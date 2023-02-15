@@ -22,7 +22,7 @@ This repository contains tooling applications and libraries for KIE projects.
 
 To start building the KIE Tools project, you're going to need:
 
-- Node `16` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
+- Node `18` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - pnpm `7.26.3` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Maven `3.8.6`
 - Java `11`

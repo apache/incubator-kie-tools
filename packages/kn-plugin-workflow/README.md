@@ -10,7 +10,7 @@ All the commands in this section should be performed in the monorepo root.
 
 ### Prerequisites
 
-- Node `>= 16.13.2` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
+- Node `>= 18.14.0` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - pnpm `7.26.3` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Go `1.19` _(To install, follow these instructions: https://go.dev/doc/install)_
 

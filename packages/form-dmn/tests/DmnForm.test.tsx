@@ -58,7 +58,7 @@ describe("DmnForm tests", () => {
 
     const { findByTestId } = render(<DmnForm {...newProps} />);
 
-    expect(await findByTestId("base-form")).toMatchSnapshot();
+    expect(await findByTestId("form-base")).toMatchSnapshot();
   });
 
   it("should submit the formData", async () => {
@@ -68,7 +68,7 @@ describe("DmnForm tests", () => {
 
     const { findByTestId } = render(<DmnForm {...props} onSubmit={onSubmit} formRef={formRef} formInputs={formData} />);
 
-    expect(await findByTestId("base-form")).toMatchSnapshot();
+    expect(await findByTestId("form-base")).toMatchSnapshot();
 
     await act(async () => {
       formRef.current?.submit();
@@ -84,7 +84,7 @@ describe("DmnForm tests", () => {
 
     const { findByTestId } = render(<DmnForm {...props} onSubmit={onSubmit} formRef={formRef} formInputs={formData} />);
 
-    expect(await findByTestId("base-form")).toMatchSnapshot();
+    expect(await findByTestId("form-base")).toMatchSnapshot();
 
     await act(async () => {
       formRef.current?.submit();
@@ -102,7 +102,7 @@ describe("DmnForm tests", () => {
       <DmnForm {...props} formRef={formRef} onValidate={onValidate} formInputs={formData} />
     );
 
-    expect(await findByTestId("base-form")).toMatchSnapshot();
+    expect(await findByTestId("form-base")).toMatchSnapshot();
 
     await act(async () => {
       formRef.current?.submit();
@@ -120,7 +120,7 @@ describe("DmnForm tests", () => {
       <DmnForm {...props} formRef={formRef} onValidate={onValidate} formInputs={formData} />
     );
 
-    expect(await findByTestId("base-form")).toMatchSnapshot();
+    expect(await findByTestId("form-base")).toMatchSnapshot();
 
     await act(async () => {
       formRef.current?.submit();

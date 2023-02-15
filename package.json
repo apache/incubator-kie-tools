@@ -19,7 +19,7 @@
     "@kie-tools-scripts/sparse-checkout": "workspace:*",
     "@kie-tools-scripts/update-version": "workspace:*",
     "@nice-move/prettier-plugin-package-json": "^0.6.1",
-    "@types/node": "^15.0.2",
+    "@types/node": "^18.13.0",
     "filemanager-webpack-plugin": "^7.0.0",
     "husky": "^6.0.0",
     "postinstall-postinstall": "^2.1.0",
@@ -31,7 +31,7 @@
     "react-dropzone": "^11.4.2"
   },
   "engines": {
-    "node": ">=16",
+    "node": ">=18",
     "pnpm": "7.26.3"
   },
   "pnpm": {

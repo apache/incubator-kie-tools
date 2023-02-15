@@ -24,7 +24,7 @@ import { COMMAND_IDS } from "./commandIds";
 import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
 
 function isYard(textDocument: vscode.TextDocument) {
-  return /^.*\.yard\.(json|yml|yaml)$/.test(textDocument.fileName);
+  return /^.*\.yard\.(yml|yaml)$/.test(textDocument.fileName);
 }
 
 async function openAsDiagramIfYard(args: { textEditor: vscode.TextEditor; active: boolean }) {

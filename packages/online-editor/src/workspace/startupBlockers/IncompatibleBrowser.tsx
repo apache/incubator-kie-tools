@@ -22,7 +22,8 @@ import * as Bowser from "bowser";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { KieIcon } from "./KieIcon";
-import { LATEST_VERSION_COMPATIBLE_WITH_LFS } from "./LatestCompatibleVersion";
+
+export const LATEST_VERSION_COMPATIBLE_WITH_LFS = "0.23.0";
 
 const hasNecessaryApis = window["SharedWorker"] && window["BroadcastChannel"];
 const isCompatibleBrowser = Bowser.getParser(window.navigator.userAgent).satisfies({

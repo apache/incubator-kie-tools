@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,4 +14,8 @@
  * limitations under the License.
  */
 
-export const LATEST_VERSION_COMPATIBLE_WITH_LFS = "0.25.0";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { App } from "./App";
+
+ReactDOM.render(<App />, document.getElementById("app"));

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
-import { AutoForm } from "uniforms-patternfly/dist/es6";
+import { AutoForm } from "@kie-tools/uniforms-patternfly/dist/esm";
 import * as Ajv from "ajv";
 import * as React from "react";
 import { useCallback } from "react";

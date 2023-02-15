@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventRef;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
-import org.kie.workbench.common.stunner.sw.definition.EventTimeout;
 import org.kie.workbench.common.stunner.sw.definition.ForEachState;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
@@ -125,13 +124,6 @@ public interface StateMarshalling {
                 List<Edge> outEdges = stateNode.getOutEdges();
                 for (Edge edge : outEdges) {
                     if (edge.getContent() instanceof Dock) {
-                        Node timeoutNode = edge.getTargetNode();
-                        if (null != timeoutNode) {
-                            Object def = getElementDefinition(timeoutNode);
-                            if (def instanceof EventTimeout) {
-                                state.setEventTimeout(((EventTimeout) def).getEventTimeout());
-                            }
-                        }
                     } else {
                         Object def = getElementDefinition(edge);
                         if (def instanceof ErrorTransition) {
