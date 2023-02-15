@@ -69,7 +69,7 @@ import { UploadCard } from "./UploadCard";
 import { ImportFromUrlCard } from "../importFromUrl/ImportFromUrlHomePageCard";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
+import { NewFileDropdownMenu } from "../editor/Toolbar/NewFileDropdownMenu";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";

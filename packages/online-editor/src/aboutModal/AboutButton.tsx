@@ -77,6 +77,7 @@ export const AboutButton: React.FunctionComponent = () => {
         variant={ModalVariant.large}
         isOpen={isModalOpen}
         aria-describedby="modal-title-icon-description"
+        aria-label="About"
         onClose={handleModalToggle}
       >
         <Divider inset={{ default: "insetMd" }} />

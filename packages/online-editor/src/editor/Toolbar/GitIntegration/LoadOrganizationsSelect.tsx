@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import {
   Button,
@@ -28,14 +27,14 @@ import {
   SelectVariant,
 } from "@patternfly/react-core";
 import { useCallback, useEffect, useState } from "react";
-import { AuthProviderType, isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
-import { useAuthProvider } from "../authProviders/AuthProvidersContext";
-import { useAuthSession } from "../authSessions/AuthSessionsContext";
-import { useBitbucketClient } from "../bitbucket/Hooks";
-import { useGitHubClient } from "../github/Hooks";
-import { switchExpression } from "../switchExpression/switchExpression";
-import { BitbucketIcon, GithubIcon, SyncAltIcon, UserAltIcon, UserIcon, UsersIcon } from "@patternfly/react-icons";
-import { useOnlineI18n } from "../i18n";
+import { AuthProviderType, isSupportedGitAuthProviderType } from "../../../authProviders/AuthProvidersApi";
+import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
+import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
+import { useBitbucketClient } from "../../../bitbucket/Hooks";
+import { useGitHubClient } from "../../../github/Hooks";
+import { switchExpression } from "../../../switchExpression/switchExpression";
+import { BitbucketIcon, GithubIcon, SyncAltIcon, UserIcon, UsersIcon } from "@patternfly/react-icons";
+import { useOnlineI18n } from "../../../i18n";
 
 export interface LoadOrganizationsReponse {
   organizations: {
@@ -105,12 +104,13 @@ export const LoadOrganizationsSelect = (props: Props) => {
     return { organizations: values.map((it) => ({ name: it.workspace.slug })) };
   }, [bitbucketClient]);
 
+  const { onSelect } = props;
   const setSelectedOption = useCallback(
     (option?: SelectOptionObjectType) => {
-      props.onSelect(option);
+      onSelect(option);
       setInternalSelectedOption(option);
     },
-    [props]
+    [onSelect]
   );
 
   const selectDefaultOption = useCallback(
@@ -125,7 +125,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
         })
       );
     },
-    [authInfo?.username, authProvider?.type]
+    [authInfo, authProvider?.type, setSelectedOption]
   );
 
   const loadOrganizations = useCallback(() => {
@@ -152,9 +152,9 @@ export const LoadOrganizationsSelect = (props: Props) => {
     if (authProvider && isSupportedGitAuthProviderType(authProvider?.type)) {
       loadOrganizations();
     }
-  }, [loadOrganizations, authProvider?.type, authProvider]);
+  }, [loadOrganizations, setSelectedOption, authProvider]);
 
-  const selectOptions = useCallback(() => {
+  const selectOptions = useMemo(() => {
     const options: JSX.Element[] = [];
     if (!authProvider || !isSupportedGitAuthProviderType(authProvider.type)) {
       return options;
@@ -215,7 +215,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
             selections={internalSelectedOption}
             isDisabled={props.readonly}
           >
-            {selectOptions()}
+            {selectOptions}
           </Select>
         )}
       </FlexItem>
