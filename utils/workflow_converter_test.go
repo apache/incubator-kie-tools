@@ -12,29 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package converters
+package utils
 
 import (
 	"context"
-	"github.com/kiegroup/kogito-serverless-operator/test/utils"
-	"github.com/stretchr/testify/assert"
-	"k8s.io/client-go/rest"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/envtest"
 	"testing"
-)
 
-var cfg *rest.Config
-var k8sClient client.Client
-var testEnv *envtest.Environment
+	"github.com/stretchr/testify/assert"
+
+	"github.com/kiegroup/kogito-serverless-operator/test"
+)
 
 func TestKogitoServerlessWorkflowConverter(t *testing.T) {
 	t.Run("verify that when KogitoServerlessWorkflow CR is nil an error is returned", func(t *testing.T) {
-		context := context.TODO()
 		// Create a KogitoServerlessWorkflow object with metadata and spec.
-		ksw, _ := utils.GetKogitoServerlessWorkflow("../config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml")
-		converterToTest := NewKogitoServerlessWorkflowConverter(context)
-		out, err := converterToTest.ToCNCFWorkflow(ksw)
+		ksw := test.GetKogitoServerlessWorkflow("../config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml", t.Name())
+		out, err := ToCNCFWorkflow(context.TODO(), ksw)
 		assert.NoError(t, err)
 		assert.True(t, out != nil)
 		assert.True(t, out.Name == "greeting")

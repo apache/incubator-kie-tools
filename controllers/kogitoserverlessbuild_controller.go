@@ -1,31 +1,29 @@
-/*
-Copyright 2022.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Copyright 2023 Red Hat, Inc. and/or its affiliates
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package controllers
 
 import (
 	"context"
 	"fmt"
-	"github.com/kiegroup/kogito-serverless-operator/platform"
-	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"time"
 
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+
+	"github.com/kiegroup/kogito-serverless-operator/platform"
+
 	"github.com/go-logr/logr"
-	"github.com/kiegroup/container-builder/api"
-	clientr "github.com/kiegroup/container-builder/client"
-	api08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/builder"
-	"github.com/kiegroup/kogito-serverless-operator/utils"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -35,6 +33,13 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
+
+	"github.com/kiegroup/container-builder/api"
+	clientr "github.com/kiegroup/container-builder/client"
+
+	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/kiegroup/kogito-serverless-operator/builder"
+	"github.com/kiegroup/kogito-serverless-operator/utils"
 )
 
 // KogitoServerlessBuildReconciler reconciles a KogitoServerlessBuild object
@@ -58,7 +63,7 @@ type KogitoServerlessBuildReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
 func (r *KogitoServerlessBuildReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := ctrllog.FromContext(ctx)
-	build := &api08.KogitoServerlessBuild{}
+	build := &operatorapi.KogitoServerlessBuild{}
 	err := r.Client.Get(ctx, req.NamespacedName, build)
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -70,7 +75,7 @@ func (r *KogitoServerlessBuildReconciler) Reconcile(ctx context.Context, req ctr
 
 	phase := build.Status.BuildPhase
 	if r.commonBuildConf.Data == nil {
-		r.commonBuildConf, err = utils.GetBuilderCommonConfigMap(r.Client)
+		r.commonBuildConf, err = builder.GetCommonConfigMap(r.Client)
 	}
 
 	if err != nil {
@@ -93,7 +98,7 @@ func (r *KogitoServerlessBuildReconciler) Reconcile(ctx context.Context, req ctr
 		return reconcile.Result{RequeueAfter: 60 * time.Second}, err
 	}
 
-	customConfig, err := utils.GetCustomConfig(*pl)
+	customConfig, err := builder.NewCustomConfig(*pl)
 	if err != nil {
 		log.Error(err, fmt.Sprintf("Error retrieving the custom configuration from the platform %s in namespace %s. Workflow %s build cannot be performed", pl.Name, pl.Namespace, build.Spec.WorkflowId))
 		return reconcile.Result{RequeueAfter: 60 * time.Second}, err
@@ -123,14 +128,14 @@ func (r *KogitoServerlessBuildReconciler) Reconcile(ctx context.Context, req ctr
 }
 
 func (r *KogitoServerlessBuildReconciler) retrieveWorkflowFromCR(workflowId string, ctx context.Context, req ctrl.Request) ([]byte, string, error) {
-	instance := &api08.KogitoServerlessWorkflow{}
-	error := r.Client.Get(ctx, types.NamespacedName{Name: workflowId, Namespace: req.Namespace}, instance)
-	workflowBytes, error := utils.GetWorkflowFromCR(instance, ctx)
+	instance := &operatorapi.KogitoServerlessWorkflow{}
+	err := r.Client.Get(ctx, types.NamespacedName{Name: workflowId, Namespace: req.Namespace}, instance)
+	workflowBytes, err := utils.GetJSONWorkflow(instance, ctx)
 	imageTag := utils.GetWorkflowImageTag(instance)
-	return workflowBytes, imageTag, error
+	return workflowBytes, imageTag, err
 }
 
-func manageStatusUpdate(ctx context.Context, build *api.Build, instance *api08.KogitoServerlessBuild, r *KogitoServerlessBuildReconciler, log logr.Logger) {
+func manageStatusUpdate(ctx context.Context, build *api.Build, instance *operatorapi.KogitoServerlessBuild, r *KogitoServerlessBuildReconciler, log logr.Logger) {
 	if build.Status.Phase != instance.Status.BuildPhase {
 		instance.Status.Builder = *build
 		instance.Status.BuildPhase = build.Status.Phase
@@ -144,6 +149,6 @@ func manageStatusUpdate(ctx context.Context, build *api.Build, instance *api08.K
 // SetupWithManager sets up the controller with the Manager.
 func (r *KogitoServerlessBuildReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&api08.KogitoServerlessBuild{}).
+		For(&operatorapi.KogitoServerlessBuild{}).
 		Complete(r)
 }

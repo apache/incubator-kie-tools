@@ -1,35 +1,42 @@
-/*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2023 Red Hat, Inc. and/or its affiliates
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package platform
 
 import (
 	"context"
-	"github.com/kiegroup/container-builder/api"
-	"github.com/kiegroup/container-builder/client"
-	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/builder"
-	"github.com/kiegroup/kogito-serverless-operator/constants"
+
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
+
+	"github.com/kiegroup/container-builder/api"
+	"github.com/kiegroup/container-builder/client"
+
+	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/kiegroup/kogito-serverless-operator/builder"
 )
 
-// NewInitializeAction returns a action that initializes the platform configuration when not provided by the user.
+const (
+	defaultKanikoPVCSize      = "1Gi"
+	defaultKanikoCachePVCName = "kogito-kaniko-cache-pv"
+)
+
+// NewInitializeAction returns an action that initializes the platform configuration when not provided by the user.
 func NewInitializeAction() Action {
 	return &initializeAction{}
 }
@@ -42,20 +49,20 @@ func (action *initializeAction) Name() string {
 	return "initialize"
 }
 
-func (action *initializeAction) CanHandle(platform *v08.KogitoServerlessPlatform) bool {
-	return platform.Status.Phase == "" || platform.Status.Phase == v08.PlatformPhaseDuplicate
+func (action *initializeAction) CanHandle(platform *operatorapi.KogitoServerlessPlatform) bool {
+	return platform.Status.Phase == "" || platform.Status.Phase == operatorapi.PlatformPhaseDuplicate
 }
 
-func (action *initializeAction) Handle(ctx context.Context, platform *v08.KogitoServerlessPlatform) (*v08.KogitoServerlessPlatform, error) {
+func (action *initializeAction) Handle(ctx context.Context, platform *operatorapi.KogitoServerlessPlatform) (*operatorapi.KogitoServerlessPlatform, error) {
 	duplicate, err := action.isPrimaryDuplicate(ctx, platform)
 	if err != nil {
 		return nil, err
 	}
 	if duplicate {
 		// another platform already present in the namespace
-		if platform.Status.Phase != v08.PlatformPhaseDuplicate {
+		if platform.Status.Phase != operatorapi.PlatformPhaseDuplicate {
 			platform := platform.DeepCopy()
-			platform.Status.Phase = v08.PlatformPhaseDuplicate
+			platform.Status.Phase = operatorapi.PlatformPhaseDuplicate
 
 			return platform, nil
 		}
@@ -82,26 +89,28 @@ func (action *initializeAction) Handle(ctx context.Context, platform *v08.Kogito
 			if err != nil {
 				return nil, err
 			}
-			platform.Status.Phase = v08.PlatformPhaseWarming
+			platform.Status.Phase = operatorapi.PlatformPhaseWarming
 		} else {
 			// Skip the warmer pod creation
-			platform.Status.Phase = v08.PlatformPhaseCreating
+			platform.Status.Phase = operatorapi.PlatformPhaseCreating
 		}
 	} else {
-		platform.Status.Phase = v08.PlatformPhaseCreating
+		platform.Status.Phase = operatorapi.PlatformPhaseCreating
 	}
-	platform.Status.Version = constants.VERSION
+	platform.Status.Version = metadata.SpecVersion
 
 	return platform, nil
 }
 
-func createPersistentVolumeClaim(ctx context.Context, client client.Client, platform *v08.KogitoServerlessPlatform) error {
-	volumeSize, err := resource.ParseQuantity(constants.DEFAULT_KAKIKO_PVC_SIZE)
+// TODO: move this to Kaniko packages based on the platform context
+
+func createPersistentVolumeClaim(ctx context.Context, client client.Client, platform *operatorapi.KogitoServerlessPlatform) error {
+	volumeSize, err := resource.ParseQuantity(defaultKanikoPVCSize)
 	if err != nil {
 		return err
 	}
 	// nolint: staticcheck
-	pvcName := constants.DEFAULT_KANIKOCACHE_PVC_NAME
+	pvcName := defaultKanikoCachePVCName
 	if persistentVolumeClaim, found := platform.Status.BuildPlatform.PublishStrategyOptions[builder.KanikoPVCName]; found {
 		pvcName = persistentVolumeClaim
 	}
@@ -140,7 +149,7 @@ func createPersistentVolumeClaim(ctx context.Context, client client.Client, plat
 }
 
 // Function to double-check if there is already an active platform on the current context (i.e. namespace)
-func (action *initializeAction) isPrimaryDuplicate(ctx context.Context, thisPlatform *v08.KogitoServerlessPlatform) (bool, error) {
+func (action *initializeAction) isPrimaryDuplicate(ctx context.Context, thisPlatform *operatorapi.KogitoServerlessPlatform) (bool, error) {
 	if IsSecondary(thisPlatform) {
 		// Always reconcile secondary platforms
 		return false, nil

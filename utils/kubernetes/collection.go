@@ -1,32 +1,31 @@
-/*
-Licensed to the Apache Software Foundation (ASF) under one or more
-contributor license agreements.  See the NOTICE file distributed with
-this work for additional information regarding copyright ownership.
-The ASF licenses this file to You under the Apache License, Version 2.0
-(the "License"); you may not use this file except in compliance with
-the License.  You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Copyright 2023 Red Hat, Inc. and/or its affiliates
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package kubernetes
 
 import (
-	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/constants"
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
+	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
+
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
+
+	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 
 	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 
@@ -128,13 +127,13 @@ func (c *Collection) GetDeployment(filter func(*appsv1.Deployment) bool) *appsv1
 }
 
 // GetDeploymentForWorkflow returns a Deployment for the given workflow.
-func (c *Collection) GetDeploymentForWorkflow(workflow *v08.KogitoServerlessWorkflow) *appsv1.Deployment {
+func (c *Collection) GetDeploymentForWorkflow(workflow *operatorapi.KogitoServerlessWorkflow) *appsv1.Deployment {
 	if workflow == nil {
 		return nil
 	}
 
 	return c.GetDeployment(func(d *appsv1.Deployment) bool {
-		return d.ObjectMeta.Labels[constants.WorkflowMetadataKeys()("name")] == workflow.Name
+		return d.ObjectMeta.Labels[metadata.Name] == workflow.Name
 	})
 }
 
@@ -222,24 +221,24 @@ func (c *Collection) GetService(filter func(*corev1.Service) bool) *corev1.Servi
 }
 
 // GetUserServiceForWorkflow returns a user Service for the given workflow.
-func (c *Collection) GetUserServiceForWorkflow(workflow *v08.KogitoServerlessWorkflow) *corev1.Service {
+func (c *Collection) GetUserServiceForWorkflow(workflow *operatorapi.KogitoServerlessWorkflow) *corev1.Service {
 	if workflow == nil {
 		return nil
 	}
 	return c.GetService(func(s *corev1.Service) bool {
 		return s.ObjectMeta.Labels != nil &&
-			s.ObjectMeta.Labels[constants.DeploymentMetadataKeys()("label")] == workflow.Name &&
-			s.ObjectMeta.Labels[constants.DeploymentMetadataKeys()("serviceType")] == v08.ServiceTypeUser
+			s.ObjectMeta.Labels[metadata.Label] == workflow.Name &&
+			s.ObjectMeta.Labels[metadata.ServiceType] == operatorapi.ServiceTypeUser
 	})
 }
 
 // GetServiceForWorkflow returns a user Service for the given workflow.
-func (c *Collection) GetServiceForWorkflow(workflow *v08.KogitoServerlessWorkflow) *corev1.Service {
+func (c *Collection) GetServiceForWorkflow(workflow *operatorapi.KogitoServerlessWorkflow) *corev1.Service {
 	if workflow == nil {
 		return nil
 	}
 	return c.GetService(func(s *corev1.Service) bool {
-		return s.ObjectMeta.Labels != nil && s.ObjectMeta.Labels[constants.DeploymentMetadataKeys()("label")] == workflow.Name
+		return s.ObjectMeta.Labels != nil && s.ObjectMeta.Labels[metadata.Label] == workflow.Name
 	})
 }
 

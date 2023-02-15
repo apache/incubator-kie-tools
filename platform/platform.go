@@ -1,32 +1,35 @@
-/*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2023 Red Hat, Inc. and/or its affiliates
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package platform
 
 import (
 	"context"
 	"fmt"
-	"github.com/kiegroup/container-builder/util/log"
-	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/constants"
-	"github.com/kiegroup/kogito-serverless-operator/utils"
+	"os"
+	"strings"
+
 	coordination "k8s.io/api/coordination/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
-	"os"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
-	"strings"
+
+	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
+
+	"github.com/kiegroup/container-builder/util/log"
+
+	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/kiegroup/kogito-serverless-operator/utils"
 )
 
 const (
@@ -39,6 +42,7 @@ const (
 )
 
 // Copied from https://github.com/kubernetes/enhancements/tree/master/keps/sig-cluster-lifecycle/generic/1755-communicating-a-local-registry
+
 // LocalRegistryHostingV1 describes a local registry that developer tools can
 // connect to. A local registry allows clients to load images into the local
 // cluster by pushing to this registry.
@@ -86,8 +90,6 @@ type LocalRegistryHostingV1 struct {
 
 const OperatorLockName = "kogito-serverless-lock"
 
-var OperatorImage string
-
 // IsCurrentOperatorGlobal returns true if the operator is configured to watch all namespaces.
 func IsCurrentOperatorGlobal() bool {
 	if watchNamespace, envSet := os.LookupEnv(OperatorWatchNamespaceEnvVariable); !envSet || strings.TrimSpace(watchNamespace) == "" {
@@ -110,12 +112,12 @@ func GetOperatorLockName(operatorID string) string {
 }
 
 // GetActivePlatform returns the currently installed active platform in the local namespace.
-func GetActivePlatform(ctx context.Context, c ctrl.Reader, namespace string) (*v08.KogitoServerlessPlatform, error) {
+func GetActivePlatform(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.KogitoServerlessPlatform, error) {
 	return GetLocalPlatform(ctx, c, namespace, true)
 }
 
 // GetLocalPlatform returns the currently installed platform or any platform existing in local namespace.
-func GetLocalPlatform(ctx context.Context, c ctrl.Reader, namespace string, active bool) (*v08.KogitoServerlessPlatform, error) {
+func GetLocalPlatform(ctx context.Context, c ctrl.Reader, namespace string, active bool) (*operatorapi.KogitoServerlessPlatform, error) {
 	log.Debug("Finding available platforms")
 
 	lst, err := ListPrimaryPlatforms(ctx, c, namespace)
@@ -139,17 +141,17 @@ func GetLocalPlatform(ctx context.Context, c ctrl.Reader, namespace string, acti
 	}
 
 	log.Debugf("Not found a local build platform")
-	return nil, k8serrors.NewNotFound(v08.Resource("KogitoServerlessPlatform"), DefaultPlatformName)
+	return nil, k8serrors.NewNotFound(operatorapi.Resource("KogitoServerlessPlatform"), DefaultPlatformName)
 }
 
 // ListPrimaryPlatforms returns all non-secondary platforms installed in a given namespace (only one will be active).
-func ListPrimaryPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*v08.KogitoServerlessPlatformList, error) {
+func ListPrimaryPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.KogitoServerlessPlatformList, error) {
 	lst, err := ListAllPlatforms(ctx, c, namespace)
 	if err != nil {
 		return nil, err
 	}
 
-	filtered := &v08.KogitoServerlessPlatformList{}
+	filtered := &operatorapi.KogitoServerlessPlatformList{}
 	for i := range lst.Items {
 		pl := lst.Items[i]
 		if !IsSecondary(&pl) {
@@ -160,8 +162,8 @@ func ListPrimaryPlatforms(ctx context.Context, c ctrl.Reader, namespace string) 
 }
 
 // ListAllPlatforms returns all platforms installed in a given namespace.
-func ListAllPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*v08.KogitoServerlessPlatformList, error) {
-	lst := v08.NewKogitoServerlessPlatformList()
+func ListAllPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.KogitoServerlessPlatformList, error) {
+	lst := operatorapi.NewKogitoServerlessPlatformList()
 	if err := c.List(ctx, &lst, ctrl.InNamespace(namespace)); err != nil {
 		return nil, err
 	}
@@ -169,13 +171,13 @@ func ListAllPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*v0
 }
 
 // IsActive determines if the given platform is being used.
-func IsActive(p *v08.KogitoServerlessPlatform) bool {
-	return p.Status.Phase != "" && p.Status.Phase != v08.PlatformPhaseDuplicate
+func IsActive(p *operatorapi.KogitoServerlessPlatform) bool {
+	return p.Status.Phase != "" && p.Status.Phase != operatorapi.PlatformPhaseDuplicate
 }
 
 // IsSecondary determines if the given platform is marked as secondary.
-func IsSecondary(p *v08.KogitoServerlessPlatform) bool {
-	if l, ok := p.Annotations[constants.PlatformAnnotation()("SecondaryPlatformAnnotation")]; ok && l == "true" {
+func IsSecondary(p *operatorapi.KogitoServerlessPlatform) bool {
+	if l, ok := p.Annotations[metadata.SecondaryPlatformAnnotation]; ok && l == "true" {
 		return true
 	}
 	return false
@@ -234,7 +236,7 @@ func IsOperatorAllowedOnNamespace(ctx context.Context, c ctrl.Reader, namespace 
 	return !alreadyOwned, nil
 }
 
-// Operators matching the annotation operator id are allowed to reconcile.
+// IsOperatorHandler Operators matching the annotation operator id are allowed to reconcile.
 // For legacy resources that are missing a proper operator id annotation the default global operator or the local
 // operator in this namespace are candidates for reconciliation.
 func IsOperatorHandler(object ctrl.Object) bool {

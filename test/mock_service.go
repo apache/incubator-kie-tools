@@ -1,25 +1,23 @@
-/*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2023 Red Hat, Inc. and/or its affiliates
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package test
 
 import (
 	"context"
 
 	"github.com/RHsyseng/operator-utils/pkg/logs"
-	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	oappsv1 "github.com/openshift/api/apps/v1"
 	buildv1 "github.com/openshift/api/build/v1"
 	consolev1 "github.com/openshift/api/console/v1"
@@ -32,9 +30,11 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	clientv1 "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
+
+	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
-var log = logs.GetLogger("kieapp.test")
+var logger = logs.GetLogger("kieapp.test")
 
 type MockPlatformService struct {
 	Client          clientv1.Client
@@ -112,7 +112,7 @@ func MockServiceWithExtraScheme(objs ...runtime.Object) *MockPlatformService {
 		}
 	}
 	client := fake.NewFakeClientWithScheme(scheme)
-	log.Debugf("Fake client created as %v", client)
+	logger.Debugf("Fake client created as %v", client)
 	return &MockPlatformService{
 		Client: client,
 		scheme: scheme,

@@ -14,10 +14,11 @@
 # limitations under the License.
 set -e
 
-script_dir_path=`dirname "${BASH_SOURCE[0]}"`
-source ${script_dir_path}/env.sh
+script_dir_path=$(dirname "${BASH_SOURCE[0]}")
+source "${script_dir_path}"/env.sh
 
 imageTag='quay.io/kiegroup/kogito-serverless-operator'
+# shellcheck disable=SC2034
 old_version=$(getOperatorVersion)
 new_version=$1
 

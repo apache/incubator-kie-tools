@@ -1,31 +1,34 @@
-/*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2023 Red Hat, Inc. and/or its affiliates
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package builder
 
 import (
 	"context"
 	"time"
 
-	"github.com/kiegroup/container-builder/api"
-	builder "github.com/kiegroup/container-builder/builder/kubernetes"
-	"github.com/kiegroup/container-builder/client"
-	"github.com/kiegroup/kogito-serverless-operator/constants"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
+
+	"github.com/kiegroup/container-builder/api"
+	builder "github.com/kiegroup/container-builder/builder/kubernetes"
+	"github.com/kiegroup/container-builder/client"
+)
+
+const (
+	resourceDockerfile = "Dockerfile"
 )
 
 type Builder struct {
@@ -43,26 +46,26 @@ func NewBuilderWithConfig(contex context.Context, common corev1.ConfigMap, custo
 }
 
 func (b *Builder) getImageBuilder(workflowID string, imageTag string, workflowDefinition []byte) ImageBuilder {
-	containerFile := b.commonConfig.Data[b.commonConfig.Data[constants.DEFAULT_BUILDER_RESOURCE_NAME_KEY]]
+	containerFile := b.commonConfig.Data[b.commonConfig.Data[configKeyDefaultBuilderResourceName]]
 	ib := NewImageBuilder(workflowID, workflowDefinition, []byte(containerFile))
-	ib.OnNamespace(b.customConfig[constants.CUSTOM_NS_KEY])
+	ib.OnNamespace(b.customConfig[configKeyBuildNamespace])
 	ib.WithPodMiddleName(workflowID)
 	ib.WithInsecureRegistry(false)
 	ib.WithImageName(workflowID + imageTag)
-	ib.WithSecret(b.customConfig[constants.CUSTOM_REG_CRED_KEY])
-	ib.WithRegistryAddress(b.customConfig[constants.CUSTOM_REG_ADDRESS_KEY])
+	ib.WithSecret(b.customConfig[configKeyRegistrySecret])
+	ib.WithRegistryAddress(b.customConfig[configKeyRegistryAddress])
 	return ib
 }
 
 func (b *Builder) getImageBuilderForKaniko(workflowID string, imageTag string, workflowDefinition []byte, task *api.KanikoTask) ImageBuilder {
-	containerFile := b.commonConfig.Data[b.commonConfig.Data[constants.DEFAULT_BUILDER_RESOURCE_NAME_KEY]]
+	containerFile := b.commonConfig.Data[b.commonConfig.Data[configKeyDefaultBuilderResourceName]]
 	ib := NewImageBuilder(workflowID, workflowDefinition, []byte(containerFile))
-	ib.OnNamespace(b.customConfig[constants.CUSTOM_NS_KEY])
+	ib.OnNamespace(b.customConfig[configKeyBuildNamespace])
 	ib.WithPodMiddleName(workflowID)
 	ib.WithInsecureRegistry(false)
 	ib.WithImageName(workflowID + imageTag)
-	ib.WithSecret(b.customConfig[constants.CUSTOM_REG_CRED_KEY])
-	ib.WithRegistryAddress(b.customConfig[constants.CUSTOM_REG_ADDRESS_KEY])
+	ib.WithSecret(b.customConfig[configKeyRegistrySecret])
+	ib.WithRegistryAddress(b.customConfig[configKeyRegistryAddress])
 	ib.WithCache(task.Cache)
 	ib.WithResources(task.Resources)
 	ib.WithAdditionalFlags(task.AdditionalFlags)
@@ -177,13 +180,14 @@ func newBuild(kb KogitoBuilder, platform api.PlatformBuild, b *Builder, cli clie
 	buildInfo := builder.BuilderInfo{FinalImageName: kb.ImageName, BuildUniqueName: kb.PodMiddleName, Platform: platform}
 
 	return builder.NewBuild(buildInfo).
-		WithResource(constants.BUILDER_RESOURCE_NAME_DEFAULT, kb.ContainerFile).
-		WithResource(kb.WorkflowID+b.commonConfig.Data[constants.DEFAULT_WORKFLOW_EXTENSION_KEY], kb.WorkflowDefinition).
+		WithResource(resourceDockerfile, kb.ContainerFile).
+		WithResource(kb.WorkflowID+b.commonConfig.Data[configKeyDefaultExtension], kb.WorkflowDefinition).
 		WithClient(cli).
 		Schedule()
 }
 
 // Fluent API section
+
 type KogitoBuilder struct {
 	WorkflowID           string
 	WorkflowDefinition   []byte

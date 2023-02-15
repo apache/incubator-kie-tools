@@ -16,17 +16,20 @@ package resources
 
 import (
 	"context"
-	"github.com/kiegroup/container-builder/client"
-	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
-	"github.com/pkg/errors"
 	"io/ioutil"
-	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"net/http"
 	"os"
 	"path/filepath"
-	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 	"strings"
+
+	"github.com/pkg/errors"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/kiegroup/container-builder/client"
+
+	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 )
 
 // ResourceCustomizer can be used to inject code that changes the objects before they are created.

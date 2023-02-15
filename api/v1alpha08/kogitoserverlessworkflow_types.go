@@ -1,18 +1,16 @@
-/*
-Copyright 2022.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Copyright 2022 Red Hat, Inc. and/or its affiliates
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package v1alpha08
 
@@ -388,45 +386,50 @@ type Endpoint struct {
 	Protocol string `json:"protocol,omitempty"` // "TCP" or "UDP"; never empty
 }
 
+// TODO: Conditions MUST be an array and follow Kubernetes conventions!!!! https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#typical-status-properties
+
 // KogitoServerlessWorkflowStatus defines the observed state of KogitoServerlessWorkflow
 type KogitoServerlessWorkflowStatus struct {
 	Endpoints []Endpoint                   `json:"endpoints,omitempty"`
 	Address   duckv1.Addressable           `json:"address,omitempty"`
 	Condition ConditionType                `json:"condition,omitempty"`
+	Reason    string                       `json:"reason,omitempty"`
 	Applied   KogitoServerlessWorkflowSpec `json:"applied,omitempty"`
+	// keeps track of how many failure recovers a given workflow had so far
+	RecoverFailureAttempts int `json:"recoverFailureAttempts,omitempty"`
 }
 
 // ConditionType type of condition
 type ConditionType string
 
 const (
-	// NoneConditionType --
+	// NoneConditionType initial condition of a just created object
 	NoneConditionType ConditionType = ""
-	// DeployedConditionType the workflow is deployed
-	DeployedConditionType ConditionType = "Deployed"
 	// ProvisioningConditionType the workflow is being provisioned
 	ProvisioningConditionType ConditionType = "Provisioning"
 	// FailedConditionType the workflow is in a failed state
 	FailedConditionType ConditionType = "Failed"
-	// WaitingForPlatformConditionType workflow created but we are waiting a platform to deploy it
+	// WaitingForPlatformConditionType workflow created, but we are waiting a platform to deploy it
 	WaitingForPlatformConditionType ConditionType = "Waiting For Platform"
-	// InitializationConditionType --
-	InitializationConditionType ConditionType = "Initialization"
 	// BuildingConditionType --
 	BuildingConditionType ConditionType = "Building Workflow"
 	// DeployingConditionType --
 	DeployingConditionType ConditionType = "Deploying"
 	// RunningConditionType --
 	RunningConditionType ConditionType = "Running"
-	// ErrorConditionType --
-	ErrorConditionType ConditionType = "Error"
 )
 
 // KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows API
 // +kubebuilder:object:root=true
 // +kubebuilder:object:generate=true
 // +kubebuilder:subresource:status
+// +kubebuilder:resource:shortName={"ksw", "workflow"}
 // +k8s:openapi-gen=true
+// +kubebuilder:printcolumn:name="Profile",type=string,JSONPath=`.metadata.annotations.sw\.kogito\.kie\.org\/profile`
+// +kubebuilder:printcolumn:name="Version",type=string,JSONPath=`.metadata.annotations.sw\.kogito\.kie\.org\/version`
+// +kubebuilder:printcolumn:name="Address",type=string,JSONPath=`.status.address.url`
+// +kubebuilder:printcolumn:name="Condition",type=string,JSONPath=`.status.condition`
+// +kubebuilder:printcolumn:name="Reason",type=string,JSONPath=`.status.reason`
 type KogitoServerlessWorkflow struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
