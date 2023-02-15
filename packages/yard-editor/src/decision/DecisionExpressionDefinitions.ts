@@ -15,16 +15,18 @@
  */
 
 import { Element } from "../model";
-import { DecisionTableProps, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import {
-  Clause,
-  DataType,
-  DecisionTableRule,
-  ExpressionProps,
-  LiteralExpressionProps,
-} from "@kie-tools/boxed-expression-component/dist/api";
+  DecisionTableExpressionDefinition,
+  DecisionTableExpressionDefinitionHitPolicy,
+  DecisionTableExpressionDefinitionClause,
+  DecisionTableExpressionDefinitionRule,
+  ExpressionDefinition,
+  LiteralExpressionDefinition,
+} from "@kie-tools/boxed-expression-component/dist/api/ExpressionDefinition";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api/DmnBuiltInDataType";
+import { ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api/ExpressionDefinitionLogicType";
 
-export function generateDecisionExpressionDefinition(element: Element): ExpressionProps {
+export function generateDecisionExpressionDefinition(element: Element): ExpressionDefinition {
   const decisionType = element.logic.type;
 
   switch (decisionType) {
@@ -33,36 +35,37 @@ export function generateDecisionExpressionDefinition(element: Element): Expressi
       const outputClauses = element.logic.outputComponents?.map((output) => generateClause(output));
       return {
         annotations: [{ name: "annotation-1a", id: "111" }],
-        dataType: DataType.Any,
+        hitPolicy: DecisionTableExpressionDefinitionHitPolicy.Unique,
         input: inputClauses,
-        logicType: LogicType.DecisionTable,
+        logicType: ExpressionDefinitionLogicType.DecisionTable,
         name: element.name,
         output: outputClauses,
         rules: generateDecisionTableRule(element.logic.rules!, element.logic.inputs?.length),
-      } as DecisionTableProps;
-    case "LiteralExpression":
-      return {
-        dataType: DataType.Any,
-        name: element.name,
-        logicType: LogicType.LiteralExpression,
-        content: element.logic.expression,
-      } as LiteralExpressionProps;
+      } as DecisionTableExpressionDefinition;
     default:
-      return {};
+      return {
+        dataType: DmnBuiltInDataType.Any,
+        name: element.name,
+        logicType: ExpressionDefinitionLogicType.Literal,
+        content: element.logic.expression,
+      } as LiteralExpressionDefinition;
   }
 }
 
-function generateClause(clauseName: string): Clause {
+function generateClause(clauseName: string): DecisionTableExpressionDefinitionClause {
   return {
     id: clauseName + Math.floor(Math.random() * 6) + 1,
     name: clauseName,
-    dataType: DataType.Any,
-  } as Clause;
+    dataType: DmnBuiltInDataType.Any,
+  } as DecisionTableExpressionDefinitionClause;
 }
 
-function generateDecisionTableRule(rules: string[][], inputLength: number | undefined): DecisionTableRule[] {
+function generateDecisionTableRule(
+  rules: string[][],
+  inputLength: number | undefined
+): DecisionTableExpressionDefinitionRule[] {
   const l = inputLength ? inputLength : 0;
-  const decisionTableRules: DecisionTableRule[] = [];
+  const decisionTableRules: DecisionTableExpressionDefinitionRule[] = [];
   let index = 0;
   rules.map((rule) => {
     decisionTableRules.push({

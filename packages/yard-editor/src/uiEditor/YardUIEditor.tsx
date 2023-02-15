@@ -32,16 +32,29 @@ import { CubesIcon } from "@patternfly/react-icons";
 import { useBoxedExpressionEditorI18n } from "../i18n";
 import { YardFile } from "../types";
 import { deserialize } from "../model/YardSerializer";
-import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/components";
+import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions/BoxedExpressionEditor";
+import { ExpressionDefinition } from "@kie-tools/boxed-expression-component/dist/api/ExpressionDefinition";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api/DmnBuiltInDataType";
+import { ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api/ExpressionDefinitionLogicType";
 import "./YardUIEditor.css";
 import { generateDecisionTypes, dataTypes, generateDecisionExpressionDefinition } from "../decision";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api/Bee";
 
 interface Props {
   file: YardFile | undefined;
   isReadOnly: boolean;
 }
 
+const INITIAL_EXPRESSION: ExpressionDefinition = {
+  id: generateUuid(),
+  name: "Expression Name",
+  logicType: ExpressionDefinitionLogicType.Undefined,
+  dataType: DmnBuiltInDataType.Undefined,
+};
+
 export const YardUIEditor = ({ file, isReadOnly }: Props) => {
+  const decisionDevElementRef = React.useRef(null);
+  const [expression, setExpression] = useState<ExpressionDefinition>(INITIAL_EXPRESSION);
   const { i18n } = useBoxedExpressionEditorI18n();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const handleTabClick = useCallback((_event, tabIndex) => setActiveTabIndex(tabIndex), []);
@@ -144,7 +157,7 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
           </div>
         </Tab>
         <Tab eventKey={2} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}>
-          <div className={"decision-element-body"}>
+          <div className={"decision-element-body"} ref={decisionDevElementRef}>
             {yardData?.elements && yardData?.elements.length > 0 ? (
               yardData.elements.map((element, index) => {
                 return (
@@ -153,7 +166,9 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
                       decisionNodeId="_00000000-0000-0000-0000-000000000000"
                       expressionDefinition={generateDecisionExpressionDefinition(element)}
                       dataTypes={types}
-                      isClearSupportedOnRootExpression={false}
+                      isResetSupportedOnRootExpression={false}
+                      setExpressionDefinition={setExpression}
+                      scrollableParentRef={decisionDevElementRef}
                     />
                     <Divider />
                   </div>
