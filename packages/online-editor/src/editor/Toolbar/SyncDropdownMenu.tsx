@@ -21,7 +21,6 @@ import {
   WorkspaceKindGistLike,
   isGistLikeWorkspaceKind,
 } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
-import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import {
   Dropdown,
   DropdownGroup,
@@ -43,7 +42,7 @@ import { AccountsDispatchActionKind, useAccountsDispatch } from "../../accounts/
 import SyncAltIcon from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { GIT_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import ArrowCircleUpIcon from "@patternfly/react-icons/dist/js/icons/arrow-circle-up-icon";
-import { useEditorToolbarContext } from "./EditorToolbarContextProvider";
+import { useEditorToolbarContext, useEditorToolbarDispatchContext } from "./EditorToolbarContextProvider";
 import { useGitIntegration } from "./GitIntegration/GitIntegrationContextProvider";
 import { useAuthProvider } from "../../authProviders/AuthProvidersContext";
 import { useAuthSession } from "../../authSessions/AuthSessionsContext";
@@ -57,12 +56,10 @@ export function SyncDropdownMenu(props: Props) {
   const accountsDispatch = useAccountsDispatch();
   const { authSession } = useAuthSession(props.workspace.descriptor.gitAuthSessionId);
   const authProvider = useAuthProvider(authSession);
-  const {
-    isSyncGistOrSnippetDropdownOpen,
-    setSyncGistOrSnippetDropdownOpen,
-    isSyncGitRepositoryDropdownOpen,
-    setSyncGitRepositoryDropdownOpen,
-  } = useEditorToolbarContext();
+  const { isSyncGistOrSnippetDropdownOpen, isSyncGitRepositoryDropdownOpen } = useEditorToolbarContext();
+
+  const { setSyncGistOrSnippetDropdownOpen, setSyncGitRepositoryDropdownOpen } = useEditorToolbarDispatchContext();
+
   const {
     auth: { changeGitAuthSessionId, authSessionSelectFilter },
     git: { canPushToGitRepository, pushToGitRepository, pullFromGitRepository },

@@ -51,6 +51,7 @@ import { useNavigationBlockersBypass, useRoutes } from "../../../navigation/Hook
 import { useHistory } from "react-router";
 import { useGitIntegrationAlerts } from "./GitIntegrationAlerts";
 import { isGistEnabledAuthProviderType } from "../../../authProviders/AuthProvidersApi";
+import { useEditorToolbarDispatchContext } from "../EditorToolbarContextProvider";
 
 export type GitIntegrationContextType = {
   workspaceImportableUrl: ImportableUrl;
@@ -95,6 +96,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
   const workspaceImportableUrl = useImportableUrl(props.workspace.descriptor.origin.url?.toString());
   const alerts = useGitIntegrationAlerts(props.workspace);
   const navigationBlockersBypass = useNavigationBlockersBypass();
+  const { setSyncGistOrSnippetDropdownOpen } = useEditorToolbarDispatchContext();
 
   const gitHubClient = useGitHubClient(authSession);
   const bitbucketClient = useBitbucketClient(authSession);
@@ -436,11 +438,18 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
       alerts.errorAlert.show();
     } finally {
       setGistOrSnippetLoading(false);
-      // setSyncGistOrSnippetDropdownOpen(false);
+      setSyncGistOrSnippetDropdownOpen(false);
     }
 
     alerts.successfullyUpdatedGistOrSnippetAlert.show();
-  }, [alerts.errorAlert, alerts.successfullyUpdatedGistOrSnippetAlert, authInfo, props.workspace, workspaces]);
+  }, [
+    alerts.errorAlert,
+    alerts.successfullyUpdatedGistOrSnippetAlert,
+    authInfo,
+    props.workspace,
+    setSyncGistOrSnippetDropdownOpen,
+    workspaces,
+  ]);
 
   const updateGistOrSnippet = useCallback(async () => {
     try {
@@ -477,7 +486,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
       throw e;
     } finally {
       setGistOrSnippetLoading(false);
-      // setSyncGistOrSnippetDropdownOpen(false);
+      setSyncGistOrSnippetDropdownOpen(false);
     }
 
     alerts.successfullyUpdatedGistOrSnippetAlert.show();
@@ -490,6 +499,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     workspaces,
     gitConfig,
     forceUpdateGistOrSnippet,
+    setSyncGistOrSnippetDropdownOpen,
   ]);
 
   const forkGitHubGist = useCallback(async () => {

@@ -59,7 +59,11 @@ import { GitDropdownGroup } from "./Share/GitDropdownGroup";
 import { EmbedDropdownGroup } from "./Share/EmbedDropdownGroup";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useGitIntegration } from "./GitIntegration/GitIntegrationContextProvider";
-import { EditorToolbarContextProvider, useEditorToolbarContext } from "./EditorToolbarContextProvider";
+import {
+  EditorToolbarContextProvider,
+  useEditorToolbarContext,
+  useEditorToolbarDispatchContext,
+} from "./EditorToolbarContextProvider";
 import { WorkspaceToolbar } from "./Workspace/WorkspaceToolbar";
 import { useWorkspaceNavigationBlocker } from "./Workspace/Hooks";
 import { FileStatus } from "./FileStatus";
@@ -105,16 +109,11 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
 
   const { alerts } = useGitIntegration();
 
-  const {
-    setNewFileDropdownMenuOpen,
-    isNewFileDropdownMenuOpen,
-    setShareDropdownOpen,
-    isShareDropdownOpen,
-    isLargeKebabOpen,
-    setLargeKebabOpen,
-    isSmallKebabOpen,
-    setSmallKebabOpen,
-  } = useEditorToolbarContext();
+  const { isNewFileDropdownMenuOpen, isShareDropdownOpen, isLargeKebabOpen, isSmallKebabOpen } =
+    useEditorToolbarContext();
+
+  const { setNewFileDropdownMenuOpen, setShareDropdownOpen, setLargeKebabOpen, setSmallKebabOpen } =
+    useEditorToolbarDispatchContext();
 
   useWorkspaceNavigationBlocker(props.workspace);
 

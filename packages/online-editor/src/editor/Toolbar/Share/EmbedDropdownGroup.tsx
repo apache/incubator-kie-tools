@@ -21,7 +21,7 @@ import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/Ac
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import ColumnsIcon from "@patternfly/react-icons/dist/js/icons/columns-icon";
 import { useOnlineI18n } from "../../../i18n";
-import { useEditorToolbarContext } from "../EditorToolbarContextProvider";
+import { useEditorToolbarDispatchContext } from "../EditorToolbarContextProvider";
 
 type Props = {
   workspaceFile: WorkspaceFile;
@@ -30,7 +30,7 @@ type Props = {
 
 export const EmbedDropdownGroup = (props: Props) => {
   const { i18n } = useOnlineI18n();
-  const { setEmbedModalOpen } = useEditorToolbarContext();
+  const { setEmbedModalOpen } = useEditorToolbarDispatchContext();
 
   const shouldIncludeEmbedDropdownItem = useMemo(() => {
     return props.workspaceFile.extension.toLowerCase() !== "pmml";

@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from "react";
-import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import React from "react";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import {
   WorkspaceKind,
@@ -40,7 +39,7 @@ import { GitIcon } from "@patternfly/react-icons";
 import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
 import { useGitIntegration } from "../GitIntegration/GitIntegrationContextProvider";
-import { useEditorToolbarContext } from "../EditorToolbarContextProvider";
+import { useEditorToolbarDispatchContext } from "../EditorToolbarContextProvider";
 
 type Props = {
   workspace: ActiveWorkspace;
@@ -58,7 +57,7 @@ export const GitDropdownGroup = (props: Props) => {
     gistOrSnippet: { canCreateGistOrSnippet },
   } = useGitIntegration();
   const { setCreateGitRepositoryModalOpen, setCreateGistOrSnippetModalOpen, setShareDropdownOpen, setSmallKebabOpen } =
-    useEditorToolbarContext();
+    useEditorToolbarDispatchContext();
 
   if (
     props.workspace.descriptor.origin.kind !== WorkspaceKind.LOCAL &&

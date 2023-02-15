@@ -38,30 +38,34 @@ import { useAuthSession } from "../../authSessions/AuthSessionsContext";
 
 export type EditorToolbarContextType = {
   isEmbedModalOpen: boolean;
-  setEmbedModalOpen: Dispatch<SetStateAction<boolean>>;
   isCreateGitRepositoryModalOpen: boolean;
-  setCreateGitRepositoryModalOpen: Dispatch<SetStateAction<boolean>>;
   isCreateGistOrSnippetModalOpen: boolean;
-  setCreateGistOrSnippetModalOpen: Dispatch<SetStateAction<boolean>>;
   isShareDropdownOpen: boolean;
-  setShareDropdownOpen: Dispatch<SetStateAction<boolean>>;
   isSyncGistOrSnippetDropdownOpen: boolean;
-  setSyncGistOrSnippetDropdownOpen: Dispatch<SetStateAction<boolean>>;
   isSyncGitRepositoryDropdownOpen: boolean;
-  setSyncGitRepositoryDropdownOpen: Dispatch<SetStateAction<boolean>>;
   isLargeKebabOpen: boolean;
-  setLargeKebabOpen: Dispatch<SetStateAction<boolean>>;
   isSmallKebabOpen: boolean;
-  setSmallKebabOpen: Dispatch<SetStateAction<boolean>>;
   isNewFileDropdownMenuOpen: boolean;
-  setNewFileDropdownMenuOpen: Dispatch<SetStateAction<boolean>>;
   downloadRef: RefObject<HTMLAnchorElement>;
   downloadAllRef: RefObject<HTMLAnchorElement>;
   downloadPreviewRef: RefObject<HTMLAnchorElement>;
   downloadWorkspaceZip: () => Promise<void>;
 };
 
+export type EditorToolbarDispatchContextType = {
+  setEmbedModalOpen: Dispatch<SetStateAction<boolean>>;
+  setCreateGitRepositoryModalOpen: Dispatch<SetStateAction<boolean>>;
+  setCreateGistOrSnippetModalOpen: Dispatch<SetStateAction<boolean>>;
+  setShareDropdownOpen: Dispatch<SetStateAction<boolean>>;
+  setSyncGistOrSnippetDropdownOpen: Dispatch<SetStateAction<boolean>>;
+  setSyncGitRepositoryDropdownOpen: Dispatch<SetStateAction<boolean>>;
+  setLargeKebabOpen: Dispatch<SetStateAction<boolean>>;
+  setSmallKebabOpen: Dispatch<SetStateAction<boolean>>;
+  setNewFileDropdownMenuOpen: Dispatch<SetStateAction<boolean>>;
+};
+
 export const EditorToolbarContext = createContext<EditorToolbarContextType>({} as any);
+export const EditorToolbarDispatchContext = createContext<EditorToolbarDispatchContextType>({} as any);
 
 type Props = {
   workspace: ActiveWorkspace;
@@ -111,23 +115,14 @@ export function EditorToolbarContextProvider(props: Props) {
   const value = useMemo(
     () => ({
       isEmbedModalOpen,
-      setEmbedModalOpen,
       isCreateGitRepositoryModalOpen,
-      setCreateGitRepositoryModalOpen,
       isCreateGistOrSnippetModalOpen,
-      setCreateGistOrSnippetModalOpen,
       isShareDropdownOpen,
-      setShareDropdownOpen,
       isSyncGistOrSnippetDropdownOpen,
-      setSyncGistOrSnippetDropdownOpen,
       isSyncGitRepositoryDropdownOpen,
-      setSyncGitRepositoryDropdownOpen,
       isLargeKebabOpen,
-      setLargeKebabOpen,
       isSmallKebabOpen,
-      setSmallKebabOpen,
       isNewFileDropdownMenuOpen,
-      setNewFileDropdownMenuOpen,
       downloadRef,
       downloadAllRef,
       downloadPreviewRef,
@@ -147,36 +142,57 @@ export function EditorToolbarContextProvider(props: Props) {
     ]
   );
 
+  const dispatch = useMemo(
+    () => ({
+      setEmbedModalOpen,
+      setCreateGitRepositoryModalOpen,
+      setCreateGistOrSnippetModalOpen,
+      setShareDropdownOpen,
+      setSyncGistOrSnippetDropdownOpen,
+      setSyncGitRepositoryDropdownOpen,
+      setLargeKebabOpen,
+      setSmallKebabOpen,
+      setNewFileDropdownMenuOpen,
+    }),
+    []
+  );
+
   return (
     <EditorToolbarContext.Provider value={value}>
-      <GitIntegrationContextProvider workspace={props.workspace}>
-        {props.children}
-        <CreateGitRepositoryModal
-          workspace={props.workspace.descriptor}
-          isOpen={isCreateGitRepositoryModalOpen}
-          onClose={() => setCreateGitRepositoryModalOpen(false)}
-        />
-        <CreateGistOrSnippetModal
-          workspace={props.workspace.descriptor}
-          isOpen={isCreateGistOrSnippetModalOpen}
-          onClose={() => setCreateGistOrSnippetModalOpen(false)}
-        />
-        <EmbedModal
-          workspace={props.workspace.descriptor}
-          workspaceFile={props.workspaceFile}
-          isOpen={isEmbedModalOpen}
-          onClose={() => setEmbedModalOpen(false)}
-        />
-        <>
-          <a ref={downloadRef} />
-          <a ref={downloadAllRef} />
-          <a ref={downloadPreviewRef} />
-        </>
-      </GitIntegrationContextProvider>
+      <EditorToolbarDispatchContext.Provider value={dispatch}>
+        <GitIntegrationContextProvider workspace={props.workspace}>
+          {props.children}
+          <CreateGitRepositoryModal
+            workspace={props.workspace.descriptor}
+            isOpen={isCreateGitRepositoryModalOpen}
+            onClose={() => setCreateGitRepositoryModalOpen(false)}
+          />
+          <CreateGistOrSnippetModal
+            workspace={props.workspace.descriptor}
+            isOpen={isCreateGistOrSnippetModalOpen}
+            onClose={() => setCreateGistOrSnippetModalOpen(false)}
+          />
+          <EmbedModal
+            workspace={props.workspace.descriptor}
+            workspaceFile={props.workspaceFile}
+            isOpen={isEmbedModalOpen}
+            onClose={() => setEmbedModalOpen(false)}
+          />
+          <>
+            <a ref={downloadRef} />
+            <a ref={downloadAllRef} />
+            <a ref={downloadPreviewRef} />
+          </>
+        </GitIntegrationContextProvider>
+      </EditorToolbarDispatchContext.Provider>
     </EditorToolbarContext.Provider>
   );
 }
 
 export function useEditorToolbarContext() {
   return useContext(EditorToolbarContext);
+}
+
+export function useEditorToolbarDispatchContext() {
+  return useContext(EditorToolbarDispatchContext);
 }
