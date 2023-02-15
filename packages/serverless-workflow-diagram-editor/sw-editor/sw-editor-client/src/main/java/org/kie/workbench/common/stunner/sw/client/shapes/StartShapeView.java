@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
 
-public class StartShapeView extends ServerlessWorkflowBasicShape<StartShapeView> {
+public class StartShapeView extends ServerlessWorkflowShapeView<StartShapeView> {
 
     private final static double START_SHAPE_RADIUS = 25;
 

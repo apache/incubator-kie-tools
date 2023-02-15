@@ -21,9 +21,10 @@ import { StartupBlockerTemplate } from "./StartupBlockerTemplate";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { KieIcon } from "./KieIcon";
-import { LATEST_VERSION_COMPATIBLE_WITH_LFS } from "./LatestCompatibleVersion";
 import { APP_NAME } from "../../AppConstants";
 import { BROWSER_DETAILS, SUPPORTED_BROWSERS } from "./SupportedBrowsers";
+
+export const LATEST_VERSION_COMPATIBLE_WITH_LFS = "0.25.0";
 
 export async function isTrue() {
   return !BROWSER_DETAILS.isCompatible;

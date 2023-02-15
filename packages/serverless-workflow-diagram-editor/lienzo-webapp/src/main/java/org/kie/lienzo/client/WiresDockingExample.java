@@ -24,9 +24,6 @@ public class WiresDockingExample extends BaseExample implements Example {
 
     @Override
     public void run() {
-
-//        getToolBarContainer().add(m_label);
-
         final WiresManager wires_manager = WiresManager.get(layer);
 
         wires_manager.setContainmentAcceptor(IContainmentAcceptor.ALL);

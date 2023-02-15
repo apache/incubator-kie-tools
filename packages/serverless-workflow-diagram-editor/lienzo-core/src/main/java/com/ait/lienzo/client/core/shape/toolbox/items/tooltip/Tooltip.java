@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.shape.TextLineBreakWrap;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
@@ -53,6 +54,7 @@ public class Tooltip {
                 new Text("")
                         .setFillColor(TEXT_COLOR).
                         setStrokeWidth(TEXT_STROKE_WIDTH);
+        this.text.setWrapper(new TextLineBreakWrap(this.text));
         this.group =
                 new Group()
                         .setAlpha(0)
@@ -213,7 +215,7 @@ public class Tooltip {
             case WEST:
                 path.setRotationDegrees(180);
                 textLoc.setX(-hl - tpw - tw)
-                        .setY((th / 2) - tph);
+                        .setY(((th / 2) - tph) * -1);
                 break;
             case NORTH:
                 path.setRotationDegrees(270);
@@ -228,7 +230,7 @@ public class Tooltip {
             default:
                 path.setRotationDegrees(0);
                 textLoc.setX(hl + tpw)
-                        .setY((th / 2) - tph);
+                        .setY(((th / 2) - tph) * -1);
         }
 
         // Location.

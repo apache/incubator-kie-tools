@@ -10,6 +10,8 @@ import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 
 import static org.kie.lienzo.client.util.WiresUtils.connect;
 
@@ -19,12 +21,11 @@ public class BasicWiresExample extends BaseExample implements Example {
     public static final String BLUE_RECTANGLE = "blueRectangle";
     public static final String CIRCLE = "circle";
     public static final String PARENT = "parent";
-
+    private HandlerRegistration redRectangleMouseEnterHandler;
+    private HandlerRegistration redRectangleMouseExitHandler;
+    private HandlerRegistration parentMouseEnterHandler;
+    private HandlerRegistration parentMouseExitHandler;
     private WiresManager wiresManager;
-    private WiresShape shapeRedRectangle;
-    private WiresShape shapeCircle;
-    private WiresShape shapeBlueRectangle;
-    private WiresShape shapeParent;
 
     public BasicWiresExample(final String title) {
         super(title);
@@ -51,29 +52,44 @@ public class BasicWiresExample extends BaseExample implements Example {
         wiresManager.setLocationAcceptor(ILocationAcceptor.ALL);
         wiresManager.setControlPointsAcceptor(IControlPointsAcceptor.ALL);
 
-        shapeRedRectangle = createShape(RED_RECTANGLE,
-                                        new MultiPath().rect(0, 0, 100, 100)
-                                                .setStrokeColor("#FF0000")
-                                                .setFillColor("#FF0000"),
-                                        new Point2D(100, 50));
+        MultiPath redRectangle = new MultiPath().rect(0, 0, 100, 100)
+                .setStrokeColor("#FF0000")
+                .setFillColor("#FF0000");
+        redRectangleMouseEnterHandler = redRectangle.addNodeMouseEnterHandler(event -> {
+            console.log("red rectangle ENTER");
+        });
+        redRectangleMouseExitHandler = redRectangle.addNodeMouseExitHandler(event -> {
+            console.log("red rectangle EXIT");
+        });
+        redRectangle.setEventPropagationMode(EventPropagationMode.LAST_ANCESTOR);
+        WiresShape shapeRedRectangle = createShape(RED_RECTANGLE,
+                                                   redRectangle,
+                                                   new Point2D(100, 50));
 
-        shapeCircle = createShape(CIRCLE,
-                                  new MultiPath().circle(50)
-                                          .setStrokeColor("#FF0000")
-                                          .setFillColor("#FF0000"),
-                                  new Point2D(400, 50));
+        WiresShape shapeCircle = createShape(CIRCLE,
+                                             new MultiPath().circle(50)
+                                                     .setStrokeColor("#FF0000")
+                                                     .setFillColor("#FF0000"),
+                                             new Point2D(400, 50));
 
-        shapeBlueRectangle = createShape(BLUE_RECTANGLE,
-                                         new MultiPath().rect(0, 0, 100, 100)
-                                                 .setStrokeColor("#0000FF")
-                                                 .setFillColor("#0000FF"),
-                                         new Point2D(650, 50));
+        WiresShape shapeBlueRectangle = createShape(BLUE_RECTANGLE,
+                                                    new MultiPath().rect(0, 0, 100, 100)
+                                                            .setStrokeColor("#0000FF")
+                                                            .setFillColor("#0000FF"),
+                                                    new Point2D(650, 50));
 
-        shapeParent = createShape(PARENT,
-                                  new MultiPath().rect(0, 0, 600, 250)
-                                          .setStrokeColor("#000000")
-                                          .setFillColor("#FFFFFF"),
-                                  new Point2D(50, 300));
+        MultiPath parent = new MultiPath().rect(0, 0, 600, 250)
+                .setStrokeColor("#000000")
+                .setFillColor("#FFFFFF");
+        parentMouseEnterHandler = parent.addNodeMouseEnterHandler(event -> {
+            console.log("PARENT ENTER");
+        });
+        parentMouseExitHandler = parent.addNodeMouseExitHandler(event -> {
+            console.log("PARENT EXIT");
+        });
+        WiresShape shapeParent = createShape(PARENT,
+                                             parent,
+                                             new Point2D(50, 300));
 
         connect(shapeRedRectangle.getMagnets(),
                 3,
@@ -125,5 +141,14 @@ public class BasicWiresExample extends BaseExample implements Example {
             }
         }
         return true;
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        redRectangleMouseEnterHandler.removeHandler();
+        redRectangleMouseExitHandler.removeHandler();
+        parentMouseEnterHandler.removeHandler();
+        parentMouseExitHandler.removeHandler();
     }
 }

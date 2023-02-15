@@ -20,15 +20,12 @@ import * as ReactDOM from "react-dom";
 import { App } from "./App";
 import "../static/resources/style.css";
 import * as incompatibleBrowser from "./workspace/startupBlockers/IncompatibleBrowser";
-import * as fsChanged from "./workspace/startupBlockers/FsChanged";
 
 async function main() {
   const appContainer = document.getElementById("app")!;
 
   if (await incompatibleBrowser.isTrue()) {
     ReactDOM.render(<incompatibleBrowser.Component />, appContainer);
-  } else if (await fsChanged.isTrue()) {
-    ReactDOM.render(<fsChanged.Component />, appContainer);
   } else {
     ReactDOM.render(<App />, appContainer);
   }

@@ -42,7 +42,9 @@
   --pf-global--BackgroundColor--100: #100c2a !important;
 }
 
-[mode="dark"] .pf-c-options-menu__menu {
+[mode="dark"] .pf-c-options-menu__menu,
+[mode="dark"] .pf-c-pagination__nav,
+[mode="dark"] .pf-c-pagination__total-items {
   background-color: #100c2a !important;
   color: #eef1fa;
 }

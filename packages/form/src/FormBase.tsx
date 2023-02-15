@@ -16,7 +16,7 @@
 
 import { AutoGenerationErrorFormStatus, EmptyFormStatus, FormStatus, ValidatorErrorFormStatus } from "./FormStatus";
 import { ErrorBoundary } from "./ErrorBoundary";
-import AutoForm from "uniforms-patternfly/dist/es6/AutoForm";
+import AutoForm from "@kie-tools/uniforms-patternfly/dist/esm/AutoForm";
 import * as React from "react";
 import { FormI18n } from "./i18n";
 import { FormJsonSchemaBridge } from "./uniforms/FormJsonSchemaBridge";
@@ -55,7 +55,7 @@ export function FormBase(props: React.PropsWithChildren<FormBaseProps>) {
       )}
       {props.formStatus === FormStatus.EMPTY && <EmptyFormStatus i18n={props.i18n} />}
       {props.formStatus === FormStatus.WITHOUT_ERROR && (
-        <div data-testid={"base-form"}>
+        <div data-testid={"form-base"}>
           <ErrorBoundary
             ref={props.errorBoundaryRef}
             setHasError={props.setFormError}
