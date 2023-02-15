@@ -26,7 +26,6 @@ import { Validator } from "./Validator";
 import { FormI18n } from "./i18n";
 
 export interface FormHook<Input extends Record<string, any>, Schema extends Record<string, any>> {
-  name?: string;
   formError: boolean;
   setFormError: React.Dispatch<React.SetStateAction<boolean>>;
   formInputs: Input;
@@ -39,13 +38,13 @@ export interface FormHook<Input extends Record<string, any>, Schema extends Reco
   validator?: Validator;
   removeRequired?: boolean;
   i18n: FormI18n;
+  formRef?: any;
 }
 
 const getObjectByPath = (obj: Record<string, Record<string, object>>, path: string) =>
   path.split(".").reduce((acc: Record<string, Record<string, object>>, key: string) => acc?.[key], obj);
 
 export function useForm<Input extends Record<string, any>, Schema extends Record<string, any>>({
-  name,
   formError,
   setFormError,
   formInputs,
@@ -58,15 +57,17 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   validator,
   removeRequired = false,
   i18n,
+  formRef,
 }: FormHook<Input, Schema>) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<FormJsonSchemaBridge>();
-  const [formModel, setFormModel] = useState<object>();
   const [formStatus, setFormStatus] = useState<FormStatus>(FormStatus.EMPTY);
   const formValidator = useMemo(() => (validator ? validator : new Validator(i18n)), [validator, i18n]);
+  const formModel = useMemo(() => formInputs, [formInputs]);
+  const [ref, setRef] = useState<HTMLFormElement | null>(null);
 
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
-    (model: object, bridge: FormJsonSchemaBridge, previousBridge?: FormJsonSchemaBridge) => {
+    (formInputs: object, bridge: FormJsonSchemaBridge, previousBridge?: FormJsonSchemaBridge) => {
       const propertiesDifference = diff(
         getObjectByPath(previousBridge?.schema ?? {}, entryPath) ?? {},
         getObjectByPath(bridge.schema ?? {}, entryPath) ?? {}
@@ -91,7 +92,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
           }
           return form;
         },
-        { ...defaultFormValues, ...model }
+        { ...defaultFormValues, ...formInputs }
       );
     },
     [entryPath]
@@ -109,12 +110,10 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
       }
       const bridge = formValidator.getBridge(form);
       setJsonSchemaBridge((previousBridge) => {
-        if (formModel) {
-          const newFormModel = removeDeletedPropertiesAndAddDefaultValues(formModel, bridge, previousBridge);
-          if (Object.keys(diff(formModel ?? {}, newFormModel ?? {})).length > 0) {
-            setFormModel(newFormModel);
-          } else {
-            setFormModel(formModel);
+        if (formInputs) {
+          const newFormInputs = removeDeletedPropertiesAndAddDefaultValues(formInputs, bridge, previousBridge);
+          if (Object.keys(diff(formInputs ?? {}, newFormInputs ?? {})).length > 0) {
+            setFormInputs(newFormInputs as Input);
           }
         }
         return bridge;
@@ -124,7 +123,15 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
     } catch (err) {
       setFormStatus(FormStatus.VALIDATOR_ERROR);
     }
-  }, [formModel, formSchema, formValidator, entryPath, removeDeletedPropertiesAndAddDefaultValues, removeRequired]);
+  }, [
+    setFormInputs,
+    formInputs,
+    formSchema,
+    formValidator,
+    entryPath,
+    removeDeletedPropertiesAndAddDefaultValues,
+    removeRequired,
+  ]);
 
   // Manage form status
   useEffect(() => {
@@ -139,7 +146,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
       setFormStatus(FormStatus.WITHOUT_ERROR);
       errorBoundaryRef.current?.reset();
     }
-  }, [formError, formSchema, jsonSchemaBridge, formModel, propertiesEntryPath]);
+  }, [formError, formSchema, jsonSchemaBridge, propertiesEntryPath]);
 
   // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {
@@ -147,12 +154,13 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   }, [formSchema]);
 
   useEffect(() => {
-    const newFormModel = cloneDeep(formInputs);
-    setFormModel(newFormModel);
+    ref?.submit();
+  }, [ref]);
 
+  useEffect(() => {
     setFormError((previousFormError) => {
-      if (!previousFormError && newFormModel && Object.keys(newFormModel).length > 0) {
-        const newFormInputs = cloneDeep(newFormModel) as Input;
+      if (!previousFormError && formInputs && Object.keys(formInputs).length > 0) {
+        const newFormInputs = cloneDeep(formInputs) as Input;
         setFormInputs(newFormInputs);
       }
       return false;
@@ -170,7 +178,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   const onFormValidate = useCallback(
     (model, error: any) => {
       onValidate?.(model, error);
-      setFormModel((previousModel) => {
+      setFormInputs((previousModel) => {
         if (Object.keys(diff(model, previousModel ?? {})).length > 0) {
           return model;
         }
@@ -216,7 +224,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
       });
       return { details };
     },
-    [onValidate]
+    [onValidate, setFormInputs]
   );
 
   return {
@@ -226,5 +234,6 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
     formStatus,
     jsonSchemaBridge,
     errorBoundaryRef,
+    setRef,
   };
 }

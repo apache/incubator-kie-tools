@@ -277,10 +277,14 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   }, [dmnRunnerState.jsonSchema]);
 
   const setFormInputs = useCallback(
-    (newFormData) => {
+    (newFormInputs) => {
       dmnRunnerDispatch.setInputRows((previousData: Array<InputRow>) => {
         const newData = [...previousData];
-        newData[dmnRunnerState.currentInputRowIndex] = newFormData;
+        if (typeof newFormInputs === "function") {
+          newData[dmnRunnerState.currentInputRowIndex] = newFormInputs(previousData);
+        } else {
+          newData[dmnRunnerState.currentInputRowIndex] = newFormInputs;
+        }
         return newData;
       });
     },
