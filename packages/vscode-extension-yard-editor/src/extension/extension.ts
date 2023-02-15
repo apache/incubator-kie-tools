@@ -45,7 +45,7 @@ export async function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping({
         type: "yard",
-        filePathGlob: "**/*.yard.+(json|yml|yaml)",
+        filePathGlob: "**/*.yard.+(yml|yaml)",
         resourcesPathPrefix: "dist/webview/editors/yard",
         envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/YardEditorEnvelopeApp.js" },
       }),
