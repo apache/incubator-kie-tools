@@ -146,22 +146,18 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
     errorBoundaryRef.current?.reset();
   }, [formSchema]);
 
-  // When form name changes, update the formModel
   useEffect(() => {
     const newFormModel = cloneDeep(formInputs);
     setFormModel(newFormModel);
-  }, [formInputs]);
 
-  // When the formModel changes, update the formData and reset the formError
-  useEffect(() => {
     setFormError((previousFormError) => {
-      if (!previousFormError && formModel && Object.keys(formModel).length > 0) {
-        const newFormInputs = cloneDeep(formModel) as Input;
+      if (!previousFormError && newFormModel && Object.keys(newFormModel).length > 0) {
+        const newFormInputs = cloneDeep(newFormModel) as Input;
         setFormInputs(newFormInputs);
       }
       return false;
     });
-  }, [formModel, setFormError, setFormInputs]);
+  }, [formInputs, setFormError, setFormInputs]);
 
   const onFormSubmit = useCallback(
     (model) => {
