@@ -15,7 +15,7 @@
  */
 
 import * as cp from "child_process";
-import * as xmlParser from "fast-xml-parser";
+import { XMLParser } from "fast-xml-parser";
 import * as fs from "fs";
 import * as path from "path";
 import { CapabilityResponse, Service } from "../api";
@@ -88,13 +88,14 @@ export class TestScenarioRunnerService implements Service, TestScenarioRunnerCap
         }
 
         const resultXmlPath = path.join(baseDir, "target", "surefire-reports", "TEST-" + runnerClass + ".xml");
-        const attrsMap = xmlParser.getTraversalObj(fs.readFileSync(resultXmlPath).toString(), {
+        const parser = new XMLParser({
           attributeNamePrefix: "",
-          ignoreNameSpace: true,
+          removeNSPrefix: true,
           ignoreAttributes: false,
           parseAttributeValue: true,
           trimValues: true,
-        }).child.testsuite[0].attrsMap;
+        });
+        const attrsMap = parser.parse(fs.readFileSync(resultXmlPath).toString()).testsuites.testsuite[0];
 
         resolve(
           CapabilityResponse.ok({

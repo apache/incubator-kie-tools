@@ -659,8 +659,8 @@ importers:
         specifier: ^0.27.2
         version: 0.27.2
       fast-xml-parser:
-        specifier: ^3.17.4
-        version: 3.17.4
+        specifier: ^4.1.2
+        version: 4.1.2
       portfinder:
         specifier: ^1.0.32
         version: 1.0.32
@@ -20441,13 +20441,6 @@ packages:
   /fast-text-encoding@1.0.3:
     resolution:
       { integrity: sha512-dtm4QZH9nZtcDt8qJiOH9fcQd1NAgi+K1O2DbE6GG1PPCK/BWfOH3idCTRQ4ImXRUOyopDEgDEnVEE7Y/2Wrig== }
-    dev: false
-
-  /fast-xml-parser@3.17.4:
-    resolution:
-      { integrity: sha512-qudnQuyYBgnvzf5Lj/yxMcf4L9NcVWihXJg7CiU1L+oUCq8MUnFEfH2/nXR/W5uq+yvUN1h7z6s7vs2v1WkL1A== }
-    hasBin: true
-    requiresBuild: true
     dev: false
 
   /fast-xml-parser@4.1.2:
