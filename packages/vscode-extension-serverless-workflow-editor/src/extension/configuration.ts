@@ -109,6 +109,16 @@ export class SwfVsCodeExtensionConfiguration {
     });
   }
 
+  public getInterpolatedSchemaDirAbsolutePosixPath(args: {
+    baseFileAbsolutePosixPath: string;
+    dataInputSchemaPath: string;
+  }) {
+    return getInterpolatedConfigurationValue({
+      currentFileAbsolutePosixPath: args.baseFileAbsolutePosixPath,
+      value: definitelyPosixPath(args.dataInputSchemaPath),
+    });
+  }
+
   public isKogitoServerlessWorkflowVisualizationPreviewEnabled(): boolean {
     return vscode.workspace
       .getConfiguration()

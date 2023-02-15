@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools/serverless-workflow-service-catalog",
+  "name": "@kie-tools/serverless-workflow-jq-expressions",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -23,11 +23,8 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "@kie-tools-core/envelope-bus": "workspace:*",
-    "@types/js-yaml": "^4.0.5",
-    "js-yaml": "^4.1.0",
-    "lodash": "^4.17.21",
-    "openapi-types": "^7.0.1"
+    "@kie-tools/serverless-workflow-service-catalog": "workspace:*",
+    "cross-fetch": "^3.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -38,8 +35,6 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
-    "@types/json-schema": "7.0.11",
-    "@types/lodash": "^4.14.168",
     "jest": "^26.6.3",
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",

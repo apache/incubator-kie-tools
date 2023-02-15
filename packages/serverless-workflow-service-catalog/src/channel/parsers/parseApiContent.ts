@@ -18,10 +18,11 @@ import * as yaml from "js-yaml";
 import { posix as posixPath } from "path";
 import { SupportArtifactTypes, SwfServiceCatalogService, SwfServiceCatalogServiceSource } from "../../api";
 import { AsyncApiParser } from "./impl/asyncapi/AsyncApiParser";
+import { JsonSchemaParser } from "./impl/jsonschema/JsonSchemaParser";
 import { OpenApiParser } from "./impl/openapi/OpenApiParser";
 import { ArgsType, SpecParser } from "./impl/SpecParser";
 
-const specParsers: SpecParser<any>[] = [new OpenApiParser(), new AsyncApiParser()];
+const specParsers: SpecParser<any>[] = [new OpenApiParser(), new AsyncApiParser(), new JsonSchemaParser()];
 
 export const supportArtifactTypes: SupportArtifactTypes[] = [
   SupportArtifactTypes.Openapi,
