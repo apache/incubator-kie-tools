@@ -49,6 +49,7 @@ public class RunTests {
     private GenericContainer builtImage = new GenericContainer(
             new ImageFromDockerfile("dev.local/jbang-test/swf-test:" + Math.round(Math.random() * 1000000.00))
                     .withDockerfile(Paths.get("tests/shell/kogito-swf-builder/", "resources", "Dockerfile"))
+                    .withBuildArg("BUILDER_VERSION", System.getProperty("IMAGE_VERSION"))
                     .withBuildArg("SCRIPT_DEBUG", "true"))
             .withExposedPorts(8080)
             .waitingFor(Wait.forHttp("/jsongreet"))
