@@ -69,8 +69,8 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
     (formInputs: object, bridge: FormJsonSchemaBridge, previousBridge?: FormJsonSchemaBridge) => {
       const propertiesDifference = diff(
-        getObjectByPath(previousBridge?.schema ?? {}, entryPath) ?? {},
-        getObjectByPath(bridge.schema ?? {}, entryPath) ?? {}
+        getObjectByPath(previousBridge?.schema ?? {}, propertiesEntryPath) ?? {},
+        getObjectByPath(bridge.schema ?? {}, propertiesEntryPath) ?? {}
       );
 
       const defaultFormValues = Object.keys(bridge?.schema?.properties ?? {}).reduce((acc, property) => {
@@ -95,10 +95,10 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
         { ...defaultFormValues, ...formInputs }
       );
     },
-    [entryPath]
+    [propertiesEntryPath]
   );
 
-  // When the schema is updated it's necessary to update the bridge and the model (remove deleted properties and
+  // When the schema is updated it's necessary to update the bridge and the formInputs (remove deleted properties and
   // add default values to it)
   useEffect(() => {
     try {
@@ -110,12 +110,13 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
       }
       const bridge = formValidator.getBridge(form);
       setJsonSchemaBridge((previousBridge) => {
-        if (formInputs) {
-          const newFormInputs = removeDeletedPropertiesAndAddDefaultValues(formInputs, bridge, previousBridge);
-          if (Object.keys(diff(formInputs ?? {}, newFormInputs ?? {})).length > 0) {
-            setFormInputs(newFormInputs as Input);
+        setFormInputs((currentFormInputs) => {
+          const newFormInputs = removeDeletedPropertiesAndAddDefaultValues(currentFormInputs, bridge, previousBridge);
+          if (Object.keys(diff(currentFormInputs ?? {}, newFormInputs ?? {})).length > 0) {
+            return newFormInputs as Input;
           }
-        }
+          return currentFormInputs;
+        });
         return bridge;
       });
 
@@ -123,15 +124,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
     } catch (err) {
       setFormStatus(FormStatus.VALIDATOR_ERROR);
     }
-  }, [
-    setFormInputs,
-    formInputs,
-    formSchema,
-    formValidator,
-    entryPath,
-    removeDeletedPropertiesAndAddDefaultValues,
-    removeRequired,
-  ]);
+  }, [setFormInputs, formSchema, formValidator, entryPath, removeDeletedPropertiesAndAddDefaultValues, removeRequired]);
 
   // Manage form status
   useEffect(() => {
@@ -153,31 +146,31 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
     errorBoundaryRef.current?.reset();
   }, [formSchema]);
 
-  // When the formInput changes (load/delete), reset the formError
+  // When the formInput, reset the formError
   useEffect(() => {
     setFormError(false);
   }, [formInputs]);
 
-  // Submits the form in the first render, to trigger the onValidate function
+  // Submits the form in the first render triggering the onValidate function
   useEffect(() => {
     ref?.submit();
     setFormRef?.(ref);
   }, [setFormRef, ref]);
 
   const onFormSubmit = useCallback(
-    (model) => {
-      onSubmit?.(model);
+    (formInputs) => {
+      onSubmit?.(formInputs);
     },
     [onSubmit]
   );
 
   // Validation occurs on every change and submit.
   const onFormValidate = useCallback(
-    (model, error: any) => {
-      onValidate?.(model, error);
+    (formInputs, error: any) => {
+      onValidate?.(formInputs, error);
       setFormInputs((previousModel) => {
-        if (Object.keys(diff(model, previousModel ?? {})).length > 0) {
-          return model;
+        if (Object.keys(diff(formInputs, previousModel ?? {})).length > 0) {
+          return formInputs;
         }
         return previousModel ?? {};
       });
@@ -217,7 +210,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
           } else {
             return deeper[field];
           }
-        }, model);
+        }, formInputs);
       });
       return { details };
     },
@@ -231,6 +224,6 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
     formStatus,
     jsonSchemaBridge,
     errorBoundaryRef,
-    setRef,
+    setFormRef: setRef,
   };
 }

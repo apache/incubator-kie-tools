@@ -50,7 +50,7 @@ export function FormComponent(props: React.PropsWithChildren<FormComponentProps<
     [props.i18n, props.locale]
   );
 
-  const { onValidate, onSubmit, formModel, formStatus, jsonSchemaBridge, errorBoundaryRef, setRef } = useForm({
+  const { onValidate, onSubmit, formModel, formStatus, jsonSchemaBridge, errorBoundaryRef, setFormRef } = useForm({
     i18n,
     formError: props.formError,
     setFormError: props.setFormError,
@@ -77,7 +77,7 @@ export function FormComponent(props: React.PropsWithChildren<FormComponentProps<
         formModel={formModel}
         onSubmit={onSubmit}
         onValidate={onValidate}
-        setFormRef={setRef}
+        setFormRef={setFormRef}
       >
         {props.children}
       </FormBase>

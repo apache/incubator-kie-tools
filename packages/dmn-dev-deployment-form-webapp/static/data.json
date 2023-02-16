@@ -1,11 +1,57 @@
 {
-  "baseUrl": "https://dmn-dev-deployment-gbqf0tj803-caponetto-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com",
+  "baseUrl": "https://dmn-dev-deployment-tal8xvo61-rhn-lmotta-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com",
   "forms": [
     {
       "uri": "/Sample.dmn",
       "modelName": "loan_pre_qualification",
       "schema": {
         "definitions": {
+          "Loan__Qualification__Qualification": {
+            "enum": ["Qualified", "Not Qualified"],
+            "type": "string",
+            "x-dmn-type": "FEEL:string",
+            "x-dmn-allowed-values": "\"Qualified\", \"Not Qualified\""
+          },
+          "Credit__Score": {
+            "type": "object",
+            "properties": { "FICO": { "$ref": "#/definitions/Credit__Score__FICO" } },
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Credit_Score }"
+          },
+          "Front__End__Ratio": {
+            "enum": ["Sufficient", "Insufficient"],
+            "type": "string",
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Front_End_Ratio }",
+            "x-dmn-allowed-values": "\"Sufficient\", \"Insufficient\""
+          },
+          "Credit__Score__FICO": {
+            "maximum": 850,
+            "exclusiveMaximum": false,
+            "minimum": 300,
+            "exclusiveMinimum": false,
+            "type": "number",
+            "x-dmn-type": "FEEL:number",
+            "x-dmn-allowed-values": "[300..850]"
+          },
+          "Back__End__Ratio": {
+            "enum": ["Insufficient", "Sufficient"],
+            "type": "string",
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Back_End_Ratio }",
+            "x-dmn-allowed-values": "\"Insufficient\", \"Sufficient\""
+          },
+          "OutputSet": {
+            "type": "object",
+            "properties": {
+              "Front End Ratio": { "$ref": "#/definitions/Front__End__Ratio" },
+              "Back End Ratio": { "$ref": "#/definitions/Back__End__Ratio" },
+              "Credit Score Rating": { "$ref": "#/definitions/Credit__Score__Rating" },
+              "Loan Pre-Qualification": { "$ref": "#/definitions/Loan__Qualification" },
+              "Credit Score": { "$ref": "#/definitions/Credit__Score" },
+              "Applicant Data": { "$ref": "#/definitions/Applicant__Data" },
+              "Requested Product": { "$ref": "#/definitions/Requested__Product" }
+            },
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : OutputSet }",
+            "x-dmn-descriptions": {}
+          },
           "Marital__Status": {
             "enum": ["M", "D", "S"],
             "type": "string",
@@ -22,56 +68,42 @@
             },
             "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Requested_Product }"
           },
-          "Credit__Score__FICO": {
-            "maximum": 850,
-            "exclusiveMaximum": false,
-            "minimum": 300,
-            "exclusiveMinimum": false,
-            "type": "number",
-            "x-dmn-type": "FEEL:number",
-            "x-dmn-allowed-values": "[300..850]"
-          },
-          "Applicant__Data__Monthly": {
-            "type": "object",
-            "properties": {
-              "Income": { "type": "number", "x-dmn-type": "FEEL:number" },
-              "Repayments": { "type": "number", "x-dmn-type": "FEEL:number" },
-              "Expenses": { "type": "number", "x-dmn-type": "FEEL:number" },
-              "Tax": { "type": "number", "x-dmn-type": "FEEL:number" },
-              "Insurance": { "type": "number", "x-dmn-type": "FEEL:number" }
-            }
-          },
-          "Back__End__Ratio": {
-            "enum": ["Insufficient", "Sufficient"],
-            "type": "string",
-            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Back_End_Ratio }",
-            "x-dmn-allowed-values": "\"Insufficient\", \"Sufficient\""
-          },
           "Applicant__Data__Employment_32Status": {
             "enum": ["Unemployed", "Employed", "Self-employed", "Student"],
             "type": "string",
             "x-dmn-type": "FEEL:string",
             "x-dmn-allowed-values": "\"Unemployed\", \"Employed\", \"Self-employed\", \"Student\""
           },
-          "Front__End__Ratio": {
-            "enum": ["Sufficient", "Insufficient"],
-            "type": "string",
-            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Front_End_Ratio }",
-            "x-dmn-allowed-values": "\"Sufficient\", \"Insufficient\""
-          },
-          "OutputSet": {
+          "Loan__Qualification": {
             "type": "object",
             "properties": {
-              "Front End Ratio": { "$ref": "#/definitions/Front__End__Ratio" },
-              "Back End Ratio": { "$ref": "#/definitions/Back__End__Ratio" },
-              "Credit Score Rating": { "$ref": "#/definitions/Credit__Score__Rating" },
-              "Loan Pre-Qualification": { "$ref": "#/definitions/Loan__Qualification" },
-              "Credit Score": { "$ref": "#/definitions/Credit__Score" },
-              "Applicant Data": { "$ref": "#/definitions/Applicant__Data" },
-              "Requested Product": { "$ref": "#/definitions/Requested__Product" }
+              "Qualification": { "$ref": "#/definitions/Loan__Qualification__Qualification" },
+              "Reason": { "type": "string", "x-dmn-type": "FEEL:string" }
             },
-            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : OutputSet }",
-            "x-dmn-descriptions": {}
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Loan_Qualification }"
+          },
+          "Credit__Score__Rating": {
+            "enum": ["Poor", "Bad", "Fair", "Good", "Excellent"],
+            "type": "string",
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Credit_Score_Rating }",
+            "x-dmn-allowed-values": "\"Poor\", \"Bad\", \"Fair\", \"Good\", \"Excellent\""
+          },
+          "Applicant__Data": {
+            "type": "object",
+            "properties": {
+              "Age": { "type": "number", "x-dmn-type": "FEEL:number" },
+              "Marital Status": { "$ref": "#/definitions/Marital__Status" },
+              "Employment Status": { "$ref": "#/definitions/Applicant__Data__Employment_32Status" },
+              "Existing Customer": { "type": "boolean", "x-dmn-type": "FEEL:boolean" },
+              "Monthly": { "$ref": "#/definitions/Applicant__Data__Monthly" }
+            },
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Applicant_Data }"
+          },
+          "Product__Type": {
+            "enum": ["Standard Loan", "Special Loan"],
+            "type": "string",
+            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Product_Type }",
+            "x-dmn-allowed-values": "\"Standard Loan\", \"Special Loan\""
           },
           "InputSet": {
             "required": ["Credit Score", "Applicant Data", "Requested Product"],
@@ -84,47 +116,15 @@
             "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : InputSet }",
             "x-dmn-descriptions": {}
           },
-          "Loan__Qualification__Qualification": {
-            "enum": ["Qualified", "Not Qualified"],
-            "type": "string",
-            "x-dmn-type": "FEEL:string",
-            "x-dmn-allowed-values": "\"Qualified\", \"Not Qualified\""
-          },
-          "Credit__Score": {
-            "type": "object",
-            "properties": { "FICO": { "$ref": "#/definitions/Credit__Score__FICO" } },
-            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Credit_Score }"
-          },
-          "Credit__Score__Rating": {
-            "enum": ["Poor", "Bad", "Fair", "Good", "Excellent"],
-            "type": "string",
-            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Credit_Score_Rating }",
-            "x-dmn-allowed-values": "\"Poor\", \"Bad\", \"Fair\", \"Good\", \"Excellent\""
-          },
-          "Loan__Qualification": {
+          "Applicant__Data__Monthly": {
             "type": "object",
             "properties": {
-              "Qualification": { "$ref": "#/definitions/Loan__Qualification__Qualification" },
-              "Reason": { "type": "string", "x-dmn-type": "FEEL:string" }
-            },
-            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Loan_Qualification }"
-          },
-          "Product__Type": {
-            "enum": ["Standard Loan", "Special Loan"],
-            "type": "string",
-            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Product_Type }",
-            "x-dmn-allowed-values": "\"Standard Loan\", \"Special Loan\""
-          },
-          "Applicant__Data": {
-            "type": "object",
-            "properties": {
-              "Age": { "type": "number", "x-dmn-type": "FEEL:number" },
-              "Marital Status": { "$ref": "#/definitions/Marital__Status" },
-              "Employment Status": { "$ref": "#/definitions/Applicant__Data__Employment_32Status" },
-              "Existing Customer": { "type": "boolean", "x-dmn-type": "FEEL:boolean" },
-              "Monthly": { "$ref": "#/definitions/Applicant__Data__Monthly" }
-            },
-            "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Applicant_Data }"
+              "Income": { "type": "number", "x-dmn-type": "FEEL:number" },
+              "Repayments": { "type": "number", "x-dmn-type": "FEEL:number" },
+              "Expenses": { "type": "number", "x-dmn-type": "FEEL:number" },
+              "Tax": { "type": "number", "x-dmn-type": "FEEL:number" },
+              "Insurance": { "type": "number", "x-dmn-type": "FEEL:number" }
+            }
           }
         },
         "$ref": "#/definitions/InputSet"
