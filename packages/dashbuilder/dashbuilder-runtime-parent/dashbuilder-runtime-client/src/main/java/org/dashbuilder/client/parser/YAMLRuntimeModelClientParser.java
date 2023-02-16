@@ -43,10 +43,12 @@ public class YAMLRuntimeModelClientParser implements RuntimeModelClientParser {
     @Override
     public RuntimeModel parse(String content) {
         var jsonContent = convertToJson(content);
-        var properties = RuntimeModelJSONMarshaller.get().retrieveProperties(jsonContent);
+        var jsonMarshaller = RuntimeModelJSONMarshaller.get();
+        var properties = jsonMarshaller.retrieveProperties(jsonContent);
+        var allowUrlProperties = jsonMarshaller.retrieveGlobalSettings(jsonContent).isAllowUrlProperties();
 
         if (properties != null && !properties.isEmpty()) {
-            var replacedContent = replacementService.replace(content, properties);
+            var replacedContent = replacementService.replace(content, properties, allowUrlProperties);
             jsonContent = convertToJson(replacedContent);
         }
         return jsonParser.parse(jsonContent);

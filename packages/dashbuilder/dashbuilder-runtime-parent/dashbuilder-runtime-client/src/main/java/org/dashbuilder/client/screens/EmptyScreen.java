@@ -45,7 +45,7 @@ public class EmptyScreen {
 
     @Inject
     View view;
-    
+
     @Inject
     RouterScreen router;
 
@@ -54,15 +54,17 @@ public class EmptyScreen {
 
     @Inject
     RuntimeClientLoader loader;
-    
+
     public interface View extends UberElemental<EmptyScreen> {
-        
+
         void editorMode();
 
         void noModel();
 
         void modelId(String modelId);
-        
+
+        void enableSamplesButton(Runnable action);
+
     }
 
     @PostConstruct
@@ -79,7 +81,7 @@ public class EmptyScreen {
     protected View getPart() {
         return view;
     }
-    
+
     @OnOpen
     protected void onOpen() {
         var modelId = loader.getImportId();
@@ -90,8 +92,12 @@ public class EmptyScreen {
         } else {
             view.noModel();
         }
+
+        if (loader.hasSamples()) {
+            view.enableSamplesButton(router::goToSamplesScreen);
+        }
     }
-    
+
     public void onModelUpdated(@Observes UpdatedRuntimeModelEvent event) {
         reload();
     }

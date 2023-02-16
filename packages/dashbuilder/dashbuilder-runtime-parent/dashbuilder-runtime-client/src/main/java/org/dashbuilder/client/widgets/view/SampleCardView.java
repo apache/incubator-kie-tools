@@ -22,6 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.Window;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLDivElement;
@@ -89,7 +90,13 @@ public class SampleCardView implements SampleCard.View {
     @Override
     public void enableEdit(Supplier<String> getSamplePath) {
         sampleEditLink.style.visibility = "visible";
-        sampleEditLink.onclick = e -> DomGlobal.window.open("vscode://file/" + getSamplePath.get());
+        sampleEditLink.onclick = e -> {
+            var proceed = Window.confirm("This will create a new file in your project, would you like to proceed?");
+            if (proceed) {
+                DomGlobal.window.open("vscode://file/" + getSamplePath.get());
+            }
+            return true;
+        };
     }
 
 }

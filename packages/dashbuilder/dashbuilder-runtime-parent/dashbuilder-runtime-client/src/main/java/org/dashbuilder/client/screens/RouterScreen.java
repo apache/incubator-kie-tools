@@ -185,11 +185,12 @@ public class RouterScreen {
         }
     }
 
+    void goToSamplesScreen() {
+        final var newUrl = GWT.getHostPageBaseURL() + "?" + SAMPLES_PARAM;
+        DomGlobal.window.location.href = newUrl;
+    }
+
     private void goToNoModelsScreen() {
-        if (clientLoader.hasSamples()) {
-            placeManager.goTo(SamplesPerspective.ID);
-        } else {
-            placeManager.goTo(EmptyPerspective.ID);
-        }
+        placeManager.goTo(EmptyPerspective.ID);
     }
 }
