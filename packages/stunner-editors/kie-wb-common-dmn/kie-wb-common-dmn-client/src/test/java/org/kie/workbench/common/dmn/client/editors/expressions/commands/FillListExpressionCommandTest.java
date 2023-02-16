@@ -71,7 +71,6 @@ public class FillListExpressionCommandTest extends TestCase {
                                                     expressionProps,
                                                     editorSelectedEvent,
                                                     "nodeUUID",
-                                                    view,
                                                     itemDefinitionUtils,
                                                     Optional.empty()));
         doNothing().when(command).fill(any(), any());

@@ -74,7 +74,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ModelsFromDocument;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PMMLParam;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
-import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.BoxedExpressionService;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.ExpressionEditorService;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.ExpressionPropsFiller;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
@@ -248,7 +248,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     @Override
     public void init(final ExpressionEditorView.Presenter presenter) {
         this.presenter = presenter;
-        BoxedExpressionService.registerBroadcastForExpression(this);
+        ExpressionEditorService.registerExpressionEditorView(this);
     }
 
     @Override
@@ -301,8 +301,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                               this::setExpressionNameText,
                                                               refreshFormPropertiesEvent,
                                                               domainObjectSelectionEvent);
-
-        expressionContainerGrid.setOnUndoClear(Optional.of(o -> reloadIfIsNewEditor()));
         gridLayer.removeAll();
         gridLayer.add(expressionContainerGrid);
         gridLayer.select(expressionContainerGrid);
@@ -323,11 +321,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         mousePanMediator.setBatchDraw(true);
         gridLayer.setDefaultTransformMediator(defaultTransformMediator);
         gridPanel.getViewport().getMediators().push(mousePanMediator);
-    }
-
-    @Override
-    public void disableBetaBoxedExpressionToggle() {
-        betaBoxedExpressionToggle.classList.toggle("hidden", true);
     }
 
     @Override
@@ -371,7 +364,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     public void onPropertiesPanelFormFieldChanged(@Observes FormFieldChanged event) {
-        reloadIfIsNewEditor();
+        reloadEditor();
     }
 
     @EventHandler("try-it")
@@ -409,11 +402,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         toggleLegacyExpressionEditor(true);
         toggleBetaBoxedExpressionEditor(false);
         preventDefault(event);
-    }
-
-    @Override
-    public void clear() {
-        getExpressionContainerGrid().clearExpressionType();
     }
 
     @Override
@@ -458,93 +446,79 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.domainObjectSelectionEvent.fire(event);
     }
 
-    public void resetExpressionDefinition(final ExpressionProps expressionProps) {
-        executeExpressionCommand(new ClearExpressionCommand(getHasExpression(),
-                                                            expressionProps,
-                                                            getEditorSelectedEvent(),
-                                                            getNodeUUID(),
-                                                            this,
-                                                            itemDefinitionUtils,
-                                                            getHasName()));
-    }
-
     public void updateExpression(final ExpressionProps expressionProps) {
-        createUndoCommand();
-
         ExpressionType logicType = ExpressionType.getTypeByText(expressionProps.logicType);
         switch (logicType) {
-            case LITERAL_EXPRESSION:
-                executeExpressionCommand(new FillLiteralExpressionCommand(getHasExpression(),
-                                                                          (LiteralProps) expressionProps,
-                                                                          getEditorSelectedEvent(),
-                                                                          getNodeUUID(),
-                                                                          this,
-                                                                          itemDefinitionUtils,
-                                                                          getHasName()));
-                break;
-            case RELATION:
-                executeExpressionCommand(new FillRelationExpressionCommand(getHasExpression(),
-                                                                           (RelationProps) expressionProps,
-                                                                           getEditorSelectedEvent(),
-                                                                           getNodeUUID(),
-                                                                           this,
-                                                                           itemDefinitionUtils,
-                                                                           getHasName()));
-                break;
             case CONTEXT:
-                executeExpressionCommand(new FillContextExpressionCommand(getHasExpression(),
-                                                                          (ContextProps) expressionProps,
-                                                                          getEditorSelectedEvent(),
-                                                                          getNodeUUID(),
-                                                                          this,
-                                                                          itemDefinitionUtils,
-                                                                          getHasName()));
+                executeUndoableExpressionCommand(new FillContextExpressionCommand(getHasExpression(),
+                                                                                  (ContextProps) expressionProps,
+                                                                                  getEditorSelectedEvent(),
+                                                                                  getNodeUUID(),
+                                                                                  itemDefinitionUtils,
+                                                                                  getHasName()));
                 break;
             case DECISION_TABLE:
-                executeExpressionCommand(new FillDecisionTableExpressionCommand(getHasExpression(),
-                                                                                (DecisionTableProps) expressionProps,
-                                                                                getEditorSelectedEvent(),
-                                                                                getNodeUUID(),
-                                                                                this,
-                                                                                itemDefinitionUtils,
-                                                                                getHasName()));
-                break;
-            case INVOCATION:
-                executeExpressionCommand(new FillInvocationExpressionCommand(getHasExpression(),
-                                                                             (InvocationProps) expressionProps,
-                                                                             getEditorSelectedEvent(),
-                                                                             getNodeUUID(),
-                                                                             this,
-                                                                             itemDefinitionUtils,
-                                                                             getHasName()));
-                break;
-            case LIST:
-                executeExpressionCommand(new FillListExpressionCommand(getHasExpression(),
-                                                                       (ListProps) expressionProps,
-                                                                       getEditorSelectedEvent(),
-                                                                       getNodeUUID(),
-                                                                       this,
-                                                                       itemDefinitionUtils,
-                                                                       getHasName()));
+                executeUndoableExpressionCommand(new FillDecisionTableExpressionCommand(getHasExpression(),
+                                                                                        (DecisionTableProps) expressionProps,
+                                                                                        getEditorSelectedEvent(),
+                                                                                        getNodeUUID(),
+                                                                                        itemDefinitionUtils,
+                                                                                        getHasName()));
                 break;
             case FUNCTION:
-                executeExpressionCommand(new FillFunctionExpressionCommand(getHasExpression(),
-                                                                           (FunctionProps) expressionProps,
-                                                                           getEditorSelectedEvent(),
-                                                                           getNodeUUID(),
-                                                                           this,
-                                                                           itemDefinitionUtils,
-                                                                           getHasName()));
+                executeUndoableExpressionCommand(new FillFunctionExpressionCommand(getHasExpression(),
+                                                                                   (FunctionProps) expressionProps,
+                                                                                   getEditorSelectedEvent(),
+                                                                                   getNodeUUID(),
+                                                                                   itemDefinitionUtils,
+                                                                                   getHasName()));
+                break;
+            case INVOCATION:
+                executeUndoableExpressionCommand(new FillInvocationExpressionCommand(getHasExpression(),
+                                                                                     (InvocationProps) expressionProps,
+                                                                                     getEditorSelectedEvent(),
+                                                                                     getNodeUUID(),
+                                                                                     itemDefinitionUtils,
+                                                                                     getHasName()));
+                break;
+            case LIST:
+                executeUndoableExpressionCommand(new FillListExpressionCommand(getHasExpression(),
+                                                                               (ListProps) expressionProps,
+                                                                               getEditorSelectedEvent(),
+                                                                               getNodeUUID(),
+                                                                               itemDefinitionUtils,
+                                                                               getHasName()));
+                break;
+            case LITERAL_EXPRESSION:
+                executeUndoableExpressionCommand(new FillLiteralExpressionCommand(getHasExpression(),
+                                                                                  (LiteralProps) expressionProps,
+                                                                                  getEditorSelectedEvent(),
+                                                                                  getNodeUUID(),
+                                                                                  itemDefinitionUtils,
+                                                                                  getHasName()));
+                break;
+            case RELATION:
+                executeUndoableExpressionCommand(new FillRelationExpressionCommand(getHasExpression(),
+                                                                                   (RelationProps) expressionProps,
+                                                                                   getEditorSelectedEvent(),
+                                                                                   getNodeUUID(),
+                                                                                   itemDefinitionUtils,
+                                                                                   getHasName()));
                 break;
             case UNDEFINED:
-                // Ignore
+                executeUndoableExpressionCommand(new ClearExpressionCommand(getHasExpression(),
+                                                                            expressionProps,
+                                                                            getEditorSelectedEvent(),
+                                                                            getNodeUUID(),
+                                                                            itemDefinitionUtils,
+                                                                            getHasName()));
                 break;
             default:
                 throw new UnsupportedOperationException("Logic type: " + logicType + " is currently unsupported");
         }
     }
 
-    public void openManageDataType() {
+    public void openDataTypePage() {
         dataTypePageActiveEvent.fire(new DataTypePageTabActiveEvent());
     }
 
@@ -555,7 +529,13 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                 .ifPresent(this::enrichModelExpression);
     }
 
-    void executeExpressionCommand(final FillExpressionCommand expressionCommand) {
+    /**
+     * It executes a given expression command. Before executing it, it creates and UNDO command with the current model
+     * status. Statement ordering matters: the UNDO command MUST be called before executing the expression command change.
+     * @param expressionCommand
+     */
+    void executeUndoableExpressionCommand(final FillExpressionCommand expressionCommand) {
+        createUndoCommand();
         expressionCommand.execute();
         updateCanvasNodeNameCommand.execute(getNodeUUID(), getHasName().orElse(null));
     }
@@ -574,8 +554,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         }
     }
 
-    boolean isNewEditorEnabled() {
-        return !HiddenHelper.isHidden(newBoxedExpression);
+    protected boolean isReactBoxedExpressionVisible() {
+        return DomGlobal.document.getElementsByClassName("kie-dmn-new-expression-editor").length > 0;
     }
 
     Stream<DataTypeProps> retrieveDefaultDataTypeProps() {
@@ -673,10 +653,12 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Override
     public void reloadEditor() {
-        loadNewBoxedExpressionEditor();
+        if (isReactBoxedExpressionVisible()) {
+            loadNewBoxedExpressionEditor();
 
-        // This should be removed when the older editor is removed.
-        syncExpressionWithOlderEditor();
+            // This should be removed when the older editor is removed.
+            syncExpressionWithOlderEditor();
+        }
     }
 
     void syncExpressionWithOlderEditor() {
@@ -685,12 +667,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                    getHasExpression(),
                                                    getHasName(),
                                                    isOnlyVisualChangeAllowed);
-    }
-
-    void reloadIfIsNewEditor() {
-        if (isNewEditorEnabled()) {
-            reloadEditor();
-        }
     }
 
     @Override

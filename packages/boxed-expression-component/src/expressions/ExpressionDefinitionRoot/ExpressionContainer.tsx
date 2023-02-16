@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ExpressionDefinition, ExpressionDefinitionLogicType, generateUuid } from "../../api";
+import { DmnBuiltInDataType, ExpressionDefinition, ExpressionDefinitionLogicType, generateUuid } from "../../api";
 import * as React from "react";
 import { useCallback, useRef } from "react";
 import { ExpressionDefinitionLogicTypeSelector } from "./ExpressionDefinitionLogicTypeSelector";
@@ -63,14 +63,10 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
     setExpression((prev) => ({
       id: prev.id,
       name: prev.name,
-      dataType: prev.dataType,
+      dataType: isNested ? prev.dataType : DmnBuiltInDataType.Undefined,
       logicType: ExpressionDefinitionLogicType.Undefined,
     }));
-
-    if (!isNested) {
-      window.beeApiWrapper?.resetExpressionDefinition(expression);
-    }
-  }, [expression, isNested, setExpression]);
+  }, [isNested, setExpression]);
 
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 

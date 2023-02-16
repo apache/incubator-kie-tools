@@ -57,8 +57,6 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
         void exit();
     }
 
-    void disableBetaBoxedExpressionToggle();
-
     void setReturnToLinkText(final String text);
 
     void setExpression(final String nodeUUID,
@@ -75,8 +73,6 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
     void setFocus();
 
     void reloadEditor();
-
-    void clear();
 
     void selectDomainObject(final String uuid);
 }

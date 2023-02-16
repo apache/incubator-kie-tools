@@ -24,7 +24,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
@@ -51,7 +50,6 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
     private DMNDiagramsSession dmnDiagramsSession;
     private Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent;
     private DRDNameChanger drdNameChanger;
-    private final KogitoChannelHelper kogitoChannelHelper;
 
     private Optional<DMNSession> session = Optional.empty();
     private Optional<ExpressionEditorView.Presenter> expressionEditor = Optional.empty();
@@ -93,15 +91,13 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
                                        final DMNGraphUtils dmnGraphUtils,
                                        final DMNDiagramsSession dmnDiagramsSession,
                                        final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
-                                       final DRDNameChanger drdNameChanger,
-                                       final KogitoChannelHelper kogitoChannelHelper) {
+                                       final DRDNameChanger drdNameChanger) {
         this.view = view;
         this.decisionNavigator = decisionNavigator;
         this.dmnGraphUtils = dmnGraphUtils;
         this.dmnDiagramsSession = dmnDiagramsSession;
         this.canvasElementUpdatedEvent = canvasElementUpdatedEvent;
         this.drdNameChanger = drdNameChanger;
-        this.kogitoChannelHelper = kogitoChannelHelper;
     }
 
     @Override
@@ -125,8 +121,7 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
                                     decisionNavigator,
                                     dmnGraphUtils,
                                     dmnDiagramsSession,
-                                    drdNameChanger,
-                                    kogitoChannelHelper);
+                                    drdNameChanger);
     }
 
     @Override

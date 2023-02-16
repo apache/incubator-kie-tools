@@ -96,8 +96,7 @@ public class FillExpressionCommandTest {
         command = spy(new FillExpressionCommandMock(hasExpression,
                                                     expressionProps,
                                                     editorSelectedEvent,
-                                                    nodeUUID,
-                                                    view));
+                                                    nodeUUID));
     }
 
     @Test
@@ -201,9 +200,8 @@ public class FillExpressionCommandTest {
         public FillExpressionCommandMock(final HasExpression hasExpression,
                                          final ExpressionProps expressionProps,
                                          final Event<ExpressionEditorChanged> editorSelectedEvent,
-                                         final String nodeUUID,
-                                         final ExpressionEditorView view) {
-            super(hasExpression, expressionProps, editorSelectedEvent, nodeUUID, view, itemDefinitionUtils, Optional.empty());
+                                         final String nodeUUID) {
+            super(hasExpression, expressionProps, editorSelectedEvent, nodeUUID, itemDefinitionUtils, Optional.empty());
         }
 
         @Override

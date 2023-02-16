@@ -30,21 +30,19 @@ import { v4 as uuid } from "uuid";
 export {};
 
 declare global {
-  // Set of Functions used by the BoxedExpressionEditor and the BoxedExpressionWrapper
+  // Set of Functions used to interact with the GWT Layer. Must be synchronized with ExpressionEditorService.java
   interface BeeApi {
-    resetExpressionDefinition: (definition: ExpressionDefinition) => void;
-
-    // Notifies the GWT layer that the expression is changed.
-    updateExpression: (expressionDefinition: ExpressionDefinition) => void;
-
-    // Navigate to Data Types definitions, if available
-    openManageDataType: () => void;
+    // It Navigates to "Data Type" tab page
+    openDataTypePage: () => void;
 
     // Notifies that an ExpressionDefinitionLogicType was selected.
     onLogicTypeSelect: (selectedLogicType: string) => void;
 
     // Notifies that an object was selected.
     selectObject: (uuid?: string) => void;
+
+    // It propagates to the GWT layer the modified expression. It MUTATES the GWT layer status.
+    updateExpression: (expressionDefinition: ExpressionDefinition) => void;
   }
 
   // API that the containing component of BoxedExpressionEditor (BEE) expects to be defined in the Window namespace

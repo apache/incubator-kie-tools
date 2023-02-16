@@ -71,7 +71,6 @@ public class FillDecisionTableExpressionCommandTest {
                                                              expressionProps,
                                                              editorSelectedEvent,
                                                              "nodeUUID",
-                                                             view,
                                                              itemDefinitionUtils,
                                                              Optional.empty()));
         doNothing().when(command).fill(any(), any());

@@ -91,8 +91,8 @@ export function ExpressionDefinitionHeaderMenu({
     setDataType(dataType);
   }, []);
 
-  const openManageDataType = useCallback(() => {
-    return beeGwtService?.openManageDataType();
+  const openDataTypePage = useCallback(() => {
+    return beeGwtService?.openDataTypePage();
   }, [beeGwtService]);
 
   const saveExpression = useCallback(() => {
@@ -168,7 +168,7 @@ export function ExpressionDefinitionHeaderMenu({
               className="manage-datatype"
               icon={<CogIcon />}
               iconPosition="left"
-              onClick={openManageDataType}
+              onClick={openDataTypePage}
             >
               {i18n.manage}
             </Button>

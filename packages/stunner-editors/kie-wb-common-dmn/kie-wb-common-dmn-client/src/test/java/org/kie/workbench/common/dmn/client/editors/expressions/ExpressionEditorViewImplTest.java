@@ -45,6 +45,7 @@ import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.ClearExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillContextExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillDecisionTableExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillExpressionCommand;
@@ -577,18 +578,6 @@ public class ExpressionEditorViewImplTest {
         verify(betaBoxedExpressionToggle.classList).toggle(ENABLED_BETA_CSS_CLASS, true);
     }
 
-    @Test
-    public void testClear() {
-
-        final ExpressionContainerGrid expressionContainerGrid = mock(ExpressionContainerGrid.class);
-
-        doReturn(expressionContainerGrid).when(view).getExpressionContainerGrid();
-
-        view.clear();
-
-        verify(expressionContainerGrid).clearExpressionType();
-    }
-
     private void assertCommandParameters(final FillExpressionCommand command,
                                          final ExpressionProps props) {
         assertEquals(hasExpression, command.getHasExpression());
@@ -601,12 +590,11 @@ public class ExpressionEditorViewImplTest {
     public void testUpdateExpressionLiteralProps() {
         final LiteralProps props = new LiteralProps("", "", ExpressionType.LITERAL_EXPRESSION.getText(), null, 0d);
 
-        doNothing().when(view).executeExpressionCommand(any());
-        doNothing().when(view).createUndoCommand();
+        doNothing().when(view).executeUndoableExpressionCommand(any());
 
         view.updateExpression(props);
 
-        verify(view).executeExpressionCommand(commandCaptor.capture());
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
@@ -618,12 +606,11 @@ public class ExpressionEditorViewImplTest {
     public void testUpdateExpressionContextProps() {
         final ContextProps props = new ContextProps("", "", ExpressionType.CONTEXT.getText(), null, null, 0d, 0d);
 
-        doNothing().when(view).executeExpressionCommand(any());
-        doNothing().when(view).createUndoCommand();
+        doNothing().when(view).executeUndoableExpressionCommand(any());
 
         view.updateExpression(props);
 
-        verify(view).executeExpressionCommand(commandCaptor.capture());
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
@@ -635,12 +622,11 @@ public class ExpressionEditorViewImplTest {
     public void testUpdateExpressionListProps() {
         final ListProps props = new ListProps("", "", ExpressionType.LIST.getText(), null, 0d);
 
-        doNothing().when(view).executeExpressionCommand(any());
-        doNothing().when(view).createUndoCommand();
+        doNothing().when(view).executeUndoableExpressionCommand(any());
 
         view.updateExpression(props);
 
-        verify(view).executeExpressionCommand(commandCaptor.capture());
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
@@ -652,12 +638,11 @@ public class ExpressionEditorViewImplTest {
     public void testUpdateExpressionInvocationProps() {
         final InvocationProps props = new InvocationProps("", "", ExpressionType.INVOCATION.getText(), null, null, 0d, 0d);
 
-        doNothing().when(view).executeExpressionCommand(any());
-        doNothing().when(view).createUndoCommand();
+        doNothing().when(view).executeUndoableExpressionCommand(any());
 
         view.updateExpression(props);
 
-        verify(view).executeExpressionCommand(commandCaptor.capture());
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
@@ -669,12 +654,11 @@ public class ExpressionEditorViewImplTest {
     public void testUpdateExpressionFunctionProps() {
         final FunctionProps props = new FunctionProps("", "", ExpressionType.FUNCTION.getText(), null, 0d, "");
 
-        doNothing().when(view).executeExpressionCommand(any());
-        doNothing().when(view).createUndoCommand();
+        doNothing().when(view).executeUndoableExpressionCommand(any());
 
         view.updateExpression(props);
 
-        verify(view).executeExpressionCommand(commandCaptor.capture());
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
@@ -686,16 +670,31 @@ public class ExpressionEditorViewImplTest {
     public void testUpdateExpressionDecisionTable() {
         final DecisionTableProps props = new DecisionTableProps("", "", ExpressionType.DECISION_TABLE.getText(), null, "", null, null, null, null);
 
-        doNothing().when(view).executeExpressionCommand(any());
-        doNothing().when(view).createUndoCommand();
+        doNothing().when(view).executeUndoableExpressionCommand(any());
 
         view.updateExpression(props);
 
-        verify(view).executeExpressionCommand(commandCaptor.capture());
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
         assertTrue(command instanceof FillDecisionTableExpressionCommand);
+        assertCommandParameters(command, props);
+    }
+
+    @Test
+    public void testUpdateExpressionUndefined() {
+        final ExpressionProps props = new ExpressionProps("", "", ExpressionType.UNDEFINED.getText(), null);
+
+        doNothing().when(view).executeUndoableExpressionCommand(any());
+
+        view.updateExpression(props);
+
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
+
+        final FillExpressionCommand command = commandCaptor.getValue();
+
+        assertTrue(command instanceof ClearExpressionCommand);
         assertCommandParameters(command, props);
     }
 
@@ -724,8 +723,8 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testOpenManageDataType() {
-        view.openManageDataType();
+    public void testOpenDataTypePage() {
+        view.openDataTypePage();
 
         verify(dataTypePageActiveEvent).fire(any(DataTypePageTabActiveEvent.class));
     }
@@ -739,17 +738,6 @@ public class ExpressionEditorViewImplTest {
         view.addExpressionCommand(expressionCommand, builder);
 
         verify(builder).addCommand(expressionCommand);
-    }
-
-    @Test
-    public void testReloadEditor() {
-        doNothing().when(view).loadNewBoxedExpressionEditor();
-        doNothing().when(view).syncExpressionWithOlderEditor();
-
-        view.reloadEditor();
-
-        verify(view).loadNewBoxedExpressionEditor();
-        verify(view).syncExpressionWithOlderEditor();
     }
 
     @Test
@@ -776,24 +764,24 @@ public class ExpressionEditorViewImplTest {
 
     @Test
     public void testReloadIfIsNewEditor_WhenItIs() {
+        doReturn(true).when(view).isReactBoxedExpressionVisible();
+        doNothing().when(view).loadNewBoxedExpressionEditor();
 
-        doReturn(true).when(view).isNewEditorEnabled();
-        doNothing().when(view).reloadEditor();
+        view.reloadEditor();
 
-        view.reloadIfIsNewEditor();
-
-        verify(view).reloadEditor();
+        verify(view).loadNewBoxedExpressionEditor();
+        verify(view).syncExpressionWithOlderEditor();
     }
 
     @Test
     public void testReloadIfIsNewEditor_WhenItIsNot() {
+        doReturn(false).when(view).isReactBoxedExpressionVisible();
+        doNothing().when(view).loadNewBoxedExpressionEditor();
 
-        doReturn(false).when(view).isNewEditorEnabled();
-        doNothing().when(view).reloadEditor();
+        view.reloadEditor();
 
-        view.reloadIfIsNewEditor();
-
-        verify(view, never()).reloadEditor();
+        verify(view, never()).loadNewBoxedExpressionEditor();
+        verify(view, never()).syncExpressionWithOlderEditor();
     }
 
     @Test

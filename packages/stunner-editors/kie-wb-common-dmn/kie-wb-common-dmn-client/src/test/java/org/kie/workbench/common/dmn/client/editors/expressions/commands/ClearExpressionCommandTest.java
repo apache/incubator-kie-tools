@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorCh
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -63,22 +64,19 @@ public class ClearExpressionCommandTest {
                                                             expressionProps,
                                                             editorSelectedEvent,
                                                             nodeUUID,
-                                                            view,
                                                             itemDefinitionUtils,
                                                             Optional.empty());
     }
 
     @Test
     public void testGetNewExpression() {
-
         assertTrue(Objects.isNull(expressionCommand.getNewExpression()));
     }
 
     @Test
     public void testFill() {
-
         expressionCommand.fill();
 
-        verify(view).clear();
+        verify(hasExpression, times(1)).setExpression(null);
     }
 }
