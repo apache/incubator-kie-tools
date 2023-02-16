@@ -18,8 +18,6 @@ package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser;
 
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlNode;
-import elemental2.core.Global;
-import elemental2.dom.DomGlobal;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 
 /**
@@ -37,8 +35,6 @@ public class StringYAMLDeserializer implements YAMLDeserializer<String> {
     if (yaml == null || yaml.isEmpty()) {
       return null;
     }
-    DomGlobal.console.log("StringYAMLDeserializer.deserialize() " + key + " " + Global.JSON.stringify(yaml));
-
     return yaml.string(key);
   }
 
@@ -50,7 +46,6 @@ public class StringYAMLDeserializer implements YAMLDeserializer<String> {
 
 
     String result = value.asScalar().value();
-    DomGlobal.console.log("StringYAMLDeserializer.deserialize() >" + result+ "<");
     if (result.equals("~")) {
       return null;
     }
