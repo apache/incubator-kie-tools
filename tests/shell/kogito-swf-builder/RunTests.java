@@ -49,7 +49,7 @@ public class RunTests {
     private GenericContainer builtImage = new GenericContainer(
             new ImageFromDockerfile("dev.local/jbang-test/swf-test:" + Math.round(Math.random() * 1000000.00))
                     .withDockerfile(Paths.get("tests/shell/kogito-swf-builder/", "resources", "Dockerfile"))
-                    .withBuildArg("BUILDER_VERSION", System.getProperty("IMAGE_VERSION"))
+                    .withBuildArg("BUILDER_VERSION", System.getenv("IMAGE_VERSION"))
                     .withBuildArg("SCRIPT_DEBUG", "true"))
             .withExposedPorts(8080)
             .waitingFor(Wait.forHttp("/jsongreet"))
@@ -77,6 +77,7 @@ public class RunTests {
             System.exit(1);
             throw new IllegalStateException("Unreachable code");
         }
+        System.out.println("Got IMAGE_VERSION = " + System.getenv("IMAGE_VERSION"));
         CommandLineOptions options = new CommandLineOptions();
         options.setSelectedClasses(Collections.singletonList(RunTests.class.getName()));
         options.setReportsDir(Paths.get(args[0]));
