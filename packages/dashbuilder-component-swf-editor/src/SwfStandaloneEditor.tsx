@@ -34,16 +34,19 @@ export function isContentJson(content: string) {
 
 export function SwfStandaloneEditor(props: SwfEditorProps) {
   const swfEditorContainer = useRef<HTMLDivElement>(null);
+  const initialEditor = (content: string) =>
+    SwfEditor.open({
+      container: swfEditorContainer.current!,
+      initialContent: Promise.resolve(content),
+      readOnly: true,
+      languageType: isContentJson(content) ? "json" : "yaml",
+      swfPreviewOptions: { editorMode: "diagram" },
+    });
+  const [editor, setEditor] = useState<any>();
 
   useEffect(() => {
     if (props.content) {
-      const editor = SwfEditor.open({
-        container: swfEditorContainer.current!,
-        initialContent: Promise.resolve(props.content),
-        readOnly: true,
-        languageType: isContentJson(props.content) ? "json" : "yaml",
-        swfPreviewOptions: { editorMode: "diagram" },
-      });
+      setEditor(initialEditor(props.content));
     }
   }, [props.content]);
 
