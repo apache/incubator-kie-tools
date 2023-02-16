@@ -77,7 +77,7 @@ interface DmnRunnerStylesConfig {
 export function DmnRunnerDrawerPanelContent(props: Props) {
   const extendedServices = useExtendedServices();
   const { i18n, locale } = useOnlineI18n();
-  const formRef = useRef<HTMLFormElement>(null);
+  const [formRef, setFormRef] = useState<HTMLFormElement | null>();
   const dmnRunnerState = useDmnRunnerState();
   const dmnRunnerDispatch = useDmnRunnerDispatch();
   const [drawerError, setDrawerError] = useState<boolean>(false);
@@ -210,9 +210,9 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}, canceled);
         } else if (previousFormError) {
           setTimeout(() => {
-            formRef.current?.submit();
+            formRef?.submit();
             Object.keys(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}).forEach((propertyName) => {
-              formRef.current?.change(
+              formRef?.change(
                 propertyName,
                 dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]?.[propertyName]
               );
@@ -221,6 +221,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         }
       },
       [
+        formRef,
         dmnRunnerState.error,
         dmnRunnerState.inputRows,
         dmnRunnerState.currentInputRowIndex,
@@ -443,7 +444,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                         setFormError={dmnRunnerDispatch.setError}
                         formSchema={dmnRunnerState.jsonSchema}
                         id={"form"}
-                        formRef={formRef}
+                        setFormRef={setFormRef}
                         showInlineError={true}
                         autoSave={true}
                         autoSaveDelay={AUTO_SAVE_DELAY}

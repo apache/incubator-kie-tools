@@ -38,11 +38,11 @@ export interface FormHook<Input extends Record<string, any>, Schema extends Reco
   validator?: Validator;
   removeRequired?: boolean;
   i18n: FormI18n;
-  formRef?: any;
+  setFormRef?: (formElement: HTMLFormElement | null) => void;
 }
 
 const getObjectByPath = (obj: Record<string, Record<string, object>>, path: string) =>
-  path.split(".").reduce((acc: Record<string, Record<string, object>>, key: string) => acc?.[key], obj);
+  path.split(".").reduce((acc: Record<string, Record<string, object>>, key: string) => acc?.[key] ?? {}, obj);
 
 export function useForm<Input extends Record<string, any>, Schema extends Record<string, any>>({
   formError,
@@ -57,7 +57,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   validator,
   removeRequired = false,
   i18n,
-  formRef,
+  setFormRef,
 }: FormHook<Input, Schema>) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<FormJsonSchemaBridge>();
@@ -153,19 +153,16 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
     errorBoundaryRef.current?.reset();
   }, [formSchema]);
 
+  // When the formInput changes (load/delete), reset the formError
+  useEffect(() => {
+    setFormError(false);
+  }, [formInputs]);
+
+  // Submits the form in the first render, to trigger the onValidate function
   useEffect(() => {
     ref?.submit();
-  }, [ref]);
-
-  useEffect(() => {
-    setFormError((previousFormError) => {
-      if (!previousFormError && formInputs && Object.keys(formInputs).length > 0) {
-        const newFormInputs = cloneDeep(formInputs) as Input;
-        setFormInputs(newFormInputs);
-      }
-      return false;
-    });
-  }, [formInputs, setFormError, setFormInputs]);
+    setFormRef?.(ref);
+  }, [setFormRef, ref]);
 
   const onFormSubmit = useCallback(
     (model) => {

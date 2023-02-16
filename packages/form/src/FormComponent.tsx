@@ -24,7 +24,7 @@ export interface FormProps<Input, Schema> {
   id?: string;
   name?: string;
   locale: string;
-  formRef?: React.RefObject<HTMLFormElement>;
+  setFormRef?: (formElement: HTMLFormElement | null) => void;
   showInlineError?: boolean;
   autoSave?: boolean;
   autoSaveDelay?: number;
@@ -63,7 +63,7 @@ export function FormComponent(props: React.PropsWithChildren<FormComponentProps<
     entryPath: props.entryPath,
     propertiesEntryPath: props.propertiesEntryPath,
     validator: props.validator,
-    formRef: props.formRef,
+    setFormRef: props.setFormRef,
   });
 
   return (
@@ -77,7 +77,7 @@ export function FormComponent(props: React.PropsWithChildren<FormComponentProps<
         formModel={formModel}
         onSubmit={onSubmit}
         onValidate={onValidate}
-        setRef={setRef}
+        setFormRef={setRef}
       >
         {props.children}
       </FormBase>
