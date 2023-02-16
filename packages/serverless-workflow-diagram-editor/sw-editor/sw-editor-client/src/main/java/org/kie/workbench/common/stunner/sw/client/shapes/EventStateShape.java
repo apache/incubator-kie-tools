@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.client.shapes.icons.CornerIcon;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.WorkflowTimeouts;
 
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.CLOCK;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.FILTER;
@@ -46,12 +47,12 @@ public class EventStateShape extends StateShape implements HasDataFilter {
     public void applyProperties(Node<View<State>, Edge> element, MutationContext mutationContext) {
         super.applyProperties(element, mutationContext);
         EventState state = (EventState) element.getContent().getDefinition();
-        if (state.getTimeouts() != null) {
+        if (state.getTimeouts() != null && state.getTimeouts() instanceof WorkflowTimeouts) {
             getView().addChild(new CornerIcon(CLOCK,
                                               RIGHT_TOP_CORNER,
-                                              getTranslation(TIMEOUT_EVENT) + ": " + state.getTimeouts().getEventTimeout() + "\r\n"
-                                                      + getTranslation(TIMEOUT_STATE) + ": " + state.getTimeouts().getStateExecTimeout() + "\r\n"
-                                                      + getTranslation(TIMEOUT_ACTION) + ": " + state.getTimeouts().getActionExecTimeout()));
+                                              getTranslation(TIMEOUT_EVENT) + ": " + ((WorkflowTimeouts)state.getTimeouts()).getEventTimeout() + "\r\n"
+                                                      + getTranslation(TIMEOUT_STATE) + ": " + ((WorkflowTimeouts)state.getTimeouts()).getStateExecTimeout() + "\r\n"
+                                                      + getTranslation(TIMEOUT_ACTION) + ": " + ((WorkflowTimeouts)state.getTimeouts()).getActionExecTimeout()));
         }
 
         if (state.getStateDataFilter() != null) {
