@@ -14,40 +14,38 @@
  * limitations under the License.
  */
 
-const CopyPlugin = require("copy-webpack-plugin");
+const path = require("path");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
+const CopyPlugin = require("copy-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = async (env) => {
-  const components = [
-    "uniforms",
-    "table",
-    "echarts",
-    "svg-heatmap",
-    "timeseries",
-    "victory-charts",
-    "map",
-    "swf-editor",
-  ];
-  const copyResources = [];
-
-  components.forEach((component) => {
-    copyResources.push({
-      from: `../dashbuilder-component-${component}/dist/`,
-      to: `./${component}/`,
-    });
-  });
-
   return merge(common(env), {
-    entry: {},
+    mode: "development",
+    entry: {
+      index: path.resolve(__dirname, "./index.tsx"),
+    },
+
     plugins: [
+      new HtmlWebpackPlugin({
+        template: "./static/index.html",
+        minify: false,
+      }),
       new CopyPlugin({
-        patterns: [...copyResources],
+        patterns: [{ from: path.resolve(__dirname, "manifest.dev.json"), to: "." }],
       }),
     ],
+
     module: {
       rules: [...patternflyBase.webpackModuleRules],
+    },
+    devServer: {
+      historyApiFallback: false,
+      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "../static") }],
+      compress: false,
+      port: 9001,
     },
   });
 };

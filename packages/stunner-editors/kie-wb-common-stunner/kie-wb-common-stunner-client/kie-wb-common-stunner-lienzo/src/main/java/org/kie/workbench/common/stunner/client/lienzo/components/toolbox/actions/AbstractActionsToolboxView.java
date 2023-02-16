@@ -172,7 +172,6 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
                                      final IsToolboxActionDraggable toolboxAction,
                                      final ButtonItem button,
                                      final NodeMouseMoveEvent event) {
-        button.disable();
         toolboxAction.onMoveStart(toolbox.getCanvasHandler(),
                                   toolbox.getElementUUID(),
                                   new MouseMoveEvent(event.getX(),
