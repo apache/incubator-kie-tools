@@ -3,9 +3,9 @@
 }
 
 [mode="dark"] .pf-c-chart g text tspan {
-  fill: white !important;
+  fill: #eef1fa !important;
 }
 
 [mode="dark"] .pf-c-chart g line {
-  stroke: white !important;
+  stroke: #eef1fa !important;
 }
