@@ -33,6 +33,6 @@ public class FilledKeyNullIdWorkflowTest extends BaseMarshallingTest {
         assertTrue(hasIncomingEdges("State1"));
         assertTrue(hasOutgoingEdges("State1"));
         assertTrue(hasIncomingEdgeFrom("State1", Marshaller.STATE_START));
-        assertTrue(hasOutgoingEdgeTo("State1", Marshaller.STATE_END));
+        assertTrue(isConnectedToEnd("State1"));
     }
 }

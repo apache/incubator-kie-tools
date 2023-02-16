@@ -221,7 +221,7 @@ public class BuilderContext {
         if (Start.class.equals(type)) {
             return new double[]{54d, 54d};
         } else if (End.class.equals(type)) {
-            return new double[]{50d, 50d};
+            return new double[]{254d, 92d};
         } else if (EventRef.class.equals(type)) {
             return new double[]{56d, 56d};
         } else if (EventState.class.equals(type)) {

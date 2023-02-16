@@ -1,5 +1,7 @@
 package com.ait.lienzo.client.core.shape.wires.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -36,6 +38,7 @@ public class WiresConnectorLabel implements IDestroyable {
     private int maxChars = 15;
     private HandlerRegistration rectangleMouseEnterHandler;
     private HandlerRegistration rectangleMouseExitHandler;
+    private List<Point2D> orthogonalPoints;
     private static final String THREE_DOTS = "...";
 
     private final WiresConnectorPointsChangedHandler pointsUpdatedHandler = event -> {
@@ -67,6 +70,11 @@ public class WiresConnectorLabel implements IDestroyable {
         refresh();
         batch();
         return this;
+    }
+
+    public void setOrthogonalPoints(List<Point2D> orthogonalPoints) {
+        this.orthogonalPoints = orthogonalPoints;
+        batch();
     }
 
     public void setRectangleColor(String color) {
@@ -159,8 +167,10 @@ public class WiresConnectorLabel implements IDestroyable {
                     text.setText(minText);
                 }
 
-                WiresConnectorLabelFactory.Segment segment = getLargestSegment(connector);
-                Point2D point = new Point2D((segment.getStart().getX() + segment.getEnd().getX()) / 2, (segment.getStart().getY() + segment.getEnd().getY()) / 2);
+                WiresConnectorLabelFactory.Segment segment = null != orthogonalPoints ?
+                        getLargestSegment(orthogonalPoints) : getLargestSegment(connector);
+                Point2D point = new Point2D((segment.getStart().getX() + segment.getEnd().getX()) / 2,
+                                            (segment.getStart().getY() + segment.getEnd().getY()) / 2);
 
                 double relativeWidth = text.getBoundingBox().getWidth();
                 double relativeHeight = text.getBoundingBox().getHeight();
@@ -228,16 +238,25 @@ public class WiresConnectorLabel implements IDestroyable {
     }
 
     protected static WiresConnectorLabelFactory.Segment getLargestSegment(WiresConnector connector) {
-        double maxLength = 0;
-
-        WiresConnectorLabelFactory.Segment segment = null;
-
+        List<Point2D> points = new ArrayList<>();
         for (int i = 0; i < connector.getPointHandles().size() - 1; i++) {
             IControlHandle control1 = connector.getPointHandles().getHandle(i);
             IControlHandle control2 = connector.getPointHandles().getHandle(i + 1);
+            points.add(new Point2D(control1.getControl().getX(), control1.getControl().getY()));
+            points.add(new Point2D(control2.getControl().getX(), control2.getControl().getY()));
+        }
 
-            Point2D point1 = new Point2D(control1.getControl().getX(), control1.getControl().getY());
-            Point2D point2 = new Point2D(control2.getControl().getX(), control2.getControl().getY());
+        return getLargestSegment(points);
+    }
+
+    protected static WiresConnectorLabelFactory.Segment getLargestSegment(final List<Point2D> points) {
+        double maxLength = 0;
+
+        WiresConnectorLabelFactory.Segment segment = null;
+        for (int i = 0; i < points.size() - 1; i++) {
+
+            Point2D point1 = points.get(i);
+            Point2D point2 = points.get(i + 1);
 
             double distance = point1.distance(point2);
             if (distance > maxLength) {

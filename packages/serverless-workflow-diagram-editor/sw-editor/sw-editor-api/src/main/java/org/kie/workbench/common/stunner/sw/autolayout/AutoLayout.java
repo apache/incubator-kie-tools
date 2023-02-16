@@ -28,7 +28,6 @@ import com.ait.lienzo.client.core.layout.VertexPosition;
 import com.ait.lienzo.client.core.layout.graph.OutgoingEdge;
 import com.ait.lienzo.client.core.layout.graph.Vertex;
 import com.ait.lienzo.client.core.types.Point2D;
-import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
@@ -46,6 +45,7 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ContentTraverseCallback;
@@ -53,9 +53,12 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.V
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.sw.autolayout.lienzo.LienzoAutoLayout;
+import org.kie.workbench.common.stunner.sw.definition.End;
 import org.uberfire.client.promise.Promises;
 
 public class AutoLayout {
+
+    public static final double X_DEVIATION = 102d;
 
     private AutoLayout() {
         // Private constructor to prevent instantiation
@@ -87,15 +90,244 @@ public class AutoLayout {
                             new CompositeCommand.Builder<>()
                                     .addCommand(layoutCommands.build())
                                     .build();
-
                     all.execute(context);
+
+                    moveEndNodesX(graph, X_DEVIATION);
+
+                    applyOrthogonalLinesBehaviour(graph);
+
                     resolve.onInvoke(parentNode);
                     return null;
                 }, error -> {
-                    DomGlobal.console.error("Error while performing layout: " + error);
                     resolve.onInvoke(parentNode);
                     return null;
                 }));
+    }
+
+    @SuppressWarnings("all")
+    static void moveEndNodesX(Graph graph, final double x) {
+        Iterable<Node> nodes = graph.nodes();
+        nodes.forEach(node -> {
+            if (node.getContent() instanceof View) {
+                final View content = (View) node.getContent();
+                if (content.getDefinition() instanceof End) {
+                    final Bounds bounds = content.getBounds();
+                    final Bounds newBounds = Bounds.create(bounds.getUpperLeft().getX() + x,
+                                                           bounds.getUpperLeft().getY(),
+                                                           bounds.getLowerRight().getX() + x,
+                                                           bounds.getLowerRight().getY());
+                    content.setBounds(newBounds);
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("all")
+    static void applyOrthogonalLinesBehaviour(Graph graph) {
+        Iterable<Node> nodes = graph.nodes();
+        nodes.forEach(node -> {
+            if (node.getContent() instanceof View) {
+                final List<Edge> inEdges = (List<Edge>) node.getInEdges().stream()
+                        .filter(e -> ((Edge) e).getContent() instanceof ViewConnector)
+                        .collect(Collectors.toList());
+                final List<Edge> outEdges = (List<Edge>) node.getOutEdges().stream()
+                        .filter(e -> ((Edge) e).getContent() instanceof ViewConnector)
+                        .collect(Collectors.toList());
+
+                // Incoming connections
+                adjustIncomingConnections(node, inEdges);
+
+                // Outgoing connections
+                adjustOutgoingConnections(node, inEdges, outEdges);
+            }
+        });
+    }
+
+    @SuppressWarnings("all")
+    static void adjustIncomingConnections(final Node node, final List<Edge> inEdges) {
+        if (inEdges.size() >= 1) {
+            for (int i = 0; i < inEdges.size(); i++) {
+                Edge edge = inEdges.get(i);
+                ViewConnector content = (ViewConnector) edge.getContent();
+                MagnetConnection sourceConnection = (MagnetConnection) content.getSourceConnection().get();
+                MagnetConnection targetConnection = (MagnetConnection) content.getTargetConnection().get();
+                org.kie.workbench.common.stunner.core.graph.content.view.Point2D sourceLocation = sourceConnection.getLocation();
+                org.kie.workbench.common.stunner.core.graph.content.view.Point2D targetLocation = targetConnection.getLocation();
+                ControlPoint[] controlPoints = content.getControlPoints();
+                Node sourceNode = edge.getSourceNode();
+                View sourceContent = (View) sourceNode.getContent();
+                Bounds sourceBounds = sourceContent.getBounds();
+                Node targetNode = edge.getTargetNode();
+                View targetContent = (View) targetNode.getContent();
+                Bounds targetBounds = targetContent.getBounds();
+
+                if (isBackwards(sourceBounds.getY(), targetBounds.getY())) {
+                    adjustBackwardConnections(sourceConnection,
+                                              targetConnection,
+                                              controlPoints.length,
+                                              inEdges.size());
+                } else if (controlPoints.length == 0) {
+                    adjustConnectionWithoutControlPoints(i,
+                                                         sourceNode,
+                                                         targetConnection,
+                                                         inEdges);
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("all")
+    static void adjustOutgoingConnections(final Node node,
+                                          final List<Edge> inEdges,
+                                          final List<Edge> outEdges) {
+        if (node.getContent() instanceof View) {
+            if (outEdges.size() >= 1) {
+                for (int i = 0; i < outEdges.size(); i++) {
+                    Edge edge = outEdges.get(i);
+                    ViewConnector content = (ViewConnector) edge.getContent();
+                    MagnetConnection sourceConnection = (MagnetConnection) content.getSourceConnection().get();
+                    MagnetConnection targetConnection = (MagnetConnection) content.getTargetConnection().get();
+                    org.kie.workbench.common.stunner.core.graph.content.view.Point2D sourceLocation = sourceConnection.getLocation();
+                    org.kie.workbench.common.stunner.core.graph.content.view.Point2D targetLocation = targetConnection.getLocation();
+                    ControlPoint[] controlPoints = content.getControlPoints();
+                    Node sourceNode = edge.getSourceNode();
+                    View sourceContent = (View) sourceNode.getContent();
+                    Bounds sourceBounds = sourceContent.getBounds();
+                    Node targetNode = edge.getTargetNode();
+                    View targetContent = (View) targetNode.getContent();
+                    Bounds targetBounds = targetContent.getBounds();
+
+                    // Handle connection / magnet default settings.
+                    if (outEdges.size() == 1) {
+                        sourceConnection.setAuto(false);
+                        sourceConnection.setIndex(MagnetConnection.MAGNET_BOTTOM);
+                    } else {
+                        sourceConnection.setAuto(false);
+                        sourceConnection.setIndex(MagnetConnection.MAGNET_CENTER);
+                    }
+
+                    // Handle backward connections to upper layer
+                    if (isBackwards(sourceBounds.getY(), targetBounds.getY())) {
+                        adjustBackwardConnections(sourceConnection,
+                                                  targetConnection,
+                                                  controlPoints.length,
+                                                  outEdges.size());
+                    } else if (controlPoints.length == 0) {
+                        // handle connections without CPs
+                        adjustConnectionWithoutControlPoints(i,
+                                                             sourceNode,
+                                                             targetConnection,
+                                                             inEdges);
+                    }
+
+                    // Handle connections crossing several (>1) layers.
+                    adjustConnectionsCrossingMultipleLayers(i,
+                                                            content,
+                                                            controlPoints,
+                                                            sourceBounds,
+                                                            targetBounds,
+                                                            sourceConnection,
+                                                            targetConnection);
+                }
+            }
+        }
+    }
+
+    // Handle connectors crossing several (>1) layers.
+    static void adjustConnectionsCrossingMultipleLayers(final int edgeIndex,
+                                                        final ViewConnector content,
+                                                        final ControlPoint[] controlPoints,
+                                                        final Bounds sourceBounds,
+                                                        final Bounds targetBounds,
+                                                        MagnetConnection sourceConnection,
+                                                        MagnetConnection targetConnection) {
+        if (controlPoints.length > 0) {
+            double padding = 40d;
+            double maxx = 0;
+            for (int j = 0; j < controlPoints.length; j++) {
+                if (j == 0) {
+                    boolean isTopBottom = sourceBounds.getY() < controlPoints[j].getLocation().getY();
+                    double ty = sourceBounds.getY() +
+                            ((padding / 2) * edgeIndex) +
+                            (isTopBottom ? sourceBounds.getHeight() + padding : -padding);
+                    controlPoints[j].getLocation().setY(ty);
+                    sourceConnection.setIndex(MagnetConnection.MAGNET_BOTTOM);
+                    sourceConnection.setAuto(false);
+                } else if (j == controlPoints.length - 1) {
+                    boolean isTopBottom = targetBounds.getY() < controlPoints[j].getLocation().getY();
+                    double ty = targetBounds.getY() +
+                            -(padding * edgeIndex) +
+                            (isTopBottom ? targetBounds.getHeight() + padding : -padding);
+                    controlPoints[j].getLocation().setY(ty);
+                    targetConnection.setIndex(MagnetConnection.MAGNET_CENTER);
+                    targetConnection.setAuto(false);
+                }
+
+                ControlPoint cp = controlPoints[j];
+                if (cp.getLocation().getX() > maxx) {
+                    maxx = cp.getLocation().getX();
+                    for (int k = j; k >= 0; k--) {
+                        controlPoints[k].getLocation().setX(maxx);
+                    }
+                }
+                cp.getLocation().setX(maxx);
+            }
+
+            content.setControlPoints(new ControlPoint[]{
+                    controlPoints[0].copy(),
+                    controlPoints[controlPoints.length - 1].copy()
+            });
+        }
+    }
+
+    // check if the connector points up
+    static boolean isBackwards(final double sourceY, final double targetY) {
+        return sourceY > targetY;
+    }
+
+    // Handle backward connections to upper layer (may overlap with incoming connectors, if any).
+    static void adjustBackwardConnections(final MagnetConnection sourceConnection,
+                                          final MagnetConnection targetConnection,
+                                          final int controlPointsCount,
+                                          final int edgesCount) {
+        if (edgesCount > 0) {
+            if (controlPointsCount == 0) {
+                sourceConnection.setAuto(false);
+                sourceConnection.setIndex(MagnetConnection.MAGNET_LEFT);
+            }
+            targetConnection.setAuto(false);
+            targetConnection.setIndex(MagnetConnection.MAGNET_CENTER);
+        }
+    }
+
+    static void adjustConnectionWithoutControlPoints(final int edgeIndex,
+                                                     final Node sourceNode,
+                                                     final MagnetConnection targetConnection,
+                                                     final List<Edge> inEdges) {
+        if (inEdges.size() == 1) {
+            targetConnection.setAuto(false);
+            targetConnection.setIndex(MagnetConnection.MAGNET_TOP);
+        } else if (isSameSource(sourceNode, inEdges, edgeIndex)) {
+            // Node with more than one connector with same target
+            targetConnection.setAuto(false);
+            targetConnection.setIndex(MagnetConnection.MAGNET_TOP);
+        } else {
+            targetConnection.setAuto(false);
+            targetConnection.setIndex(MagnetConnection.MAGNET_CENTER);
+        }
+    }
+
+    @SuppressWarnings("all")
+    static boolean isSameSource(final Node sourceNode, final List<Edge> inEdges, final int currentIndex) {
+        for (int k = currentIndex; k < inEdges.size(); k++) {
+            if (k != currentIndex) {
+                Node tempNode = inEdges.get(k).getSourceNode();
+                if (sourceNode == tempNode) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     static void hideNodeIfIsNotConnected(final Layout layout,
@@ -114,6 +346,7 @@ public class AutoLayout {
         }
     }
 
+    @SuppressWarnings("all")
     private static void deleteNode(Node parentNode, String nodeId, Graph graph) {
         final Optional outParent = parentNode.getOutEdges().stream()
                 .filter(outEdge -> Objects.equals(((Edge) outEdge).getTargetNode().getUUID(), nodeId))
@@ -166,6 +399,7 @@ public class AutoLayout {
         }
     }
 
+    @SuppressWarnings("all")
     private static void updateTargetMagnet(final CompositeCommand.Builder layoutCommands,
                                            final com.ait.lienzo.client.core.layout.Edge outgoingEdge,
                                            final String edgeIUd,
@@ -187,6 +421,7 @@ public class AutoLayout {
         });
     }
 
+    @SuppressWarnings("all")
     private static void updateSourceMagnet(final CompositeCommand.Builder layoutCommands,
                                            final com.ait.lienzo.client.core.layout.Edge outgoingEdge,
                                            final String edgeIUd,
@@ -231,6 +466,7 @@ public class AutoLayout {
         return Position.BELOW;
     }
 
+    @SuppressWarnings("all")
     public static void createControlPoints(final Layout layout,
                                            final CompositeCommand.Builder layoutCommands) {
 
@@ -239,7 +475,9 @@ public class AutoLayout {
                 int index = -1;
                 for (final Point2D bendingPoint : outgoingEdge.getBendingPoints()) {
                     final org.kie.workbench.common.stunner.core.graph.content.view.Point2D point = new org.kie.workbench.common.stunner.core.graph.content.view.Point2D(bendingPoint.getX(), bendingPoint.getY());
-                    layoutCommands.addCommand(new AddControlPointCommand(outgoingEdge.getId(), new ControlPoint(point), ++index));
+                    ControlPoint cp = new ControlPoint(point);
+                    AddControlPointCommand command = new AddControlPointCommand(outgoingEdge.getId(), cp, ++index);
+                    layoutCommands.addCommand(command);
                 }
             }
         }

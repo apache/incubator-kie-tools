@@ -16,7 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.wires.types;
 
+import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
+import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import jsinterop.annotations.JsType;
 
 @JsType
@@ -34,5 +38,24 @@ public class JsWiresConnector {
 
     public JsWiresConnection getTailConnection() {
         return new JsWiresConnection(connector.getTailConnection());
+    }
+
+    public NFastArrayList<Point2D> getConnectorPoints() {
+        final IDirectionalMultiPointShape<?> line = connector.getLine();
+        if (line instanceof OrthogonalPolyLine) {
+            return ((OrthogonalPolyLine) line).getComputedPoint2DArray().toNFastArrayList();
+        }
+        return connector.getLine().getPoint2DArray().toNFastArrayList();
+    }
+
+    public Double[] getConnectorPointsAsArray() {
+        NFastArrayList<Point2D> points = getConnectorPoints();
+        Double[] pointsArray = new Double[points.size() * 2];
+        int i = 0;
+        for (Point2D point : points.toList()) {
+            pointsArray[i++] = point.getX();
+            pointsArray[i++] = point.getY();
+        }
+        return pointsArray;
     }
 }

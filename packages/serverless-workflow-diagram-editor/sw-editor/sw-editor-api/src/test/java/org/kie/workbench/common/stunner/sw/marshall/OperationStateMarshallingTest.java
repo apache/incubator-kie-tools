@@ -30,6 +30,7 @@ public class OperationStateMarshallingTest extends BaseMarshallingTest {
 
     private static final String WORKFLOW_ID = "workflow1";
     private static final String WORKFLOW_NAME = "Workflow1";
+
     @Override
     protected Workflow createWorkflow() {
         return new Workflow()
@@ -60,7 +61,7 @@ public class OperationStateMarshallingTest extends BaseMarshallingTest {
         assertTrue(hasIncomingEdges("State1"));
         assertTrue(hasOutgoingEdges("State1"));
         assertTrue(hasIncomingEdgeFrom("State1", Marshaller.STATE_START));
-        assertTrue(hasOutgoingEdgeTo("State1", Marshaller.STATE_END));
+        assertTrue(isConnectedToEnd("State1"));
         assertDefinitionReferencedInNode(state.getActions()[0], "Call Function 1");
     }
 }

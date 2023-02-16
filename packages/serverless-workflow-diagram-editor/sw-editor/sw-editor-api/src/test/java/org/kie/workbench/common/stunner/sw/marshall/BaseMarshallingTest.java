@@ -16,13 +16,18 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.Before;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 
 import static org.junit.Assert.assertTrue;
@@ -84,6 +89,24 @@ public abstract class BaseMarshallingTest {
                 .filter(e -> fromUUID.equals(((Edge) e).getSourceNode().getUUID()))
                 .findAny()
                 .isPresent();
+    }
+
+    public boolean isConnectedToEnd(final String name) {
+        final Node state1 = getNodeByName(name);
+        final List<Edge> outEdges = (List<Edge>) state1.getOutEdges().stream()
+                .filter(e -> ((Edge) e).getContent() instanceof ViewConnector)
+                .collect(Collectors.toList());
+
+        if (outEdges.size() == 1) {
+            Edge edge = outEdges.get(0);
+            Node targetNode = edge.getTargetNode();
+            View targetContent = (View) targetNode.getContent();
+            System.out.println(targetContent.getDefinition().toString());
+            if (targetContent.getDefinition() instanceof End) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void assertDefinitionReferencedInNode(Object def, String nodeName) {
