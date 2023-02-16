@@ -437,11 +437,7 @@ export function EditorPage(props: Props) {
                 workspaceFile={file.workspaceFile}
                 onNotificationClick={onNotificationClick}
               >
-                <PageSection
-                  hasOverflowScroll={true}
-                  padding={{ default: "noPadding" }}
-                  aria-label="serverless logic web tools - editor page"
-                >
+                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor Section">
                   <div style={{ height: "100%" }}>
                     {!isEditorReady && <LoadingSpinner />}
                     <div style={{ display: isEditorReady ? "inline" : "none" }}>

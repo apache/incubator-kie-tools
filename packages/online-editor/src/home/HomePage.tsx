@@ -128,7 +128,7 @@ export function HomePage() {
         sticky={"top"}
         hasOverflowScroll={false}
         style={{ overflowX: "scroll" }}
-        aria-label="kie sandbox - home page - models section"
+        aria-label="New Models Section"
       >
         <Grid hasGutter style={{ minWidth: "1280px", gridGap: "var(--pf-c-page__main-section--PaddingTop)" }}>
           <GridItem span={6}>
@@ -182,12 +182,7 @@ export function HomePage() {
           </GridItem>
         </Grid>
       </PageSection>
-      <PageSection
-        isFilled={true}
-        variant={"light"}
-        hasOverflowScroll={true}
-        aria-label="kie sandbox - home page - drawer"
-      >
+      <PageSection isFilled={true} variant={"light"} hasOverflowScroll={true} aria-label="Workspace Section">
         <PromiseStateWrapper
           promise={workspaceDescriptorsPromise}
           rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
