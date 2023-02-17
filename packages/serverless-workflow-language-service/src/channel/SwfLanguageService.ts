@@ -69,6 +69,12 @@ export type SwfLanguageServiceArgs = {
   config: SwfLanguageServiceConfig;
 };
 
+export function isVirtualRegistry(serviceCatalogFunction: SwfServiceCatalogFunction): boolean {
+  return (
+    serviceCatalogFunction.source.type === "SERVICE_REGISTRY" && serviceCatalogFunction.source.registry === "Virtual"
+  );
+}
+
 export class SwfLanguageService {
   constructor(private readonly args: SwfLanguageServiceArgs) {}
 
@@ -149,32 +155,28 @@ export class SwfLanguageService {
     return Promise.resolve(result.flat());
   }
 
-  private getFunctionDiagnostics(contents: SwfServiceCatalogService[]): Diagnostic[] {
-    const diagnosticList: Diagnostic[] = [];
-    contents.forEach((value) => {
+  private getFunctionDiagnostics(services: SwfServiceCatalogService[]): Diagnostic[] {
+    return services.flatMap((value) =>
       value.functions
-        .filter((f) => !f.name)
-        .filter((fs) => !this.isVirtualRegistry(JSON.stringify(fs.source)))
-        .forEach((fs) => {
-          diagnosticList.push(
-            Diagnostic.create(
-              Range.create(Position.create(0, 0), Position.create(100000, 10000)),
-              JSON.stringify(fs.source) + " does not have operationId",
-              DiagnosticSeverity.Warning
-            )
-          );
-        });
-    });
-    return diagnosticList;
+        .filter((fs) => !fs.name && !isVirtualRegistry(fs))
+        .map((fs) =>
+          Diagnostic.create(
+            Range.create(Position.create(0, 0), Position.create(0, 0)),
+            this.getWarningMessage(fs),
+            DiagnosticSeverity.Warning
+          )
+        )
+    );
   }
 
-  private isVirtualRegistry(source: string): boolean {
-    if (source.includes("registry")) {
-      if (JSON.parse(source).registry === "Virtual") {
-        return true;
-      }
+  private getWarningMessage(serviceCatalogFunction: SwfServiceCatalogFunction): string {
+    if (serviceCatalogFunction.source.type == "SERVICE_REGISTRY") {
+      return `The ${serviceCatalogFunction.source.serviceId} service in the  ${serviceCatalogFunction.source.registry} registry is missing the "operationId" property in at least one operation`;
     }
-    return false;
+    if (serviceCatalogFunction.source.type === "LOCAL_FS") {
+      return `The ${serviceCatalogFunction.source.serviceFileAbsolutePath} service is missing the "operationId" property in at least one operation`;
+    }
+    return "";
   }
 
   public async getDiagnostics(args: {
