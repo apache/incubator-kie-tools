@@ -32,10 +32,10 @@ type testBuildImage struct {
 }
 
 var testsRunBuildImageSuccess = []testBuildImage{
-	{input: BuildCmdConfig{Image: "test"}, expected: "test:latest"},
-	{input: BuildCmdConfig{Image: "docker.io/test:latest"}, expected: "docker.io/test:latest"},
-	{input: BuildCmdConfig{Image: "docker.io/repo/test:latest"}, expected: "docker.io/repo/test:latest"},
-	{input: BuildCmdConfig{Image: "quay.io/repo/test:0.0.0"}, expected: "quay.io/repo/test:0.0.0"},
+	{input: BuildCmdConfig{Image: "test", Jib: true}, expected: "test:latest"},
+	{input: BuildCmdConfig{Image: "docker.io/test:latest", JibPodman: true}, expected: "docker.io/test:latest"},
+	{input: BuildCmdConfig{Image: "docker.io/repo/test:latest", Push: true}, expected: "docker.io/repo/test:latest"},
+	{input: BuildCmdConfig{Image: "quay.io/repo/test:0.0.0", Test: true}, expected: "quay.io/repo/test:0.0.0"},
 
 	{input: BuildCmdConfig{Image: "test", ImageName: "abcd"}, expected: "abcd:latest"},
 	{input: BuildCmdConfig{Image: "docker.io/test", Registry: "quay.io"}, expected: "quay.io/test:latest"},
