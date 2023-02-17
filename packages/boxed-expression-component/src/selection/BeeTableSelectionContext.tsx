@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { assertUnreachable } from "../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
-import { ResizingWidth } from "../resizing/ResizingWidthsContext";
+import { ResizingWidth, useResizingWidthsDispatch } from "../resizing/ResizingWidthsContext";
 
 export const SELECTION_MIN_ACTIVE_DEPTH = -1;
 export const SELECTION_MIN_MAX_DEPTH = 0;
@@ -961,6 +961,7 @@ export function useBeeTableSelectableCell(
   setValue?: BeeTableCellRef["setValue"],
   getValue?: BeeTableCellRef["getValue"]
 ) {
+  const { isResizing } = useResizingWidthsDispatch();
   const { isActive, isEditing, isSelected, selectedPositions } = useBeeTableSelectableCellRef(
     rowIndex,
     columnIndex,
@@ -1027,7 +1028,7 @@ export function useBeeTableSelectableCell(
       // Not a final solution, as user can start dragging from anywhere.
       // Ideally, we want users to change selection only when the dragging originates
       // some other cell within the table.
-      if (e.buttons === 1 && e.button === 0) {
+      if (e.buttons === 1 && e.button === 0 && !isResizing()) {
         setSelectionEnd({
           columnIndex,
           rowIndex,
@@ -1041,7 +1042,7 @@ export function useBeeTableSelectableCell(
     return () => {
       cell?.removeEventListener("mouseenter", onEnter);
     };
-  }, [columnIndex, rowIndex, resetSelectionAt, setSelectionEnd, cellRef]);
+  }, [columnIndex, rowIndex, resetSelectionAt, setSelectionEnd, cellRef, isResizing]);
 
   useLayoutEffect(() => {
     if (isActive && !isEditing) {

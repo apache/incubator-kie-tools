@@ -51,7 +51,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   //
   // This whole thing is responsible for allowing any cell to shrink the entire table when resized.
 
-  const { getResizerRefs } = useResizingWidthsDispatch();
+  const { getResizerRefs, setResizing: _setResizing } = useResizingWidthsDispatch();
 
   const [resizingStop__data, setResizingStop__data] = useState(0);
   const onResizeStop = useCallback((_, data) => {
@@ -78,11 +78,12 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     }
 
     setResizing?.(false);
+    _setResizing(false);
     setResizingWidth?.({ value: Math.floor(resizingStop__data), isPivoting: false });
     setWidth?.(resizingWidth?.value);
 
     setResizingStop__data(0); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
-  }, [getResizerRefs, resizingWidth?.value, resizingStop__data, setResizing, setResizingWidth, setWidth]);
+  }, [getResizerRefs, resizingWidth?.value, resizingStop__data, setResizing, setResizingWidth, setWidth, _setResizing]);
 
   //
   // onResizeStop batching strategy (end)
@@ -103,12 +104,15 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     (_, data) => {
       setResizingWidth?.({ value: Math.floor(data.size.width), isPivoting: true });
       setResizing?.(true);
+      _setResizing(true);
     },
-    [setResizing, setResizingWidth]
+    [_setResizing, setResizing, setResizingWidth]
   );
 
   const onDoubleClick = useCallback(
     (e: React.MouseEvent) => {
+      e.stopPropagation();
+
       const widthToFitData = getWidthToFitData?.();
 
       // This is pretending we resized down.

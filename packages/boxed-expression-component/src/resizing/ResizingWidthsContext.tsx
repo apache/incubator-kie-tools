@@ -25,9 +25,16 @@ export function ResizingWidthsContextProvider({ children }: React.PropsWithChild
   }, [resizingWidths]);
 
   const refs = useRef<Set<ResizerRef>>(new Set());
+  const isResizingRef = useRef<boolean>(false);
 
   const dispatch = useMemo<ResizingWidthsDispatchContextType>(() => {
     return {
+      setResizing: (isResizing) => {
+        isResizingRef.current = isResizing;
+      },
+      isResizing: () => {
+        return isResizingRef.current;
+      },
       updateResizingWidth: (id, getNewResizingWidth) => {
         setResizingWidths((prev) => {
           const n = new Map(prev);
@@ -67,6 +74,8 @@ export type ResizingWidthsContextType = {
 };
 
 export type ResizingWidthsDispatchContextType = {
+  setResizing: (isResizing: boolean) => void;
+  isResizing: () => boolean;
   updateResizingWidth(id: string, getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth): void;
   registerResizerRef(ref: ResizerRef): ResizerRef;
   deregisterResizerRef(ref: ResizerRef): void;
