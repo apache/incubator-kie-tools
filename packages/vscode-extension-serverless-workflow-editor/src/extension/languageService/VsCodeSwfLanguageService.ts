@@ -92,7 +92,7 @@ export class VsCodeSwfLanguageService {
           },
         },
         relative: {
-          getServices: async (textDocument) => {
+          getServices: async (textDocument: any) => {
             const { specsDirAbsolutePosixPath } = this.getSpecsDirPosixPaths(textDocument);
             let swfServiceCatalogRelativeStore = this.fsWatchingSwfServiceCatalogStore.get(specsDirAbsolutePosixPath);
             if (swfServiceCatalogRelativeStore) {
@@ -109,7 +109,10 @@ export class VsCodeSwfLanguageService {
             return swfServiceCatalogRelativeStore.getServices();
           },
         },
-        getServiceFileNameFromSwfServiceCatalogServiceId: async (registryName, swfServiceCatalogServiceId) => {
+        getServiceFileNameFromSwfServiceCatalogServiceId: async (
+          registryName: any,
+          swfServiceCatalogServiceId: any
+        ) => {
           return getServiceFileNameFromSwfServiceCatalogServiceId(registryName, swfServiceCatalogServiceId);
         },
       },
@@ -147,8 +150,11 @@ export class VsCodeSwfLanguageService {
         shouldReferenceServiceRegistryFunctionsWithUrls: async () => {
           return this.args.configuration.getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls();
         },
-        getSpecsDirPosixPaths: async (textDocument) => {
+        getSpecsDirPosixPaths: async (textDocument: any) => {
           return this.getSpecsDirPosixPaths(textDocument);
+        },
+        getRoutesDirPosixPaths: async (textDocument: any) => {
+          return this.getRoutesDirPosixPaths(textDocument);
         },
         shouldConfigureServiceRegistries: () => {
           return !this.args.swfServiceCatalogGlobalStore.isServiceRegistryConfigured;
@@ -184,6 +190,23 @@ export class VsCodeSwfLanguageService {
     const baseFileAbsolutePosixPath = vscode.Uri.parse(args.doc.uri).path;
     return baseFileAbsolutePosixPath.replace(/(\/.*)\/.+/, "$1").concat("/", args.schemaPath);
   }
+  
+  private getRoutesDirPosixPaths(document: TextDocument) {
+    const baseFileAbsolutePosixPath = vscode.Uri.parse(document.uri).path;
+
+    const routesDirAbsolutePosixPath = definitelyPosixPath(
+      this.args.configuration.getInterpolatedRoutesDirAbsolutePosixPath({
+        baseFileAbsolutePosixPath,
+      })
+    );
+
+    const routesDirRelativePosixPath = definitelyPosixPath(
+      path.relative(path.dirname(baseFileAbsolutePosixPath), routesDirAbsolutePosixPath)
+    );
+
+    return { routesDirRelativePosixPath, routesDirAbsolutePosixPath };
+  }
+
   public dispose() {
     this.jsonLs.dispose();
     this.yamlLs.dispose();

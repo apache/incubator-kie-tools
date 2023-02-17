@@ -147,6 +147,11 @@
           "markdownDescription": "Enable/disable Kogito Serverless Workflow Visualization Preview for JSON files.",
           "type": "boolean"
         },
+        "kogito.swf.routesStoragePath": {
+          "default": "${fileDirname}/routes",
+          "markdownDescription": "Directory where camel routes files are stored (defaults to a 'routes' directory in the same path as the Serverless Workflow file).",
+          "type": "string"
+        },
         "kogito.swf.runOnSave": {
           "default": "extension.kogito.swf.silentlyGenerateSvg",
           "markdownDescription": "Execute a command on each save operation of the Serverless Workflow file.",

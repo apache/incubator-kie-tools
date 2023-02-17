@@ -44,6 +44,9 @@ export type SwfLanguageServiceConfig = {
   getSpecsDirPosixPaths: (
     textDocument: TextDocument
   ) => Promise<{ specsDirRelativePosixPath: string; specsDirAbsolutePosixPath: string }>;
+  getRoutesDirPosixPaths: (
+    textDocument: TextDocument
+  ) => Promise<{ routesDirRelativePosixPath: string; routesDirAbsolutePosixPath: string }>;
   shouldDisplayServiceRegistriesIntegration: () => Promise<boolean>;
   shouldReferenceServiceRegistryFunctionsWithUrls: () => Promise<boolean>;
   shouldIncludeJsonSchemaDiagnostics: () => Promise<boolean>;

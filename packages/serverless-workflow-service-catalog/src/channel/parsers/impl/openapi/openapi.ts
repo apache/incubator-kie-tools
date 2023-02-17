@@ -56,11 +56,13 @@ export function extractFunctions(
   serviceOpenApiDocument: OpenAPIV3.Document,
   source: SwfServiceCatalogFunctionSource
 ): SwfServiceCatalogFunction[] {
+  console.log("openapi-serviceOpenApiDocument", serviceOpenApiDocument);
   const swfServiceCatalogFunctions = Object.entries(serviceOpenApiDocument.paths).map(
     ([endpoint, pathItem]: [string, OpenAPIV3.PathItemObject]) => {
       return extractPathItemFunctions(pathItem, endpoint, serviceOpenApiDocument, source);
     }
   );
+  console.log("openapi-swfServiceCatalogFunctions", [].concat.apply([], swfServiceCatalogFunctions));
   return [].concat.apply([], swfServiceCatalogFunctions);
 }
 

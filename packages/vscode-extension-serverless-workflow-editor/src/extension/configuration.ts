@@ -28,6 +28,7 @@ export const WEBVIEW_EDITOR_VIEW_TYPE = "kieKogitoWebviewEditorsServerlessWorkfl
 export const CONFIGURATION_SECTIONS = {
   serviceRegistriesSettings: "kogito.swf.serviceRegistries",
   specsStoragePath: "kogito.swf.specsStoragePath",
+  routesStoragePath: "kogito.swf.routesStoragePath",
   shouldReferenceServiceRegistryFunctionsWithUrls: "kogito.swf.shouldReferenceServiceRegistryFunctionsWithUrls",
   automaticallyOpenDiagramEditorAlongsideTextEditor: "kogito.swf.automaticallyOpenDiagramEditorAlongsideTextEditor",
   enableKogitoServerlessWorkflowVisualizationPreview: "kogito.swf.enableKogitoServerlessWorkflowVisualizationPreview",
@@ -96,6 +97,12 @@ export class SwfVsCodeExtensionConfiguration {
       .get(CONFIGURATION_SECTIONS.specsStoragePath, path.join(configurationTokenKeys["${fileDirname}"], "/specs"));
   }
 
+  public getConfiguredRoutesDirPath() {
+    return vscode.workspace
+      .getConfiguration()
+      .get(CONFIGURATION_SECTIONS.routesStoragePath, path.join(configurationTokenKeys["${fileDirname}"], "/routes"));
+  }
+
   public getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls() {
     return vscode.workspace
       .getConfiguration()
@@ -116,6 +123,13 @@ export class SwfVsCodeExtensionConfiguration {
     return getInterpolatedConfigurationValue({
       currentFileAbsolutePosixPath: args.baseFileAbsolutePosixPath,
       value: definitelyPosixPath(args.dataInputSchemaPath),
+    })
+  }
+  
+  public getInterpolatedRoutesDirAbsolutePosixPath(args: { baseFileAbsolutePosixPath: string }) {
+    return getInterpolatedConfigurationValue({
+      currentFileAbsolutePosixPath: args.baseFileAbsolutePosixPath,
+      value: definitelyPosixPath(this.getConfiguredRoutesDirPath()),
     });
   }
 
