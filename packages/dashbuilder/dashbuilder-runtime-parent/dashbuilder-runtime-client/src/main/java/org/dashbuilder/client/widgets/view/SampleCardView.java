@@ -91,7 +91,7 @@ public class SampleCardView implements SampleCard.View {
     public void enableEdit(Supplier<String> getSamplePath) {
         sampleEditLink.style.visibility = "visible";
         sampleEditLink.onclick = e -> {
-            var proceed = Window.confirm("This will create a new file in your project, would you like to proceed?");
+            var proceed = Window.confirm("This will create a new file in your project, would you like to proceed to VSCode?");
             if (proceed) {
                 DomGlobal.window.open("vscode://file/" + getSamplePath.get());
             }

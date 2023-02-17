@@ -17,6 +17,6 @@ dashbuilder = {
 		  samplesUrl: "/samples",
 	  	
 		  // An URL to resolve sample path on disk. It will receive a GET request with a query parameter called "sampleId"
-		  samplesEditService: "/edit"
+		  samplesEditService: "edit"
 	  */
 };

@@ -87,6 +87,8 @@ public class EmptyScreenView implements EmptyScreen.View {
     @Override
     public void enableSamplesButton(Runnable action) {
         uploadContainer.style.display = Display.NONE.getCssName();
+        subTitleParagraph.textContent = subTitleParagraph.textContent + " " + AppConstants.INSTANCE
+                .emptyScreenTrySamples();
         trySamplesContainer.style.display = Display.INLINE_BLOCK.getCssName();
         trySamples.onclick = e -> {
             action.run();
