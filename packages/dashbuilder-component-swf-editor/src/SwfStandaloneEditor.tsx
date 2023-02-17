@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as SwfEditor from "@kie-tools/serverless-workflow-standalone-editor/dist/swf";
 
 export interface SwfEditorProps {
@@ -34,7 +34,7 @@ export function isContentJson(content: string) {
 
 export function SwfStandaloneEditor(props: SwfEditorProps) {
   const swfEditorContainer = useRef<HTMLDivElement>(null);
-  const initialEditor = (content: string) =>
+  const initEditor = useCallback((content: string) => {
     SwfEditor.open({
       container: swfEditorContainer.current!,
       initialContent: Promise.resolve(content),
@@ -42,11 +42,12 @@ export function SwfStandaloneEditor(props: SwfEditorProps) {
       languageType: isContentJson(content) ? "json" : "yaml",
       swfPreviewOptions: { editorMode: "diagram" },
     });
+  }, []);
   const [editor, setEditor] = useState<any>();
 
   useEffect(() => {
     if (props.content) {
-      setEditor(initialEditor(props.content));
+      setEditor(initEditor(props.content));
     }
   }, [props.content]);
 
