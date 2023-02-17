@@ -23,17 +23,14 @@ export interface FetchDmnResultArgs {
 }
 
 export async function fetchDmnResult(args: FetchDmnResultArgs): Promise<DecisionResult[]> {
-  const response = await fetch(
-    `https://dmn-dev-deployment-7uizzaa867-rhn-lmotta-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com/${args.modelName}/dmnresult`,
-    {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(args.inputs),
-    }
-  );
+  const response = await fetch(routes.dmnResult.path({ modelName: args.modelName }), {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(args.inputs),
+  });
 
   return (await response.json()).decisionResults as DecisionResult[];
 }
