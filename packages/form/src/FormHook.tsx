@@ -145,7 +145,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
     errorBoundaryRef.current?.reset();
   }, [formSchema]);
 
-  // When the formInput, reset the formError
+  // When the formInput changes, reset the formError
   useEffect(() => {
     setFormError(false);
   }, [formInputs]);
