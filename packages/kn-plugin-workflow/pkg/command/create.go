@@ -18,6 +18,7 @@ package command
 
 import (
 	"fmt"
+	"regexp"
 	"time"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
@@ -85,13 +86,29 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("initializing create config: %w", err)
 	}
 
+	if err := common.CheckJavaDependencies(); err != nil {
+		return err
+	}
+
+	if err = runCreateProject(cfg); err != nil {
+		return err
+	}
+
+	workflowFilePath := fmt.Sprintf("./%s/src/main/resources/%s", cfg.ProjectName, metadata.WORKFLOW_SW_JSON)
+	CreateWorkflow(workflowFilePath)
+
+	finish := time.Since(start)
+	fmt.Printf("🚀 Project creation took: %s \n", finish)
+	return nil
+}
+
+func runCreateProject(cfg CreateCmdConfig) (err error) {
+	if err = checkProjectName(cfg.ProjectName); err != nil {
+		return err
+	}
 	exists, err := common.CheckIfDirExists(cfg.ProjectName)
 	if err != nil || exists {
 		return fmt.Errorf("directory with name \"%s\" already exists: %w", cfg.ProjectName, err)
-	}
-
-	if err := common.CheckJavaDependencies(); err != nil {
-		return err
 	}
 
 	create := common.ExecCommand(
@@ -111,13 +128,16 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	); err != nil {
 		return err
 	}
+	return
+}
 
-	workflowFilePath := fmt.Sprintf("./%s/src/main/resources/%s", cfg.ProjectName, metadata.WORKFLOW_SW_JSON)
-	CreateWorkflow(workflowFilePath)
-
-	finish := time.Since(start)
-	fmt.Printf("🚀 Project creation took: %s \n", finish)
-	return nil
+func checkProjectName(name string) (err error) {
+	matched, err := regexp.MatchString(`^([_\-\.a-zA-Z0-9]+)$`, name)
+	if !matched {
+		fmt.Printf("The project name (\"%s\") contains invalid characters. Valid characters are alphanumeric (A-Za-z), underscore, dash and dot.", name)
+		err = fmt.Errorf("invalid project name")
+	}
+	return
 }
 
 // runCreateCmdConfig returns the configs from the current execution context
