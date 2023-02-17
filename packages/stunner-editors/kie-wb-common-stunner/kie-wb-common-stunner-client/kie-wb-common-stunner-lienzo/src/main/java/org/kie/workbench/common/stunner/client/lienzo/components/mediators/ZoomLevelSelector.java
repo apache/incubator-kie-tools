@@ -21,10 +21,12 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.stunner.client.lienzo.util.ToolboxRefreshEvent;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 
@@ -49,9 +51,11 @@ public class ZoomLevelSelector implements IsWidget {
     private Command onReset;
     private Command onDecreaseLevel;
     private Command onIncreaseLevel;
+    private final Event<ToolboxRefreshEvent> toolboxRefreshEvent;
 
     @Inject
-    public ZoomLevelSelector(final View view) {
+    public ZoomLevelSelector(final View view, final Event<ToolboxRefreshEvent> toolboxRefreshEvent) {
+        this.toolboxRefreshEvent = toolboxRefreshEvent;
         this.view = view;
         this.onReset = () -> {
         };
@@ -121,14 +125,21 @@ public class ZoomLevelSelector implements IsWidget {
 
     void onReset() {
         onReset.execute();
+        fireToolboxRefreshEvent();
     }
 
     void onIncreaseLevel() {
         onIncreaseLevel.execute();
+        fireToolboxRefreshEvent();
     }
 
     void onDecreaseLevel() {
         onDecreaseLevel.execute();
+        fireToolboxRefreshEvent();
+    }
+
+    protected void fireToolboxRefreshEvent() {
+        toolboxRefreshEvent.fire(new ToolboxRefreshEvent());
     }
 
     @PreDestroy

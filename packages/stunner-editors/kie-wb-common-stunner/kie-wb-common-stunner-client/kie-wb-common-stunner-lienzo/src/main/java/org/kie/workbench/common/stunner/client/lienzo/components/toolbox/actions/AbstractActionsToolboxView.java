@@ -35,6 +35,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.widget.panel.impl.LienzoPanelScrollEvent;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderers;
+import org.kie.workbench.common.stunner.client.lienzo.util.ToolboxRefreshEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
@@ -74,8 +75,8 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
     @Override
     public V init(final ActionsToolbox toolbox) {
         return init(toolbox,
-                    (WiresCanvas) toolbox.getCanvas(),
-                    (WiresShape) toolbox.getShape().getShapeView());
+                (WiresCanvas) toolbox.getCanvas(),
+                (WiresShape) toolbox.getShape().getShapeView());
     }
 
     @Override
@@ -90,11 +91,14 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
         return cast();
     }
 
+    public void onToolboxRefreshEvent(final @Observes ToolboxRefreshEvent event) {
+        drawTopLayer();
+    }
+
     @Override
     public void destroy() {
         Optional.ofNullable(toolboxView).ifPresent(WiresShapeToolbox::destroy);
         Optional.ofNullable(tooltip).ifPresent(ToolboxTextTooltip::destroy);
-
 
         drawTopLayer();
 
@@ -142,7 +146,7 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
     private void initButtons(final ActionsToolbox<ActionsToolboxView<?>> toolbox) {
         for (ToolboxAction toolboxAction : toolbox) {
             final ButtonItem button = addButton(toolbox.getGlyph(toolboxAction),
-                                                toolbox.getTitle(toolboxAction));
+                    toolbox.getTitle(toolboxAction));
             button.onClick(event -> {
                 onButtonClick(toolbox, toolboxAction, button, event);
             });
@@ -160,11 +164,11 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
                                  final ButtonItem button,
                                  final NodeMouseClickEvent event) {
         toolboxAction.onMouseClick(toolbox.getCanvasHandler(),
-                                   toolbox.getElementUUID(),
-                                   new MouseClickEvent(event.getX(),
-                                                       event.getY(),
-                                                       getClientX(event),
-                                                       getClientY(event)));
+                toolbox.getElementUUID(),
+                new MouseClickEvent(event.getX(),
+                        event.getY(),
+                        getClientX(event),
+                        getClientY(event)));
     }
 
     @SuppressWarnings("unchecked")
@@ -174,11 +178,11 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
                                      final NodeMouseMoveEvent event) {
         button.disable();
         toolboxAction.onMoveStart(toolbox.getCanvasHandler(),
-                                  toolbox.getElementUUID(),
-                                  new MouseMoveEvent(event.getX(),
-                                                     event.getY(),
-                                                     getClientX(event),
-                                                     getClientY(event)));
+                toolbox.getElementUUID(),
+                new MouseMoveEvent(event.getX(),
+                        event.getY(),
+                        getClientX(event),
+                        getClientY(event)));
     }
 
     ButtonItem addButton(final Glyph glyph,
@@ -186,7 +190,7 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
         final ButtonItem button =
                 toolboxFactory.buttons()
                         .button(renderGlyph(glyph,
-                                            getGlyphSize()))
+                                getGlyphSize()))
                         .decorate(createDecorator())
                         .tooltip(tooltip.createItem(title))
                         .onMouseEnter(event -> onMouseEnter())
