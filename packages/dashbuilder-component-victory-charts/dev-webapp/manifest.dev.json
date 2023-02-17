@@ -87,6 +87,10 @@
     {
       "key": "barOffset",
       "value": "10"
+    },
+    {
+      "key": "mode",
+      "value": "dark"
     }
   ],
   "dataSet": {
