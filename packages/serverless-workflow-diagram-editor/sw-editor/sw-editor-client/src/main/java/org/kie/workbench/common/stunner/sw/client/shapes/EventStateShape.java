@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.client.shapes.icons.CornerIcon;
 import org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath;
+import org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 
@@ -40,6 +41,7 @@ public class EventStateShape extends StateShape {
         EventState state = (EventState) element.getContent().getDefinition();
         if (state.getTimeouts() != null) {
             getView().addChild(new CornerIcon(IconPath.CLOCK,
+                                              IconPosition.RIGHT_TOP_CORNER,
                                               "EventTimeout: " + state.getTimeouts().getEventTimeout() + "\r\n"
                                                       + "StateExecTimeout: " + state.getTimeouts().getStateExecTimeout() + "\r\n"
                                                       + "ActionExecTimeout: " + state.getTimeouts().getActionExecTimeout()));
