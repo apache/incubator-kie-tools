@@ -5,7 +5,7 @@ deployProperties = [:]
 
 pipeline {
     agent {
-        label 'kogito-image-slave && !built-in'
+        label 'rhel8 && podman && !built-in'
     }
 
     options {
