@@ -19,7 +19,9 @@ package command
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/spf13/afero"
 )
 
 type WorkflowStates struct {
@@ -66,7 +68,7 @@ func CreateWorkflow(workflowFilePath string) (err error) {
 		return err
 	}
 
-	err = ioutil.WriteFile(workflowFilePath, workflowFileData, 0644)
+	err = afero.WriteFile(common.FS, workflowFilePath, workflowFileData, 0644)
 	if err != nil {
 		fmt.Println("ERROR: writing the workflow json file.")
 		return err
