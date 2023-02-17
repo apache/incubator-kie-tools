@@ -132,14 +132,21 @@ jobs:
 
       - name: "Check tests result (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
-        uses: mikepenz/action-junit-report@ab07dd7abefd456d92ecbeb22f81392fafe3d528
-        with:
-          check_name: "-"
-          annotate_only: true
-          fail_on_failure: true
-          report_paths: |
+        uses: actions/github-script@v6
+        env:
+          KIE_TOOLS_CI__JUNIT_REPORT_RESULTS_PATTERNS: |-
             ${{ steps.ci_patterns.outputs.tests_reports_patterns }}
             ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns }}
+        with:
+          result-encoding: string
+          script: |
+            const patterns = process.env["KIE_TOOLS_CI__JUNIT_REPORT_RESULTS_PATTERNS"]
+                                .split("\n")
+                                .map(p => p.trim())
+                                .filter(p => p);
+
+            const script = require("./scripts/check-junit-report-results/src/index.js");
+            await script({ core, glob, patterns });
 
       - name: "Check hanging uncommitted files (you should commit those!)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
@@ -160,6 +167,8 @@ jobs:
           BUILDKITE_BRANCH: ${{ github.ref_name }}
           BUILDKITE_MESSAGE: ${{ github.event.commits[0].message }}
         run: |
+          eval "find -P * -type f ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns_for_find }}"
+          echo "---------------------------- starting upload -----------------------"
           eval "find -P * -type f ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns_for_find }}" | xargs -I{} curl -X POST \
             -H "Authorization: Token token=\"$BUILDKITE_ANALYTICS_TOKEN\"" \
             -F "format=junit" \

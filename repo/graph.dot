@@ -4,6 +4,7 @@ digraph G {
   edge [ headport = "n", tailport = "s", arrowhead =dot, arrowsize =0.5 ];
   "kie-tools-root" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/bootstrap" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-scripts/check-junit-report-results" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/run-script-if" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-scripts/sparse-checkout" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/update-version" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -128,6 +129,7 @@ digraph G {
   "vscode-extension-yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "kie-tools-root" -> "@kie-tools-scripts/bootstrap" [ style = "dashed", color = "black" ];
+  "kie-tools-root" -> "@kie-tools-scripts/check-junit-report-results" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/run-script-if" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/sparse-checkout" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/update-version" [ style = "dashed", color = "black" ];
