@@ -31,8 +31,11 @@ import { useOpenShift } from "../OpenShiftContext";
 import { OpenShiftDeploymentDropdownItem } from "./OpenShiftDeploymentDropdownItem";
 import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
+import { useEnv } from "../../env/EnvContext";
+import { AppDistributionMode } from "../../AppConstants";
 
 export function OpenshiftDeploymentsDropdown() {
+  const { env } = useEnv();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const openshift = useOpenShift();
@@ -47,20 +50,21 @@ export function OpenshiftDeploymentsDropdown() {
   }, [settingsDispatch]);
 
   const items = useMemo(() => {
-    const common = isConnected
-      ? [
-          <DropdownItem
-            key={"dropdown-openshift-setup-as"}
-            component={"button"}
-            onClick={openOpenShiftSettings}
-            ouiaId={"setup-as-openshift-dropdown-button"}
-            description={"Change..."}
-          >
-            {`Connected to ${settings.openshift.config.namespace}`}
-          </DropdownItem>,
-          <DropdownSeparator key={"dropdown-openshift-separator-deployments-2"} />,
-        ]
-      : [];
+    const common =
+      isConnected && env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY
+        ? [
+            <DropdownItem
+              key={"dropdown-openshift-setup-as"}
+              component={"button"}
+              onClick={openOpenShiftSettings}
+              ouiaId={"setup-as-openshift-dropdown-button"}
+              description={"Change..."}
+            >
+              {`Connected to ${settings.openshift.config.namespace}`}
+            </DropdownItem>,
+            <DropdownSeparator key={"dropdown-openshift-separator-deployments-2"} />,
+          ]
+        : [];
 
     if (openshift.deployments.length === 0) {
       return [

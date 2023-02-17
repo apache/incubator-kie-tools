@@ -26,13 +26,19 @@ import { useKieSandboxExtendedServices } from "./KieSandboxExtendedServicesConte
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { useAppI18n } from "../i18n";
+import { useEnv } from "../env/EnvContext";
+import { AppDistributionMode } from "../AppConstants";
 
 export function KieSandboxExtendedServicesIcon() {
+  const { env } = useEnv();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const { i18n } = useAppI18n();
   const settingsDispatch = useSettingsDispatch();
 
   const toggleKieSandboxExtendedServices = useCallback(() => {
+    if (env.FEATURE_FLAGS.MODE === AppDistributionMode.OPERATE_FIRST) {
+      return;
+    }
     if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
       settingsDispatch.open(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES);
     }
@@ -42,7 +48,7 @@ export function KieSandboxExtendedServicesIcon() {
     }
     kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
     kieSandboxExtendedServices.setModalOpen(true);
-  }, [settingsDispatch, kieSandboxExtendedServices]);
+  }, [env.FEATURE_FLAGS.MODE, kieSandboxExtendedServices, settingsDispatch]);
 
   const dropdownToggleIcon = useMemo(
     () => (

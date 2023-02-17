@@ -135,20 +135,22 @@ export function OpenShiftContextProvider(props: Props) {
     }
 
     if (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED) {
-      const deploymentLoaderPromises = Promise.all([
-        env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY
-          ? deploymentLoaderPipeline.execute()
-          : Promise.resolve([]),
-        devModeDeploymentLoaderPipeline.execute(),
-      ]).then((res) => res.flat());
-
       settingsDispatch.openshift.service
         .isConnectionEstablished(settings.openshift.config)
         .then((isConfigOk: boolean) => {
           settingsDispatch.openshift.setStatus(
             isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
           );
-          return isConfigOk ? deploymentLoaderPromises : [];
+
+          if (isConfigOk) {
+            return Promise.all([
+              env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY
+                ? deploymentLoaderPipeline.execute()
+                : Promise.resolve([]),
+              devModeDeploymentLoaderPipeline.execute(),
+            ]).then((res) => res.flat());
+          }
+          return [];
         })
         .then((ds) => setDeployments(ds.flat()))
         .catch((error) => console.error(error));

@@ -24,6 +24,8 @@ import { ServiceAccountSettingsTab } from "./serviceAccount/ServiceAccountSettin
 import { ServiceRegistrySettingsTab } from "./serviceRegistry/ServiceRegistrySettingsTab";
 import { KieSandboxExtendedServicesSettingsTab } from "./extendedServices/KieSandboxExtendedServicesSettingsTab";
 import { FeaturePreviewSettingsTab } from "./featurePreview/FeaturePreviewSettingsTab";
+import { useEnv } from "../env/EnvContext";
+import { AppDistributionMode } from "../AppConstants";
 
 export enum SettingsTabs {
   GITHUB = "github",
@@ -36,6 +38,7 @@ export enum SettingsTabs {
 }
 
 export function SettingsModalBody() {
+  const { env } = useEnv();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
 
@@ -53,20 +56,24 @@ export function SettingsModalBody() {
       >
         <GitHubSettingsTab />
       </Tab>
-      <Tab
-        className="kie-tools--settings-tab"
-        eventKey={SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES}
-        title={<TabTitleText>KIE Sandbox Extended Services</TabTitleText>}
-      >
-        <KieSandboxExtendedServicesSettingsTab />
-      </Tab>
-      <Tab
-        className="kie-tools--settings-tab"
-        eventKey={SettingsTabs.OPENSHIFT}
-        title={<TabTitleText>OpenShift</TabTitleText>}
-      >
-        <OpenShiftSettingsTab />
-      </Tab>
+      {env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY && (
+        <>
+          <Tab
+            className="kie-tools--settings-tab"
+            eventKey={SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES}
+            title={<TabTitleText>KIE Sandbox Extended Services</TabTitleText>}
+          >
+            <KieSandboxExtendedServicesSettingsTab />
+          </Tab>
+          <Tab
+            className="kie-tools--settings-tab"
+            eventKey={SettingsTabs.OPENSHIFT}
+            title={<TabTitleText>OpenShift</TabTitleText>}
+          >
+            <OpenShiftSettingsTab />
+          </Tab>
+        </>
+      )}
       <Tab
         className="kie-tools--settings-tab"
         eventKey={SettingsTabs.SERVICE_ACCOUNT}
@@ -81,13 +88,15 @@ export function SettingsModalBody() {
       >
         <ServiceRegistrySettingsTab />
       </Tab>
-      <Tab
-        className="kie-tools--settings-tab"
-        eventKey={SettingsTabs.KAFKA}
-        title={<TabTitleText>Streams for Apache Kafka</TabTitleText>}
-      >
-        <ApacheKafkaSettingsTab />
-      </Tab>
+      {env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY && (
+        <Tab
+          className="kie-tools--settings-tab"
+          eventKey={SettingsTabs.KAFKA}
+          title={<TabTitleText>Streams for Apache Kafka</TabTitleText>}
+        >
+          <ApacheKafkaSettingsTab />
+        </Tab>
+      )}
       <Tab
         className="kie-tools--settings-tab"
         eventKey={SettingsTabs.FEATURE_PREVIEW}

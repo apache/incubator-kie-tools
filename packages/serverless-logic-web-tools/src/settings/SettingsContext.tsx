@@ -38,6 +38,8 @@ import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/Kie
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
 import { FeaturePreviewSettingsConfig, readFeaturePreviewConfigCookie } from "./featurePreview/FeaturePreviewConfig";
+import { useEnv } from "../env/EnvContext";
+import { AppDistributionMode } from "../AppConstants";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -134,6 +136,7 @@ export const SettingsDispatchContext = React.createContext<SettingsDispatchConte
 export function SettingsContextProvider(props: any) {
   const queryParams = useQueryParams();
   const history = useHistory();
+  const { env } = useEnv();
   const [isOpen, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(SettingsTabs.GITHUB);
 
@@ -216,7 +219,7 @@ export function SettingsContextProvider(props: any) {
   }, [githubAuthService]);
 
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
-  const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
+  const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie(env.FEATURE_FLAGS.MODE));
   const [kafkaConfig, setKafkaConfig] = useState<KafkaSettingsConfig>(readKafkaConfigCookie());
   const [serviceAccountConfig, setServiceAccountConfig] = useState<ServiceAccountSettingsConfig>(
     readServiceAccountConfigCookie()
@@ -239,9 +242,11 @@ export function SettingsContextProvider(props: any) {
     () =>
       new OpenShiftService({
         connection: openshiftConfig,
-        proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/cors-proxy`,
+        proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/${
+          env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY ? "cors-proxy" : "operate-first"
+        }`,
       }),
-    [openshiftConfig, kieSandboxExtendedServices.config]
+    [openshiftConfig, kieSandboxExtendedServices.config, env.FEATURE_FLAGS.MODE]
   );
 
   const serviceCatalogStore = useMemo(

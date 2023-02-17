@@ -15,6 +15,7 @@
  */
 
 import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import { AppDistributionMode } from "../../AppConstants";
 import { makeCookieName, getCookie, setCookie } from "../../cookies";
 
 export const OPENSHIFT_NAMESPACE_COOKIE_NAME = makeCookieName("openshift", "namespace");
@@ -27,10 +28,18 @@ export const EMPTY_CONFIG: OpenShiftConnection = {
   token: "",
 };
 
-export function readOpenShiftConfigCookie(): OpenShiftConnection {
+export function readOpenShiftConfigCookie(mode: AppDistributionMode): OpenShiftConnection {
+  if (mode === AppDistributionMode.OPERATE_FIRST) {
+    // TODO CAPONETTO: maybe move these values to env vars
+    return {
+      namespace: "kubesmarts",
+      host: "https://c130-e.us-south.containers.cloud.ibm.com:30741",
+      token: "<provided>",
+    };
+  }
   return {
-    namespace: getCookie(OPENSHIFT_NAMESPACE_COOKIE_NAME) ?? "kubesmarts",
-    host: getCookie(OPENSHIFT_HOST_COOKIE_NAME) ?? "https://c130-e.us-south.containers.cloud.ibm.com:30741",
+    namespace: OPENSHIFT_NAMESPACE_COOKIE_NAME ?? "",
+    host: getCookie(OPENSHIFT_HOST_COOKIE_NAME) ?? "",
     token: getCookie(OPENSHIFT_TOKEN_COOKIE_NAME) ?? "",
   };
 }
