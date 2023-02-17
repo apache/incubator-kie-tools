@@ -74,26 +74,22 @@ export function BeeTableEditableCellContent({
     setEditingValue((prev) => (isEditing ? prev : value));
   }, [isEditing, value]);
 
-  const triggerReadMode = useCallback(
+  const updateValue = useCallback(
     (newValue: string) => {
-      if (mode !== Mode.Edit) {
-        return;
-      }
-
       if (value !== newValue) {
         onChange(newValue);
         setCellHeight(calculateCellHeight(newValue));
       }
     },
-    [mode, value, onChange]
+    [value, onChange]
   );
 
   const onFeelBlur = useCallback(
     (valueOnBlur: string) => {
-      triggerReadMode(valueOnBlur);
+      updateValue(valueOnBlur);
       setEditing(false);
     },
-    [setEditing, triggerReadMode]
+    [setEditing, updateValue]
   );
 
   const onFeelKeyDown = useCallback(
@@ -104,7 +100,7 @@ export function BeeTableEditableCellContent({
         if (feelInputRef.current?.isSuggestionWidgetOpen()) {
           // Do nothing.
         } else {
-          triggerReadMode(newValue);
+          updateValue(newValue);
           setEditing(false);
           onFeelTabKeyDown?.({ isShiftPressed: e.shiftKey });
           e.preventDefault();
@@ -117,8 +113,8 @@ export function BeeTableEditableCellContent({
         } else if (feelInputRef.current?.isSuggestionWidgetOpen()) {
           // Do nothing;
         } else {
+          updateValue(newValue);
           setEditing(false);
-          triggerReadMode(newValue);
           onFeelEnterKeyDown?.({ isShiftPressed: e.shiftKey });
         }
       }
@@ -127,12 +123,16 @@ export function BeeTableEditableCellContent({
         if (feelInputRef.current?.isSuggestionWidgetOpen()) {
           // Do nothing.
         } else {
-          triggerReadMode(previousValue);
+          // We need to restore the content on Monaco, because when
+          // we disable it, it changes the cell content with the
+          // last value it had.
+          feelInputRef.current?.setMonacoValue(previousValue);
+          updateValue(previousValue);
           setEditing(false);
         }
       }
     },
-    [triggerReadMode, setEditing, onFeelTabKeyDown, onFeelEnterKeyDown, previousValue]
+    [updateValue, setEditing, onFeelTabKeyDown, onFeelEnterKeyDown, previousValue]
   );
 
   useEffect(() => {

@@ -75,6 +75,9 @@ export type ResizingWidthsContextType = {
 
 export type ResizingWidthsDispatchContextType = {
   setResizing: (isResizing: boolean) => void;
+  /**
+   * This is exactly the same as searching for a pivoting resizingWidth, but more performatic.
+   */
   isResizing: () => boolean;
   updateResizingWidth(id: string, getNewResizingWidth: (prev: ResizingWidth | undefined) => ResizingWidth): void;
   registerResizerRef(ref: ResizerRef): ResizerRef;

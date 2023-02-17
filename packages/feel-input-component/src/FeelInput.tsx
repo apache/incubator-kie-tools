@@ -92,11 +92,9 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
       return feelDefaultConfig(options);
     }, [options]);
 
+    // This creates the Monaco Editor
     useEffect(() => {
-      monacoRef.current?.dispose();
-      monacoRef.current = undefined;
-
-      if (enabled) {
+      if (enabled && !monacoRef.current) {
         const element = monacoContainer.current!;
 
         const editor = Monaco.editor.create(element, config);
@@ -121,12 +119,22 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
       }
     }, [config, enabled, onBlur, onChange, onKeyDown]);
 
+    // This updates the Monaco Editor instance if the value is changed externally
     useEffect(() => {
       if (enabled) {
         monacoRef.current?.setValue(value ?? "");
         monacoRef.current?.setPosition(calculatePosition(value ?? ""));
       }
     }, [value, enabled]);
+
+    // When the Monaco Editor instance is not enabled anymore, we update the value.
+    useEffect(() => {
+      if (!enabled && monacoRef.current) {
+        onBlur?.(monacoRef.current?.getValue());
+        monacoRef.current?.dispose();
+        monacoRef.current = undefined;
+      }
+    }, [enabled, onBlur]);
 
     useEffect(() => {
       Monaco.editor.colorize(value ?? "", MONACO_FEEL_LANGUAGE, {}).then((colorizedValue) => {
