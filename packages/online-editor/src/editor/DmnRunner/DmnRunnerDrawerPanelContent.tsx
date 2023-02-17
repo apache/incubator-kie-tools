@@ -65,7 +65,6 @@ interface Props {
 }
 
 const DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION = 711;
-const AUTO_SAVE_DELAY = 500;
 
 interface DmnRunnerStylesConfig {
   contentWidth: "50%" | "100%";
@@ -434,7 +433,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                         setFormRef={setFormRef}
                         showInlineError={true}
                         autoSave={true}
-                        // autoSaveDelay={AUTO_SAVE_DELAY}
                         placeholder={true}
                         errorsField={() => <></>}
                         submitField={() => <></>}
