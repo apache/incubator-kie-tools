@@ -63,7 +63,6 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<FormJsonSchemaBridge>();
   const [formStatus, setFormStatus] = useState<FormStatus>(FormStatus.EMPTY);
   const formValidator = useMemo(() => (validator ? validator : new Validator(i18n)), [validator, i18n]);
-  const formModel = useMemo(() => formInputs, [formInputs]);
   const [ref, setRef] = useState<HTMLFormElement | null>(null);
 
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
@@ -220,7 +219,6 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   return {
     onSubmit: onFormSubmit,
     onValidate: onFormValidate,
-    formModel,
     formStatus,
     jsonSchemaBridge,
     errorBoundaryRef,
