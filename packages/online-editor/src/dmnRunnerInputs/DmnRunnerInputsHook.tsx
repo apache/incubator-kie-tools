@@ -122,9 +122,6 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
     )
   );
 
-  // execute 3 times;
-  // only the first matters;
-
   // Debounce to avoid multiple updates on the filesystem
   const timeout = useRef<number | undefined>(undefined);
   const setInputRowsAndUpdatePersistence = useCallback(
@@ -138,11 +135,15 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
         newInputRows,
         previousInputRows.current
       );
+      console.log("here1", stringfiedDmnRunnerInputs);
+
       if (previousInputRowsStringfied.current === stringfiedDmnRunnerInputs) {
         return;
       }
 
       timeout.current = window.setTimeout(() => {
+        console.log("here2", stringfiedDmnRunnerInputs);
+
         updatePersistedInputRows(workspaceFile.workspaceId, workspaceFile.relativePath, stringfiedDmnRunnerInputs);
         previousInputRowsStringfied.current = stringfiedDmnRunnerInputs;
       }, 400);

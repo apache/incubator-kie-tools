@@ -80,7 +80,7 @@ export function FormBase(props: React.PropsWithChildren<FormBaseProps>) {
               onValidate={props.onValidate}
               errorsField={props.errorsField}
               submitField={props.submitField}
-              validate={"onChange"}
+              validate={"onSubmit"}
             >
               {props.children}
             </AutoForm>

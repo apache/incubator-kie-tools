@@ -434,7 +434,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                         setFormRef={setFormRef}
                         showInlineError={true}
                         autoSave={true}
-                        autoSaveDelay={AUTO_SAVE_DELAY}
+                        // autoSaveDelay={AUTO_SAVE_DELAY}
                         placeholder={true}
                         errorsField={() => <></>}
                         submitField={() => <></>}

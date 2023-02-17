@@ -24,7 +24,7 @@ export interface FetchDmnResultArgs {
 
 export async function fetchDmnResult(args: FetchDmnResultArgs): Promise<DecisionResult[]> {
   const response = await fetch(
-    `https://dmn-dev-deployment-tal8xvo61-rhn-lmotta-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com/${args.modelName}/dmnresult`,
+    `https://dmn-dev-deployment-7uizzaa867-rhn-lmotta-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com/${args.modelName}/dmnresult`,
     {
       method: "POST",
       headers: {
