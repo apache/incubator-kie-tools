@@ -203,5 +203,6 @@ if [ -n "$OSBS_BUILD_USER" ]; then
 fi
 
 cd ../
-
-make -f Makefile.rhpam
+# hack to replace the branch overrides as cekit detects two osbs sections and don't know which one to override.
+sed -i 's/rhba-7-rhel-8/rhba-7-rhel-8-nightly/g' rhpam-image.yaml
+make -f Makefile.rhpam container-build-osbs
