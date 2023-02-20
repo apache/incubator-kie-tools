@@ -108,7 +108,6 @@ test("<DateField> - renders a input with correct value (specified)", () => {
 });
 
 test("<DateField> - renders a input which correctly reacts on change (DatePicker)", () => {
-  // Skipping due to a known timezone issue.
   const onChange = jest.fn();
 
   const now = "2000-04-04";
