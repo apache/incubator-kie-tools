@@ -29,8 +29,8 @@ export function HomePageNav(props: { pathname: string }) {
             <Link to="/">Overview</Link>
           </NavItem>
 
-          <NavItem itemId={1} key={"Serverless-models-nav"} isActive={props.pathname === "/ServerlessModels"}>
-            <Link to="/ServerlessModels">Serverless Models</Link>
+          <NavItem itemId={1} key={"Recent-models-nav"} isActive={props.pathname === "/RecentModels"}>
+            <Link to="/RecentModels">Recent Models</Link>
           </NavItem>
 
           <NavItem itemId={2} key={"SampleCatalog-nav"} isActive={props.pathname === "/SampleCatalog"}>

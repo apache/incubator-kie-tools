@@ -73,7 +73,7 @@ import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 
-export function ServerlessModels() {
+export function RecentModels() {
   const routes = useRoutes();
   const history = useHistory();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
@@ -82,7 +82,7 @@ export function ServerlessModels() {
 
   const closeExpandedWorkspace = useCallback(() => {
     history.replace({
-      pathname: "/ServerlessModels",
+      pathname: "/RecentModels",
       search: queryParams.without(QueryParams.EXPAND).toString(),
     });
   }, [history, queryParams]);
@@ -96,7 +96,7 @@ export function ServerlessModels() {
       }
 
       history.replace({
-        pathname: "/ServerlessModels",
+        pathname: "/RecentModels",
         search: routes.home.queryString({ expand }),
       });
     },

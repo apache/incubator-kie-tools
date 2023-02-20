@@ -17,7 +17,7 @@
 import React, { useMemo } from "react";
 import { Switch } from "react-router";
 import { Overview } from "../overView/Overview";
-import { ServerlessModels } from "../serverlessModels/ServerlessModels";
+import { RecentModels } from "../recentModels/RecentModels";
 import { Route } from "react-router-dom";
 import { SampleCatalog } from "../sampleCatalog/SampleCatalog";
 import { useRoutes } from "../../navigation/Hooks";
@@ -57,8 +57,8 @@ export function HomePageRoutes(props: { isNavOpen: boolean }) {
       <Route path="/" exact>
         <Overview isNavOpen={props.isNavOpen} />
       </Route>
-      <Route path="/ServerlessModels">
-        <ServerlessModels />
+      <Route path="/RecentModels">
+        <RecentModels />
       </Route>
       <Route path="/SampleCatalog">
         <SampleCatalog />
