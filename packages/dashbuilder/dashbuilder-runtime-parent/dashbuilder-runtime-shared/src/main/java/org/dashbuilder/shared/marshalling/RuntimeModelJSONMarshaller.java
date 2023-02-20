@@ -123,6 +123,10 @@ public class RuntimeModelJSONMarshaller {
         return extractProperties(toJsonObject(json));
     }
 
+    public GlobalSettings retrieveGlobalSettings(String json) {
+        return retrieveGlobalSettings(toJsonObject(json));
+    }
+
     GlobalSettings retrieveGlobalSettings(JsonObject json) {
         var settingsJson = json.get(GLOBAL);
         if (settingsJson != null &&

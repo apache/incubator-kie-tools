@@ -24,6 +24,7 @@ public class GlobalSettings {
 
     private Mode mode = Mode.LIGHT;
     private DisplayerSettings settings;
+    private boolean allowUrlProperties;
 
     public Mode getMode() {
         return mode;
@@ -39,6 +40,14 @@ public class GlobalSettings {
 
     public void setSettings(DisplayerSettings settings) {
         this.settings = settings;
+    }
+
+    public boolean isAllowUrlProperties() {
+        return allowUrlProperties;
+    }
+
+    public void setAllowUrlProperties(boolean allowUrlProperties) {
+        this.allowUrlProperties = allowUrlProperties;
     }
 
 }
