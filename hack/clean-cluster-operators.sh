@@ -17,6 +17,8 @@ script_dir_path=`dirname "${BASH_SOURCE[0]}"`
 source ${script_dir_path}/env.sh
 
 function clean_installed_operators() {
+  echo "--- Clean installplans in $1"
+  get_and_clean_resources $1 'installplan'
   echo "--- Clean subscriptions in $1"
   get_and_clean_resources $1 'subscription'
   echo "--- Clean clusterserviceversions in $1"
