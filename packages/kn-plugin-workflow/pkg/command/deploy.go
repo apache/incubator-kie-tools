@@ -94,6 +94,7 @@ func deployKnativeServiceAndEventingBindings(cfg DeployCmdConfig) (bool, error) 
 		createService,
 		"deploy",
 	); err != nil {
+		fmt.Println("❌ Deploy failed, Knative service was not created.")
 		return isKnativeEventingBindingsCreated, err
 	}
 	fmt.Println("✅ Knative service sucessufully created")
@@ -105,6 +106,7 @@ func deployKnativeServiceAndEventingBindings(cfg DeployCmdConfig) (bool, error) 
 			deploy,
 			"deploy",
 		); err != nil {
+			fmt.Println("❌ Deploy failed, Knative Eventing binding was not created.")
 			return isKnativeEventingBindingsCreated, err
 		}
 		isKnativeEventingBindingsCreated = true
