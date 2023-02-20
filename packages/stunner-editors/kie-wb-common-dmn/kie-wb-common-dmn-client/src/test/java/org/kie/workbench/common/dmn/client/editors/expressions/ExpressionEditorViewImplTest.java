@@ -109,8 +109,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorViewImpl.ENABLED_BETA_CSS_CLASS;
-import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.LITERAL_EXPRESSION;
-import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.UNDEFINED;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -228,6 +227,9 @@ public class ExpressionEditorViewImplTest {
 
     @Mock
     private HasExpression hasExpression;
+
+    @Mock
+    private HasName hasName;
 
     @Mock
     private HTMLAnchorElement tryIt;
@@ -604,7 +606,7 @@ public class ExpressionEditorViewImplTest {
 
     @Test
     public void testUpdateExpressionContextProps() {
-        final ContextProps props = new ContextProps("", "", ExpressionType.CONTEXT.getText(), null, null, 0d, 0d);
+        final ContextProps props = new ContextProps("", "", CONTEXT.getText(), null, null, 0d, 0d);
 
         doNothing().when(view).executeUndoableExpressionCommand(any());
 
@@ -815,11 +817,18 @@ public class ExpressionEditorViewImplTest {
 
     @Test
     public void testOnLogicTypeSelect() {
-        doNothing().when(view).loadNewBoxedExpressionEditor();
+        doNothing().when(view).setExpressionNameText(any());
 
-        view.onLogicTypeSelect(LITERAL_EXPRESSION.getText());
+        view.setExpression(NODE_UUID, hasExpression, Optional.empty(), false);
+
+        ExpressionProps expressionProps = view.getDefaultExpressionDefinition(LITERAL_EXPRESSION.getText());
 
         verify(literalExpressionEditorDefinition).enrich(any(), any(), any());
-        verify(view).loadNewBoxedExpressionEditor();
+
+        assertThat(expressionProps)
+                .isInstanceOf(LiteralProps.class)
+                .isNotNull()
+                .extracting(expression -> expression.logicType)
+                .isEqualTo(LITERAL_EXPRESSION.getText());
     }
 }

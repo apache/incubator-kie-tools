@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util;
 
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -31,8 +32,19 @@ public class ExpressionEditorService {
 
     private static ExpressionEditorViewImpl expressionEditorView;
 
+    @JsIgnore
     public static void registerExpressionEditorView(final ExpressionEditorViewImpl expressionEditor) {
         ExpressionEditorService.expressionEditorView = expressionEditor;
+    }
+
+    /**
+     * Given a logic type, it returns its default Expression definition. Currently working for Root expressions only.
+     * @param logicType The selected logicType (see. ExpressionType.java)
+     * @return The default Expression definition as ExpressionProps
+     */
+    @JsMethod
+    public static ExpressionProps getDefaultExpressionDefinition(final String logicType) {
+        return expressionEditorView.getDefaultExpressionDefinition(logicType);
     }
 
     /**
@@ -44,17 +56,12 @@ public class ExpressionEditorService {
     }
 
     @JsMethod
-    public static void onLogicTypeSelect(final String selectedLogicType) {
-        expressionEditorView.onLogicTypeSelect(selectedLogicType);
-    }
-
-    @JsMethod
     public static void selectObject(final String uuid) {
         expressionEditorView.selectDomainObject(uuid);
     }
 
     /**
-     * It updates the expression modified by the React Layer. It MUTATES the GWT layer status.
+     * It updates the expression modified by the React Layer. It **MUTATES** the GWT layer status.
      * @param expressionProps The updated expression
      */
     @JsMethod

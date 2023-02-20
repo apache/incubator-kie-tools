@@ -26,6 +26,7 @@ import {
   generateUuid,
 } from "../src/api";
 import { BoxedExpressionEditor } from "../src/expressions";
+import { getDefaultExpressionDefinitionByLogicType } from "../src/expressions/defaultExpression";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
@@ -93,8 +94,13 @@ const INITIAL_EXPRESSION: ExpressionDefinition = {
 
 //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
 const beeGwtService: BeeGwtService = {
+  getDefaultExpressionDefinition(logicType: string): ExpressionDefinition {
+    return getDefaultExpressionDefinitionByLogicType(
+      logicType as ExpressionDefinitionLogicType,
+      {} as ExpressionDefinition
+    );
+  },
   openDataTypePage(): void {},
-  onLogicTypeSelect(): void {},
   selectObject(): void {},
 };
 

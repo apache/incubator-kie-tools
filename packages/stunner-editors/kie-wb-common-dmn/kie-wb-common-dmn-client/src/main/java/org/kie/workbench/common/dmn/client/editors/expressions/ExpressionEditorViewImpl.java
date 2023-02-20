@@ -522,11 +522,20 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         dataTypePageActiveEvent.fire(new DataTypePageTabActiveEvent());
     }
 
-    public void onLogicTypeSelect(final String selectedLogicType) {
-        expressionEditorDefinitionsSupplier
+    public ExpressionProps getDefaultExpressionDefinition(String logicType) {
+        return expressionEditorDefinitionsSupplier
                 .get()
-                .getExpressionEditorDefinition(ExpressionType.getTypeByText(selectedLogicType))
-                .ifPresent(this::enrichModelExpression);
+                .getExpressionEditorDefinition(ExpressionType.getTypeByText(logicType))
+                .map(this::generateExpressionProps)
+                .orElseThrow(IllegalStateException::new);
+    }
+
+    private ExpressionProps generateExpressionProps(final ExpressionEditorDefinition<Expression> expressionExpressionEditorDefinition) {
+        final Optional<Expression> modelExpression = expressionExpressionEditorDefinition.getModelClass();
+        expressionExpressionEditorDefinition.enrich(Optional.of(getNodeUUID()), hasExpression, modelExpression);
+        return modelExpression
+                .map(expression -> ExpressionPropsFiller.buildAndFillJsInteropProp(expression, getExpressionName(), getTypeRef()))
+                .orElseThrow(IllegalStateException::new);
     }
 
     /**
@@ -623,17 +632,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                     .toArray(EntryInfo[]::new);
             return new ModelsFromDocument(modelName, parametersFromModel);
         };
-    }
-
-    private void enrichModelExpression(final ExpressionEditorDefinition<Expression> expressionExpressionEditorDefinition) {
-        final Optional<Expression> modelExpression = expressionExpressionEditorDefinition.getModelClass();
-        expressionExpressionEditorDefinition.enrich(Optional.of(getNodeUUID()), hasExpression, modelExpression);
-        modelExpression.ifPresent(this::reloadNewBoxedExpressionEditorWithUpdatedModel);
-    }
-
-    private void reloadNewBoxedExpressionEditorWithUpdatedModel(final Expression expression) {
-        getHasExpression().setExpression(expression);
-        loadNewBoxedExpressionEditor();
     }
 
     @EventHandler("returnToDRGLink")

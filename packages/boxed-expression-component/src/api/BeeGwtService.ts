@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+import { ExpressionDefinition } from "./ExpressionDefinition";
+
 /**
  * This interface defines all the API methods which BoxedExpressionEditor component can use to dialog with GWT Layer
  */
 export interface BeeGwtService {
+  getDefaultExpressionDefinition(logicType: string): ExpressionDefinition;
   openDataTypePage: () => void; // Just open the data types tab
-  onLogicTypeSelect: (selectedLogicType: string) => void; // FIXME: Tiago -> Rename to "onRootExpressionLogicTypeSelected"
   selectObject: (uuid?: string) => void; // Changes the Properties panel
 }
