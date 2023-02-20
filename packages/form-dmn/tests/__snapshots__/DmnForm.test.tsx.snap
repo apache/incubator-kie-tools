@@ -114,7 +114,7 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
             name="name"
             placeholder=""
             type="text"
-            value=""
+            value="Kogito"
           />
           
         </div>
@@ -152,7 +152,7 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
             name="lastName"
             placeholder=""
             type="text"
-            value=""
+            value="Tooling"
           />
           
         </div>
@@ -190,7 +190,7 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
             name="daysAndTimeDuration"
             placeholder=""
             type="text"
-            value=""
+            value="P1D"
           />
           
         </div>
@@ -238,7 +238,7 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
 </div>
 `;
 
-exports[`DmnForm tests should submit the formData 1`] = `
+exports[`DmnForm tests should submit the formInputs 1`] = `
 <div
   data-testid="form-base"
 >
@@ -405,7 +405,7 @@ exports[`DmnForm tests should submit the formData 1`] = `
 </div>
 `;
 
-exports[`DmnForm tests should validate the formData - invalid 1`] = `
+exports[`DmnForm tests should validate the formInputs - invalid 1`] = `
 <div
   data-testid="form-base"
 >
@@ -578,7 +578,7 @@ exports[`DmnForm tests should validate the formData - invalid 1`] = `
 </div>
 `;
 
-exports[`DmnForm tests should validate the formData - success 1`] = `
+exports[`DmnForm tests should validate the formInputs - success 1`] = `
 <div
   data-testid="form-base"
 >
@@ -745,7 +745,7 @@ exports[`DmnForm tests should validate the formData - success 1`] = `
 </div>
 `;
 
-exports[`DmnForm tests shouldn't submit the formData 1`] = `
+exports[`DmnForm tests shouldn't submit the formInputs 1`] = `
 <div
   data-testid="form-base"
 >

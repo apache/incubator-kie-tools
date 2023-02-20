@@ -54,76 +54,92 @@ const props: FormComponentProps<InputRow, DmnSchema> = {
 
 describe("DmnForm tests", () => {
   it("should render the DMN Form", async () => {
-    const newProps = { ...props, formData: { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "P1D" } };
+    const newProps = { ...props, formInputs: { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "P1D" } };
 
     const { findByTestId } = render(<DmnForm {...newProps} />);
 
     expect(await findByTestId("form-base")).toMatchSnapshot();
   });
 
-  it("should submit the formData", async () => {
-    const formRef = React.createRef<HTMLFormElement>();
+  it("should submit the formInputs", async () => {
+    let formRef: HTMLFormElement;
+    const setFormRef = (node: any) => {
+      formRef = node;
+    };
     const onSubmit = jest.fn();
-    const formData = { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "P1D" };
+    const formInputs = { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "P1D" };
 
-    const { findByTestId } = render(<DmnForm {...props} onSubmit={onSubmit} formRef={formRef} formInputs={formData} />);
+    const { findByTestId } = render(
+      <DmnForm {...props} onSubmit={onSubmit} setFormRef={setFormRef} formInputs={formInputs} />
+    );
 
     expect(await findByTestId("form-base")).toMatchSnapshot();
 
     await act(async () => {
-      formRef.current?.submit();
+      formRef?.submit();
     });
 
-    expect(onSubmit).toHaveBeenCalledWith(formData);
+    expect(onSubmit).toHaveBeenCalledWith(formInputs);
   });
 
-  it("shouldn't submit the formData", async () => {
-    const formRef = React.createRef<HTMLFormElement>();
+  it("shouldn't submit the formInputs", async () => {
+    let formRef: HTMLFormElement;
+    const setFormRef = (node: any) => {
+      formRef = node;
+    };
     const onSubmit = jest.fn();
-    const formData = { daysAndTimeDuration: "p" };
+    const formInputs = { daysAndTimeDuration: "p" };
 
-    const { findByTestId } = render(<DmnForm {...props} onSubmit={onSubmit} formRef={formRef} formInputs={formData} />);
+    const { findByTestId } = render(
+      <DmnForm {...props} onSubmit={onSubmit} setFormRef={setFormRef} formInputs={formInputs} />
+    );
 
     expect(await findByTestId("form-base")).toMatchSnapshot();
 
     await act(async () => {
-      formRef.current?.submit();
+      formRef?.submit();
     });
 
     expect(onSubmit).toHaveBeenCalledTimes(0);
   });
 
-  it("should validate the formData - success", async () => {
-    const formRef = React.createRef<HTMLFormElement>();
+  it("should validate the formInputs - success", async () => {
+    let formRef: HTMLFormElement;
+    const setFormRef = (node: any) => {
+      formRef = node;
+    };
     const onValidate = jest.fn();
-    const formData = { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "P1D" };
+    const formInputs = { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "P1D" };
 
     const { findByTestId } = render(
-      <DmnForm {...props} formRef={formRef} onValidate={onValidate} formInputs={formData} />
+      <DmnForm {...props} setFormRef={setFormRef} onValidate={onValidate} formInputs={formInputs} />
     );
 
     expect(await findByTestId("form-base")).toMatchSnapshot();
 
     await act(async () => {
-      formRef.current?.submit();
+      formRef?.submit();
     });
 
-    expect(onValidate).toHaveBeenCalledWith(formData, null);
+    expect(onValidate).toHaveBeenCalledWith(formInputs, null);
   });
 
-  it("should validate the formData - invalid", async () => {
-    const formRef = React.createRef<HTMLFormElement>();
+  it("should validate the formInputs - invalid", async () => {
+    let formRef: HTMLFormElement;
+    const setFormRef = (node: any) => {
+      formRef = node;
+    };
     const onValidate = jest.fn();
-    const formData = { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "p" };
+    const formInputs = { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "p" };
 
     const { findByTestId } = render(
-      <DmnForm {...props} formRef={formRef} onValidate={onValidate} formInputs={formData} />
+      <DmnForm {...props} setFormRef={setFormRef} onValidate={onValidate} formInputs={formInputs} />
     );
 
     expect(await findByTestId("form-base")).toMatchSnapshot();
 
     await act(async () => {
-      formRef.current?.submit();
+      formRef?.submit();
     });
 
     expect(onValidate).toHaveBeenCalledTimes(2);
@@ -142,12 +158,9 @@ describe("DmnForm tests", () => {
       },
     };
 
-    const formRef = React.createRef<HTMLFormElement>();
-    const formData = {};
+    const formInputs = {};
 
-    const { getByText } = render(
-      <DmnForm {...props} placeholder={true} formSchema={schema} formRef={formRef} formInputs={formData} />
-    );
+    const { getByText } = render(<DmnForm {...props} placeholder={true} formSchema={schema} formInputs={formInputs} />);
 
     expect(getByText(dmnFormI18n.getCurrent().schema.selectPlaceholder)).toMatchSnapshot();
   });
@@ -165,11 +178,14 @@ describe("DmnForm tests", () => {
       },
     };
 
-    const formRef = React.createRef<HTMLFormElement>();
-    const formData = {};
+    let formRef: HTMLFormElement;
+    const setFormRef = (node: any) => {
+      formRef = node;
+    };
+    const formInputs = {};
 
     const { getByText } = render(
-      <DmnForm {...props} placeholder={true} formSchema={schema} formRef={formRef} formInputs={formData} />
+      <DmnForm {...props} placeholder={true} formSchema={schema} setFormRef={setFormRef} formInputs={formInputs} />
     );
 
     expect(getByText("name")).toMatchSnapshot();
@@ -189,8 +205,11 @@ describe("DmnForm tests", () => {
       },
     };
 
-    const formRef = React.createRef<HTMLFormElement>();
-    const formData = {};
+    let formRef: HTMLFormElement;
+    const setFormRef = (node: any) => {
+      formRef = node;
+    };
+    const formInputs = {};
     const onSubmit = jest.fn();
 
     const { container } = render(
@@ -199,17 +218,17 @@ describe("DmnForm tests", () => {
         placeholder={true}
         formSchema={schema}
         onSubmit={onSubmit}
-        formRef={formRef}
-        formInputs={formData}
+        setFormRef={setFormRef}
+        formInputs={formInputs}
       />
     );
 
     expect(container).toMatchSnapshot();
 
     await act(async () => {
-      formRef.current?.submit();
+      formRef?.submit();
     });
 
-    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledTimes(2);
   });
 });
