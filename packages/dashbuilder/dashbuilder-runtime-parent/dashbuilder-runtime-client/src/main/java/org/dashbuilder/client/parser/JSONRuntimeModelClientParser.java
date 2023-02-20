@@ -27,15 +27,17 @@ public class JSONRuntimeModelClientParser implements RuntimeModelClientParser {
 
     @Inject
     PropertyReplacementService replaceService;
-    
+
     @Inject
     GlobalDisplayerSettings globalDisplayerSettings;
 
     @Override
     public RuntimeModel parse(String jsonContent) {
         var runtimeModelJsonMarshaller = RuntimeModelJSONMarshaller.get();
+        var allowUrlProperties = runtimeModelJsonMarshaller.retrieveGlobalSettings(jsonContent).isAllowUrlProperties();
+
         var properties = runtimeModelJsonMarshaller.retrieveProperties(jsonContent);
-        var newContent = replaceService.replace(jsonContent, properties);        
+        var newContent = replaceService.replace(jsonContent, properties, allowUrlProperties);
         return runtimeModelJsonMarshaller.fromJson(newContent);
     }
 

@@ -19,6 +19,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Style.Display;
+import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLParagraphElement;
@@ -41,10 +42,18 @@ public class EmptyScreenView implements EmptyScreen.View {
     @Inject
     @DataField
     HTMLDivElement uploadContainer;
-    
+
+    @Inject
+    @DataField
+    HTMLDivElement trySamplesContainer;
+
     @Inject
     @DataField
     HTMLParagraphElement subTitleParagraph;
+
+    @Inject
+    @DataField
+    HTMLButtonElement trySamples;
 
     @Inject
     UploadWidget uploadWidget;
@@ -75,4 +84,15 @@ public class EmptyScreenView implements EmptyScreen.View {
         subTitleParagraph.innerHTML = AppConstants.INSTANCE.emptyWithImportId(modelId);
     }
 
+    @Override
+    public void enableSamplesButton(Runnable action) {
+        uploadContainer.style.display = Display.NONE.getCssName();
+        subTitleParagraph.textContent = subTitleParagraph.textContent + " " + AppConstants.INSTANCE
+                .emptyScreenTrySamples();
+        trySamplesContainer.style.display = Display.INLINE_BLOCK.getCssName();
+        trySamples.onclick = e -> {
+            action.run();
+            return true;
+        };
+    }
 }

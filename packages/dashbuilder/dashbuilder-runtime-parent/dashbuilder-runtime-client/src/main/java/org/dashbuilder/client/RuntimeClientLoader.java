@@ -36,6 +36,7 @@ import org.dashbuilder.client.perspective.generator.RuntimePerspectiveGenerator;
 import org.dashbuilder.client.plugins.RuntimePerspectivePluginManager;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.screens.RouterScreen;
+import org.dashbuilder.client.services.SamplesService;
 import org.dashbuilder.client.setup.RuntimeClientMode;
 import org.dashbuilder.client.setup.RuntimeClientSetup;
 import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
@@ -85,6 +86,8 @@ public class RuntimeClientLoader {
 
     RuntimeClientSetup setup;
 
+    private SamplesService samplesService;
+
     Event<DataSetDefRemovedEvent> dataSetDefRemovedEvent;
 
     String clientModelBaseUrl;
@@ -102,6 +105,7 @@ public class RuntimeClientLoader {
                                NavigationManager navigationManager,
                                BusyIndicatorView loading,
                                ExternalDataSetClientProvider externalDataSetRegister,
+                               SamplesService samplesService,
                                RuntimeModelClientParserFactory parserFactory,
                                RuntimeModelContentListener contentListener,
                                Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent,
@@ -113,6 +117,7 @@ public class RuntimeClientLoader {
         this.runtimePerspectivePluginManager = runtimePerspectivePluginManager;
         this.navigationManager = navigationManager;
         this.externalDataSetProvider = externalDataSetRegister;
+        this.samplesService = samplesService;
         this.parserFactory = parserFactory;
         this.contentListener = contentListener;
         this.loading = loading;
@@ -134,7 +139,8 @@ public class RuntimeClientLoader {
             hideNavBar = setup.getHideNavBar();
             if (modeStr != null) {
                 mode = RuntimeClientMode.getOrDefault(modeStr);
-            } else if (setup.getDashboards() != null && setup.getDashboards().length > 0) {
+            } else if ((setup.getDashboards() != null && setup.getDashboards().length > 0) ||
+                       setup.getSamplesUrl() != null && !setup.getSamplesUrl().trim().isEmpty()) {
                 mode = RuntimeClientMode.CLIENT;
             }
 
@@ -250,6 +256,10 @@ public class RuntimeClientLoader {
 
     public boolean isHideNavBar() {
         return hideNavBar;
+    }
+
+    public boolean hasSamples() {
+        return !samplesService.allSamples().isEmpty();
     }
 
     /**
@@ -396,6 +406,9 @@ public class RuntimeClientLoader {
                 return importID;
             }
             throw new IllegalArgumentException("External models are not enabled");
+        }
+        if (samplesService.isSample(importID)) {
+            return importID;
         }
         return clientModelBaseUrl + importID;
     }

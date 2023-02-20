@@ -31,6 +31,7 @@ import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.parser.RuntimeModelClientParserFactory;
 import org.dashbuilder.client.perspective.generator.RuntimePerspectiveGenerator;
 import org.dashbuilder.client.plugins.RuntimePerspectivePluginManager;
+import org.dashbuilder.client.services.SamplesService;
 import org.dashbuilder.client.setup.RuntimeClientMode;
 import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
 import org.dashbuilder.navigation.NavTree;
@@ -89,6 +90,9 @@ public class RuntimeClientLoaderTest {
 
     @Mock
     RuntimeModelContentListener runtimeModelContentListener;
+    
+    @Mock
+    SamplesService samplesService;
 
     @InjectMocks
     RuntimeClientLoader runtimeClientLoader;
