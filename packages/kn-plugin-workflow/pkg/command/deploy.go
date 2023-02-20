@@ -105,7 +105,7 @@ func deployKnativeServiceAndEventingBindings(cfg DeployCmdConfig) (bool, error) 
 			deploy,
 			"deploy",
 		); err != nil {
-			return true, err
+			return isKnativeEventingBindingsCreated, err
 		}
 		isKnativeEventingBindingsCreated = true
 		fmt.Println("✅ Knative Eventing bindings successfully created")
