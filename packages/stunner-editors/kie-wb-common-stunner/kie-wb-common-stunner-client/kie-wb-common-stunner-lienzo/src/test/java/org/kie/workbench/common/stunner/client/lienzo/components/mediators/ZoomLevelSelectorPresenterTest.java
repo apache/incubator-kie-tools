@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 
+import javax.enterprise.event.Event;
+
 import com.ait.lienzo.client.core.event.ViewportTransformChangedHandler;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -36,6 +38,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
+import org.kie.workbench.common.stunner.client.lienzo.util.ToolboxRefreshEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingWidgetView;
@@ -112,10 +115,13 @@ public class ZoomLevelSelectorPresenterTest {
     private Layer layer;
     private ZoomLevelSelector selector;
 
+    @Mock
+    private Event<ToolboxRefreshEvent> toolboxRefreshEventEvent;
+
     @Before
     public void setUp() {
         translationService = new ClientTranslationService(translationServiceMock, elementNameProviders, sessionManager, definitionUtils);
-        selector = spy(new ZoomLevelSelector(selectorView));
+        selector = spy(new ZoomLevelSelector(selectorView, toolboxRefreshEventEvent));
         layer = spy(new Layer());
         when(layer.getViewport()).thenReturn(viewport);
         when(canvas.getView()).thenReturn(canvasView);

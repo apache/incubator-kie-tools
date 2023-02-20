@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresLayer;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderers;
+import org.kie.workbench.common.stunner.client.lienzo.util.ToolboxRefreshEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
 import org.mockito.ArgumentCaptor;
@@ -190,6 +191,14 @@ public abstract class AbstractActionsToolboxViewTest {
         toolboxView2.onScrollEvent(new LienzoPanelScrollEvent());
         verify(toolboxView2,
                times(1)).drawTopLayer();
+    }
+
+    @Test
+    public void testOnToolboxRefreshEvent() {
+        doCallRealMethod().when(toolboxView2).onToolboxRefreshEvent(any());
+        toolboxView2.onToolboxRefreshEvent(new ToolboxRefreshEvent());
+        verify(toolboxView2,
+                times(1)).drawTopLayer();
     }
 
 }
