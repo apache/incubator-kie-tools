@@ -16,19 +16,19 @@
 
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { App } from "./App";
 import "../static/resources/style.css";
 import * as incompatibleBrowser from "./workspace/startupBlockers/IncompatibleBrowser";
+import { createRoot } from "react-dom/client";
 
 async function main() {
   const appContainer = document.getElementById("app")!;
 
-  if (await incompatibleBrowser.isTrue()) {
-    ReactDOM.render(<incompatibleBrowser.Component />, appContainer);
-  } else {
-    ReactDOM.render(<App />, appContainer);
-  }
+  const Component = (await incompatibleBrowser.isTrue()) ? <incompatibleBrowser.Component /> : <App />;
+
+  const root = createRoot(appContainer);
+
+  root.render(Component);
 }
 
 main();

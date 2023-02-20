@@ -96,14 +96,13 @@ export function usingTestingChromeExtensionI18nContext(
     defaults: chromeExtensionI18nDefaults,
     dictionaries: chromeExtensionI18nDictionaries,
     ctx: ChromeExtensionI18nContext,
-    children,
     ...ctx,
   };
   return {
     ctx: usedCtx,
     wrapper: (
       <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
-        {usedCtx.children}
+        {children}
       </I18nDictionariesProvider>
     ),
   };

@@ -25,6 +25,7 @@ import {
   FunctionCallRequest,
   FunctionResultType,
 } from "@kie-tools/dashbuilder-component-api";
+import { createRoot } from "react-dom/client";
 
 const DEV_FILE = "/manifest.dev.json";
 const COMP_ID = 42;
@@ -54,9 +55,10 @@ function handleDevConf(text: string) {
   const devPane = document.createElement("div");
   document.body.prepend(devPane);
 
-  ReactDOM.render(
-    <ComponentDevPane sendDataSet={() => sendMessage(dataSetMessage)} sendInit={() => sendMessage(initMessage)} />,
-    devPane
+  const root = createRoot(devPane);
+
+  root.render(
+    <ComponentDevPane sendDataSet={() => sendMessage(dataSetMessage)} sendInit={() => sendMessage(initMessage)} />
   );
 
   window.addEventListener("message", (e) => {

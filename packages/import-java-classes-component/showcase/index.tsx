@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import "@patternfly/react-core/dist/styles/base.css";
 import "./index.css";
 import { ImportJavaClasses, GWTLayerService, JavaCodeCompletionService } from "../src";
@@ -115,4 +115,6 @@ const Showcase: React.FunctionComponent = () => {
   );
 };
 
-ReactDOM.render(<Showcase />, document.getElementById("root"));
+const rootElement = document.getElementById("root")!;
+const root = createRoot(rootElement);
+root.render(<Showcase />);

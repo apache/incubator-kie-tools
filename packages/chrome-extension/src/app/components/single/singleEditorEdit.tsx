@@ -16,7 +16,6 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import * as ReactDOM from "react-dom";
 import {
   createAndGetMainContainer,
   extractOpenFileExtension,
@@ -30,6 +29,7 @@ import { Dependencies } from "../../Dependencies";
 import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from "../../constants";
 import { useGlobals } from "../common/GlobalContext";
 import { FileInfo } from "./singleEditorView";
+import { createRoot } from "react-dom/client";
 
 export function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo }) {
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
@@ -55,7 +55,9 @@ export function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo }) {
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanup(args.id, args.dependencies);
 
-  ReactDOM.render(
+  const root = createRoot(createAndGetMainContainer(args.id, args.dependencies.all.body()));
+
+  root.render(
     <Main
       id={args.id}
       editorEnvelopeLocator={args.editorEnvelopeLocator}
@@ -67,10 +69,10 @@ export function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo }) {
       externalEditorManager={args.externalEditorManager}
     >
       <SingleEditorEditApp openFileExtension={openFileExtension} fileInfo={args.fileInfo} />
-    </Main>,
-    createAndGetMainContainer(args.id, args.dependencies.all.body()),
-    () => args.logger.log("Mounted.")
+    </Main>
   );
+
+  args.logger.log("Mounted.");
 }
 
 function SingleEditorEditApp(props: { openFileExtension: string; fileInfo: FileInfo }) {

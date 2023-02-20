@@ -16,13 +16,19 @@
 
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
-import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
-import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  Button,
+  Form,
+  FormGroup,
+  Split,
+  SplitItem,
+  Stack,
+  StackItem,
+  TextInput,
+  Title,
+  TitleSizes,
+  Tooltip,
+} from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-alt-circle-left-icon";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { GenericSelector } from "../../EditorScorecard/atoms";

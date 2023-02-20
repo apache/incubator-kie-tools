@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import "./BoxedExpressionProvider.css";
 import { hashfy, ResizerSupervisor } from "../Resizer";
 import { BoxedExpressionGlobalContext } from "../../context";
@@ -26,11 +26,11 @@ import { BoxedExpressionEditorProps } from "./BoxedExpressionEditor";
 export interface BoxedExpressionProviderProps extends BoxedExpressionEditorProps {
   /** Flag that changes how the resize works when being used by the DMN Runner **/
   isRunnerTable: boolean;
-  /** Children component **/
-  children: React.ReactNode;
 }
 
-export function BoxedExpressionProvider(props: BoxedExpressionProviderProps) {
+export const BoxedExpressionProvider: React.FunctionComponent<PropsWithChildren<BoxedExpressionProviderProps>> = (
+  props: PropsWithChildren<BoxedExpressionProviderProps>
+) => {
   const [currentlyOpenedHandlerCallback, setCurrentlyOpenedHandlerCallback] = useState(() => _.identity);
   const [supervisorHash, setSupervisorHash] = useState(hashfy(props.expressionDefinition));
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
@@ -64,4 +64,4 @@ export function BoxedExpressionProvider(props: BoxedExpressionProviderProps) {
       {props.isRunnerTable === false && <CellSelectionBox />}
     </BoxedExpressionGlobalContext.Provider>
   );
-}
+};

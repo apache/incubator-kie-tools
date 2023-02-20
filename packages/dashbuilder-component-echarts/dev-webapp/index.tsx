@@ -15,13 +15,13 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { ComponentDev } from "@kie-tools/dashbuilder-component-dev";
 import { ComponentApi } from "@kie-tools/dashbuilder-component-api";
 import { EChartsComponent } from "../src/EChartsComponent";
 
 const api = new ComponentApi();
 
-ReactDOM.render(<EChartsComponent controller={api.getComponentController()} />, document.getElementById("app")!);
+createRoot(document.getElementById("app")!).render(<EChartsComponent controller={api.getComponentController()} />);
 
 new ComponentDev().start();

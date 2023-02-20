@@ -34,7 +34,7 @@ export interface ImportJavaClassesWizardFieldListTableProps {
 
 export const ImportJavaClassesWizardFieldListTable = (props: ImportJavaClassesWizardFieldListTableProps) => {
   return (
-    <TableComposable aria-label="field-table">
+    <TableComposable aria-label="field-table" ouiaId={"import-java-classes-wizard-table"}>
       {props.selectedJavaClassFields.map((javaClass, index) => {
         return (
           <TableJavaClassItem

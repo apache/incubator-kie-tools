@@ -18,7 +18,7 @@ import { KogitoGuidedTour } from "@kie-tools-core/guided-tour/dist";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { Root } from "react-dom/client";
 import { GuidedTour } from "@kie-tools-core/guided-tour/dist/components";
 import { GuidedTourDomUtils, GuidedTourEventBus } from "@kie-tools-core/guided-tour/dist/core";
 
@@ -31,7 +31,7 @@ describe("KogitoGuidedTour", () => {
 
       KogitoGuidedTour.getInstance().setup();
 
-      expect(ReactDOM.render).toBeCalledWith(<GuidedTour />, expect.any(HTMLElement), expect.any(Function));
+      expect(reactClientRoot.render).toBeCalledWith(<GuidedTour />);
     });
   });
 
@@ -127,8 +127,15 @@ describe("KogitoGuidedTour", () => {
 
 jest.mock("@kie-tools-core/guided-tour/dist/components");
 jest.mock("@kie-tools-core/guided-tour/dist/core");
-jest.mock("react-dom", () => ({
+
+const ReactClientRootMock: jest.Mock<Root> = jest.fn(() => ({
   render: jest.fn(),
+  unmount: jest.fn(),
+}));
+
+const reactClientRoot = new ReactClientRootMock();
+jest.mock("react-dom/client", () => ({
+  createRoot: () => reactClientRoot,
 }));
 
 function mockInstance(obj: any, methods: any) {

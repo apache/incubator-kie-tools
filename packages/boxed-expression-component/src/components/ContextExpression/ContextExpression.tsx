@@ -108,14 +108,14 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
   );
 
   const setInfoWidth = useCallback(
-    (newInfoWidth) => {
+    (newInfoWidth?: number) => {
       spreadContextExpressionDefinition({ entryInfoWidth: newInfoWidth });
     },
     [spreadContextExpressionDefinition]
   );
 
   const setExpressionWidth = useCallback(
-    (newEntryExpressionWidth) => {
+    (newEntryExpressionWidth?: number) => {
       spreadContextExpressionDefinition({ entryExpressionWidth: newEntryExpressionWidth });
     },
     [spreadContextExpressionDefinition]

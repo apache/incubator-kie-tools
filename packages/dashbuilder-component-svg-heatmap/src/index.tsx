@@ -15,10 +15,10 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { ComponentApi } from "@kie-tools/dashbuilder-component-api";
 import { SVGHeatmapComponent } from "./SVGHeatmapComponent";
+import { createRoot } from "react-dom/client";
 
 const api = new ComponentApi();
 
-ReactDOM.render(<SVGHeatmapComponent controller={api.getComponentController()} />, document.getElementById("app")!);
+createRoot(document.getElementById("app")!).render(<SVGHeatmapComponent controller={api.getComponentController()} />);

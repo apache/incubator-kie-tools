@@ -19,7 +19,7 @@ import { ChartBar, ChartStack, ChartTooltip } from "@patternfly/react-charts";
 import { XYChart } from "./XYChart";
 
 export class StackChart extends XYChart {
-  buildChartGroup(): any {
+  buildChartGroup(): JSX.Element {
     return (
       <ChartStack>
         {this.dataSetToXYData()

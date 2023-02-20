@@ -38,7 +38,9 @@ describe("NavigationControls", () => {
     act(() => {
       useContextMock(ctx);
       render(<NavigationControls />);
+    });
 
+    act(() => {
       triggerClick("[data-kgt-next]");
     });
 
@@ -58,7 +60,9 @@ describe("NavigationControls", () => {
     act(() => {
       useContextMock(ctx);
       render(<NavigationControls />);
+    });
 
+    act(() => {
       triggerClick("[data-kgt-prev]");
     });
 

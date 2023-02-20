@@ -17,11 +17,11 @@
 import { fireEvent, render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import * as React from "react";
-import { EditExpressionMenu } from "@kie-tools/boxed-expression-component/dist/components/EditExpressionMenu";
 import { activatePopover } from "../PopoverMenu/PopoverMenu.test";
-import { DataType, ExpressionProps, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import * as _ from "lodash";
 import { act } from "react-dom/test-utils";
+import { EditExpressionMenu } from "../../../src/components/EditExpressionMenu";
+import { DataType, ExpressionProps, LogicType } from "../../../src/api";
 
 jest.useFakeTimers();
 

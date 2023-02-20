@@ -15,13 +15,13 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { ComponentDev } from "@kie-tools/dashbuilder-component-dev";
 import { ComponentApi } from "@kie-tools/dashbuilder-component-api";
 import { TimeSeriesComponent } from "../src/TimeSeriesComponent";
+import { createRoot } from "react-dom/client";
 
 const api = new ComponentApi();
 
-ReactDOM.render(<TimeSeriesComponent controller={api.getComponentController()} />, document.getElementById("app")!);
+createRoot(document.getElementById("app")!).render(<TimeSeriesComponent controller={api.getComponentController()} />);
 
 new ComponentDev().start();

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import { activateSelector, usingTestingBoxedExpressionI18nContext } from "../test-utils";
-import { LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import * as React from "react";
-import { PMMLLiteralExpression } from "@kie-tools/boxed-expression-component/dist/components/LiteralExpression";
+import { PMMLLiteralExpression } from "../../../src/components/LiteralExpression";
+import { LogicType } from "../../../src/api";
 
 describe("PMMLLiteralExpression tests", () => {
   test("should show noOptionsLabel when no options are available", async () => {
@@ -90,7 +90,10 @@ describe("PMMLLiteralExpression tests", () => {
     );
 
     await activateSelector(container as HTMLElement, ".pmml-literal-expression button");
-    (baseElement.querySelector(`[data-ouia-component-id='${changedOption}']`) as HTMLButtonElement).click();
+
+    act(() => {
+      (baseElement.querySelector(`[data-ouia-component-id='${changedOption}']`) as HTMLButtonElement).click();
+    });
 
     expect(container.querySelector(".pmml-literal-expression")).toBeTruthy();
     expect(container.querySelector(".pmml-literal-expression button")).toContainHTML(changedOption);

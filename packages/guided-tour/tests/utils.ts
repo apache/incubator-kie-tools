@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import { unmountComponentAtNode, render as reactRender } from "react-dom";
 import * as React from "react";
+import { createRoot, Root } from "react-dom/client";
 
 let contextMock = {};
 let componentContainer: HTMLElement | null = null;
+let reactClientRoot: Root | null = null;
 
 jest.mock("react", () => {
   const ActualReact = jest.requireActual("react");
@@ -38,16 +39,18 @@ export const setupContainer = () => {
 };
 
 export const teardownContainer = () => {
-  if (componentContainer) {
-    unmountComponentAtNode(componentContainer);
+  if (componentContainer && reactClientRoot) {
+    reactClientRoot.unmount();
     componentContainer.remove();
   }
+  reactClientRoot = null;
   componentContainer = null;
 };
 
-export const render = (component: React.SFCElement<any>) => {
+export const render = (component: React.ReactNode) => {
   if (componentContainer) {
-    reactRender(component, componentContainer);
+    reactClientRoot = createRoot(componentContainer);
+    reactClientRoot.render(component);
   } else {
     throw new Error("[Guided Tour] Test error: 'setupContainer' must be called on 'beforeEach'.");
   }
@@ -57,10 +60,10 @@ export const renderedComponent = () => {
   return componentContainer;
 };
 
-export const triggerClick = (selector: string) => {
+export const triggerClick = async (selector: string) => {
   const element = document.querySelector(selector);
   if (element) {
-    element.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await element.dispatchEvent(new MouseEvent("click", { bubbles: true }));
   } else {
     throw new Error("[Guided Tour] Test error: clickable element could not be found.");
   }

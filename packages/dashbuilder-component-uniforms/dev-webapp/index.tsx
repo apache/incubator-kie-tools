@@ -16,13 +16,13 @@
 
 import * as React from "react";
 import "@patternfly/react-core/dist/styles/base.css";
-import * as ReactDOM from "react-dom";
 import { ComponentDev } from "@kie-tools/dashbuilder-component-dev";
 import { ComponentApi } from "@kie-tools/dashbuilder-component-api";
 import { UniformsComponent } from "../src/UniformsComponent";
+import { createRoot } from "react-dom/client";
 
 const api = new ComponentApi();
 
-ReactDOM.render(<UniformsComponent controller={api.getComponentController()} />, document.getElementById("app")!);
+createRoot(document.getElementById("app")!).render(<UniformsComponent controller={api.getComponentController()} />);
 
 new ComponentDev().start();

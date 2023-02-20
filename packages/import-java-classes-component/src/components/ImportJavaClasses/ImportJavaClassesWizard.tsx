@@ -196,6 +196,7 @@ export const ImportJavaClassesWizard = ({
         <Tooltip content={defineTooltipMessage()}>
           <Button
             data-testid={"modal-wizard-button"}
+            ouiaId={"modal-wizard-button"}
             isAriaDisabled={isButtonDisabled()}
             isLoading={isButtonLoading()}
             onClick={handleButtonClick}
@@ -207,6 +208,7 @@ export const ImportJavaClassesWizard = ({
       ) : (
         <Button
           data-testid={"modal-wizard-button"}
+          ouiaId={"modal-wizard-button"}
           isAriaDisabled={isButtonDisabled()}
           isLoading={isButtonLoading()}
           onClick={handleButtonClick}
@@ -217,6 +219,9 @@ export const ImportJavaClassesWizard = ({
       )}
       {isOpen ? (
         <Modal
+          aria-describedby={"Import Java Classes Modal"}
+          aria-labelledby={"Import Java Classes Modal"}
+          ouiaId={"import-java-classes-modal"}
           description={i18n.modalWizard.description}
           isOpen={isOpen}
           onClose={handleWizardClose}
@@ -224,6 +229,8 @@ export const ImportJavaClassesWizard = ({
           variant={ModalVariant.large}
         >
           <Wizard
+            aria-describedby={"Import Java Classes Wizard"}
+            aria-labelledby={"Import Java Classes Wizard"}
             className={"import-java-classes"}
             height={600}
             onClose={handleWizardClose}

@@ -19,8 +19,6 @@ import * as Numeral from "numeral";
 import { BaseChart, XYChartSeries, XYChartDataLine, XYChartData } from "./BaseChart";
 import { Chart, ChartAxis, ChartGroup } from "@patternfly/react-charts";
 
-export type ChartGroupType = typeof ChartGroup;
-
 export abstract class XYChart extends BaseChart {
   render() {
     const { width, height, themeColor, themeVariant } = this.props;
@@ -52,7 +50,7 @@ export abstract class XYChart extends BaseChart {
     );
   }
 
-  abstract buildChartGroup(): ChartGroupType;
+  abstract buildChartGroup(): JSX.Element;
 
   categories() {
     return this.props.dataSet.columns.slice(1).map((column: any) => column.settings["columnName"]);

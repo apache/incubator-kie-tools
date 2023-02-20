@@ -28,6 +28,7 @@ import { routes } from "../routes";
 
 export function BasePage(props: { children?: React.ReactNode }) {
   const history = useHistory();
+
   const { i18n } = useAppI18n();
 
   return (

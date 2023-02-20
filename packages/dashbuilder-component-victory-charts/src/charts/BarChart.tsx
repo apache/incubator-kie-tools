@@ -19,7 +19,7 @@ import { ChartBar, ChartGroup } from "@patternfly/react-charts";
 import { XYChart } from "./XYChart";
 
 export class BarChart extends XYChart {
-  buildChartGroup(): any {
+  buildChartGroup(): JSX.Element {
     return (
       <ChartGroup
         offset={(this.props.barWidth || 0) + (this.props.barOffset || 10)}

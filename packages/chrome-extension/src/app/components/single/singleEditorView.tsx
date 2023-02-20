@@ -31,6 +31,7 @@ import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from ".
 import { fetchFile } from "../../github/api";
 import { useGitHubApi } from "../common/GitHubContext";
 import { useGlobals } from "../common/GlobalContext";
+import { createRoot } from "react-dom/client";
 
 export interface FileInfo {
   repo: string;
@@ -63,7 +64,9 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanup(args.id, args.dependencies);
 
-  ReactDOM.render(
+  const root = createRoot(createAndGetMainContainer(args.id, args.dependencies.all.body()));
+
+  root.render(
     <Main
       id={args.id}
       editorEnvelopeLocator={args.editorEnvelopeLocator}
@@ -75,10 +78,10 @@ export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileIn
       externalEditorManager={args.externalEditorManager}
     >
       <SingleEditorViewApp fileInfo={args.fileInfo} openFileExtension={openFileExtension} />
-    </Main>,
-    createAndGetMainContainer(args.id, args.dependencies.all.body()!),
-    () => args.logger.log("Mounted.")
+    </Main>
   );
+
+  args.logger.log("Mounted.");
 }
 
 function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: string }) {

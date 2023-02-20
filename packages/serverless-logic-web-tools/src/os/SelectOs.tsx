@@ -37,12 +37,12 @@ const WINDOWS = "Windows";
 export function SelectOs(props: Props) {
   const [isSelectExpanded, setSelectIsExpanded] = useState(false);
 
-  const onSelectOsToggle = useCallback((isExpanded) => {
+  const onSelectOsToggle = useCallback((isExpanded: boolean) => {
     setSelectIsExpanded(isExpanded);
   }, []);
 
   const onSelectOperatingSystem = useCallback(
-    (e, selection) => {
+    (_e: React.MouseEvent | React.ChangeEvent, selection: OperatingSystem) => {
       props.onSelect(selection);
       setSelectIsExpanded(false);
     },

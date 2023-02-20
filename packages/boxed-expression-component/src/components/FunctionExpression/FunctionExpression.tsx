@@ -23,6 +23,7 @@ import {
   ContextProps,
   DataType,
   DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+  EntryInfo,
   executeIfExpressionDefinitionChanged,
   ExpressionProps,
   FeelFunctionProps,
@@ -352,7 +353,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (
   }, [editorRef]);
 
   const setParameters = useCallback(
-    (newParameter) => {
+    (newParameter: EntryInfo[]) => {
       spreadFunctionExpressionDefinition({ formalParameters: newParameter });
     },
     [spreadFunctionExpressionDefinition]
@@ -437,7 +438,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (
   );
 
   const resetRowCustomFunction = useCallback(
-    (row) => {
+    (row: ContextEntryRecord) => {
       spreadFunctionExpressionDefinition({
         functionKind: FunctionKind.Feel,
         formalParameters: [],

@@ -23,6 +23,7 @@ import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Actions } from "../../../reducers";
 import {
   AttributeEditor,
+  AttributeEditorContent,
   AttributeToolbar,
   CharacteristicsToolbar,
   EmptyStateNoCharacteristics,
@@ -208,7 +209,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   };
 
   const onUpdateAttribute = useCallback(
-    (_index, _content) => {
+    (_index: number, _content: AttributeEditorContent) => {
       if (_index === undefined) {
         dispatch({
           type: Actions.Scorecard_AddAttribute,

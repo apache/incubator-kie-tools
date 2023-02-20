@@ -27,14 +27,13 @@ export function usingTestingDmnFormI18nContext(
     defaults: dmnFormI18nDefaults,
     dictionaries: dmnFormI18nDictionaries,
     ctx: DmnFormI18nContext,
-    children,
     ...ctx,
   };
   return {
     ctx: usedCtx,
     wrapper: (
       <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
-        {usedCtx.children}
+        {children}
       </I18nDictionariesProvider>
     ),
   };

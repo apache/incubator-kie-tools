@@ -23,11 +23,9 @@ import {
   usingTestingBoxedExpressionI18nContext,
   usingTestingBoxedExpressionProviderContext,
 } from "../test-utils";
-import {
-  DEFAULT_FIRST_PARAM_NAME,
-  FunctionExpression,
-} from "@kie-tools/boxed-expression-component/dist/components/FunctionExpression";
 import * as React from "react";
+import { act } from "react-dom/test-utils";
+import { DEFAULT_FIRST_PARAM_NAME, FunctionExpression } from "../../../src/components/FunctionExpression";
 import {
   BoxedExpressionEditorGWTService,
   DataType,
@@ -35,8 +33,7 @@ import {
   FunctionKind,
   FunctionProps,
   LogicType,
-} from "@kie-tools/boxed-expression-component/dist/api";
-import { act } from "react-dom/test-utils";
+} from "../../../src/api";
 
 describe("FunctionExpression tests", () => {
   const parameterId = "p1";
@@ -202,6 +199,8 @@ describe("FunctionExpression tests", () => {
         ).click();
         await flushPromises();
         jest.runAllTimers();
+      });
+      await act(async () => {
         (baseElement.querySelector(`[data-ouia-component-id='${DataType.Boolean}']`) as HTMLButtonElement).click();
       });
 
@@ -423,6 +422,9 @@ describe("FunctionExpression tests", () => {
       fireEvent.contextMenu(
         container.querySelector(".function-expression table tbody td.counter-cell") as HTMLTableElement
       );
+    });
+
+    await act(async () => {
       await flushPromises();
       jest.runAllTimers();
     });

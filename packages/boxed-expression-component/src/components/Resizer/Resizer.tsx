@@ -17,7 +17,7 @@
 import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useContext, useLayoutEffect, useMemo, useState } from "react";
-import { ResizableBox } from "react-resizable";
+import { ResizableBox, ResizeCallbackData } from "react-resizable";
 import { v4 as uuid } from "uuid";
 import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
 import { widthValue as commonWidthValue } from "./common";
@@ -160,7 +160,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   }, [getApplicableCells, id, widthValue, boxedExpression.editorRef]);
 
   const onResize = useCallback(
-    (_, data) => {
+    (_: React.SyntheticEvent, data: ResizeCallbackData) => {
       const newResizerWidth = parseInt(data.size.width + "");
       cells.forEach((cell) => {
         const delta = newResizerWidth - initialResizerWidth;
@@ -177,7 +177,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   );
 
   const onResizeStop = useCallback(
-    (_, data) => {
+    (_: React.SyntheticEvent, data: ResizeCallbackData) => {
       const newResizerWidth = widthValue(data.size.width);
       boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
       cells.forEach((cell) => {

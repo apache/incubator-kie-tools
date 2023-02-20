@@ -22,9 +22,9 @@ import {
   usingTestingBoxedExpressionI18nContext,
   usingTestingBoxedExpressionProviderContext,
 } from "../test-utils";
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import * as React from "react";
-import { InvocationExpression } from "@kie-tools/boxed-expression-component/dist/components/InvocationExpression";
+import { InvocationExpression } from "../../../src/components/InvocationExpression";
+import { DataType, LogicType } from "../../../src/api";
 
 describe("InvocationExpression tests", () => {
   test("should show a table with two levels visible header, with one row and two columns", () => {

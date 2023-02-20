@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { render } from "@testing-library/react";
-import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/components";
-import { DataType, ExpressionProps } from "@kie-tools/boxed-expression-component/dist/api";
+import { DataType, ExpressionProps } from "../../../src/api";
+import { BoxedExpressionEditor } from "../../../src/components";
 
 describe("BoxedExpressionEditor tests", () => {
   test("should render BoxedExpressionEditor component", () => {

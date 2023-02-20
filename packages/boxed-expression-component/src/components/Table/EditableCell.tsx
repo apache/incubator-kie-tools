@@ -119,12 +119,12 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
   const onTextAreaBlur = useCallback(() => setIsSelected(false), []);
 
   const onTextAreaChange = useCallback(
-    (event) => {
-      const newValue: string = event.target.value.trim("") ?? "";
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const newValue: string = event.target.value.trim() ?? "";
       const isPastedValue = newValue.includes("\t") || newValue.includes("\n");
 
       // event.nativeEvent.inputType==="insertFromPaste" ensure that this block is not executed on cells with newlines inside
-      if (textarea.current && isPastedValue && event.nativeEvent.inputType === "insertFromPaste") {
+      if (textarea.current && isPastedValue && (event.nativeEvent as InputEvent).inputType === "insertFromPaste") {
         const pasteValue = newValue.slice(value.length);
         paste(pasteValue, textarea.current, boxedExpression.editorRef.current!);
         triggerReadMode();
@@ -220,14 +220,17 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     [triggerReadMode, previousValue, rowIndex, commandStack, onCellUpdate, columnId]
   );
 
-  const onFeelChange = useCallback((_e, newValue, newPreview) => {
-    const numberOfValueLines = `${newValue}`.split("\n").length + 1;
-    const numberOfLines = numberOfValueLines < 3 ? 3 : numberOfValueLines;
-    setCellHeight(numberOfLines * CELL_LINE_HEIGHT);
-    setPreview(newPreview);
-  }, []);
+  const onFeelChange = useCallback(
+    (_e: Monaco.editor.IModelContentChangedEvent, newValue: string, newPreview: string) => {
+      const numberOfValueLines = `${newValue}`.split("\n").length + 1;
+      const numberOfLines = numberOfValueLines < 3 ? 3 : numberOfValueLines;
+      setCellHeight(numberOfLines * CELL_LINE_HEIGHT);
+      setPreview(newPreview);
+    },
+    []
+  );
 
-  const onFeelLoad = useCallback((newPreview) => {
+  const onFeelLoad = useCallback((newPreview: string) => {
     setPreview(newPreview);
   }, []);
 

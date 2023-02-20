@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { EDIT_EXPRESSION_NAME, updateElementViaPopover, usingTestingBoxedExpressionI18nContext } from "../test-utils";
 import { render } from "@testing-library/react";
-import { ContextEntryInfo } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as _ from "lodash";
 import * as React from "react";
+import { DataType } from "../../../src/api";
+import { ContextEntryInfo } from "../../../src/components/ContextExpression";
 
 jest.useFakeTimers();
 

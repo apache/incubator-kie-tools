@@ -78,7 +78,7 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
   );
 
   const onHorizontalResizeStop = useCallback(
-    (width) => {
+    (width: number) => {
       spreadLiteralExpressionDefinition({
         width,
       });
@@ -87,7 +87,7 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
   );
 
   const onCellUpdate = useCallback(
-    (_number, _columnId, value) => {
+    (_number: number, _columnId: string, value: string) => {
       spreadLiteralExpressionDefinition({
         content: value,
       });

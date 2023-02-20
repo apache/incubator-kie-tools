@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import { render } from "@testing-library/react";
 import { flushPromises, usingTestingBoxedExpressionI18nContext } from "../test-utils";
-import { ContextEntryExpressionCell } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as _ from "lodash";
 import * as React from "react";
 import { DataRecord } from "react-table";
 import { act } from "react-dom/test-utils";
+import { ContextEntryExpressionCell } from "../../../src/components/ContextExpression";
+import { DataType, LogicType } from "../../../src/api";
 
 jest.useFakeTimers();
 
@@ -78,10 +78,13 @@ describe("ContextEntryExpressionCell tests", () => {
       ).wrapper
     );
 
-    (container.querySelector(".entry-expression")! as HTMLDivElement).click();
     await act(async () => {
+      (container.querySelector(".entry-expression")! as HTMLDivElement).click();
       await flushPromises();
       jest.runAllTimers();
+    });
+
+    await act(async () => {
       Array.from(baseElement.querySelectorAll("button"))
         .find((el) => el.textContent === LogicType.LiteralExpression)!
         .click();

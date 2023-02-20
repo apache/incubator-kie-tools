@@ -22,6 +22,7 @@ import {
   Annotation,
   BuiltinAggregation,
   Clause,
+  ColumnsUpdateArgs,
   DataType,
   DecisionTableProps,
   DecisionTableRule,
@@ -323,19 +324,24 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   );
 
   const onColumnsUpdate = useCallback(
-    ({ columns }) => {
-      const decisionNodeColumn = _.find(columns, { groupType: DecisionTableColumnType.OutputClause });
+    (args: ColumnsUpdateArgs<ColumnInstance>) => {
+      const decisionNodeColumn = _.find(args.columns, { groupType: DecisionTableColumnType.OutputClause });
+
+      if (!decisionNodeColumn) {
+        return;
+      }
+
       if (!decisionTable.isHeadless) {
         synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType(decisionNodeColumn);
       }
       spreadDecisionTableExpressionDefinition({
         updatedDecisionTable: {
-          name: decisionNodeColumn.label,
+          name: decisionNodeColumn.label as string,
           dataType: decisionNodeColumn.dataType,
         },
         updatedColumns: [...columns],
       });
-      decisionTable.onUpdatingNameAndDataType?.(decisionNodeColumn.label, decisionNodeColumn.dataType);
+      decisionTable.onUpdatingNameAndDataType?.(decisionNodeColumn.label as string, decisionNodeColumn.dataType);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -389,7 +395,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   );
 
   const onBuiltInAggregatorSelect = useCallback(
-    (itemId) => {
+    (itemId: BuiltinAggregation) => {
       spreadDecisionTableExpressionDefinition({
         updatedDecisionTable: {
           aggregation: (BuiltinAggregation as never)[itemId],

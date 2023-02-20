@@ -18,13 +18,15 @@
   },
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/monaco-editor": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/vscode-java-code-completion": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-table": "^4.112.39",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -34,11 +36,12 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@testing-library/jest-dom": "^5.16.1",
-    "@testing-library/react": "^11.2.6",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
-    "@types/react": "^17.0.6",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
     "@types/testing-library__jest-dom": "^5.9.1",
     "@types/testing-library__react": "^9.1.2",
     "copy-webpack-plugin": "^11.0.0",

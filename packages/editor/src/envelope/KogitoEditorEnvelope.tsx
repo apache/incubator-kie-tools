@@ -31,6 +31,7 @@ import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-compon
 import { getOperatingSystem } from "@kie-tools-core/operating-system";
 import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
+import { createRoot } from "react-dom/client";
 
 export class KogitoEditorEnvelope<
   E extends Editor,
@@ -92,9 +93,8 @@ export class KogitoEditorEnvelope<
 
     return new Promise<() => EditorEnvelopeViewApi<E>>((res) => {
       setTimeout(() => {
-        ReactDOM.render(app, container, () => {
-          res(() => editorEnvelopeViewRef.current!);
-        });
+        createRoot(container).render(app);
+        res(() => editorEnvelopeViewRef.current!);
       }, 0);
     });
   }

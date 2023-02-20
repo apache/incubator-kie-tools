@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
-import { ContextEntryExpression } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as _ from "lodash";
 import * as React from "react";
+import { ContextEntryExpression } from "../../../src/components/ContextExpression";
+import { DataType, LogicType } from "../../../src/api";
 
 describe("ContextEntryExpression tests", () => {
   const name = "Expression Name";

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { fireEvent, render } from "@testing-library/react";
+import { act, fireEvent, render } from "@testing-library/react";
 import * as React from "react";
 import { LandingPage } from "@kie-tools/pmml-editor/dist/editor/components/LandingPage/templates";
 import { Provider } from "react-redux";
@@ -102,7 +102,10 @@ describe("LandingPage", () => {
     const submit: HTMLButtonElement = element2 as HTMLButtonElement;
 
     fireEvent.change(input, { target: { value: "spam" } });
-    submit.click();
+
+    act(() => {
+      submit.click();
+    });
 
     expect(getByTestId("empty-state-no-models")).not.toBeUndefined();
   });

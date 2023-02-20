@@ -15,21 +15,18 @@
  */
 
 import * as React from "react";
+import { act } from "react-dom/test-utils";
+import { fireEvent } from "@testing-library/react";
 import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tools-core/i18n/dist/react-components";
 import {
   boxedExpressionEditorDictionaries,
-  BoxedExpressionEditorI18n,
-  BoxedExpressionEditorI18nContext,
   boxedExpressionEditorI18nDefaults,
-} from "@kie-tools/boxed-expression-component/dist/i18n";
-import { act } from "react-dom/test-utils";
-import { fireEvent } from "@testing-library/react";
-import { BoxedExpressionGlobalContext } from "@kie-tools/boxed-expression-component/dist/context";
-import {
-  BoxedExpressionProvider,
-  BoxedExpressionProviderProps,
-} from "@kie-tools/boxed-expression-component/dist/components";
-import { BoxedExpressionEditorGWTService, DataType } from "@kie-tools/boxed-expression-component/dist/api";
+  BoxedExpressionEditorI18nContext,
+  BoxedExpressionEditorI18n,
+} from "../../src/i18n";
+import { BoxedExpressionEditorGWTService, DataType } from "../../src/api";
+import { BoxedExpressionProvider, BoxedExpressionProviderProps } from "../../src/components";
+import { BoxedExpressionGlobalContext } from "../../src/context";
 
 global.console = { ...global.console, warn: () => ({}) };
 
@@ -104,14 +101,13 @@ export function usingTestingBoxedExpressionI18nContext(
     defaults: boxedExpressionEditorI18nDefaults,
     dictionaries: boxedExpressionEditorDictionaries,
     ctx: BoxedExpressionEditorI18nContext,
-    children,
     ...ctx,
   };
   return {
     ctx: usedCtx,
     wrapper: wrapComponentInContext(
       <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
-        {usedCtx.children}
+        {children}
       </I18nDictionariesProvider>
     ),
   };
@@ -127,7 +123,6 @@ export function usingTestingBoxedExpressionProviderContext(
     dataTypes,
     pmmlParams,
     isRunnerTable: false,
-    children,
     ...ctx,
   };
   return {
@@ -141,7 +136,7 @@ export function usingTestingBoxedExpressionProviderContext(
         pmmlParams={usedCtx.pmmlParams}
         isRunnerTable={false}
       >
-        {usedCtx.children}
+        {children}
       </BoxedExpressionProvider>
     ),
   };

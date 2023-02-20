@@ -40,8 +40,8 @@ import {
 } from "@kie-tools/import-java-classes-component";
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import * as ReactDOM from "react-dom";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
+import { createRoot } from "react-dom/client";
 
 export interface BoxedExpressionEditorWrapperProps {
   /** Identifier of the decision node, where the expression will be hold */
@@ -152,15 +152,14 @@ const renderBoxedExpressionEditor = (
   clearSupportedOnRootExpression: boolean,
   pmmlParams: PMMLParams
 ) => {
-  ReactDOM.render(
+  createRoot(document.querySelector(selector)!).render(
     <BoxedExpressionWrapper
       decisionNodeId={decisionNodeId}
       expressionDefinition={expressionDefinition}
       dataTypes={dataTypes}
       clearSupportedOnRootExpression={clearSupportedOnRootExpression}
       pmmlParams={pmmlParams}
-    />,
-    document.querySelector(selector)
+    />
   );
 };
 
@@ -185,7 +184,7 @@ const ImportJavaClassesWrapper = () => {
 };
 
 const renderImportJavaClasses = (selector: string) => {
-  ReactDOM.render(<ImportJavaClassesWrapper />, document.querySelector(selector));
+  createRoot(document.querySelector(selector)!).render(<ImportJavaClassesWrapper />);
 };
 
 export { renderBoxedExpressionEditor, renderImportJavaClasses };

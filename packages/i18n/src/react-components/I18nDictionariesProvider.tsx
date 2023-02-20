@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { I18n, I18nDefaults, I18nDictionaries, ReferenceDictionary } from "../core";
 import { I18nContextType } from "./I18nContext";
 
@@ -24,10 +24,11 @@ export interface I18nDictionariesProviderProps<D extends ReferenceDictionary> {
   dictionaries: I18nDictionaries<D>;
   initialLocale?: string;
   ctx: React.Context<I18nContextType<D>>;
-  children: React.ReactNode;
 }
 
-export const I18nDictionariesProvider = <D extends ReferenceDictionary>(props: I18nDictionariesProviderProps<D>) => {
+export function I18nDictionariesProvider<D extends ReferenceDictionary>(
+  props: PropsWithChildren<I18nDictionariesProviderProps<D>>
+) {
   const [locale, setLocale] = useState(props.initialLocale ?? props.defaults.locale);
 
   const i18n = useMemo(
@@ -51,6 +52,5 @@ export const I18nDictionariesProvider = <D extends ReferenceDictionary>(props: I
     }),
     [i18n, locale, setNewLocale]
   );
-
   return <props.ctx.Provider value={value}>{props.children}</props.ctx.Provider>;
-};
+}

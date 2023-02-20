@@ -23,14 +23,14 @@
   "dependencies": {
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@types/react": "^17.0.6",
-    "@types/react-dom": "^17.0.5",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
     "@types/vscode": "^1.66.0",
     "copyfiles": "^2.4.1",
     "rimraf": "^3.0.2",

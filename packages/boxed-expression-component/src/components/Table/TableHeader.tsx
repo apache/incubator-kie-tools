@@ -64,9 +64,9 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
 }) => {
   const { boxedExpressionEditorGWTService } = useBoxedExpression();
 
-  const getColumnLabel: (groupType: string) => string | undefined = useCallback(
+  const getColumnLabel: (groupType: string | undefined) => string | undefined = useCallback(
     (groupType) => {
-      if (_.isObject(editColumnLabel) && _.has(editColumnLabel, groupType)) {
+      if (groupType && _.isObject(editColumnLabel) && _.has(editColumnLabel, groupType)) {
         return editColumnLabel[groupType];
       }
       if (typeof editColumnLabel === "string") {
@@ -164,7 +164,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   );
 
   const renderHeaderCellInfo = useCallback(
-    (column, columnIndex, onAnnotationCellToggle?: (isReadMode: boolean) => void) => (
+    (column: ColumnInstance, columnIndex: number, onAnnotationCellToggle?: (isReadMode: boolean) => void) => (
       <div className="header-cell-info" data-ouia-component-type="expression-column-header-cell-info">
         {column.headerCellElement
           ? column.headerCellElement
@@ -176,7 +176,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   );
 
   const onHorizontalResizeStop = useCallback(
-    (column, columnWidth) => {
+    (column: ColumnInstance, columnWidth: number) => {
       const columnToBeFound = column.placeholderOf || column;
       let columnToUpdate = _.find(tableColumns, getColumnSearchPredicate(columnToBeFound)) as ColumnInstance;
       if (column.parent) {
@@ -245,7 +245,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   );
 
   const getHeaderGroups = useCallback(
-    (tableInstance) => {
+    (tableInstance: TableInstance) => {
       return skipLastHeaderGroup ? _.dropRight(tableInstance.headerGroups) : tableInstance.headerGroups;
     },
     [skipLastHeaderGroup]

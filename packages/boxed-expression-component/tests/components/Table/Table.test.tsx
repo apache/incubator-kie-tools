@@ -19,15 +19,6 @@ import * as _ from "lodash";
 import * as React from "react";
 import { act } from "react-dom/test-utils";
 import { ColumnInstance, DataRecord } from "react-table";
-import { PASTE_OPERATION } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
-import {
-  BoxedExpressionEditorGWTService,
-  ColumnsUpdateArgs,
-  DataType,
-  RowsUpdateArgs,
-  TableHandlerConfiguration,
-  TableOperation,
-} from "@kie-tools/boxed-expression-component/dist/api";
 
 import {
   activateNameAndDataTypePopover,
@@ -39,8 +30,17 @@ import {
   usingTestingBoxedExpressionProviderContext,
   wrapComponentInContext,
 } from "../test-utils";
-import { DEFAULT_MIN_WIDTH } from "@kie-tools/boxed-expression-component/dist/components/Resizer";
-import { Table } from "@kie-tools/boxed-expression-component/dist/components";
+import { DEFAULT_MIN_WIDTH } from "../../../src/components/Resizer";
+import { PASTE_OPERATION } from "../../../src/components/Table/common";
+import {
+  BoxedExpressionEditorGWTService,
+  ColumnsUpdateArgs,
+  DataType,
+  RowsUpdateArgs,
+  TableHandlerConfiguration,
+  TableOperation,
+} from "../../../src/api";
+import { Table } from "../../../src/components";
 
 jest.useFakeTimers();
 
@@ -400,12 +400,12 @@ describe("Table tests", () => {
         accessor: "column-2",
         dataType: DataType.Undefined,
         width: DEFAULT_MIN_WIDTH,
-      } as ColumnInstance;
+      } as unknown as ColumnInstance;
       const secondColumn = {
         label: "column-3",
         dataType: DataType.Undefined,
         width: DEFAULT_MIN_WIDTH,
-      } as ColumnInstance;
+      } as unknown as ColumnInstance;
       const onColumnUpdate = ({ columns }: ColumnsUpdateArgs) => {
         _.identity(columns);
       };
@@ -684,7 +684,7 @@ describe("Table tests", () => {
         dataType: DataType.Undefined,
         width: DEFAULT_MIN_WIDTH,
         inlineEditable: true,
-      } as ColumnInstance;
+      } as unknown as ColumnInstance;
 
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
@@ -694,11 +694,15 @@ describe("Table tests", () => {
         ).wrapper
       );
 
-      const element = container.querySelectorAll("p.pf-u-text-truncate")[0] as HTMLElement;
-      element.click();
+      act(() => {
+        const element = container.querySelectorAll("p.pf-u-text-truncate")[0] as HTMLElement;
+        element.click();
+      });
 
-      const input = changeValue(container, "new value");
-      input.blur();
+      act(() => {
+        const input = changeValue(container, "new value");
+        input.blur();
+      });
 
       expect(mockedNotifyUserAction).toHaveBeenCalled();
     });
@@ -712,7 +716,7 @@ describe("Table tests", () => {
         dataType: DataType.Undefined,
         width: DEFAULT_MIN_WIDTH,
         inlineEditable: true,
-      } as ColumnInstance;
+      } as unknown as ColumnInstance;
 
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
@@ -722,11 +726,15 @@ describe("Table tests", () => {
         ).wrapper
       );
 
-      const element = container.querySelectorAll("p.pf-u-text-truncate")[0] as HTMLElement;
-      element.click();
+      act(() => {
+        const element = container.querySelectorAll("p.pf-u-text-truncate")[0] as HTMLElement;
+        element.click();
+      });
 
-      const input = changeValue(container, columnName);
-      input.blur();
+      act(() => {
+        const input = changeValue(container, columnName);
+        input.blur();
+      });
 
       expect(mockedNotifyUserAction).toHaveBeenCalledTimes(0);
     });
@@ -748,8 +756,10 @@ async function selectMenuEntryIfNotDisabled(baseElement: Element, menuEntry: str
 }
 
 export async function openContextMenu(element: Element): Promise<void> {
-  await act(async () => {
+  act(() => {
     fireEvent.contextMenu(element);
+  });
+  await act(async () => {
     await flushPromises();
     jest.runAllTimers();
   });

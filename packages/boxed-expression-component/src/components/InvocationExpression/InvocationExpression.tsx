@@ -38,7 +38,7 @@ import {
 } from "../../api";
 import { Table } from "../Table";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { ColumnInstance, DataRecord } from "react-table";
+import { ColumnInstance, DataRecord, Row } from "react-table";
 import { ContextEntryExpressionCell, getContextEntryInfoCell } from "../ContextExpression";
 import * as _ from "lodash";
 import { useBoxedExpression } from "../../context";
@@ -111,7 +111,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
   );
 
   const onBlurCallback = useCallback(
-    (event) => {
+    (event: React.FocusEvent<HTMLInputElement>) => {
       if (invocationProps.invokedFunction != event.target.value) {
         boxedExpressionEditorGWTService?.notifyUserAction();
       }
@@ -136,14 +136,14 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
   );
 
   const setInfoWidth = useCallback(
-    (newInfoWidth) => {
+    (newInfoWidth: number) => {
       spreadInvocationExpressionDefinition({ entryInfoWidth: newInfoWidth });
     },
     [spreadInvocationExpressionDefinition]
   );
 
   const setExpressionWidth = useCallback(
-    (newEntryExpressionWidth) => {
+    (newEntryExpressionWidth: number) => {
       spreadInvocationExpressionDefinition({ entryExpressionWidth: newEntryExpressionWidth });
     },
     [spreadInvocationExpressionDefinition]
@@ -236,8 +236,8 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
     [spreadInvocationExpressionDefinition]
   );
 
-  const getRowKeyCallback = useCallback((row) => getEntryKey(row), []);
-  const resetEntryCallback = useCallback((row) => resetEntry(row), []);
+  const getRowKeyCallback = useCallback((row: Row) => getEntryKey(row), []);
+  const resetEntryCallback = useCallback((row: ContextEntryRecord) => resetEntry(row), []);
 
   const defaultCell = useMemo(
     () => ({

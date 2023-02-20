@@ -146,7 +146,7 @@ export function useUnitablesInputs(
   }, [jsonSchemaBridge, updateInputCellsWidth]);
 
   const onModelUpdate = useCallback(
-    (model: object, index) => {
+    (model: object, index: number) => {
       setInputRows?.((previousData) => {
         const newData = [...previousData];
         newData[index] = model;

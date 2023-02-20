@@ -16,9 +16,7 @@
 
 import * as React from "react";
 import { BaseSyntheticEvent, useContext, useMemo } from "react";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Button, Flex, FlexItem, Split, SplitItem } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { DataDictionary, MiningField } from "@kie-tools/pmml-editor-marshaller";
 import { MiningSchemaContext } from "../MiningSchemaContainer/MiningSchemaContainer";
@@ -57,7 +55,7 @@ const MiningSchemaFields: React.FC<MiningSchemaFieldsProps> = ({
       {fields?.map((field, index) => {
         return (
           <MiningSchemaItem
-            key={field.name as string}
+            key={field.name}
             dataDictionary={dataDictionary}
             field={field}
             index={index}

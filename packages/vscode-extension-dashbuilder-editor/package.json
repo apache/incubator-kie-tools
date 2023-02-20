@@ -46,7 +46,7 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@types/react": "^17.0.6",
+    "@types/react": "^18.0.28",
     "@types/vscode": "^1.66.0",
     "@vscode/test-web": "^0.0.30",
     "@vscode/vsce": "^2.18.0",

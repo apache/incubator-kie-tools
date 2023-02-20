@@ -27,6 +27,7 @@ import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { chromeExtensionI18nDictionaries, chromeExtensionI18nDefaults, ChromeExtensionI18nContext } from "../../i18n";
+import { PropsWithChildren } from "react";
 
 export interface Globals {
   id: string;
@@ -54,7 +55,7 @@ function KogitoMenuPortal(props: { id: string }) {
   );
 }
 
-export const Main: React.FunctionComponent<Globals> = (props) => {
+export const Main: React.FunctionComponent<PropsWithChildren<Globals>> = (props) => {
   return (
     <I18nDictionariesProvider
       defaults={chromeExtensionI18nDefaults}

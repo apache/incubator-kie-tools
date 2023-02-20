@@ -16,7 +16,7 @@
 
 import { Octokit } from "@octokit/rest";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useLayoutEffect, useState } from "react";
+import { PropsWithChildren, useCallback, useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useGlobals } from "./GlobalContext";
 
 export interface GitHubContextType {
@@ -52,7 +52,7 @@ export function getCookie(name: string) {
 
 let octokitInstance: Octokit;
 
-export const GitHubContextProvider: React.FC<{}> = (props) => {
+export const GitHubContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const globals = useGlobals();
   const [ready, setReady] = useState(false);
   const [token, setToken] = useState(getCookie(globals.githubAuthTokenCookieName));
@@ -88,7 +88,7 @@ export const GitHubContextProvider: React.FC<{}> = (props) => {
 
   return (
     <GitHubContext.Provider value={{ token, setToken, octokit, userIsLoggedIn }}>
-      {ready && props.children}
+      {ready && children}
     </GitHubContext.Provider>
   );
 };

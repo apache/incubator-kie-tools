@@ -15,14 +15,13 @@
  */
 
 import "../../../__mocks__/ReactWithSupervisor";
-import { Cell, CELL_CSS_SELECTOR } from "@kie-tools/boxed-expression-component/dist/components/Resizer";
-import { Resizer } from "@kie-tools/boxed-expression-component/dist/components/Resizer";
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, wrapComponentInContext } from "../../test-utils";
 import * as React from "react";
-import { ContextExpression } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
-import { ContextProps } from "@kie-tools/boxed-expression-component/dist/api";
 import { act } from "react-dom/test-utils";
+import { ContextExpression } from "../../../../src/components/ContextExpression";
+import { Cell, CELL_CSS_SELECTOR, Resizer } from "../../../../src/components/Resizer";
+import { ContextProps } from "../../../../src/api";
 
 let cell: Cell;
 let element: HTMLElement;
@@ -65,9 +64,9 @@ describe("Cell", () => {
 
   describe("refreshWidthAsParent", () => {
     it("set the width as parent", () => {
-      act(() => {
-        createContext();
+      createContext();
 
+      act(() => {
         const elements = container.querySelectorAll(CELL_CSS_SELECTOR);
         const child1 = new Cell(elements.item(1) as HTMLElement, [], 1, document.body);
         const child2 = new Cell(elements.item(2) as HTMLElement, [], 1, document.body);
@@ -84,9 +83,9 @@ describe("Cell", () => {
 
   describe("refreshWidthAsLastColumn", () => {
     it("set the width as the last column", () => {
-      act(() => {
-        createContext();
+      createContext();
 
+      act(() => {
         const elements = container.querySelectorAll(CELL_CSS_SELECTOR);
         const child1 = new Cell(elements.item(0) as HTMLElement, [], 1, document.body);
         const child2 = new Cell(elements.item(1) as HTMLElement, [], 1, document.body);
@@ -100,23 +99,26 @@ describe("Cell", () => {
     });
 
     it("does not change the width when it is not the last column", () => {
+      createLiteral();
+
       act(() => {
-        createLiteral();
         cell.refreshWidthAsLastColumn();
       });
+
       expect(element.style.width).toBe("250px");
     });
   });
 
   describe("isLastColumn", () => {
     it("returns true when the literal expression lives in the last column", () => {
-      act(renderLiteralAtLastColumn);
+      renderLiteralAtLastColumn();
 
       expect(cell.isLastColumn()).toBeTruthy();
     });
 
     it("returns false when the literal expression does not live in the last column", () => {
-      act(renderLiteralAtRegularColumn);
+      renderLiteralAtRegularColumn();
+
       expect(cell.isLastColumn()).toBeFalsy();
     });
   });
@@ -177,71 +179,68 @@ function createLiteral() {
 }
 
 function createContext() {
-  container = render(
-    usingTestingBoxedExpressionI18nContext(
-      wrapComponentInContext(
-        <ContextExpression
-          {...({
-            id: "id1",
-            logicType: "Context",
-            name: "Expression Name",
-            dataType: "<Undefined>",
-            contextEntries: [
-              {
-                entryInfo: {
-                  name: "ContextEntry-1",
-                  dataType: "<Undefined>",
-                },
-                entryExpression: {
-                  id: "id2",
-                  logicType: "Context",
-                  contextEntries: [
-                    {
-                      entryInfo: {
-                        name: "ContextEntry-1",
-                        dataType: "<Undefined>",
-                      },
-                      entryExpression: {
-                        id: "id4",
-                        logicType: "Context",
-                        contextEntries: [
-                          {
-                            entryInfo: {
-                              name: "ContextEntry-1",
-                              dataType: "<Undefined>",
-                            },
-                            entryExpression: {},
-                            editInfoPopoverLabel: "Edit Context Entry",
-                          },
-                        ],
-                        result: {
-                          id: "id7",
-                        },
-                        entryInfoWidth: 257,
-                        entryExpressionWidth: 370,
-                      },
-                      editInfoPopoverLabel: "Edit Context Entry",
-                    },
-                  ],
-                  result: {
-                    id: "id5",
-                  },
-                  entryInfoWidth: 713,
-                  entryExpressionWidth: 691,
-                },
-                editInfoPopoverLabel: "Edit Context Entry",
-              },
-            ],
-            result: {
-              id: "id3",
+  const wrapper = usingTestingBoxedExpressionI18nContext(
+    <ContextExpression
+      {...({
+        id: "id1",
+        logicType: "Context",
+        name: "Expression Name",
+        dataType: "<Undefined>",
+        contextEntries: [
+          {
+            entryInfo: {
+              name: "ContextEntry-1",
+              dataType: "<Undefined>",
             },
-            entryInfoWidth: 150,
-            entryExpressionWidth: 1468,
-          } as unknown as ContextProps)}
-        />
-      )
-    ).wrapper
-  ).container;
+            entryExpression: {
+              id: "id2",
+              logicType: "Context",
+              contextEntries: [
+                {
+                  entryInfo: {
+                    name: "ContextEntry-1",
+                    dataType: "<Undefined>",
+                  },
+                  entryExpression: {
+                    id: "id4",
+                    logicType: "Context",
+                    contextEntries: [
+                      {
+                        entryInfo: {
+                          name: "ContextEntry-1",
+                          dataType: "<Undefined>",
+                        },
+                        entryExpression: {},
+                        editInfoPopoverLabel: "Edit Context Entry",
+                      },
+                    ],
+                    result: {
+                      id: "id7",
+                    },
+                    entryInfoWidth: 257,
+                    entryExpressionWidth: 370,
+                  },
+                  editInfoPopoverLabel: "Edit Context Entry",
+                },
+              ],
+              result: {
+                id: "id5",
+              },
+              entryInfoWidth: 713,
+              entryExpressionWidth: 691,
+            },
+            editInfoPopoverLabel: "Edit Context Entry",
+          },
+        ],
+        result: {
+          id: "id3",
+        },
+        entryInfoWidth: 150,
+        entryExpressionWidth: 1468,
+      } as unknown as ContextProps)}
+    />
+  );
+  container = render(wrapper.wrapper).container;
 }
 
 jest.mock("uuid", () => {

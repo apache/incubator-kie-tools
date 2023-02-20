@@ -57,7 +57,11 @@ const DataTypesSort = ({ dataTypes, onReorder }: DataTypesSortProps) => {
 
 export default DataTypesSort;
 
-const SortableList = SortableContainer(({ items }: { items: DDDataField[] }) => {
+type SortableListProps = {
+  items: DDDataField[];
+};
+
+const SortableList = SortableContainer<SortableListProps>(({ items }: SortableListProps) => {
   return (
     <ul className="data-types-sorting">
       {items.map((item, index) => (
@@ -67,7 +71,11 @@ const SortableList = SortableContainer(({ items }: { items: DDDataField[] }) => 
   );
 });
 
-const SortableItem = SortableElement(({ item }: { item: DDDataField }) => (
+type SortableItemProps = {
+  item: DDDataField;
+};
+
+const SortableItem = SortableElement<SortableItemProps>(({ item }: SortableItemProps) => (
   <li className="editable-item data-type-item__sortable">
     <section className="editable-item__inner" data-ouia-component-id={item.name}>
       <Flex alignItems={{ default: "alignItemsCenter" }}>

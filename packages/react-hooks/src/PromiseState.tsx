@@ -28,6 +28,7 @@ export type NewStateArgs<T> =
   | { loading?: false; data: T; error?: undefined }
   | { loading?: false; data?: undefined; error: string }
   | { loading: true; data?: undefined; error?: undefined };
+export type NewStateArgValue<T> = NewStateArgs<T> | ((prevState: T | undefined) => NewStateArgs<T>);
 
 export enum PromiseStateStatus {
   PENDING,
@@ -75,13 +76,10 @@ export function useDelayedPromiseState<T>(ms: number): [PromiseState<T>, (newSta
   return [ret, setState];
 }
 
-export function usePromiseState<T>(): [
-  PromiseState<T>,
-  (newState: NewStateArgs<T> | ((prevState: T | undefined) => NewStateArgs<T>)) => void
-] {
+export function usePromiseState<T>(): [PromiseState<T>, (newState: NewStateArgValue<T>) => void] {
   const [state, setState] = useState<PromiseState<T>>({ status: PromiseStateStatus.PENDING });
 
-  const set = useCallback((newState) => {
+  const set = useCallback((newState: NewStateArgValue<T>) => {
     return setState((prev) => {
       const ns = typeof newState == "function" ? newState(prev.data) : newState;
 

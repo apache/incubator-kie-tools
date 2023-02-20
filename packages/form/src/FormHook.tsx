@@ -157,7 +157,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   }, [setFormRef, ref]);
 
   const onFormSubmit = useCallback(
-    (formInputs) => {
+    (formInputs: any) => {
       onSubmit?.(formInputs);
     },
     [onSubmit]
@@ -165,7 +165,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
 
   // Validation occurs on every change and submit.
   const onFormValidate = useCallback(
-    (formInputs, error: any) => {
+    (formInputs: any, error: any) => {
       onValidate?.(formInputs, error);
       setFormInputs((previousModel) => {
         if (Object.keys(diff(formInputs, previousModel ?? {})).length > 0) {

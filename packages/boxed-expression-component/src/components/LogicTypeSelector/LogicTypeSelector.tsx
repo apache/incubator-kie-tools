@@ -234,7 +234,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   }, [boxedExpression.decisionNodeId, isHeadless, isLogicTypeSelected]);
 
   const onRootSelectorClick = useCallback(
-    (event) => {
+    (event: React.MouseEvent) => {
       if (!isHeadless && event.target === contextMenuRef.current) {
         boxedExpression.boxedExpressionEditorGWTService?.selectObject(boxedExpression.decisionNodeId);
       }

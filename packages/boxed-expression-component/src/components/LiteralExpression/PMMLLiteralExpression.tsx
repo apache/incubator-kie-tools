@@ -32,7 +32,7 @@ export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressio
   const [selectOpen, setSelectOpen] = useState(false);
 
   const onSelectToggle = useCallback(
-    (isOpen) => {
+    (isOpen: boolean) => {
       if (!props.getOptions() || !props.getOptions().length) {
         return;
       }
@@ -43,7 +43,7 @@ export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressio
   );
 
   const onSelect = useCallback(
-    (event, updatedSelection) => {
+    (event: React.MouseEvent, updatedSelection: string) => {
       setSelectOpen(false);
       selection.current = updatedSelection;
       props.onUpdatingRecursiveExpression?.({

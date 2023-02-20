@@ -20,6 +20,7 @@ import * as ReactDOM from "react-dom";
 import { Rect, Tutorial, UserInteraction } from "./api";
 import { GuidedTour } from "./components";
 import { GuidedTourDomUtils, GuidedTourEventBus } from "./core";
+import { createRoot } from "react-dom/client";
 
 class KogitoGuidedTour {
   private static instance?: KogitoGuidedTour;
@@ -52,9 +53,9 @@ class KogitoGuidedTour {
    */
   public setup(onTearDown = () => {}) {
     this.onTearDown = onTearDown;
-    ReactDOM.render(<GuidedTour />, this.domUtils.getGuidedTourHTMLElement(), () => {
-      this.eventBus.enableBus();
-    });
+    const root = createRoot(this.domUtils.getGuidedTourHTMLElement());
+    root.render(<GuidedTour />);
+    this.eventBus.enableBus();
   }
 
   /**

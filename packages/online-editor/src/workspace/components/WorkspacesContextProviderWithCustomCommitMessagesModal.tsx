@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { FunctionComponent, useMemo } from "react";
+import { FunctionComponent, PropsWithChildren, useMemo } from "react";
 import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
@@ -24,7 +24,9 @@ import { WorkspaceCommitModal } from "./WorkspaceCommitModal";
 import { ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { useOnlineI18n } from "../../i18n";
 
-export const WorkspacesContextProviderWithCustomCommitMessagesModal: FunctionComponent = (props) => {
+export const WorkspacesContextProviderWithCustomCommitMessagesModal: FunctionComponent<PropsWithChildren> = ({
+  children,
+}) => {
   const { env } = useEnv();
   const { i18n } = useOnlineI18n();
   const [promiseModalController, promiseModalRef] = useController<PromiseModalRef<string>>();
@@ -42,7 +44,7 @@ export const WorkspacesContextProviderWithCustomCommitMessagesModal: FunctionCom
           shouldRequireCommitMessage={env.KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE}
           onCommitMessageRequest={onCommitMessageRequest}
         >
-          {props.children}
+          {children}
         </WorkspacesContextProvider>
       )}
       <PromiseModal<string> title={i18n.commitModal.title} variant={ModalVariant.medium} forwardRef={promiseModalRef}>

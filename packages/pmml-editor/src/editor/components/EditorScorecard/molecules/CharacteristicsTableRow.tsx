@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { BaseSyntheticEvent, useCallback } from "react";
-import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Split, SplitItem } from "@patternfly/react-core";
 import {
   AttributeLabels,
   CharacteristicLabels,
@@ -114,7 +114,7 @@ const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) 
   const { validationRegistry } = useValidationRegistry();
 
   const validations = useCallback(
-    (attributeIndex) =>
+    (attributeIndex: number) =>
       validationRegistry.get(
         Builder()
           .forModel(modelIndex)

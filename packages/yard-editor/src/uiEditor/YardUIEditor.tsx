@@ -37,7 +37,10 @@ interface Props {
 export const YardUIEditor = ({ file, isReadOnly }: Props) => {
   const { i18n } = useBoxedExpressionEditorI18n();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  const handleTabClick = useCallback((_event, tabIndex) => setActiveTabIndex(tabIndex), []);
+  const handleTabClick = useCallback(
+    (_event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: number) => setActiveTabIndex(tabIndex),
+    []
+  );
   const yardData = file?.content ? deserialize(file.content) : undefined;
   const types = yardData?.inputs ? generateDecisionTypes(yardData?.inputs) : dataTypes;
 

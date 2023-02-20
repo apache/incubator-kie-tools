@@ -26,7 +26,7 @@ import {
   PMML,
   Scorecard,
 } from "@kie-tools/pmml-editor-marshaller";
-import { CharacteristicsContainer, CorePropertiesTable } from "../organisms";
+import { CharacteristicsContainer, CoreProperties, CorePropertiesTable } from "../organisms";
 import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
 import { useSelector } from "react-redux";
@@ -80,7 +80,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   }, [characteristics]);
 
   const onDeleteOutputField = useCallback(
-    (_index) => {
+    (_index: number) => {
       //See https://issues.redhat.com/browse/FAI-443
       //if (window.confirm(`Delete Output "${output?.OutputField[_index].name}"?`)) {
       dispatch({
@@ -96,7 +96,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   );
 
   const onUpdateOutputField = useCallback(
-    (_index, _outputField) => {
+    (_index: number, _outputField: OutputField) => {
       if (_index === undefined) {
         dispatch({
           type: Actions.AddOutput,
@@ -135,7 +135,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   );
 
   const onUpdateCoreProperty = useCallback(
-    (_props) => {
+    (_props: CoreProperties) => {
       dispatch({
         type: Actions.Scorecard_SetCoreProperties,
         payload: {

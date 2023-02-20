@@ -18,8 +18,8 @@ import { render } from "@testing-library/react";
 import * as React from "react";
 import { act } from "react-dom/test-utils";
 import { DataRecord } from "react-table";
-import { iterableValue, paste, pasteOnTable } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 import { wrapComponentInContext } from "../../test-utils";
+import { iterableValue, pasteOnTable, paste } from "../../../../src/components/Table/common";
 
 describe("CopyAndPasteUtils", () => {
   describe("pasteOnTable", () => {
@@ -234,7 +234,9 @@ describe("CopyAndPasteUtils", () => {
         )
       ).container;
 
-      paste("Z\tZ\nZ\tZ", container.querySelector(".ref")!, document.body);
+      act(() => {
+        paste("Z\tZ\nZ\tZ", container.querySelector(".ref")!, document.body);
+      });
     });
 
     test("dispatches paste event", () => {

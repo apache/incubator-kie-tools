@@ -53,7 +53,7 @@ export const CellSelectionBox: React.FunctionComponent = () => {
   }, []);
 
   const findFirstCell = useCallback(
-    (rect): Element | null => {
+    (rect: SelectionRect): Element | null => {
       const x = rect.x;
       const y = rect.y;
       return findCell(x, y);
@@ -62,7 +62,7 @@ export const CellSelectionBox: React.FunctionComponent = () => {
   );
 
   const findLastCell = useCallback(
-    (rect): Element | null => {
+    (rect: SelectionRect): Element | null => {
       const x = rect.x + rect.width;
       const y = rect.y + rect.height;
       return findCell(x, y);
@@ -156,7 +156,7 @@ export const CellSelectionBox: React.FunctionComponent = () => {
   );
 
   const setCellsValue = useCallback(
-    (event) => {
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       const pasteValue = event.target.value;
       const selectedCell = boxedExpression.editorRef.current?.querySelector(`.${SELECTED_CELL}`);
 

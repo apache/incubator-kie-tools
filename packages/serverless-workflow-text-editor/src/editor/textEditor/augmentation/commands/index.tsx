@@ -70,20 +70,19 @@ export function initAugmentationCommands(
             console.info("Opening functions widget..");
             // Part of an example
             //
-            // ReactDOM.render(
+            // createRoot(container).render(
             //   <EmbeddedDivPingPong
             //     apiImpl={pingPongChannelApiImpl}
             //     name={"React " + Math.random()}
             //     targetOrigin={window.location.origin}
             //     renderView={renderPingPongReact}
-            //   />,
-            //   container
+            //   />
             // );
           },
           onClose: ({ container }) => {
             // Part of an example
             //
-            // return ReactDOM.unmountComponentAtNode(container);
+            // return root.unmount();
           },
         });
       }

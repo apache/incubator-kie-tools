@@ -484,7 +484,7 @@ describe("ScorecardReducer::Valid actions", () => {
 
     const predicate: SimplePredicate = updated.Characteristics.Characteristic[0].Attribute[0]
       .predicate as SimplePredicate;
-    expect(predicate.field as string).toBe("updatedDataField");
+    expect(predicate.field).toBe("updatedDataField");
   });
 
   test("Actions.UpdateDataDictionaryField::CompoundPredicate", () => {
@@ -555,9 +555,9 @@ describe("ScorecardReducer::Valid actions", () => {
     expect(predicates[0]).toBeInstanceOf(SimplePredicate);
     expect(predicates[1]).toBeInstanceOf(SimplePredicate);
     const simplePredicate0: SimplePredicate = predicates[0] as SimplePredicate;
-    expect(simplePredicate0.field as string).toBe("updatedDataField");
+    expect(simplePredicate0.field).toBe("updatedDataField");
     const simplePredicate1: SimplePredicate = predicates[1] as SimplePredicate;
-    expect(simplePredicate1.field as string).toBe("updatedDataField");
+    expect(simplePredicate1.field).toBe("updatedDataField");
   });
 });
 

@@ -84,7 +84,7 @@ export const WorkspaceCommitModal: PromiseModalChildren<string> = ({ onReturn, o
   );
 
   const onSubmit = useCallback(
-    async (e) => {
+    async (e: React.FormEvent | React.MouseEvent) => {
       setLoading(true);
       e.preventDefault();
       e.stopPropagation();

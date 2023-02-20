@@ -118,7 +118,7 @@ export const ListExpression: React.FunctionComponent<ListProps> = (listExpressio
   );
 
   const setListWidth = useCallback(
-    (newInfoWidth) => {
+    (newInfoWidth: number) => {
       spreadListExpressionDefinition({ width: newInfoWidth });
     },
     [spreadListExpressionDefinition]

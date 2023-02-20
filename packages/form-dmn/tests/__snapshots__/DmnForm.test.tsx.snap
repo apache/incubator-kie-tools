@@ -62,7 +62,6 @@ exports[`DmnForm tests should remove require parameter 1`] = `
               type="text"
               value=""
             />
-            
           </div>
         </div>
       </div>
@@ -116,7 +115,6 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
             type="text"
             value="Kogito"
           />
-          
         </div>
       </div>
       <div
@@ -154,7 +152,6 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
             type="text"
             value="Tooling"
           />
-          
         </div>
       </div>
       <div
@@ -192,7 +189,6 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
             type="text"
             value="P1D"
           />
-          
         </div>
       </div>
       <div
@@ -230,7 +226,6 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
             type="text"
             value=""
           />
-          
         </div>
       </div>
     </div>
@@ -283,7 +278,6 @@ exports[`DmnForm tests should submit the formInputs 1`] = `
             type="text"
             value="Kogito"
           />
-          
         </div>
       </div>
       <div
@@ -321,7 +315,6 @@ exports[`DmnForm tests should submit the formInputs 1`] = `
             type="text"
             value="Tooling"
           />
-          
         </div>
       </div>
       <div
@@ -359,7 +352,6 @@ exports[`DmnForm tests should submit the formInputs 1`] = `
             type="text"
             value="P1D"
           />
-          
         </div>
       </div>
       <div
@@ -397,7 +389,6 @@ exports[`DmnForm tests should submit the formInputs 1`] = `
             type="text"
             value=""
           />
-          
         </div>
       </div>
     </div>
@@ -450,7 +441,6 @@ exports[`DmnForm tests should validate the formInputs - invalid 1`] = `
             type="text"
             value="Kogito"
           />
-          
         </div>
       </div>
       <div
@@ -488,7 +478,6 @@ exports[`DmnForm tests should validate the formInputs - invalid 1`] = `
             type="text"
             value="Tooling"
           />
-          
         </div>
       </div>
       <div
@@ -570,7 +559,6 @@ exports[`DmnForm tests should validate the formInputs - invalid 1`] = `
             type="text"
             value=""
           />
-          
         </div>
       </div>
     </div>
@@ -623,7 +611,6 @@ exports[`DmnForm tests should validate the formInputs - success 1`] = `
             type="text"
             value="Kogito"
           />
-          
         </div>
       </div>
       <div
@@ -661,7 +648,6 @@ exports[`DmnForm tests should validate the formInputs - success 1`] = `
             type="text"
             value="Tooling"
           />
-          
         </div>
       </div>
       <div
@@ -699,7 +685,6 @@ exports[`DmnForm tests should validate the formInputs - success 1`] = `
             type="text"
             value="P1D"
           />
-          
         </div>
       </div>
       <div
@@ -737,7 +722,6 @@ exports[`DmnForm tests should validate the formInputs - success 1`] = `
             type="text"
             value=""
           />
-          
         </div>
       </div>
     </div>
@@ -790,7 +774,6 @@ exports[`DmnForm tests shouldn't submit the formInputs 1`] = `
             type="text"
             value=""
           />
-          
         </div>
       </div>
       <div
@@ -828,7 +811,6 @@ exports[`DmnForm tests shouldn't submit the formInputs 1`] = `
             type="text"
             value=""
           />
-          
         </div>
       </div>
       <div
@@ -910,7 +892,6 @@ exports[`DmnForm tests shouldn't submit the formInputs 1`] = `
             type="text"
             value=""
           />
-          
         </div>
       </div>
     </div>

@@ -23,12 +23,12 @@ import { ThCell } from "./ThCell";
 import { EditExpressionMenu } from "../EditExpressionMenu";
 
 export interface ResizableHeaderCellProps {
-  column: any;
+  column: ColumnInstance;
   columnIndex: number;
   editColumnLabel?: string | { [groupType: string]: string };
   editableHeader: boolean;
   getColumnKey: (column: Column) => string;
-  getColumnLabel: (groupType: string) => string | undefined;
+  getColumnLabel: (groupType: string | undefined) => string | undefined;
   onCellKeyDown: () => (e: KeyboardEvent) => void;
   onColumnNameOrDataTypeUpdate: (column: ColumnInstance, columnIndex: number) => any;
   onHeaderClick: (columnKey: string) => () => void;
@@ -39,7 +39,7 @@ export interface ResizableHeaderCellProps {
   xPosition: number;
   yPosition: number;
   renderHeaderCellInfo: (
-    column: Column,
+    column: ColumnInstance,
     columnIndex: number,
     onAnnotationCellToggle?: (isReadMode: boolean) => void
   ) => React.ReactElement;
@@ -66,7 +66,7 @@ export const ResizableHeaderCell = ({
     ...column.getHeaderProps(),
     style: {},
   };
-  const width = column.width || DEFAULT_MIN_WIDTH;
+  const width = (column.width as number) || DEFAULT_MIN_WIDTH;
   const isColspan = (column.columns?.length ?? 0) > 0 || false;
   const columnKey = getColumnKey(column);
   const isFocusable = /^(_\w{8}-(\w{4}-){3}\w{12}|parameters|functionDefinition)$/.test(columnKey);
@@ -82,8 +82,8 @@ export const ResizableHeaderCell = ({
     }
     if (column.placeholderOf) {
       cssClasses.push("colspan-header");
-      cssClasses.push(column.placeholderOf.cssClasses);
-      cssClasses.push(column.placeholderOf.groupType);
+      cssClasses.push(column.placeholderOf.cssClasses || "");
+      cssClasses.push(column.placeholderOf.groupType || "");
     }
     cssClasses.push(column.groupType || "");
     cssClasses.push(column.cssClasses || "");
@@ -142,7 +142,7 @@ export const ResizableHeaderCell = ({
           {column.dataType && editableHeader ? (
             <EditExpressionMenu
               title={getColumnLabel(column.groupType)}
-              selectedExpressionName={column.label}
+              selectedExpressionName={column.label as string}
               selectedDataType={column.dataType}
               onExpressionUpdate={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
               key={columnKey}

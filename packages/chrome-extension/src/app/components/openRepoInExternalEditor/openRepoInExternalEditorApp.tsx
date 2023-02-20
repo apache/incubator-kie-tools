@@ -16,16 +16,12 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Globals, Main } from "../common/Main";
 import { createAndGetMainContainer, openRepoInExternalEditorContainer, removeAllChildren } from "../../utils";
 import { OpenInExternalEditorButton } from "./OpenInExternalEditorButton";
 import { GitHubPageType } from "../../github/GitHubPageType";
-import {
-  KOGITO_IFRAME_CONTAINER_PR_CLASS,
-  KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS,
-  KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
-  KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS,
-} from "../../constants";
+import { KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS } from "../../constants";
 
 export function renderOpenRepoInExternalEditorApp(
   args: Globals & { className: string; pageType: GitHubPageType; container: () => HTMLElement }
@@ -34,7 +30,9 @@ export function renderOpenRepoInExternalEditorApp(
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanup(args.id);
 
-  ReactDOM.render(
+  const root = createRoot(createAndGetMainContainer(args.id, args.dependencies.all.body()));
+
+  root.render(
     <Main
       id={args.id}
       editorEnvelopeLocator={args.editorEnvelopeLocator}
@@ -49,10 +47,10 @@ export function renderOpenRepoInExternalEditorApp(
         <OpenInExternalEditorButton className={args.className} pageType={args.pageType} />,
         openRepoInExternalEditorContainer(args.id, args.container())
       )}
-    </Main>,
-    createAndGetMainContainer(args.id, args.dependencies.all.body()),
-    () => args.logger.log("Mounted.")
+    </Main>
   );
+
+  args.logger.log("Mounted.");
 }
 
 function cleanup(id: string) {

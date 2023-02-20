@@ -31,9 +31,9 @@ import {
   focusTextInput,
   focusUpperCell,
   getParentCell,
-} from "@kie-tools/boxed-expression-component/dist/components/Table/common";
-import { PMMLLiteralExpression } from "@kie-tools/boxed-expression-component/dist/components/LiteralExpression";
-import { LogicType } from "@kie-tools/boxed-expression-component/dist/api";
+} from "../../../../src/components/Table/common";
+import { PMMLLiteralExpression } from "../../../../src/components/LiteralExpression";
+import { LogicType } from "../../../../src/api";
 
 /**
  * Create Mock HTML Table.

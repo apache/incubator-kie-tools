@@ -17,9 +17,9 @@
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import * as React from "react";
-import { LiteralExpression } from "@kie-tools/boxed-expression-component/dist/components/LiteralExpression";
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import { act } from "react-dom/test-utils";
+import { LiteralExpression } from "../../../src/components/LiteralExpression";
+import { DataType, LogicType } from "../../../src/api";
 
 jest.useFakeTimers();
 const flushPromises = () => new Promise((resolve) => process.nextTick(resolve));

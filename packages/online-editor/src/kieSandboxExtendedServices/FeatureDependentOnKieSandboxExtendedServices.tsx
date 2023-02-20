@@ -21,17 +21,16 @@ import { useExtendedServices } from "./KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 
 interface Props {
-  children: any;
   isLight: boolean;
   position: "auto" | "top" | "bottom" | "left" | "right";
 }
 
-export function FeatureDependentOnKieSandboxExtendedServices(props: Props) {
+export function FeatureDependentOnKieSandboxExtendedServices(props: React.PropsWithChildren<Props>) {
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
 
   if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-    return props.children;
+    return <>{props.children}</>;
   }
 
   return (
@@ -40,7 +39,7 @@ export function FeatureDependentOnKieSandboxExtendedServices(props: Props) {
       position={props.position}
       className={props.isLight ? "kogito--editor__light-tooltip" : ""}
     >
-      {props.children}
+      <div>{props.children}</div>
     </Tooltip>
   );
 }

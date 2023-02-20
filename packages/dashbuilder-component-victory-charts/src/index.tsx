@@ -16,10 +16,10 @@
 
 import * as React from "react";
 import "@patternfly/react-core/dist/styles/base.css";
-import * as ReactDOM from "react-dom";
 import { ComponentApi } from "@kie-tools/dashbuilder-component-api";
 import { VictoryChartComponent } from "./VictoryChartComponent";
+import { createRoot } from "react-dom/client";
 
 const api = new ComponentApi();
 
-ReactDOM.render(<VictoryChartComponent controller={api.getComponentController()} />, document.getElementById("app")!);
+createRoot(document.getElementById("app")!).render(<VictoryChartComponent controller={api.getComponentController()} />);

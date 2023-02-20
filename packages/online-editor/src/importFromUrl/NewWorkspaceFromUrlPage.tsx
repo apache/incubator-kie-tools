@@ -100,7 +100,7 @@ export function NewWorkspaceFromUrlPage() {
   );
 
   const setUrl = useCallback(
-    (newUrl) => {
+    (newUrl: React.SetStateAction<string>) => {
       if (!newUrl) {
         history.replace({
           pathname: routes.import.path({}),
@@ -119,7 +119,7 @@ export function NewWorkspaceFromUrlPage() {
   );
 
   const setGitRefName = useCallback(
-    (newGitRefName) => {
+    (newGitRefName: React.SetStateAction<string>) => {
       if (!newGitRefName) {
         history.replace({
           pathname: routes.import.path({}),

@@ -24,9 +24,9 @@ import {
   usingTestingBoxedExpressionI18nContext,
   usingTestingBoxedExpressionProviderContext,
 } from "../test-utils";
-import { ContextExpression } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as React from "react";
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import { ContextExpression } from "../../../src/components/ContextExpression";
+import { DataType, LogicType } from "../../../src/api";
 
 describe("ContextExpression tests", () => {
   const name = "contextName";

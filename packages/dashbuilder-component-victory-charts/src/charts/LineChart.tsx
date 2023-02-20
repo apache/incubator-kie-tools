@@ -20,7 +20,7 @@ import { ChartGroup, ChartLine } from "@patternfly/react-charts";
 import { XYChart } from "./XYChart";
 
 export class LineChart extends XYChart {
-  buildChartGroup(): any {
+  buildChartGroup(): JSX.Element {
     return (
       <ChartGroup>
         {this.dataSetToXYData()

@@ -19,8 +19,8 @@
     "@kie-tools/import-java-classes-component": "workspace:*",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.33.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -34,8 +34,8 @@
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
     "@types/lodash": "^4.14.168",
-    "@types/react": "^17.0.6",
-    "@types/react-dom": "^17.0.5",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
     "jest": "^26.6.3",
     "jest-when": "^3.5.0",
     "rimraf": "^3.0.2",

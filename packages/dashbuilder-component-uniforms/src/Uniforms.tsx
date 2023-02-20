@@ -30,14 +30,14 @@ const createValidator = (schema: any) => {
 
 interface Props {
   schema: Object;
-  onSubmit: (formRef: any, data: Object) => void;
+  onSubmit: (formRef: any, data: any) => void;
   disabled?: boolean;
 }
 
 export const Uniforms = (props: Props) => {
   const bridge = new JSONSchemaBridge(props.schema, createValidator(props.schema));
   let formRef: any;
-  const onSubmitWrapper = useCallback((data) => props.onSubmit(formRef, data), [formRef, props]);
+  const onSubmitWrapper = useCallback((data: any) => props.onSubmit(formRef, data), [formRef, props]);
   return (
     <>
       <AutoForm

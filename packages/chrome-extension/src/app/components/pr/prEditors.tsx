@@ -29,13 +29,16 @@ import { Dependencies } from "../../Dependencies";
 import { PrInfo } from "./IsolatedPrEditor";
 import { OpenInExternalEditorButton } from "../openRepoInExternalEditor/OpenInExternalEditorButton";
 import { GitHubPageType } from "../../github/GitHubPageType";
+import { createRoot } from "react-dom/client";
 
 export function renderPrEditorsApp(args: Globals) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanup(args.id);
 
-  ReactDOM.render(
+  const root = createRoot(createAndGetMainContainer(args.id, args.dependencies.all.body()));
+
+  root.render(
     <Main
       id={args.id}
       editorEnvelopeLocator={args.editorEnvelopeLocator}
@@ -51,10 +54,10 @@ export function renderPrEditorsApp(args: Globals) {
         <OpenInExternalEditorButton className={"btn btn-sm"} pageType={GitHubPageType.PR_FILES_OR_COMMITS} />,
         openRepoInExternalEditorContainer(args.id, args.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!)
       )}
-    </Main>,
-    createAndGetMainContainer(args.id, args.dependencies.all.body()),
-    () => args.logger.log("Mounted.")
+    </Main>
   );
+
+  args.logger.log("Mounted.");
 }
 
 export function parsePrInfo(dependencies: Dependencies): PrInfo {

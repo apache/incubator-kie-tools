@@ -16,10 +16,10 @@
 
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
-import { TableHandlerMenu } from "@kie-tools/boxed-expression-component/dist/components";
 import * as React from "react";
-import { TableOperation } from "@kie-tools/boxed-expression-component/dist/api";
 import * as _ from "lodash";
+import { TableHandlerMenu } from "../../../src/components";
+import { TableOperation } from "../../../src/api";
 
 const menuItem = (item: string) => {
   return "[data-ouia-component-id='expression-table-handler-menu-" + item + "'] span";

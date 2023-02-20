@@ -44,7 +44,7 @@ import { ValidationIndicator } from "../../EditorCore/atoms";
 import set = Reflect.set;
 import get = Reflect.get;
 
-interface AttributeEditorContent {
+export interface AttributeEditorContent {
   partialScore?: number;
   reasonCode?: string;
   predicate?: Predicate;

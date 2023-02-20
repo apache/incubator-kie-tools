@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { Column, DataType, generateUuid, LogicType, Row } from "@kie-tools/boxed-expression-component/dist/api";
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import * as React from "react";
-import { RelationExpression } from "@kie-tools/boxed-expression-component/dist/components/RelationExpression";
+import { RelationExpression } from "../../../src/components/RelationExpression";
+import { Column, DataType, generateUuid, LogicType, Row } from "../../../src/api";
 
 describe("RelationExpression tests", () => {
   test("should render a table element, with one default column and one default row, when no props are passed", () => {

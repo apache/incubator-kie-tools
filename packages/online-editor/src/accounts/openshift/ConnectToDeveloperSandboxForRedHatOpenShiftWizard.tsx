@@ -122,8 +122,8 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   );
 
   const onStepChanged = useCallback(
-    async ({ id }) => {
-      if (id === WizardStepIds.CONNECT) {
+    async (newStep: { id?: string | number }) => {
+      if (newStep.id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
         setConnectionValidated(await props.openshiftService.isConnectionEstablished());
         setConnectLoading(false);

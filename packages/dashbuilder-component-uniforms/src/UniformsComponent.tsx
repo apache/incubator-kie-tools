@@ -51,7 +51,7 @@ export function UniformsComponent(props: Props) {
   }, []);
 
   const submitForm = useCallback(
-    (ref, data) => {
+    (ref: any, data: any) => {
       const _body = JSON.stringify(data);
       setFormState((prev) => ({
         ...prev,

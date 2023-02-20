@@ -55,21 +55,20 @@ export function usingCurrentTutorialContext(children: React.ReactElement, ctx?: 
 }
 
 export function usingTestingGuidedTourI18nContext(
-  children: React.ReactElement,
+  children: React.ReactNode,
   ctx?: Partial<I18nDictionariesProviderProps<GuidedTourI18n>>
 ) {
   const usedCtx: I18nDictionariesProviderProps<GuidedTourI18n> = {
     defaults: guidedTourI18nDefaults,
     dictionaries: guidedTourI18nDictionaries,
     ctx: GuidedTourI18nContext,
-    children,
     ...ctx,
   };
   return {
     ctx: usedCtx,
     wrapper: (
       <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
-        {usedCtx.children}
+        {children}
       </I18nDictionariesProvider>
     ),
   };

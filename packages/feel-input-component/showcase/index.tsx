@@ -20,6 +20,7 @@ import * as ReactDOM from "react-dom";
 import { FeelService } from "./FeelService";
 import "./index.css";
 import { FeelInput } from "../src";
+import { createRoot } from "react-dom/client";
 
 const feelServerUrl = process.env.WEBPACK_REPLACE__FEEL_INPUT_COMPONENT_DEV_WEBAPP__feelServerUrl;
 if (!feelServerUrl) {
@@ -107,4 +108,4 @@ declare global {
   }
 }
 
-ReactDOM.render(<FeelEditor />, document.getElementById("root"));
+createRoot(document.getElementById("root")!).render(<FeelEditor />);

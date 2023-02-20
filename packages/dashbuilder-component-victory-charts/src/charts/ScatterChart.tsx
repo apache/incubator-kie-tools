@@ -19,7 +19,7 @@ import { ChartArea, ChartGroup, ChartScatter } from "@patternfly/react-charts";
 import { XYChart } from "./XYChart";
 
 export class ScatterChart extends XYChart {
-  buildChartGroup(): any {
+  buildChartGroup(): JSX.Element {
     return (
       <ChartGroup>
         {this.dataSetToXYData()

@@ -18,7 +18,7 @@ import "./ContextEntryInfo.css";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { EditExpressionMenu } from "../EditExpressionMenu";
-import { DataType } from "../../api";
+import { DataType, ExpressionProps } from "../../api";
 
 export interface ContextEntryInfoProps {
   /** Context entry info id */
@@ -41,8 +41,8 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
   editInfoPopoverLabel,
 }) => {
   const onEntryNameOrDataTypeUpdate = useCallback(
-    ({ name, dataType }) => {
-      onContextEntryUpdate(name, dataType);
+    ({ name, dataType }: ExpressionProps) => {
+      onContextEntryUpdate(name!, dataType!);
     },
     [onContextEntryUpdate]
   );

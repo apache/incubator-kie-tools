@@ -14,20 +14,28 @@
  * limitations under the License.
  */
 
-import { fireEvent, render } from "@testing-library/react";
+import { act, fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { CellSelectionBox } from "@kie-tools/boxed-expression-component/dist/components/SelectionBox";
 import "../../__mocks__/ReactWithSupervisor";
 import { wrapComponentInContext } from "../test-utils";
+import { CellSelectionBox } from "../../../src/components/SelectionBox";
 
 describe("CellSelectionBox", () => {
   describe("when users select elements in a simple table", () => {
     it("stores element values in the text area element", async () => {
       const container = renderSimpleTable();
 
-      fireEvent.mouseDown(container, { clientX: -1, clientY: -1 });
-      fireEvent.mouseMove(container, { clientX: 1000, clientY: 1000 });
-      fireEvent.mouseUp(container);
+      act(() => {
+        fireEvent.mouseDown(container, { clientX: -1, clientY: -1 });
+      });
+
+      act(() => {
+        fireEvent.mouseMove(container, { clientX: 1000, clientY: 1000 });
+      });
+
+      act(() => {
+        fireEvent.mouseUp(container);
+      });
 
       const kieSelectionTextarea = container.querySelector(".kie-cell-selection-box textarea") as HTMLTextAreaElement;
       const selectionValue = kieSelectionTextarea!.value;
@@ -52,9 +60,17 @@ describe("CellSelectionBox", () => {
         )
       );
 
-      fireEvent.mouseDown(container, { clientX: -1, clientY: -1 });
-      fireEvent.mouseMove(container, { clientX: 1000, clientY: 1000 });
-      fireEvent.mouseUp(container);
+      act(() => {
+        fireEvent.mouseDown(container, { clientX: -1, clientY: -1 });
+      });
+
+      act(() => {
+        fireEvent.mouseMove(container, { clientX: 1000, clientY: 1000 });
+      });
+
+      act(() => {
+        fireEvent.mouseUp(container);
+      });
 
       const kieSelectionTextarea = container.querySelector(".kie-cell-selection-box textarea") as HTMLTextAreaElement;
       const selectionValue = kieSelectionTextarea!.value;

@@ -266,7 +266,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   }, [dmnRunnerState.jsonSchema]);
 
   const setFormInputs = useCallback(
-    (newFormInputs) => {
+    (newFormInputs: React.SetStateAction<InputRow>) => {
       setInputRows((currentInputRows: Array<InputRow>) => {
         const newData = [...currentInputRows];
         if (typeof newFormInputs === "function") {
@@ -285,7 +285,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const [selectedRow, selectRow] = useState<string>("");
   const [rowSelectionIsOpen, openRowSelection] = useState<boolean>(false);
 
-  const onSelectRow = useCallback((event) => {
+  const onSelectRow = useCallback(() => {
     openRowSelection(false);
   }, []);
 

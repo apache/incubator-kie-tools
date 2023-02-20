@@ -81,9 +81,12 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     setDataType(selectedDataType);
   }, [selectedDataType]);
 
-  const onExpressionNameChange = useCallback((event) => {
-    setExpressionName(event.target.value);
-  }, []);
+  const onExpressionNameChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>) => {
+      setExpressionName(event.target.value);
+    },
+    []
+  );
 
   const onDataTypeChange = useCallback((dataType: DataType) => {
     setDataType(dataType);

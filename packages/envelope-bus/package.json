@@ -25,8 +25,8 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -37,7 +37,7 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
-    "@types/react": "^17.0.6",
+    "@types/react": "^18.0.28",
     "jest": "^26.6.3",
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",

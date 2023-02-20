@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-import { fireEvent, render } from "@testing-library/react";
+import { act, fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { Resizer } from "@kie-tools/boxed-expression-component/dist/components/Resizer";
-import { SelectionBox } from "@kie-tools/boxed-expression-component/dist/components/SelectionBox";
 import "../../__mocks__/ReactWithSupervisor";
 import { wrapComponentInContext } from "../test-utils";
+import { SelectionBox } from "../../../src/components/SelectionBox";
+import { Resizer } from "../../../src/components/Resizer";
 
 describe("SelectionBox", () => {
   describe("when users drag the selection box element (but do not release the mouse button)", () => {
     it("it appears in the screen", async () => {
       const container = renderTable();
+
+      act(() => {
+        fireEvent.mouseDown(container, { clientX: 10, clientY: 20 });
+      });
+
+      act(() => {
+        fireEvent.mouseMove(container, { clientX: 300, clientY: 400 });
+      });
+
       const selectionBox = container.querySelector(".kie-selection-box") as HTMLElement;
       const selectionBoxStyle = selectionBox.style;
-
-      fireEvent.mouseDown(container, { clientX: 10, clientY: 20 });
-      fireEvent.mouseMove(container, { clientX: 300, clientY: 400 });
 
       expect(selectionBoxStyle.width).toEqual("290px");
       expect(selectionBoxStyle.height).toEqual("380px");
@@ -44,9 +50,17 @@ describe("SelectionBox", () => {
       const selectionBox = container.querySelector(".kie-selection-box") as HTMLElement;
       const selectionBoxStyle = selectionBox.style;
 
-      fireEvent.mouseDown(container, { clientX: 10, clientY: 10 });
-      fireEvent.mouseMove(container, { clientX: 300, clientY: 400 });
-      fireEvent.mouseUp(container);
+      act(() => {
+        fireEvent.mouseDown(container, { clientX: 10, clientY: 20 });
+      });
+
+      act(() => {
+        fireEvent.mouseMove(container, { clientX: 300, clientY: 400 });
+      });
+
+      act(() => {
+        fireEvent.mouseUp(container);
+      });
 
       expect(selectionBoxStyle.width).toEqual("");
       expect(selectionBoxStyle.height).toEqual("");

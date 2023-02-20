@@ -20,6 +20,7 @@ import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import "./PopoverMenu.css";
 import { useBoxedExpression } from "../../context";
 import { NavigationKeysUtils } from "../common";
+import { Instance as TippyInstance } from "@patternfly/react-core/src/helpers/Popper/DeprecatedTippyTypes";
 
 export interface PopoverMenuProps {
   /** Optional children element to be considered for triggering the popover */
@@ -29,7 +30,7 @@ export interface PopoverMenuProps {
   /** A function which returns the HTMLElement where the popover's arrow should be placed */
   arrowPlacement?: () => HTMLElement;
   /** The content of the popover itself */
-  body: React.ReactNode;
+  body: React.ReactNode | ((hide: () => void) => React.ReactNode);
   /** The node where to append the popover content */
   appendTo?: HTMLElement | ((ref?: HTMLElement) => HTMLElement);
   /** Additional classname to be used for the popover */
@@ -100,7 +101,7 @@ export const PopoverMenu = React.forwardRef(
     }, []);
 
     const shouldClose = useCallback(
-      (_tip, hideFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
+      (_tip: TippyInstance, hideFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
         // if the esc key has been pressed with a Select component open
         if ((event?.target as Element).closest(".pf-c-select__menu")) {
           return;

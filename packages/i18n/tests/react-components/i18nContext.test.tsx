@@ -20,6 +20,7 @@ import { immutableDeepMerge } from "@kie-tools-core/i18n/dist/core/immutableDeep
 import { TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
 import { render } from "@testing-library/react";
 import { DummyContext, DummyDictionary, DummyComponent, dummyDefault, interpolationFunction } from "../utils";
+import { I18nDictionaries } from "../../src/core";
 
 describe("I18nDictionariesProvider", () => {
   describe("I18nDictionariesProvider::component", () => {
@@ -29,7 +30,7 @@ describe("I18nDictionariesProvider", () => {
       const { getByTestId } = render(
         <I18nDictionariesProvider
           defaults={{ locale: "en", dictionary: dummyDefault }}
-          dictionaries={dictionaries}
+          dictionaries={dictionaries as I18nDictionaries<any>}
           ctx={DummyContext}
         >
           <DummyComponent />
@@ -45,7 +46,7 @@ describe("I18nDictionariesProvider", () => {
       const { getByTestId } = render(
         <I18nDictionariesProvider
           defaults={{ locale: "en", dictionary: dummyDefault }}
-          dictionaries={dictionaries}
+          dictionaries={dictionaries as I18nDictionaries<any>}
           ctx={DummyContext}
         >
           <DummyComponent />
@@ -68,7 +69,7 @@ describe("I18nDictionariesProvider", () => {
       const { getByTestId } = render(
         <I18nDictionariesProvider
           defaults={{ locale: "en-US", dictionary: dummyDefault }}
-          dictionaries={dictionaries}
+          dictionaries={dictionaries as I18nDictionaries<any>}
           ctx={DummyContext}
         >
           <DummyComponent />

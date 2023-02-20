@@ -599,6 +599,12 @@
       { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/import-java-classes-component", "target": "@kie-tools-core/monaco-editor", "weight": 1 },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/patternfly-base",
+        "weight": 1
+      },
       {
         "source": "@kie-tools/import-java-classes-component",
         "target": "@kie-tools-core/vscode-java-code-completion",

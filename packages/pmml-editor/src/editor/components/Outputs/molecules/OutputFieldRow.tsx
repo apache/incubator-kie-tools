@@ -15,9 +15,7 @@
  */
 import * as React from "react";
 import { BaseSyntheticEvent, useMemo } from "react";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { Flex, FlexItem, Label, Split, SplitItem } from "@patternfly/react-core";
 import { DataType, OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
 import { OutputFieldRowAction, OutputLabels } from "../atoms";
 import "./OutputFieldRow.scss";

@@ -51,8 +51,8 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
     !_.includes(BUILT_IN_AGGREGATION_AVAILABILITY, selectedHitPolicy)
   );
 
-  const onHitPolicySelectToggle = useCallback((isOpen) => setHitPolicySelectOpen(isOpen), []);
-  const onBuiltInAggregatorSelectToggle = useCallback((isOpen) => setBuiltInAggregatorSelectOpen(isOpen), []);
+  const onHitPolicySelectToggle = useCallback((isOpen: boolean) => setHitPolicySelectOpen(isOpen), []);
+  const onBuiltInAggregatorSelectToggle = useCallback((isOpen: boolean) => setBuiltInAggregatorSelectOpen(isOpen), []);
 
   const hitPolicySelectionCallback = useCallback(
     (event: React.MouseEvent<Element, MouseEvent>, itemId: string) => {

@@ -21,6 +21,7 @@ import { useCallback, useMemo } from "react";
 import "@patternfly/react-styles/css/utilities/Text/text.css";
 import {
   Column as RelationColumn,
+  ColumnsUpdateArgs,
   DataType,
   executeIfExpressionDefinitionChanged,
   generateUuid,
@@ -145,7 +146,7 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
   );
 
   const onColumnsUpdate = useCallback(
-    ({ columns, operation, columnIndex }) => {
+    ({ columns, operation, columnIndex = 0 }: ColumnsUpdateArgs) => {
       const newColumns = columns.map((columnInstance: ColumnInstance) => ({
         id: columnInstance.accessor,
         name: columnInstance.label as string,

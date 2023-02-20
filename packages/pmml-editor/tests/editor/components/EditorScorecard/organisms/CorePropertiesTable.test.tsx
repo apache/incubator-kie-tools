@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { fireEvent, render } from "@testing-library/react";
+import { act, fireEvent, render } from "@testing-library/react";
 import * as React from "react";
 import { CoreProperties, CorePropertiesTable } from "../../../../../src/editor/components/EditorScorecard/organisms";
 import { Operation, OperationContext } from "../../../../../src/editor/components/EditorScorecard";
@@ -58,7 +58,10 @@ describe("CorePropertiesTable", () => {
     expect(container.children[0].className.toString()).toContain("editable-item");
     expect(container).toMatchSnapshot();
 
-    container.click();
+    act(() => {
+      container.click();
+    });
+
     rerender(component);
     const containerEditing = getByTestId("core-properties-table");
     expect(containerEditing.children[0].className.toString()).toContain("editable-item--editing");
@@ -116,11 +119,17 @@ describe("CorePropertiesTable", () => {
     const { getByTestId, rerender } = render(component);
     const container = getByTestId("core-properties-table");
 
-    container.click();
+    act(() => {
+      container.click();
+    });
+
     rerender(component);
 
     const isScorable = getByTestId("core-properties-table-isScorable");
-    isScorable.click();
+
+    act(() => {
+      isScorable.click();
+    });
 
     expect(commit).toBeCalledTimes(1);
     const args: CoreProperties[] = commit.mock.calls[0];
@@ -157,11 +166,17 @@ describe("CorePropertiesTable", () => {
     const { getByTestId, rerender } = render(component);
     const container = getByTestId("core-properties-table");
 
-    container.click();
+    act(() => {
+      container.click();
+    });
+
     rerender(component);
 
     const useReasonCodes = getByTestId("core-properties-table-useReasonCodes");
-    useReasonCodes.click();
+
+    act(() => {
+      useReasonCodes.click();
+    });
 
     expect(commit).toBeCalledTimes(1);
     const args: CoreProperties[] = commit.mock.calls[0];
@@ -198,7 +213,9 @@ describe("CorePropertiesTable", () => {
     const { getByTestId, rerender } = render(component);
     const container = getByTestId("core-properties-table");
 
-    container.click();
+    act(() => {
+      container.click();
+    });
     rerender(component);
 
     const algorithmName = getByTestId("core-properties-table-algorithmName");

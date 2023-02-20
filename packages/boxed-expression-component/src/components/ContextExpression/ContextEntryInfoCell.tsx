@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CellProps, ContextEntries, ContextEntryRecord, EntryInfo, ExpressionProps } from "../../api";
+import { CellProps, ContextEntries, ContextEntryRecord, DataType, EntryInfo, ExpressionProps } from "../../api";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { DataRecord } from "react-table";
@@ -38,7 +38,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   const entryExpression: ExpressionProps = useMemo(() => contextEntry.entryExpression, [contextEntry.entryExpression]);
 
   const onContextEntryUpdate = useCallback(
-    (name, dataType) => {
+    (name: string, dataType: DataType) => {
       const updatedExpression = { ...entryExpression };
       if (contextEntry.nameAndDataTypeSynchronized && _.size(name) && _.size(dataType)) {
         updatedExpression.name = name;

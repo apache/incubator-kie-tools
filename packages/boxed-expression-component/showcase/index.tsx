@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useState } from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import "./index.css";
 // noinspection ES6PreferShortImport
 import {
@@ -200,4 +200,4 @@ export const App: React.FunctionComponent = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("root"));
+createRoot(document.getElementById("root")).render(<App />);

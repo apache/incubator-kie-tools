@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  BoxedExpressionEditorGWTService,
-  DataType,
-  DecisionTableProps,
-  HitPolicy,
-  LogicType,
-} from "@kie-tools/boxed-expression-component/dist/api";
 import { fireEvent, render } from "@testing-library/react";
 import {
   flushPromises,
@@ -29,10 +22,10 @@ import {
   wrapComponentInContext,
 } from "../test-utils";
 import * as React from "react";
-import { DecisionTableExpression } from "@kie-tools/boxed-expression-component/dist/components/DecisionTableExpression";
 import { openContextMenu } from "../Table/Table.test";
-import * as _ from "lodash";
 import { act } from "react-dom/test-utils";
+import { DecisionTableExpression } from "../../../src/components/DecisionTableExpression";
+import { BoxedExpressionEditorGWTService, DataType, DecisionTableProps, HitPolicy, LogicType } from "../../../src/api";
 
 describe("DecisionTableExpression tests", () => {
   test("should show a table with three columns: input, output and annotation, and one row", () => {

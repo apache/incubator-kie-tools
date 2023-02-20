@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useRef } from "react";
 import "./ExpressionContainer.css";
-import { ExpressionProps, LogicType } from "../../api";
+import { DataType, ExpressionProps, LogicType } from "../../api";
 import { LogicTypeSelector } from "../LogicTypeSelector";
 import { useBoxedExpression } from "../../context";
 
@@ -37,7 +37,7 @@ export const ExpressionContainer: (props: ExpressionContainerProps) => JSX.Eleme
   const expressionContainerRef = useRef<HTMLDivElement>(null);
 
   const updateExpressionNameAndDataType = useCallback(
-    (updatedName, updatedDataType) => {
+    (updatedName: string, updatedDataType: DataType) => {
       if (selectedExpression.name === updatedName && selectedExpression.dataType === updatedDataType) {
         return;
       }
@@ -51,7 +51,7 @@ export const ExpressionContainer: (props: ExpressionContainerProps) => JSX.Eleme
   );
 
   const onLogicTypeUpdating = useCallback(
-    (logicType) => {
+    (logicType: LogicType) => {
       onExpressionChange?.({
         ...selectedExpression,
         logicType: logicType,

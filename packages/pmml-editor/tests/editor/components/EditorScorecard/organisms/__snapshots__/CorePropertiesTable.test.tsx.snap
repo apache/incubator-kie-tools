@@ -277,7 +277,6 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                       </div>
                     </span>
                   </label>
-                  
                 </div>
               </div>
             </div>
@@ -348,7 +347,6 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                       </span>
                     </button>
                   </div>
-                  
                 </div>
               </div>
             </div>
@@ -387,7 +385,6 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                     type="text"
                     value="algorithmName"
                   />
-                  
                 </div>
               </div>
             </div>
@@ -423,7 +420,6 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                     type="number"
                     value="2"
                   />
-                  
                 </div>
               </div>
             </div>
@@ -486,7 +482,6 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                       </div>
                     </span>
                   </label>
-                  
                 </div>
               </div>
             </div>
@@ -555,7 +550,6 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                       </span>
                     </button>
                   </div>
-                  
                 </div>
               </div>
             </div>
@@ -608,7 +602,6 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                     type="number"
                     value="1"
                   />
-                  
                 </div>
               </div>
             </div>
@@ -677,7 +670,6 @@ exports[`CorePropertiesTable render::Editing 2`] = `
                       </span>
                     </button>
                   </div>
-                  
                 </div>
               </div>
             </div>

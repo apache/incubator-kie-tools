@@ -26,7 +26,7 @@ import {
   getFullCellCoordinates,
   getFullCellCoordinatesByDataAttributes,
   getFullCellCoordinatesByHTMLPosition,
-} from "@kie-tools/boxed-expression-component/dist/components/Table/common";
+} from "../../../../src/components/Table/common";
 
 describe("TableUtils", () => {
   describe("getCellCoordinates", () => {

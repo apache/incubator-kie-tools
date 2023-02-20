@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { Location, LocationDescriptorObject } from "history";
+import { Action, Location, LocationDescriptorObject } from "history";
 
 export type BlockerDelegate = (args: { location: Location }) => boolean;
 
@@ -95,7 +95,7 @@ export function NavigationContextProvider(props: { children: React.ReactNode }) 
   );
 
   useEffect(() => {
-    const cleanup = history.block((location, action) => {
+    const cleanup = history.block((location: Location, action: Action) => {
       // history.replace is usually necessary for plumbing, so no reason to block.
       if (action === "REPLACE") {
         return;

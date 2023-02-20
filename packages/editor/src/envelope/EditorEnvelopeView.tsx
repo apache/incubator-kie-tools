@@ -18,7 +18,7 @@ import * as React from "react";
 import { Editor } from "../api";
 import { LoadingScreen } from "./LoadingScreen";
 import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
-import { useCallback, useImperativeHandle, useState } from "react";
+import { useImperativeHandle, useMemo, useState } from "react";
 
 interface Props {
   setLocale: React.Dispatch<string>;
@@ -54,13 +54,19 @@ export const EditorEnvelopeViewRef: React.ForwardRefRenderFunction<EditorEnvelop
     [props, editor]
   );
 
+  const children = useMemo(() => {
+    if (!editor || !editor.af_isReact) {
+      return undefined;
+    }
+
+    return <>{editor.af_componentRoot()}</>;
+  }, [editor, editor?.af_isReact]);
+
   return (
     <>
       {!loading && props.showKeyBindingsOverlay && <KeyBindingsHelpOverlay />}
       <LoadingScreen loading={loading} />
-      <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0", left: "0" }}>
-        {editor && editor.af_isReact && editor.af_componentRoot()}
-      </div>
+      <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0", left: "0" }}>{children}</div>
     </>
   );
 };

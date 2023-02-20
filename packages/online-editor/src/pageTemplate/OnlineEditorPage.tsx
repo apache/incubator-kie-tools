@@ -31,7 +31,7 @@ import { MastheadContent } from "@patternfly/react-core/dist/js/components/Masth
 import { Toolbar, ToolbarContent } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { ToolbarGroup, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 
-export function OnlineEditorPage(props: { children?: React.ReactNode }) {
+export function OnlineEditorPage(props: React.PropsWithChildren) {
   const history = useHistory();
   const routes = useRoutes();
 
