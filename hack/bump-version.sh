@@ -31,7 +31,7 @@ snapshot=$(if [[ "${new_version}" == *snapshot ]]; then echo 'true'; else echo '
 
 echo "Set new version to ${new_version} (set nightly image tag ? ${snapshot})"
 
-sed -i "s|VERSION ?=.*|VERSION ?= ${new_version}|g" Makefile
+sed -i "s|^VERSION ?=.*|VERSION ?= ${new_version}|g" Makefile
 sed -i "s|newTag:.*|newTag: ${new_version}|g" config/manager/kustomization.yaml
 
 if [ "${snapshot}" = 'true' ]; then
