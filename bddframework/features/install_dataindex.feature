@@ -257,6 +257,7 @@ Feature: Kogito Data Index
       # For Quarkus
       | runtime-env | QUARKUS_DATASOURCE_USERNAME                  | myuser                                          |
       | runtime-env | QUARKUS_DATASOURCE_PASSWORD                  | mypass                                          |
+      | runtime-env | QUARKUS_DATASOURCE_JDBC_URL                  | jdbc:postgresql://postgresql:5432/mydb          |
       | runtime-env | QUARKUS_DATASOURCE_REACTIVE_URL              | postgresql://postgresql:5432/mydb               |
     And Kogito Runtime "process-postgres" has 1 pods running within 10 minutes
     
