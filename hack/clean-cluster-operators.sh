@@ -18,11 +18,11 @@ source ${script_dir_path}/env.sh
 
 function clean_installed_operators() {
   echo "--- Clean installplans in $1"
-  get_and_clean_resources $1 'installplan'
+  get_and_clean_resources $1 'installplans.operators.coreos.com'
   echo "--- Clean subscriptions in $1"
-  get_and_clean_resources $1 'subscription'
+  get_and_clean_resources $1 'subscriptions.operators.coreos.com'
   echo "--- Clean clusterserviceversions in $1"
-  get_and_clean_resources $1 'clusterserviceversion'
+  get_and_clean_resources $1 'clusterserviceversions.operators.coreos.com'
 }
 
 clean_installed_operators 'openshift-operators'
