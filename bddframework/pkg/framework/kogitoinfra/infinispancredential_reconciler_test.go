@@ -15,7 +15,9 @@
 package kogitoinfra
 
 import (
-	"github.com/kiegroup/kogito-operator/apis"
+	"testing"
+
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
@@ -23,7 +25,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/core/v1"
 	v12 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"testing"
 )
 
 func TestInfinispanCredentialReconciler(t *testing.T) {
@@ -56,8 +57,8 @@ func TestInfinispanCredentialReconciler(t *testing.T) {
 	exist, err := kubernetes.ResourceC(cli).Fetch(credentialSecret)
 	assert.True(t, exist)
 	assert.NoError(t, err)
-	assert.NotNil(t, credentialSecret.StringData["QUARKUS_INFINISPAN_CLIENT_AUTH_USERNAME"])
-	assert.NotNil(t, credentialSecret.StringData["QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD"])
+	assert.NotNil(t, credentialSecret.StringData["QUARKUS_INFINISPAN_CLIENT_USERNAME"])
+	assert.NotNil(t, credentialSecret.StringData["QUARKUS_INFINISPAN_CLIENT_PASSWORD"])
 }
 
 func TestInfinispanCredentialReconciler_EncryptionDisabled(t *testing.T) {

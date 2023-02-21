@@ -61,8 +61,8 @@ var (
 			appPropInfinispanTrustStoreType:     "quarkus.infinispan-client.trust-store-type",
 			appPropInfinispanTrustStorePassword: "quarkus.infinispan-client.trust-store-password",
 
-			envVarInfinispanUser:     "QUARKUS_INFINISPAN_CLIENT_AUTH_USERNAME",
-			envVarInfinispanPassword: "QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD",
+			envVarInfinispanUser:     "QUARKUS_INFINISPAN_CLIENT_USERNAME",
+			envVarInfinispanPassword: "QUARKUS_INFINISPAN_CLIENT_PASSWORD",
 		},
 		api.SpringBootRuntimeType: {
 			appPropInfinispanServerList:         "infinispan.remote.server-list",
