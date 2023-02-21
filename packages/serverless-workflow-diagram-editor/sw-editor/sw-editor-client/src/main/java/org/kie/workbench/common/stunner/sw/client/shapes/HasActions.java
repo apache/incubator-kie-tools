@@ -18,22 +18,20 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.sw.definition.ActionNode;
 import org.kie.workbench.common.stunner.sw.definition.FunctionRef;
-import org.kie.workbench.common.stunner.sw.definition.StateDataFilter;
 import org.kie.workbench.common.stunner.sw.definition.SubFlowRef;
 
-public interface TextUtils {
+import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.ACTIONS_ARE_NULL;
+import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.ACTION_IS_EVENT;
+import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.ACTION_IS_FUNC;
+import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.ACTION_IS_NULL;
+import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.ACTION_IS_SUBFLOW;
+import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.ACTION_NAME;
 
-    String ACTION_IS_NULL = "Action is not defined";
-    String STATE_DATA_FILTER_IS_NULL = "StateDataFilter is not defined";
-    String ACTIONS_ARE_NULL = "No actions provided";
-    String ACTION_NAME = "Action: ";
-    String ACTION_IS_FUNC = "Action functionRef: ";
-    String ACTION_IS_EVENT = "Action eventRef: ";
-    String ACTION_IS_SUBFLOW = "Action subFlowRef: ";
+public interface HasActions extends HasTranslation {
 
-    static String getActionStringFromArray(ActionNode[] actions) {
+    default String getActionStringFromArray(ActionNode[] actions) {
         if (actions == null || actions.length == 0) {
-            return ACTIONS_ARE_NULL;
+            return getTranslation(ACTIONS_ARE_NULL);
         }
 
         StringBuilder actionString = new StringBuilder();
@@ -45,59 +43,37 @@ public interface TextUtils {
         return actionString.toString();
     }
 
-    static String getActionString(ActionNode action) {
+    default String getActionString(ActionNode action) {
         if (action == null) {
-            return ACTION_IS_NULL;
+            return getTranslation(ACTION_IS_NULL);
         }
 
         if (StringUtils.nonEmpty(action.getName())) {
-            return ACTION_NAME + action.getName();
+            return getTranslation(ACTION_NAME) + ": " + action.getName();
         }
 
         if (action.getFunctionRef() != null) {
             if (action.getFunctionRef() instanceof String) {
-                return ACTION_IS_FUNC + action.getFunctionRef();
+                return getTranslation(ACTION_IS_FUNC) + ": " + action.getFunctionRef();
             }
 
             FunctionRef functionRef = (FunctionRef) action.getFunctionRef();
-            return ACTION_IS_FUNC + functionRef.getRefName();
+            return getTranslation(ACTION_IS_FUNC) + ": " + functionRef.getRefName();
         }
 
         if (action.getEventRef() != null) {
-            return ACTION_IS_EVENT + action.getEventRef().getConsumeEventRef();
+            return getTranslation(ACTION_IS_EVENT) + ": " + action.getEventRef().getConsumeEventRef();
         }
 
         if (action.getSubFlowRef() != null) {
             if (action.getSubFlowRef() instanceof String) {
-                return ACTION_IS_SUBFLOW + action.getSubFlowRef();
+                return getTranslation(ACTION_IS_SUBFLOW) + ": " + action.getSubFlowRef();
             }
 
             SubFlowRef subFlowRef = (SubFlowRef) action.getSubFlowRef();
-            return ACTION_IS_SUBFLOW + subFlowRef.getWorkflowId();
+            return getTranslation(ACTION_IS_SUBFLOW) + ": " + subFlowRef.getWorkflowId();
         }
 
-        return ACTION_IS_NULL;
-    }
-
-    static String getStateDataFilter(StateDataFilter filter) {
-        if (filter == null) {
-            return STATE_DATA_FILTER_IS_NULL;
-        }
-
-        return "stateDataFilter:\r\ninput: " + truncate(filter.getInput(), 30)
-                + "\r\noutput: " + truncate(filter.getOutput(), 30);
-    }
-
-    static String truncate(String value, int size) {
-        if (value == null) {
-            return value;
-        }
-
-        String result = value.trim();
-        if (result.length() <= size) {
-            return result;
-        }
-
-        return result.substring(0, size) + "...";
+        return getTranslation(ACTION_IS_NULL);
     }
 }

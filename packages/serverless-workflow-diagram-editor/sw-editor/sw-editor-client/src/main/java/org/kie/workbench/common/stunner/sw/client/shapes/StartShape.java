@@ -16,10 +16,14 @@
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+
+import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.SHAPE_START;
+
 public class StartShape extends ServerlessWorkflowShape<StartShapeView> {
 
-    public StartShape() {
-        super(new StartShapeView().asAbstractShape());
+    public StartShape(TranslationService translationService) {
+        super(new StartShapeView(translationService.getTranslation(SHAPE_START)).asAbstractShape(), translationService);
         getShape().getShapeView().setController(this);
     }
 }

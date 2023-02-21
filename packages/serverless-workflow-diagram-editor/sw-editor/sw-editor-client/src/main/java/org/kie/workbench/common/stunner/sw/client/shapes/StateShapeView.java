@@ -25,9 +25,10 @@ import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextLineBreakTruncateWrapper;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.shared.core.types.EventPropagationMode;
-import com.ait.lienzo.shared.core.types.TextAlign;
-import com.ait.lienzo.shared.core.types.TextBaseLine;
+
+import static com.ait.lienzo.shared.core.types.EventPropagationMode.LAST_ANCESTOR;
+import static com.ait.lienzo.shared.core.types.TextAlign.CENTER;
+import static com.ait.lienzo.shared.core.types.TextBaseLine.MIDDLE;
 
 public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> {
 
@@ -52,9 +53,9 @@ public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> 
                 .setStrokeWidth(0)
                 .setFillColor("#383B3D")
                 .setFontFamily("Open Sans")
-                .setTextAlign(TextAlign.CENTER)
-                .setTextBaseLine(TextBaseLine.MIDDLE)
-                .setEventPropagationMode(EventPropagationMode.LAST_ANCESTOR)
+                .setTextAlign(CENTER)
+                .setTextBaseLine(MIDDLE)
+                .setEventPropagationMode(LAST_ANCESTOR)
                 .setFontSize(12)
                 .setListening(false);
         TextLineBreakTruncateWrapper textWrapper = new TextLineBreakTruncateWrapper(title, BoundingBox.fromDoubles(0, 0, 140, 44));
@@ -64,7 +65,7 @@ public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> 
         Group icon = newGroup()
                 .setX(45.00)
                 .setY(46.00);
-        icon.setEventPropagationMode(EventPropagationMode.LAST_ANCESTOR);
+        icon.setEventPropagationMode(LAST_ANCESTOR);
         addChild(icon);
 
         backgroundCircle = newCircle(STATE_SHAPE_ICON_RADIUS)

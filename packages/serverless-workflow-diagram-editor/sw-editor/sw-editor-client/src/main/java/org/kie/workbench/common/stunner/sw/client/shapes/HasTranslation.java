@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,7 @@
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+public interface HasTranslation {
 
-import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.SHAPE_END;
-
-public class EndShape extends ServerlessWorkflowShape<EndShapeView> {
-
-    public EndShape(TranslationService translationService) {
-        super(new EndShapeView(translationService.getTranslation(SHAPE_END)).asAbstractShape(), translationService);
-        getShape().getShapeView().setController(this);
-    }
+    String getTranslation(String constant);
 }

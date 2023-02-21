@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.sw.client.resources.GlyphFactory;
@@ -62,16 +63,18 @@ public class ShapeFactory
 
     @Inject
     ResourceContentService resourceContentService;
+    @Inject
+    private TranslationService translationService;
 
     @Override
     @SuppressWarnings("all")
     public Shape newShape(Object instance) {
         if (instance instanceof Start) {
-            return new StartShape();
+            return new StartShape(translationService);
         } else if (instance instanceof End) {
-            return new EndShape();
+            return new EndShape(translationService);
         } else if (instance instanceof State) {
-            return StateShape.create((State) instance, resourceContentService);
+            return StateShape.create((State) instance, resourceContentService, translationService);
         } else if (TransitionShape.isTransition(instance)) {
             return TransitionShape.create(instance).setAppearance(instance);
         }
