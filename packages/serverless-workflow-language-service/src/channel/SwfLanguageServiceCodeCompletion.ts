@@ -242,29 +242,33 @@ async function getJqFunctionCompletions(
   }
   if (wordToSearch.startsWith("fn:")) {
     const reusalbeFunctions: SwfLsNode = findNodeAtLocation(args.rootNode, ["functions"])!;
-    const reusableFunctionExpressions: CompletionItem[] = [];
+    const replacableWord = wordToSearch.split(":")[1];
+    const functionNamesArray: string[] = [];
     if (reusalbeFunctions.type === "array") {
       reusalbeFunctions.children?.forEach((func) => {
         if (findNodeAtLocation(func, ["type"])?.value === "expression") {
           const functionName = findNodeAtLocation(func, ["name"])?.value;
-          const replacableWord = wordToSearch.split(":")[1];
-          reusableFunctionExpressions.push(
-            createCompletionItem({
-              ...args,
-              completion: functionName,
-              kind: CompletionItemKind.Function,
-              label: functionName,
-              filterText: replacableWord,
-              detail: "Reusable functions(expressions) defined in the functions array",
-              overwriteRange: Range.create(
-                Position.create(args.cursorPosition.line, args.cursorPosition.character - replacableWord.length),
-                Position.create(args.cursorPosition.line, args.cursorPosition.character)
-              ),
-            })
-          );
+          functionNamesArray.push(functionName);
         }
       });
-      return Promise.resolve(reusableFunctionExpressions ?? []);
+      return functionNamesArray
+        .filter((name: string) => {
+          return name.startsWith(replacableWord);
+        })
+        .map((filteredName) => {
+          return createCompletionItem({
+            ...args,
+            completion: filteredName,
+            kind: CompletionItemKind.Function,
+            label: filteredName,
+            filterText: replacableWord,
+            detail: "Reusable functions(expressions) defined in the functions array",
+            overwriteRange: Range.create(
+              Position.create(args.cursorPosition.line, args.cursorPosition.character - replacableWord.length),
+              Position.create(args.cursorPosition.line, args.cursorPosition.character)
+            ),
+          });
+        });
     }
   }
   const result = jqInbuiltFunctions
