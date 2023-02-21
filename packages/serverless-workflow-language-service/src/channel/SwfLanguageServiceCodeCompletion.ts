@@ -106,12 +106,13 @@ function createCompletionItem(args: {
   kind: CompletionItemKind;
   label: string;
   overwriteRange: Range;
+  filterText?: string;
 }): CompletionItem {
   return {
     kind: args.kind,
     label: args.label,
     sortText: `100_${args.label}`, //place the completion on top in the menu
-    filterText: args.label,
+    filterText: args.filterText ?? args.label,
     detail: args.detail,
     textEdit: {
       newText: args.codeCompletionStrategy.translate({
@@ -170,6 +171,7 @@ function extractFunctionsPath(functionsNode: SwfLsNode[]) {
   });
   return { relativeList, remoteList };
 }
+
 /**
  * get jq CodeCompletion functions
  */
@@ -245,41 +247,43 @@ async function getJqFunctionCompletions(
       reusalbeFunctions.children?.forEach((func) => {
         if (findNodeAtLocation(func, ["type"])?.value === "expression") {
           const functionName = findNodeAtLocation(func, ["name"])?.value;
-          const replacableWordLength = wordToSearch.split(":")[1].length;
+          const replacableWord = wordToSearch.split(":")[1];
           reusableFunctionExpressions.push(
             createCompletionItem({
               ...args,
               completion: functionName,
               kind: CompletionItemKind.Function,
               label: functionName,
+              filterText: replacableWord,
               detail: "Reusable functions(expressions) defined in the functions array",
               overwriteRange: Range.create(
-                Position.create(args.cursorPosition.line, args.cursorPosition.character - replacableWordLength),
+                Position.create(args.cursorPosition.line, args.cursorPosition.character - replacableWord.length),
                 Position.create(args.cursorPosition.line, args.cursorPosition.character)
               ),
             })
           );
         }
       });
-      return reusableFunctionExpressions ?? [];
+      return Promise.resolve(reusableFunctionExpressions ?? []);
     }
   }
-
-  return jqInbuiltFunctions
-    .filter((func) => func.functionName.startsWith(wordToSearch))
-    .map((filteredFunc) => {
+  const result = jqInbuiltFunctions
+    .filter((func: { functionName: string; description: string }) => func.functionName.startsWith(wordToSearch))
+    .map((filteredFunc: { functionName: string; description: string }) => {
       return createCompletionItem({
         ...args,
         completion: filteredFunc.functionName,
         kind: CompletionItemKind.Function,
         label: filteredFunc.functionName,
         detail: filteredFunc.description,
+        filterText: wordToSearch,
         overwriteRange: Range.create(
           Position.create(args.cursorPosition.line, args.cursorPosition.character - wordToSearch.length),
           Position.create(args.cursorPosition.line, args.cursorPosition.character)
         ),
       });
     });
+  return Promise.resolve(result);
 }
 /**
  * SwfLanguageService CodeCompletion functions
