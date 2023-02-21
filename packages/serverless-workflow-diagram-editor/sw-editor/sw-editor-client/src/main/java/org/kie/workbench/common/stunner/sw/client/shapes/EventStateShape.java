@@ -26,6 +26,8 @@ import org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.getStateDataFilter;
+
 public class EventStateShape extends StateShape {
 
     public static final String ICON_COLOR = "#F4C145";
@@ -45,6 +47,12 @@ public class EventStateShape extends StateShape {
                                               "EventTimeout: " + state.getTimeouts().getEventTimeout() + "\r\n"
                                                       + "StateExecTimeout: " + state.getTimeouts().getStateExecTimeout() + "\r\n"
                                                       + "ActionExecTimeout: " + state.getTimeouts().getActionExecTimeout()));
+        }
+
+        if (state.getStateDataFilter() != null) {
+            getView().addChild(new CornerIcon(IconPath.FILTER,
+                                              IconPosition.BOTTOM_FROM_RIGHT_TOP_CORNER,
+                                              getStateDataFilter(state.getStateDataFilter())));
         }
     }
 

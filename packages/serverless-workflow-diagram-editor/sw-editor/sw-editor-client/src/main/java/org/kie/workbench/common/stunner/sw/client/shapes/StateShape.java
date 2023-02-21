@@ -76,8 +76,7 @@ public class StateShape extends ServerlessWorkflowShape<StateShapeView> implemen
             case "sleep":
                 return new SleepStateShape(state, resourceContentService);
             default:
-                // If type is missing create Inject By default.
-                return new InjectStateShape(state, resourceContentService);
+                return new StateShape(state, resourceContentService);
         }
     }
 
