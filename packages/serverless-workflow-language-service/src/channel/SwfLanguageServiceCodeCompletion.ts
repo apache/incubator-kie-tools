@@ -547,7 +547,7 @@ export const SwfLanguageServiceCodeCompletion = {
     return Promise.resolve(result);
   },
 
-  getFunctionRefArgumentsCompletions: async (
+  getFunctionRefArgumentsCompletions: (
     args: SwfLanguageServiceCodeCompletionFunctionsArgs
   ): Promise<CompletionItem[]> => {
     if (args.currentNode.type !== "property" && args.currentNode.type !== "string") {
