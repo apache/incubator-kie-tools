@@ -1,3 +1,5 @@
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { QuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/question-circle-icon";
 import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
 import {
@@ -187,6 +189,14 @@ export function JavaFunctionBindingCell({ data, rowIndex }: BeeTableCellProps<RO
   );
 }
 
+function getParameterLabelHelp(javaFunctionParameterLabel: string): React.ReactNode {
+  if (javaFunctionParameterLabel === "Class name") {
+    return <code>org.kie.kogito.MyClass</code>;
+  } else {
+    return <code>doSomething(java.lang.Integer, double)</code>;
+  }
+}
+
 function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTableCellProps<JAVA_ROWTYPE>>) {
   const label = React.useMemo(() => {
     return props.data[props.rowIndex].label;
@@ -201,7 +211,16 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
 
   return (
     <div className={"java-function-expression-label"}>
-      <div className={"name"}>{label}</div>
+      <div className={"name"}>
+        {label}
+        <Popover
+          className="java-function-parameter-help-popover"
+          headerContent={label + " example"}
+          bodyContent={getParameterLabelHelp(label)}
+        >
+          <QuestionCircleIcon size="sm" className="java-function-parameter-help-icon" />
+        </Popover>
+      </div>
       <div className={"data-type"}>{`(string)`}</div>
     </div>
   );

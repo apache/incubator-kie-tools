@@ -41,3 +41,11 @@
   justify-content: center;
   flex-direction: column;
 }
+
+.java-function-expression-label .java-function-parameter-help-icon {
+  margin-left: 5px;
+}
+
+.java-function-parameter-help-popover .pf-c-title {
+  margin-top: 0px;
+}

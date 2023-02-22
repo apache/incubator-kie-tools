@@ -30,6 +30,15 @@
   width: 100%;
 }
 
+.function-kind-popover {
+  width: 520px;
+  white-space: break-spaces;
+}
+
+.function-kind-popover .pf-c-menu__item-description {
+  font-size: 10px;
+}
+
 .function-kind-popover .pf-c-menu {
   box-shadow: none;
 }
