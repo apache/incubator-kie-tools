@@ -21,7 +21,7 @@ import {
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
-import { JqExpressionReadSchemasImpl } from "@kie-tools/serverless-workflow-jq-expressions/dist/channel/impl";
+import { JqExpressionReadSchemasImpl } from "@kie-tools/serverless-workflow-jq-expressions/dist/impl";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { removeDuplicatedKeyValuePairs } from "@kie-tools/serverless-workflow-jq-expressions/dist/utils";
 export class WebToolsSwfLanguageService {

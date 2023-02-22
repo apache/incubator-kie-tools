@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { JqExpressionReadSchemas } from "../../api/JqExpressionReadSchemas";
-import { JqExpressionContentType } from "../../api/types";
+import { JqExpressionReadSchemas } from "../api/JqExpressionReadSchemas";
+import { JqExpressionContentType } from "../api/types";
 import {
   SwfCatalogSourceType,
   SwfServiceCatalogServiceSource,
@@ -24,19 +24,26 @@ import fetch from "cross-fetch";
 export class JqExpressionReadSchemasImpl implements JqExpressionReadSchemas {
   public async getContentFromRemoteUrl(remotePaths: string[]): Promise<JqExpressionContentType[]> {
     const promises = remotePaths.map((remotePath: string) => {
-      return new Promise<JqExpressionContentType>(async (resolve, reject) => {
-        let response = await fetch(remotePath);
-        if (response.status >= 400) {
-          reject(`cannot fetch the data from the server: error code is ${response.status}`);
-          return;
-        }
-        const resData = await response.text();
-        const fileName = remotePath.split("/").pop()!;
-        resolve({
-          fileName: fileName,
-          fileContent: Uint8Array.from(Array.from(resData).map((letter: string) => letter.charCodeAt(0))),
-          absoluteFilePath: remotePath,
-        });
+      return new Promise<JqExpressionContentType>((resolve, reject) => {
+        (async () => {
+          try {
+            const response = await fetch(remotePath);
+            if (response.status >= 400) {
+              reject(`cannot fetch the data from the server: error code is ${response.status}`);
+              return;
+            }
+            const resData = await response.text();
+            const fileName = remotePath.split("/").pop()!;
+            resolve({
+              fileName: fileName,
+              fileContent: Uint8Array.from(Array.from(resData).map((letter: string) => letter.charCodeAt(0))),
+              absoluteFilePath: remotePath,
+            });
+          } catch (err) {
+            console.error(err);
+            reject(err);
+          }
+        })();
       });
     });
     try {
@@ -57,11 +64,7 @@ export class JqExpressionReadSchemasImpl implements JqExpressionReadSchemas {
     return result.flatMap((p) => p);
   }
 
-  private getEachProperties(args: {
-    fileName: string;
-    fileContent: Uint8Array;
-    absoluteFilePath: string;
-  }): Record<string, string>[] {
+  private getEachProperties(args: JqExpressionContentType): Record<string, string>[] {
     try {
       const source: SwfServiceCatalogServiceSource = {
         type: SwfCatalogSourceType?.LOCAL_FS,
@@ -72,14 +75,13 @@ export class JqExpressionReadSchemasImpl implements JqExpressionReadSchemas {
         serviceFileContent: new TextDecoder("utf-8").decode(args.fileContent),
         source,
       });
-      const result = parsedContent.functions.map((func: any) => {
+      return parsedContent.functions.flatMap((func: any) => {
         return Object.entries(func.arguments).map(([argValue, argType]: [string, string]) => {
           return {
             [argValue]: argType,
           };
         });
       });
-      return result.flat();
     } catch (e) {
       console.error(e);
       return [];

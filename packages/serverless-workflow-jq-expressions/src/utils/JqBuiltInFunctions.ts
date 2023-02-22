@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const jqInbuiltFunctions = [
+
+// The below mentioned functions are referenced from https://stedolan.github.io/jq/manual/.
+export const jqBuiltInFunctions = [
   {
     functionName: "length",
     description: "The builtin function length gets the length of various different types of value.",

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { JqExpressionContentType } from "@kie-tools/serverless-workflow-jq-expressions/dist/api/types";
-import { JqExpressionReadSchemasImpl } from "@kie-tools/serverless-workflow-jq-expressions/dist/channel/impl";
+import { JqExpressionReadSchemasImpl } from "@kie-tools/serverless-workflow-jq-expressions/dist/impl";
 import * as vscode from "vscode";
 const SCHEMA_REGEX = new RegExp("^.*\\.(json|yaml|yml)$");
 

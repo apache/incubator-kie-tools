@@ -67,19 +67,5 @@ export function getPropertiesRecursively(schema: JSONSchema7): Record<string, Sw
 }
 
 function resolveArgumentType(type: string): SwfServiceCatalogFunctionArgumentType {
-  switch (type) {
-    case "boolean":
-      return SwfServiceCatalogFunctionArgumentType.boolean;
-    case "object":
-      return SwfServiceCatalogFunctionArgumentType.object;
-    case "number":
-      return SwfServiceCatalogFunctionArgumentType.number;
-    case "string":
-      return SwfServiceCatalogFunctionArgumentType.string;
-    case "integer":
-      return SwfServiceCatalogFunctionArgumentType.integer;
-    case "array":
-      return SwfServiceCatalogFunctionArgumentType.array;
-  }
-  return SwfServiceCatalogFunctionArgumentType.object;
+  return SwfServiceCatalogFunctionArgumentType[type as keyof typeof SwfServiceCatalogFunctionArgumentType];
 }

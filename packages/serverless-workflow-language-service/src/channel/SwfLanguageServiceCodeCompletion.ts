@@ -45,7 +45,7 @@ import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodeAtLocation, SwfLanguageServiceConfig } from "./SwfLanguageService";
 import { CodeCompletionStrategy, SwfLsNode, JqCompletions } from "./types";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { jqInbuiltFunctions } from "@kie-tools/serverless-workflow-jq-expressions/dist/utils";
+import { jqBuiltInFunctions } from "@kie-tools/serverless-workflow-jq-expressions/dist/utils";
 
 type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
 export type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "functions"> & {
@@ -71,7 +71,7 @@ function toCompletionItemLabel(namespace: string, resource: string, operation: s
 }
 
 function isRemotePath(pathUri: string): boolean {
-  return ["file", "http", "https"].includes(pathUri.split(":")[0]);
+  return /^(http|https|file):\/\//.test(pathUri);
 }
 
 function toCompletionItemLabelPrefix(
@@ -173,7 +173,105 @@ function extractFunctionsPath(functionsNode: SwfLsNode[]) {
 }
 
 /**
- * get jq CodeCompletion functions
+ * get the input workflow variables from remote/relative paths.
+ */
+async function getJqInputVariablesCompletions(
+  args: SwfLanguageServiceCodeCompletionFunctionsArgs & { wordToSearch: string }
+): Promise<CompletionItem[]> {
+  const { relativeList, remoteList } = extractFunctionsPath(
+    findNodeAtLocation(args.rootNode, ["functions"])?.children as SwfLsNode[]
+  );
+  const dataInputSchemaPath = findNodeAtLocation(args.rootNode, ["dataInputSchema"])?.value;
+  if (dataInputSchemaPath) {
+    if (isRemotePath(dataInputSchemaPath)) {
+      remoteList.push(dataInputSchemaPath);
+    } else {
+      relativeList.push(dataInputSchemaPath);
+    }
+  }
+  if (remoteList.length > 0 || relativeList.length > 0) {
+    const schemaData = await Promise.all([
+      ...(await args.jqCompletions.remote.getJqAutocompleteProperties({
+        textDocument: args.document,
+        schemaPaths: remoteList ?? [],
+      })),
+      ...(await args.jqCompletions.relative.getJqAutocompleteProperties({
+        textDocument: args.document,
+        schemaPaths: relativeList ?? [],
+      })),
+    ]);
+    if (schemaData.length === 0) {
+      return Promise.resolve([]);
+    }
+    args.wordToSearch = args.wordToSearch.slice(args.wordToSearch.indexOf("."), args.wordToSearch.length);
+    return Promise.resolve(
+      schemaData
+        .filter((prop: Record<string, string>) => {
+          if (args.wordToSearch === ".") {
+            return true;
+          } else {
+            return Object.keys(prop)[0].startsWith(args.wordToSearch.slice(1, args.wordToSearch.length));
+          }
+        })
+        .map((parsedProp: Record<string, string>) => {
+          return createCompletionItem({
+            ...args,
+            completion: Object.keys(parsedProp)[0],
+            kind: CompletionItemKind.Value,
+            label: Object.keys(parsedProp)[0],
+            detail: Object.values(parsedProp)[0],
+            overwriteRange: Range.create(
+              Position.create(
+                args.cursorPosition.line,
+                args.cursorPosition.character - args.wordToSearch.slice(1, args.wordToSearch.length).length
+              ),
+              Position.create(args.cursorPosition.line, args.cursorPosition.character)
+            ),
+          });
+        })
+    );
+  }
+  return [];
+}
+/**
+ * get reusable functions defined in the functions array of the swf file.
+ */
+function getReusableFunctionCompletion(
+  args: SwfLanguageServiceCodeCompletionFunctionsArgs & { wordToSearch: string }
+): CompletionItem[] {
+  const reusalbeFunctions: SwfLsNode = findNodeAtLocation(args.rootNode, ["functions"])!;
+  const replacableWord = args.wordToSearch.split(":")[1];
+  const functionNamesArray: string[] = [];
+  if (reusalbeFunctions.type === "array") {
+    reusalbeFunctions.children?.forEach((func) => {
+      if (findNodeAtLocation(func, ["type"])?.value === "expression") {
+        const functionName = findNodeAtLocation(func, ["name"])?.value;
+        functionNamesArray.push(functionName);
+      }
+    });
+    return functionNamesArray
+      .filter((name: string) => {
+        return name.startsWith(replacableWord);
+      })
+      .map((filteredName) => {
+        return createCompletionItem({
+          ...args,
+          completion: filteredName,
+          kind: CompletionItemKind.Function,
+          label: filteredName,
+          filterText: replacableWord,
+          detail: "Reusable functions(expressions) defined in the functions array",
+          overwriteRange: Range.create(
+            Position.create(args.cursorPosition.line, args.cursorPosition.character - replacableWord.length),
+            Position.create(args.cursorPosition.line, args.cursorPosition.character)
+          ),
+        });
+      });
+  }
+  return [];
+}
+/**
+ * get jq CodeCompletion functions.
  */
 async function getJqFunctionCompletions(
   args: SwfLanguageServiceCodeCompletionFunctionsArgs
@@ -186,92 +284,12 @@ async function getJqFunctionCompletions(
     .pop()
     .replace(/[^a-zA-Z _.(:]/g, "");
   if (wordToSearch.startsWith(".") || wordToSearch.includes("(.")) {
-    const { relativeList, remoteList } = extractFunctionsPath(
-      findNodeAtLocation(args.rootNode, ["functions"])?.children!
-    );
-    const dataInputSchemaPath = findNodeAtLocation(args.rootNode, ["dataInputSchema"])?.value;
-    if (dataInputSchemaPath) {
-      if (isRemotePath(dataInputSchemaPath)) {
-        remoteList.push(dataInputSchemaPath);
-      } else {
-        relativeList.push(dataInputSchemaPath);
-      }
-    }
-    if (remoteList.length > 0 || relativeList.length > 0) {
-      const getSchemaData = await Promise.all([
-        ...(await args.jqCompletions.remote.getJqAutocompleteProperties({
-          textDocument: args.document,
-          schemaPaths: remoteList ?? [],
-        })),
-        ...(await args.jqCompletions.relative.getJqAutocompleteProperties({
-          textDocument: args.document,
-          schemaPaths: relativeList ?? [],
-        })),
-      ]);
-      if (getSchemaData.length === 0) {
-        return Promise.resolve([]);
-      }
-      wordToSearch = wordToSearch.slice(wordToSearch.indexOf("."), wordToSearch.length);
-      return Promise.resolve(
-        getSchemaData
-          .filter((prop: Record<string, string>) => {
-            if (wordToSearch === ".") {
-              return true;
-            } else {
-              return Object.keys(prop)[0].startsWith(wordToSearch.slice(1, wordToSearch.length));
-            }
-          })
-          .map((parsedProp: Record<string, string>) => {
-            return createCompletionItem({
-              ...args,
-              completion: Object.keys(parsedProp)[0],
-              kind: CompletionItemKind.Value,
-              label: Object.keys(parsedProp)[0],
-              detail: Object.values(parsedProp)[0],
-              overwriteRange: Range.create(
-                Position.create(
-                  args.cursorPosition.line,
-                  args.cursorPosition.character - wordToSearch.slice(1, wordToSearch.length).length
-                ),
-                Position.create(args.cursorPosition.line, args.cursorPosition.character)
-              ),
-            });
-          })
-      );
-    }
+    return await getJqInputVariablesCompletions({ ...args, wordToSearch });
   }
   if (wordToSearch.startsWith("fn:")) {
-    const reusalbeFunctions: SwfLsNode = findNodeAtLocation(args.rootNode, ["functions"])!;
-    const replacableWord = wordToSearch.split(":")[1];
-    const functionNamesArray: string[] = [];
-    if (reusalbeFunctions.type === "array") {
-      reusalbeFunctions.children?.forEach((func) => {
-        if (findNodeAtLocation(func, ["type"])?.value === "expression") {
-          const functionName = findNodeAtLocation(func, ["name"])?.value;
-          functionNamesArray.push(functionName);
-        }
-      });
-      return functionNamesArray
-        .filter((name: string) => {
-          return name.startsWith(replacableWord);
-        })
-        .map((filteredName) => {
-          return createCompletionItem({
-            ...args,
-            completion: filteredName,
-            kind: CompletionItemKind.Function,
-            label: filteredName,
-            filterText: replacableWord,
-            detail: "Reusable functions(expressions) defined in the functions array",
-            overwriteRange: Range.create(
-              Position.create(args.cursorPosition.line, args.cursorPosition.character - replacableWord.length),
-              Position.create(args.cursorPosition.line, args.cursorPosition.character)
-            ),
-          });
-        });
-    }
+    return getReusableFunctionCompletion({ ...args, wordToSearch });
   }
-  const result = jqInbuiltFunctions
+  const result = jqBuiltInFunctions
     .filter((func: { functionName: string; description: string }) => func.functionName.startsWith(wordToSearch))
     .map((filteredFunc: { functionName: string; description: string }) => {
       return createCompletionItem({
