@@ -53,7 +53,7 @@ modules:
       version: "11"
     - name: org.kie.kogito.dynamic.resources
     - name: org.kie.kogito.maven
-      version: "3.8.6"
+      version: "3.8-rpm"
     - name: org.kie.kogito.s2i.core
     - name: org.kie.kogito.s2i.builder
     - name: org.kie.kogito.rhpam.prod.profile
