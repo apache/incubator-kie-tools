@@ -36,6 +36,10 @@ export class DmnRunnerInputsService {
   }
 
   public parseDmnRunnerInputs(inputs: string): Array<InputRow> {
-    return JSON.parse(inputs) as Array<InputRow>;
+    const parsedDmnRunnerInputs = JSON.parse(inputs);
+    if (Array.isArray(parsedDmnRunnerInputs)) {
+      return parsedDmnRunnerInputs.map((e) => (e === null ? {} : e));
+    }
+    return [{}];
   }
 }
