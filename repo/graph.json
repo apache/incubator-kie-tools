@@ -61,6 +61,7 @@
       { "id": "@kie-tools/dashbuilder-component-echarts" },
       { "id": "@kie-tools/dashbuilder-component-map" },
       { "id": "@kie-tools/dashbuilder-component-svg-heatmap" },
+      { "id": "@kie-tools/dashbuilder-component-swf-editor" },
       { "id": "@kie-tools/dashbuilder-component-table" },
       { "id": "@kie-tools/dashbuilder-component-timeseries" },
       { "id": "@kie-tools/dashbuilder-component-uniforms" },
@@ -353,7 +354,6 @@
       },
       { "source": "@kie-tools/serverless-workflow-text-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/dashbuilder-component-assembler", "weight": 1 },
-      { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-component-assembler",
         "target": "@kie-tools/dashbuilder-component-echarts",
@@ -367,6 +367,11 @@
       {
         "source": "@kie-tools/dashbuilder-component-assembler",
         "target": "@kie-tools/dashbuilder-component-svg-heatmap",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dashbuilder-component-assembler",
+        "target": "@kie-tools/dashbuilder-component-swf-editor",
         "weight": 1
       },
       {
@@ -424,6 +429,16 @@
       },
       {
         "source": "@kie-tools/dashbuilder-component-svg-heatmap",
+        "target": "@kie-tools/dashbuilder-component-dev",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dashbuilder-component-swf-editor",
+        "target": "@kie-tools/serverless-workflow-standalone-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dashbuilder-component-swf-editor",
         "target": "@kie-tools/dashbuilder-component-dev",
         "weight": 1
       },
@@ -497,7 +512,6 @@
         "target": "@kie-tools/dashbuilder-component-api",
         "weight": 1
       },
-      { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools/dashbuilder-client", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools/dashbuilder-language-service", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-language-service", "target": "@kie-tools/yaml-language-server", "weight": 1 },
@@ -510,7 +524,6 @@
         "target": "@kie-tools/dashbuilder-client",
         "weight": 1
       },
-      { "source": "@kie-tools/dashbuilder-viewer", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-viewer", "target": "@kie-tools/dashbuilder-client", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-viewer-deployment-webapp",
@@ -643,11 +656,6 @@
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
-      {
-        "source": "@kie-tools/serverless-logic-web-tools",
-        "target": "@kie-tools/serverless-workflow-combined-editor",
-        "weight": 1
-      },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/text-editor", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools",
@@ -854,6 +862,7 @@
     ["@kie-tools/dashbuilder-component-echarts-base", "packages/dashbuilder-component-echarts-base"],
     ["@kie-tools/dashbuilder-component-map", "packages/dashbuilder-component-map"],
     ["@kie-tools/dashbuilder-component-svg-heatmap", "packages/dashbuilder-component-svg-heatmap"],
+    ["@kie-tools/dashbuilder-component-swf-editor", "packages/dashbuilder-component-swf-editor"],
     ["@kie-tools/dashbuilder-component-table", "packages/dashbuilder-component-table"],
     ["@kie-tools/dashbuilder-component-timeseries", "packages/dashbuilder-component-timeseries"],
     ["@kie-tools/dashbuilder-component-uniforms", "packages/dashbuilder-component-uniforms"],

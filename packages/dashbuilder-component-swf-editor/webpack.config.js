@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,40 +14,32 @@
  * limitations under the License.
  */
 
-const CopyPlugin = require("copy-webpack-plugin");
+const path = require("path");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = async (env) => {
-  const components = [
-    "uniforms",
-    "table",
-    "echarts",
-    "svg-heatmap",
-    "timeseries",
-    "victory-charts",
-    "map",
-    "swf-editor",
-  ];
-  const copyResources = [];
-
-  components.forEach((component) => {
-    copyResources.push({
-      from: `../dashbuilder-component-${component}/dist/`,
-      to: `./${component}/`,
-    });
-  });
-
   return merge(common(env), {
-    entry: {},
+    entry: {
+      index: "./src/index.tsx",
+    },
     plugins: [
-      new CopyPlugin({
-        patterns: [...copyResources],
+      new HtmlWebpackPlugin({
+        template: "./static/index.html",
+        minify: false,
       }),
     ],
+
     module: {
       rules: [...patternflyBase.webpackModuleRules],
+    },
+    devServer: {
+      historyApiFallback: false,
+      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
+      compress: false,
+      port: 9001,
     },
   });
 };
