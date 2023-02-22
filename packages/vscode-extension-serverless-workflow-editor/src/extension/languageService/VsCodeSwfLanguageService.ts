@@ -182,11 +182,7 @@ export class VsCodeSwfLanguageService {
 
   private getSchemaFilePosixPath(args: { doc: TextDocument; schemaPath: string }) {
     const baseFileAbsolutePosixPath = vscode.Uri.parse(args.doc.uri).path;
-    return baseFileAbsolutePosixPath
-      .split("/")
-      .splice(0, baseFileAbsolutePosixPath.split("/").length - 1)
-      .join("/")
-      .concat("/", args.schemaPath);
+    return baseFileAbsolutePosixPath.replace(/(\/.*)\/.+/, "$1").concat("/", args.schemaPath);
   }
   public dispose() {
     this.jsonLs.dispose();
