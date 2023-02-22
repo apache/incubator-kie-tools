@@ -15,17 +15,13 @@
  */
 
 import { createContext, useContext } from "react";
-import { InputRow } from "@kie-tools/form-dmn";
 import { DmnRunnerInputsService } from "./DmnRunnerInputsService";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 interface DmnInputsDispatchContextType {
   dmnRunnerInputsService: DmnRunnerInputsService;
   deletePersistedInputRows: (workspaceFile: WorkspaceFile) => void;
-  updatePersistedInputRows: (
-    workspaceFile: WorkspaceFile,
-    newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)
-  ) => void;
+  updatePersistedInputRows: (workspaceId: string, workspaceFileRelativePath: string, newInputRows: string) => void;
   getInputRowsForDownload: (workspaceFile: WorkspaceFile) => Promise<Blob | undefined>;
   uploadInputRows: (workspaceFile: WorkspaceFile, file: File) => void;
 }

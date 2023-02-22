@@ -24,7 +24,7 @@ export interface FormProps<Input, Schema> {
   id?: string;
   name?: string;
   locale: string;
-  formRef?: React.RefObject<HTMLFormElement>;
+  setFormRef?: (formElement: HTMLFormElement | null) => void;
   showInlineError?: boolean;
   autoSave?: boolean;
   autoSaveDelay?: number;
@@ -50,9 +50,8 @@ export function FormComponent(props: React.PropsWithChildren<FormComponentProps<
     [props.i18n, props.locale]
   );
 
-  const { onValidate, onSubmit, formModel, formStatus, jsonSchemaBridge, errorBoundaryRef } = useForm({
+  const { onValidate, onSubmit, formStatus, jsonSchemaBridge, errorBoundaryRef, setFormRef } = useForm({
     i18n,
-    name: props.name,
     formError: props.formError,
     setFormError: props.setFormError,
     formInputs: props.formInputs,
@@ -64,6 +63,7 @@ export function FormComponent(props: React.PropsWithChildren<FormComponentProps<
     entryPath: props.entryPath,
     propertiesEntryPath: props.propertiesEntryPath,
     validator: props.validator,
+    setFormRef: props.setFormRef,
   });
 
   return (
@@ -74,9 +74,10 @@ export function FormComponent(props: React.PropsWithChildren<FormComponentProps<
         formStatus={formStatus}
         errorBoundaryRef={errorBoundaryRef}
         jsonSchemaBridge={jsonSchemaBridge}
-        formModel={formModel}
+        formModel={props.formInputs}
         onSubmit={onSubmit}
         onValidate={onValidate}
+        setFormRef={setFormRef}
       >
         {props.children}
       </FormBase>

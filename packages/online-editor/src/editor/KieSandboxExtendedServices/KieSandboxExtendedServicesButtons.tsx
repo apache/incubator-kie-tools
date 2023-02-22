@@ -207,7 +207,10 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               <Divider />
               <DropdownItem component={"button"} style={{ padding: "4px" }}>
                 <DeleteDropdownWithConfirmation
-                  onDelete={() => dmnRunnerInputsDispatch.deletePersistedInputRows(props.workspaceFile)}
+                  onDelete={() => {
+                    dmnRunnerDispatch.setCurrentInputRowIndex(0);
+                    dmnRunnerInputsDispatch.deletePersistedInputRows(props.workspaceFile);
+                  }}
                   item={`Delete DMN Runner inputs`}
                   label={" Delete inputs"}
                   isHoverable={false}

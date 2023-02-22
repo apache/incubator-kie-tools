@@ -32,10 +32,9 @@ interface DmnRunnerInputs {
 
 export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInputs {
   const { dmnRunnerInputsService, updatePersistedInputRows } = useDmnRunnerInputsDispatch();
-
   const [inputRows, setInputRows] = useState<Array<InputRow>>(EMPTY_DMN_RUNNER_INPUTS);
-  const lastInputRows = useRef<string>(JSON.stringify(EMPTY_DMN_RUNNER_INPUTS));
   const previousInputRows = usePreviousRef(inputRows);
+  const previousInputRowsStringfied = useRef<string>(JSON.stringify(EMPTY_DMN_RUNNER_INPUTS));
 
   // TODO: Use useCompanionFsFile for keeping the `inputRows` up to date with updates made to it.
   //   I.e. When the DMN Runner Inputs file is changed
@@ -67,12 +66,12 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
             companionEvent.type === "CFSF_DELETE"
           ) {
             // Triggered by the tab
-            if (companionEvent.content === lastInputRows.current) {
+            if (companionEvent.content === previousInputRowsStringfied.current) {
               setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(companionEvent.content));
               return;
             }
             // Triggered by the other tab
-            lastInputRows.current = companionEvent.content;
+            previousInputRowsStringfied.current = companionEvent.content;
             setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(companionEvent.content));
           }
         };
@@ -114,7 +113,7 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
                 return;
               }
               const inputRows = decoder.decode(content);
-              lastInputRows.current = inputRows;
+              previousInputRowsStringfied.current = inputRows;
               setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(inputRows));
             });
           });
@@ -132,22 +131,27 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
       }
 
       // After a re-render the callback is called by the first time, this avoids a filesystem unnecessary re-update
-      if (
-        lastInputRows.current ===
-        dmnRunnerInputsService.stringifyDmnRunnerInputs(newInputRows, previousInputRows.current)
-      ) {
+      const stringfiedDmnRunnerInputs = dmnRunnerInputsService.stringifyDmnRunnerInputs(
+        newInputRows,
+        previousInputRows.current
+      );
+
+      if (previousInputRowsStringfied.current === stringfiedDmnRunnerInputs) {
         return;
       }
 
       timeout.current = window.setTimeout(() => {
-        updatePersistedInputRows(workspaceFile, newInputRows);
-        lastInputRows.current = dmnRunnerInputsService.stringifyDmnRunnerInputs(
-          newInputRows,
-          previousInputRows.current
-        );
+        updatePersistedInputRows(workspaceFile.workspaceId, workspaceFile.relativePath, stringfiedDmnRunnerInputs);
+        previousInputRowsStringfied.current = stringfiedDmnRunnerInputs;
       }, 400);
     },
-    [previousInputRows, updatePersistedInputRows, workspaceFile, dmnRunnerInputsService]
+    [
+      previousInputRows,
+      updatePersistedInputRows,
+      workspaceFile.workspaceId,
+      workspaceFile.relativePath,
+      dmnRunnerInputsService,
+    ]
   );
 
   return {
