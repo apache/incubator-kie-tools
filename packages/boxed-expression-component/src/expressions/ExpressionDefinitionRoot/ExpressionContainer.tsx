@@ -42,6 +42,15 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   const { beeGwtService } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
+  const getDefaultExpressionDefinition = useCallback(
+    (isNested, logicType, prev) => {
+      return isNested
+        ? getDefaultExpressionDefinitionByLogicType(logicType, prev)
+        : beeGwtService!.getDefaultExpressionDefinition(logicType);
+    },
+    [beeGwtService]
+  );
+
   const onLogicTypeSelected = useCallback(
     (logicType) => {
       setExpression((prev) => ({
@@ -52,16 +61,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
         name: prev.name ?? DEFAULT_EXPRESSION_NAME,
       }));
     },
-    [isNested, setExpression]
-  );
-
-  const getDefaultExpressionDefinition = useCallback(
-    (isNested, logicType, prev) => {
-      return isNested
-        ? getDefaultExpressionDefinitionByLogicType(logicType, prev)
-        : beeGwtService!.getDefaultExpressionDefinition(logicType);
-    },
-    [beeGwtService]
+    [getDefaultExpressionDefinition, isNested, setExpression]
   );
 
   const onLogicTypeReset = useCallback(() => {

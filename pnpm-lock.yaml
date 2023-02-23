@@ -746,6 +746,9 @@ importers:
       "@kie-tools-core/monaco-editor":
         specifier: workspace:*
         version: link:../monaco-editor
+      "@kie-tools-core/operating-system":
+        specifier: workspace:*
+        version: link:../operating-system
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
@@ -11925,7 +11928,7 @@ packages:
       "@jest/test-result": 26.6.2
       "@jest/transform": 26.6.2
       "@jest/types": 26.6.2
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       exit: 0.1.2
@@ -22844,7 +22847,7 @@ packages:
       "@jest/source-map": 26.6.2
       "@jest/test-result": 26.6.2
       "@jest/types": 26.6.2
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
       chalk: 4.1.2
       co: 4.6.0
       expect: 26.6.2
@@ -23014,7 +23017,7 @@ packages:
       "@jest/environment": 26.6.2
       "@jest/test-result": 26.6.2
       "@jest/types": 26.6.2
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
       chalk: 4.1.2
       emittery: 0.7.2
       exit: 0.1.2

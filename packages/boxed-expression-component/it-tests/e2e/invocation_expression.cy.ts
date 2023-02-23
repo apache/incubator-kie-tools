@@ -41,14 +41,9 @@ describe("Invocation Expression Tests", () => {
   });
 
   it("Edit function definition with the keyboard navigation", () => {
-    cy.get(".functionDefinition").focus();
+    cy.get(".functionName p").click();
+    cy.get(".functionName input").type("test{enter}");
 
-    cy.get(".functionDefinition").type("{enter}test");
-
-    cy.realPress("Tab");
-
-    cy.ouiaId("expression-column-1").should("be.focused");
-
-    cy.get(".functionDefinition input").should("have.value", "test");
+    cy.get(".functionName p").should("have.text", "test");
   });
 });

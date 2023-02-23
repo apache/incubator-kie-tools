@@ -96,10 +96,18 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   const renderEntryDefinition = useCallback(
     (args: { additionalCssClass?: string }) => (
       <div className={`expression-info ${args.additionalCssClass}`} ref={ref}>
-        <p className="expression-info-name pf-u-text-truncate" title={entryInfo.name}>
+        <p
+          className="expression-info-name pf-u-text-truncate"
+          title={entryInfo.name}
+          data-ouia-component-id={"expression-info-name"}
+        >
           {entryInfo.name}
         </p>
-        <p className="expression-info-data-type pf-u-text-truncate" title={entryInfo.dataType}>
+        <p
+          className="expression-info-data-type pf-u-text-truncate"
+          title={entryInfo.dataType}
+          data-ouia-component-id={"expression-info-data-type"}
+        >
           ({entryInfo.dataType})
         </p>
       </div>

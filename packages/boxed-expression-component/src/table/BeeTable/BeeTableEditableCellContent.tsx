@@ -185,6 +185,9 @@ export function BeeTableEditableCellContent({
         onKeyDown={onKeyDown}
       >
         <span className="editable-cell-value pf-u-text-break-word" dangerouslySetInnerHTML={{ __html: preview }} />
+        <span data-ouia-component-id={"editable-cell-plain-value"} style={{ visibility: "hidden" }}>
+          {value}
+        </span>
         <FeelInput
           ref={feelInputRef}
           enabled={mode === Mode.Edit}

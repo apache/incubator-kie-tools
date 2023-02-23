@@ -168,6 +168,7 @@ export function BeeTableInternal<R extends object>({
   const defaultColumn = useMemo(
     () => ({
       Cell: (cellProps: ReactTable.CellProps<R>) => {
+        const columnIndex = cellProps.allColumns.findIndex((c) => c.id === cellProps.column.id);
         const CellComponentForColumn =
           cellComponentByColumnAccessor?.[cellProps.column.id] ?? cellComponentByColumnAccessor?.["___default"];
         if (CellComponentForColumn) {
@@ -175,7 +176,7 @@ export function BeeTableInternal<R extends object>({
             <CellComponentForColumn
               data={cellProps.data}
               rowIndex={cellProps.row.index}
-              columnIndex={cellProps.allColumns.findIndex((c) => c.id === cellProps.column.id)}
+              columnIndex={columnIndex}
               columnId={cellProps.column.id}
             />
           );
@@ -183,6 +184,7 @@ export function BeeTableInternal<R extends object>({
           return (
             <BeeTableDefaultCell
               hasAdditionalRow={hasAdditionalRow}
+              columnIndex={columnIndex}
               cellProps={cellProps}
               onCellUpdates={onCellUpdates}
               isReadOnly={isReadOnly}
@@ -377,17 +379,17 @@ export function BeeTableInternal<R extends object>({
 
       // FIXME: Tiago -> This won't work well on non-macOS
       // COPY/CUT/PASTE
-      if (!e.shiftKey && e.metaKey && e.key === "c") {
+      if (!e.shiftKey && e.metaKey && e.key.toLowerCase() === "c") {
         e.stopPropagation();
         e.preventDefault();
         copy();
       }
-      if (!e.shiftKey && e.metaKey && e.key === "x") {
+      if (!e.shiftKey && e.metaKey && e.key.toLowerCase() === "x") {
         e.stopPropagation();
         e.preventDefault();
         cut();
       }
-      if (!e.shiftKey && e.metaKey && e.key === "v") {
+      if (!e.shiftKey && e.metaKey && e.key.toLowerCase() === "v") {
         e.stopPropagation();
         e.preventDefault();
         paste();
@@ -395,7 +397,7 @@ export function BeeTableInternal<R extends object>({
 
       // FIXME: Tiago -> This won't work well on non-macOS
       // SELECT ALL
-      if (!e.shiftKey && e.metaKey && e.key === "a") {
+      if (!e.shiftKey && e.metaKey && e.key.toLowerCase() === "a") {
         e.stopPropagation();
         e.preventDefault();
 
@@ -515,7 +517,11 @@ export function BeeTableInternal<R extends object>({
 
   return (
     <div className={`table-component ${tableId}`} ref={tableRef} onKeyDown={onKeyDown}>
-      <table {...reactTableInstance.getTableProps()} ref={tableComposableRef}>
+      <table
+        {...reactTableInstance.getTableProps()}
+        ref={tableComposableRef}
+        data-ouia-component-id={"expression-grid-table"}
+      >
         <BeeTableHeader<R>
           resizerStopBehavior={resizerStopBehavior}
           shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}

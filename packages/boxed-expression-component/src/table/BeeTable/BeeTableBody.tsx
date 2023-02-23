@@ -66,7 +66,7 @@ export function BeeTableBody<R extends object>({
       reactTableInstance.prepareRow(row);
 
       const renderTr = () => (
-        <tr className={rowKey} key={rowKey}>
+        <tr className={rowKey} key={rowKey} data-ouia-component-id={`expression-row-${rowIndex}`}>
           {row.cells.map((cell, cellIndex) => {
             const columnKey = getColumnKey(reactTableInstance.allColumns[cellIndex]);
             return (
@@ -140,7 +140,7 @@ export function BeeTableBody<R extends object>({
       })}
 
       {additionalRow && (
-        <tr className={"additional-row"}>
+        <tr className={"additional-row"} data-ouia-component-id={"additional-row"}>
           {shouldRenderRowIndexColumn && (
             <BeeTableCoordinatesContextProvider coordinates={{ rowIndex: additionalRowIndex, columnIndex: 0 }}>
               <BeeTableTdForAdditionalRow

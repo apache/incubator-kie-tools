@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 import { env } from "../../env";
 const buildEnv = env;
+
+const cmdOrControlKey = getOperatingSystem() === OperatingSystem.MACOS ? "Meta" : "Control";
 
 describe("Relation Expression Tests", () => {
   beforeEach(() => {
@@ -84,8 +87,8 @@ describe("Relation Expression Tests", () => {
 
     defineRelationExpression(3, 3);
 
-    cy.ouiaId("expression-grid-table").contains("row 1 column 1").rightclick();
-    cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
+    cy.ouiaId("expression-grid-table").contains("td", "row 1 column 1").rightclick();
+    cy.ouiaId("expression-table-context-menu").contains("Insert below").click({ force: true });
 
     cy.ouiaId("expression-row-2").within(($row) => {
       cy.ouiaId("expression-column-0").should("have.text", "3");
@@ -101,21 +104,20 @@ describe("Relation Expression Tests", () => {
 
     defineRelationExpression(3, 1);
 
-    cy.ouiaId("expression-grid-table").contains("row 0 column 0").rightclick();
-    cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
+    cy.ouiaId("expression-grid-table").contains("td", "row 0 column 0").rightclick();
+    cy.ouiaId("expression-table-context-menu").contains("Insert below").click({ force: true });
 
-    cy.ouiaId("expression-grid-table")
-      .contains("row 0 column 0")
-      .trigger("mousedown", "topLeft", { which: 1 })
-      .trigger("mousemove", { clientX: 300, clientY: 10 })
-      .trigger("mouseup", { force: true });
+    cy.ouiaId("expression-grid-table").contains("td", "row 0 column 0").click();
+
+    // select first two cells
+    cy.realPress(["Shift", "ArrowRight"]);
 
     // copy
-    cy.realPress(["ControlLeft", "C"]);
+    cy.realPress([cmdOrControlKey, "C"]);
 
     // paste
     cy.ouiaId("expression-row-1").ouiaId("expression-column-1").click();
-    cy.realPress(["ControlLeft", "V"]);
+    cy.realPress([cmdOrControlKey, "V"]);
 
     cy.ouiaId("expression-row-1").within(($row) => {
       cy.ouiaId("expression-column-0").should("have.text", "2");
@@ -131,16 +133,26 @@ describe("Relation Expression Tests", () => {
 
     defineRelationExpression(3, 2);
 
-    // go to first cell and open contextMenu
-    cy.contains("td", "row 0 column 0").rightclick();
+    cy.contains("td", "row 1 column 2").as("targetCell");
 
-    // go to 2nd row 2nd cell then navigate to around and stop at 2nd row 4rd cell. Then write text
+    // go to 2nd row 2nd cell then navigate to around and stop at 2nd row, 4th cell. Then write text
     cy.contains("td", "row 1 column 1").type(
-      "{rightarrow}{rightarrow}{rightarrow}{rightarrow}{uparrow}{downarrow}{enter}Newtext"
+      "{rightarrow}{rightarrow}{rightarrow}{rightarrow}{uparrow}{downarrow}{enter}"
     );
 
-    // exit edit mode and check 2nd row 4rd cell has the new text
-    cy.get("[data-yposition='2'][data-xposition='3']").click({ force: true }).should("contain.text", "Newtext");
+    cy.realPress([cmdOrControlKey, "A"]);
+    cy.realPress("Backspace");
+    cy.realPress("N");
+    cy.realPress("e");
+    cy.realPress("w");
+    cy.realPress("t");
+    cy.realPress("e");
+    cy.realPress("x");
+    cy.realPress("t");
+    cy.realPress("Enter");
+
+    // exit edit mode and check 2nd row, 4th cell has the new text
+    cy.contains("td", "Newtext").ouiaId("editable-cell-plain-value").should("have.text", "Newtext");
   });
 
   it("Regression tests: focus on the first data cell", () => {
@@ -150,7 +162,7 @@ describe("Relation Expression Tests", () => {
     defineRelationExpression(3, 2);
 
     // go to first cell and open contextMenu
-    cy.contains("td", "row 0 column 0").focus().wait(0);
+    cy.contains("td", "row 0 column 0").click().wait(0);
 
     // check the snapshot for regression
     cy.matchImageSnapshot("data_cell_focus");

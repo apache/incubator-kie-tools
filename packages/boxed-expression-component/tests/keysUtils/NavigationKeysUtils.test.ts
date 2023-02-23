@@ -30,8 +30,7 @@ describe("NavigationKeysUtils", () => {
       ["Escape", true],
       ["ESCAPE", true],
     ])(testDescription, (key, expected) => {
-      // @ts-ignore
-      expect(NavigationKeysUtils.isEscape(key)).toBe(expected);
+      expect(NavigationKeysUtils.isEsc(key!)).toBe(expected);
     });
   });
 
@@ -45,8 +44,7 @@ describe("NavigationKeysUtils", () => {
       ["AltGraph", true],
       ["ALTGRAPH", true],
     ])(testDescription, (key, expected) => {
-      // @ts-ignore
-      expect(NavigationKeysUtils.isAltGraph(key)).toBe(expected);
+      expect(NavigationKeysUtils.isAltGraph(key!)).toBe(expected);
     });
   });
 
@@ -60,8 +58,7 @@ describe("NavigationKeysUtils", () => {
       ["ArrowDown", true],
       ["ARROWDOWN", true],
     ])(testDescription, (key, expected) => {
-      // @ts-ignore
-      expect(NavigationKeysUtils.isArrowDown(key)).toBe(expected);
+      expect(NavigationKeysUtils.isArrowDown(key!)).toBe(expected);
     });
   });
 
@@ -75,8 +72,7 @@ describe("NavigationKeysUtils", () => {
       ["ArrowLeft", true],
       ["ARROWLEFT", true],
     ])(testDescription, (key, expected) => {
-      // @ts-ignore
-      expect(NavigationKeysUtils.isArrowLeft(key)).toBe(expected);
+      expect(NavigationKeysUtils.isArrowLeft(key!)).toBe(expected);
     });
   });
 
@@ -90,8 +86,7 @@ describe("NavigationKeysUtils", () => {
       ["ArrowRight", true],
       ["ARROWRIGHT", true],
     ])(testDescription, (key, expected) => {
-      // @ts-ignore
-      expect(NavigationKeysUtils.isArrowRight(key)).toBe(expected);
+      expect(NavigationKeysUtils.isArrowRight(key!)).toBe(expected);
     });
   });
 
@@ -105,8 +100,7 @@ describe("NavigationKeysUtils", () => {
       ["ArrowUp", true],
       ["ARROWUP", true],
     ])(testDescription, (key, expected) => {
-      // @ts-ignore
-      expect(NavigationKeysUtils.isArrowUp(key)).toBe(expected);
+      expect(NavigationKeysUtils.isArrowUp(key!)).toBe(expected);
     });
   });
 
@@ -122,8 +116,7 @@ describe("NavigationKeysUtils", () => {
       ["ArrowUp", true],
       ["ARROWRIGHT", true],
     ])(testDescription, (key, expected) => {
-      // @ts-ignore
-      expect(NavigationKeysUtils.isAnyArrow(key)).toBe(expected);
+      expect(NavigationKeysUtils.isAnyArrow(key!)).toBe(expected);
     });
   });
 
@@ -137,8 +130,7 @@ describe("NavigationKeysUtils", () => {
       ["Enter", true],
       ["ENTER", true],
     ])(testDescription, (key, expected) => {
-      // @ts-ignore
-      expect(NavigationKeysUtils.isEnter(key)).toBe(expected);
+      expect(NavigationKeysUtils.isEnter(key!)).toBe(expected);
     });
   });
 
@@ -152,8 +144,7 @@ describe("NavigationKeysUtils", () => {
       ["Tab", true],
       ["TAB", true],
     ])(testDescription, (key, expected) => {
-      // @ts-ignore
-      expect(NavigationKeysUtils.isTab(key)).toBe(expected);
+      expect(NavigationKeysUtils.isTab(key!)).toBe(expected);
     });
   });
 
@@ -168,30 +159,7 @@ describe("NavigationKeysUtils", () => {
       ["F12", true],
       ["F120", false],
     ])(testDescription, (key, expected) => {
-      // @ts-ignore
-      expect(NavigationKeysUtils.isFX(key)).toBe(expected);
-    });
-  });
-
-  describe("isTypingKey", () => {
-    test.each([
-      [undefined, false],
-      ["", false],
-      [notAKey, false],
-      ["as", false],
-      ["F1", false],
-      ["f1", false],
-      ["tab", false],
-      ["capslock", false],
-      ["enter", true],
-      ["space", true],
-      ["a", true],
-      ["D", true],
-      ["1", true],
-      ["!", true],
-    ])(testDescription, (key, expected) => {
-      // @ts-ignore
-      expect(NavigationKeysUtils.isTypingKey(key)).toBe(expected);
+      expect(NavigationKeysUtils.isFunctionKey(key!)).toBe(expected);
     });
   });
 });

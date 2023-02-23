@@ -14,17 +14,15 @@ export function BeeTableDefaultCell<R extends object>({
   onCellUpdates,
   isReadOnly,
   hasAdditionalRow,
+  columnIndex,
 }: {
   isReadOnly: boolean;
   cellProps: ReactTable.CellProps<R>;
   onCellUpdates?: (cellUpdates: BeeTableCellUpdate<R>[]) => void;
   hasAdditionalRow: boolean;
+  columnIndex: number;
 }) {
   const { mutateSelection } = useBeeTableSelectionDispatch();
-
-  const columnIndex = useMemo(() => {
-    return cellProps.allColumns.findIndex((c) => c.id === cellProps.column.id);
-  }, [cellProps.allColumns, cellProps.column.id]);
 
   const rowCount = useMemo(() => {
     return cellProps.rows.length + (hasAdditionalRow ? 1 : 0);

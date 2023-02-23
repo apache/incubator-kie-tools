@@ -34,7 +34,7 @@ describe("List Expression Tests", () => {
   });
 
   it("Regression tests: focus on the first data cell", () => {
-    cy.ouiaId("expression-column-1").focus().wait(0);
+    cy.ouiaId("expression-column-1").eq(0).focus().wait(0);
 
     // check the snapshot for regression
     cy.matchImageSnapshot("data_cell_focus");

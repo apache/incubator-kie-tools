@@ -79,6 +79,7 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
       ref={inputRef}
       type={"text"}
       autoFocus={true}
+      onFocus={(e) => e.target.select()}
       defaultValue={value}
       onBlur={onInputBlur}
       onKeyDown={onInputKeyDown}

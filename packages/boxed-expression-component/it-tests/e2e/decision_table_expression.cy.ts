@@ -79,7 +79,7 @@ describe.skip("Decision Table Expression Tests", () => {
       name: "Expression Name",
       dataType: "<Undefined>",
       uid: "id1",
-      logicType: "Decision Table",
+      logicType: "Decision table",
       aggregation: "",
       input: inColumns(inSize),
       output: outColumns(outSize),
@@ -93,7 +93,7 @@ describe.skip("Decision Table Expression Tests", () => {
     cy.ouiaId("expression-container").click();
 
     // Define new expression as Relation
-    cy.ouiaId("expression-popover-menu").contains("Decision Table").click({ force: true });
+    cy.ouiaId("expression-popover-menu").contains("Decision table").click({ force: true });
 
     // Define 50x50 Decision Table
     cy.ouiaId("edit-expression-json").click();
@@ -115,7 +115,7 @@ describe.skip("Decision Table Expression Tests", () => {
     cy.ouiaId("expression-container").click();
 
     // Define new expression as Relation
-    cy.ouiaId("expression-popover-menu").contains("Decision Table").click({ force: true });
+    cy.ouiaId("expression-popover-menu").contains("Decision table").click({ force: true });
 
     // Define Decision Table
     cy.ouiaId("edit-expression-json").click();
@@ -128,7 +128,7 @@ describe.skip("Decision Table Expression Tests", () => {
     cy.ouiaId("confirm-expression-json").click();
 
     cy.ouiaId("expression-grid-table").contains("in-value-1:1").rightclick();
-    cy.ouiaId("expression-table-handler-menu").contains("Duplicate").click({ force: true });
+    cy.ouiaId("expression-table-context-menu").contains("Duplicate").click({ force: true });
 
     cy.ouiaId("expression-row-2").within(($row) => {
       cy.ouiaId("expression-column-0").should("have.text", "3");
@@ -149,19 +149,19 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.ouiaId("expression-container").click();
 
     // Define new expression as Relation
-    cy.ouiaId("expression-popover-menu").contains("Decision Table").click({ force: true });
+    cy.ouiaId("expression-popover-menu").contains("Decision table").click({ force: true });
 
     // open contextMenu from first input cell
     cy.ouiaId("expression-column-1").first().as("firstInputCell").rightclick();
 
     // create a row below
-    cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
+    cy.ouiaId("expression-table-context-menu").contains("Insert below").click({ force: true });
 
     // open contextMenu from first input cell
     cy.get("@firstInputCell").rightclick();
 
     // create a row below
-    cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
+    cy.ouiaId("expression-table-context-menu").contains("Insert below").click({ force: true });
 
     // open contextMenu from first input cell
     cy.get("@firstInputCell").rightclick();
@@ -171,12 +171,10 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
     // write some text in the table
     cy.get(".data-cell").each((cell, cellIndex) => {
-      cy.wrap(cell).type(`{enter}cell ${cellIndex + 1}`, { delay: 0, waitForAnimations: false });
+      cy.wrap(cell).type(`{enter}cell ${cellIndex + 1}`, { delay: 50, waitForAnimations: true });
+      cy.realPress("Tab");
+      cy.realPress("Escape");
     });
-    // click outside to finish editing
-    cy.get("body").click();
-
-    cy.get(".boxed-expression").scrollTo("top");
   });
 
   it("Regression tests: input header cell focus", () => {
@@ -199,7 +197,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
       .type("{rightarrow}{rightarrow}{rightarrow}{leftarrow}{downarrow}{downarrow}{leftarrow}")
       // check the cell 10 is focused
       .focused()
-      .should("contain.text", "cell 10");
+      .should("contain.text", "-cell 10 ");
 
     // check the cell 9 is not focused
     cy.contains("td", /cell 9/).should("not.be.focused");
@@ -404,7 +402,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@cell-3").type("{leftarrow}").should("be.focused");
 
     // close the menu
-    cy.get("body").type("{esc}");
+    cy.realPress("Escape");
   });
 
   describe("Keyboard interaction with annotation cell", () => {

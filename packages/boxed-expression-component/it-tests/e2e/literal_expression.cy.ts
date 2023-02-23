@@ -25,7 +25,7 @@ describe("Literal Expression Tests", () => {
     cy.ouiaId("expression-container").click();
 
     // Define new expression as Literal Expression
-    cy.ouiaId("expression-popover-menu").contains("Literal expression").click({ force: true });
+    cy.ouiaId("expression-popover-menu").contains("Literal").click({ force: true });
   });
 
   it("Regression without focus", () => {
@@ -34,7 +34,7 @@ describe("Literal Expression Tests", () => {
   });
 
   it("Regression tests with cell focus", () => {
-    cy.get(".literal-expression-body").click();
+    cy.get(".literal-expression-body-container").click();
 
     // check the snapshot for regression
     cy.matchImageSnapshot("data_cell_focus");
@@ -42,7 +42,7 @@ describe("Literal Expression Tests", () => {
 
   it("Change data type", () => {
     // Change return type to boolean
-    cy.get(".literal-expression-header").click();
+    cy.get("th").click();
 
     cy.ouiaId("edit-expression-data-type").within(($container) => {
       cy.get("span.pf-c-select__toggle-text").click({ force: true });
@@ -55,7 +55,7 @@ describe("Literal Expression Tests", () => {
   });
 
   it("Check monaco-editor autocompletion", () => {
-    cy.get(".literal-expression-body").dblclick().type("abs");
+    cy.get(".literal-expression-body-container").dblclick().type("abs");
     cy.get("div[class='monaco-list-rows']:contains('abs(n)')").should("be.visible").click();
     cy.get("div[class='monaco-list-rows']").should("not.be.visible");
     cy.get(".editable-cell-value").should("have.text", "abs()");

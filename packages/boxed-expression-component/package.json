@@ -20,6 +20,7 @@
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
+    "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools/feel-input-component": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",

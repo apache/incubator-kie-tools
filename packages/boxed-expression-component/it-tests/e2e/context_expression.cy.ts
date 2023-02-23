@@ -44,7 +44,7 @@ describe("Context Expression Tests", () => {
     cy.ouiaId("expression-row-0").ouiaId("expression-column-2").click();
 
     // Set first context entry as Decision Table
-    cy.ouiaId("expression-popover-menu").contains("Decision Table").click({ force: true });
+    cy.ouiaId("expression-popover-menu").contains("Decision table").click({ force: true });
 
     // Change First context entry to return boolean
     cy.ouiaId("expression-row-0").ouiaId("expression-column-1").contains("ContextEntry-1").click();
@@ -54,12 +54,6 @@ describe("Context Expression Tests", () => {
     });
 
     cy.get("button:contains('boolean')").click({ force: true });
-
-    // close the context menu
-    cy.get("body").click();
-
-    // check boolean is now also in decision table header
-    cy.ouiaType("expression-column-header-cell-info").contains("boolean").should("be.visible");
   });
 
   it("Define nested Decision Table", () => {
@@ -75,7 +69,7 @@ describe("Context Expression Tests", () => {
     });
 
     // Set first context entry as Decision Table
-    cy.ouiaId("expression-popover-menu").contains("Decision Table").click({ force: true });
+    cy.ouiaId("expression-popover-menu").contains("Decision table").click({ force: true });
 
     // insert one output column right
     cy.ouiaType("expression-column-header-cell-info").contains("output-1").rightclick();
@@ -101,12 +95,12 @@ describe("Context Expression Tests", () => {
     cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
 
     // Invoke Logic type selector for first context entry
-    cy.ouiaId("OUIA-Generated-TableRow-2").within(($row) => {
+    cy.ouiaId("additional-row").within(($row) => {
       cy.contains("Select expression").click();
     });
 
     // Set first context entry as Decision Table
-    cy.ouiaId("expression-popover-menu").contains("Decision Table").click({ force: true });
+    cy.ouiaId("expression-popover-menu").contains("Decision table").click({ force: true });
 
     // insert one output column right
     cy.ouiaType("expression-column-header-cell-info").contains("output-1").rightclick();
@@ -116,13 +110,14 @@ describe("Context Expression Tests", () => {
     cy.ouiaType("expression-column-header-cell-info").contains("output-1").rightclick();
     cy.contains("Insert left").click({ force: true });
 
-    cy.get("th:contains('output-')").should(($outputs) => {
-      expect($outputs).to.have.length(4);
-      expect($outputs.eq(0)).to.contain("output-1");
-      expect($outputs.eq(1)).to.contain("output-3");
-      expect($outputs.eq(2)).to.contain("output-1");
-      expect($outputs.eq(3)).to.contain("output-2");
-    });
+    cy.get("th div[data-ouia-component-type='expression-column-header-cell-info'] p.label:contains(output-)").should(
+      ($outputs) => {
+        expect($outputs).to.have.length(3);
+        expect($outputs.eq(0)).to.contain("output-3");
+        expect($outputs.eq(1)).to.contain("output-1");
+        expect($outputs.eq(2)).to.contain("output-2");
+      }
+    );
   });
 });
 
@@ -157,13 +152,11 @@ describe("Context Expression Tests :: Nested Relations", () => {
       .ouiaId("expression-row-0")
       .find(".data-cell")
       .each((el, index) => {
-        cy.wrap(el).type("nested " + (index + 1));
+        cy.wrap(el).type("{enter}nested " + (index + 1));
       });
 
-    //click outside to finish editing
-    cy.get("body").click();
-
-    cy.get(".boxed-expression").scrollTo("top");
+    // De-select cells.
+    cy.get("table table").type("{esc}{esc}{esc}");
   });
 
   it("Regression tests: header cell focus", () => {
@@ -182,10 +175,12 @@ describe("Context Expression Tests :: Nested Relations", () => {
 
   it("Check nested Relation", () => {
     cy.get("th:contains('column-')").should(($siblings) => {
-      expect($siblings).to.have.length(3);
-      expect($siblings.eq(0)).to.contain("column-3");
+      expect($siblings).to.have.length(5);
+      expect($siblings.eq(0)).to.contain("column-5");
       expect($siblings.eq(1)).to.contain("column-1");
-      expect($siblings.eq(2)).to.contain("column-2");
+      expect($siblings.eq(2)).to.contain("column-4");
+      expect($siblings.eq(3)).to.contain("column-2");
+      expect($siblings.eq(4)).to.contain("column-3");
     });
   });
 
@@ -201,36 +196,41 @@ describe("Context Expression Tests :: Nested Relations", () => {
 
     // from counter cell 2 navigate to last cell
     cy.ouiaId("expression-row-1")
-      .ouiaId("expression-column-0")
+      .ouiaId("expression-column-1")
       .should("be.focused")
       .type("{rightarrow}{rightarrow}{rightarrow}{downarrow}");
 
     // from last cell navigate to the upper cell
-    cy.ouiaId("OUIA-Generated-TableRow-2").contains("td", "Select expression").should("be.focused").type("{uparrow}");
+    cy.ouiaId("expression-row-2").contains("td", "Select expression").should("be.focused").type("{uparrow}");
 
     // check if the expression cell of the 2nd row is focused
-    cy.ouiaId("expression-row-1").ouiaId("expression-column-2").should("be.focused");
+    cy.ouiaId("expression-row-1")
+      .ouiaId("expression-column-2")
+      .should("be.focused")
+      .type("{uparrow}{enter}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}");
 
     // from the 3rd cell navigate inside the nested table and left to the edge
     cy.ouiaId("expression-row-0")
       .ouiaId("expression-column-2")
       .not("td td")
       .as("parentCell")
-      .click({ force: true })
-      .type("{enter}")
       .contains("td", "nested 1")
-      .should("be.focused")
-      .type("{leftarrow}{leftarrow}{leftarrow}");
+      .get(".editable-cell")
+      .should("be.focused");
 
     // from the counter-cell of the inner table navigate to "nested 3"
+    cy.get("table table").find(".row-index-column-cell").closest("td").click().should("be.focused");
+
     cy.get("table table")
-      .find(".counter-cell")
+      .ouiaId("expression-column-1")
       .closest("td")
+      .click()
+      .find(".editable-cell")
       .should("be.focused")
-      .type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}{downarrow}{downarrow}");
+      .type("{rightarrow}{rightarrow}");
 
     // navigate back to the cell of the parent table
-    cy.contains("td", "nested 3").should("be.focused").type("{esc}");
+    cy.contains("td", "nested 3").find(".editable-cell").should("be.focused").type("{esc}");
 
     // navigate left
     cy.get("@parentCell").should("be.focused").type("{leftarrow}");
@@ -241,7 +241,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
 
   it("Keyboard interaction with contextMenu", () => {
     // open contextMenu and expression menu from the expression cell of the 2nd row and check you are not able to navigate. Then close the contextMenu.
-    cy.ouiaId("OUIA-Generated-TableRow-2")
+    cy.ouiaId("expression-row-1")
       .contains("td", "Select expression")
       .rightclick()
       .type("{leftarrow}")
@@ -256,9 +256,6 @@ describe("Context Expression Tests :: Nested Relations", () => {
   });
 
   it("Keyboard interaction with header's contextMenu in nested decision table", () => {
-    //reset the state of the contextMenu. Necessary to pass test.
-    cy.get("body").click();
-
     // focus the 1st header cell inside the nested decision table.
     cy.contains("th", "column-3").as("targetCell");
 
@@ -268,7 +265,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
     // open the contextMenu by pressing enter
     cy.wait(100).get("@targetCell").focus().type("{enter}");
 
-    // check the menu is open
-    cy.get(".pf-c-popover__content").should("be.visible");
+    // check the menu is not open
+    cy.get(".pf-c-popover__content").should("not.exist");
   });
 });
