@@ -70,7 +70,11 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
     const monacoRef = useRef<Monaco.editor.IStandaloneCodeEditor>();
 
     useEffect(() => {
-      Monaco.languages.registerCompletionItemProvider(MONACO_FEEL_LANGUAGE, {
+      if (!enabled) {
+        return;
+      }
+
+      const disposable = Monaco.languages.registerCompletionItemProvider(MONACO_FEEL_LANGUAGE, {
         provideCompletionItems: (model: Monaco.editor.ITextModel, position: Monaco.Position) => {
           let completionItems = feelDefaultSuggestions();
 
@@ -86,7 +90,11 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
           };
         },
       });
-    }, [suggestionProvider]);
+
+      return () => {
+        disposable.dispose();
+      };
+    }, [enabled, suggestionProvider]);
 
     const config = useMemo(() => {
       return feelDefaultConfig(options);
