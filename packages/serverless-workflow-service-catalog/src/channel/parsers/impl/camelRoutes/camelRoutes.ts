@@ -24,6 +24,7 @@ import {
   SwfServiceCatalogServiceType,
 } from "../../../../api";
 import { convertSource } from "../convertSource";
+import * as CamelRoutes from "./types";
 
 export function parseCamelRoutes(
   args: {
@@ -31,12 +32,13 @@ export function parseCamelRoutes(
     serviceFileName: string;
     serviceFileContent: string;
   },
-  serviceCamelRoutesDocument: any
+  serviceCamelRoutesDocument: CamelRoutes.CamelRouteDocument
 ): SwfServiceCatalogService {
   const swfServiceCatalogFunctions = extractFunctions(serviceCamelRoutesDocument, convertSource(args.source));
+  const serviceName = args.serviceFileName.split(".")[0];
   return {
-    name: args.serviceFileName,
-    type: SwfServiceCatalogServiceType.camelroutes,
+    name: serviceName,
+    type: SwfServiceCatalogServiceType.camelroute,
     source: args.source,
     functions: swfServiceCatalogFunctions,
     rawContent: args.serviceFileContent,
@@ -44,44 +46,49 @@ export function parseCamelRoutes(
 }
 
 export function extractFunctions(
-  serviceCamelRoutesDocument: any,
+  serviceCamelRoutesDocument: CamelRoutes.CamelRouteDocument,
   source: SwfServiceCatalogFunctionSource
 ): SwfServiceCatalogFunction[] {
-  const swfServiceCatalogFunctions = serviceCamelRoutesDocument.map((routeItem: any) => {
+  const swfServiceCatalogFunctions = serviceCamelRoutesDocument.map((routeItem: CamelRoutes.RouteItemType) => {
     return extractRouteItemFunctions(routeItem, source);
   });
   return [].concat.apply([], swfServiceCatalogFunctions);
 }
 
 function extractRouteItemFunctions(
-  routeItem: any,
+  routeItem: CamelRoutes.RouteItemType,
   source: SwfServiceCatalogFunctionSource
 ): SwfServiceCatalogFunction[] {
   const swfServiceCatalogFunctions: SwfServiceCatalogFunction[] = [];
-  if (routeItem.from) {
-    const routeFrom = routeItem.from as any;
 
-    const name = `camel:${routeFrom.uri}` as string;
-
-    const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {
-      body: SwfServiceCatalogFunctionArgumentType.string,
-      header: SwfServiceCatalogFunctionArgumentType.object,
-    };
-
-    const endpoint = routeFrom.uri.split(":")[0];
-
-    if (endpoint !== "direct") {
-      throw new Error(`'Only routes with direct endpoints are supported`);
-    }
-
-    const swfServiceCatalogFunction: SwfServiceCatalogFunction = {
-      source,
-      name,
-      type: SwfServiceCatalogFunctionType.custom,
-      arguments: functionArguments,
-    };
-    swfServiceCatalogFunctions.push(swfServiceCatalogFunction);
+  let routeFrom;
+  if ("from" in routeItem) {
+    routeFrom = routeItem.from;
+  } else if ("route" in routeItem) {
+    routeFrom = routeItem.route?.from;
   }
+
+  const name = `camel:${routeFrom?.uri}` as string;
+
+  const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {
+    body: SwfServiceCatalogFunctionArgumentType.string,
+    header: SwfServiceCatalogFunctionArgumentType.object,
+  };
+
+  const endpoint = routeFrom?.uri.split(":")[0];
+
+  if (endpoint !== "direct") {
+    console.log(`'Only routes with direct endpoints are supported`);
+    return [] as SwfServiceCatalogFunction[];
+  }
+
+  const swfServiceCatalogFunction: SwfServiceCatalogFunction = {
+    source,
+    name,
+    type: SwfServiceCatalogFunctionType.custom,
+    arguments: functionArguments,
+  };
+  swfServiceCatalogFunctions.push(swfServiceCatalogFunction);
 
   return swfServiceCatalogFunctions;
 }

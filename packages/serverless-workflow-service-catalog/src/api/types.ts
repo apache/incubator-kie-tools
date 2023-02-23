@@ -33,7 +33,7 @@ export enum SwfServiceCatalogServiceType {
   rest = "rest",
   graphql = "graphql",
   asyncapi = "asyncapi",
-  camelroutes = "camelroutes",
+  camelroute = "camelroute",
 }
 
 export interface SwfServiceCatalogService {

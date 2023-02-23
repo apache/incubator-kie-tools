@@ -45,37 +45,35 @@ function doParse(fileName: string): SwfServiceCatalogService {
 }
 
 describe("Camel routes parser", () => {
-  it("parse numberToWords camel", async () => {
+  it("parse numberToWords camelRoutes", async () => {
     const result = doParse("numberToWords.yaml");
-    console.log("result", result);
     expect(result).not.toBeNull();
-    // expect(result.type).toBe(SwfServiceCatalogServiceType.asyncapi);
-    // expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
-    // expect(result.source).toHaveProperty("absoluteFilePath", "/async-api-tests/specs/message.yaml");
-    // expect(result.name).toBe("Kafka Application");
+    expect(result.type).toBe(SwfServiceCatalogServiceType.camelroute);
+    expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
+    expect(result.source).toHaveProperty("absoluteFilePath", "/camel-routes-tests/specs/numberToWords.yaml");
+    expect(result.name).toBe("numberToWords");
 
-    // expect(result.functions).toHaveLength(1);
+    expect(result.functions).toHaveLength(2);
 
-    // const subscribeOperation = result.functions[0];
-    // expect(subscribeOperation.type).toBe(SwfServiceCatalogFunctionType.asyncapi);
-    // expect(subscribeOperation.name).toBe("wait");
-    // expect(subscribeOperation.arguments).not.toBeNull();
+    const subscribeOperation = result.functions[0];
+    expect(subscribeOperation.type).toBe(SwfServiceCatalogFunctionType.custom);
+    expect(subscribeOperation.name).toBe("camel:direct:numberToWords");
+    expect(subscribeOperation.arguments).not.toBeNull();
   });
 
-  it("parse http asyncapi", async () => {
-    // const result = doParse("http.yaml");
-    // expect(result).not.toBeNull();
-    // expect(result.type).toBe(SwfServiceCatalogServiceType.asyncapi);
-    // expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
-    // expect(result.source).toHaveProperty("absoluteFilePath", "/async-api-tests/specs/http.yaml");
-    // expect(result.name).toBe("Http Application");
-    // expect(result.functions).toHaveLength(2);
-    // const functionDef = result.functions[0];
-    // expect(functionDef.type).toBe(SwfServiceCatalogFunctionType.asyncapi);
-    // expect(functionDef.name).toBe("getMessages");
-    // expect(functionDef.arguments).not.toBeNull();
-    // expect(functionDef.arguments).toHaveProperty("userId", SwfServiceCatalogFunctionArgumentType.string);
-    // expect(functionDef.arguments).toHaveProperty("age", SwfServiceCatalogFunctionArgumentType.integer);
-    // expect(functionDef.arguments).toHaveProperty("name", SwfServiceCatalogFunctionArgumentType.string);
+  it("parse camelMessage routes", async () => {
+    const result = doParse("sendMessage.yaml");
+    expect(result).not.toBeNull();
+    expect(result.type).toBe(SwfServiceCatalogServiceType.camelroute);
+    expect(result.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
+    expect(result.source).toHaveProperty("absoluteFilePath", "/camel-routes-tests/specs/sendMessage.yaml");
+    expect(result.name).toBe("sendMessage");
+    expect(result.functions).toHaveLength(1);
+    const functionDef = result.functions[0];
+    expect(functionDef.type).toBe(SwfServiceCatalogFunctionType.custom);
+    expect(functionDef.name).toBe("camel:direct:sendMessage");
+    expect(functionDef.arguments).not.toBeNull();
+    expect(functionDef.arguments).toHaveProperty("body", SwfServiceCatalogFunctionArgumentType.string);
+    expect(functionDef.arguments).toHaveProperty("header", SwfServiceCatalogFunctionArgumentType.object);
   });
 });

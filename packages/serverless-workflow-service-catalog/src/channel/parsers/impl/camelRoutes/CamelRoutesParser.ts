@@ -17,13 +17,14 @@
 import { SwfServiceCatalogService } from "../../../../api";
 import { parseCamelRoutes } from "./camelRoutes";
 import { ArgsType, SpecParser } from "../SpecParser";
+import * as CamelRoutes from "./types";
 
 export class CamelRoutesParser implements SpecParser<any> {
   canParse(content: any): boolean {
-    return Array.isArray(content) && content.some((route: any) => route.from);
+    return Array.isArray(content) && content.some((content) => content.from || content.route);
   }
 
-  parse(serviceCamelRoutesDocument: any, args: ArgsType): SwfServiceCatalogService {
+  parse(serviceCamelRoutesDocument: CamelRoutes.CamelRouteDocument, args: ArgsType): SwfServiceCatalogService {
     return parseCamelRoutes(args, serviceCamelRoutesDocument);
   }
 }
