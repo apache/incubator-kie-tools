@@ -15,7 +15,6 @@
  */
 import {
   CompoundPredicate,
-  FieldName,
   Model,
   PMML,
   Predicate,
@@ -356,7 +355,7 @@ describe("ScorecardReducer::Valid actions", () => {
       type: Actions.AddMiningSchemaFields,
       payload: {
         modelIndex: 0,
-        names: ["miningSchemaField1" as FieldName],
+        names: ["miningSchemaField1"],
       },
     });
 
@@ -371,7 +370,7 @@ describe("ScorecardReducer::Valid actions", () => {
 
   test("Actions.DeleteMiningSchemaField", () => {
     const scorecard: Scorecard = {
-      MiningSchema: { MiningField: [{ name: "miningSchemaField" as FieldName }] },
+      MiningSchema: { MiningField: [{ name: "miningSchemaField" }] },
       Characteristics: {
         Characteristic: [],
       },
@@ -420,7 +419,7 @@ describe("ScorecardReducer::Valid actions", () => {
         attributeIndex: 0,
         reasonCode: "updatedAttributeReasonCode",
         partialScore: 2.0,
-        predicate: new SimplePredicate({ field: "field" as FieldName, operator: "equal", value: 100 }),
+        predicate: new SimplePredicate({ field: "field", operator: "equal", value: 100 }),
       },
     });
 
@@ -447,7 +446,7 @@ describe("ScorecardReducer::Valid actions", () => {
                 reasonCode: "attributeReasonCode",
                 partialScore: 1.0,
                 predicate: new SimplePredicate({
-                  field: "dataField" as FieldName,
+                  field: "dataField",
                   operator: "equal",
                   value: 100,
                 }),
@@ -460,7 +459,7 @@ describe("ScorecardReducer::Valid actions", () => {
     };
     const pmml: PMML = {
       version: "1.0",
-      DataDictionary: { DataField: [{ name: "dataField" as FieldName, dataType: "string", optype: "categorical" }] },
+      DataDictionary: { DataField: [{ name: "dataField", dataType: "string", optype: "categorical" }] },
       Header: {},
       models: [scorecard],
     };
@@ -469,8 +468,8 @@ describe("ScorecardReducer::Valid actions", () => {
       type: Actions.UpdateDataDictionaryField,
       payload: {
         modelIndex: 0,
-        dataField: { name: "updatedDataField" as FieldName, dataType: "string", optype: "categorical" },
-        originalName: "dataField" as FieldName,
+        dataField: { name: "updatedDataField", dataType: "string", optype: "categorical" },
+        originalName: "dataField",
         dataDictionaryIndex: 0,
       },
     });
@@ -504,12 +503,12 @@ describe("ScorecardReducer::Valid actions", () => {
                 predicate: new CompoundPredicate({
                   predicates: [
                     new SimplePredicate({
-                      field: "dataField" as FieldName,
+                      field: "dataField",
                       operator: "greaterThan",
                       value: 100,
                     }),
                     new SimplePredicate({
-                      field: "dataField" as FieldName,
+                      field: "dataField",
                       operator: "lessOrEqual",
                       value: 200,
                     }),
@@ -525,7 +524,7 @@ describe("ScorecardReducer::Valid actions", () => {
     };
     const pmml: PMML = {
       version: "1.0",
-      DataDictionary: { DataField: [{ name: "dataField" as FieldName, dataType: "string", optype: "categorical" }] },
+      DataDictionary: { DataField: [{ name: "dataField", dataType: "string", optype: "categorical" }] },
       Header: {},
       models: [scorecard],
     };
@@ -534,8 +533,8 @@ describe("ScorecardReducer::Valid actions", () => {
       type: Actions.UpdateDataDictionaryField,
       payload: {
         modelIndex: 0,
-        dataField: { name: "updatedDataField" as FieldName, dataType: "string", optype: "categorical" },
-        originalName: "dataField" as FieldName,
+        dataField: { name: "updatedDataField", dataType: "string", optype: "categorical" },
+        originalName: "dataField",
         dataDictionaryIndex: 0,
       },
     });

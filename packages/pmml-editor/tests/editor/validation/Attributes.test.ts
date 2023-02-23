@@ -16,7 +16,7 @@
 
 import { ValidationEntry, ValidationRegistry } from "@kie-tools/pmml-editor/dist/editor/validation";
 import { validateAttribute, validateAttributes } from "@kie-tools/pmml-editor/dist/editor/validation/Attributes";
-import { CompoundPredicate, FieldName, SimplePredicate } from "@kie-tools/pmml-editor-marshaller";
+import { CompoundPredicate, SimplePredicate } from "@kie-tools/pmml-editor-marshaller";
 
 let registry: ValidationRegistry;
 beforeEach(() => {
@@ -44,8 +44,8 @@ describe("ValidateAttribute", () => {
       },
       false,
       2,
-      { predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }) },
-      [{ name: "field1" as FieldName }],
+      { predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }) },
+      [{ name: "field1" }],
       registry
     );
 
@@ -67,8 +67,8 @@ describe("ValidateAttribute", () => {
       },
       false,
       2,
-      { predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }) },
-      [{ name: "field1" as FieldName }],
+      { predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }) },
+      [{ name: "field1" }],
       registry
     );
 
@@ -87,9 +87,9 @@ describe("ValidateAttribute", () => {
       2,
       {
         reasonCode: "reasonCode",
-        predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }),
+        predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }),
       },
-      [{ name: "field1" as FieldName }],
+      [{ name: "field1" }],
       registry
     );
 
@@ -107,9 +107,9 @@ describe("ValidateAttribute", () => {
       true,
       2,
       {
-        predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }),
+        predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }),
       },
-      [{ name: "field1" as FieldName }],
+      [{ name: "field1" }],
       registry
     );
 
@@ -132,9 +132,9 @@ describe("ValidateAttribute", () => {
       2,
       {
         partialScore: 2.0,
-        predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }),
+        predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }),
       },
-      [{ name: "field1" as FieldName }],
+      [{ name: "field1" }],
       registry
     );
 
@@ -170,7 +170,7 @@ describe("ValidateAttribute", () => {
       },
       false,
       2,
-      { predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }) },
+      { predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }) },
       [],
       registry
     );
@@ -196,12 +196,12 @@ describe("ValidateAttribute", () => {
         predicate: new CompoundPredicate({
           predicates: [
             new SimplePredicate({
-              field: "field1" as FieldName,
+              field: "field1",
               operator: "greaterThan",
               value: 100,
             }),
             new SimplePredicate({
-              field: "field1" as FieldName,
+              field: "field1",
               operator: "lessOrEqual",
               value: 200,
             }),
@@ -234,8 +234,8 @@ describe("ValidateAttribute", () => {
       },
       false,
       2,
-      { predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }) },
-      [{ name: "field1" as FieldName }],
+      { predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }) },
+      [{ name: "field1" }],
       registry
     );
 
@@ -256,12 +256,12 @@ describe("ValidateAttribute", () => {
         predicate: new CompoundPredicate({
           predicates: [
             new SimplePredicate({
-              field: "field1" as FieldName,
+              field: "field1",
               operator: "greaterThan",
               value: 100,
             }),
             new SimplePredicate({
-              field: "field1" as FieldName,
+              field: "field1",
               operator: "lessOrEqual",
               value: 200,
             }),
@@ -269,7 +269,7 @@ describe("ValidateAttribute", () => {
           booleanOperator: "and",
         }),
       },
-      [{ name: "field1" as FieldName }],
+      [{ name: "field1" }],
       registry
     );
 
@@ -286,12 +286,12 @@ describe("ValidateAttributes", () => {
       {
         Attribute: [
           {
-            predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }),
+            predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }),
           },
-          { predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }) },
+          { predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }) },
         ],
       },
-      [{ name: "field1" as FieldName }],
+      [{ name: "field1" }],
       registry
     );
 
@@ -307,12 +307,12 @@ describe("ValidateAttributes", () => {
         Attribute: [
           {
             partialScore: 1.0,
-            predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }),
+            predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }),
           },
-          { predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }) },
+          { predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }) },
         ],
       },
-      [{ name: "field1" as FieldName }],
+      [{ name: "field1" }],
       registry
     );
 
@@ -332,15 +332,15 @@ describe("ValidateAttributes", () => {
         Attribute: [
           {
             partialScore: 1.0,
-            predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }),
+            predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }),
           },
           {
             partialScore: 2.0,
-            predicate: new SimplePredicate({ field: "field1" as FieldName, operator: "equal", value: 100 }),
+            predicate: new SimplePredicate({ field: "field1", operator: "equal", value: 100 }),
           },
         ],
       },
-      [{ name: "field1" as FieldName }],
+      [{ name: "field1" }],
       registry
     );
 

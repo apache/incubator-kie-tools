@@ -18,7 +18,6 @@ import {
   Characteristic,
   CompoundPredicate,
   False,
-  FieldName,
   MiningField,
   Predicate,
   SimplePredicate,
@@ -120,7 +119,7 @@ export const validateAttributes = (
 const validatePredicate = (
   pathBuilder: PredicateBuilder,
   predicate: Predicate | undefined,
-  fieldNames: FieldName[],
+  fieldNames: string[],
   validationRegistry: ValidationRegistry
 ) => {
   if (predicate === undefined) {

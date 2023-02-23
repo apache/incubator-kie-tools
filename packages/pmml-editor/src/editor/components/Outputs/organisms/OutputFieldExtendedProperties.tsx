@@ -20,7 +20,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
+import { OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
 import { GenericSelector, GenericSelectorOption } from "../../EditorScorecard/atoms";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { useValidationRegistry } from "../../../validation";
@@ -38,7 +38,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
   const { activeOutputField, activeOutputFieldIndex, modelIndex, targetFields, commit } = props;
 
   const [optype, setOptype] = useState<OpType | undefined>();
-  const [targetField, setTargetField] = useState<FieldName | undefined>();
+  const [targetField, setTargetField] = useState<string | undefined>();
   const [feature, setFeature] = useState<ResultFeature | undefined>();
   const [value, setValue] = useState<any | undefined>();
   const [rank, setRank] = useState<number | undefined>();
@@ -181,9 +181,9 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           id="output-targetField"
           value={(targetField ?? "").toString()}
           onChange={(selection) => {
-            if (selection !== targetField?.value) {
-              setTargetField(selection === "" ? undefined : (selection as FieldName));
-              commit({ targetField: selection === "" ? undefined : (selection as FieldName) });
+            if (selection !== targetField) {
+              setTargetField(selection === "" ? undefined : selection);
+              commit({ targetField: selection === "" ? undefined : selection });
             }
           }}
           isDisabled={!targetFieldsOptions.length}

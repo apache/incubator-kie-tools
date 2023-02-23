@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
-import { DataDictionary, DataType, FieldName, OpType } from "@kie-tools/pmml-editor-marshaller";
+import { DataDictionary, DataType, OpType } from "@kie-tools/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { validateDataFields, ValidationRegistry } from "../validation";
 import { Builder } from "../paths";
@@ -33,7 +33,7 @@ interface DataDictionaryPayload {
   };
   [Actions.AddBatchDataDictionaryFields]: {
     readonly modelIndex?: number;
-    readonly dataDictionaryFields: FieldName[];
+    readonly dataDictionaryFields: string[];
   };
   [Actions.ReorderDataDictionaryFields]: {
     readonly oldIndex: number;
@@ -52,7 +52,7 @@ export const DataDictionaryReducer: HistoryAwareValidatingReducer<DataDictionary
       case Actions.AddDataDictionaryField:
         historyService.batch(state, Builder().forDataDictionary().build(), (draft) => {
           draft.DataField.push({
-            name: action.payload.name as FieldName,
+            name: action.payload.name as string,
             dataType: action.payload.type,
             optype: action.payload.optype,
           });
