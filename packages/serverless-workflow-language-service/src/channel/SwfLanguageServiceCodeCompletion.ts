@@ -121,7 +121,6 @@ function createCompletionItem(args: {
       }),
       range: args.overwriteRange,
     },
-    insertText: args.label,
     insertTextFormat: InsertTextFormat.Snippet,
     ...args.extraOptions,
   };
@@ -171,6 +170,23 @@ function extractFunctionsPath(functionsNode: SwfLsNode[]) {
   });
   return { relativeList, remoteList };
 }
+/**
+ * get word to search for built-in jq functions.
+ */
+function getJqCompletionWordToSearch(slicedValue: string): string {
+  const removeSpecialChar = slicedValue.replace(/[^a-zA-Z _()]/g, "");
+  const builtInFunctionMatch = removeSpecialChar.match(/\s(\w+)?$/);
+  if (builtInFunctionMatch === null) {
+    if (removeSpecialChar.length) {
+      return removeSpecialChar.trim();
+    }
+  } else if (builtInFunctionMatch[1] === undefined) {
+    return "";
+  } else if (builtInFunctionMatch[1].length) {
+    return builtInFunctionMatch[1];
+  }
+  return "";
+}
 
 /**
  * get the input workflow variables from remote/relative paths.
@@ -205,13 +221,9 @@ async function getJqInputVariablesCompletions(
     }
     return Promise.resolve(
       schemaData
-        .filter((prop: Record<string, string>) => {
-          if (args.wordToSearch === ".") {
-            return true;
-          } else {
-            return Object.keys(prop)[0].startsWith(args.wordToSearch);
-          }
-        })
+        .filter((prop: Record<string, string>) =>
+          args.wordToSearch === "." ? true : Object.keys(prop)[0].startsWith(args.wordToSearch)
+        )
         .map((parsedProp: Record<string, string>) => {
           return createCompletionItem({
             ...args,
@@ -220,6 +232,9 @@ async function getJqInputVariablesCompletions(
             label: Object.keys(parsedProp)[0],
             detail: Object.values(parsedProp)[0],
             filterText: args.wordToSearch === "." ? Object.keys(parsedProp)[0] : args.wordToSearch,
+            extraOptions: {
+              insertText: Object.keys(parsedProp)[0],
+            },
             overwriteRange: Range.create(
               Position.create(
                 args.cursorPosition.line,
@@ -243,6 +258,11 @@ function getReusableFunctionCompletion(
 ): CompletionItem[] {
   const reusalbeFunctions: SwfLsNode = findNodeAtLocation(args.rootNode, ["functions"])!;
   const functionNamesArray: string[] = [];
+  const isWordToSearchEmpty = args.wordToSearch.length ? true : false;
+  const overwriteRange = Range.create(
+    Position.create(args.cursorPosition.line, args.cursorPosition.character - args.wordToSearch.length),
+    Position.create(args.cursorPosition.line, args.cursorPosition.character)
+  );
   if (reusalbeFunctions.type === "array") {
     reusalbeFunctions.children?.forEach((func) => {
       if (findNodeAtLocation(func, ["type"])?.value === "expression") {
@@ -251,24 +271,19 @@ function getReusableFunctionCompletion(
       }
     });
     return functionNamesArray
-      .filter((name: string) => {
-        if (args.wordToSearch === "") {
-          return true;
-        }
-        return name.startsWith(args.wordToSearch);
-      })
+      .filter((name: string) => (args.wordToSearch === "" ? true : name.startsWith(args.wordToSearch)))
       .map((filteredName: string) => {
         return createCompletionItem({
           ...args,
           completion: filteredName,
           kind: CompletionItemKind.Function,
           label: filteredName,
-          filterText: args.wordToSearch.length ? args.wordToSearch : filteredName,
+          filterText: isWordToSearchEmpty ? args.wordToSearch : filteredName,
           detail: "Reusable functions(expressions) defined in the functions array",
-          overwriteRange: Range.create(
-            Position.create(args.cursorPosition.line, args.cursorPosition.character - args.wordToSearch.length),
-            Position.create(args.cursorPosition.line, args.cursorPosition.character)
-          ),
+          extraOptions: {
+            insertText: filteredName,
+          },
+          overwriteRange,
         });
       });
   }
@@ -284,43 +299,28 @@ async function getJqFunctionCompletions(
   const slicedValue = args.currentNode.value.slice(0, currentCursor - 1);
   const inputVariableMatch = slicedValue.match(/.*\.(\w+)?$/);
   if (inputVariableMatch) {
-    let wordToSearch = "";
-    if (inputVariableMatch[1] === undefined) {
-      wordToSearch = ".";
-    } else {
-      wordToSearch = inputVariableMatch[1];
-    }
-    return await getJqInputVariablesCompletions({ ...args, wordToSearch });
+    return await getJqInputVariablesCompletions({
+      ...args,
+      wordToSearch: inputVariableMatch[1] === undefined ? "." : inputVariableMatch[1],
+    });
   }
   const reusableFunctionMatch = slicedValue.match(/.*fn:(\w+)?$/);
   if (reusableFunctionMatch) {
-    let wordToSearch = "";
-    if (reusableFunctionMatch[1] === undefined) {
-      wordToSearch = "";
-    } else {
-      wordToSearch = reusableFunctionMatch[1];
-    }
-    return getReusableFunctionCompletion({ ...args, wordToSearch });
+    return getReusableFunctionCompletion({
+      ...args,
+      wordToSearch: reusableFunctionMatch[1] === undefined ? "" : reusableFunctionMatch[1],
+    });
   }
-  const removeSpecialChar = slicedValue.replace(/[^a-zA-Z _()]/g, "");
-  const builtInFunctionMatch = removeSpecialChar.match(/\s(\w+)?$/);
-  let wordToSearch = "";
-  if (builtInFunctionMatch === null) {
-    if (removeSpecialChar.length) {
-      wordToSearch = removeSpecialChar.trim();
-    }
-  } else if (builtInFunctionMatch[1] === undefined) {
-    wordToSearch = "";
-  } else if (builtInFunctionMatch[1].length) {
-    wordToSearch = builtInFunctionMatch[1];
-  }
+  const wordToSearch = getJqCompletionWordToSearch(slicedValue);
+  const isWordToSearchEmpty = wordToSearch.length ? true : false;
+  const overwriteRange = Range.create(
+    Position.create(args.cursorPosition.line, args.cursorPosition.character - wordToSearch.length),
+    Position.create(args.cursorPosition.line, args.cursorPosition.character)
+  );
   const result = jqBuiltInFunctions
-    .filter((func: { functionName: string; description: string }) => {
-      if (!wordToSearch.length) {
-        return true;
-      }
-      return func.functionName.startsWith(wordToSearch);
-    })
+    .filter((func: { functionName: string; description: string }) =>
+      !wordToSearch.length ? true : func.functionName.startsWith(wordToSearch)
+    )
     .map((filteredFunc: { functionName: string; description: string }) => {
       return createCompletionItem({
         ...args,
@@ -328,11 +328,11 @@ async function getJqFunctionCompletions(
         kind: CompletionItemKind.Function,
         label: filteredFunc.functionName,
         detail: filteredFunc.description,
-        filterText: wordToSearch.length ? wordToSearch : filteredFunc.functionName,
-        overwriteRange: Range.create(
-          Position.create(args.cursorPosition.line, args.cursorPosition.character - wordToSearch.length),
-          Position.create(args.cursorPosition.line, args.cursorPosition.character)
-        ),
+        filterText: isWordToSearchEmpty ? wordToSearch : filteredFunc.functionName,
+        extraOptions: {
+          insertText: filteredFunc.functionName,
+        },
+        overwriteRange,
       });
     });
   return Promise.resolve(result);
