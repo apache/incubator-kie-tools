@@ -3,5 +3,10 @@ name: org.kie.kogito.dataindex.common
 version: "2.0.0-snapshot"
 description: "Common modules for data-index persistence provider images, any addition that is common must be added in this module"
 
+envs:
+  - name: "KOGITO_DATA_INDEX_QUARKUS_PROFILE"
+    value: "kafka-events-support"
+    description: "Allows to change the event connection type. The possible values are :`kafka-events-support`(default) or `http-events-support`"
+
 execute:
   - script: configure
