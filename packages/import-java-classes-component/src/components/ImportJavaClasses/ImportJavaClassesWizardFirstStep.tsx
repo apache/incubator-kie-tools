@@ -80,7 +80,7 @@ export const ImportJavaClassesWizardFirstStep = ({
   );
 
   const handleSearchValueChange = useCallback(
-    (value: string) => {
+    (event: React.FormEvent<HTMLInputElement>, value: string) => {
       setSearchValue(value);
       /* Managing debounce effect */
       if (requestTimer) {

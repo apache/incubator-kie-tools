@@ -150,7 +150,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
 
   const renderAdditiveRow = useCallback(
     (rowIndex: number) => (
-      <Tr className="table-row additive-row">
+      <Tr className="table-row additive-row" ouiaId={"expression-additive-row"}>
         <TdAdditiveCell
           isEmptyCell={true}
           rowIndex={rowIndex}

@@ -76,6 +76,7 @@ export const AboutButton: React.FunctionComponent = () => {
         }
         variant={ModalVariant.large}
         isOpen={isModalOpen}
+        aria-label="About Modal"
         aria-describedby="modal-title-icon-description"
         onClose={handleModalToggle}
       >
