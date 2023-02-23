@@ -219,6 +219,7 @@ async function getJqInputVariablesCompletions(
             kind: CompletionItemKind.Value,
             label: Object.keys(parsedProp)[0],
             detail: Object.values(parsedProp)[0],
+            filterText: args.wordToSearch === "." ? Object.keys(parsedProp)[0] : args.wordToSearch,
             overwriteRange: Range.create(
               Position.create(
                 args.cursorPosition.line,
@@ -256,13 +257,13 @@ function getReusableFunctionCompletion(
         }
         return name.startsWith(args.wordToSearch);
       })
-      .map((filteredName) => {
+      .map((filteredName: string) => {
         return createCompletionItem({
           ...args,
           completion: filteredName,
           kind: CompletionItemKind.Function,
           label: filteredName,
-          filterText: args.wordToSearch,
+          filterText: args.wordToSearch.length ? args.wordToSearch : filteredName,
           detail: "Reusable functions(expressions) defined in the functions array",
           overwriteRange: Range.create(
             Position.create(args.cursorPosition.line, args.cursorPosition.character - args.wordToSearch.length),
@@ -279,7 +280,9 @@ function getReusableFunctionCompletion(
 async function getJqFunctionCompletions(
   args: SwfLanguageServiceCodeCompletionFunctionsArgs
 ): Promise<CompletionItem[]> {
-  const inputVariableMatch = args.currentNode.value.match(/.*\.(\w+)?\)?$/);
+  const currentCursor = args.cursorOffset - args.currentNode.offset;
+  const slicedValue = args.currentNode.value.slice(0, currentCursor - 1);
+  const inputVariableMatch = slicedValue.match(/.*\.(\w+)?$/);
   if (inputVariableMatch) {
     let wordToSearch = "";
     if (inputVariableMatch[1] === undefined) {
@@ -289,7 +292,7 @@ async function getJqFunctionCompletions(
     }
     return await getJqInputVariablesCompletions({ ...args, wordToSearch });
   }
-  const reusableFunctionMatch = args.currentNode.value.match(/.*fn\:(\w+)?$/);
+  const reusableFunctionMatch = slicedValue.match(/.*fn\:(\w+)?$/);
   if (reusableFunctionMatch) {
     let wordToSearch = "";
     if (reusableFunctionMatch[1] === undefined) {
@@ -299,7 +302,7 @@ async function getJqFunctionCompletions(
     }
     return getReusableFunctionCompletion({ ...args, wordToSearch });
   }
-  const removeSpecialChar = args.currentNode.value.replace(/[^a-zA-Z _()]/g, "");
+  const removeSpecialChar = slicedValue.replace(/[^a-zA-Z _()]/g, "");
   const builtInFunctionMatch = removeSpecialChar.match(/\s(\w+)?$/);
   let wordToSearch = "";
   if (builtInFunctionMatch === null) {
