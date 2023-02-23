@@ -18,7 +18,7 @@ import { BaseSyntheticEvent, useMemo } from "react";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { DataType, FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
+import { DataType, OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
 import { OutputFieldRowAction, OutputLabels } from "../atoms";
 import "./OutputFieldRow.scss";
 import { ValidationIndicator } from "../../EditorCore/atoms";
@@ -35,10 +35,10 @@ interface OutputFieldRowProps {
 }
 
 interface Values {
-  name: FieldName | undefined;
+  name: string | undefined;
   dataType: DataType | undefined;
   optype?: OpType;
-  targetField?: FieldName;
+  targetField?: string;
   feature?: ResultFeature;
   value?: any;
   rank?: number;
