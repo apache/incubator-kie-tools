@@ -28,7 +28,6 @@ interface Props {
 }
 
 export function DmnRunnerDockToggle(props: Props) {
-  console.log("dmnrunner toggle!");
   return (
     <EditorPageDockToggleItem isDisabled={props.isDisabled} disabledReason={props.disabledReason}>
       <ToggleGroupItem
