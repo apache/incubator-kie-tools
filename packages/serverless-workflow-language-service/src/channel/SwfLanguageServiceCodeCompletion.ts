@@ -203,14 +203,13 @@ async function getJqInputVariablesCompletions(
     if (schemaData.length === 0) {
       return Promise.resolve([]);
     }
-    args.wordToSearch = args.wordToSearch.slice(args.wordToSearch.indexOf("."), args.wordToSearch.length);
     return Promise.resolve(
       schemaData
         .filter((prop: Record<string, string>) => {
           if (args.wordToSearch === ".") {
             return true;
           } else {
-            return Object.keys(prop)[0].startsWith(args.wordToSearch.slice(1, args.wordToSearch.length));
+            return Object.keys(prop)[0].startsWith(args.wordToSearch);
           }
         })
         .map((parsedProp: Record<string, string>) => {
@@ -223,7 +222,9 @@ async function getJqInputVariablesCompletions(
             overwriteRange: Range.create(
               Position.create(
                 args.cursorPosition.line,
-                args.cursorPosition.character - args.wordToSearch.slice(1, args.wordToSearch.length).length
+                args.wordToSearch === "."
+                  ? args.cursorPosition.character
+                  : args.cursorPosition.character - args.wordToSearch.length
               ),
               Position.create(args.cursorPosition.line, args.cursorPosition.character)
             ),
@@ -240,7 +241,6 @@ function getReusableFunctionCompletion(
   args: SwfLanguageServiceCodeCompletionFunctionsArgs & { wordToSearch: string }
 ): CompletionItem[] {
   const reusalbeFunctions: SwfLsNode = findNodeAtLocation(args.rootNode, ["functions"])!;
-  const replacableWord = args.wordToSearch.split(":")[1];
   const functionNamesArray: string[] = [];
   if (reusalbeFunctions.type === "array") {
     reusalbeFunctions.children?.forEach((func) => {
@@ -251,7 +251,10 @@ function getReusableFunctionCompletion(
     });
     return functionNamesArray
       .filter((name: string) => {
-        return name.startsWith(replacableWord);
+        if (args.wordToSearch === "") {
+          return true;
+        }
+        return name.startsWith(args.wordToSearch);
       })
       .map((filteredName) => {
         return createCompletionItem({
@@ -259,10 +262,10 @@ function getReusableFunctionCompletion(
           completion: filteredName,
           kind: CompletionItemKind.Function,
           label: filteredName,
-          filterText: replacableWord,
+          filterText: args.wordToSearch,
           detail: "Reusable functions(expressions) defined in the functions array",
           overwriteRange: Range.create(
-            Position.create(args.cursorPosition.line, args.cursorPosition.character - replacableWord.length),
+            Position.create(args.cursorPosition.line, args.cursorPosition.character - args.wordToSearch.length),
             Position.create(args.cursorPosition.line, args.cursorPosition.character)
           ),
         });
@@ -276,21 +279,45 @@ function getReusableFunctionCompletion(
 async function getJqFunctionCompletions(
   args: SwfLanguageServiceCodeCompletionFunctionsArgs
 ): Promise<CompletionItem[]> {
-  const currentCursor = args.cursorOffset - args.currentNode.offset;
-  let wordToSearch = args.currentNode.value
-    .slice(0, currentCursor)
-    .trim()
-    .split(" ")
-    .pop()
-    .replace(/[^a-zA-Z _.(:]/g, "");
-  if (wordToSearch.startsWith(".") || wordToSearch.includes("(.")) {
+  const inputVariableMatch = args.currentNode.value.match(/.*\.(\w+)?\)?$/);
+  if (inputVariableMatch) {
+    let wordToSearch = "";
+    if (inputVariableMatch[1] === undefined) {
+      wordToSearch = ".";
+    } else {
+      wordToSearch = inputVariableMatch[1];
+    }
     return await getJqInputVariablesCompletions({ ...args, wordToSearch });
   }
-  if (wordToSearch.startsWith("fn:")) {
+  const reusableFunctionMatch = args.currentNode.value.match(/.*fn\:(\w+)?$/);
+  if (reusableFunctionMatch) {
+    let wordToSearch = "";
+    if (reusableFunctionMatch[1] === undefined) {
+      wordToSearch = "";
+    } else {
+      wordToSearch = reusableFunctionMatch[1];
+    }
     return getReusableFunctionCompletion({ ...args, wordToSearch });
   }
+  const removeSpecialChar = args.currentNode.value.replace(/[^a-zA-Z _()]/g, "");
+  const builtInFunctionMatch = removeSpecialChar.match(/\s(\w+)?$/);
+  let wordToSearch = "";
+  if (builtInFunctionMatch === null) {
+    if (removeSpecialChar.length) {
+      wordToSearch = removeSpecialChar.trim();
+    }
+  } else if (builtInFunctionMatch[1] === undefined) {
+    wordToSearch = "";
+  } else if (builtInFunctionMatch[1].length) {
+    wordToSearch = builtInFunctionMatch[1];
+  }
   const result = jqBuiltInFunctions
-    .filter((func: { functionName: string; description: string }) => func.functionName.startsWith(wordToSearch))
+    .filter((func: { functionName: string; description: string }) => {
+      if (!wordToSearch.length) {
+        return true;
+      }
+      return func.functionName.startsWith(wordToSearch);
+    })
     .map((filteredFunc: { functionName: string; description: string }) => {
       return createCompletionItem({
         ...args,
@@ -298,7 +325,7 @@ async function getJqFunctionCompletions(
         kind: CompletionItemKind.Function,
         label: filteredFunc.functionName,
         detail: filteredFunc.description,
-        filterText: wordToSearch,
+        filterText: wordToSearch.length ? wordToSearch : filteredFunc.functionName,
         overwriteRange: Range.create(
           Position.create(args.cursorPosition.line, args.cursorPosition.character - wordToSearch.length),
           Position.create(args.cursorPosition.line, args.cursorPosition.character)
