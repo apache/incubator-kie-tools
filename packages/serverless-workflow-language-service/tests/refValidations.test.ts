@@ -19,6 +19,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { trim } from "./testUtils";
 import * as jsonc from "jsonc-parser";
 import { SwfLanguageServiceConfig, SwfYamlLanguageService } from "../src/channel";
+import { defaultJqCompletionsConfig } from "./SwfLanguageServiceConfigs";
 
 function textDoc(content: string) {
   return TextDocument.create("", "serverless-workflow-json", 0, content);
@@ -502,6 +503,7 @@ describe("test YAML refValidation method against source and target paths", () =>
     fs: {},
     serviceCatalog: defaultServiceCatalogConfig,
     config: defaultConfig,
+    jqCompletions: defaultJqCompletionsConfig,
   });
   test("check functionRef against functions array", () => {
     const { content } = trim(`

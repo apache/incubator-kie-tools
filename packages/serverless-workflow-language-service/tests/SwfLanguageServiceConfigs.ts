@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { SwfLanguageServiceConfig } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { JqCompletions, SwfLanguageServiceConfig } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionArgumentType,
@@ -64,4 +64,9 @@ export const defaultConfig: SwfLanguageServiceConfig = {
   shouldDisplayServiceRegistriesIntegration: async () => true,
   shouldReferenceServiceRegistryFunctionsWithUrls: async () => false,
   shouldIncludeJsonSchemaDiagnostics: async () => true,
+};
+
+export const defaultJqCompletionsConfig: JqCompletions = {
+  remote: { getJqAutocompleteProperties: async (_args) => [] },
+  relative: { getJqAutocompleteProperties: async (_args) => [] },
 };

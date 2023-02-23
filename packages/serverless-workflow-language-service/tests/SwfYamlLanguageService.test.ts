@@ -22,7 +22,12 @@ import {
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, Position } from "vscode-languageserver-types";
-import { defaultConfig, defaultServiceCatalogConfig, testRelativeService1 } from "./SwfLanguageServiceConfigs";
+import {
+  defaultConfig,
+  defaultJqCompletionsConfig,
+  defaultServiceCatalogConfig,
+  testRelativeService1,
+} from "./SwfLanguageServiceConfigs";
 import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, treat, trim } from "./testUtils";
 
 const documentUri = "test.sw.yaml";
@@ -34,6 +39,7 @@ describe("YamlCodeCompletionStrategy", () => {
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     describe("string value", () => {
@@ -224,6 +230,7 @@ describe("SWF LS YAML", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -252,6 +259,7 @@ functions: []
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -294,6 +302,7 @@ functions:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -324,6 +333,7 @@ states:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`---
@@ -346,6 +356,7 @@ functions:
         relative: { getServices: async () => [testRelativeService1] },
       },
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     const parseContentTester = (contentToParse: ContentWithCursor) => {
@@ -435,6 +446,7 @@ states:
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     const completionItems = await ls.getCompletionItems({
@@ -464,6 +476,7 @@ states:
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
@@ -480,6 +493,7 @@ states:
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
@@ -503,6 +517,7 @@ states:
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const { content } = trim(`functions:\n- `);
@@ -525,6 +540,7 @@ states:
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const { content } = trim(`functions: [] `);
@@ -540,6 +556,7 @@ states:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`events:\n- `);
@@ -562,6 +579,7 @@ states:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`states:\n- `);
@@ -590,6 +608,7 @@ states:
           shouldServiceRegistriesLogIn: () => true,
           canRefreshServices: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -615,6 +634,7 @@ functions:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -651,6 +671,7 @@ functions:
           ...defaultConfig,
           shouldConfigureServiceRegistries: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -687,6 +708,7 @@ functions:
           ...defaultConfig,
           canRefreshServices: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -724,6 +746,7 @@ functions:
         relative: { getServices: async () => [testRelativeService1] },
       },
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     describe("empty file completion", () => {
@@ -919,6 +942,7 @@ states:
             relative: { getServices: async () => [testRelativeService1WithEmptyFunctionArgs] },
           },
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const { completionItems } = await codeCompletionTester(
@@ -1149,6 +1173,7 @@ states:
         relative: { getServices: async () => [] },
       },
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     describe("using JSON format", () => {

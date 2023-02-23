@@ -22,7 +22,12 @@ import {
   SwfJsonLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { CodeLens, Position } from "vscode-languageserver-types";
-import { defaultConfig, defaultServiceCatalogConfig, testRelativeService1 } from "./SwfLanguageServiceConfigs";
+import {
+  defaultConfig,
+  defaultJqCompletionsConfig,
+  defaultServiceCatalogConfig,
+  testRelativeService1,
+} from "./SwfLanguageServiceConfigs";
 import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, treat, trim } from "./testUtils";
 
 const documentUri = "test.sw.json";
@@ -34,6 +39,7 @@ describe("JsonCodeCompletionStrategy", () => {
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     test("string value", async () => {
@@ -351,6 +357,7 @@ describe("SWF LS JSON", () => {
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     const completionItems = await ls.getCompletionItems({
@@ -380,6 +387,7 @@ describe("SWF LS JSON", () => {
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
@@ -396,6 +404,7 @@ describe("SWF LS JSON", () => {
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
@@ -419,6 +428,7 @@ describe("SWF LS JSON", () => {
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const { content } = trim(`
@@ -444,6 +454,7 @@ describe("SWF LS JSON", () => {
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const { content } = trim(`{"functions":[]}`);
@@ -467,6 +478,7 @@ describe("SWF LS JSON", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`{"events":[]}`);
@@ -489,6 +501,7 @@ describe("SWF LS JSON", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`{"states":[]}`);
@@ -517,6 +530,7 @@ describe("SWF LS JSON", () => {
           shouldServiceRegistriesLogIn: () => true,
           canRefreshServices: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -542,6 +556,7 @@ describe("SWF LS JSON", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -578,6 +593,7 @@ describe("SWF LS JSON", () => {
           ...defaultConfig,
           shouldConfigureServiceRegistries: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -614,6 +630,7 @@ describe("SWF LS JSON", () => {
           ...defaultConfig,
           canRefreshServices: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -651,6 +668,7 @@ describe("SWF LS JSON", () => {
         relative: { getServices: async () => [testRelativeService1] },
       },
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     describe("empty file completion", () => {
@@ -994,6 +1012,7 @@ describe("SWF LS JSON", () => {
         relative: { getServices: async () => [] },
       },
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     test.each([
