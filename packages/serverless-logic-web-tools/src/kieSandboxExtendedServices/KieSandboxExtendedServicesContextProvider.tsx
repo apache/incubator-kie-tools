@@ -71,13 +71,9 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
       const envHost = `${envUrl.protocol}//${envUrl.hostname}`;
       const envPort = envUrl.port;
 
-      // TODO CAPONETTO: check if this change is really necessary
-      let host;
-      let port;
-      if (env.FEATURE_FLAGS.MODE === AppDistributionMode.OPERATE_FIRST) {
-        host = envHost ?? getCookie(KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME);
-        port = envPort ?? getCookie(KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME);
-      } else {
+      let host = envHost;
+      let port = envPort;
+      if (env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY) {
         host = getCookie(KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envHost;
         port = getCookie(KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envPort;
       }

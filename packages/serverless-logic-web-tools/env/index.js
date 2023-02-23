@@ -84,6 +84,18 @@ module.exports = composeEnv(
         default: "https://localhost:9020/",
         description: "",
       },
+      SERVERLESS_LOGIC_WEB_TOOLS__openShiftConnectionNamespace: {
+        default: "",
+        description: "Optional pre setup OpenShift Namespace",
+      },
+      SERVERLESS_LOGIC_WEB_TOOLS__openShiftConnectionHost: {
+        default: "",
+        description: "Optional pre setup OpenShift Host",
+      },
+      SERVERLESS_LOGIC_WEB_TOOLS__openShiftConnectionToken: {
+        default: "",
+        description: "Optional pre setup OpenShift Token",
+      },
     }),
     get env() {
       return {
@@ -120,6 +132,11 @@ module.exports = composeEnv(
           gitCorsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl),
           featureFlags: {
             mode: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__featureFlagMode),
+          },
+          openShiftConnection: {
+            namespace: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__openShiftConnectionNamespace),
+            host: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__openShiftConnectionHost),
+            token: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__openShiftConnectionToken),
           },
         },
       };

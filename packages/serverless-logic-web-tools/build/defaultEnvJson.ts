@@ -28,4 +28,9 @@ export const defaultEnvJson: EnvJson = {
   FEATURE_FLAGS: {
     MODE: buildEnv.serverlessLogicWebTools.featureFlags.mode,
   },
+  OPENSHIFT_CONNECTION: {
+    namespace: buildEnv.serverlessLogicWebTools.openShiftConnection.namespace,
+    host: buildEnv.serverlessLogicWebTools.openShiftConnection.host,
+    token: buildEnv.serverlessLogicWebTools.openShiftConnection.token,
+  },
 };

@@ -22,7 +22,10 @@ import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
 import { readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
-import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import {
+  OpenShiftConnection,
+  isOpenShiftConnectionValid,
+} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { OpenShiftService } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
 import { useHistory } from "react-router";
@@ -219,7 +222,9 @@ export function SettingsContextProvider(props: any) {
   }, [githubAuthService]);
 
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
-  const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie(env.FEATURE_FLAGS.MODE));
+  const [openshiftConfig, setOpenShiftConfig] = useState(
+    isOpenShiftConnectionValid(env.OPENSHIFT_CONNECTION) ? env.OPENSHIFT_CONNECTION : readOpenShiftConfigCookie()
+  );
   const [kafkaConfig, setKafkaConfig] = useState<KafkaSettingsConfig>(readKafkaConfigCookie());
   const [serviceAccountConfig, setServiceAccountConfig] = useState<ServiceAccountSettingsConfig>(
     readServiceAccountConfigCookie()

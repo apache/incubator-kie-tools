@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { AppDistributionMode } from "../AppConstants";
 
 export interface EnvJson {
@@ -22,4 +23,5 @@ export interface EnvJson {
   FEATURE_FLAGS: {
     MODE: AppDistributionMode;
   };
+  OPENSHIFT_CONNECTION: OpenShiftConnection;
 }
