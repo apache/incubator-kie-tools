@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.client.shapes.icons.CornerIcon;
 import org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath;
+import org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 
@@ -40,9 +41,14 @@ public class OperationStateShape extends StateShape {
         OperationState state = (OperationState) element.getContent().getDefinition();
         if (state.getTimeouts() != null) {
             getView().addChild(new CornerIcon(IconPath.CLOCK,
+                                              IconPosition.LEFT_FROM_RIGHT_TOP_CORNER,
                                               "StateExecTimeout: " + state.getTimeouts().getStateExecTimeout() + "\r\n"
                                                       + "ActionExecTimeout: " + state.getTimeouts().getActionExecTimeout()));
         }
+
+        getView().addChild(new CornerIcon(IconPath.SERVICE,
+                                          IconPosition.RIGHT_TOP_CORNER,
+                                          HasAction.getActionStringFromArray(state.getActions())));
     }
 
     @Override

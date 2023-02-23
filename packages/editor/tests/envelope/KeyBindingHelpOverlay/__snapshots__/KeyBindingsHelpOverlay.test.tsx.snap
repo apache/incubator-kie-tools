@@ -50,7 +50,7 @@ exports[`KeyBindingsHelpOverlay minimal setup 1`] = `
             aria-disabled="false"
             aria-label="Close"
             class="pf-c-button pf-m-plain"
-            data-ouia-component-id="OUIA-Generated-Button-plain-1"
+            data-ouia-component-id="OUIA-Generated-Modal-default-1-ModalBoxCloseButton"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             type="button"
@@ -94,7 +94,6 @@ exports[`KeyBindingsHelpOverlay minimal setup 1`] = `
             >
               <dl
                 class=""
-                data-pf-content="true"
               >
                 <h2
                   class=""
@@ -107,13 +106,11 @@ exports[`KeyBindingsHelpOverlay minimal setup 1`] = `
                 </h2>
                 <dt
                   class=""
-                  data-pf-content="true"
                 >
                   Ctrl + C
                 </dt>
                 <dd
                   class=""
-                  data-pf-content="true"
                 />
                 <h2
                   class=""
@@ -126,13 +123,11 @@ exports[`KeyBindingsHelpOverlay minimal setup 1`] = `
                 </h2>
                 <dt
                   class=""
-                  data-pf-content="true"
                 >
                   Shift + /
                 </dt>
                 <dd
                   class=""
-                  data-pf-content="true"
                 >
                   Show keyboard shortcuts
                 </dd>

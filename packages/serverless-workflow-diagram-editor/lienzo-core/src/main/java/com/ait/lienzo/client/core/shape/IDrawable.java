@@ -45,6 +45,7 @@ import com.ait.lienzo.client.core.event.NodeTouchCancelHandler;
 import com.ait.lienzo.client.core.event.NodeTouchEndHandler;
 import com.ait.lienzo.client.core.event.NodeTouchMoveHandler;
 import com.ait.lienzo.client.core.event.NodeTouchStartHandler;
+import com.ait.lienzo.client.core.event.OrthogonalPolylinePointsChangedHandler;
 import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
@@ -134,6 +135,8 @@ public interface IDrawable<T extends IDrawable<T>> extends EventReceiver {
     HandlerRegistration addNodeDragMoveHandler(NodeDragMoveHandler handler);
 
     HandlerRegistration addNodeDragStartHandler(NodeDragStartHandler handler);
+
+    HandlerRegistration addOrthogonalPolylinePointsChangedHandler(OrthogonalPolylinePointsChangedHandler handler);
 
     /**
      * Gets the object's {@link Layer}

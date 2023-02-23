@@ -76,6 +76,10 @@ public class WiresConnectorViewExt<T>
                                                                supportedEventTypes);
     }
 
+    public WiresConnectorLabel getLabel() {
+        return label.orElse(null);
+    }
+
     @Override
     public boolean supports(final ViewEventType type) {
         return eventHandlerManager.supports(type);

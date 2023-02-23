@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.event.OrthogonalPolylinePointsChangedEvent;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -114,11 +115,20 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 }
             }
 
+            firePointsChangedEvent();
+
             return true;
         }
 
         m_computedPoint2DArray = null;
+
         return false;
+    }
+
+    public void firePointsChangedEvent() {
+        OrthogonalPolylinePointsChangedEvent event = new OrthogonalPolylinePointsChangedEvent(getLayer().getElement());
+        event.override(m_computedPoint2DArray);
+        fireEvent(event);
     }
 
     public final Point2DArray correctBreakDistance(Point2DArray points, double breakDistance) {
@@ -502,6 +512,9 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
         double y = p0y;
 
+        double break_distance_ratio = (Math.abs(dx) / Math.abs(dy)) * 2;
+        break_distance_ratio = Math.max(break_distance_ratio, 1.5d);
+
         if (behind) {
             // means p0 is behind.
             switch (tailDirection) {
@@ -512,7 +525,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                             (dx > 0 && lastDirection == EAST) ||
                             (dx < 0 && lastDirection == WEST)) {
                         // A mid point is needed to ensure an attractive line is drawn.
-                        x = p0x + (dx / 2);
+                        x = p0x + (dx / break_distance_ratio);
                         addPoint(buffer, x, y, write);
 
                         if (lastDirection == NORTH || lastDirection == SOUTH) {
@@ -541,7 +554,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                             (dy > 0 && lastDirection == SOUTH) ||
                             (dy < 0 && lastDirection == NORTH)) {
                         // A mid point is needed to ensure an attrictive line is drawn.
-                        y = p0y + (dy / 2);
+                        y = p0y + (dy / break_distance_ratio);
                         addPoint(buffer, x, y, write);
 
                         if (lastDirection == EAST || lastDirection == WEST) {
@@ -576,7 +589,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                             (dx > 0 && lastDirection == WEST) ||
                             (dx < 0 && lastDirection == EAST)) {
                         // A mid point is needed to ensure an attrictive line is drawn.
-                        y = p0y + (dy / 2);
+                        y = p0y + (dy / break_distance_ratio);
                         addPoint(buffer, x, y, write);
 
                         if (lastDirection == EAST || lastDirection == WEST) {
@@ -602,7 +615,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                             (dy > 0 && lastDirection == NORTH) ||
                             (dy < 0 && lastDirection == SOUTH)) {
                         // A mid point is needed to ensure an attrictive line is drawn.
-                        x = p0x + (dx / 2);
+                        x = p0x + (dx / break_distance_ratio);
                         addPoint(buffer, x, y, write);
 
                         if (lastDirection == NORTH || lastDirection == SOUTH) {

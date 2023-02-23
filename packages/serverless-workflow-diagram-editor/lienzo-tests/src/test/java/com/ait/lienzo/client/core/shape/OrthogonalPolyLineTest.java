@@ -5,6 +5,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import elemental2.dom.HTMLDivElement;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -17,7 +18,10 @@ import static com.ait.lienzo.shared.core.types.Direction.SOUTH;
 import static com.ait.lienzo.shared.core.types.Direction.WEST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -36,16 +40,22 @@ public class OrthogonalPolyLineTest {
 
     @Test
     public void testParse() {
+        Layer layer = mock(Layer.class);
+        HTMLDivElement element = mock(HTMLDivElement.class);
         Point2DArray points = new Point2DArray();
         OrthogonalPolyLine polyLine = spy(new OrthogonalPolyLine(points));
 
+        when(polyLine.getLayer()).thenReturn(layer);
+        when(layer.getElement()).thenReturn(element);
         when(polyLine.getControlPoints()).thenReturn(points);
         when(polyLine.getHeadDirection()).thenReturn(NONE);
         when(polyLine.getTailDirection()).thenReturn(NONE);
 
         points.push(new Point2D(0, 0));
         points.push(new Point2D(5, 5));
+
         assertTrue(polyLine.parse());
+        verify(polyLine, times(1)).firePointsChangedEvent();
     }
 
     @Test

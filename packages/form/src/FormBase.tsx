@@ -25,7 +25,7 @@ export interface FormBaseProps {
   id?: string;
   i18n: FormI18n;
   setFormError: React.Dispatch<React.SetStateAction<boolean>>;
-  formRef?: React.RefObject<HTMLFormElement>;
+  setFormRef: React.Dispatch<React.SetStateAction<HTMLFormElement | null>>;
   showInlineError?: boolean;
   autoSave?: boolean;
   autoSaveDelay?: number;
@@ -70,7 +70,7 @@ export function FormBase(props: React.PropsWithChildren<FormBaseProps>) {
             <AutoForm
               id={props.id}
               model={props.formModel}
-              ref={props.formRef}
+              ref={(node: HTMLFormElement) => props.setFormRef(node)}
               showInlineError={props.showInlineError}
               autosave={props.autoSave}
               autosaveDelay={props.autoSaveDelay}
@@ -80,7 +80,7 @@ export function FormBase(props: React.PropsWithChildren<FormBaseProps>) {
               onValidate={props.onValidate}
               errorsField={props.errorsField}
               submitField={props.submitField}
-              validate={"onChange"}
+              validate={"onSubmit"}
             >
               {props.children}
             </AutoForm>
