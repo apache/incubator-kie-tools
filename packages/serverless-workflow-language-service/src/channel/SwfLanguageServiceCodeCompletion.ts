@@ -292,7 +292,7 @@ async function getJqFunctionCompletions(
     }
     return await getJqInputVariablesCompletions({ ...args, wordToSearch });
   }
-  const reusableFunctionMatch = slicedValue.match(/.*fn\:(\w+)?$/);
+  const reusableFunctionMatch = slicedValue.match(/.*fn:(\w+)?$/);
   if (reusableFunctionMatch) {
     let wordToSearch = "";
     if (reusableFunctionMatch[1] === undefined) {
