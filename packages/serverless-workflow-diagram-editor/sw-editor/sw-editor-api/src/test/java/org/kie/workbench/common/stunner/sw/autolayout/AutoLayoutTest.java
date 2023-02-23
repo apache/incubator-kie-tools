@@ -264,8 +264,13 @@ public class AutoLayoutTest extends BaseMarshallingTest {
                                 assertFalse(sourceConnection.isAuto());
                                 assertEquals(MagnetConnection.MAGNET_LEFT, sourceConnection.getMagnetIndex().getAsInt(), 0);
                             }
-                            assertFalse(targetConnection.isAuto());
-                            assertEquals(MagnetConnection.MAGNET_CENTER, targetConnection.getMagnetIndex().getAsInt(), 0);
+                            if (inEdges.size() == 1) {
+                                assertFalse(targetConnection.isAuto());
+                                assertEquals(MagnetConnection.MAGNET_TOP, targetConnection.getMagnetIndex().getAsInt(), 0);
+                            } else {
+                                assertFalse(targetConnection.isAuto());
+                                assertEquals(MagnetConnection.MAGNET_CENTER, targetConnection.getMagnetIndex().getAsInt(), 0);
+                            }
                         }
                     }
                 }
@@ -322,7 +327,7 @@ public class AutoLayoutTest extends BaseMarshallingTest {
 
     @SuppressWarnings("all")
     @Test
-    public void testAdjustOutgoingConnectionsBackwards() {
+    public void testAdjustOutgoingConnectionsBackwardsNoCPs() {
         Iterable<Node> nodes = ((GraphImpl) getGraph()).nodes();
         nodes.forEach(node -> {
             if (node.getContent() instanceof View) {
@@ -360,8 +365,6 @@ public class AutoLayoutTest extends BaseMarshallingTest {
                                         assertFalse(sourceConnection.isAuto());
                                         assertEquals(MagnetConnection.MAGNET_LEFT, sourceConnection.getMagnetIndex().getAsInt(), 0);
                                     }
-                                    assertFalse(targetConnection.isAuto());
-                                    assertEquals(MagnetConnection.MAGNET_CENTER, targetConnection.getMagnetIndex().getAsInt(), 0);
                                 }
                             }
                         }

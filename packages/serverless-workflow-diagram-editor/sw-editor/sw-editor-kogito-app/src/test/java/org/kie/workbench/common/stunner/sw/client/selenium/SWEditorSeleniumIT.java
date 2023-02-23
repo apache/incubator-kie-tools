@@ -319,31 +319,27 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
 
         // Long backward connector
         // Pick timeout state then get points for the backward connector connected to the right magnet
-        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(10), MagnetConnection.MAGNET_RIGHT, 0);
+        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(10), MagnetConnection.MAGNET_CENTER, 1);
         // Number of points in the line
-        assertThat(points.size() / 2).isEqualTo(11);
+        assertThat(points.size() / 2).isEqualTo(9);
         assertThat(points.get(0)).isEqualTo(629L); // X
-        assertThat(points.get(1)).isEqualTo(1576L); // Y
+        assertThat(points.get(1)).isEqualTo(1541.8842794759826D); // Y
         assertThat(points.get(2)).isEqualTo(639L); // X
-        assertThat(points.get(3)).isEqualTo(1576L); // Y
+        assertThat(points.get(3)).isEqualTo(1541.8842794759826D); // Y
         assertThat(points.get(4)).isEqualTo(962L); // X
-        assertThat(points.get(5)).isEqualTo(1576L); // Y
+        assertThat(points.get(5)).isEqualTo(1541.8842794759826D); // Y
         assertThat(points.get(6)).isEqualTo(962L); // X
-        assertThat(points.get(7)).isEqualTo(578L); // Y
+        assertThat(points.get(7)).isEqualTo(1451L); // Y
         assertThat(points.get(8)).isEqualTo(962L); // X
-        assertThat(points.get(9)).isEqualTo(578L); // Y
+        assertThat(points.get(9)).isEqualTo(1122L); // Y
         assertThat(points.get(10)).isEqualTo(962L); // X
-        assertThat(points.get(11)).isEqualTo(1122L); // Y
+        assertThat(points.get(11)).isEqualTo(905L); // Y
         assertThat(points.get(12)).isEqualTo(962L); // X
-        assertThat(points.get(13)).isEqualTo(1122L); // Y
+        assertThat(points.get(13)).isEqualTo(578L); // Y
         assertThat(points.get(14)).isEqualTo(962L); // X
-        assertThat(points.get(15)).isEqualTo(905L); // Y
-        assertThat(points.get(16)).isEqualTo(962L); // X
-        assertThat(points.get(17)).isEqualTo(578L); // Y
-        assertThat(points.get(18)).isEqualTo(962L); // X
-        assertThat(points.get(19)).isEqualTo(514.7445414847161D); // Y
-        assertThat(points.get(20)).isEqualTo(641L); // X
-        assertThat(points.get(21)).isEqualTo(514.7445414847161D); // Y
+        assertThat(points.get(15)).isEqualTo(514.7445414847161D); // Y
+        assertThat(points.get(16)).isEqualTo(641L); // X
+        assertThat(points.get(17)).isEqualTo(514.7445414847161D); // Y
     }
 
     @Test
@@ -388,23 +384,57 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
 
         // Backward connector
         // Pick switch state then get points for the backward connector connected to the right magnet
-        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(4), MagnetConnection.MAGNET_RIGHT, 0);
+        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(4), MagnetConnection.MAGNET_CENTER, 2);
         // Number of points in the line
         assertThat(points.size() / 2).isEqualTo(7);
-        assertThat(points.get(0)).isEqualTo(452L); // X
-        assertThat(points.get(1)).isEqualTo(925L); // Y
-        assertThat(points.get(2)).isEqualTo(462L); // X
-        assertThat(points.get(3)).isEqualTo(925L); // Y
-        assertThat(points.get(4)).isEqualTo(481L); // X
-        assertThat(points.get(5)).isEqualTo(925L); // Y
+        assertThat(points.get(0)).isEqualTo(382.44D); // X
+        assertThat(points.get(1)).isEqualTo(880L); // Y
+        assertThat(points.get(2)).isEqualTo(382.44D); // X
+        assertThat(points.get(3)).isEqualTo(870L); // Y
+        assertThat(points.get(4)).isEqualTo(382.44D); // X
+        assertThat(points.get(5)).isEqualTo(800L); // Y
         assertThat(points.get(6)).isEqualTo(481L); // X
-        assertThat(points.get(7)).isEqualTo(618L); // Y
+        assertThat(points.get(7)).isEqualTo(800L); // Y
         assertThat(points.get(8)).isEqualTo(481L); // X
-        assertThat(points.get(9)).isEqualTo(599.8973709217612D); // Y
-        assertThat(points.get(10)).isEqualTo(381.56692913385825D); // X
-        assertThat(points.get(11)).isEqualTo(599.8973709217612D); // Y
-        assertThat(points.get(12)).isEqualTo(381.56692913385825D); // X
+        assertThat(points.get(9)).isEqualTo(638.6666666666666D); // Y
+        assertThat(points.get(10)).isEqualTo(349.4271844660194D); // X
+        assertThat(points.get(11)).isEqualTo(638.6666666666666D); // Y
+        assertThat(points.get(12)).isEqualTo(349.4271844660194D); // X
         assertThat(points.get(13)).isEqualTo(548L); // Y
+    }
+
+    @Test
+    // Line shall not overlap the state beside in the way up towards the target
+    public void testAutoLayoutBackwardConnectionFromTopCPs() throws Exception {
+        String resource = "LoanBroker.sw.json";
+        final String expected = loadResource(resource);
+        setContent(expected);
+        waitCanvasPanel();
+
+        List<String> nodeIds = jsHelper.getNodeIds();
+        // Number of states in the diagram
+        assertThat(nodeIds.size()).isEqualTo(14);
+
+        // Backward connector
+        // Pick operation state then get points for the backward connector connected to the center magnet
+        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(12), MagnetConnection.MAGNET_CENTER, 0);
+
+        // Number of points in the line
+        assertThat(points.size() / 2).isEqualTo(7);
+        assertThat(points.get(0)).isEqualTo(758L); // X
+        assertThat(points.get(1)).isEqualTo(753L); // Y
+        assertThat(points.get(2)).isEqualTo(758L); // X
+        assertThat(points.get(3)).isEqualTo(763L); // Y
+        assertThat(points.get(4)).isEqualTo(758L); // X
+        assertThat(points.get(5)).isEqualTo(815L); // Y
+        assertThat(points.get(6)).isEqualTo(1064L); // X
+        assertThat(points.get(7)).isEqualTo(815L); // Y
+        assertThat(points.get(8)).isEqualTo(1064L); // X
+        assertThat(points.get(9)).isEqualTo(988.3333333333334D); // Y
+        assertThat(points.get(10)).isEqualTo(1083.834862385321D); // X
+        assertThat(points.get(11)).isEqualTo(988.3333333333334D); // Y
+        assertThat(points.get(12)).isEqualTo(1083.834862385321D); // X
+        assertThat(points.get(13)).isEqualTo(1085L); // Y
     }
 
     private void testExample(String exampleName) throws Exception {

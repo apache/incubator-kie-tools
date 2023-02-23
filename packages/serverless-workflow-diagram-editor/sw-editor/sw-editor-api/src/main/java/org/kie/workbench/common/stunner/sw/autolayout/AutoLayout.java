@@ -198,7 +198,6 @@ public class AutoLayout {
 
                         // Handle backward connections crossing several (>1) layers.
                         adjustBackwardConnectionsCrossingMultipleLayers(i,
-                                                                        content,
                                                                         controlPoints,
                                                                         sourceBounds,
                                                                         targetBounds,
@@ -281,7 +280,6 @@ public class AutoLayout {
 
     // Handle backward connectors crossing several (>1) layers.
     static void adjustBackwardConnectionsCrossingMultipleLayers(final int edgeIndex,
-                                                                final ViewConnector content,
                                                                 final ControlPoint[] controlPoints,
                                                                 final Bounds sourceBounds,
                                                                 final Bounds targetBounds,
@@ -292,30 +290,43 @@ public class AutoLayout {
             double maxx = 0;
             for (int j = 0; j < controlPoints.length; j++) {
                 if (j == 0) {
-                    boolean isBottomTop = targetBounds.getY() < controlPoints[j].getLocation().getY();
-                    double ty = targetBounds.getY() +
-                            ((padding / 2) * edgeIndex) +
-                            (isBottomTop ? targetBounds.getHeight() + padding : -padding);
+                    // Figure out if it goes to the left, to the right or up
+                    // Source and target are horizontally aligned
+                    if (Math.abs(controlPoints[j].getLocation().getX() - ((sourceBounds.getX() + sourceBounds.getWidth())) / 2) > padding &&
+                            Math.abs(sourceBounds.getX() - targetBounds.getX()) < targetBounds.getWidth()) {
+                        targetConnection.setAuto(false);
+                        targetConnection.setIndex(MagnetConnection.MAGNET_CENTER);
 
-                    // Figure out if goes to the left or to the right
-                    if (controlPoints[0].getLocation().getX() < sourceBounds.getX()) {
-                        sourceConnection.setAuto(false);
-                        sourceConnection.setIndex(MagnetConnection.MAGNET_LEFT);
-                    } else if (controlPoints[0].getLocation().getX() > sourceBounds.getX()) {
-                        sourceConnection.setAuto(false);
-                        sourceConnection.setIndex(MagnetConnection.MAGNET_RIGHT);
+                        controlPoints[j].getLocation().setY(sourceBounds.getUpperLeft().getY() - (padding * 2));
+                    } else {
+                        boolean isBottomTop = targetBounds.getY() < controlPoints[j].getLocation().getY();
+                        double ty = targetBounds.getY() +
+                                (isBottomTop ? targetBounds.getHeight() + padding : -padding);
+
+                        if (Math.abs(controlPoints[0].getLocation().getX() - sourceBounds.getX()) < padding) {
+                            sourceConnection.setAuto(false);
+                            sourceConnection.setIndex(MagnetConnection.MAGNET_LEFT);
+                        } else {
+                            sourceConnection.setAuto(false);
+                            sourceConnection.setIndex(MagnetConnection.MAGNET_CENTER);
+                            targetConnection.setAuto(false);
+                            targetConnection.setIndex(MagnetConnection.MAGNET_LEFT);
+                            ty = sourceBounds.getY() - padding;
+                            controlPoints[j].getLocation().setX(controlPoints[j].getLocation().getX() - (padding * 2));
+                        }
+
+                        controlPoints[j].getLocation().setY(ty);
                     }
-
-                    controlPoints[j].getLocation().setY(ty);
                 } else if (j == controlPoints.length - 1) {
                     boolean isTopBottom = targetBounds.getY() < controlPoints[j].getLocation().getY();
                     double ty = targetBounds.getY() +
                             -(padding * edgeIndex) +
                             (isTopBottom ? targetBounds.getHeight() + padding : -padding);
                     controlPoints[j].getLocation().setY(ty);
-
-                    targetConnection.setIndex(MagnetConnection.MAGNET_CENTER);
+                    sourceConnection.setAuto(false);
+                    sourceConnection.setIndex(MagnetConnection.MAGNET_CENTER);
                     targetConnection.setAuto(false);
+                    targetConnection.setIndex(MagnetConnection.MAGNET_CENTER);
                 }
 
                 ControlPoint cp = controlPoints[j];
