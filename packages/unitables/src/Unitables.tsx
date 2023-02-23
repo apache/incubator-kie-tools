@@ -32,7 +32,6 @@ import { useUnitablesColumns } from "./UnitablesColumns";
 import "./Unitables.css";
 import { UnitablesRow } from "./UnitablesRow";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { GratipayIcon } from "@patternfly/react-icons";
 
 interface Props {
   jsonSchema: object;
@@ -201,7 +200,7 @@ function UnitablesRowWrapper({
   return (
     <UnitablesRow
       key={rowIndex}
-      formId={FORMS_ID}
+      formsId={FORMS_ID}
       rowIndex={rowIndex}
       model={model}
       jsonSchemaBridge={jsonSchemaBridge}

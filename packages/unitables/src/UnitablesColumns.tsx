@@ -15,14 +15,9 @@
  */
 
 import * as React from "react";
-import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from "react";
-import * as ReactTable from "react-table";
+import { useEffect, useMemo, useRef } from "react";
 import { diff } from "deep-object-diff";
-import { FORMS_ID, UnitablesJsonSchemaBridge } from "./uniforms";
-import { UnitablesRow, UnitablesRowApi } from "./UnitablesRow";
-import { UnitablesRowType } from "./UnitablesTypes";
-import { UNITABLES_COLUMN_MIN_WIDTH } from "./bee";
-import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
+import { UnitablesJsonSchemaBridge } from "./uniforms";
 
 export function usePrevious<T>(value: T) {
   const ref = useRef<T>();

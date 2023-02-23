@@ -15,14 +15,14 @@
  */
 
 import * as React from "react";
-import { PropsWithChildren, useCallback, useImperativeHandle, useRef, useState } from "react";
+import { PropsWithChildren, useCallback, useImperativeHandle, useRef } from "react";
 import { AutoRow } from "./uniforms/AutoRow";
 import { createPortal } from "react-dom";
 import { context as UniformsContext } from "uniforms";
-import { UnitablesJsonSchemaBridge } from "./uniforms";
+import { AUTO_ROW_ID, UnitablesJsonSchemaBridge } from "./uniforms";
 
 interface Props {
-  formId: string;
+  formsId: string;
   rowIndex: number;
   jsonSchemaBridge: UnitablesJsonSchemaBridge;
   model: object;
@@ -35,7 +35,7 @@ export interface UnitablesRowApi {
 }
 
 export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<Props>>(
-  ({ children, formId, rowIndex, jsonSchemaBridge, model, onModelUpdate }, forwardRef) => {
+  ({ children, formsId, rowIndex, jsonSchemaBridge, model, onModelUpdate }, forwardRef) => {
     const autoRowRef = useRef<HTMLFormElement>(null);
 
     const onSubmit = useCallback(
@@ -74,8 +74,8 @@ export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<
             {(uniformsContext) => (
               <>
                 {createPortal(
-                  <form id={`unitables-row-${rowIndex}`} onSubmit={(data) => uniformsContext?.onSubmit(data)} />,
-                  document.getElementById(formId)!
+                  <form id={`${AUTO_ROW_ID}-${rowIndex}`} onSubmit={(data) => uniformsContext?.onSubmit(data)} />,
+                  document.getElementById(formsId)!
                 )}
                 {children}
               </>

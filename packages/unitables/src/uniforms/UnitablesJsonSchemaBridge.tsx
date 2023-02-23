@@ -20,11 +20,11 @@ import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import * as React from "react";
 import { joinName } from "uniforms";
-import { AutoField } from "./AutoField";
 import { UNITABLES_COLUMN_MIN_WIDTH } from "../bee";
 import { UnitablesColumnType } from "../UnitablesTypes";
 
 export const FORMS_ID = "unitables-forms";
+export const AUTO_ROW_ID = "unitables-row";
 
 const DEFAULT_DATE_TIME_CELL_WDITH = 296;
 const DEFAULT_DATE_CELL_WIDTH = 180;

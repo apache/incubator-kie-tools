@@ -37,6 +37,7 @@ import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import { AutoField } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { useField } from "uniforms";
+import { AUTO_ROW_ID } from "../uniforms/UnitablesJsonSchemaBridge";
 
 export const UNITABLES_COLUMN_MIN_WIDTH = 150;
 
@@ -212,18 +213,22 @@ function getColumnAccessor(c: UnitablesColumnType) {
 function UnitablesBeeTableCell({ joinedName }: BeeTableCellProps<ROWTYPE> & { joinedName: string }) {
   const { containerCellCoordinates } = useBeeTableCoordinates();
 
-  const [field] = useField(joinedName, {});
+  const [{ value, onChange: setValue }] = useField(joinedName, {});
 
   useBeeTableSelectableCellRef(
     containerCellCoordinates?.rowIndex ?? 0,
     containerCellCoordinates?.columnIndex ?? 0,
-    field.onChange,
-    () => JSON.stringify(field.value)
+    setValue,
+    useCallback(() => JSON.stringify(value), [value])
   );
 
   return (
     <>
-      <AutoField key={joinedName} name={joinedName} form={generateUuid()} />
+      <AutoField
+        key={joinedName}
+        name={joinedName}
+        form={`${AUTO_ROW_ID}-${containerCellCoordinates?.rowIndex ?? 0}`}
+      />
     </>
   );
 }
