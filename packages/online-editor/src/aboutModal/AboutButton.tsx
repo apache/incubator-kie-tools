@@ -78,7 +78,6 @@ export const AboutButton: React.FunctionComponent = () => {
         isOpen={isModalOpen}
         aria-label="About Modal"
         aria-describedby="modal-title-icon-description"
-        aria-label="About"
         onClose={handleModalToggle}
       >
         <Divider inset={{ default: "insetMd" }} />
