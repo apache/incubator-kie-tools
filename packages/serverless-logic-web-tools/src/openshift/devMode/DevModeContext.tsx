@@ -33,6 +33,7 @@ import { AppDistributionMode } from "../../AppConstants";
 import { SpinUpDevModePipeline } from "../pipelines/SpinUpDevModePipeline";
 import { fetchWithTimeout } from "../../fetch";
 import { zipFiles } from "../../zip";
+import { isServerlessWorkflow, isSupportedByDevMode } from "../../extension";
 
 export const resolveWebToolsId = () => {
   const webToolsId = localStorage.getItem(WEB_TOOLS_ID_KEY) ?? uuid();
@@ -49,7 +50,7 @@ export interface DevModeContextType {
 }
 
 export interface DevModeDispatchContextType {
-  upload(files: WorkspaceFile[]): Promise<DevModeUploadResult>;
+  upload(args: { targetFile: WorkspaceFile; allFiles: WorkspaceFile[] }): Promise<DevModeUploadResult>;
   checkHealthReady(): Promise<boolean>;
 }
 
@@ -119,7 +120,7 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
   }, [endpoints]);
 
   const upload = useCallback(
-    async (files: WorkspaceFile[]): Promise<DevModeUploadResult> => {
+    async (args: { targetFile: WorkspaceFile; allFiles: WorkspaceFile[] }): Promise<DevModeUploadResult> => {
       if (!endpoints) {
         console.error("Route URL for Dev Mode deployment not available.");
         return {
@@ -136,8 +137,25 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
         };
       }
 
+      if (!isServerlessWorkflow(args.targetFile.relativePath)) {
+        console.error(`File is not Serverless Workflow: ${args.targetFile.relativePath}`);
+        return {
+          success: false,
+          reason: "ERROR",
+        };
+      }
+
       try {
-        const zipBlob = await zipFiles(files);
+        // TODO CAPONETTO: no need to have `targetFile` if uploading all sw files.
+        // Uncomment when supporting other assets like application.properties and spec files
+        // const filesToUpload = [
+        //   args.targetFile,
+        //   ...args.allFiles.filter(
+        //     (f) => f.relativePath !== args.targetFile.relativePath && isSupportedByDevMode(f.relativePath)
+        //   ),
+        // ];
+        const filesToUpload = [args.targetFile];
+        const zipBlob = await zipFiles(filesToUpload);
 
         const formData = new FormData();
         formData.append(ZIP_FILE_PART_KEY, zipBlob, ZIP_FILE_NAME);

@@ -205,8 +205,7 @@ export function useDeployDropdownItems(props: Props) {
   const onUploadDevMode = useCallback(async () => {
     if (isKieSandboxExtendedServicesRunning) {
       devModeUploadingAlert.show();
-      // TODO CAPONETTO: only the current file is uploaded for now
-      const result = await devModeDispatch.upload([props.workspaceFile]);
+      const result = await devModeDispatch.upload({ targetFile: props.workspaceFile, allFiles: props.workspace.files });
       devModeUploadingAlert.close();
 
       if (result.success) {
@@ -237,6 +236,7 @@ export function useDeployDropdownItems(props: Props) {
     devModeUploadingAlert,
     devModeDispatch,
     props.workspaceFile,
+    props.workspace.files,
     uploadToDevModeSuccessAlert,
     devModeReadyAlert,
     devMode.endpoints,

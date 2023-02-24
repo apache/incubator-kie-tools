@@ -30,6 +30,8 @@ const REGEX = {
   json: /^.*\.json$/i,
   yaml: /^.*\.(yml|yaml)$/i,
   spec: /^.*(\.spec|\.specs|spec|specs)\.(json|yml|yaml)$/i,
+  // TODO CAPONETTO: this regex might become too complex
+  devModeAssets: /^((?:[^/]+\/)*specs\/.*\.(json|ya?ml)|.*\/(application\.properties|spec\.(ya?ml|json)))$/i,
 };
 
 export const GLOB_PATTERN = {
@@ -94,6 +96,10 @@ export function isEditable(path: string): boolean {
 
 export function isSupportedByVirtualServiceRegistry(path: string): boolean {
   return isServerlessWorkflow(path) || isSpec(path);
+}
+
+export function isSupportedByDevMode(path: string): boolean {
+  return REGEX.devModeAssets.test(path);
 }
 
 export function isSpec(path: string): boolean {

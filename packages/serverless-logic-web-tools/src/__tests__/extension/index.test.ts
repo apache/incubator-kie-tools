@@ -16,7 +16,7 @@
 
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { Minimatch } from "minimatch";
-import { GLOB_PATTERN, splitFiles } from "../../extension";
+import { GLOB_PATTERN, isSupportedByDevMode, splitFiles } from "../../extension";
 
 const createWorkspaceFileMock = (args: Partial<ConstructorParameters<typeof WorkspaceFile>[0]>): WorkspaceFile =>
   new WorkspaceFile({
@@ -224,6 +224,23 @@ describe("extension", () => {
         const matcher = new Minimatch(GLOB_PATTERN.sw_spec, { dot: true });
         expect(matcher.match(path)).toBe(result);
       });
+    });
+  });
+  describe("isSupportedByDevMode", () => {
+    it.each([
+      [false, "application.json in the root folder", "/application.json"],
+      [false, "spec.js in a sub folder", "foo/spec.js"],
+      [false, "bar.yaml in the any other folder than specs", "foo/bar.yaml"],
+      [true, "application.properties in the root folder", "/application.properties"],
+      [true, "application.properties in a sub folder", "foo/application.properties"],
+      [true, "spec.json in a sub folder", "foo/spec.json"],
+      [true, "spec.yaml in a sub folder", "foo/spec.yaml"],
+      [true, "spec.yml in a sub folder", "foo/spec.yml"],
+      [true, "bar.json in the specs folder", "specs/bar.json"],
+      [true, "bar.yaml in the specs folder", "specs/bar.yaml"],
+      [true, "bar.yml in the specs folder", "specs/bar.yml"],
+    ])("should be %s when path is %s", (result, _desc, path) => {
+      expect(isSupportedByDevMode(path)).toBe(result);
     });
   });
 });
