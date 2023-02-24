@@ -652,3 +652,7 @@ section.kie-tools--settings-tab {
 .pf-c-masthead__main::before {
   display: none;
 }
+
+.pf-c-menu__item-description {
+  word-break: normal !important;
+}

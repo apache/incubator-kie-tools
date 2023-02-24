@@ -61,21 +61,25 @@ export function NewFileDropdownMenu(props: {
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
   const [activeMenu, setActiveMenu] = useState("addFileRootMenu");
 
-  const drillIn = useCallback((fromMenuId, toMenuId, pathId) => {
+  const drillIn = useCallback((_event, fromMenuId, toMenuId, pathId) => {
     setMenuDrilledIn((prev) => [...prev, fromMenuId]);
     setDrilldownPath((prev) => [...prev, pathId]);
     setActiveMenu(toMenuId);
   }, []);
 
-  const drillOut = useCallback((toMenuId) => {
+  const drillOut = useCallback((_event, toMenuId) => {
     setMenuDrilledIn((prev) => prev.slice(0, prev.length - 1));
     setDrilldownPath((prev) => prev.slice(0, prev.length - 1));
     setActiveMenu(toMenuId);
   }, []);
 
   const setHeight = useCallback((menuId: string, height: number) => {
-    // do not try to simplify this ternary's condition as some heights are 0, resulting in an infinite loop.
-    setMenuHeights((prev) => (prev[menuId] !== undefined ? prev : { ...prev, [menuId]: height }));
+    setMenuHeights((prev) => {
+      if (prev[menuId] === undefined || (menuId !== "addFileRootMenu" && prev[menuId] !== height)) {
+        return { ...prev, [menuId]: height };
+      }
+      return prev;
+    });
   }, []);
 
   const workspaces = useWorkspaces();
@@ -248,7 +252,7 @@ export function NewFileDropdownMenu(props: {
       tabIndex={1}
       style={{ boxShadow: "none", minWidth: "400px" }}
       id="addFileRootMenu"
-      containsDrilldown={true}
+      containsDrilldown
       onDrillIn={drillIn}
       onDrillOut={drillOut}
       activeMenu={activeMenu}
@@ -257,7 +261,7 @@ export function NewFileDropdownMenu(props: {
       drilledInMenus={menuDrilledIn}
     >
       <MenuContent menuHeight={`${menuHeights[activeMenu]}px`}>
-        <MenuList>
+        <MenuList style={{ padding: 0 }}>
           <MenuItem
             itemId={"newBpmnItemId"}
             onClick={() => addEmptyFile("bpmn")}
@@ -267,28 +271,24 @@ export function NewFileDropdownMenu(props: {
               <FileLabel style={{ marginBottom: "4px" }} extension={"bpmn"} />
             </b>
           </MenuItem>
-          <MenuGroup label={" "}>
-            <MenuItem
-              itemId={"newDmnItemId"}
-              onClick={() => addEmptyFile("dmn")}
-              description="DMN files are used to generate decision models"
-            >
-              <b>
-                <FileLabel style={{ marginBottom: "4px" }} extension={"dmn"} />
-              </b>
-            </MenuItem>
-          </MenuGroup>
-          <MenuGroup label={" "}>
-            <MenuItem
-              itemId={"newPmmlItemId"}
-              onClick={() => addEmptyFile("pmml")}
-              description="PMML files are used to generate scorecards"
-            >
-              <b>
-                <FileLabel style={{ marginBottom: "4px" }} extension={"pmml"} />
-              </b>
-            </MenuItem>
-          </MenuGroup>
+          <MenuItem
+            itemId={"newDmnItemId"}
+            onClick={() => addEmptyFile("dmn")}
+            description="DMN files are used to generate decision models"
+          >
+            <b>
+              <FileLabel style={{ marginBottom: "4px" }} extension={"dmn"} />
+            </b>
+          </MenuItem>
+          <MenuItem
+            itemId={"newPmmlItemId"}
+            onClick={() => addEmptyFile("pmml")}
+            description="PMML files are used to generate scorecards"
+          >
+            <b>
+              <FileLabel style={{ marginBottom: "4px" }} extension={"pmml"} />
+            </b>
+          </MenuItem>
           <Divider />
           <MenuItem
             description={"Try sample models"}
