@@ -258,7 +258,7 @@ function getReusableFunctionCompletion(
 ): CompletionItem[] {
   const reusalbeFunctions: SwfLsNode = findNodeAtLocation(args.rootNode, ["functions"])!;
   const functionNamesArray: string[] = [];
-  const isWordToSearchEmpty = args.wordToSearch.length ? true : false;
+  const isWordToSearchExist = args.wordToSearch.length ? true : false;
   const overwriteRange = Range.create(
     Position.create(args.cursorPosition.line, args.cursorPosition.character - args.wordToSearch.length),
     Position.create(args.cursorPosition.line, args.cursorPosition.character)
@@ -278,7 +278,7 @@ function getReusableFunctionCompletion(
           completion: filteredName,
           kind: CompletionItemKind.Function,
           label: filteredName,
-          filterText: isWordToSearchEmpty ? args.wordToSearch : filteredName,
+          filterText: isWordToSearchExist ? args.wordToSearch : filteredName,
           detail: "Reusable functions(expressions) defined in the functions array",
           extraOptions: {
             insertText: filteredName,
@@ -312,7 +312,7 @@ async function getJqFunctionCompletions(
     });
   }
   const wordToSearch = getJqCompletionWordToSearch(slicedValue);
-  const isWordToSearchEmpty = wordToSearch.length ? true : false;
+  const isWordToSearchExist = wordToSearch.length ? true : false;
   const overwriteRange = Range.create(
     Position.create(args.cursorPosition.line, args.cursorPosition.character - wordToSearch.length),
     Position.create(args.cursorPosition.line, args.cursorPosition.character)
@@ -328,7 +328,7 @@ async function getJqFunctionCompletions(
         kind: CompletionItemKind.Function,
         label: filteredFunc.functionName,
         detail: filteredFunc.description,
-        filterText: isWordToSearchEmpty ? wordToSearch : filteredFunc.functionName,
+        filterText: isWordToSearchExist ? wordToSearch : filteredFunc.functionName,
         extraOptions: {
           insertText: filteredFunc.functionName,
         },

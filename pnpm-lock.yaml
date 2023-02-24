@@ -6428,6 +6428,9 @@ importers:
       "@kie-tools/serverless-workflow-diagram-editor-envelope":
         specifier: workspace:*
         version: link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-jq-expressions":
+        specifier: workspace:*
+        version: link:../serverless-workflow-jq-expressions
       "@kie-tools/serverless-workflow-language-service":
         specifier: workspace:*
         version: link:../serverless-workflow-language-service
