@@ -176,13 +176,11 @@ function extractFunctionsPath(functionsNode: SwfLsNode[]) {
 function getJqCompletionWordToSearch(slicedValue: string): string {
   const removeSpecialChar = slicedValue.replace(/[^a-zA-Z _()]/g, "");
   const builtInFunctionMatch = removeSpecialChar.match(/\s(\w+)?$/);
-  if (builtInFunctionMatch === null) {
-    if (removeSpecialChar.length) {
-      return removeSpecialChar.trim();
-    }
-  } else if (builtInFunctionMatch[1] === undefined) {
+  if (builtInFunctionMatch === null && removeSpecialChar.length) {
+    return removeSpecialChar.trim();
+  } else if (builtInFunctionMatch && builtInFunctionMatch[1] === undefined) {
     return "";
-  } else if (builtInFunctionMatch[1].length) {
+  } else if (builtInFunctionMatch && builtInFunctionMatch[1].length) {
     return builtInFunctionMatch[1];
   }
   return "";
