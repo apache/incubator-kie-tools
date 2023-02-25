@@ -252,7 +252,7 @@ export function NewFileDropdownMenu(props: {
       tabIndex={1}
       style={{ boxShadow: "none", minWidth: "400px" }}
       id="addFileRootMenu"
-      containsDrilldown
+      containsDrilldown={true}
       onDrillIn={drillIn}
       onDrillOut={drillOut}
       activeMenu={activeMenu}
