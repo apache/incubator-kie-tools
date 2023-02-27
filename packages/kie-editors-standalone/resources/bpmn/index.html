@@ -50,7 +50,7 @@
     <script>
       const query = window.location.search;
       //Получение URL с помощью "const urlParams = new URLSearchParams(queryString);" работает некорректно
-      var encodeFile = query.split("?q=")[1].split("&name=");
+      var encodeFile = query.split("?q=")[1].split("&");
 
       var savedContent = {};
       var projectRoles = {};
@@ -62,7 +62,8 @@
       var nodeElementName;
       var processId;
       var processName = b64DecodeUnicode(encodeFile[1]);
-      var contentURI = window.location.origin + "/resources/" + b64DecodeUnicode(encodeFile[0]);
+      var projectName = encodeFile[2];
+      var contentURI = `${window.location.origin}/${projectName}-resources/${b64DecodeUnicode(encodeFile[0])}`;
       var content = getContent(contentURI);
 
       var proxyElementId = new Proxy(nodeElementId, {
