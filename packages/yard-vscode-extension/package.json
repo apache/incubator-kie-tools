@@ -133,6 +133,12 @@
       "files.associations": {
         "*.yard.yaml": "yaml",
         "*.yard.yml": "yaml"
+      },
+      "yaml.schemas": {
+        "https://raw.githubusercontent.com/kiegroup/yard/main/yard-api/src/main/resources/YaRD-schema.json": [
+          "**/*.yard.yml",
+          "**/*.yard.yaml"
+        ]
       }
     },
     "customEditors": [
