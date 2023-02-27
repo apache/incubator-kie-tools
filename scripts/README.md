@@ -11,7 +11,7 @@ Today we have these scripts:
 - [push-local-registry.sh](push-local-registry.sh)
 - [push-staging.py](push-staging.py)
 - [run-bats.sh](run-bats.sh)
-- [update-tests.py](update-tests.py)
+- [update-repository.py](update-repository.py)
 
 
 
@@ -158,11 +158,11 @@ If there is no need to update the tag, there is the option to override it, just 
 
 ### Update tests script
 
-The `update-tests` script allows you to change some information in order to perform some testing.
+The `update-repository` script allows you to change some build & test information in the repository.
 
 #### Script dependencies
 
-The `update-tests.py` has some dependencies that needs to be manually installed:
+The `update-repository.py` has some dependencies that needs to be manually installed:
 
 ```bash
 $ pip install -U ruamel.yaml
@@ -173,7 +173,7 @@ $ pip install -U ruamel.yaml
 ##### Update repository url
 
 ```bash
-$ python update-tests.py --repo-url 'https://maven-repository.mirror.com/public'
+$ python update-repository.py --repo-url 'https://maven-repository.mirror.com/public'
 ```
 
 This will add this repository as an extra repository for artifacts to be retrieved from into the behave tests, next to the default JBoss repository.
@@ -181,23 +181,29 @@ This will add this repository as an extra repository for artifacts to be retriev
 You can also completely replace the main Jboss repository:
 
 ```bash
-$ python update-tests.py --repo-url 'https://maven-repository.mirror.com/public' --replace-jboss-repo
+$ python update-repository.py --repo-url 'https://maven-repository.mirror.com/public' --replace-jboss-repo
 ```
 
 ##### Update artifacts version
 
 ```bash
-$ python update-tests.py --artifacts-version 1.0.0
+$ python update-repository.py --artifacts-version 1.0.0
 ```
 
-This will set the default artifacts version to 1.0.0 into the behave tests.
+This will set the default artifacts version.
+
+##### Update quarkus version
+
+```bash
+$ python update-repository.py quarkus-platform-version 2.16.0.Final
+```
+
+This will set the image quarkus version to 2.16.0.Final.
 
 ##### Update Examples URI and Ref
 
 ```bash
-$ python update-tests.py --examples-uri https://github.com/<yournamespace>/kogito-examples --examples-ref 1.0.0
+$ python update-repository.py --examples-uri https://github.com/<yournamespace>/kogito-examples --examples-ref 1.0.0
 ```
 
 This will update the examples uri and/or the ref for the tests.
-
-

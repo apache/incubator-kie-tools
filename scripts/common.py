@@ -18,10 +18,11 @@ IMAGE_STREAM_FILENAME = "kogito-imagestream.yaml"
 PROD_IMAGE_STREAM_FILENAME = "logic-imagestream.yaml"
 # image.yaml file definition that needs to be updated
 IMAGE_FILENAME = "image.yaml"
-ARTIFACTS_VERSION_ENV_KEY = "KOGITO_VERSION"
+KOGITO_VERSION_ENV_KEY = "KOGITO_VERSION"
+KOGITO_VERSION_LABEL_NAME = "org.kie.kogito.version"
 
-QUARKUS_VERSION_ENV_KEY = "QUARKUS_VERSION"
-QUARKUS_VERSION_LABEL_NAME = "org.quarkus.version"
+QUARKUS_PLATFORM_VERSION_ENV_KEY = "QUARKUS_PLATFORM_VERSION"
+QUARKUS_PLATFORM_VERSION_LABEL_NAME = "io.quarkus.platform.version"
 
 # behave tests that needs to be updated
 BEHAVE_BASE_DIR = 'tests/features'
@@ -125,7 +126,7 @@ def update_image_stream(target_version, prod=False):
         raise
 
 
-def get_all_module_dirs(prefix):
+def get_all_module_dirs():
     """
     Retrieve the module directories
     """
@@ -135,9 +136,7 @@ def get_all_module_dirs(prefix):
     for r, d, f in os.walk(MODULES_DIR):
         for item in f:
             if MODULE_FILENAME == item:
-                path = os.path.dirname(os.path.join(r, item))
-                if os.path.basename(path).startswith(prefix):
-                    modules.append(path)
+                modules.append(os.path.dirname(os.path.join(r, item)))
 
     return modules
 
@@ -146,14 +145,25 @@ def get_community_module_dirs():
     """
     Retrieve the Kogito module directories
     """
-    return get_all_module_dirs(COMMUNITY_PREFIX)
+    community_modules = []
+    for module_path in get_all_module_dirs():
+        if "{0}".format(os.path.relpath(module_path, MODULES_DIR)).startswith(COMMUNITY_PREFIX) and os.path.basename(module_path) != "prod":
+            community_modules.append(module_path)
+
+    return community_modules
+
 
 
 def get_prod_module_dirs():
     """
     Retrieve the Logic module directories
     """
-    return get_all_module_dirs(PRODUCT_PREFIX)
+    prod_modules = []
+    for module_path in get_all_module_dirs():
+        if "{0}".format(os.path.relpath(module_path, MODULES_DIR)).startswith(PRODUCT_PREFIX) or ("{0}".format(os.path.relpath(module_path, MODULES_DIR)).startswith(COMMUNITY_PREFIX) and os.path.basename(module_path) == "prod"):
+            prod_modules.append(module_path)
+
+    return prod_modules
 
 
 def get_images(prefix):
@@ -251,74 +261,6 @@ def update_module_version(module_dir, target_version):
     except TypeError:
         raise
 
-def update_images_env_value(env_name, new_value, prod=False):
-    """
-    Update the given env name for all images with the given new value.
-    :param env_name: environment variable name to update
-    :param new_value: new value to set
-    :param prod: if the module to be updated is prod version.
-    """
-    images = []
-    if prod:
-        images = get_prod_images()
-    else:
-        images = get_community_images()
-
-    for image_name in images:
-        image_filename = "{}-overrides.yaml".format(image_name)
-        update_env_value(image_filename, env_name, new_value)
-
-def update_images_label_value(label_name, new_value, prod=False):
-    """
-    Update the given label name for all images with the given new value.
-    :param label_name: label name to update
-    :param new_value: new value to set
-    :param prod: if the module to be updated is prod version.
-    """
-    images = []
-    if prod:
-        images = get_prod_images()
-    else:
-        images = get_community_images()
-
-    for image_name in images:
-        image_filename = "{}-overrides.yaml".format(image_name)
-        update_label_value(image_filename, label_name, new_value)
-
-def update_modules_env_value(env_name, new_value, prod=False):
-    """
-    Update the given environment variable name for all Kogito modules with the given new value.
-    :param env_name: label name to update
-    :param new_value: new value to set
-    :param prod: if the module to be updated is prod version.
-    """
-    modules = []
-    if prod:
-        modules = get_prod_module_dirs()
-    else:
-        modules = get_community_module_dirs()
-
-    for module_dir in modules:
-        module_file = os.path.join(module_dir, "module.yaml")
-        update_env_value(module_file, env_name, new_value)
-
-def update_modules_label_value(label_name, new_value, prod=False):
-    """
-    Update the given label name for all Kogito modules with the given new value.
-    :param label_name: label name to update
-    :param new_value: new value to set
-    :param prod: if the module to be updated is prod version.
-    """
-    modules = []
-    if prod:
-        modules = get_prod_module_dirs()
-    else:
-        modules = get_community_module_dirs()
-
-    for module_dir in modules:
-        module_file = os.path.join(module_dir, "module.yaml")
-        update_label_value(module_file, label_name, new_value)
-
 def retrieve_artifacts_version():
     """
     Retrieve the artifacts version from envs in main image.yaml
@@ -327,25 +269,31 @@ def retrieve_artifacts_version():
         with open(IMAGE_FILENAME) as imageFile:
             data = yaml_loader().load(imageFile)
             for index, env in enumerate(data['envs'], start=0):
-                if env['name'] == ARTIFACTS_VERSION_ENV_KEY:
+                if env['name'] == KOGITO_VERSION_ENV_KEY:
                     return data['envs'][index]['value']
 
     except TypeError:
         raise
 
-def update_quarkus_version_env_in_image(quarkus_version):
+def update_quarkus_platform_version_in_build(quarkus_platform_version, prod=False):
     """
-    Update `QUARKUS_VERSION` env var in image.yaml.
-    :param quarkus_version: quarkus version used to update image.yaml which contains the `QUARKUS_VERSION` env var
+    Update quarkus_platform_version version into images/modules
+    :param quarkus_platform_version: quarkus version to set
     """
-    update_env_value(IMAGE_FILENAME, QUARKUS_VERSION_ENV_KEY, quarkus_version)
+    update_env_value(QUARKUS_PLATFORM_VERSION_ENV_KEY, quarkus_platform_version, prod)
+    update_label_value(QUARKUS_PLATFORM_VERSION_LABEL_NAME, quarkus_platform_version, prod)
 
-def update_artifacts_version_env_in_image(artifacts_version):
+def update_quarkus_platform_version_in_behave_tests_repository_paths(quarkus_platform_version):
     """
-    Update `KOGITO_VERSION` env var in image.yaml.
-    :param artifacts_version: kogito version used to update image.yaml which contains the `KOGITO_VERSION` env var
+    Update quarkus_platform_version version into behave tests repository paths
+    :param quarkus_platform_version: quarkus version to set
     """
-    update_env_value(IMAGE_FILENAME, ARTIFACTS_VERSION_ENV_KEY, artifacts_version)
+    print("Set quarkus_platform_version {} in behave tests as repository path".format(quarkus_platform_version))
+    # pattern to change the KOGITO_VERSION
+    pattern = re.compile(
+        'io/quarkus/platform/quarkus-bom/([\d.]+.Final)/quarkus-bom-([\d.]+.Final).pom')
+    replacement = 'io/quarkus/platform/quarkus-bom/{}/quarkus-bom-{}.pom'.format(quarkus_platform_version, quarkus_platform_version)
+    update_in_behave_tests(pattern, replacement)
 
 def update_examples_ref_in_behave_tests(examples_ref):
     """
@@ -370,6 +318,13 @@ def update_examples_uri_in_behave_tests(examples_uri):
     replacement = examples_uri
     update_in_behave_tests(pattern, replacement)
 
+def update_artifacts_version_in_build(artifacts_version, prod=False):
+    """
+    Update artifacts version into modules / images
+    :param artifacts_version: artifacts version to set
+    """
+    update_env_value(KOGITO_VERSION_ENV_KEY, artifacts_version, prod)
+    update_label_value(KOGITO_VERSION_LABEL_NAME, artifacts_version, prod)
 
 def update_artifacts_version_in_behave_tests(artifacts_version):
     """
@@ -428,6 +383,18 @@ def update_maven_mirror_url_in_quarkus_plugin_behave_tests(repo_url):
     replacement = "\g<1>| variable | value |\n      | {} | {} |\n      | MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE | true |\n      | DEBUG | true |".format(
         "MAVEN_MIRROR_URL", repo_url)
     update_in_behave_tests(pattern, replacement)
+
+def update_maven_repo_env_value(repo_url, replace_jboss_repository, prod=False):
+    """
+    Update the given maven repository value for all images/modules.
+    :param repo_url: Maven repository url
+    :param replace_jboss_repository: Set to true if default Jboss repository needs to be ove
+    :param prod: if the module to be updated is prod version.
+    """
+    env_name = "MAVEN_REPO_URL"
+    if replace_jboss_repository:
+        env_name = "JBOSS_MAVEN_REPO_URL"
+    update_env_value(env_name, repo_url, prod)
 
 
 def ignore_maven_self_signed_certificate_in_behave_tests():
@@ -492,7 +459,33 @@ def update_maven_repo_in_setup_maven(repo_url, replace_jboss_repository):
         replacement = 'export MAVEN_REPO_URL="{}"'.format(repo_url)
     update_in_file(SETUP_MAVEN_SCRIPT, pattern, replacement)
 
-def update_env_value(filename, env_name, env_value):
+def update_env_value(env_name, env_value, prod=False):
+    """
+    Update environment value into the given yaml module/image file
+    :param env_name: environment variable name to update
+    :param env_value: value to set
+    """
+
+    images = []
+    modules = []
+    if prod:
+        images = get_prod_images()
+        modules = get_prod_module_dirs()
+    else:
+        images = get_community_images()
+        modules = get_community_module_dirs()
+
+    update_env_value_in_file(IMAGE_FILENAME, env_name, env_value)
+
+    for image_name in images:
+        image_filename = "{}-overrides.yaml".format(image_name)
+        update_env_value_in_file(image_filename, env_name, env_value)
+    
+    for module_dir in modules:
+        module_file = os.path.join(module_dir, "module.yaml")
+        update_env_value_in_file(module_file, env_name, env_value)
+
+def update_env_value_in_file(filename, env_name, env_value):
     """
     Update environment value into the given yaml module/image file
     :param filename: filename to update
@@ -500,6 +493,7 @@ def update_env_value(filename, env_name, env_value):
     :param env_value: value to set
     """
     try:
+        file_updated = False
         with open(filename) as yaml_file:
             data = yaml_loader().load(yaml_file)
             if 'envs' in data:
@@ -507,16 +501,43 @@ def update_env_value(filename, env_name, env_value):
                     if env['name'] == env_name:
                         print("Updating {0} label {1} with value {2}".format(filename, env_name,
                                                                                     env_value))
-                        if 'value' in data['envs'][index]: # Do not update if no value already defined
-                            data['envs'][index]['value'] = env_value
+                        data['envs'][index]['value'] = env_value
+                        file_updated = True
 
-        with open(filename, 'w') as yaml_file:
-            yaml_loader().dump(data, yaml_file)
+        if file_updated:
+            with open(filename, 'w') as yaml_file:
+                yaml_loader().dump(data, yaml_file)
 
     except TypeError:
         raise
 
-def update_label_value(filename, label_name, label_value):
+def update_label_value(label_name, label_value, prod=False):
+    """
+    Update label value in all module / image files 
+    :param label_name: label name to update
+    :param label_value: value to set
+    """
+
+    images = []
+    modules = []
+    if prod:
+        images = get_prod_images()
+        modules = get_prod_module_dirs()
+    else:
+        images = get_community_images()
+        modules = get_community_module_dirs()
+
+    update_label_value_in_file(IMAGE_FILENAME, label_name, label_value)
+
+    for image_name in images:
+        image_filename = "{}-overrides.yaml".format(image_name)
+        update_label_value_in_file(image_filename, label_name, label_value)
+    
+    for module_dir in modules:
+        module_file = os.path.join(module_dir, "module.yaml")
+        update_label_value_in_file(module_file, label_name, label_name)
+
+def update_label_value_in_file(filename, label_name, label_value):
     """
     Update label value into the given yaml module/image file
     :param filename: filename to update
@@ -524,6 +545,7 @@ def update_label_value(filename, label_name, label_value):
     :param label_value: value to set
     """
     try:
+        file_updated = False
         with open(filename) as yaml_file:
             data = yaml_loader().load(yaml_file)
             if 'labels' in data:
@@ -533,9 +555,11 @@ def update_label_value(filename, label_name, label_value):
                                                                                     label_value))
                         if 'value' in data['labels'][index]: # Do not update if no value already defined
                             data['labels'][index]['value'] = label_value
+                            file_updated = True
 
-        with open(filename, 'w') as yaml_file:
-            yaml_loader().dump(data, yaml_file)
+        if file_updated:
+            with open(filename, 'w') as yaml_file:
+                yaml_loader().dump(data, yaml_file)
 
     except TypeError:
         raise

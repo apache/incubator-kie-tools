@@ -23,9 +23,10 @@ fi
 # auto configure JVM settings
 source "${KOGITO_HOME}"/launch/jvm-settings.sh
 
-"${MAVEN_HOME}"/bin/mvn -U -B ${MAVEN_ARGS_APPEND} \
+# `-o` means offline mode
+"${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
+  -o \
   -s "${MAVEN_SETTINGS_PATH}" \
   -DskipTests \
   -Dquarkus.http.host=0.0.0.0 \
-  -Dquarkus.version="${QUARKUS_VERSION}" \
   clean compile quarkus:dev

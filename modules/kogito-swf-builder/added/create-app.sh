@@ -19,21 +19,20 @@ configure
 # auto configure JVM settings
 source "${KOGITO_HOME}"/launch/jvm-settings.sh
 
-"${MAVEN_HOME}"/bin/mvn -U -B -s "${MAVEN_SETTINGS_PATH}" \
-  io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_VERSION}":create ${QUARKUS_CREATE_ARGS} \
+"${MAVEN_HOME}"/bin/mvn -B -s "${MAVEN_SETTINGS_PATH}" \
+  -nsu \
+  io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":create ${QUARKUS_CREATE_ARGS} \
   -DprojectGroupId="${PROJECT_GROUP_ID}" \
   -DprojectArtifactId="${PROJECT_ARTIFACT_ID}" \
   -DprojectVersionId="${PROJECT_VERSION}" \
-  -DplatformVersion="${QUARKUS_VERSION}" \
+  -DplatformVersion="${QUARKUS_PLATFORM_VERSION}" \
   -Dextensions="${QUARKUS_EXTENSIONS}"
 
 cd "${PROJECT_ARTIFACT_ID}"
 
-# Quarkus version is enforced if some dependency pulled has older version of Quarkus set.
-# This avoids to have, for example, Quarkus BOMs or orther artifacts with multiple versions.
-"${MAVEN_HOME}"/bin/mvn -U -B ${MAVEN_ARGS_APPEND} \
+"${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
+  -nsu \
   -s "${MAVEN_SETTINGS_PATH}" \
-  -Dquarkus.version="${QUARKUS_VERSION}" \
   -DskipTests \
   -Dquarkus.container-image.build=false \
    clean install

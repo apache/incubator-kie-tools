@@ -68,6 +68,9 @@ envs:
   - name: "MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE"
     description: "When set, use of relaxed SSL check for user generated certificates. Default value is false"
     example: "true"
+  - name: "MAVEN_OFFLINE_MODE"
+    description: "When set to true, tells Maven to work in offline mode. See Maven `-o` option for more information."
+    example: "true"
 # unfortunately by now the version needs to be hardcoded.
 artifacts:
   - name: apache-maven-3.6.2-bin.tar.gz

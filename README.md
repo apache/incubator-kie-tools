@@ -32,6 +32,7 @@ Table of Contents
       - [Kogito SWF (Serverless Workflow) Builder Image usage](#kogito-swf-serverless-workflow-builder-image-usage)
         - [Using as a builder](#using-as-a-builder)
         - [Using for application development](#using-for-application-development)
+        - [Using the Kogito SWF Builder Image nightly image](#using-the-kogito-swf-builder-image-nightly-image)
       - [Kogito s2i Builder Image usage](#kogito-s2i-builder-image-usage)
       - [Kogito s2i Builder Image example](#kogito-s2i-builder-image-example)
         - [S2i Builder Image Example with Quarkus](#s2i-builder-image-example-with-quarkus)
@@ -203,6 +204,16 @@ docker run -it --rm -p 8080:8080 -v <local_workflow_path>:/home/kogito/serverles
 Replace `<local_workflow_path>` with your local filesystem containing your workflow files. You can test with the [example application](https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/getting-started/create-your-first-workflow-service.html#proc-creating-workflow).
 
 After the image bootstrap, you can access [http://localhost:8080/q/swagger-ui](http://localhost:8080/q/swagger-ui) and test the workflow application right away!
+
+##### Using the Kogito SWF Builder Image nightly image
+
+The nightly builder image has been built and optimized with an internal nightly build of the Quarkus Platform.  
+There are 2 environment variables that should not be changed when using it:
+
+- QUARKUS_PLATFORM_VERSION = kogito-${KOGITO_VERSION}
+- MAVEN_REPO_URL = https://repository.jboss.org/nexus/content/repositories/kogito-internal-repository/
+
+That way, no new artifacts will be downloaded and you can directly use it.
 
 #### Kogito s2i Builder Image usage
 

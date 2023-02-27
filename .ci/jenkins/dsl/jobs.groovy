@@ -36,7 +36,7 @@ if (Utils.isProductizedBranch(this)) {
 }
 
 KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], [
-    'source ~/virtenvs/cekit/bin/activate && python3 scripts/update-quarkus-version.py --bump-to %new_version%'
+    'source ~/virtenvs/cekit/bin/activate && python3 scripts/update-repository.py --quarkus-platform-version %new_version%'
 ])
 
 /////////////////////////////////////////////////////////////////
@@ -49,6 +49,9 @@ void setupPrJob(boolean isProdCI = false) {
         run_only_for_branches: [ "${GIT_BRANCH}" ],
         disable_status_message_error: true,
         disable_status_message_failure: true,
+    ])
+    jobParams.env.putAll([
+        QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
     ])
     if (isProdCI) {
         jobParams.job.name += '.prod'
@@ -71,6 +74,8 @@ void createSetupBranchJob() {
         MAX_REGISTRY_RETRIES: 3,
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
 
         AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
 
@@ -136,6 +141,8 @@ void setupDeployJob(JobType jobType, String envName = '') {
 
             MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
             DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
+
+            QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
         ])
     }
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
@@ -168,6 +175,9 @@ void setupDeployJob(JobType jobType, String envName = '') {
             // Release information
             stringParam('PROJECT_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
             stringParam('KOGITO_ARTIFACTS_VERSION', '', 'Optional. If artifacts\' version is different from PROJECT_VERSION.')
+            if (jobType == JobType.RELEASE) {
+                stringParam('QUARKUS_PLATFORM_VERSION', '', 'Allow to override the Quarkus Platform version')
+            }
 
             booleanParam('CREATE_PR', false, 'In case of not releasing, you can ask to create a PR with the changes')
 

@@ -8,6 +8,7 @@ USER 1001
 ARG QUARKUS_PACKAGE_TYPE="jar"
 ARG SCRIPT_DEBUG="true"
 ARG MAVEN_DOWNLOAD_OUTPUT="true"
+ARG MAVEN_OFFLINE_MODE="true"
 
 # Copy from build context to resources directory
 COPY * ./resources/

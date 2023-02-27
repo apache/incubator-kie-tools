@@ -10,9 +10,9 @@ set -o pipefail
 
 # Read entries before sourcing
 image_name="${1}"
-quarkus_version="${2}"
+quarkus_platform_version="${2}"
 
-if [ -z ${quarkus_version} ]; then
+if [ -z ${quarkus_platform_version} ]; then
     echo "Please provide the quarkus version"
     exit 1
 fi
@@ -34,6 +34,10 @@ mvn_local_repo="/tmp/temp_maven/kogito-swf-builder"
 
 rm -rf ${target_tmp_dir} && mkdir -p ${target_tmp_dir}
 rm -rf ${build_target_dir} && mkdir -p ${build_target_dir}
+if [ "${CI}" = "true" ]; then
+    # On CI we want to make sure we remove all artifacts from maven repo
+    rm -rf ${mvn_local_repo}
+fi
 mkdir -p ${mvn_local_repo}
 
 . ${script_dir_path}/setup-maven.sh "${build_target_dir}"/settings.xml
@@ -41,22 +45,21 @@ mkdir -p ${mvn_local_repo}
 set -x
 echo "Create quarkus project to path ${build_target_dir}"
 cd ${build_target_dir}
-mvn -U ${MAVEN_OPTIONS} \
+mvn ${MAVEN_OPTIONS} \
     -Dmaven.repo.local=${mvn_local_repo} \
     -DprojectGroupId="org.acme" \
     -DprojectArtifactId="serverless-workflow-project" \
     -DprojectVersionId="1.0.0-SNAPSHOT" \
-    -DplatformVersion="${quarkus_version}" \
+    -DplatformVersion="${quarkus_platform_version}" \
     -Dextensions="quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing" \
-    io.quarkus.platform:quarkus-maven-plugin:"${quarkus_version}":create
+    io.quarkus.platform:quarkus-maven-plugin:"${quarkus_platform_version}":create
 
 echo "Build quarkus app"
 cd "serverless-workflow-project"
 # Quarkus version is enforced if some dependency pulled has older version of Quarkus set.
 # This avoids to have, for example, Quarkus BOMs or orther artifacts with multiple versions.
-mvn -U ${MAVEN_OPTIONS} \
+mvn ${MAVEN_OPTIONS} \
     -DskipTests \
-    -Dquarkus.version="${quarkus_version}" \
     -Dmaven.repo.local=${mvn_local_repo} \
     -Dquarkus.container-image.build=false \
     clean install

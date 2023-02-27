@@ -106,10 +106,10 @@ function build_kogito_app() {
 
     else
         log_info "---> Generating $RUNTIME_TYPE project structure for $PROJECT_ARTIFACT_ID..."
-        local quarkus_version
+        local quarkus_platform_version
         if [ "${RUNTIME_TYPE}" == "${QUARKUS_RUNTIME_TYPE}" ]; then
 
-            local quarkus_plugin="${QUARKUS_PLUGIN:-io.quarkus:quarkus-maven-plugin}"
+            local quarkus_plugin="${QUARKUS_PLUGIN:-io.quarkus.platform:quarkus-maven-plugin}"
             if [[ "${JBOSS_IMAGE_NAME}" =~ "rhpam-7" ]]; then
                 quarkus_plugin="${QUARKUS_PLUGIN:-com.redhat.quarkus.platform:quarkus-maven-plugin}"
             fi
@@ -118,16 +118,16 @@ function build_kogito_app() {
             for i in "${GAV[@]}"; do
                 if [[ "$i" =~ ^[0-9]{0,2}\.[0-9]{0,3} ]]; then
                     log_info "version [${i}] provided through QUARKUS_PLUGIN env."
-                    quarkus_version=${i}
+                    quarkus_platform_version=${i}
                 else
-                    quarkus_version=$(get_quarkus_version) || exit 1
+                    quarkus_platform_version=${QUARKUS_PLATFORM_VERSION} || exit 1
                 fi
             done
 
-            log_info "----> Using Quarkus ${quarkus_plugin}:${quarkus_version} to bootstrap the application."
+            log_info "----> Using Quarkus ${quarkus_plugin}:${quarkus_platform_version} to bootstrap the application."
 
-            $MAVEN_HOME/bin/mvn -U -B ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}" $(get_quarkus_platform_properties) \
-                "${quarkus_plugin}":"${quarkus_version}":create  \
+            $MAVEN_HOME/bin/mvn -B ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}" $(get_quarkus_platform_properties) \
+                "${quarkus_plugin}":"${quarkus_platform_version}":create  \
                     -DprojectGroupId=$PROJECT_GROUP_ID \
                     -DprojectArtifactId=$PROJECT_ARTIFACT_ID \
                     -DprojectVersion=$PROJECT_VERSION \
@@ -137,13 +137,13 @@ function build_kogito_app() {
                 log_info "----> Adding extra Quarkus extensions: ${QUARKUS_EXTRA_EXTENSIONS}"
                 $MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}" $(get_quarkus_platform_properties) \
 				-f $PROJECT_ARTIFACT_ID/pom.xml \
-                                "${quarkus_plugin}":"${quarkus_version}":add-extension \
+                                "${quarkus_plugin}":"${quarkus_platform_version}":add-extension \
                                 -Dextensions="${QUARKUS_EXTRA_EXTENSIONS}"
             fi
 
         elif [ "${RUNTIME_TYPE}" == "${SPRINGBOOT_RUNTIME_TYPE}" ]; then
             log_info "----> Using Spring Boot to bootstrap the application."
-            $MAVEN_HOME/bin/mvn archetype:generate -U -B -DinteractiveMode=false -DarchetypeGroupId=org.kie.kogito \
+            $MAVEN_HOME/bin/mvn archetype:generate -B -DinteractiveMode=false -DarchetypeGroupId=org.kie.kogito \
                 -DarchetypeArtifactId=kogito-spring-boot-archetype -DarchetypeVersion=$KOGITO_VERSION \
                 -DgroupId=$PROJECT_GROUP_ID -DartifactId=$PROJECT_ARTIFACT_ID -Dversion=$PROJECT_VERSION \
                 ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}"
@@ -186,12 +186,12 @@ function build_kogito_app() {
             log_info "--> Adding Kogito Quarkus Workflows extension to the generated project."
 
             # we must set the evaluate version since forceStdout is not available in previous versions
-            local quarkus_version
-            quarkus_version=$(get_quarkus_version) || exit 1
-            log_info "--> Quarkus version is '$quarkus_version'"
+            local quarkus_platform_version
+            quarkus_platform_version=${QUARKUS_PLATFORM_VERSION} || exit 1
+            log_info "--> Quarkus version is '$quarkus_platform_version'"
 
             $MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}" $(get_quarkus_platform_properties) \
-                "${quarkus_plugin}":"${quarkus_version}":add-extension \
+                "${quarkus_plugin}":"${quarkus_platform_version}":add-extension \
                 -Dextensions="org.kie.kogito:kogito-quarkus-serverless-workflow"
         fi
 
@@ -275,23 +275,5 @@ function get_quarkus_platform_properties() {
         quarkus_platform_artifact_id="${QUARKUS_PLATFORM_ARTIFACT_ID:-quarkus-bom}"
     fi
 
-    echo " -DplatformGroupId=${quarkus_platform_group_id} -DplatformArtifactId=${quarkus_platform_artifact_id} -DplatformVersion=$(get_quarkus_version)"
-}
-
-function get_quarkus_version() {
-    local quarkus_version="${QUARKUS_VERSION}"
-    if [ "${QUARKUS_VERSION}x" = "x" ]; then
-        log_info "----> Trying to retrieve Quarkus version from org.kie.kogito:kogito-build-parent:${KOGITO_VERSION}"
-        ver=$($MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}" help:evaluate -q \
-            -Dartifact=org.kie.kogito:kogito-build-parent:"${KOGITO_VERSION}" \
-            -Dexpression=version.io.quarkus \
-            -DforceStdout)
-
-        if [[ ! "$ver" =~ ^[0-9]{0,2}\.[0-9]{0,3}\.[0-9]{0,2} ]]; then
-            log_error "----> Impossible to get Quarkus version from the generated Maven project (output: '$ver'), failing build"
-            exit 1
-        fi
-	    quarkus_version=$ver
-    fi
-    echo $quarkus_version
+    echo " -DplatformGroupId=${quarkus_platform_group_id} -DplatformArtifactId=${quarkus_platform_artifact_id} -DplatformVersion=${QUARKUS_PLATFORM_VERSION}"
 }

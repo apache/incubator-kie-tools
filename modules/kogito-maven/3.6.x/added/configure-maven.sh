@@ -24,9 +24,12 @@ function prepareEnv() {
 }
 
 function configure() {
+    log_info "Configure Maven"
+    
     configure_proxy
     configure_mirrors
     configure_maven_download_output
+    configure_maven_offline_mode
     ignore_maven_self_signed_certificates
     set_kogito_maven_repo
     add_maven_repo
@@ -96,6 +99,13 @@ function configure_mirrors() {
 function configure_maven_download_output() {
     if [ "${MAVEN_DOWNLOAD_OUTPUT}" != "true" ]; then
         export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} --no-transfer-progress"
+    fi
+}
+
+function configure_maven_offline_mode() {
+    if [ "${MAVEN_OFFLINE_MODE}" = "true" ]; then
+        log_info "Setup Maven offline mode. No artifact will be downloaded !!!"
+        export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} -o"
     fi
 }
 

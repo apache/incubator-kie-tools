@@ -68,7 +68,7 @@ if __name__ == "__main__":
                 common.update_community_image_version(args.bump_to)
                 common.update_image_stream(args.bump_to)
                 common.update_modules_version(args.bump_to)
-                common.update_artifacts_version_env_in_image(artifacts_version)
+                common.update_artifacts_version_in_build(artifacts_version)
 
                 # tests default values
                 common.update_examples_ref_in_behave_tests(examples_ref)

@@ -1,7 +1,5 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
-import org.kie.jenkins.MavenCommand
-
 changeAuthor = env.ghprbAuthorRepoGitUrl ? util.getGroup(env.ghprbAuthorRepoGitUrl) : (env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR)
 changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
 changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
@@ -27,12 +25,6 @@ pipeline {
                 script {
                     clean()
 
-                    // Set the mirror url only if exist
-                    if (env.MAVEN_MIRROR_REPOSITORY != null
-                            && env.MAVEN_MIRROR_REPOSITORY != '') {
-                        env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
-                    }
-
                     githubscm.checkoutIfExists('kogito-images', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
 
                     if (isProdCI()) {
@@ -56,14 +48,33 @@ pipeline {
                 }
             }
         }
-        stage('Prepare for tests') {
+        stage('Prepare environment') {
             steps {
                 script {
-                    //Ignore self-signed certificates if MAVEN_MIRROR_URL is defined
-                    if (env.MAVEN_MIRROR_URL != '') {
-                        runPythonCommand('python3 scripts/update-tests.py --ignore-self-signed-cert')
+                    // Set the mirror url only if exist
+                    if (env.MAVEN_MIRROR_REPOSITORY) {
+                        env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
+                        
+                        // Ignore self-signed certificates if MAVEN_MIRROR_URL is defined
+                        runPythonCommand("python3 scripts/update-repository.py --ignore-self-signed-cert")
                     }
+                }
+            }
+        }
+        stage('Setup Quarkus platform') {
+            steps {
+                script {
+                    String kogitoVersion = sh(returnStdout: true, script: 'make display-kogito-version')
+                    String quarkusPlatformVersion = "kogito-${kogitoVersion}"
 
+                    // Setup quarkus platform repo configuration
+                    runPythonCommand("python3 scripts/update-repository.py --repo-url ${QUARKUS_PLATFORM_NEXUS_URL} --ignore-self-signed-cert --quarkus-platform-version ${quarkusPlatformVersion}")
+                }
+            }
+        }
+        stage('Prepare offline kogito-examples') {
+            steps {
+                script {
                     runPythonCommand('make clone-repos')
                 }
             }
