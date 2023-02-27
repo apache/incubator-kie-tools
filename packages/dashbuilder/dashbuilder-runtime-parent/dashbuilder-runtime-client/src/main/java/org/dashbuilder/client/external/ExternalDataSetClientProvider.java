@@ -162,7 +162,6 @@ public class ExternalDataSetClientProvider {
                 if (response.status == HttpResponseCodes.SC_OK) {
                     return register(def, callback, responseText, mimeType);
                 } else {
-                    // return notAbleToRetrieveDataSet(def, callback);
                     var exception = buildExceptionForResponse(responseText, response);
                    return notAbleToRetrieveDataSet(def, callback, exception);
                 }
