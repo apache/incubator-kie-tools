@@ -22,6 +22,8 @@ import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { YardEditorChannelApi } from "../api";
 import { editor } from "monaco-editor";
 import { YardFile } from "../types";
+import { initCodeCompletion } from "./CodeCompletion";
+import { initAugmentationCommands } from "../editor/augmentation/commands";
 
 interface Props {
   file: YardFile;
@@ -68,8 +70,8 @@ const RefForwardingYardTextEditor: React.ForwardRefRenderFunction<YardTextEditor
 
     // TODO: Add support to JSON code completion and code lenses
     const instance = controller.show(container.current, theme ?? EditorTheme.LIGHT);
-    // const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
-    // initJsonCompletion(commands, editorEnvelopeCtx.channelApi);
+    const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
+    initCodeCompletion(commands, editorEnvelopeCtx.channelApi);
     // initJsonCodeLenses(commands, editorEnvelopeCtx.channelApi);
 
     return () => {

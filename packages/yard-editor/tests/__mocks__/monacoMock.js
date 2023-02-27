@@ -13,14 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const languages = [];
+let value = "new value";
+let onDidBlurEditorText;
 
 module.exports = {
+  Position: class {
+    lineNumber;
+    column;
+
+    constructor(lineNumber, column) {
+      this.lineNumber = lineNumber;
+      this.column = column;
+    }
+  },
   languages: {
-    register: function (language) {},
-    setMonarchTokensProvider: function (name, tokens) {},
-    registerCompletionItemProvider: function (name, provider) {},
+    registeredLanguages: [],
+    register: (language) => {
+      languages.push(language);
+    },
+    getLanguages: () => {
+      return languages;
+    },
+    setMonarchTokensProvider: (_name, _tokens) => {},
+    registerCompletionItemProvider: (_name, _provider) => {},
+    CompletionItemKind: {
+      Keyword: "Keyword",
+      Function: "Function",
+    },
+    CompletionItemInsertTextRule: {
+      InsertAsSnippet: "InsertAsSnippet",
+    },
   },
   editor: {
-    defineTheme: function (name, theme) {},
+    defineTheme: (_name, _theme) => {},
+    colorize: () => ({
+      then: (fn) => fn(),
+    }),
+    create: (element, _config) => {
+      element.innerHTML = "<monaco-editor-mock />";
+      return {
+        dispose: () => {},
+        getValue: () => value,
+        setValue: (newValue) => {
+          if (newValue.includes("</>")) {
+            onDidBlurEditorText(newValue);
+          }
+        },
+        setPosition: (_v) => {},
+        focus: () => {},
+        onDidChangeModelContent: () => {},
+        onDidBlurEditorText: (fn) => (onDidBlurEditorText = fn),
+        onKeyDown: () => {},
+      };
+    },
   },
 };

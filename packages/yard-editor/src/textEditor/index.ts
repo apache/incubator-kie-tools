@@ -1,0 +1,1 @@
+export { resolveCompletionItem } from "./CompletionItemResolver";

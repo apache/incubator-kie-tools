@@ -18,6 +18,7 @@ import { editor, KeyCode, KeyMod } from "monaco-editor";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
+import { YardLanguageServiceCommandIds } from "../editor/augmentation/commands";
 
 initYamlSchemaDiagnostics();
 export interface YardTextEditorApi {
@@ -37,7 +38,7 @@ export enum YardTextEditorOperation {
 }
 
 export interface YardTextEditorInstance {
-  /*commands: YardLanguageServiceCommandIds; to be imported from future yard-language-service */
+  commands: YardLanguageServiceCommandIds;
   instance: editor.IStandaloneCodeEditor;
 }
 
