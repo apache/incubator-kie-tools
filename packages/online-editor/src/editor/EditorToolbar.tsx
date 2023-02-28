@@ -110,7 +110,9 @@ import {
   isGistEnabledAuthProviderType,
 } from "../authProviders/AuthProvidersApi";
 import { CreateGitRepositoryModal, CreateRepositoryResponse } from "./CreateGitRepositoryModal";
-import { BitbucketIcon, GitIcon, GithubIcon } from "@patternfly/react-icons";
+import { BitbucketIcon } from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
+import { GitIcon } from "@patternfly/react-icons/dist/js/icons/git-icon";
+import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { useBitbucketClient } from "../bitbucket/Hooks";
 import {
   isGistLikeWorkspaceKind,

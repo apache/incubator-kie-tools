@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import { FlexItem } from "@patternfly/react-core";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
-import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import * as React from "react";

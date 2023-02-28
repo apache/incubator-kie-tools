@@ -37,7 +37,7 @@ import { RelationExpression } from "../RelationExpression";
 import { ContextExpression } from "../ContextExpression";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { PopoverMenu } from "../PopoverMenu";
-import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core";
+import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core/dist/js/components/Menu";
 import * as _ from "lodash";
 import { useContextMenuHandler } from "../../hooks";
 import { useBoxedExpression } from "../../context";

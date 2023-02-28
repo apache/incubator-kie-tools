@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useMemo, useRef } from "react";
-import { Page, PageSection } from "@patternfly/react-core";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { EmbeddedDivPingPong } from "@kie-tools-examples/ping-pong-view/dist/embedded";
 import { StatsSidebar } from "../StatsSidebar";
 import { pingPongEnvelopViewRenderDiv } from "@kie-tools-examples/ping-pong-view-angular/dist/wc/lib";

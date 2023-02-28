@@ -17,7 +17,7 @@
 import "./EditParameters.css";
 import * as _ from "lodash";
 import { DataTypeSelector } from "../EditExpressionMenu";
-import { Button } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { OutlinedTrashAltIcon } from "@patternfly/react-icons/dist/js/icons/outlined-trash-alt-icon";
 import * as React from "react";
 import { ChangeEvent, useCallback } from "react";

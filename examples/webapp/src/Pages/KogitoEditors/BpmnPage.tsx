@@ -18,7 +18,7 @@ import { ChannelType, EnvelopeContentType } from "@kie-tools-core/editor/dist/ap
 import * as React from "react";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
-import { Page } from "@patternfly/react-core";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { Sidebar } from "./Sidebar";
