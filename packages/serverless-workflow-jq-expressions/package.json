@@ -35,7 +35,7 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
-    "@types/node": "17.0.12",
+    "@types/node": "^18.13.0",
     "jest": "^26.6.3",
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",

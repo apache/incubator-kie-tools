@@ -6078,8 +6078,8 @@ importers:
         specifier: ^2.7.4
         version: 2.7.4
       "@types/node":
-        specifier: 17.0.12
-        version: 17.0.12
+        specifier: ^18.13.0
+        version: 18.14.2
       jest:
         specifier: ^26.6.3
         version: 26.6.3
