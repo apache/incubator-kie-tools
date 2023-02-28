@@ -17,7 +17,9 @@
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Brand, Nav, NavItem, NavList, Page, PageHeader } from "@patternfly/react-core";
+import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
+import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
+import { Page, PageHeader } from "@patternfly/react-core/dist/js/components/Page";
 import { HashRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { Base64PngPage } from "./Pages/Base64Png/Base64PngPage";
 import { BpmnPage } from "./Pages/KogitoEditors/BpmnPage";

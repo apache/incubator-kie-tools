@@ -15,7 +15,7 @@
  */
 
 import { PopoverMenu } from "../PopoverMenu";
-import { Menu, MenuItem, MenuList } from "@patternfly/react-core";
+import { Menu, MenuItem, MenuList } from "@patternfly/react-core/dist/js/components/Menu";
 import * as _ from "lodash";
 import * as React from "react";
 import { useCallback } from "react";

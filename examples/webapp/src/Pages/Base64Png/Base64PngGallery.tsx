@@ -16,7 +16,9 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { Nav, NavItem, Title, Card, NavList } from "@patternfly/react-core";
+import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 
 const samplePaths = [
