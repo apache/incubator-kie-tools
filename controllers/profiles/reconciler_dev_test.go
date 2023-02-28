@@ -19,6 +19,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	clientruntime "sigs.k8s.io/controller-runtime/pkg/client"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
@@ -85,9 +87,15 @@ func Test_newDevProfile(t *testing.T) {
 	deployment := test.MustGetDeployment(t, client, workflow)
 	assert.Equal(t, defaultKogitoServerlessWorkflowDevImage, deployment.Spec.Template.Spec.Containers[0].Image)
 
-	cm := test.MustGetConfigMap(t, client, workflow)
-	assert.NotEmpty(t, cm.Data[workflow.Name+kogitoWorkflowJSONFileExt])
+	defCM := test.MustGetConfigMap(t, client, workflow)
+	assert.NotEmpty(t, defCM.Data[workflow.Name+kogitoWorkflowJSONFileExt])
 	assert.Equal(t, configMapWorkflowDefMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
+
+	propCM := &v1.ConfigMap{}
+	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: getWorkflowPropertiesConfigMapName(workflow)}, propCM)
+	assert.NotEmpty(t, propCM.Data[applicationPropertiesFileName])
+	assert.Equal(t, quarkusDevConfigMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1].MountPath)
+	assert.Contains(t, propCM.Data[applicationPropertiesFileName], "quarkus.http.port")
 
 	service := test.MustGetService(t, client, workflow)
 	assert.Equal(t, int32(defaultHTTPWorkflowPort), service.Spec.Ports[0].TargetPort.IntVal)
@@ -115,6 +123,11 @@ func Test_newDevProfile(t *testing.T) {
 	deployment.Spec.Template.Spec.Containers[0].Image = "default"
 	err = client.Update(context.TODO(), deployment)
 	assert.NoError(t, err)
+
+	propCM = &v1.ConfigMap{}
+	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: getWorkflowPropertiesConfigMapName(workflow)}, propCM)
+	assert.NotEmpty(t, propCM.Data[applicationPropertiesFileName])
+	assert.Contains(t, propCM.Data[applicationPropertiesFileName], "quarkus.http.port")
 
 	// reconcile
 	workflow.Status.Condition = operatorapi.RunningConditionType

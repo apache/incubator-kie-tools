@@ -34,13 +34,17 @@ import (
 var _ ProfileReconciler = &developmentProfile{}
 
 const (
-	// TODO: read from the platform config, open a JIRA to track it down. Default tag MUST align with the current operator's version. See: https://issues.redhat.com/browse/KOGITO-8675
+	// TODO: read from the platform config. Default tag MUST align with the current operator's version. See: https://issues.redhat.com/browse/KOGITO-8675
 	defaultKogitoServerlessWorkflowDevImage = "quay.io/kiegroup/kogito-swf-builder-nightly:latest"
-	configMapWorkflowDefVolumeNamePrefix    = "wd"
+	configMapWorkflowDefVolumeName          = "workflow-definition"
 	configMapWorkflowDefMountPath           = "/home/kogito/serverless-workflow-project/src/main/resources/workflows"
-	requeueAfterFailure                     = 3 * time.Minute
-	requeueAfterFollowDeployment            = 10 * time.Second
-	requeueAfterIsRunning                   = 3 * time.Minute
+	// quarkusDevConfigMountPath mount path for application properties file in the Workflow Quarkus Application
+	//
+	// See: https://quarkus.io/guides/config-reference#application-properties-file
+	quarkusDevConfigMountPath    = "/home/kogito/serverless-workflow-project/src/main/resources"
+	requeueAfterFailure          = 3 * time.Minute
+	requeueAfterFollowDeployment = 10 * time.Second
+	requeueAfterIsRunning        = 3 * time.Minute
 	// recoverDeploymentErrorRetries how many times the operator should try to recover from a failure before giving up
 	recoverDeploymentErrorRetries = 3
 	// recoverDeploymentErrorInterval interval between recovering from failures
@@ -76,16 +80,18 @@ func newDevProfileReconciler(client client.Client, logger *logr.Logger) ProfileR
 
 func newDevelopmentObjectEnsurers(support *stateSupport) *devProfileObjectEnsurers {
 	return &devProfileObjectEnsurers{
-		deployment:        newObjectEnsurer(support.client, support.logger, defaultDeploymentCreator),
-		service:           newObjectEnsurer(support.client, support.logger, defaultServiceCreator),
-		workflowConfigMap: newObjectEnsurer(support.client, support.logger, workflowSpecConfigMapCreator),
+		deployment:          newObjectEnsurer(support.client, support.logger, defaultDeploymentCreator),
+		service:             newObjectEnsurer(support.client, support.logger, defaultServiceCreator),
+		definitionConfigMap: newObjectEnsurer(support.client, support.logger, workflowDefConfigMapCreator),
+		propertiesConfigMap: newObjectEnsurer(support.client, support.logger, workflowPropsConfigMapCreator),
 	}
 }
 
 type devProfileObjectEnsurers struct {
-	deployment        *objectEnsurer
-	service           *objectEnsurer
-	workflowConfigMap *objectEnsurer
+	deployment          *objectEnsurer
+	service             *objectEnsurer
+	definitionConfigMap *objectEnsurer
+	propertiesConfigMap *objectEnsurer
 }
 
 type ensureRunningDevWorkflowReconciliationState struct {
@@ -101,16 +107,22 @@ func (e *ensureRunningDevWorkflowReconciliationState) CanReconcile(workflow *ope
 func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, []client.Object, error) {
 	var objs []client.Object
 
-	configMap, _, err := e.ensurers.workflowConfigMap.ensure(ctx, workflow, ensureWorkflowSpecConfigMapMutator(workflow))
+	flowDefCM, _, err := e.ensurers.definitionConfigMap.ensure(ctx, workflow, ensureWorkflowSpecConfigMapMutator(workflow))
 	if err != nil {
 		return ctrl.Result{Requeue: false}, objs, err
 	}
-	objs = append(objs, configMap)
+	objs = append(objs, flowDefCM)
+
+	propsCM, _, err := e.ensurers.propertiesConfigMap.ensure(ctx, workflow, ensureWorkflowPropertiesConfigMapMutator(workflow))
+	if err != nil {
+		return ctrl.Result{Requeue: false}, objs, err
+	}
+	objs = append(objs, propsCM)
 
 	deployment, _, err := e.ensurers.deployment.ensure(ctx, workflow,
 		defaultDeploymentMutateVisitor(workflow),
 		naiveApplyImageDeploymentMutateVisitor(defaultKogitoServerlessWorkflowDevImage),
-		mountWorkflowDefConfigMapMutateVisitor(configMap.(*v1.ConfigMap)))
+		mountDevConfigMapsMutateVisitor(flowDefCM.(*v1.ConfigMap), propsCM.(*v1.ConfigMap)))
 	if err != nil {
 		return ctrl.Result{RequeueAfter: requeueAfterFailure}, objs, err
 	}
@@ -254,27 +266,43 @@ func getDeploymentFailureReasonOrDefaultReason(deployment *appsv1.Deployment) st
 	return failure
 }
 
-// mountWorkflowDefConfigMapMutateVisitor mounts the given ConfigMap workflows definitions into the dev container
-func mountWorkflowDefConfigMapMutateVisitor(cm *v1.ConfigMap) mutateVisitor {
+// mountDevConfigMapsMutateVisitor mounts the required configMaps in the Workflow Dev Deployment
+func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *v1.ConfigMap) mutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			deployment := object.(*appsv1.Deployment)
 			volumes := make([]v1.Volume, 0)
 			volumeMounts := make([]v1.VolumeMount, 0)
 
-			volumes = append(volumes, v1.Volume{
-				Name: configMapWorkflowDefVolumeNamePrefix,
-				VolumeSource: v1.VolumeSource{
-					ConfigMap: &v1.ConfigMapVolumeSource{
-						LocalObjectReference: v1.LocalObjectReference{Name: cm.Name},
+			volumes = append(volumes,
+				v1.Volume{
+					Name: configMapWorkflowDefVolumeName,
+					VolumeSource: v1.VolumeSource{
+						ConfigMap: &v1.ConfigMapVolumeSource{
+							LocalObjectReference: v1.LocalObjectReference{Name: flowDefCM.Name},
+						},
 					},
 				},
-			})
+				v1.Volume{
+					Name: configMapWorkflowPropsVolumeName,
+					VolumeSource: v1.VolumeSource{
+						ConfigMap: &v1.ConfigMapVolumeSource{
+							LocalObjectReference: v1.LocalObjectReference{Name: propsCM.Name},
+							Items:                []v1.KeyToPath{{Key: applicationPropertiesFileName, Path: applicationPropertiesFileName}},
+						},
+					},
+				})
+
 			volumeMounts = append(volumeMounts,
 				v1.VolumeMount{
-					Name:      configMapWorkflowDefVolumeNamePrefix,
+					Name:      configMapWorkflowDefVolumeName,
 					ReadOnly:  true,
 					MountPath: configMapWorkflowDefMountPath,
+				},
+				v1.VolumeMount{
+					Name:      configMapWorkflowPropsVolumeName,
+					ReadOnly:  true,
+					MountPath: quarkusDevConfigMountPath,
 				},
 			)
 

@@ -16,7 +16,9 @@ package profiles
 
 import (
 	"context"
+	"strconv"
 
+	"github.com/magiconair/properties"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -35,7 +37,15 @@ const (
 	defaultHTTPServicePort    = 80
 	labelApp                  = "app"
 	kogitoWorkflowJSONFileExt = ".sw.json"
+
+	applicationPropertiesFileName = "application.properties"
+
+	workflowConfigMapNameSuffix      = "-props"
+	configMapWorkflowPropsVolumeName = "workflow-properties"
 )
+
+var defaultApplicationProperties = "quarkus.http.port=" + strconv.Itoa(defaultHTTPWorkflowPort) + "\n" +
+	"quarkus.http.host=0.0.0.0\n"
 
 // objectCreator is the func that creates the initial reference object, if the object doesn't exist in the cluster, this one is created.
 // Can be used as a reference to keep the object immutable
@@ -168,8 +178,8 @@ func defaultServiceMutateVisitor(workflow *operatorapi.KogitoServerlessWorkflow)
 	}
 }
 
-// workflowSpecConfigMapCreator creates a new ConfigMap that holds the definition of a workflow specification.
-func workflowSpecConfigMapCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+// workflowDefConfigMapCreator creates a new ConfigMap that holds the definition of a workflow specification.
+func workflowDefConfigMapCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
 	workflowDef, err := utils.GetJSONWorkflow(workflow, context.TODO())
 	if err != nil {
 		return nil, err
@@ -192,12 +202,64 @@ func ensureWorkflowSpecConfigMapMutator(workflow *operatorapi.KogitoServerlessWo
 			if kubeutil.IsObjectNew(object) {
 				return nil
 			}
-			original, err := workflowSpecConfigMapCreator(workflow)
+			original, err := workflowDefConfigMapCreator(workflow)
 			if err != nil {
 				return err
 			}
 			object.(*corev1.ConfigMap).Data = original.(*corev1.ConfigMap).Data
 			object.(*corev1.ConfigMap).Labels = original.GetLabels()
+			return nil
+		}
+	}
+}
+
+// workflowPropsConfigMapCreator creates a ConfigMap to hold the external application properties
+func workflowPropsConfigMapCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+	return &corev1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      getWorkflowPropertiesConfigMapName(workflow),
+			Namespace: workflow.Namespace,
+			Labels:    labels(workflow),
+		},
+		// we could use utils.NewJavaProperties, but this way is faster
+		Data: map[string]string{applicationPropertiesFileName: defaultApplicationProperties},
+	}, nil
+}
+
+func getWorkflowPropertiesConfigMapName(workflow *operatorapi.KogitoServerlessWorkflow) string {
+	return workflow.Name + workflowConfigMapNameSuffix
+}
+
+func ensureWorkflowPropertiesConfigMapMutator(workflow *operatorapi.KogitoServerlessWorkflow) mutateVisitor {
+	return func(object client.Object) controllerutil.MutateFn {
+		return func() error {
+			if kubeutil.IsObjectNew(object) {
+				return nil
+			}
+			original, err := workflowPropsConfigMapCreator(workflow)
+			if err != nil {
+				return err
+			}
+			cm := object.(*corev1.ConfigMap)
+			cm.Labels = original.GetLabels()
+
+			_, hasKey := cm.Data[applicationPropertiesFileName]
+			if !hasKey {
+				cm.Data = make(map[string]string, 1)
+				cm.Data[applicationPropertiesFileName] = defaultApplicationProperties
+			} else {
+				props, propErr := properties.LoadString(cm.Data[applicationPropertiesFileName])
+				if propErr != nil {
+					// can't load user's properties, replace with default
+					cm.Data[applicationPropertiesFileName] = defaultApplicationProperties
+					return nil
+				}
+				originalProps := properties.MustLoadString(original.(*corev1.ConfigMap).Data[applicationPropertiesFileName])
+				// we overwrite with the defaults
+				props.Merge(originalProps)
+				cm.Data[applicationPropertiesFileName] = props.String()
+			}
+
 			return nil
 		}
 	}
