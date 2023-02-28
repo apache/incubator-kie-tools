@@ -53,3 +53,12 @@
   padding: 8px;
   text-align: left;
 }
+
+.expression-container .editable-cell .editable-cell-raw-value {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}

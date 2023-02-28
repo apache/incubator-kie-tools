@@ -125,6 +125,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
   return (
     <div ref={selectContainerRef} onKeyDown={onKeyDown}>
       <Select
+        onKeyDown={(e) => e.stopPropagation()}
         menuAppendTo={menuAppendTo}
         ouiaId="edit-expression-data-type"
         variant={SelectVariant.single}
@@ -134,8 +135,8 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
         onFilter={onFilter}
         isOpen={isOpen}
         selections={value}
-        isGrouped
-        hasInlineFilter
+        isGrouped={true}
+        hasInlineFilter={true}
         inlineFilterPlaceholderText={i18n.choose}
         maxHeight={500}
       >

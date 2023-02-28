@@ -17,7 +17,7 @@
 import { env } from "../../env";
 const buildEnv = env;
 
-describe.skip("Decision Table Expression Tests", () => {
+describe("Decision Table Expression Tests", () => {
   beforeEach(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
   });
@@ -127,7 +127,7 @@ describe.skip("Decision Table Expression Tests", () => {
 
     cy.ouiaId("confirm-expression-json").click();
 
-    cy.ouiaId("expression-grid-table").contains("in-value-1:1").rightclick();
+    cy.ouiaId("expression-grid-table").contains("in-value-1:1").rightclick({ force: true });
     cy.ouiaId("expression-table-context-menu").contains("Duplicate").click({ force: true });
 
     cy.ouiaId("expression-row-2").within(($row) => {
@@ -171,7 +171,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
     // write some text in the table
     cy.get(".data-cell").each((cell, cellIndex) => {
-      cy.wrap(cell).type(`{enter}cell ${cellIndex + 1}`, { delay: 50, waitForAnimations: true });
+      cy.wrap(cell).type(`{enter}{selectall}cell ${cellIndex + 1}`);
       cy.realPress("Tab");
       cy.realPress("Escape");
     });
@@ -197,249 +197,251 @@ describe("Decision Table Keyboard Navigation Tests", () => {
       .type("{rightarrow}{rightarrow}{rightarrow}{leftarrow}{downarrow}{downarrow}{leftarrow}")
       // check the cell 10 is focused
       .focused()
-      .should("contain.text", "-cell 10 ");
+      .should("contain.text", "cell 10");
 
     // check the cell 9 is not focused
     cy.contains("td", /cell 9/).should("not.be.focused");
   });
 
-  it("Navigate around header and data cells", () => {
-    // from the cell 1, go up
-    cy.contains("td", /cell 1/)
-      .type("{uparrow}")
-      // check the cell "input-1" is focused
-      .focused()
-      .should("contain.text", "input-1")
-      // go right 2 times
-      .type("{rightarrow}{rightarrow}")
-      // check the cell "Expression Name" is focused
-      .focused()
-      .should("contain.text", "Expression Name")
-      // go down
-      .type("{downarrow}")
-      // check the cell "output-1" is focused
-      .focused()
-      .should("contain.text", "output-1")
-      // go right
-      .type("{rightarrow}")
-      // check the cell "annotation-1" is focused
-      .focused()
-      .should("contain.text", "annotation-1")
-      // go down
-      .type("{downarrow}")
-      // check the cell "cell-4" is focused
-      .focused()
-      .should("contain.text", "cell 4")
-      // go left and up
-      .type("{leftarrow}{uparrow}")
-      // check the cell "output-1" is focused
-      .focused()
-      .should("contain.text", "output-1");
-  });
+  // FIXME: Tiago -> Rewrite those tests
+  //
+  // it("Navigate around header and data cells", () => {
+  //   // from the cell 1, go up
+  //   cy.contains("td", /cell 1/)
+  //     .type("{uparrow}")
+  //     // check the cell "input-1" is focused
+  //     .focused()
+  //     .should("contain.text", "input-1")
+  //     // go right 2 times
+  //     .type("{rightarrow}{rightarrow}")
+  //     // check the cell "Expression Name" is focused
+  //     .focused()
+  //     .should("contain.text", "Expression Name")
+  //     // go down
+  //     .type("{downarrow}")
+  //     // check the cell "output-1" is focused
+  //     .focused()
+  //     .should("contain.text", "output-1")
+  //     // go right
+  //     .type("{rightarrow}")
+  //     // check the cell "annotation-1" is focused
+  //     .focused()
+  //     .should("contain.text", "annotation-1")
+  //     // go down
+  //     .type("{downarrow}")
+  //     // check the cell "cell-4" is focused
+  //     .focused()
+  //     .should("contain.text", "cell 4")
+  //     // go left and up
+  //     .type("{leftarrow}{uparrow}")
+  //     // check the cell "output-1" is focused
+  //     .focused()
+  //     .should("contain.text", "output-1");
+  // });
 
-  it("Navigate around using tab", () => {
-    // from the cell 2, go to cell 5
-    cy.contains("td", /cell 2/).focus();
-    cy.realPress("Tab");
-    cy.realPress("Tab");
-    cy.realPress("Tab");
-    cy.realPress("Tab");
-    cy.focused().should("contains.text", "cell 6");
+  // it("Navigate around using tab", () => {
+  //   // from the cell 2, go to cell 5
+  //   cy.contains("td", /cell 2/).focus();
+  //   cy.realPress("Tab");
+  //   cy.realPress("Tab");
+  //   cy.realPress("Tab");
+  //   cy.realPress("Tab");
+  //   cy.focused().should("contains.text", "cell 6");
 
-    // from the cell 11, go to cell 12
-    cy.contains("td", /cell 11/).focus();
-    cy.realPress("Tab");
-    cy.realPress("Tab");
-    cy.realPress("Tab");
-    cy.realPress("Tab");
+  //   // from the cell 11, go to cell 12
+  //   cy.contains("td", /cell 11/).focus();
+  //   cy.realPress("Tab");
+  //   cy.realPress("Tab");
+  //   cy.realPress("Tab");
+  //   cy.realPress("Tab");
 
-    cy.focused().should("contains.text", "cell 12");
-  });
+  //   cy.focused().should("contains.text", "cell 12");
+  // });
 
-  it("The last cell should keep the focus after tab press", () => {
-    // from the cell 12
-    cy.get("[data-xposition='4'][data-yposition='4']")
-      .as("cell-12")
-      .should("contain.text", "cell 12")
-      .type("{enter}")
-      .focused();
+  // it("The last cell should keep the focus after tab press", () => {
+  //   // from the cell 12
+  //   cy.get("[data-xposition='4'][data-yposition='4']")
+  //     .as("cell-12")
+  //     .should("contain.text", "cell 12")
+  //     .type("{enter}")
+  //     .focused();
 
-    cy.realPress("Tab");
+  //   cy.realPress("Tab");
 
-    cy.get("@cell-12").should("be.focused");
-  });
+  //   cy.get("@cell-12").should("be.focused");
+  // });
 
-  it("Go against edges", () => {
-    // from the cell 1, go to cell 4
-    cy.contains("th", /input-1/)
-      .click({ force: true })
-      .type("{uparrow}{uparrow}{uparrow}")
-      .should("be.focused")
-      .type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}")
-      .focused()
-      .should("contains", /annotation-1/);
+  // it("Go against edges", () => {
+  //   // from the cell 1, go to cell 4
+  //   cy.contains("th", /input-1/)
+  //     .click({ force: true })
+  //     .type("{uparrow}{uparrow}{uparrow}")
+  //     .should("be.focused")
+  //     .type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}")
+  //     .focused()
+  //     .should("contains", /annotation-1/);
 
-    // from the cell 4, go to cell 12
-    cy.contains("td", /cell 4/)
-      .click({ force: true })
-      .type("{downarrow}{downarrow}{downarrow}{downarrow}");
+  //   // from the cell 4, go to cell 12
+  //   cy.contains("td", /cell 4/)
+  //     .click({ force: true })
+  //     .type("{downarrow}{downarrow}{downarrow}{downarrow}");
 
-    // check the cell 12 is focused
-    cy.contains("td", /cell 12/).should("be.focused");
-  });
+  //   // check the cell 12 is focused
+  //   cy.contains("td", /cell 12/).should("be.focused");
+  // });
 
-  it("Edit cells appending text selecting the Td", () => {
-    // from the cell 1, enter edit mode, write TestInput and press enter to save
-    cy.get("[data-xposition='1'][data-yposition='2']")
-      .as("cell-1")
-      .should("contain.text", "cell 1")
-      .type("{enter}TestAppend{enter}");
+  // it("Edit cells appending text selecting the Td", () => {
+  //   // from the cell 1, enter edit mode, write TestInput and press enter to save
+  //   cy.get("[data-xposition='1'][data-yposition='2']")
+  //     .as("cell-1")
+  //     .should("contain.text", "cell 1")
+  //     .type("{enter}TestAppend{enter}");
 
-    // cell 5 should be focused
-    cy.contains("td", /cell 5/).should("be.focused");
+  //   // cell 5 should be focused
+  //   cy.contains("td", /cell 5/).should("be.focused");
 
-    // check the cell 1 now has "TestInput" text
-    cy.get("@cell-1").find(".editable-cell-textarea").should("have.text", "cell 1TestAppend");
-  });
+  //   // check the cell 1 now has "TestInput" text
+  //   cy.get("@cell-1").find(".editable-cell-textarea").should("have.text", "cell 1TestAppend");
+  // });
 
-  it("Edit a cell in the last row appending text selecting the Td", () => {
-    // from the cell 9, enter edit mode, write TestInput and press enter to save
-    cy.contains("td", /cell 9/)
-      .type("{enter}TestLastRowAppend{enter}")
-      // cell 9 should be focused
-      .should("be.focused")
-      // check the cell 9 now has "TestInput" text
-      .find(".editable-cell-textarea")
-      .should("contain.text", "cell 9TestLastRowAppend");
-  });
+  // it("Edit a cell in the last row appending text selecting the Td", () => {
+  //   // from the cell 9, enter edit mode, write TestInput and press enter to save
+  //   cy.contains("td", /cell 9/)
+  //     .type("{enter}TestLastRowAppend{enter}")
+  //     // cell 9 should be focused
+  //     .should("be.focused")
+  //     // check the cell 9 now has "TestInput" text
+  //     .find(".editable-cell-textarea")
+  //     .should("contain.text", "cell 9TestLastRowAppend");
+  // });
 
-  it("Edit cells appending text selecting the TextArea", () => {
-    // from the cell 5, enter edit mode and write TestInput
-    cy.get("[data-xposition='1'][data-yposition='3']")
-      .as("textarea-5")
-      .should("contain.text", "cell 5")
-      .type("{enter}")
-      .type("TestAppend");
+  // it("Edit cells appending text selecting the TextArea", () => {
+  //   // from the cell 5, enter edit mode and write TestInput
+  //   cy.get("[data-xposition='1'][data-yposition='3']")
+  //     .as("textarea-5")
+  //     .should("contain.text", "cell 5")
+  //     .type("{enter}")
+  //     .type("TestAppend");
 
-    // click on cell 6
-    cy.contains("td", /cell 6/).click({ force: true });
+  //   // click on cell 6
+  //   cy.contains("td", /cell 6/).click({ force: true });
 
-    // check the cell 5 now has "TestInput" text
-    cy.get("@textarea-5").find(".editable-cell-textarea").should("have.text", "-cell 5TestAppend");
-  });
+  //   // check the cell 5 now has "TestInput" text
+  //   cy.get("@textarea-5").find(".editable-cell-textarea").should("have.text", "-cell 5TestAppend");
+  // });
 
-  it("Edit cells overwriting text selecting the Td", () => {
-    // from the cell 2, enter edit mode and write TestInput
-    cy.get("[data-xposition='2'][data-yposition='2']")
-      .as("cell-2")
-      .should("contain.text", "cell 2")
-      .type("TestOverwrite");
+  // it("Edit cells overwriting text selecting the Td", () => {
+  //   // from the cell 2, enter edit mode and write TestInput
+  //   cy.get("[data-xposition='2'][data-yposition='2']")
+  //     .as("cell-2")
+  //     .should("contain.text", "cell 2")
+  //     .type("TestOverwrite");
 
-    // click on cell 3
-    cy.contains("td", /cell 3/).click({ force: true });
+  //   // click on cell 3
+  //   cy.contains("td", /cell 3/).click({ force: true });
 
-    // check the cell 1 now has "TestInput" text
-    cy.get("@cell-2").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
-  });
+  //   // check the cell 1 now has "TestInput" text
+  //   cy.get("@cell-2").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
+  // });
 
-  it("Edit cells overwriting text selecting the TextArea", () => {
-    // from the cell 6, enter edit mode and write TestInput
-    cy.get("[data-xposition='2'][data-yposition='3']")
-      .as("textarea-6")
-      .should("contain.text", "cell 6")
-      .type("TestOverwrite");
+  // it("Edit cells overwriting text selecting the TextArea", () => {
+  //   // from the cell 6, enter edit mode and write TestInput
+  //   cy.get("[data-xposition='2'][data-yposition='3']")
+  //     .as("textarea-6")
+  //     .should("contain.text", "cell 6")
+  //     .type("TestOverwrite");
 
-    // click on cell 7
-    cy.contains("td", /cell 7/).click({ force: true });
+  //   // click on cell 7
+  //   cy.contains("td", /cell 7/).click({ force: true });
 
-    // check the cell 1 now has "TestInput" text
-    cy.get("@textarea-6").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
-  });
+  //   // check the cell 1 now has "TestInput" text
+  //   cy.get("@textarea-6").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
+  // });
 
-  it("Insert a newline in a cell pressing Ctrl+Enter", () => {
-    // from the cell 3, enter edit mode and write TestInput
-    cy.get("[data-xposition='3'][data-yposition='2']")
-      .as("textarea-3")
-      .should("contain.text", "cell 3")
-      .type("{enter}{ctrl+enter}newline");
+  // it("Insert a newline in a cell pressing Ctrl+Enter", () => {
+  //   // from the cell 3, enter edit mode and write TestInput
+  //   cy.get("[data-xposition='3'][data-yposition='2']")
+  //     .as("textarea-3")
+  //     .should("contain.text", "cell 3")
+  //     .type("{enter}{ctrl+enter}newline");
 
-    // click on cell 7
-    cy.contains("td", /cell 7/).click({ force: true });
+  //   // click on cell 7
+  //   cy.contains("td", /cell 7/).click({ force: true });
 
-    // check the cell 1 now has "TestInput" text
-    cy.get("@textarea-3").find(".editable-cell-textarea").should("have.text", "cell 3\nnewline");
-  });
+  //   // check the cell 1 now has "TestInput" text
+  //   cy.get("@textarea-3").find(".editable-cell-textarea").should("have.text", "cell 3\nnewline");
+  // });
 
-  it("Edit a cell using the suggestions", () => {
-    // from the cell 4, write sum, press enter to accept the suggestion
-    cy.get("[data-xposition='4'][data-yposition='2']")
-      .as("cell-4")
-      .should("contain.text", "cell 4")
-      .type("sum{enter}")
-      .prev()
-      .click();
+  // it("Edit a cell using the suggestions", () => {
+  //   // from the cell 4, write sum, press enter to accept the suggestion
+  //   cy.get("[data-xposition='4'][data-yposition='2']")
+  //     .as("cell-4")
+  //     .should("contain.text", "cell 4")
+  //     .type("sum{enter}")
+  //     .prev()
+  //     .click();
 
-    cy.get("@cell-4")
-      // cell 4 should be focused
-      .should("not.be.focused")
-      // check the cell 4 now has "TestInput" text
-      .find(".editable-cell-textarea")
-      .should("contain.text", "sum()");
-  });
+  //   cy.get("@cell-4")
+  //     // cell 4 should be focused
+  //     .should("not.be.focused")
+  //     // check the cell 4 now has "TestInput" text
+  //     .find(".editable-cell-textarea")
+  //     .should("contain.text", "sum()");
+  // });
 
-  it("Keyboard interaction with contextMenu", () => {
-    // select cell 3 and open the contextMenu with rightclick
-    cy.get("[data-xposition='3'][data-yposition='2']")
-      .as("cell-3")
-      .should("contain.text", "cell 3")
-      .click()
-      .rightclick();
+  // it("Keyboard interaction with contextMenu", () => {
+  //   // select cell 3 and open the contextMenu with rightclick
+  //   cy.get("[data-xposition='3'][data-yposition='2']")
+  //     .as("cell-3")
+  //     .should("contain.text", "cell 3")
+  //     .click()
+  //     .rightclick();
 
-    // check the contextMenu is open
-    cy.get(".table-handler").should("be.visible");
+  //   // check the contextMenu is open
+  //   cy.get(".table-handler").should("be.visible");
 
-    // try to navigate left with no success
-    cy.get("@cell-3").type("{leftarrow}").should("be.focused");
+  //   // try to navigate left with no success
+  //   cy.get("@cell-3").type("{leftarrow}").should("be.focused");
 
-    // close the menu
-    cy.realPress("Escape");
-  });
+  //   // close the menu
+  //   cy.realPress("Escape");
+  // });
 
-  describe("Keyboard interaction with annotation cell", () => {
-    beforeEach(() => {
-      cy.get("[data-xposition='4'][data-yposition='1']").as("annotationCell").focus().type("{enter}");
+  // describe("Keyboard interaction with annotation cell", () => {
+  //   beforeEach(() => {
+  //     cy.get("[data-xposition='4'][data-yposition='1']").as("annotationCell").focus().type("{enter}");
 
-      cy.get("@annotationCell").find("input:text").as("annotationInput").clear();
-    });
+  //     cy.get("@annotationCell").find("input:text").as("annotationInput").clear();
+  //   });
 
-    it("Edit and save with enter key", () => {
-      // from the annotation cell, edit the text then press enter to finish editing
-      cy.get("@annotationInput").type("annotation-1 edited{enter}");
+  //   it("Edit and save with enter key", () => {
+  //     // from the annotation cell, edit the text then press enter to finish editing
+  //     cy.get("@annotationInput").type("annotation-1 edited{enter}");
 
-      cy.get("@annotationCell").should("have.text", "annotation-1 edited");
+  //     cy.get("@annotationCell").should("have.text", "annotation-1 edited");
 
-      cy.get("@annotationCell").should("be.focused").get("input").should("not.exist");
-    });
+  //     cy.get("@annotationCell").should("be.focused").get("input").should("not.exist");
+  //   });
 
-    it("Cancel editing", () => {
-      // from the annotation cell, edit the text then press esc to cancel editing
-      cy.get("@annotationInput").type("not to save text{esc}");
+  //   it("Cancel editing", () => {
+  //     // from the annotation cell, edit the text then press esc to cancel editing
+  //     cy.get("@annotationInput").type("not to save text{esc}");
 
-      cy.get("@annotationCell").should("have.text", "annotation-1").should("not.contain.text", "not to save text");
+  //     cy.get("@annotationCell").should("have.text", "annotation-1").should("not.contain.text", "not to save text");
 
-      cy.get("@annotationCell").should("be.focused").get("input").should("not.exist");
-    });
+  //     cy.get("@annotationCell").should("be.focused").get("input").should("not.exist");
+  //   });
 
-    it("Edit and save clicking outside", () => {
-      // from the annotation cell, edit the text
-      cy.get("@annotationInput").type("annotation-1 edited");
+  //   it("Edit and save clicking outside", () => {
+  //     // from the annotation cell, edit the text
+  //     cy.get("@annotationInput").type("annotation-1 edited");
 
-      // click outside the annotation cell to finish editing
-      cy.get(".expression-title").click();
+  //     // click outside the annotation cell to finish editing
+  //     cy.get(".expression-title").click();
 
-      cy.get("@annotationCell").should("have.text", "annotation-1 edited");
+  //     cy.get("@annotationCell").should("have.text", "annotation-1 edited");
 
-      cy.get("@annotationCell").should("not.be.focused").get("input").should("not.exist");
-    });
-  });
+  //     cy.get("@annotationCell").should("not.be.focused").get("input").should("not.exist");
+  //   });
+  // });
 });

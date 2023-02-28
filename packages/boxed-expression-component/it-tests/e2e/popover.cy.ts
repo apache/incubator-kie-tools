@@ -49,9 +49,9 @@ describe("PopoverMenu Tests", () => {
 
     cy.ouiaId("expression-popover-menu")
       // check the popover be open. This check is to check that the popover is not closed after data type selection
-      .should("be.visible")
-      // Cancel the editing
-      .type("{esc}");
+      .should("be.visible");
+
+    cy.realPress("Escape");
 
     // Assert data type not to be changed
     cy.get("@ExpressionNameCell").find(".data-type").should("contain.text", "Undefined");
@@ -65,10 +65,12 @@ describe("PopoverMenu Tests", () => {
     cy.get("#expression-name").type("{selectall}Newname", { force: true });
 
     // Cancel the editing
-    cy.ouiaId("expression-popover-menu").contains("Edit Expression").click();
+    cy.ouiaId("expression-popover-menu").contains("Name").click();
 
     // check the popover be open. This check is to check that the popover is not closed after data type selection
-    cy.ouiaId("expression-popover-menu").should("be.visible").type("{esc}");
+    cy.ouiaId("expression-popover-menu").should("be.visible");
+
+    cy.realPress("Escape");
 
     // Assert expression name not to be changed
     cy.get("@ExpressionNameCell").find(".label").should("contain.text", "Expression Name");
@@ -85,7 +87,11 @@ describe("PopoverMenu Tests", () => {
     cy.ouiaId("edit-expression-data-type").should("contain.text", "Undefined");
 
     // close the popover to reset the state of it
-    cy.ouiaId("expression-popover-menu").type("{esc}");
+    cy.ouiaId("expression-popover-menu").should("exist");
+
+    cy.realPress("Escape");
+
+    cy.ouiaId("expression-popover-menu").should("not.exist");
   });
 
   describe("Keyboard interaction with header's contextMenu in nested decision table", () => {
@@ -97,7 +103,7 @@ describe("PopoverMenu Tests", () => {
       cy.ouiaId("expression-popover-menu").should("not.to.exist");
 
       // open the popover menu
-      cy.get("@ExpressionNameCell").focus().wait(100).type("{enter}");
+      cy.get("@ExpressionNameCell").click();
 
       // check the popover is open
       cy.ouiaId("expression-popover-menu").should("be.visible");
@@ -127,11 +133,7 @@ describe("PopoverMenu Tests", () => {
       cy.ouiaId("edit-expression-name").realPress("Tab").realPress("Tab");
 
       // open the data type menu
-      cy.ouiaId("edit-expression-data-type")
-        .as("expressionDataType")
-        .find("button")
-        .should("be.focused")
-        .realPress("Enter");
+      cy.ouiaId("edit-expression-data-type").as("expressionDataType").find("button").should("be.focused").click();
 
       // check the data type menu is open
       cy.get("@expressionDataType").find(".pf-c-select__menu").should("be.visible");
@@ -151,8 +153,7 @@ describe("PopoverMenu Tests", () => {
       // check data type is now "date"
       cy.get("@expressionDataType").find(".pf-c-select__toggle-text").should("contain.text", "date");
 
-      // press enter from the expression name to save (from the expression data type the menu will be opened again if press enter)
-      cy.ouiaId("edit-expression-name").focus().realPress("Enter");
+      cy.realPress("Enter");
 
       // check the expression name field has the new text
       cy.get("@ExpressionNameCell").should("contain.text", "(date)");

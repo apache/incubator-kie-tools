@@ -152,7 +152,7 @@ describe("Relation Expression Tests", () => {
     cy.realPress("Enter");
 
     // exit edit mode and check 2nd row, 4th cell has the new text
-    cy.contains("td", "Newtext").ouiaId("editable-cell-plain-value").should("have.text", "Newtext");
+    cy.contains("td", "Newtext").ouiaId("editable-cell-raw-value").should("have.text", "Newtext");
   });
 
   it("Regression tests: focus on the first data cell", () => {
