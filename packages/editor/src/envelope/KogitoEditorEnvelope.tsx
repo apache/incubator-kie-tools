@@ -22,7 +22,6 @@ import {
   KogitoEditorEnvelopeContextType,
 } from "../api";
 import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
-import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { Envelope, EnvelopeApiFactory } from "@kie-tools-core/envelope";
 import { I18nService } from "@kie-tools-core/i18n/dist/envelope";

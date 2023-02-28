@@ -62,14 +62,13 @@ export function usingEditorEnvelopeI18nContext(
     defaults: editorEnvelopeI18nDefaults,
     dictionaries: editorEnvelopeI18nDictionaries,
     ctx: EditorEnvelopeI18nContext,
-    children,
     ...ctx,
   };
   return {
     ctx: usedCtx,
     wrapper: (
       <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
-        {usedCtx.children}
+        {children}
       </I18nDictionariesProvider>
     ),
   };

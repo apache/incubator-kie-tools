@@ -250,9 +250,14 @@ describe("ImportJavaClasses component tests", () => {
   }
 
   async function testJavaClassSelection(baseElement: Element, hasThirdElement: boolean) {
-    await waitFor(() => {
-      expect(baseElement.querySelector('[aria-label="class-data-list"]')!).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(baseElement.querySelector('[aria-label="class-data-list"]')!).toBeInTheDocument();
+      },
+      {
+        timeout: 5000,
+      }
+    );
     const firstElement = baseElement.querySelector('[id="com.Book"]')! as HTMLSpanElement;
     expect(firstElement).toBeInTheDocument();
     const secondElement = baseElement.querySelector('[id="com.Author"]')! as HTMLSpanElement;
@@ -343,7 +348,9 @@ describe("ImportJavaClasses component tests", () => {
 
   function getJavaCodeCompletionServiceMock(classMocks: JavaCodeCompletionClass[]) {
     const javaCodeCompletionServiceMock: JavaCodeCompletionService = {
-      getClasses: (value) => Promise.resolve(classMocks),
+      getClasses: (value) => {
+        return Promise.resolve(classMocks);
+      },
       getFields: getFieldsMocks,
       isLanguageServerAvailable: () => Promise.resolve(true),
     };

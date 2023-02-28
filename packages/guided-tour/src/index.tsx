@@ -15,13 +15,11 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import { Rect, Tutorial, UserInteraction } from "./api";
 import { GuidedTour } from "./components";
 import { GuidedTourDomUtils, GuidedTourEventBus } from "./core";
-import { createRoot } from "react-dom/client";
-
 class KogitoGuidedTour {
   private static instance?: KogitoGuidedTour;
 
