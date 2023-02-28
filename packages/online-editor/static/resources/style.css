@@ -662,3 +662,7 @@ section.kie-tools--settings-tab {
 .kie-sandbox--file-switcher .pf-c-dropdown__menu {
   min-width: 0;
 }
+
+.pf-c-menu__item-description {
+  word-break: normal !important;
+}
