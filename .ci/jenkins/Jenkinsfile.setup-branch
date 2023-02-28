@@ -151,7 +151,7 @@ pipeline {
                     String quarkusPlatformVersion = "kogito-${kogitoVersion}"
 
                     // Setup quarkus platform repo configuration
-                    runPythonCommand("python3 scripts/update-repository.py --repo-url ${QUARKUS_PLATFORM_NEXUS_URL} --ignore-self-signed-cert quarkus-platform-version ${quarkusPlatformVersion}")
+                    runPythonCommand("python3 scripts/update-repository.py --repo-url ${QUARKUS_PLATFORM_NEXUS_URL} --ignore-self-signed-cert --quarkus-platform-version ${quarkusPlatformVersion}")
                 }
             }
         }

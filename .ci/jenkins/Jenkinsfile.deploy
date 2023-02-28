@@ -141,7 +141,7 @@ pipeline {
 
                     if (isRelease()) {
                         if (params.QUARKUS_PLATFORM_VERSION) {
-                            runPythonCommand("python3 scripts/update-repository.py quarkus-platform-version ${params.QUARKUS_PLATFORM_VERSION}")
+                            runPythonCommand("python3 scripts/update-repository.py --quarkus-platform-version ${params.QUARKUS_PLATFORM_VERSION}")
                         } else {
                             echo "No new quarkus version given for the release. Statu quo ..."
                         }
@@ -150,7 +150,7 @@ pipeline {
                             echo "[WARN] Artifacts repository defined in env will override the quarkus platform URL in tests. Make sure the platform artifacts are available on that artifacts repository (you can use a maven group)"
                         }
                         // Setup quarkus platform repo configuration
-                        runPythonCommand("python3 scripts/update-repository.py --repo-url ${QUARKUS_PLATFORM_NEXUS_URL} --ignore-self-signed-cert quarkus-platform-version ${quarkusPlatformVersion}")
+                        runPythonCommand("python3 scripts/update-repository.py --repo-url ${QUARKUS_PLATFORM_NEXUS_URL} --ignore-self-signed-cert --quarkus-platform-version ${quarkusPlatformVersion}")
                     }
                 }
             }
