@@ -12210,9 +12210,9 @@ exports[`SWF LS JSON code completion Jq functionRef arguments completion for var
 
 exports[`SWF LS JSON code completion Jq functionRef arguments completion for variables completion space before fn: 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq operation completion for built-in functions cursor after a value - auto-complete the word map 1`] = `2`;
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor after a value - auto-complete the word map 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq operation completion for built-in functions cursor after a value - auto-complete the word map 2`] = `
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor after a value - auto-complete the word map 2`] = `
 Array [
   Object {
     "detail": "For any filter x, map(x) will run that filter for each element of the input array, and return the outputs in a new array. map(.+1) will increment each element of an array of numbers.",
@@ -12226,12 +12226,12 @@ Array [
       "newText": "\\"map(x)\\"",
       "range": Object {
         "end": Object {
-          "character": 22,
-          "line": 5,
+          "character": 35,
+          "line": 26,
         },
         "start": Object {
-          "character": 19,
-          "line": 5,
+          "character": 32,
+          "line": 26,
         },
       },
     },
@@ -12248,12 +12248,12 @@ Array [
       "newText": "\\"map_values(x)\\"",
       "range": Object {
         "end": Object {
-          "character": 22,
-          "line": 5,
+          "character": 35,
+          "line": 26,
         },
         "start": Object {
-          "character": 19,
-          "line": 5,
+          "character": 32,
+          "line": 26,
         },
       },
     },
@@ -12261,9 +12261,60 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq operation completion for built-in functions cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor after a value - auto-complete the word map 3`] = `2`;
 
-exports[`SWF LS JSON code completion Jq operation completion for built-in functions cursor after some random word 2`] = `
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor after a value - auto-complete the word map 4`] = `
+Array [
+  Object {
+    "detail": "For any filter x, map(x) will run that filter for each element of the input array, and return the outputs in a new array. map(.+1) will increment each element of an array of numbers.",
+    "filterText": "map",
+    "insertText": "map(x)",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "map(x)",
+    "sortText": "100_map(x)",
+    "textEdit": Object {
+      "newText": "\\"map(x)\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "map_values(x) will run that filter for each element, but it will return an object when an object is passed.",
+    "filterText": "map",
+    "insertText": "map_values(x)",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "map_values(x)",
+    "sortText": "100_map_values(x)",
+    "textEdit": Object {
+      "newText": "\\"map_values(x)\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor after some random word 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor after some random word 2`] = `
 Array [
   Object {
     "detail": "Outputs all remaining inputs, one by one.",
@@ -12277,12 +12328,12 @@ Array [
       "newText": "\\"inputs\\"",
       "range": Object {
         "end": Object {
-          "character": 29,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
         "start": Object {
-          "character": 29,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
       },
     },
@@ -12299,12 +12350,12 @@ Array [
       "newText": "\\"debug\\"",
       "range": Object {
         "end": Object {
-          "character": 29,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
         "start": Object {
-          "character": 29,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
       },
     },
@@ -12321,12 +12372,12 @@ Array [
       "newText": "\\"stderr\\"",
       "range": Object {
         "end": Object {
-          "character": 29,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
         "start": Object {
-          "character": 29,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
       },
     },
@@ -12343,12 +12394,12 @@ Array [
       "newText": "\\"input_filename\\"",
       "range": Object {
         "end": Object {
-          "character": 29,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
         "start": Object {
-          "character": 29,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
       },
     },
@@ -12365,12 +12416,12 @@ Array [
       "newText": "\\"input_line_number\\"",
       "range": Object {
         "end": Object {
-          "character": 29,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
         "start": Object {
-          "character": 29,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
       },
     },
@@ -12378,130 +12429,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq operation completion for built-in functions cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor after some random word 3`] = `142`;
 
-exports[`SWF LS JSON code completion Jq operation completion for built-in functions cursor before empty space 2`] = `
-Array [
-  Object {
-    "detail": "Outputs all remaining inputs, one by one.",
-    "filterText": "inputs",
-    "insertText": "inputs",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "inputs",
-    "sortText": "100_inputs",
-    "textEdit": Object {
-      "newText": "\\"inputs\\",",
-      "range": Object {
-        "end": Object {
-          "character": 19,
-          "line": 5,
-        },
-        "start": Object {
-          "character": 19,
-          "line": 5,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
-    "filterText": "debug",
-    "insertText": "debug",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "debug",
-    "sortText": "100_debug",
-    "textEdit": Object {
-      "newText": "\\"debug\\",",
-      "range": Object {
-        "end": Object {
-          "character": 19,
-          "line": 5,
-        },
-        "start": Object {
-          "character": 19,
-          "line": 5,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
-    "filterText": "stderr",
-    "insertText": "stderr",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "stderr",
-    "sortText": "100_stderr",
-    "textEdit": Object {
-      "newText": "\\"stderr\\",",
-      "range": Object {
-        "end": Object {
-          "character": 19,
-          "line": 5,
-        },
-        "start": Object {
-          "character": 19,
-          "line": 5,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
-    "filterText": "input_filename",
-    "insertText": "input_filename",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "input_filename",
-    "sortText": "100_input_filename",
-    "textEdit": Object {
-      "newText": "\\"input_filename\\",",
-      "range": Object {
-        "end": Object {
-          "character": 19,
-          "line": 5,
-        },
-        "start": Object {
-          "character": 19,
-          "line": 5,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Returns the line number of the input currently being filtered.",
-    "filterText": "input_line_number",
-    "insertText": "input_line_number",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "input_line_number",
-    "sortText": "100_input_line_number",
-    "textEdit": Object {
-      "newText": "\\"input_line_number\\",",
-      "range": Object {
-        "end": Object {
-          "character": 19,
-          "line": 5,
-        },
-        "start": Object {
-          "character": 19,
-          "line": 5,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq operation completion for built-in functions operation with empty object 1`] = `0`;
-
-exports[`SWF LS JSON code completion Jq operation completion for built-in functions operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq operation completion for built-in functions operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq operation completion for built-in functions operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor after some random word 4`] = `
 Array [
   Object {
     "detail": "Outputs all remaining inputs, one by one.",
@@ -12515,12 +12445,12 @@ Array [
       "newText": "\\"inputs\\"",
       "range": Object {
         "end": Object {
-          "character": 19,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
         "start": Object {
-          "character": 19,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
       },
     },
@@ -12537,12 +12467,12 @@ Array [
       "newText": "\\"debug\\"",
       "range": Object {
         "end": Object {
-          "character": 19,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
         "start": Object {
-          "character": 19,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
       },
     },
@@ -12559,12 +12489,12 @@ Array [
       "newText": "\\"stderr\\"",
       "range": Object {
         "end": Object {
-          "character": 19,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
         "start": Object {
-          "character": 19,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
       },
     },
@@ -12581,12 +12511,12 @@ Array [
       "newText": "\\"input_filename\\"",
       "range": Object {
         "end": Object {
-          "character": 19,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
         "start": Object {
-          "character": 19,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
       },
     },
@@ -12603,12 +12533,12 @@ Array [
       "newText": "\\"input_line_number\\"",
       "range": Object {
         "end": Object {
-          "character": 19,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
         "start": Object {
-          "character": 19,
-          "line": 5,
+          "character": 42,
+          "line": 26,
         },
       },
     },
@@ -12616,290 +12546,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq operation completion for reusable functions fn: after some value 1`] = `3`;
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor after the dot(variable): 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq operation completion for reusable functions fn: after some value 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "reusableFunction1",
-    "insertText": "reusableFunction1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "reusableFunction1",
-    "sortText": "100_reusableFunction1",
-    "textEdit": Object {
-      "newText": "\\"reusableFunction1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 31,
-          "line": 15,
-        },
-        "start": Object {
-          "character": 31,
-          "line": 15,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "anotherReusableFunction1",
-    "insertText": "anotherReusableFunction1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "anotherReusableFunction1",
-    "sortText": "100_anotherReusableFunction1",
-    "textEdit": Object {
-      "newText": "\\"anotherReusableFunction1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 31,
-          "line": 15,
-        },
-        "start": Object {
-          "character": 31,
-          "line": 15,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "testFunction",
-    "insertText": "testFunction",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "testFunction",
-    "sortText": "100_testFunction",
-    "textEdit": Object {
-      "newText": "\\"testFunction\\"",
-      "range": Object {
-        "end": Object {
-          "character": 31,
-          "line": 15,
-        },
-        "start": Object {
-          "character": 31,
-          "line": 15,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq operation completion for reusable functions fn: starting with a 1`] = `1`;
-
-exports[`SWF LS JSON code completion Jq operation completion for reusable functions fn: starting with a 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "a",
-    "insertText": "anotherReusableFunction1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "anotherReusableFunction1",
-    "sortText": "100_anotherReusableFunction1",
-    "textEdit": Object {
-      "newText": "\\"anotherReusableFunction1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 23,
-          "line": 15,
-        },
-        "start": Object {
-          "character": 22,
-          "line": 15,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq operation completion for reusable functions fn: starting with r 1`] = `1`;
-
-exports[`SWF LS JSON code completion Jq operation completion for reusable functions fn: starting with r 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "r",
-    "insertText": "reusableFunction1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "reusableFunction1",
-    "sortText": "100_reusableFunction1",
-    "textEdit": Object {
-      "newText": "\\"reusableFunction1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 23,
-          "line": 15,
-        },
-        "start": Object {
-          "character": 22,
-          "line": 15,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq operation completion for reusable functions operation with empty object 1`] = `0`;
-
-exports[`SWF LS JSON code completion Jq operation completion for reusable functions operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq operation completion for reusable functions operation with fn: 1`] = `3`;
-
-exports[`SWF LS JSON code completion Jq operation completion for reusable functions operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "reusableFunction1",
-    "insertText": "reusableFunction1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "reusableFunction1",
-    "sortText": "100_reusableFunction1",
-    "textEdit": Object {
-      "newText": "\\"reusableFunction1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 22,
-          "line": 15,
-        },
-        "start": Object {
-          "character": 22,
-          "line": 15,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "anotherReusableFunction1",
-    "insertText": "anotherReusableFunction1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "anotherReusableFunction1",
-    "sortText": "100_anotherReusableFunction1",
-    "textEdit": Object {
-      "newText": "\\"anotherReusableFunction1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 22,
-          "line": 15,
-        },
-        "start": Object {
-          "character": 22,
-          "line": 15,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "testFunction",
-    "insertText": "testFunction",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "testFunction",
-    "sortText": "100_testFunction",
-    "textEdit": Object {
-      "newText": "\\"testFunction\\"",
-      "range": Object {
-        "end": Object {
-          "character": 22,
-          "line": 15,
-        },
-        "start": Object {
-          "character": 22,
-          "line": 15,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq operation completion for reusable functions space before fn: 1`] = `3`;
-
-exports[`SWF LS JSON code completion Jq operation completion for reusable functions space before fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "reusableFunction1",
-    "insertText": "reusableFunction1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "reusableFunction1",
-    "sortText": "100_reusableFunction1",
-    "textEdit": Object {
-      "newText": "\\"reusableFunction1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 23,
-          "line": 15,
-        },
-        "start": Object {
-          "character": 23,
-          "line": 15,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "anotherReusableFunction1",
-    "insertText": "anotherReusableFunction1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "anotherReusableFunction1",
-    "sortText": "100_anotherReusableFunction1",
-    "textEdit": Object {
-      "newText": "\\"anotherReusableFunction1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 23,
-          "line": 15,
-        },
-        "start": Object {
-          "character": 23,
-          "line": 15,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "testFunction",
-    "insertText": "testFunction",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "testFunction",
-    "sortText": "100_testFunction",
-    "textEdit": Object {
-      "newText": "\\"testFunction\\"",
-      "range": Object {
-        "end": Object {
-          "character": 23,
-          "line": 15,
-        },
-        "start": Object {
-          "character": 23,
-          "line": 15,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq operation completion for variable functions cursor after the dot(variable): 1`] = `4`;
-
-exports[`SWF LS JSON code completion Jq operation completion for variable functions cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor after the dot(variable): 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -12913,12 +12562,12 @@ Array [
       "newText": "\\"name\\"",
       "range": Object {
         "end": Object {
-          "character": 20,
-          "line": 16,
+          "character": 33,
+          "line": 26,
         },
         "start": Object {
-          "character": 20,
-          "line": 16,
+          "character": 33,
+          "line": 26,
         },
       },
     },
@@ -12935,12 +12584,12 @@ Array [
       "newText": "\\"age\\"",
       "range": Object {
         "end": Object {
-          "character": 20,
-          "line": 16,
+          "character": 33,
+          "line": 26,
         },
         "start": Object {
-          "character": 20,
-          "line": 16,
+          "character": 33,
+          "line": 26,
         },
       },
     },
@@ -12957,12 +12606,12 @@ Array [
       "newText": "\\"avgLoad\\"",
       "range": Object {
         "end": Object {
-          "character": 20,
-          "line": 16,
+          "character": 33,
+          "line": 26,
         },
         "start": Object {
-          "character": 20,
-          "line": 16,
+          "character": 33,
+          "line": 26,
         },
       },
     },
@@ -12979,12 +12628,12 @@ Array [
       "newText": "\\"numberOfPods\\"",
       "range": Object {
         "end": Object {
-          "character": 20,
-          "line": 16,
+          "character": 33,
+          "line": 26,
         },
         "start": Object {
-          "character": 20,
-          "line": 16,
+          "character": 33,
+          "line": 26,
         },
       },
     },
@@ -12992,9 +12641,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq operation completion for variable functions cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor before empty space 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq operation completion for variable functions cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor before empty space 2`] = `
 Array [
   Object {
     "detail": "Outputs all remaining inputs, one by one.",
@@ -13008,12 +12657,12 @@ Array [
       "newText": "\\"inputs\\",",
       "range": Object {
         "end": Object {
-          "character": 19,
-          "line": 16,
+          "character": 32,
+          "line": 26,
         },
         "start": Object {
-          "character": 19,
-          "line": 16,
+          "character": 32,
+          "line": 26,
         },
       },
     },
@@ -13030,12 +12679,12 @@ Array [
       "newText": "\\"debug\\",",
       "range": Object {
         "end": Object {
-          "character": 19,
-          "line": 16,
+          "character": 32,
+          "line": 26,
         },
         "start": Object {
-          "character": 19,
-          "line": 16,
+          "character": 32,
+          "line": 26,
         },
       },
     },
@@ -13052,12 +12701,12 @@ Array [
       "newText": "\\"stderr\\",",
       "range": Object {
         "end": Object {
-          "character": 19,
-          "line": 16,
+          "character": 32,
+          "line": 26,
         },
         "start": Object {
-          "character": 19,
-          "line": 16,
+          "character": 32,
+          "line": 26,
         },
       },
     },
@@ -13074,12 +12723,12 @@ Array [
       "newText": "\\"input_filename\\",",
       "range": Object {
         "end": Object {
-          "character": 19,
-          "line": 16,
+          "character": 32,
+          "line": 26,
         },
         "start": Object {
-          "character": 19,
-          "line": 16,
+          "character": 32,
+          "line": 26,
         },
       },
     },
@@ -13096,12 +12745,12 @@ Array [
       "newText": "\\"input_line_number\\",",
       "range": Object {
         "end": Object {
-          "character": 19,
-          "line": 16,
+          "character": 32,
+          "line": 26,
         },
         "start": Object {
-          "character": 19,
-          "line": 16,
+          "character": 32,
+          "line": 26,
         },
       },
     },
@@ -13109,9 +12758,243 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq operation completion for variable functions cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor before empty space 3`] = `142`;
 
-exports[`SWF LS JSON code completion Jq operation completion for variable functions cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor before empty space 4`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor before the dot(variable): 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor before the dot(variable): 2`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor with a space after the  dot(variable): 2`] = `
 Array [
   Object {
     "detail": "Outputs all remaining inputs, one by one.",
@@ -13125,12 +13008,12 @@ Array [
       "newText": "\\"inputs\\"",
       "range": Object {
         "end": Object {
-          "character": 21,
-          "line": 16,
+          "character": 34,
+          "line": 26,
         },
         "start": Object {
-          "character": 21,
-          "line": 16,
+          "character": 34,
+          "line": 26,
         },
       },
     },
@@ -13147,12 +13030,12 @@ Array [
       "newText": "\\"debug\\"",
       "range": Object {
         "end": Object {
-          "character": 21,
-          "line": 16,
+          "character": 34,
+          "line": 26,
         },
         "start": Object {
-          "character": 21,
-          "line": 16,
+          "character": 34,
+          "line": 26,
         },
       },
     },
@@ -13169,12 +13052,12 @@ Array [
       "newText": "\\"stderr\\"",
       "range": Object {
         "end": Object {
-          "character": 21,
-          "line": 16,
+          "character": 34,
+          "line": 26,
         },
         "start": Object {
-          "character": 21,
-          "line": 16,
+          "character": 34,
+          "line": 26,
         },
       },
     },
@@ -13191,12 +13074,12 @@ Array [
       "newText": "\\"input_filename\\"",
       "range": Object {
         "end": Object {
-          "character": 21,
-          "line": 16,
+          "character": 34,
+          "line": 26,
         },
         "start": Object {
-          "character": 21,
-          "line": 16,
+          "character": 34,
+          "line": 26,
         },
       },
     },
@@ -13213,12 +13096,12 @@ Array [
       "newText": "\\"input_line_number\\"",
       "range": Object {
         "end": Object {
-          "character": 21,
-          "line": 16,
+          "character": 34,
+          "line": 26,
         },
         "start": Object {
-          "character": 21,
-          "line": 16,
+          "character": 34,
+          "line": 26,
         },
       },
     },
@@ -13226,9 +13109,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq operation completion for variable functions cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor with a value following the  dot(variable): 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq operation completion for variable functions cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion cursor with a value following the  dot(variable): 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -13242,12 +13125,12 @@ Array [
       "newText": "\\"age\\"",
       "range": Object {
         "end": Object {
-          "character": 21,
-          "line": 16,
+          "character": 34,
+          "line": 26,
         },
         "start": Object {
-          "character": 20,
-          "line": 16,
+          "character": 33,
+          "line": 26,
         },
       },
     },
@@ -13264,12 +13147,12 @@ Array [
       "newText": "\\"avgLoad\\"",
       "range": Object {
         "end": Object {
-          "character": 21,
-          "line": 16,
+          "character": 34,
+          "line": 26,
         },
         "start": Object {
-          "character": 20,
-          "line": 16,
+          "character": 33,
+          "line": 26,
         },
       },
     },
@@ -13277,9 +13160,2643 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq operation completion for variable functions operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion operation with empty object 1`] = `0`;
 
-exports[`SWF LS JSON code completion Jq operation completion for variable functions operation with empty object 2`] = `Array []`;
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion operation with empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion operation with empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion operation with empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion operation with empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion operation with empty object 6`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion operation with no value 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion operation with no value 2`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion operation with no value 3`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for built-in functions completion operation with no value 4`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor after a value - auto-complete the word map 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor after a value - auto-complete the word map 2`] = `
+Array [
+  Object {
+    "detail": "For any filter x, map(x) will run that filter for each element of the input array, and return the outputs in a new array. map(.+1) will increment each element of an array of numbers.",
+    "filterText": "map",
+    "insertText": "map(x)",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "map(x)",
+    "sortText": "100_map(x)",
+    "textEdit": Object {
+      "newText": "\\"map(x)\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "map_values(x) will run that filter for each element, but it will return an object when an object is passed.",
+    "filterText": "map",
+    "insertText": "map_values(x)",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "map_values(x)",
+    "sortText": "100_map_values(x)",
+    "textEdit": Object {
+      "newText": "\\"map_values(x)\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor after a value - auto-complete the word map 3`] = `2`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor after a value - auto-complete the word map 4`] = `
+Array [
+  Object {
+    "detail": "For any filter x, map(x) will run that filter for each element of the input array, and return the outputs in a new array. map(.+1) will increment each element of an array of numbers.",
+    "filterText": "map",
+    "insertText": "map(x)",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "map(x)",
+    "sortText": "100_map(x)",
+    "textEdit": Object {
+      "newText": "\\"map(x)\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "map_values(x) will run that filter for each element, but it will return an object when an object is passed.",
+    "filterText": "map",
+    "insertText": "map_values(x)",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "map_values(x)",
+    "sortText": "100_map_values(x)",
+    "textEdit": Object {
+      "newText": "\\"map_values(x)\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor after some random word 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor after some random word 2`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor after some random word 3`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor after some random word 4`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor after the dot(variable): 1`] = `4`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor after the dot(variable): 2`] = `
+Array [
+  Object {
+    "detail": "string",
+    "filterText": "name",
+    "insertText": "name",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "name",
+    "sortText": "100_name",
+    "textEdit": Object {
+      "newText": "\\"name\\"",
+      "range": Object {
+        "end": Object {
+          "character": 33,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 33,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "1",
+    "filterText": "age",
+    "insertText": "age",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "age",
+    "sortText": "100_age",
+    "textEdit": Object {
+      "newText": "\\"age\\"",
+      "range": Object {
+        "end": Object {
+          "character": 33,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 33,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "string",
+    "filterText": "avgLoad",
+    "insertText": "avgLoad",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "avgLoad",
+    "sortText": "100_avgLoad",
+    "textEdit": Object {
+      "newText": "\\"avgLoad\\"",
+      "range": Object {
+        "end": Object {
+          "character": 33,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 33,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "1",
+    "filterText": "numberOfPods",
+    "insertText": "numberOfPods",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "numberOfPods",
+    "sortText": "100_numberOfPods",
+    "textEdit": Object {
+      "newText": "\\"numberOfPods\\"",
+      "range": Object {
+        "end": Object {
+          "character": 33,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 33,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor before empty space 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor before empty space 2`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor before empty space 3`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor before empty space 4`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor before the dot(variable): 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor before the dot(variable): 2`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor with a space after the  dot(variable): 2`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion cursor with a value following the  dot(variable): 2`] = `
+Array [
+  Object {
+    "detail": "1",
+    "filterText": "a",
+    "insertText": "age",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "age",
+    "sortText": "100_age",
+    "textEdit": Object {
+      "newText": "\\"age\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 33,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "string",
+    "filterText": "a",
+    "insertText": "avgLoad",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "avgLoad",
+    "sortText": "100_avgLoad",
+    "textEdit": Object {
+      "newText": "\\"avgLoad\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 33,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion operation with empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion operation with empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion operation with empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion operation with empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion operation with empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion operation with empty object 6`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion operation with no value 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion operation with no value 2`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion operation with no value 3`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for reusable functions completion operation with no value 4`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor after a value - auto-complete the word map 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor after a value - auto-complete the word map 2`] = `
+Array [
+  Object {
+    "detail": "For any filter x, map(x) will run that filter for each element of the input array, and return the outputs in a new array. map(.+1) will increment each element of an array of numbers.",
+    "filterText": "map",
+    "insertText": "map(x)",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "map(x)",
+    "sortText": "100_map(x)",
+    "textEdit": Object {
+      "newText": "\\"map(x)\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "map_values(x) will run that filter for each element, but it will return an object when an object is passed.",
+    "filterText": "map",
+    "insertText": "map_values(x)",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "map_values(x)",
+    "sortText": "100_map_values(x)",
+    "textEdit": Object {
+      "newText": "\\"map_values(x)\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor after a value - auto-complete the word map 3`] = `2`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor after a value - auto-complete the word map 4`] = `
+Array [
+  Object {
+    "detail": "For any filter x, map(x) will run that filter for each element of the input array, and return the outputs in a new array. map(.+1) will increment each element of an array of numbers.",
+    "filterText": "map",
+    "insertText": "map(x)",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "map(x)",
+    "sortText": "100_map(x)",
+    "textEdit": Object {
+      "newText": "\\"map(x)\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "map_values(x) will run that filter for each element, but it will return an object when an object is passed.",
+    "filterText": "map",
+    "insertText": "map_values(x)",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "map_values(x)",
+    "sortText": "100_map_values(x)",
+    "textEdit": Object {
+      "newText": "\\"map_values(x)\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor after some random word 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor after some random word 2`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor after some random word 3`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor after some random word 4`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\"",
+      "range": Object {
+        "end": Object {
+          "character": 42,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 42,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor after the dot(variable): 1`] = `4`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor after the dot(variable): 2`] = `
+Array [
+  Object {
+    "detail": "string",
+    "filterText": "name",
+    "insertText": "name",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "name",
+    "sortText": "100_name",
+    "textEdit": Object {
+      "newText": "\\"name\\"",
+      "range": Object {
+        "end": Object {
+          "character": 33,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 33,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "1",
+    "filterText": "age",
+    "insertText": "age",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "age",
+    "sortText": "100_age",
+    "textEdit": Object {
+      "newText": "\\"age\\"",
+      "range": Object {
+        "end": Object {
+          "character": 33,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 33,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "string",
+    "filterText": "avgLoad",
+    "insertText": "avgLoad",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "avgLoad",
+    "sortText": "100_avgLoad",
+    "textEdit": Object {
+      "newText": "\\"avgLoad\\"",
+      "range": Object {
+        "end": Object {
+          "character": 33,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 33,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "1",
+    "filterText": "numberOfPods",
+    "insertText": "numberOfPods",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "numberOfPods",
+    "sortText": "100_numberOfPods",
+    "textEdit": Object {
+      "newText": "\\"numberOfPods\\"",
+      "range": Object {
+        "end": Object {
+          "character": 33,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 33,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor before empty space 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor before empty space 2`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor before empty space 3`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor before empty space 4`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor before the dot(variable): 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor before the dot(variable): 2`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\",",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor with a space after the  dot(variable): 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor with a space after the  dot(variable): 2`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor with a value following the  dot(variable): 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion cursor with a value following the  dot(variable): 2`] = `
+Array [
+  Object {
+    "detail": "1",
+    "filterText": "a",
+    "insertText": "age",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "age",
+    "sortText": "100_age",
+    "textEdit": Object {
+      "newText": "\\"age\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 33,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "string",
+    "filterText": "a",
+    "insertText": "avgLoad",
+    "insertTextFormat": 2,
+    "kind": 12,
+    "label": "avgLoad",
+    "sortText": "100_avgLoad",
+    "textEdit": Object {
+      "newText": "\\"avgLoad\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 33,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion operation with empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion operation with empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion operation with empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion operation with empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion operation with empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion operation with empty object 6`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion operation with no value 1`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion operation with no value 2`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion operation with no value 3`] = `142`;
+
+exports[`SWF LS JSON code completion Jq operation completion for variables completion operation with no value 4`] = `
+Array [
+  Object {
+    "detail": "Outputs all remaining inputs, one by one.",
+    "filterText": "inputs",
+    "insertText": "inputs",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "inputs",
+    "sortText": "100_inputs",
+    "textEdit": Object {
+      "newText": "\\"inputs\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Causes a debug message based on the input value to be produced. The jq executable wraps the input value with [\\"DEBUG:\\", <input-value>] and prints that and a newline on stderr, compactly. This may change in the future.",
+    "filterText": "debug",
+    "insertText": "debug",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "debug",
+    "sortText": "100_debug",
+    "textEdit": Object {
+      "newText": "\\"debug\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Prints its input in raw and compact mode to stderr with no additional decoration, not even a newline.",
+    "filterText": "stderr",
+    "insertText": "stderr",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "stderr",
+    "sortText": "100_stderr",
+    "textEdit": Object {
+      "newText": "\\"stderr\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the name of the file whose input is currently being filtered. Note that this will not work well unless jq is running in a UTF-8 locale.",
+    "filterText": "input_filename",
+    "insertText": "input_filename",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_filename",
+    "sortText": "100_input_filename",
+    "textEdit": Object {
+      "newText": "\\"input_filename\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Returns the line number of the input currently being filtered.",
+    "filterText": "input_line_number",
+    "insertText": "input_line_number",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "input_line_number",
+    "sortText": "100_input_line_number",
+    "textEdit": Object {
+      "newText": "\\"input_line_number\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
 
 exports[`SWF LS JSON code completion Jq state data filter completion for built-in functions completion cursor after a value - auto-complete the word map 1`] = `2`;
 

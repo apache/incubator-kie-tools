@@ -15,6 +15,7 @@
  */
 import { defaultConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
 import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { SwfYamlLanguageService } from "../dist/channel";
 export function getJqBuiltInFunctionTests(): Array<Array<string>> {
   return [
     ["operation with empty object", `{🎯}`],
@@ -45,8 +46,25 @@ export function getJqVariableTests(): Array<Array<string>> {
     ["cursor with a value following the  dot(variable):", `".a🎯"`],
   ];
 }
-export function getLsForJqExpressionTests(): SwfJsonLanguageService {
+export function getJsonLsForJqExpressionTests(): SwfJsonLanguageService {
   return new SwfJsonLanguageService({
+    fs: {},
+    serviceCatalog: defaultServiceCatalogConfig,
+    config: defaultConfig,
+    jqCompletions: {
+      remote: {
+        getJqAutocompleteProperties: async (_args) => [{ name: "string" }, { age: "1" }] as Record<string, string>[],
+      },
+      relative: {
+        getJqAutocompleteProperties: async (_args) =>
+          [{ avgLoad: "string" }, { numberOfPods: "1" }] as Record<string, string>[],
+      },
+    },
+  });
+}
+
+export function getYamlLsForJqExpressionTests(): SwfYamlLanguageService {
+  return new SwfYamlLanguageService({
     fs: {},
     serviceCatalog: defaultServiceCatalogConfig,
     config: defaultConfig,
