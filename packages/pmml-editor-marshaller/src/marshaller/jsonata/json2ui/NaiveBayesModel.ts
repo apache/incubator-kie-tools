@@ -52,7 +52,7 @@ export function naiveBayesModelFactory(): NaiveBayesModel {
   return new NaiveBayesModel({
     MiningSchema: new MiningSchema({ MiningField: [] }),
     BayesInputs: { BayesInput: [] },
-    BayesOutput: { TargetValueCounts: { TargetValueCount: [] }, fieldName: {} },
+    BayesOutput: { TargetValueCounts: { TargetValueCount: [] }, fieldName: "" },
     threshold: 0,
     functionName: "regression",
   });

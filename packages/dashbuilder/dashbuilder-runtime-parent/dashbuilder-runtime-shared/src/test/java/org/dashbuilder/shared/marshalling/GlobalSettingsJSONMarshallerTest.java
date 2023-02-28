@@ -20,7 +20,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 public class GlobalSettingsJSONMarshallerTest {
@@ -29,7 +31,8 @@ public class GlobalSettingsJSONMarshallerTest {
     GlobalSettingsJSONMarshaller marshaller;
     
     private static final String FULL_JSON = "{\n" + 
-            "        \"mode\": \"dark\",\n" + 
+            "        \"mode\": \"dark\",\n" +
+            "        \"allowUrlProperties\": \"true\",\n" + 
             "        \"settings\": {\n" + 
             "          \"general\": {\n" + 
             "            \"title\": \"Test Title\"\n" + 
@@ -46,6 +49,7 @@ public class GlobalSettingsJSONMarshallerTest {
     public void testMarshalling() {
         var settings = marshaller.fromJson(FULL_JSON);
         assertEquals(Mode.DARK, settings.getMode());
+        assertTrue(settings.isAllowUrlProperties());
         assertEquals("Test Title", settings.getSettings().getTitle());
     }
     
@@ -54,6 +58,7 @@ public class GlobalSettingsJSONMarshallerTest {
         var settings = marshaller.fromJson("{}");
         assertNotNull(settings.getSettings());
         assertNotNull(settings.getMode());
+        assertFalse(settings.isAllowUrlProperties());
     }
     
 }

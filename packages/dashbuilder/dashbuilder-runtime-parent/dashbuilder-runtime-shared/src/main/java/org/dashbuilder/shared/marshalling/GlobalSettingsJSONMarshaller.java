@@ -27,6 +27,7 @@ import org.dashbuilder.shared.model.GlobalSettings;
 public class GlobalSettingsJSONMarshaller {
 
     private static final String MODE = "mode";
+    private static final String ALLOW_URL_PROPERTIES = "allowUrlProperties";
     private static final Mode DEFAULT_MODE = Mode.LIGHT;
 
     private static GlobalSettingsJSONMarshaller instance;
@@ -46,10 +47,12 @@ public class GlobalSettingsJSONMarshaller {
     public GlobalSettings fromJson(JsonObject json) {
         var globalSettings = new GlobalSettings();
         var mode = DEFAULT_MODE;
+        var allowUrlProperties = false;
         var displayerSettings = new DisplayerSettings();
 
         if (json != null) {
             mode = retrieveMode(json);
+            allowUrlProperties = retrieveAllowUrlProperties(json);
             var displayerSettingsObj = json.getObject(LayoutTemplateJSONMarshaller.SETTINGS);
             try {
                 displayerSettings = DisplayerSettingsJSONMarshaller.get().fromJsonObject(displayerSettingsObj, false);
@@ -59,10 +62,19 @@ public class GlobalSettingsJSONMarshaller {
         }
 
         displayerSettings.setMode(mode);
-        globalSettings.setSettings(displayerSettings);
         globalSettings.setMode(mode);
+        globalSettings.setSettings(displayerSettings);
+        globalSettings.setAllowUrlProperties(allowUrlProperties);
         return globalSettings;
 
+    }
+
+    private boolean retrieveAllowUrlProperties(JsonObject json) {
+        if (json.has(ALLOW_URL_PROPERTIES)) {
+            var allowUrlProperties = json.getString(ALLOW_URL_PROPERTIES);
+            return Boolean.TRUE.toString().equalsIgnoreCase(allowUrlProperties);
+        }
+        return false;
     }
 
     private Mode retrieveMode(JsonObject json) {

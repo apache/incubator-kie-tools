@@ -21,7 +21,7 @@ import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import "./OutputFieldRow.scss";
-import { DataType, FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
+import { DataType, OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
 import { OutputLabelsEditMode } from "../atoms";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { ValidatedType } from "../../../types";
@@ -34,7 +34,7 @@ interface OutputFieldEditRowProps {
   modelIndex: number;
   outputField: OutputField;
   outputFieldIndex: number;
-  validateOutputName: (name: FieldName) => boolean;
+  validateOutputName: (name: string) => boolean;
   viewExtendedProperties: () => void;
   onCommitAndClose: () => void;
   onCommit: (partial: Partial<OutputField>) => void;
@@ -75,10 +75,10 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
 
   const { activeOperation } = useOperation();
 
-  const [name, setName] = useState<ValidatedType<FieldName>>({ value: "" as FieldName, valid: false });
+  const [name, setName] = useState<ValidatedType<string>>({ value: "", valid: false });
   const [dataType, setDataType] = useState<DataType>("boolean");
   const [optype, setOptype] = useState<OpType | undefined>();
-  const [targetField, setTargetField] = useState<FieldName | undefined>();
+  const [targetField, setTargetField] = useState<string | undefined>();
   const [feature, setFeature] = useState<ResultFeature | undefined>();
   const [value, setValue] = useState<any | undefined>();
   const [rank, setRank] = useState<number | undefined>();
@@ -166,14 +166,14 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   autoFocus={true}
                   onChange={(e) => {
                     setName({
-                      value: e as FieldName,
-                      valid: validateOutputName(e as FieldName),
+                      value: e,
+                      valid: validateOutputName(e),
                     });
                   }}
                   onBlur={(e) => {
                     if (name?.valid) {
                       onCommit({
-                        name: name.value as FieldName,
+                        name: name.value,
                       });
                     } else {
                       setName({

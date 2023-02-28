@@ -325,7 +325,7 @@ exports[`LandingPage render::With Supported Model 1`] = `
           data-testid="landing-page__model-card"
         >
           <article
-            class="pf-c-card pf-m-hoverable model-card"
+            class="pf-c-card pf-m-selectable model-card"
             data-ouia-component-id="OUIA-Generated-Card-1"
             data-ouia-component-type="PF4/Card"
             data-ouia-safe="true"

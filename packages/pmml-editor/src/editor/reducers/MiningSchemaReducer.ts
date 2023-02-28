@@ -16,7 +16,7 @@
 import { Reducer } from "react";
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
-import { FieldName, MiningSchema } from "@kie-tools/pmml-editor-marshaller";
+import { MiningSchema } from "@kie-tools/pmml-editor-marshaller";
 import { ValidationRegistry } from "../validation";
 import { Builder } from "../paths";
 import { validateMiningFields } from "../validation/MiningSchema";
@@ -25,12 +25,12 @@ import { getMiningSchema } from "../PMMLModelHelper";
 interface MiningSchemaPayload {
   [Actions.AddMiningSchemaFields]: {
     readonly modelIndex: number;
-    readonly names: FieldName[];
+    readonly names: string[];
   };
   [Actions.DeleteMiningSchemaField]: {
     readonly modelIndex: number;
     readonly miningSchemaIndex: number;
-    readonly name?: FieldName;
+    readonly name?: string;
   };
 }
 

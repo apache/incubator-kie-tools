@@ -21,7 +21,7 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
 import { CloseIcon } from "@patternfly/react-icons/dist/js/icons/close-icon";
 import { WarningTriangleIcon } from "@patternfly/react-icons/dist/js/icons/warning-triangle-icon";
-import { FieldName, MiningSchema, Output, OutputField } from "@kie-tools/pmml-editor-marshaller";
+import { MiningSchema, Output, OutputField } from "@kie-tools/pmml-editor-marshaller";
 import { OutputsContainer } from "./OutputsContainer";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { useValidationRegistry } from "../../../validation";
@@ -32,7 +32,7 @@ interface OutputsHandlerProps {
   modelIndex: number;
   output?: Output;
   miningSchema?: MiningSchema;
-  validateOutputFieldName: (index: number | undefined, name: FieldName) => boolean;
+  validateOutputFieldName: (index: number | undefined, name: string) => boolean;
   deleteOutputField: (index: number) => void;
   commitOutputField: (index: number | undefined, outputField: OutputField) => void;
 }

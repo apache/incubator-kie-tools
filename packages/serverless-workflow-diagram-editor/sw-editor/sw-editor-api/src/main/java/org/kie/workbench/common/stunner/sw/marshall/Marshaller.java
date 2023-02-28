@@ -116,7 +116,6 @@ public class Marshaller {
 
     private final Workflow_JsonMapperImpl mapper = Workflow_JsonMapperImpl.INSTANCE;
 
-
     @Inject
     public Marshaller(DefinitionManager definitionManager,
                       FactoryManager factoryManager,
@@ -238,7 +237,7 @@ public class Marshaller {
         }
     }
 
-    private String getEndNodeUuid(final GraphImpl<Object> graph) {
+    public static String getEndNodeUuid(final GraphImpl<Object> graph) {
 
         final Optional<Node> endNode = StreamSupport.stream(graph.nodes().spliterator(), false)
                 .filter(Marshaller::isEndState)
@@ -251,7 +250,7 @@ public class Marshaller {
         return null;
     }
 
-    private String getStartNodeUuid(final GraphImpl<Object> graph) {
+    public static String getStartNodeUuid(final GraphImpl<Object> graph) {
 
         final Optional<Node> startNode = StreamSupport.stream(graph.nodes().spliterator(), false)
                 .filter(Marshaller::isStartState)

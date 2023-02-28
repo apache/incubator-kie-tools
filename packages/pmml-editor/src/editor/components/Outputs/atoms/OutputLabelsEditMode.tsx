@@ -16,7 +16,7 @@
 import * as React from "react";
 import { CSSProperties } from "react";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
+import { OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-alt-circle-right-icon";
 import { OutputFieldLabel } from "./OutputFieldLabel";
 import { ValidationEntry } from "../../../validation";
@@ -25,8 +25,8 @@ import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 interface OutputLabelsEditModeProps {
   optype: OpType | undefined;
   setOptype: (optype: OpType | undefined) => void;
-  targetField: FieldName | undefined;
-  setTargetField: (targetField: FieldName | undefined) => void;
+  targetField: string | undefined;
+  setTargetField: (targetField: string | undefined) => void;
   targetFieldValidation: ValidationEntry[];
   feature: ResultFeature | undefined;
   setFeature: (feature: ResultFeature | undefined) => void;

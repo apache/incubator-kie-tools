@@ -18,6 +18,7 @@ exports[`LoadingScreen when just made not visible 1`] = `
         >
           <div>
             <span
+              aria-label="Contents"
               aria-valuetext="Loading..."
               class="pf-c-spinner pf-m-xl"
               role="progressbar"
@@ -66,6 +67,7 @@ exports[`LoadingScreen when not visible after fadeout delay 1`] = `
         >
           <div>
             <span
+              aria-label="Contents"
               aria-valuetext="Loading..."
               class="pf-c-spinner pf-m-xl"
               role="progressbar"
@@ -114,6 +116,7 @@ exports[`LoadingScreen when visible 1`] = `
         >
           <div>
             <span
+              aria-label="Contents"
               aria-valuetext="Loading..."
               class="pf-c-spinner pf-m-xl"
               role="progressbar"

@@ -27,7 +27,8 @@ import { DevDeploymentsDropdown } from "../devDeployments/DevDeploymentsDropdown
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AccountsIcon } from "../accounts/AccountsIcon";
 import { AboutButton } from "../aboutModal/AboutButton";
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { MastheadContent, Toolbar, ToolbarContent } from "@patternfly/react-core";
+import { ToolbarGroup, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
@@ -36,7 +37,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   return (
     <Page
       header={
-        <Masthead aria-label={"Page header"} display={{ default: "stack" }}>
+        <Masthead aria-label={"Page header"} display={{ default: "inline" }}>
           <MastheadMain style={{ justifyContent: "space-between" }}>
             <PageHeaderToolsItem className={"kie-sandbox--logo"}>
               <MastheadBrand
@@ -48,8 +49,10 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                     <Brand
                       src={routes.static.images.kieHorizontalLogoReverse.path({})}
                       alt={"Logo"}
-                      style={{ display: "inline", height: "38px" }}
-                    />
+                      heights={{ default: "38px" }}
+                    >
+                      <source srcSet={routes.static.images.kieHorizontalLogoReverse.path({})} />
+                    </Brand>
                   </FlexItem>
                   <FlexItem style={{ display: "flex", alignItems: "center" }}>
                     <TextContent>
@@ -60,30 +63,28 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
               </MastheadBrand>
               <AboutButton />
             </PageHeaderToolsItem>
-            <Flex justifyContent={{ default: "justifyContentFlexEnd" }} flexWrap={{ default: "nowrap" }}>
-              <FlexItem>
-                <PageHeaderToolsItem>
-                  <DevDeploymentsDropdown />
-                </PageHeaderToolsItem>
-              </FlexItem>
-              <Divider isVertical={true} inset={{ default: "insetMd" }} />
-              <FlexItem>
-                <PageHeaderToolsItem>
-                  <KieSandboxExtendedServicesIcon />
-                </PageHeaderToolsItem>
-              </FlexItem>
-              <FlexItem>
-                <PageHeaderToolsItem>
-                  <SettingsButton />
-                </PageHeaderToolsItem>
-              </FlexItem>
-              <FlexItem>
-                <PageHeaderToolsItem>
-                  <AccountsIcon />
-                </PageHeaderToolsItem>
-              </FlexItem>
-            </Flex>
           </MastheadMain>
+          <MastheadContent>
+            <Toolbar isStatic>
+              <ToolbarContent>
+                <ToolbarGroup alignment={{ default: "alignRight" }} spacer={{ default: "spacerNone", md: "spacerMd" }}>
+                  <ToolbarItem>
+                    <DevDeploymentsDropdown />
+                  </ToolbarItem>
+                  <ToolbarItem variant="separator" />
+                  <ToolbarItem>
+                    <KieSandboxExtendedServicesIcon />
+                  </ToolbarItem>
+                  <ToolbarItem>
+                    <SettingsButton />
+                  </ToolbarItem>
+                  <ToolbarItem>
+                    <AccountsIcon />
+                  </ToolbarItem>
+                </ToolbarGroup>
+              </ToolbarContent>
+            </Toolbar>
+          </MastheadContent>
         </Masthead>
       }
     >

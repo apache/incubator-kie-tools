@@ -1,0 +1,11 @@
+[mode="dark"] .pf-c-chart {
+  background-color: #100c2a;
+}
+
+[mode="dark"] .pf-c-chart g text tspan {
+  fill: #eef1fa !important;
+}
+
+[mode="dark"] .pf-c-chart g line {
+  stroke: #eef1fa !important;
+}

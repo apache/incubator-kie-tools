@@ -20,9 +20,9 @@
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/vscode-java-code-completion": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
-    "@patternfly/react-core": "^4.157.3",
-    "@patternfly/react-icons": "^4.11.17",
-    "@patternfly/react-table": "^4.27.15",
+    "@patternfly/react-core": "^4.276.6",
+    "@patternfly/react-icons": "^4.93.6",
+    "@patternfly/react-table": "^4.112.39",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import com.ait.lienzo.tools.client.collection.NFastDoubleArray;
 import elemental2.core.Global;
 import elemental2.core.JsIterable;
@@ -92,6 +93,15 @@ public class Point2DArray implements JsIterable<Point2D>,
             return points;
         }
         points.push(inArray);
+        return points;
+    }
+
+    @JsOverlay
+    public final NFastArrayList<Point2D> toNFastArrayList() {
+        NFastArrayList<Point2D> points = new NFastArrayList<>();
+        for (Point2D point : this.getPoints()) {
+            points.add(point);
+        }
         return points;
     }
 
