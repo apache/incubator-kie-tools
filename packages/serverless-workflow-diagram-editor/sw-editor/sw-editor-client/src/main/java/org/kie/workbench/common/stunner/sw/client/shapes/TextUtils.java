@@ -21,8 +21,6 @@ import org.kie.workbench.common.stunner.sw.definition.FunctionRef;
 import org.kie.workbench.common.stunner.sw.definition.StateDataFilter;
 import org.kie.workbench.common.stunner.sw.definition.SubFlowRef;
 
-import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
-
 public interface TextUtils {
 
     String ACTION_IS_NULL = "Action is not defined";
@@ -91,10 +89,15 @@ public interface TextUtils {
     }
 
     static String truncate(String value, int size) {
-        if (isEmpty(value) || value.length() <= size) {
+        if (value == null) {
             return value;
         }
 
-        return value.substring(0, size) + "...";
+        String result = value.trim();
+        if (result.length() <= size) {
+            return result;
+        }
+
+        return result.substring(0, size) + "...";
     }
 }

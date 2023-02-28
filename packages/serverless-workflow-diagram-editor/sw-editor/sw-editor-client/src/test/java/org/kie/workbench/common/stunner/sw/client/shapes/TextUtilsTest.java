@@ -215,4 +215,22 @@ public class TextUtilsTest {
         filter.setOutput(out);
         assertEquals("stateDataFilter:\r\ninput: in\r\noutput: out", getStateDataFilter(filter));
     }
+
+    @Test
+    public void stateDataFilterInputIsTrimmedTest() {
+        StateDataFilter filter = new StateDataFilter();
+        String in = "                                                                          ";
+        filter.setInput(in);
+        assertEquals("stateDataFilter:\r\ninput: \r\noutput: null",
+                     getStateDataFilter(filter));
+    }
+
+    @Test
+    public void stateDataFilterOutputIsTrimmedTest() {
+        StateDataFilter filter = new StateDataFilter();
+        String out = " ";
+        filter.setOutput(out);
+        assertEquals("stateDataFilter:\r\ninput: null\r\noutput: ",
+                     getStateDataFilter(filter));
+    }
 }
