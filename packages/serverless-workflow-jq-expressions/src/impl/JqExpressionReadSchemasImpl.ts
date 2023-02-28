@@ -54,14 +54,13 @@ export class JqExpressionReadSchemasImpl implements JqExpressionReadSchemas {
     }
   }
   public parseSchemaProperties(contentArray: JqExpressionContentType[]): Record<string, string>[] {
-    const result = contentArray.map((content: JqExpressionContentType) => {
-      return this.getEachProperties({
+    return contentArray.flatMap((content: JqExpressionContentType) =>
+      this.getEachProperties({
         fileName: content.fileName,
         fileContent: content.fileContent,
         absoluteFilePath: content.absoluteFilePath,
-      });
-    });
-    return result.flatMap((p) => p);
+      })
+    );
   }
 
   private getEachProperties(args: JqExpressionContentType): Record<string, string>[] {
