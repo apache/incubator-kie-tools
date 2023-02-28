@@ -39,6 +39,8 @@ import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/E
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 
+const ROOT_MENU_ID = "addFileRootMenu";
+
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
   destinationDirPath: string;
@@ -50,7 +52,7 @@ export function NewFileDropdownMenu(props: {
   const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
   const [drilldownPath, setDrilldownPath] = useState<string[]>([]);
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
-  const [activeMenu, setActiveMenu] = useState("addFileRootMenu");
+  const [activeMenu, setActiveMenu] = useState(ROOT_MENU_ID);
 
   const drillIn = useCallback((_event, fromMenuId, toMenuId, pathId) => {
     setMenuDrilledIn((prev) => [...prev, fromMenuId]);
@@ -66,7 +68,7 @@ export function NewFileDropdownMenu(props: {
 
   const setHeight = useCallback((menuId: string, height: number) => {
     setMenuHeights((prev) => {
-      if (prev[menuId] === undefined || (menuId !== "addFileRootMenu" && prev[menuId] !== height)) {
+      if (prev[menuId] === undefined || (menuId !== ROOT_MENU_ID && prev[menuId] !== height)) {
         return { ...prev, [menuId]: height };
       }
       return prev;
@@ -208,7 +210,7 @@ export function NewFileDropdownMenu(props: {
   return (
     <Menu
       style={{ boxShadow: "none", minWidth: "400px" }}
-      id="addFileRootMenu"
+      id={ROOT_MENU_ID}
       containsDrilldown={true}
       onDrillIn={drillIn}
       onDrillOut={drillOut}

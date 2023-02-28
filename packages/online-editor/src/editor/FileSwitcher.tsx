@@ -208,7 +208,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
 
   const setHeight = useCallback((menuId: string, height: number) => {
     setMenuHeights((prev) => {
-      if (prev[menuId] === undefined || (menuId !== "addFileRootMenu" && prev[menuId] !== height)) {
+      if (prev[menuId] === undefined || (menuId !== ROOT_MENU_ID && prev[menuId] !== height)) {
         return { ...prev, [menuId]: height };
       }
       return prev;
