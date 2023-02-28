@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-source "${KOGITO_HOME}"/launch/logging.sh
+script_dir_path="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+
+source "${script_dir_path}"/logging.sh
 
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
@@ -10,9 +12,7 @@ if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     printenv
 fi
 
-# Call the configure-maven here
-source "${KOGITO_HOME}"/launch/configure-maven.sh
-configure
+source "${script_dir_path}"/configure-jvm-mvn.sh
 
 cd "${PROJECT_ARTIFACT_ID}"
 
@@ -20,8 +20,6 @@ if [ ! -z "${QUARKUS_EXTENSIONS}" ]; then
   ${KOGITO_HOME}/launch/add-extension.sh "${QUARKUS_EXTENSIONS}"
 fi
 
-# auto configure JVM settings
-source "${KOGITO_HOME}"/launch/jvm-settings.sh
 
 # `-o` means offline mode
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \

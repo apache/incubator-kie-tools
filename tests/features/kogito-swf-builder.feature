@@ -19,7 +19,7 @@ Feature: SWF and Quarkus installation
     Then check that page is served
       | property             | value                                                                         |
       | port                 | 8080                                                                          |
-      | path                 | /q/swagger-ui                                                                 |
+      | path                 | /q/health/ready                                                               |
       | wait                 | 480                                                                           |
       | request_method       | GET                                                                           |
       | expected_status_code | 200                                                                           |

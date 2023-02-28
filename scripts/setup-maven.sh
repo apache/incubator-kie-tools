@@ -11,6 +11,7 @@ MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE=true
 maven_settings_path=$1
 if [ -z "${maven_settings_path}" ]; then
     maven_settings_path="${HOME}"/.m2/settings.xml
+    echo "Maven settings path argument is empty, using ${maven_settings_path}"
 fi
 
 LOGGING_MODULE="$(dirname "${BASH_SOURCE[0]}")/../modules/kogito-logging/"
@@ -43,8 +44,10 @@ if [ ! -z "${NPM_REGISTRY_URL}" ]; then
 </properties>\
 </profile>\
 "   
-    sed -i -E "s|(<!-- ### extra maven repositories ### -->)|\1\n${npm_profile}|" "${MAVEN_SETTINGS_PATH}"
-    sed -i -E "s|(<!-- ### extra maven profile ### -->)|\1\n<activeProfile>internal-npm-registry</activeProfile>|" "${MAVEN_SETTINGS_PATH}"
+    sed -i.bak -E "s|(<!-- ### extra maven repositories ### -->)|\1\n${npm_profile}|" "${MAVEN_SETTINGS_PATH}"
+    sed -i.bak -E "s|(<!-- ### extra maven profile ### -->)|\1\n<activeProfile>internal-npm-registry</activeProfile>|" "${MAVEN_SETTINGS_PATH}"
+    
+    rm -rf "${MAVEN_SETTINGS_PATH}/*.bak"
 fi
 
 cat "${maven_settings_path}"
