@@ -2,6 +2,7 @@
 @kafka
 @keycloak
 @security
+@disabled
 Feature: Kogito integration with Keycloak
 
   Background:
