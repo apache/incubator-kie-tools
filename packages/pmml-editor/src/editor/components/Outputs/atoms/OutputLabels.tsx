@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { FieldName, OpType, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
+import { OpType, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
 import { OutputFieldLabel } from "./OutputFieldLabel";
 import { ValidationEntry } from "../../../validation";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 
 interface OutputLabelsProps {
   optype: OpType | undefined;
-  targetField: FieldName | undefined;
+  targetField: string | undefined;
   targetFieldValidation: ValidationEntry[];
   feature: ResultFeature | undefined;
   value: any | undefined;

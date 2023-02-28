@@ -16,15 +16,19 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.lienzo.util.ToolboxRefreshEvent;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -48,9 +52,12 @@ public class ZoomLevelSelectorTest {
 
     private ZoomLevelSelector tested;
 
+    @Mock
+    private Event<ToolboxRefreshEvent> toolboxRefreshEventEvent;
+
     @Before
     public void setUp() {
-        tested = new ZoomLevelSelector(view);
+        tested = new ZoomLevelSelector(view, toolboxRefreshEventEvent);
         tested.onIncreaseLevel(onIncreaseLevel);
         tested.onDecreaseLevel(onDecreaseLevel);
         tested.onReset(onReset);
@@ -93,18 +100,21 @@ public class ZoomLevelSelectorTest {
     public void testOnReset() {
         tested.onReset();
         verify(onReset, times(1)).execute();
+        verify(toolboxRefreshEventEvent, times(1)).fire(any(ToolboxRefreshEvent.class));
     }
 
     @Test
     public void testOnIncreaseLevel() {
         tested.onIncreaseLevel();
         verify(onIncreaseLevel, times(1)).execute();
+        verify(toolboxRefreshEventEvent, times(1)).fire(any(ToolboxRefreshEvent.class));
     }
 
     @Test
     public void testOnDecreaseLevel() {
         tested.onDecreaseLevel();
         verify(onDecreaseLevel, times(1)).execute();
+        verify(toolboxRefreshEventEvent, times(1)).fire(any(ToolboxRefreshEvent.class));
     }
 
     @Test

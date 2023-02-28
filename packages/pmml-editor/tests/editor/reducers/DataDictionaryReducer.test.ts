@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataDictionary, FieldName } from "@kie-tools/pmml-editor-marshaller";
+import { DataDictionary } from "@kie-tools/pmml-editor-marshaller";
 import { Actions, AllActions, DataDictionaryReducer } from "@kie-tools/pmml-editor/dist/editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "@kie-tools/pmml-editor/dist/editor/history";
@@ -50,7 +50,7 @@ describe("DataDictionaryReducer::Valid actions", () => {
       {
         DataField: [
           {
-            name: "field1" as FieldName,
+            name: "field1",
             dataType: "string",
             optype: "categorical",
           },

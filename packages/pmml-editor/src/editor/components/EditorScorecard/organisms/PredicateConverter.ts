@@ -19,7 +19,6 @@ import {
   DataField,
   DataType,
   False,
-  FieldName,
   Predicate,
   SimplePredicate,
   SimplePredicateOperator,
@@ -39,15 +38,11 @@ const SimplePredicateOperatorMap: Map<SimplePredicateOperator, string> = new Map
 ]);
 
 export const toText = (predicate: Predicate | undefined, fields: DataField[]): string => {
-  const fieldToDataType: Map<FieldName, DataType> = new Map(fields.map((field) => [field.name, field.dataType]));
+  const fieldToDataType: Map<string, DataType> = new Map(fields.map((field) => [field.name, field.dataType]));
   return _toText(predicate, fieldToDataType, 0);
 };
 
-const _toText = (
-  predicate: Predicate | undefined,
-  fieldToDataType: Map<FieldName, DataType>,
-  nesting: number
-): string => {
+const _toText = (predicate: Predicate | undefined, fieldToDataType: Map<string, DataType>, nesting: number): string => {
   if (predicate instanceof True) {
     return "True";
   } else if (predicate instanceof False) {
@@ -87,13 +82,13 @@ const FalsePredicate = () => {
   return predicate;
 };
 
-const UnarySimplePredicate = (field: FieldName, operator: SimplePredicateOperator) => {
+const UnarySimplePredicate = (field: string, operator: SimplePredicateOperator) => {
   const predicate: SimplePredicate = new SimplePredicate({ field: field, operator: operator });
   (predicate as any)._type = "SimplePredicate";
   return predicate;
 };
 
-const BinarySimplePredicate = (field: FieldName, operator: SimplePredicateOperator, value: any) => {
+const BinarySimplePredicate = (field: string, operator: SimplePredicateOperator, value: any) => {
   const predicate: SimplePredicate = new SimplePredicate({ field: field, operator: operator, value: value });
   (predicate as any)._type = "SimplePredicate";
   return predicate;
@@ -109,7 +104,7 @@ const SimpleCompoundPredicate = (
   return predicate;
 };
 
-const _value = (field: FieldName, value: any, fieldToDataType: Map<FieldName, DataType>): string => {
+const _value = (field: string, value: any, fieldToDataType: Map<string, DataType>): string => {
   if (value === undefined) {
     return "";
   }
@@ -156,13 +151,13 @@ export const fromText = (text: string | undefined): Predicate | undefined => {
 
   const unaryMatches = regUnaryOperator.exec(text);
   if (unaryMatches !== null) {
-    return UnarySimplePredicate(unaryMatches[1] as FieldName, unaryMatches[2] as SimplePredicateOperator);
+    return UnarySimplePredicate(unaryMatches[1], unaryMatches[2] as SimplePredicateOperator);
   }
 
   const binaryMatches = regBinaryOperator.exec(text);
   if (binaryMatches !== null) {
     return BinarySimplePredicate(
-      binaryMatches[1] as FieldName,
+      binaryMatches[1],
       _operator(binaryMatches[2]) as SimplePredicateOperator,
       binaryMatches[3]
     );

@@ -18,7 +18,6 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerInputsService } from "./DmnRunnerInputsService";
-import { InputRow } from "@kie-tools/form-dmn";
 import { DmnRunnerInputsDispatchContext } from "./DmnRunnerInputsDispatchContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { useSyncedCompanionFs } from "../companionFs/CompanionFsHooks";
@@ -32,28 +31,8 @@ export function DmnRunnerInputsDispatchContextProvider(props: React.PropsWithChi
   useSyncedCompanionFs(dmnRunnerInputsService.companionFsService);
 
   const updatePersistedInputRows = useCallback(
-    async (
-      workspaceFile: WorkspaceFile,
-      newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)
-    ) => {
-      if (typeof newInputRows === "function") {
-        const inputs = await dmnRunnerInputsService.companionFsService.get({
-          workspaceId: workspaceFile.workspaceId,
-          workspaceFileRelativePath: workspaceFile.relativePath,
-        });
-
-        const content = await inputs?.getFileContents();
-        const previousInputRows = dmnRunnerInputsService.parseDmnRunnerInputs(decoder.decode(content));
-        await dmnRunnerInputsService.companionFsService.update(
-          { workspaceId: workspaceFile.workspaceId, workspaceFileRelativePath: workspaceFile.relativePath },
-          dmnRunnerInputsService.stringifyDmnRunnerInputs(newInputRows, previousInputRows)
-        );
-      } else {
-        await dmnRunnerInputsService.companionFsService.update(
-          { workspaceId: workspaceFile.workspaceId, workspaceFileRelativePath: workspaceFile.relativePath },
-          dmnRunnerInputsService.stringifyDmnRunnerInputs(newInputRows)
-        );
-      }
+    async (workspaceId: string, workspaceFileRelativePath: string, newInputRows: string) => {
+      await dmnRunnerInputsService.companionFsService.update({ workspaceId, workspaceFileRelativePath }, newInputRows);
     },
     [dmnRunnerInputsService]
   );

@@ -1,0 +1,18 @@
+{
+  "private": true,
+  "name": "@kie-tools-scripts/check-junit-report-results",
+  "version": "0.0.0",
+  "keywords": [],
+  "scripts": {
+    "install": "jest --silent --verbose --passWithNoTests"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^4.1.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "jest": "^26.6.3",
+    "jest-junit": "^14.0.0"
+  }
+}

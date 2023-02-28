@@ -25,7 +25,6 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
-import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.Start;
 import org.kie.workbench.common.stunner.sw.definition.StartTransition;
 import org.kie.workbench.common.stunner.sw.definition.State;
@@ -34,7 +33,6 @@ import org.kie.workbench.common.stunner.sw.marshall.Marshaller.NodeMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.NodeUnmarshaller;
 
 import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getChildNodes;
-import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.STATE_END;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.STATE_START;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.hasNodeMarshaller;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.isEndState;
@@ -77,13 +75,6 @@ public interface WorkflowMarshalling {
                 return workflow;
             };
 
-    NodeUnmarshaller<Workflow> END_NODE_UNMARSHALLER =
-            (context, workflow) -> {
-                final End endBean = new End();
-                Node endNode = context.addNode(STATE_END, endBean);
-                return endNode;
-            };
-
     NodeUnmarshaller<Workflow> WORKFLOW_UNMARSHALLER =
             (context, workflow) -> {
                 String workflowId = workflow.getId() != null ? workflow.getId() : workflow.getKey();
@@ -99,9 +90,6 @@ public interface WorkflowMarshalling {
 
                 // Start state.
                 START_NODE_UNMARSHALLER.unmarshall(context, workflow);
-
-                // End state.
-                END_NODE_UNMARSHALLER.unmarshall(context, workflow);
 
                 // States.
                 final State[] states = workflow.getStates();

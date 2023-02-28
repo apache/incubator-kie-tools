@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.sw.marshall;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition;
@@ -36,7 +37,6 @@ import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeUnmarshaller;
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getEnd;
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getTransition;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.EDGE_START;
-import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.STATE_END;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.getElementDefinition;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.getStateNodeName;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.isValidString;
@@ -124,7 +124,10 @@ public interface TransitionMarshalling {
 
                 Edge edge = null;
                 if (end) {
-                    edge = context.addEdgeToTargetName(dataConditionTransition, context.sourceNode, STATE_END);
+                    final End endBean = new End();
+                    String endName = UUID.uuid();
+                    Node endNode = context.addNode(endName, endBean);
+                    edge = context.addEdgeToTargetName(dataConditionTransition, context.sourceNode, endName);
                 } else if (isValidString(transition)) {
                     edge = context.addEdgeToTargetName(dataConditionTransition, context.sourceNode, transition);
                 }
@@ -169,7 +172,10 @@ public interface TransitionMarshalling {
 
                 Edge edge = null;
                 if (end) {
-                    edge = context.addEdgeToTargetName(defaultConditionTransition, context.sourceNode, STATE_END);
+                    final End endBean = new End();
+                    String endName = UUID.uuid();
+                    Node endNode = context.addNode(endName, endBean);
+                    edge = context.addEdgeToTargetName(defaultConditionTransition, context.sourceNode, endName);
                 } else if (isValidString(transition)) {
                     edge = context.addEdgeToTargetName(defaultConditionTransition, context.sourceNode, transition);
                 }
@@ -215,7 +221,10 @@ public interface TransitionMarshalling {
 
                 Edge edge = null;
                 if (end) {
-                    edge = context.addEdgeToTargetName(errorTransition, context.sourceNode, STATE_END);
+                    final End endBean = new End();
+                    String endName = UUID.uuid();
+                    Node endNode = context.addNode(endName, endBean);
+                    edge = context.addEdgeToTargetName(errorTransition, context.sourceNode, endName);
                 } else if (isValidString(transition)) {
                     edge = context.addEdgeToTargetName(errorTransition, context.sourceNode, transition);
                 }
@@ -241,7 +250,7 @@ public interface TransitionMarshalling {
                             if (errorTransition.getTransition() instanceof String) {
                                 errorTransition.setTransition(getStateNodeName(targetNode));
                             } else {
-                                ((StateTransition)errorTransition.getTransition())
+                                ((StateTransition) errorTransition.getTransition())
                                         .setNextState(getStateNodeName(targetNode));
                             }
 
@@ -261,14 +270,16 @@ public interface TransitionMarshalling {
 
                 Edge edge = null;
                 if (end) {
-                    edge = context.addEdgeToTargetName(eventConditionTransition, context.sourceNode, STATE_END);
+                    final End endBean = new End();
+                    String endName = UUID.uuid();
+                    Node endNode = context.addNode(endName, endBean);
+                    edge = context.addEdgeToTargetName(eventConditionTransition, context.sourceNode, endName);
                 } else if (isValidString(transition)) {
                     edge = context.addEdgeToTargetName(eventConditionTransition, context.sourceNode, transition);
                 }
 
                 return edge;
             };
-
 
     EdgeMarshaller<EventConditionTransition> EVENT_CONDITION_TRANSITION_MARSHALLER =
             (context, edge) -> {
@@ -336,5 +347,4 @@ public interface TransitionMarshalling {
 
                 return edge;
             };
-
 }

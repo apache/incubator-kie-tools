@@ -38,7 +38,7 @@ const DateConstructor = (typeof global === "object" ? global : window).Date;
 
 function DateField({ onChange, ...props }: DateFieldProps) {
   const dateValue = useCallback(
-    (newDate?: Date) => {
+    (newDate?: string) => {
       if (newDate) {
         return new DateConstructor(newDate);
       }
@@ -67,11 +67,11 @@ function DateField({ onChange, ...props }: DateFieldProps) {
   }, [dateValue]);
 
   const onDateChange = useCallback(
-    (value: string, date?: Date) => {
-      if (!date) {
-        onChange(date);
+    (event: React.FormEvent<HTMLInputElement>, value: string) => {
+      if (!value) {
+        onChange(value);
       } else {
-        const newDate = dateValue(date);
+        const newDate = dateValue(value);
         const time = parseTime;
         if (time !== "") {
           newDate?.setUTCHours(parseInt(time?.split(":")[0]));
@@ -110,7 +110,7 @@ function DateField({ onChange, ...props }: DateFieldProps) {
   }, [dateValue, props.min, props.max]);
 
   const onTimeChange = useCallback(
-    (time: string, hours?: number, minutes?: number) => {
+    (event: React.FormEvent<HTMLInputElement>, time: string, hours?: number, minutes?: number) => {
       const newDate = dateValue();
       if (newDate) {
         if (hours && minutes) {
