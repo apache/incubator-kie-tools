@@ -105,8 +105,10 @@ public class SugiyamaLayoutServiceTest {
         inOrder.verify(vertexLayerer).createLayers(layeredGraph);
         inOrder.verify(vertexOrdering).orderVertices(layeredGraph);
         inOrder.verify(vertexPositioning).calculateVerticesPositions(layeredGraph,
-                                                                     DEFAULT_LAYER_ARRANGEMENT);
-        verify(layoutService).buildLayout(indexByUuid, layers);
+                                                                     DEFAULT_LAYER_ARRANGEMENT,
+                                                                     graphProcessor,
+                                                                     graph);
+        verify(layoutService).buildLayout(indexByUuid, layers, graph);
     }
 
     @Test

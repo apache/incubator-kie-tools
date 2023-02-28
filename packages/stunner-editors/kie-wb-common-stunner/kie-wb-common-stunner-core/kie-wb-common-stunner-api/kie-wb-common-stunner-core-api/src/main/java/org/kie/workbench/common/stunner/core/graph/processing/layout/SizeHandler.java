@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.stunner.core.graph.processing.layout;
 
-import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
 
-public interface LayoutExecutor {
+public interface SizeHandler {
 
-    void applyLayout(final Layout layout,
-                     final Graph graph,
-                     final SizeHandler sizeHandler);
+    void setSize(final Node node, final double width, final double height);
 }

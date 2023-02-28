@@ -19,6 +19,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.LayeredGraph;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step01.ReverseEdgesCycleBreaker;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step02.LongestPathVertexLayerer;
@@ -30,11 +31,15 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.st
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step04.LayerArrangement;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.mockito.Mockito.mock;
+
 @RunWith(MockitoJUnitRunner.class)
 public class IntegrationTests {
 
     @Test
     public void testRealCase1() {
+        final GraphProcessor graphProcessor = mock(GraphProcessor.class);
+        final Graph<?, ?> stunnerGraph = mock(Graph.class);
         final LayeredGraph graph = new LayeredGraph(Graphs.REAL_CASE_1);
 
         final ReverseEdgesCycleBreaker s01 = new ReverseEdgesCycleBreaker();
@@ -55,7 +60,9 @@ public class IntegrationTests {
 
         final DefaultVertexPositioning defaultVertexPositioning = new DefaultVertexPositioning();
         defaultVertexPositioning.calculateVerticesPositions(graph,
-                                                            LayerArrangement.TopDown);
+                                                            LayerArrangement.TopDown,
+                                                            graphProcessor,
+                                                            stunnerGraph);
     }
 
     @Test
