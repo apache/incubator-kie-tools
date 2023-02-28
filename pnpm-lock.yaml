@@ -6078,8 +6078,8 @@ importers:
         specifier: ^2.7.4
         version: 2.7.4
       "@types/node":
-        specifier: 18.14.2
-        version: 18.14.2
+        specifier: 17.0.12
+        version: 17.0.12
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -14172,7 +14172,7 @@ packages:
     resolution:
       { integrity: sha512-mVRvYnTOZJz3ccpxhr3wgxVmSeiYinW+zlzQz3SXWaJmD1DuL05Jeq7nKw3SnbKmbleW5qrLG5vdyWe/A9sXhw== }
     dependencies:
-      "@types/node": 18.13.0
+      "@types/node": 18.14.2
     dev: true
 
   /@types/cacheable-request@6.0.1:
@@ -14571,7 +14571,7 @@ packages:
       { integrity: sha512-9hhgvYPdC5iHyyksPcKCu45gfaAIPQHKHGdvNXu4582DmOZX3wrUJIJPT40o4G1oTKPgpMMFqZglOTjhnYoF+A== }
     dependencies:
       "@types/bson": 4.0.3
-      "@types/node": 18.13.0
+      "@types/node": 18.14.2
     dev: true
 
   /@types/node@13.13.52:
