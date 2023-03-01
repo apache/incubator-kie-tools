@@ -72,7 +72,6 @@ public class AutoLayout {
                                             final boolean isSubset,
                                             final String startingNodeId,
                                             final String endingNodeId) {
-
         final Map<String, Vertex> vertices = loadVertices(graph, parentNode, false);
         final Promise<Layout> autoLayoutPromise = new LienzoAutoLayout().layout(graph, vertices, startingNodeId, endingNodeId);
 
@@ -149,29 +148,13 @@ public class AutoLayout {
             for (int i = 0; i < inEdges.size(); i++) {
                 Edge edge = inEdges.get(i);
                 ViewConnector content = (ViewConnector) edge.getContent();
-                MagnetConnection sourceConnection = (MagnetConnection) content.getSourceConnection().get();
                 MagnetConnection targetConnection = (MagnetConnection) content.getTargetConnection().get();
-                org.kie.workbench.common.stunner.core.graph.content.view.Point2D sourceLocation = sourceConnection.getLocation();
-                org.kie.workbench.common.stunner.core.graph.content.view.Point2D targetLocation = targetConnection.getLocation();
-                ControlPoint[] controlPoints = content.getControlPoints();
                 Node sourceNode = edge.getSourceNode();
-                View sourceContent = (View) sourceNode.getContent();
-                Bounds sourceBounds = sourceContent.getBounds();
-                Node targetNode = edge.getTargetNode();
-                View targetContent = (View) targetNode.getContent();
-                Bounds targetBounds = targetContent.getBounds();
 
-                if (isBackwards(sourceBounds.getY(), targetBounds.getY())) {
-                    adjustBackwardConnections(sourceConnection,
-                                              targetConnection,
-                                              controlPoints.length,
-                                              inEdges.size());
-                } else if (controlPoints.length == 0) {
-                    adjustConnectionWithoutControlPoints(i,
-                                                         sourceNode,
-                                                         targetConnection,
-                                                         inEdges);
-                }
+                adjustConnectionWithoutControlPoints(i,
+                                                     sourceNode,
+                                                     targetConnection,
+                                                     inEdges);
             }
         }
     }
@@ -198,36 +181,50 @@ public class AutoLayout {
                     Bounds targetBounds = targetContent.getBounds();
 
                     // Handle connection / magnet default settings.
-                    if (outEdges.size() == 1) {
-                        sourceConnection.setAuto(false);
-                        sourceConnection.setIndex(MagnetConnection.MAGNET_BOTTOM);
-                    } else {
-                        sourceConnection.setAuto(false);
-                        sourceConnection.setIndex(MagnetConnection.MAGNET_CENTER);
-                    }
+                    sourceConnection.setAuto(false);
+                    sourceConnection.setIndex(MagnetConnection.MAGNET_CENTER);
 
-                    // Handle backward connections to upper layer
                     if (isBackwards(sourceBounds.getY(), targetBounds.getY())) {
+                        // single backward connections on top
+                        if (outEdges.size() == 1) {
+                            sourceConnection.setAuto(false);
+                            sourceConnection.setIndex(MagnetConnection.MAGNET_TOP);
+                        }
+
                         adjustBackwardConnections(sourceConnection,
                                                   targetConnection,
-                                                  controlPoints.length,
+                                                  controlPoints,
                                                   outEdges.size());
-                    } else if (controlPoints.length == 0) {
+
+                        // Handle backward connections crossing several (>1) layers.
+                        adjustBackwardConnectionsCrossingMultipleLayers(i,
+                                                                        controlPoints,
+                                                                        sourceBounds,
+                                                                        targetBounds,
+                                                                        sourceConnection,
+                                                                        targetConnection);
+                    } else {
+                        // single connections on bottom
+                        if (outEdges.size() == 1) {
+                            sourceConnection.setAuto(false);
+                            sourceConnection.setIndex(MagnetConnection.MAGNET_BOTTOM);
+                        }
+
                         // handle connections without CPs
                         adjustConnectionWithoutControlPoints(i,
                                                              sourceNode,
                                                              targetConnection,
                                                              inEdges);
-                    }
 
-                    // Handle connections crossing several (>1) layers.
-                    adjustConnectionsCrossingMultipleLayers(i,
-                                                            content,
-                                                            controlPoints,
-                                                            sourceBounds,
-                                                            targetBounds,
-                                                            sourceConnection,
-                                                            targetConnection);
+                        // Handle connections crossing several (>1) layers.
+                        adjustConnectionsCrossingMultipleLayers(i,
+                                                                content,
+                                                                controlPoints,
+                                                                sourceBounds,
+                                                                targetBounds,
+                                                                sourceConnection,
+                                                                targetConnection);
+                    }
                 }
             }
         }
@@ -251,6 +248,7 @@ public class AutoLayout {
                             ((padding / 2) * edgeIndex) +
                             (isTopBottom ? sourceBounds.getHeight() + padding : -padding);
                     controlPoints[j].getLocation().setY(ty);
+
                     sourceConnection.setIndex(MagnetConnection.MAGNET_BOTTOM);
                     sourceConnection.setAuto(false);
                 } else if (j == controlPoints.length - 1) {
@@ -280,6 +278,70 @@ public class AutoLayout {
         }
     }
 
+    // Handle backward connectors crossing several (>1) layers.
+    static void adjustBackwardConnectionsCrossingMultipleLayers(final int edgeIndex,
+                                                                final ControlPoint[] controlPoints,
+                                                                final Bounds sourceBounds,
+                                                                final Bounds targetBounds,
+                                                                MagnetConnection sourceConnection,
+                                                                MagnetConnection targetConnection) {
+        if (controlPoints.length > 0) {
+            double padding = 40d;
+            double maxx = 0;
+            for (int j = 0; j < controlPoints.length; j++) {
+                if (j == 0) {
+                    // Figure out if it goes to the left, to the right or up
+                    // Source and target are horizontally aligned
+                    if (Math.abs(controlPoints[j].getLocation().getX() - ((sourceBounds.getX() + sourceBounds.getWidth())) / 2) > padding &&
+                            Math.abs(sourceBounds.getX() - targetBounds.getX()) < targetBounds.getWidth()) {
+                        targetConnection.setAuto(false);
+                        targetConnection.setIndex(MagnetConnection.MAGNET_CENTER);
+
+                        controlPoints[j].getLocation().setY(sourceBounds.getUpperLeft().getY() - (padding * 2));
+                    } else {
+                        boolean isBottomTop = targetBounds.getY() < controlPoints[j].getLocation().getY();
+                        double ty = targetBounds.getY() +
+                                (isBottomTop ? targetBounds.getHeight() + padding : -padding);
+
+                        if (Math.abs(controlPoints[0].getLocation().getX() - sourceBounds.getX()) < padding) {
+                            sourceConnection.setAuto(false);
+                            sourceConnection.setIndex(MagnetConnection.MAGNET_LEFT);
+                        } else {
+                            sourceConnection.setAuto(false);
+                            sourceConnection.setIndex(MagnetConnection.MAGNET_CENTER);
+                            targetConnection.setAuto(false);
+                            targetConnection.setIndex(MagnetConnection.MAGNET_LEFT);
+                            ty = sourceBounds.getY() - padding;
+                            controlPoints[j].getLocation().setX(controlPoints[j].getLocation().getX() - (padding * 2));
+                        }
+
+                        controlPoints[j].getLocation().setY(ty);
+                    }
+                } else if (j == controlPoints.length - 1) {
+                    boolean isTopBottom = targetBounds.getY() < controlPoints[j].getLocation().getY();
+                    double ty = targetBounds.getY() +
+                            -(padding * edgeIndex) +
+                            (isTopBottom ? targetBounds.getHeight() + padding : -padding);
+                    controlPoints[j].getLocation().setY(ty);
+                    sourceConnection.setAuto(false);
+                    sourceConnection.setIndex(MagnetConnection.MAGNET_CENTER);
+                    targetConnection.setAuto(false);
+                    targetConnection.setIndex(MagnetConnection.MAGNET_CENTER);
+                }
+
+                ControlPoint cp = controlPoints[j];
+                if (cp.getLocation().getX() > maxx) {
+                    maxx = cp.getLocation().getX();
+                    for (int k = j; k >= 0; k--) {
+                        controlPoints[k].getLocation().setX(maxx);
+                    }
+                }
+
+                cp.getLocation().setX(maxx);
+            }
+        }
+    }
+
     // check if the connector points up
     static boolean isBackwards(final double sourceY, final double targetY) {
         return sourceY > targetY;
@@ -288,10 +350,10 @@ public class AutoLayout {
     // Handle backward connections to upper layer (may overlap with incoming connectors, if any).
     static void adjustBackwardConnections(final MagnetConnection sourceConnection,
                                           final MagnetConnection targetConnection,
-                                          final int controlPointsCount,
+                                          final ControlPoint[] controlPoints,
                                           final int edgesCount) {
         if (edgesCount > 0) {
-            if (controlPointsCount == 0) {
+            if (controlPoints.length == 0) {
                 sourceConnection.setAuto(false);
                 sourceConnection.setIndex(MagnetConnection.MAGNET_LEFT);
             }
