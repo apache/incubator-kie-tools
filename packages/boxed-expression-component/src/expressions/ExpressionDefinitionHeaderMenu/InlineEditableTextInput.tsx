@@ -42,12 +42,12 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
   const { isEditing, setEditing } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined, undefined);
 
   const stopEditingPersistingValue = useCallback(() => {
-    const v = inputRef.current?.value;
-    if (v) {
-      onChange(v);
-      setEditing(false);
+    const newValue = inputRef.current?.value;
+    if (newValue && newValue !== value) {
+      onChange(newValue);
     }
-  }, [onChange, setEditing]);
+    setEditing(false);
+  }, [onChange, setEditing, value]);
 
   const onInputKeyDown = useMemo(
     () => (e: React.KeyboardEvent) => {
