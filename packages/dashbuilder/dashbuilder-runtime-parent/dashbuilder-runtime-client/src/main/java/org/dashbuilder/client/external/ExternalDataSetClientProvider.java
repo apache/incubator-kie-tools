@@ -168,7 +168,7 @@ public class ExternalDataSetClientProvider {
 
             }, error -> notAbleToRetrieveDataSet(def, callback));
         }).catch_(e -> notAbleToRetrieveDataSet(def, callback,
-                new RuntimeException("Request not started, make sure that CORS is enabled. message: " + e)
+                new RuntimeException("Request not started, make sure that CORS is enabled. Message: " + e)
         ));
     }
 
