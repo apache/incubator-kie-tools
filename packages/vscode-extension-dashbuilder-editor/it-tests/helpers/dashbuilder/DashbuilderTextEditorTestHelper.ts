@@ -17,7 +17,7 @@
 import { WebView } from "vscode-extension-tester";
 
 /**
- * Helper class to easen work with swf text editor.
+ * Helper class to easen work with dashbuilder text editor.
  * Make sure you switch to the webview's frame before creating and instance
  * via contructor.
  */
