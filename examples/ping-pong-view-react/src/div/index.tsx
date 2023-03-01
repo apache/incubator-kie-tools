@@ -22,6 +22,7 @@ import { PingPongEnvelopeView } from "..";
 export const pingPongEnvelopViewRenderDiv = (container: HTMLElement, envelopeId: string) =>
   new Promise<void>((res) => {
     const root = createRoot(container);
-    root.render(<PingPongEnvelopeView envelopeConfig={{ containerType: ContainerType.DIV, envelopeId }} />);
-    res();
+    root.render(
+      <PingPongEnvelopeView envelopeConfig={{ containerType: ContainerType.DIV, envelopeId }} onRender={() => res()} />
+    );
   });

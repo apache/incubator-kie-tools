@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
+import { EnvelopeBus, MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { TodoListEnvelopeContext } from "./TodoListEnvelopeContext";
@@ -49,10 +49,18 @@ export function init(args: { container: HTMLElement; bus: EnvelopeBus }) {
    */
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<TodoListEnvelopeViewApi>();
+
     return new Promise<() => TodoListEnvelopeViewApi>((res) => {
       const root = createRoot(args.container);
-      root.render(<TodoListEnvelopeView ref={ref} channelApi={envelope.channelApi} />);
-      res(() => ref.current!);
+      root.render(
+        <TodoListEnvelopeView
+          onRender={() => {
+            res(() => ref.current!);
+          }}
+          channelApi={envelope.channelApi}
+          ref={ref}
+        />
+      );
     });
   };
 

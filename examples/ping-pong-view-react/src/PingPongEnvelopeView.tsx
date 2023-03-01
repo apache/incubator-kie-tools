@@ -21,7 +21,12 @@ import { PingPongReactImplFactory } from ".";
 import "./styles.css";
 import { EnvelopeDivConfig, EnvelopeIFrameConfig } from "@kie-tools-core/envelope";
 
-export const PingPongEnvelopeView = (props: { envelopeConfig: EnvelopeDivConfig | EnvelopeIFrameConfig }) => {
+type Props = {
+  envelopeConfig: EnvelopeDivConfig | EnvelopeIFrameConfig;
+  onRender: () => void;
+};
+
+export const PingPongEnvelopeView = (props: Props) => {
   const [view, setView] = useState<React.ReactElement>();
 
   useEffect(() => {
@@ -30,6 +35,7 @@ export const PingPongEnvelopeView = (props: { envelopeConfig: EnvelopeDivConfig 
       bus: { postMessage: (message, _targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
       pingPongViewFactory: new PingPongReactImplFactory(setView),
     });
+    props.onRender();
   }, [props.envelopeConfig]);
 
   return (

@@ -194,11 +194,14 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
     setActiveMenu(`dd${props.workspace.descriptor.workspaceId}`);
   }, [isFilesDropdownOpen, props.workspace.descriptor.workspaceId]);
 
-  const drillIn = useCallback((_event: React.KeyboardEvent | React.MouseEvent, fromMenuId: string, toMenuId: string, pathId: string) => {
+  const drillIn = useCallback(
+    (_event: React.KeyboardEvent | React.MouseEvent, fromMenuId: string, toMenuId: string, pathId: string) => {
       setMenuDrilledIn((prev) => [...prev, fromMenuId]);
       setDrilldownPath((prev) => [...prev, pathId]);
       setActiveMenu(toMenuId);
-    }, []);
+    },
+    []
+  );
 
   const drillOut = useCallback((_event: React.KeyboardEvent | React.MouseEvent, toMenuId: string) => {
     setMenuDrilledIn((prev) => prev.slice(0, prev.length - 1));

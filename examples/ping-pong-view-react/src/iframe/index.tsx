@@ -22,6 +22,7 @@ import { PingPongEnvelopeView } from "..";
 export const pingPongEnvelopViewRender = (container: HTMLElement) =>
   new Promise<void>((res) => {
     const root = createRoot(container);
-    root.render(<PingPongEnvelopeView envelopeConfig={{ containerType: ContainerType.IFRAME }} />);
-    res();
+    root.render(
+      <PingPongEnvelopeView envelopeConfig={{ containerType: ContainerType.IFRAME }} onRender={() => res()} />
+    );
   });

@@ -16,7 +16,7 @@
 
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import * as React from "react";
-import { useCallback, useImperativeHandle, useMemo, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Item, TodoListChannelApi } from "../api";
 import "./styles.scss";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
@@ -30,6 +30,8 @@ export interface TodoListEnvelopeViewApi {
 
 interface Props {
   channelApi: MessageBusClientApi<TodoListChannelApi>;
+
+  onRender: () => void;
 }
 
 /**
@@ -41,6 +43,10 @@ interface Props {
 export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Props>((props, forwardedRef) => {
   const [user, setUser] = useState<string | undefined>();
   const [items, setItems] = useState<Item[]>([]);
+
+  useEffect(() => {
+    props.onRender();
+  }, []);
 
   const removeItem = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, item: Item) => {

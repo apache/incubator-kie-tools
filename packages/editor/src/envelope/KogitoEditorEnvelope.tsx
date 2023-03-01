@@ -16,6 +16,7 @@
 
 import {
   Editor,
+  EditorApi,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContext,
@@ -31,6 +32,7 @@ import { getOperatingSystem } from "@kie-tools-core/operating-system";
 import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 import { createRoot } from "react-dom/client";
+import { useEffect } from "react";
 
 export class KogitoEditorEnvelope<
   E extends Editor,
@@ -67,34 +69,58 @@ export class KogitoEditorEnvelope<
   }
 
   private renderView(container: HTMLElement) {
-    const editorEnvelopeViewRef = React.createRef<EditorEnvelopeViewApi<E>>();
-
-    const app = (
-      <KogitoEditorEnvelopeContext.Provider value={this.context}>
-        <I18nDictionariesProvider
-          defaults={editorEnvelopeI18nDefaults}
-          dictionaries={editorEnvelopeI18nDictionaries}
-          ctx={EditorEnvelopeI18nContext}
-          initialLocale={navigator.language}
-        >
-          <EditorEnvelopeI18nContext.Consumer>
-            {({ setLocale }) => (
-              <EditorEnvelopeView
-                ref={editorEnvelopeViewRef}
-                setLocale={setLocale}
-                showKeyBindingsOverlay={this.keyboardShortcutsService.isEnabled()}
-              />
-            )}
-          </EditorEnvelopeI18nContext.Consumer>
-        </I18nDictionariesProvider>
-      </KogitoEditorEnvelopeContext.Provider>
-    );
-
     return new Promise<() => EditorEnvelopeViewApi<E>>((res) => {
       setTimeout(() => {
-        createRoot(container).render(app);
-        res(() => editorEnvelopeViewRef.current!);
+        createRoot(container).render(
+          <KogitoEditorEnvelopeViewWrapper<E, EnvelopeApi, ChannelApi>
+            setEditorEnvelopeViewApi={(api) => res(() => api)}
+            isKeyboardServiceEnabled={this.keyboardShortcutsService.isEnabled()}
+            context={this.context}
+          />
+        );
       }, 0);
     });
   }
+}
+
+type Props<
+  E extends Editor,
+  EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi>,
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>
+> = {
+  setEditorEnvelopeViewApi: (api: EditorEnvelopeViewApi<E>) => void;
+  context: KogitoEditorEnvelopeContextType<ChannelApi>;
+  isKeyboardServiceEnabled: boolean;
+};
+
+function KogitoEditorEnvelopeViewWrapper<
+  E extends Editor,
+  EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi>,
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>
+>(props: Props<E, EnvelopeApi, ChannelApi>) {
+  const ref = React.createRef<EditorEnvelopeViewApi<E>>();
+  useEffect(() => {
+    props.setEditorEnvelopeViewApi(ref.current!);
+  }, []);
+
+  return (
+    <KogitoEditorEnvelopeContext.Provider value={props.context}>
+      <I18nDictionariesProvider
+        defaults={editorEnvelopeI18nDefaults}
+        dictionaries={editorEnvelopeI18nDictionaries}
+        ctx={EditorEnvelopeI18nContext}
+        initialLocale={navigator.language}
+      >
+        <EditorEnvelopeI18nContext.Consumer>
+          {({ setLocale }) => (
+            <EditorEnvelopeView
+              ref={ref}
+              setLocale={setLocale}
+              showKeyBindingsOverlay={props.isKeyboardServiceEnabled}
+            />
+          )}
+        </EditorEnvelopeI18nContext.Consumer>
+      </I18nDictionariesProvider>
+    </KogitoEditorEnvelopeContext.Provider>
+  );
 }
