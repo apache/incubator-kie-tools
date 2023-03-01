@@ -24,6 +24,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, Position } from "vscode-languageserver-types";
 import {
   getJqBuiltInFunctionTests,
+  getJqReusableFunctionTests,
   getJqVariableTests,
   getYamlLsForJqExpressionTests,
 } from "./SwfJqExpressionTestUtils";
@@ -818,7 +819,7 @@ functions:
     describe("Jq completions", () => {
       describe("operation completions", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqVariableTests()])(
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
             "%s",
             async (_description, nodeValue) => {
               const content = `---
@@ -853,7 +854,7 @@ functions:
       });
       describe("data condition completion", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqVariableTests()])(
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
             "%s",
             async (_description, nodeValue) => {
               const content = `---
@@ -862,6 +863,12 @@ functions:
                - name: "testFunc"
                  type: "asyncapi"
                  "operation": "http://path_to_remote_asyncApiFile/"
+               - name: "expressionFunc1"
+                 type: "expression"
+                 operation: "."
+               - name: "expressionFunc2"
+                 type: "expression"
+                 operation: "."
               states:
               - name: testState
                 type: switch
@@ -882,7 +889,7 @@ functions:
       });
       describe("state data filter completions", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqVariableTests()])(
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
             "%s",
             async (_description, nodeValue) => {
               const content = `---
@@ -891,6 +898,12 @@ functions:
                - name: "testFunc"
                  type: "asyncapi"
                  "operation": "http://path_to_remote_asyncApiFile/"
+               - name: "expressionFunc1"
+                 type: "expression"
+                 operation: "."
+               - name: "expressionFunc2"
+                 type: "expression"
+                 operation: "."
               states:
               - name: testState
                 type: inject
@@ -910,7 +923,7 @@ functions:
       });
       describe("event data filter completions", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqVariableTests()])(
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
             "%s",
             async (_description, nodeValue) => {
               const content = `---
@@ -919,6 +932,12 @@ functions:
                - name: "testFunc"
                  type: "asyncapi"
                  "operation": "http://path_to_remote_asyncApiFile/"
+               - name: "expressionFunc1"
+                 type: "expression"
+                 operation: "."
+               - name: "expressionFunc2"
+                 type: "expression"
+                 operation: "."
               states:
               - name: testEvent
                 type: callBack
@@ -939,7 +958,7 @@ functions:
       });
       describe("event data filter inside onEvents completion", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqVariableTests()])(
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
             "%s",
             async (_description, nodeValue) => {
               const content = `---
@@ -948,6 +967,12 @@ functions:
                - name: "testFunc"
                  type: "asyncapi"
                  "operation": "http://path_to_remote_asyncApiFile/"
+               - name: "expressionFunc1"
+                 type: "expression"
+                 operation: "."
+               - name: "expressionFunc2"
+                 type: "expression"
+                 operation: "."
               states:
               - name: testEvent
                 type: event
@@ -969,7 +994,7 @@ functions:
       });
       describe("action data filter completions", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqVariableTests()])(
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
             "%s",
             async (_description, nodeValue) => {
               const content = `---
@@ -978,6 +1003,12 @@ functions:
                - name: "testFunc"
                  type: "asyncapi"
                  "operation": "http://path_to_remote_asyncApiFile/"
+               - name: "expressionFunc1"
+                 type: "expression"
+                 operation: "."
+               - name: "expressionFunc2"
+                 type: "expression"
+                 operation: "."
               states:
               - name: testState
                 type: operation
@@ -1001,7 +1032,7 @@ functions:
       });
       describe("functionRef arguments completions", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqVariableTests()])(
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
             "%s",
             async (_description, nodeValue) => {
               const content = `---
@@ -1010,6 +1041,12 @@ functions:
       - name: "testFunc"
         type: "asyncapi"
         "operation": "http://path_to_remote_asyncApiFile/"
+      - name: "expressionFunc1"
+        type: "expression"
+        operation: "."
+      - name: "expressionFunc2"
+        type: "expression"
+        operation: "."
     states:
       - name: testState
         type: operation

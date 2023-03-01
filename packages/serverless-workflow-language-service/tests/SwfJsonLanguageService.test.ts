@@ -781,6 +781,16 @@ describe("SWF LS JSON", () => {
                 "name": "testFunc",
                 "type": "rest",
                 "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
               }
             ],
             "states": [
@@ -817,6 +827,16 @@ describe("SWF LS JSON", () => {
                 "name": "testFunc",
                 "type": "rest",
                 "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
               }
             ],
             "states": [
@@ -854,6 +874,16 @@ describe("SWF LS JSON", () => {
                 "name": "testFunc",
                 "type": "rest",
                 "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
               }
             ],
             "states":[
@@ -895,6 +925,16 @@ describe("SWF LS JSON", () => {
                 "name": "testFunc",
                 "type": "rest",
                 "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
               }
             ],
             "states": [
@@ -940,6 +980,16 @@ describe("SWF LS JSON", () => {
                 "name": "testFunc",
                 "type": "rest",
                 "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
               }
             ],
             "states": [
@@ -983,6 +1033,16 @@ describe("SWF LS JSON", () => {
                 "name": "testFunc",
                 "type": "rest",
                 "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
               }
             ],
             "states": [
