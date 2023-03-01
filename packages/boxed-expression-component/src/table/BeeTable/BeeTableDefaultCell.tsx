@@ -43,26 +43,11 @@ export function BeeTableDefaultCell<R extends object>({
     [cellProps.column, cellProps.row.index, cellProps.row.original, columnIndex, onCellUpdates]
   );
 
-  const setEditing = useCallback(
-    (isEditing: boolean) => {
-      mutateSelection({
-        part: SelectionPart.ActiveCell,
-        columnCount: () => cellProps.allColumns.length,
-        rowCount,
-        deltaColumns: 0,
-        deltaRows: 0,
-        isEditingActiveCell: isEditing,
-        keepInsideSelection: true,
-      });
-    },
-    [cellProps.allColumns.length, rowCount, mutateSelection]
-  );
-
   const getValue = useCallback(() => {
     return cellProps.value;
   }, [cellProps.value]);
 
-  const { isActive, isEditing } = useBeeTableSelectableCellRef(
+  const { isActive, isEditing, setEditing } = useBeeTableSelectableCellRef(
     cellProps.row.index,
     columnIndex,
     onCellChanged,

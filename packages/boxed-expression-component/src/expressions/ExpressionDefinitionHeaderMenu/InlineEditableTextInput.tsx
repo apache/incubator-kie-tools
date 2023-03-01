@@ -15,51 +15,58 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState, FocusEvent, useEffect, useRef } from "react";
+import { useCallback, useMemo, useEffect, useRef } from "react";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { NavigationKeysUtils } from "../../keysUtils";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 
 export interface InlineEditableTextInputProps {
   /** Text value */
   value: string;
   /** Callback executed when text changes */
   onChange: (updatedValue: string) => void;
+  rowIndex: number;
+  columnIndex: number;
 }
 
-export const InlineEditableTextInput: React.FunctionComponent<InlineEditableTextInputProps> = ({ value, onChange }) => {
+export const InlineEditableTextInput: React.FunctionComponent<InlineEditableTextInputProps> = ({
+  rowIndex,
+  columnIndex,
+  value,
+  onChange,
+}) => {
   const { i18n } = useBoxedExpressionEditorI18n();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [toggle, setToggle] = useState(true);
+  const { isEditing, setEditing } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined, undefined);
 
-  const onInputBlur = useCallback(
-    (event: FocusEvent<HTMLInputElement>) => {
-      const changedText = event.target.value;
-      onChange(changedText);
-      setToggle(true);
-    },
-    [onChange]
-  );
+  const stopEditingPersistingValue = useCallback(() => {
+    const v = inputRef.current?.value;
+    if (v) {
+      onChange(v);
+      setEditing(false);
+    }
+  }, [onChange, setEditing]);
 
   const onInputKeyDown = useMemo(
     () => (e: React.KeyboardEvent) => {
       e.stopPropagation();
 
       if (NavigationKeysUtils.isEnter(e.key)) {
-        (e.currentTarget as HTMLElement)?.blur();
+        stopEditingPersistingValue();
       }
 
       if (NavigationKeysUtils.isEsc(e.key)) {
-        setToggle(true);
+        setEditing(false);
       }
     },
-    []
+    [setEditing, stopEditingPersistingValue]
   );
 
   const onLabelClick = useCallback(() => {
-    setToggle(false);
-  }, []);
+    setEditing(true);
+  }, [setEditing]);
 
   const getTextStyle = useMemo(() => {
     if (_.isEmpty(value)) {
@@ -69,7 +76,14 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
     }
   }, [value]);
 
-  return toggle ? (
+  // Runs every time this component re-renders.
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.select();
+    }
+  });
+
+  return !isEditing ? (
     <p className={"inline-editable-preview pf-u-text-truncate"} style={getTextStyle} onClick={onLabelClick}>
       {value || i18n.enterText}
     </p>
@@ -79,9 +93,8 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
       ref={inputRef}
       type={"text"}
       autoFocus={true}
-      onFocus={(e) => e.target.select()}
       defaultValue={value}
-      onBlur={onInputBlur}
+      onBlur={stopEditingPersistingValue}
       onKeyDown={onInputKeyDown}
     />
   );

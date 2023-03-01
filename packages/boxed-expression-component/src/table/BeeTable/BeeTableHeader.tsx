@@ -221,6 +221,8 @@ export function BeeTableHeader<R extends object>({
                     column.headerCellElement
                   ) : column.isInlineEditable ? (
                     <InlineEditableTextInput
+                      columnIndex={columnIndex}
+                      rowIndex={rowIndex}
                       value={column.label}
                       onChange={(value) => {
                         onExpressionHeaderUpdated(column, columnIndex)({ name: value, dataType: column.dataType });
