@@ -33,7 +33,8 @@ import { GIT_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/c
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
 import { useBitbucketClient } from "../../../bitbucket/Hooks";
-import { GithubIcon, BitbucketIcon } from "@patternfly/react-icons";
+import { BitbucketIcon } from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
+import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { useGitHubClient } from "../../../github/Hooks";
 import { isSupportedGitAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";

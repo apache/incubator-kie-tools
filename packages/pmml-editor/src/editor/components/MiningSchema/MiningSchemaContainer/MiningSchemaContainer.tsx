@@ -28,7 +28,7 @@ import MiningSchemaAddFields from "../MiningSchemaAddFields/MiningSchemaAddField
 import MiningSchemaPropertiesEdit from "../MiningSchemaPropertiesEdit/MiningSchemaPropertiesEdit";
 import "./MiningSchemaContainer.scss";
 
-import { DataDictionary, FieldName, MiningField, MiningSchema } from "@kie-tools/pmml-editor-marshaller";
+import { DataDictionary, MiningField, MiningSchema } from "@kie-tools/pmml-editor-marshaller";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { Interaction } from "../../../types";
@@ -40,7 +40,7 @@ interface MiningSchemaContainerProps {
   miningSchema?: MiningSchema;
   onAddField: (name: string[]) => void;
   onDeleteField: (index: number) => void;
-  onUpdateField: (index: number, originalName: FieldName | undefined, field: MiningField) => void;
+  onUpdateField: (index: number, originalName: string | undefined, field: MiningField) => void;
 }
 
 const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {

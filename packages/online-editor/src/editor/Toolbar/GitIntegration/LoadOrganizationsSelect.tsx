@@ -16,16 +16,10 @@
 
 import React, { useMemo } from "react";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import {
-  Button,
-  Divider,
-  Flex,
-  FlexItem,
-  Select,
-  SelectGroup,
-  SelectOption,
-  SelectVariant,
-} from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { useCallback, useEffect, useState } from "react";
 import { AuthProviderType, isSupportedGitAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
@@ -33,7 +27,11 @@ import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
 import { useBitbucketClient } from "../../../bitbucket/Hooks";
 import { useGitHubClient } from "../../../github/Hooks";
 import { switchExpression } from "../../../switchExpression/switchExpression";
-import { BitbucketIcon, GithubIcon, SyncAltIcon, UserIcon, UsersIcon } from "@patternfly/react-icons";
+import { BitbucketIcon } from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
+import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
+import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
+import { UserIcon } from "@patternfly/react-icons/dist/js/icons/user-icon";
+import { UsersIcon } from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { useOnlineI18n } from "../../../i18n";
 
 export interface LoadOrganizationsReponse {

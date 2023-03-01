@@ -17,7 +17,7 @@ import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Form } from "@patternfly/react-core/dist/js/components/Form";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { FieldName, OutputField } from "@kie-tools/pmml-editor-marshaller";
+import { OutputField } from "@kie-tools/pmml-editor-marshaller";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 import OutputFieldRow from "../molecules/OutputFieldRow";
@@ -30,7 +30,7 @@ interface OutputFieldsTableProps {
   outputs: OutputField[];
   selectedOutputIndex: number | undefined;
   setSelectedOutputIndex: (index: number | undefined) => void;
-  validateOutputFieldName: (index: number | undefined, name: FieldName) => boolean;
+  validateOutputFieldName: (index: number | undefined, name: string) => boolean;
   viewExtendedProperties: () => void;
   onAddOutputField: () => void;
   onDeleteOutputField: (index: number) => void;
@@ -110,7 +110,7 @@ const OutputFieldsTable = (props: OutputFieldsTableProps) => {
     }
   };
 
-  const onValidateOutputFieldName = (index: number | undefined, nameToValidate: FieldName): boolean => {
+  const onValidateOutputFieldName = (index: number | undefined, nameToValidate: string): boolean => {
     return validateOutputFieldName(index, nameToValidate);
   };
 

@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Page, PageSection } from "@patternfly/react-core";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import * as SwfEditor from "@kie-tools/serverless-workflow-standalone-editor/dist/swf";
 import { ServerlessWorkflowEmptyState } from "./SwfEditorEmptyState";
 import {

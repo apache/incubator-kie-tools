@@ -32,7 +32,8 @@ import {
   RelationProps,
 } from "../src/api";
 import { BoxedExpressionEditor } from "../src/components";
-import { Button, Modal } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
 import "../src/components/BoxedExpressionEditor/base-no-reset-wrapped.css";
 import ReactJson from "react-json-view";

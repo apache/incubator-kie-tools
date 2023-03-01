@@ -24,7 +24,6 @@
     "@kie-tools/dashbuilder-component-echarts": "workspace:*",
     "@kie-tools/dashbuilder-component-map": "workspace:*",
     "@kie-tools/dashbuilder-component-svg-heatmap": "workspace:*",
-    "@kie-tools/dashbuilder-component-swf-editor": "workspace:*",
     "@kie-tools/dashbuilder-component-table": "workspace:*",
     "@kie-tools/dashbuilder-component-timeseries": "workspace:*",
     "@kie-tools/dashbuilder-component-uniforms": "workspace:*",

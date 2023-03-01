@@ -15,7 +15,8 @@
  */
 
 import * as React from "react";
-import { Bullseye, Spinner } from "@patternfly/react-core";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useCallback, useEffect } from "react";
 import { ImportJavaClassesWizardFieldListTable } from "./ImportJavaClassesWizardFieldListTable";
 import { JavaField } from "./model/JavaField";

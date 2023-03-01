@@ -109,7 +109,7 @@ export function setupBuiltInVsCodeEditorDashbuilderContributions(args: {
 
   args.context.subscriptions.push(
     vscode.languages.registerCodeLensProvider(
-      { scheme: "file", pattern: "**/*.dash.{yaml,yml,json}" },
+      { pattern: "**/*.dash.{yaml,yml,json}" },
       {
         provideCodeLenses: async (document: vscode.TextDocument, token: vscode.CancellationToken) => {
           const lsCodeLenses = await args.vsCodeDashbuilderLanguageService.getLs(document).getCodeLenses({
@@ -141,7 +141,7 @@ export function setupBuiltInVsCodeEditorDashbuilderContributions(args: {
 
   args.context.subscriptions.push(
     vscode.languages.registerCompletionItemProvider(
-      { scheme: "file", pattern: "**/*.dash.{yaml,yml,json}" },
+      { pattern: "**/*.dash.{yaml,yml,json}" },
       {
         provideCompletionItems: async (
           document: vscode.TextDocument,

@@ -19,7 +19,6 @@ import {
   BaselineMethod,
   CompoundPredicate,
   False,
-  FieldName,
   MiningFunction,
   Predicate,
   ReasonCodeAlgorithm,
@@ -381,8 +380,8 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
 const updatePredicateFieldName = (
   pathBuilder: PredicateBuilder,
   predicate: Predicate | undefined,
-  name: FieldName,
-  originalName: FieldName | undefined,
+  name: string,
+  originalName: string | undefined,
   service: HistoryService
 ) => {
   if (predicate === undefined) {

@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
-import { FieldName, Output, OutputField } from "@kie-tools/pmml-editor-marshaller";
+import { Output, OutputField } from "@kie-tools/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { Builder } from "../paths";
 import { getCharacteristics, getMiningSchema, getOutputs } from "../PMMLModelHelper";
@@ -33,7 +33,7 @@ interface OutputPayload {
   };
   [Actions.AddBatchOutputs]: {
     readonly modelIndex: number;
-    readonly outputFields: FieldName[];
+    readonly outputFields: string[];
   };
 }
 

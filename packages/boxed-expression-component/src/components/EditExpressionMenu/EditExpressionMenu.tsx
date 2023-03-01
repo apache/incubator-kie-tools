@@ -23,7 +23,7 @@ import { DataType, ExpressionProps } from "../../api";
 import { useBoxedExpression } from "../../context";
 import { DataTypeSelector } from "./DataTypeSelector";
 import { CogIcon } from "@patternfly/react-icons/dist/js/icons/cog-icon";
-import { Button } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { NavigationKeysUtils } from "../common";
 
 export interface EditExpressionMenuProps {

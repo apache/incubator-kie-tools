@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { Page } from "@patternfly/react-core";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import * as DmnEditor from "@kie-tools/kie-editors-standalone/dist/dmn";
 
 export function DmnStandaloneEditorPage() {

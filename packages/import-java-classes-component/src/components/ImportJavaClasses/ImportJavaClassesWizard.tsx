@@ -25,7 +25,10 @@ import { JavaField } from "./model/JavaField";
 import { DMNSimpleType } from "./model/DMNSimpleType";
 import { getJavaClassSimpleName } from "./model/JavaClassUtils";
 import { GWTLayerService, JavaCodeCompletionService } from "./services";
-import { Button, Modal, ModalVariant, Tooltip, Wizard } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Wizard } from "@patternfly/react-core/dist/js/components/Wizard";
 
 export interface ImportJavaClassesWizardProps {
   /** Service class which contains all API methods to dialog with GWT layer */

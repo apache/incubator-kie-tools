@@ -18,7 +18,7 @@ import * as React from "react";
 import { ComponentController, DataSet } from "@kie-tools/dashbuilder-component-api";
 import { useState, useEffect, useCallback } from "react";
 import { Uniforms } from "./Uniforms";
-import { Alert, AlertActionCloseButton } from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 
 interface Props {
   controller: ComponentController;
