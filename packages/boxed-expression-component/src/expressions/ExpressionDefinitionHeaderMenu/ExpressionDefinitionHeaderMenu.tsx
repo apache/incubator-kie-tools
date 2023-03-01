@@ -96,8 +96,10 @@ export function ExpressionDefinitionHeaderMenu({
   }, [beeGwtService]);
 
   const saveExpression = useCallback(() => {
-    onExpressionHeaderUpdated({ name: expressionName, dataType: dataType });
-  }, [expressionName, onExpressionHeaderUpdated, dataType]);
+    if (expressionName !== selectedExpressionName || dataType !== selectedDataType) {
+      onExpressionHeaderUpdated({ name: expressionName, dataType: dataType });
+    }
+  }, [expressionName, selectedExpressionName, dataType, selectedDataType, onExpressionHeaderUpdated]);
 
   const resetFormData = useCallback(() => {
     setExpressionName(selectedExpressionName);
