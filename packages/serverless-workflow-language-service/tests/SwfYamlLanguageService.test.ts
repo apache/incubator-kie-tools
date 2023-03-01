@@ -26,6 +26,7 @@ import {
   getJqBuiltInFunctionTests,
   getJqReusableFunctionTests,
   getJqVariableTests,
+  getSingleQuoteTestForYaml,
   getYamlLsForJqExpressionTests,
 } from "./SwfJqExpressionTestUtils";
 import {
@@ -819,10 +820,13 @@ functions:
     describe("Jq completions", () => {
       describe("operation completions", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
-            "%s",
-            async (_description, nodeValue) => {
-              const content = `---
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
               dataInputSchema: "path/to/schema"
               functions:
                 - name: "testFunc1"
@@ -840,24 +844,26 @@ functions:
                 - name: "expressionFunc3"
                   type: "expression"
                   operation: ${nodeValue}` as ContentWithCursor;
-              const { completionItems } = await codeCompletionTester(
-                getYamlLsForJqExpressionTests(),
-                documentUri,
-                content,
-                false
-              );
-              expect(completionItems.length).toMatchSnapshot();
-              expect(completionItems.slice(0, 5)).toMatchSnapshot();
-            }
-          );
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
         });
       });
       describe("data condition completion", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
-            "%s",
-            async (_description, nodeValue) => {
-              const content = `---
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
               dataInputSchema: "path/to/schema"
               functions:
                - name: "testFunc"
@@ -875,24 +881,26 @@ functions:
                 dataConditions:
                   - condition: ${nodeValue}
                     transition: nextTransition` as ContentWithCursor;
-              const { completionItems } = await codeCompletionTester(
-                getYamlLsForJqExpressionTests(),
-                documentUri,
-                content,
-                false
-              );
-              expect(completionItems.length).toMatchSnapshot();
-              expect(completionItems.slice(0, 5)).toMatchSnapshot();
-            }
-          );
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
         });
       });
       describe("state data filter completions", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
-            "%s",
-            async (_description, nodeValue) => {
-              const content = `---
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
               dataInputSchema: "path/to/schema"
               functions:
                - name: "testFunc"
@@ -909,24 +917,26 @@ functions:
                 type: inject
                 stateDataFilter:
                   output: ${nodeValue}` as ContentWithCursor;
-              const { completionItems } = await codeCompletionTester(
-                getYamlLsForJqExpressionTests(),
-                documentUri,
-                content,
-                false
-              );
-              expect(completionItems.length).toMatchSnapshot();
-              expect(completionItems.slice(0, 5)).toMatchSnapshot();
-            }
-          );
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
         });
       });
       describe("event data filter completions", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
-            "%s",
-            async (_description, nodeValue) => {
-              const content = `---
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
               dataInputSchema: "path/to/schema"
               functions:
                - name: "testFunc"
@@ -944,24 +954,26 @@ functions:
                 eventDataFilter:
                   data: ${nodeValue}
                   toStateData: ${nodeValue}` as ContentWithCursor;
-              const { completionItems } = await codeCompletionTester(
-                getYamlLsForJqExpressionTests(),
-                documentUri,
-                content,
-                false
-              );
-              expect(completionItems.length).toMatchSnapshot();
-              expect(completionItems.slice(0, 5)).toMatchSnapshot();
-            }
-          );
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
         });
       });
       describe("event data filter inside onEvents completion", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
-            "%s",
-            async (_description, nodeValue) => {
-              const content = `---
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
               dataInputSchema: "path/to/schema"
               functions:
                - name: "testFunc"
@@ -980,24 +992,26 @@ functions:
                   - eventDataFilter:
                       data: ${nodeValue}
                       toStateData: ${nodeValue}` as ContentWithCursor;
-              const { completionItems } = await codeCompletionTester(
-                getYamlLsForJqExpressionTests(),
-                documentUri,
-                content,
-                false
-              );
-              expect(completionItems.length).toMatchSnapshot();
-              expect(completionItems.slice(0, 5)).toMatchSnapshot();
-            }
-          );
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
         });
       });
       describe("action data filter completions", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
-            "%s",
-            async (_description, nodeValue) => {
-              const content = `---
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
               dataInputSchema: "path/to/schema"
               functions:
                - name: "testFunc"
@@ -1018,24 +1032,26 @@ functions:
                       results: ${nodeValue}
                       toStateData: ${nodeValue}` as ContentWithCursor;
 
-              const { completionItems } = await codeCompletionTester(
-                getYamlLsForJqExpressionTests(),
-                documentUri,
-                content,
-                false
-              );
-              expect(completionItems.length).toMatchSnapshot();
-              expect(completionItems.slice(0, 5)).toMatchSnapshot();
-            }
-          );
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
         });
       });
       describe("functionRef arguments completions", () => {
         describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
-          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
-            "%s",
-            async (_description, nodeValue) => {
-              const content = `---
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
     dataInputSchema: path/to/schema
     functions:
       - name: "testFunc"
@@ -1055,16 +1071,15 @@ functions:
               refName: testRefName
               arguments:
                 numberOfRunningPods: ${nodeValue}` as ContentWithCursor;
-              const { completionItems } = await codeCompletionTester(
-                getYamlLsForJqExpressionTests(),
-                documentUri,
-                content,
-                false
-              );
-              expect(completionItems.length).toMatchSnapshot();
-              expect(completionItems.slice(0, 5)).toMatchSnapshot();
-            }
-          );
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
         });
       });
     });

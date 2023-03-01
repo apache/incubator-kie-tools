@@ -168,9 +168,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -380,9 +380,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -497,9 +497,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -614,9 +614,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -664,6 +664,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion fn: after some value 1`] = `2`;
 
@@ -724,72 +736,9 @@ exports[`SWF LS JSON code completion Jq completions data condition completions b
 
 exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 35,
-          "line": 25,
-        },
-        "start": Object {
-          "character": 35,
-          "line": 25,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 35,
-          "line": 25,
-        },
-        "start": Object {
-          "character": 35,
-          "line": 25,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -947,6 +896,57 @@ Array [
         },
         "start": Object {
           "character": 36,
+          "line": 25,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 25,
+        },
+        "start": Object {
+          "character": 35,
+          "line": 25,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 25,
+        },
+        "start": Object {
+          "character": 35,
           "line": 25,
         },
       },
@@ -1123,9 +1123,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -1335,9 +1335,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -1452,9 +1452,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -1569,9 +1569,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -1619,6 +1619,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion fn: after some value 1`] = `2`;
 
@@ -1679,72 +1691,9 @@ exports[`SWF LS JSON code completion Jq completions data condition completions r
 
 exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 35,
-          "line": 25,
-        },
-        "start": Object {
-          "character": 35,
-          "line": 25,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 35,
-          "line": 25,
-        },
-        "start": Object {
-          "character": 35,
-          "line": 25,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -1902,6 +1851,57 @@ Array [
         },
         "start": Object {
           "character": 36,
+          "line": 25,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 25,
+        },
+        "start": Object {
+          "character": 35,
+          "line": 25,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 25,
+        },
+        "start": Object {
+          "character": 35,
           "line": 25,
         },
       },
@@ -2078,9 +2078,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -2290,9 +2290,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -2407,9 +2407,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -2524,9 +2524,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -2574,6 +2574,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions variables completion fn: after some value 1`] = `2`;
 
@@ -2634,72 +2646,9 @@ exports[`SWF LS JSON code completion Jq completions data condition completions v
 
 exports[`SWF LS JSON code completion Jq completions data condition completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 35,
-          "line": 25,
-        },
-        "start": Object {
-          "character": 35,
-          "line": 25,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 35,
-          "line": 25,
-        },
-        "start": Object {
-          "character": 35,
-          "line": 25,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -2857,6 +2806,57 @@ Array [
         },
         "start": Object {
           "character": 36,
+          "line": 25,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 25,
+        },
+        "start": Object {
+          "character": 35,
+          "line": 25,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 35,
+          "line": 25,
+        },
+        "start": Object {
+          "character": 35,
           "line": 25,
         },
       },
@@ -3033,9 +3033,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -3245,9 +3245,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -3362,9 +3362,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -3479,9 +3479,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -3529,6 +3529,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion fn: after some value 1`] = `2`;
 
@@ -3589,72 +3601,9 @@ exports[`SWF LS JSON code completion Jq completions data filter completions buil
 
 exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 39,
-          "line": 30,
-        },
-        "start": Object {
-          "character": 39,
-          "line": 30,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 39,
-          "line": 30,
-        },
-        "start": Object {
-          "character": 39,
-          "line": 30,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -3812,6 +3761,57 @@ Array [
         },
         "start": Object {
           "character": 40,
+          "line": 30,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 39,
+          "line": 30,
+        },
+        "start": Object {
+          "character": 39,
+          "line": 30,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 39,
+          "line": 30,
+        },
+        "start": Object {
+          "character": 39,
           "line": 30,
         },
       },
@@ -3988,9 +3988,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -4200,9 +4200,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -4317,9 +4317,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -4434,9 +4434,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -4484,6 +4484,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion fn: after some value 1`] = `2`;
 
@@ -4544,72 +4556,9 @@ exports[`SWF LS JSON code completion Jq completions data filter completions reus
 
 exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 39,
-          "line": 30,
-        },
-        "start": Object {
-          "character": 39,
-          "line": 30,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 39,
-          "line": 30,
-        },
-        "start": Object {
-          "character": 39,
-          "line": 30,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -4767,6 +4716,57 @@ Array [
         },
         "start": Object {
           "character": 40,
+          "line": 30,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 39,
+          "line": 30,
+        },
+        "start": Object {
+          "character": 39,
+          "line": 30,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 39,
+          "line": 30,
+        },
+        "start": Object {
+          "character": 39,
           "line": 30,
         },
       },
@@ -4943,9 +4943,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -5155,9 +5155,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -5272,9 +5272,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -5389,9 +5389,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -5439,6 +5439,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions variables completion fn: after some value 1`] = `2`;
 
@@ -5499,72 +5511,9 @@ exports[`SWF LS JSON code completion Jq completions data filter completions vari
 
 exports[`SWF LS JSON code completion Jq completions data filter completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 39,
-          "line": 30,
-        },
-        "start": Object {
-          "character": 39,
-          "line": 30,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 39,
-          "line": 30,
-        },
-        "start": Object {
-          "character": 39,
-          "line": 30,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -5722,6 +5671,57 @@ Array [
         },
         "start": Object {
           "character": 40,
+          "line": 30,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 39,
+          "line": 30,
+        },
+        "start": Object {
+          "character": 39,
+          "line": 30,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 39,
+          "line": 30,
+        },
+        "start": Object {
+          "character": 39,
           "line": 30,
         },
       },
@@ -5898,9 +5898,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -6110,9 +6110,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -6227,9 +6227,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -6344,9 +6344,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -6394,6 +6394,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion fn: after some value 1`] = `2`;
 
@@ -6454,72 +6466,9 @@ exports[`SWF LS JSON code completion Jq completions data filter inside on onEven
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 34,
-          "line": 26,
-        },
-        "start": Object {
-          "character": 34,
-          "line": 26,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 34,
-          "line": 26,
-        },
-        "start": Object {
-          "character": 34,
-          "line": 26,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -6677,6 +6626,57 @@ Array [
         },
         "start": Object {
           "character": 35,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
           "line": 26,
         },
       },
@@ -6853,9 +6853,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -7065,9 +7065,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -7182,9 +7182,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -7299,9 +7299,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -7349,6 +7349,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion fn: after some value 1`] = `2`;
 
@@ -7409,72 +7421,9 @@ exports[`SWF LS JSON code completion Jq completions data filter inside on onEven
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 34,
-          "line": 26,
-        },
-        "start": Object {
-          "character": 34,
-          "line": 26,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 34,
-          "line": 26,
-        },
-        "start": Object {
-          "character": 34,
-          "line": 26,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -7632,6 +7581,57 @@ Array [
         },
         "start": Object {
           "character": 35,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
           "line": 26,
         },
       },
@@ -7808,9 +7808,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -8020,9 +8020,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -8137,9 +8137,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -8254,9 +8254,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -8304,6 +8304,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion fn: after some value 1`] = `2`;
 
@@ -8364,72 +8376,9 @@ exports[`SWF LS JSON code completion Jq completions data filter inside on onEven
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 34,
-          "line": 26,
-        },
-        "start": Object {
-          "character": 34,
-          "line": 26,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 34,
-          "line": 26,
-        },
-        "start": Object {
-          "character": 34,
-          "line": 26,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -8587,6 +8536,57 @@ Array [
         },
         "start": Object {
           "character": 35,
+          "line": 26,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
+          "line": 26,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 34,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 34,
           "line": 26,
         },
       },
@@ -8763,9 +8763,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -8975,9 +8975,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -9092,9 +9092,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -9209,9 +9209,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -9259,6 +9259,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion fn: after some value 1`] = `2`;
 
@@ -9319,72 +9331,9 @@ exports[`SWF LS JSON code completion Jq completions event data filter completion
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 30,
-          "line": 24,
-        },
-        "start": Object {
-          "character": 30,
-          "line": 24,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 30,
-          "line": 24,
-        },
-        "start": Object {
-          "character": 30,
-          "line": 24,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -9542,6 +9491,57 @@ Array [
         },
         "start": Object {
           "character": 31,
+          "line": 24,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 30,
+          "line": 24,
+        },
+        "start": Object {
+          "character": 30,
+          "line": 24,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 30,
+          "line": 24,
+        },
+        "start": Object {
+          "character": 30,
           "line": 24,
         },
       },
@@ -9718,9 +9718,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -9930,9 +9930,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -10047,9 +10047,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -10164,9 +10164,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -10214,6 +10214,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion fn: after some value 1`] = `2`;
 
@@ -10274,72 +10286,9 @@ exports[`SWF LS JSON code completion Jq completions event data filter completion
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 30,
-          "line": 24,
-        },
-        "start": Object {
-          "character": 30,
-          "line": 24,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 30,
-          "line": 24,
-        },
-        "start": Object {
-          "character": 30,
-          "line": 24,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -10497,6 +10446,57 @@ Array [
         },
         "start": Object {
           "character": 31,
+          "line": 24,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 30,
+          "line": 24,
+        },
+        "start": Object {
+          "character": 30,
+          "line": 24,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 30,
+          "line": 24,
+        },
+        "start": Object {
+          "character": 30,
           "line": 24,
         },
       },
@@ -10673,9 +10673,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -10885,9 +10885,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -11002,9 +11002,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -11119,9 +11119,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -11169,6 +11169,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion fn: after some value 1`] = `2`;
 
@@ -11229,72 +11241,9 @@ exports[`SWF LS JSON code completion Jq completions event data filter completion
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 30,
-          "line": 24,
-        },
-        "start": Object {
-          "character": 30,
-          "line": 24,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 30,
-          "line": 24,
-        },
-        "start": Object {
-          "character": 30,
-          "line": 24,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -11452,6 +11401,57 @@ Array [
         },
         "start": Object {
           "character": 31,
+          "line": 24,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 30,
+          "line": 24,
+        },
+        "start": Object {
+          "character": 30,
+          "line": 24,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 30,
+          "line": 24,
+        },
+        "start": Object {
+          "character": 30,
           "line": 24,
         },
       },
@@ -11628,9 +11628,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -11840,9 +11840,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -11957,9 +11957,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -12074,9 +12074,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -12124,6 +12124,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion fn: after some value 1`] = `2`;
 
@@ -12184,72 +12196,9 @@ exports[`SWF LS JSON code completion Jq completions functionRef arguments comple
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 51,
-          "line": 28,
-        },
-        "start": Object {
-          "character": 51,
-          "line": 28,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 51,
-          "line": 28,
-        },
-        "start": Object {
-          "character": 51,
-          "line": 28,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -12407,6 +12356,57 @@ Array [
         },
         "start": Object {
           "character": 52,
+          "line": 28,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 51,
+          "line": 28,
+        },
+        "start": Object {
+          "character": 51,
+          "line": 28,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 51,
+          "line": 28,
+        },
+        "start": Object {
+          "character": 51,
           "line": 28,
         },
       },
@@ -12583,9 +12583,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -12795,9 +12795,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -12912,9 +12912,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -13029,9 +13029,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -13079,6 +13079,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion fn: after some value 1`] = `2`;
 
@@ -13139,72 +13151,9 @@ exports[`SWF LS JSON code completion Jq completions functionRef arguments comple
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 51,
-          "line": 28,
-        },
-        "start": Object {
-          "character": 51,
-          "line": 28,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 51,
-          "line": 28,
-        },
-        "start": Object {
-          "character": 51,
-          "line": 28,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -13362,6 +13311,57 @@ Array [
         },
         "start": Object {
           "character": 52,
+          "line": 28,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 51,
+          "line": 28,
+        },
+        "start": Object {
+          "character": 51,
+          "line": 28,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 51,
+          "line": 28,
+        },
+        "start": Object {
+          "character": 51,
           "line": 28,
         },
       },
@@ -13538,9 +13538,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -13750,9 +13750,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -13867,9 +13867,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -13984,9 +13984,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -14034,6 +14034,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion fn: after some value 1`] = `2`;
 
@@ -14094,72 +14106,9 @@ exports[`SWF LS JSON code completion Jq completions functionRef arguments comple
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 51,
-          "line": 28,
-        },
-        "start": Object {
-          "character": 51,
-          "line": 28,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 51,
-          "line": 28,
-        },
-        "start": Object {
-          "character": 51,
-          "line": 28,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -14317,6 +14266,57 @@ Array [
         },
         "start": Object {
           "character": 52,
+          "line": 28,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 51,
+          "line": 28,
+        },
+        "start": Object {
+          "character": 51,
+          "line": 28,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 51,
+          "line": 28,
+        },
+        "start": Object {
+          "character": 51,
           "line": 28,
         },
       },
@@ -14661,9 +14661,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -14990,9 +14990,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -15107,9 +15107,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -15224,9 +15224,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -15275,21 +15275,21 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion empty object 1`] = `0`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion operation with empty object 2`] = `Array []`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion empty object 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion operation with empty object 3`] = `0`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion empty object 3`] = `0`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion operation with empty object 4`] = `Array []`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion empty object 4`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion operation with empty object 5`] = `0`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion empty object 5`] = `0`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion operation with empty object 6`] = `Array []`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion empty object 6`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion operation with no value 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -15404,9 +15404,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion operation with no value 3`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion no value/double quotes 3`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion operation with no value 4`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion no value/double quotes 4`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -15857,9 +15857,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -16186,9 +16186,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -16303,9 +16303,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -16420,9 +16420,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -16471,21 +16471,21 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion empty object 1`] = `0`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion operation with empty object 2`] = `Array []`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion empty object 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion operation with empty object 3`] = `0`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion empty object 3`] = `0`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion operation with empty object 4`] = `Array []`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion empty object 4`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion operation with empty object 5`] = `0`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion empty object 5`] = `0`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion operation with empty object 6`] = `Array []`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion empty object 6`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion operation with no value 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -16600,9 +16600,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion operation with no value 3`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion no value/double quotes 3`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion operation with no value 4`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion no value/double quotes 4`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -17053,9 +17053,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -17382,9 +17382,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -17499,9 +17499,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -17616,9 +17616,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -17667,21 +17667,21 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion empty object 1`] = `0`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion operation with empty object 2`] = `Array []`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion empty object 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion operation with empty object 3`] = `0`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion empty object 3`] = `0`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion operation with empty object 4`] = `Array []`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion empty object 4`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion operation with empty object 5`] = `0`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion empty object 5`] = `0`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion operation with empty object 6`] = `Array []`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion empty object 6`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion operation with no value 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -17796,9 +17796,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion operation with no value 3`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion no value/double quotes 3`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion operation with no value 4`] = `
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion no value/double quotes 4`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -18081,9 +18081,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -18293,9 +18293,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -18410,9 +18410,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -18527,9 +18527,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -18577,6 +18577,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion fn: after some value 1`] = `2`;
 
@@ -18637,72 +18649,9 @@ exports[`SWF LS JSON code completion Jq completions state data filter completion
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 32,
-          "line": 24,
-        },
-        "start": Object {
-          "character": 32,
-          "line": 24,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 32,
-          "line": 24,
-        },
-        "start": Object {
-          "character": 32,
-          "line": 24,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -18860,6 +18809,57 @@ Array [
         },
         "start": Object {
           "character": 33,
+          "line": 24,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 24,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 24,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 24,
+        },
+        "start": Object {
+          "character": 32,
           "line": 24,
         },
       },
@@ -19036,9 +19036,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -19248,9 +19248,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -19365,9 +19365,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -19482,9 +19482,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -19532,6 +19532,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion fn: after some value 1`] = `2`;
 
@@ -19592,72 +19604,9 @@ exports[`SWF LS JSON code completion Jq completions state data filter completion
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 32,
-          "line": 24,
-        },
-        "start": Object {
-          "character": 32,
-          "line": 24,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 32,
-          "line": 24,
-        },
-        "start": Object {
-          "character": 32,
-          "line": 24,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -19815,6 +19764,57 @@ Array [
         },
         "start": Object {
           "character": 33,
+          "line": 24,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 24,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 24,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 24,
+        },
+        "start": Object {
+          "character": 32,
           "line": 24,
         },
       },
@@ -19991,9 +19991,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor after the dot(variable): 1`] = `4`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor after the dot(variable):/double quotes 1`] = `4`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor after the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor after the dot(variable):/double quotes 2`] = `
 Array [
   Object {
     "detail": "string",
@@ -20203,9 +20203,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor before the dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor before the dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor before the dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor before the dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -20320,9 +20320,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor with a space after the  dot(variable): 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor with a space after the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -20437,9 +20437,9 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor with a value following the  dot(variable): 1`] = `2`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor with a value following the  dot(variable) 1`] = `2`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor with a value following the  dot(variable): 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor with a value following the  dot(variable) 2`] = `
 Array [
   Object {
     "detail": "1",
@@ -20487,6 +20487,18 @@ Array [
   },
 ]
 `;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion empty object 1`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion empty object 2`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion empty object 3`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion empty object 4`] = `Array []`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion empty object 5`] = `0`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion empty object 6`] = `Array []`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion fn: after some value 1`] = `2`;
 
@@ -20547,72 +20559,9 @@ exports[`SWF LS JSON code completion Jq completions state data filter completion
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion operation with empty object 1`] = `0`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion no value/double quotes 1`] = `142`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion operation with empty object 2`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion operation with empty object 3`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion operation with empty object 4`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion operation with empty object 5`] = `0`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion operation with empty object 6`] = `Array []`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion operation with fn: 1`] = `2`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion operation with fn: 2`] = `
-Array [
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc1",
-    "insertText": "expressionFunc1",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc1",
-    "sortText": "100_expressionFunc1",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc1\\"",
-      "range": Object {
-        "end": Object {
-          "character": 32,
-          "line": 24,
-        },
-        "start": Object {
-          "character": 32,
-          "line": 24,
-        },
-      },
-    },
-  },
-  Object {
-    "detail": "Reusable functions(expressions) defined in the functions array",
-    "filterText": "expressionFunc2",
-    "insertText": "expressionFunc2",
-    "insertTextFormat": 2,
-    "kind": 3,
-    "label": "expressionFunc2",
-    "sortText": "100_expressionFunc2",
-    "textEdit": Object {
-      "newText": "\\"expressionFunc2\\"",
-      "range": Object {
-        "end": Object {
-          "character": 32,
-          "line": 24,
-        },
-        "start": Object {
-          "character": 32,
-          "line": 24,
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion operation with no value 1`] = `142`;
-
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion operation with no value 2`] = `
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion no value/double quotes 2`] = `
 Array [
   Object {
     "detail": "The builtin function length gets the length of various different types of value.",
@@ -20770,6 +20719,57 @@ Array [
         },
         "start": Object {
           "character": 33,
+          "line": 24,
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion value fn:/double quotes 1`] = `2`;
+
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion value fn:/double quotes 2`] = `
+Array [
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc1",
+    "insertText": "expressionFunc1",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc1",
+    "sortText": "100_expressionFunc1",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc1\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 24,
+        },
+        "start": Object {
+          "character": 32,
+          "line": 24,
+        },
+      },
+    },
+  },
+  Object {
+    "detail": "Reusable functions(expressions) defined in the functions array",
+    "filterText": "expressionFunc2",
+    "insertText": "expressionFunc2",
+    "insertTextFormat": 2,
+    "kind": 3,
+    "label": "expressionFunc2",
+    "sortText": "100_expressionFunc2",
+    "textEdit": Object {
+      "newText": "\\"expressionFunc2\\"",
+      "range": Object {
+        "end": Object {
+          "character": 32,
+          "line": 24,
+        },
+        "start": Object {
+          "character": 32,
           "line": 24,
         },
       },

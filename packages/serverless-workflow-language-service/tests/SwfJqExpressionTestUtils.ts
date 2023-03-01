@@ -16,10 +16,26 @@
 import { defaultConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
 import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { SwfYamlLanguageService } from "../dist/channel";
+
+const languageServiceArgs = {
+  fs: {},
+  serviceCatalog: defaultServiceCatalogConfig,
+  config: defaultConfig,
+  jqCompletions: {
+    remote: {
+      getJqAutocompleteProperties: async (_args: any) => [{ name: "string" }, { age: "1" }] as Record<string, string>[],
+    },
+    relative: {
+      getJqAutocompleteProperties: async (_args: any) =>
+        [{ avgLoad: "string" }, { numberOfPods: "1" }] as Record<string, string>[],
+    },
+  },
+};
+
 export function getJqBuiltInFunctionTests(): Array<Array<string>> {
   return [
-    ["operation with empty object", `{🎯}`],
-    ["operation with no value", `"🎯"`],
+    ["empty object", `{🎯}`],
+    ["no value/double quotes", `"🎯"`],
     ["cursor after some random word", `"some_func 🎯"`],
     ["cursor before empty space", `"🎯 "`],
     ["cursor after a value - auto-complete the word map", `"map🎯"`],
@@ -28,8 +44,8 @@ export function getJqBuiltInFunctionTests(): Array<Array<string>> {
 
 export function getJqReusableFunctionTests(): Array<Array<string>> {
   return [
-    ["operation with empty object", `{🎯}`],
-    ["operation with fn:", `"fn:🎯"`],
+    ["empty object", `{🎯}`],
+    ["value fn:/double quotes", `"fn:🎯"`],
     ["space before fn:", `" fn:🎯"`],
     ["fn: starting with r", `"fn:r🎯"`],
     ["fn: starting with a", `"fn:a🎯"`],
@@ -39,43 +55,26 @@ export function getJqReusableFunctionTests(): Array<Array<string>> {
 
 export function getJqVariableTests(): Array<Array<string>> {
   return [
-    ["operation with empty object", `{🎯}`],
-    ["cursor before the dot(variable):", `"🎯."`],
-    ["cursor after the dot(variable):", `".🎯"`],
-    ["cursor with a space after the  dot(variable):", `". 🎯"`],
-    ["cursor with a value following the  dot(variable):", `".a🎯"`],
+    ["empty object", `{🎯}`],
+    ["cursor before the dot(variable)", `"🎯."`],
+    ["cursor after the dot(variable):/double quotes", `".🎯"`],
+    ["cursor with a space after the  dot(variable)", `". 🎯"`],
+    ["cursor with a value following the  dot(variable)", `".a🎯"`],
   ];
 }
+
+export function getSingleQuoteTestForYaml(): Array<Array<string>> {
+  return [
+    ["no value/single quotes", `'🎯'`],
+    ["value fn:/single quotes", `'fn:🎯'`],
+    ["cursor after the dot(variable):/single quotes", `'.🎯'`],
+  ];
+}
+
 export function getJsonLsForJqExpressionTests(): SwfJsonLanguageService {
-  return new SwfJsonLanguageService({
-    fs: {},
-    serviceCatalog: defaultServiceCatalogConfig,
-    config: defaultConfig,
-    jqCompletions: {
-      remote: {
-        getJqAutocompleteProperties: async (_args) => [{ name: "string" }, { age: "1" }] as Record<string, string>[],
-      },
-      relative: {
-        getJqAutocompleteProperties: async (_args) =>
-          [{ avgLoad: "string" }, { numberOfPods: "1" }] as Record<string, string>[],
-      },
-    },
-  });
+  return new SwfJsonLanguageService(languageServiceArgs);
 }
 
 export function getYamlLsForJqExpressionTests(): SwfYamlLanguageService {
-  return new SwfYamlLanguageService({
-    fs: {},
-    serviceCatalog: defaultServiceCatalogConfig,
-    config: defaultConfig,
-    jqCompletions: {
-      remote: {
-        getJqAutocompleteProperties: async (_args) => [{ name: "string" }, { age: "1" }] as Record<string, string>[],
-      },
-      relative: {
-        getJqAutocompleteProperties: async (_args) =>
-          [{ avgLoad: "string" }, { numberOfPods: "1" }] as Record<string, string>[],
-      },
-    },
-  });
+  return new SwfYamlLanguageService(languageServiceArgs);
 }
