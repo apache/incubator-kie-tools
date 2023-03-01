@@ -35,7 +35,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { switchExpression } from "../../../switchExpression/switchExpression";
 import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import GithubIcon from "@patternfly/react-icons/dist/js/icons/github-icon";
-import { GitIcon } from "@patternfly/react-icons";
+import GitIcon from "@patternfly/react-icons/dist/js/icons/git-icon";
 import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
 import { useGitIntegration } from "../GitIntegration/GitIntegrationContextProvider";
