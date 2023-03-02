@@ -141,7 +141,6 @@ public class ExternalDataSetJSONParser {
                 dataSet.addColumn(id, type);
             }
         }
-
     }
 
     private void addValues(DataSet dataSet, JsonArray valuesArray) {

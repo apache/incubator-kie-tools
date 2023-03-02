@@ -54,13 +54,8 @@ const INIT_OPTION = {
 };
 
 const validate = (columns: Column[]): string | undefined => {
-  if (
-    columns.length < 3 ||
-    columns[0].type !== "LABEL" || // series
-    columns[1].type !== "NUMBER" || // time
-    columns[2].type !== "NUMBER" // value
-  ) {
-    return "Data Set is Invalid! You must provide at least 3 columns container the series (LABEL), timestamp (NUMBER) and the value (NUMBER)";
+  if (columns.length < 3) {
+    return "Data Set is Invalid! You must provide at least 3 columns containing the series, timestamp and the value";
   }
 };
 
