@@ -80,7 +80,7 @@ public class AddListRowCommand extends AbstractCanvasGraphCommand implements Vet
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
                 list.getExpression().add(uiRowIndex, hasExpression);
-                hasExpression.asDMNModelInstrumentedBase().setParent(list);
+                hasExpression.getExpression().setParent(list);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
@@ -88,7 +88,7 @@ public class AddListRowCommand extends AbstractCanvasGraphCommand implements Vet
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
                 list.getExpression().remove(uiRowIndex);
-                hasExpression.asDMNModelInstrumentedBase().setParent(null);
+                hasExpression.getExpression().setParent(null);
                 return GraphCommandResultBuilder.SUCCESS;
             }
         };
