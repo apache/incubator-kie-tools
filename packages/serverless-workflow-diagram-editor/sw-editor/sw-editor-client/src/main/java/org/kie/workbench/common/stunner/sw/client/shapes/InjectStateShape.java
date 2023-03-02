@@ -16,7 +16,17 @@
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.sw.client.shapes.icons.CornerIcon;
+import org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath;
+import org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition;
+import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.State;
+
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.getStateDataFilter;
 
 public class InjectStateShape extends StateShape {
 
@@ -25,6 +35,18 @@ public class InjectStateShape extends StateShape {
 
     public InjectStateShape(State state, ResourceContentService resourceContentService) {
         super(state, resourceContentService);
+    }
+
+    @Override
+    public void applyProperties(Node<View<State>, Edge> element, MutationContext mutationContext) {
+        super.applyProperties(element, mutationContext);
+        InjectState state = (InjectState) element.getContent().getDefinition();
+
+        if (state.getStateDataFilter() != null) {
+            getView().addChild(new CornerIcon(IconPath.FILTER,
+                                              IconPosition.BOTTOM_FROM_RIGHT_TOP_CORNER,
+                                              getStateDataFilter(state.getStateDataFilter())));
+        }
     }
 
     @Override

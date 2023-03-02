@@ -57,7 +57,7 @@ public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> 
                 .setEventPropagationMode(EventPropagationMode.LAST_ANCESTOR)
                 .setFontSize(12)
                 .setListening(false);
-        TextLineBreakTruncateWrapper textWrapper = new TextLineBreakTruncateWrapper(title, BoundingBox.fromDoubles(0, 0, 160, 44));
+        TextLineBreakTruncateWrapper textWrapper = new TextLineBreakTruncateWrapper(title, BoundingBox.fromDoubles(0, 0, 140, 44));
 
         title.setWrapper(textWrapper);
         addChild(title);

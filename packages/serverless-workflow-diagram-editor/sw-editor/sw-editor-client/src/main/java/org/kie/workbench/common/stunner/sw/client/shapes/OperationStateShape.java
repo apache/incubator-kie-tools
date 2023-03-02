@@ -26,6 +26,8 @@ import org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.getStateDataFilter;
+
 public class OperationStateShape extends StateShape {
 
     public static final String ICON_COLOR = "#0066CC";
@@ -48,7 +50,13 @@ public class OperationStateShape extends StateShape {
 
         getView().addChild(new CornerIcon(IconPath.SERVICE,
                                           IconPosition.RIGHT_TOP_CORNER,
-                                          HasAction.getActionStringFromArray(state.getActions())));
+                                          TextUtils.getActionStringFromArray(state.getActions())));
+
+        if (state.getStateDataFilter() != null) {
+            getView().addChild(new CornerIcon(IconPath.FILTER,
+                                              IconPosition.BOTTOM_FROM_RIGHT_TOP_CORNER,
+                                              getStateDataFilter(state.getStateDataFilter())));
+        }
     }
 
     @Override

@@ -19,19 +19,22 @@ import org.junit.Test;
 import org.kie.workbench.common.stunner.sw.definition.ActionEventRef;
 import org.kie.workbench.common.stunner.sw.definition.ActionNode;
 import org.kie.workbench.common.stunner.sw.definition.FunctionRef;
+import org.kie.workbench.common.stunner.sw.definition.StateDataFilter;
 import org.kie.workbench.common.stunner.sw.definition.SubFlowRef;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.ACTIONS_ARE_NULL;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.ACTION_IS_EVENT;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.ACTION_IS_FUNC;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.ACTION_IS_NULL;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.ACTION_IS_SUBFLOW;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.ACTION_NAME;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.getActionString;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.getActionStringFromArray;
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.ACTIONS_ARE_NULL;
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.ACTION_IS_EVENT;
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.ACTION_IS_FUNC;
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.ACTION_IS_NULL;
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.ACTION_IS_SUBFLOW;
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.ACTION_NAME;
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.STATE_DATA_FILTER_IS_NULL;
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.getActionString;
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.getActionStringFromArray;
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.getStateDataFilter;
 
-public class HasActionTest {
+public class TextUtilsTest {
 
     @Test
     public void actionIsNullTest() {
@@ -162,5 +165,72 @@ public class HasActionTest {
 
         assertEquals(ACTION_IS_SUBFLOW + workflowId + "\r\n" + ACTION_IS_FUNC + funcRef + "\r\n",
                      getActionStringFromArray(actions));
+    }
+
+    @Test
+    public void stateDataFilterEmptyTest() {
+        assertEquals(STATE_DATA_FILTER_IS_NULL, getStateDataFilter(null));
+    }
+
+    @Test
+    public void stateDataFilterInputIsEmptyTest() {
+        StateDataFilter filter = new StateDataFilter();
+        String in = "in";
+        filter.setInput(in);
+        assertEquals("stateDataFilter:\r\ninput: in\r\noutput: null", getStateDataFilter(filter));
+    }
+
+    @Test
+    public void stateDataFilterOutputIsEmptyTest() {
+        StateDataFilter filter = new StateDataFilter();
+        String out = "out";
+        filter.setOutput(out);
+        assertEquals("stateDataFilter:\r\ninput: null\r\noutput: out", getStateDataFilter(filter));
+    }
+
+    @Test
+    public void stateDataFilterInputIsLongTest() {
+        StateDataFilter filter = new StateDataFilter();
+        String in = "012345678901234567890123456789012345";
+        filter.setInput(in);
+        assertEquals("stateDataFilter:\r\ninput: 012345678901234567890123456789...\r\noutput: null",
+                     getStateDataFilter(filter));
+    }
+
+    @Test
+    public void stateDataFilterOutputIsLongTest() {
+        StateDataFilter filter = new StateDataFilter();
+        String out = "012345678901234567890123456789012345";
+        filter.setOutput(out);
+        assertEquals("stateDataFilter:\r\ninput: null\r\noutput: 012345678901234567890123456789...",
+                     getStateDataFilter(filter));
+    }
+
+    @Test
+    public void stateDataFilterTest() {
+        StateDataFilter filter = new StateDataFilter();
+        String in = "in";
+        filter.setInput(in);
+        String out = "out";
+        filter.setOutput(out);
+        assertEquals("stateDataFilter:\r\ninput: in\r\noutput: out", getStateDataFilter(filter));
+    }
+
+    @Test
+    public void stateDataFilterInputIsTrimmedTest() {
+        StateDataFilter filter = new StateDataFilter();
+        String in = "                                                                          ";
+        filter.setInput(in);
+        assertEquals("stateDataFilter:\r\ninput: \r\noutput: null",
+                     getStateDataFilter(filter));
+    }
+
+    @Test
+    public void stateDataFilterOutputIsTrimmedTest() {
+        StateDataFilter filter = new StateDataFilter();
+        String out = " ";
+        filter.setOutput(out);
+        assertEquals("stateDataFilter:\r\ninput: null\r\noutput: ",
+                     getStateDataFilter(filter));
     }
 }
