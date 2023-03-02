@@ -26,8 +26,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.types.Transform;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLAnchorElement;
@@ -376,7 +374,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     void loadNewBoxedExpressionEditor() {
         ExpressionProps expression = ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef());
-        DomGlobal.console.info(JsonUtils.stringify((JavaScriptObject) (Object) expression));
         String decisionNodeId = null;
         if (hasExpression instanceof Decision) {
             decisionNodeId = ((Decision) hasExpression).getId().getValue();
@@ -512,6 +509,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                             getNodeUUID(),
                                                                             itemDefinitionUtils,
                                                                             getHasName()));
+                getExpressionContainerGrid().clearExpression(getNodeUUID());
                 break;
             default:
                 throw new UnsupportedOperationException("Logic type: " + logicType + " is currently unsupported");

@@ -689,12 +689,15 @@ public class ExpressionEditorViewImplTest {
     @Test
     public void testUpdateExpressionUndefined() {
         final ExpressionProps props = new ExpressionProps("", "", ExpressionType.UNDEFINED.getText(), null);
+        final ExpressionContainerGrid expressionContainerGrid = mock(ExpressionContainerGrid.class);
 
         doNothing().when(view).executeUndoableExpressionCommand(any());
+        doReturn(expressionContainerGrid).when(view).getExpressionContainerGrid();
 
         view.updateExpression(props);
 
         verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
+        verify(expressionContainerGrid).clearExpression(NODE_UUID);
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
