@@ -26,6 +26,8 @@ import org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition;
 import org.kie.workbench.common.stunner.sw.definition.ParallelState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 
+import static org.kie.workbench.common.stunner.sw.client.shapes.TextUtils.getStateDataFilter;
+
 public class ParallelStateShape extends StateShape {
 
     public static final String ICON_COLOR = "#4CB140";
@@ -44,6 +46,12 @@ public class ParallelStateShape extends StateShape {
                                               IconPosition.RIGHT_TOP_CORNER,
                                               "BranchExecTimeout: " + state.getTimeouts().getBranchExecTimeout() + "\r\n"
                                                       + "StateExecTimeout: " + state.getTimeouts().getStateExecTimeout()));
+        }
+
+        if (state.getStateDataFilter() != null) {
+            getView().addChild(new CornerIcon(IconPath.FILTER,
+                                              IconPosition.BOTTOM_FROM_RIGHT_TOP_CORNER,
+                                              getStateDataFilter(state.getStateDataFilter())));
         }
     }
 

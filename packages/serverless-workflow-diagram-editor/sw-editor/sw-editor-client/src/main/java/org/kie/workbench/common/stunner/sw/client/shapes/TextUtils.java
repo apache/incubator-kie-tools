@@ -18,11 +18,13 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.sw.definition.ActionNode;
 import org.kie.workbench.common.stunner.sw.definition.FunctionRef;
+import org.kie.workbench.common.stunner.sw.definition.StateDataFilter;
 import org.kie.workbench.common.stunner.sw.definition.SubFlowRef;
 
-public interface HasAction {
+public interface TextUtils {
 
     String ACTION_IS_NULL = "Action is not defined";
+    String STATE_DATA_FILTER_IS_NULL = "StateDataFilter is not defined";
     String ACTIONS_ARE_NULL = "No actions provided";
     String ACTION_NAME = "Action: ";
     String ACTION_IS_FUNC = "Action functionRef: ";
@@ -75,5 +77,27 @@ public interface HasAction {
         }
 
         return ACTION_IS_NULL;
+    }
+
+    static String getStateDataFilter(StateDataFilter filter) {
+        if (filter == null) {
+            return STATE_DATA_FILTER_IS_NULL;
+        }
+
+        return "stateDataFilter:\r\ninput: " + truncate(filter.getInput(), 30)
+                + "\r\noutput: " + truncate(filter.getOutput(), 30);
+    }
+
+    static String truncate(String value, int size) {
+        if (value == null) {
+            return value;
+        }
+
+        String result = value.trim();
+        if (result.length() <= size) {
+            return result;
+        }
+
+        return result.substring(0, size) + "...";
     }
 }
