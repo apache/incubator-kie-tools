@@ -31,7 +31,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     },
     KN_PLUGIN_WORKFLOW__quarkusVersion: {
       name: "KN_PLUGIN_WORKFLOW__quarkusVersion",
-      default: "2.15.0.Final",
+      default: "2.16.0.Final",
       description: "Quarkus version to be used when creating the Kogito Serverless Workflow project",
     },
   }),
