@@ -11,12 +11,6 @@ Feature: Kogito-data-index common feature.
       | SCRIPT_DEBUG           | true    |
     Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080
 
-  Scenario: check if the default quarkus profile is correctly set on data index
-    When container is started with env
-      | variable               | value   |
-      | SCRIPT_DEBUG           | true    |
-    Then container log should contain -Dquarkus.profile=kafka-events-support
-
   Scenario: check if a provided data index quarkus profile is correctly set on data index
     When container is started with env
       | variable                           | value               |

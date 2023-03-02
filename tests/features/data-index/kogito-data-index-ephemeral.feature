@@ -19,3 +19,8 @@ Feature: Kogito-data-index ephemeral postgresql feature.
     And container log should contain Embedded Postgres started at port
     And container log should not contain Application failed to start
 
+  Scenario: check if the default quarkus profile is correctly set on data index
+    When container is started with env
+      | variable               | value   |
+      | SCRIPT_DEBUG           | true    |
+    Then container log should contain -Dquarkus.profile=http-events-support

@@ -11,3 +11,8 @@ Feature: Kogito-data-index postgresql feature.
       And the image should contain label io.k8s.display-name with value Kogito Data Index Service - PostgreSQL
       And the image should contain label io.openshift.tags with value kogito,data-index,data-index-postgresql
 
+  Scenario: check if the default quarkus profile is correctly set on data index
+    When container is started with env
+      | variable               | value   |
+      | SCRIPT_DEBUG           | true    |
+    Then container log should contain -Dquarkus.profile=kafka-events-support

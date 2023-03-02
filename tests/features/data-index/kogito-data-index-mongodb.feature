@@ -26,3 +26,8 @@ Feature: Kogito-data-index mongodb feature.
      And container log should contain QUARKUS_MONGODB_CREDENTIALS_AUTH_PASSWORD=SecretRealm
      And container log should contain QUARKUS_MONGODB_CREDENTIALS_AUTH_MECHANISM=MONGODB-X509
 
+  Scenario: check if the default quarkus profile is correctly set on data index
+    When container is started with env
+      | variable               | value   |
+      | SCRIPT_DEBUG           | true    |
+    Then container log should contain -Dquarkus.profile=kafka-events-support

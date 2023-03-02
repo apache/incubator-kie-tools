@@ -28,3 +28,8 @@ Feature: Kogito-data-index infinispan feature.
      And container log should contain QUARKUS_INFINISPAN_CLIENT_AUTH_REALM=SecretReal
      And container log should contain QUARKUS_INFINISPAN_CLIENT_SASL_MECHANISM=COOLGSSAPI
 
+  Scenario: check if the default quarkus profile is correctly set on data index
+    When container is started with env
+      | variable               | value   |
+      | SCRIPT_DEBUG           | true    |
+    Then container log should contain -Dquarkus.profile=kafka-events-support
