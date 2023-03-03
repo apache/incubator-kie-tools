@@ -53,40 +53,47 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const { getResizerRefs, setResizing: _setResizing } = useResizingWidthsDispatch();
 
-  const [resizingStop__data, setResizingStop__data] = useState(0);
-  const onResizeStop = useCallback((_, data) => {
-    setResizingStop__data(data.size.width);
+  const [resizingStop__data, setResizingStop__data] = useState({ width: 0 });
+  const onResizeStop = useCallback((e, data) => {
+    if (e.detail === 2) {
+      console.debug("Skipping resizeStop onMouseUp because onDoubleClick will handle it.");
+      return;
+    }
+
+    setResizingStop__data({ width: data.size.width });
   }, []);
 
   useEffect(() => {
-    if (!resizingStop__data) {
+    const resizingStopWidth = Math.floor(resizingStop__data.width);
+    if (!resizingStopWidth) {
       return;
     }
 
-    if (resizingWidth?.value === width) {
-      return;
-    }
+    if (!(resizingWidth?.value === width && width === resizingStopWidth)) {
+      console.debug(`Stop resizing (different): ${resizingStopWidth}`);
+      for (const resizerRef of getResizerRefs()) {
+        resizerRef.setWidth?.((prev) => {
+          const prevWidth = prev ?? 0;
+          const resizingWidthValue = resizerRef.resizingWidth?.value ?? prevWidth;
+          if (resizerRef.resizerStopBehavior === ResizerStopBehavior.SET_WIDTH_ALWAYS) {
+            return resizingWidthValue;
+          } else if (resizerRef.resizerStopBehavior === ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER) {
+            return Math.min(resizingWidthValue, prevWidth);
+          } else {
+            throw new Error("Shouldn't ever reach this point");
+          }
+        });
+      }
 
-    for (const resizerRef of getResizerRefs()) {
-      resizerRef.setWidth?.((prev) => {
-        const prevWidth = prev ?? 0;
-        const resizingWidthValue = resizerRef.resizingWidth?.value ?? prevWidth;
-        if (resizerRef.resizerStopBehavior === ResizerStopBehavior.SET_WIDTH_ALWAYS) {
-          return resizingWidthValue;
-        } else if (resizerRef.resizerStopBehavior === ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER) {
-          return Math.min(resizingWidthValue, prevWidth);
-        } else {
-          throw new Error("Shouldn't ever reach this point");
-        }
-      });
+      setWidth?.(resizingStopWidth);
+    } else {
+      console.debug(`Stop resizing (equal): ${resizingStopWidth}`);
     }
 
     setResizing?.(false);
     _setResizing(false);
-    setResizingWidth?.({ value: Math.floor(resizingStop__data), isPivoting: false });
-    setWidth?.(resizingWidth?.value);
-
-    setResizingStop__data(0); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
+    setResizingWidth?.({ value: resizingStopWidth, isPivoting: false });
+    setResizingStop__data({ width: 0 }); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
   }, [
     getResizerRefs,
     resizingWidth?.value,
@@ -96,6 +103,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     setWidth,
     _setResizing,
     width,
+    minWidth,
   ]);
 
   //
@@ -115,7 +123,10 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const onResizeStart = useCallback(
     (_, data) => {
-      setResizingWidth?.({ value: Math.floor(data.size.width), isPivoting: true });
+      const startResizingWidth = Math.floor(data.size.width);
+
+      console.debug(`Start resizing: ${startResizingWidth}`);
+      setResizingWidth?.({ value: startResizingWidth, isPivoting: true });
       setResizing?.(true);
       _setResizing(true);
     },
@@ -128,18 +139,13 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
       const widthToFitData = getWidthToFitData?.();
 
-      // This is pretending we resized down.
-      onResizeStart(undefined, {
-        size: {
-          width: Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH),
-        },
-      });
-      // Let React handle the state update above, then stop the resizing.
       setTimeout(() => {
-        setResizingStop__data(Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH));
-      }, 100);
+        setResizingStop__data({
+          width: Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH),
+        });
+      }, 0);
     },
-    [getWidthToFitData, minWidth, onResizeStart]
+    [getWidthToFitData, minWidth]
   );
 
   const style = useMemo(() => {
