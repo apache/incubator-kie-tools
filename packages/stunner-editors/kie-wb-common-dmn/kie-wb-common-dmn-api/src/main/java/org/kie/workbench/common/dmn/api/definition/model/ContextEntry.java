@@ -37,8 +37,6 @@ public class ContextEntry extends DMNModelInstrumentedBase implements HasExpress
                                                                       HasVariable<InformationItem>,
                                                                       HasDomainObject {
 
-    public static final String DEFAULT_EXPRESSION_VALUE = "null // auto-filled by the editor to avoid missing empty expression.";
-
     private InformationItem variable;
     private Expression expression;
 
