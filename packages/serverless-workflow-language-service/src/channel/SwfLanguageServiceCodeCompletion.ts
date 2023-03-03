@@ -65,6 +65,12 @@ export type SwfLanguageServiceCodeCompletionFunctionsArgs = {
   cursorPosition: Position;
   jqCompletions: JqCompletions;
 };
+interface JqFunctionCompletion {
+  /**
+   * @param wordToSearch The wordToSearch is empty to show all the completion. Otherwise it completes the word.
+   */
+  (args: SwfLanguageServiceCodeCompletionFunctionsArgs & { wordToSearch: string }): Promise<CompletionItem[]>;
+}
 
 function toCompletionItemLabel(namespace: string, resource: string, operation: string) {
   return `${namespace}»${resource}#${operation}`;
@@ -189,9 +195,10 @@ function getJqCompletionWordToSearch(slicedValue: string): string {
 /**
  * get the input workflow variables from remote/relative paths.
  */
-async function getJqInputVariablesCompletions(
+const getJqInputVariablesCompletions: JqFunctionCompletion = async function getJqInputVariablesCompletions(
   args: SwfLanguageServiceCodeCompletionFunctionsArgs & { wordToSearch: string }
 ): Promise<CompletionItem[]> {
+  const showAllCompletion = !args.wordToSearch.length ? true : false;
   const { relativeList, remoteList } = extractFunctionsPath(
     findNodeAtLocation(args.rootNode, ["functions"])?.children as SwfLsNode[]
   );
@@ -220,7 +227,7 @@ async function getJqInputVariablesCompletions(
     return Promise.resolve(
       schemaData
         .filter((prop: Record<string, string>) =>
-          args.wordToSearch === "." ? true : Object.keys(prop)[0].startsWith(args.wordToSearch)
+          showAllCompletion ? true : Object.keys(prop)[0].startsWith(args.wordToSearch)
         )
         .map((parsedProp: Record<string, string>) => {
           return createCompletionItem({
@@ -229,14 +236,14 @@ async function getJqInputVariablesCompletions(
             kind: CompletionItemKind.Value,
             label: Object.keys(parsedProp)[0],
             detail: Object.values(parsedProp)[0],
-            filterText: args.wordToSearch === "." ? Object.keys(parsedProp)[0] : args.wordToSearch,
+            filterText: showAllCompletion ? Object.keys(parsedProp)[0] : args.wordToSearch,
             extraOptions: {
               insertText: Object.keys(parsedProp)[0],
             },
             overwriteRange: Range.create(
               Position.create(
                 args.cursorPosition.line,
-                args.wordToSearch === "."
+                showAllCompletion
                   ? args.cursorPosition.character
                   : args.cursorPosition.character - args.wordToSearch.length
               ),
@@ -247,13 +254,13 @@ async function getJqInputVariablesCompletions(
     );
   }
   return [];
-}
+};
 /**
  * get reusable functions defined in the functions array of the swf file.
  */
-function getReusableFunctionCompletion(
+const getReusableFunctionCompletion: JqFunctionCompletion = async function (
   args: SwfLanguageServiceCodeCompletionFunctionsArgs & { wordToSearch: string }
-): CompletionItem[] {
+): Promise<CompletionItem[]> {
   const reusalbeFunctions: SwfLsNode = findNodeAtLocation(args.rootNode, ["functions"])!;
   const functionNamesArray: string[] = [];
   const isWordToSearchExist = args.wordToSearch.length ? true : false;
@@ -269,7 +276,7 @@ function getReusableFunctionCompletion(
       }
     });
     return functionNamesArray
-      .filter((name: string) => (args.wordToSearch === "" ? true : name.startsWith(args.wordToSearch)))
+      .filter((name: string) => (!isWordToSearchExist ? true : name.startsWith(args.wordToSearch)))
       .map((filteredName: string) => {
         return createCompletionItem({
           ...args,
@@ -286,38 +293,21 @@ function getReusableFunctionCompletion(
       });
   }
   return [];
-}
+};
 /**
- * get jq CodeCompletion functions.
+ * get jq built-in CodeCompletions.
  */
-async function getJqFunctionCompletions(
-  args: SwfLanguageServiceCodeCompletionFunctionsArgs
+const getJqBuiltInFunctions: JqFunctionCompletion = async function (
+  args: SwfLanguageServiceCodeCompletionFunctionsArgs & { wordToSearch: string }
 ): Promise<CompletionItem[]> {
-  const currentCursor = args.cursorOffset - args.currentNode.offset;
-  const slicedValue = args.currentNode.value.slice(0, currentCursor - 1);
-  const inputVariableMatch = slicedValue.match(/.*\.(\w+)?$/);
-  if (inputVariableMatch) {
-    return await getJqInputVariablesCompletions({
-      ...args,
-      wordToSearch: inputVariableMatch[1] === undefined ? "." : inputVariableMatch[1],
-    });
-  }
-  const reusableFunctionMatch = slicedValue.match(/.*fn:(\w+)?$/);
-  if (reusableFunctionMatch) {
-    return getReusableFunctionCompletion({
-      ...args,
-      wordToSearch: reusableFunctionMatch[1] === undefined ? "" : reusableFunctionMatch[1],
-    });
-  }
-  const wordToSearch = getJqCompletionWordToSearch(slicedValue);
-  const isWordToSearchExist = wordToSearch.length ? true : false;
+  const isWordToSearchExist = args.wordToSearch.length ? true : false;
   const overwriteRange = Range.create(
-    Position.create(args.cursorPosition.line, args.cursorPosition.character - wordToSearch.length),
+    Position.create(args.cursorPosition.line, args.cursorPosition.character - args.wordToSearch.length),
     Position.create(args.cursorPosition.line, args.cursorPosition.character)
   );
-  const result = jqBuiltInFunctions
+  return jqBuiltInFunctions
     .filter((func: { functionName: string; description: string }) =>
-      !wordToSearch.length ? true : func.functionName.startsWith(wordToSearch)
+      !isWordToSearchExist ? true : func.functionName.startsWith(args.wordToSearch)
     )
     .map((filteredFunc: { functionName: string; description: string }) => {
       return createCompletionItem({
@@ -326,14 +316,37 @@ async function getJqFunctionCompletions(
         kind: CompletionItemKind.Function,
         label: filteredFunc.functionName,
         detail: filteredFunc.description,
-        filterText: isWordToSearchExist ? wordToSearch : filteredFunc.functionName,
+        filterText: isWordToSearchExist ? args.wordToSearch : filteredFunc.functionName,
         extraOptions: {
           insertText: filteredFunc.functionName,
         },
         overwriteRange,
       });
     });
-  return Promise.resolve(result);
+};
+/**
+ * get jq CodeCompletion functions.
+ */
+async function getJqFunctionCompletions(
+  args: SwfLanguageServiceCodeCompletionFunctionsArgs
+): Promise<CompletionItem[]> {
+  const {
+    currentNode,
+    cursorOffset,
+    currentNode: { offset },
+  } = args;
+  const isCurrentNodeValueWithQuotes = currentNode.length === currentNode.value.length ? 0 : 1;
+  const currentCursor = cursorOffset - offset;
+  const slicedValue = currentNode.value.slice(0, currentCursor - isCurrentNodeValueWithQuotes);
+  const inputVariableMatch = slicedValue.match(/.*((\.)|(fn:))(\w+)?$/);
+  if (inputVariableMatch) {
+    const wordToSearch = inputVariableMatch[4] ?? "";
+    return inputVariableMatch[1] === "."
+      ? await getJqInputVariablesCompletions({ ...args, wordToSearch })
+      : await getReusableFunctionCompletion({ ...args, wordToSearch });
+  }
+  const wordToSearch = getJqCompletionWordToSearch(slicedValue);
+  return await getJqBuiltInFunctions({ ...args, wordToSearch });
 }
 /**
  * SwfLanguageService CodeCompletion functions
