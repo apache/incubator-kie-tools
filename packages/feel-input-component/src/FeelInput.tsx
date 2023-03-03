@@ -63,6 +63,11 @@ Monaco.editor.defineTheme(MONACO_FEEL_THEME, feelTheme());
 
 Monaco.languages.setMonarchTokensProvider(MONACO_FEEL_LANGUAGE, feelTokensConfig());
 
+// Don't remove this. It's necessary for Monaco to initialize correctly and display correct colors for FEEL.
+Monaco.editor.create(document.body, { theme: MONACO_FEEL_THEME, language: MONACO_FEEL_LANGUAGE }).dispose();
+
+console.info("Registered FEEL language on Monaco Editor.");
+
 export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
   ({ enabled, value, suggestionProvider, onBlur, onPreviewChanged, onKeyDown, onChange, options }, forwardRef) => {
     const monacoContainer = useRef<HTMLDivElement>(null);
