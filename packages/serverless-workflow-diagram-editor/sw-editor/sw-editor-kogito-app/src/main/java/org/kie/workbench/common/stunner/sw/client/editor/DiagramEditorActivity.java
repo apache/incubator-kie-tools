@@ -64,11 +64,6 @@ public class DiagramEditorActivity extends AbstractActivity implements EditorAct
     }
 
     @Override
-    public Promise<Void> setContentYAML(String path, String value) {
-        return realPresenter.setContentYAML(path, value);
-    }
-
-    @Override
     public Promise<Void> selectStateByName(String name){
         return realPresenter.selectStateByName(name);
     }
@@ -81,6 +76,11 @@ public class DiagramEditorActivity extends AbstractActivity implements EditorAct
     @Override
     public Promise<String> getContentYAML() {
         return realPresenter.getContentYAML();
+    }
+
+    @Override
+    public Promise<String> getContentJSON() {
+        return realPresenter.getContentJSON();
     }
 
     @Override

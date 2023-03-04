@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.core.Global;
 import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.dom.DomGlobal;
@@ -92,6 +93,13 @@ public class DiagramEditor {
     private final Event<TogglePreviewEvent> togglePreviewEvent;
     private final DiagramApi diagramApi;
 
+<<<<<<< HEAD
+=======
+    private DocType currentDocType = DocType.JSON;
+
+    JsCanvas jsCanvas;
+
+>>>>>>> 2fd1c09df2 (on review)
     @Inject
     public DiagramEditor(Promises promises,
                          StunnerEditor stunnerEditor,
@@ -137,22 +145,32 @@ public class DiagramEditor {
     }
 
     public Promise<String> getContent() {
-        return diagramService.transform(stunnerEditor.getDiagram(), DocType.JSON);
+        return diagramService.transform(stunnerEditor.getDiagram(), currentDocType);
     }
 
     public Promise<String> getContentYAML() {
         return diagramService.transform(stunnerEditor.getDiagram(), DocType.YAML);
     }
 
-    public Promise<Void> setContent(final String path, final String value) {
-        return setContent(path, value, DocType.JSON);
+    public Promise<String> getContentJSON() {
+        return diagramService.transform(stunnerEditor.getDiagram(), DocType.JSON);
     }
 
-    public Promise<Void> setContentYAML(final String path, final String value) {
-        return setContent(path, value, DocType.YAML);
+    public Promise<Void> setContent(final String path, final String value) {
+        if(value == null || value.isEmpty()) {
+            return setContent(path, "{}", DocType.JSON);
+        }
+
+        try{
+            Global.JSON.parse(value); //check if it is a valid json, if now, we can assume it is a yaml
+            return setContent(path, value, DocType.JSON);
+        } catch (Exception e) {
+            return setContent(path, value, DocType.YAML);
+        }
     }
 
     private Promise<Void> setContent(final String path, final String value, final DocType docType) {
+        this.currentDocType = docType;
         TogglePreviewEvent event = new TogglePreviewEvent(TogglePreviewEvent.EventType.HIDE);
         togglePreviewEvent.fire(event);
         Promise<Void> setContentPromise;

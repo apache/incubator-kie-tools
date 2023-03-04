@@ -30,10 +30,6 @@ public class JSFunctions {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::setContent(Ljava/lang/String;Ljava/lang/String;)(path, value);
         };
 
-        $wnd.GWTEditor.prototype.setContentYAML = function (path, value) {
-            return this.instance.@org.uberfire.client.mvp.EditorActivity::setContentYAML(Ljava/lang/String;Ljava/lang/String;)(path, value);
-        };
-
         $wnd.GWTEditor.prototype.selectStateByName = function (name) {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::selectStateByName(Ljava/lang/String;)(name);
         };
@@ -44,6 +40,10 @@ public class JSFunctions {
 
         $wnd.GWTEditor.prototype.getContentYAML = function () {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::getContentYAML()();
+        };
+
+        $wnd.GWTEditor.prototype.getContentJSON = function () {
+            return this.instance.@org.uberfire.client.mvp.EditorActivity::getContentJSON()();
         };
 
         $wnd.GWTEditor.prototype.getPreview = function () {
