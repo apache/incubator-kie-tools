@@ -26,8 +26,6 @@ public interface EditorActivity extends Activity {
 
     Promise<Void> setContent(String path, String value);
 
-    Promise<Void> setContentYAML(String path, String value);
-
     default Promise<Void> selectStateByName(String name) {
         throw new UnsupportedOperationException("The editor does not support state selection.");
     }
@@ -35,6 +33,8 @@ public interface EditorActivity extends Activity {
     Promise<String> getContent();
 
     Promise<String> getContentYAML();
+
+    Promise<String> getContentJSON();
 
     Promise<String> getPreview();
 

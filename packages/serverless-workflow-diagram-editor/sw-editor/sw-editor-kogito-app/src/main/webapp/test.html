@@ -15,27 +15,17 @@
   -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
   <head>
     <meta charset="UTF-8" />
     <title>SW Editor Test Page (Read-Only)</title>
 
     <script>
-      function loadJSONDiagram(diagram) {
+      function loadDiagram(diagram) {
         var path = "somePath";
         window.frames.editorFrame.contentWindow.gwtEditorBeans.get("SWDiagramEditor").get().setContent(path, diagram);
         document.getElementById("download_btn").disabled = false;
-        document.getElementById("download_btn_yaml").disabled = false;
-        document.getElementById("download_svg_btn").disabled = false;
-      }
-
-      function loadYAMLDiagram(diagram) {
-        var path = "somePath";
-        window.frames.editorFrame.contentWindow.gwtEditorBeans
-          .get("SWDiagramEditor")
-          .get()
-          .setContentYAML(path, diagram);
-        document.getElementById("download_btn").disabled = false;
+        document.getElementById("download_btn_json").disabled = false;
         document.getElementById("download_btn_yaml").disabled = false;
         document.getElementById("download_svg_btn").disabled = false;
       }
@@ -53,6 +43,23 @@
             var d = document.createElement("a");
             d.setAttribute("href", "data:text/xml;charset=utf-8," + encodeURIComponent(process));
             d.setAttribute("download", "process.sw.json");
+            d.style.display = "none";
+
+            document.body.appendChild(d);
+            d.click();
+            document.body.removeChild(d);
+          });
+      }
+
+      function downloadJSON() {
+        window.frames.editorFrame.contentWindow.gwtEditorBeans
+          .get("SWDiagramEditor")
+          .get()
+          .getContentJSON()
+          .then(function (process) {
+            var d = document.createElement("a");
+            d.setAttribute("href", "data:text/xml;charset=utf-8," + encodeURIComponent(process));
+            d.setAttribute("download", "process.sw");
             d.style.display = "none";
 
             document.body.appendChild(d);
@@ -110,12 +117,19 @@
   <body>
     <div id="editor">
       Wait until the editor is loaded to open a SW file:<br />
-      <input type="button" onclick="loadJSON('')" value="Create new" />
+      <input type="button" onclick="loadDiagram('')" value="Create new" />
       <input type="button" onclick="callPreview()" value="Call Preview" />
       or
       <input type="file" onchange="openFile(event)" value="Choose SW file" accept="sw,txt" />
       When you are ready you can
-      <input type="button" id="download_btn" value="Download the diagram as JSON" onclick="download()" disabled />
+      <input type="button" id="download_btn" value="Download the diagram as loaded" onclick="download()" disabled />
+      <input
+        type="button"
+        id="download_btn_json"
+        value="Download the diagram as JSON"
+        onclick="downloadJSON()"
+        disabled
+      />
       <input
         type="button"
         id="download_btn_yaml"
@@ -128,19 +142,19 @@
 
     <div style="display: flex">
       <div style="display: inline; float: left; padding: 25px">
-        <label for="selectExample">Examples:&nbsp;</label>
-        <select id="selectExample"></select>
         <div>
-          <!--          <input
-            type="button"
-            onclick="loadJSON()"
-            value="Load JSON Content"
-            style="display: inline-block; margin-bottom: 5px"
-          />-->
+          <label for="selectYamlExample">Yaml Examples:&nbsp;</label>
+          <select id="selectYamlExample"></select>
+        </div>
+        <div>
+          <label for="selectJsonExample">Json Examples:&nbsp;&nbsp;</label>
+          <select id="selectJsonExample"></select>
+        </div>
+        <div>
           <input
             type="button"
-            onclick="loadYAML()"
-            value="Load YAML Content"
+            onclick="load()"
+            value="Load Content"
             style="display: inline-block; margin-bottom: 5px"
           />
         </div>
@@ -153,7 +167,7 @@
     </div>
 
     <script>
-      const examples = [
+      const yaml_examples = [
         {
           id: "injectExample",
           name: "Inject State Example",
@@ -512,6 +526,507 @@
     </script>
 
     <script>
+      const json_examples = [
+        {
+          id: "injectExample",
+          version: "1.0",
+          specVersion: "0.8",
+          name: "Inject State Example",
+          description: "Inject Example",
+          start: "Inject State",
+          states: [
+            {
+              name: "Inject State",
+              type: "inject",
+              data: {
+                person: {
+                  fname: "John",
+                  lname: "Doe",
+                },
+              },
+              stateDataFilter: {
+                input: "${ {vegetables: .vegetables} }",
+                output: "${ {vegetables: [.vegetables[] | select(.veggieLike == true)]} }",
+              },
+              usedForCompensation: false,
+              metadata: {
+                prop1: "value1",
+                prop2: "value2",
+              },
+              end: true,
+            },
+          ],
+        },
+
+        {
+          id: "sleepExample",
+          version: "1.0",
+          specVersion: "0.8",
+          name: "Sleep State Example",
+          description: "Sleep State Example",
+          start: "Sleep State",
+          states: [
+            {
+              name: "Sleep State",
+              type: "sleep",
+              duration: "PT5S",
+              end: true,
+            },
+          ],
+        },
+
+        {
+          id: "errorsExample",
+          version: "1.0",
+          specVersion: "0.8",
+          name: "Errors Example",
+          description: "Errors Example",
+          start: "Init State",
+          states: [
+            {
+              name: "Init State",
+              type: "inject",
+              end: false,
+              transition: "Next State",
+              onErrors: [
+                {
+                  errorRef: "Some Error",
+                  end: false,
+                  transition: "Error State",
+                },
+              ],
+            },
+            {
+              name: "Error State",
+              type: "inject",
+              end: true,
+            },
+            {
+              name: "Next State",
+              type: "inject",
+              end: true,
+            },
+          ],
+        },
+
+        {
+          id: "operationStateWorkflow",
+          name: "Operation State Example",
+          description: "Operation State Example",
+          version: "1.0",
+          specVersion: "0.8",
+          start: "Operation State",
+          states: [
+            {
+              name: "Operation State",
+              type: "operation",
+              actionMode: "sequential",
+              actions: [
+                {
+                  name: "action1",
+                  functionRef: "function1",
+                },
+                {
+                  name: "action2",
+                  subFlowRef: "subflow1",
+                },
+              ],
+              end: true,
+            },
+          ],
+        },
+
+        {
+          id: "forEachExample",
+          version: "1.0",
+          specVersion: "0.8",
+          name: "ForEach State Example",
+          description: "ForEach State Example",
+          start: "ForEach State",
+          states: [
+            {
+              name: "ForEach State",
+              type: "foreach",
+              inputCollection: "${ .messages }",
+              iterationParam: "singlemessage",
+              actions: [
+                {
+                  functionRef: {
+                    refName: "sendTextFunction",
+                    arguments: {
+                      message: "${ .singlemessage }",
+                    },
+                  },
+                },
+              ],
+              end: true,
+            },
+          ],
+        },
+
+        {
+          id: "eventStateExample",
+          version: "1.0",
+          name: "Event State Example",
+          start: "Event State",
+          states: [
+            {
+              name: "Event State",
+              type: "event",
+              onEvents: [
+                {
+                  eventRefs: ["Event1"],
+                  actions: [
+                    {
+                      functionRef: "Function1",
+                    },
+                  ],
+                },
+              ],
+              end: true,
+            },
+          ],
+          events: [
+            {
+              name: "Event1",
+              type: "EventDef1Type",
+              source: "EventDef1Source",
+            },
+          ],
+          functions: [
+            {
+              name: "Function1",
+              operation: "openapiservicedef.json#someFunction",
+              type: "rest",
+            },
+          ],
+        },
+
+        {
+          id: "eventBasedSwitchStateExample",
+          version: "1.0",
+          specVersion: "0.8",
+          name: "Event Based Switch Example",
+          description: "Event Based Switch Example",
+          start: "Switch State",
+          states: [
+            {
+              name: "Switch State",
+              type: "switch",
+              eventConditions: [
+                {
+                  eventRef: "event1",
+                  transition: "Event1 State",
+                },
+                {
+                  eventRef: "event2",
+                  transition: "Event2 State",
+                },
+              ],
+              defaultCondition: {
+                transition: "Default State",
+              },
+            },
+            {
+              name: "Default State",
+              type: "operation",
+              actions: [
+                {
+                  subFlowRef: "handleApprovedVisaWorkflowID",
+                },
+              ],
+              end: true,
+            },
+            {
+              name: "Event2 State",
+              type: "operation",
+              actions: [
+                {
+                  subFlowRef: "handleRejectedVisaWorkflowID",
+                },
+              ],
+              end: true,
+            },
+            {
+              name: "Event1 State",
+              type: "operation",
+              actions: [
+                {
+                  subFlowRef: "handleNoVisaDecisionWorkflowId",
+                },
+              ],
+              end: true,
+            },
+          ],
+        },
+
+        {
+          id: "dataBasedSwitchStateExample",
+          version: "1.0",
+          specVersion: "0.8",
+          name: "Data Based Switch Example",
+          description: "Data Based Switch Example",
+          start: "Switch State",
+          states: [
+            {
+              name: "Switch State",
+              type: "switch",
+              dataConditions: [
+                {
+                  condition: "condition1",
+                  transition: "Condition1 State",
+                },
+                {
+                  condition: "condition2",
+                  transition: "Condition2 State",
+                },
+              ],
+              defaultCondition: {
+                transition: "Default State",
+              },
+            },
+            {
+              name: "Default State",
+              type: "operation",
+              actions: [
+                {
+                  subFlowRef: "handleApprovedVisaWorkflowID",
+                },
+              ],
+              end: true,
+            },
+            {
+              name: "Condition2 State",
+              type: "operation",
+              actions: [
+                {
+                  subFlowRef: "handleRejectedVisaWorkflowID",
+                },
+              ],
+              end: true,
+            },
+            {
+              name: "Condition1 State",
+              type: "operation",
+              actions: [
+                {
+                  subFlowRef: "handleNoVisaDecisionWorkflowId",
+                },
+              ],
+              end: true,
+            },
+          ],
+        },
+
+        {
+          id: "parallelStateExample",
+          version: "1.0",
+          specVersion: "0.8",
+          name: "Parallel State Example",
+          description: "Parallel State Example",
+          start: "Parallel State",
+          states: [
+            {
+              name: "Parallel State",
+              type: "parallel",
+              completionType: "allOf",
+              branches: [
+                {
+                  name: "branch1",
+                  actions: [
+                    {
+                      subFlowRef: "subflow1",
+                    },
+                  ],
+                },
+                {
+                  name: "branch2",
+                  actions: [
+                    {
+                      subFlowRef: "subflow2",
+                    },
+                  ],
+                },
+              ],
+              end: true,
+            },
+          ],
+        },
+
+        {
+          id: "statesExample",
+          version: "1.0",
+          specVersion: "0.8",
+          name: "States Example",
+          description: "States Example",
+          start: "Create Initial Data",
+          states: [
+            {
+              name: "Create Initial Data",
+              type: "sleep",
+              end: false,
+              transition: "Inject data",
+            },
+            {
+              name: "Inject data",
+              type: "foreach",
+              end: false,
+              compensatedBy: "Compensate",
+              transition: "Wait for Events",
+              onErrors: [
+                {
+                  errorRef: "SomeError1",
+                  end: false,
+                  transition: "Handle Error1",
+                },
+                {
+                  errorRef: "SomeError2",
+                  end: false,
+                  transition: "Handle Error2",
+                },
+              ],
+            },
+            {
+              name: "Handle Error1",
+              type: "inject",
+              end: true,
+            },
+            {
+              name: "Handle Error2",
+              type: "inject",
+              end: true,
+            },
+            {
+              name: "Wait for Events",
+              type: "event",
+              onEvents: [
+                {
+                  eventRefs: ["Event"],
+                  actions: [
+                    {
+                      functionRef: "Function",
+                    },
+                  ],
+                },
+              ],
+              transition: "Run Operations",
+              end: false,
+            },
+            {
+              name: "Run Operations",
+              type: "operation",
+              actionMode: "sequential",
+              actions: [
+                {
+                  name: "action1",
+                  functionRef: "Task1",
+                },
+                {
+                  name: "action2",
+                  subFlowRef: "Task2",
+                },
+              ],
+              end: false,
+              transition: "Switch State",
+            },
+            {
+              name: "Switch State",
+              type: "switch",
+              onErrors: [
+                {
+                  errorRef: "SomeError3",
+                  end: false,
+                  transition: "Handle Error3",
+                },
+              ],
+              eventConditions: [
+                {
+                  eventRef: "event1",
+                  transition: "Event1 State",
+                },
+                {
+                  eventRef: "event2",
+                  transition: "Event2 State",
+                },
+              ],
+              defaultCondition: {
+                transition: "Default State",
+              },
+            },
+            {
+              name: "Handle Error3",
+              type: "callback",
+              end: true,
+            },
+            {
+              name: "Event1 State",
+              type: "event",
+              end: true,
+            },
+            {
+              name: "Event2 State",
+              type: "event",
+              end: true,
+            },
+            {
+              name: "Default State",
+              type: "parallel",
+              end: true,
+            },
+            {
+              name: "Compensate",
+              type: "callback",
+              end: true,
+            },
+          ],
+        },
+
+        {
+          id: "startTransitionEndObjects",
+          version: "1.0",
+          specVersion: "0.8",
+          name: "Start, Transition and End as Objects",
+          description: "Start, Transition and End as Objects",
+          start: {
+            stateName: "Init State",
+            schedule: "2020-03-20T09:00:00Z/2020-03-20T15:00:00Z",
+          },
+          states: [
+            {
+              name: "Init State",
+              type: "inject",
+              end: false,
+              transition: {
+                nextState: "Next State",
+              },
+              onErrors: [
+                {
+                  errorRef: "Some Error",
+                  end: false,
+                  transition: {
+                    nextState: "Error State",
+                  },
+                },
+              ],
+            },
+            {
+              name: "Error State",
+              type: "inject",
+              end: true,
+            },
+            {
+              name: "Next State",
+              type: "inject",
+              end: {
+                terminate: true,
+              },
+            },
+          ],
+        },
+      ];
+    </script>
+
+    <script>
       function applyText(object) {
         setText(JSON.stringify(object, null, " "));
       }
@@ -520,22 +1035,19 @@
         document.getElementById("jsonRawContent").value = object;
       }
 
-      function loadJSON() {
-        loadJSONDiagram(getText());
-      }
-      function loadYAML() {
-        loadYAMLDiagram(getText());
+      function load() {
+        loadDiagram(getText());
       }
 
       function getText() {
         return document.getElementById("jsonRawContent").value;
       }
 
-      function loadExamplesDropDown() {
-        var examplesSelect = document.getElementById("selectExample");
+      function loadYamlExamplesDropDown() {
+        var examplesSelect = document.getElementById("selectYamlExample");
 
-        for (let i = 0; i < examples.length; i++) {
-          let example = examples[i];
+        for (let i = 0; i < yaml_examples.length; i++) {
+          let example = yaml_examples[i];
           var option = document.createElement("option");
           option.value = example.id;
           option.textContent = example.name;
@@ -546,13 +1058,34 @@
         }
       }
 
-      document.getElementById("selectExample").onchange = function (e) {
-        var i = document.getElementById("selectExample").selectedIndex;
-        setText(examples[i].content);
+      document.getElementById("selectYamlExample").onchange = function (e) {
+        var i = document.getElementById("selectYamlExample").selectedIndex;
+        setText(yaml_examples[i].content);
       };
 
-      loadExamplesDropDown();
-      setText(examples[0].content);
+      function loadJsonExamplesDropDown() {
+        var examplesSelect = document.getElementById("selectJsonExample");
+
+        for (let i = 0; i < json_examples.length; i++) {
+          let example = json_examples[i];
+          var option = document.createElement("option");
+          option.value = example.id;
+          option.textContent = example.name;
+          if (i === 0) {
+            option.selected = "selected";
+          }
+          examplesSelect.appendChild(option);
+        }
+      }
+
+      document.getElementById("selectJsonExample").onchange = function (e) {
+        var i = document.getElementById("selectJsonExample").selectedIndex;
+        applyText(json_examples[i]);
+      };
+
+      loadJsonExamplesDropDown();
+      loadYamlExamplesDropDown();
+      setText(yaml_examples[0].content);
       window.frames.editorFrame.contentWindow.onContentChanged = function (raw) {
         setText(raw);
       };
