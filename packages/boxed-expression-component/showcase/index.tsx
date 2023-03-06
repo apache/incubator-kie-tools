@@ -119,7 +119,7 @@ export const App: React.FunctionComponent = () => {
     selectObject(): void {},
   };
 
-  const onTypedExpressionChange = useCallback((e) => {
+  const onTypedExpressionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTypedExpressionDefinition(e.target.value);
   }, []);
 
@@ -200,4 +200,4 @@ export const App: React.FunctionComponent = () => {
   );
 };
 
-createRoot(document.getElementById("root")).render(<App />);
+createRoot(document.getElementById("root")!).render(<App />);
