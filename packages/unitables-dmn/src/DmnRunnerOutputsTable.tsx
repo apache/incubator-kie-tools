@@ -23,10 +23,9 @@ import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamati
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import nextId from "react-id-generator";
 import { useDmnRunnerOutputs as useDmnRunnerOutputs } from "./DmnRunnerOutputs";
-import { DecisionResult } from "./DmnTypes";
+import { DecisionResult, Result } from "./DmnTypes";
 import { DmnUnitablesI18n } from "./i18n";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
-
 import * as ReactTable from "react-table";
 import {
   BeeTableHeaderVisibility,
@@ -63,9 +62,7 @@ export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrolla
   const rows = useMemo(
     () =>
       (results ?? []).map((result) => ({
-        outputEntries: (result ?? []).map(({ result }) => {
-          return result as string; // FIXME: Tiago -> This ` as string` here is absolutely wrong.
-        }),
+        outputEntries: (result ?? []).map(({ result }) => result),
       })),
     [results]
   );
@@ -119,20 +116,21 @@ function OutputError() {
 
 export const DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH = 150;
 
-type ROWTYPE = any; // FIXME: Tiago
+interface ROWTYPE {
+  id: string;
+}
 
-const DASH_SYMBOL = "-";
 const EMPTY_SYMBOL = "";
 
-export interface OutputsTableProps {
+interface OutputsTableProps {
   id: string;
   i18n: BoxedExpressionEditorI18n;
-  rows: { outputEntries: string[] }[];
+  rows: { outputEntries: Result[] }[];
   outputs?: UnitablesColumnType[];
   scrollableParentRef: React.RefObject<HTMLElement>;
 }
 
-export function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: OutputsTableProps) {
+function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: OutputsTableProps) {
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
       {
@@ -148,13 +146,41 @@ export function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }
   }, []);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
-    return (rows?.[0]?.outputEntries ?? []).flatMap((outputEntry, outputIndex) => {
-      if (outputEntry === null || outputEntry === undefined) {
-        return [];
-      }
+    return (rows?.[0]?.outputEntries ?? []).flatMap((outputEntry: Result, outputIndex: number) => {
+      const output: UnitablesColumnType | undefined = outputs?.[outputIndex];
 
+      // Primitives and null;
+      if (
+        typeof outputEntry === "string" ||
+        typeof outputEntry === "number" ||
+        typeof outputEntry === "boolean" ||
+        outputEntry === null
+      ) {
+        return [
+          {
+            originalId: uuid + `-parent-${output?.name}`,
+            label: "",
+            accessor: `output-parent-${output?.name}` as any,
+            dataType: undefined as any,
+            isRowIndexColumn: false,
+            groupType: "dmn-runner-output",
+            minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+            columns: [
+              {
+                originalId: uuid + `${output?.name}`,
+                label: output?.name ?? "",
+                accessor: `output-${output?.name}` as any,
+                dataType: output?.dataType ?? DmnBuiltInDataType.Undefined,
+                isRowIndexColumn: false,
+                groupType: "dmn-runner-output",
+                width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+                minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+              },
+            ],
+          },
+        ];
+      }
       // Lists
-      const output = outputs?.[outputIndex];
       if (Array.isArray(outputEntry)) {
         return [
           {
@@ -164,7 +190,6 @@ export function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }
             dataType: output?.dataType ?? DmnBuiltInDataType.Undefined,
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
-            width: undefined,
             columns: outputEntry.map((entry, entryIndex) => ({
               originalId: uuid + `${entryIndex}`,
               label: `[${entryIndex}]`,
@@ -179,7 +204,7 @@ export function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }
         ];
       }
       // Contexts/Structures
-      else if (typeof outputEntry === "object") {
+      if (typeof outputEntry === "object") {
         return [
           {
             originalId: uuid + `${output?.name}`,
@@ -188,7 +213,6 @@ export function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }
             dataType: output?.dataType ?? DmnBuiltInDataType.Undefined,
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
-            width: undefined,
             minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
             columns: Object.keys(outputEntry).map((entryKey) => {
               const filteredOutputs = output?.insideProperties?.find((property) =>
@@ -208,41 +232,17 @@ export function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }
           },
         ];
       }
-      // Primitives
-      else {
-        return [
-          {
-            originalId: uuid + `-parent-${output?.name}`,
-            label: "",
-            accessor: `output-parent-${output?.name}` as any,
-            dataType: undefined as any,
-            isRowIndexColumn: false,
-            groupType: "dmn-runner-output",
-            width: undefined,
-            minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-            columns: [
-              {
-                originalId: uuid + `${output?.name}`,
-                label: output?.name ?? "",
-                accessor: `output-${output?.name}` as any,
-                dataType: output?.dataType ?? DmnBuiltInDataType.Undefined,
-                isRowIndexColumn: false,
-                groupType: "dmn-runner-output",
-                width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-                minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-              },
-            ],
-          },
-        ];
-      }
+      return [] as ReactTable.Column<ROWTYPE>[];
     });
   }, [outputs, rows, uuid]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
     return rows.map((row, rowIndex) => {
-      const rowArray = row.outputEntries.reduce((acc, entry) => {
-        if (entry == null || entry === undefined) {
+      const rowArray = row.outputEntries.reduce((acc: Result[], entry: Result): Result[] => {
+        if (entry === undefined) {
           return acc;
+        } else if (entry === null) {
+          return [...acc, "null"];
         } else if (Array.isArray(entry)) {
           return [...acc, ...entry.map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:"))];
         } else if (typeof entry === "object") {
@@ -253,7 +253,7 @@ export function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }
         } else {
           return [...acc, JSON.stringify(entry)];
         }
-      }, []);
+      }, []) as Result[]; // compiler could not infer correctly
 
       return getColumnsAtLastLevel(beeTableColumns).reduce((tableRow: any, column, columnIndex) => {
         tableRow[column.accessor] = rowArray[columnIndex] || EMPTY_SYMBOL;

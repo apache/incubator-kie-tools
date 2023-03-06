@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { InputRow } from "@kie-tools/form-dmn";
@@ -23,7 +23,7 @@ import { useDmnRunnerInputsDispatch } from "./DmnRunnerInputsDispatchContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { CompanionFsServiceBroadcastEvents } from "../companionFs/CompanionFsService";
 import { EMPTY_DMN_RUNNER_INPUTS } from "./DmnRunnerInputsService";
-import { usePreviousRef } from "@kie-tools-core/react-hooks/dist/usePreviousRef";
+import isEqual from "lodash/isEqual";
 
 interface DmnRunnerInputs {
   inputRows: Array<InputRow>;
@@ -31,14 +31,10 @@ interface DmnRunnerInputs {
 }
 
 export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInputs {
-  const { dmnRunnerInputsService, updatePersistedInputRows } = useDmnRunnerInputsDispatch();
   const [inputRows, setInputRows] = useState<Array<InputRow>>(EMPTY_DMN_RUNNER_INPUTS);
-  const previousInputRows = usePreviousRef(inputRows);
-  const previousInputRowsStringfied = useRef<string>(JSON.stringify(EMPTY_DMN_RUNNER_INPUTS));
+  const { dmnRunnerInputsService } = useDmnRunnerInputsDispatch();
 
-  // TODO: Use useCompanionFsFile for keeping the `inputRows` up to date with updates made to it.
-  //   I.e. When the DMN Runner Inputs file is changed
-
+  // When another TAB updates the FS, it should sync up
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -65,14 +61,14 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
             companionEvent.type === "CFSF_ADD" ||
             companionEvent.type === "CFSF_DELETE"
           ) {
-            // Triggered by the tab
-            if (companionEvent.content === previousInputRowsStringfied.current) {
-              setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(companionEvent.content));
-              return;
-            }
-            // Triggered by the other tab
-            previousInputRowsStringfied.current = companionEvent.content;
-            setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(companionEvent.content));
+            setInputRows((currentInputRows) => {
+              // Triggered by the tab; shouldn't update; safe comparison;
+              if (isEqual(JSON.parse(companionEvent.content), currentInputRows)) {
+                return currentInputRows;
+              }
+              // Triggered by the other tab; should update;
+              return dmnRunnerInputsService.parseDmnRunnerInputs(companionEvent.content);
+            });
           }
         };
 
@@ -81,7 +77,7 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
           broadcastChannel.close();
         };
       },
-      [dmnRunnerInputsService, workspaceFile]
+      [dmnRunnerInputsService, workspaceFile, setInputRows]
     )
   );
 
@@ -113,49 +109,37 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
                 return;
               }
               const inputRows = decoder.decode(content);
-              previousInputRowsStringfied.current = inputRows;
               setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(inputRows));
             });
           });
       },
-      [dmnRunnerInputsService, workspaceFile]
+      [dmnRunnerInputsService, workspaceFile, setInputRows]
     )
   );
 
-  // Debounce to avoid multiple updates on the filesystem
-  const timeout = useRef<number | undefined>(undefined);
-  const setInputRowsAndUpdatePersistence = useCallback(
-    (newInputRowsAction: React.SetStateAction<InputRow[]>) => {
-      if (timeout.current) {
-        window.clearTimeout(timeout.current);
-      }
+  // Updating the inputRows should update the FS
+  useEffect(() => {
+    console.log("use effect triggered by input rows", inputRows);
+    if (!workspaceFile.relativePath || !workspaceFile.workspaceId) {
+      return;
+    }
 
-      // After a re-render the callback is called by the first time, this avoids a filesystem unnecessary re-update
-      const stringfiedDmnRunnerInputs = dmnRunnerInputsService.stringifyDmnRunnerInputs(
-        newInputRowsAction,
-        previousInputRows.current
-      );
+    // safe comparison, it compares to an array with an empty object;
+    if (JSON.stringify(inputRows) === JSON.stringify(EMPTY_DMN_RUNNER_INPUTS)) {
+      return;
+    }
 
-      if (previousInputRowsStringfied.current === stringfiedDmnRunnerInputs) {
-        return;
-      }
-
-      timeout.current = window.setTimeout(() => {
-        updatePersistedInputRows(workspaceFile.workspaceId, workspaceFile.relativePath, stringfiedDmnRunnerInputs);
-        previousInputRowsStringfied.current = stringfiedDmnRunnerInputs;
-      }, 400);
-    },
-    [
-      previousInputRows,
-      updatePersistedInputRows,
-      workspaceFile.workspaceId,
-      workspaceFile.relativePath,
-      dmnRunnerInputsService,
-    ]
-  );
+    dmnRunnerInputsService.companionFsService.update(
+      {
+        workspaceId: workspaceFile.workspaceId,
+        workspaceFileRelativePath: workspaceFile.relativePath,
+      },
+      JSON.stringify(inputRows)
+    );
+  }, [dmnRunnerInputsService, workspaceFile.workspaceId, workspaceFile.relativePath, inputRows]);
 
   return {
     inputRows,
-    setInputRows: setInputRowsAndUpdatePersistence,
+    setInputRows,
   };
 }

@@ -32,11 +32,14 @@ import { useUnitablesColumns } from "./UnitablesColumns";
 import "./Unitables.css";
 import { UnitablesRow } from "./UnitablesRow";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import isEqual from "lodash/isEqual";
+
+const EMPTY_UNITABLES_INPUTS = [{}];
 
 interface Props {
   jsonSchema: object;
   rows: object[];
-  setRows: React.Dispatch<React.SetStateAction<object[]>>;
+  setInputRows: React.Dispatch<React.SetStateAction<object[]>>;
   error: boolean;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   openRow: (rowIndex: number) => void;
@@ -45,13 +48,15 @@ interface Props {
   propertiesEntryPath: string;
   containerRef: React.RefObject<HTMLDivElement>;
   scrollableParentRef: React.RefObject<HTMLElement>;
+  onRowAdded: (args: { beforeIndex: number }) => void;
+  onRowDuplicated: (args: { rowIndex: number }) => void;
+  onRowReset: (args: { rowIndex: number }) => void;
+  onRowDeleted: (args: { rowIndex: number }) => void;
 }
 
 export const Unitables = ({
-  jsonSchema,
   rows,
-  setRows,
-  error,
+  setInputRows,
   setError,
   openRow,
   i18n,
@@ -59,14 +64,29 @@ export const Unitables = ({
   propertiesEntryPath,
   containerRef,
   scrollableParentRef,
+  onRowAdded,
+  onRowDuplicated,
+  onRowReset,
+  onRowDeleted,
 }: Props) => {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
-
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
-
-  const { columns: unitablesColumns } = useUnitablesColumns(jsonSchemaBridge, rows, setRows, propertiesEntryPath);
-
+  const { columns: unitablesColumns } = useUnitablesColumns(jsonSchemaBridge, setInputRows, propertiesEntryPath);
   const inputUid = useMemo(() => nextId(), []);
+  const cachedRows = useRef<object[]>([...EMPTY_UNITABLES_INPUTS]);
+
+  // Erase cache;
+  useLayoutEffect(() => {
+    if (isEqual(rows, EMPTY_UNITABLES_INPUTS)) {
+      cachedRows.current = [...EMPTY_UNITABLES_INPUTS];
+    }
+  }, [rows]);
+
+  const beeTableRows = useMemo<ROWTYPE[]>(() => {
+    return rows.map((row) => {
+      return { id: generateUuid(), ...row };
+    });
+  }, [rows]);
 
   // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {
@@ -100,17 +120,31 @@ export const Unitables = ({
   }, [formsDivRendered, rows, containerRef, searchRecursively]);
   // Set in-cell input heights (end)
 
-  const onModelUpdate = useCallback(
-    (model: object, index: number) => {
-      setRows?.((prev) => {
-        console.info(`prev model (${index}) ${JSON.stringify(prev)}`);
-        console.info(`updating model (${index}) ${JSON.stringify(model)}`);
-        const n = [...prev];
-        n[index] = model;
-        return n;
-      });
+  // Perform a autosaveDelay and update all rows simultaneously;
+  const timeout = useRef<number | undefined>(undefined);
+  const onValidateRow = useCallback(
+    (rowInput: object, rowIndex: number) => {
+      // Save all rowInputs before timeout;
+      cachedRows.current[rowIndex] = rowInput;
+
+      // Debounce;
+      if (timeout.current) {
+        window.clearTimeout(timeout.current);
+      }
+
+      timeout.current = window.setTimeout(() => {
+        // Update all rows if a value was changed;
+        setInputRows?.((currentInputRows) => {
+          // if cached length isn't equal to current a table event occured. e.g. add, delete;
+          // if cached has the same value as current
+          if (cachedRows.current.length !== currentInputRows.length || isEqual(cachedRows.current, currentInputRows)) {
+            return currentInputRows;
+          }
+          return [...cachedRows.current];
+        });
+      }, 400); // autoSaveDelay
     },
-    [setRows]
+    [setInputRows]
   );
 
   const rowWrapper = useCallback(
@@ -123,24 +157,20 @@ export const Unitables = ({
       row: object;
     }>) => {
       return (
-        <UnitablesRowWrapper
+        <UnitablesRow
+          key={rowIndex}
+          formsId={FORMS_ID}
           rowIndex={rowIndex}
-          model={row}
+          rowInput={row}
           jsonSchemaBridge={jsonSchemaBridge}
-          onModelUpdate={onModelUpdate}
+          onValidateRow={onValidateRow}
         >
           {children}
-        </UnitablesRowWrapper>
+        </UnitablesRow>
       );
     },
-    [jsonSchemaBridge, onModelUpdate]
+    [jsonSchemaBridge, onValidateRow]
   );
-
-  const beeTableRows = useMemo<ROWTYPE[]>(() => {
-    return rows.map((row) => {
-      return { id: generateUuid(), ...row };
-    });
-  }, [rows]);
 
   return (
     <>
@@ -149,13 +179,13 @@ export const Unitables = ({
           <div style={{ display: "flex" }} ref={containerRef}>
             <div
               className={"kie-tools--unitables-open-on-form-container"}
-              style={{ display: "flex", flexDirection: "column", marginTop: "5px", paddingLeft: "5px" }}
+              style={{ display: "flex", flexDirection: "column" }}
             >
               <OutsideRowMenu height={63} isFirstChild={true}>{`#`}</OutsideRowMenu>
-              <OutsideRowMenu height={64.5} borderBottomSizeBasis={1}>{`#`}</OutsideRowMenu>
+              <OutsideRowMenu height={64.2} borderBottomSizeBasis={1}>{`#`}</OutsideRowMenu>
               {rows.map((e, rowIndex) => (
                 <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
-                  <OutsideRowMenu height={61} isLastChild={rowIndex === rows.length - 1}>
+                  <OutsideRowMenu height={60.8} isLastChild={rowIndex === rows.length - 1}>
                     <Button
                       className={"kie-tools--masthead-hoverable"}
                       variant={ButtonVariant.plain}
@@ -174,7 +204,10 @@ export const Unitables = ({
               rows={beeTableRows}
               columns={unitablesColumns}
               id={inputUid}
-              setRows={setRows}
+              onRowAdded={onRowAdded}
+              onRowDuplicated={onRowDuplicated}
+              onRowReset={onRowReset}
+              onRowDeleted={onRowDeleted}
             />
           </div>
         </ErrorBoundary>
@@ -184,32 +217,6 @@ export const Unitables = ({
     </>
   );
 };
-
-function UnitablesRowWrapper({
-  children,
-  rowIndex,
-  model,
-  jsonSchemaBridge,
-  onModelUpdate,
-}: React.PropsWithChildren<{
-  rowIndex: number;
-  model: object;
-  jsonSchemaBridge: UnitablesJsonSchemaBridge;
-  onModelUpdate: (model: object, index: number) => void;
-}>) {
-  return (
-    <UnitablesRow
-      key={rowIndex}
-      formsId={FORMS_ID}
-      rowIndex={rowIndex}
-      model={model}
-      jsonSchemaBridge={jsonSchemaBridge}
-      onModelUpdate={onModelUpdate}
-    >
-      {children}
-    </UnitablesRow>
-  );
-}
 
 function InputError() {
   return (
@@ -243,7 +250,7 @@ function OutsideRowMenu({
     <div
       style={{
         width: "60px",
-        height: `${height + (isFirstChild ? 3 : 0) + (isLastChild ? 2 : 0)}px`,
+        height: `${height + (isFirstChild ? 3 : 0) + (isLastChild ? 1.6 : 0)}px`,
         display: "flex",
         fontSize: "16px",
         color: "gray",

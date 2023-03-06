@@ -41,18 +41,19 @@ import { AUTO_ROW_ID } from "../uniforms/UnitablesJsonSchemaBridge";
 
 export const UNITABLES_COLUMN_MIN_WIDTH = 150;
 
-export type ROWTYPE = Record<string, any> & { id: string };
-
-const EMPTY_SYMBOL = "";
+export type ROWTYPE = Record<string, any>;
 
 export interface UnitablesBeeTable {
   id: string;
   i18n: BoxedExpressionEditorI18n;
-  rows: ROWTYPE[];
-  setRows: React.Dispatch<React.SetStateAction<object[]>>;
+  rows: object[];
   columns: UnitablesColumnType[];
   scrollableParentRef: React.RefObject<HTMLElement>;
-  rowWrapper?: React.FunctionComponent<React.PropsWithChildren<{ row: ROWTYPE; rowIndex: number }>>;
+  rowWrapper?: React.FunctionComponent<React.PropsWithChildren<{ row: object; rowIndex: number }>>;
+  onRowAdded: (args: { beforeIndex: number }) => void;
+  onRowDuplicated: (args: { rowIndex: number }) => void;
+  onRowReset: (args: { rowIndex: number }) => void;
+  onRowDeleted: (args: { rowIndex: number }) => void;
 }
 
 export function UnitablesBeeTable({
@@ -60,9 +61,12 @@ export function UnitablesBeeTable({
   i18n,
   columns,
   rows,
-  setRows,
   scrollableParentRef,
   rowWrapper,
+  onRowAdded,
+  onRowDuplicated,
+  onRowReset,
+  onRowDeleted,
 }: UnitablesBeeTable) {
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
@@ -136,10 +140,6 @@ export function UnitablesBeeTable({
     });
   }, [columns, uuid]);
 
-  const beeTableRows = useMemo<ROWTYPE[]>(() => {
-    return rows;
-  }, [rows]);
-
   const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
     return column.originalId ?? column.id;
   }, []);
@@ -147,39 +147,6 @@ export function UnitablesBeeTable({
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
     return row.original.id;
   }, []);
-
-  const onRowAdded = useCallback(
-    (args: { beforeIndex: number }) => {
-      setRows((prev) => {
-        const n = [...(prev ?? [])];
-        n.splice(
-          args.beforeIndex,
-          0,
-          Object.keys(prev[0]).reduce((acc, k) => {
-            acc[k] = undefined;
-            return acc;
-          }, {} as Record<string, any>)
-        );
-
-        return n;
-      });
-    },
-    [setRows]
-  );
-
-  const onRowDuplicated = useCallback(
-    (args: { rowIndex: number }) => {
-      setRows((prev) => {
-        const n = [...(prev ?? [])];
-        n.splice(args.rowIndex, 0, {
-          ...JSON.parse(JSON.stringify(prev[args.rowIndex])),
-          id: generateUuid(),
-        });
-        return n;
-      });
-    },
-    [setRows]
-  );
 
   return (
     <StandaloneBeeTable
@@ -193,13 +160,15 @@ export function UnitablesBeeTable({
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
       operationConfig={beeTableOperationConfig}
       columns={beeTableColumns}
-      rows={beeTableRows}
+      rows={rows}
       enableKeyboardNavigation={true}
       shouldRenderRowIndexColumn={true}
       shouldShowRowsInlineControls={true}
       shouldShowColumnsInlineControls={false}
       onRowAdded={onRowAdded}
       onRowDuplicated={onRowDuplicated}
+      onRowReset={onRowReset}
+      onRowDeleted={onRowDeleted}
       rowWrapper={rowWrapper}
       resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_ALWAYS}
     />

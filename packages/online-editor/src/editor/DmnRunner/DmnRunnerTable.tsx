@@ -41,25 +41,35 @@ interface Props {
 
 export function DmnRunnerTable({ setPanelOpen }: Props) {
   const extendedServices = useExtendedServices();
-  const dmnRunnerState = useDmnRunnerState();
-  const dmnRunnerDispatch = useDmnRunnerDispatch();
+  const { error, inputRows, jsonSchema } = useDmnRunnerState();
+  const {
+    onRowAdded,
+    onRowDuplicated,
+    onRowReset,
+    onRowDeleted,
+    preparePayload,
+    setCurrentInputRowIndex,
+    setError,
+    setInputRows,
+    setMode,
+  } = useDmnRunnerDispatch();
   const [dmnRunnerTableError, setDmnRunnerTableError] = useState<boolean>(false);
   const dmnRunnerTableErrorBoundaryRef = useRef<ErrorBoundary>(null);
 
   const { i18n } = useOnlineI18n();
 
   const rowCount = useMemo(() => {
-    return dmnRunnerState.inputRows?.length ?? 1;
-  }, [dmnRunnerState.inputRows?.length]);
+    return inputRows?.length ?? 1;
+  }, [inputRows?.length]);
 
   const jsonSchemaBridge = useMemo(
-    () => new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(dmnRunnerState.jsonSchema ?? {}),
-    [i18n, dmnRunnerState.jsonSchema]
+    () => new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(jsonSchema ?? {}),
+    [i18n, jsonSchema]
   );
 
   useEffect(() => {
     dmnRunnerTableErrorBoundaryRef.current?.reset();
-  }, [dmnRunnerState.jsonSchema]);
+  }, [jsonSchema]);
 
   const inputsContainerRef = useRef<HTMLDivElement>(null);
   const outputsContainerRef = useRef<HTMLDivElement>(null);
@@ -71,15 +81,15 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
 
   useEffect(() => {
     forceDrawerPanelRefresh();
-  }, [forceDrawerPanelRefresh, dmnRunnerState.jsonSchema]);
+  }, [forceDrawerPanelRefresh, jsonSchema]);
 
   const openRow = useCallback(
     (rowIndex: number) => {
-      dmnRunnerDispatch.setMode(DmnRunnerMode.FORM);
-      dmnRunnerDispatch.setCurrentInputRowIndex(rowIndex);
+      setMode(DmnRunnerMode.FORM);
+      setCurrentInputRowIndex(rowIndex);
       setPanelOpen(PanelId.NONE);
     },
-    [dmnRunnerDispatch, setPanelOpen]
+    [setMode, setCurrentInputRowIndex, setPanelOpen]
   );
 
   // FIXME: Tiago -> !
@@ -92,8 +102,7 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-
-        Promise.all(dmnRunnerState.inputRows.map((data) => dmnRunnerDispatch.preparePayload(data)))
+        Promise.all(inputRows.map((data) => preparePayload(data)))
           .then((payloads) =>
             Promise.all(
               payloads.map((payload) => {
@@ -112,7 +121,7 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
             const runnerResults: Array<DecisionResult[] | undefined> = [];
             for (const result of results) {
               if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-                dmnRunnerDispatch.setError(true);
+                setError(true);
                 break;
               }
               if (result) {
@@ -123,7 +132,7 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
             setDmnRunnerResults(runnerResults);
           });
       },
-      [dmnRunnerDispatch, dmnRunnerState.inputRows, extendedServices.client]
+      [preparePayload, setError, inputRows, extendedServices.client]
     )
   );
 
@@ -140,7 +149,7 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
   return (
     <div style={{ height: "100%" }}>
       <DmnRunnerLoading>
-        {dmnRunnerState.jsonSchema &&
+        {jsonSchema &&
           (dmnRunnerTableError ? (
             dmnRunnerTableError
           ) : (
@@ -176,15 +185,19 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
                   <Unitables
                     scrollableParentRef={inputsScrollableElementRef.current}
                     i18n={i18n.dmnRunner.table}
-                    jsonSchema={dmnRunnerState.jsonSchema}
+                    jsonSchema={jsonSchema}
                     openRow={openRow}
-                    rows={dmnRunnerState.inputRows}
-                    setRows={dmnRunnerDispatch.setInputRows}
-                    error={dmnRunnerState.error}
-                    setError={dmnRunnerDispatch.setError}
+                    rows={inputRows}
+                    setInputRows={setInputRows}
+                    error={error}
+                    setError={setError}
                     jsonSchemaBridge={jsonSchemaBridge}
                     propertiesEntryPath={"definitions.InputSet"}
                     containerRef={inputsContainerRef}
+                    onRowAdded={onRowAdded}
+                    onRowDuplicated={onRowDuplicated}
+                    onRowReset={onRowReset}
+                    onRowDeleted={onRowDeleted}
                   />
                 </DrawerContent>
               </Drawer>

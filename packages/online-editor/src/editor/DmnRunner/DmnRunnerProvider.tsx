@@ -27,6 +27,7 @@ import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api/Bee";
 
 interface Props {
   isEditorReady?: boolean;
@@ -120,8 +121,65 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
   }, [prevKieSandboxExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
+  const onRowAdded = useCallback(
+    (args: { beforeIndex: number }) => {
+      setInputRows((currentInputRows) => {
+        const n = [...currentInputRows];
+        // add default value;
+        n.splice(args.beforeIndex, 0, { id: generateUuid() });
+        return n;
+      });
+    },
+    [setInputRows]
+  );
+
+  const onRowDuplicated = useCallback(
+    (args: { rowIndex: number }) => {
+      setInputRows((currentInputRows) => {
+        const newInputRows = [...currentInputRows];
+        newInputRows.splice(args.rowIndex, 0, {
+          ...JSON.parse(JSON.stringify(currentInputRows[args.rowIndex])),
+          id: generateUuid(),
+        });
+        return newInputRows;
+      });
+    },
+    [setInputRows]
+  );
+
+  const onRowReset = useCallback(
+    (args: { rowIndex: number }) => {
+      setInputRows((currentInputRows) => {
+        const newInputRows = [...currentInputRows];
+        newInputRows[args.rowIndex] = { id: generateUuid() };
+        return newInputRows;
+      });
+    },
+    [setInputRows]
+  );
+
+  const onRowDeleted = useCallback(
+    (args: { rowIndex: number }) => {
+      setInputRows((currentInputRows) => {
+        const newInputRows = [...currentInputRows];
+        newInputRows.splice(args.rowIndex, 1);
+        newInputRows.forEach((e, i, newInputRows) => {
+          if (i >= args.rowIndex) {
+            newInputRows[i] = { ...e, id: generateUuid() };
+          }
+        });
+        return newInputRows;
+      });
+    },
+    [setInputRows]
+  );
+
   const dmnRunnerDispatch = useMemo(
     () => ({
+      onRowAdded,
+      onRowDuplicated,
+      onRowReset,
+      onRowDeleted,
       preparePayload,
       setCurrentInputRowIndex,
       setError,
@@ -129,7 +187,18 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       setInputRows,
       setMode,
     }),
-    [preparePayload, setCurrentInputRowIndex, setError, setExpanded, setInputRows, setMode]
+    [
+      onRowAdded,
+      onRowDuplicated,
+      onRowReset,
+      onRowDeleted,
+      preparePayload,
+      setCurrentInputRowIndex,
+      setError,
+      setExpanded,
+      setInputRows,
+      setMode,
+    ]
   );
 
   const dmnRunnerState = useMemo(

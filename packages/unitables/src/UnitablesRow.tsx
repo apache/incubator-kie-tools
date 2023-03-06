@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { PropsWithChildren, useCallback, useImperativeHandle, useRef } from "react";
+import { PropsWithChildren, useCallback, useRef, useEffect } from "react";
 import { AutoRow } from "./uniforms/AutoRow";
 import { createPortal } from "react-dom";
 import { context as UniformsContext } from "uniforms";
@@ -25,50 +25,47 @@ interface Props {
   formsId: string;
   rowIndex: number;
   jsonSchemaBridge: UnitablesJsonSchemaBridge;
-  model: object;
-  onModelUpdate: (model: object, index: number) => void;
+  rowInput: object;
+  onValidateRow: (rowInput: object, index: number) => void;
 }
 
 export interface UnitablesRowApi {
-  submit: () => void;
-  reset: (defaultValues?: object) => void;
+  submit: (rowInput?: object) => void;
 }
 
 export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<Props>>(
-  ({ children, formsId, rowIndex, jsonSchemaBridge, model, onModelUpdate }, forwardRef) => {
+  ({ children, formsId, rowIndex, jsonSchemaBridge, rowInput, onValidateRow }, forwardRef) => {
     const autoRowRef = useRef<HTMLFormElement>(null);
 
     const onSubmit = useCallback(
-      (model: object) => {
+      (rowInput: object) => {
         console.log("SUBMITTING ROW: " + rowIndex);
-        onModelUpdate(model, rowIndex);
       },
-      [onModelUpdate, rowIndex]
+      [rowIndex]
     );
 
     const onValidate = useCallback(
-      (model: object, error: object) => {
-        onModelUpdate(model, rowIndex);
+      (rowInput: object, error: object) => {
+        onValidateRow(rowInput, rowIndex);
       },
-      [onModelUpdate, rowIndex]
+      [onValidateRow, rowIndex]
     );
 
-    useImperativeHandle(forwardRef, () => ({
-      submit: () => autoRowRef.current?.submit(),
-      reset: onSubmit,
-    }));
+    // Submits the form in the first render triggering the onValidate function
+    useEffect(() => {
+      autoRowRef.current?.submit();
+    }, [autoRowRef]);
 
     return (
       <>
         <AutoRow
           ref={autoRowRef}
           schema={jsonSchemaBridge}
-          autosave={true}
-          autosaveDelay={200}
-          model={model}
+          model={rowInput}
           onSubmit={onSubmit}
           onValidate={onValidate}
           placeholder={true}
+          validate={"onChange"}
         >
           <UniformsContext.Consumer>
             {(uniformsContext) => (

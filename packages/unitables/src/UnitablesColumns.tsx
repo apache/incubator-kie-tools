@@ -37,7 +37,6 @@ const getObjectByPath = (obj: Record<string, object | undefined> | undefined, pa
 
 export function useUnitablesColumns(
   jsonSchemaBridge: UnitablesJsonSchemaBridge,
-  rows: object[],
   setRows: React.Dispatch<React.SetStateAction<object[]>>,
   propertiesEntryPath = "definitions"
 ) {

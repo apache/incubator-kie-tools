@@ -17,6 +17,7 @@
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import { Validator } from "@kie-tools/form";
 import { DmnFormI18n } from "./i18n";
+import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/form-dmn/dist/uniforms";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
 
 export const DAYS_AND_TIME =
@@ -35,12 +36,12 @@ export class DmnValidator extends Validator {
   // Add meta schema v4 and period format
   private setupValidator() {
     this.ajv.addMetaSchema(metaSchemaDraft04);
-    this.ajv.addFormat("days and time duration", {
+    this.ajv.addFormat(DAYS_AND_TIME_DURATION_FORMAT, {
       type: "string",
       validate: (data: string) => !!data.match(DAYS_AND_TIME),
     });
 
-    this.ajv.addFormat("years and months duration", {
+    this.ajv.addFormat(YEARS_AND_MONTHS_DURATION_FORMAT, {
       type: "string",
       validate: (data: string) => !!data.match(YEARS_AND_MONTHS),
     });
@@ -61,10 +62,10 @@ export class DmnValidator extends Validator {
       return {
         details: validator.errors?.map((error: any) => {
           if (error.keyword === "format") {
-            if ((error.params as any).format === "days and time duration") {
+            if ((error.params as any).format === DAYS_AND_TIME_DURATION_FORMAT) {
               return { ...error, message: (this.i18n as DmnFormI18n).validation.daysAndTimeError };
             }
-            if ((error.params as any).format === "years and months duration") {
+            if ((error.params as any).format === YEARS_AND_MONTHS_DURATION_FORMAT) {
               return { ...error, message: (this.i18n as DmnFormI18n).validation.yearsAndMonthsError };
             }
           }

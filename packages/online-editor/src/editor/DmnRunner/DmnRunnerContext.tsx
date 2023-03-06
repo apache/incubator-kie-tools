@@ -32,6 +32,10 @@ export interface DmnRunnerContextType {
 }
 
 export interface DmnRunnerCallbacksContextType {
+  onRowAdded: (args: { beforeIndex: number }) => void;
+  onRowDuplicated: (args: { rowIndex: number }) => void;
+  onRowReset: (args: { rowIndex: number }) => void;
+  onRowDeleted: (args: { rowIndex: number }) => void;
   preparePayload: (formData?: InputRow) => Promise<KieSandboxExtendedServicesModelPayload>;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;

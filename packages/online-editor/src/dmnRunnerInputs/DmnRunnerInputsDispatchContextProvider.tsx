@@ -30,13 +30,6 @@ export function DmnRunnerInputsDispatchContextProvider(props: React.PropsWithChi
 
   useSyncedCompanionFs(dmnRunnerInputsService.companionFsService);
 
-  const updatePersistedInputRows = useCallback(
-    async (workspaceId: string, workspaceFileRelativePath: string, newInputRows: string) => {
-      await dmnRunnerInputsService.companionFsService.update({ workspaceId, workspaceFileRelativePath }, newInputRows);
-    },
-    [dmnRunnerInputsService]
-  );
-
   const deletePersistedInputRows = useCallback(
     async (workspaceFile: WorkspaceFile) => {
       await dmnRunnerInputsService.companionFsService.delete({
@@ -44,7 +37,7 @@ export function DmnRunnerInputsDispatchContextProvider(props: React.PropsWithChi
         workspaceFileRelativePath: workspaceFile.relativePath,
       });
 
-      dmnRunnerInputsService.companionFsService.createOrOverwrite(
+      return dmnRunnerInputsService.companionFsService.createOrOverwrite(
         { workspaceId: workspaceFile.workspaceId, workspaceFileRelativePath: workspaceFile.relativePath },
         JSON.stringify(EMPTY_DMN_RUNNER_INPUTS)
       );
@@ -82,7 +75,6 @@ export function DmnRunnerInputsDispatchContextProvider(props: React.PropsWithChi
     <DmnRunnerInputsDispatchContext.Provider
       value={{
         dmnRunnerInputsService,
-        updatePersistedInputRows,
         deletePersistedInputRows,
         getInputRowsForDownload,
         uploadInputRows,
