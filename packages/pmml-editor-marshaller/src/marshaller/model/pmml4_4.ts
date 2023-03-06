@@ -30,9 +30,9 @@ export class Expression extends PMMLObject {
 
 export class Aggregate extends Expression {
   Extension?: Extension[];
-  field: FieldName;
+  field: string;
   function: Function;
-  groupField?: FieldName;
+  groupField?: string;
   sqlWhere?: string;
 
   constructor(data: Aggregate) {
@@ -57,7 +57,7 @@ export class Annotation extends PMMLObject {
 export class Anova extends PMMLObject {
   Extension?: Extension[];
   AnovaRow: AnovaRow[];
-  target?: FieldName;
+  target?: string;
 
   constructor(data: Anova) {
     super(data);
@@ -197,7 +197,7 @@ export class BinarySimilarity extends Similarity {
 
 export class BlockIndicator extends PMMLObject {
   Extension?: Extension[];
-  field: FieldName;
+  field: string;
 
   constructor(data: BlockIndicator) {
     super(data);
@@ -495,7 +495,7 @@ export class DataField extends Field<DataField> {
   Extension?: Extension[];
   Interval?: Interval[];
   Value?: Value[];
-  name: FieldName;
+  name: string;
   displayName?: string;
   optype: OpType;
   dataType: DataType;
@@ -570,7 +570,7 @@ export class DerivedField extends Field<DerivedField> {
   expression?: Expression;
   Interval?: Interval[];
   Value?: Value[];
-  name?: FieldName;
+  name?: string;
   displayName?: string;
   optype: OpType;
   dataType: DataType;
@@ -610,7 +610,7 @@ export class DiscreteDistribution extends Distribution {
 export class Discretize extends Expression {
   Extension?: Extension[];
   DiscretizeBin?: DiscretizeBin[];
-  field: FieldName;
+  field: string;
   mapMissingTo?: any;
   defaultValue?: any;
   dataType?: DataType;
@@ -686,7 +686,7 @@ export class False extends Predicate {
 
 export class FieldColumnPair extends PMMLObject {
   Extension?: Extension[];
-  field: FieldName;
+  field: string;
   column: string;
 
   constructor(data: FieldColumnPair) {
@@ -696,18 +696,9 @@ export class FieldColumnPair extends PMMLObject {
     this.column = data.column;
   }
 }
-
-export class FieldName {
-  value?: string;
-
-  constructor(data: FieldName) {
-    this.value = data.value;
-  }
-}
-
 export class FieldRef extends Expression {
   Extension?: Extension[];
-  field: FieldName;
+  field: string;
   mapMissingTo?: string;
 
   constructor(data: FieldRef) {
@@ -811,7 +802,7 @@ export class Jaccard extends Similarity {
 export class Lag extends Expression {
   Extension?: Extension[];
   BlockIndicator?: BlockIndicator[];
-  field: FieldName;
+  field: string;
   n?: number;
   aggregate?: string;
 
@@ -955,7 +946,7 @@ export class MiningBuildTask extends PMMLObject {
 
 export class MiningField extends PMMLObject {
   Extension?: Extension[];
-  name: FieldName;
+  name: string;
   usageType?: UsageType;
   optype?: OpType;
   importance?: number;
@@ -1126,7 +1117,7 @@ export class NormContinuous extends Expression {
   Extension?: Extension[];
   LinearNorm: LinearNorm[];
   mapMissingTo?: number;
-  field: FieldName;
+  field: string;
   outliers?: OutlierTreatmentMethod;
 
   constructor(data: NormContinuous) {
@@ -1141,7 +1132,7 @@ export class NormContinuous extends Expression {
 
 export class NormDiscrete extends Expression {
   Extension?: Extension[];
-  field: FieldName;
+  field: string;
   method?: Method;
   value: any;
   mapMissingTo?: number;
@@ -1206,12 +1197,12 @@ export class OutputField extends Field<OutputField> {
   Decisions?: Decisions;
   expression?: Expression;
   Value?: Value[];
-  name: FieldName;
+  name: string;
   displayName?: string;
   optype?: OpType;
   dataType: DataType;
-  targetField?: FieldName;
-  "x-reportField"?: FieldName;
+  targetField?: string;
+  "x-reportField"?: string;
   feature?: ResultFeature;
   value?: any;
   ruleFeature?: RuleFeature;
@@ -1274,7 +1265,7 @@ export class PMML extends PMMLObject {
 export interface PMMLFunctions {}
 
 export class ParameterField extends Field<ParameterField> {
-  name: FieldName;
+  name: string;
   optype?: OpType;
   dataType?: DataType;
   displayName?: string;
@@ -1308,7 +1299,7 @@ export class PartitionFieldStats extends PMMLObject {
   Counts?: Counts;
   NumericInfo?: NumericInfo;
   Array?: Array[];
-  field: FieldName;
+  field: string;
   weighted?: PartitionFieldStatsWeighted;
 
   constructor(data: PartitionFieldStats) {
@@ -1338,7 +1329,7 @@ export class PredictiveModelQuality extends PMMLObject {
   ConfusionMatrix?: ConfusionMatrix;
   LiftData?: LiftData[];
   ROC?: ROC;
-  targetField: FieldName;
+  targetField: string;
   dataName?: string;
   dataUsage?: DataUsage;
   meanError?: number;
@@ -1461,7 +1452,7 @@ export class RealSparseArray extends SparseArray<number> {
 
 export class ResultField extends Field<ResultField> {
   Extension?: Extension[];
-  name: FieldName;
+  name: string;
   displayName?: string;
   optype?: OpType;
   dataType?: DataType;
@@ -1517,7 +1508,7 @@ export class SimpleMatching extends Similarity {
 
 export class SimplePredicate extends Predicate {
   Extension?: Extension[];
-  field: FieldName;
+  field: string;
   operator: SimplePredicateOperator;
   value?: any;
 
@@ -1533,7 +1524,7 @@ export class SimplePredicate extends Predicate {
 export class SimpleSetPredicate extends Predicate {
   Extension?: Extension[];
   Array: Array;
-  field: FieldName;
+  field: string;
   booleanOperator: SimpleSetPredicate$BooleanOperator;
 
   constructor(data: SimpleSetPredicate) {
@@ -1577,7 +1568,7 @@ export class Tanimoto extends Similarity {
 export class Target extends PMMLObject {
   Extension?: Extension[];
   TargetValue?: TargetValue[];
-  field?: FieldName;
+  field?: string;
   optype?: OpType;
   castInteger?: CastInteger;
   min?: number;
@@ -1646,7 +1637,7 @@ export class TextIndex extends Expression {
   Extension?: Extension[];
   TextIndexNormalization?: TextIndexNormalization[];
   expression?: Expression;
-  textField: FieldName;
+  textField: string;
   localTermWeights?: TextIndexLocalTermWeights;
   isCaseSensitive?: boolean;
   maxLevenshteinDistance?: number;
@@ -1749,7 +1740,7 @@ export class UnivariateStats extends PMMLObject {
   DiscrStats?: DiscrStats;
   ContStats?: ContStats;
   Anova?: Anova;
-  field?: FieldName;
+  field?: string;
   weighted?: UnivariateStatsWeighted;
 
   constructor(data: UnivariateStats) {
@@ -1782,7 +1773,7 @@ export class Value extends PMMLObject {
 
 export class VerificationField extends PMMLObject {
   Extension?: Extension[];
-  field: FieldName;
+  field: string;
   column?: string;
   precision?: number;
   zeroThreshold?: number;
@@ -1958,7 +1949,7 @@ export class Item extends PMMLObject {
   Extension?: Extension[];
   id: string;
   value: string;
-  field?: FieldName;
+  field?: string;
   category?: string;
   mappedValue?: string;
   weight?: number;
@@ -2081,7 +2072,7 @@ export class FieldValue extends PMMLObject {
   Extension?: Extension[];
   FieldValue?: FieldValue[];
   FieldValueCount?: FieldValueCount[];
-  field: FieldName;
+  field: string;
   value: any;
 
   constructor(data: FieldValue) {
@@ -2096,7 +2087,7 @@ export class FieldValue extends PMMLObject {
 
 export class FieldValueCount extends PMMLObject {
   Extension?: Extension[];
-  field: FieldName;
+  field: string;
   value: any;
   count: number;
 
@@ -2113,11 +2104,11 @@ export class TestDistributions extends PMMLObject {
   Extension?: Extension[];
   Baseline: Baseline;
   Alternate?: Alternate;
-  field: FieldName;
+  field: string;
   testStatistic: TestStatistic;
   resetValue?: number;
   windowSize?: number;
-  weightField?: FieldName;
+  weightField?: string;
   normalizationScheme?: string;
 
   constructor(data: TestDistributions) {
@@ -2220,7 +2211,7 @@ export class ContinuousNode extends PMMLObject {
   Extension?: Extension[];
   DerivedField?: DerivedField[];
   content?: PMMLObject[];
-  name: FieldName;
+  name: string;
   count?: number;
 
   constructor(data: ContinuousNode) {
@@ -2252,7 +2243,7 @@ export class DiscreteNode extends PMMLObject {
   Extension?: Extension[];
   DerivedField?: DerivedField[];
   content?: PMMLObject[];
-  name: FieldName;
+  name: string;
   count?: number;
 
   constructor(data: DiscreteNode) {
@@ -2315,7 +2306,7 @@ export class NormalDistribution extends PMMLObject {
 
 export class ParentValue extends PMMLObject {
   Extension?: Extension[];
-  parent: FieldName;
+  parent: string;
   value: any;
 
   constructor(data: ParentValue) {
@@ -2424,7 +2415,7 @@ export class Cluster extends Entity<string> {
 export class ClusteringField extends ComparisonField<ClusteringField> {
   Extension?: Extension[];
   Comparisons?: Comparisons;
-  field: FieldName;
+  field: string;
   isCenterField?: CenterField;
   fieldWeight?: number;
   similarityScale?: number;
@@ -2786,7 +2777,7 @@ export class GeneralRegressionModel extends Model {
   EventValues?: EventValues;
   BaseCumHazardTables?: BaseCumHazardTables;
   ModelVerification?: ModelVerification;
-  targetVariableName?: FieldName;
+  targetVariableName?: string;
   modelType: GeneralRegressionModelType;
   modelName?: string;
   functionName: MiningFunction;
@@ -2795,18 +2786,18 @@ export class GeneralRegressionModel extends Model {
   cumulativeLink?: CumulativeLinkFunction;
   linkFunction?: LinkFunction;
   linkParameter?: number;
-  trialsVariable?: FieldName;
+  trialsVariable?: string;
   trialsValue?: number;
   distribution?: GeneralRegressionModelDistribution;
   distParameter?: number;
-  offsetVariable?: FieldName;
+  offsetVariable?: string;
   offsetValue?: number;
   modelDF?: number;
-  endTimeVariable?: FieldName;
-  startTimeVariable?: FieldName;
-  subjectIDVariable?: FieldName;
-  statusVariable?: FieldName;
-  baselineStrataVariable?: FieldName;
+  endTimeVariable?: string;
+  startTimeVariable?: string;
+  subjectIDVariable?: string;
+  statusVariable?: string;
+  baselineStrataVariable?: string;
   isScorable?: boolean;
   "x-mathContext"?: MathContext;
 
@@ -2914,7 +2905,7 @@ export class PCovMatrix extends PMMLObject {
 export class PPCell extends ParameterCell {
   Extension?: Extension[];
   value: any;
-  predictorName: FieldName;
+  predictorName: string;
   parameterName: string;
   targetCategory?: any;
 
@@ -2980,7 +2971,7 @@ export class Predictor extends PMMLObject {
   Extension?: Extension[];
   Categories?: Categories;
   Matrix?: Matrix;
-  name: FieldName;
+  name: string;
   contrastMatrixType?: string;
 
   constructor(data: Predictor) {
@@ -3070,7 +3061,7 @@ export class Segmentation extends PMMLObject {
 
 export class VariableWeight extends PMMLObject {
   Extension?: Extension[];
-  field: FieldName;
+  field: string;
 
   constructor(data: VariableWeight) {
     super(data);
@@ -3084,7 +3075,7 @@ export class BayesInput extends PMMLObject {
   TargetValueStats?: TargetValueStats;
   DerivedField?: DerivedField;
   PairCounts?: PairCounts[];
-  fieldName: FieldName;
+  fieldName: string;
 
   constructor(data: BayesInput) {
     super(data);
@@ -3110,7 +3101,7 @@ export class BayesInputs extends PMMLObject {
 export class BayesOutput extends PMMLObject {
   Extension?: Extension[];
   TargetValueCounts: TargetValueCounts;
-  fieldName: FieldName;
+  fieldName: string;
 
   constructor(data: BayesOutput) {
     super(data);
@@ -3222,7 +3213,7 @@ export class TargetValueStats extends PMMLObject {
 
 export class InstanceField extends PMMLObject {
   Extension?: Extension[];
-  field: FieldName;
+  field: string;
   column?: string;
 
   constructor(data: InstanceField) {
@@ -3246,7 +3237,7 @@ export class InstanceFields extends PMMLObject {
 
 export class KNNInput extends ComparisonField<KNNInput> {
   Extension?: Extension[];
-  field: FieldName;
+  field: string;
   fieldWeight?: number;
   compareFunction?: CompareFunction;
 
@@ -3288,7 +3279,7 @@ export class NearestNeighborModel extends Model {
   numberOfNeighbors: number;
   continuousScoringMethod?: ContinuousScoringMethod;
   categoricalScoringMethod?: CategoricalScoringMethod;
-  instanceIdVariable?: FieldName;
+  instanceIdVariable?: string;
   threshold?: number;
   isScorable?: boolean;
   "x-mathContext"?: MathContext;
@@ -3512,7 +3503,7 @@ export class Term extends PMMLObject {
 
 export class CategoricalPredictor extends Term {
   Extension?: Extension[];
-  name: FieldName;
+  name: string;
   value: any;
   coefficient: number;
 
@@ -3527,7 +3518,7 @@ export class CategoricalPredictor extends Term {
 
 export class NumericPredictor extends Term {
   Extension?: Extension[];
-  name: FieldName;
+  name: string;
   exponent?: number;
   coefficient: number;
 
@@ -3543,7 +3534,7 @@ export class NumericPredictor extends Term {
 export class PredictorTerm extends Term {
   Extension?: Extension[];
   FieldRef: FieldRef[];
-  name?: FieldName;
+  name?: string;
   coefficient: number;
 
   constructor(data: PredictorTerm) {
@@ -3598,7 +3589,7 @@ export class RegressionModel extends Model {
   functionName: MiningFunction;
   algorithmName?: string;
   modelType?: RegressionModelType;
-  targetFieldName?: FieldName;
+  targetFieldName?: string;
   normalizationMethod?: RegressionModelNormalizationMethod;
   isScorable?: boolean;
   "x-mathContext"?: MathContext;
@@ -4064,7 +4055,7 @@ export class SetPredicate extends PMMLObject {
   Extension?: Extension[];
   Array?: Array;
   id: string;
-  field: FieldName;
+  field: string;
   operator?: SetPredicateOperator;
 
   constructor(data: SetPredicate) {
@@ -4536,11 +4527,11 @@ export class DynamicRegressor extends PMMLObject {
   Numerator?: Numerator;
   Denominator?: Denominator;
   RegressorValues?: RegressorValues;
-  field: FieldName;
+  field: string;
   transformation?: string;
   delay?: number;
   futureValuesMethod?: string;
-  targetField?: FieldName;
+  targetField?: string;
 
   constructor(data: DynamicRegressor) {
     super(data);
@@ -5063,7 +5054,7 @@ export class TimeSeries extends PMMLObject {
   startTime?: number;
   endTime?: number;
   interpolationMethod?: InterpolationMethod;
-  field?: FieldName;
+  field?: string;
 
   constructor(data: TimeSeries) {
     super(data);

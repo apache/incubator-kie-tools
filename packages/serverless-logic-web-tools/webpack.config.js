@@ -143,7 +143,7 @@ module.exports = async (env) => {
               globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
             },
             {
-              from: "../dashbuilder-client/dist/",
+              from: "../dashbuilder-editor/dist/dashbuilder-client/",
               to: "./dashbuilder-client",
               globOptions: { ignore: ["**/WEB-INF/**/*"] }, // "**/*.html" omitted because dashbuilder-client/index.html is needed
             },

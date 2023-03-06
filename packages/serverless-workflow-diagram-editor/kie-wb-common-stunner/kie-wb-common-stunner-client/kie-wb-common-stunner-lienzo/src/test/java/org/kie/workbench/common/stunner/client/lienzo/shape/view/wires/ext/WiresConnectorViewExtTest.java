@@ -137,7 +137,7 @@ public class WiresConnectorViewExtTest {
         assertEquals(0.0, tested.getTitleFontSize(), 0.0001);
         assertNull(tested.getFontPosition());
         assertNull(tested.getFontAlignment());
-
+        assertEquals(tested.getLabel(), label);
         tested.destroy();
         verify(label, times(1)).destroy();
         assertFalse(tested.label.isPresent());
@@ -158,6 +158,7 @@ public class WiresConnectorViewExtTest {
 
         assertNotNull(tested.label);
         assertFalse(tested.label.isPresent());
+        assertNull(tested.getLabel());
         tested.batch();
         verify(labelText, never()).batch();
     }

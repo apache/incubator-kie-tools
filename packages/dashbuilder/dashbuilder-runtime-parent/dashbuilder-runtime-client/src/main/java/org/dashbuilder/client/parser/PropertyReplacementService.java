@@ -17,10 +17,10 @@
 package org.dashbuilder.client.parser;
 
 import java.util.Map;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.URLSearchParams;
 
@@ -31,9 +31,13 @@ public class PropertyReplacementService {
     private static String PROPERTY_REPLACEMENT_PATTERN = "\\$\\{" + PROPERTY_KEY + "\\}";
 
     public String replace(String content, Map<String, String> properties) {
+        return replace(content, properties, false);
+    }
+
+    public String replace(String content, Map<String, String> properties, boolean allowUrlProperties) {
         var contentSb = new StringBuffer(content);
         properties.forEach((k, v) -> {
-            var value = getExternalPropertyValue(k, v);
+            var value = getExternalPropertyValue(allowUrlProperties, k, v);
             var replaceToken = PROPERTY_REPLACEMENT_PATTERN.replace(PROPERTY_KEY, k);
             var replacedContent = contentSb.toString().replaceAll(replaceToken, value);
             contentSb.replace(0, contentSb.length(), replacedContent);
@@ -41,13 +45,16 @@ public class PropertyReplacementService {
         return contentSb.toString();
     }
 
-    public String getExternalPropertyValue(String key, String v) {
-        if (DomGlobal.window != null) {
+    public String getExternalPropertyValue(boolean allowUrlProperties, String key, String v) {
+        if (DomGlobal.window != null && allowUrlProperties) {
             var params = new URLSearchParams(DomGlobal.window.location.search);
-            return Optional.ofNullable(params.get(key)).orElse(v);
-        } else {
-            return v;
+            var value = params.get(key);
+            if (value != null) {
+                return SimpleHtmlSanitizer.sanitizeHtml(value).asString();
+            }
         }
+        return v;
+
     }
 
 }

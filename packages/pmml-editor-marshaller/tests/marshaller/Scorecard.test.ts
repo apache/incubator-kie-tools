@@ -21,7 +21,6 @@ import {
   CompoundPredicate,
   DataDictionary,
   False,
-  FieldName,
   MiningField,
   Model,
   Output,
@@ -195,22 +194,22 @@ describe("Scorecard tests", () => {
     const characteristic1Attributes: Attribute[] = characteristics[1].Attribute as Attribute[];
 
     assertSimplePredicate(characteristic0Attributes[0].predicate, {
-      field: "input1" as FieldName,
+      field: "input1",
       operator: "lessOrEqual",
       value: "10",
     });
     assertSimplePredicate(characteristic0Attributes[1].predicate, {
-      field: "input1" as FieldName,
+      field: "input1",
       operator: "greaterThan",
       value: "10",
     });
     assertSimplePredicate(characteristic1Attributes[0].predicate, {
-      field: "input2" as FieldName,
+      field: "input2",
       operator: "lessOrEqual",
       value: "-5",
     });
     assertSimplePredicate(characteristic1Attributes[1].predicate, {
-      field: "input2" as FieldName,
+      field: "input2",
       operator: "greaterThan",
       value: "-5",
     });
@@ -224,7 +223,7 @@ describe("Scorecard tests", () => {
     const characteristic0Attributes: Attribute[] = characteristics[0].Attribute as Attribute[];
 
     assertSimplePredicate(characteristic0Attributes[0].predicate, {
-      field: "input1" as FieldName,
+      field: "input1",
       operator: "lessOrEqual",
       value: "10",
     });
@@ -277,14 +276,14 @@ describe("Scorecard tests", () => {
     assertCompoundPredicate(characteristic0Attributes[0].predicate, { booleanOperator: "and" }, [
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input1" as FieldName,
+          field: "input1",
           operator: "lessOrEqual",
           value: "-5",
         });
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input2" as FieldName,
+          field: "input2",
           operator: "lessOrEqual",
           value: "-5",
         });
@@ -295,14 +294,14 @@ describe("Scorecard tests", () => {
     assertCompoundPredicate(characteristic0Attributes[1].predicate, { booleanOperator: "and" }, [
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input1" as FieldName,
+          field: "input1",
           operator: "greaterThan",
           value: "-5",
         });
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input2" as FieldName,
+          field: "input2",
           operator: "greaterThan",
           value: "-5",
         });
@@ -318,14 +317,14 @@ describe("Scorecard tests", () => {
     assertCompoundPredicate(characteristic1Attributes[0].predicate, { booleanOperator: "or" }, [
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input3" as FieldName,
+          field: "input3",
           operator: "equal",
           value: "classA",
         });
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input4" as FieldName,
+          field: "input4",
           operator: "equal",
           value: "classA",
         });
@@ -336,14 +335,14 @@ describe("Scorecard tests", () => {
     assertCompoundPredicate(characteristic1Attributes[1].predicate, { booleanOperator: "or" }, [
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input3" as FieldName,
+          field: "input3",
           operator: "equal",
           value: "classB",
         });
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input4" as FieldName,
+          field: "input4",
           operator: "equal",
           value: "classB",
         });
@@ -358,14 +357,14 @@ describe("Scorecard tests", () => {
     assertCompoundPredicate(characteristic2Attributes[0].predicate, { booleanOperator: "xor" }, [
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input3" as FieldName,
+          field: "input3",
           operator: "equal",
           value: "classA",
         });
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input4" as FieldName,
+          field: "input4",
           operator: "equal",
           value: "classA",
         });
@@ -412,14 +411,14 @@ describe("Scorecard tests", () => {
           },
           (cp: Predicate) => {
             assertSimplePredicate(cp, {
-              field: "input1" as FieldName,
+              field: "input1",
               operator: "greaterThan",
               value: "-15",
             });
           },
           (cp: Predicate) => {
             assertSimplePredicate(cp, {
-              field: "input1" as FieldName,
+              field: "input1",
               operator: "lessOrEqual",
               value: "25.4",
             });
@@ -428,7 +427,7 @@ describe("Scorecard tests", () => {
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input2" as FieldName,
+          field: "input2",
           operator: "notEqual",
           value: "classA",
         });
@@ -443,14 +442,14 @@ describe("Scorecard tests", () => {
     assertCompoundPredicate(characteristic1Attributes[0].predicate, { booleanOperator: "or" }, [
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input1" as FieldName,
+          field: "input1",
           operator: "lessOrEqual",
           value: "-20",
         });
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input2" as FieldName,
+          field: "input2",
           operator: "equal",
           value: "classA",
         });
@@ -465,14 +464,14 @@ describe("Scorecard tests", () => {
             assertCompoundPredicate(cp, { booleanOperator: "and" }, [
               (cp2: Predicate) => {
                 assertSimplePredicate(cp2, {
-                  field: "input1" as FieldName,
+                  field: "input1",
                   operator: "greaterOrEqual",
                   value: "5",
                 });
               },
               (cp2: Predicate) => {
                 assertSimplePredicate(cp2, {
-                  field: "input1" as FieldName,
+                  field: "input1",
                   operator: "lessThan",
                   value: "12",
                 });
@@ -481,7 +480,7 @@ describe("Scorecard tests", () => {
           },
           (cp: Predicate) => {
             assertSimplePredicate(cp, {
-              field: "input2" as FieldName,
+              field: "input2",
               operator: "equal",
               value: "classB",
             });
@@ -490,7 +489,7 @@ describe("Scorecard tests", () => {
       },
       (predicate: Predicate) => {
         assertSimplePredicate(predicate, {
-          field: "input2" as FieldName,
+          field: "input2",
           operator: "equal",
           value: "classC",
         });
@@ -624,13 +623,13 @@ describe("Scorecard tests", () => {
     expect(Object.getPrototypeOf(miningSchema)).toBe(Object.prototype);
     expect(Object.getPrototypeOf(miningFields)).toBe(Array.prototype);
     expect(Object.getPrototypeOf(miningFields[0])).toBe(Object.prototype);
-    miningFields.push({ name: "mf" as FieldName });
+    miningFields.push({ name: "mf" });
     expect(Object.getPrototypeOf(miningFields[1])).toBe(Object.prototype);
 
     expect(Object.getPrototypeOf(output)).toBe(Object.prototype);
     expect(Object.getPrototypeOf(outputFields)).toBe(Array.prototype);
     expect(Object.getPrototypeOf(outputFields[0])).toBe(Object.prototype);
-    outputFields.push({ name: "mf" as FieldName, dataType: "string" });
+    outputFields.push({ name: "mf", dataType: "string" });
     expect(Object.getPrototypeOf(outputFields[1])).toBe(Object.prototype);
 
     expect(Object.getPrototypeOf(characteristics)).toBe(Object.prototype);

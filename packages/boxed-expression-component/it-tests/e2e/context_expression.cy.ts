@@ -101,7 +101,7 @@ describe("Context Expression Tests", () => {
     cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
 
     // Invoke Logic type selector for first context entry
-    cy.ouiaId("OUIA-Generated-TableRow-2").within(($row) => {
+    cy.ouiaId("expression-additive-row").within(($row) => {
       cy.contains("Select expression").click();
     });
 
@@ -206,7 +206,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
       .type("{rightarrow}{rightarrow}{rightarrow}{downarrow}");
 
     // from last cell navigate to the upper cell
-    cy.ouiaId("OUIA-Generated-TableRow-2").contains("td", "Select expression").should("be.focused").type("{uparrow}");
+    cy.ouiaId("expression-additive-row").contains("td", "Select expression").should("be.focused").type("{uparrow}");
 
     // check if the expression cell of the 2nd row is focused
     cy.ouiaId("expression-row-1").ouiaId("expression-column-2").should("be.focused");
@@ -241,7 +241,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
 
   it("Keyboard interaction with contextMenu", () => {
     // open contextMenu and expression menu from the expression cell of the 2nd row and check you are not able to navigate. Then close the contextMenu.
-    cy.ouiaId("OUIA-Generated-TableRow-2")
+    cy.ouiaId("expression-additive-row")
       .contains("td", "Select expression")
       .rightclick()
       .type("{leftarrow}")

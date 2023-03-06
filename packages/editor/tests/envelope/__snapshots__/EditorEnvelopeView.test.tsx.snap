@@ -123,6 +123,7 @@ exports[`EditorEnvelopeView first open 1`] = `
           >
             <div>
               <span
+                aria-label="Contents"
                 aria-valuetext="Loading..."
                 class="pf-c-spinner pf-m-xl"
                 role="progressbar"

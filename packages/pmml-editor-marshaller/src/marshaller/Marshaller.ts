@@ -38,7 +38,7 @@ import { textModelFactory } from "./jsonata/json2ui/TextModel";
 import { timeSeriesModelFactory } from "./jsonata/json2ui/TimeSeriesModel";
 import { treeModelFactory } from "./jsonata/json2ui/TreeModel";
 import { UI2JSON_TRANSFORMATION as ui2json } from "./jsonata/UI2JSON";
-import { CompoundPredicate, False, FieldName, PMML, SimplePredicate, True } from "./model/pmml4_4";
+import { CompoundPredicate, False, PMML, SimplePredicate, True } from "./model/pmml4_4";
 
 export function XML2PMML(xml: string): PMML {
   const doc: XMLJS.Element = XMLJS.xml2js(xml) as XMLJS.Element;
@@ -124,7 +124,7 @@ function singletonArray(value: any): any[] {
 }
 
 function json2uiSimplePredicateFactory(): SimplePredicate {
-  return new SimplePredicate({ field: "" as FieldName, operator: "equal" });
+  return new SimplePredicate({ field: "", operator: "equal" });
 }
 
 function json2uiCompoundPredicateFactory(): CompoundPredicate {

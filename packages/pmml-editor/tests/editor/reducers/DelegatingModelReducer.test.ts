@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FieldName, MiningField, Model, PMML, Scorecard } from "@kie-tools/pmml-editor-marshaller";
+import { MiningField, Model, PMML, Scorecard } from "@kie-tools/pmml-editor-marshaller";
 import { Actions, AllActions } from "@kie-tools/pmml-editor/dist/editor/reducers";
 import { Reducer } from "react";
 import { HistoryService } from "@kie-tools/pmml-editor/dist/editor/history";
 import { DelegatingModelReducer } from "@kie-tools/pmml-editor/dist/editor/reducers/DelegatingModelReducer";
 
 const service = new HistoryService([]);
-const miningFields: MiningField[] = [{ name: "field1" as FieldName }];
+const miningFields: MiningField[] = [{ name: "field1" }];
 const models: Model[] = [
   new Scorecard({
     MiningSchema: { MiningField: miningFields },
@@ -35,7 +35,7 @@ const models: Model[] = [
 ];
 const pmml: PMML = {
   version: "1.0",
-  DataDictionary: { DataField: [{ name: "field1" as FieldName, dataType: "boolean", optype: "categorical" }] },
+  DataDictionary: { DataField: [{ name: "field1", dataType: "boolean", optype: "categorical" }] },
   Header: {},
   models: models,
 };
@@ -63,8 +63,8 @@ describe("DelegatingModelReducer::Valid actions", () => {
       type: Actions.UpdateDataDictionaryField,
       payload: {
         dataDictionaryIndex: 0,
-        dataField: { name: "updated" as FieldName, dataType: "string", optype: "ordinal" },
-        originalName: "field1" as FieldName,
+        dataField: { name: "updated", dataType: "string", optype: "ordinal" },
+        originalName: "field1",
       },
     });
     service.commit(pmml);
@@ -82,8 +82,8 @@ describe("DelegatingModelReducer::Valid actions", () => {
       payload: {
         modelIndex: 1,
         miningSchemaIndex: 0,
-        name: "updated" as FieldName,
-        originalName: "field1" as FieldName,
+        name: "updated",
+        originalName: "field1",
         usageType: undefined,
         optype: undefined,
         importance: undefined,

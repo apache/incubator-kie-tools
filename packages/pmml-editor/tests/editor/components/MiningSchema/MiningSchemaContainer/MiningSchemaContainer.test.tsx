@@ -15,11 +15,10 @@
  */
 import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { DataField, DataType, FieldName, MiningField } from "@kie-tools/pmml-editor-marshaller";
+import { DataField, MiningField } from "@kie-tools/pmml-editor-marshaller";
 import MiningSchemaContainer, {
   MiningSchemaContext,
 } from "../../../../../src/editor/components/MiningSchema/MiningSchemaContainer/MiningSchemaContainer";
-import { DDDataField } from "../../../../../src/editor/components/DataDictionary/DataDictionaryContainer/DataDictionaryContainer";
 
 const onAddField = jest.fn((name) => {});
 const onDeleteField = jest.fn((index) => {});
@@ -27,12 +26,12 @@ const onUpdateField = jest.fn((index, originalName, field) => {});
 
 const dataFields: DataField[] = [
   {
-    name: "field1" as FieldName,
+    name: "field1",
     optype: "categorical",
     dataType: "string",
   },
   {
-    name: "field2" as FieldName,
+    name: "field2",
     optype: "categorical",
     dataType: "string",
   },
@@ -47,10 +46,10 @@ beforeEach(() => {
 
   miningFields = [
     {
-      name: "field1" as FieldName,
+      name: "field1",
     },
     {
-      name: "field2" as FieldName,
+      name: "field2",
     },
   ];
 });

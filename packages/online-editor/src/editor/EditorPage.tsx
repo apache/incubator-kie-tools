@@ -394,7 +394,7 @@ export function EditorPage(props: Props) {
               <Page>
                 <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />
                 <Divider />
-                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
+                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor section">
                   <DmnRunnerDrawer workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
                     <EditorPageDockDrawer ref={editorPageDockRef} workspaceFile={file.workspaceFile}>
                       {embeddedEditorFile && (

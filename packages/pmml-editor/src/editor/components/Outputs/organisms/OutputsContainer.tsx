@@ -26,7 +26,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-alt-circle-left-icon";
 import { BoltIcon } from "@patternfly/react-icons/dist/js/icons/bolt-icon";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { FieldName, MiningSchema, Output, OutputField } from "@kie-tools/pmml-editor-marshaller";
+import { MiningSchema, Output, OutputField } from "@kie-tools/pmml-editor-marshaller";
 import { Actions } from "../../../reducers";
 import OutputFieldsTable from "./OutputFieldsTable";
 import OutputsBatchAdd from "./OutputsBatchAdd";
@@ -44,7 +44,7 @@ interface OutputsContainerProps {
   modelIndex: number;
   output?: Output;
   miningSchema?: MiningSchema;
-  validateOutputFieldName: (index: number | undefined, name: FieldName) => boolean;
+  validateOutputFieldName: (index: number | undefined, name: string) => boolean;
   deleteOutputField: (index: number) => void;
   commitOutputField: (index: number | undefined, outputField: OutputField) => void;
 }
@@ -94,7 +94,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     const numberOfOutputFields = output?.OutputField.length;
     if (numberOfOutputFields !== undefined) {
       const existingNames: string[] = output?.OutputField.map((of) => of.name.toString()) ?? [];
-      const newOutputFieldName: FieldName = findIncrementalName("New output", existingNames, 1) as FieldName;
+      const newOutputFieldName: string = findIncrementalName("New output", existingNames, 1);
       const newOutputField: OutputField = {
         name: newOutputFieldName,
         dataType: "string",

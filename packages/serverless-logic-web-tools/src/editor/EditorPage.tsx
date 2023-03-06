@@ -435,7 +435,7 @@ export function EditorPage(props: Props) {
               workspaceFile={file.workspaceFile}
               onNotificationClick={onNotificationClick}
             >
-              <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
+              <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor Section">
                 <div style={{ height: "100%" }}>
                   {!isEditorReady && <LoadingSpinner />}
                   <div style={{ display: isEditorReady ? "inline" : "none" }}>
