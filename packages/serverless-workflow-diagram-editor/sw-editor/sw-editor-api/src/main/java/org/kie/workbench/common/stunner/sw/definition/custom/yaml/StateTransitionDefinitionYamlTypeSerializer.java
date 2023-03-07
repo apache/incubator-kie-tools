@@ -24,10 +24,10 @@ public class StateTransitionDefinitionYamlTypeSerializer implements YAMLDeserial
 
     @Override
     public Object deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
-        if (yaml == null || yaml.isEmpty() || yaml.value(key) == null) {
+        YamlNode value = yaml.value(key);
+        if (value == null) {
             return null;
         }
-        YamlNode value = yaml.value(key);
         return deserialize(value, ctx);
     }
 

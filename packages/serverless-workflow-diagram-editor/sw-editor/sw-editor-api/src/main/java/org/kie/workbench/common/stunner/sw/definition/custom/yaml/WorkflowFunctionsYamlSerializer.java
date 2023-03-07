@@ -5,6 +5,7 @@ import com.amihaiemil.eoyaml.YamlNode;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.exception.YAMLDeserializationException;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.StringYAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.array.ArrayYAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.StringYAMLSerializer;
@@ -26,16 +27,18 @@ public class WorkflowFunctionsYamlSerializer implements YAMLDeserializer, YAMLSe
     private static final Function_YamlDeserializerImpl deserializer =
             new Function_YamlDeserializerImpl();
 
+    private static final StringYAMLDeserializer stringJsonDeserializer = new StringYAMLDeserializer();
     private static final StringYAMLSerializer stringJsonSerializer = new StringYAMLSerializer();
 
 
     @Override
     public Object deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
-        if(yaml == null || yaml.isEmpty() || yaml.value(key) == null) {
+        YamlNode value = yaml.value(key);
+        if (value == null) {
             return null;
         }
-
-        return deserialize(yaml.value(key), ctx);    }
+        return deserialize(value, ctx);
+    }
 
     @Override
     public Object deserialize(YamlNode node, YAMLDeserializationContext ctx) {
@@ -43,7 +46,7 @@ public class WorkflowFunctionsYamlSerializer implements YAMLDeserializer, YAMLSe
             return null;
         }
         if(node.type() == SCALAR) {
-            return deserializer.deserialize(node, ctx);
+            return stringJsonDeserializer.deserialize(node, ctx);
         } else if (node.type() == SEQUENCE) {
             return ArrayYAMLDeserializer.newInstance(deserializer, Function[]::new).deserialize(node, ctx);
         }

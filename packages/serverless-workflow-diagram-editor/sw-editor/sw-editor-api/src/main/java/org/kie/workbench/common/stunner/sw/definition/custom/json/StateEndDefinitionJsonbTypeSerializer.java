@@ -40,6 +40,9 @@ public class StateEndDefinitionJsonbTypeSerializer implements JsonbDeserializer<
 
     @Override
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
+
+
+
         if (obj instanceof Boolean) {
             generator.write(((Boolean) obj));
         } else if (obj instanceof StateEnd) {

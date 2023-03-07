@@ -28,7 +28,6 @@ import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
 import com.google.gwt.user.client.ui.IsWidget;
-import elemental2.core.Global;
 import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.dom.DomGlobal;
@@ -160,13 +159,10 @@ public class DiagramEditor {
         if(value == null || value.isEmpty()) {
             return setContent(path, "{}", DocType.JSON);
         }
-
-        try{
-            Global.JSON.parse(value); //check if it is a valid json, if now, we can assume it is a yaml
+        if(value.charAt(0) == '{') {
             return setContent(path, value, DocType.JSON);
-        } catch (Exception e) {
-            return setContent(path, value, DocType.YAML);
         }
+        return setContent(path, value, DocType.YAML);
     }
 
     private Promise<Void> setContent(final String path, final String value, final DocType docType) {

@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.exception.YAMLDeserializationException;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.StringYAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.array.ArrayYAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.StringYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.array.ArrayYAMLSerializer;
@@ -47,11 +48,12 @@ public class ErrorYamlSerializer implements YAMLDeserializer, YAMLSerializer {
 
     @Override
     public Object deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
-        if(yaml == null || yaml.isEmpty() || yaml.value(key) == null) {
+        YamlNode value = yaml.value(key);
+        if (value == null) {
             return null;
         }
-
-        return deserialize(yaml.value(key), ctx);    }
+        return deserialize(value, ctx);
+    }
 
     @Override
     public Object deserialize(YamlNode node, YAMLDeserializationContext ctx) {
@@ -61,7 +63,7 @@ public class ErrorYamlSerializer implements YAMLDeserializer, YAMLSerializer {
         if(node.type() == SCALAR) {
             return stringYAMLDeserializer.deserialize(node, ctx);
         } else {
-            return deserializer.deserialize(node, ctx);
+            return ArrayYAMLDeserializer.newInstance(deserializer, org.kie.workbench.common.stunner.sw.definition.Error[]::new).deserialize(node, ctx);
         }
 
     }
@@ -71,10 +73,9 @@ public class ErrorYamlSerializer implements YAMLDeserializer, YAMLSerializer {
         if (obj instanceof String) {
             stringYAMLSerializer.serialize(writer, propertyName, (String) obj, ctx);
         } else if (obj instanceof org.kie.workbench.common.stunner.sw.definition.Error[]) {
-            new ArrayYAMLSerializer<org.kie.workbench.common.stunner.sw.definition.Error>(serializer)
-                    .serialize(writer, (org.kie.workbench.common.stunner.sw.definition.Error[]) obj,
+            new ArrayYAMLSerializer<>(serializer)
+                    .serialize(writer, propertyName, (org.kie.workbench.common.stunner.sw.definition.Error[]) obj,
                             ctx);
-
         }
     }
 
