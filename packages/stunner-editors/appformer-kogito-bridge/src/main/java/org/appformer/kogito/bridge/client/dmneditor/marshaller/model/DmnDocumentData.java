@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.appformer.kogito.bridge.client.pmmleditor.marshaller.model;
+package org.appformer.kogito.bridge.client.dmneditor.marshaller.model;
 
 import java.util.List;
 
@@ -25,20 +25,26 @@ import jsinterop.base.JsArrayLike;
 import org.appformer.kogito.bridge.client.util.JSIUtils;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class PMMLDocumentData {
+public class DmnDocumentData {
 
     @JsOverlay
-    public final List<PMMLModelData> getModels() {
-        if (getNativeModels() == null) {
-            setNativeModels(JSIUtils.getNativeArray());
+    public final List<DmnDecision> getDecisions() {
+        if (getNativeDecisions() == null) {
+            setNativeDecisions(JSIUtils.getNativeArray());
         }
-        return JSIUtils.toList(JSIUtils.getUnwrappedElementsArray(getNativeModels()));
+        return JSIUtils.toList(JSIUtils.getUnwrappedElementsArray(getNativeDecisions()));
     }
 
-    @JsProperty(name = "models")
-    public native JsArrayLike<PMMLModelData> getNativeModels();
+    @JsProperty(name = "namespace")
+    public native String getNamespace();
 
-    @JsProperty(name = "models")
-    public native void setNativeModels(JsArrayLike<PMMLModelData> models);
+    @JsProperty(name = "name")
+    public native String getName();
+
+    @JsProperty(name = "decisions")
+    public native JsArrayLike<DmnDecision> getNativeDecisions();
+
+    @JsProperty(name = "decisions")
+    public native void setNativeDecisions(JsArrayLike<DmnDecision> models);
 
 }

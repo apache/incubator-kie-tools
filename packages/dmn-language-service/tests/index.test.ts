@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { DmnLanguageService } from "../src";
+import { DmnDocumentData, DmnLanguageService } from "../src";
 import { readFile } from "fs/promises";
 import { readFileSync } from "fs";
 import { resolve } from "path";
+import { DmnDecision } from "../src/DmnDecision";
 
 const tests = [
   { modelPath: "./fixtures/model.dmn", expected: ["recursive.dmn", "nested.dmn"] },
@@ -89,5 +90,27 @@ describe("DmnLanguageService", () => {
     const service = new DmnLanguageService({ getDmnImportedModel: () => new Promise((res) => res(expected)) });
 
     expect(await service.getAllImportedModelsResources([fileRecursive])).toEqual([expected]);
+  });
+
+  it("getDmnDocumentData - get decisions", async () => {
+    const pathRecursive = resolve(__dirname, "./fixtures/decisions.dmn");
+    const fileRecursive = readFileSync(pathRecursive, "utf8");
+
+    const pathNested = resolve(__dirname, "./fixtures/nested.dmn");
+    const fileNested = readFileSync(pathNested, "utf8");
+
+    const expected = {
+      relativePath: pathNested,
+      content: fileNested,
+    };
+
+    const dmnDocumentData: DmnDocumentData = new DmnDocumentData(
+      "https://kiegroup.org/dmn/_57B8BED3-0077-4154-8435-30E57EA6F02E",
+      "My Model Name",
+      [new DmnDecision("Decision-1"), new DmnDecision("Decision-2"), new DmnDecision("Decision-3")]
+    );
+    const service = new DmnLanguageService({ getDmnImportedModel: () => new Promise((res) => res(expected)) });
+
+    expect(service.getDmnDocumentData(fileRecursive)).toEqual(dmnDocumentData);
   });
 });

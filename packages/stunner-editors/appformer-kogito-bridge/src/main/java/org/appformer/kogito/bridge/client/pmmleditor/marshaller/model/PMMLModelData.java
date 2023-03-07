@@ -22,6 +22,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsArrayLike;
+import org.appformer.kogito.bridge.client.util.JSIUtils;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class PMMLModelData {

@@ -119,7 +119,7 @@ public class ListBoxValues {
             return;
         }
         List<String> keys = new ArrayList<>(acceptableValues.keySet());
-        java.util.Collections.sort(keys);
+        java.util.Collections.sort(keys, String.CASE_INSENSITIVE_ORDER);
 
         if (allowEmpty) {
             acceptableValuesWithCustomValues.add("");
