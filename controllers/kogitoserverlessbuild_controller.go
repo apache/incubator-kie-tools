@@ -27,7 +27,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -75,13 +74,11 @@ func (r *KogitoServerlessBuildReconciler) Reconcile(ctx context.Context, req ctr
 
 	phase := build.Status.BuildPhase
 	if r.commonBuildConf.Data == nil {
-		r.commonBuildConf, err = builder.GetCommonConfigMap(r.Client)
+		r.commonBuildConf, err = builder.GetCommonConfigMap(r.Client, build.Namespace)
 	}
 
 	if err != nil {
-		return ctrl.Result{}, errors.NewNotFound(schema.GroupResource{
-			Resource: "ConfigMap",
-		}, "builder-config")
+		return ctrl.Result{}, err
 	}
 	// Fetch the Platform build with the information we need for the build
 	pl, err := platform.GetActivePlatform(ctx, r.Client, req.Namespace)

@@ -46,23 +46,22 @@ func NewCustomConfig(platform operatorapi.KogitoServerlessPlatform) (map[string]
 		return nil, fmt.Errorf("unable to retrieve the namespace from platform %s", platform.Name)
 	}
 	customConfig[configKeyBuildNamespace] = platform.Namespace
-	if platform.Spec.BuildPlatform.Registry.Secret == "" {
-		return nil, fmt.Errorf("unable to retrieve the registry credentials from platform %s", platform.Name)
-	}
+	// Registry Secret and Address are not required, the inner builder will use minikube inner registry if available
+	// TODO: we should review
 	customConfig[configKeyRegistrySecret] = platform.Spec.BuildPlatform.Registry.Secret
-	if platform.Spec.BuildPlatform.Registry.Address == "" {
-		return nil, fmt.Errorf("unable to retrieve the registry address from platform %s", platform.Name)
-	}
 	customConfig[configKeyRegistryAddress] = platform.Spec.BuildPlatform.Registry.Address
 	return customConfig, nil
 }
 
 // GetCommonConfigMap retrieves the config map with the builder common configuration information
-func GetCommonConfigMap(client client.Client) (corev1.ConfigMap, error) {
+func GetCommonConfigMap(client client.Client, fallbackNS string) (corev1.ConfigMap, error) {
 
 	namespace, found := os.LookupEnv(envVarPodNamespaceName)
-
 	if !found {
+		namespace = fallbackNS
+	}
+
+	if !found && len(namespace) == 0 {
 		return corev1.ConfigMap{}, errors.Errorf("Can't find current context namespace, make sure that %s env is set", envVarPodNamespaceName)
 	}
 
@@ -80,18 +79,17 @@ func GetCommonConfigMap(client client.Client) (corev1.ConfigMap, error) {
 
 	err := client.Get(context.TODO(), types.NamespacedName{Name: ConfigMapName, Namespace: namespace}, &existingConfigMap)
 	if err != nil {
-		log.Error(err, "reading configmap")
+		log.Error(err, "fetching configmap "+ConfigMapName)
 		return corev1.ConfigMap{}, err
 	}
 
 	err = isValidBuilderCommonConfigMap(existingConfigMap)
 	if err != nil {
-		log.Error(err, "configmap is not valid")
+		log.Error(err, "configmap "+ConfigMapName+" is not valid")
 		return existingConfigMap, err
 	}
 
 	return existingConfigMap, nil
-
 }
 
 // isValidBuilderCommonConfigMap  function that will verify that in the builder config maps there are the required keys, and they aren't empty

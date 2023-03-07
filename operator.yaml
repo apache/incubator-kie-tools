@@ -875,10 +875,10 @@ spec:
     - jsonPath: .status.address.url
       name: Address
       type: string
-    - jsonPath: .status.condition
-      name: Condition
+    - jsonPath: .status.conditions[?(@.type=='Running')].status
+      name: Ready
       type: string
-    - jsonPath: .status.reason
+    - jsonPath: .status.conditions[?(@.type=='Running')].reason
       name: Reason
       type: string
     name: v1alpha08
@@ -2519,24 +2519,39 @@ spec:
                 - start
                 - states
                 type: object
-              condition:
-                description: ConditionType type of condition
-                type: string
-              endpoints:
+              conditions:
+                description: The latest available observations of a resource's current
+                  state.
                 items:
+                  description: Condition describes the common structure for conditions
+                    in our types
                   properties:
-                    ip:
+                    lastUpdateTime:
+                      description: The last time this condition was updated.
+                      format: date-time
                       type: string
-                    port:
-                      type: integer
-                    portName:
+                    message:
+                      description: A human-readable message indicating details about
+                        the transition.
                       type: string
-                    protocol:
+                    reason:
+                      description: The reason for the condition's last transition.
                       type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type condition for the given object
+                      type: string
+                  required:
+                  - status
+                  - type
                   type: object
                 type: array
-              reason:
-                type: string
+              observedGeneration:
+                description: The generation observed by the deployment controller.
+                format: int64
+                type: integer
               recoverFailureAttempts:
                 description: keeps track of how many failure recovers a given workflow
                   had so far
@@ -2960,6 +2975,8 @@ spec:
           capabilities:
             drop:
             - ALL
+          seccompProfile:
+            type: RuntimeDefault
       - args:
         - --health-probe-bind-address=:8081
         - --metrics-bind-address=127.0.0.1:8080
@@ -2999,5 +3016,7 @@ spec:
             - ALL
       securityContext:
         runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       serviceAccountName: kogito-serverless-operator-controller-manager
       terminationGracePeriodSeconds: 10

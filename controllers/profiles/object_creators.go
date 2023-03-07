@@ -86,11 +86,11 @@ func defaultDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (c
 							AllowPrivilegeEscalation: utils.Pbool(false),
 							Privileged:               utils.Pbool(false),
 							RunAsNonRoot:             utils.Pbool(true),
-							Capabilities: &corev1.Capabilities{
-								Drop: []corev1.Capability{corev1.Capability("ALL")},
-							},
 							SeccompProfile: &corev1.SeccompProfile{
 								Type: corev1.SeccompProfileTypeRuntimeDefault,
+							},
+							Capabilities: &corev1.Capabilities{
+								Drop: []corev1.Capability{corev1.Capability("ALL")},
 							},
 						},
 						ImagePullPolicy: corev1.PullAlways,

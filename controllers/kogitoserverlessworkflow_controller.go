@@ -29,9 +29,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
+	"github.com/kiegroup/kogito-serverless-operator/api"
+
 	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles"
 
-	"github.com/kiegroup/container-builder/api"
+	builderapi "github.com/kiegroup/container-builder/api"
 	"github.com/kiegroup/container-builder/util/log"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
@@ -92,7 +94,7 @@ func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req 
 
 func buildEnqueueRequestsFromMapFunc(c client.Client, build *operatorapi.KogitoServerlessBuild) []reconcile.Request {
 	var requests []reconcile.Request
-	if build.Status.BuildPhase != api.BuildPhaseSucceeded && build.Status.BuildPhase != api.BuildPhaseError {
+	if build.Status.BuildPhase != builderapi.BuildPhaseSucceeded && build.Status.BuildPhase != builderapi.BuildPhaseError {
 		return requests
 	}
 
@@ -119,8 +121,8 @@ func buildEnqueueRequestsFromMapFunc(c client.Client, build *operatorapi.KogitoS
 			continue
 		}
 
-		if workflow.Status.Condition == operatorapi.BuildingConditionType || workflow.Status.Condition == operatorapi.RunningConditionType {
-			log.Infof("Build %s ready, notify workflow: %s in condition %s", build.Name, workflow.Name, workflow.Status.Condition)
+		if workflow.Status.GetCondition(api.BuiltConditionType).IsTrue() || workflow.Status.GetTopLevelCondition().IsTrue() {
+			log.Infof("Build %s ready, notify workflow: %s", build.Name, workflow.Name)
 			requests = append(requests, reconcile.Request{
 				NamespacedName: types.NamespacedName{
 					Namespace: workflow.Namespace,
@@ -151,7 +153,8 @@ func platformEnqueueRequestsFromMapFunc(c client.Client, p *operatorapi.KogitoSe
 		}
 
 		for _, workflow := range list.Items {
-			if workflow.Status.Condition == operatorapi.WaitingForPlatformConditionType {
+			cond := workflow.Status.GetTopLevelCondition()
+			if cond.IsFalse() && api.WaitingForPlatformReason == cond.Reason {
 				log.Infof("Platform %s ready, wake-up workflow: %s", p.Name, workflow.Name)
 				requests = append(requests, reconcile.Request{
 					NamespacedName: types.NamespacedName{

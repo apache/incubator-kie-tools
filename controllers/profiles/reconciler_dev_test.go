@@ -25,7 +25,8 @@ import (
 	clientruntime "sigs.k8s.io/controller-runtime/pkg/client"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/kiegroup/kogito-serverless-operator/api"
+
 	"github.com/kiegroup/kogito-serverless-operator/test"
 )
 
@@ -34,7 +35,7 @@ func Test_recoverFromFailureNoDeployment(t *testing.T) {
 	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
 	workflowID := clientruntime.ObjectKeyFromObject(workflow)
 
-	workflow.Status.Condition = operatorapi.FailedConditionType
+	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, "")
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
 
 	reconciler := newDevProfileReconciler(client, &logger)
@@ -46,7 +47,7 @@ func Test_recoverFromFailureNoDeployment(t *testing.T) {
 
 	// the recover state tried to clear the conditions of our workflow, so we can try reconciling it again
 	workflow = test.MustGetWorkflow(t, client, workflowID)
-	assert.Equal(t, operatorapi.NoneConditionType, workflow.Status.Condition)
+	assert.True(t, workflow.Status.GetTopLevelCondition().IsUnknown())
 	result, err = reconciler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.NotNil(t, result)
@@ -56,7 +57,7 @@ func Test_recoverFromFailureNoDeployment(t *testing.T) {
 
 	// we failed again, but now we have the deployment
 	workflow = test.MustGetWorkflow(t, client, workflowID)
-	workflow.Status.Condition = operatorapi.FailedConditionType
+	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, "")
 	err = client.Status().Update(context.TODO(), workflow)
 	assert.NoError(t, err)
 	// the fake client won't update the deployment status condition since we don't have a deployment controller
@@ -66,7 +67,7 @@ func Test_recoverFromFailureNoDeployment(t *testing.T) {
 	assert.NotNil(t, result)
 
 	workflow = test.MustGetWorkflow(t, client, workflowID)
-	assert.Equal(t, operatorapi.FailedConditionType, workflow.Status.Condition)
+	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, "")
 	assert.Equal(t, 1, workflow.Status.RecoverFailureAttempts)
 
 	deployment := test.MustGetDeployment(t, client, workflow)
@@ -100,7 +101,7 @@ func Test_newDevProfile(t *testing.T) {
 	service := test.MustGetService(t, client, workflow)
 	assert.Equal(t, int32(defaultHTTPWorkflowPort), service.Spec.Ports[0].TargetPort.IntVal)
 
-	workflow.Status.Condition = operatorapi.RunningConditionType
+	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
 	err = client.Status().Update(context.TODO(), workflow)
 	assert.NoError(t, err)
 
@@ -130,7 +131,7 @@ func Test_newDevProfile(t *testing.T) {
 	assert.Contains(t, propCM.Data[applicationPropertiesFileName], "quarkus.http.port")
 
 	// reconcile
-	workflow.Status.Condition = operatorapi.RunningConditionType
+	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
 	err = client.Update(context.TODO(), workflow)
 	assert.NoError(t, err)
 	result, err = devReconciler.Reconcile(context.TODO(), workflow)

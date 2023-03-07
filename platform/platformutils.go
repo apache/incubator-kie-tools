@@ -40,7 +40,7 @@ import (
 )
 
 // BuilderServiceAccount --.
-const BuilderServiceAccount = "kogito-builder"
+const BuilderServiceAccount = "kogito-serverless-operator-builder"
 
 // ResourceCustomizer can be used to inject code that changes the objects before they are created.
 type ResourceCustomizer func(object ctrl.Object) ctrl.Object

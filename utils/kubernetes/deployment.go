@@ -36,7 +36,7 @@ func IsDeploymentAvailable(deployment *appsv1.Deployment) bool {
 
 // IsDeploymentProgressing checks if the Deployment is progressing/scaling its replicas.
 // Not progressing doesn't necessarily mean that the deployment is in a failure state.
-// It might be running under the required replicas, always check IsDeploymentAvailable and GetDeploymentUnavailabilityReason to understand the real condition.
+// It might be running under the required replicas, always check IsDeploymentAvailable and GetDeploymentUnavailabilityMessage to understand the real condition.
 func IsDeploymentProgressing(deployment *appsv1.Deployment) bool {
 	if !IsDeploymentAvailable(deployment) {
 		// it's not available, so let's check if it's progressing
@@ -52,10 +52,16 @@ func IsDeploymentProgressing(deployment *appsv1.Deployment) bool {
 	return false
 }
 
-// GetDeploymentUnavailabilityReason returns a string explaining why the given deployment is unavailable. If empty, there's no replica failure.
+// GetDeploymentUnavailabilityMessage returns a string explaining why the given deployment is unavailable. If empty, there's no replica failure.
 // Note that the Deployment might be available, but a second replica failed to scale. Always check IsDeploymentAvailable.
-func GetDeploymentUnavailabilityReason(deployment *appsv1.Deployment) string {
+//
+// See: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#failed-deployment
+func GetDeploymentUnavailabilityMessage(deployment *appsv1.Deployment) string {
 	for _, condition := range deployment.Status.Conditions {
+		if condition.Type == appsv1.DeploymentProgressing &&
+			condition.Status == v1.ConditionFalse {
+			return fmt.Sprintf("deployment %s unavailable: reason %s, message %s", deployment.Name, condition.Reason, condition.Message)
+		}
 		if condition.Type == appsv1.DeploymentReplicaFailure &&
 			condition.Status == v1.ConditionTrue {
 			return fmt.Sprintf("deployment %s unavailable: reason %s, message %s", deployment.Name, condition.Reason, condition.Message)

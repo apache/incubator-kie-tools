@@ -23,6 +23,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
+	"github.com/kiegroup/kogito-serverless-operator/api"
+
 	"github.com/kiegroup/kogito-serverless-operator/test"
 
 	"github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
@@ -63,7 +65,9 @@ func TestKogitoServerlessWorkflowController(t *testing.T) {
 		// Perform some checks on the created CR
 		assert.True(t, afterReconcileWorkflow.Spec.Start == "ChooseOnLanguage")
 		// We create the initial build and return
-		assert.Equal(t, v1alpha08.BuildingConditionType, afterReconcileWorkflow.Status.Condition)
+		assert.True(t, afterReconcileWorkflow.Status.GetCondition(api.BuiltConditionType).IsFalse())
+		assert.True(t, afterReconcileWorkflow.Status.GetCondition(api.RunningConditionType).IsFalse())
+		assert.True(t, afterReconcileWorkflow.Status.IsWaitingForBuild())
 		assert.True(t, len(afterReconcileWorkflow.Spec.States) == 4)
 	})
 }

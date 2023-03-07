@@ -13,10 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Runs the operator locally via go main
+# runs the e2e locally
+# You must have minikube installed
 
-kubectl apply -f ./bundle/manifests/sw.kogito.kie.org_kogitoserverlessplatforms.yaml
-kubectl apply -f ./bundle/manifests/sw.kogito.kie.org_kogitoserverlessbuilds.yaml
-kubectl apply -f ./bundle/manifests/sw.kogito.kie.org_kogitoserverlessworkflows.yaml
+export OPERATOR_IMAGE_NAME=localhost/kogito-serverless-operator:0.0.1
+eval "$(minikube -p minikube docker-env)"
+make container-build BUILDER=docker IMG="${OPERATOR_IMAGE_NAME}"
 
-make debug
+make test-e2e
