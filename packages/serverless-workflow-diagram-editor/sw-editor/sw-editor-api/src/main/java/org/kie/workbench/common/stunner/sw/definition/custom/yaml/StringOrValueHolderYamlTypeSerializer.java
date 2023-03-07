@@ -38,10 +38,11 @@ public class StringOrValueHolderYamlTypeSerializer implements YAMLDeserializer, 
 
     @Override
     public Object deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
-        if(yaml == null || yaml.isEmpty() || yaml.value(key) == null) {
+        YamlNode value = yaml.value(key);
+        if (value == null) {
             return null;
         }
-        return deserialize(yaml.value(key), ctx);
+        return deserialize(value, ctx);
     }
 
     @Override

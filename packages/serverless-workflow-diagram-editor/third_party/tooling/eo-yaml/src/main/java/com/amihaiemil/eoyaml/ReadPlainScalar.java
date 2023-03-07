@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2020, Mihai Emil Andronache
+ * Copyright (c) 2016-2023, Mihai Emil Andronache
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 /**
  * A plain scalar value read from somewhere.
  * @author Mihai Andronace (amihaiemil@gmail.com)
- * @version $Id: 8aa92f57d80848cca2d99b758752ca8453356def $
+ * @version $Id: 1e0c87b888ba72293126e9d99428eb7a63d25ee1 $
  * @since 3.1.3
  */
 final class ReadPlainScalar extends BaseScalar {
@@ -57,32 +57,31 @@ final class ReadPlainScalar extends BaseScalar {
      *   - -[ ]+(.*) : Any characters after a hyphen (-) and one more spaces.
      */
     private static final Pattern QUOTED_LITERAL_MAP_SEQ = Pattern.compile("^("
-        + "[ ]*(-[ ]+)"
-        + "(?<EscapedScalar>"
-            + "('(?:[^'\\\\]|\\\\.)*')|"
-            + "(\"(?:[^\"\\\\]|\\\\.)*\")"
-        + ")|"
-        + "(((?<key>[^:'\"]+)|(?<keyQ>\".+\")|(?<keySQ>'.+'))*:[ ]+"
-        + "(?<MappingScalar>.*))|"
-        + "(-[ ]+(?<UnescapedSequenceScalar>.*))"
-        + ")$"
-    );
+            + "[ ]*(-[ ]+)"
+            + "(('(?:[^'\\\\]|\\\\.)*')|"
+            + "(\"(?:[^\"\\\\]|\\\\.)*\"))|"
+            + "(.*:[ ]+(.*))|"
+            + "(-[ ]+(.*))"
+            + ")$");
 
     /**
      * Name of the regex group for escaped scalars (between "" or '').
      */
-    private static final String ESCAPED_SCALAR = "EscapedScalar";
+    private static final int QUOTED_LITERAL_GROUP = 3;
+    //private static final String ESCAPED_SCALAR = "EscapedScalar";
 
     /**
      * Name of the regex group for scalars in a mapping.
      */
-    private static final String MAPPING_SCALAR = "MappingScalar";
+    private static final int MAPPING_GROUP = 7;
+    //private static final String MAPPING_SCALAR = "MappingScalar";
 
     /**
      * Name of the regex group for unescaped scalars in a sequence.
      */
-    private static final String UNESCAPED_SEQUENCE_SCALAR =
-        "UnescapedSequenceScalar";
+    private static final int SEQUENCE_GROUP = 9;
+    //private static final String UNESCAPED_SEQUENCE_SCALAR =
+    //    "UnescapedSequenceScalar";
 
     /**
      * All YAML Lines of the document.
@@ -120,13 +119,20 @@ final class ReadPlainScalar extends BaseScalar {
         String value = this.scalar.trimmed();
         Matcher matcher = this.escapedSequenceScalar(this.scalar);
         if(matcher.matches()) {
-            if (matcher.group(ESCAPED_SCALAR) != null) {
+            if (matcher.group(QUOTED_LITERAL_GROUP) != null) {
+                value = matcher.group(QUOTED_LITERAL_GROUP);
+            } else if (matcher.group(MAPPING_GROUP) != null) {
+                value = matcher.group(MAPPING_GROUP).trim();
+            } else if (matcher.group(SEQUENCE_GROUP) != null) {
+                value = matcher.group(SEQUENCE_GROUP).trim();
+            }
+/*            if (matcher.group(ESCAPED_SCALAR) != null) {
                 value = matcher.group(ESCAPED_SCALAR);
             } else if (matcher.group(MAPPING_SCALAR) != null) {
                 value = matcher.group(MAPPING_SCALAR).trim();
             } else if (matcher.group(UNESCAPED_SEQUENCE_SCALAR) != null) {
                 value = matcher.group(UNESCAPED_SEQUENCE_SCALAR).trim();
-            }
+            }*/
         }
         if("null".equals(value)) {
             return null;
@@ -140,36 +146,36 @@ final class ReadPlainScalar extends BaseScalar {
         final Comment comment;
         if(this.scalar instanceof YamlLine.NullYamlLine) {
             comment = new Concatenated(
-                new BuiltComment(this, ""),
-                new BuiltComment(this, "")
+                    new BuiltComment(this, ""),
+                    new BuiltComment(this, "")
             );
         } else {
             final int lineNumber = this.scalar.number();
             comment = new Concatenated(
-                new ReadComment(
-                    new Backwards(
-                        new FirstCommentFound(
+                    new ReadComment(
                             new Backwards(
-                                new Skip(
-                                    this.all,
-                                    line -> line.number() >= lineNumber,
-                                    line -> line.trimmed().startsWith("..."),
-                                    line -> line.trimmed().startsWith("%"),
-                                    line -> line.trimmed().startsWith("!!")
-                                )
+                                    new FirstCommentFound(
+                                            new Backwards(
+                                                    new Skip(
+                                                            this.all,
+                                                            line -> line.number() >= lineNumber,
+                                                            line -> line.trimmed().startsWith("..."),
+                                                            line -> line.trimmed().startsWith("%"),
+                                                            line -> line.trimmed().startsWith("!!")
+                                                    )
+                                            ),
+                                            false
+                                    )
                             ),
-                            false
-                        )
+                            this
                     ),
-                    this
-                ),
-                new ReadComment(
-                    new Skip(
-                        this.all,
-                        line -> line.number() != lineNumber
-                    ),
-                    this
-                )
+                    new ReadComment(
+                            new Skip(
+                                    this.all,
+                                    line -> line.number() != lineNumber
+                            ),
+                            this
+                    )
             );
         }
         return comment;

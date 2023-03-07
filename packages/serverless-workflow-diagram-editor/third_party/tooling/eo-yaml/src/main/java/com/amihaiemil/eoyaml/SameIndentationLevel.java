@@ -81,7 +81,7 @@ final class SameIndentationLevel implements YamlLines {
             while (iterator.hasNext()) {
                 YamlLine current = iterator.next();
                 if (firstIsDashMap
-                        && this.mapping(current)
+                        && this.isMappingEntry(current)
                         && current.indentation() == firstIndentation + 2) {
                     sameIndentation.add(current);
                 } else if(current.indentation() == firstIndentation) {
@@ -123,11 +123,11 @@ final class SameIndentationLevel implements YamlLines {
      * @param dashLine Line.
      * @return True of false.
      */
-    private boolean mapping(final YamlLine dashLine) {
+    private boolean isMappingEntry(final YamlLine dashLine) {
         final String trimmed = dashLine.trimmed();
         final boolean escapedScalar = trimmed.matches("^\\s*\".*\"$")
                 || trimmed.matches("^\\s*'.*'$");
-        return trimmed.matches("^.*:\\s.+$") && !escapedScalar;
+        return trimmed.matches("^.*:(\\s.*)?$") && !escapedScalar;
     }
 
 }

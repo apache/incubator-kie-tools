@@ -42,10 +42,11 @@ public class MetadataYamlSerializer implements YAMLSerializer<Metadata>, YAMLDes
 
     @Override
     public Metadata deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
-        if(yaml != null || yaml.value(key) != null) {
-            return deserialize(yaml.value(key), ctx);
+        YamlNode value = yaml.value(key);
+        if (value == null) {
+            return null;
         }
-        return null;
+        return deserialize(value, ctx);
     }
 
     @Override
