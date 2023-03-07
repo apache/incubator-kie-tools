@@ -373,7 +373,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     void loadNewBoxedExpressionEditor() {
-        ExpressionProps expression = ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef());
+        ExpressionProps expression = ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef(), getNodeUUID());
         String decisionNodeId = null;
         if (hasExpression instanceof Decision) {
             decisionNodeId = ((Decision) hasExpression).getId().getValue();
