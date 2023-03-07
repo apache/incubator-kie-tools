@@ -87,6 +87,9 @@ func Test_newDevProfile(t *testing.T) {
 	// check if the objects have been created
 	deployment := test.MustGetDeployment(t, client, workflow)
 	assert.Equal(t, defaultKogitoServerlessWorkflowDevImage, deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].LivenessProbe)
+	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].ReadinessProbe)
+	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].StartupProbe)
 
 	defCM := test.MustGetConfigMap(t, client, workflow)
 	assert.NotEmpty(t, defCM.Data[workflow.Name+kogitoWorkflowJSONFileExt])

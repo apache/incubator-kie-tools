@@ -85,7 +85,7 @@ func newDevelopmentObjectEnsurers(support *stateSupport) *devProfileObjectEnsure
 		deployment:          newObjectEnsurer(support.client, support.logger, defaultDeploymentCreator),
 		service:             newObjectEnsurer(support.client, support.logger, defaultServiceCreator),
 		definitionConfigMap: newObjectEnsurer(support.client, support.logger, workflowDefConfigMapCreator),
-		propertiesConfigMap: newObjectEnsurer(support.client, support.logger, workflowPropsConfigMapCreator),
+		propertiesConfigMap: newObjectEnsurer(support.client, support.logger, workflowDevPropsConfigMapCreator),
 	}
 }
 
@@ -114,7 +114,7 @@ func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, wo
 	}
 	objs = append(objs, flowDefCM)
 
-	propsCM, _, err := e.ensurers.propertiesConfigMap.ensure(ctx, workflow, ensureWorkflowPropertiesConfigMapMutator(workflow))
+	propsCM, _, err := e.ensurers.propertiesConfigMap.ensure(ctx, workflow, ensureWorkflowDevPropertiesConfigMapMutator(workflow))
 	if err != nil {
 		return ctrl.Result{Requeue: false}, objs, err
 	}
