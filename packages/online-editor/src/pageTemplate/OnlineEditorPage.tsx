@@ -26,7 +26,6 @@ import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/Ki
 import { DevDeploymentsDropdown } from "../devDeployments/DevDeploymentsDropdown";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AccountsIcon } from "../accounts/AccountsIcon";
-import { AboutButton } from "../aboutModal/AboutButton";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
@@ -38,7 +37,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
       header={
         <Masthead aria-label={"Page header"} display={{ default: "stack" }}>
           <MastheadMain style={{ justifyContent: "space-between" }}>
-            <PageHeaderToolsItem className={"kie-sandbox--logo"}>
+            <PageHeaderToolsItem className={"pf-l-flex"}>
               <MastheadBrand
                 onClick={() => history.push({ pathname: routes.home.path({}) })}
                 style={{ textDecoration: "none" }}
@@ -58,7 +57,6 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                   </FlexItem>
                 </Flex>
               </MastheadBrand>
-              <AboutButton />
             </PageHeaderToolsItem>
             <Flex justifyContent={{ default: "justifyContentFlexEnd" }} flexWrap={{ default: "nowrap" }}>
               <FlexItem>

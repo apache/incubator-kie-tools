@@ -26,7 +26,6 @@ import { defaultEnvJson } from "./build/defaultEnvJson";
 
 import common from "@kie-tools-core/webpack-base/webpack.common.config";
 import patternflyBase from "@kie-tools-core/patternfly-base";
-import childProcess from "child_process";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -53,14 +52,6 @@ export default async (env: any, argv: any) => {
     devDeployments_onlineEditorUrl,
   ] = getDevDeploymentsArgs();
   const gtmResource = getGtmResource();
-
-  let lastCommitHash = "";
-  try {
-    lastCommitHash = childProcess.execSync("git rev-parse --short HEAD").toString().trim();
-    JSON.stringify(lastCommitHash);
-  } catch (e) {
-    throw new Error(e);
-  }
 
   return [
     merge(common(env), {
@@ -103,7 +94,6 @@ export default async (env: any, argv: any) => {
             },
           ]),
           new EnvironmentPlugin({
-            WEBPACK_REPLACE__commitHash: lastCommitHash,
             WEBPACK_REPLACE__buildInfo: buildInfo,
             WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
             WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
