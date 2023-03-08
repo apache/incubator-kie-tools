@@ -351,5 +351,14 @@ public class AggregateFunctionsTest {
         values = List.of(1);
         result = function.aggregate(values);
         assertEquals(result, 1.0d);
+
+        values = List.of(1, 2, 3, 3, 4, 5);
+        result = function.aggregate(values);
+        assertEquals(3d, result);
+
+        values = List.of(1, 3, 3, 4);
+        result = function.aggregate(values);
+        assertEquals(3d, result);
     }
+
 }
