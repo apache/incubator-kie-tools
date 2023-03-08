@@ -36,7 +36,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
 import "../src/components/BoxedExpressionEditor/base-no-reset-wrapped.css";
-import ReactJson from "react-json-view";
+import { JsonViewer } from "@textea/json-viewer";
 
 /**
  * Constants copied from tests to fix debugger
@@ -170,7 +170,7 @@ export const App: React.FunctionComponent = () => {
         </div>
 
         <pre>
-          <ReactJson src={expressionDefinition} name={false} enableClipboard />
+          <JsonViewer value={expressionDefinition} rootName={false} enableClipboard />
         </pre>
       </div>
 
