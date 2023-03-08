@@ -34,8 +34,8 @@ public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> 
 
     private Group iconImage;
     private Circle backgroundCircle;
-    protected final static double STATE_SHAPE_WIDTH = 250;
-    protected final static double STATE_SHAPE_HEIGHT = 90;
+    public final static double STATE_SHAPE_WIDTH = 250;
+    public final static double STATE_SHAPE_HEIGHT = 90;
     public final static double STATE_SHAPE_ICON_RADIUS = 25;
     public final static double STATE_CORNER_RADIUS = 5.00;
 
