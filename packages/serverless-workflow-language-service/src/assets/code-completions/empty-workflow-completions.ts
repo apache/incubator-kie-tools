@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from "./workflow-completions";
-export * from "./states-completions";
-export * from "./events-completions";
-export * from "./functions-completions";
-export * from "./empty-workflow-completions";
+
+export const emptyWorkflowCompletion = {
+  id: "${1:Workflow unique identifier}",
+  version: "${2:0.1}",
+  specVersion: "${3:0.8}",
+  name: "${4:Workflow name}",
+  description: "${5:Workflow description}",
+  start: "${13}",
+  functions: [],
+  events: [],
+  states: [],
+};
