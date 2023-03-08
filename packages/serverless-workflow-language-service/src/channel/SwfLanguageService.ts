@@ -18,6 +18,7 @@ import {
   SwfServiceCatalogFunction,
   SwfCatalogSourceType,
   SwfServiceCatalogService,
+  SwfServiceCatalogFunctionSource,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
@@ -156,25 +157,29 @@ export class SwfLanguageService {
   }
 
   private getFunctionDiagnostics(services: SwfServiceCatalogService[]): Diagnostic[] {
-    return services.flatMap((value) =>
-      value.functions
-        .filter((fs) => !fs.name && !isVirtualRegistry(fs))
-        .map((fs) =>
-          Diagnostic.create(
-            Range.create(Position.create(0, 0), Position.create(0, 0)),
-            this.getWarningMessage(fs),
-            DiagnosticSeverity.Warning
-          )
-        )
-    );
+    return services.flatMap((value) => this.generateDiagnostic(value.functions));
   }
 
-  private getWarningMessage(serviceCatalogFunction: SwfServiceCatalogFunction): string {
-    if (serviceCatalogFunction.source.type == "SERVICE_REGISTRY") {
-      return `The ${serviceCatalogFunction.source.serviceId} service in the  ${serviceCatalogFunction.source.registry} registry is missing the "operationId" property in at least one operation`;
+  private generateDiagnostic(serviceCatalogFunctions: SwfServiceCatalogFunction[]): Diagnostic[] {
+    const diagnostics: Diagnostic[] = [];
+    if (serviceCatalogFunctions.filter((fs) => !fs.name && !isVirtualRegistry(fs)).length >= 1) {
+      diagnostics.push(
+        Diagnostic.create(
+          Range.create(Position.create(0, 0), Position.create(0, 0)),
+          this.getWarningMessage(serviceCatalogFunctions[0].source),
+          DiagnosticSeverity.Warning
+        )
+      );
     }
-    if (serviceCatalogFunction.source.type === "LOCAL_FS") {
-      return `The ${serviceCatalogFunction.source.serviceFileAbsolutePath} service is missing the "operationId" property in at least one operation`;
+    return diagnostics;
+  }
+
+  private getWarningMessage(swfServiceCatalogFunctionSource: SwfServiceCatalogFunctionSource): string {
+    if (swfServiceCatalogFunctionSource.type == "SERVICE_REGISTRY") {
+      return `The ${swfServiceCatalogFunctionSource.serviceId} service in the  ${swfServiceCatalogFunctionSource.registry} registry is missing the "operationId" property in at least one operation`;
+    }
+    if (swfServiceCatalogFunctionSource.type === "LOCAL_FS") {
+      return `The ${swfServiceCatalogFunctionSource.serviceFileAbsolutePath} service is missing the "operationId" property in at least one operation`;
     }
     return "";
   }
