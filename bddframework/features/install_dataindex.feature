@@ -259,6 +259,7 @@ Feature: Kogito Data Index
       | runtime-env | QUARKUS_DATASOURCE_PASSWORD                  | mypass                                          |
       | runtime-env | QUARKUS_DATASOURCE_JDBC_URL                  | jdbc:postgresql://postgresql:5432/mydb          |
       | runtime-env | QUARKUS_DATASOURCE_REACTIVE_URL              | postgresql://postgresql:5432/mydb               |
+      | runtime-env | QUARKUS_FLYWAY_BASELINE_ON_MIGRATE           | true                                            |
     And Kogito Runtime "process-postgres" has 1 pods running within 10 minutes
     
     When Start "deals" process on service "process-postgres" within 3 minutes with body:
