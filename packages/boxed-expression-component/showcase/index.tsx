@@ -97,7 +97,8 @@ const beeGwtService: BeeGwtService = {
   getDefaultExpressionDefinition(logicType: string): ExpressionDefinition {
     return getDefaultExpressionDefinitionByLogicType(
       logicType as ExpressionDefinitionLogicType,
-      { dataType: DmnBuiltInDataType.Undefined } as ExpressionDefinition
+      { dataType: DmnBuiltInDataType.Undefined } as ExpressionDefinition,
+      0
     );
   },
   openDataTypePage(): void {},
@@ -105,6 +106,7 @@ const beeGwtService: BeeGwtService = {
 };
 
 export const App: React.FunctionComponent = () => {
+  const [version, setVersion] = useState(-1);
   const [expression, setExpression] = useState<ExpressionDefinition>(INITIAL_EXPRESSION);
   const [expressionString, setExpressionString] = useState(JSON.stringify(INITIAL_EXPRESSION));
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -128,12 +130,14 @@ export const App: React.FunctionComponent = () => {
   }, [expressionString]);
 
   useEffect(() => {
+    setVersion((prev) => prev + 1);
     setExpressionString(JSON.stringify(expression));
   }, [expression]);
 
   const emptyRef = React.useRef<HTMLElement>(null);
   return (
     <div className="showcase">
+      <h3 style={{ position: "absolute", right: 0 }}>v{version}&nbsp;&nbsp;</h3>
       <div className="boxed-expression">
         <BoxedExpressionEditor
           scrollableParentRef={emptyRef}

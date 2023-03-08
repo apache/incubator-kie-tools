@@ -49,6 +49,7 @@ export function BeeTableTdForAdditionalRow<R extends object>({
   const { resizingWidth, setResizingWidth } = useBeeTableResizableCell(
     columnIndex,
     resizerStopBehavior,
+    column.width,
     column.setWidth,
     // If the column specifies a width, then we should respect its minWidth as well.
     column.width ? Math.max(lastColumnMinWidth ?? column.minWidth ?? 0, column.width ?? 0) : undefined

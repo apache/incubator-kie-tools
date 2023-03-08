@@ -22,6 +22,7 @@ import {
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+  LITERAL_EXPRESSION_EXTRA_WIDTH,
 } from "../resizing/WidthConstants";
 import { DECISION_TABLE_INPUT_DEFAULT_VALUE, DECISION_TABLE_OUTPUT_DEFAULT_VALUE } from "./DecisionTableExpression";
 import {
@@ -33,13 +34,14 @@ import { RELATION_EXPRESSION_DEFAULT_VALUE } from "./RelationExpression";
 
 export function getDefaultExpressionDefinitionByLogicType(
   logicType: ExpressionDefinitionLogicType,
-  prev: ExpressionDefinitionBase
+  prev: ExpressionDefinitionBase,
+  containerWidth: number
 ): ExpressionDefinition {
   if (logicType === ExpressionDefinitionLogicType.Literal) {
     const literalExpression: LiteralExpressionDefinition = {
       ...prev,
       logicType,
-      width: LITERAL_EXPRESSION_MIN_WIDTH,
+      width: Math.max(LITERAL_EXPRESSION_MIN_WIDTH, containerWidth - LITERAL_EXPRESSION_EXTRA_WIDTH),
     };
     return literalExpression;
   } else if (logicType === ExpressionDefinitionLogicType.Function) {

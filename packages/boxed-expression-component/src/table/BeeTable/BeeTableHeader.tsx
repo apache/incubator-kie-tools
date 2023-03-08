@@ -25,6 +25,7 @@ import { BeeTableThResizable } from "./BeeTableThResizable";
 import { InlineEditableTextInput } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import { getCanvasFont, getTextWidth } from "../../resizing/WidthsToFitData";
+import { BeeTableThController } from "./BeeTableThController";
 
 export interface BeeTableColumnUpdate<R extends object> {
   dataType: DmnBuiltInDataType;
@@ -260,53 +261,58 @@ export function BeeTableHeader<R extends object>({
     ]
   );
 
-  const renderHeaderGroups = useCallback(() => {
-    const headerGroupsToRender = skipLastHeaderGroup
-      ? _.dropRight(reactTableInstance.headerGroups)
-      : reactTableInstance.headerGroups;
+  const shouldRenderHeaderGroup = useCallback(
+    (rowIndex: number) => {
+      if (rowIndex === -1 && skipLastHeaderGroup) {
+        return false;
+      }
 
+      switch (headerVisibility) {
+        case BeeTableHeaderVisibility.None:
+          return false;
+        case BeeTableHeaderVisibility.AllLevels:
+          return true;
+        case BeeTableHeaderVisibility.SecondToLastLevel:
+          return rowIndex === -2;
+        case BeeTableHeaderVisibility.LastLevel:
+          return rowIndex === -1;
+      }
+    },
+    [headerVisibility, skipLastHeaderGroup]
+  );
+
+  const renderHeaderGroups = useCallback(() => {
     const done = new Set<ReactTable.ColumnInstance<R>>();
-    return headerGroupsToRender.map((headerGroup, headerGroupLevel) => {
+
+    return reactTableInstance.headerGroups.map((headerGroup, index) => {
       // rowIndex === -1 --> Last headerGroup
       // rowIndex === -2 --> Second to last headerGroup
       // ... and so on
-      const rowIndex = -(headerGroupsToRender.length - 1 - headerGroupLevel + 1);
+      const rowIndex = -(reactTableInstance.headerGroups.length - 1 - index + 1);
 
       const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
-      return (
-        <tr key={key} {...props}>
-          {headerGroup.headers.map((column, columnIndex) => renderColumn(rowIndex, column, columnIndex, done))}
-        </tr>
-      );
+      if (shouldRenderHeaderGroup(rowIndex)) {
+        return (
+          <tr key={key} {...props}>
+            {headerGroup.headers.map((column, columnIndex) => renderColumn(rowIndex, column, columnIndex, done))}
+          </tr>
+        );
+      } else {
+        return (
+          <React.Fragment key={key}>
+            {headerGroup.headers.map((column, columnIndex) => (
+              <BeeTableThController
+                key={getColumnKey(column)}
+                columnIndex={columnIndex}
+                column={column}
+                reactTableInstance={reactTableInstance}
+              />
+            ))}
+          </React.Fragment>
+        );
+      }
     });
-  }, [skipLastHeaderGroup, reactTableInstance.headerGroups, renderColumn]);
+  }, [getColumnKey, reactTableInstance, renderColumn, shouldRenderHeaderGroup]);
 
-  const renderAtLevelInHeaderGroups = useCallback(
-    (headerGroupLevel: number) => {
-      const done = new Set<ReactTable.ColumnInstance<R>>();
-      return (
-        <tr>
-          {_.nth(reactTableInstance.headerGroups, headerGroupLevel)?.headers.map((column, columnIndex) =>
-            renderColumn(headerGroupLevel, column, columnIndex, done)
-          )}
-        </tr>
-      );
-    },
-    [renderColumn, reactTableInstance.headerGroups]
-  );
-
-  const header = useMemo(() => {
-    switch (headerVisibility) {
-      case BeeTableHeaderVisibility.AllLevels:
-        return <thead>{renderHeaderGroups()}</thead>;
-      case BeeTableHeaderVisibility.LastLevel:
-        return <thead>{renderAtLevelInHeaderGroups(-1)}</thead>;
-      case BeeTableHeaderVisibility.SecondToLastLevel:
-        return <thead>{renderAtLevelInHeaderGroups(-2)}</thead>;
-      default:
-        return null;
-    }
-  }, [headerVisibility, renderHeaderGroups, renderAtLevelInHeaderGroups]);
-
-  return <>{header}</>;
+  return <>{<thead>{renderHeaderGroups()}</thead>}</>;
 }

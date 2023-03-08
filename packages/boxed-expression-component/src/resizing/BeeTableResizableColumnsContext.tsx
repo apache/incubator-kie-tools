@@ -6,7 +6,7 @@ import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "./WidthConstants";
 // TYPES
 
 export type BeeTableResizableColumnsContextType = {
-  //
+  columnResizingWidths: Map<number, ResizingWidth>;
 };
 
 export interface BeeTableResizableColumnsDispatchContextType {
@@ -36,9 +36,23 @@ export const BeeTableResizableColumnsContextProvider = React.forwardRef<MyRef, P
   ({ children, onChange }, forwardRef) => {
     const refs = React.useRef<Map<number, Set<BeeTableResizableCellRef>>>(new Map());
 
-    const value = useMemo(() => {
-      return {};
+    const [columnResizingWidths, setColumnResizingWidths] = useState<Map<number, ResizingWidth>>(new Map());
+
+    const onColumnResizingWidthChange = useCallback((args: Map<number, ResizingWidth | undefined>) => {
+      setColumnResizingWidths((prev) => {
+        const n = new Map(prev);
+        for (const [columnIndex, newResizingWidth] of args.entries()) {
+          if (newResizingWidth) {
+            n.set(columnIndex, newResizingWidth);
+          }
+        }
+        return n;
+      });
     }, []);
+
+    const value = useMemo(() => {
+      return { columnResizingWidths };
+    }, [columnResizingWidths]);
 
     const dispatch = useMemo<BeeTableResizableColumnsDispatchContextType>(() => {
       return {
@@ -49,6 +63,7 @@ export const BeeTableResizableColumnsContextProvider = React.forwardRef<MyRef, P
             }
           }
 
+          onColumnResizingWidthChange(newColumnResizingWidths);
           onChange?.(newColumnResizingWidths);
         },
         registerResizableCellRef: (columnIndex, ref) => {
@@ -60,7 +75,7 @@ export const BeeTableResizableColumnsContextProvider = React.forwardRef<MyRef, P
           refs.current?.get(columnIndex)?.delete(ref);
         },
       };
-    }, [onChange]);
+    }, [onChange, onColumnResizingWidthChange]);
 
     useImperativeHandle(forwardRef, () => dispatch, [dispatch]);
 
@@ -78,11 +93,16 @@ export function useBeeTableResizableColumnsDispatch() {
   return React.useContext(BeeTableResizableColumnsDispatchContext);
 }
 
+export function useBeeTableResizableColumns() {
+  return React.useContext(BeeTableResizableColumnsContext);
+}
+
 // HOOKS
 
 export function useBeeTableResizableCell(
   columnIndex: number,
   resizerStopBehavior: ResizerStopBehavior,
+  width: number | undefined,
   setWidth?: React.Dispatch<React.SetStateAction<number | undefined>>,
   initialResizingWidthValue?: number
 ) {
@@ -105,11 +125,12 @@ export function useBeeTableResizableCell(
   useResizerRef(
     useMemo(
       () => ({
+        width,
         setWidth,
         resizingWidth,
         resizerStopBehavior,
       }),
-      [resizerStopBehavior, resizingWidth, setWidth]
+      [resizerStopBehavior, resizingWidth, setWidth, width]
     )
   );
 

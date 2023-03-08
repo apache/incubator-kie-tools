@@ -30,7 +30,7 @@ export const LITERAL_EXPRESSION_EXTRA_WIDTH = 20; // 20px for the equals sign
 export const LITERAL_EXPRESSION_MIN_WIDTH = CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH - LITERAL_EXPRESSION_EXTRA_WIDTH;
 
 // LIST
-export const LIST_ITEM_EXPRESSION_MIN_WIDTH = 210;
+export const LIST_EXPRESSION_ITEM_MIN_WIDTH = 210;
 export const LIST_EXPRESSION_EXTRA_WIDTH =
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + //
   2; // 2px for borders of context entry expression // FIXME: Tiago -> To me, it's a mistery why to this cell is counting the borders.

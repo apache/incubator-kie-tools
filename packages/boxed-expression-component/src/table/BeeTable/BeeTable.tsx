@@ -86,7 +86,7 @@ export function BeeTableInternal<R extends object>({
   columns,
   operationConfig,
   headerVisibility = BeeTableHeaderVisibility.AllLevels,
-  headerLevelCount = 0,
+  headerLevelCountForAppendingRowIndexColumn = 0,
   skipLastHeaderGroup = false,
   getRowKey,
   getColumnKey,
@@ -153,11 +153,11 @@ export function BeeTableInternal<R extends object>({
         dataType: undefined as any, // FIXME: Tiago -> No bueno.
       };
 
-      addRowIndexColumnsRecursively(rowIndexColumn, headerLevelCount);
+      addRowIndexColumnsRecursively(rowIndexColumn, headerLevelCountForAppendingRowIndexColumn);
 
       return [rowIndexColumn, ...columns];
     },
-    [addRowIndexColumnsRecursively, headerLevelCount]
+    [addRowIndexColumnsRecursively, headerLevelCountForAppendingRowIndexColumn]
   );
 
   const columnsWithAddedIndexColumns = useMemo(

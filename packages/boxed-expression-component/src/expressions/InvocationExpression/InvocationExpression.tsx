@@ -66,7 +66,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     isPivoting: false,
   });
 
-  const onColumnResizingWidthChange = useCallback((args: Map<number, ResizingWidth | undefined>) => {
+  const onColumnResizingWidthChange1 = useCallback((args: Map<number, ResizingWidth | undefined>) => {
     const newResizingWidth = args.get(1);
     if (newResizingWidth) {
       setParametersResizingWidth(newResizingWidth);
@@ -77,21 +77,31 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
 
-  const { nestedExpressionContainerValue } = useNestedExpressionContainerWithNestedExpressions(
-    useMemo(() => {
-      return {
-        nestedExpressions: invocationExpression.bindingEntries?.map((e) => e.entryExpression) ?? [],
-        fixedColumnActualWidth: parametersWidth,
-        fixedColumnResizingWidth: parametersResizingWidth,
-        fixedColumnMinWidth: INVOCATION_PARAMETER_MIN_WIDTH,
-        nestedExpressionMinWidth: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
-        extraWidth: INVOCATION_EXTRA_WIDTH,
-        expression: invocationExpression,
-      };
-    }, [parametersWidth, parametersResizingWidth, invocationExpression])
-  );
+  const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange2 } =
+    useNestedExpressionContainerWithNestedExpressions(
+      useMemo(() => {
+        return {
+          nestedExpressions: invocationExpression.bindingEntries?.map((e) => e.entryExpression) ?? [],
+          fixedColumnActualWidth: parametersWidth,
+          fixedColumnResizingWidth: parametersResizingWidth,
+          fixedColumnMinWidth: INVOCATION_PARAMETER_MIN_WIDTH,
+          nestedExpressionMinWidth: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
+          extraWidth: INVOCATION_EXTRA_WIDTH,
+          expression: invocationExpression,
+          flexibleColumnIndex: 2,
+        };
+      }, [parametersWidth, parametersResizingWidth, invocationExpression])
+    );
 
   /// //////////////////////////////////////////////////////
+
+  const onColumnResizingWidthChange = useCallback(
+    (args: Map<number, ResizingWidth | undefined>) => {
+      onColumnResizingWidthChange2?.(args);
+      onColumnResizingWidthChange1(args);
+    },
+    [onColumnResizingWidthChange1, onColumnResizingWidthChange2]
+  );
 
   const beeTableRows: ROWTYPE[] = useMemo(() => {
     return invocationExpression.bindingEntries ?? [];
@@ -293,7 +303,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
         <BeeTable
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={invocationExpression.id}
-          headerLevelCount={2}
+          headerLevelCountForAppendingRowIndexColumn={2}
           headerVisibility={headerVisibility}
           skipLastHeaderGroup={true}
           cellComponentByColumnAccessor={cellComponentByColumnAccessor}

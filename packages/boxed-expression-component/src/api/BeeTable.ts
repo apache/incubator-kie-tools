@@ -54,7 +54,7 @@ export interface BeeTableProps<R extends object> {
   /** The way in which the header will be rendered */
   headerVisibility?: BeeTableHeaderVisibility;
   /** Number of levels in the header, 0-based */
-  headerLevelCount?: number;
+  headerLevelCountForAppendingRowIndexColumn?: number;
   /** True, for skipping the creation in the DOM of the last defined header group */
   skipLastHeaderGroup?: boolean;
   /** Custom function for getting row key prop, and avoid using the row index */

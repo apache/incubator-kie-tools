@@ -29,25 +29,9 @@ export function FeelFunctionImplementationCell({ data, rowIndex }: BeeTableCellP
     [setExpression]
   );
 
-  const { nestedExpressionContainerValue } = useNestedExpressionContainerWithNestedExpressions(
-    useMemo(() => {
-      return {
-        nestedExpressions: [functionExpression.expression],
-        fixedColumnActualWidth: 0,
-        fixedColumnResizingWidth: { value: 0, isPivoting: false },
-        fixedColumnMinWidth: 0,
-        nestedExpressionMinWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-        extraWidth: FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH,
-        expression: functionExpression,
-      };
-    }, [functionExpression])
-  );
-
   return (
-    <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
-      <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
-        <ExpressionContainer expression={functionExpression.expression} isResetSupported={false} isNested={true} />
-      </NestedExpressionDispatchContextProvider>
-    </NestedExpressionContainerContext.Provider>
+    <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
+      <ExpressionContainer expression={functionExpression.expression} isResetSupported={false} isNested={true} />
+    </NestedExpressionDispatchContextProvider>
   );
 }

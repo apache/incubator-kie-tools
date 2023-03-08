@@ -32,7 +32,7 @@ import {
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
-import { LIST_EXPRESSION_EXTRA_WIDTH, LIST_ITEM_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthConstants";
+import { LIST_EXPRESSION_EXTRA_WIDTH, LIST_EXPRESSION_ITEM_MIN_WIDTH } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
@@ -50,19 +50,21 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
 
-  const { nestedExpressionContainerValue } = useNestedExpressionContainerWithNestedExpressions(
-    useMemo(() => {
-      return {
-        nestedExpressions: listExpression.items,
-        fixedColumnActualWidth: 0,
-        fixedColumnResizingWidth: { value: 0, isPivoting: false },
-        fixedColumnMinWidth: 0,
-        nestedExpressionMinWidth: LIST_ITEM_EXPRESSION_MIN_WIDTH,
-        extraWidth: LIST_EXPRESSION_EXTRA_WIDTH,
-        expression: listExpression,
-      };
-    }, [listExpression])
-  );
+  const { nestedExpressionContainerValue, onColumnResizingWidthChange } =
+    useNestedExpressionContainerWithNestedExpressions(
+      useMemo(() => {
+        return {
+          nestedExpressions: listExpression.items,
+          fixedColumnActualWidth: 0,
+          fixedColumnResizingWidth: { value: 0, isPivoting: false },
+          fixedColumnMinWidth: 0,
+          nestedExpressionMinWidth: LIST_EXPRESSION_ITEM_MIN_WIDTH,
+          extraWidth: LIST_EXPRESSION_EXTRA_WIDTH,
+          expression: listExpression,
+          flexibleColumnIndex: 1,
+        };
+      }, [listExpression])
+    );
 
   /// //////////////////////////////////////////////////////
 
@@ -95,6 +97,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
         label: listExpression.name ?? DEFAULT_EXPRESSION_NAME,
         dataType: listExpression.dataType,
         isRowIndexColumn: false,
+        minWidth: LIST_EXPRESSION_ITEM_MIN_WIDTH,
         width: undefined,
       },
     ],
@@ -178,6 +181,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`${listExpression.id} list-expression`}>
         <BeeTable<ROWTYPE>
+          onColumnResizingWidthChange={onColumnResizingWidthChange}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={listExpression.id}
           headerVisibility={beeTableHeaderVisibility}

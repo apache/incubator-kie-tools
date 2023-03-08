@@ -22,7 +22,6 @@ import { useCellWidthToFitData } from "../../resizing/BeeTableCellWidthToFitData
 import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContext";
 import { Resizer } from "../../resizing/Resizer";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
-import { DEFAULT_MIN_WIDTH } from "../../resizing/WidthConstants";
 import {
   BeeTableCellCoordinates,
   BeeTableCoordinatesContextProvider,
@@ -79,6 +78,7 @@ export function BeeTableTd<R extends object>({
   const { resizingWidth, setResizingWidth } = useBeeTableResizableCell(
     columnIndex,
     resizerStopBehavior,
+    column.width,
     column.setWidth,
     // If the column specifies a width, then we should respect its minWidth as well.
     column.width ? Math.max(lastColumnMinWidth ?? column.minWidth ?? 0, column.width ?? 0) : undefined

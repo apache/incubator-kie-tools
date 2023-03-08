@@ -652,7 +652,7 @@ export function DecisionTableExpression(
           isPivoting ? ResizerStopBehavior.SET_WIDTH_ALWAYS : ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER
         }
         forwardRef={beeTableRef}
-        headerLevelCount={1}
+        headerLevelCountForAppendingRowIndexColumn={1}
         headerVisibility={beeTableHeaderVisibility}
         editColumnLabel={getEditColumnLabel}
         operationConfig={beeTableOperationConfig}

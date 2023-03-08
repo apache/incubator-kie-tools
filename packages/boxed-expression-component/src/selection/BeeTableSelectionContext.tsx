@@ -254,7 +254,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
   // Every call to `setValue` mutates the expression, so batching is essential for performance reasons.
   // This effect runs once when pasteData is truthy. Then, after running, it sets pasteData to a falsy value, which short-circuits it.
   //
-  // This can be refactored to be simpler when upgrading to React 18, as batching is automatic, even outside event handlers.
+  // This can be refactored to be simpler when upgrading to React 18, as batching is automatic, even outside event handlers and hooks.
   const [pasteData, setPasteData] = useState("");
   useEffect(() => {
     if (!pasteData) {

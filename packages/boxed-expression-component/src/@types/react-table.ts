@@ -16,7 +16,6 @@
 
 import * as React from "react";
 import { DmnBuiltInDataType } from "../api";
-import { ResizingWidth } from "../resizing/ResizingWidthsContext";
 
 // Extending react-table definitions with missing and custom properties
 declare module "react-table" {
@@ -61,7 +60,7 @@ declare module "react-table" {
     cellDelegate?: (id: string) => React.ReactNode;
 
     width?: number;
-    setWidth?: React.Dispatch<React.SetStateAction<number | undefined>>;
+    setWidth?: (newWidth: number) => void;
     isWidthPinned?: boolean;
 
     columns?: Array<Column<D>>;

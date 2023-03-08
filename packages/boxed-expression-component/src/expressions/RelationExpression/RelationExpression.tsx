@@ -305,7 +305,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
           isPivoting ? ResizerStopBehavior.SET_WIDTH_ALWAYS : ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER
         }
         forwardRef={beeTableRef}
-        headerLevelCount={1}
+        headerLevelCountForAppendingRowIndexColumn={1}
         editColumnLabel={i18n.editRelation}
         columns={beeTableColumns}
         headerVisibility={beeTableHeaderVisibility}

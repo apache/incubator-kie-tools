@@ -24,7 +24,7 @@ import "./Resizer.css";
 export interface ResizerProps {
   minWidth: number | undefined;
   width: number | undefined;
-  setWidth: React.Dispatch<React.SetStateAction<number | undefined>> | undefined;
+  setWidth: ((newWidth: number) => void) | undefined;
   resizingWidth: ResizingWidth | undefined;
   setResizingWidth: (newResizingWidth: ResizingWidth) => void;
   setResizing?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -47,13 +47,14 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   // Every call to `setWidth` mutates the expression, so batching is essential for performance reasons.
   // This effect runs once when resizingStop__data is truthy. Then, after running, it sets resizingStop__data to a falsy value, which short-circuits it.
   //
-  // This can be refactored to be simpler when upgrading to React 18, as batching is automatic, even outside event handlers.
+  // This can be refactored to be simpler when upgrading to React 18, as batching is automatic, even outside event handlers and hooks.
   //
   // This whole thing is responsible for allowing any cell to shrink the entire table when resized.
 
   const { getResizerRefs, setResizing: _setResizing } = useResizingWidthsDispatch();
 
   const [resizingStop__data, setResizingStop__data] = useState({ width: 0 });
+  const [startResizingWidth, setStartResizingWidth] = useState({ width: 0 });
   const onResizeStop = useCallback((e, data) => {
     if (e.detail === 2) {
       console.debug("Skipping resizeStop onMouseUp because onDoubleClick will handle it.");
@@ -69,25 +70,21 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       return;
     }
 
-    if (!(resizingWidth?.value === width && width === resizingStopWidth)) {
+    if (resizingStopWidth === startResizingWidth.width) {
+      console.debug(`Stop resizing (equal): ${resizingStopWidth}`);
+    } else {
       console.debug(`Stop resizing (different): ${resizingStopWidth}`);
       for (const resizerRef of getResizerRefs()) {
-        resizerRef.setWidth?.((prev) => {
-          const prevWidth = prev ?? 0;
-          const resizingWidthValue = resizerRef.resizingWidth?.value ?? prevWidth;
-          if (resizerRef.resizerStopBehavior === ResizerStopBehavior.SET_WIDTH_ALWAYS) {
-            return resizingWidthValue;
-          } else if (resizerRef.resizerStopBehavior === ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER) {
-            return Math.min(resizingWidthValue, prevWidth);
-          } else {
-            throw new Error("Shouldn't ever reach this point");
-          }
-        });
+        if (resizerRef.resizingWidth?.value !== resizerRef.width) {
+          resizerRef.setWidth?.((prev) => resizerRef.resizingWidth?.value ?? prev ?? 0);
+        } else {
+          // Ignoring. Nothing to do.
+        }
       }
 
-      setWidth?.(resizingStopWidth);
-    } else {
-      console.debug(`Stop resizing (equal): ${resizingStopWidth}`);
+      if (resizingStopWidth !== width) {
+        setWidth?.(resizingStopWidth);
+      }
     }
 
     setResizing?.(false);
@@ -95,15 +92,14 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     setResizingWidth?.({ value: resizingStopWidth, isPivoting: false });
     setResizingStop__data({ width: 0 }); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
   }, [
+    _setResizing,
     getResizerRefs,
-    resizingWidth?.value,
-    resizingStop__data,
     setResizing,
     setResizingWidth,
     setWidth,
-    _setResizing,
+    resizingStop__data.width,
+    startResizingWidth.width,
     width,
-    minWidth,
   ]);
 
   //
@@ -126,6 +122,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       const startResizingWidth = Math.floor(data.size.width);
 
       console.debug(`Start resizing: ${startResizingWidth}`);
+      setStartResizingWidth({ width: startResizingWidth });
       setResizingWidth?.({ value: startResizingWidth, isPivoting: true });
       setResizing?.(true);
       _setResizing(true);
@@ -137,15 +134,26 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     (e: React.MouseEvent) => {
       e.stopPropagation();
 
-      const widthToFitData = getWidthToFitData?.();
+      let widthToFitData;
+      try {
+        widthToFitData = getWidthToFitData?.();
+      } catch (e) {
+        // Ignore, as bugs can appear...
+      }
 
+      const newWidth = Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH);
+
+      // This starts the resizing process again with the correct width.
+      onResizeStart(undefined, { size: { width: newWidth } });
+
+      // Wait for an event loop iteration, leaving time for the resizeStart to propagate.
+      // Then, pretend that the startResizingWidth is different from the one we're going to stop with.
       setTimeout(() => {
-        setResizingStop__data({
-          width: Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH),
-        });
+        setStartResizingWidth({ width: 0 });
+        setResizingStop__data({ width: newWidth });
       }, 0);
     },
-    [getWidthToFitData, minWidth]
+    [getWidthToFitData, minWidth, onResizeStart]
   );
 
   const style = useMemo(() => {
@@ -158,9 +166,9 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   `;
 
   return (
-    <div>
-      {/* {width && (
-        <div className="pf-c-drawer" style={{ position: "absolute", left: width - 8 }}>
+    <>
+      {width && (
+        <div className="pf-c-drawer" style={{ position: "absolute", left: width - 10 }}>
           <div className={`pf-c-drawer__splitter pf-m-vertical actual`}>
             <div className={`pf-c-drawer__splitter-handle`} />
           </div>
@@ -168,12 +176,12 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       )}
 
       {width && minWidth && (
-        <div className="pf-c-drawer" style={{ position: "absolute", left: minWidth - 8 }}>
+        <div className="pf-c-drawer" style={{ position: "absolute", left: minWidth - 10 }}>
           <div className={`pf-c-drawer__splitter pf-m-vertical min-basis`}>
             <div className={`pf-c-drawer__splitter-handle`} />
           </div>
         </div>
-      )} */}
+      )}
 
       {width && resizingWidth && (
         <Resizable
@@ -196,6 +204,6 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
           <div style={style} />
         </Resizable>
       )}
-    </div>
+    </>
   );
 };

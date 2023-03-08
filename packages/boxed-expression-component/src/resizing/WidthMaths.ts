@@ -20,7 +20,7 @@ import {
   PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
   PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
   FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
-  LIST_ITEM_EXPRESSION_MIN_WIDTH,
+  LIST_EXPRESSION_ITEM_MIN_WIDTH,
   JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
   PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH,
   INVOCATION_EXTRA_WIDTH,
@@ -94,7 +94,7 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
   else if (expression.logicType === ExpressionDefinitionLogicType.List) {
     return (
       Math.max(
-        LIST_ITEM_EXPRESSION_MIN_WIDTH,
+        LIST_EXPRESSION_ITEM_MIN_WIDTH,
         ...(expression.items ?? []).map((expression) => getExpressionMinWidth(expression))
       ) + LIST_EXPRESSION_EXTRA_WIDTH
     );
@@ -203,7 +203,7 @@ export function getExpressionResizingWidth(
     return (
       resizingWidth ??
       Math.max(
-        LIST_ITEM_EXPRESSION_MIN_WIDTH,
+        LIST_EXPRESSION_ITEM_MIN_WIDTH,
         ...(expression.items ?? []).map((expression) => getExpressionResizingWidth(expression, resizingWidths))
       ) + LIST_EXPRESSION_EXTRA_WIDTH
     );

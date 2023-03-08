@@ -7,6 +7,7 @@ export enum ResizerStopBehavior {
 }
 
 export type ResizerRef = {
+  width: number | undefined;
   setWidth?: React.Dispatch<React.SetStateAction<number | undefined>>;
   resizingWidth: ResizingWidth | undefined;
   resizerStopBehavior: ResizerStopBehavior;

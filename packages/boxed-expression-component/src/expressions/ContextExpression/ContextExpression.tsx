@@ -75,7 +75,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     isPivoting: false,
   });
 
-  const onColumnResizingWidthChange = useCallback((args: Map<number, ResizingWidth | undefined>) => {
+  const onColumnResizingWidthChange1 = useCallback((args: Map<number, ResizingWidth | undefined>) => {
     const newResizingWidth = args.get(1);
     if (newResizingWidth) {
       setEntryInfoResizingWidth(newResizingWidth);
@@ -86,24 +86,34 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
 
-  const { nestedExpressionContainerValue } = useNestedExpressionContainerWithNestedExpressions(
-    useMemo(() => {
-      return {
-        nestedExpressions: [
-          ...contextExpression.contextEntries.map((e) => e.entryExpression),
-          contextExpression.result,
-        ],
-        fixedColumnActualWidth: entryInfoWidth,
-        fixedColumnResizingWidth: entryInfoResizingWidth,
-        fixedColumnMinWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-        nestedExpressionMinWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-        extraWidth: CONTEXT_EXPRESSION_EXTRA_WIDTH,
-        expression: contextExpression,
-      };
-    }, [contextExpression, entryInfoResizingWidth, entryInfoWidth])
-  );
+  const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange2 } =
+    useNestedExpressionContainerWithNestedExpressions(
+      useMemo(() => {
+        return {
+          nestedExpressions: [
+            ...contextExpression.contextEntries.map((e) => e.entryExpression),
+            contextExpression.result,
+          ],
+          fixedColumnActualWidth: entryInfoWidth,
+          fixedColumnResizingWidth: entryInfoResizingWidth,
+          fixedColumnMinWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
+          nestedExpressionMinWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+          extraWidth: CONTEXT_EXPRESSION_EXTRA_WIDTH,
+          expression: contextExpression,
+          flexibleColumnIndex: 2,
+        };
+      }, [contextExpression, entryInfoResizingWidth, entryInfoWidth])
+    );
 
   /// //////////////////////////////////////////////////////
+
+  const onColumnResizingWidthChange = useCallback(
+    (args: Map<number, ResizingWidth | undefined>) => {
+      onColumnResizingWidthChange2?.(args);
+      onColumnResizingWidthChange1(args);
+    },
+    [onColumnResizingWidthChange1, onColumnResizingWidthChange2]
+  );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
@@ -127,8 +137,8 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           {
             accessor: "entryExpression",
             label: "entryExpression",
-            isRowIndexColumn: false,
             dataType: DmnBuiltInDataType.Undefined,
+            isRowIndexColumn: false,
             minWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
             width: undefined,
           },
@@ -286,7 +296,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
         <BeeTable
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={contextExpression.id}
-          headerLevelCount={1}
+          headerLevelCountForAppendingRowIndexColumn={1}
           headerVisibility={headerVisibility}
           cellComponentByColumnAccessor={cellComponentByColumnAccessor}
           columns={beeTableColumns}

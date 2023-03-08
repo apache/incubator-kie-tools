@@ -25,6 +25,7 @@ import { ExpressionDefinition, ExpressionDefinitionLogicType, generateUuid } fro
 import { useCustomContextMenuHandler } from "../../../contextMenu";
 import { PopoverMenu } from "../../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../../i18n";
+import { useNestedExpressionContainer } from "../../../resizing/NestedExpressionContainerContext";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
@@ -301,9 +302,19 @@ export function ExpressionDefinitionLogicTypeSelector({
     }
   }, [isResetContextMenuOpen]);
 
+  const nestedExpressionContainer = useNestedExpressionContainer();
+
   return (
     <>
-      <div className={cssClass} ref={resetContextMenuContainerRef}>
+      <div
+        className={cssClass}
+        ref={resetContextMenuContainerRef}
+        style={
+          !isLogicTypeSelected && nestedExpressionContainer.resizingWidth
+            ? { width: `${nestedExpressionContainer.resizingWidth?.value}px` }
+            : {}
+        }
+      >
         {isLogicTypeSelected ? (
           <>
             {showExpressionHeader && (
