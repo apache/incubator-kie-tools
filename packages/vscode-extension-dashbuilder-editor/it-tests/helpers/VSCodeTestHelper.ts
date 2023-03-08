@@ -33,7 +33,7 @@ import {
 /**
  * Common test helper class for VSCode extension testing.
  * Provides common API to work with VSCode test instance.
- * Allows you  to open folders, files, close open editor.
+ * Allows you to open folders, files, close open editor.
  * Aquire notifications, input CLI commands etc.
  */
 export default class VSCodeTestHelper {
@@ -92,7 +92,7 @@ export default class VSCodeTestHelper {
 
   /**
    * Opens Dashbuilder file from a sidebarview. Expects that the sideBarView will be defined and open.
-   * To define sideBarView a folder needs to be openned using openFolder function.
+   * To define sideBarView a folder needs to be opened using openFolder function.
    * Both webviews (text editor and dashbuilder preview) are loaded and returned
    * in an array on predefined indexes - see returns definition.
    *
@@ -100,7 +100,7 @@ export default class VSCodeTestHelper {
    * @param fileParentPath optional, use when file is not in root of resources. This is the path of file's parent directory, relative to resources
    *                       if not used the file will be looked in root of resources.
    * @returns promise that resolves to an array of WebViews of the opened dashbuilder file.
-   *          The lenght of the array is always 2 and there is guaranteed TextEditor as webview on O index.
+   *          The lenght of the array is always 2 and TextEditor is guaranteed as webview on O index.
    *          Custom dashbuilder editor as webview is always on index 1
    */
   public openFileFromSidebar = async (fileName: string, fileParentPath?: string): Promise<WebView[]> => {
