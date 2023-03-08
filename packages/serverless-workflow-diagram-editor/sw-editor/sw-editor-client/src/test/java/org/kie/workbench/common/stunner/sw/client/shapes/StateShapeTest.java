@@ -19,6 +19,7 @@ import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import elemental2.promise.Promise;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
@@ -84,6 +85,9 @@ public class StateShapeTest {
     @Mock
     ResourceContentService kogitoService;
 
+    @Mock
+    private TranslationService translationService;
+
     @Test
     public void injectStateColorTest() {
         simpleStateIconTest(INJECT, INJECT_COLOR);
@@ -136,7 +140,7 @@ public class StateShapeTest {
 
     @Test
     public void setNullPictureTest() {
-        StateShape shape = spy(StateShape.create(createState(INJECT), kogitoService));
+        StateShape shape = spy(StateShape.create(createState(INJECT), kogitoService, translationService));
         shape.setIconPicture(null, "icon.png");
 
         verify(shape, never()).setIconPicture(any());
@@ -144,7 +148,7 @@ public class StateShapeTest {
 
     @Test
     public void setEmptyPictureTest() {
-        StateShape shape = spy(StateShape.create(createState(INJECT), kogitoService));
+        StateShape shape = spy(StateShape.create(createState(INJECT), kogitoService, translationService));
         shape.setIconPicture("", "icon.png");
 
         verify(shape, never()).setIconPicture(any());
@@ -152,7 +156,7 @@ public class StateShapeTest {
 
     @Test
     public void setValidPictureTest() {
-        StateShape shape = spy(StateShape.create(createState(INJECT), kogitoService));
+        StateShape shape = spy(StateShape.create(createState(INJECT), kogitoService, translationService));
         shape.setIconPicture("base64string", "icon.png");
 
         verify(shape, times(1)).setIconPicture(any());
@@ -165,7 +169,7 @@ public class StateShapeTest {
         metadata.setIcon("data://png..lalala");
         state.setMetadata(metadata);
 
-        StateShape shape = StateShape.create(state, kogitoService);
+        StateShape shape = StateShape.create(state, kogitoService, translationService);
         assertTrue(shape.getView().isIconEmpty());
         assertNull(shape.getView().getIconBackgroundColor());
 
@@ -184,7 +188,7 @@ public class StateShapeTest {
         when(kogitoService.get(eq("png..lalala"), any())).thenReturn(new Promise<>((resolve, reject) -> {
         }));
 
-        StateShape shape = StateShape.create(state, kogitoService);
+        StateShape shape = StateShape.create(state, kogitoService, translationService);
         assertTrue(shape.getView().isIconEmpty());
         assertNull(shape.getView().getIconBackgroundColor());
 
@@ -366,7 +370,7 @@ public class StateShapeTest {
 
     private StateShape prepareShapeForExitTests(ShapeStateHandler stateHandler, ShapeState currentState) {
         State state = createState(INJECT);
-        StateShape shape = spy(StateShape.create(state, kogitoService));
+        StateShape shape = spy(StateShape.create(state, kogitoService, translationService));
         shape.applyProperties(createElement(state), null);
 
         when(stateHandler.getShapeState()).thenReturn(currentState);
@@ -378,7 +382,7 @@ public class StateShapeTest {
     private void simpleStateIconTest(String type, String color) {
         State state = createState(type);
 
-        StateShape shape = StateShape.create(state, kogitoService);
+        StateShape shape = StateShape.create(state, kogitoService, translationService);
         assertTrue(shape.getView().isIconEmpty());
         assertNull(shape.getView().getIconBackgroundColor());
 
@@ -428,7 +432,7 @@ public class StateShapeTest {
         metadata.setType(customType);
         state.setMetadata(metadata);
 
-        StateShape shape = StateShape.create(state, kogitoService);
+        StateShape shape = StateShape.create(state, kogitoService, translationService);
         assertTrue(shape.getView().isIconEmpty());
         assertNull(shape.getView().getIconBackgroundColor());
 
