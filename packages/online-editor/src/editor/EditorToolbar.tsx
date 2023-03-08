@@ -1376,6 +1376,7 @@ export function EditorToolbar(props: Props) {
 
   const navigationStatus = useNavigationStatus();
   const navigationStatusToggle = useNavigationStatusToggle();
+  const historyAction = history.action;
   const confirmNavigationAlert = useGlobalAlert<{ lastBlockedLocation: Location }>(
     useCallback(
       (_, { lastBlockedLocation }) => (
@@ -1393,6 +1394,7 @@ export function EditorToolbar(props: Props) {
           actionLinks={
             <>
               <Divider inset={{ default: "insetMd" }} />
+
               <br />
               {(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL && (
                 <AlertActionLink
@@ -1430,11 +1432,24 @@ export function EditorToolbar(props: Props) {
               <br />
               <AlertActionLink
                 data-testid="unsaved-alert-close-without-save-button"
-                onClick={() =>
-                  navigationBlockersBypass.execute(() => {
-                    history.push(lastBlockedLocation);
-                  })
-                }
+                onClick={() => {
+                  //executed the 2nd time back button is clicked due to strange URL behavior
+                  if (window.location.href.endsWith("#/")) {
+                    navigationStatusToggle.unblock();
+                    window.location.reload();
+                  }
+                  // ideally would be executed when the home button or toolbar back button is clicked
+                  //  else if (history.action === "PUSH") {
+                  //   history.push(lastBlockedLocation);
+                  // }
+
+                  //executed 1st time back button is clicked due to strange URL behavior
+                  else {
+                    history.goBack();
+                    navigationStatusToggle.unblock();
+                    history.goBack();
+                  }
+                }}
               >
                 {i18n.editorPage.alerts.unsaved.proceedAnyway}
               </AlertActionLink>
@@ -1521,7 +1536,9 @@ export function EditorToolbar(props: Props) {
                         <Button
                           className={"kie-tools--masthead-hoverable"}
                           variant={ButtonVariant.plain}
-                          onClick={() => history.push({ pathname: routes.home.path({}) })}
+                          onClick={() => {
+                            history.push({ pathname: routes.home.path({}) });
+                          }}
                         >
                           <AngleLeftIcon />
                         </Button>
