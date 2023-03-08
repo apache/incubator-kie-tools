@@ -22,10 +22,9 @@ import { NavigationKeysUtils } from "../../keysUtils";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 
 export interface InlineEditableTextInputProps {
-  /** Text value */
   value: string;
-  /** Callback executed when text changes */
   onChange: (updatedValue: string) => void;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   rowIndex: number;
   columnIndex: number;
 }
@@ -34,12 +33,13 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
   rowIndex,
   columnIndex,
   value,
+  setEditing,
   onChange,
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { isEditing, setEditing } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined, undefined);
+  const { isEditing } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined, undefined);
 
   const stopEditingPersistingValue = useCallback(() => {
     const newValue = inputRef.current?.value;

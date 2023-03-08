@@ -26,6 +26,8 @@ import { InlineEditableTextInput } from "../../expressions/ExpressionDefinitionH
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import { getCanvasFont, getTextWidth } from "../../resizing/WidthsToFitData";
 import { BeeTableThController } from "./BeeTableThController";
+import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
+import { SelectionPart, useBeeTableSelectionDispatch } from "../../selection/BeeTableSelectionContext";
 
 export interface BeeTableColumnUpdate<R extends object> {
   dataType: DmnBuiltInDataType;
@@ -68,6 +70,7 @@ export interface BeeTableHeaderProps<R extends object> {
 
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function BeeTableHeader<R extends object>({
@@ -83,6 +86,7 @@ export function BeeTableHeader<R extends object>({
   shouldShowRowsInlineControls,
   resizerStopBehavior,
   lastColumnMinWidth,
+  setEditing,
 }: BeeTableHeaderProps<R>) {
   const { beeGwtService } = useBoxedExpressionEditor();
 
@@ -222,6 +226,7 @@ export function BeeTableHeader<R extends object>({
                     column.headerCellElement
                   ) : column.isInlineEditable ? (
                     <InlineEditableTextInput
+                      setEditing={setEditing}
                       columnIndex={columnIndex}
                       rowIndex={rowIndex}
                       value={column.label}
@@ -249,14 +254,15 @@ export function BeeTableHeader<R extends object>({
       shouldRenderRowIndexColumn,
       renderRowIndexColumn,
       getColumnKey,
+      reactTableInstance,
       resizerStopBehavior,
       isEditableHeader,
       shouldShowRowsInlineControls,
       getColumnLabel,
       onHeaderClick,
-      reactTableInstance,
       onColumnAdded,
       lastColumnMinWidth,
+      setEditing,
       onExpressionHeaderUpdated,
     ]
   );
@@ -276,6 +282,8 @@ export function BeeTableHeader<R extends object>({
           return rowIndex === -2;
         case BeeTableHeaderVisibility.LastLevel:
           return rowIndex === -1;
+        default:
+          assertUnreachable(headerVisibility);
       }
     },
     [headerVisibility, skipLastHeaderGroup]

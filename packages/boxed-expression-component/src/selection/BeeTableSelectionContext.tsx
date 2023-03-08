@@ -918,7 +918,7 @@ export function useBeeTableSelectableCellRef(
   setValue?: BeeTableCellRef["setValue"],
   getValue?: BeeTableCellRef["getValue"]
 ) {
-  const { mutateSelection, registerSelectableCellRef, deregisterSelectableCellRef } = useBeeTableSelectionDispatch();
+  const { registerSelectableCellRef, deregisterSelectableCellRef } = useBeeTableSelectionDispatch();
 
   const [status, setStatus] = useState<BeeTableCellStatus>(NEUTRAL_CELL_STATUS);
 
@@ -933,28 +933,7 @@ export function useBeeTableSelectableCellRef(
     };
   }, [columnIndex, rowIndex, getValue, setValue, registerSelectableCellRef, deregisterSelectableCellRef]);
 
-  const setEditing = useCallback(
-    (isEditing: boolean) => {
-      mutateSelection({
-        part: SelectionPart.ActiveCell,
-        columnCount: () => columnIndex + 1, // This is not accurate, but will work since it will ceratinly include the portion of the table that contains the activeCell
-        rowCount: rowIndex + 1, // This is not accurate, but will work since it will ceratinly include the portion of the table that contains the activeCell
-        deltaColumns: 0,
-        deltaRows: 0,
-        isEditingActiveCell: isEditing,
-        keepInsideSelection: true,
-      });
-    },
-    [mutateSelection, columnIndex, rowIndex]
-  );
-
-  return useMemo(
-    () => ({
-      ...status,
-      setEditing,
-    }),
-    [setEditing, status]
-  );
+  return status;
 }
 
 function getSelectionIterationBoundaries(selection: BeeTableSelection) {

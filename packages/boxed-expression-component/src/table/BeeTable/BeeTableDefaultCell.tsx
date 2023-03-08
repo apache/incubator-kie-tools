@@ -1,33 +1,27 @@
 import * as React from "react";
-import { useMemo, useCallback } from "react";
+import { useCallback } from "react";
 import { BeeTableCellUpdate } from ".";
 import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
-import {
-  useBeeTableSelectionDispatch,
-  SelectionPart,
-  useBeeTableSelectableCellRef,
-} from "../../selection/BeeTableSelectionContext";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import * as ReactTable from "react-table";
 
 export function BeeTableDefaultCell<R extends object>({
   cellProps,
   onCellUpdates,
   isReadOnly,
-  hasAdditionalRow,
   columnIndex,
+  setEditing,
+  navigateHorizontally,
+  navigateVertically,
 }: {
   isReadOnly: boolean;
   cellProps: ReactTable.CellProps<R>;
   onCellUpdates?: (cellUpdates: BeeTableCellUpdate<R>[]) => void;
-  hasAdditionalRow: boolean;
   columnIndex: number;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  navigateVertically: (args: { isShiftPressed: boolean }) => void;
+  navigateHorizontally: (args: { isShiftPressed: boolean }) => void;
 }) {
-  const { mutateSelection } = useBeeTableSelectionDispatch();
-
-  const rowCount = useMemo(() => {
-    return cellProps.rows.length + (hasAdditionalRow ? 1 : 0);
-  }, [hasAdditionalRow, cellProps.rows.length]);
-
   const onCellChanged = useCallback(
     (value: string) => {
       onCellUpdates?.([
@@ -47,41 +41,11 @@ export function BeeTableDefaultCell<R extends object>({
     return cellProps.value;
   }, [cellProps.value]);
 
-  const { isActive, isEditing, setEditing } = useBeeTableSelectableCellRef(
+  const { isActive, isEditing } = useBeeTableSelectableCellRef(
     cellProps.row.index,
     columnIndex,
     onCellChanged,
     getValue
-  );
-
-  const navigateVertically = useCallback(
-    (args: { isShiftPressed: boolean }) => {
-      mutateSelection({
-        part: SelectionPart.ActiveCell,
-        columnCount: () => cellProps.allColumns.length,
-        rowCount,
-        deltaColumns: 0,
-        deltaRows: args.isShiftPressed ? -1 : 1,
-        isEditingActiveCell: false,
-        keepInsideSelection: true,
-      });
-    },
-    [cellProps.allColumns.length, rowCount, mutateSelection]
-  );
-
-  const navigateHorizontally = useCallback(
-    (args: { isShiftPressed: boolean }) => {
-      mutateSelection({
-        part: SelectionPart.ActiveCell,
-        columnCount: () => cellProps.allColumns.length,
-        rowCount,
-        deltaColumns: args.isShiftPressed ? -1 : 1,
-        deltaRows: 0,
-        isEditingActiveCell: false,
-        keepInsideSelection: true,
-      });
-    },
-    [cellProps.allColumns.length, rowCount, mutateSelection]
   );
 
   return (

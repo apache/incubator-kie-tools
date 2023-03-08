@@ -165,6 +165,58 @@ export function BeeTableInternal<R extends object>({
     [addRowIndexColumns, columns, controllerCell]
   );
 
+  const rowCount = useCallback(
+    (normalRowsCount: number) => {
+      return normalRowsCount + (hasAdditionalRow ? 1 : 0);
+    },
+    [hasAdditionalRow]
+  );
+
+  const _setEditing = useCallback(
+    (rowCount: number, columnCount: (rowIndex: number) => number) => (isEditing: boolean) => {
+      mutateSelection({
+        part: SelectionPart.ActiveCell,
+        columnCount,
+        rowCount,
+        deltaColumns: 0,
+        deltaRows: 0,
+        isEditingActiveCell: isEditing,
+        keepInsideSelection: true,
+      });
+    },
+    [mutateSelection]
+  );
+
+  const _navigateVertically = useCallback(
+    (rowCount: number, columnCount: (rowIndex: number) => number) => (args: { isShiftPressed: boolean }) => {
+      mutateSelection({
+        part: SelectionPart.ActiveCell,
+        columnCount,
+        rowCount,
+        deltaColumns: 0,
+        deltaRows: args.isShiftPressed ? -1 : 1,
+        isEditingActiveCell: false,
+        keepInsideSelection: true,
+      });
+    },
+    [mutateSelection]
+  );
+
+  const _navigateHorizontally = useCallback(
+    (rowCount: number, columnCount: (rowIndex: number) => number) => (args: { isShiftPressed: boolean }) => {
+      mutateSelection({
+        part: SelectionPart.ActiveCell,
+        columnCount,
+        rowCount,
+        deltaColumns: args.isShiftPressed ? -1 : 1,
+        deltaRows: 0,
+        isEditingActiveCell: false,
+        keepInsideSelection: true,
+      });
+    },
+    [mutateSelection]
+  );
+
   const defaultColumn = useMemo(
     () => ({
       Cell: (cellProps: ReactTable.CellProps<R>) => {
@@ -183,17 +235,19 @@ export function BeeTableInternal<R extends object>({
         } else {
           return (
             <BeeTableDefaultCell
-              hasAdditionalRow={hasAdditionalRow}
               columnIndex={columnIndex}
               cellProps={cellProps}
               onCellUpdates={onCellUpdates}
               isReadOnly={isReadOnly}
+              setEditing={_setEditing(cellProps.rows.length, () => cellProps.allColumns.length)}
+              navigateHorizontally={_navigateHorizontally(cellProps.rows.length, () => cellProps.allColumns.length)}
+              navigateVertically={_navigateVertically(cellProps.rows.length, () => cellProps.allColumns.length)}
             />
           );
         }
       },
     }),
-    [hasAdditionalRow, cellComponentByColumnAccessor, isReadOnly, onCellUpdates]
+    [cellComponentByColumnAccessor, onCellUpdates, isReadOnly, _setEditing, _navigateHorizontally, _navigateVertically]
   );
 
   const reactTableInstance = ReactTable.useTable<R>(
@@ -226,10 +280,6 @@ export function BeeTableInternal<R extends object>({
     },
     [getRowKey]
   );
-
-  const rowCount = useMemo(() => {
-    return reactTableInstance.rows.length + (hasAdditionalRow ? 1 : 0);
-  }, [hasAdditionalRow, reactTableInstance.rows.length]);
 
   const getColumnCount = useCallback(
     (rowIndex: number) => {
@@ -268,7 +318,7 @@ export function BeeTableInternal<R extends object>({
           mutateSelection({
             part: SelectionPart.ActiveCell,
             columnCount: getColumnCount,
-            rowCount,
+            rowCount: rowCount(reactTableInstance.rows.length),
             deltaColumns: 0,
             deltaRows: 0,
             isEditingActiveCell: true,
@@ -286,7 +336,7 @@ export function BeeTableInternal<R extends object>({
           mutateSelection({
             part: SelectionPart.ActiveCell,
             columnCount: getColumnCount,
-            rowCount,
+            rowCount: rowCount(reactTableInstance.rows.length),
             deltaColumns: -1,
             deltaRows: 0,
             isEditingActiveCell: false,
@@ -296,7 +346,7 @@ export function BeeTableInternal<R extends object>({
           mutateSelection({
             part: SelectionPart.ActiveCell,
             columnCount: getColumnCount,
-            rowCount,
+            rowCount: rowCount(reactTableInstance.rows.length),
             deltaColumns: 1,
             deltaRows: 0,
             isEditingActiveCell: false,
@@ -315,7 +365,7 @@ export function BeeTableInternal<R extends object>({
         mutateSelection({
           part: selectionPart,
           columnCount: getColumnCount,
-          rowCount,
+          rowCount: rowCount(reactTableInstance.rows.length),
           deltaColumns: -1,
           deltaRows: 0,
           isEditingActiveCell: false,
@@ -328,7 +378,7 @@ export function BeeTableInternal<R extends object>({
         mutateSelection({
           part: selectionPart,
           columnCount: getColumnCount,
-          rowCount,
+          rowCount: rowCount(reactTableInstance.rows.length),
           deltaColumns: 1,
           deltaRows: 0,
           isEditingActiveCell: false,
@@ -341,7 +391,7 @@ export function BeeTableInternal<R extends object>({
         mutateSelection({
           part: selectionPart,
           columnCount: getColumnCount,
-          rowCount,
+          rowCount: rowCount(reactTableInstance.rows.length),
           deltaColumns: 0,
           deltaRows: -1,
           isEditingActiveCell: false,
@@ -354,7 +404,7 @@ export function BeeTableInternal<R extends object>({
         mutateSelection({
           part: selectionPart,
           columnCount: getColumnCount,
-          rowCount,
+          rowCount: rowCount(reactTableInstance.rows.length),
           deltaColumns: 0,
           deltaRows: 1,
           isEditingActiveCell: false,
@@ -404,7 +454,7 @@ export function BeeTableInternal<R extends object>({
         mutateSelection({
           part: SelectionPart.SelectionStart,
           columnCount: getColumnCount,
-          rowCount,
+          rowCount: rowCount(reactTableInstance.rows.length),
           deltaColumns: -(reactTableInstance.allColumns.length - 1),
           deltaRows: -(reactTableInstance.rows.length - 1),
           isEditingActiveCell: false,
@@ -413,7 +463,7 @@ export function BeeTableInternal<R extends object>({
         mutateSelection({
           part: SelectionPart.SelectionEnd,
           columnCount: getColumnCount,
-          rowCount,
+          rowCount: rowCount(reactTableInstance.rows.length),
           deltaColumns: +(reactTableInstance.allColumns.length - 1),
           deltaRows: +(reactTableInstance.rows.length - 1),
           isEditingActiveCell: false,
@@ -515,6 +565,10 @@ export function BeeTableInternal<R extends object>({
     [adaptSelection, onColumnDeleted]
   );
 
+  const setEditing = useMemo(() => {
+    return _setEditing(reactTableInstance.rows.length, () => reactTableInstance.allColumns.length);
+  }, [_setEditing, reactTableInstance.allColumns.length, reactTableInstance.rows.length]);
+
   return (
     <div className={`table-component ${tableId}`} ref={tableRef} onKeyDown={onKeyDown}>
       <table
@@ -536,6 +590,7 @@ export function BeeTableInternal<R extends object>({
           reactTableInstance={reactTableInstance}
           onColumnAdded={onColumnAdded2}
           lastColumnMinWidth={lastColumnMinWidth}
+          setEditing={setEditing}
         />
         <BeeTableBody<R>
           rowWrapper={rowWrapper}
