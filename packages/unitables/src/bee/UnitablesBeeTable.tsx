@@ -156,7 +156,7 @@ export function UnitablesBeeTable({
       getRowKey={getRowKey}
       tableId={id}
       isEditableHeader={false}
-      headerLevelCount={1}
+      headerLevelCountForAppendingRowIndexColumn={1}
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
       operationConfig={beeTableOperationConfig}
       columns={beeTableColumns}

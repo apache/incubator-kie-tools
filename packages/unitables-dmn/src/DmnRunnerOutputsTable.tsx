@@ -278,7 +278,7 @@ function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: Outpu
       getRowKey={getRowKey}
       tableId={id}
       isEditableHeader={false}
-      headerLevelCount={1}
+      headerLevelCountForAppendingRowIndexColumn={1}
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
       operationConfig={beeTableOperationConfig}
       columns={beeTableColumns}
