@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { WebElement } from "selenium-webdriver";
-import { By, WebView } from "vscode-extension-tester";
+import { By, WebElement, WebView } from "vscode-extension-tester";
 
 /**
  * Helper class to easen work with Dashbuilder editor inside of a webview.
