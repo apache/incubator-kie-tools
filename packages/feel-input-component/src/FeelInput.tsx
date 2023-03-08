@@ -63,8 +63,9 @@ Monaco.editor.defineTheme(MONACO_FEEL_THEME, feelTheme());
 
 Monaco.languages.setMonarchTokensProvider(MONACO_FEEL_LANGUAGE, feelTokensConfig());
 
+// FIXME: Tiago -> This is breaking for DMN Editor Dev webapp
 // Don't remove this. It's necessary for Monaco to initialize correctly and display correct colors for FEEL.
-Monaco.editor.create(document.body, { theme: MONACO_FEEL_THEME, language: MONACO_FEEL_LANGUAGE }).dispose();
+// Monaco.editor.create(document.body, { theme: MONACO_FEEL_THEME, language: MONACO_FEEL_LANGUAGE }).dispose();
 
 console.info("Registered FEEL language on Monaco Editor.");
 
