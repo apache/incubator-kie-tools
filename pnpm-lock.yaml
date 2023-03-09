@@ -3092,6 +3092,58 @@ importers:
         specifier: ^4.4.2
         version: 4.5.4
 
+  packages/editor-language-service:
+    dependencies:
+      jsonata:
+        specifier: ^1.8.3
+        version: 1.8.3
+      vscode-languageserver-types:
+        specifier: ^3.16.0
+        version: 3.17.2
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.16.12
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.16.11(@babel/core@7.16.12)
+      "@babel/preset-react":
+        specifier: ^7.16.0
+        version: 7.16.0(@babel/core@7.16.12)
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      "@types/jest-when":
+        specifier: ^2.7.4
+        version: 2.7.4
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      jest-when:
+        specifier: ^3.5.0
+        version: 3.5.0(jest@26.6.3)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.4.2
+        version: 4.8.4
+
   packages/envelope:
     dependencies:
       "@kie-tools-core/envelope-bus":
@@ -6040,6 +6092,9 @@ importers:
 
   packages/serverless-workflow-language-service:
     dependencies:
+      "@kie-tools/editor-language-service":
+        specifier: workspace:^0.0.0
+        version: link:../editor-language-service
       "@kie-tools/serverless-workflow-service-catalog":
         specifier: workspace:*
         version: link:../serverless-workflow-service-catalog
@@ -13804,7 +13859,7 @@ packages:
     engines: { node: ">=10" }
     dependencies:
       "@svgr/plugin-jsx": 6.2.1(@svgr/core@6.2.1)
-      camelcase: 6.2.0
+      camelcase: 6.3.0
       cosmiconfig: 7.0.1
     transitivePeerDependencies:
       - supports-color
@@ -16774,12 +16829,6 @@ packages:
     resolution:
       { integrity: sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg== }
     engines: { node: ">=6" }
-    dev: true
-
-  /camelcase@6.2.0:
-    resolution:
-      { integrity: sha512-c7wVvbw3f37nuobQNtgsgG9POC9qMbNuMQmTCqZv23b6MIz0fcYpBiOlv9gEN/hdLdnZTDQhg6e9Dq5M1vKvfg== }
-    engines: { node: ">=10" }
     dev: true
 
   /camelcase@6.3.0:
@@ -31746,7 +31795,7 @@ packages:
       { integrity: sha512-7pRTIA9Qc1caZ0bZ6RYRGbHJthJWuakf+WmHK0rVeLkNrrGhfoabBNdue6kdINI6r4if7ocq9aD/n7xwKOdzOA== }
     engines: { node: ">=10" }
     dependencies:
-      camelcase: 6.2.0
+      camelcase: 6.3.0
       decamelize: 4.0.0
       flat: 5.0.2
       is-plain-obj: 2.1.0

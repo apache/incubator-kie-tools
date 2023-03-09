@@ -490,7 +490,7 @@ states:
           range: { start: position, end: position },
           command: {
             title: "Create a Serverless Workflow",
-            command: "swf.ls.commands.OpenCompletionItems",
+            command: "editor.ls.commands.OpenCompletionItems",
             arguments: [{ newCursorPosition: position }],
           },
         } as CodeLens);
@@ -514,7 +514,7 @@ states:
           range: { start: { line: 1, character: 0 }, end: { line: 1, character: 0 } },
           command: {
             title: "+ Add function...",
-            command: "swf.ls.commands.OpenCompletionItems",
+            command: "editor.ls.commands.OpenCompletionItems",
             arguments: [{ newCursorPosition: { character: 0, line: 1 } }],
           },
         } as CodeLens);
@@ -551,7 +551,7 @@ states:
         range: { start: { line: 1, character: 0 }, end: { line: 1, character: 0 } },
         command: {
           title: "+ Add event...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 0, line: 1 } }],
         },
       } as CodeLens);
@@ -573,7 +573,7 @@ states:
         range: { start: { line: 1, character: 0 }, end: { line: 1, character: 0 } },
         command: {
           title: "+ Add state...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 0, line: 1 } }],
         },
       } as CodeLens);
@@ -604,7 +604,7 @@ functions:
         range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);
@@ -637,7 +637,7 @@ functions:
         range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);
@@ -673,7 +673,7 @@ functions:
         range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);
@@ -709,7 +709,7 @@ functions:
         range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);

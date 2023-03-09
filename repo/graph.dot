@@ -74,6 +74,7 @@ digraph G {
   "@kie-tools/dmn-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/guided-tour" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/keyboard-shortcuts" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools/editor-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/envelope-bus" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/extended-services" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/monaco-editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -237,6 +238,9 @@ digraph G {
   "@kie-tools-core/editor" -> "@kie-tools-core/envelope" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/guided-tour" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/keyboard-shortcuts" [ style = "solid", color = "purple" ];
+  "@kie-tools/editor-language-service" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
+  "@kie-tools/editor-language-service" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/editor-language-service" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/envelope" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "purple" ];
   "@kie-tools-core/envelope-bus" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/envelope-bus" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
@@ -338,6 +342,7 @@ digraph G {
   "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/editor-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/serverless-workflow-service-catalog" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];

@@ -89,6 +89,7 @@
       { "id": "@kie-tools/form" },
       { "id": "@kie-tools/dmn-language-service" },
       { "id": "@kie-tools-core/operating-system" },
+      { "id": "@kie-tools/editor-language-service" },
       { "id": "@kie-tools/extended-services" },
       { "id": "@kie-tools/form-generation-tool" },
       { "id": "@kie-tools/uniforms-bootstrap4-codegen" },
@@ -586,6 +587,9 @@
       { "source": "@kie-tools-core/operating-system", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/operating-system", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/operating-system", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/editor-language-service", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/editor-language-service", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/editor-language-service", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/extended-services", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/form-generation-tool", "target": "@kie-tools/uniforms-bootstrap4-codegen", "weight": 1 },
       { "source": "@kie-tools/form-generation-tool", "target": "@kie-tools/uniforms-patternfly-codegen", "weight": 1 },
@@ -716,6 +720,11 @@
         "weight": 1
       },
       { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "@kie-tools/root-env", "weight": 1 },
+      {
+        "source": "@kie-tools/serverless-workflow-language-service",
+        "target": "@kie-tools/editor-language-service",
+        "weight": 1
+      },
       {
         "source": "@kie-tools/serverless-workflow-language-service",
         "target": "@kie-tools/serverless-workflow-service-catalog",
@@ -872,6 +881,7 @@
     ["@kie-tools/dmn-dev-deployment-quarkus-app", "packages/dmn-dev-deployment-quarkus-app"],
     ["@kie-tools/dmn-language-service", "packages/dmn-language-service"],
     ["@kie-tools-core/editor", "packages/editor"],
+    ["@kie-tools/editor-language-service", "packages/editor-language-service"],
     ["@kie-tools-core/envelope", "packages/envelope"],
     ["@kie-tools-core/envelope-bus", "packages/envelope-bus"],
     ["@kie-tools/eslint", "packages/eslint"],

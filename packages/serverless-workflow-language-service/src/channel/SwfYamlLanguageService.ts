@@ -328,7 +328,7 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
 
   public shouldCreateCodelens(args: ShouldCreateCodelensArgs): boolean {
     return (
-      args.commandName !== "swf.ls.commands.OpenCompletionItems" ||
+      args.commandName !== "editor.ls.commands.OpenCompletionItems" ||
       getNodeFormat(args.content, args.node) !== FileLanguage.JSON
     );
   }

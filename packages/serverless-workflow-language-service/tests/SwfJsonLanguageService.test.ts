@@ -406,7 +406,7 @@ describe("SWF LS JSON", () => {
           range: { start: position, end: position },
           command: {
             title: "Create a Serverless Workflow",
-            command: "swf.ls.commands.OpenCompletionItems",
+            command: "editor.ls.commands.OpenCompletionItems",
             arguments: [{ newCursorPosition: position }],
           },
         } as CodeLens);
@@ -433,7 +433,7 @@ describe("SWF LS JSON", () => {
           range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
           command: {
             title: "+ Add function...",
-            command: "swf.ls.commands.OpenCompletionItems",
+            command: "editor.ls.commands.OpenCompletionItems",
             arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
           },
         } as CodeLens);
@@ -455,7 +455,7 @@ describe("SWF LS JSON", () => {
           range: { start: { line: 0, character: 13 }, end: { line: 0, character: 13 } },
           command: {
             title: "+ Add function...",
-            command: "swf.ls.commands.OpenCompletionItems",
+            command: "editor.ls.commands.OpenCompletionItems",
             arguments: [{ newCursorPosition: { character: 14, line: 0 } }],
           },
         } as CodeLens);
@@ -478,7 +478,7 @@ describe("SWF LS JSON", () => {
         range: { start: { line: 0, character: 10 }, end: { line: 0, character: 10 } },
         command: {
           title: "+ Add event...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 11, line: 0 } }],
         },
       } as CodeLens);
@@ -500,7 +500,7 @@ describe("SWF LS JSON", () => {
         range: { start: { line: 0, character: 10 }, end: { line: 0, character: 10 } },
         command: {
           title: "+ Add state...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 11, line: 0 } }],
         },
       } as CodeLens);
@@ -531,7 +531,7 @@ describe("SWF LS JSON", () => {
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
         },
       } as CodeLens);
@@ -564,7 +564,7 @@ describe("SWF LS JSON", () => {
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
         },
       } as CodeLens);
@@ -600,7 +600,7 @@ describe("SWF LS JSON", () => {
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
         },
       } as CodeLens);
@@ -636,7 +636,7 @@ describe("SWF LS JSON", () => {
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
         },
       } as CodeLens);

@@ -87,7 +87,7 @@ const createOpenCompletionItemsCodeLenses = (
     ...args,
     positionLensAt: "begin",
     commandDelegates: ({ node }) => {
-      const commandName: SwfLanguageServiceCommandTypes = args.commandName || "swf.ls.commands.OpenCompletionItems";
+      const commandName: SwfLanguageServiceCommandTypes = args.commandName || "editor.ls.commands.OpenCompletionItems";
 
       if (
         node.type !== args.nodeType ||
@@ -114,7 +114,7 @@ const createOpenCompletionItemsCodeLenses = (
 export const SwfLanguageServiceCodeLenses = {
   createNewSWF: (): CodeLens[] => {
     const position = Position.create(0, 0);
-    const command: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenCompletionItems";
+    const command: SwfLanguageServiceCommandTypes = "editor.ls.commands.OpenCompletionItems";
 
     return [
       {
