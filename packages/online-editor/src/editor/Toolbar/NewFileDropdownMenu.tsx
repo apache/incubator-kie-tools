@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { FileLabel } from "../filesList/FileLabel";
+import { FileLabel } from "../../filesList/FileLabel";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
@@ -32,22 +32,22 @@ import {
 import {
   SupportedFileExtensions,
   useEditorEnvelopeLocator,
-} from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+} from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename, extname } from "path";
-import { ImportSingleFileFromUrlForm } from "../importFromUrl/ImportSingleFileFromUrlForm";
-import { ImportableUrl, UrlType, useImportableUrl } from "../importFromUrl/ImportableUrlHooks";
-import { useRoutes } from "../navigation/Hooks";
-import { fetchSingleFileContent } from "../importFromUrl/fetchSingleFileContent";
-import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
-import { useGitHubClient } from "../github/Hooks";
-import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
+import { ImportSingleFileFromUrlForm } from "../../importFromUrl/ImportSingleFileFromUrlForm";
+import { ImportableUrl, UrlType, useImportableUrl } from "../../importFromUrl/ImportableUrlHooks";
+import { useRoutes } from "../../navigation/Hooks";
+import { fetchSingleFileContent } from "../../importFromUrl/fetchSingleFileContent";
+import { useAuthSession, useAuthSessions } from "../../authSessions/AuthSessionsContext";
+import { useGitHubClient } from "../../github/Hooks";
+import { useAuthProviders } from "../../authProviders/AuthProvidersContext";
+import { getCompatibleAuthSessionWithUrlDomain } from "../../authSessions/CompatibleAuthSessions";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import { useGlobalAlert } from "../alerts";
-import { useBitbucketClient } from "../bitbucket/Hooks";
+import { useGlobalAlert } from "../../alerts";
+import { useBitbucketClient } from "../../bitbucket/Hooks";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 

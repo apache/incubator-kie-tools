@@ -16,13 +16,13 @@
 
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { useRoutes } from "../navigation/Hooks";
+import { useRoutes } from "../../navigation/Hooks";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { join } from "path";
 import { Dropdown } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { FileLabel } from "../filesList/FileLabel";
+import { FileLabel } from "../../filesList/FileLabel";
 import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -59,7 +59,7 @@ import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/compo
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {
@@ -68,7 +68,7 @@ import {
   FileListItem,
   getFileDataListHeight,
   SingleFileWorkspaceDataList,
-} from "../filesList/FileDataList";
+} from "../../filesList/FileDataList";
 import {
   DataList,
   DataListCell,
@@ -76,9 +76,9 @@ import {
   DataListItemCells,
   DataListItemRow,
 } from "@patternfly/react-core/dist/js/components/DataList";
-import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
-import { usePreviewSvg } from "../previewSvgs/PreviewSvgHooks";
-import { WorkspaceLoadingMenuItem } from "../workspace/components/WorkspaceLoadingCard";
+import { WorkspaceListItem } from "../../workspace/components/WorkspaceListItem";
+import { usePreviewSvg } from "../../previewSvgs/PreviewSvgHooks";
+import { WorkspaceLoadingMenuItem } from "../../workspace/components/WorkspaceLoadingCard";
 
 const ROOT_MENU_ID = "rootMenu";
 
