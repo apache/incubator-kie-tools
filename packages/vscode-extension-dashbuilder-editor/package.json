@@ -17,7 +17,7 @@
   "main": "dist/extension/extension.js",
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "rimraf dist && webpack && pnpm pack:prod",
+    "build:prod": "rimraf dist && webpack && pnpm pack:prod && pnpm test:it",
     "compile": "webpack",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/vscode_extension_dashbuilder_editor_$npm_package_version.vsix",
