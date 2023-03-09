@@ -8,8 +8,8 @@ Array [
     "detail": "Start with a simple Serverless Workflow",
     "insertTextFormat": 2,
     "kind": 1,
-    "label": "Create your first Serverless Workflow",
-    "sortText": "100_Create your first Serverless Workflow",
+    "label": "Serverless Workflow Example",
+    "sortText": "100_Serverless Workflow Example",
     "textEdit": Object {
       "newText": "id: '\${1:Workflow unique identifier}'
 version: '\${2:0.1}'
@@ -52,8 +52,8 @@ states:
     "detail": "Start with an empty Serverless Workflow",
     "insertTextFormat": 2,
     "kind": 1,
-    "label": "Create empty Serverless Workflow",
-    "sortText": "100_Create empty Serverless Workflow",
+    "label": "Empty Serverless Workflow",
+    "sortText": "100_Empty Serverless Workflow",
     "textEdit": Object {
       "newText": "id: '\${1:Workflow unique identifier}'
 version: '\${2:0.1}'
@@ -87,8 +87,8 @@ Array [
     "detail": "Start with a simple Serverless Workflow",
     "insertTextFormat": 2,
     "kind": 1,
-    "label": "Create your first Serverless Workflow",
-    "sortText": "100_Create your first Serverless Workflow",
+    "label": "Serverless Workflow Example",
+    "sortText": "100_Serverless Workflow Example",
     "textEdit": Object {
       "newText": "id: '\${1:Workflow unique identifier}'
 version: '\${2:0.1}'
@@ -131,8 +131,8 @@ states:
     "detail": "Start with an empty Serverless Workflow",
     "insertTextFormat": 2,
     "kind": 1,
-    "label": "Create empty Serverless Workflow",
-    "sortText": "100_Create empty Serverless Workflow",
+    "label": "Empty Serverless Workflow",
+    "sortText": "100_Empty Serverless Workflow",
     "textEdit": Object {
       "newText": "id: '\${1:Workflow unique identifier}'
 version: '\${2:0.1}'
@@ -166,8 +166,8 @@ Array [
     "detail": "Start with a simple Serverless Workflow",
     "insertTextFormat": 2,
     "kind": 1,
-    "label": "Create your first Serverless Workflow",
-    "sortText": "100_Create your first Serverless Workflow",
+    "label": "Serverless Workflow Example",
+    "sortText": "100_Serverless Workflow Example",
     "textEdit": Object {
       "newText": "id: '\${1:Workflow unique identifier}'
 version: '\${2:0.1}'
@@ -210,8 +210,8 @@ states:
     "detail": "Start with an empty Serverless Workflow",
     "insertTextFormat": 2,
     "kind": 1,
-    "label": "Create empty Serverless Workflow",
-    "sortText": "100_Create empty Serverless Workflow",
+    "label": "Empty Serverless Workflow",
+    "sortText": "100_Empty Serverless Workflow",
     "textEdit": Object {
       "newText": "id: '\${1:Workflow unique identifier}'
 version: '\${2:0.1}'
