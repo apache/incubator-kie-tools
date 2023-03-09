@@ -64,6 +64,21 @@ interface OnlineDictionary extends ReferenceDictionary {
     share: string;
     embed: string;
   };
+  accelerators: {
+    commitMessage: (acceleratorName: string) => string;
+    loadingAlert: (acceleratorName: string) => string;
+    successAlert: (acceleratorName: string) => string;
+    failAlert: (acceleratorName: string) => string;
+    applyConfirmMessage: string;
+    acceleratorDescription: string;
+    acceleratorDetails: string;
+    dmnFilesMove: string;
+    dmnFilesLocation: string;
+    bpmnFilesMove: string;
+    bpmnFilesLocation: string;
+    otherFilesMove: string;
+    otherFilesLocation: string;
+  };
   devDeployments: {
     common: {
       deployYourModel: string;

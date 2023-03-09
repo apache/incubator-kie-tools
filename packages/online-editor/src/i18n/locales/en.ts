@@ -18,7 +18,6 @@ import { OnlineI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { en as en_unitables } from "@kie-tools/unitables/dist/i18n/locales/en";
 import { wrapped } from "@kie-tools-core/i18n/dist/core";
-import { names } from "@kie-tools/i18n-common-dictionary/dist/names";
 
 export const en: OnlineI18n = {
   ...en_common,
@@ -65,6 +64,23 @@ export const en: OnlineI18n = {
     cantUpdateSnippetTooltip: `You can't update your Snippet because you're either not logged in, not the owner, or your models are in nested directories.`,
     share: "Share",
     embed: "Embed",
+  },
+  accelerators: {
+    commitMessage: (acceleratorName: string) =>
+      `${en_common.names.businessModeler.online}: Adding ${acceleratorName} accelerator to project`,
+    loadingAlert: (acceleratorName: string) => `Applying ${acceleratorName} accelerator to project...`,
+    successAlert: (acceleratorName: string) => `Successfully applied ${acceleratorName} accelerator to project`,
+    failAlert: (acceleratorName: string) => `Failed to apply ${acceleratorName} accelerator to project`,
+    applyConfirmMessage: "Are you sure you want to apply this Accelerator?",
+    acceleratorDescription:
+      "An Accelerator is a template to your project. Adding it will move your current files according to the Accelerator specifications and create a new commit for the changes.",
+    acceleratorDetails: "This accelerator is hosted at",
+    dmnFilesMove: "Your decision files will be moved to:",
+    dmnFilesLocation: "Your decision files are at:",
+    bpmnFilesMove: "Your business model files will be moved to:",
+    bpmnFilesLocation: "Your business model files are at:",
+    otherFilesMove: "Other files will be moved to:",
+    otherFilesLocation: "Other files should be at:",
   },
   devDeployments: {
     common: {

@@ -18,6 +18,7 @@ import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { names } from "./names";
 
 export type CommonDictionary = {
+  apply: string;
   available: string;
   back: string;
   cancel: string;

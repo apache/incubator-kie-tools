@@ -88,9 +88,37 @@ export interface WorkspacesWorkerGitApi {
     };
   }): Promise<void>;
 
+  kieSandboxWorkspacesGit_merge(args: {
+    workspaceId: string;
+    ours: string;
+    theirs: string;
+    gitConfig?: {
+      email: string;
+      name: string;
+    };
+    dryRun?: boolean;
+    fastForwardOnly?: boolean;
+  }): Promise<void>;
+
+  kieSandboxWorkspacesGit_renameBranch(args: {
+    workspaceId: string;
+    ref: string;
+    oldref: string;
+    checkout: boolean;
+  }): Promise<void>;
+
+  kieSandboxWorkspacesGit_deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
+
   kieSandboxWorkspacesGit_branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void>;
 
-  kieSandboxWorkspacesGit_checkout(args: { workspaceId: string; ref: string; remote: string }): Promise<void>;
+  kieSandboxWorkspacesGit_checkout(args: {
+    workspaceId: string;
+    ref: string;
+    remote: string;
+    force?: boolean;
+    noUpdateHead?: boolean;
+    filepaths?: string[];
+  }): Promise<void>;
 
   kieSandboxWorkspacesGit_addRemote(args: {
     workspaceId: string;
@@ -103,12 +131,21 @@ export interface WorkspacesWorkerGitApi {
 
   kieSandboxWorkspacesGit_getUnstagedModifiedFileRelativePaths(args: { workspaceId: string }): Promise<string[]>;
 
+  kieSandboxWorkspacesGit_stageFile(args: { workspaceId: string; relativePath: string }): Promise<void>;
+
   kieSandboxWorkspacesGit_commit(args: {
     workspaceId: string;
+    targetBranch: string;
     gitConfig?: {
       email: string;
       name: string;
     };
+    commitMessage?: string;
+  }): Promise<void>;
+
+  kieSandboxWorkspacesGit_createSavePoint(args: {
+    workspaceId: string;
+    gitConfig?: { email: string; name: string };
     commitMessage?: string;
   }): Promise<void>;
 

@@ -52,10 +52,18 @@ const CommitValidationErrorMessages = (props: { validations?: string[] }) => {
   );
 };
 
-export const WorkspaceCommitModal: PromiseModalChildren<string> = ({ onReturn, onClose }) => {
+export type WorkspaceCommitModalArgs = {
+  commitMessagePlaceholder?: string;
+};
+
+export const WorkspaceCommitModal: PromiseModalChildren<string, WorkspaceCommitModalArgs> = ({
+  onReturn,
+  onClose,
+  args,
+}) => {
   const { i18n } = useOnlineI18n();
   const { env } = useEnv();
-  const [commitMessage, setCommitMessage] = useState<string>("");
+  const [commitMessage, setCommitMessage] = useState<string>(args?.commitMessagePlaceholder ?? "");
   const [validation, setValidation] = useState<CommitMessageValidation>({
     result: true,
   });

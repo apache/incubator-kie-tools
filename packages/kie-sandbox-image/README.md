@@ -54,13 +54,14 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
    [comment]: <> (//TODO: Use EnvJson.schema.json to generate this documentation somehow.. See https://github.com/kiegroup/kie-issues/issues/16)
 
-   |                            Name                            |                                                     Description                                                      |                               Default                               |
-   | :--------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
-   |            `KIE_SANDBOX_EXTENDED_SERVICES_URL`             |                              The URL that points to the KIE Sandbox Extended Services.                               | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |              `KIE_SANDBOX_GIT_CORS_PROXY_URL`              |                    The URL that points to the Git CORS proxy for interacting with Git providers.                     | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |        `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE`         |                      Require users to type a custom commit message when creating a new commit.                       | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   | `KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL` |                                       Service URL to validate commit messages.                                       | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |                `KIE_SANDBOX_AUTH_PROVIDERS`                | Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more. | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                            Name                             |                                                     Description                                                      |                               Default                               |
+   | :---------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
+   |             `KIE_SANDBOX_EXTENDED_SERVICES_URL`             |                              The URL that points to the KIE Sandbox Extended Services.                               | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |              `KIE_SANDBOX_GIT_CORS_PROXY_URL`               |                    The URL that points to the Git CORS proxy for interacting with Git providers.                     | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |        `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGES`         |                      Require users to type a custom commit message when creating a new commit.                       | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   | `KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL` |                                       Service URL to validate commit messages.                                       | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                `KIE_SANDBOX_AUTH_PROVIDERS`                 | Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more. | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                 `KIE_SANDBOX_ACCELERATORS`                  |                     Project accelerators configuration. Used to add a template to your project.                      | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
 
    ### Examples
 
@@ -73,7 +74,15 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    2. Enabling authentication with a GitHub Enterprise Server instance.
 
       ```bash
-      podman run -t -p 8080:8080 -e KIE_SANDBOX_AUTH_PROVIDERS='[{"id":"github_at_my_company","domain":"github.my-company.com","supportedGitRemoteDomains":["github.my-company.com","gist.github.my-company.com"],"type":"github","name":"GitHub @ MyCompany","enabled":true, "group":"git" }]' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      podman run -t -p 8080:8080 -e KIE_SANDBOX_AUTH_PROVIDERS='[{
+        "id":"github_at_my_company", \
+        "domain":"github.my-company.com", \
+        "supportedGitRemoteDomains":["github.my-company.com","gist.github.my-company.com"], \
+        "type":"github", \
+        "name":"GitHub @ MyCompany", \
+        "enabled":true, \
+        "group":"git" \
+      }]' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
 
    3. Requiring users to input a custom commit message on every commit.
@@ -88,6 +97,20 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
       podman run -t -p 8080:8080 -e KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE='true' KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL='http://localhost:8090/validate' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
 
+   5. Adding project accelerators available for your users.
+
+      ```bash
+      podman run -t -p 8080:8080 -e KIE_SANDBOX_ACCELERATORS='[{ \
+        name: "Quarkus", \
+        iconUrl: "https://seeklogo.com/images/Q/quarkus-logo-C9F006782E-seeklogo.com.png", \
+        gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-template", \
+        gitRepositoryGitRef: "template", \
+        dmnDestinationFolder: "src/main/resources/dmn", \
+        bpmnDestinationFolder: "src/main/resources/bpmn", \
+        otherFilesDestinationFolder: "src/main/resources/others", \
+      }]' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      ```
+
 2. Write a custom `Containerfile/Dockerfile` from the image:
 
    ```docker
@@ -98,6 +121,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    ENV KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE=<my_value>
    ENV KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL=<my_value>
    ENV KIE_SANDBOX_AUTH_PROVIDERS=<my_value>
+   ENV KIE_SANDBOX_ACCELERATORS=<my_value>
    ```
 
 3. Create the application from the image in OpenShift and set the deployment environment variable right from the OpenShift UI.

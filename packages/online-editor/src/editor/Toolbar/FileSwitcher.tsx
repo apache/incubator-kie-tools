@@ -630,11 +630,9 @@ export function FilesMenuItems(props: {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
 
   const sortedAndFilteredFiles = useMemo(
-    () =>
-      props.workspaceFiles
-        .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => file.relativePath !== props.currentWorkspaceFile?.relativePath),
-    [props.workspaceFiles, props.currentWorkspaceFile]
+    () => props.workspaceFiles.sort((a, b) => a.relativePath.localeCompare(b.relativePath)),
+    // .filter((file) => file.relativePath !== props.currentWorkspaceFile?.relativePath),
+    [props.workspaceFiles]
   );
 
   const models = useMemo(

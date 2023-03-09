@@ -149,12 +149,23 @@ export class GitService {
     });
   }
 
-  public async checkout(args: { fs: KieSandboxWorkspacesFs; dir: string; ref: string; remote: string }) {
+  public async checkout(args: {
+    fs: KieSandboxWorkspacesFs;
+    dir: string;
+    ref: string;
+    remote: string;
+    force?: boolean;
+    noUpdateHead?: boolean;
+    filepaths?: string[];
+  }) {
     await git.checkout({
       fs: args.fs,
       dir: args.dir,
       ref: args.ref,
       remote: args.remote,
+      force: args.force,
+      noUpdateHead: args.noUpdateHead,
+      filepaths: args.filepaths,
     });
   }
 
@@ -205,6 +216,58 @@ export class GitService {
       singleBranch: true,
       author: args.author,
       onAuth: () => args.authInfo,
+    });
+  }
+
+  public async merge(args: {
+    fs: KieSandboxWorkspacesFs;
+    dir: string;
+    ours: string;
+    theirs: string;
+    author: {
+      name: string;
+      email: string;
+    };
+    dryRun?: boolean;
+    fastForwardOnly?: boolean;
+  }) {
+    await git.merge({
+      fs: args.fs,
+      dir: args.dir,
+      ours: args.ours,
+      theirs: args.theirs,
+      author: args.author,
+      dryRun: args.dryRun,
+      fastForwardOnly: args.fastForwardOnly,
+    });
+  }
+
+  public async renameBranch(args: {
+    fs: KieSandboxWorkspacesFs;
+    dir: string;
+    ref: string;
+    oldref: string;
+    checkout?: boolean;
+  }) {
+    await git.renameBranch({
+      fs: args.fs,
+      dir: args.dir,
+      ref: args.ref,
+      oldref: args.oldref,
+      checkout: args.checkout,
+    });
+  }
+
+  public async deleteBranch(args: { fs: KieSandboxWorkspacesFs; dir: string; ref: string }) {
+    const currentBranch = await git.currentBranch({ fs: args.fs, dir: args.dir });
+
+    if (args.ref === currentBranch) {
+      throw new Error("Can't delete current branch.");
+    }
+    await git.deleteBranch({
+      fs: args.fs,
+      dir: args.dir,
+      ref: args.ref,
     });
   }
 

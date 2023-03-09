@@ -32,7 +32,7 @@ type Props = {
     }
   | {
       shouldRequireCommitMessage: true;
-      onCommitMessageRequest: () => Promise<string>;
+      onCommitMessageRequest: (commitMessagePlaceholder?: string) => Promise<string>;
     }
 );
 
@@ -97,6 +97,40 @@ export function WorkspacesContextProvider(props: Props) {
     [workspacesSharedWorker]
   );
 
+  const merge = useCallback(
+    async (args: {
+      workspaceId: string;
+      ours: string;
+      theirs: string;
+      gitConfig?: {
+        email: string;
+        name: string;
+      };
+      dryRun?: boolean;
+      fastForwardOnly?: boolean;
+    }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) => {
+        return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_merge(args);
+      }),
+    [workspacesSharedWorker]
+  );
+
+  const renameBranch = useCallback(
+    async (args: { workspaceId: string; ref: string; oldref: string; checkout: boolean }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) => {
+        return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_renameBranch(args);
+      }),
+    [workspacesSharedWorker]
+  );
+
+  const deleteBranch = useCallback(
+    async (args: { workspaceId: string; ref: string }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) => {
+        return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_deleteBranch(args);
+      }),
+    [workspacesSharedWorker]
+  );
+
   const addRemote = useCallback(
     async (args: { workspaceId: string; name: string; url: string; force: boolean }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
@@ -130,7 +164,14 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const checkout = useCallback(
-    async (args: { workspaceId: string; ref: string; remote: string }) =>
+    async (args: {
+      workspaceId: string;
+      ref: string;
+      remote: string;
+      force?: boolean;
+      noUpdateHead?: boolean;
+      filepaths?: string[];
+    }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_checkout(args)
       ),
@@ -145,28 +186,56 @@ export function WorkspacesContextProvider(props: Props) {
     [workspacesSharedWorker]
   );
 
+  const commit = useCallback(
+    async (args: {
+      workspaceId: string;
+      targetBranch: string;
+      commitMessage: string;
+      gitConfig?: { email: string; name: string };
+    }) => {
+      return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit(args)
+      );
+    },
+    [workspacesSharedWorker]
+  );
+
   const createSavePoint = useCallback(
-    async (args: { workspaceId: string; gitConfig?: { email: string; name: string }; commitMessage?: string }) => {
-      if (!(await hasLocalChanges(args))) {
+    async (args: {
+      workspaceId: string;
+      gitConfig?: { email: string; name: string };
+      commitMessage?: string;
+      forceHasChanges?: boolean;
+    }) => {
+      if (!args.forceHasChanges && !(await hasLocalChanges(args))) {
         return;
       }
-      if (props.shouldRequireCommitMessage && !args.commitMessage) {
+      if (props.shouldRequireCommitMessage) {
         let commitMessage: string;
         try {
-          commitMessage = await props.onCommitMessageRequest();
+          commitMessage = await props.onCommitMessageRequest(args.commitMessage);
         } catch (e) {
           throw new Error("No commit message!");
         }
         return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
-          workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit({ ...args, commitMessage })
+          workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_createSavePoint({ ...args, commitMessage })
         );
       } else {
         return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
-          workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit(args)
+          workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_createSavePoint(args)
         );
       }
     },
-    [props, workspacesSharedWorker, hasLocalChanges]
+    [hasLocalChanges, props, workspacesSharedWorker]
+  );
+
+  const stageFile = useCallback(
+    async (args: { workspaceId: string; relativePath: string }) => {
+      return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_stageFile(args)
+      );
+    },
+    [workspacesSharedWorker]
   );
 
   const getGitServerRefs = useCallback(
@@ -497,10 +566,15 @@ export function WorkspacesContextProvider(props: Props) {
       prepareZip,
       getUniqueFileIdentifier,
       createSavePoint,
+      stageFile,
+      commit,
       pull,
       addRemote,
       deleteRemote,
       push,
+      merge,
+      renameBranch,
+      deleteBranch,
       branch,
       checkout,
       fetch,
@@ -532,6 +606,8 @@ export function WorkspacesContextProvider(props: Props) {
       addFile,
       existsFile,
       createSavePoint,
+      stageFile,
+      commit,
       createWorkspaceFromGitRepository,
       createWorkspaceFromLocal,
       deleteFile,
@@ -547,6 +623,9 @@ export function WorkspacesContextProvider(props: Props) {
       addRemote,
       deleteRemote,
       push,
+      merge,
+      renameBranch,
+      deleteBranch,
       branch,
       checkout,
       fetch,

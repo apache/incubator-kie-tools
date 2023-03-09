@@ -68,6 +68,7 @@ import { WorkspaceToolbar } from "./Workspace/WorkspaceToolbar";
 import { useWorkspaceNavigationBlocker } from "./Workspace/Hooks";
 import { FileStatus } from "./FileStatus";
 import { SyncDropdownMenu } from "./SyncDropdownMenu";
+import { AcceleratorsDropdown } from "./Accelerators/AcceleratorsDropdown";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -299,6 +300,9 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
                         }}
                       />
                     </ResponsiveDropdown>
+                  </ToolbarItem>
+                  <ToolbarItem>
+                    <AcceleratorsDropdown workspaceFile={props.workspaceFile} />
                   </ToolbarItem>
                   <ToolbarItem visibility={hideWhenSmall}>
                     {props.workspaceFile.extension === "dmn" && (

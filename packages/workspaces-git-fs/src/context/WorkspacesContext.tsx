@@ -128,9 +128,32 @@ export interface WorkspacesContextType {
     };
   }): Promise<void>;
 
+  merge(args: {
+    workspaceId: string;
+    ours: string;
+    theirs: string;
+    gitConfig?: {
+      email: string;
+      name: string;
+    };
+    dryRun?: boolean;
+    fastForwardOnly?: boolean;
+  }): Promise<void>;
+
+  renameBranch(args: { workspaceId: string; ref: string; oldref: string; checkout: boolean }): Promise<void>;
+
+  deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
+
   branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void>;
 
-  checkout(args: { workspaceId: string; ref: string; remote: string }): Promise<void>;
+  checkout(args: {
+    workspaceId: string;
+    ref: string;
+    remote: string;
+    force?: boolean;
+    noUpdateHead?: boolean;
+    filepaths?: string[];
+  }): Promise<void>;
 
   addRemote(args: { workspaceId: string; name: string; url: string; force: boolean }): Promise<void>;
 
@@ -150,13 +173,27 @@ export interface WorkspacesContextType {
 
   isFileModified(args: { workspaceId: string; relativePath: string }): Promise<boolean>;
 
+  commit(args: {
+    workspaceId: string;
+    targetBranch: string;
+    gitConfig?: {
+      email: string;
+      name: string;
+    };
+    commitMessage: string;
+  }): Promise<void>;
+
   createSavePoint(args: {
     workspaceId: string;
     gitConfig?: {
       email: string;
       name: string;
     };
+    commitMessage?: string;
+    forceHasChanges?: boolean;
   }): Promise<void>;
+
+  stageFile: (args: { workspaceId: string; relativePath: string }) => Promise<void>;
 
   fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<void>;
 

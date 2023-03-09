@@ -79,4 +79,24 @@ export const defaultEnvJson: EnvJson = {
       group: AuthProviderGroup.CLOUD,
     },
   ],
+  KIE_SANDBOX_ACCELERATORS: [
+    {
+      name: "Quarkus",
+      iconUrl: "https://seeklogo.com/images/Q/quarkus-logo-C9F006782E-seeklogo.com.png",
+      gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-template",
+      gitRepositoryGitRef: "template",
+      dmnDestinationFolder: "src/main/resources/dmn",
+      bpmnDestinationFolder: "src/main/resources/bpmn",
+      otherFilesDestinationFolder: "src/main/resources/others",
+    },
+    {
+      name: "DMN + Springboot",
+      iconUrl: "https://dz2cdn1.dzone.com/storage/temp/12434118-spring-boot-logo.png",
+      gitRepositoryUrl: "https://github.com/thiagoelg/kie-sandbox-dmn-springboot-template",
+      gitRepositoryGitRef: "main",
+      dmnDestinationFolder: "src/main/resources",
+      bpmnDestinationFolder: "src/main/resources",
+      otherFilesDestinationFolder: "src/main/resources",
+    },
+  ],
 };
