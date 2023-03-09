@@ -62,7 +62,8 @@ public class RuntimeModelJSONMarshallerTest {
             "      \"pushMaxSize\": 1024,\n" + 
             "      \"refreshAlways\": false,\n" + 
             "      \"dynamic\": false,\n" + 
-            "      \"url\": \"http://acme.com\"\n" + 
+            "      \"url\": \"http://acme.com\",\n" +
+            "      \"accumulate\": false\n" +
             "    }\n" + 
             "  ],\n" + 
             "  \"properties\": {\n" + 

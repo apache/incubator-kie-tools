@@ -24,13 +24,17 @@ import org.dashbuilder.dataset.ColumnType;
  * List of available aggregate functions used in data set group operations.
  */
 public enum AggregateFunctionType {
+
     COUNT,
     DISTINCT,
     AVERAGE,
     SUM,
     MIN,
     MAX,
-    MEDIAN;
+    MEDIAN,
+    JOIN,
+    JOIN_COMMA,
+    JOIN_LINE_BREAK;
 
     private static AggregateFunctionType[] _typeArray = values();
     private static List<AggregateFunctionType> _numericOnly = Arrays.asList(AVERAGE, MEDIAN, SUM, MAX, MIN);
@@ -38,7 +42,8 @@ public enum AggregateFunctionType {
     public int getIndex() {
         for (int i = 0; i < _typeArray.length; i++) {
             AggregateFunctionType type = _typeArray[i];
-            if (this.equals(type)) return i;
+            if (this.equals(type))
+                return i;
         }
         return -1;
     }
@@ -51,8 +56,13 @@ public enum AggregateFunctionType {
     }
 
     public ColumnType getResultType(ColumnType columnType) {
-        if (columnType != null &&  (MIN.equals(this) || MAX.equals(this))) {
+        if (columnType != null && (MIN.equals(this) || MAX.equals(this))) {
             return columnType;
+        }
+        if (JOIN.equals(this) ||
+            JOIN_COMMA.equals(this) ||
+            JOIN_LINE_BREAK.equals(this)) {
+            return ColumnType.TEXT;
         }
         return ColumnType.NUMBER;
     }
