@@ -140,32 +140,36 @@ export const SwfLanguageServiceCodeCompletion = {
     cursorOffset: number;
     document: TextDocument;
   }): CompletionItem[] {
+    const kind = CompletionItemKind.Text;
+    const emptyWorkflowLabel = "Empty Serverless Workflow";
+    const exampleWorkflowLabel = "Serverless Workflow Example";
+
     return [
       {
-        kind: CompletionItemKind.Text,
-        label: "Create your first Serverless Workflow",
+        kind,
+        label: exampleWorkflowLabel,
         detail: "Start with a simple Serverless Workflow",
-        sortText: `100_${"Create your first Serverless Workflow"}`, //place the completion on top in the menu
+        sortText: `100_${exampleWorkflowLabel}`, //place the completion on top in the menu
         textEdit: {
           newText: args.codeCompletionStrategy.translate({
             ...args,
             completion: workflowCompletion,
-            completionItemKind: CompletionItemKind.Text,
+            completionItemKind: kind,
           }),
           range: Range.create(args.cursorPosition, args.cursorPosition),
         },
         insertTextFormat: InsertTextFormat.Snippet,
       },
       {
-        kind: CompletionItemKind.Text,
-        label: "Create empty Serverless Workflow",
+        kind,
+        label: emptyWorkflowLabel,
         detail: "Start with an empty Serverless Workflow",
-        sortText: `100_${"Create empty Serverless Workflow"}`, //place the completion on top in the menu
+        sortText: `100_${emptyWorkflowLabel}`, //place the completion on top in the menu
         textEdit: {
           newText: args.codeCompletionStrategy.translate({
             ...args,
             completion: emptyWorkflowCompletion,
-            completionItemKind: CompletionItemKind.Text,
+            completionItemKind: kind,
           }),
           range: Range.create(args.cursorPosition, args.cursorPosition),
         },
