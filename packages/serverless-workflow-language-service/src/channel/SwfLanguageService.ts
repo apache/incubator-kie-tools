@@ -161,17 +161,17 @@ export class SwfLanguageService {
   }
 
   private generateDiagnostic(serviceCatalogFunctions: SwfServiceCatalogFunction[]): Diagnostic[] {
-    const diagnostics: Diagnostic[] = [];
-    if (serviceCatalogFunctions.filter((fs) => !fs.name && !isVirtualRegistry(fs)).length >= 1) {
-      diagnostics.push(
-        Diagnostic.create(
-          Range.create(Position.create(0, 0), Position.create(0, 0)),
-          this.getWarningMessage(serviceCatalogFunctions[0].source),
-          DiagnosticSeverity.Warning
-        )
-      );
-    }
-    return diagnostics;
+    const functionsWithoutName = serviceCatalogFunctions.filter((fs) => !fs.name && !isVirtualRegistry(fs));
+
+    return functionsWithoutName.length >= 1
+      ? [
+          Diagnostic.create(
+            Range.create(Position.create(0, 0), Position.create(0, 0)),
+            this.getWarningMessage(serviceCatalogFunctions[0].source),
+            DiagnosticSeverity.Warning
+          ),
+        ]
+      : [];
   }
 
   private getWarningMessage(swfServiceCatalogFunctionSource: SwfServiceCatalogFunctionSource): string {
