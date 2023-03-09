@@ -220,7 +220,7 @@ It looks like this:
 }
 ```
 
-- **Name**: This is how your accelerator will be known inside KIE Sandbox.
+- **name**: This is how your accelerator will be known inside KIE Sandbox.
 - **iconUrl**: An optional parameter to add an image/logo besides you accelerator name.
 - **gitRepositoryUrl**: This is where your accelerator is hosted. Should be and URL that can be used with `git clone`.
 - **gitRepositoryGitRef**: Where in your repository is this accelerator located. Could be a branch, commit, tag, anything that can be used with `git checkout`.
