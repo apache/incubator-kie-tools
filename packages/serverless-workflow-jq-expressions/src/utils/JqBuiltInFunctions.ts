@@ -164,11 +164,6 @@ export const jqBuiltInFunctions = [
       "Stops the jq program with no further outputs. The input will be printed on stderr as raw output (i.e., strings will not have double quotes) with no decoration, not even a newline.",
   },
   {
-    functionName: "$__loc__",
-    description:
-      'Produces an object with a "file" key and a "line" key, with the filename and line number where $__loc__ occurs, as values.',
-  },
-  {
     functionName: "paths",
     description:
       "paths outputs the paths to all the elements in its input (except it does not output the empty list, representing . itself).",
@@ -409,10 +404,6 @@ export const jqBuiltInFunctions = [
     functionName: "walk(f)",
     description:
       "The walk(f) function applies f recursively to every component of the input entity. When an array is encountered, f is first applied to its elements and then to the array itself; when an object is encountered, f is first applied to all the values and then to the object. In practice, f will usually test the type of its input, as illustrated in the following examples. The first example highlights the usefulness of processing the elements of an array of arrays before processing the array itself. The second example shows how all the keys of all the objects within the input can be considered for alteration.",
-  },
-  {
-    functionName: "$ENV",
-    description: "$ENV is an object representing the environment variables as set when the jq program started.",
   },
   { functionName: "env", description: "env outputs an object representing jqs current environment." },
   {

@@ -51,7 +51,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -263,7 +263,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -380,7 +380,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -497,7 +497,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -736,7 +736,7 @@ exports[`SWF LS JSON code completion Jq completions data condition completions b
 
 exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -1006,7 +1006,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor after some random word 2`] = `
 Array [
@@ -1218,7 +1218,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor before empty space 2`] = `
 Array [
@@ -1335,7 +1335,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -1452,7 +1452,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -1691,7 +1691,7 @@ exports[`SWF LS JSON code completion Jq completions data condition completions r
 
 exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions reusable functions completion no value/double quotes 2`] = `
 Array [
@@ -1961,7 +1961,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor after some random word 2`] = `
 Array [
@@ -2173,7 +2173,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor before empty space 2`] = `
 Array [
@@ -2290,7 +2290,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -2407,7 +2407,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -2646,7 +2646,7 @@ exports[`SWF LS JSON code completion Jq completions data condition completions v
 
 exports[`SWF LS JSON code completion Jq completions data condition completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data condition completions variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data condition completions variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data condition completions variables completion no value/double quotes 2`] = `
 Array [
@@ -2916,7 +2916,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -3128,7 +3128,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -3245,7 +3245,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -3362,7 +3362,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -3601,7 +3601,7 @@ exports[`SWF LS JSON code completion Jq completions data filter completions buil
 
 exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -3871,7 +3871,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor after some random word 2`] = `
 Array [
@@ -4083,7 +4083,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor before empty space 2`] = `
 Array [
@@ -4200,7 +4200,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -4317,7 +4317,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -4556,7 +4556,7 @@ exports[`SWF LS JSON code completion Jq completions data filter completions reus
 
 exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions reusable functions completion no value/double quotes 2`] = `
 Array [
@@ -4826,7 +4826,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor after some random word 2`] = `
 Array [
@@ -5038,7 +5038,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor before empty space 2`] = `
 Array [
@@ -5155,7 +5155,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -5272,7 +5272,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -5511,7 +5511,7 @@ exports[`SWF LS JSON code completion Jq completions data filter completions vari
 
 exports[`SWF LS JSON code completion Jq completions data filter completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data filter completions variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter completions variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter completions variables completion no value/double quotes 2`] = `
 Array [
@@ -5781,7 +5781,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -5993,7 +5993,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -6110,7 +6110,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -6227,7 +6227,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -6466,7 +6466,7 @@ exports[`SWF LS JSON code completion Jq completions data filter inside on onEven
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -6736,7 +6736,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor after some random word 2`] = `
 Array [
@@ -6948,7 +6948,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor before empty space 2`] = `
 Array [
@@ -7065,7 +7065,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -7182,7 +7182,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -7421,7 +7421,7 @@ exports[`SWF LS JSON code completion Jq completions data filter inside on onEven
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions reusable functions completion no value/double quotes 2`] = `
 Array [
@@ -7691,7 +7691,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor after some random word 2`] = `
 Array [
@@ -7903,7 +7903,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor before empty space 2`] = `
 Array [
@@ -8020,7 +8020,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -8137,7 +8137,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -8376,7 +8376,7 @@ exports[`SWF LS JSON code completion Jq completions data filter inside on onEven
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions data filter inside on onEvents completions variables completion no value/double quotes 2`] = `
 Array [
@@ -8646,7 +8646,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -8858,7 +8858,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -8975,7 +8975,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -9092,7 +9092,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -9331,7 +9331,7 @@ exports[`SWF LS JSON code completion Jq completions event data filter completion
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -9601,7 +9601,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor after some random word 2`] = `
 Array [
@@ -9813,7 +9813,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor before empty space 2`] = `
 Array [
@@ -9930,7 +9930,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -10047,7 +10047,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -10286,7 +10286,7 @@ exports[`SWF LS JSON code completion Jq completions event data filter completion
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions reusable functions completion no value/double quotes 2`] = `
 Array [
@@ -10556,7 +10556,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor after some random word 2`] = `
 Array [
@@ -10768,7 +10768,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor before empty space 2`] = `
 Array [
@@ -10885,7 +10885,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -11002,7 +11002,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -11241,7 +11241,7 @@ exports[`SWF LS JSON code completion Jq completions event data filter completion
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions event data filter completions variables completion no value/double quotes 2`] = `
 Array [
@@ -11511,7 +11511,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -11723,7 +11723,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -11840,7 +11840,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -11957,7 +11957,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -12196,7 +12196,7 @@ exports[`SWF LS JSON code completion Jq completions functionRef arguments comple
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -12466,7 +12466,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor after some random word 2`] = `
 Array [
@@ -12678,7 +12678,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor before empty space 2`] = `
 Array [
@@ -12795,7 +12795,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -12912,7 +12912,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -13151,7 +13151,7 @@ exports[`SWF LS JSON code completion Jq completions functionRef arguments comple
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions reusable functions completion no value/double quotes 2`] = `
 Array [
@@ -13421,7 +13421,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor after some random word 2`] = `
 Array [
@@ -13633,7 +13633,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor before empty space 2`] = `
 Array [
@@ -13750,7 +13750,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -13867,7 +13867,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -14106,7 +14106,7 @@ exports[`SWF LS JSON code completion Jq completions functionRef arguments comple
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions functionRef arguments completions variables completion no value/double quotes 2`] = `
 Array [
@@ -14427,7 +14427,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -14544,7 +14544,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor after some random word 3`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor after some random word 3`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor after some random word 4`] = `
 Array [
@@ -14756,7 +14756,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -14873,7 +14873,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before empty space 3`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before empty space 3`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before empty space 4`] = `
 Array [
@@ -14990,7 +14990,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -15107,7 +15107,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -15287,7 +15287,7 @@ exports[`SWF LS JSON code completion Jq completions operations completion built-
 
 exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion empty object 6`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -15404,7 +15404,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion no value/double quotes 3`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion no value/double quotes 3`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion built-in functions completion no value/double quotes 4`] = `
 Array [
@@ -15623,7 +15623,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor after some random word 2`] = `
 Array [
@@ -15740,7 +15740,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor after some random word 3`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor after some random word 3`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor after some random word 4`] = `
 Array [
@@ -15952,7 +15952,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before empty space 2`] = `
 Array [
@@ -16069,7 +16069,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before empty space 3`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before empty space 3`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before empty space 4`] = `
 Array [
@@ -16186,7 +16186,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -16303,7 +16303,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -16483,7 +16483,7 @@ exports[`SWF LS JSON code completion Jq completions operations completion reusab
 
 exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion empty object 6`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion no value/double quotes 2`] = `
 Array [
@@ -16600,7 +16600,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion no value/double quotes 3`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion no value/double quotes 3`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion reusable functions completion no value/double quotes 4`] = `
 Array [
@@ -16819,7 +16819,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor after some random word 2`] = `
 Array [
@@ -16936,7 +16936,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor after some random word 3`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor after some random word 3`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor after some random word 4`] = `
 Array [
@@ -17148,7 +17148,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before empty space 2`] = `
 Array [
@@ -17265,7 +17265,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before empty space 3`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before empty space 3`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before empty space 4`] = `
 Array [
@@ -17382,7 +17382,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -17499,7 +17499,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -17679,7 +17679,7 @@ exports[`SWF LS JSON code completion Jq completions operations completion variab
 
 exports[`SWF LS JSON code completion Jq completions operations completion variables completion empty object 6`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion variables completion no value/double quotes 2`] = `
 Array [
@@ -17796,7 +17796,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions operations completion variables completion no value/double quotes 3`] = `142`;
+exports[`SWF LS JSON code completion Jq completions operations completion variables completion no value/double quotes 3`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions operations completion variables completion no value/double quotes 4`] = `
 Array [
@@ -17964,7 +17964,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -18176,7 +18176,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -18293,7 +18293,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -18410,7 +18410,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -18649,7 +18649,7 @@ exports[`SWF LS JSON code completion Jq completions state data filter completion
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -18919,7 +18919,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor after some random word 2`] = `
 Array [
@@ -19131,7 +19131,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor before empty space 2`] = `
 Array [
@@ -19248,7 +19248,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -19365,7 +19365,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -19604,7 +19604,7 @@ exports[`SWF LS JSON code completion Jq completions state data filter completion
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions reusable functions completion no value/double quotes 2`] = `
 Array [
@@ -19874,7 +19874,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor after some random word 2`] = `
 Array [
@@ -20086,7 +20086,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor before empty space 2`] = `
 Array [
@@ -20203,7 +20203,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -20320,7 +20320,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -20559,7 +20559,7 @@ exports[`SWF LS JSON code completion Jq completions state data filter completion
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS JSON code completion Jq completions state data filter completions variables completion no value/double quotes 2`] = `
 Array [

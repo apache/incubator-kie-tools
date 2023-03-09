@@ -51,7 +51,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -358,7 +358,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -475,7 +475,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -592,7 +592,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -831,7 +831,7 @@ exports[`SWF LS YAML code completion Jq completions action data filter completio
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -948,7 +948,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions built-in functions completion no value/single quotes 2`] = `
 Array [
@@ -1269,7 +1269,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion cursor after some random word 2`] = `
 Array [
@@ -1576,7 +1576,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion cursor before empty space 2`] = `
 Array [
@@ -1693,7 +1693,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -1810,7 +1810,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -2049,7 +2049,7 @@ exports[`SWF LS YAML code completion Jq completions action data filter completio
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion no value/double quotes 2`] = `
 Array [
@@ -2166,7 +2166,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions action data filter completions variables completion no value/single quotes 2`] = `
 Array [
@@ -2487,7 +2487,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -2794,7 +2794,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -2911,7 +2911,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -3028,7 +3028,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -3267,7 +3267,7 @@ exports[`SWF LS YAML code completion Jq completions data condition completion bu
 
 exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -3384,7 +3384,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions data condition completion built-in functions completion no value/single quotes 2`] = `
 Array [
@@ -3705,7 +3705,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions data condition completion variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions data condition completion variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions data condition completion variables completion cursor after some random word 2`] = `
 Array [
@@ -4012,7 +4012,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions data condition completion variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions data condition completion variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions data condition completion variables completion cursor before empty space 2`] = `
 Array [
@@ -4129,7 +4129,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions data condition completion variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions data condition completion variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions data condition completion variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -4246,7 +4246,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions data condition completion variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions data condition completion variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions data condition completion variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -4485,7 +4485,7 @@ exports[`SWF LS YAML code completion Jq completions data condition completion va
 
 exports[`SWF LS YAML code completion Jq completions data condition completion variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions data condition completion variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions data condition completion variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions data condition completion variables completion no value/double quotes 2`] = `
 Array [
@@ -4602,7 +4602,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions data condition completion variables completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions data condition completion variables completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions data condition completion variables completion no value/single quotes 2`] = `
 Array [
@@ -4923,7 +4923,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -5230,7 +5230,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -5347,7 +5347,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -5464,7 +5464,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -5703,7 +5703,7 @@ exports[`SWF LS YAML code completion Jq completions event data filter completion
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -5820,7 +5820,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions built-in functions completion no value/single quotes 2`] = `
 Array [
@@ -6141,7 +6141,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion cursor after some random word 2`] = `
 Array [
@@ -6448,7 +6448,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion cursor before empty space 2`] = `
 Array [
@@ -6565,7 +6565,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -6682,7 +6682,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -6921,7 +6921,7 @@ exports[`SWF LS YAML code completion Jq completions event data filter completion
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion no value/double quotes 2`] = `
 Array [
@@ -7038,7 +7038,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter completions variables completion no value/single quotes 2`] = `
 Array [
@@ -7359,7 +7359,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -7666,7 +7666,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -7783,7 +7783,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -7900,7 +7900,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -8139,7 +8139,7 @@ exports[`SWF LS YAML code completion Jq completions event data filter inside onE
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -8256,7 +8256,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion built-in functions completion no value/single quotes 2`] = `
 Array [
@@ -8577,7 +8577,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion cursor after some random word 2`] = `
 Array [
@@ -8884,7 +8884,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion cursor before empty space 2`] = `
 Array [
@@ -9001,7 +9001,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -9118,7 +9118,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -9357,7 +9357,7 @@ exports[`SWF LS YAML code completion Jq completions event data filter inside onE
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion no value/double quotes 2`] = `
 Array [
@@ -9474,7 +9474,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions event data filter inside onEvents completion variables completion no value/single quotes 2`] = `
 Array [
@@ -9795,7 +9795,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -10102,7 +10102,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -10219,7 +10219,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -10336,7 +10336,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -10575,7 +10575,7 @@ exports[`SWF LS YAML code completion Jq completions functionRef arguments comple
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -10692,7 +10692,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions built-in functions completion no value/single quotes 2`] = `
 Array [
@@ -11013,7 +11013,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion cursor after some random word 2`] = `
 Array [
@@ -11320,7 +11320,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion cursor before empty space 2`] = `
 Array [
@@ -11437,7 +11437,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -11554,7 +11554,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -11793,7 +11793,7 @@ exports[`SWF LS YAML code completion Jq completions functionRef arguments comple
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion no value/double quotes 2`] = `
 Array [
@@ -11910,7 +11910,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions functionRef arguments completions variables completion no value/single quotes 2`] = `
 Array [
@@ -12231,7 +12231,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -12538,7 +12538,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -12655,7 +12655,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -12772,7 +12772,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -13033,7 +13033,7 @@ exports[`SWF LS YAML code completion Jq completions operation completions built-
 
 exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -13150,7 +13150,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions operation completions built-in functions completion no value/single quotes 2`] = `
 Array [
@@ -13537,7 +13537,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions operation completions variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions operation completions variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions operation completions variables completion cursor after some random word 2`] = `
 Array [
@@ -13844,7 +13844,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions operation completions variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions operation completions variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions operation completions variables completion cursor before empty space 2`] = `
 Array [
@@ -13961,7 +13961,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions operation completions variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions operation completions variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions operation completions variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -14078,7 +14078,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions operation completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions operation completions variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions operation completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -14339,7 +14339,7 @@ exports[`SWF LS YAML code completion Jq completions operation completions variab
 
 exports[`SWF LS YAML code completion Jq completions operation completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions operation completions variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions operation completions variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions operation completions variables completion no value/double quotes 2`] = `
 Array [
@@ -14456,7 +14456,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions operation completions variables completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions operation completions variables completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions operation completions variables completion no value/single quotes 2`] = `
 Array [
@@ -14843,7 +14843,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion cursor after some random word 2`] = `
 Array [
@@ -15150,7 +15150,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion cursor before empty space 2`] = `
 Array [
@@ -15267,7 +15267,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion cursor before the dot(variable) 2`] = `
 Array [
@@ -15384,7 +15384,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -15623,7 +15623,7 @@ exports[`SWF LS YAML code completion Jq completions state data filter completion
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion no value/double quotes 2`] = `
 Array [
@@ -15740,7 +15740,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions built-in functions completion no value/single quotes 2`] = `
 Array [
@@ -16061,7 +16061,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion cursor after some random word 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion cursor after some random word 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion cursor after some random word 2`] = `
 Array [
@@ -16368,7 +16368,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion cursor before empty space 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion cursor before empty space 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion cursor before empty space 2`] = `
 Array [
@@ -16485,7 +16485,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion cursor before the dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion cursor before the dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion cursor before the dot(variable) 2`] = `
 Array [
@@ -16602,7 +16602,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion cursor with a space after the  dot(variable) 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion cursor with a space after the  dot(variable) 2`] = `
 Array [
@@ -16841,7 +16841,7 @@ exports[`SWF LS YAML code completion Jq completions state data filter completion
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion fn: starting with r 2`] = `Array []`;
 
-exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion no value/double quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion no value/double quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion no value/double quotes 2`] = `
 Array [
@@ -16958,7 +16958,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion no value/single quotes 1`] = `142`;
+exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion no value/single quotes 1`] = `140`;
 
 exports[`SWF LS YAML code completion Jq completions state data filter completions variables completion no value/single quotes 2`] = `
 Array [
