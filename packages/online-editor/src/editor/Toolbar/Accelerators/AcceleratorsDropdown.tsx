@@ -157,7 +157,7 @@ export function AcceleratorsDropdown(props: Props) {
         dropdownItems={accelerators.map((accelerator) => (
           <DropdownItem
             key={accelerator.name}
-            icon={<img src={accelerator.iconUrl} />}
+            icon={accelerator.iconUrl && <img src={accelerator.iconUrl} />}
             onClick={() => onOpenConfirmAccelerator(accelerator)}
           >
             {accelerator.name}

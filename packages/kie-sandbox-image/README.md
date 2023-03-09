@@ -192,3 +192,52 @@ Content-Type: application/json
 
 - #### HTTP Status different from 200
   If the service responds with an HTTP code other than 200, an error message is displayed alongside the HTTP Code + the response body of the request in full.
+
+### Accelerators
+
+Accelerators are Git repositories that contain a skeleton of a "project" and will convert a Workspace into a fully functional project that can be built and deployed.
+Here are some examples:
+
+- https://github.com/thiagoelg/kie-sandbox-quarkus-template/tree/template
+- https://github.com/thiagoelg/kie-sandbox-dmn-springboot-template/tree/main
+
+After creating yours you must define where resources should be placed inside these projects. For example, `.dmn` files should be placed inside `src/main/resources` for a Quarkus project. As a bonus, adding an image/logo can be used to better represent your accelerator wherever it's listed.
+
+#### The Accelerator configuration
+
+Having all of that, it's time to create the configuration required to add it to the **KIE_SANDBOX_ACCELERATORS** list env var.
+It looks like this:
+
+```js
+{
+    name: "Your accelerator name",
+    iconUrl: "https://link.to/your/logo/image",
+    gitRepositoryUrl: "https://github.com/...",
+    gitRepositoryGitRef: "branchName",
+    dmnDestinationFolder: "path/to/place/dmn/files",
+    bpmnDestinationFolder: "path/to/place/bpmn/files",
+    otherFilesDestinationFolder: "path/to/place/other/files",
+}
+```
+
+- **Name**: This is how your accelerator will be known inside KIE Sandbox.
+- **iconUrl**: An optional parameter to add an image/logo besides you accelerator name.
+- **gitRepositoryUrl**: This is where your accelerator is hosted. Should be and URL that can be used with `git clone`.
+- **gitRepositoryGitRef**: Where in your repository is this accelerator located. Could be a branch, commit, tag, anything that can be used with `git checkout`.
+- **dmnDestinationFolder**: Where your DMN, PMML, and SCESIM files will be moved to after applying the accelerator.
+- **bpmnDestinationFolder**: Where your BPMN files will be moved to after applying the accelerator.
+- **otherFilesDestinationFolder**: Where other files will be moved to after applying the accelerator.
+
+Here's an example of what it should look like:
+
+```js
+{
+    name: "Quarkus",
+    iconUrl: "https://github.com/thiagoelg/kie-sandbox-quarkus-template/raw/template/quarkus-logo.png",
+    gitRepositoryUrl: "https://github.com/thiagoelg/kie-sandbox-quarkus-template",
+    gitRepositoryGitRef: "template",
+    dmnDestinationFolder: "src/main/resources/dmn",
+    bpmnDestinationFolder: "src/main/resources/bpmn",
+    otherFilesDestinationFolder: "src/main/resources/others",
+}
+```

@@ -16,7 +16,7 @@
 
 export type ProjectAccelerator = {
   name: string;
-  iconUrl: string;
+  iconUrl?: string;
   gitRepositoryUrl: string;
   gitRepositoryGitRef: string;
   dmnDestinationFolder: string;

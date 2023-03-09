@@ -237,6 +237,16 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
           filepaths: movedFilesPaths,
         });
 
+        // Stage all moved files
+        await Promise.all(
+          movedFiles.map(async (file) => {
+            return workspaces.stageFile({
+              workspaceId,
+              relativePath: file.relativePath,
+            });
+          })
+        );
+
         await workspaces.addFile({
           workspaceId,
           name: ACCELERATOR_CONFIG_FILE_NAME,
@@ -249,16 +259,6 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
           workspaceId,
           relativePath: ACCELERATOR_CONFIG_FILE_RELATIVE_PATH,
         });
-
-        // Stage all moved files
-        await Promise.all(
-          movedFiles.map(async (file) => {
-            return workspaces.stageFile({
-              workspaceId,
-              relativePath: file.relativePath,
-            });
-          })
-        );
 
         await workspaces.createSavePoint({
           workspaceId,
