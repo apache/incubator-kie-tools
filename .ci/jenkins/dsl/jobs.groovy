@@ -55,7 +55,7 @@ void setupPrJob(boolean isProdCI = false) {
     ])
     if (isProdCI) {
         jobParams.job.name += '.prod'
-        jobParams.pr.trigger_phrase = '.*[j|J]enkins,?.*(re)run [prod|Prod|PROD].*'
+        jobParams.pr.trigger_phrase = '.*[j|J]enkins,?.*(rerun|run) [prod|Prod|PROD].*'
         jobParams.pr.trigger_phrase_only = true
         jobParams.pr.commitContext = 'Prod'
         jobParams.env.put('PROD_CI', true)
