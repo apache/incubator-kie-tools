@@ -41,7 +41,7 @@ public class AggregateFunctionManagerImpl implements AggregateFunctionManager {
         registerFunction(new MinFunction());
         registerFunction(new JoinFunction());
         registerFunction(new JoinCommaFunction());
-        registerFunction(new JoinLineBreakFunction());
+        registerFunction(new JoinHyphenFunction());
     }
 
     public Collection<AggregateFunction> getAllFunctions() {

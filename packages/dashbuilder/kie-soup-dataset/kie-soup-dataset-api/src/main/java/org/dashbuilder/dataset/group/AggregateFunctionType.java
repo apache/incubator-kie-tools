@@ -34,7 +34,7 @@ public enum AggregateFunctionType {
     MEDIAN,
     JOIN,
     JOIN_COMMA,
-    JOIN_LINE_BREAK;
+    JOIN_HYPHEN;
 
     private static AggregateFunctionType[] _typeArray = values();
     private static List<AggregateFunctionType> _numericOnly = Arrays.asList(AVERAGE, MEDIAN, SUM, MAX, MIN);
@@ -61,7 +61,7 @@ public enum AggregateFunctionType {
         }
         if (JOIN.equals(this) ||
             JOIN_COMMA.equals(this) ||
-            JOIN_LINE_BREAK.equals(this)) {
+            JOIN_HYPHEN.equals(this)) {
             return ColumnType.TEXT;
         }
         return ColumnType.NUMBER;

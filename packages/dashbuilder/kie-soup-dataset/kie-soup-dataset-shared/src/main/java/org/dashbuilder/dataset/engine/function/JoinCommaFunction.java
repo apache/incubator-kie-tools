@@ -19,7 +19,7 @@ import org.dashbuilder.dataset.group.AggregateFunctionType;
 
 public class JoinCommaFunction extends JoinFunction {
 
-    private static final CharSequence COMMA = ",";
+    private static final CharSequence COMMA = ", ";
 
     public JoinCommaFunction() {
         super(COMMA);

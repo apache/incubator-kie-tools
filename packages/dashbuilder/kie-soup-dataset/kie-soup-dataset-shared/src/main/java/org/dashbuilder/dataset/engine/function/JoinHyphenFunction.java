@@ -17,15 +17,18 @@ package org.dashbuilder.dataset.engine.function;
 
 import org.dashbuilder.dataset.group.AggregateFunctionType;
 
-public class JoinLineBreakFunction extends JoinFunction {
+public class JoinHyphenFunction extends JoinFunction {
 
-    public JoinLineBreakFunction() {
-        super(System.lineSeparator());
+    // line break compatible with Javascript
+    private static final CharSequence HYPHEN = " - ";
+
+    public JoinHyphenFunction() {
+        super(HYPHEN);
     }
     
     @Override
     public AggregateFunctionType getType() {
-        return AggregateFunctionType.JOIN_LINE_BREAK;
+        return AggregateFunctionType.JOIN_HYPHEN;
     }
 
 }
