@@ -20,6 +20,9 @@ envs:
   - name: "SCRIPT_DEBUG"
     example: "true"
     description: "If set to true, ensures that the bash scripts are executed with the -x option, printing the commands and their arguments as they are executed. Also debug JVM initialization."
+  - name: "KOGITO_DATA_INDEX_QUARKUS_PROFILE"
+    value: "http-events-support"
+    description: "Allows to change the event connection type. The possible values are :`kafka-events-support` or `http-events-support`(default)"
 ports:
 - value: 8080
 
