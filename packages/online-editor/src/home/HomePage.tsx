@@ -243,7 +243,7 @@ export function HomePage() {
           }}
         />
       </PageSection>
-      {buildInfo && (
+      {(buildInfo?.includes("dev") || buildInfo?.includes("staging")) && (
         <div className={"kie-tools--build-info"}>
           <Label>{buildInfo}</Label>
         </div>
