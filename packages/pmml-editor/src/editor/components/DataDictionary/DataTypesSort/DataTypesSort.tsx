@@ -15,9 +15,14 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import {
+  DragDrop,
+  Draggable,
+  DraggableItemPosition,
+  Droppable,
+} from "@patternfly/react-core/dist/js/components/DragDrop";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { GripVerticalIcon } from "@patternfly/react-icons/dist/js/icons/grip-vertical-icon";
@@ -32,51 +37,71 @@ interface DataTypesSortProps {
 const DataTypesSort = ({ dataTypes, onReorder }: DataTypesSortProps) => {
   const [state, setState] = useState<DDDataField[]>(dataTypes);
 
-  const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
-    // still updating the internal state before calling the callback to avoid flickering
-    const newOrder = reorder(state, oldIndex, newIndex);
-    setState(newOrder);
-    onReorder(oldIndex, newIndex);
-  };
-
-  const getHelperClass = () => {
-    if (state.length >= 8) {
-      return "data-type-item__sortable--sm-size";
-    }
-    if (state.length >= 5) {
-      return "data-type-item__sortable--md-size";
-    }
-  };
+  const onSortEnd = useCallback(
+    (oldIndex: number, newIndex: number) => {
+      // still updating the internal state before calling the callback to avoid flickering
+      const newOrder = reorder(state, oldIndex, newIndex);
+      setState(newOrder);
+      onReorder(oldIndex, newIndex);
+    },
+    [state]
+  );
 
   useEffect(() => {
     setState(dataTypes);
   }, [dataTypes]);
 
-  return <SortableList items={state} onSortEnd={onSortEnd} lockAxis="y" helperClass={getHelperClass()} />;
+  return <SortableList items={state} onSortEnd={onSortEnd} />;
 };
 
 export default DataTypesSort;
 
 type SortableListProps = {
   items: DDDataField[];
+  onSortEnd: (oldIndex: number, newIndex: number) => void;
 };
 
-const SortableList = SortableContainer<SortableListProps>(({ items }: SortableListProps) => {
-  return (
-    <ul className="data-types-sorting">
-      {items.map((item, index) => (
-        <SortableItem key={`item-${item.name}`} index={index} item={item} />
-      ))}
-    </ul>
+const SortableList: React.FC<SortableListProps> = ({ items, onSortEnd }) => {
+  const onDrop = useCallback(
+    (source: DraggableItemPosition, dest?: DraggableItemPosition) => {
+      if (!dest || source.index === dest.index) {
+        return false;
+      }
+
+      onSortEnd(source.index, dest.index);
+      return true;
+    },
+    [items, onSortEnd]
   );
-});
+
+  const helperClass = useMemo(() => {
+    if (items.length >= 8) {
+      return "data-type-item__sortable--sm-size";
+    }
+    if (items.length >= 5) {
+      return "data-type-item__sortable--md-size";
+    }
+  }, [items]);
+
+  return (
+    <div className={`data-types-sorting ${helperClass}`}>
+      <DragDrop onDrop={onDrop}>
+        <Droppable>
+          {items.map((item, index) => (
+            <SortableItem key={`item-${item.name}`} item={item} />
+          ))}
+        </Droppable>
+      </DragDrop>
+    </div>
+  );
+};
 
 type SortableItemProps = {
   item: DDDataField;
 };
 
-const SortableItem = SortableElement<SortableItemProps>(({ item }: SortableItemProps) => (
-  <li className="editable-item data-type-item__sortable">
+const SortableItem: React.FC<SortableItemProps> = ({ item }: SortableItemProps) => (
+  <Draggable className="editable-item data-type-item__sortable">
     <section className="editable-item__inner" data-ouia-component-id={item.name}>
       <Flex alignItems={{ default: "alignItemsCenter" }}>
         <FlexItem spacer={{ default: "spacerXs" }}>
@@ -92,8 +117,8 @@ const SortableItem = SortableElement<SortableItemProps>(({ item }: SortableItemP
         </FlexItem>
       </Flex>
     </section>
-  </li>
-));
+  </Draggable>
+);
 
 const reorder = (list: DDDataField[], startIndex: number, endIndex: number) => {
   const result = [...list];

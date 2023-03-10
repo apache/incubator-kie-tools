@@ -15,9 +15,14 @@
  */
 
 import * as React from "react";
-import { useContext, useEffect, useRef, useState } from "react";
-import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import {
+  DragDrop,
+  Draggable,
+  DraggableItemPosition,
+  Droppable,
+} from "@patternfly/react-core/dist/js/components/DragDrop";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -37,14 +42,23 @@ interface ConstraintsEnumEditProps {
   onSort: (oldIndex: number, newIndex: number) => void;
 }
 
-const ConstraintsEnumEdit = (props: ConstraintsEnumEditProps) => {
-  const { dataFieldIndex, enumerations, onAdd, onChange, onDelete, onSort } = props;
+const ConstraintsEnumEdit: React.FC<ConstraintsEnumEditProps> = ({
+  dataFieldIndex,
+  enumerations,
+  onAdd,
+  onChange,
+  onDelete,
+  onSort,
+}) => {
   const [enums, setEnums] = useState(enumerations);
   const [addedEnum, setAddedEnum] = useState<number>();
 
-  const handleChange = (value: string, index: number) => {
-    onChange(value, index);
-  };
+  const handleChange = useCallback(
+    (value: string, index: number) => {
+      onChange(value, index);
+    },
+    [enums]
+  );
 
   const handleDelete = (index: number) => {
     onDelete(index);
@@ -57,10 +71,6 @@ const ConstraintsEnumEdit = (props: ConstraintsEnumEditProps) => {
 
   const handleTab = () => {
     console.log("tab detected");
-  };
-
-  const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
-    onSort(oldIndex, newIndex);
   };
 
   useEffect(() => {
@@ -92,9 +102,7 @@ const ConstraintsEnumEdit = (props: ConstraintsEnumEditProps) => {
               onUpdate={handleChange}
               onTab={handleTab}
               onDelete={handleDelete}
-              onSortEnd={onSortEnd}
-              lockAxis="y"
-              distance={10}
+              onSortEnd={onSort}
             />
           </StackItem>
           <StackItem>
@@ -115,27 +123,43 @@ type EnumsListProps = {
   onUpdate: (value: string, index: number) => void;
   onTab: () => void;
   onDelete: (index: number) => void;
+  onSortEnd: (oldIndex: number, newIndex: number) => void;
 };
 
-const EnumsList = SortableContainer<EnumsListProps>(({ items, onUpdate, onTab, onDelete }: EnumsListProps) => {
-  return (
-    <ul className="constraints-enum__list" aria-label="Compact data list example">
-      {items.map((item, index) => (
-        <EnumItem
-          key={index + item}
-          enumValue={item}
-          index={index}
-          position={index}
-          onUpdate={onUpdate}
-          onTab={onTab}
-          onDelete={onDelete}
-          enumsCount={items.length}
-          disabled={items.length === 1}
-        />
-      ))}
-    </ul>
+const EnumsList: React.FC<EnumsListProps> = ({ items, onUpdate, onTab, onDelete, onSortEnd }) => {
+  const onDrop = useCallback(
+    (source: DraggableItemPosition, dest?: DraggableItemPosition) => {
+      if (!dest || source.index === dest.index) {
+        return false;
+      }
+
+      onSortEnd(source.index, dest.index);
+      return true;
+    },
+    [items]
   );
-});
+
+  return (
+    <div className="constraints-enum__list">
+      <DragDrop onDrop={onDrop}>
+        <Droppable>
+          {items.map((item, index) => (
+            <Draggable key={`${index}_${item}`}>
+              <EnumItem
+                enumValue={item}
+                position={index}
+                onUpdate={onUpdate}
+                onTab={onTab}
+                onDelete={onDelete}
+                enumsCount={items.length}
+              />
+            </Draggable>
+          ))}
+        </Droppable>
+      </DragDrop>
+    </div>
+  );
+};
 
 interface EnumItemProps {
   enumValue: string;
@@ -146,96 +170,93 @@ interface EnumItemProps {
   onDelete: (index: number) => void;
 }
 
-const EnumItem = SortableElement<EnumItemProps>(
-  ({ enumValue, enumsCount, position, onUpdate, onTab, onDelete }: EnumItemProps) => {
-    const [enumeration, setEnumeration] = useState(enumValue);
-    const { dataFieldIndex, addedEnum, updateAddedEnum } = useContext(EnumConstraintsContext);
+const EnumItem: React.FC<EnumItemProps> = ({ enumValue, enumsCount, position, onUpdate, onTab, onDelete }) => {
+  const [enumeration, setEnumeration] = useState(enumValue);
+  const { dataFieldIndex, addedEnum, updateAddedEnum } = useContext(EnumConstraintsContext);
 
-    const handleChange = (value: string) => {
-      setEnumeration(value);
-    };
-    const handleSave = () => {
-      onUpdate(enumeration, position);
-    };
-    const handleDelete = () => {
-      onDelete(position);
-    };
+  const handleChange = (value: string) => {
+    setEnumeration(value);
+  };
+  const handleSave = () => {
+    onUpdate(enumeration, position);
+  };
+  const handleDelete = () => {
+    onDelete(position);
+  };
 
-    const handleTabNavigation = (event: React.KeyboardEvent) => {
-      if (event.key === "Tab") {
-        onTab();
-      }
-    };
+  const handleTabNavigation = (event: React.KeyboardEvent) => {
+    if (event.key === "Tab") {
+      onTab();
+    }
+  };
 
-    const { validationRegistry } = useValidationRegistry();
-    const validations = useRef(
-      validationRegistry.get(Builder().forDataDictionary().forDataField(dataFieldIndex).forValue(position).build())
+  const { validationRegistry } = useValidationRegistry();
+  const validations = useRef(
+    validationRegistry.get(Builder().forDataDictionary().forDataField(dataFieldIndex).forValue(position).build())
+  );
+  useEffect(() => {
+    validations.current = validationRegistry.get(
+      Builder().forDataDictionary().forDataField(dataFieldIndex).forValue(position).build()
     );
-    useEffect(() => {
-      validations.current = validationRegistry.get(
-        Builder().forDataDictionary().forDataField(dataFieldIndex).forValue(position).build()
-      );
-    }, [position, enumValue]);
+  }, [position, enumValue]);
 
-    const enumRef = useRef<HTMLLIElement | null>(null);
-    useEffect(() => {
-      if (enumRef.current && addedEnum === position) {
-        const container = document.querySelector(".data-dictionary__properties-edit__form .constraints__form");
-        container?.scroll({ top: container?.scrollHeight, behavior: "smooth" });
-        updateAddedEnum(undefined);
-      }
-    }, [addedEnum, enumRef.current, position]);
+  const enumRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (enumRef.current && addedEnum === position) {
+      const container = document.querySelector(".data-dictionary__properties-edit__form .constraints__form");
+      container?.scroll({ top: container?.scrollHeight, behavior: "smooth" });
+      updateAddedEnum(undefined);
+    }
+  }, [addedEnum, enumRef.current, position]);
 
-    return (
-      <li
-        className={`constraints-enum__item ${enumsCount === 1 ? "constraints-enum__item--sort-disabled" : ""}`}
-        tabIndex={20 + position}
-        ref={enumRef}
-        data-ouia-component-id={`val-${position}`}
-      >
-        <Flex>
-          <FlexItem>
-            <Button
-              variant="plain"
-              aria-label="Drag to sort"
-              component={"span"}
-              isDisabled={enumsCount === 1}
-              ouiaId="drag-it"
-            >
-              <GripVerticalIcon />
-            </Button>
-          </FlexItem>
-          <FlexItem>
-            <TextInput
-              className="constraints-enum__field"
-              type="text"
-              id={`enum-value-${position}`}
-              name={`enum-value-${position}`}
-              placeholder="Please enter a value"
-              value={enumeration}
-              onChange={handleChange}
-              onBlur={handleSave}
-              onKeyDown={handleTabNavigation}
-              autoComplete="off"
-              validated={validations.current.length > 0 ? "warning" : "default"}
-              data-ouia-component-type="value-name"
-            />
-          </FlexItem>
-          <FlexItem align={{ default: "alignRight" }}>
-            <Button
-              variant={ButtonVariant.plain}
-              onClick={handleDelete}
-              isDisabled={enumsCount === 1}
-              ouiaId="delete-item"
-            >
-              <TrashIcon />
-            </Button>
-          </FlexItem>
-        </Flex>
-      </li>
-    );
-  }
-);
+  return (
+    <div
+      className={`constraints-enum__item ${enumsCount === 1 ? "constraints-enum__item--sort-disabled" : ""}`}
+      ref={enumRef}
+      data-ouia-component-id={`val-${position}`}
+    >
+      <Flex>
+        <FlexItem>
+          <Button
+            variant="plain"
+            aria-label="Drag to sort"
+            component={"span"}
+            isDisabled={enumsCount === 1}
+            ouiaId="drag-it"
+          >
+            <GripVerticalIcon />
+          </Button>
+        </FlexItem>
+        <FlexItem>
+          <TextInput
+            className="constraints-enum__field"
+            type="text"
+            id={`enum-value-${position}`}
+            name={`enum-value-${position}`}
+            placeholder="Please enter a value"
+            value={enumeration}
+            onChange={handleChange}
+            onBlur={handleSave}
+            onKeyDown={handleTabNavigation}
+            autoComplete="off"
+            validated={validations.current.length > 0 ? "warning" : "default"}
+            data-ouia-component-type="value-name"
+          />
+        </FlexItem>
+        <FlexItem align={{ default: "alignRight" }}>
+          <Button
+            variant={ButtonVariant.plain}
+            onClick={handleDelete}
+            isDisabled={enumsCount === 1}
+            ouiaId="delete-item"
+          >
+            <TrashIcon />
+          </Button>
+        </FlexItem>
+      </Flex>
+    </div>
+  );
+};
 
 interface AddedEnumConstraints {
   addedEnum: number | undefined;

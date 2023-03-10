@@ -18,3 +18,13 @@
     width: 320px;
   }
 }
+
+.pf-c-droppable {
+  --pf-c-droppable--m-dragging--after--BorderColor: none;
+  --pf-c-droppable--m-drag-outside--after--BorderColor: none;
+}
+
+.pf-c-draggable {
+  --pf-c-draggable--m-dragging--after--BorderColor: none;
+  --pf-c-draggable--m-drag-outside--after--BorderColor: none;
+}

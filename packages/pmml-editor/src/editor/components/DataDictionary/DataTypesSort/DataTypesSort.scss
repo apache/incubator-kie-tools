@@ -1,12 +1,5 @@
 .data-type-item {
   &__sortable {
-    // sorting library is canceling pointer events for some reason
-    // they are needed for setting the cursor while dragging
-    pointer-events: auto !important;
-    cursor: grab;
-    z-index: 9999;
-    list-style: none;
-
     &--sm-size .editable-item__inner {
       padding-top: 8px !important;
       padding-bottom: 8px !important;
@@ -24,4 +17,14 @@
 
 body > .data-type-item__sortable:hover {
   cursor: grabbing;
+}
+
+.pf-c-droppable {
+  --pf-c-droppable--m-dragging--after--BorderColor: none;
+  --pf-c-droppable--m-drag-outside--after--BorderColor: none;
+}
+
+.pf-c-draggable {
+  --pf-c-draggable--m-dragging--after--BorderColor: none;
+  --pf-c-draggable--m-drag-outside--after--BorderColor: none;
 }

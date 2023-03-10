@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useRef } from "react";
-import MonacoEditor from "react-monaco-editor";
-import { EditorDidMount } from "react-monaco-editor/src/types";
+import { useEffect, useMemo, useRef } from "react";
 import { bootstrapMonaco } from "./PredicateEditorSetup";
-import * as monacoEditor from "@kie-tools-core/monaco-editor";
+import { PredicateEditorMonacoController } from "./PredicateEditorMonacoController";
 
 interface PredicateEditorProps {
   text: string | undefined;
@@ -27,28 +25,24 @@ interface PredicateEditorProps {
 
 bootstrapMonaco();
 
-export const PredicateEditor = (props: PredicateEditorProps) => {
-  const { text, setText } = props;
+export const PredicateEditor: React.FC<PredicateEditorProps> = ({ text, setText }) => {
+  const monacoContainerRef = useRef<HTMLDivElement>(null);
 
-  const monaco = useRef<MonacoEditor>(null);
+  const monacoController = useMemo(() => new PredicateEditorMonacoController(), []);
 
-  const editorDidMount: EditorDidMount = (editor: monacoEditor.editor.IStandaloneCodeEditor) => {
-    editor.focus();
-  };
+  useEffect(() => {
+    if (monacoContainerRef.current) {
+      monacoController.createEditor(monacoContainerRef.current, setText);
+    }
+    return () => {
+      monacoController.dispose();
+    };
+  }, [monacoContainerRef]);
 
-  return (
-    <MonacoEditor
-      ref={monaco}
-      height="300px"
-      language="scorecards"
-      theme="scorecards"
-      options={{
-        glyphMargin: false,
-        scrollBeyondLastLine: false,
-      }}
-      value={text ?? ""}
-      onChange={(e) => setText(e)}
-      editorDidMount={editorDidMount}
-    />
-  );
+  useEffect(() => {
+    // Setting the
+    monacoController.setValue(text);
+  }, [text]);
+
+  return <div style={{ height: "300px" }} ref={monacoContainerRef} />;
 };
