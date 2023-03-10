@@ -4,7 +4,7 @@ Feature: SWF and Quarkus installation
   Scenario: verify if the swf and quarkus files are under /home/kogito/.m2/repository
     When container is started with command bash
     Then file /home/kogito/.m2/repository/org/acme/serverless-workflow-project/1.0.0-SNAPSHOT/serverless-workflow-project-1.0.0-SNAPSHOT.jar should exist
-      And file /home/kogito/.m2/repository/io/quarkus/platform/quarkus-bom/2.16.0.Final/quarkus-bom-2.16.0.Final.pom should exist
+      And file /home/kogito/.m2/repository/io/quarkus/platform/quarkus-bom/2.16.4.Final/quarkus-bom-2.16.4.Final.pom should exist
       And file /home/kogito/.m2/repository/org/kie/kogito/kogito-quarkus-serverless-workflow/ should exist and be a directory
 
   # This check should be enabled again once a similar check is done on runtimes
