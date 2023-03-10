@@ -117,10 +117,6 @@ export function HomePage() {
     document.title = "KIE Sandbox :: Home";
   }, []);
 
-  const buildInfo = useMemo(() => {
-    return process.env["WEBPACK_REPLACE__buildInfo"];
-  }, []);
-
   return (
     <OnlineEditorPage>
       <PageSection
@@ -243,11 +239,6 @@ export function HomePage() {
           }}
         />
       </PageSection>
-      {(buildInfo?.includes("dev") || buildInfo?.includes("staging")) && (
-        <div className={"kie-tools--build-info"}>
-          <Label>{buildInfo}</Label>
-        </div>
-      )}
     </OnlineEditorPage>
   );
 }
