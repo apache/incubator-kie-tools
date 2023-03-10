@@ -589,12 +589,11 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
       async ({ fs, broadcaster }) => {
-        const result = await this.args.services.gitService.fetch({
+        return this.args.services.gitService.fetch({
           fs: fs,
           dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
           ...args,
         });
-        return result;
       }
     );
   }
