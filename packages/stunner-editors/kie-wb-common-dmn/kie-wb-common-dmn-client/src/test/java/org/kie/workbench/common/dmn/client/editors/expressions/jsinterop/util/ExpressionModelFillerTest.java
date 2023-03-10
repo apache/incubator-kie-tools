@@ -48,6 +48,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.D
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.EntryInfo;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FeelFunctionProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.JavaFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ListProps;
@@ -200,11 +201,13 @@ public class ExpressionModelFillerTest {
     @Test
     public void testFillInvocationExpression() {
         final Invocation invocationExpression = new Invocation();
+        final String functionID = "ID-F";
         final String invokedFunction = "f()";
         final ContextEntryProps[] bindingEntries = new ContextEntryProps[]{
                 buildContextEntryProps()
         };
-        final InvocationProps invocationProps = new InvocationProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, invokedFunction, bindingEntries, ENTRY_INFO_WIDTH, ENTRY_EXPRESSION_WIDTH);
+        final InvocationFunctionProps invocationFunctionProps = new InvocationFunctionProps(functionID, invokedFunction);
+        final InvocationProps invocationProps = new InvocationProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, invocationFunctionProps, bindingEntries, ENTRY_INFO_WIDTH, ENTRY_EXPRESSION_WIDTH);
 
         ExpressionModelFiller.fillInvocationExpression(invocationExpression, invocationProps, qName -> qName);
 
@@ -213,6 +216,7 @@ public class ExpressionModelFillerTest {
                 .isNotNull()
                 .isExactlyInstanceOf(LiteralExpression.class);
         assertThat(((LiteralExpression) invocationExpression.getExpression()).getText().getValue()).isEqualTo(invokedFunction);
+        assertThat((invocationExpression.getExpression()).getId().getValue()).isEqualTo(functionID);
         assertThat(invocationExpression.getBinding())
                 .isNotNull()
                 .hasSize(1);
@@ -279,10 +283,9 @@ public class ExpressionModelFillerTest {
     @Test
     public void testFillDecisionTableExpression() {
         final DecisionTable decisionTableExpression = new DecisionTable();
-        final String annotationId = "Annotation id";
         final String annotationName = "Annotation name";
         final double annotationWidth = 456d;
-        final Annotation[] annotations = new Annotation[]{new Annotation(annotationId, annotationName, annotationWidth)};
+        final Annotation[] annotations = new Annotation[]{new Annotation(annotationName, annotationWidth)};
         final String inputId = "Input id";
         final String inputColumn = "Input column";
         final String inputDataType = BuiltInType.DATE_TIME.asQName().getLocalPart();

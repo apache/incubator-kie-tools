@@ -125,6 +125,17 @@ public class InputClauseLiteralExpression extends DMNModelInstrumentedBase imple
         return clonedInputClauseLiteralExpression;
     }
 
+    public InputClauseLiteralExpression exactCopy() {
+        final InputClauseLiteralExpression exactelyClonedInputClauseLiteralExpression = new InputClauseLiteralExpression();
+        exactelyClonedInputClauseLiteralExpression.id = Optional.ofNullable(id).map(Id::copy).orElse(null);
+        exactelyClonedInputClauseLiteralExpression.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        exactelyClonedInputClauseLiteralExpression.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
+        exactelyClonedInputClauseLiteralExpression.typeRefHolder = Optional.ofNullable(typeRefHolder).map(QNameHolder::copy).orElse(null);
+        exactelyClonedInputClauseLiteralExpression.text = Optional.ofNullable(text).map(Text::copy).orElse(null);
+        exactelyClonedInputClauseLiteralExpression.importedValues = Optional.ofNullable(importedValues).map(ImportedValues::exactCopy).orElse(null);
+        return exactelyClonedInputClauseLiteralExpression;
+    }
+
     @Override
     public List<HasTypeRef> getHasTypeRefs() {
         return new ArrayList<>(singletonList(this));

@@ -48,6 +48,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.E
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FeelFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FunctionProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.JavaFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ListProps;
@@ -79,10 +80,9 @@ public class ExpressionPropsFiller {
             return new ListProps(expressionId, expressionName, dataType, itemsConvertForListProps(listExpression), width);
         } else if (wrappedExpression instanceof Invocation) {
             final Invocation invocationExpression = (Invocation) wrappedExpression;
-            final String invokedFunction = ((LiteralExpression) Optional.ofNullable(invocationExpression.getExpression()).orElse(new LiteralExpression())).getText().getValue();
             final Double entryInfoWidth = invocationExpression.getComponentWidths().get(1);
             final Double entryExpressionWidth = invocationExpression.getComponentWidths().get(2);
-            return new InvocationProps(expressionId, expressionName, dataType, invokedFunction, bindingsConvertForInvocationProps(invocationExpression), entryInfoWidth, entryExpressionWidth);
+            return new InvocationProps(expressionId, expressionName, dataType, createInvocationFunctionProps(invocationExpression), bindingsConvertForInvocationProps(invocationExpression), entryInfoWidth, entryExpressionWidth);
         } else if (wrappedExpression instanceof FunctionDefinition) {
             final FunctionDefinition functionExpression = (FunctionDefinition) wrappedExpression;
             final EntryInfo[] formalParameters = formalParametersConvertForFunctionProps(functionExpression);
@@ -162,12 +162,19 @@ public class ExpressionPropsFiller {
                 .toArray(ContextEntryProps[]::new);
     }
 
+    private static InvocationFunctionProps createInvocationFunctionProps(final Invocation invocationExpression) {
+        String functionId = Optional.ofNullable(invocationExpression.getExpression()).map(DMNElement::getId).orElse(new Id()).getValue();
+        String functionName = ((LiteralExpression) Optional.ofNullable(invocationExpression.getExpression()).orElse(new LiteralExpression())).getText().getValue();
+
+        return new InvocationFunctionProps(functionId, functionName);
+    }
+
     private static ContextEntryProps fromModelToPropsContextEntryMapper(final InformationItem contextEntryVariable, final Expression expression) {
         final String entryId = contextEntryVariable.getId().getValue();
         final String entryName = contextEntryVariable.getName().getValue();
         final String entryDataType = contextEntryVariable.getTypeRef().getLocalPart();
         final EntryInfo entryInfo = new EntryInfo(entryId, entryName, entryDataType);
-        final ExpressionProps entryExpression = buildAndFillJsInteropProp(expression, entryName, entryDataType, entryId);
+        final ExpressionProps entryExpression = buildAndFillJsInteropProp(expression, entryName, entryDataType);
         return new ContextEntryProps(entryInfo, entryExpression);
     }
 
@@ -285,9 +292,8 @@ public class ExpressionPropsFiller {
                     final RuleAnnotationClause ruleAnnotationClause = decisionTableExpression.getAnnotations().get(index);
                     final Double width = decisionTableExpression.getComponentWidths()
                             .get(decisionTableExpression.getInput().size() + decisionTableExpression.getOutput().size() + index + 1);
-                    final String annotationId = Optional.ofNullable(ruleAnnotationClause.getId()).orElse(new Id()).getValue();
                     final String annotationName = ruleAnnotationClause.getName().getValue();
-                    return new Annotation(annotationId, annotationName, width);
+                    return new Annotation(annotationName, width);
                 })
                 .toArray(Annotation[]::new);
     }

@@ -21,6 +21,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class ImportedValuesTest {
@@ -44,6 +45,28 @@ public class ImportedValuesTest {
         final ImportedValues target = source.copy();
 
         assertNotNull(target);
+        assertNotEquals(source.getId().getValue(), target.getId().getValue());
+        assertEquals(NAMESPACE, target.getNamespace());
+        assertEquals(LOCATION_URI, target.getLocationURI().getValue());
+        assertEquals(IMPORT_TYPE, target.getImportType());
+        assertEquals(IMPORTED_ELEMENT, target.getImportedElement());
+        assertEquals(EXPRESSION_LANGUAGE, target.getExpressionLanguage().getValue());
+    }
+
+    @Test
+    public void testExactCopy() {
+        final ImportedValues source = new ImportedValues(
+                NAMESPACE,
+                new LocationURI(LOCATION_URI),
+                IMPORT_TYPE,
+                IMPORTED_ELEMENT,
+                new ExpressionLanguage(EXPRESSION_LANGUAGE)
+        );
+
+        final ImportedValues target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(source.getId().getValue(), target.getId().getValue());
         assertEquals(NAMESPACE, target.getNamespace());
         assertEquals(LOCATION_URI, target.getLocationURI().getValue());
         assertEquals(IMPORT_TYPE, target.getImportType());

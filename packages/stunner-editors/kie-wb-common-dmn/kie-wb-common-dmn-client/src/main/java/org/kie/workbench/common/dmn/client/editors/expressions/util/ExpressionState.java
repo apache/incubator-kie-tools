@@ -167,7 +167,7 @@ public class ExpressionState {
         if (Objects.isNull(getHasExpression().getExpression())) {
             setSavedExpression(null);
         } else {
-            setSavedExpression(getHasExpression().getExpression().copy());
+            setSavedExpression(getHasExpression().getExpression().exactCopy());
         }
     }
 }

@@ -47,6 +47,13 @@ public class ContextEntry extends DMNModelInstrumentedBase implements HasExpress
         return clonedContextEntry;
     }
 
+    public ContextEntry exactCopy() {
+        final ContextEntry exactelyClonedContextEntry = new ContextEntry();
+        exactelyClonedContextEntry.variable = Optional.ofNullable(variable).map(InformationItem::exactCopy).orElse(null);
+        exactelyClonedContextEntry.expression = Optional.ofNullable(expression).map(Expression::exactCopy).orElse(null);
+        return exactelyClonedContextEntry;
+    }
+
     @Override
     public InformationItem getVariable() {
         return variable;

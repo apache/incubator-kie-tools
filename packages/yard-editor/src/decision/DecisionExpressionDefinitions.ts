@@ -34,7 +34,7 @@ export function generateDecisionExpressionDefinition(element: Element): Expressi
       const inputClauses = element.logic.inputs?.map((input) => generateClause(input));
       const outputClauses = element.logic.outputComponents?.map((output) => generateClause(output));
       return {
-        annotations: [{ name: "annotation-1a", id: "111" }],
+        annotations: [{ name: "annotation-1a" }],
         hitPolicy: DecisionTableExpressionDefinitionHitPolicy.Unique,
         input: inputClauses,
         logicType: ExpressionDefinitionLogicType.DecisionTable,

@@ -219,19 +219,22 @@ export function DecisionTableExpression(
     );
 
     const annotationColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.annotations ?? []).map(
-      (annotation, annotationIndex) => ({
-        accessor: annotation.id ?? (generateUuid() as any),
-        id: annotation.id,
-        label: annotation.name,
-        width: annotation.width ?? DECISION_TABLE_ANNOTATION_MIN_WIDTH,
-        setWidth: setAnnotationColumnWidth(annotationIndex),
-        minWidth: DECISION_TABLE_ANNOTATION_MIN_WIDTH,
-        isInlineEditable: true,
-        groupType: DecisionTableColumnType.Annotation,
-        cssClasses: "decision-table--annotation",
-        isRowIndexColumn: false,
-        dataType: undefined as any,
-      })
+      (annotation, annotationIndex) => {
+        const annotationId = generateUuid();
+        return {
+          accessor: annotationId,
+          id: annotationId,
+          label: annotation.name,
+          width: annotation.width ?? DECISION_TABLE_ANNOTATION_MIN_WIDTH,
+          setWidth: setAnnotationColumnWidth(annotationIndex),
+          minWidth: DECISION_TABLE_ANNOTATION_MIN_WIDTH,
+          isInlineEditable: true,
+          groupType: DecisionTableColumnType.Annotation,
+          cssClasses: "decision-table--annotation",
+          isRowIndexColumn: false,
+          dataType: undefined as any,
+        };
+      }
     );
 
     const inputSection = {
@@ -522,7 +525,6 @@ export function DecisionTableExpression(
           case DecisionTableColumnType.Annotation:
             const newAnnotations = [...(prev.annotations ?? [])];
             newAnnotations.splice(sectionIndex, 0, {
-              id: generateUuid(),
               name: getNextAvailablePrefixedName(prev.annotations?.map((c) => c.name) ?? [], "annotation"),
               width: DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
             });

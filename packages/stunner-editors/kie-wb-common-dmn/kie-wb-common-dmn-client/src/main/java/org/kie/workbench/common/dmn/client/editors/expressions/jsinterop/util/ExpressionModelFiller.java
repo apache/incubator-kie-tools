@@ -134,8 +134,8 @@ public class ExpressionModelFiller {
         invocationExpression.setId(new Id(invocationProps.id));
         invocationExpression.getComponentWidths().set(1, invocationProps.entryInfoWidth);
         invocationExpression.getComponentWidths().set(2, invocationProps.entryExpressionWidth);
-        invokedFunction.setText(new Text(invocationProps.invokedFunction));
-        invokedFunction.setTypeRef(BuiltInType.STRING.asQName());
+        invokedFunction.setId(new Id(invocationProps.invokedFunction.id));
+        invokedFunction.setText(new Text(invocationProps.invokedFunction.functionName));
         invocationExpression.setExpression(invokedFunction);
         invocationExpression.getBinding().clear();
         invocationExpression.getBinding().addAll(bindingsConvertForInvocationExpression(invocationProps, qNameNormalizer));
@@ -410,7 +410,6 @@ public class ExpressionModelFiller {
                 .stream(Optional.ofNullable(decisionTableProps.annotations).orElse(new Annotation[0]))
                 .map(annotation -> {
                     final RuleAnnotationClause ruleAnnotationClause = new RuleAnnotationClause();
-                    ruleAnnotationClause.setId(new Id(annotation.id));
                     ruleAnnotationClause.setName(new Name(annotation.name));
                     return ruleAnnotationClause;
                 })

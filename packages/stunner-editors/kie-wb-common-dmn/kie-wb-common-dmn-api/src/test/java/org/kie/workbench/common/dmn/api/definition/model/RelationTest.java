@@ -111,6 +111,26 @@ public class RelationTest {
     }
 
     @Test
+    public void testExactCopy() {
+        final Relation source = new Relation(
+                new Id(RELATION_ID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                new ArrayList<>(),
+                new ArrayList<>()
+        );
+
+        final Relation target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(RELATION_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertTrue(target.getColumn().isEmpty());
+        assertTrue(target.getRow().isEmpty());
+    }
+
+    @Test
     public void testFindDomainObject_WhenColumnMatches() {
 
         final Relation relation = new Relation();

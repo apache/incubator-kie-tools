@@ -272,7 +272,7 @@ public class ExpressionStateTest {
         final Expression expression = mock(Expression.class);
         final Expression expressionCopy = mock(Expression.class);
 
-        when(expression.copy()).thenReturn(expressionCopy);
+        when(expression.exactCopy()).thenReturn(expressionCopy);
         when(hasExpression.getExpression()).thenReturn(expression);
 
         expressionState.saveCurrentExpression();

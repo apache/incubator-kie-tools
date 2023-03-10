@@ -92,6 +92,28 @@ public class LiteralExpressionTest {
     }
 
     @Test
+    public void testExactCopy() {
+        final LiteralExpression source = new LiteralExpression(
+                new Id(LITERAL_ID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                new Text(TEXT),
+                null,
+                new ExpressionLanguage(EXPRESSION_LANGUAGE)
+        );
+
+        final LiteralExpression target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(LITERAL_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertEquals(TEXT, target.getText().getValue());
+        assertNull(target.getImportedValues());
+        assertEquals(EXPRESSION_LANGUAGE, target.getExpressionLanguage().getValue());
+    }
+
+    @Test
     public void testFindDomainObject() {
 
         final LiteralExpression literalExpression = new LiteralExpression(new Id(UUID),

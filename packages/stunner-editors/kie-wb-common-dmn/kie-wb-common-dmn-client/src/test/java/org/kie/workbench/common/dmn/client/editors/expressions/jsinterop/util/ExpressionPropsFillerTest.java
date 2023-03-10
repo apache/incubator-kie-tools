@@ -167,7 +167,9 @@ public class ExpressionPropsFillerTest {
         final Invocation invocationExpression = new Invocation();
         final LiteralExpression invokedFunctionExpression = new LiteralExpression();
         final String invokedFunctionText = "Invoked function text";
+        final String invokedFunctionID = "ID-F";
         invokedFunctionExpression.setText(new Text(invokedFunctionText));
+        invokedFunctionExpression.setId(new Id(invokedFunctionID));
         invocationExpression.setExpression(invokedFunctionExpression);
         final Binding binding = new Binding();
         binding.setVariable(buildVariable());
@@ -179,7 +181,8 @@ public class ExpressionPropsFillerTest {
         assertThat(expressionProps)
                 .isNotNull()
                 .isExactlyInstanceOf(InvocationProps.class);
-        assertThat(((InvocationProps) expressionProps).invokedFunction).isEqualTo(invokedFunctionText);
+        assertThat(((InvocationProps) expressionProps).invokedFunction.functionName).isEqualTo(invokedFunctionText);
+        assertThat(((InvocationProps) expressionProps).invokedFunction.id).isEqualTo(invokedFunctionID);
         assertThat(((InvocationProps) expressionProps).bindingEntries)
                 .isNotNull()
                 .hasSize(1);

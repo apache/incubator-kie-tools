@@ -131,7 +131,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
         columns: [
           {
             accessor: "functionName" as keyof ROWTYPE,
-            label: invocationExpression.invokedFunction ?? "Function name",
+            label: invocationExpression.invokedFunction?.functionName ?? "Function name",
             isRowIndexColumn: false,
             isInlineEditable: true,
             dataType: undefined as any,
@@ -176,7 +176,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
         if (u.column.originalId === "functionName") {
           setExpression((prev) => ({
             ...prev,
-            invokedFunction: u.name,
+            functionName: u.name,
           }));
         }
       }
