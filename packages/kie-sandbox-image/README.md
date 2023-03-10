@@ -222,7 +222,7 @@ It looks like this:
 
 - **name**: This is how your accelerator will be known inside KIE Sandbox.
 - **iconUrl**: An optional parameter to add an image/logo besides you accelerator name.
-- **gitRepositoryUrl**: This is where your accelerator is hosted. Should be and URL that can be used with `git clone`.
+- **gitRepositoryUrl**: This is where your accelerator is hosted. Should be an URL that can be used with `git clone`.
 - **gitRepositoryGitRef**: Where in your repository is this accelerator located. Could be a branch, commit, tag, anything that can be used with `git checkout`.
 - **dmnDestinationFolder**: Where your DMN, PMML, and SCESIM files will be moved to after applying the accelerator.
 - **bpmnDestinationFolder**: Where your BPMN files will be moved to after applying the accelerator.
