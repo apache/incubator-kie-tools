@@ -68,7 +68,7 @@ function extractRouteItemFunctions(
     routeFrom = routeItem.route?.from;
   }
 
-  const name = `camel:${routeFrom?.uri}` as string;
+  const name = `camel:${routeFrom?.uri}`;
 
   const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {
     body: SwfServiceCatalogFunctionArgumentType.string,

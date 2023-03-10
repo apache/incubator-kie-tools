@@ -24,7 +24,7 @@ import {
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
 import path = require("path");
 
-const EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json|xml)$");
+const EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
 export class FsWatchingServiceCatalogRelativeStore {
   private configurationChangedCallback: vscode.Disposable | undefined;

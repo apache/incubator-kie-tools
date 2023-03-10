@@ -19,8 +19,8 @@ import { parseCamelRoutes } from "./camelRoutes";
 import { ArgsType, SpecParser } from "../SpecParser";
 import * as CamelRoutes from "./types";
 
-export class CamelRoutesParser implements SpecParser<any> {
-  canParse(content: any): boolean {
+export class CamelRoutesParser implements SpecParser<CamelRoutes.CamelRouteDocument> {
+  canParse(content: CamelRoutes.RouteItemType): boolean {
     return Array.isArray(content) && content.some((content) => content.from || content.route);
   }
 

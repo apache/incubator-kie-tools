@@ -92,7 +92,7 @@ export class VsCodeSwfLanguageService {
           },
         },
         relative: {
-          getServices: async (textDocument: any) => {
+          getServices: async (textDocument) => {
             const { specsDirAbsolutePosixPath } = this.getSpecsDirPosixPaths(textDocument);
             let swfServiceCatalogRelativeStore = this.fsWatchingSwfServiceCatalogStore.get(specsDirAbsolutePosixPath);
             if (swfServiceCatalogRelativeStore) {
@@ -109,10 +109,7 @@ export class VsCodeSwfLanguageService {
             return swfServiceCatalogRelativeStore.getServices();
           },
         },
-        getServiceFileNameFromSwfServiceCatalogServiceId: async (
-          registryName: any,
-          swfServiceCatalogServiceId: any
-        ) => {
+        getServiceFileNameFromSwfServiceCatalogServiceId: async (registryName, swfServiceCatalogServiceId) => {
           return getServiceFileNameFromSwfServiceCatalogServiceId(registryName, swfServiceCatalogServiceId);
         },
       },
@@ -150,10 +147,10 @@ export class VsCodeSwfLanguageService {
         shouldReferenceServiceRegistryFunctionsWithUrls: async () => {
           return this.args.configuration.getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls();
         },
-        getSpecsDirPosixPaths: async (textDocument: any) => {
+        getSpecsDirPosixPaths: async (textDocument) => {
           return this.getSpecsDirPosixPaths(textDocument);
         },
-        getRoutesDirPosixPaths: async (textDocument: any) => {
+        getRoutesDirPosixPaths: async (textDocument) => {
           return this.getRoutesDirPosixPaths(textDocument);
         },
         shouldConfigureServiceRegistries: () => {

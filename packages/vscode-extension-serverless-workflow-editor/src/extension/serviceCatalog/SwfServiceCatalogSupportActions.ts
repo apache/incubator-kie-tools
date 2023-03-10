@@ -67,7 +67,8 @@ export class SwfServiceCatalogSupportActions {
       vscode.Uri.parse(routesServiceFileAbsolutePosixPath),
       encoder.encode(args.containingService.rawContent)
     );
-    vscode.window.showInformationMessage(`Wrote ${serviceFileAbsolutePosixPath}.`);
-    vscode.window.showInformationMessage(`Wrote ${routesServiceFileAbsolutePosixPath}.`);
+    vscode.window.showInformationMessage(
+      `Wrote ${serviceFileAbsolutePosixPath} and ${routesServiceFileAbsolutePosixPath}.`
+    );
   }
 }
