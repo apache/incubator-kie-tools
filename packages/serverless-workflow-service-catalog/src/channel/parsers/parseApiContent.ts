@@ -23,7 +23,12 @@ import { OpenApiParser } from "./impl/openapi/OpenApiParser";
 import { ArgsType, SpecParser } from "./impl/SpecParser";
 import { CamelRoutesParser } from "./impl/camelRoutes/CamelRoutesParser";
 
-const specParsers: SpecParser<any>[] = [new OpenApiParser(), new AsyncApiParser(), new JsonSchemaParser(), new CamelRoutesParser()];
+const specParsers: SpecParser<any>[] = [
+  new OpenApiParser(),
+  new AsyncApiParser(),
+  new JsonSchemaParser(),
+  new CamelRoutesParser(),
+];
 
 export const supportArtifactTypes: SupportArtifactTypes[] = [
   SupportArtifactTypes.Openapi,

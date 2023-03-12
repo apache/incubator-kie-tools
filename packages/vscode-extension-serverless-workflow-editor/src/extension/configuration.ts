@@ -123,9 +123,9 @@ export class SwfVsCodeExtensionConfiguration {
     return getInterpolatedConfigurationValue({
       currentFileAbsolutePosixPath: args.baseFileAbsolutePosixPath,
       value: definitelyPosixPath(args.dataInputSchemaPath),
-    })
+    });
   }
-  
+
   public getInterpolatedRoutesDirAbsolutePosixPath(args: { baseFileAbsolutePosixPath: string }) {
     return getInterpolatedConfigurationValue({
       currentFileAbsolutePosixPath: args.baseFileAbsolutePosixPath,

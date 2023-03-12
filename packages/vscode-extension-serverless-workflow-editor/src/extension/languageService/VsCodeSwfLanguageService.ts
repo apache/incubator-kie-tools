@@ -187,7 +187,7 @@ export class VsCodeSwfLanguageService {
     const baseFileAbsolutePosixPath = vscode.Uri.parse(args.doc.uri).path;
     return baseFileAbsolutePosixPath.replace(/(\/.*)\/.+/, "$1").concat("/", args.schemaPath);
   }
-  
+
   private getRoutesDirPosixPaths(document: TextDocument) {
     const baseFileAbsolutePosixPath = vscode.Uri.parse(document.uri).path;
 

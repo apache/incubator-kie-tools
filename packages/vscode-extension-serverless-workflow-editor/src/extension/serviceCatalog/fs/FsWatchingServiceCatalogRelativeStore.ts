@@ -124,7 +124,7 @@ export class FsWatchingServiceCatalogRelativeStore {
     }
   }
 
-  private readFileSystemServices(dirAbsolutePosixPath: any): Promise<SwfServiceCatalogService[]> {
+  private readFileSystemServices(dirAbsolutePosixPath: string): Promise<SwfServiceCatalogService[]> {
     return new Promise<SwfServiceCatalogService[]>((resolve, reject) => {
       try {
         const dirAbsolutePosixPathUri = vscode.Uri.parse(dirAbsolutePosixPath);
