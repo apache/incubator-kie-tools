@@ -31,6 +31,7 @@ import {
   operationStateCompletion,
   switchStateCompletion,
   workflowCompletion,
+  emptyWorkflowCompletion,
 } from "../assets/code-completions";
 import * as swfModelQueries from "./modelQueries";
 import { nodeUpUntilType } from "./nodeUpUntilType";
@@ -140,18 +141,34 @@ export const SwfLanguageServiceCodeCompletion = {
     document: TextDocument;
   }): CompletionItem[] {
     const kind = CompletionItemKind.Text;
-    const label = "Create your first Serverless Workflow";
+    const emptyWorkflowLabel = "Empty Serverless Workflow";
+    const exampleWorkflowLabel = "Serverless Workflow Example";
 
     return [
       {
         kind,
-        label,
+        label: exampleWorkflowLabel,
         detail: "Start with a simple Serverless Workflow",
-        sortText: `100_${label}`, //place the completion on top in the menu
+        sortText: `100_${exampleWorkflowLabel}`, //place the completion on top in the menu
         textEdit: {
           newText: args.codeCompletionStrategy.translate({
             ...args,
             completion: workflowCompletion,
+            completionItemKind: kind,
+          }),
+          range: Range.create(args.cursorPosition, args.cursorPosition),
+        },
+        insertTextFormat: InsertTextFormat.Snippet,
+      },
+      {
+        kind,
+        label: emptyWorkflowLabel,
+        detail: "Start with an empty Serverless Workflow",
+        sortText: `100_${emptyWorkflowLabel}`, //place the completion on top in the menu
+        textEdit: {
+          newText: args.codeCompletionStrategy.translate({
+            ...args,
+            completion: emptyWorkflowCompletion,
             completionItemKind: kind,
           }),
           range: Range.create(args.cursorPosition, args.cursorPosition),
