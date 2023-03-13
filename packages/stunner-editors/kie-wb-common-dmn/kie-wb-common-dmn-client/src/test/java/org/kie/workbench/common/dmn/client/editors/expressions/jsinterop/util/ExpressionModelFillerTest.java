@@ -399,6 +399,7 @@ public class ExpressionModelFillerTest {
                 .hasSize(1)
                 .first()
                 .satisfies(param -> {
+                    assertThat(param.getId().getValue()).isEqualTo(PARAM_ID);
                     assertThat(param.getValue().getValue()).isEqualTo(PARAM_NAME);
                     assertThat(param.getTypeRef().getLocalPart()).isEqualTo(PARAM_DATA_TYPE);
                 });

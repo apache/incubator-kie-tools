@@ -300,6 +300,7 @@ public class ExpressionModelFiller {
                 .stream(Optional.ofNullable(functionProps.formalParameters).orElse(new EntryInfo[0]))
                 .map(entryInfo -> {
                     final InformationItem informationItem = new InformationItem();
+                    informationItem.setId(new Id(entryInfo.id));
                     informationItem.setName(new Name(entryInfo.name));
                     QName qName = qNameNormalizer.apply(makeQName(entryInfo.dataType));
                     informationItem.setTypeRef(qName);
