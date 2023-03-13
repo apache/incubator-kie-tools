@@ -769,12 +769,19 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         refs.current?.set(rowIndex, refs.current?.get(rowIndex) ?? new Map());
         const prev = refs.current?.get(rowIndex)?.get(columnIndex) ?? new Set();
         refs.current?.get(rowIndex)?.set(columnIndex, new Set([...prev, ref]));
-        const isActive = coincides(selectionRef.current?.active, { rowIndex, columnIndex });
-        ref.setStatus?.({
-          isActive,
-          isEditing: isActive && (selectionRef.current?.active?.isEditing ?? false),
-          isSelected: !coincides(selectionRef.current?.selectionStart, selectionRef.current?.selectionEnd),
-        });
+        // FIXME: Tiago
+        //
+        // Having this commented introduces a bug where if you open a header cell popover, make a change, and click on another cell on the table, the popover will close but you won't be able to start typing directly on the active cell.
+        // On the other hand, if this is not commented, there's a very bad selection bug when adding/deleting rows/column.
+        //
+        // It's better to have the first bug for the first version, so let's leave this commented for now.
+        //
+        // const isActive = coincides(selectionRef.current?.active, { rowIndex, columnIndex });
+        // ref.setStatus?.({
+        //   isActive,
+        //   isEditing: isActive && (selectionRef.current?.active?.isEditing ?? false),
+        //   isSelected: !coincides(selectionRef.current?.selectionStart, selectionRef.current?.selectionEnd),
+        // });
         return ref;
       },
       deregisterSelectableCellRef: (rowIndex, columnIndex, ref) => {
@@ -834,12 +841,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
             isActive: false,
             isEditing: false,
             isSelected: true,
-            selectedPositions: [
-              ...(r === startRow ? [BeeTableSelectionPosition.Top] : []),
-              ...(r === endRow ? [BeeTableSelectionPosition.Bottom] : []),
-              ...(c === startColumn ? [BeeTableSelectionPosition.Left] : []),
-              ...(c === endColumn ? [BeeTableSelectionPosition.Right] : []),
-            ],
+            selectedPositions: getSelectedPositions(selection, { rowIndex: r, columnIndex: c }),
           })
         );
       }
@@ -944,6 +946,26 @@ function getSelectionIterationBoundaries(selection: BeeTableSelection) {
     startRow: Math.min(selection.selectionStart?.rowIndex ?? 0, selection.selectionEnd?.rowIndex ?? 0),
     endRow: Math.max(selection.selectionStart?.rowIndex ?? 0, selection.selectionEnd?.rowIndex ?? 0),
   };
+}
+
+function isInsideSelection(selection: BeeTableSelection, cell: BeeTableCellCoordinates) {
+  const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selection);
+  return (
+    cell.rowIndex >= startRow &&
+    cell.rowIndex <= endRow &&
+    cell.columnIndex >= startColumn &&
+    cell.columnIndex <= endColumn
+  );
+}
+
+function getSelectedPositions(selection: BeeTableSelection, cell: BeeTableCellCoordinates) {
+  const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selection);
+  return [
+    ...(cell.rowIndex === startRow ? [BeeTableSelectionPosition.Top] : []),
+    ...(cell.rowIndex === endRow ? [BeeTableSelectionPosition.Bottom] : []),
+    ...(cell.columnIndex === startColumn ? [BeeTableSelectionPosition.Left] : []),
+    ...(cell.columnIndex === endColumn ? [BeeTableSelectionPosition.Right] : []),
+  ];
 }
 
 function coincides(a: BeeTableCellCoordinates | undefined, b: BeeTableCellCoordinates | undefined) {
