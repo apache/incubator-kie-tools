@@ -140,18 +140,14 @@ export function RecentModels() {
   }, []);
 
   const onConfirmDeleteModalDelete = useCallback(
-    (workspaceDescriptors: WorkspaceDescriptor[]) => {
+    async (workspaceDescriptors: WorkspaceDescriptor[]) => {
       const modelsWord = selectedWorkspaceIds.length > 1 ? "Models" : "Model";
       setIsConfirmDeleteModalOpen(false);
-
-      /* TODO: RecentModels: to delete all models use https://github.com/kiegroup/kie-tools/blob/07229b6b4a2f64e0c86a63274cf9f35a10628bde/packages/serverless-logic-sandbox/src/workspace/startupBlockers/FsChanged.tsx#L57*/
 
       Promise.all(
         workspaceDescriptors
           .filter((w) => selectedWorkspaceIds.includes(w.workspaceId))
-          /* TODO: RecentModels: uncomment me */
-          // .map((w) => workspaces.deleteWorkspace(w))
-          .map((w) => () => true)
+          .map((w) => workspaces.deleteWorkspace(w))
       )
         .then(() => {
           addAlert(`${modelsWord} deleted successfully`, "success");

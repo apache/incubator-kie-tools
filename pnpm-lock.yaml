@@ -5551,9 +5551,6 @@ importers:
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
-      dexie:
-        specifier: ^3.2.2
-        version: 3.2.2
       history:
         specifier: ^4.9.0
         version: 4.10.1
