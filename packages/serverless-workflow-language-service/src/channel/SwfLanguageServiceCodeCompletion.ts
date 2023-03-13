@@ -21,7 +21,7 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
-import { getNodePath } from "./SwfLanguageService";
+import { getNodePath, isVirtualRegistry } from "./SwfLanguageService";
 import { SwfLanguageServiceCommandExecution } from "../api";
 import {
   eventCompletion,
@@ -130,6 +130,13 @@ function getStateNameCompletion(
   });
 }
 
+function validateFunction(serviceCatalogFunction: SwfServiceCatalogFunction) {
+  if (isVirtualRegistry(serviceCatalogFunction)) {
+    return true;
+  }
+  return !(serviceCatalogFunction.name === undefined);
+}
+
 /**
  * SwfLanguageService CodeCompletion functions
  */
@@ -234,7 +241,11 @@ export const SwfLanguageServiceCodeCompletion = {
 
     const result = args.swfCompletionItemServiceCatalogServices.flatMap((swfServiceCatalogService) =>
       swfServiceCatalogService.functions
-        .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
+        .filter(
+          (swfServiceCatalogFunc) =>
+            !existingFunctionOperations.includes(swfServiceCatalogFunc.operation) &&
+            validateFunction(swfServiceCatalogFunc)
+        )
         .map((swfServiceCatalogFunc) => {
           const swfFunction: Omit<Specification.Function, "normalize"> = {
             name: `$\{1:${swfServiceCatalogFunc.name}}`,

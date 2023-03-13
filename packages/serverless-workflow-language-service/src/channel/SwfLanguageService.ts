@@ -18,11 +18,12 @@ import {
   SwfServiceCatalogFunction,
   SwfCatalogSourceType,
   SwfServiceCatalogService,
+  SwfServiceCatalogFunctionSource,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, CompletionItem, Diagnostic, Position, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import { doRefValidation } from "./refValidation";
@@ -68,6 +69,12 @@ export type SwfLanguageServiceArgs = {
   };
   config: SwfLanguageServiceConfig;
 };
+
+export function isVirtualRegistry(serviceCatalogFunction: SwfServiceCatalogFunction): boolean {
+  return (
+    serviceCatalogFunction.source.type === "SERVICE_REGISTRY" && serviceCatalogFunction.source.registry === "Virtual"
+  );
+}
 
 export class SwfLanguageService {
   constructor(private readonly args: SwfLanguageServiceArgs) {}
@@ -149,6 +156,34 @@ export class SwfLanguageService {
     return Promise.resolve(result.flat());
   }
 
+  private getFunctionDiagnostics(services: SwfServiceCatalogService[]): Diagnostic[] {
+    return services.flatMap((value) => this.generateDiagnostic(value.functions));
+  }
+
+  private generateDiagnostic(serviceCatalogFunctions: SwfServiceCatalogFunction[]): Diagnostic[] {
+    const functionsWithoutName = serviceCatalogFunctions.filter((fs) => !fs.name && !isVirtualRegistry(fs));
+
+    return functionsWithoutName.length >= 1
+      ? [
+          Diagnostic.create(
+            Range.create(Position.create(0, 0), Position.create(0, 0)),
+            this.getWarningMessage(serviceCatalogFunctions[0].source),
+            DiagnosticSeverity.Warning
+          ),
+        ]
+      : [];
+  }
+
+  private getWarningMessage(swfServiceCatalogFunctionSource: SwfServiceCatalogFunctionSource): string {
+    if (swfServiceCatalogFunctionSource.type == "SERVICE_REGISTRY") {
+      return `The ${swfServiceCatalogFunctionSource.serviceId} service in the  ${swfServiceCatalogFunctionSource.registry} registry is missing the "operationId" property in at least one operation`;
+    }
+    if (swfServiceCatalogFunctionSource.type === "LOCAL_FS") {
+      return `The ${swfServiceCatalogFunctionSource.serviceFileAbsolutePath} service is missing the "operationId" property in at least one operation`;
+    }
+    return "";
+  }
+
   public async getDiagnostics(args: {
     content: string;
     uriPath: string;
@@ -175,7 +210,14 @@ export class SwfLanguageService {
       ? await args.getSchemaDiagnostics(textDocument, this.args.lang.fileMatch)
       : [];
 
-    return [...schemaValidationResults, ...refValidationResults];
+    const doc = TextDocument.create(args.uriPath, this.args.lang.fileLanguage, 0, args.content);
+    const globalServices = await this.args.serviceCatalog.global.getServices();
+    const relativeServices = await this.args.serviceCatalog.relative.getServices(doc);
+    return [
+      ...schemaValidationResults,
+      ...refValidationResults,
+      ...this.getFunctionDiagnostics([...globalServices, ...relativeServices]),
+    ];
   }
 
   public async getCodeLenses(args: {
