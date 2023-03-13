@@ -242,7 +242,7 @@ export function RecentModels() {
                 </TextContent>
               </PageSection>
 
-              <PageSection hasOverflowScroll isFilled>
+              <PageSection hasOverflowScroll isFilled aria-label="workspaces-table-section">
                 <PageSection variant={"light"} isFilled style={{ height: "100%" }}>
                   {workspaceDescriptors.length > 0 && (
                     <Toolbar>

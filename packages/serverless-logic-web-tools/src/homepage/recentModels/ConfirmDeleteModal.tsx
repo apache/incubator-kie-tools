@@ -97,7 +97,6 @@ export function ConfirmDeleteModal(
       });
   }, [selectedWorkspaceIds, isWsFolder, isOpen, getWorkspaceName, isPlural]);
 
-  /* FIXME: ConfirmDeleteModal: rendering problem with key */
   return (
     <>
       <Modal
@@ -112,7 +111,7 @@ export function ConfirmDeleteModal(
               Delete {elementsTypeName}
             </Button>
           ) : (
-            <Skeleton width="100px" />
+            <Skeleton width="100px" key="confirm-skeleton" />
           ),
           <Button key="cancel" variant="link" onClick={onClose} aria-label="Cancel">
             Cancel
