@@ -80,12 +80,12 @@ function extractPathItemFunctions(
       const response = responses["200"] as OpenAPIV3.ResponseObject;
       const name = pathOperation.operationId as string;
 
-    const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {};
+      const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {};
 
-    // Looking at operation params
-    if (pathOperation.parameters) {
-      extractFunctionArgumentsFromParams(pathOperation.parameters, functionArguments);
-    }
+      // Looking at operation params
+      if (pathOperation.parameters) {
+        extractFunctionArgumentsFromParams(pathOperation.parameters, functionArguments);
+      }
 
       // Looking only at application/json mime types, we might consider others.
       if (body && body.content && body.content[APPLICATION_JSON] && body.content[APPLICATION_JSON].schema) {
