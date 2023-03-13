@@ -20778,7 +20778,7 @@ Array [
 ]
 `;
 
-exports[`SWF LS JSON code completion empty file completion empty file with a newline after the cursor 1`] = `1`;
+exports[`SWF LS JSON code completion empty file completion empty file with a newline after the cursor 1`] = `2`;
 
 exports[`SWF LS JSON code completion empty file completion empty file with a newline after the cursor 2`] = `
 Array [
