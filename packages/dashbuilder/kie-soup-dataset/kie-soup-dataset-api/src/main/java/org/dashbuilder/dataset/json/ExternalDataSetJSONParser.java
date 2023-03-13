@@ -46,14 +46,13 @@ public class ExternalDataSetJSONParser {
 
     private static final String COLUMN_PREFIX = "Column ";
     private static final ColumnType DEFAULT_COLUMN_TYPE = ColumnType.LABEL;
-    
-    
+
     private Function<String, Date> dateParser;
-    
+
     public ExternalDataSetJSONParser() {
         this(s -> null);
-    }         
-    
+    }
+
     public ExternalDataSetJSONParser(Function<String, Date> dateParser) {
         super();
         this.dateParser = dateParser;
@@ -107,9 +106,13 @@ public class ExternalDataSetJSONParser {
                 }
 
             } else if (trimedJson.startsWith(ARRAY_START_TOKEN)) {
-                JsonArray dataSetArray = Json.instance().parse(json);
-                fillDataSetColumns(dataSet, dataSetArray);
-                addValues(dataSet, dataSetArray);
+                try {
+                    JsonArray dataSetArray = Json.instance().parse(json);
+                    fillDataSetColumns(dataSet, dataSetArray);
+                    addValues(dataSet, dataSetArray);
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("DataSet JSON is invalid. Please check that the data is in correct format.", e);
+                }
             }
         }
         return dataSet;
@@ -215,7 +218,7 @@ public class ExternalDataSetJSONParser {
         } catch (NumberFormatException e) {
             // empty
         }
-        
+
         try {
             convertToDate(value);
             return ColumnType.DATE;
@@ -225,7 +228,7 @@ public class ExternalDataSetJSONParser {
 
         return DEFAULT_COLUMN_TYPE;
     }
-    
+
     protected Date convertToDate(String value) {
         return dateParser.apply(value);
     }
