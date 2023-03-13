@@ -35,7 +35,7 @@ import {
   SwfLanguageServiceCodeLenses,
   SwfLanguageServiceCodeLensesFunctionsArgs,
 } from "./SwfLanguageServiceCodeLenses";
-import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode } from "./types";
+import { CodeCompletionStrategy, JqCompletions, SwfJsonPath, SwfLsNode } from "./types";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -67,6 +67,20 @@ export type SwfLanguageServiceArgs = {
       swfServiceCatalogServiceId: string
     ) => Promise<string>;
   };
+  jqCompletions: {
+    remote: {
+      getJqAutocompleteProperties: (args: {
+        textDocument: TextDocument;
+        schemaPaths: string[];
+      }) => Promise<Record<string, string>[]>;
+    };
+    relative: {
+      getJqAutocompleteProperties: (args: {
+        textDocument: TextDocument;
+        schemaPaths: string[];
+      }) => Promise<Record<string, string>[]>;
+    };
+  };
   config: SwfLanguageServiceConfig;
 };
 
@@ -89,7 +103,6 @@ export class SwfLanguageService {
   }): Promise<CompletionItem[]> {
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
     const cursorOffset = doc.offsetAt(args.cursorPosition);
-
     if (!args.rootNode) {
       return args.content.trim().length
         ? []
@@ -105,11 +118,9 @@ export class SwfLanguageService {
       start: doc.positionAt(currentNode.offset),
       end: doc.positionAt(currentNode.offset + currentNode.length),
     };
-
     const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
       ? currentNodeRange
       : args.cursorWordRange;
-
     const swfCompletionItemServiceCatalogServices = await Promise.all(
       [
         ...(await this.args.serviceCatalog.global.getServices()),
@@ -124,7 +135,6 @@ export class SwfLanguageService {
         ),
       }))
     );
-
     const matchedCompletions = Array.from(completions.entries()).filter(([path, _]) =>
       args.codeCompletionStrategy.shouldComplete({
         content: args.content,
@@ -135,7 +145,6 @@ export class SwfLanguageService {
         root: args.rootNode,
       })
     );
-
     const result = await Promise.all(
       matchedCompletions.map(([_, completionItemsDelegate]) => {
         return completionItemsDelegate({
@@ -149,10 +158,10 @@ export class SwfLanguageService {
           overwriteRange,
           rootNode: args.rootNode!,
           swfCompletionItemServiceCatalogServices,
+          jqCompletions: this.args.jqCompletions,
         });
       })
     );
-
     return Promise.resolve(result.flat());
   }
 
@@ -203,9 +212,7 @@ export class SwfLanguageService {
       docVersion,
       args.content
     );
-
     const refValidationResults = doRefValidation({ textDocument, rootNode: args.rootNode });
-
     const schemaValidationResults = (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
       ? await args.getSchemaDiagnostics(textDocument, this.args.lang.fileMatch)
       : [];
@@ -307,6 +314,7 @@ const completions = new Map<
     overwriteRange: Range;
     rootNode: SwfLsNode;
     swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
+    jqCompletions: JqCompletions;
   }) => Promise<CompletionItem[]>
 >([
   [["start"], SwfLanguageServiceCodeCompletion.getStartCompletions],
@@ -323,6 +331,12 @@ const completions = new Map<
     ["states", "*", "actions", "*", "functionRef", "arguments"],
     SwfLanguageServiceCodeCompletion.getFunctionRefArgumentsCompletions,
   ],
+  [["states", "*", "actions", "*", "functionRef", "arguments", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
+  [["states", "*", "actions", "*", "actionDataFilter", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
+  [["states", "*", "stateDataFilter", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
+  [["states", "*", "onEvents", "*", "eventDataFilter", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
+  [["states", "*", "eventDataFilter", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
+  [["states", "*", "dataConditions", "*", "condition"], SwfLanguageServiceCodeCompletion.getJqcompletions],
   [["states", "*", "onEvents", "*", "eventRefs", "*"], SwfLanguageServiceCodeCompletion.getEventRefsCompletions],
   [["states", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
   [["states", "*", "dataConditions", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],

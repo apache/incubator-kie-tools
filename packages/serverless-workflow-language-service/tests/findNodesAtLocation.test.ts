@@ -19,7 +19,7 @@ import {
   SwfYamlLanguageService,
   SwfJsonLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { defaultConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
+import { defaultConfig, defaultJqCompletionsConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
 import { treat } from "./testUtils";
 
 describe("findNodesAtLocation", () => {
@@ -36,6 +36,7 @@ describe("findNodesAtLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const content = `
 {
@@ -58,6 +59,7 @@ describe("findNodesAtLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const content = `
 {
@@ -81,6 +83,7 @@ describe("findNodesAtLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const content = `
 {
@@ -108,6 +111,7 @@ describe("findNodesAtLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const content = `
 {
@@ -136,6 +140,7 @@ describe("findNodesAtLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const content = `
 {
@@ -193,6 +198,7 @@ describe("findNodesAtLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const content = `
 {
@@ -246,6 +252,7 @@ describe("findNodesAtLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const content = `{
   "functions": [{
@@ -276,6 +283,7 @@ describe("findNodesAtLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const content = `{
   "functions": [{
@@ -312,6 +320,7 @@ describe("findNodesAtLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const content = `---
 states:
@@ -330,6 +339,7 @@ states:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const content = `---
 functions:
@@ -366,6 +376,7 @@ states:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const content = `---
       functions:
@@ -392,6 +403,7 @@ states:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const content = `---
       functions:

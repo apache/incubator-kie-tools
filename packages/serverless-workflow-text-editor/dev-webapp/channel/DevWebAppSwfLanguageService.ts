@@ -65,6 +65,14 @@ export class DevWebAppSwfLanguageService {
         canRefreshServices: () => false,
         ...configOverrides,
       },
+      jqCompletions: {
+        remote: {
+          getJqAutocompleteProperties: (_args: any) => Promise.resolve([]),
+        },
+        relative: {
+          getJqAutocompleteProperties: (_args: any) => Promise.resolve([]),
+        },
+      },
     };
   }
 }

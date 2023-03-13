@@ -40,6 +40,7 @@
     "@kie-tools-core/vscode-java-code-completion": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
+    "@kie-tools/serverless-workflow-jq-expressions": "workspace:*",
     "@kie-tools/serverless-workflow-language-service": "workspace:*",
     "@kie-tools/serverless-workflow-mermaid-viewer": "workspace:*",
     "@kie-tools/serverless-workflow-service-catalog": "workspace:*",

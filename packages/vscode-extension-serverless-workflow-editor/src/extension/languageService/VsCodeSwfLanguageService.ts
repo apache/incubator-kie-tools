@@ -30,7 +30,8 @@ import { getServiceFileNameFromSwfServiceCatalogServiceId } from "../serviceCata
 import { definitelyPosixPath } from "@kie-tools-core/vscode-extension/dist/ConfigurationInterpolation";
 import { getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { KogitoEditorDocument } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
-
+import { JqExpressionsReadSchemaFromFs } from "../jqExpressionCompletion/fs/JqExpressionsReadSchemaFromFs";
+import { removeDuplicatedKeyValuePairs } from "@kie-tools/serverless-workflow-jq-expressions/dist/utils";
 export const SWF_YAML_LANGUAGE_ID = "serverless-workflow-yaml";
 export const SWF_JSON_LANGUAGE_ID = "serverless-workflow-json";
 
@@ -112,6 +113,31 @@ export class VsCodeSwfLanguageService {
           return getServiceFileNameFromSwfServiceCatalogServiceId(registryName, swfServiceCatalogServiceId);
         },
       },
+      jqCompletions: {
+        remote: {
+          getJqAutocompleteProperties: async (args: {
+            textDocument: TextDocument;
+            schemaPaths: string[];
+          }): Promise<Record<string, string>[]> => {
+            const jqExpressionReadSchema = new JqExpressionsReadSchemaFromFs();
+            const contentArray = await jqExpressionReadSchema.getContentFromRemoteUrl(args.schemaPaths);
+            return removeDuplicatedKeyValuePairs(jqExpressionReadSchema.parseSchemaProperties(contentArray));
+          },
+        },
+        relative: {
+          getJqAutocompleteProperties: async (args: {
+            textDocument: TextDocument;
+            schemaPaths: string[];
+          }): Promise<Record<string, string>[]> => {
+            const schemaAbsoluteFilePath = args.schemaPaths.map((schemaPath: string) => {
+              return this.getSchemaFilePosixPath({ doc: args.textDocument, schemaPath });
+            });
+            const jqExpressionReadSchema = new JqExpressionsReadSchemaFromFs();
+            const contentArray = await jqExpressionReadSchema.getContentFromFs(schemaAbsoluteFilePath);
+            return removeDuplicatedKeyValuePairs(jqExpressionReadSchema.parseSchemaProperties(contentArray));
+          },
+        },
+      },
       config: {
         shouldDisplayServiceRegistriesIntegration: async () => {
           // FIXME: This should take the OS into account as well. RHHCC integration only works on macOS.
@@ -143,20 +169,21 @@ export class VsCodeSwfLanguageService {
 
   private getSpecsDirPosixPaths(document: TextDocument) {
     const baseFileAbsolutePosixPath = vscode.Uri.parse(document.uri).path;
-
     const specsDirAbsolutePosixPath = definitelyPosixPath(
       this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath({
         baseFileAbsolutePosixPath,
       })
     );
-
     const specsDirRelativePosixPath = definitelyPosixPath(
       path.relative(path.dirname(baseFileAbsolutePosixPath), specsDirAbsolutePosixPath)
     );
-
     return { specsDirRelativePosixPath, specsDirAbsolutePosixPath };
   }
 
+  private getSchemaFilePosixPath(args: { doc: TextDocument; schemaPath: string }) {
+    const baseFileAbsolutePosixPath = vscode.Uri.parse(args.doc.uri).path;
+    return baseFileAbsolutePosixPath.replace(/(\/.*)\/.+/, "$1").concat("/", args.schemaPath);
+  }
   public dispose() {
     this.jsonLs.dispose();
     this.yamlLs.dispose();
