@@ -43,8 +43,7 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
     await testHelper.closeAllNotifications();
   });
 
-  // The following test is skipped because there is a bug in Canvas API: https://issues.redhat.com/browse/KOGITO-8793
-  it.skip("Select states", async function () {
+  it("Select states", async function () {
     this.timeout(30000);
 
     const WORKFLOW_NAME = "applicant-request-decision.sw.json";

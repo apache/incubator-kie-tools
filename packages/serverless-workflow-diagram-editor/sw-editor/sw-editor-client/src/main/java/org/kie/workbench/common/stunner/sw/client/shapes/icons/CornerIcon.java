@@ -28,6 +28,7 @@ public class CornerIcon extends Group {
     private final HandlerRegistration mouseEnterHandler;
     private final HandlerRegistration mouseExitHandler;
     private final HandlerRegistration mouseClickHandler;
+    PrimitiveTextTooltip tooltipElement;
     private final String tooltipText;
 
     private final Rectangle border = new Rectangle(20, 20)
@@ -45,14 +46,6 @@ public class CornerIcon extends Group {
         add(border);
         this.tooltipText = tooltip;
 
-        PrimitiveTextTooltip tooltipElement = PrimitiveTextTooltip.Builder.build(tooltipText);
-        tooltipElement.withText(t -> {
-            t.setText(tooltipText);
-            t.setFontSize(12);
-        });
-        add(tooltipElement.asPrimitive());
-        tooltipElement.forComputedBoundingBox(border::getBoundingBox);
-
         MultiPath clockIcon = new MultiPath(icon)
                 .setScale(2)
                 .setStrokeWidth(0)
@@ -63,11 +56,14 @@ public class CornerIcon extends Group {
         mouseEnterHandler = border.addNodeMouseEnterHandler(event -> {
             this.getParent().moveToTop();
             this.moveToTop();
-            tooltipElement.show();
+            createToolTip();
             clockIcon.setFillColor("#4F5255");
         });
         mouseExitHandler = border.addNodeMouseExitHandler(event -> {
             tooltipElement.hide();
+            remove(tooltipElement.asPrimitive());
+            tooltipElement.destroy();
+            tooltipElement = null;
             clockIcon.setFillColor("#CCC");
             border.getLayer().batch();
         });
@@ -76,9 +72,24 @@ public class CornerIcon extends Group {
         );
     }
 
+    private void createToolTip() {
+        tooltipElement = PrimitiveTextTooltip.Builder.build(tooltipText);
+        tooltipElement.withText(t -> {
+            t.setText(tooltipText);
+            t.setFontSize(12);
+        });
+        add(tooltipElement.asPrimitive());
+        tooltipElement.forComputedBoundingBox(border::getBoundingBox);
+        tooltipElement.show();
+    }
+
     @Override
     public void destroy() {
         super.destroy();
+        if (tooltipElement != null) {
+            tooltipElement.destroy();
+            tooltipElement = null;
+        }
         mouseEnterHandler.removeHandler();
         mouseExitHandler.removeHandler();
         mouseClickHandler.removeHandler();
