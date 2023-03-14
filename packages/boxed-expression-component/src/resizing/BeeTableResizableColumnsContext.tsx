@@ -40,14 +40,7 @@ export const BeeTableResizableColumnsContextProvider = React.forwardRef<MyRef, P
     const refs = React.useRef<Map<number, Set<BeeTableResizableCellRef>>>(new Map());
 
     const [columnResizingWidths, setColumnResizingWidths] = useState<Map<number, ResizingWidth>>(
-      new Map(
-        columns
-          .flatMap((c) => getFlatListOfSubColumns(c))
-          .map((c, i) => {
-            // i + 1 because 0 is the rowIndexColumn
-            return [i + 1, { value: c.width ?? c.minWidth ?? 0, isPivoting: false }];
-          })
-      )
+      new Map(getDefaultColumnsResizingWidths(columns))
     );
 
     useEffect(() => {
@@ -80,6 +73,7 @@ export const BeeTableResizableColumnsContextProvider = React.forwardRef<MyRef, P
           }
 
           onColumnResizingWidthChange(newColumnResizingWidths);
+          onChange?.(newColumnResizingWidths);
         },
         registerResizableCellRef: (columnIndex, ref) => {
           const prev = refs.current?.get(columnIndex) ?? new Set();
@@ -90,7 +84,7 @@ export const BeeTableResizableColumnsContextProvider = React.forwardRef<MyRef, P
           refs.current?.get(columnIndex)?.delete(ref);
         },
       };
-    }, [onColumnResizingWidthChange]);
+    }, [onChange, onColumnResizingWidthChange]);
 
     useImperativeHandle(forwardRef, () => dispatch, [dispatch]);
 
@@ -103,6 +97,17 @@ export const BeeTableResizableColumnsContextProvider = React.forwardRef<MyRef, P
     );
   }
 );
+
+export function getDefaultColumnsResizingWidths(columns: ReactTable.Column<any>[]) {
+  return new Map(
+    columns
+      .flatMap((c) => getFlatListOfSubColumns(c))
+      .map((c, i) => {
+        // i + 1 because 0 is the rowIndexColumn
+        return [i + 1, { value: c.width ?? c.minWidth ?? 0, isPivoting: false }];
+      })
+  );
+}
 
 export function useBeeTableResizableColumnsDispatch() {
   return React.useContext(BeeTableResizableColumnsDispatchContext);
