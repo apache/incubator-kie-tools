@@ -19,7 +19,7 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     SERVERLESS_LOGIC_WEB_TOOLS__quarkusPlatformVersion: {
-      default: "2.16.2.Final",
+      default: "2.16.4.Final",
       description: "",
     },
   }),
