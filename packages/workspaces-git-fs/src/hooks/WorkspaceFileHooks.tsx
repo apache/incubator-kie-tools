@@ -96,6 +96,9 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
             if (data.type === "WS_PULL") {
               refresh(workspaceId, relativePath, canceled);
             }
+            if (data.type === "WS_CHECKOUT_FILES_FROM_LOCAL_HEAD" && data.relativePaths.includes(relativePath)) {
+              refresh(workspaceId, relativePath, canceled);
+            }
           };
 
           return () => {

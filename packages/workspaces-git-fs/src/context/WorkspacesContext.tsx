@@ -29,6 +29,7 @@ import { decoder } from "../encoderdecoder/EncoderDecoder";
 import { parseWorkspaceFileRelativePath } from "../relativePath/WorkspaceFileRelativePathParser";
 import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 import { GitServerRef } from "../worker/api/GitServerRef";
+import { UnstagedModifiedFilesStatusEntryType } from "../services/GitService";
 
 export class WorkspaceFile {
   private readonly parsedRelativePath;
@@ -132,6 +133,8 @@ export interface WorkspacesContextType {
 
   checkout(args: { workspaceId: string; ref: string; remote: string }): Promise<void>;
 
+  checkoutFilesFromLocalHead(args: { workspaceId: string; ref?: string; filepaths?: string[] }): Promise<void>;
+
   addRemote(args: { workspaceId: string; name: string; url: string; force: boolean }): Promise<void>;
 
   deleteRemote(args: { workspaceId: string; name: string }): Promise<void>;
@@ -147,6 +150,8 @@ export interface WorkspacesContextType {
   }): Promise<GitServerRef[]>;
 
   hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
+
+  getUnstagedModifiedFilesStatus(args: { workspaceId: string }): Promise<UnstagedModifiedFilesStatusEntryType[]>;
 
   isFileModified(args: { workspaceId: string; relativePath: string }): Promise<boolean>;
 

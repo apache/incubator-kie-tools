@@ -626,4 +626,16 @@ export const en: OnlineI18n = {
       organizations: "GitHub organizations",
     },
   },
+  gitStatusIndicatorActions: {
+    revert: {
+      title: "Revert Changes",
+      description: "This action is permanent. Following file will be reverted to the last commit:",
+      confirmButtonText: "Revert Permanently",
+    },
+    revertAll: {
+      title: "Revert All Changes",
+      description: "This action is permanent. Following files will be reverted to the last commit:",
+      confirmButtonText: "Revert Permanently",
+    },
+  },
 };

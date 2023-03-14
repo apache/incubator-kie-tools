@@ -67,6 +67,14 @@ export function WorkspacesContextProvider(props: Props) {
     [workspacesSharedWorker]
   );
 
+  const getUnstagedModifiedFilesStatus = useCallback(
+    async (args: { workspaceId: string }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_getUnstagedModifiedFilesStatus(args)
+      ),
+    [workspacesSharedWorker]
+  );
+
   const pull = useCallback(
     async (args: {
       workspaceId: string;
@@ -133,6 +141,14 @@ export function WorkspacesContextProvider(props: Props) {
     async (args: { workspaceId: string; ref: string; remote: string }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_checkout(args)
+      ),
+    [workspacesSharedWorker]
+  );
+
+  const checkoutFilesFromLocalHead = useCallback(
+    async (args: { workspaceId: string; ref?: string; filepaths: string[] }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_checkoutFilesFromLocalHead(args)
       ),
     [workspacesSharedWorker]
   );
@@ -503,10 +519,12 @@ export function WorkspacesContextProvider(props: Props) {
       push,
       branch,
       checkout,
+      checkoutFilesFromLocalHead,
       fetch,
       resolveRef,
       getFiles,
       hasLocalChanges,
+      getUnstagedModifiedFilesStatus,
       moveFile,
       addEmptyFile,
       addFile,
@@ -541,6 +559,7 @@ export function WorkspacesContextProvider(props: Props) {
       getFiles,
       getUniqueFileIdentifier,
       hasLocalChanges,
+      getUnstagedModifiedFilesStatus,
       moveFile,
       prepareZip,
       pull,
@@ -549,6 +568,7 @@ export function WorkspacesContextProvider(props: Props) {
       push,
       branch,
       checkout,
+      checkoutFilesFromLocalHead,
       fetch,
       resolveRef,
       renameFile,

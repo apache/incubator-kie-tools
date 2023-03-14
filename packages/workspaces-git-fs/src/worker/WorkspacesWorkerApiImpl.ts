@@ -25,6 +25,7 @@ import { join } from "path";
 import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { decoder, encoder } from "../encoderdecoder/EncoderDecoder";
 import { FsSchema } from "../services/FsCache";
+import { FileModificationStatus, UnstagedModifiedFilesStatusEntryType } from "../services/GitService";
 import { KieSandboxWorkspacesFs } from "../services/KieSandboxWorkspaceFs";
 import { StorageFile } from "../services/StorageService";
 import { GitServerRef } from "./api/GitServerRef";
@@ -430,6 +431,33 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     );
   }
 
+  public async kieSandboxWorkspacesGit_checkoutFilesFromLocalHead(args: {
+    workspaceId: string;
+    ref?: string;
+    filepaths: string[];
+  }): Promise<void> {
+    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
+      args.workspaceId,
+      async ({ fs, broadcaster }) => {
+        const workspaceDir = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
+        await this.args.services.gitService.checkoutFilesFromLocalHead({
+          fs,
+          dir: workspaceDir,
+          ref: args.ref,
+          filepaths: args.filepaths,
+        });
+        broadcaster.broadcast({
+          channel: args.workspaceId,
+          message: async () => ({
+            type: "WS_CHECKOUT_FILES_FROM_LOCAL_HEAD",
+            workspaceId: args.workspaceId,
+            relativePaths: args.filepaths,
+          }),
+        });
+      }
+    );
+  }
+
   public async kieSandboxWorkspacesGit_getGitServerRefs(args: {
     url: string;
     authInfo?: {
@@ -464,13 +492,13 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     });
   }
 
-  public async kieSandboxWorkspacesGit_getUnstagedModifiedFileRelativePaths(args: {
+  public async kieSandboxWorkspacesGit_getUnstagedModifiedFilesStatus(args: {
     workspaceId: string;
-  }): Promise<string[]> {
+  }): Promise<UnstagedModifiedFilesStatusEntryType[]> {
     const workspaceRootDirPath = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
 
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs }) => {
-      return await this.args.services.gitService.unstagedModifiedFileRelativePaths({
+      return await this.args.services.gitService.unstagedModifiedFilesStatus({
         fs,
         dir: workspaceRootDirPath,
         exclude: (filepath) => !this.args.fileFilter.isEditable(filepath),
@@ -491,11 +519,11 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
 
     const defaultCommitMessage = `Changes from ${this.args.appName}`;
 
-    const fileRelativePaths = await this.kieSandboxWorkspacesGit_getUnstagedModifiedFileRelativePaths({
+    const unstagedModifiedFilesStatus = await this.kieSandboxWorkspacesGit_getUnstagedModifiedFilesStatus({
       workspaceId: args.workspaceId,
     });
 
-    if (fileRelativePaths.length === 0) {
+    if (unstagedModifiedFilesStatus.length === 0) {
       console.debug("Nothing to commit.");
       return;
     }
@@ -504,24 +532,18 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       args.workspaceId,
       async ({ fs, broadcaster }) => {
         await Promise.all(
-          fileRelativePaths.map(async (relativePath) => {
-            if (
-              await this.args.services.workspaceService.existsFile({
-                fs,
-                workspaceId: args.workspaceId,
-                relativePath,
-              })
-            ) {
+          unstagedModifiedFilesStatus.map(async (stageStatusEntry) => {
+            if (stageStatusEntry.status !== FileModificationStatus.deleted) {
               await this.args.services.gitService.add({
                 fs,
                 dir: workspaceRootDirPath,
-                relativePath,
+                relativePath: stageStatusEntry.path,
               });
             } else {
               await this.args.services.gitService.rm({
                 fs,
                 dir: workspaceRootDirPath,
-                relativePath,
+                relativePath: stageStatusEntry.path,
               });
             }
           })
