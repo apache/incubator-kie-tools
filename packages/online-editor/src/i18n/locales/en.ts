@@ -628,14 +628,14 @@ export const en: OnlineI18n = {
   },
   gitStatusIndicatorActions: {
     revert: {
-      title: "Revert Changes",
+      title: "Revert",
       description: "This action is permanent. Following file will be reverted to the last commit:",
-      confirmButtonText: "Revert Permanently",
+      confirmButtonText: "Revert permanently",
     },
     revertAll: {
-      title: "Revert All Changes",
+      title: "Revert all changes",
       description: "This action is permanent. Following files will be reverted to the last commit:",
-      confirmButtonText: "Revert Permanently",
+      confirmButtonText: "Revert permanently",
     },
   },
 };

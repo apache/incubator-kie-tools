@@ -72,11 +72,11 @@ export function FileListItem(props: {
     <>
       <Flex
         flexWrap={{ default: "nowrap" }}
-        onClick={(ev) => {
+        onClick={(e) => {
           if (props.displayMode !== FileListItemDisplayMode.enabled) {
             // this prevents the FileSwitcher from closing on click.
-            ev.stopPropagation();
-            ev.preventDefault();
+            e.stopPropagation();
+            e.preventDefault();
           }
         }}
       >

@@ -28,7 +28,6 @@ import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-ico
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { useNavigationBlocker, useRoutes } from "../../navigation/Hooks";
 import { matchPath } from "react-router";
-import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { switchExpression } from "../../switchExpression/switchExpression";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -41,12 +40,13 @@ import { FileModificationStatus } from "@kie-tools-core/workspaces-git-fs/dist/s
 /**
  * Indicates current git sync status either for whole Workspace or a particular WorkspaceFile, depending on the provided properties.
  */
-export function GitStatusIndicator(props: {
-  gitStatusProps: GitStatusProps;
-  workspaceFile?: WorkspaceFile;
-  children?: JSX.Element;
-  isHoverable?: boolean;
-}) {
+export function GitStatusIndicator(
+  props: React.PropsWithChildren<{
+    gitStatusProps: GitStatusProps;
+    workspaceFile?: WorkspaceFile;
+    isHoverable?: boolean;
+  }>
+) {
   // We use this trick to prevent the icon from blinking while updating.
   const prev = usePrevious(props.gitStatusProps.workspaceGitStatusPromise?.data);
 
@@ -64,21 +64,21 @@ export function GitStatusIndicator(props: {
 
     const tooltipForStageStatus = (stageStatus?: FileModificationStatus) => {
       const modifiedTooltip = (
-        <Tooltip content={"Modified."} position={"bottom"}>
+        <Tooltip content={"Modified"} position={"bottom"}>
           <small>
             <i>M</i>
           </small>
         </Tooltip>
       );
       const deletedTooltip = (
-        <Tooltip content={"Deleted file."} position={"bottom"}>
+        <Tooltip content={"Deleted"} position={"bottom"}>
           <small>
             <i>D</i>
           </small>
         </Tooltip>
       );
       const addedTooltip = (
-        <Tooltip content={"New file."} position={"bottom"}>
+        <Tooltip content={"Added"} position={"bottom"}>
           <small>
             <i>A</i>
           </small>
@@ -148,8 +148,8 @@ export function GitStatusIndicator(props: {
             flexWrap={{ default: "nowrap" }}
             spaceItems={{ default: "spaceItemsSm" }}
             alignItems={{ default: "alignItemsCenter" }}
-            onClick={(ev) => {
-              ev.stopPropagation();
+            onClick={(e) => {
+              e.stopPropagation();
             }}
           >
             <FlexItem>

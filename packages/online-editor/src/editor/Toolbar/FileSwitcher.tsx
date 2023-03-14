@@ -393,7 +393,6 @@ export function FileSwitcher(props: {
                   <MenuGroup
                     style={{
                       maxHeight: `calc(${MENU_HEIGHT_MAX_LIMIT_CSS} - ${DRILLDOWN_NAVIGATION_MENU_ITEM_HEIGHT_IN_PX})` /* height of menu minus the height of Current item*/,
-                      overflowY: "auto",
                     }}
                   >
                     {workspacesMenuItems}
@@ -694,8 +693,8 @@ export function FilesMenuItems(props: {
           }}
           placeholder={`In '${props.workspace.descriptor.name}'`}
           style={{ fontSize: "small" }}
-          onClick={(ev) => {
-            ev.stopPropagation();
+          onClick={(e) => {
+            e.stopPropagation();
           }}
         />
       </MenuInput>
@@ -753,37 +752,36 @@ export function FilesMenuItems(props: {
 
   return (
     <>
-      <Grid style={{ alignItems: "center" }}>
-        <GridItem span={12}>
-          <MenuItem direction={"up"} itemId={`${props.workspace.descriptor.workspaceId}-breadcrumb`}>
-            All
-          </MenuItem>
-        </GridItem>
-        <GridItem span={12}>{searchInput}</GridItem>
-        <GridItem span={6}></GridItem>
-        <GridItem span={4}>
+      <MenuItem direction={"up"} itemId={`${props.workspace.descriptor.workspaceId}-breadcrumb`}>
+        All
+      </MenuItem>
+      {searchInput}
+      <Flex
+        justifyContent={{ default: "justifyContentFlexEnd" }}
+        alignItems={{ default: "alignItemsCenter" }}
+        style={{ paddingRight: "16px" }}
+      >
+        <FlexItem>
           {props.currentWorkspaceGitStatusProps !== undefined && (
-            <MenuInput>
-              <Tooltip content={"Filter only modified files"} position={"bottom"}>
-                <Checkbox
-                  label={"Only changed"}
-                  id={"filter-git-status-changed-locally"}
-                  aria-label={"Select to display only modified files"}
-                  isChecked={filteredGitSyncStatus === WorkspaceGitLocalChangesStatus.pending}
-                  onChange={(checked) => {
-                    setFilteredGitSyncStatus(checked ? WorkspaceGitLocalChangesStatus.pending : undefined);
-                  }}
-                />
-              </Tooltip>
-            </MenuInput>
+            <Tooltip content={"Select to display only modified, added, or deleted files"} position={"bottom"}>
+              <Checkbox
+                label={"Only modified"}
+                id={"filter-git-status-modified-locally"}
+                aria-label={"Select to display only modified, added, or deleted files"}
+                isChecked={filteredGitSyncStatus === WorkspaceGitLocalChangesStatus.pending}
+                onChange={(checked) => {
+                  setFilteredGitSyncStatus(checked ? WorkspaceGitLocalChangesStatus.pending : undefined);
+                }}
+              />
+            </Tooltip>
           )}
-        </GridItem>
-        <GridItem span={2}>
+        </FlexItem>
+        <FlexItem>
           <Flex justifyContent={{ default: "justifyContentCenter" }}>
             <FilesMenuModeIcons filesMenuMode={props.filesMenuMode} setFilesMenuMode={props.setFilesMenuMode} />
           </Flex>
-        </GridItem>
-      </Grid>
+        </FlexItem>
+      </Flex>
       <Divider component={"li"} />
 
       {props.filesMenuMode === FilesMenuMode.LIST && (
@@ -932,7 +930,7 @@ export function FilesMenuItems(props: {
                     setTopSectionHeightInPx((prev) => prev + MENU_SHOW_CHANGED_CHECKBOX_HEIGHT_IN_PX);
                   }}
                 >
-                  Back To Models
+                  Back
                 </MenuItem>
                 {searchInput}
                 <Divider component={"li"} />

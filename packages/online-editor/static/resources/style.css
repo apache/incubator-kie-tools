@@ -657,9 +657,10 @@ section.kie-tools--settings-tab {
 }
 
 /* FilesMenu */
-.kie-sandbox--files-menu.pf-c-menu.pf-m-drilldown > .pf-c-menu__content > .pf-c-menu__group {
+.kie-sandbox--files-menu.pf-c-menu.pf-m-drilldown > .pf-c-menu__content {
   overflow-y: auto;
 }
+
 .kie-sandbox--files-menu .kie-sandbox--files-menu--label {
   --kie-sandbox--files-menu--title-padding: var(--pf-global--spacer--md);
   padding-left: var(--kie-sandbox--files-menu--title-padding);
