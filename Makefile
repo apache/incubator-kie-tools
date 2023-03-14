@@ -126,3 +126,9 @@ push-local-registry:
 .PHONY: bats
 bats:
 	./scripts/run-bats.sh
+
+.PHONY: container-build-osbs
+prod_component=
+container-build-osbs:
+	echo "calling RHPAM container-build-osbs......................................"
+	$(CEKIT_CMD) --redhat --overrides-file $(prod_component)-overrides.yaml build osbs
