@@ -22,10 +22,11 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import * as React from "react";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { basename } from "path";
+import { buildEndpoints } from "../devMode/DevModeConstants";
 
 interface Props {
   id: number;
@@ -50,6 +51,11 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
     const name = extension ? basename(workspaceName, `.${extension}`) : workspaceName;
     return `${name.substring(0, maxSize - extension.length)}...${extension}`;
   }, [props.deployment.devMode, props.deployment.workspaceName]);
+
+  const openDeployment = useCallback(() => {
+    const endpoints = buildEndpoints(props.deployment.routeUrl);
+    window.open(props.deployment.devMode ? endpoints.devUi : endpoints.base, "_blank");
+  }, [props.deployment.devMode, props.deployment.routeUrl]);
 
   const stateIcon = useMemo(() => {
     if (props.deployment.state === OpenShiftDeploymentState.UP) {
@@ -113,12 +119,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
       id="openshift-deployment-item-button"
       key={`openshift-dropdown-item-${props.id}`}
       isDisabled={props.deployment.state === OpenShiftDeploymentState.ERROR}
-      onClick={() =>
-        window.open(
-          props.deployment.devMode ? props.deployment.routeUrl + "/q/swagger-ui" : props.deployment.routeUrl,
-          "_blank"
-        )
-      }
+      onClick={openDeployment}
       description={`Created at ${props.deployment.creationTimestamp.toLocaleString()}`}
       icon={stateIcon}
     >

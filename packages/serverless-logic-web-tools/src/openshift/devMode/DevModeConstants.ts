@@ -29,6 +29,7 @@ export type DevModeUploadResult =
 export interface DevModeEndpoints {
   base: string;
   upload: string;
+  devUi: string;
   swaggerUi: string;
   health: {
     live: string;
@@ -40,6 +41,7 @@ export interface DevModeEndpoints {
 export const buildEndpoints = (routeUrl: string): DevModeEndpoints => ({
   base: routeUrl,
   upload: `${routeUrl}/upload`,
+  devUi: `${routeUrl}/q/dev`,
   swaggerUi: `${routeUrl}/q/swagger-ui`,
   health: {
     live: `${routeUrl}/q/health/live`,

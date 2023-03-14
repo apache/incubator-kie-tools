@@ -131,6 +131,8 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
         })
       );
 
+      const routeUrl = this.args.openShiftService.kubernetes.composeRouteUrl(route);
+
       const appLabels = {
         [this.args.webToolsId]: "true",
       };
@@ -172,10 +174,7 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
                       protocol: "TCP",
                     },
                   ],
-                  // env: [
-                  //   { name: "MAVEN_OPTS", value: "-Xmx512m -Xms128m" },
-                  //   { name: "JAVA_OPTS", value: "-Xmx512m -Xms128m" },
-                  // ],
+                  env: [{ name: "DATA_INDEX_URL", value: routeUrl }],
                 },
               ],
             },
