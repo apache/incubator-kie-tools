@@ -146,7 +146,7 @@
         },
         "kogito.swf.enableKogitoServerlessWorkflowVisualizationPreview": {
           "default": true,
-          "markdownDescription": "Enable/disable Kogito Serverless Workflow Visualization Preview for JSON files.",
+          "markdownDescription": "Enable/disable Kogito Serverless Workflow Visualization Preview for JSON and YAML files.",
           "type": "boolean"
         },
         "kogito.swf.routesStoragePath": {
