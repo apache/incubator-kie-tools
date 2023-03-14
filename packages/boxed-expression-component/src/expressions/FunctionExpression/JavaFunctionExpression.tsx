@@ -18,7 +18,7 @@ import { Popover } from "@patternfly/react-core/dist/js/components/Popover/Popov
 import QuestionCircleIcon from "@patternfly/react-icons/dist/js/icons/question-circle-icon";
 import _ from "lodash";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableCellProps,
@@ -213,6 +213,12 @@ export function JavaFunctionExpression({
     columnResizingWidths,
     useMemo(() => [], []) // rows
   );
+
+  useEffect(() => {
+    beeTableRef.current?.updateColumnResizingWidths(
+      new Map([[1, { isPivoting: false, value: JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH }]])
+    );
+  }, []);
 
   /// //////////////////////////////////////////////////////
 
