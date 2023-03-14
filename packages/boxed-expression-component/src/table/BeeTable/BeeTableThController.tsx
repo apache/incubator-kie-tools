@@ -6,11 +6,13 @@ export function BeeTableThController({
   columnIndex,
   column,
   reactTableInstance,
+  shouldRenderRowIndexColumn,
 }: {
   columnIndex: number;
   column: ReactTable.ColumnInstance<any>;
   reactTableInstance: ReactTable.TableInstance<any>;
+  shouldRenderRowIndexColumn: boolean;
 }) {
-  useFillingResizingWidth(columnIndex, column, reactTableInstance);
+  useFillingResizingWidth(columnIndex, column, reactTableInstance, shouldRenderRowIndexColumn);
   return <></>;
 }

@@ -35,18 +35,14 @@ export const LIST_EXPRESSION_EXTRA_WIDTH =
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + //
   2; // 2px for borders of context entry expression // FIXME: Tiago -> To me, it's a mistery why to this cell is counting the borders.
 
-// FUNCTION
-export const FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH =
-  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + //
-  2; // 2px for borders of context entry expression // FIXME: Tiago -> To me, it's a mistery why to this cell is counting the borders.
-
 export const FEEL_FUNCTION_EXPRESSION_MIN_WIDTH = 210;
+export const FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH = BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + 2; // 2px for borders of context entry expression // FIXME: Tiago -> To me, it's a mistery why to this cell is counting the borders.
 
 export const PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH = 210;
 export const PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH = 120;
-export const PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH = FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH;
+export const PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH = BEE_TABLE_ROW_INDEX_COLUMN_WIDTH;
 
 export const JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH = 210;
 export const JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH = 140;
 
-export const JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH = FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH + 2;
+export const JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH = BEE_TABLE_ROW_INDEX_COLUMN_WIDTH;

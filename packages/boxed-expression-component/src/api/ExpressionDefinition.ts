@@ -257,9 +257,7 @@ export type ExpressionDefinition =
   | ListExpressionDefinition
   | InvocationExpressionDefinition
   | UndefinedExpressionDefinition
-  | FunctionExpressionDefinition
-  | PmmlFunctionExpressionDefinition
-  | JavaFunctionExpressionDefinition;
+  | FunctionExpressionDefinition;
 
 // OTHER
 

@@ -184,6 +184,7 @@ export function BeeTableHeader<R extends object>({
               forwardRef={thRef}
               resizerStopBehavior={resizerStopBehavior}
               rowSpan={rowSpan}
+              shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
               isEditableHeader={isEditableHeader}
               shouldShowColumnsInlineControls={shouldShowRowsInlineControls}
               getColumnKey={getColumnKey}
@@ -314,13 +315,14 @@ export function BeeTableHeader<R extends object>({
                 columnIndex={columnIndex}
                 column={column}
                 reactTableInstance={reactTableInstance}
+                shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
               />
             ))}
           </React.Fragment>
         );
       }
     });
-  }, [getColumnKey, reactTableInstance, renderColumn, shouldRenderHeaderGroup]);
+  }, [getColumnKey, reactTableInstance, renderColumn, shouldRenderHeaderGroup, shouldRenderRowIndexColumn]);
 
   return <>{<thead>{renderHeaderGroups()}</thead>}</>;
 }

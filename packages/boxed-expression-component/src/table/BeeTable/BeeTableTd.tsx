@@ -193,7 +193,7 @@ export function BeeTableTd<R extends object>({
           <>
             {tdContent}
 
-            {(hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
+            {!column.isWidthConstant && (hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
               <Resizer
                 getWidthToFitData={cellWidthToFitDataRef?.getWidthToFitData}
                 minWidth={lastColumnMinWidth ?? cell.column.minWidth}

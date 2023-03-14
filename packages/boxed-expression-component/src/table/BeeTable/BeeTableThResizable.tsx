@@ -24,7 +24,12 @@ import { Resizer } from "../../resizing/Resizer";
 import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContext";
 import { BeeTableTh, getHoverInfo, HoverInfo } from "./BeeTableTh";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
-import { isFlexbileColumn, isParentColumn, useFillingResizingWidth } from "../../resizing/FillingColumnResizingWidth";
+import {
+  getFlatListOfSubColumns,
+  isFlexbileColumn,
+  isParentColumn,
+  useFillingResizingWidth,
+} from "../../resizing/FillingColumnResizingWidth";
 
 export interface BeeTableThResizableProps<R extends object> {
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
@@ -46,6 +51,7 @@ export interface BeeTableThResizableProps<R extends object> {
   lastColumnMinWidth?: number;
   onGetWidthToFitData: () => number;
   forwardRef?: React.RefObject<HTMLTableCellElement>;
+  shouldRenderRowIndexColumn: boolean;
 }
 
 export function BeeTableThResizable<R extends object>({
@@ -53,6 +59,7 @@ export function BeeTableThResizable<R extends object>({
   columnIndex,
   rowIndex,
   firstColumnIndexOfGroup,
+  shouldRenderRowIndexColumn,
   rowSpan,
   isEditableHeader,
   reactTableInstance,
@@ -155,7 +162,7 @@ export function BeeTableThResizable<R extends object>({
     fillingWidth,
     setFillingWidth,
     minFillingWidth,
-  } = useFillingResizingWidth(columnIndex, column, reactTableInstance);
+  } = useFillingResizingWidth(columnIndex, column, reactTableInstance, shouldRenderRowIndexColumn);
 
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
   const [isResizing, setResizing] = useState<boolean>(false);
@@ -222,19 +229,23 @@ export function BeeTableThResizable<R extends object>({
         )}
       </div>
       {/* resizingWidth. I.e., Exact-sized columns. */}
-      {column.width && resizingWidth && (hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
-        <Resizer
-          minWidth={lastColumnMinWidth ?? column.minWidth}
-          width={column.width}
-          setWidth={column.setWidth}
-          resizingWidth={resizingWidth}
-          setResizingWidth={setResizingWidth}
-          getWidthToFitData={getWidthToFitData}
-          setResizing={setResizing}
-        />
-      )}
+      {!column.isWidthConstant &&
+        column.width &&
+        resizingWidth &&
+        (hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
+          <Resizer
+            minWidth={lastColumnMinWidth ?? column.minWidth}
+            width={column.width}
+            setWidth={column.setWidth}
+            resizingWidth={resizingWidth}
+            setResizingWidth={setResizingWidth}
+            getWidthToFitData={getWidthToFitData}
+            setResizing={setResizing}
+          />
+        )}
       {/* fillingResizingWidth. I.e., Flexible or parent columns. */}
-      {(isFlexbileColumn(column) || isParentColumn(column)) &&
+      {getFlatListOfSubColumns(column).some((c) => !(c.isWidthConstant ?? false)) &&
+        (isFlexbileColumn(column) || isParentColumn(column)) &&
         (hoverInfo.isHovered || (fillingResizingWidth?.isPivoting && isResizing)) && (
           <Resizer
             minWidth={minFillingWidth}

@@ -1,7 +1,9 @@
 import * as React from "react";
+import * as ReactTable from "react-table";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { ResizerStopBehavior, ResizingWidth, useResizerRef, useResizingWidthsDispatch } from "./ResizingWidthsContext";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "./WidthConstants";
+import { getFlatListOfSubColumns } from "./FillingColumnResizingWidth";
 
 // TYPES
 
@@ -28,15 +30,29 @@ export interface BeeTableResizableCellRef {
 
 type Props = React.PropsWithChildren<{
   onChange?: (args: Map<number, ResizingWidth | undefined>) => void;
+  columns: ReactTable.Column<any>[];
 }>;
 
 type MyRef = BeeTableResizableColumnsDispatchContextType;
 
 export const BeeTableResizableColumnsContextProvider = React.forwardRef<MyRef, Props>(
-  ({ children, onChange }, forwardRef) => {
+  ({ children, onChange, columns }, forwardRef) => {
     const refs = React.useRef<Map<number, Set<BeeTableResizableCellRef>>>(new Map());
 
-    const [columnResizingWidths, setColumnResizingWidths] = useState<Map<number, ResizingWidth>>(new Map());
+    const [columnResizingWidths, setColumnResizingWidths] = useState<Map<number, ResizingWidth>>(
+      new Map(
+        columns
+          .flatMap((c) => getFlatListOfSubColumns(c))
+          .map((c, i) => {
+            // i + 1 because 0 is the rowIndexColumn
+            return [i + 1, { value: c.width ?? c.minWidth ?? 0, isPivoting: false }];
+          })
+      )
+    );
+
+    useEffect(() => {
+      onChange?.(columnResizingWidths);
+    }, [columnResizingWidths, onChange]);
 
     const onColumnResizingWidthChange = useCallback((args: Map<number, ResizingWidth | undefined>) => {
       setColumnResizingWidths((prev) => {
@@ -64,7 +80,6 @@ export const BeeTableResizableColumnsContextProvider = React.forwardRef<MyRef, P
           }
 
           onColumnResizingWidthChange(newColumnResizingWidths);
-          onChange?.(newColumnResizingWidths);
         },
         registerResizableCellRef: (columnIndex, ref) => {
           const prev = refs.current?.get(columnIndex) ?? new Set();
@@ -75,7 +90,7 @@ export const BeeTableResizableColumnsContextProvider = React.forwardRef<MyRef, P
           refs.current?.get(columnIndex)?.delete(ref);
         },
       };
-    }, [onChange, onColumnResizingWidthChange]);
+    }, [onColumnResizingWidthChange]);
 
     useImperativeHandle(forwardRef, () => dispatch, [dispatch]);
 

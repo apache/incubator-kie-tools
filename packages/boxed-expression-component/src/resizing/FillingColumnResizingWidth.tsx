@@ -5,30 +5,32 @@ import { useBeeTableResizableColumns, useBeeTableResizableColumnsDispatch } from
 import { apportionColumnWidths } from "./Hooks";
 import { useNestedExpressionContainer } from "./NestedExpressionContainerContext";
 import { ResizingWidth } from "./ResizingWidthsContext";
+import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "./WidthConstants";
 
 export function useFillingResizingWidth(
   columnIndex: number,
   column: ReactTable.ColumnInstance<any>,
-  reactTableInstance: ReactTable.TableInstance<any>
+  reactTableInstance: ReactTable.TableInstance<any>,
+  shouldRenderRowIndexColumn: boolean
 ) {
   const nestedExpressionContainer = useNestedExpressionContainer();
 
   const minFillingWidth = useMemo(
     () =>
       Math.max(
-        nestedExpressionContainer.minWidth,
+        nestedExpressionContainer.minWidth - (shouldRenderRowIndexColumn ? BEE_TABLE_ROW_INDEX_COLUMN_WIDTH : 0),
         sumColumnPropertyRecursively(column, "minWidth", nestedExpressionContainer.minWidth)
       ),
-    [column, nestedExpressionContainer.minWidth]
+    [column, nestedExpressionContainer.minWidth, shouldRenderRowIndexColumn]
   );
 
   const fillingWidth = useMemo(
     () =>
       Math.max(
-        nestedExpressionContainer.minWidth,
+        nestedExpressionContainer.minWidth - (shouldRenderRowIndexColumn ? BEE_TABLE_ROW_INDEX_COLUMN_WIDTH : 0),
         sumColumnPropertyRecursively(column, "width", nestedExpressionContainer.actualWidth)
       ),
-    [column, nestedExpressionContainer.actualWidth, nestedExpressionContainer.minWidth]
+    [column, nestedExpressionContainer.actualWidth, nestedExpressionContainer.minWidth, shouldRenderRowIndexColumn]
   );
 
   // That's be be used for:
@@ -165,7 +167,7 @@ export function sumColumnPropertyRecursively(
 }
 
 export function findIndexOfColumn(
-  column: ReactTable.ColumnInstance<any> | undefined,
+  column: ReactTable.Column<any> | undefined,
   reactTableInstance: ReactTable.TableInstance<any>
 ) {
   return reactTableInstance.allColumns.findIndex(({ id }) => id === column?.id);
@@ -190,7 +192,7 @@ export function getTotalColumnResizingWidth(
   return { isPivoting, value };
 }
 
-export function getFlatListOfSubColumns(column: ReactTable.ColumnInstance<any>): ReactTable.ColumnInstance<any>[] {
+export function getFlatListOfSubColumns(column: ReactTable.Column<any>): ReactTable.Column<any>[] {
   if (isParentColumn(column)) {
     return (column.columns ?? []).flatMap((c) => getFlatListOfSubColumns(c));
   }
@@ -198,11 +200,11 @@ export function getFlatListOfSubColumns(column: ReactTable.ColumnInstance<any>):
   return [column];
 }
 
-export function isParentColumn(column: ReactTable.ColumnInstance<any>) {
+export function isParentColumn(column: ReactTable.Column<any>) {
   return (column.columns?.length ?? 0) > 0;
 }
 
-export function isFlexbileColumn(column: ReactTable.ColumnInstance<any>) {
+export function isFlexbileColumn(column: ReactTable.Column<any>) {
   return !column.width && !isParentColumn(column);
 }
 

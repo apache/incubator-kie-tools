@@ -38,8 +38,10 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
 
   const functionKindSelectionCallback = useCallback(
     (hide: () => void) => (event?: React.MouseEvent, itemId?: string | number) => {
-      onFunctionKindSelect(itemId as FunctionExpressionDefinitionKind);
       hide();
+      setTimeout(() => {
+        onFunctionKindSelect(itemId as FunctionExpressionDefinitionKind);
+      }, 0);
     },
     [onFunctionKindSelect]
   );

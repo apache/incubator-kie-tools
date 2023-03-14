@@ -62,6 +62,7 @@ declare module "react-table" {
     width?: number;
     setWidth?: (newWidth: number) => void;
     isWidthPinned?: boolean;
+    isWidthConstant?: boolean;
 
     columns?: Array<Column<D>>;
   }

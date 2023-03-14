@@ -630,7 +630,11 @@ export type ForwardRefBeeTableProps<R extends object> = BeeTableProps<R> & { for
 export const BeeTable = <R extends object>(props: ForwardRefBeeTableProps<R>) => {
   return (
     <BeeTableSelectionContextProvider>
-      <BeeTableResizableColumnsContextProvider ref={props.forwardRef} onChange={props.onColumnResizingWidthChange}>
+      <BeeTableResizableColumnsContextProvider
+        ref={props.forwardRef}
+        onChange={props.onColumnResizingWidthChange}
+        columns={props.columns}
+      >
         <BeeTableCellWidthsToFitDataContextProvider>
           <BeeTableInternal {...props} />
         </BeeTableCellWidthsToFitDataContextProvider>

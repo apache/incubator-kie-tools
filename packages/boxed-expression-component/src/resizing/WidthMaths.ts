@@ -10,7 +10,6 @@ import {
   DECISION_TABLE_INPUT_MIN_WIDTH,
   DECISION_TABLE_OUTPUT_MIN_WIDTH,
   DEFAULT_MIN_WIDTH,
-  FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH,
   LIST_EXPRESSION_EXTRA_WIDTH,
   LITERAL_EXPRESSION_EXTRA_WIDTH,
   LITERAL_EXPRESSION_MIN_WIDTH,
@@ -26,6 +25,7 @@ import {
   INVOCATION_EXTRA_WIDTH,
   INVOCATION_PARAMETER_MIN_WIDTH,
   INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
+  FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH,
 } from "./WidthConstants";
 
 export function getExpressionMinWidth(expression?: ExpressionDefinition): number {
@@ -57,19 +57,19 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
         Math.max(
           FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
           ...[expression.expression].map((expression) => getExpressionMinWidth(expression))
-        ) + FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
+        ) + FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
       return (
         JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
         JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
-        FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
+        JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
       return (
         PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
         PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
-        FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
+        PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
     } else {
       throw new Error("Should never get here");
@@ -179,13 +179,15 @@ export function getExpressionResizingWidth(
         Math.max(
           FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
           ...[expression.expression].map((expression) => getExpressionResizingWidth(expression, resizingWidths))
-        ) + FUNCTION_EXPRESSION_COMMON_EXTRA_WIDTH
+        ) + FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
-      const variableWidth =
-        resizingWidth ?? expression.classAndMethodNamesWidth ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH;
-
-      return variableWidth + JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH + JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH;
+      return (
+        resizingWidth ??
+        JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
+          (expression.classAndMethodNamesWidth ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH) +
+          JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH
+      );
     } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
       return (
         resizingWidth ??
