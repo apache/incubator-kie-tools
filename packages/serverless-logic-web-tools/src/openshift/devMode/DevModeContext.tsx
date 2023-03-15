@@ -33,7 +33,8 @@ import { AppDistributionMode } from "../../AppConstants";
 import { SpinUpDevModePipeline } from "../pipelines/SpinUpDevModePipeline";
 import { fetchWithTimeout } from "../../fetch";
 import { zipFiles } from "../../zip";
-import { isServerlessWorkflow, isSupportedByDevMode } from "../../extension";
+import { isServerlessWorkflow } from "../../extension";
+import { RestartDevModePipeline } from "../pipelines/RestartDevModePipeline";
 
 export const resolveWebToolsId = () => {
   const webToolsId = localStorage.getItem(WEB_TOOLS_ID_KEY) ?? uuid();
@@ -52,6 +53,7 @@ export interface DevModeContextType {
 export interface DevModeDispatchContextType {
   upload(args: { targetFile: WorkspaceFile; allFiles: WorkspaceFile[] }): Promise<DevModeUploadResult>;
   checkHealthReady(): Promise<boolean>;
+  restart(): Promise<void>;
 }
 
 export const DevModeContext = React.createContext<DevModeContextType>({} as any);
@@ -174,8 +176,17 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
     [checkHealthReady, endpoints]
   );
 
+  const restart = useCallback(async () => {
+    const restartDevModePipeline = new RestartDevModePipeline({
+      webToolsId: resolveWebToolsId(),
+      namespace: settings.openshift.config.namespace,
+      openShiftService: settingsDispatch.openshift.service,
+    });
+    restartDevModePipeline.execute().catch((e) => console.error(e));
+  }, [settings.openshift.config.namespace, settingsDispatch.openshift.service]);
+
   const value = useMemo(() => ({ endpoints }), [endpoints]);
-  const dispatch = useMemo(() => ({ upload, checkHealthReady }), [upload, checkHealthReady]);
+  const dispatch = useMemo(() => ({ upload, checkHealthReady, restart }), [upload, checkHealthReady, restart]);
 
   return (
     <DevModeContext.Provider value={value}>

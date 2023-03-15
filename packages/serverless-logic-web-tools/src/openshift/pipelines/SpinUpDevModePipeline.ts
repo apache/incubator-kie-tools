@@ -99,7 +99,7 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
         fetcher.execute({
           target: new UpdateDeployment({
             namespace: this.args.namespace,
-            resourceName: latestDeployment.metadata.name,
+            resourceName: updatedDeployment.metadata.name,
             descriptor: updatedDeployment,
           }),
         })

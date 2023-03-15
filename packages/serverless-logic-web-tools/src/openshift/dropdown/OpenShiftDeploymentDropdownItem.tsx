@@ -27,6 +27,7 @@ import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { basename } from "path";
 import { buildEndpoints } from "../devMode/DevModeConstants";
+import { useDevModeDispatch } from "../devMode/DevModeContext";
 
 interface Props {
   id: number;
@@ -34,6 +35,8 @@ interface Props {
 }
 
 export function OpenShiftDeploymentDropdownItem(props: Props) {
+  const devModeDispatch = useDevModeDispatch();
+
   const deploymentName = useMemo(() => {
     if (props.deployment.devMode) {
       return "Dev Mode";
@@ -57,6 +60,17 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
     window.open(props.deployment.devMode ? endpoints.devUi : endpoints.base, "_blank");
   }, [props.deployment.devMode, props.deployment.routeUrl]);
 
+  const onStateIconClicked = useCallback(
+    (e: React.MouseEvent) => {
+      if (!props.deployment.devMode) {
+        return;
+      }
+      devModeDispatch.restart();
+      e.stopPropagation();
+    },
+    [devModeDispatch, props.deployment.devMode]
+  );
+
   const stateIcon = useMemo(() => {
     if (props.deployment.state === OpenShiftDeploymentState.UP) {
       return (
@@ -64,6 +78,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
           <CheckCircleIcon
             id="openshift-deployment-item-up-icon"
             className="kogito--editor__openshift-dropdown-item-status success-icon"
+            onClick={onStateIconClicked}
           />
         </Tooltip>
       );
@@ -82,6 +97,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
           <SyncAltIcon
             id="openshift-deployment-item-in-progress-icon"
             className="kogito--editor__openshift-dropdown-item-status in-progress-icon rotating"
+            onClick={onStateIconClicked}
           />
         </Tooltip>
       );
@@ -99,6 +115,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
           <ExclamationCircleIcon
             id="openshift-deployment-item-error-icon"
             className="kogito--editor__openshift-dropdown-item-status error-icon"
+            onClick={onStateIconClicked}
           />
         </Tooltip>
       );
@@ -109,10 +126,11 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
         <ExclamationTriangleIcon
           id="openshift-deployment-item-down-icon"
           className="kogito--editor__openshift-dropdown-item-status warning-icon"
+          onClick={onStateIconClicked}
         />
       </Tooltip>
     );
-  }, [props.deployment.state, props.id]);
+  }, [onStateIconClicked, props.deployment.state, props.id]);
 
   return (
     <DropdownItem

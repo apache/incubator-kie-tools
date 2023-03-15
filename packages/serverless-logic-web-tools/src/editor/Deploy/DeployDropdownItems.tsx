@@ -112,7 +112,9 @@ export function useDeployDropdownItems(props: Props) {
           aria-live="polite"
           data-testid="alert-dev-mode-ready"
           actionClose={<AlertActionCloseButton onClose={close} />}
-          actionLinks={<AlertActionLink onClick={() => window.open(routeUrl, "_blank")}>Dev UI</AlertActionLink>}
+          actionLinks={
+            <AlertActionLink onClick={() => window.open(routeUrl, "_blank")}>{"Go to Dev UI"}</AlertActionLink>
+          }
         />
       );
     }, [])
