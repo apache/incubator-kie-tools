@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Dropdown,
   DropdownItem,
@@ -225,7 +225,7 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
 
   const canSeeWorkspaceToolbar = useMemo(
     () => props.workspace.descriptor.origin.kind !== WorkspaceKind.LOCAL || props.workspace.files.length > 1,
-    [props.workspace.descriptor.origin.kind, props.workspace.files.length]
+    [props.workspace.descriptor.origin.kind, props.workspace.files]
   );
 
   return (
@@ -265,6 +265,9 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
               <ToolbarContent style={{ paddingRight: 0 }}>
                 <ToolbarGroup>
                   <ToolbarItem>
+                    <AcceleratorsDropdown workspaceFile={props.workspaceFile} />
+                  </ToolbarItem>
+                  <ToolbarItem>
                     <ResponsiveDropdown
                       title={"Add file"}
                       onClose={() => setNewFileDropdownMenuOpen(false)}
@@ -300,9 +303,6 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
                         }}
                       />
                     </ResponsiveDropdown>
-                  </ToolbarItem>
-                  <ToolbarItem>
-                    <AcceleratorsDropdown workspaceFile={props.workspaceFile} />
                   </ToolbarItem>
                   <ToolbarItem visibility={hideWhenSmall}>
                     {props.workspaceFile.extension === "dmn" && (

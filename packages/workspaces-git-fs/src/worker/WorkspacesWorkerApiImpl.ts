@@ -404,11 +404,21 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
       async ({ fs, broadcaster }) => {
-        return this.args.services.gitService.branch({
+        await this.args.services.gitService.branch({
           fs: fs,
           dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
           ...args,
         });
+
+        if (args.checkout) {
+          broadcaster.broadcast({
+            channel: args.workspaceId,
+            message: async () => ({
+              type: "WS_CHECKOUT",
+              workspaceId: args.workspaceId,
+            }),
+          });
+        }
       }
     );
   }
@@ -424,11 +434,21 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
       async ({ fs, broadcaster }) => {
-        return this.args.services.gitService.checkout({
+        await this.args.services.gitService.checkout({
           fs: fs,
           dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
           ...args,
         });
+
+        if (!args.filepaths) {
+          broadcaster.broadcast({
+            channel: args.workspaceId,
+            message: async () => ({
+              type: "WS_CHECKOUT",
+              workspaceId: args.workspaceId,
+            }),
+          });
+        }
       }
     );
   }
@@ -757,24 +777,6 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
             name: args.gitConfig?.name ?? this.GIT_DEFAULT_USER.name,
             email: args.gitConfig?.email ?? this.GIT_DEFAULT_USER.email,
           },
-          ...args,
-        });
-      }
-    );
-  }
-
-  kieSandboxWorkspacesGit_renameBranch(args: {
-    workspaceId: string;
-    ref: string;
-    oldref: string;
-    checkout: boolean;
-  }): Promise<void> {
-    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
-      args.workspaceId,
-      async ({ fs, broadcaster }) => {
-        return this.args.services.gitService.renameBranch({
-          fs: fs,
-          dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
           ...args,
         });
       }

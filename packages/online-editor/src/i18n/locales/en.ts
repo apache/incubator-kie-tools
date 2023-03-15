@@ -67,20 +67,25 @@ export const en: OnlineI18n = {
   },
   accelerators: {
     commitMessage: (acceleratorName: string) =>
-      `${en_common.names.businessModeler.online}: Adding ${acceleratorName} accelerator to project`,
-    loadingAlert: (acceleratorName: string) => `Applying ${acceleratorName} accelerator to project...`,
-    successAlert: (acceleratorName: string) => `Successfully applied ${acceleratorName} accelerator to project`,
-    failAlert: (acceleratorName: string) => `Failed to apply ${acceleratorName} accelerator to project`,
-    applyConfirmMessage: "Are you sure you want to apply this Accelerator?",
+      `${en_common.names.businessModeler.online}: Applying ${acceleratorName} Accelerator`,
+    loadingAlert: (acceleratorName: string) => `Applying ${acceleratorName} Accelerator...`,
+    successAlert: (acceleratorName: string) => `Successfully applied ${acceleratorName} Accelerator`,
+    failAlert: (acceleratorName: string) => `Failed to apply ${acceleratorName} Accelerator`,
     acceleratorDescription:
-      "An Accelerator is a template to your project. Adding it will move your current files according to the Accelerator specifications and create a new commit for the changes.",
-    acceleratorDetails: "This accelerator is hosted at",
-    dmnFilesMove: "Your decision files will be moved to:",
-    dmnFilesLocation: "Your decision files are at:",
-    bpmnFilesMove: "Your business model files will be moved to:",
-    bpmnFilesLocation: "Your business model files are at:",
+      "An Accelerator is a template. Applying it will move your current files according to the Accelerator specifications and create a new commit for it.",
+    acceleratorDetails: "This Accelerator is hosted at",
+    dmnFilesMove: "Decisions (.dmn, .scesim) will be moved to:",
+    dmnFilesLocation: "Decisions (.dmn, .scesim) were moved to:",
+    pmmlFilesMove: "Score cards (.pmml) will moved to:",
+    pmmlFilesLocation: "Score cards (.pmml) were moved to:",
+    bpmnFilesMove: "Workflows (.bpmn, .bpmn2) will be moved to:",
+    bpmnFilesLocation: "Workflows (.bpmn, .bpmn2) were moved to:",
     otherFilesMove: "Other files will be moved to:",
-    otherFilesLocation: "Other files should be at:",
+    otherFilesLocation: "Other files were moved to:",
+    applyAccelerator: "Apply Accelerator...",
+    appliedAt: "This Accelerator was applied at:",
+    applyDisclaimer:
+      "This action is permanent. Any changes made after applying an Accelerator may result in your files being in different directories.",
   },
   devDeployments: {
     common: {

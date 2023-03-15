@@ -100,13 +100,6 @@ export interface WorkspacesWorkerGitApi {
     fastForwardOnly?: boolean;
   }): Promise<void>;
 
-  kieSandboxWorkspacesGit_renameBranch(args: {
-    workspaceId: string;
-    ref: string;
-    oldref: string;
-    checkout: boolean;
-  }): Promise<void>;
-
   kieSandboxWorkspacesGit_deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
 
   kieSandboxWorkspacesGit_branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void>;

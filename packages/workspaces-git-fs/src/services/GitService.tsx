@@ -242,22 +242,6 @@ export class GitService {
     });
   }
 
-  public async renameBranch(args: {
-    fs: KieSandboxWorkspacesFs;
-    dir: string;
-    ref: string;
-    oldref: string;
-    checkout?: boolean;
-  }) {
-    await git.renameBranch({
-      fs: args.fs,
-      dir: args.dir,
-      ref: args.ref,
-      oldref: args.oldref,
-      checkout: args.checkout,
-    });
-  }
-
   public async deleteBranch(args: { fs: KieSandboxWorkspacesFs; dir: string; ref: string }) {
     const currentBranch = await git.currentBranch({ fs: args.fs, dir: args.dir });
 

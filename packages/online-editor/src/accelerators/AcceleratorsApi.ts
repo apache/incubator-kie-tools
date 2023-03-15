@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-export type ProjectAccelerator = {
+export type AcceleratorConfig = {
   name: string;
-  iconUrl?: string;
   gitRepositoryUrl: string;
   gitRepositoryGitRef: string;
   dmnDestinationFolder: string;
   bpmnDestinationFolder: string;
   otherFilesDestinationFolder: string;
+  iconUrl?: string;
+  appliedAt?: string;
 };
 
 export function validateAcceleratorDestinationFolderPaths(path: string) {
@@ -35,5 +36,5 @@ export function validateAcceleratorDestinationFolderPaths(path: string) {
 
 export const KIE_SANDBOX_PROJECT_FILES_PATH = ".kie-sandbox";
 export const ACCELERATOR_CONFIG_FILE_NAME = "accelerator";
-export const ACCELERATOR_CONFIG_FILE_EXTENSION = "json";
+export const ACCELERATOR_CONFIG_FILE_EXTENSION = "yaml";
 export const ACCELERATOR_CONFIG_FILE_RELATIVE_PATH = `${KIE_SANDBOX_PROJECT_FILES_PATH}/${ACCELERATOR_CONFIG_FILE_NAME}.${ACCELERATOR_CONFIG_FILE_EXTENSION}`;

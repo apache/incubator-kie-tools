@@ -140,8 +140,6 @@ export interface WorkspacesContextType {
     fastForwardOnly?: boolean;
   }): Promise<void>;
 
-  renameBranch(args: { workspaceId: string; ref: string; oldref: string; checkout: boolean }): Promise<void>;
-
   deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
 
   branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void>;

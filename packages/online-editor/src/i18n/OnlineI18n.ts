@@ -69,15 +69,19 @@ interface OnlineDictionary extends ReferenceDictionary {
     loadingAlert: (acceleratorName: string) => string;
     successAlert: (acceleratorName: string) => string;
     failAlert: (acceleratorName: string) => string;
-    applyConfirmMessage: string;
     acceleratorDescription: string;
     acceleratorDetails: string;
     dmnFilesMove: string;
     dmnFilesLocation: string;
+    pmmlFilesMove: string;
+    pmmlFilesLocation: string;
     bpmnFilesMove: string;
     bpmnFilesLocation: string;
     otherFilesMove: string;
     otherFilesLocation: string;
+    applyAccelerator: string;
+    appliedAt: string;
+    applyDisclaimer: string;
   };
   devDeployments: {
     common: {

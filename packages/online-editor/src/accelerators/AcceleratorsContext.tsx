@@ -15,12 +15,13 @@
  */
 
 import React, { useCallback, useMemo, useState } from "react";
+import * as yaml from "js-yaml";
 import { useEnv } from "../env/hooks/EnvContext";
 import {
   ACCELERATOR_CONFIG_FILE_NAME,
   ACCELERATOR_CONFIG_FILE_EXTENSION,
   KIE_SANDBOX_PROJECT_FILES_PATH,
-  ProjectAccelerator,
+  AcceleratorConfig,
   validateAcceleratorDestinationFolderPaths,
   ACCELERATOR_CONFIG_FILE_RELATIVE_PATH,
 } from "./AcceleratorsApi";
@@ -32,7 +33,7 @@ import { useGlobalAlert } from "../alerts";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useOnlineI18n } from "../i18n";
-import { isBusinessProcessModel, isDecision, isEditable, isScorecard, isTestScenario } from "../extension";
+import { isBusinessProcessModel, isDecision, isScorecard, isTestScenario } from "../extension";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useAuthSession } from "../authSessions/AuthSessionsContext";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
@@ -48,7 +49,7 @@ const MOVED_FILES_BRANCH_NAME = "moved-files-accelerator-branch";
 
 export function useAvailableAccelerators() {
   const { env } = useEnv();
-  return useMemo<ProjectAccelerator[]>(() => env.KIE_SANDBOX_ACCELERATORS, [env.KIE_SANDBOX_ACCELERATORS]);
+  return useMemo<AcceleratorConfig[]>(() => env.KIE_SANDBOX_ACCELERATORS, [env.KIE_SANDBOX_ACCELERATORS]);
 }
 
 export function useApplyAccelerators(workspace: ActiveWorkspace) {
@@ -104,13 +105,33 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
     { durationInSeconds: 4 }
   );
 
+  const attemptToDeleteTemporaryBranches = useCallback(async () => {
+    const workspaceId = workspace.descriptor.workspaceId;
+    try {
+      await workspaces.deleteBranch({ workspaceId, ref: BACKUP_BRANCH_NAME });
+    } catch (e) {
+      // Do nothing
+    }
+    try {
+      await workspaces.deleteBranch({ workspaceId, ref: MOVED_FILES_BRANCH_NAME });
+    } catch (e) {
+      // Do nothing
+    }
+  }, [workspace.descriptor.workspaceId, workspaces]);
+
   const applyAcceleratorToWorkspace = useCallback(
-    async (accelerator: ProjectAccelerator, currentFile: WorkspaceFile) => {
+    async (accelerator: AcceleratorConfig, currentFile: WorkspaceFile) => {
       apllyingAcceleratorAlert.show({ acceleratorName: accelerator.name });
 
       const workspaceId = workspace.descriptor.workspaceId;
 
       let movedFiles: WorkspaceFile[] = [];
+
+      // Attempt to delete branches
+      // This is a workaround, as isomorphic-git doesn't necessarilly deletes the branch, even though it resolves
+      attemptToDeleteTemporaryBranches();
+
+      let configFile: WorkspaceFile | undefined = undefined;
 
       try {
         const destinationPathValidation = {
@@ -133,6 +154,13 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
 
         // Create new temporary branch with current files, but stay on main
         await workspaces.branch({ workspaceId, name: BACKUP_BRANCH_NAME, checkout: false });
+
+        // Commit moved files to moved files branch
+        await workspaces.commit({
+          workspaceId,
+          commitMessage: "Backup files",
+          targetBranch: BACKUP_BRANCH_NAME,
+        });
 
         // Create new temporary branch for moved files, but stay on main
         await workspaces.branch({ workspaceId, name: MOVED_FILES_BRANCH_NAME, checkout: false });
@@ -182,14 +210,14 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
         // Commit moved files to moved files branch
         await workspaces.commit({
           workspaceId,
-          commitMessage: "Moving files to apply accelerator.",
+          commitMessage: "Moving files to apply Accelerator.",
           targetBranch: MOVED_FILES_BRANCH_NAME,
         });
 
         // Go back to main
         await workspaces.checkout({ workspaceId, ref: GIT_DEFAULT_BRANCH, remote: GIT_ORIGIN_REMOTE_NAME });
 
-        // Add accelerator remote and fetch it
+        // Add Accelerator remote and fetch it
         await workspaces.addRemote({
           workspaceId,
           name: TEMP_ACCELERATOR_REMOTE_NAME,
@@ -203,7 +231,7 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
           ref: accelerator.gitRepositoryGitRef,
         });
 
-        // Checkout accelerator files, wiping everything else
+        // Checkout Accelerator files, wiping everything else
         await workspaces.checkout({
           workspaceId,
           ref: `remotes/${TEMP_ACCELERATOR_REMOTE_NAME}/${accelerator.gitRepositoryGitRef}`,
@@ -213,10 +241,10 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
           filepaths: ["."],
         });
 
-        // Delete accelerator remote
+        // Delete Accelerator remote
         await workspaces.deleteRemote({ workspaceId, name: TEMP_ACCELERATOR_REMOTE_NAME });
 
-        // Stage all accelerator files
+        // Stage all Accelerator files
         const acceleratorFiles = await workspaces.getFiles({ workspaceId });
         await Promise.all(
           acceleratorFiles.map(async (file) => {
@@ -247,11 +275,15 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
           })
         );
 
-        await workspaces.addFile({
+        // Add Accelerator YAML config
+        const content = `# This file was automatically created by ${
+          i18n.names.businessModeler.online
+        }. Please don't modify it.\n${yaml.dump({ ...accelerator, appliedAt: new Date().toISOString() })}`;
+        configFile = await workspaces.addFile({
           workspaceId,
           name: ACCELERATOR_CONFIG_FILE_NAME,
           destinationDirRelativePath: KIE_SANDBOX_PROJECT_FILES_PATH,
-          content: JSON.stringify(accelerator, null, 2),
+          content,
           extension: ACCELERATOR_CONFIG_FILE_EXTENSION,
         });
 
@@ -260,12 +292,19 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
           relativePath: ACCELERATOR_CONFIG_FILE_RELATIVE_PATH,
         });
 
+        // Create commit
         await workspaces.createSavePoint({
           workspaceId,
           gitConfig,
           commitMessage: i18n.accelerators.commitMessage(accelerator.name),
           forceHasChanges: true,
         });
+
+        apllyingAcceleratorAlert.close();
+
+        applyAcceleratorSuccessAlert.show({ acceleratorName: accelerator.name });
+
+        attemptToDeleteTemporaryBranches();
 
         history.replace({
           pathname: routes.workspaceWithFilePath.path({
@@ -274,9 +313,20 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
             workspaceId,
           }),
         });
-
-        applyAcceleratorSuccessAlert.show({ acceleratorName: accelerator.name });
       } catch (e) {
+        apllyingAcceleratorAlert.close();
+        applyAcceleratorFailAlert.show({ acceleratorName: accelerator.name });
+
+        console.error(e);
+
+        // Delete config file
+        if (configFile) {
+          await workspaces.deleteFile({ file: configFile });
+        }
+
+        // Return to main
+        await workspaces.checkout({ workspaceId, ref: GIT_DEFAULT_BRANCH, remote: GIT_ORIGIN_REMOTE_NAME });
+
         // Revert repo
         await workspaces.checkout({
           workspaceId,
@@ -287,10 +337,16 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
           filepaths: ["."],
         });
 
-        // Delete moved files
-        await Promise.all(movedFiles.map(async (file) => await workspaces.deleteFile({ file })));
+        attemptToDeleteTemporaryBranches();
 
-        applyAcceleratorFailAlert.show({ acceleratorName: accelerator.name });
+        // Delete moved files
+        await Promise.all(
+          movedFiles.map(
+            async (file) =>
+              (await workspaces.existsFile({ workspaceId, relativePath: file.relativePath })) &&
+              (await workspaces.deleteFile({ file }))
+          )
+        );
 
         // Reload to currentFile file
         history.replace({
@@ -300,21 +356,17 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
             workspaceId,
           }),
         });
-
-        console.error(e);
-      } finally {
-        await workspaces.deleteBranch({ workspaceId, ref: BACKUP_BRANCH_NAME });
-        await workspaces.deleteBranch({ workspaceId, ref: MOVED_FILES_BRANCH_NAME });
-        apllyingAcceleratorAlert.close();
       }
     },
     [
       apllyingAcceleratorAlert,
       applyAcceleratorFailAlert,
       applyAcceleratorSuccessAlert,
+      attemptToDeleteTemporaryBranches,
       gitConfig,
       history,
       i18n.accelerators,
+      i18n.names.businessModeler.online,
       routes.workspaceWithFilePath,
       workspace.descriptor.workspaceId,
       workspaces,
@@ -325,7 +377,7 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
 }
 
 export function useCurrentAccelerator(workspaceId: string) {
-  const [currentAccelerator, setCurrentAccelerator] = useState<ProjectAccelerator>();
+  const [currentAccelerator, setCurrentAccelerator] = useState<AcceleratorConfig>();
 
   const acceleratorConfigFile = useWorkspaceFilePromise(workspaceId, ACCELERATOR_CONFIG_FILE_RELATIVE_PATH);
 
@@ -334,7 +386,7 @@ export function useCurrentAccelerator(workspaceId: string) {
       return;
     }
 
-    return JSON.parse(await acceleratorConfigFile.data.workspaceFile.getFileContentsAsString()) as ProjectAccelerator;
+    return yaml.load(await acceleratorConfigFile.data.workspaceFile.getFileContentsAsString()) as AcceleratorConfig;
   }, [acceleratorConfigFile.data]);
 
   useCancelableEffect(
