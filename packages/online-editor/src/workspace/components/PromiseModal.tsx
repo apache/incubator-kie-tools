@@ -17,35 +17,35 @@
 import React, { useState, useCallback, useImperativeHandle, Ref } from "react";
 import { Modal, ModalProps } from "@patternfly/react-core/dist/js/components/Modal";
 
-export type PromiseModalChildren<T, A> = ({
+export type PromiseModalChildren<ExpectedReturnType, ExtraArgs> = ({
   onReturn,
   onClose,
   args,
 }: {
-  onReturn: (value: T) => void;
+  onReturn: (value: ExpectedReturnType) => void;
   onClose: () => void;
-  args?: A;
+  args?: ExtraArgs;
 }) => JSX.Element;
 
-export type PromiseModalProps<T, A> = Omit<ModalProps, "isOpen" | "ref" | "children"> & {
-  children: PromiseModalChildren<T, A>;
-  forwardRef: Ref<PromiseModalRef<T, A>>;
+export type PromiseModalProps<ExpectedReturnType, ExtraArgs> = Omit<ModalProps, "isOpen" | "ref" | "children"> & {
+  children: PromiseModalChildren<ExpectedReturnType, ExtraArgs>;
+  forwardRef: Ref<PromiseModalRef<ExpectedReturnType, ExtraArgs>>;
 };
 
-export interface PromiseModalRef<T, A> {
-  open: (args?: A) => Promise<T>;
+export interface PromiseModalRef<ExpectedReturnType, ExtraArgs> {
+  open: (args?: ExtraArgs) => Promise<ExpectedReturnType>;
   close: () => void;
 }
 
-export function PromiseModal<T, A>(props: PromiseModalProps<T, A>) {
+export function PromiseModal<ExpectedReturnType, ExtraArgs>(props: PromiseModalProps<ExpectedReturnType, ExtraArgs>) {
   const [isOpen, setIsOpen] = useState(false);
-  const [args, setArgs] = useState<A>();
+  const [args, setArgs] = useState<ExtraArgs>();
   const [promiseCallbacks, setPromiseCallbacks] =
-    useState<{ resolve: (value: T) => void; reject: (reason?: any) => void }>();
+    useState<{ resolve: (value: ExpectedReturnType) => void; reject: (reason?: any) => void }>();
 
-  const open = useCallback(async (openArgs?: A) => {
+  const open = useCallback(async (openArgs?: ExtraArgs) => {
     setArgs(openArgs);
-    return new Promise<T>((resolve, reject) => {
+    return new Promise<ExpectedReturnType>((resolve, reject) => {
       setPromiseCallbacks({
         resolve,
         reject,
@@ -60,7 +60,7 @@ export function PromiseModal<T, A>(props: PromiseModalProps<T, A>) {
   }, []);
 
   const onReturn = useCallback(
-    (value: T) => {
+    (value: ExpectedReturnType) => {
       promiseCallbacks?.resolve(value);
       close();
     },

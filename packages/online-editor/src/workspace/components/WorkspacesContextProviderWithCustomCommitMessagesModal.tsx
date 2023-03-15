@@ -32,7 +32,7 @@ export const WorkspacesContextProviderWithCustomCommitMessagesModal: FunctionCom
   const onCommitMessageRequest = useMemo(
     () =>
       promiseModalController
-        ? (commitMessagePlaceholder?: string) => promiseModalController.open({ commitMessagePlaceholder })
+        ? (defaultCommitMessage?: string) => promiseModalController.open({ defaultCommitMessage })
         : undefined,
     [promiseModalController]
   );

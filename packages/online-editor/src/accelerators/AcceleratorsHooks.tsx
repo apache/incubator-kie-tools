@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import { useEnv } from "../env/hooks/EnvContext";
 import {
   ACCELERATOR_CONFIG_FILE_NAME,
   ACCELERATOR_CONFIG_FILE_EXTENSION,
-  KIE_SANDBOX_PROJECT_FILES_PATH,
+  KIE_SANDBOX_DIRECTORY_PATH,
   AcceleratorConfig,
   validateAcceleratorDestinationFolderPaths,
   ACCELERATOR_CONFIG_FILE_RELATIVE_PATH,
@@ -34,7 +34,6 @@ import { useGlobalAlert } from "../alerts";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useOnlineI18n } from "../i18n";
-import { isBusinessProcessModel, isDecision, isScorecard, isTestScenario } from "../extension";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useAuthSession } from "../authSessions/AuthSessionsContext";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
@@ -43,17 +42,24 @@ import {
   GIT_DEFAULT_BRANCH,
   GIT_ORIGIN_REMOTE_NAME,
 } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
+import { isDecision, isScorecard, isWorkflow } from "../envelopeLocator/EditorEnvelopeLocatorFactory";
 
-const TEMP_ACCELERATOR_REMOTE_NAME = "accelerator-remote";
-const BACKUP_BRANCH_NAME = "pre-accelerator-backup-branch";
-const MOVED_FILES_BRANCH_NAME = "moved-files-accelerator-branch";
+const TEMP_ACCELERATOR_REMOTE_NAME = "__kie-sandbox__accelerator-remote";
+const BACKUP_BRANCH_NAME = "__kie-sandbox__accelerator-backup-branch";
+const MOVED_FILES_BRANCH_NAME = "__kie-sandbox__accelerator-moved-files-branch";
+
+class ApplyAcceleratorError extends Error {
+  constructor(acceleratorName: string, message?: string) {
+    super(`Applying Accelerator ${acceleratorName}: ${message}`);
+  }
+}
 
 export function useAvailableAccelerators() {
   const { env } = useEnv();
   return useMemo<AcceleratorConfig[]>(() => env.KIE_SANDBOX_ACCELERATORS, [env.KIE_SANDBOX_ACCELERATORS]);
 }
 
-export function useApplyAccelerators(workspace: ActiveWorkspace) {
+export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
   const workspaces = useWorkspaces();
   const history = useHistory();
   const routes = useRoutes();
@@ -148,7 +154,7 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
           destinationPathValidation.bpmnDestinationFolder ||
           destinationPathValidation.otherFilesDestinationFolder
         ) {
-          throw destinationPathValidation;
+          throw new ApplyAcceleratorError(JSON.stringify(destinationPathValidation));
         }
 
         const workspaceFiles = await workspaces.getFiles({ workspaceId });
@@ -156,10 +162,10 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
         // Create new temporary branch with current files, but stay on main
         await workspaces.branch({ workspaceId, name: BACKUP_BRANCH_NAME, checkout: false });
 
-        // Commit moved files to moved files branch
+        // Commit moved files to moved files branch (this commit will never be pushed, as this branch will be deleted)
         await workspaces.commit({
           workspaceId,
-          commitMessage: "Backup files",
+          commitMessage: `KIE Sandbox: Backup files before applying ${accelerator.name} Accelerator`,
           targetBranch: BACKUP_BRANCH_NAME,
         });
 
@@ -182,7 +188,7 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
 
             if (isDecision(file.relativePath) || isScorecard(file.relativePath)) {
               fileNewDestination = accelerator.dmnDestinationFolder;
-            } else if (isBusinessProcessModel(file.relativePath)) {
+            } else if (isWorkflow(file.relativePath)) {
               fileNewDestination = accelerator.bpmnDestinationFolder;
             } else {
               fileNewDestination = accelerator.otherFilesDestinationFolder;
@@ -205,13 +211,13 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
         const movedFilesPaths = movedFiles.map((file) => file.relativePath);
 
         if (!currentFileAfterAccelerator) {
-          throw new Error("Failed to find current file after moving.");
+          throw new ApplyAcceleratorError("Failed to find current file after moving.");
         }
 
-        // Commit moved files to moved files branch
+        // Commit moved files to moved files branch (this commit will never be pushed, as this branch will be deleted)
         await workspaces.commit({
           workspaceId,
-          commitMessage: "Moving files to apply Accelerator.",
+          commitMessage: `KIE Sandbox: Moving files to apply ${accelerator.name} Accelerator.`,
           targetBranch: MOVED_FILES_BRANCH_NAME,
         });
 
@@ -233,7 +239,7 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
         });
 
         if (!fetchResult.fetchHead) {
-          throw new Error(`Unable to find remote HEAD for ${accelerator.gitRepositoryGitRef} ref.`);
+          throw new ApplyAcceleratorError(`Unable to find remote HEAD for ${accelerator.gitRepositoryGitRef} ref.`);
         }
 
         // Checkout Accelerator files, wiping everything else
@@ -287,7 +293,7 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
         configFile = await workspaces.addFile({
           workspaceId,
           name: ACCELERATOR_CONFIG_FILE_NAME,
-          destinationDirRelativePath: KIE_SANDBOX_PROJECT_FILES_PATH,
+          destinationDirRelativePath: KIE_SANDBOX_DIRECTORY_PATH,
           content,
           extension: ACCELERATOR_CONFIG_FILE_EXTENSION,
         });
@@ -378,7 +384,7 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
     ]
   );
 
-  return applyAcceleratorToWorkspace;
+  return { applyAcceleratorToWorkspace };
 }
 
 export function useCurrentAccelerator(workspaceId: string) {

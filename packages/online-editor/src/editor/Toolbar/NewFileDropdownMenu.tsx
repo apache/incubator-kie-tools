@@ -48,7 +48,7 @@ import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/E
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useGlobalAlert } from "../../alerts";
 import { useBitbucketClient } from "../../bitbucket/Hooks";
-import { isEditable } from "../../extension";
+import { isEditable } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 
@@ -155,6 +155,7 @@ export function NewFileDropdownMenu(props: {
         })
       );
 
+      // Since non-editable files are not checked for changes, manually stage and commit these files
       await Promise.all(
         uploadedFiles.map(async (file) => {
           if (!isEditable(file.relativePath)) {
@@ -165,7 +166,6 @@ export function NewFileDropdownMenu(props: {
           }
         })
       );
-
       await workspaces.createSavePoint({
         workspaceId: props.workspaceDescriptor.workspaceId,
         gitConfig,

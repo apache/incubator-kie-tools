@@ -54,14 +54,14 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
    [comment]: <> (//TODO: Use EnvJson.schema.json to generate this documentation somehow.. See https://github.com/kiegroup/kie-issues/issues/16)
 
-   |                            Name                             |                                                     Description                                                      |                               Default                               |
-   | :---------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
-   |             `KIE_SANDBOX_EXTENDED_SERVICES_URL`             |                              The URL that points to the KIE Sandbox Extended Services.                               | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |              `KIE_SANDBOX_GIT_CORS_PROXY_URL`               |                    The URL that points to the Git CORS proxy for interacting with Git providers.                     | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |        `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGES`         |                      Require users to type a custom commit message when creating a new commit.                       | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   | `KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL` |                                       Service URL to validate commit messages.                                       | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |                `KIE_SANDBOX_AUTH_PROVIDERS`                 | Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more. | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |                 `KIE_SANDBOX_ACCELERATORS`                  |                     Project accelerators configuration. Used to add a template to your project.                      | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                            Name                             |                                                         Description                                                         |                               Default                               |
+   | :---------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
+   |             `KIE_SANDBOX_EXTENDED_SERVICES_URL`             |                                  The URL that points to the KIE Sandbox Extended Services.                                  | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |              `KIE_SANDBOX_GIT_CORS_PROXY_URL`               |                        The URL that points to the Git CORS proxy for interacting with Git providers.                        | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |        `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGES`         |                          Require users to type a custom commit message when creating a new commit.                          | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   | `KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL` |                                          Service URL to validate commit messages.                                           | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                `KIE_SANDBOX_AUTH_PROVIDERS`                 |    Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more.     | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                 `KIE_SANDBOX_ACCELERATORS`                  | Accelerators configuration. Used to add a template to a set of Decisions and Workflows, making it buildable and deployable. | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
 
    ### Examples
 
@@ -97,14 +97,14 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
       podman run -t -p 8080:8080 -e KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE='true' KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL='http://localhost:8090/validate' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
 
-   5. Adding project accelerators available for your users.
+   5. Adding Accelerators available for your users.
 
       ```bash
       podman run -t -p 8080:8080 -e KIE_SANDBOX_ACCELERATORS='[{ \
         name: "Quarkus", \
-        iconUrl: "https://seeklogo.com/images/Q/quarkus-logo-C9F006782E-seeklogo.com.png", \
-        gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-template", \
-        gitRepositoryGitRef: "template", \
+        iconUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator/raw/0.0.0/quarkus-logo.png", \
+        gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator", \
+        gitRepositoryGitRef: "0.0.0", \
         dmnDestinationFolder: "src/main/resources/dmn", \
         bpmnDestinationFolder: "src/main/resources/bpmn", \
         otherFilesDestinationFolder: "src/main/resources/others", \
@@ -195,13 +195,9 @@ Content-Type: application/json
 
 ### Accelerators
 
-Accelerators are Git repositories that contain a skeleton of a "project" and will convert a Workspace into a fully functional project that can be built and deployed.
-Here are some examples:
+Accelerators are Git repositories that contain a skeleton of an application and will convert a working directory with your .dmn and .bpmn files into a fully functional application that can be built and deployed.
 
-- https://github.com/thiagoelg/kie-sandbox-quarkus-template/tree/template
-- https://github.com/thiagoelg/kie-sandbox-dmn-springboot-template/tree/main
-
-After creating yours you must define where resources should be placed inside these projects. For example, `.dmn` files should be placed inside `src/main/resources` for a Quarkus project. As a bonus, adding an image/logo can be used to better represent your accelerator wherever it's listed.
+After creating yours you must define where resources should be placed inside these repositories. For example, `.dmn` files should be placed inside `src/main/resources` for a Quarkus application. As a bonus, adding an image/logo can be used to better represent your Accelerator wherever it's listed.
 
 #### The Accelerator configuration
 
@@ -210,7 +206,7 @@ It looks like this:
 
 ```js
 {
-    name: "Your accelerator name",
+    name: "Your Accelerator name",
     iconUrl: "https://link.to/your/logo/image",
     gitRepositoryUrl: "https://github.com/...",
     gitRepositoryGitRef: "branchName",
@@ -220,22 +216,22 @@ It looks like this:
 }
 ```
 
-- **name**: This is how your accelerator will be known inside KIE Sandbox.
-- **iconUrl**: An optional parameter to add an image/logo besides you accelerator name.
-- **gitRepositoryUrl**: This is where your accelerator is hosted. Should be an URL that can be used with `git clone`.
-- **gitRepositoryGitRef**: Where in your repository is this accelerator located. Could be a branch, commit, tag, anything that can be used with `git checkout`.
-- **dmnDestinationFolder**: Where your DMN, PMML, and SCESIM files will be moved to after applying the accelerator.
-- **bpmnDestinationFolder**: Where your BPMN files will be moved to after applying the accelerator.
-- **otherFilesDestinationFolder**: Where other files will be moved to after applying the accelerator.
+- **name**: This is how the Accelerator will be known inside KIE Sandbox.
+- **iconUrl**: An optional parameter to add an image/logo besides you Accelerator name.
+- **gitRepositoryUrl**: This is where your Accelerator is hosted. Should be an URL that can be used with `git clone`.
+- **gitRepositoryGitRef**: Where in your repository is this Accelerator located. Could be a branch, commit, tag, anything that can be used with `git checkout`.
+- **dmnDestinationFolder**: Where your DMN and PMML files will be moved to after applying the Accelerator.
+- **bpmnDestinationFolder**: Where your BPMN files will be moved to after applying the Accelerator.
+- **otherFilesDestinationFolder**: Where other files will be moved to after applying the Accelerator.
 
 Here's an example of what it should look like:
 
 ```js
 {
     name: "Quarkus",
-    iconUrl: "https://github.com/thiagoelg/kie-sandbox-quarkus-template/raw/template/quarkus-logo.png",
-    gitRepositoryUrl: "https://github.com/thiagoelg/kie-sandbox-quarkus-template",
-    gitRepositoryGitRef: "template",
+    iconUrl: `https://github.com/kiegroup/kie-sandbox-quarkus-accelerator/raw/0.0.0/quarkus-logo.png`,
+    gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator",
+    gitRepositoryGitRef: "main,
     dmnDestinationFolder: "src/main/resources/dmn",
     bpmnDestinationFolder: "src/main/resources/bpmn",
     otherFilesDestinationFolder: "src/main/resources/others",

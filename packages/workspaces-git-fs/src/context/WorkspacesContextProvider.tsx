@@ -32,7 +32,7 @@ type Props = {
     }
   | {
       shouldRequireCommitMessage: true;
-      onCommitMessageRequest: (commitMessagePlaceholder?: string) => Promise<string>;
+      onCommitMessageRequest: (defaultCommitMessage?: string) => Promise<string>;
     }
 );
 

@@ -82,7 +82,7 @@ export const en: OnlineI18n = {
     bpmnFilesLocation: "Workflows (.bpmn, .bpmn2) were moved to:",
     otherFilesMove: "Other files will be moved to:",
     otherFilesLocation: "Other files were moved to:",
-    applyAccelerator: "Apply Accelerator...",
+    applyAccelerator: "Apply Accelerator",
     appliedAt: "This Accelerator was applied at:",
     applyDisclaimer:
       "This action is permanent. Any changes made after applying an Accelerator may result in your files being in different directories.",

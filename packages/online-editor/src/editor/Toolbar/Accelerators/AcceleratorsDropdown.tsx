@@ -1,13 +1,29 @@
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import React, { useCallback, useState } from "react";
 import { ResponsiveDropdown } from "../../../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../../../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { useEditorToolbarContext, useEditorToolbarDispatchContext } from "../EditorToolbarContextProvider";
 import CaretDownIcon from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import {
-  useApplyAccelerators,
+  useAcceleratorsDispatch,
   useAvailableAccelerators,
   useCurrentAccelerator,
-} from "../../../accelerators/AcceleratorsContext";
+} from "../../../accelerators/AcceleratorsHooks";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { AcceleratorConfig } from "../../../accelerators/AcceleratorsApi";
@@ -24,7 +40,7 @@ export function AcceleratorsDropdown(props: Props) {
   const { isAcceleratorsDropdownOpen, workspace } = useEditorToolbarContext();
   const { setAcceleratorsDropdownOpen } = useEditorToolbarDispatchContext();
   const accelerators = useAvailableAccelerators();
-  const applyAcceleratorToWorkspace = useApplyAccelerators(workspace);
+  const { applyAcceleratorToWorkspace } = useAcceleratorsDispatch(workspace);
   const [isApplyModalOpen, setApplyModalOpen] = useState(false);
   const [selectedAccelerator, setSelectedAccelerator] = useState<AcceleratorConfig | undefined>();
 
@@ -75,7 +91,7 @@ export function AcceleratorsDropdown(props: Props) {
             icon={<AcceleratorIcon iconUrl={accelerator.iconUrl} />}
             onClick={() => onOpenApplyAccelerator(accelerator)}
           >
-            {accelerator.name}
+            {accelerator.name}...
           </DropdownItem>
         ))}
       />
