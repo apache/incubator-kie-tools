@@ -74,8 +74,8 @@ export const en: OnlineI18n = {
     acceleratorDescription:
       "An Accelerator is a template. Applying it will move your current files according to the Accelerator specifications and create a new commit for it.",
     acceleratorDetails: "This Accelerator is hosted at",
-    dmnFilesMove: "Decisions (.dmn, .scesim) will be moved to:",
-    dmnFilesLocation: "Decisions (.dmn, .scesim) were moved to:",
+    dmnFilesMove: "Decisions (.dmn) will be moved to:",
+    dmnFilesLocation: "Decisions (.dmn) were moved to:",
     pmmlFilesMove: "Score cards (.pmml) will moved to:",
     pmmlFilesLocation: "Score cards (.pmml) were moved to:",
     bpmnFilesMove: "Workflows (.bpmn, .bpmn2) will be moved to:",

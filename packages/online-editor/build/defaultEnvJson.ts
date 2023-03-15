@@ -82,21 +82,12 @@ export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_ACCELERATORS: [
     {
       name: "Quarkus",
-      iconUrl: "https://github.com/thiagoelg/kie-sandbox-quarkus-template/raw/template/quarkus-logo.png",
-      gitRepositoryUrl: "https://github.com/thiagoelg/kie-sandbox-quarkus-template",
-      gitRepositoryGitRef: "template",
+      iconUrl: `https://github.com/kiegroup/kie-sandbox-quarkus-template/raw/${buildEnv.root.version}/quarkus-logo.png`,
+      gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-template",
+      gitRepositoryGitRef: buildEnv.root.version,
       dmnDestinationFolder: "src/main/resources/dmn",
       bpmnDestinationFolder: "src/main/resources/bpmn",
       otherFilesDestinationFolder: "src/main/resources/others",
-    },
-    {
-      name: "DMN + Springboot",
-      iconUrl: "https://github.com/thiagoelg/kie-sandbox-dmn-springboot-template/raw/main/spring-boot-logo.png",
-      gitRepositoryUrl: "https://github.com/thiagoelg/kie-sandbox-dmn-springboot-template",
-      gitRepositoryGitRef: "main",
-      dmnDestinationFolder: "src/main/resources",
-      bpmnDestinationFolder: "src/main/resources",
-      otherFilesDestinationFolder: "src/main/resources",
     },
   ],
 };

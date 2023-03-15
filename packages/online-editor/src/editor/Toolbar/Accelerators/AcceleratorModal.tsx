@@ -1,5 +1,5 @@
-import React from "react";
-import { AcceleratorConfig } from "../../../accelerators/AcceleratorsApi";
+import React, { useMemo } from "react";
+import { AcceleratorAppliedConfig, AcceleratorConfig } from "../../../accelerators/AcceleratorsApi";
 import { useOnlineI18n } from "../../../i18n";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
@@ -9,7 +9,7 @@ import { AcceleratorIcon } from "./AcceleratorIcon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 type Props = {
-  accelerator: AcceleratorConfig;
+  accelerator: AcceleratorAppliedConfig;
   isOpen: boolean;
   onClose: () => any;
   isApplying?: boolean;

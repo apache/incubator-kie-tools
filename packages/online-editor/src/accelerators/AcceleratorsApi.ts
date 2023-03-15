@@ -22,8 +22,9 @@ export type AcceleratorConfig = {
   bpmnDestinationFolder: string;
   otherFilesDestinationFolder: string;
   iconUrl?: string;
-  appliedAt?: string;
 };
+
+export type AcceleratorAppliedConfig = AcceleratorConfig & { appliedAt?: string };
 
 export function validateAcceleratorDestinationFolderPaths(path: string) {
   if (path.startsWith(".")) {

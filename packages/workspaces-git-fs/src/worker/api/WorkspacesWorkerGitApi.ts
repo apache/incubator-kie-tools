@@ -19,6 +19,7 @@ import { BitbucketOrigin, GistOrigin, GitHubOrigin, SnippetOrigin } from "./Work
 import { LocalFile } from "./LocalFile";
 import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
 import { GitServerRef } from "./GitServerRef";
+import { FetchResult } from "isomorphic-git";
 
 export interface WorkspacesWorkerGitApi {
   kieSandboxWorkspacesGit_getGitServerRefs(args: {
@@ -142,7 +143,7 @@ export interface WorkspacesWorkerGitApi {
     commitMessage?: string;
   }): Promise<void>;
 
-  kieSandboxWorkspacesGit_fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<void>;
+  kieSandboxWorkspacesGit_fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<FetchResult>;
 
   kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {
     workspaceId: string;

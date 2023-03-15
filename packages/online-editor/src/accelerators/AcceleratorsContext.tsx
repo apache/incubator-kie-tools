@@ -24,6 +24,7 @@ import {
   AcceleratorConfig,
   validateAcceleratorDestinationFolderPaths,
   ACCELERATOR_CONFIG_FILE_RELATIVE_PATH,
+  AcceleratorAppliedConfig,
 } from "./AcceleratorsApi";
 import { WorkspaceFile, useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { dirname, join } from "path";
@@ -179,7 +180,7 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
           workspaceFiles.map(async (file) => {
             let fileNewDestination: string;
 
-            if (isDecision(file.relativePath) || isScorecard(file.relativePath) || isTestScenario(file.relativePath)) {
+            if (isDecision(file.relativePath) || isScorecard(file.relativePath)) {
               fileNewDestination = accelerator.dmnDestinationFolder;
             } else if (isBusinessProcessModel(file.relativePath)) {
               fileNewDestination = accelerator.bpmnDestinationFolder;
@@ -225,16 +226,20 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
           force: true,
         });
 
-        await workspaces.fetch({
+        const fetchResult = await workspaces.fetch({
           workspaceId,
           remote: TEMP_ACCELERATOR_REMOTE_NAME,
           ref: accelerator.gitRepositoryGitRef,
         });
 
+        if (!fetchResult.fetchHead) {
+          throw new Error(`Unable to find remote HEAD for ${accelerator.gitRepositoryGitRef} ref.`);
+        }
+
         // Checkout Accelerator files, wiping everything else
         await workspaces.checkout({
           workspaceId,
-          ref: `remotes/${TEMP_ACCELERATOR_REMOTE_NAME}/${accelerator.gitRepositoryGitRef}`,
+          ref: fetchResult.fetchHead,
           remote: TEMP_ACCELERATOR_REMOTE_NAME,
           force: true,
           noUpdateHead: true,
@@ -377,7 +382,7 @@ export function useApplyAccelerators(workspace: ActiveWorkspace) {
 }
 
 export function useCurrentAccelerator(workspaceId: string) {
-  const [currentAccelerator, setCurrentAccelerator] = useState<AcceleratorConfig>();
+  const [currentAccelerator, setCurrentAccelerator] = useState<AcceleratorAppliedConfig>();
 
   const acceleratorConfigFile = useWorkspaceFilePromise(workspaceId, ACCELERATOR_CONFIG_FILE_RELATIVE_PATH);
 
@@ -386,7 +391,9 @@ export function useCurrentAccelerator(workspaceId: string) {
       return;
     }
 
-    return yaml.load(await acceleratorConfigFile.data.workspaceFile.getFileContentsAsString()) as AcceleratorConfig;
+    return yaml.load(
+      await acceleratorConfigFile.data.workspaceFile.getFileContentsAsString()
+    ) as AcceleratorAppliedConfig;
   }, [acceleratorConfigFile.data]);
 
   useCancelableEffect(

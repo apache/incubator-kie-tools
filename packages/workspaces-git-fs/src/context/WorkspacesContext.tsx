@@ -29,6 +29,7 @@ import { decoder } from "../encoderdecoder/EncoderDecoder";
 import { parseWorkspaceFileRelativePath } from "../relativePath/WorkspaceFileRelativePathParser";
 import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 import { GitServerRef } from "../worker/api/GitServerRef";
+import { FetchResult } from "isomorphic-git";
 
 export class WorkspaceFile {
   private readonly parsedRelativePath;
@@ -193,7 +194,7 @@ export interface WorkspacesContextType {
 
   stageFile: (args: { workspaceId: string; relativePath: string }) => Promise<void>;
 
-  fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<void>;
+  fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<FetchResult>;
 
   // storage
 

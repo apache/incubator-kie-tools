@@ -42,6 +42,7 @@ import { WorkspacesWorkerApi } from "./api/WorkspacesWorkerApi";
 import { WorkspaceWorkerFile } from "./api/WorkspaceWorkerFile";
 import { WorkspaceWorkerFileDescriptor } from "./api/WorkspaceWorkerFileDescriptor";
 import { WorkspaceServices } from "./createWorkspaceServices";
+import { FetchResult } from "isomorphic-git";
 
 export interface FileFilter {
   // Files with the highest priority
@@ -605,7 +606,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     workspaceId: string;
     remote: string;
     ref: string;
-  }): Promise<void> {
+  }): Promise<FetchResult> {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
       async ({ fs, broadcaster }) => {
