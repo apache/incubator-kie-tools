@@ -154,7 +154,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           destinationPathValidation.bpmnDestinationFolder ||
           destinationPathValidation.otherFilesDestinationFolder
         ) {
-          throw new ApplyAcceleratorError(JSON.stringify(destinationPathValidation));
+          throw new ApplyAcceleratorError(accelerator.name, JSON.stringify(destinationPathValidation));
         }
 
         const workspaceFiles = await workspaces.getFiles({ workspaceId });
@@ -211,7 +211,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         const movedFilesPaths = movedFiles.map((file) => file.relativePath);
 
         if (!currentFileAfterAccelerator) {
-          throw new ApplyAcceleratorError("Failed to find current file after moving.");
+          throw new ApplyAcceleratorError(accelerator.name, "Failed to find current file after moving.");
         }
 
         // Commit moved files to moved files branch (this commit will never be pushed, as this branch will be deleted)
@@ -239,7 +239,10 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         });
 
         if (!fetchResult.fetchHead) {
-          throw new ApplyAcceleratorError(`Unable to find remote HEAD for ${accelerator.gitRepositoryGitRef} ref.`);
+          throw new ApplyAcceleratorError(
+            accelerator.name,
+            `Unable to find remote HEAD for ${accelerator.gitRepositoryGitRef} ref.`
+          );
         }
 
         // Checkout Accelerator files, wiping everything else
