@@ -28,18 +28,16 @@ export function parseWorkspaceFileRelativePath(relativePath: string) {
 }
 
 export function extractExtension(relativePath: string) {
-  const fileName = basename(relativePath);
-  if (fileName.startsWith(".")) {
-    return fileName.slice(1);
+  const fileName = basename(relativePath).toLowerCase();
+  let extensionFinder = 0;
+  if (fileName.includes(".sw.")) {
+    extensionFinder = fileName.lastIndexOf(".sw.");
+  } else if (fileName.includes(".yard.")) {
+    extensionFinder = fileName.lastIndexOf(".yard.");
+  } else if (fileName.includes(".dash.")) {
+    extensionFinder = fileName.lastIndexOf(".dash.");
+  } else {
+    extensionFinder = fileName.lastIndexOf(".");
   }
-
-  const matchDots = fileName.match(/\./g);
-  if (matchDots && matchDots.length > 1) {
-    return fileName
-      .split(/\.(.*)/s)
-      .slice(1)
-      .join("");
-  }
-
-  return extname(relativePath).replace(".", "");
+  return fileName.substring(extensionFinder + 1);
 }
