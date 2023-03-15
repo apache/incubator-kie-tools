@@ -17,8 +17,12 @@
 import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/esm/components/Dropdown";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core/dist/js/components/Menu";
-import { CopyIcon, CutIcon, ListIcon, PasteIcon, TableIcon } from "@patternfly/react-icons";
 import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
+import CopyIcon from "@patternfly/react-icons/dist/js/icons/copy-icon";
+import CutIcon from "@patternfly/react-icons/dist/js/icons/cut-icon";
+import ListIcon from "@patternfly/react-icons/dist/js/icons/list-icon";
+import PasteIcon from "@patternfly/react-icons/dist/js/icons/paste-icon";
+import TableIcon from "@patternfly/react-icons/dist/js/icons/table-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ExpressionDefinition, ExpressionDefinitionLogicType, generateUuid } from "../../../api";
