@@ -17,6 +17,7 @@
 export interface FromObject {
   id: string;
   parameters: object;
+  description: string;
   steps: any;
   uri: string;
 }

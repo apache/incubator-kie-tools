@@ -87,23 +87,37 @@ export class FsWatchingServiceCatalogRelativeStore {
     specsDirAbsolutePosixPath: string;
     routesDirAbsolutePosixPath: string;
   }): vscode.Disposable {
-    const fsWatcher = vscode.workspace.createFileSystemWatcher(
-      new vscode.RelativePattern(vscode.Uri.parse(args.specsDirAbsolutePosixPath), "*.{json,yaml,yml}"),
-      false,
-      false,
-      false
-    );
+    const fsWatchers = [
+      vscode.workspace.createFileSystemWatcher(
+        new vscode.RelativePattern(vscode.Uri.parse(args.specsDirAbsolutePosixPath), "*.{json,yaml,yml}"),
+        false,
+        false,
+        false
+      ),
+      vscode.workspace.createFileSystemWatcher(
+        new vscode.RelativePattern(vscode.Uri.parse(args.routesDirAbsolutePosixPath), "*.{json,yaml,yml}"),
+        false,
+        false,
+        false
+      ),
+    ];
 
-    const onDidCreate: vscode.Disposable = fsWatcher.onDidCreate(() => this.refresh(args));
-    const onDidChange: vscode.Disposable = fsWatcher.onDidChange(() => this.refresh(args));
-    const onDidDelete: vscode.Disposable = fsWatcher.onDidDelete(() => this.refresh(args));
+    const onDidCreateWatchers: vscode.Disposable[] = fsWatchers.map((fsWatcher) =>
+      fsWatcher.onDidCreate(() => this.refresh(args))
+    );
+    const onDidChangeWatchers: vscode.Disposable[] = fsWatchers.map((fsWatcher) =>
+      fsWatcher.onDidChange(() => this.refresh(args))
+    );
+    const onDidDeleteWatchers: vscode.Disposable[] = fsWatchers.map((fsWatcher) =>
+      fsWatcher.onDidDelete(() => this.refresh(args))
+    );
 
     return {
       dispose: () => {
-        onDidCreate.dispose();
-        onDidChange.dispose();
-        onDidDelete.dispose();
-        fsWatcher.dispose();
+        onDidCreateWatchers.forEach((onDidCreate) => onDidCreate.dispose());
+        onDidChangeWatchers.forEach((onDidChange) => onDidChange.dispose());
+        onDidDeleteWatchers.forEach((onDidDelete) => onDidDelete.dispose());
+        fsWatchers.forEach((fsWatcher) => fsWatcher.dispose());
       },
     };
   }

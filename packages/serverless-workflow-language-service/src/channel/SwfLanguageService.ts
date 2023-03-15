@@ -19,6 +19,7 @@ import {
   SwfCatalogSourceType,
   SwfServiceCatalogService,
   SwfServiceCatalogFunctionSource,
+  SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
@@ -277,10 +278,19 @@ export class SwfLanguageService {
     document: TextDocument
   ): Promise<string> {
     const { specsDirRelativePosixPath } = await this.args.config.getSpecsDirPosixPaths(document);
+    const { routesDirRelativePosixPath } = await this.args.config.getRoutesDirPosixPaths(document);
+
+    let dirRelativePosixPath;
+
+    if (containingService.type === SwfServiceCatalogServiceType.camelroute) {
+      dirRelativePosixPath = routesDirRelativePosixPath;
+    } else {
+      dirRelativePosixPath = specsDirRelativePosixPath;
+    }
 
     if (func.source.type === SwfCatalogSourceType.LOCAL_FS) {
       const serviceFileName = posixPath.basename(func.source.serviceFileAbsolutePath);
-      const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
+      const serviceFileRelativePosixPath = posixPath.join(dirRelativePosixPath, serviceFileName);
       return `${serviceFileRelativePosixPath}#${func.name}`;
     } else if (
       (await this.args.config.shouldReferenceServiceRegistryFunctionsWithUrls()) &&
@@ -296,7 +306,7 @@ export class SwfLanguageService {
         containingService.source.registry,
         containingService.source.id
       );
-      const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
+      const serviceFileRelativePosixPath = posixPath.join(dirRelativePosixPath, serviceFileName);
       return `${serviceFileRelativePosixPath}#${func.name}`;
     } else {
       throw new Error("Unknown Service Catalog function source type");
