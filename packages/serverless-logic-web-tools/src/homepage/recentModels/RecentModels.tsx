@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as React from "react";
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
@@ -31,12 +30,6 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core/dist/js";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-  DrawerPanelContent,
-} from "@patternfly/react-core/dist/js/components/Drawer";
-import {
   Dropdown,
   DropdownItem,
   DropdownToggle,
@@ -47,19 +40,17 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { KebabDropdown } from "../../editor/EditorToolbar";
 import { useRoutes } from "../../navigation/Hooks";
 import { QueryParams } from "../../navigation/Routes";
 import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
-import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
-import { WorkspaceCard, WorkspaceCardError } from "./WorkspaceCard";
-import { WorkspacesListDrawerPanelContent } from "./WorkspacesListDrawerPanelContent";
+import { WorkspacesTable } from "./WorkspacesTable";
 
 export function RecentModels() {
   const routes = useRoutes();
@@ -200,6 +191,13 @@ export function RecentModels() {
     []
   );
 
+  const onWsToggle = useCallback((workspaceId: WorkspaceDescriptor["workspaceId"], checked: boolean) => {
+    setSelectedWorkspaceIds((prevSelected) => {
+      const otherSelectedIds = prevSelected.filter((r) => r !== workspaceId);
+      return checked ? [...otherSelectedIds, workspaceId] : otherSelectedIds;
+    });
+  }, []);
+
   return (
     <PromiseStateWrapper
       promise={workspaceDescriptorsPromise}
@@ -238,95 +236,66 @@ export function RecentModels() {
                 </TextContent>
               </PageSection>
 
-              <PageSection hasOverflowScroll isFilled aria-label="workspaces-table-section">
-                <PageSection variant={"light"} isFilled style={{ height: "100%" }}>
+              <PageSection isFilled aria-label="workspaces-table-section">
+                <PageSection variant={"light"} padding={{ default: "noPadding" }}>
                   {workspaceDescriptors.length > 0 && (
-                    <Toolbar>
-                      <ToolbarContent style={{ paddingLeft: modelsListPadding, paddingRight: modelsListPadding }}>
-                        <ToolbarItem alignment={{ default: "alignLeft" }}>
-                          <Dropdown
-                            onSelect={onBulkDropDownSelect}
-                            toggle={
-                              <DropdownToggle
-                                splitButtonItems={[
-                                  <DropdownToggleCheckbox
-                                    onChange={(checked) => onSelectAllWorkspace(checked, workspaceDescriptors)}
-                                    isChecked={isBulkCheckBoxChecked}
-                                    id="split-button-text-checkbox"
-                                    key="bulk-check-box"
-                                    aria-label="Select all"
-                                  >
-                                    {selectedWorkspaceIds.length ? `${selectedWorkspaceIds.length} selected` : ""}
-                                  </DropdownToggleCheckbox>,
-                                ]}
-                                onToggle={onBulkDropDownToggle}
-                                id="toggle-split-button-text"
-                              />
-                            }
-                            isOpen={isBulkDropDownOpen}
-                            dropdownItems={bulkDropDownItems(workspaceDescriptors)}
-                            aria-label="Bulk selection dropdown"
-                          />
-                        </ToolbarItem>
-                        <ToolbarItem alignment={{ default: "alignRight" }}>
-                          <KebabDropdown
-                            id={"kebab-lg"}
-                            state={[isLargeKebabOpen, setLargeKebabOpen]}
-                            items={[deleteFileDropdownItem]}
-                            menuAppendTo="parent"
-                          />
-                        </ToolbarItem>
-                      </ToolbarContent>
-                    </Toolbar>
+                    <>
+                      <Toolbar>
+                        <ToolbarContent style={{ paddingLeft: modelsListPadding, paddingRight: modelsListPadding }}>
+                          <ToolbarItem alignment={{ default: "alignLeft" }}>
+                            <Dropdown
+                              onSelect={onBulkDropDownSelect}
+                              toggle={
+                                <DropdownToggle
+                                  splitButtonItems={[
+                                    <DropdownToggleCheckbox
+                                      onChange={(checked) => onSelectAllWorkspace(checked, workspaceDescriptors)}
+                                      isChecked={isBulkCheckBoxChecked}
+                                      id="split-button-text-checkbox"
+                                      key="bulk-check-box"
+                                      aria-label="Select all"
+                                    >
+                                      {selectedWorkspaceIds.length ? `${selectedWorkspaceIds.length} selected` : ""}
+                                    </DropdownToggleCheckbox>,
+                                  ]}
+                                  onToggle={onBulkDropDownToggle}
+                                  id="toggle-split-button-text"
+                                />
+                              }
+                              isOpen={isBulkDropDownOpen}
+                              dropdownItems={bulkDropDownItems(workspaceDescriptors)}
+                              aria-label="Bulk selection dropdown"
+                            />
+                          </ToolbarItem>
+                          <ToolbarItem alignment={{ default: "alignRight" }}>
+                            <KebabDropdown
+                              id={"kebab-lg"}
+                              state={[isLargeKebabOpen, setLargeKebabOpen]}
+                              items={[deleteFileDropdownItem]}
+                              menuAppendTo="parent"
+                            />
+                          </ToolbarItem>
+                        </ToolbarContent>
+                      </Toolbar>
+                      <WorkspacesTable
+                        workspaceDescriptors={workspaceDescriptors}
+                        selectedWorkspaceIds={selectedWorkspaceIds}
+                        setSelectedWorkspaceIds={setSelectedWorkspaceIds}
+                        onWsToggle={onWsToggle}
+                      />
+                    </>
                   )}
-                  <Drawer isExpanded={!!expandedWorkspaceId} isInline={true}>
-                    <DrawerContent
-                      panelContent={
-                        <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
-                          <WorkspacesListDrawerPanelContent
-                            key={expandedWorkspaceId}
-                            workspaceId={expandedWorkspaceId}
-                            onClose={closeExpandedWorkspace}
-                          />
-                        </DrawerPanelContent>
-                      }
-                    >
-                      <DrawerContentBody>
-                        {workspaceDescriptors.length > 0 && (
-                          <Stack hasGutter={true} style={{ padding: modelsListPadding }}>
-                            {workspaceDescriptors
-                              .sort((a, b) =>
-                                new Date(a.lastUpdatedDateISO) < new Date(b.lastUpdatedDateISO) ? 1 : -1
-                              )
-                              .map((workspace) => (
-                                <StackItem key={workspace.workspaceId}>
-                                  <ErrorBoundary error={<WorkspaceCardError workspace={workspace} />}>
-                                    <WorkspaceCard
-                                      workspaceId={workspace.workspaceId}
-                                      onSelect={() => expandWorkspace(workspace.workspaceId)}
-                                      isSelected={workspace.workspaceId === expandedWorkspaceId}
-                                      selectedWorkspaceIds={selectedWorkspaceIds}
-                                      setSelectedWorkspaceIds={setSelectedWorkspaceIds}
-                                    />
-                                  </ErrorBoundary>
-                                </StackItem>
-                              ))}
-                          </Stack>
-                        )}
-                        {workspaceDescriptors.length === 0 && (
-                          <Bullseye>
-                            <EmptyState>
-                              <EmptyStateIcon icon={CubesIcon} />
-                              <Title headingLevel="h4" size="lg">
-                                {`Nothing here`}
-                              </Title>
-                              <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
-                            </EmptyState>
-                          </Bullseye>
-                        )}
-                      </DrawerContentBody>
-                    </DrawerContent>
-                  </Drawer>
+                  {workspaceDescriptors.length === 0 && (
+                    <Bullseye>
+                      <EmptyState>
+                        <EmptyStateIcon icon={CubesIcon} />
+                        <Title headingLevel="h4" size="lg">
+                          {`Nothing here`}
+                        </Title>
+                        <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
+                      </EmptyState>
+                    </Bullseye>
+                  )}
                 </PageSection>
               </PageSection>
             </Page>

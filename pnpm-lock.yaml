@@ -5536,6 +5536,9 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-table":
+        specifier: ^4.112.39
+        version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-tokens":
         specifier: ^4.94.6
         version: 4.94.6
@@ -24511,7 +24514,7 @@ packages:
     resolution:
       { integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg== }
     dependencies:
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /lowercase-keys@2.0.0:
@@ -25399,7 +25402,7 @@ packages:
       { integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg== }
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /node-abi@2.30.1:
@@ -26250,7 +26253,7 @@ packages:
       { integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g== }
     dependencies:
       no-case: 3.0.4
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /pascalcase@0.1.1:

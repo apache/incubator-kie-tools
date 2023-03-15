@@ -54,6 +54,7 @@
     "@patternfly/quickstarts": "^2.3.2",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
+    "@patternfly/react-table": "^4.112.39",
     "@patternfly/react-tokens": "^4.94.6",
     "@rhoas/registry-instance-sdk": "^0.34.1",
     "axios": "^0.27.2",
