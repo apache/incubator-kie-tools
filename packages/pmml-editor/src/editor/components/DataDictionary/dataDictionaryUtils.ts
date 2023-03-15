@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Closure, DataDictionary, DataField, FieldName, Interval } from "@kie-tools/pmml-editor-marshaller";
+import { Closure, DataDictionary, DataField, Interval } from "@kie-tools/pmml-editor-marshaller";
 import { ConstraintType, DDDataField } from "./DataDictionaryContainer/DataDictionaryContainer";
 
 export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): DDDataField[] => {
@@ -29,7 +29,7 @@ export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): 
 
 export const convertToDataField = (item: DDDataField): DataField => {
   const convertedField: DataField = {
-    name: item.name as FieldName,
+    name: item.name,
     dataType: item.type,
     optype: item.optype,
   };

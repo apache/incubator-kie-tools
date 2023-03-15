@@ -1,4 +1,5 @@
 {
+  "extensions.autoUpdate": false,
   "window.titleBarStyle": "custom",
   "workbench.editor.enablePreview": false,
   "window.restoreFullscreen": true,

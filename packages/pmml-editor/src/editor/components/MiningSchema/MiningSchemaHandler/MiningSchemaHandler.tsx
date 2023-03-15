@@ -23,7 +23,7 @@ import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Tit
 import { CloseIcon } from "@patternfly/react-icons/dist/js/icons/close-icon";
 import { WarningTriangleIcon } from "@patternfly/react-icons/dist/js/icons/warning-triangle-icon";
 import MiningSchemaContainer from "../MiningSchemaContainer/MiningSchemaContainer";
-import { DataDictionary, FieldName, MiningField, MiningSchema, PMML } from "@kie-tools/pmml-editor-marshaller";
+import { DataDictionary, MiningField, MiningSchema, PMML } from "@kie-tools/pmml-editor-marshaller";
 import { useSelector } from "react-redux";
 import { Actions } from "../../../reducers";
 import { useBatchDispatch, useHistoryService } from "../../../history";
@@ -68,7 +68,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
     // }
   };
 
-  const updateField = (index: number, originalName: FieldName | undefined, field: MiningField) => {
+  const updateField = (index: number, originalName: string | undefined, field: MiningField) => {
     dispatch({
       type: Actions.UpdateMiningSchemaField,
       payload: {

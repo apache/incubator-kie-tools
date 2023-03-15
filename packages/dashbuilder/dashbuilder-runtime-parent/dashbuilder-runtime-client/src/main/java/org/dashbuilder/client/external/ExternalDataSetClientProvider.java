@@ -162,12 +162,31 @@ public class ExternalDataSetClientProvider {
                 if (response.status == HttpResponseCodes.SC_OK) {
                     return register(def, callback, responseText, mimeType);
                 } else {
-                    return notAbleToRetrieveDataSet(def, callback);
+                    var exception = buildExceptionForResponse(responseText, response);
+                   return notAbleToRetrieveDataSet(def, callback, exception);
                 }
 
             }, error -> notAbleToRetrieveDataSet(def, callback));
-        }).catch_(e -> notAbleToRetrieveDataSet(def, callback));
+        }).catch_(e -> notAbleToRetrieveDataSet(def, callback,
+                new RuntimeException("Request not started, make sure that CORS is enabled. Message: " + e)
+        ));
     }
+
+    
+
+    private Throwable buildExceptionForResponse(String responseText, Response response) {
+        var sb = new StringBuffer("The dataset URL is unreachable with status ");
+        sb.append(response.status);
+        sb.append(" - ");
+        sb.append(response.statusText);
+
+        if (responseText != null && !responseText.trim().isEmpty()) {
+            sb.append("\n");
+            sb.append("Response Text: ");
+            sb.append(responseText);
+        }
+        return new RuntimeException(sb.toString());
+   }
 
     private IThenable<Object> register(ExternalDataSetDef def,
                                        final DataSetReadyCallback callback,

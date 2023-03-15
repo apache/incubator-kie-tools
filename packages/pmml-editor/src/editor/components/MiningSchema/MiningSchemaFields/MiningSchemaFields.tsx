@@ -140,7 +140,7 @@ const MiningSchemaItem: React.FC<MiningSchemaFieldProps> = (props) => {
           data-ouia-component-id={field.name}
           data-ouia-component-type="edit-mining-field-row-"
           className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
-          key={field.name.value}
+          key={field.name}
           ref={ref}
           tabIndex={0}
           onKeyDown={(event) => {
@@ -175,7 +175,7 @@ const MiningSchemaItem: React.FC<MiningSchemaFieldProps> = (props) => {
           data-ouia-component-id={field.name}
           data-ouia-component-type="mining-field-row"
           className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
-          key={field.name.value}
+          key={field.name}
           onClick={(event) => handleEdit(event)}
           ref={ref}
           tabIndex={0}

@@ -19,6 +19,7 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = async (env) => {
   return merge(common(env), {
@@ -29,6 +30,9 @@ module.exports = async (env) => {
       new HtmlWebpackPlugin({
         template: "./static/index.html",
         minify: false,
+      }),
+      new CopyPlugin({
+        patterns: [{ from: path.resolve(__dirname, "./static/index.css"), to: "." }],
       }),
     ],
 

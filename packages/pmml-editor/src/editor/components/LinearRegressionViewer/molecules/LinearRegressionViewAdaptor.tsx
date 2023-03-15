@@ -18,7 +18,6 @@ import {
   CategoricalPredictor,
   DataDictionary,
   DataField,
-  FieldName,
   Interval,
   MiningField,
   MiningSchema,
@@ -137,7 +136,7 @@ const getXRange = (dataDictionary: DataDictionary, numericPredictor: NumericPred
   return getIntervalsMaximumRange(predictorFieldIntervals);
 };
 
-const getMiningFieldIntervals = (dataDictionary: DataDictionary, fieldName: FieldName): Interval[] => {
+const getMiningFieldIntervals = (dataDictionary: DataDictionary, fieldName: string): Interval[] => {
   const dataFields: DataField[] = dataDictionary.DataField.filter(
     (df) => df.name === fieldName && df.optype === "continuous"
   );

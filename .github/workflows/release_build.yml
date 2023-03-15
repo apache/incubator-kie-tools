@@ -184,7 +184,7 @@ jobs:
       KIE_SANDBOX__imageAccount: "kie-tools"
       KIE_SANDBOX__imageName: "kie-sandbox-image"
       KIE_SANDBOX__imageBuildTags: "latest ${{ inputs.tag }}"
-      ONLINE_EDITOR__buildInfo: ""
+      ONLINE_EDITOR__buildInfo: "${{ inputs.tag }}"
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
@@ -384,7 +384,7 @@ jobs:
 
   online_editor:
     env:
-      ONLINE_EDITOR__buildInfo: ""
+      ONLINE_EDITOR__buildInfo: "${{ inputs.tag }}"
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"

@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { Form } from "@patternfly/react-core";
+import { Form } from "@patternfly/react-core/dist/js/components/Form";
 import { BaseForm, context } from "uniforms";
 
 function Patternfly(parent: any): any {

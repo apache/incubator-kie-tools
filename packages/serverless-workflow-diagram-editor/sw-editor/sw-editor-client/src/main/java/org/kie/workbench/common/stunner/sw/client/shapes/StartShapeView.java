@@ -22,11 +22,11 @@ public class StartShapeView extends ServerlessWorkflowShapeView<StartShapeView> 
 
     private final static double START_SHAPE_RADIUS = 25;
 
-    public StartShapeView() {
+    public StartShapeView(String title) {
         super(new MultiPath()
                       .circle(START_SHAPE_RADIUS)
                       .setID("start"),
-              "Start");
+              title);
         setTitleXOffsetPosition(2.0);
         setTitleYOffsetPosition(17.0);
     }

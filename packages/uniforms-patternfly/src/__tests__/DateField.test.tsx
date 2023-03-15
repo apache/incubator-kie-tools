@@ -39,9 +39,9 @@ test("<DateField> - renders a input with correct id (specified)", () => {
   expect(screen.getByTestId("date-field")).toBeInTheDocument();
   expect(screen.getByTestId("date-picker").getAttribute("id")).toBe("date-picker-y");
   // TimePicker component id is in an inside div
-  expect(screen.getByTestId("time-picker").getElementsByClassName("pf-c-select")[0].getAttribute("id")).toBe(
-    "time-picker-y"
-  );
+  expect(
+    screen.getByTestId("time-picker").getElementsByClassName("pf-c-input-group")[0].children[0].getAttribute("id")
+  ).toBe("time-picker-y");
 });
 
 test("<DateField> - renders a input with correct name", () => {
@@ -111,12 +111,24 @@ test("<DateField> - renders a input which correctly reacts on change (DatePicker
   const onChange = jest.fn();
 
   const now = "2000-04-04";
+  const dateNow = new Date(now);
   render(usingUniformsContext(<DateField name="x" />, { x: { type: Date } }, { onChange }));
 
   const input = screen.getByTestId("date-picker").getElementsByTagName("input")[0];
   fireEvent.change(input, { target: { value: now } });
 
-  expect(onChange).toHaveBeenLastCalledWith("x", `${now}T00:00:00.000Z`);
+  expect(onChange).toHaveBeenLastCalledWith("x", `${dateNow.toISOString()}`);
+});
+
+test("<DateField> - renders a input which correctly reacts on change (empty value) (DatePicker)", () => {
+  const onChange = jest.fn();
+
+  render(usingUniformsContext(<DateField name="x" value={"2000-04-04"} />, { x: { type: Date } }, { onChange }));
+
+  const input = screen.getByTestId("date-picker").getElementsByTagName("input")[0];
+  fireEvent.change(input, { target: { value: "" } });
+
+  expect(onChange).toHaveBeenLastCalledWith("x", "");
 });
 
 test("<DateField> - renders a input which correctly reacts on change (DatePicker - empty)", () => {

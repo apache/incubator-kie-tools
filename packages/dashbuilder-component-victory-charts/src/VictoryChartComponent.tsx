@@ -18,7 +18,7 @@ import * as React from "react";
 import { ComponentController, DataSet } from "@kie-tools/dashbuilder-component-api";
 import { useState, useEffect } from "react";
 import { VictoryChart, VictoryChartProps } from "./VictoryChart";
-import { Alert } from "@patternfly/react-core";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { ChartType, ThemeColorType, ThemeVariantType } from "./charts/BaseChart";
 
 interface Props {

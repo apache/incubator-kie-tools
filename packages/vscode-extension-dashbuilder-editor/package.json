@@ -17,11 +17,14 @@
   "main": "dist/extension/extension.js",
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "rimraf dist && webpack && pnpm pack:prod",
+    "build:prod": "rimraf dist && webpack && pnpm pack:prod && pnpm test:it",
     "compile": "webpack",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/vscode_extension_dashbuilder_editor_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c max -u -e ./test-resources -o ./it-tests/settings.json out/*.test.js\"",
+    "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resources && rimraf ./out && rimraf ./it-tests-tmp && rimraf *.vsix",
+    "test:it:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn -t insider -u -e ./test-resources -o ./it-tests/settings.json out/*.test.js",
     "watch": "webpack"
   },
   "dependencies": {
@@ -46,12 +49,19 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "@types/chai": "^4.2.17",
     "@types/react": "^17.0.6",
+    "@types/selenium-webdriver": "^4.1.9",
     "@types/vscode": "^1.66.0",
     "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.15.0",
+    "@vscode/vsce": "^2.18.0",
+    "chai": "^4.3.4",
     "copy-webpack-plugin": "^11.0.0",
+    "cpr": "^3.0.1",
     "rimraf": "^3.0.2",
+    "selenium-webdriver": "^4.7.1",
+    "typescript": "^4.4.2",
+    "vscode-extension-tester": "5.4.0",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.7.3",
@@ -200,5 +210,8 @@
   "extensionDependencies": [
     "redhat.vscode-yaml"
   ],
-  "icon": "icon.png"
+  "icon": "icon.png",
+  "vsce": {
+    "dependencies": false
+  }
 }

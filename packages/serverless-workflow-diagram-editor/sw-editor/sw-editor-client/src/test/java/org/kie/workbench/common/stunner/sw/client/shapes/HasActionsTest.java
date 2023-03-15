@@ -21,28 +21,20 @@ import org.kie.workbench.common.stunner.sw.definition.ActionNode;
 import org.kie.workbench.common.stunner.sw.definition.FunctionRef;
 import org.kie.workbench.common.stunner.sw.definition.SubFlowRef;
 
-import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.ACTIONS_ARE_NULL;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.ACTION_IS_EVENT;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.ACTION_IS_FUNC;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.ACTION_IS_NULL;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.ACTION_IS_SUBFLOW;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.ACTION_NAME;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.getActionString;
-import static org.kie.workbench.common.stunner.sw.client.shapes.HasAction.getActionStringFromArray;
+public class HasActionsTest extends HasTranslationGeneralTest {
 
-public class HasActionTest {
+    private final HasActions hasAction = HasActionsTest.super::getTranslation;
 
     @Test
     public void actionIsNullTest() {
-        assertEquals(ACTION_IS_NULL, getActionString(null));
+        assertTranslations(TEST_STRING, hasAction.getActionString(null), "Action.null");
     }
 
     @Test
     public void actionIsEmptyTest() {
         ActionNode action = new ActionNode();
 
-        assertEquals(ACTION_IS_NULL, getActionString(action));
+        assertTranslations(TEST_STRING, hasAction.getActionString(action), "Action.null");
     }
 
     @Test
@@ -51,7 +43,9 @@ public class HasActionTest {
         String testName = "TEST NAME";
         action.setName(testName);
 
-        assertEquals(ACTION_NAME + testName, getActionString(action));
+        assertTranslations(TEST_STRING + ": " + testName,
+                           hasAction.getActionString(action),
+                           "Action.name");
     }
 
     @Test
@@ -60,7 +54,9 @@ public class HasActionTest {
         String funcRef = "FUNC REF NAME";
         action.setFunctionRef(funcRef);
 
-        assertEquals(ACTION_IS_FUNC + funcRef, getActionString(action));
+        assertTranslations(TEST_STRING + ": " + funcRef,
+                           hasAction.getActionString(action),
+                           "Action.function");
     }
 
     @Test
@@ -69,7 +65,9 @@ public class HasActionTest {
         FunctionRef functionRef = new FunctionRef();
         action.setFunctionRef(functionRef);
 
-        assertEquals(ACTION_IS_FUNC + "null", getActionString(action));
+        assertTranslations(TEST_STRING + ": " + "null",
+                           hasAction.getActionString(action),
+                           "Action.function");
     }
 
     @Test
@@ -80,7 +78,9 @@ public class HasActionTest {
         functionRef.setRefName(refName);
         action.setFunctionRef(functionRef);
 
-        assertEquals(ACTION_IS_FUNC + refName, getActionString(action));
+        assertTranslations(TEST_STRING + ": " + refName,
+                           hasAction.getActionString(action),
+                           "Action.function");
     }
 
     @Test
@@ -89,7 +89,9 @@ public class HasActionTest {
         ActionEventRef eventRef = new ActionEventRef();
         action.setEventRef(eventRef);
 
-        assertEquals(ACTION_IS_EVENT + "null", getActionString(action));
+        assertTranslations(TEST_STRING + ": " + "null",
+                           hasAction.getActionString(action),
+                           "Action.event");
     }
 
     @Test
@@ -100,7 +102,9 @@ public class HasActionTest {
         eventRef.setConsumeEventRef(consumeEventRef);
         action.setEventRef(eventRef);
 
-        assertEquals(ACTION_IS_EVENT + consumeEventRef, getActionString(action));
+        assertTranslations(TEST_STRING + ": " + consumeEventRef,
+                           hasAction.getActionString(action),
+                           "Action.event");
     }
 
     @Test
@@ -109,7 +113,9 @@ public class HasActionTest {
         String subFlowRef = "SUBFLOW REF NAME";
         action.setSubFlowRef(subFlowRef);
 
-        assertEquals(ACTION_IS_SUBFLOW + subFlowRef, getActionString(action));
+        assertTranslations(TEST_STRING + ": " + subFlowRef,
+                           hasAction.getActionString(action),
+                           "Action.subflow");
     }
 
     @Test
@@ -118,7 +124,9 @@ public class HasActionTest {
         SubFlowRef subFlowRef = new SubFlowRef();
         action.setSubFlowRef(subFlowRef);
 
-        assertEquals(ACTION_IS_SUBFLOW + "null", getActionString(action));
+        assertTranslations(TEST_STRING + ": " + "null",
+                           hasAction.getActionString(action),
+                           "Action.subflow");
     }
 
     @Test
@@ -129,19 +137,25 @@ public class HasActionTest {
         subFlowRef.setWorkflowId(workflowId);
         action.setSubFlowRef(subFlowRef);
 
-        assertEquals(ACTION_IS_SUBFLOW + workflowId, getActionString(action));
+        assertTranslations(TEST_STRING + ": " + workflowId,
+                           hasAction.getActionString(action),
+                           "Action.subflow");
     }
 
     @Test
     public void actionsArrayNullTest() {
-        assertEquals(ACTIONS_ARE_NULL, getActionStringFromArray(null));
+        assertTranslations(TEST_STRING,
+                           hasAction.getActionStringFromArray(null),
+                           "Actions.null");
     }
 
     @Test
     public void actionsArrayEmptyTest() {
         ActionNode[] actions = new ActionNode[0];
 
-        assertEquals(ACTIONS_ARE_NULL, getActionStringFromArray(actions));
+        assertTranslations(TEST_STRING,
+                           hasAction.getActionStringFromArray(actions),
+                           "Actions.null");
     }
 
     @Test
@@ -160,7 +174,9 @@ public class HasActionTest {
         action2.setFunctionRef(funcRef);
         actions[1] = action2;
 
-        assertEquals(ACTION_IS_SUBFLOW + workflowId + "\r\n" + ACTION_IS_FUNC + funcRef + "\r\n",
-                     getActionStringFromArray(actions));
+        assertTranslations(TEST_STRING + ": " + workflowId + "\r\n" + TEST_STRING + ": " + funcRef + "\r\n",
+                           hasAction.getActionStringFromArray(actions),
+                           "Action.subflow",
+                           "Action.function");
     }
 }

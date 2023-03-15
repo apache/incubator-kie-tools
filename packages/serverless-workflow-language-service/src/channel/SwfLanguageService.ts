@@ -18,11 +18,12 @@ import {
   SwfServiceCatalogFunction,
   SwfCatalogSourceType,
   SwfServiceCatalogService,
+  SwfServiceCatalogFunctionSource,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, CompletionItem, Diagnostic, Position, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import { doRefValidation } from "./refValidation";
@@ -34,7 +35,7 @@ import {
   SwfLanguageServiceCodeLenses,
   SwfLanguageServiceCodeLensesFunctionsArgs,
 } from "./SwfLanguageServiceCodeLenses";
-import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode } from "./types";
+import { CodeCompletionStrategy, JqCompletions, SwfJsonPath, SwfLsNode } from "./types";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -66,8 +67,28 @@ export type SwfLanguageServiceArgs = {
       swfServiceCatalogServiceId: string
     ) => Promise<string>;
   };
+  jqCompletions: {
+    remote: {
+      getJqAutocompleteProperties: (args: {
+        textDocument: TextDocument;
+        schemaPaths: string[];
+      }) => Promise<Record<string, string>[]>;
+    };
+    relative: {
+      getJqAutocompleteProperties: (args: {
+        textDocument: TextDocument;
+        schemaPaths: string[];
+      }) => Promise<Record<string, string>[]>;
+    };
+  };
   config: SwfLanguageServiceConfig;
 };
+
+export function isVirtualRegistry(serviceCatalogFunction: SwfServiceCatalogFunction): boolean {
+  return (
+    serviceCatalogFunction.source.type === "SERVICE_REGISTRY" && serviceCatalogFunction.source.registry === "Virtual"
+  );
+}
 
 export class SwfLanguageService {
   constructor(private readonly args: SwfLanguageServiceArgs) {}
@@ -82,7 +103,6 @@ export class SwfLanguageService {
   }): Promise<CompletionItem[]> {
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
     const cursorOffset = doc.offsetAt(args.cursorPosition);
-
     if (!args.rootNode) {
       return args.content.trim().length
         ? []
@@ -98,11 +118,9 @@ export class SwfLanguageService {
       start: doc.positionAt(currentNode.offset),
       end: doc.positionAt(currentNode.offset + currentNode.length),
     };
-
     const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
       ? currentNodeRange
       : args.cursorWordRange;
-
     const swfCompletionItemServiceCatalogServices = await Promise.all(
       [
         ...(await this.args.serviceCatalog.global.getServices()),
@@ -117,7 +135,6 @@ export class SwfLanguageService {
         ),
       }))
     );
-
     const matchedCompletions = Array.from(completions.entries()).filter(([path, _]) =>
       args.codeCompletionStrategy.shouldComplete({
         content: args.content,
@@ -128,7 +145,6 @@ export class SwfLanguageService {
         root: args.rootNode,
       })
     );
-
     const result = await Promise.all(
       matchedCompletions.map(([_, completionItemsDelegate]) => {
         return completionItemsDelegate({
@@ -142,11 +158,39 @@ export class SwfLanguageService {
           overwriteRange,
           rootNode: args.rootNode!,
           swfCompletionItemServiceCatalogServices,
+          jqCompletions: this.args.jqCompletions,
         });
       })
     );
-
     return Promise.resolve(result.flat());
+  }
+
+  private getFunctionDiagnostics(services: SwfServiceCatalogService[]): Diagnostic[] {
+    return services.flatMap((value) => this.generateDiagnostic(value.functions));
+  }
+
+  private generateDiagnostic(serviceCatalogFunctions: SwfServiceCatalogFunction[]): Diagnostic[] {
+    const functionsWithoutName = serviceCatalogFunctions.filter((fs) => !fs.name && !isVirtualRegistry(fs));
+
+    return functionsWithoutName.length >= 1
+      ? [
+          Diagnostic.create(
+            Range.create(Position.create(0, 0), Position.create(0, 0)),
+            this.getWarningMessage(serviceCatalogFunctions[0].source),
+            DiagnosticSeverity.Warning
+          ),
+        ]
+      : [];
+  }
+
+  private getWarningMessage(swfServiceCatalogFunctionSource: SwfServiceCatalogFunctionSource): string {
+    if (swfServiceCatalogFunctionSource.type == "SERVICE_REGISTRY") {
+      return `The ${swfServiceCatalogFunctionSource.serviceId} service in the  ${swfServiceCatalogFunctionSource.registry} registry is missing the "operationId" property in at least one operation`;
+    }
+    if (swfServiceCatalogFunctionSource.type === "LOCAL_FS") {
+      return `The ${swfServiceCatalogFunctionSource.serviceFileAbsolutePath} service is missing the "operationId" property in at least one operation`;
+    }
+    return "";
   }
 
   public async getDiagnostics(args: {
@@ -168,14 +212,19 @@ export class SwfLanguageService {
       docVersion,
       args.content
     );
-
     const refValidationResults = doRefValidation({ textDocument, rootNode: args.rootNode });
-
     const schemaValidationResults = (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
       ? await args.getSchemaDiagnostics(textDocument, this.args.lang.fileMatch)
       : [];
 
-    return [...schemaValidationResults, ...refValidationResults];
+    const doc = TextDocument.create(args.uriPath, this.args.lang.fileLanguage, 0, args.content);
+    const globalServices = await this.args.serviceCatalog.global.getServices();
+    const relativeServices = await this.args.serviceCatalog.relative.getServices(doc);
+    return [
+      ...schemaValidationResults,
+      ...refValidationResults,
+      ...this.getFunctionDiagnostics([...globalServices, ...relativeServices]),
+    ];
   }
 
   public async getCodeLenses(args: {
@@ -265,6 +314,7 @@ const completions = new Map<
     overwriteRange: Range;
     rootNode: SwfLsNode;
     swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
+    jqCompletions: JqCompletions;
   }) => Promise<CompletionItem[]>
 >([
   [["start"], SwfLanguageServiceCodeCompletion.getStartCompletions],
@@ -281,6 +331,12 @@ const completions = new Map<
     ["states", "*", "actions", "*", "functionRef", "arguments"],
     SwfLanguageServiceCodeCompletion.getFunctionRefArgumentsCompletions,
   ],
+  [["states", "*", "actions", "*", "functionRef", "arguments", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
+  [["states", "*", "actions", "*", "actionDataFilter", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
+  [["states", "*", "stateDataFilter", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
+  [["states", "*", "onEvents", "*", "eventDataFilter", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
+  [["states", "*", "eventDataFilter", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
+  [["states", "*", "dataConditions", "*", "condition"], SwfLanguageServiceCodeCompletion.getJqcompletions],
   [["states", "*", "onEvents", "*", "eventRefs", "*"], SwfLanguageServiceCodeCompletion.getEventRefsCompletions],
   [["states", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
   [["states", "*", "dataConditions", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],

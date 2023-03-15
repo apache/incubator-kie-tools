@@ -23,6 +23,8 @@ import * as vscode from "vscode";
 import { DashbuilderVsCodeExtensionConfiguration } from "../extension/configuration";
 import { setupDashboardEditorControls } from "../extension/setupDashboardEditorControls";
 import { DashbuilderViewerChannelApiProducer } from "../api/DashbuilderViewerChannelApiProducer";
+import { setupBuiltInVsCodeEditorDashbuilderContributions } from "../extension/builtInVsCodeEditorDashbuilderContributions";
+import { VsCodeDashbuilderLanguageService } from "../extension/languageService/VsCodeDashbuilderLanguageService";
 
 const componentServerUrl = "https://start.kubesmarts.org/dashbuilder-client/dashbuilder/component";
 
@@ -56,6 +58,16 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   const configuration = new DashbuilderVsCodeExtensionConfiguration();
+
+  const vsCodeDashbuilderLanguageService = new VsCodeDashbuilderLanguageService();
+
+  setupBuiltInVsCodeEditorDashbuilderContributions({
+    context,
+    vsCodeDashbuilderLanguageService,
+    configuration,
+    kieEditorsStore,
+  });
+
   await setupDashboardEditorControls({
     context,
     configuration,

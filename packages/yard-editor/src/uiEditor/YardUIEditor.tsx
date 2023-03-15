@@ -16,19 +16,12 @@
 
 import * as React from "react";
 import { useCallback, useState } from "react";
-import {
-  Divider,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  Tab,
-  Tabs,
-  TabTitleText,
-  TextInput,
-  Title,
-  TitleSizes,
-} from "@patternfly/react-core";
-import { CubesIcon } from "@patternfly/react-icons";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useBoxedExpressionEditorI18n } from "../i18n";
 import { YardFile } from "../types";
 import { deserialize } from "../model/YardSerializer";

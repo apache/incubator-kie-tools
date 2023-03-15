@@ -41,7 +41,7 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@types/vscode": "^1.66.0",
     "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.15.0",
+    "@vscode/vsce": "^2.18.0",
     "file-loader": "^6.2.0",
     "rimraf": "^3.0.2",
     "webpack": "^5.36.2",

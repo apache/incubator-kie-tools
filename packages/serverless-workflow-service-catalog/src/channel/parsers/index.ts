@@ -16,4 +16,5 @@
 
 export { parseOpenApi } from "./impl/openapi/openapi";
 export { parseAsyncApi } from "./impl/asyncapi/asyncapi";
+export { parseJsonSchema } from "./impl/jsonschema/jsonschema";
 export { parseApiContent } from "./parseApiContent";

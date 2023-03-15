@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
-import { EditorToolbar } from "./EditorToolbar";
+import { EditorToolbar } from "./Toolbar/EditorToolbar";
 import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../i18n";
 import { ChannelType } from "@kie-tools-core/editor/dist/api";
@@ -394,7 +394,7 @@ export function EditorPage(props: Props) {
               <Page>
                 <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />
                 <Divider />
-                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
+                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor section">
                   <DmnRunnerDrawer workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
                     <EditorPageDockDrawer ref={editorPageDockRef} workspaceFile={file.workspaceFile}>
                       {embeddedEditorFile && (

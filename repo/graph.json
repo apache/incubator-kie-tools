@@ -113,6 +113,7 @@
       { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
+      { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "vscode-extension-backend" },
       { "id": "vscode-extension-bpmn-editor" },
@@ -719,12 +720,17 @@
       { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-language-service",
-        "target": "@kie-tools/serverless-workflow-service-catalog",
+        "target": "@kie-tools/serverless-workflow-jq-expressions",
         "weight": 1
       },
       {
         "source": "@kie-tools/serverless-workflow-language-service",
         "target": "@kie-tools/yaml-language-server",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-jq-expressions",
+        "target": "@kie-tools/serverless-workflow-service-catalog",
         "weight": 1
       },
       {
@@ -930,6 +936,7 @@
     ["@kie-tools/serverless-workflow-diagram-editor", "packages/serverless-workflow-diagram-editor"],
     ["@kie-tools/serverless-workflow-diagram-editor-assets", "packages/serverless-workflow-diagram-editor-assets"],
     ["@kie-tools/serverless-workflow-diagram-editor-envelope", "packages/serverless-workflow-diagram-editor-envelope"],
+    ["@kie-tools/serverless-workflow-jq-expressions", "packages/serverless-workflow-jq-expressions"],
     ["@kie-tools/serverless-workflow-language-service", "packages/serverless-workflow-language-service"],
     ["@kie-tools/serverless-workflow-mermaid-viewer", "packages/serverless-workflow-mermaid-viewer"],
     ["@kie-tools/serverless-workflow-service-catalog", "packages/serverless-workflow-service-catalog"],

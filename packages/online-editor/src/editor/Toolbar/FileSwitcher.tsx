@@ -16,13 +16,13 @@
 
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { useRoutes } from "../navigation/Hooks";
+import { useRoutes } from "../../navigation/Hooks";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { join } from "path";
 import { Dropdown } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { FileLabel } from "../filesList/FileLabel";
+import { FileLabel } from "../../filesList/FileLabel";
 import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -59,7 +59,7 @@ import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/compo
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {
@@ -68,7 +68,7 @@ import {
   FileListItem,
   getFileDataListHeight,
   SingleFileWorkspaceDataList,
-} from "../filesList/FileDataList";
+} from "../../filesList/FileDataList";
 import {
   DataList,
   DataListCell,
@@ -76,9 +76,9 @@ import {
   DataListItemCells,
   DataListItemRow,
 } from "@patternfly/react-core/dist/js/components/DataList";
-import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
-import { usePreviewSvg } from "../previewSvgs/PreviewSvgHooks";
-import { WorkspaceLoadingMenuItem } from "../workspace/components/WorkspaceLoadingCard";
+import { WorkspaceListItem } from "../../workspace/components/WorkspaceListItem";
+import { usePreviewSvg } from "../../previewSvgs/PreviewSvgHooks";
+import { WorkspaceLoadingMenuItem } from "../../workspace/components/WorkspaceLoadingCard";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -194,21 +194,25 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
     setActiveMenu(`dd${props.workspace.descriptor.workspaceId}`);
   }, [isFilesDropdownOpen, props.workspace.descriptor.workspaceId]);
 
-  const drillIn = useCallback((fromMenuId, toMenuId, pathId) => {
+  const drillIn = useCallback((_event, fromMenuId, toMenuId, pathId) => {
     setMenuDrilledIn((prev) => [...prev, fromMenuId]);
     setDrilldownPath((prev) => [...prev, pathId]);
     setActiveMenu(toMenuId);
   }, []);
 
-  const drillOut = useCallback((toMenuId) => {
+  const drillOut = useCallback((_event, toMenuId) => {
     setMenuDrilledIn((prev) => prev.slice(0, prev.length - 1));
     setDrilldownPath((prev) => prev.slice(0, prev.length - 1));
     setActiveMenu(toMenuId);
   }, []);
 
   const setHeight = useCallback((menuId: string, height: number) => {
-    // do not try to simplify this ternary's condition as some heights are 0, resulting in an infinite loop.
-    setMenuHeights((prev) => (prev[menuId] === height ? prev : { ...prev, [menuId]: height }));
+    setMenuHeights((prev) => {
+      if (prev[menuId] === undefined || (menuId !== ROOT_MENU_ID && prev[menuId] !== height)) {
+        return { ...prev, [menuId]: height };
+      }
+      return prev;
+    });
   }, []);
 
   const workspacesMenuItems = useMemo(() => {
@@ -360,7 +364,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                 menuHeight={activeMenu === ROOT_MENU_ID ? undefined : `${menuHeights[activeMenu]}px`}
                 style={{ overflow: "hidden" }}
               >
-                <MenuList>
+                <MenuList style={{ padding: 0 }}>
                   <MenuItem
                     itemId={props.workspace.descriptor.workspaceId}
                     direction={"down"}
@@ -707,7 +711,7 @@ export function FilesMenuItems(props: {
                 <>
                   <Divider component={"li"} />
                   <MenuGroup>
-                    <MenuList>
+                    <MenuList style={{ padding: 0 }}>
                       <MenuItem
                         onClick={(e) => {
                           e.stopPropagation();

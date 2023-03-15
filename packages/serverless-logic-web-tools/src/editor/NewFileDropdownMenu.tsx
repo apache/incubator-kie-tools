@@ -39,6 +39,8 @@ import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/E
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 
+const ROOT_MENU_ID = "addFileRootMenu";
+
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
   destinationDirPath: string;
@@ -50,23 +52,27 @@ export function NewFileDropdownMenu(props: {
   const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
   const [drilldownPath, setDrilldownPath] = useState<string[]>([]);
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
-  const [activeMenu, setActiveMenu] = useState("addFileRootMenu");
+  const [activeMenu, setActiveMenu] = useState(ROOT_MENU_ID);
 
-  const drillIn = useCallback((fromMenuId, toMenuId, pathId) => {
+  const drillIn = useCallback((_event, fromMenuId, toMenuId, pathId) => {
     setMenuDrilledIn((prev) => [...prev, fromMenuId]);
     setDrilldownPath((prev) => [...prev, pathId]);
     setActiveMenu(toMenuId);
   }, []);
 
-  const drillOut = useCallback((toMenuId) => {
+  const drillOut = useCallback((_event, toMenuId) => {
     setMenuDrilledIn((prev) => prev.slice(0, prev.length - 1));
     setDrilldownPath((prev) => prev.slice(0, prev.length - 1));
     setActiveMenu(toMenuId);
   }, []);
 
   const setHeight = useCallback((menuId: string, height: number) => {
-    // do not try to simplify this ternary's condition as some heights are 0, resulting in an infinite loop.
-    setMenuHeights((prev) => (prev[menuId] !== undefined ? prev : { ...prev, [menuId]: height }));
+    setMenuHeights((prev) => {
+      if (prev[menuId] === undefined || (menuId !== ROOT_MENU_ID && prev[menuId] !== height)) {
+        return { ...prev, [menuId]: height };
+      }
+      return prev;
+    });
   }, []);
 
   const workspaces = useWorkspaces();
@@ -204,7 +210,7 @@ export function NewFileDropdownMenu(props: {
   return (
     <Menu
       style={{ boxShadow: "none", minWidth: "400px" }}
-      id="addFileRootMenu"
+      id={ROOT_MENU_ID}
       containsDrilldown={true}
       onDrillIn={drillIn}
       onDrillOut={drillOut}
@@ -214,7 +220,7 @@ export function NewFileDropdownMenu(props: {
       drilledInMenus={menuDrilledIn}
     >
       <MenuContent menuHeight={`${menuHeights[activeMenu]}px`}>
-        <MenuList>
+        <MenuList style={{ padding: 0 }}>
           <MenuItem
             itemId={"newSwfItemId"}
             onClick={() => addEmptyFile(FileTypes.SW_JSON)}

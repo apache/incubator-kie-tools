@@ -43,7 +43,7 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
       cy.iframe("#kogito-iframe[src='./serverless-workflow-text-editor-envelope.html']").within(() => {
         // create basic JSON structure
         cy.get(".codelens-decoration a:contains('Create a Serverless Workflow')").click();
-        cy.get("[aria-label='Create your first Serverless Workflow'] a").click();
+        cy.get("[aria-label='Serverless Workflow Example'] a").click();
 
         // check basic workflow parameters
         cy.get(".monaco-editor textarea")
@@ -82,7 +82,7 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
       cy.iframe("#kogito-iframe[src='./serverless-workflow-text-editor-envelope.html']").within(() => {
         // create basic YAML structure
         cy.get(".codelens-decoration a:contains('Create a Serverless Workflow')").click();
-        cy.get("[aria-label='Create your first Serverless Workflow'] a").click();
+        cy.get("[aria-label='Serverless Workflow Example'] a").click();
 
         // check basic workflow parameters
         cy.get(".monaco-editor textarea")

@@ -188,7 +188,7 @@ public class AddListRowCommandTest {
                      list.getExpression().get(0));
 
         assertEquals(list,
-                     hasExpression.asDMNModelInstrumentedBase().getParent());
+                     hasExpression.getExpression().getParent());
     }
 
     @Test
@@ -210,7 +210,7 @@ public class AddListRowCommandTest {
                      list.getExpression().get(1));
 
         assertEquals(list,
-                     hasExpression.asDMNModelInstrumentedBase().getParent());
+                     hasExpression.getExpression().getParent());
     }
 
     @Test

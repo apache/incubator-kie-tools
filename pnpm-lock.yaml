@@ -67,11 +67,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/workspace
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -190,8 +190,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -432,8 +432,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -462,11 +462,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/uniforms-patternfly
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       ajv:
         specifier: ^6.12.6
         version: 6.12.6
@@ -580,11 +580,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/serverless-workflow-standalone-editor
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       monaco-editor:
         specifier: ^0.33.0
         version: 0.33.0
@@ -759,14 +759,17 @@ importers:
         specifier: workspace:*
         version: link:../i18n-common-dictionary
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-styles":
-        specifier: ^4.18.8
-        version: 4.18.8
+        specifier: ^4.92.6
+        version: 4.92.6
+      "@patternfly/react-table":
+        specifier: ^4.112.39
+        version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -1835,11 +1838,11 @@ importers:
         specifier: workspace:*
         version: link:../dashbuilder-component-api
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-table":
-        specifier: ^4.27.15
-        version: 4.37.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.112.39
+        version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -2038,11 +2041,11 @@ importers:
         specifier: workspace:*
         version: link:../uniforms-patternfly
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-table":
-        specifier: ^4.27.15
-        version: 4.37.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.112.39
+        version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
       ajv:
         specifier: ^6.12.6
         version: 6.12.6
@@ -2150,14 +2153,14 @@ importers:
         specifier: workspace:*
         version: link:../dashbuilder-component-api
       "@patternfly/react-charts":
-        specifier: ^6.15.23
-        version: 6.15.23(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^6.94.18
+        version: 6.94.18(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-table":
-        specifier: ^4.27.15
-        version: 4.37.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.112.39
+        version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
       numeral:
         specifier: ^2.0.6
         version: 2.0.6
@@ -2286,11 +2289,11 @@ importers:
         specifier: workspace:*
         version: link:../dashbuilder-language-service
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       json-schema:
         specifier: ^0.4.0
         version: 0.4.0
@@ -2517,11 +2520,11 @@ importers:
         specifier: workspace:*
         version: link:../workspace
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -2644,11 +2647,11 @@ importers:
         specifier: workspace:*
         version: link:../i18n-common-dictionary
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -2811,11 +2814,11 @@ importers:
         specifier: workspace:*
         version: link:../i18n-common-dictionary
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -3001,11 +3004,11 @@ importers:
         specifier: workspace:*
         version: link:../workspace
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       csstype:
         specifier: ^3.0.11
         version: 3.0.11
@@ -3378,11 +3381,11 @@ importers:
         specifier: workspace:*
         version: link:../uniforms-patternfly
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       ajv:
         specifier: ^6.12.6
         version: 6.12.6
@@ -3487,11 +3490,11 @@ importers:
         specifier: workspace:*
         version: link:../uniforms-patternfly
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       ajv:
         specifier: ^6.12.6
         version: 6.12.6
@@ -3711,11 +3714,11 @@ importers:
         specifier: workspace:*
         version: link:../patternfly-base
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -3958,14 +3961,14 @@ importers:
         specifier: workspace:*
         version: link:../i18n-common-dictionary
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-table":
-        specifier: ^4.27.15
-        version: 4.37.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.112.39
+        version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -4170,8 +4173,8 @@ importers:
         specifier: workspace:*
         version: link:../pmml-editor-marshaller
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -4714,14 +4717,14 @@ importers:
         specifier: ^18.5.3
         version: 18.5.3
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-tokens":
-        specifier: ^4.33.1
-        version: 4.33.1
+        specifier: ^4.94.6
+        version: 4.94.6
       bowser:
         specifier: ^2.10.0
         version: 2.11.0
@@ -5045,14 +5048,14 @@ importers:
         specifier: workspace:*
         version: link:../pmml-editor-marshaller
       "@patternfly/react-charts":
-        specifier: ^6.15.23
-        version: 6.15.23(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^6.94.18
+        version: 6.94.18(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       "@types/lodash":
         specifier: ^4.14.168
         version: 4.14.169
@@ -5409,6 +5412,9 @@ importers:
       "@kie-tools/serverless-workflow-diagram-editor-envelope":
         specifier: workspace:*
         version: link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-jq-expressions":
+        specifier: workspace:*
+        version: link:../serverless-workflow-jq-expressions
       "@kie-tools/serverless-workflow-language-service":
         specifier: workspace:*
         version: link:../serverless-workflow-language-service
@@ -5431,14 +5437,14 @@ importers:
         specifier: ^18.5.3
         version: 18.5.3
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-tokens":
-        specifier: ^4.33.1
-        version: 4.33.1
+        specifier: ^4.94.6
+        version: 4.94.6
       "@rhoas/registry-instance-sdk":
         specifier: ^0.34.1
         version: 0.34.1
@@ -5605,6 +5611,9 @@ importers:
       typescript:
         specifier: ^4.4.2
         version: 4.8.4
+      vscode-languageserver-textdocument:
+        specifier: ^1.0.4
+        version: 1.0.7
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -5678,11 +5687,11 @@ importers:
         specifier: workspace:*
         version: link:../i18n-common-dictionary
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -5820,11 +5829,11 @@ importers:
         specifier: workspace:*
         version: link:../serverless-workflow-text-editor
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       json-schema:
         specifier: ^0.4.0
         version: 0.4.0
@@ -6044,8 +6053,63 @@ importers:
         specifier: ^4.4.2
         version: 4.5.4
 
+  packages/serverless-workflow-jq-expressions:
+    dependencies:
+      "@kie-tools/serverless-workflow-service-catalog":
+        specifier: workspace:*
+        version: link:../serverless-workflow-service-catalog
+      cross-fetch:
+        specifier: ^3.1.5
+        version: 3.1.5
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.16.12
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.16.11(@babel/core@7.16.12)
+      "@babel/preset-react":
+        specifier: ^7.16.0
+        version: 7.16.0(@babel/core@7.16.12)
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      "@types/jest-when":
+        specifier: ^2.7.4
+        version: 2.7.4
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      jest-when:
+        specifier: ^3.5.0
+        version: 3.5.0(jest@26.6.3)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.4.2
+        version: 4.8.4
+
   packages/serverless-workflow-language-service:
     dependencies:
+      "@kie-tools/serverless-workflow-jq-expressions":
+        specifier: workspace:*
+        version: link:../serverless-workflow-jq-expressions
       "@kie-tools/serverless-workflow-service-catalog":
         specifier: workspace:*
         version: link:../serverless-workflow-service-catalog
@@ -6153,11 +6217,11 @@ importers:
         specifier: workspace:*
         version: link:../workspace
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       "@severlessworkflow/sdk-typescript":
         specifier: ^3.0.3
         version: 3.0.3
@@ -6298,6 +6362,9 @@ importers:
       "@types/jest-when":
         specifier: ^2.7.4
         version: 2.7.4
+      "@types/json-schema":
+        specifier: ^7.0.11
+        version: 7.0.11
       "@types/lodash":
         specifier: ^4.14.168
         version: 4.14.169
@@ -6370,6 +6437,9 @@ importers:
       "@kie-tools/serverless-workflow-diagram-editor-envelope":
         specifier: workspace:*
         version: link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-jq-expressions":
+        specifier: workspace:*
+        version: link:../serverless-workflow-jq-expressions
       "@kie-tools/serverless-workflow-language-service":
         specifier: workspace:*
         version: link:../serverless-workflow-language-service
@@ -6518,11 +6588,11 @@ importers:
         specifier: workspace:*
         version: link:../serverless-workflow-service-catalog
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       json-schema:
         specifier: ^0.4.0
         version: 0.4.0
@@ -6578,6 +6648,9 @@ importers:
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
+      "@types/react-dom":
+        specifier: ^17.0.5
+        version: 17.0.8
       "@types/testing-library__jest-dom":
         specifier: ^5.9.1
         version: 5.9.5
@@ -6764,8 +6837,8 @@ importers:
         specifier: workspace:*
         version: link:../workspace
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       monaco-editor:
         specifier: ^0.33.0
         version: 0.33.0
@@ -6991,11 +7064,11 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       "@testing-library/jest-dom":
         specifier: ^5.16.1
         version: 5.16.1
@@ -7193,11 +7266,11 @@ importers:
         specifier: workspace:*
         version: link:../uniforms-patternfly
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       "@types/lodash":
         specifier: ^4.14.168
         version: 4.14.169
@@ -7317,11 +7390,11 @@ importers:
         specifier: workspace:*
         version: link:../unitables
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       "@types/lodash":
         specifier: ^4.14.168
         version: 4.14.169
@@ -7536,8 +7609,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.70.0)
@@ -7618,8 +7691,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.70.0)
@@ -7699,9 +7772,15 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@types/chai":
+        specifier: ^4.2.17
+        version: 4.2.18
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
+      "@types/selenium-webdriver":
+        specifier: ^4.1.9
+        version: 4.1.12
       "@types/vscode":
         specifier: ^1.66.0
         version: 1.66.0
@@ -7709,14 +7788,29 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
+      chai:
+        specifier: ^4.3.4
+        version: 4.3.4
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.70.0)
+      cpr:
+        specifier: ^3.0.1
+        version: 3.0.1
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      selenium-webdriver:
+        specifier: ^4.7.1
+        version: 4.8.1
+      typescript:
+        specifier: ^4.4.2
+        version: 4.8.4
+      vscode-extension-tester:
+        specifier: 5.4.0
+        version: 5.4.0(typescript@4.8.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -7776,8 +7870,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.70.0)
@@ -7815,8 +7909,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -7851,8 +7945,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -7960,8 +8054,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
       chai:
         specifier: ^4.3.4
         version: 4.3.4
@@ -8005,8 +8099,8 @@ importers:
         specifier: ^4.4.2
         version: 4.5.4
       vscode-extension-tester:
-        specifier: 5.3.0
-        version: 5.3.0(mocha@9.2.0)(typescript@4.5.4)
+        specifier: 5.4.0
+        version: 5.4.0(mocha@9.2.0)(typescript@4.5.4)
       vscode-test:
         specifier: ^1.6.1
         version: 1.6.1
@@ -8069,8 +8163,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.70.0)
@@ -8108,8 +8202,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -8164,6 +8258,9 @@ importers:
       "@kie-tools/serverless-workflow-diagram-editor-envelope":
         specifier: workspace:*
         version: link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-jq-expressions":
+        specifier: workspace:*
+        version: link:../serverless-workflow-jq-expressions
       "@kie-tools/serverless-workflow-language-service":
         specifier: workspace:*
         version: link:../serverless-workflow-language-service
@@ -8226,8 +8323,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
       chai:
         specifier: ^4.3.4
         version: 4.3.4
@@ -8262,8 +8359,8 @@ importers:
         specifier: ^4.4.2
         version: 4.5.4
       vscode-extension-tester:
-        specifier: 5.3.0
-        version: 5.3.0(mocha@9.2.0)(typescript@4.5.4)
+        specifier: 5.4.0
+        version: 5.4.0(mocha@9.2.0)(typescript@4.5.4)
       vscode-test:
         specifier: ^1.6.1
         version: 1.6.1
@@ -8362,8 +8459,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.18.0
+        version: 2.18.0
       chai:
         specifier: ^4.3.4
         version: 4.3.4
@@ -8395,8 +8492,8 @@ importers:
         specifier: ^4.4.2
         version: 4.5.4
       vscode-extension-tester:
-        specifier: 5.3.0
-        version: 5.3.0(mocha@9.2.0)(typescript@4.5.4)
+        specifier: 5.4.0
+        version: 5.4.0(mocha@9.2.0)(typescript@4.5.4)
       vscode-test:
         specifier: ^1.6.1
         version: 1.6.1
@@ -8749,11 +8846,11 @@ importers:
         specifier: workspace:*
         version: link:../i18n-common-dictionary
       "@patternfly/react-core":
-        specifier: ^4.157.3
-        version: 4.168.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
-        specifier: ^4.11.17
-        version: 4.19.8(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       "@types/js-yaml":
         specifier: ^4.0.5
         version: 4.0.5
@@ -12469,88 +12566,89 @@ packages:
     engines: { node: ">=8.0" }
     dev: true
 
-  /@patternfly/react-charts@6.15.23(react-dom@17.0.2)(react@17.0.2):
+  /@patternfly/react-charts@6.94.18(react-dom@17.0.2)(react@17.0.2):
     resolution:
-      { integrity: sha512-X8ou27onHXrkpcvv9AZhyinlw8vXzd9MFesDIKuXRwaQESdaPEznKIVg55ciVBj3tdAYBk5mQmxegh4UJFWSig== }
+      { integrity: sha512-56WxnZYC3blRX41mW67JaPxJ3YhXViLvwGpEsZrYCccla/rTV8JgKK0gjHnqtzPQiVBfpn+3ewOyNCOR5uRoSw== }
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0
-      react-dom: ^16.8.0 || ^17.0.0
+      react: ^16.8 || ^17 || ^18
+      react-dom: ^16.8 || ^17 || ^18
     dependencies:
-      "@patternfly/react-styles": 4.18.8
-      "@patternfly/react-tokens": 4.33.1
+      "@patternfly/react-styles": 4.92.6
+      "@patternfly/react-tokens": 4.94.6
       hoist-non-react-statics: 3.3.2
       lodash: 4.17.21
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      tslib: 2.3.1
-      victory-area: 35.11.4(react@17.0.2)
-      victory-axis: 35.11.4(react@17.0.2)
-      victory-bar: 35.11.4(react@17.0.2)
-      victory-chart: 35.11.4(react@17.0.2)
-      victory-core: 35.11.4(react@17.0.2)
-      victory-create-container: 35.11.4(react@17.0.2)
-      victory-group: 35.11.4(react@17.0.2)
-      victory-legend: 35.11.4(react@17.0.2)
-      victory-line: 35.11.4(react@17.0.2)
-      victory-pie: 35.11.4(react@17.0.2)
-      victory-scatter: 35.11.4(react@17.0.2)
-      victory-stack: 35.11.4(react@17.0.2)
-      victory-tooltip: 35.11.4(react@17.0.2)
-      victory-voronoi-container: 35.11.4(react@17.0.2)
-      victory-zoom-container: 35.11.4(react@17.0.2)
+      tslib: 2.5.0
+      victory-area: 36.6.8(react@17.0.2)
+      victory-axis: 36.6.8(react@17.0.2)
+      victory-bar: 36.6.8(react@17.0.2)
+      victory-chart: 36.6.8(react@17.0.2)
+      victory-core: 36.6.8(react@17.0.2)
+      victory-create-container: 36.6.8(react@17.0.2)
+      victory-cursor-container: 36.6.8(react@17.0.2)
+      victory-group: 36.6.8(react@17.0.2)
+      victory-legend: 36.6.8(react@17.0.2)
+      victory-line: 36.6.8(react@17.0.2)
+      victory-pie: 36.6.8(react@17.0.2)
+      victory-scatter: 36.6.8(react@17.0.2)
+      victory-stack: 36.6.8(react@17.0.2)
+      victory-tooltip: 36.6.8(react@17.0.2)
+      victory-voronoi-container: 36.6.8(react@17.0.2)
+      victory-zoom-container: 36.6.8(react@17.0.2)
     dev: false
 
-  /@patternfly/react-core@4.168.8(react-dom@17.0.2)(react@17.0.2):
+  /@patternfly/react-core@4.276.6(react-dom@17.0.2)(react@17.0.2):
     resolution:
-      { integrity: sha512-wfG52saibeAXRoBYytzMgVGANoInbPuhUK0y6AynVp3/QKAPCKHpaI4nCh9ytNZ+UjiT2KGOcunhavsOw5+iMA== }
+      { integrity: sha512-G0K+378jf9jw9g+hCAoKnsAe/UGTRspqPeuAYypF2FgNr+dC7dUpc7/VkNhZBVqSJzUWVEK8NyXcqkfi0IemIg== }
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0
-      react-dom: ^16.8.0 || ^17.0.0
+      react: ^16.8 || ^17 || ^18
+      react-dom: ^16.8 || ^17 || ^18
     dependencies:
-      "@patternfly/react-icons": 4.19.8(react-dom@17.0.2)(react@17.0.2)
-      "@patternfly/react-styles": 4.18.8
-      "@patternfly/react-tokens": 4.33.1
-      focus-trap: 6.2.2
+      "@patternfly/react-icons": 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-styles": 4.92.6
+      "@patternfly/react-tokens": 4.94.6
+      focus-trap: 6.9.2
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      react-dropzone: 11.4.2(react@17.0.2)
+      react-dropzone: 11.7.1(react@17.0.2)
       tippy.js: 5.1.2
-      tslib: 2.3.1
+      tslib: 2.5.0
 
-  /@patternfly/react-icons@4.19.8(react-dom@17.0.2)(react@17.0.2):
+  /@patternfly/react-icons@4.93.6(react-dom@17.0.2)(react@17.0.2):
     resolution:
-      { integrity: sha512-JBBcVntRLspe857JnGo8lFaZfy+WOR/IYe2E9W3Rknqm1T8WO6oXpeEnrr5r9bpYDFUa4ttcb/acuQXc1xypxg== }
+      { integrity: sha512-ZrXegc/81oiuTIeWvoHb3nG/eZODbB4rYmekBEsrbiysyO7m/sUFoi/RLvgFINrRoh6YCJqL5fj06Jg6d7jX1g== }
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0
-      react-dom: ^16.8.0 || ^17.0.0
+      react: ^16.8 || ^17 || ^18
+      react-dom: ^16.8 || ^17 || ^18
     dependencies:
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
 
-  /@patternfly/react-styles@4.18.8:
+  /@patternfly/react-styles@4.92.6:
     resolution:
-      { integrity: sha512-136N/Whs0qXDtPpsh5JeNJld5BeFPsbmmcgI5LlMQ+P9dioddh24rTqaaOIea67tHiXUB7orxaqKpBBILXqcPQ== }
+      { integrity: sha512-b8uQdEReMyeoMzjpMri845QxqtupY/tIFFYfVeKoB2neno8gkcW1RvDdDe62LF88q45OktCwAe/8A99ker10Iw== }
 
-  /@patternfly/react-table@4.37.8(react-dom@17.0.2)(react@17.0.2):
+  /@patternfly/react-table@4.112.39(react-dom@17.0.2)(react@17.0.2):
     resolution:
-      { integrity: sha512-DEaRooSGgfauX5RV3rwNcc9ZgMzR7gcCxsn9V7oNz6UsBgAV5cL7leGdAETdcV/B2+JMmGb+6QPjc54lsvwiuQ== }
+      { integrity: sha512-U+hOMgYlbghGH4M5MX+qt0GkVi/ocrGnxDnm11YiS3CtEGsd6Rr0NeqMmk0uoR46Od4Pr5tKuXxZhPP32sCL/w== }
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0
-      react-dom: ^16.8.0 || ^17.0.0
+      react: ^16.8 || ^17 || ^18
+      react-dom: ^16.8 || ^17 || ^18
     dependencies:
-      "@patternfly/react-core": 4.168.8(react-dom@17.0.2)(react@17.0.2)
-      "@patternfly/react-icons": 4.19.8(react-dom@17.0.2)(react@17.0.2)
-      "@patternfly/react-styles": 4.18.8
-      "@patternfly/react-tokens": 4.33.1
+      "@patternfly/react-core": 4.276.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-icons": 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-styles": 4.92.6
+      "@patternfly/react-tokens": 4.94.6
       lodash: 4.17.21
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: false
 
-  /@patternfly/react-tokens@4.33.1:
+  /@patternfly/react-tokens@4.94.6:
     resolution:
-      { integrity: sha512-n06+BYDviOEuoo+qE9f0Jm1DkMDpwtXWyaJFHsvi8w8uddQEsBGGoP7lpkwZj15u6jc+F9IDgk/j+EkTScrvUA== }
+      { integrity: sha512-tm7C6nat+uKMr1hrapis7hS3rN9cr41tpcCKhx6cod6FLU8KwF2Yt5KUxakhIOCEcE/M/EhXhAw/qejp8w0r7Q== }
 
   /@pnpm/build-modules@9.3.5(@pnpm/logger@4.0.0):
     resolution:
@@ -13806,7 +13904,7 @@ packages:
     engines: { node: ">=10" }
     dependencies:
       "@svgr/plugin-jsx": 6.2.1(@svgr/core@6.2.1)
-      camelcase: 6.2.0
+      camelcase: 6.3.0
       cosmiconfig: 7.0.1
     transitivePeerDependencies:
       - supports-color
@@ -14066,21 +14164,21 @@ packages:
       { integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g== }
     dependencies:
       "@types/connect": 3.4.34
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
     dev: true
 
   /@types/bonjour@3.5.10:
     resolution:
       { integrity: sha512-p7ienRMiS41Nu2/igbJxxLDWrSZ0WxM8UQgCeO9KhoVF7cOVFkrKsiDr1EsJIla8vV3oEEjGcz11jc5yimhzZw== }
     dependencies:
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
     dev: true
 
   /@types/bson@4.0.3:
     resolution:
       { integrity: sha512-mVRvYnTOZJz3ccpxhr3wgxVmSeiYinW+zlzQz3SXWaJmD1DuL05Jeq7nKw3SnbKmbleW5qrLG5vdyWe/A9sXhw== }
     dependencies:
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
     dev: true
 
   /@types/cacheable-request@6.0.1:
@@ -14116,14 +14214,14 @@ packages:
       { integrity: sha512-h8QJa8xSb1WD4fpKBDcATDNGXghFj6/3GRWG6dhmRcu0RX1Ubasur2Uvx5aeEwlf0MwblEC2bMzzMQntxnw/Cw== }
     dependencies:
       "@types/express-serve-static-core": 4.17.28
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
     dev: true
 
   /@types/connect@3.4.34:
     resolution:
       { integrity: sha512-ePPA/JuI+X0vb+gSWlPKOY0NdNAie/rPUqX2GUPpbZwiKTkSPhjXWuee47E4MtE54QVzGCQMQkAL6JhV2E1+cQ== }
     dependencies:
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
     dev: true
 
   /@types/cookie@0.4.1:
@@ -14141,10 +14239,25 @@ packages:
       { integrity: sha512-N3aUkw/yWPtdV5Ilze3UskxHjkM4mHjvQ8w9o0RK7Y6IvRkdwNyZhzGacYceCx9RTQsyw6sa1DXBHx4toDR8tQ== }
     dev: true
 
+  /@types/d3-array@3.0.4:
+    resolution:
+      { integrity: sha512-nwvEkG9vYOc0Ic7G7kwgviY4AQlTfYGIZ0fqB7CQHXGyYM6nO7kJh5EguSNA3jfh4rq7Sb7eMVq8isuvg2/miQ== }
+    dev: false
+
   /@types/d3-color@1.4.2:
     resolution:
       { integrity: sha512-fYtiVLBYy7VQX+Kx7wU/uOIkGQn8aAEY8oWMoyja3N4dLd8Yf6XgSIR/4yWvMuveNOH5VShnqCgRqqh/UNanBA== }
     dev: true
+
+  /@types/d3-color@3.1.0:
+    resolution:
+      { integrity: sha512-HKuicPHJuvPgCD+np6Se9MQvS6OCbJmOjGvylzMJRlDwUXjKTTXs6Pwgk79O09Vj/ho3u1ofXnhFOaEWWPrlwA== }
+    dev: false
+
+  /@types/d3-ease@3.0.0:
+    resolution:
+      { integrity: sha512-aMo4eaAOijJjA6uU+GIeW018dvy9+oH5Y2VPPzjjfxevvGQ/oRDs+tfYC9b50Q4BygRR8yE2QCLsrT0WtAVseA== }
+    dev: false
 
   /@types/d3-geo@1.12.3:
     resolution:
@@ -14160,6 +14273,18 @@ packages:
       "@types/d3-color": 1.4.2
     dev: true
 
+  /@types/d3-interpolate@3.0.1:
+    resolution:
+      { integrity: sha512-jx5leotSeac3jr0RePOH1KdR9rISG91QIE4Q2PYTu4OymLTZfA3SrnURSLzKH48HmXVUru50b8nje4E79oQSQw== }
+    dependencies:
+      "@types/d3-color": 3.1.0
+    dev: false
+
+  /@types/d3-path@3.0.0:
+    resolution:
+      { integrity: sha512-0g/A+mZXgFkQxN3HniRDbXMN79K3CdTpLsevj+PXiTcb2hVyvkZUBg37StmgCQkaD84cUJ4uaDAWq7UJOQy2Tg== }
+    dev: false
+
   /@types/d3-scale@4.0.2:
     resolution:
       { integrity: sha512-Yk4htunhPAwN0XGlIwArRomOjdoBFXC3+kCxK2Ubg7I9shQlVSJy/pG/Ht5ASN+gdMIalpk8TJ5xV74jFsetLA== }
@@ -14167,15 +14292,33 @@ packages:
       "@types/d3-time": 3.0.0
     dev: true
 
+  /@types/d3-scale@4.0.3:
+    resolution:
+      { integrity: sha512-PATBiMCpvHJSMtZAMEhc2WyL+hnzarKzI6wAHYjhsonjWJYGq5BXTzQjv4l8m2jO183/4wZ90rKvSeT7o72xNQ== }
+    dependencies:
+      "@types/d3-time": 3.0.0
+    dev: false
+
   /@types/d3-selection@1.4.3:
     resolution:
       { integrity: sha512-GjKQWVZO6Sa96HiKO6R93VBE8DUW+DDkFpIMf9vpY5S78qZTlRRSNUsHr/afDpF7TvLDV7VxrUFOWW7vdIlYkA== }
     dev: true
 
+  /@types/d3-shape@3.1.1:
+    resolution:
+      { integrity: sha512-6Uh86YFF7LGg4PQkuO2oG6EMBRLuW9cbavUW46zkIO5kuS2PfTqo2o9SkgtQzguBHbLgNnU90UNsITpsX1My+A== }
+    dependencies:
+      "@types/d3-path": 3.0.0
+    dev: false
+
   /@types/d3-time@3.0.0:
     resolution:
       { integrity: sha512-sZLCdHvBUcNby1cB6Fd3ZBrABbjz3v1Vm90nysCQ6Vt7vd6e/h9Lt7SiJUoEX0l4Dzc7P5llKyhqSi1ycSf1Hg== }
-    dev: true
+
+  /@types/d3-timer@3.0.0:
+    resolution:
+      { integrity: sha512-HNB/9GHqu7Fo8AQiugyJbv6ZxYz58wef0esl4Mv828w1ZKpAshw/uFWVDUcIB9KKFeFKoxS3cHY07FFgtTRZ1g== }
+    dev: false
 
   /@types/d3-zoom@1.8.3:
     resolution:
@@ -14222,7 +14365,7 @@ packages:
     resolution:
       { integrity: sha512-P1BJAEAW3E2DJUlkgq4tOL3RyMunoWXqbSCygWo5ZIWTjUgN1YnaXWW4VWl/oc8vs/XoYibEGBKP0uZyF4AHig== }
     dependencies:
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
       "@types/qs": 6.9.7
       "@types/range-parser": 1.2.4
     dev: true
@@ -14309,7 +14452,7 @@ packages:
     resolution:
       { integrity: sha512-5kPLG5BKpWYkw/LVOGWpiq3nEVqxiN32rTgI53Sk12/xHFQ2rG3ehI9IO+O3W2QoKeyB92dJkoka8SUm6BX1pA== }
     dependencies:
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
     dev: true
 
   /@types/inquirer@7.3.3:
@@ -14434,7 +14577,7 @@ packages:
       { integrity: sha512-9hhgvYPdC5iHyyksPcKCu45gfaAIPQHKHGdvNXu4582DmOZX3wrUJIJPT40o4G1oTKPgpMMFqZglOTjhnYoF+A== }
     dependencies:
       "@types/bson": 4.0.3
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
     dev: true
 
   /@types/node@13.13.52:
@@ -14607,6 +14750,13 @@ packages:
     resolution:
       { integrity: sha512-EaCxbanVeyxDRTQBkdLb3Bvl/HK7PBK6UJjsSixB0iHKoWxE5uu2Q/DgtpOhPIojN0Zl1whvOd7PoHs2P0s5eA== }
 
+  /@types/selenium-webdriver@4.1.12:
+    resolution:
+      { integrity: sha512-3DxuYHEbzIyUtuICRtxXtJomdOOkBeCbkXAlAPm/h8ArIn/ArWNnVSC6tIj/ECZ/sdxBoI0F/wuwcpxBew3hGw== }
+    dependencies:
+      "@types/ws": 8.2.2
+    dev: true
+
   /@types/selenium-webdriver@4.1.9:
     resolution:
       { integrity: sha512-QNCYI3Rgjf3bZ2GZwXnUpOJUPR8p7+c9Um9MEKggLaUaF8UfjitH5aPCV1PF0DHVEiPYsXayGVS6+67DO3VILw== }
@@ -14636,7 +14786,7 @@ packages:
       { integrity: sha512-nCkHGI4w7ZgAdNkrEu0bv+4xNV/XDqW+DydknebMOQwkpDGx8G+HTlj7R7ABI8i8nKxVw0wtKPi1D+lPOkh4YQ== }
     dependencies:
       "@types/mime": 1.3.2
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
     dev: true
 
   /@types/simpl-schema@1.12.0:
@@ -14674,7 +14824,7 @@ packages:
     resolution:
       { integrity: sha512-f0KEEe05NvUnat+boPTZ0dgaLZ4SfSouXUgv5noUiefG2ajgKjmETo9ZJyuqsl7dfl2aHlLJUiki6B4ZYldiiw== }
     dependencies:
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
     dev: true
 
   /@types/ssri@7.1.1:
@@ -14732,7 +14882,7 @@ packages:
     resolution:
       { integrity: sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg== }
     dependencies:
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
     dev: true
 
   /@types/treeify@1.0.0:
@@ -14757,7 +14907,7 @@ packages:
     resolution:
       { integrity: sha512-NOn5eIcgWLOo6qW8AcuLZ7G8PycXu0xTxxkS6Q18VWFxgPUSOwV0pBj2a/4viNZVu25i7RIB7GttdkAIUUXOOg== }
     dependencies:
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
     dev: true
 
   /@types/yargs-parser@15.0.0:
@@ -14772,12 +14922,12 @@ packages:
       "@types/yargs-parser": 15.0.0
     dev: true
 
-  /@types/yauzl@2.9.1:
+  /@types/yauzl@2.10.0:
     resolution:
-      { integrity: sha512-A1b8SU4D10uoPjwb0lnHmmu8wZhR9d+9o2PKBQT2jU5YPTKsxac6M2qGAdY7VcL+dHHhARVUDmeg0rOrcd9EjA== }
+      { integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw== }
     requiresBuild: true
     dependencies:
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
     dev: true
     optional: true
 
@@ -14925,9 +15075,9 @@ packages:
       - supports-color
     dev: true
 
-  /@vscode/vsce@2.15.0:
+  /@vscode/vsce@2.18.0:
     resolution:
-      { integrity: sha512-c+qS5KSX4jO3RuGqeNQHqci4+WrcmLxHAwiWTR3PDR6wXzV1fQJxybueUOojXcqvsJR3W2AeROrpf+302ZkTfg== }
+      { integrity: sha512-tUA3XoKx5xjoi3EDcngk0VUYMhvfXLhS4s7CntpLPh1qtLYtgSCexTIMUHkCy6MqyozRW98bdW3a2yHPEADRnQ== }
     engines: { node: ">= 14" }
     hasBin: true
     dependencies:
@@ -14937,34 +15087,7 @@ packages:
       commander: 6.2.1
       glob: 7.2.0
       hosted-git-info: 4.1.0
-      keytar: 7.7.0
-      leven: 3.1.0
-      markdown-it: 12.3.2
-      mime: 1.6.0
-      minimatch: 3.0.5
-      parse-semver: 1.1.1
-      read: 1.0.7
-      semver: 5.7.1
-      tmp: 0.2.1
-      typed-rest-client: 1.8.4
-      url-join: 4.0.1
-      xml2js: 0.4.23
-      yauzl: 2.10.0
-      yazl: 2.5.1
-    dev: true
-
-  /@vscode/vsce@2.16.0:
-    resolution:
-      { integrity: sha512-BhJ0zO7UxShLFBZM6jwOLt1ZVoqQ4r5Lj/kHNeYp0ICPXhz/erqBSMQnHkRgkjn2L/bh+TYFGkZyguhu/SKsjw== }
-    engines: { node: ">= 14" }
-    hasBin: true
-    dependencies:
-      azure-devops-node-api: 11.0.1
-      chalk: 2.4.2
-      cheerio: 1.0.0-rc.10
-      commander: 6.2.1
-      glob: 7.2.0
-      hosted-git-info: 4.1.0
+      jsonc-parser: 3.2.0
       leven: 3.1.0
       markdown-it: 12.3.2
       mime: 1.6.0
@@ -16744,19 +16867,13 @@ packages:
       { integrity: sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw== }
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /camelcase@5.3.1:
     resolution:
       { integrity: sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg== }
     engines: { node: ">=6" }
-    dev: true
-
-  /camelcase@6.2.0:
-    resolution:
-      { integrity: sha512-c7wVvbw3f37nuobQNtgsgG9POC9qMbNuMQmTCqZv23b6MIz0fcYpBiOlv9gEN/hdLdnZTDQhg6e9Dq5M1vKvfg== }
-    engines: { node: ">=10" }
     dev: true
 
   /camelcase@6.3.0:
@@ -16903,7 +17020,7 @@ packages:
       htmlparser2: 6.1.0
       parse5: 6.0.1
       parse5-htmlparser2-tree-adapter: 6.0.1
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /chevrotain@9.1.0:
@@ -17563,7 +17680,7 @@ packages:
     dependencies:
       graceful-fs: 4.2.10
       minimist: 1.2.6
-      mkdirp: 0.5.5
+      mkdirp: 0.5.6
       rimraf: 2.7.1
     dev: true
 
@@ -17627,7 +17744,6 @@ packages:
       node-fetch: 2.6.7
     transitivePeerDependencies:
       - encoding
-    dev: true
 
   /cross-spawn@6.0.5:
     resolution:
@@ -17953,6 +18069,14 @@ packages:
       internmap: 2.0.3
     dev: false
 
+  /d3-array@3.2.2:
+    resolution:
+      { integrity: sha512-yEEyEAbDrF8C6Ob2myOBLjwBLck1Z89jMGFee0oPsn95GqjerpaOA4ch+vc2l0FNFFwMD5N7OCSEN5eAlsUbgQ== }
+    engines: { node: ">=12" }
+    dependencies:
+      internmap: 2.0.3
+    dev: false
+
   /d3-axis@1.0.12:
     resolution:
       { integrity: sha512-ejINPfPSNdGFKEOAtnBtdkpr24c4d4jsei6Lg98mxf424ivoDP2956/5HDpIAtmHo85lqT4pruy+zEgvRUBqaQ== }
@@ -18016,6 +18140,12 @@ packages:
   /d3-color@3.0.1:
     resolution:
       { integrity: sha512-6/SlHkDOBLyQSJ1j1Ghs82OIUXpKWlR0hCsw0XrLSQhuUPuCSmLQ1QPH98vpnQxMUQM2/gfAkUEWsupVpd9JGw== }
+    engines: { node: ">=12" }
+    dev: false
+
+  /d3-color@3.1.0:
+    resolution:
+      { integrity: sha512-zg/chbXyeBtMQ1LbD/WSoW2DpC3I0mpmPdW+ynRTj/x2DAWYrIY7qeZIHidozwV24m4iavr15lNwIwLxRmOxhA== }
     engines: { node: ">=12" }
     dev: false
 
@@ -18201,7 +18331,7 @@ packages:
       { integrity: sha512-3bYs1rOD33uo8aqJfKP3JWPAibgw8Zm2+L9vBKEHJ2Rg+viTR7o5Mmv5mZcieN+FRYaAOWX5SJATX6k1PWz72g== }
     engines: { node: ">=12" }
     dependencies:
-      d3-color: 3.0.1
+      d3-color: 3.1.0
     dev: false
 
   /d3-path@1.0.9:
@@ -18212,6 +18342,12 @@ packages:
   /d3-path@3.0.1:
     resolution:
       { integrity: sha512-gq6gZom9AFZby0YLduxT1qmrp4xpBA1YZr19OI717WIdKE2OM5ETq5qrHLb301IgxhLwcuxvGZVLeeWc/k1I6w== }
+    engines: { node: ">=12" }
+    dev: false
+
+  /d3-path@3.1.0:
+    resolution:
+      { integrity: sha512-p3KP5HCf/bvjBSSKuXid6Zqijx7wIfNW+J/maPs+iwR35at5JCbLUT0LzF1cnjbCHWhqzQTIN2Jpe8pRebIEFQ== }
     engines: { node: ">=12" }
     dev: false
 
@@ -18295,10 +18431,10 @@ packages:
       { integrity: sha512-GZW464g1SH7ag3Y7hXjf8RoUuAFIqklOAq3MRl4OaWabTFJY9PN/E1YklhXLh+OQ3fM9yS2nOkCoS+WLZ6kvxQ== }
     engines: { node: ">=12" }
     dependencies:
-      d3-array: 3.1.1
+      d3-array: 3.2.2
       d3-format: 3.1.0
       d3-interpolate: 3.0.1
-      d3-time: 3.0.0
+      d3-time: 3.1.0
       d3-time-format: 4.1.0
     dev: false
 
@@ -18333,6 +18469,14 @@ packages:
       d3-path: 3.0.1
     dev: false
 
+  /d3-shape@3.2.0:
+    resolution:
+      { integrity: sha512-SaLBuwGm3MOViRq2ABk3eLoxwZELpH6zhl3FbAoJ7Vm1gofKx6El1Ib5z23NUEhF9AsGl7y+dzLe5Cw2AArGTA== }
+    engines: { node: ">=12" }
+    dependencies:
+      d3-path: 3.1.0
+    dev: false
+
   /d3-time-format@2.3.0:
     resolution:
       { integrity: sha512-guv6b2H37s2Uq/GefleCDtbe0XZAuy7Wa49VGkPVPMfLL9qObgBST3lEHJBMUp8S7NdLQAGIvr2KXk8Hc98iKQ== }
@@ -18359,6 +18503,14 @@ packages:
     engines: { node: ">=12" }
     dependencies:
       d3-array: 3.1.1
+    dev: false
+
+  /d3-time@3.1.0:
+    resolution:
+      { integrity: sha512-VqKjzBLejbSMT4IgbmVgDjpkYrNWUYJnbCGo874u7MMKIWsILRX+OpX/gTk8MqjpT1A/c6HY2dCA77ZN0lkQ2Q== }
+    engines: { node: ">=12" }
+    dependencies:
+      d3-array: 3.2.2
     dev: false
 
   /d3-timer@1.0.10:
@@ -19200,7 +19352,7 @@ packages:
       { integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w== }
     dependencies:
       no-case: 3.0.4
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /duplexer2@0.1.4:
@@ -19334,7 +19486,7 @@ packages:
     dependencies:
       "@types/cookie": 0.4.1
       "@types/cors": 2.8.12
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
       accepts: 1.3.7
       base64id: 2.0.0
       cookie: 0.4.1
@@ -20395,7 +20547,7 @@ packages:
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
-      "@types/yauzl": 2.9.1
+      "@types/yauzl": 2.10.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -20410,7 +20562,7 @@ packages:
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
-      "@types/yauzl": 2.9.1
+      "@types/yauzl": 2.10.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -20576,7 +20728,15 @@ packages:
       { integrity: sha512-ZDsQNbrv6qRi1YTDOEWzf5J2KjZ9KMI1Q2SGeTkCJmNNW25Jg4TW4UMcmoqcg4WrAyKRcpBXdbWRxkfrOzVRbA== }
     engines: { node: ">= 10" }
     dependencies:
-      tslib: 2.3.1
+      tslib: 2.5.0
+    dev: false
+
+  /file-selector@0.4.0:
+    resolution:
+      { integrity: sha512-iACCiXeMYOvZqlF1kTiYINzgepRBymz1wwjiuup9u9nayhb6g4fSwiyJ/6adli+EPwrWtpgQAh2PoS7HukEGEg== }
+    engines: { node: ">= 10" }
+    dependencies:
+      tslib: 2.5.0
 
   /file-type@3.9.0:
     resolution:
@@ -20756,11 +20916,11 @@ packages:
       - encoding
     dev: true
 
-  /focus-trap@6.2.2:
+  /focus-trap@6.9.2:
     resolution:
-      { integrity: sha512-qWovH9+LGoKqREvJaTCzJyO0hphQYGz+ap5Hc4NqXHNhZBdxCi5uBPPcaOUw66fHmzXLVwvETLvFgpwPILqKpg== }
+      { integrity: sha512-gBEuXOPNOKPrLdZpMFUSTyIo1eT2NSZRrwZ9r/0Jqw5tmT3Yvxfmu8KBHw8xW2XQkw6E/JoG+OlEq7UDtSUNgw== }
     dependencies:
-      tabbable: 5.1.5
+      tabbable: 5.3.3
 
   /follow-redirects@1.14.9:
     resolution:
@@ -23232,7 +23392,7 @@ packages:
       { integrity: sha512-gHWJF/6Xi5CTG5QCvROr6GcmpIqNYpDJyc8A1h/DyXqH1tD6SnRCM0d3U5msV31D2LB/U+E0M+W4oyvKV44oNw== }
     engines: { node: ">= 10.13.0" }
     dependencies:
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
@@ -23730,6 +23890,7 @@ packages:
       node-addon-api: 3.2.1
       prebuild-install: 6.1.4
     dev: true
+    optional: true
 
   /keyv@4.0.3:
     resolution:
@@ -23914,7 +24075,7 @@ packages:
     dependencies:
       copy-anything: 2.0.3
       parse-node-version: 1.0.1
-      tslib: 2.3.1
+      tslib: 2.5.0
     optionalDependencies:
       errno: 0.1.8
       graceful-fs: 4.2.10
@@ -24201,7 +24362,7 @@ packages:
     resolution:
       { integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg== }
     dependencies:
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /lowercase-keys@2.0.0:
@@ -24706,14 +24867,6 @@ packages:
       mkdirp: 1.0.4
     dev: true
 
-  /mkdirp@0.5.5:
-    resolution:
-      { integrity: sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ== }
-    hasBin: true
-    dependencies:
-      minimist: 1.2.6
-    dev: true
-
   /mkdirp@0.5.6:
     resolution:
       { integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw== }
@@ -24851,9 +25004,9 @@ packages:
     dependencies:
       monaco-editor: 0.33.0
 
-  /monaco-page-objects@3.3.0(selenium-webdriver@4.8.0)(typescript@4.5.4):
+  /monaco-page-objects@3.4.0(selenium-webdriver@4.8.1)(typescript@4.5.4):
     resolution:
-      { integrity: sha512-BnyE3MYuKhcqqhkAdVWNDSS8wWaPSKPz9PDb2KovBqeTnzbiZ4R5SpupsupJe23Fg9QwKCXe06EcYU2ofwKyAA== }
+      { integrity: sha512-65W5vpceLM9494qffpK5rNsRSzNlYK7sC21Z+Xb9j23rgalnEkKuGCRf5Y7vNj+0bXpCh2Bk+n//K/kzJGseZA== }
     peerDependencies:
       selenium-webdriver: ^4.6.1
       typescript: ">=4.6.2"
@@ -24862,9 +25015,25 @@ packages:
       clone-deep: 4.0.1
       compare-versions: 5.0.1
       fs-extra: 11.1.0
-      selenium-webdriver: 4.8.0
+      selenium-webdriver: 4.8.1
       ts-essentials: 9.3.0(typescript@4.5.4)
       typescript: 4.5.4
+    dev: true
+
+  /monaco-page-objects@3.4.0(selenium-webdriver@4.8.1)(typescript@4.8.4):
+    resolution:
+      { integrity: sha512-65W5vpceLM9494qffpK5rNsRSzNlYK7sC21Z+Xb9j23rgalnEkKuGCRf5Y7vNj+0bXpCh2Bk+n//K/kzJGseZA== }
+    peerDependencies:
+      selenium-webdriver: ^4.6.1
+      typescript: ">=4.6.2"
+    dependencies:
+      clipboardy: 2.3.0
+      clone-deep: 4.0.1
+      compare-versions: 5.0.1
+      fs-extra: 11.1.0
+      selenium-webdriver: 4.8.1
+      ts-essentials: 9.3.0(typescript@4.8.4)
+      typescript: 4.8.4
     dev: true
 
   /monaco-worker-manager@2.0.1(monaco-editor@0.33.0):
@@ -25089,7 +25258,7 @@ packages:
       { integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg== }
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /node-abi@2.30.1:
@@ -25103,6 +25272,7 @@ packages:
     resolution:
       { integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A== }
     dev: true
+    optional: true
 
   /node-fetch@2.6.7:
     resolution:
@@ -25842,7 +26012,7 @@ packages:
       { integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A== }
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /parent-module@1.0.1:
@@ -25929,7 +26099,7 @@ packages:
       { integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g== }
     dependencies:
       no-case: 3.0.4
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /pascalcase@0.1.1:
@@ -27190,6 +27360,19 @@ packages:
       file-selector: 0.2.4
       prop-types: 15.8.1
       react: 17.0.2
+    dev: false
+
+  /react-dropzone@11.7.1(react@17.0.2):
+    resolution:
+      { integrity: sha512-zxCMwhfPy1olUEbw3FLNPLhAm/HnaYH5aELIEglRbqabizKAdHs0h+WuyOpmA+v1JXn0++fpQDdNfUagWt5hJQ== }
+    engines: { node: ">= 10.13" }
+    peerDependencies:
+      react: ">= 16.8"
+    dependencies:
+      attr-accept: 2.2.2
+      file-selector: 0.4.0
+      prop-types: 15.8.1
+      react: 17.0.2
 
   /react-error-boundary@3.1.3(react@17.0.2):
     resolution:
@@ -27205,6 +27388,11 @@ packages:
   /react-fast-compare@2.0.4:
     resolution:
       { integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw== }
+    dev: false
+
+  /react-fast-compare@3.2.0:
+    resolution:
+      { integrity: sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA== }
     dev: false
 
   /react-id-generator@3.0.2(react@17.0.2):
@@ -28024,7 +28212,7 @@ packages:
     resolution:
       { integrity: sha512-dnyv2/YsXhnm461G+R/Pe5bWP41Nm6LBXEYWI6eiFP4fiwx6WRI/CD0zbdVAudd9xwLEF2IDcKXLHit0FYjUzw== }
     dependencies:
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /safe-buffer@5.1.2:
@@ -28206,9 +28394,9 @@ packages:
       - utf-8-validate
     dev: true
 
-  /selenium-webdriver@4.8.0:
+  /selenium-webdriver@4.8.1:
     resolution:
-      { integrity: sha512-s/HL8WNwy1ggHR244+tAhjhyKMJnZLt1HKJ6Gn7nQgVjB/ybDF+46Uui0qI2J7AjPNJzlUmTncdC/jg/kKkn0A== }
+      { integrity: sha512-p4MtfhCQdcV6xxkS7eI0tQN6+WNReRULLCAuT4RDGkrjfObBNXMJ3WT8XdK+aXTr5nnBKuh+PxIevM0EjJgkxA== }
     engines: { node: ">= 14.20.0" }
     dependencies:
       jszip: 3.10.1
@@ -29266,9 +29454,9 @@ packages:
       rename-overwrite: 4.0.0
     dev: true
 
-  /tabbable@5.1.5:
+  /tabbable@5.3.3:
     resolution:
-      { integrity: sha512-oVAPrWgLLqrbvQE8XqcU7CVBq6SQbaIbHkhOca3u7/jzuQvyZycrUKPCGr04qpEIUslmUlULbSeN+m3QrKEykA== }
+      { integrity: sha512-QD9qKY3StfbZqWOPLp0++pOrAVb/HbUi5xCc8cUo4XjP19808oaMiDzn0leBY5mCespIBM0CIZePzZjgzR83kA== }
 
   /table@6.7.1:
     resolution:
@@ -29689,6 +29877,15 @@ packages:
       typescript: 4.5.4
     dev: true
 
+  /ts-essentials@9.3.0(typescript@4.8.4):
+    resolution:
+      { integrity: sha512-XeiCboEyBG8UqXZtXl59bWEi4ZgOqRsogFDI6WDGIF1LmzbYiAkIwjkXN6zZWWl4re/lsOqMlYfe8KA0XiiEPw== }
+    peerDependencies:
+      typescript: ">=4.1.0"
+    dependencies:
+      typescript: 4.8.4
+    dev: true
+
   /ts-jest@26.5.6(jest@26.6.3):
     resolution:
       { integrity: sha512-rua+rCP8DxpA8b4DQD/6X2HQS8Zy/xzViVYfEs2OQu68tkCuKLV0Md8pmX55+W24uRIyAsf/BajRfxOs+R2MKA== }
@@ -29878,6 +30075,10 @@ packages:
   /tslib@2.3.1:
     resolution:
       { integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw== }
+
+  /tslib@2.5.0:
+    resolution:
+      { integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg== }
 
   /tsscmp@1.0.6:
     resolution:
@@ -30443,71 +30644,71 @@ packages:
       semver: 7.3.7
     dev: true
 
-  /victory-area@35.11.4(react@17.0.2):
+  /victory-area@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-i3rN4Jvn1uwA3YvCuv3EIPEcK2SWSOq3c+TvLvVj1BKFQug11C06UjyQje+3EEzffZ/EMkvGqj2+YudIjrGEzA== }
+      { integrity: sha512-aIyMuzUqiDcpTCB7FUOYDJvqiDPiluEXLOw6Lh1vrUYmV7CNqMDOIBtTau2vI41Ao0o0YJdCAcyzBib9e3UYbw== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
-      d3-shape: 1.3.7
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      victory-core: 35.11.4(react@17.0.2)
+      victory-core: 36.6.8(react@17.0.2)
+      victory-vendor: 36.6.8
     dev: false
 
-  /victory-axis@35.11.4(react@17.0.2):
+  /victory-axis@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-KmPXC/vgbiiWckhK0LruZvsFQqESg6BflhIqS/Xemc50ymWetqbT9VZhjPWbU0arOIP5E8xcFnGUimDN//Jffw== }
+      { integrity: sha512-tClVJEay1YOJAh9rRyyLx8pei7Sr1/xTz04bJmfzFoAxFoPBtvgfFwXhfZ1YjGIl7m5Wh2CiYMY3figueLzYtg== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      victory-core: 35.11.4(react@17.0.2)
+      victory-core: 36.6.8(react@17.0.2)
     dev: false
 
-  /victory-bar@35.11.4(react@17.0.2):
+  /victory-bar@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-EZC+6VGwHkIcOYEppVFBIC5JymYnfF+RLF+NM0Uys7q5+AwaLx36LS9a2xBUBYO/gx20Wd1HVH8kjSHzw1rTqQ== }
+      { integrity: sha512-jLLPm3IW8/2uSLPvQD9bxzXnTraUYBIDTkbZPZy7oHP01OVzP1sj+MMHcINCWcUbyUyLZDL3u8CvViXjS273JQ== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
-      d3-shape: 1.3.7
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      victory-core: 35.11.4(react@17.0.2)
+      victory-core: 36.6.8(react@17.0.2)
+      victory-vendor: 36.6.8
     dev: false
 
-  /victory-brush-container@35.11.4(react@17.0.2):
+  /victory-brush-container@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-KpFYU2LxKbLIjZDhXTdveok1SWLFlG5s2R214IRq+ukYRz21CoxlvZCWhFL60lSPilD+ZD1Udv3sK/RW9CFMxA== }
+      { integrity: sha512-PN5zQ6kjVwZca1qV41WlV6J2IEyQh+2hykRe6c/wERDotVVbSrX3sJVAzUbN+7x2rrK0CL6a/XUI8jDsWTMM2A== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      react-fast-compare: 2.0.4
-      victory-core: 35.11.4(react@17.0.2)
+      react-fast-compare: 3.2.0
+      victory-core: 36.6.8(react@17.0.2)
     dev: false
 
-  /victory-chart@35.11.4(react@17.0.2):
+  /victory-chart@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-oBTjx6ytp+/s6zswCuOUQotiISePQKuDUdOsjnbINBPSNvJuE2W9GXHD+B7ibDkCh4ZWXm8obHz7mnrRGbCGFQ== }
+      { integrity: sha512-kC1jL63PAmqUrvZNOfwAXNuaIwz4nvXYUuEPu59WRBCOIGDGRgv2wJ1O7O0xYXqDkI57EtAYf9KUK+miEn/Btg== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      react-fast-compare: 2.0.4
-      victory-axis: 35.11.4(react@17.0.2)
-      victory-core: 35.11.4(react@17.0.2)
-      victory-polar-axis: 35.11.4(react@17.0.2)
-      victory-shared-events: 35.11.4(react@17.0.2)
+      react-fast-compare: 3.2.0
+      victory-axis: 36.6.8(react@17.0.2)
+      victory-core: 36.6.8(react@17.0.2)
+      victory-polar-axis: 36.6.8(react@17.0.2)
+      victory-shared-events: 36.6.8(react@17.0.2)
     dev: false
 
   /victory-core@35.11.4(react@17.0.2):
@@ -30527,175 +30728,208 @@ packages:
       react-fast-compare: 2.0.4
     dev: false
 
-  /victory-create-container@35.11.4(react@17.0.2):
+  /victory-core@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-baDLO4GSk/7eTVEYkhikwgwV5BtrSMuNPjKZBjZrIA3Ka9Fn5shklRG9PWg+26JIBFxqZdM6zOvpF7xhjxi37Q== }
+      { integrity: sha512-SkyEszZKGyxjqfptfFWYdI22CvCuE9LhkaDpikzIhT2gcE3SuOBO5fk/740XMYE2ZUsJ4Fu/Vy4+8jZi17y44A== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
-    dependencies:
-      lodash: 4.17.21
-      react: 17.0.2
-      victory-brush-container: 35.11.4(react@17.0.2)
-      victory-core: 35.11.4(react@17.0.2)
-      victory-cursor-container: 35.11.4(react@17.0.2)
-      victory-selection-container: 35.11.4(react@17.0.2)
-      victory-voronoi-container: 35.11.4(react@17.0.2)
-      victory-zoom-container: 35.11.4(react@17.0.2)
-    dev: false
-
-  /victory-cursor-container@35.11.4(react@17.0.2):
-    resolution:
-      { integrity: sha512-gs6bwRd/qbGTN78w2QgshIFxlyOsss5qWOMdCcY9i0Oi99l9OJ6UFQDBzSgKsgD53KGs7JxiKevmUqc3qSZZBg== }
-    peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      victory-core: 35.11.4(react@17.0.2)
+      react-fast-compare: 3.2.0
+      victory-vendor: 36.6.8
     dev: false
 
-  /victory-group@35.11.4(react@17.0.2):
+  /victory-create-container@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-ceFBll9h1sPpdMjNcvdgEhnYELVHfx9ymmk8iMEjOKpxa4fVvapMhegPmL0/zTemJ/NCu71W2xIr0VqyqK0DaA== }
+      { integrity: sha512-H2BsdTbJ/RxxcEg5lzk3TDlihtOs7I/5KaIBP3yosPs702i40mL2qndkRkj08QeiZhkaKfQ2GOUvyP+t7DSdmg== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
+    dependencies:
+      lodash: 4.17.21
+      react: 17.0.2
+      victory-brush-container: 36.6.8(react@17.0.2)
+      victory-core: 36.6.8(react@17.0.2)
+      victory-cursor-container: 36.6.8(react@17.0.2)
+      victory-selection-container: 36.6.8(react@17.0.2)
+      victory-voronoi-container: 36.6.8(react@17.0.2)
+      victory-zoom-container: 36.6.8(react@17.0.2)
+    dev: false
+
+  /victory-cursor-container@36.6.8(react@17.0.2):
+    resolution:
+      { integrity: sha512-3WIBRl+7jnZok6syLfW8RK23nliDcoD/JUTN0YZo6bKBqHeFc4+ur3mlwCfghH7sGoxJRYuOJxTd9x2MwM5HQQ== }
+    peerDependencies:
+      react: ">=16.6.0"
     dependencies:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      react-fast-compare: 2.0.4
-      victory-core: 35.11.4(react@17.0.2)
-      victory-shared-events: 35.11.4(react@17.0.2)
+      victory-core: 36.6.8(react@17.0.2)
     dev: false
 
-  /victory-legend@35.11.4(react@17.0.2):
+  /victory-group@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-JZzQARjxYorWlNf9RmZRPAzlgPjukiUV1aTBaeC8YA2S4PhP4PWhNwO/Pb3aCdkifpumpgsm3JULpJiCGOPdBQ== }
+      { integrity: sha512-CiupDIGPPWVgwif3ayd8glSlR41mVbuT0Nl0ay9q42w2fiM32syiJAoifIw47X4tL8ow/DXH+/5Pd8eEyA2trA== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      victory-core: 35.11.4(react@17.0.2)
+      react-fast-compare: 3.2.0
+      victory-core: 36.6.8(react@17.0.2)
+      victory-shared-events: 36.6.8(react@17.0.2)
     dev: false
 
-  /victory-line@35.11.4(react@17.0.2):
+  /victory-legend@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-uKX6/1b1OmlqJZOsVDCCDlyc9QItgb39vRssTwP4CJX1NLU4Sfgq2i4VVUbHXCo/I2sMEczjf3cdnxdZtC6IFA== }
+      { integrity: sha512-OnkzB82Mvt5/1LYNsrfZQoXaVvgfp1rCsFRI3imq257Sh/UPy0/eZehCMQs/SVbU0z0EuIpXokhZb3BBdoJgpw== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
-    dependencies:
-      d3-shape: 1.3.7
-      lodash: 4.17.21
-      prop-types: 15.8.1
-      react: 17.0.2
-      victory-core: 35.11.4(react@17.0.2)
-    dev: false
-
-  /victory-pie@35.11.4(react@17.0.2):
-    resolution:
-      { integrity: sha512-EruxP3PIkrTPTzsC5YhiRKg2s+0UtaRU1ZHZUWK8qi+zlbMDFKYg2AlHqsEnctu5AOdOWLLiye6qUG3oxjiURg== }
-    peerDependencies:
-      react: ^16.6.0 || ^17.0.0
-    dependencies:
-      d3-shape: 1.3.7
-      lodash: 4.17.21
-      prop-types: 15.8.1
-      react: 17.0.2
-      victory-core: 35.11.4(react@17.0.2)
-    dev: false
-
-  /victory-polar-axis@35.11.4(react@17.0.2):
-    resolution:
-      { integrity: sha512-mnIRpfARn36TG6ZdCgKR+oWY+pIX6wLHYS0un5xM1TTObKk4IyAR3dnQhEp+3KM1SGoLg0mENFR1Ac8xrus6nQ== }
-    peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      victory-core: 35.11.4(react@17.0.2)
+      victory-core: 36.6.8(react@17.0.2)
     dev: false
 
-  /victory-scatter@35.11.4(react@17.0.2):
+  /victory-line@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-8n9rmXmVju2SqA6Xd90rRTmboaU7WStOnj1QUg4q96DDiAVf6kGPdolzCwbUBbiECLyluGoFNJ043WLXztGpiA== }
+      { integrity: sha512-MozOejQRZPdzFaru5zUfqVB4TEff6nZjtQhOs+F5yyhXjLgM89zGX30r3jK5cjVdAPbTu4KPUrwktvlw+AkPRA== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      victory-core: 35.11.4(react@17.0.2)
+      victory-core: 36.6.8(react@17.0.2)
+      victory-vendor: 36.6.8
     dev: false
 
-  /victory-selection-container@35.11.4(react@17.0.2):
+  /victory-pie@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-Olxnjp9tvHUHeFr4zU/K1dzp0zbeqQRMr2Qqpr85Dd4pWV9bIReE/DanxGhjNg9s3KB5Vsn1GC46PXSTMM1XIQ== }
+      { integrity: sha512-dUHWiiKd60dlt7OjFa+YYwanHAkP/T0abzy6O3SFxGre52oeqd8px1EoVhlLKpn4ao8L35koG9mvz6/pGyr8Dw== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      victory-core: 35.11.4(react@17.0.2)
+      victory-core: 36.6.8(react@17.0.2)
+      victory-vendor: 36.6.8
     dev: false
 
-  /victory-shared-events@35.11.4(react@17.0.2):
+  /victory-polar-axis@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-flvI27J9K+09BAbuVJf2w51D4OkXlDxE/5BlaHSKzM5jNDYsbcQ6djXa4pqa7NQtMGPOApTBkOSmVRyWRqVoYA== }
+      { integrity: sha512-aU+Wp5six21POhI9oXeREnZHljpqcmwFHHnliVGrwgRsuc7TAjfXPWVOX9guEFfh6zQW6IZWWWTTLAN/PIEm9w== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.8.1
+      react: 17.0.2
+      victory-core: 36.6.8(react@17.0.2)
+    dev: false
+
+  /victory-scatter@36.6.8(react@17.0.2):
+    resolution:
+      { integrity: sha512-GKSNneBxIWLsF3eBSTW5IwT5S4YdsfFl4PVCP3/wTa2myfS5DIS9FufEnJp/FEZGalEXYWxeR47rlWqABxAj5A== }
+    peerDependencies:
+      react: ">=16.6.0"
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.8.1
+      react: 17.0.2
+      victory-core: 36.6.8(react@17.0.2)
+    dev: false
+
+  /victory-selection-container@36.6.8(react@17.0.2):
+    resolution:
+      { integrity: sha512-kudYbSX+o7fr64oeN7+EG/c+lqO22aypxVdCwa6BagAGoqqLR4jXxTqqIdp8tvxCgfCCXxopnTKYr46nubypGw== }
+    peerDependencies:
+      react: ">=16.6.0"
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.8.1
+      react: 17.0.2
+      victory-core: 36.6.8(react@17.0.2)
+    dev: false
+
+  /victory-shared-events@36.6.8(react@17.0.2):
+    resolution:
+      { integrity: sha512-hWPOVqMD3Sv6Rl1iyO6ibQrwYF9/eLCnRo0T59/Hsid6On0AJJjL9gv0oEIM5fqz7R7zx9PJmMk877IctEOemw== }
+    peerDependencies:
+      react: ">=16.6.0"
     dependencies:
       json-stringify-safe: 5.0.1
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      react-fast-compare: 2.0.4
-      victory-core: 35.11.4(react@17.0.2)
+      react-fast-compare: 3.2.0
+      victory-core: 36.6.8(react@17.0.2)
     dev: false
 
-  /victory-stack@35.11.4(react@17.0.2):
+  /victory-stack@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-fNTY50fN+DCHcK/9AgMUEq0uJ8IXGnMlRtkSCzMB9ZpEzB7Edx3jLM2Gl970zOkwVaDYXTlikPd1dwf+h3m0dA== }
+      { integrity: sha512-Pkux46IqAealOi0KvqQpaJKKKpHCfZ/sh5IeUKYFy+QKWAjiQjG6hFZeHgr2YaS7OfdbvHhoAdvp03KntWzpbw== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      react-fast-compare: 2.0.4
-      victory-core: 35.11.4(react@17.0.2)
-      victory-shared-events: 35.11.4(react@17.0.2)
+      react-fast-compare: 3.2.0
+      victory-core: 36.6.8(react@17.0.2)
+      victory-shared-events: 36.6.8(react@17.0.2)
     dev: false
 
-  /victory-tooltip@35.11.4(react@17.0.2):
+  /victory-tooltip@36.6.8(react@17.0.2):
     resolution:
-      { integrity: sha512-B+UUqzryurtMghJGiE34tg5eI44vHxyOOcuPIM3IpJLujnNIJXVykBjgQZnFq1CT/63TtDCOlzPkOjSbecPtXQ== }
+      { integrity: sha512-9P+QeAGyDpP0trJnQ1NtnbDhpoJB0Ghc2boYEehvL12p0OzolY9/Nq5SDP0tu5i1BBujwFXtnoCDqt+mOH25fA== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      victory-core: 35.11.4(react@17.0.2)
+      victory-core: 36.6.8(react@17.0.2)
     dev: false
 
-  /victory-voronoi-container@35.11.4(react@17.0.2):
+  /victory-vendor@36.6.8:
     resolution:
-      { integrity: sha512-vmwHBm/+nZ9qdRcaNd7r08AVRkus/ER6UA4KAYWkKUe50ZT9NYjDxy0wW/Y7PHQldfL9q/VxAyIE/M6jSFWkEA== }
+      { integrity: sha512-H3kyQ+2zgjMPvbPqAl7Vwm2FD5dU7/4bCTQakFQnpIsfDljeOMDojRsrmJfwh4oAlNnWhpAf+mbAoLh8u7dwyQ== }
+    dependencies:
+      "@types/d3-array": 3.0.4
+      "@types/d3-ease": 3.0.0
+      "@types/d3-interpolate": 3.0.1
+      "@types/d3-scale": 4.0.3
+      "@types/d3-shape": 3.1.1
+      "@types/d3-time": 3.0.0
+      "@types/d3-timer": 3.0.0
+      d3-array: 3.2.2
+      d3-ease: 3.0.1
+      d3-interpolate: 3.0.1
+      d3-scale: 4.0.2
+      d3-shape: 3.2.0
+      d3-time: 3.1.0
+      d3-timer: 3.0.1
+    dev: false
+
+  /victory-voronoi-container@36.6.8(react@17.0.2):
+    resolution:
+      { integrity: sha512-x9/OOZdMm4dh38jNhSfBYT0nG6ribsINU0/WNzIn3QcDXFBInsJ7jRySxYmdmk45OdXfbDRwDMqVHk72sWQyUw== }
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0
+      react: ">=16.6.0"
     dependencies:
       delaunay-find: 0.0.6
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      react-fast-compare: 2.0.4
-      victory-core: 35.11.4(react@17.0.2)
-      victory-tooltip: 35.11.4(react@17.0.2)
+      react-fast-compare: 3.2.0
+      victory-core: 36.6.8(react@17.0.2)
+      victory-tooltip: 36.6.8(react@17.0.2)
     dev: false
 
   /victory-zoom-container@35.11.4(react@17.0.2):
@@ -30710,32 +30944,44 @@ packages:
       victory-core: 35.11.4(react@17.0.2)
     dev: false
 
+  /victory-zoom-container@36.6.8(react@17.0.2):
+    resolution:
+      { integrity: sha512-gxX5iJUaxrFFZ2IGS0sQnUI+3Mhj6bVLqtOlQd3Krld+9f/ieuUbxl+P+eIyhQU/VyHSlirIZeOGOXJeYcU9jQ== }
+    peerDependencies:
+      react: ">=16.6.0"
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.8.1
+      react: 17.0.2
+      victory-core: 36.6.8(react@17.0.2)
+    dev: false
+
   /void-elements@2.0.1:
     resolution: { integrity: sha1-wGavtYK7HLQSjWDqkjkulNXp2+w= }
     engines: { node: ">=0.10.0" }
     dev: true
 
-  /vscode-extension-tester-locators@3.3.0(monaco-page-objects@3.3.0)(selenium-webdriver@4.8.0):
+  /vscode-extension-tester-locators@3.4.0(monaco-page-objects@3.4.0)(selenium-webdriver@4.8.1):
     resolution:
-      { integrity: sha512-rpeuCVNTxy5fGy2lQKPNUBCt6/7nSJBZY91J2MtwVYv1Nj6VbVZl38JNq7KAM9J+7pNSPYLsFAmHB2NzLWkD5g== }
+      { integrity: sha512-rCJCVUUUZni2udwZMcrI9LUIT4v5F5jaoTnTDGw4+WsImsuOQXQj/SG99bgbzY8ZsbF+8Kjuj1oNTa2lLL++gQ== }
     peerDependencies:
-      monaco-page-objects: ^3.3.0
+      monaco-page-objects: ^3.4.0
       selenium-webdriver: ^4.6.1
     dependencies:
-      monaco-page-objects: 3.3.0(selenium-webdriver@4.8.0)(typescript@4.5.4)
-      selenium-webdriver: 4.8.0
+      monaco-page-objects: 3.4.0(selenium-webdriver@4.8.1)(typescript@4.8.4)
+      selenium-webdriver: 4.8.1
     dev: true
 
-  /vscode-extension-tester@5.3.0(mocha@9.2.0)(typescript@4.5.4):
+  /vscode-extension-tester@5.4.0(mocha@9.2.0)(typescript@4.5.4):
     resolution:
-      { integrity: sha512-AWUJkeEsKCxQniD2p1N6gtnLHilgAtz0FszRfqL898z4ZJuySmkKD2+GOuqeacU/PjmSEsVd3h8BcxyvDswcVw== }
+      { integrity: sha512-Kacxy8Eloh/4sEf46/03eVLzcmtl8e5dxtWCiAVQKmgSDHoJpH9YrI4i7L/FOlTmG8P0jBJnZg1IT3mKeFFlNQ== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
       typescript: ">=4.6.2"
     dependencies:
-      "@types/selenium-webdriver": 4.1.9
-      "@vscode/vsce": 2.16.0
+      "@types/selenium-webdriver": 4.1.12
+      "@vscode/vsce": 2.18.0
       commander: 10.0.0
       compare-versions: 5.0.1
       fs-extra: 11.1.0
@@ -30744,13 +30990,42 @@ packages:
       hpagent: 1.2.0
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 3.3.0(selenium-webdriver@4.8.0)(typescript@4.5.4)
+      monaco-page-objects: 3.4.0(selenium-webdriver@4.8.1)(typescript@4.5.4)
       sanitize-filename: 1.6.3
-      selenium-webdriver: 4.8.0
+      selenium-webdriver: 4.8.1
       targz: 1.0.1
       typescript: 4.5.4
       unzip-stream: 0.3.1
-      vscode-extension-tester-locators: 3.3.0(monaco-page-objects@3.3.0)(selenium-webdriver@4.8.0)
+      vscode-extension-tester-locators: 3.4.0(monaco-page-objects@3.4.0)(selenium-webdriver@4.8.1)
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: true
+
+  /vscode-extension-tester@5.4.0(typescript@4.8.4):
+    resolution:
+      { integrity: sha512-Kacxy8Eloh/4sEf46/03eVLzcmtl8e5dxtWCiAVQKmgSDHoJpH9YrI4i7L/FOlTmG8P0jBJnZg1IT3mKeFFlNQ== }
+    hasBin: true
+    peerDependencies:
+      mocha: ">=5.2.0"
+      typescript: ">=4.6.2"
+    dependencies:
+      "@types/selenium-webdriver": 4.1.12
+      "@vscode/vsce": 2.18.0
+      commander: 10.0.0
+      compare-versions: 5.0.1
+      fs-extra: 11.1.0
+      glob: 8.1.0
+      got: 11.8.6
+      hpagent: 1.2.0
+      js-yaml: 4.1.0
+      monaco-page-objects: 3.4.0(selenium-webdriver@4.8.1)(typescript@4.8.4)
+      sanitize-filename: 1.6.3
+      selenium-webdriver: 4.8.1
+      targz: 1.0.1
+      typescript: 4.8.4
+      unzip-stream: 0.3.1
+      vscode-extension-tester-locators: 3.4.0(monaco-page-objects@3.4.0)(selenium-webdriver@4.8.1)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -31493,7 +31768,7 @@ packages:
       "@oozcitak/dom": 1.15.10
       "@oozcitak/infra": 1.0.8
       "@oozcitak/util": 8.3.8
-      "@types/node": 17.0.12
+      "@types/node": 18.13.0
       js-yaml: 3.14.0
     dev: true
 
@@ -31610,7 +31885,7 @@ packages:
       { integrity: sha512-7pRTIA9Qc1caZ0bZ6RYRGbHJthJWuakf+WmHK0rVeLkNrrGhfoabBNdue6kdINI6r4if7ocq9aD/n7xwKOdzOA== }
     engines: { node: ">=10" }
     dependencies:
-      camelcase: 6.2.0
+      camelcase: 6.3.0
       decamelize: 4.0.0
       flat: 5.0.2
       is-plain-obj: 2.1.0

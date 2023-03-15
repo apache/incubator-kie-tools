@@ -15,8 +15,7 @@
  */
 
 import { ErrorBoundary } from "@kie-tools/form/dist/ErrorBoundary";
-import { Button } from "@patternfly/react-core";
-import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";

@@ -20,8 +20,15 @@ import {
   SwfServiceCatalogService,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
-import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
-import { getNodePath } from "./SwfLanguageService";
+import {
+  CompletionItem,
+  CompletionItemKind,
+  InsertTextFormat,
+  Position,
+  Range,
+  TextEdit,
+} from "vscode-languageserver-types";
+import { getNodePath, isVirtualRegistry } from "./SwfLanguageService";
 import { SwfLanguageServiceCommandExecution } from "../api";
 import {
   eventCompletion,
@@ -31,12 +38,14 @@ import {
   operationStateCompletion,
   switchStateCompletion,
   workflowCompletion,
+  emptyWorkflowCompletion,
 } from "../assets/code-completions";
 import * as swfModelQueries from "./modelQueries";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodeAtLocation, SwfLanguageServiceConfig } from "./SwfLanguageService";
-import { CodeCompletionStrategy, SwfLsNode } from "./types";
+import { CodeCompletionStrategy, SwfLsNode, JqCompletions } from "./types";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { jqBuiltInFunctions } from "@kie-tools/serverless-workflow-jq-expressions/dist/utils";
 
 type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
 export type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "functions"> & {
@@ -53,10 +62,22 @@ export type SwfLanguageServiceCodeCompletionFunctionsArgs = {
   overwriteRange: Range;
   rootNode: SwfLsNode;
   swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
+  cursorPosition: Position;
+  jqCompletions: JqCompletions;
 };
+interface JqFunctionCompletion {
+  /**
+   * @param wordToSearch The wordToSearch is empty to show all the completion. Otherwise it completes the word.
+   */
+  (args: SwfLanguageServiceCodeCompletionFunctionsArgs & { wordToSearch: string }): Promise<CompletionItem[]>;
+}
 
 function toCompletionItemLabel(namespace: string, resource: string, operation: string) {
   return `${namespace}»${resource}#${operation}`;
+}
+
+function isRemotePath(pathUri: string): boolean {
+  return /^(http|https|file):\/\//.test(pathUri);
 }
 
 function toCompletionItemLabelPrefix(
@@ -91,12 +112,13 @@ function createCompletionItem(args: {
   kind: CompletionItemKind;
   label: string;
   overwriteRange: Range;
+  filterText?: string;
 }): CompletionItem {
   return {
     kind: args.kind,
     label: args.label,
     sortText: `100_${args.label}`, //place the completion on top in the menu
-    filterText: args.label,
+    filterText: args.filterText ?? args.label,
     detail: args.detail,
     textEdit: {
       newText: args.codeCompletionStrategy.translate({
@@ -129,6 +151,203 @@ function getStateNameCompletion(
   });
 }
 
+function validateFunction(serviceCatalogFunction: SwfServiceCatalogFunction) {
+  if (isVirtualRegistry(serviceCatalogFunction)) {
+    return true;
+  }
+  return !(serviceCatalogFunction.name === undefined);
+}
+
+function extractFunctionsPath(functionsNode: SwfLsNode[]) {
+  const relativeList: string[] = [];
+  const remoteList: string[] = [];
+  functionsNode.forEach((func: SwfLsNode) => {
+    const functionType = findNodeAtLocation(func, ["type"])?.value.trim() ?? "rest";
+    if (functionType == "rest" || functionType == "asyncapi") {
+      const path = findNodeAtLocation(func, ["operation"])?.value.split("#")[0];
+      if (path) {
+        if (isRemotePath(path)) {
+          remoteList.push(path);
+        } else {
+          relativeList.push(path);
+        }
+      }
+    }
+  });
+  return { relativeList, remoteList };
+}
+/**
+ * get word to search for built-in jq functions.
+ */
+function getJqCompletionWordToSearch(slicedValue: string): string {
+  const removeSpecialChar = slicedValue.replace(/[^a-zA-Z _()]/g, "");
+  const builtInFunctionMatch = removeSpecialChar.match(/\s(\w+)?$/);
+  if (builtInFunctionMatch === null && removeSpecialChar.length) {
+    return removeSpecialChar.trim();
+  } else if (builtInFunctionMatch && builtInFunctionMatch[1] === undefined) {
+    return "";
+  } else if (builtInFunctionMatch && builtInFunctionMatch[1].length) {
+    return builtInFunctionMatch[1];
+  }
+  return "";
+}
+
+/**
+ * get the input workflow variables from remote/relative paths.
+ */
+const getJqInputVariablesCompletions: JqFunctionCompletion = async function getJqInputVariablesCompletions(
+  args: SwfLanguageServiceCodeCompletionFunctionsArgs & { wordToSearch: string }
+): Promise<CompletionItem[]> {
+  const showAllCompletion = !args.wordToSearch.length ? true : false;
+  const { relativeList, remoteList } = extractFunctionsPath(
+    findNodeAtLocation(args.rootNode, ["functions"])?.children as SwfLsNode[]
+  );
+  const dataInputSchemaPath = findNodeAtLocation(args.rootNode, ["dataInputSchema"])?.value;
+  if (dataInputSchemaPath) {
+    if (isRemotePath(dataInputSchemaPath)) {
+      remoteList.push(dataInputSchemaPath);
+    } else {
+      relativeList.push(dataInputSchemaPath);
+    }
+  }
+  if (remoteList.length > 0 || relativeList.length > 0) {
+    const schemaData = await Promise.all([
+      ...(await args.jqCompletions.remote.getJqAutocompleteProperties({
+        textDocument: args.document,
+        schemaPaths: remoteList ?? [],
+      })),
+      ...(await args.jqCompletions.relative.getJqAutocompleteProperties({
+        textDocument: args.document,
+        schemaPaths: relativeList ?? [],
+      })),
+    ]);
+    if (schemaData.length === 0) {
+      return Promise.resolve([]);
+    }
+    return Promise.resolve(
+      schemaData
+        .filter((prop: Record<string, string>) =>
+          showAllCompletion ? true : Object.keys(prop)[0].startsWith(args.wordToSearch)
+        )
+        .map((parsedProp: Record<string, string>) => {
+          return createCompletionItem({
+            ...args,
+            completion: Object.keys(parsedProp)[0],
+            kind: CompletionItemKind.Value,
+            label: Object.keys(parsedProp)[0],
+            detail: Object.values(parsedProp)[0],
+            filterText: showAllCompletion ? Object.keys(parsedProp)[0] : args.wordToSearch,
+            extraOptions: {
+              insertText: Object.keys(parsedProp)[0],
+            },
+            overwriteRange: Range.create(
+              Position.create(
+                args.cursorPosition.line,
+                showAllCompletion
+                  ? args.cursorPosition.character
+                  : args.cursorPosition.character - args.wordToSearch.length
+              ),
+              Position.create(args.cursorPosition.line, args.cursorPosition.character)
+            ),
+          });
+        })
+    );
+  }
+  return [];
+};
+/**
+ * get reusable functions defined in the functions array of the swf file.
+ */
+const getReusableFunctionCompletion: JqFunctionCompletion = async function (
+  args: SwfLanguageServiceCodeCompletionFunctionsArgs & { wordToSearch: string }
+): Promise<CompletionItem[]> {
+  const reusalbeFunctions: SwfLsNode = findNodeAtLocation(args.rootNode, ["functions"])!;
+  const functionNamesArray: string[] = [];
+  const isWordToSearchExist = args.wordToSearch.length ? true : false;
+  const overwriteRange = Range.create(
+    Position.create(args.cursorPosition.line, args.cursorPosition.character - args.wordToSearch.length),
+    Position.create(args.cursorPosition.line, args.cursorPosition.character)
+  );
+  if (reusalbeFunctions.type === "array") {
+    reusalbeFunctions.children?.forEach((func) => {
+      if (findNodeAtLocation(func, ["type"])?.value === "expression") {
+        const functionName = findNodeAtLocation(func, ["name"])?.value;
+        functionNamesArray.push(functionName);
+      }
+    });
+    return functionNamesArray
+      .filter((name: string) => (!isWordToSearchExist ? true : name.startsWith(args.wordToSearch)))
+      .map((filteredName: string) => {
+        return createCompletionItem({
+          ...args,
+          completion: filteredName,
+          kind: CompletionItemKind.Function,
+          label: filteredName,
+          filterText: isWordToSearchExist ? args.wordToSearch : filteredName,
+          detail: "Reusable functions(expressions) defined in the functions array",
+          extraOptions: {
+            insertText: filteredName,
+          },
+          overwriteRange,
+        });
+      });
+  }
+  return [];
+};
+/**
+ * get jq built-in CodeCompletions.
+ */
+const getJqBuiltInFunctions: JqFunctionCompletion = async function (
+  args: SwfLanguageServiceCodeCompletionFunctionsArgs & { wordToSearch: string }
+): Promise<CompletionItem[]> {
+  const isWordToSearchExist = args.wordToSearch.length ? true : false;
+  const overwriteRange = Range.create(
+    Position.create(args.cursorPosition.line, args.cursorPosition.character - args.wordToSearch.length),
+    Position.create(args.cursorPosition.line, args.cursorPosition.character)
+  );
+  return jqBuiltInFunctions
+    .filter((func: { functionName: string; description: string }) =>
+      !isWordToSearchExist ? true : func.functionName.startsWith(args.wordToSearch)
+    )
+    .map((filteredFunc: { functionName: string; description: string }) => {
+      return createCompletionItem({
+        ...args,
+        completion: filteredFunc.functionName,
+        kind: CompletionItemKind.Function,
+        label: filteredFunc.functionName,
+        detail: filteredFunc.description,
+        filterText: isWordToSearchExist ? args.wordToSearch : filteredFunc.functionName,
+        extraOptions: {
+          insertText: filteredFunc.functionName,
+        },
+        overwriteRange,
+      });
+    });
+};
+/**
+ * get jq CodeCompletion functions.
+ */
+async function getJqFunctionCompletions(
+  args: SwfLanguageServiceCodeCompletionFunctionsArgs
+): Promise<CompletionItem[]> {
+  const {
+    currentNode,
+    cursorOffset,
+    currentNode: { offset },
+  } = args;
+  const isCurrentNodeValueWithQuotes = currentNode.length === currentNode.value.length ? 0 : 1;
+  const currentCursor = cursorOffset - offset;
+  const slicedValue = currentNode.value.slice(0, currentCursor - isCurrentNodeValueWithQuotes);
+  const inputVariableMatch = slicedValue.match(/.*((\.)|(fn:))(\w+)?$/);
+  if (inputVariableMatch) {
+    const wordToSearch = inputVariableMatch[4] ?? "";
+    return inputVariableMatch[1] === "."
+      ? await getJqInputVariablesCompletions({ ...args, wordToSearch })
+      : await getReusableFunctionCompletion({ ...args, wordToSearch });
+  }
+  const wordToSearch = getJqCompletionWordToSearch(slicedValue);
+  return await getJqBuiltInFunctions({ ...args, wordToSearch });
+}
 /**
  * SwfLanguageService CodeCompletion functions
  */
@@ -140,18 +359,34 @@ export const SwfLanguageServiceCodeCompletion = {
     document: TextDocument;
   }): CompletionItem[] {
     const kind = CompletionItemKind.Text;
-    const label = "Create your first Serverless Workflow";
+    const emptyWorkflowLabel = "Empty Serverless Workflow";
+    const exampleWorkflowLabel = "Serverless Workflow Example";
 
     return [
       {
         kind,
-        label,
+        label: exampleWorkflowLabel,
         detail: "Start with a simple Serverless Workflow",
-        sortText: `100_${label}`, //place the completion on top in the menu
+        sortText: `100_${exampleWorkflowLabel}`, //place the completion on top in the menu
         textEdit: {
           newText: args.codeCompletionStrategy.translate({
             ...args,
             completion: workflowCompletion,
+            completionItemKind: kind,
+          }),
+          range: Range.create(args.cursorPosition, args.cursorPosition),
+        },
+        insertTextFormat: InsertTextFormat.Snippet,
+      },
+      {
+        kind,
+        label: emptyWorkflowLabel,
+        detail: "Start with an empty Serverless Workflow",
+        sortText: `100_${emptyWorkflowLabel}`, //place the completion on top in the menu
+        textEdit: {
+          newText: args.codeCompletionStrategy.translate({
+            ...args,
+            completion: emptyWorkflowCompletion,
             completionItemKind: kind,
           }),
           range: Range.create(args.cursorPosition, args.cursorPosition),
@@ -217,7 +452,11 @@ export const SwfLanguageServiceCodeCompletion = {
 
     const result = args.swfCompletionItemServiceCatalogServices.flatMap((swfServiceCatalogService) =>
       swfServiceCatalogService.functions
-        .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
+        .filter(
+          (swfServiceCatalogFunc) =>
+            !existingFunctionOperations.includes(swfServiceCatalogFunc.operation) &&
+            validateFunction(swfServiceCatalogFunc)
+        )
         .map((swfServiceCatalogFunc) => {
           const swfFunction: Omit<Specification.Function, "normalize"> = {
             name: `$\{1:${swfServiceCatalogFunc.name}}`,
@@ -273,18 +512,21 @@ export const SwfLanguageServiceCodeCompletion = {
 
     return Promise.resolve([...result, genericFunctionCompletion]);
   },
-
-  getFunctionOperationCompletions: (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+  getFunctionOperationCompletions: async (
+    args: SwfLanguageServiceCodeCompletionFunctionsArgs
+  ): Promise<CompletionItem[]> => {
     if (!args.currentNode.parent?.parent) {
       return Promise.resolve([]);
     }
-
     // As "rest" is the default, if the value is undefined, it's a rest function too.
     const isRestFunction = (findNodeAtLocation(args.currentNode.parent.parent, ["type"])?.value ?? "rest") === "rest";
-    if (!isRestFunction) {
+    const isExpression = findNodeAtLocation(args.currentNode.parent.parent, ["type"])?.value === "expression";
+    if (!isRestFunction && !isExpression) {
       return Promise.resolve([]);
     }
-
+    if (isExpression) {
+      return Promise.resolve(await getJqFunctionCompletions(args));
+    }
     const existingFunctionOperations = swfModelQueries.getFunctions(args.rootNode).map((f) => f.operation);
 
     const result = args.swfCompletionItemServiceCatalogServices
@@ -461,5 +703,13 @@ export const SwfLanguageServiceCodeCompletion = {
     const result = getStateNameCompletion({ ...args, states });
 
     return Promise.resolve(result);
+  },
+
+  getJqcompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+    const jqCompletions = await getJqFunctionCompletions(args);
+    if (args.currentNode && args.currentNode.type === "string") {
+      return Promise.resolve(jqCompletions);
+    }
+    return Promise.resolve([]);
   },
 };

@@ -220,17 +220,6 @@
   border-width: var(--pf-global--BorderWidth--sm);
 }
 
-.kie-tools--build-info {
-  font-size: 0.8em;
-  position: fixed;
-  bottom: 10px;
-  z-index: 9999;
-  width: 100%;
-  pointer-events: none;
-  display: flex;
-  justify-content: center;
-}
-
 .kogito--code {
   font-family: var(--pf-global--FontFamily--monospace);
   font-weight: var(--pf-global--FontWeight--normal);
@@ -653,4 +642,8 @@ section.kie-tools--settings-tab {
 
 .kie-sandbox--file-switcher .pf-c-dropdown__menu {
   min-width: 0;
+}
+
+.pf-c-menu__item-description {
+  word-break: normal !important;
 }

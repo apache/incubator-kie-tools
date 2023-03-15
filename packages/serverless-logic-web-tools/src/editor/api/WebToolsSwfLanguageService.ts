@@ -21,7 +21,9 @@ import {
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
-
+import { JqExpressionReadSchemasImpl } from "@kie-tools/serverless-workflow-jq-expressions/dist/impl";
+import { TextDocument } from "vscode-languageserver-textdocument";
+import { removeDuplicatedKeyValuePairs } from "@kie-tools/serverless-workflow-jq-expressions/dist/utils";
 export class WebToolsSwfLanguageService {
   constructor(private readonly catalogStore: SwfServiceCatalogStore) {}
 
@@ -54,6 +56,21 @@ export class WebToolsSwfLanguageService {
           registryName: string,
           swfServiceCatalogServiceId: string
         ) => `${registryName}__${swfServiceCatalogServiceId}__latest.yaml`,
+      },
+      jqCompletions: {
+        remote: {
+          getJqAutocompleteProperties: async (args: {
+            textDocument: TextDocument;
+            schemaPaths: string[];
+          }): Promise<Record<string, string>[]> => {
+            const jqExpressionReadSchema = new JqExpressionReadSchemasImpl();
+            const contentArray = await jqExpressionReadSchema.getContentFromRemoteUrl(args.schemaPaths);
+            return removeDuplicatedKeyValuePairs(jqExpressionReadSchema.parseSchemaProperties(contentArray));
+          },
+        },
+        relative: {
+          getJqAutocompleteProperties: (_args: any) => Promise.resolve([]),
+        },
       },
       config: {
         shouldDisplayServiceRegistriesIntegration: async () => false,

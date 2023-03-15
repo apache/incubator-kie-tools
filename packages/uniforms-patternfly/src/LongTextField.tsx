@@ -22,7 +22,7 @@ export type LongTextFieldProps = HTMLFieldProps<
   string,
   HTMLDivElement,
   {
-    inputRef?: React.RefObject<HTMLInputElement>;
+    inputRef?: React.RefObject<HTMLTextAreaElement>;
     onChange: (value: string, event: React.ChangeEvent<HTMLTextAreaElement>) => void;
     value?: string;
     prefix?: string;

@@ -149,6 +149,34 @@ export const EditorPageDockDrawer = React.forwardRef<
     [dmnRunnerState.mode, props.workspaceFile.extension]
   );
 
+  const toggleGroupItems = useMemo(() => {
+    const items = [];
+
+    if (isDmnTableMode) {
+      items.push(
+        <DmnRunnerDockToggle
+          key="dmn-runner-toggle-item"
+          isDisabled={dockIsDisabled}
+          disabledReason={dockIsDisabledReason}
+          isSelected={panel === PanelId.DMN_RUNNER_TABLE}
+          onChange={(id) => onToggle(id)}
+        />
+      );
+    }
+    items.push(
+      <NotificationsPanelDockToggle
+        key="notifications-toggle-item"
+        isDisabled={dockIsDisabled}
+        disabledReason={dockIsDisabledReason}
+        ref={notificationsToggleRef}
+        isSelected={panel === PanelId.NOTIFICATIONS_PANEL}
+        onChange={(id) => onToggle(id)}
+      />
+    );
+
+    return items;
+  }, [isDmnTableMode, dockIsDisabled, panel, dockIsDisabledReason, onToggle, notificationsToggleRef]);
+
   useEffect(() => {
     if (
       (extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
@@ -169,11 +197,7 @@ export const EditorPageDockDrawer = React.forwardRef<
                 {panel === PanelId.NOTIFICATIONS_PANEL && (
                   <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
                 )}
-                {panel === PanelId.DMN_RUNNER_TABLE && isDmnTableMode && (
-                  <DmnRunnerTable
-                    setPanelOpen={setPanel}
-                  />
-                )}
+                {panel === PanelId.DMN_RUNNER_TABLE && isDmnTableMode && <DmnRunnerTable setPanelOpen={setPanel} />}
               </DrawerPanelContent>
             )
           }
@@ -189,23 +213,7 @@ export const EditorPageDockDrawer = React.forwardRef<
           justifyContent: "flex-end",
         }}
       >
-        <ToggleGroup>
-          {isDmnTableMode && (
-            <DmnRunnerDockToggle
-              isDisabled={dockIsDisabled}
-              disabledReason={dockIsDisabledReason}
-              isSelected={panel === PanelId.DMN_RUNNER_TABLE}
-              onChange={(id) => onToggle(id)}
-            />
-          )}
-          <NotificationsPanelDockToggle
-            isDisabled={dockIsDisabled}
-            disabledReason={dockIsDisabledReason}
-            ref={notificationsToggleRef}
-            isSelected={panel === PanelId.NOTIFICATIONS_PANEL}
-            onChange={(id) => onToggle(id)}
-          />
-        </ToggleGroup>
+        <ToggleGroup>{toggleGroupItems}</ToggleGroup>
       </div>
     </>
   );

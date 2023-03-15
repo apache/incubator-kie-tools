@@ -16,21 +16,19 @@
 
 import * as React from "react";
 import "./ImportJavaClassesWizardFirstStep.css";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import {
-  Bullseye,
   DataList,
   DataListCell,
   DataListCheck,
   DataListItem,
   DataListItemRow,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  SearchInput,
-  Spinner,
-  Tooltip,
-  Title,
-} from "@patternfly/react-core";
+} from "@patternfly/react-core/dist/js/components/DataList";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { useCallback, useState } from "react";
@@ -80,7 +78,7 @@ export const ImportJavaClassesWizardFirstStep = ({
   );
 
   const handleSearchValueChange = useCallback(
-    (value: string) => {
+    (event: React.FormEvent<HTMLInputElement>, value: string) => {
       setSearchValue(value);
       /* Managing debounce effect */
       if (requestTimer) {

@@ -69,7 +69,7 @@ import { UploadCard } from "./UploadCard";
 import { ImportFromUrlCard } from "../importFromUrl/ImportFromUrlHomePageCard";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
+import { NewFileDropdownMenu } from "../editor/Toolbar/NewFileDropdownMenu";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
@@ -117,13 +117,15 @@ export function HomePage() {
     document.title = "KIE Sandbox :: Home";
   }, []);
 
-  const buildInfo = useMemo(() => {
-    return process.env["WEBPACK_REPLACE__buildInfo"];
-  }, []);
-
   return (
     <OnlineEditorPage>
-      <PageSection isFilled={false} sticky={"top"} hasOverflowScroll={false} style={{ overflowX: "scroll" }}>
+      <PageSection
+        isFilled={false}
+        sticky={"top"}
+        hasOverflowScroll={false}
+        style={{ overflowX: "scroll" }}
+        aria-label="New Models Section"
+      >
         <Grid hasGutter style={{ minWidth: "1280px", gridGap: "var(--pf-c-page__main-section--PaddingTop)" }}>
           <GridItem span={6}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
@@ -176,7 +178,7 @@ export function HomePage() {
           </GridItem>
         </Grid>
       </PageSection>
-      <PageSection isFilled={true} variant={"light"} hasOverflowScroll={true}>
+      <PageSection isFilled={true} variant={"light"} hasOverflowScroll={true} aria-label="Workspace Section">
         <PromiseStateWrapper
           promise={workspaceDescriptorsPromise}
           rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
@@ -237,11 +239,6 @@ export function HomePage() {
           }}
         />
       </PageSection>
-      {buildInfo && (
-        <div className={"kie-tools--build-info"}>
-          <Label>{buildInfo}</Label>
-        </div>
-      )}
     </OnlineEditorPage>
   );
 }
