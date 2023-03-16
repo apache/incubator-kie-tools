@@ -22,7 +22,6 @@ import java.util.function.Supplier;
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.IDrawable;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 /**
@@ -42,21 +41,14 @@ public class ShapeViewUserDataEncoder {
         return new ShapeViewUserDataEncoder();
     }
 
-    public void applyShapeViewType(final Supplier<LienzoShapeView<?>> shapeSupplier, ShapeStateDefaultHandler.ShapeType shapeType) {
+    public void applyShapeViewType(final Supplier<ShapeView> shapeSupplier, ShapeStateDefaultHandler.ShapeType shapeType) {
         if (Objects.isNull(shapeType)) {
             return;
         }
         applyShapeViewUserData(shapeSupplier, "shapeType", shapeType.name());
     }
 
-    public void applyShapeViewRenderType(final Supplier<LienzoShapeView<?>> shapeSupplier, ShapeStateDefaultHandler.RenderType renderType) {
-        if (Objects.isNull(renderType)) {
-            return;
-        }
-        applyShapeViewUserData(shapeSupplier, "renderType", renderType.name());
-    }
-
-    public void applyShapeViewUserData(final Supplier<LienzoShapeView<?>> shapeSupplier, String key, String value) {
+    public void applyShapeViewUserData(final Supplier<ShapeView> shapeSupplier, String key, String value) {
         if (Objects.isNull(shapeSupplier) || Objects.isNull(shapeSupplier.get())) {
             return;
         }
@@ -86,7 +78,7 @@ public class ShapeViewUserDataEncoder {
                     String suffix = "";
                     if (null != drawable.getUserData()) {
                         suffix = drawable.getUserData().toString();
-                    } else if (null != drawable.getID()){
+                    } else if (null != drawable.getID()) {
                         suffix = "_" + drawable.getID();
                     }
                     drawable.setID(uuid + suffix);

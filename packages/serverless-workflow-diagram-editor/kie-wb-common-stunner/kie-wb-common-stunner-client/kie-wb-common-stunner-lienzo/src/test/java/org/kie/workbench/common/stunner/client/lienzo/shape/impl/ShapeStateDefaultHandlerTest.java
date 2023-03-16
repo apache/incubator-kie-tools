@@ -34,13 +34,10 @@ import org.uberfire.mvp.Command;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,7 +46,7 @@ import static org.mockito.Mockito.when;
 public class ShapeStateDefaultHandlerTest {
 
     @Mock
-    private ShapeStateAttributeAnimationHandler<LienzoShapeView<?>> handler;
+    private ShapeStateAttributeHandler<LienzoShapeView<?>> handler;
 
     @Mock
     private ShapeStateAttributeHandler<LienzoShapeView<?>> delegateHandler;
@@ -68,22 +65,13 @@ public class ShapeStateDefaultHandlerTest {
 
     @Before
     public void setup() throws Exception {
-        doAnswer(invocationOnMock -> {
-            ShapeStateDefaultHandlerTest.this.onComplete = (Command) invocationOnMock.getArguments()[0];
-            return handler;
-        }).when(handler).onComplete(any(Command.class));
-        when(handler.getAttributesHandler()).thenReturn(delegateHandler);
-        tested = new ShapeStateDefaultHandler(handler);
+
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testSelectedStateStroke() {
-        reset(delegateHandler);
-
         when(handler.getShapeState()).thenReturn(ShapeState.SELECTED);
-
-        tested.setRenderType(ShapeStateDefaultHandler.RenderType.STROKE);
 
         verify(delegateHandler).useAttributes(stateAttributesProviderCaptor.capture());
 

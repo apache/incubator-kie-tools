@@ -374,7 +374,7 @@ public class StateShapeTest {
         shape.applyProperties(createElement(state), null);
 
         when(stateHandler.getShapeState()).thenReturn(currentState);
-        when(shape.getShapeStateHandler()).thenReturn(stateHandler);
+        //when(shape.getShapeStateHandler()).thenReturn(stateHandler);
 
         return shape;
     }

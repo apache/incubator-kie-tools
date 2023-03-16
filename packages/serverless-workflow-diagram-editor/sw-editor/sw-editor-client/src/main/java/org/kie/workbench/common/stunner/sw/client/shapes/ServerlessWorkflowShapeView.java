@@ -27,6 +27,7 @@ import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresShapeViewExt;
+import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractShape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
@@ -89,15 +90,19 @@ public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflo
         return controller.getEnterHandler();
     }
 
-    public ShapeStateHandler getShapeStateHandler() {
-        return shapeStateHandler;
+    public void applyState(ShapeState state) {
+        this.asAbstractShape().applyState(state);
+    }
+
+    public ShapeState getShapeState() {
+        return shapeStateHandler.getShapeState();
     }
 
     public AbstractShape<ServerlessWorkflowShapeView<VIEW>> asAbstractShape() {
         return new AbstractShape<ServerlessWorkflowShapeView<VIEW>>() {
             @Override
             public ShapeStateHandler getShapeStateHandler() {
-                return ServerlessWorkflowShapeView.this.getShapeStateHandler();
+                return ServerlessWorkflowShapeView.this.shapeStateHandler;
             }
 
             @Override
@@ -113,6 +118,12 @@ public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflo
             @Override
             public ServerlessWorkflowShapeView<VIEW> getShapeView() {
                 return ServerlessWorkflowShapeView.this;
+            }
+
+            @Override
+            public void applyState(ShapeState state) {
+                super.applyState(state);
+                getShapeView().getShape().getLayer().batch();
             }
         };
     }
