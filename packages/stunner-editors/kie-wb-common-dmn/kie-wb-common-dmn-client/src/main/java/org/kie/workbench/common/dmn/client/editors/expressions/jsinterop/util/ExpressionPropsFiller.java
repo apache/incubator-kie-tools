@@ -76,8 +76,7 @@ public class ExpressionPropsFiller {
             return new RelationProps(expressionId, expressionName, dataType, columnsConvertForRelationProps(relationExpression), rowsConvertForRelationProps(relationExpression));
         } else if (wrappedExpression instanceof List) {
             final List listExpression = (List) wrappedExpression;
-            final Double width = listExpression.getComponentWidths().get(1);
-            return new ListProps(expressionId, expressionName, dataType, itemsConvertForListProps(listExpression), width);
+            return new ListProps(expressionId, expressionName, dataType, itemsConvertForListProps(listExpression));
         } else if (wrappedExpression instanceof Invocation) {
             final Invocation invocationExpression = (Invocation) wrappedExpression;
             final Double entryInfoWidth = invocationExpression.getComponentWidths().get(1);

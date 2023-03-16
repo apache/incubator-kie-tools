@@ -142,7 +142,7 @@ export function getDefaultExpressionDefinitionByLogicType(
       ],
       invokedFunction: {
         id: generateUuid(),
-        functionName: "FUNCTION",
+        name: "FUNCTION",
       },
     };
     return invocationExpression;

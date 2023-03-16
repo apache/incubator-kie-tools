@@ -183,7 +183,7 @@ public class ExpressionModelFillerTest {
         final String nestedContent = "nested content";
         final ExpressionProps[] items = new ExpressionProps[]{new LiteralProps("nested-literal", "Nested Literal Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), nestedContent, null)};
         final Double width = 600d;
-        final ListProps listProps = new ListProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, items, width);
+        final ListProps listProps = new ListProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, items);
 
         ExpressionModelFiller.fillListExpression(listExpression, listProps, qName -> qName);
 
@@ -195,7 +195,6 @@ public class ExpressionModelFillerTest {
                 .isNotNull()
                 .isExactlyInstanceOf(LiteralExpression.class);
         assertThat(listExpression.getExpression()).first().extracting(item -> ((LiteralExpression) item.getExpression()).getText().getValue()).isEqualTo(nestedContent);
-        assertThat(listExpression.getComponentWidths()).element(1).isEqualTo(width);
     }
 
     @Test

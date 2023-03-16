@@ -122,7 +122,6 @@ public class ExpressionModelFiller {
                                           final ListProps listProps,
                                           final UnaryOperator<QName> qNameNormalizer) {
         listExpression.setId(new Id(listProps.id));
-        listExpression.getComponentWidths().set(1, listProps.width);
         listExpression.getExpression().clear();
         listExpression.getExpression().addAll(itemsConvertForListExpression(listProps, listExpression, qNameNormalizer));
     }
@@ -135,7 +134,7 @@ public class ExpressionModelFiller {
         invocationExpression.getComponentWidths().set(1, invocationProps.entryInfoWidth);
         invocationExpression.getComponentWidths().set(2, invocationProps.entryExpressionWidth);
         invokedFunction.setId(new Id(invocationProps.invokedFunction.id));
-        invokedFunction.setText(new Text(invocationProps.invokedFunction.functionName));
+        invokedFunction.setText(new Text(invocationProps.invokedFunction.name));
         invocationExpression.setExpression(invokedFunction);
         invocationExpression.getBinding().clear();
         invocationExpression.getBinding().addAll(bindingsConvertForInvocationExpression(invocationProps, qNameNormalizer));

@@ -100,6 +100,7 @@ public class SaveCurrentStateCommand extends AbstractCanvasCommand {
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         if (!Objects.isNull(getStateBeforeUndo())) {
             getStateBeforeUndo().apply();
+            setStateBeforeUndo(null);
         }
         return buildResult();
     }

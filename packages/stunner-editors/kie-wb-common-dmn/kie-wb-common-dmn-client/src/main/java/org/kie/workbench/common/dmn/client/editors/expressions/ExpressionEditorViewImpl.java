@@ -395,7 +395,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         getExpressionGridCacheSupplier()
                 .get()
                 .removeExpressionGrid(nodeUUID);
-        setExpression(nodeUUID, hasExpression, hasName, isOnlyVisualChangeAllowed);
+        syncExpressionWithOlderEditor();
         toggleLegacyExpressionEditor(true);
         toggleBetaBoxedExpressionEditor(false);
         preventDefault(event);
@@ -651,8 +651,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     public void reloadEditor() {
         if (isReactBoxedExpressionVisible()) {
             loadNewBoxedExpressionEditor();
-
-            // This should be removed when the older editor is removed.
+        } else {
             syncExpressionWithOlderEditor();
         }
     }

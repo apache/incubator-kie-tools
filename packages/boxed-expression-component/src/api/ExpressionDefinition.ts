@@ -183,7 +183,7 @@ export interface InvocationExpressionDefinition<T extends ExpressionDefinition =
 
 export interface InvocationFunction {
   id: string;
-  functionName: string;
+  name: string;
 }
 
 // UNDEFINED EXPRESSION

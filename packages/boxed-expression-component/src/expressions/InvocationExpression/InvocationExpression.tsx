@@ -131,7 +131,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
         columns: [
           {
             accessor: "functionName" as keyof ROWTYPE,
-            label: invocationExpression.invokedFunction?.functionName ?? "Function name",
+            label: invocationExpression.invokedFunction.name ?? "Function name",
             isRowIndexColumn: false,
             isInlineEditable: true,
             dataType: undefined as any,
@@ -174,9 +174,12 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       for (const u of columnUpdates) {
         if (u.column.originalId === "functionName") {
-          setExpression((prev) => ({
+          setExpression((prev: InvocationExpressionDefinition) => ({
             ...prev,
-            functionName: u.name,
+            invokedFunction: {
+              id: prev.invokedFunction.id,
+              name: u.name,
+            },
           }));
         }
       }
