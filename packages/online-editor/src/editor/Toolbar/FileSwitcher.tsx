@@ -74,7 +74,6 @@ import {
 import { WorkspaceListItem } from "../../workspace/components/WorkspaceListItem";
 import { usePreviewSvg } from "../../previewSvgs/PreviewSvgHooks";
 import { WorkspaceLoadingMenuItem } from "../../workspace/components/WorkspaceLoadingCard";
-import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import {
   listDeletedFiles,
   resolveGitLocalChangesStatus,
@@ -99,7 +98,7 @@ const FILE_SWITCHER_INITIAL_HEIGHT_OFFSET_IN_PX = 204;
 const MENU_HEIGHT_MAX_LIMIT_CSS = `calc(100vh - ${FILE_SWITCHER_INITIAL_HEIGHT_OFFSET_IN_PX}px)` as const;
 const DRILLDOWN_NAVIGATION_MENU_ITEM_HEIGHT_IN_PX = 40;
 const MENU_SEARCH_HEIGHT_IN_PX = 64;
-const MENU_SHOW_CHANGED_CHECKBOX_HEIGHT_IN_PX = 53;
+const MENU_SHOW_CHANGED_CHECKBOX_HEIGHT_IN_PX = 36;
 const MENU_DIVIDER_HEIGHT_IN_PX = 17;
 
 export function FileSwitcher(props: {
@@ -392,7 +391,8 @@ export function FileSwitcher(props: {
                   </MenuItem>
                   <MenuGroup
                     style={{
-                      maxHeight: `calc(${MENU_HEIGHT_MAX_LIMIT_CSS} - ${DRILLDOWN_NAVIGATION_MENU_ITEM_HEIGHT_IN_PX})` /* height of menu minus the height of Current item*/,
+                      maxHeight: `calc(${MENU_HEIGHT_MAX_LIMIT_CSS} - ${DRILLDOWN_NAVIGATION_MENU_ITEM_HEIGHT_IN_PX}px)` /* height of menu minus the height of Current item*/,
+                      overflowY: "auto",
                     }}
                   >
                     {workspacesMenuItems}
@@ -703,11 +703,9 @@ export function FilesMenuItems(props: {
 
   const fileListMenuItemsHeightMaxLimitCss = useMemo(() => {
     return `calc(${MENU_HEIGHT_MAX_LIMIT_CSS} - ${
-      (!props.currentWorkspaceGitStatusProps
-        ? topSectionHeightInPx - MENU_SHOW_CHANGED_CHECKBOX_HEIGHT_IN_PX
-        : topSectionHeightInPx) + (otherFiles.length ? bottomSectionHeightInPx : 0)
+      topSectionHeightInPx + (otherFiles.length ? bottomSectionHeightInPx : 0)
     }px)`;
-  }, [bottomSectionHeightInPx, otherFiles.length, props.currentWorkspaceGitStatusProps, topSectionHeightInPx]);
+  }, [bottomSectionHeightInPx, otherFiles.length, topSectionHeightInPx]);
 
   const isCurrentWorkspaceFile = useCallback(
     (file: WorkspaceFile) => {

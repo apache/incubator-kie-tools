@@ -165,6 +165,7 @@ export function WorkspaceToolbar(props: Props) {
           }}
           currentWorkspaceFile={props.currentWorkspaceFile}
           onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
+          workspaceFiles={props.workspace.files}
         />
       </FlexItem>
     </Flex>

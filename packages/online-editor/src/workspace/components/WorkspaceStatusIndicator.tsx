@@ -31,11 +31,7 @@ import { matchPath } from "react-router";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { switchExpression } from "../../switchExpression/switchExpression";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import {
-  GitStatusIndicatorActions,
-  GitStatusIndicatorActionVariant,
-  GitStatusProps,
-} from "./GitStatusIndicatorActions";
+import { GitStatusIndicatorActions, GitStatusProps } from "./GitStatusIndicatorActions";
 import { FileModificationStatus } from "@kie-tools-core/workspaces-git-fs/dist/services/GitService";
 /**
  * Indicates current git sync status either for whole Workspace or a particular WorkspaceFile, depending on the provided properties.
@@ -177,6 +173,7 @@ export function WorkspaceStatusIndicator(props: {
   gitStatusProps: GitStatusProps;
   currentWorkspaceFile: WorkspaceFile;
   onDeletedWorkspaceFile: () => void;
+  workspaceFiles: WorkspaceFile[];
 }) {
   const routes = useRoutes();
   const [isActionsDropdownOpen, setActionsDropdownOpen] = React.useState(false);
@@ -218,13 +215,12 @@ export function WorkspaceStatusIndicator(props: {
   return (
     <GitStatusIndicator gitStatusProps={props.gitStatusProps} isHoverable={!isActionsDropdownOpen}>
       <GitStatusIndicatorActions
-        variant={GitStatusIndicatorActionVariant.dropdown}
         isOpen={isActionsDropdownOpen}
         setOpen={setActionsDropdownOpen}
         currentWorkspaceFile={props.currentWorkspaceFile}
         onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
         gitStatusProps={props.gitStatusProps}
-        expandDirection={"right"}
+        workspaceFiles={props.workspaceFiles}
       />
     </GitStatusIndicator>
   );

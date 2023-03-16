@@ -34,11 +34,7 @@ import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/work
 import { WorkspaceDescriptorDates } from "../workspace/components/WorkspaceDescriptorDates";
 import { EyeIcon } from "@patternfly/react-icons/dist/js/icons/eye-icon";
 import { GitStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
-import {
-  GitStatusIndicatorActions,
-  GitStatusIndicatorActionVariant,
-  GitStatusProps,
-} from "../workspace/components/GitStatusIndicatorActions";
+import { GitStatusIndicatorActions, GitStatusProps } from "../workspace/components/GitStatusIndicatorActions";
 import { switchExpression } from "../switchExpression/switchExpression";
 
 const FILE_DATA_LIST_HEIGHTS = {
@@ -65,8 +61,6 @@ export function FileListItem(props: {
 }) {
   const [keepGitStatusActionsDisplayed, setKeepGitStatusActionsDisplayed] = React.useState(false);
   const fileDirPath = props.file.relativeDirPath.split("/").join(" > ");
-  const fileName =
-    props.displayMode === FileListItemDisplayMode.enabled ? props.file.nameWithoutExtension : props.file.name;
 
   return (
     <>
@@ -90,11 +84,12 @@ export function FileListItem(props: {
             distance={5}
             position={"top-start"}
             content={
-              fileName + (props.displayMode === FileListItemDisplayMode.deleted ? " (Deleted in workspace.)" : "")
+              props.file.nameWithoutExtension +
+              (props.displayMode === FileListItemDisplayMode.deleted ? " (Deleted)" : "")
             }
           >
             <TextContent>
-              <Text component={TextVariants.p}>{fileName}</Text>
+              <Text component={TextVariants.p}>{props.file.nameWithoutExtension}</Text>
             </TextContent>
           </Tooltip>
         </FlexItem>
@@ -109,7 +104,6 @@ export function FileListItem(props: {
               isHoverable={!keepGitStatusActionsDisplayed}
             >
               <GitStatusIndicatorActions
-                variant={GitStatusIndicatorActionVariant.popover}
                 gitStatusProps={props.gitStatusProps}
                 workspaceFile={props.file}
                 currentWorkspaceFile={props.isCurrentWorkspaceFile ? props.file : undefined}

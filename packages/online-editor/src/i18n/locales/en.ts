@@ -18,7 +18,6 @@ import { OnlineI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { en as en_unitables } from "@kie-tools/unitables/dist/i18n/locales/en";
 import { wrapped } from "@kie-tools-core/i18n/dist/core";
-import { names } from "@kie-tools/i18n-common-dictionary/dist/names";
 
 export const en: OnlineI18n = {
   ...en_common,
@@ -629,13 +628,15 @@ export const en: OnlineI18n = {
   gitStatusIndicatorActions: {
     revert: {
       title: "Revert",
-      description: "This action is permanent. Following file will be reverted to the last commit:",
-      confirmButtonText: "Revert permanently",
+      warning: "This action is permanent",
+      description: "Are you sure you want to revert local changes of",
+      confirmButtonText: "Yes, revert permanently",
     },
     revertAll: {
       title: "Revert all changes",
-      description: "This action is permanent. Following files will be reverted to the last commit:",
-      confirmButtonText: "Revert permanently",
+      warning: "This action is permanent",
+      description: "Are you sure? Following files will be reverted to the last commit:",
+      confirmButtonText: "Yes, revert permanently",
     },
   },
 };

@@ -520,6 +520,7 @@ interface OnlineDictionary extends ReferenceDictionary {
   gitStatusIndicatorActions: {
     [key in SupportedActions]: {
       title: string;
+      warning: string;
       description: string;
       confirmButtonText: string;
     };

@@ -657,9 +657,6 @@ section.kie-tools--settings-tab {
 }
 
 /* FilesMenu */
-.kie-sandbox--files-menu.pf-c-menu.pf-m-drilldown > .pf-c-menu__content {
-  overflow-y: auto;
-}
 
 .kie-sandbox--files-menu .kie-sandbox--files-menu--label {
   --kie-sandbox--files-menu--title-padding: var(--pf-global--spacer--md);
@@ -702,50 +699,22 @@ section.kie-tools--settings-tab {
   visibility: visible;
 }
 /* GitStatusIndicatorActions dropdown render*/
-.kie-tools--git-status-indicator .pf-c-dropdown__toggle.kie-tools--no-whitespace-dropdown-toggle {
+.kie-tools--git-status-indicator .kie-tools--no-whitespace-dropdown-toggle {
   --pf-c-dropdown__toggle--PaddingLeft: 0;
   --pf-c-dropdown__toggle-icon--MarginLeft: 0;
 }
-.pf-c-dropdown__menu-item.kie-tools--alert-dropdown-item .pf-c-alert__description {
-  white-space: normal; /* override pf-c-dropdown__menu-item no-wrap*/
-  min-width: 200px;
-}
-.kie-tools--alert-dropdown-item {
-  display: flex;
-  align-items: baseline;
-  cursor: default;
-}
-.kie-tools--alert-dropdown-item .pf-c-alert {
-  display: flex;
-  flex-direction: column;
-}
-.kie-tools--alert-dropdown-item .pf-c-alert__action-group {
-  display: flex;
-  flex-direction: row;
-  align-self: flex-end;
-}
-.kie-tools--alert-dropdown-item .pf-c-alert__description {
-  white-space: normal;
-  min-width: 200px;
-}
-.kie-tools--alert-dropdown-right .kie-tools--alert-dropdown-item {
-  flex-direction: row-reverse;
-}
-.kie-tools--alert-dropdown-left .pf-c-alert.kie-tools--git-status-indicator-actions-alert-expanded {
-  flex-direction: column;
-  align-items: flex-start;
-}
-.kie-tools--alert-dropdown-right .pf-c-alert.kie-tools--git-status-indicator-actions-alert-expanded {
-  flex-direction: column;
-  align-items: flex-end;
-}
 /* GitStatusIndicatorActions popover render */
-.pf-c-popover[data-popper-placement="left"] .pf-c-alert.kie-tools--git-status-indicator-actions-alert-expanded,
-.pf-c-popover[data-popper-placement="top"] .pf-c-alert.kie-tools--git-status-indicator-actions-alert-expanded,
-.pf-c-popover[data-popper-placement="top-end"] .pf-c-alert.kie-tools--git-status-indicator-actions-alert-expanded {
-  flex-direction: column;
-  align-items: flex-start;
-  display: flex;
+
+/* Override styles from PopoverMenu.css which were hiding the close popover button */
+.kie-tools--git-status-indicator__popover > .pf-c-popover__content > .pf-c-button {
+  display: inline-block;
+  z-index: 9999;
+}
+
+/* remove padding so that inline alert fills whole popover */
+.kie-tools--git-status-indicator__popover-no-padding > .pf-c-popover__content,
+.kie-tools--git-status-indicator__popover-no-padding > .pf-c-popover__content > .pf-c-popover__body {
+  padding: 0;
 }
 .kie-sandbox--files-menu .kie-tools--git-status-indicator button {
   /* For the padding not to mess with surrounding layout */
