@@ -22,11 +22,7 @@ import java.util.Set;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.NativeContext2D;
-import com.ait.lienzo.client.core.animation.AnimationProperties;
-import com.ait.lienzo.client.core.animation.AnimationProperty;
-import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.shape.ContainerNode;
-import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -128,26 +124,6 @@ public class JsCanvas implements JsCanvasNodeLister {
     public NativeContext2D getNativeContext() {
         Context2D context = getLayer().getContext();
         return context.getNativeContext();
-    }
-
-    public void rotateGroupOverCenter(Group group, double degrees, double duration) {
-        BoundingBox boundingBox = group.getBoundingBox();
-        NFastArrayList<IPrimitive<?>> childNodes = group.getChildNodes();
-        for (int i = 0; i < childNodes.size(); i++) {
-            IPrimitive<?> child = childNodes.get(i);
-            if (null != child) {
-                child.setOffset(boundingBox.getWidth() / 2, boundingBox.getHeight() / 2);
-                if (duration > 0) {
-                    child.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(
-                                    AnimationProperty.Properties.ROTATION_DEGREES(degrees)
-                            ), duration)
-                            .run();
-                } else {
-                    child.setRotationDegrees(degrees);
-                }
-            }
-        }
-        draw();
     }
 
     public JsCanvasEvents events() {

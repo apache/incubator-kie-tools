@@ -80,41 +80,40 @@ Navigate to the test page in your root context path, eg: `http://localhost:8080/
         // Get canvas instance
         var canvas = window.frames.editorFrame.contentWindow.canvas
 
-  | Function              | Parameters                                             |    Return Type    | Description                                              |
-  | :-------------------- | :----------------------------------------------------- | :---------------: | :------------------------------------------------------- |
-  | getNodeIds            |                                                        |     String[]      | get all nodes ids                                        |
-  | getBackgroundColor    | String id                                              |      String       | get background color                                     |
-  | setBackgroundColor    | String id, <br/>String color                           |                   | set background color                                     |
-  | getBorderColor        | String id                                              |      String       | get border color                                         |
-  | setBorderColor        | String id, <br/>string color                           |                   | set border color                                         |
-  | getLocation           | String id                                              |     Number[]      | get location [x, y]                                      |
-  | getAbsoluteLocation   | String id                                              |     Number[]      | get absolute location [x, y]                             |
-  | getDimensions         | String id                                              |     Number[]      | get dimensions [width, height]                           |
-  | applyState            | String id, <br/>String state                           |                   | apply state {'none', 'highlight', 'selected', 'invalid'} |
-  | center                | String id                                              |                   | center node in the viewable canvas                       |
-  | calculateCenter       | String id                                              |     Number[]      | get node center location [x, y]                          |
-  | isConnected           | String id1, <br/>String id2                            |      boolean      | check if two nodes are connected                         |
-  | isShapeVisible        | String id1                                             |      boolean      | check if the node is within the viewable canvas          |
-  | translate             | Number x, <br/>Number y                                |                   | move canvas viewable area                                |
-  | getTranslateX         |                                                        |      Number       | get X position of the viewable canvas                    |
-  | getTranslateY         |                                                        |      Number       | get Y position of the viewable canvas                    |
-  | scale                 | Number factor                                          |                   | scale the diagram (zoom in/out)                          |
-  | scaleWithXY           | Number x, <br/>Number y                                |                   | scale the diagram (zoom in/out)                          |
-  | getScaleX             |                                                        |      Number       | get X scale factor                                       |
-  | getScaleY             |                                                        |      Number       | get Y scale factor                                       |
-  | rotateGroupOverCenter | Group group, <br/>Number degrees, <br/>Number duration |      Number       | get Y scale factor                                       |
-  | getLayer              |                                                        |       Layer       | get HTMLCanvasElement element                            |
-  | getCanvas             |                                                        | HTMLCanvasElement | get canvas Layer instance                                |
-  | getViewport           |                                                        |     Viewport      | get canvas NativeContext2D instance                      |
-  | getNativeContext      |                                                        |  NativeContext2D  | get canvas Viewport instance                             |
-  | draw                  |                                                        |                   | repaint canvas                                           |
-  | add                   | Primitive shape                                        |                   | add shape to the canvas                                  |
-  | getShape              | String id                                              |     Primitive     | get shape instance                                       |
-  | getWiresManager       |                                                        |   WiresManager    | get WiresManager instance                                |
-  | log                   |                                                        |   CanvasLogger    | get Canvas WireShape Logger instance                     |
-  | getNodeIdSet          |                                                        |        Set        | get WireShape ids                                        |
-  | getWiresShape         | String id                                              |    WiresShape     | get WiresShape instance                                  |
-  | close                 |                                                        |                   | close canvas                                             |
+  | Function            | Parameters                   |    Return Type    | Description                                                                                                                                                |
+  | :------------------ | :--------------------------- | :---------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | getNodeIds          |                              |     String[]      | get all nodes ids                                                                                                                                          |
+  | getBackgroundColor  | String id                    |      String       | get background color                                                                                                                                       |
+  | setBackgroundColor  | String id, <br/>String color |                   | set background color, <br/> take color name or color Hex code <br/> e.g. 'black' or '#000000'                                                              |
+  | getBorderColor      | String id                    |      String       | get border color                                                                                                                                           |
+  | setBorderColor      | String id, <br/>string color |                   | set border color, <br/> take color name or color Hex code <br/> e.g. 'black' or '#000000'                                                                  |
+  | getLocation         | String id                    |     Number[]      | get location [x, y]                                                                                                                                        |
+  | getAbsoluteLocation | String id                    |     Number[]      | get absolute location [x, y]                                                                                                                               |
+  | getDimensions       | String id                    |     Number[]      | get dimensions [width, height]                                                                                                                             |
+  | applyState          | String id, <br/>String state |                   | apply state {'none', 'highlight', 'selected', 'invalid'}                                                                                                   |
+  | center              | String id                    |                   | center node in the viewable canvas, <br/> only applicable to large diagrams where the node is not within the visible area                                  |
+  | calculateCenter     | String id                    |     Number[]      | get the coordinates to center a node in the viewable canvas [x, y], <br/> only applicable to large diagrams where the node is not within the viewable area |
+  | isConnected         | String id1, <br/>String id2  |      boolean      | check if two nodes are connected                                                                                                                           |
+  | isShapeVisible      | String id1                   |      boolean      | check if the node is within the viewable canvas                                                                                                            |
+  | translate           | Number x, <br/>Number y      |                   | change canvas viewable area                                                                                                                                |
+  | getTranslateX       |                              |      Number       | get X position of the viewable canvas                                                                                                                      |
+  | getTranslateY       |                              |      Number       | get Y position of the viewable canvas                                                                                                                      |
+  | scale               | Number factor                |                   | scale the diagram (zoom in/out)                                                                                                                            |
+  | scaleWithXY         | Number x, <br/>Number y      |                   | scale the diagram (zoom in/out)                                                                                                                            |
+  | getScaleX           |                              |      Number       | get X scale factor                                                                                                                                         |
+  | getScaleY           |                              |      Number       | get Y scale factor                                                                                                                                         |
+  | getLayer            |                              |       Layer       | get HTMLCanvasElement element                                                                                                                              |
+  | getCanvas           |                              | HTMLCanvasElement | get canvas Layer instance                                                                                                                                  |
+  | getViewport         |                              |     Viewport      | get canvas Viewport instance                                                                                                                               |
+  | getNativeContext    |                              |  NativeContext2D  | get canvas NativeContext2D instance                                                                                                                        |
+  | draw                |                              |                   | repaint canvas, <br/> apply graphic changes to the shapes in the canvas                                                                                    |
+  | add                 | Primitive shape              |                   | add shape to the canvas                                                                                                                                    |
+  | getShape            | String id                    |     Primitive     | get shape instance                                                                                                                                         |
+  | getWiresManager     |                              |   WiresManager    | get WiresManager instance, <br/> low level API to manage and interact with WiresShapes                                                                     |
+  | log                 |                              |   CanvasLogger    | get Canvas WireShape Logger instance, <br/> recover high level information about the elements in the canvas <br/> e.g. canvas.log().logWiresShapes()       |
+  | getNodeIdSet        |                              |        Set        | get WireShape ids                                                                                                                                          |
+  | getWiresShape       | String id                    |    WiresShape     | get WiresShape instance                                                                                                                                    |
+  | close               |                              |                   | close canvas                                                                                                                                               |
 
   #### Session API (Stunner)
 
