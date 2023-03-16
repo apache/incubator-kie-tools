@@ -208,6 +208,9 @@ if [ -n "$OSBS_BUILD_USER" ]; then
 fi
 
 cd ../
+set -x
+PROD_C="${PROD_COMPONENT}-overrides"
 # hack to replace the branch overrides as cekit detects two osbs sections and don't know which one to override.
-sed -i 's/rhba-7-rhel-8/rhba-7-rhel-8-nightly/g' ${PROD_COMPONENT}.yaml
-make container-build-osbs prod_component=${PROD_COMPONENT}
+sed -i 's/rhba-7-rhel-8/rhba-7-rhel-8-nightly/g' ${PROD_C}.yaml
+make container-build-osbs prod_component=${PROD_C}
+set +x
