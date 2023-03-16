@@ -18,6 +18,7 @@ import {
   SwfServiceCatalogFunction,
   SwfCatalogSourceType,
   SwfServiceCatalogService,
+  SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import {
@@ -449,9 +450,18 @@ export const SwfLanguageServiceCodeCompletion = {
     const existingFunctionOperations = swfModelQueries.getFunctions(args.rootNode).map((f) => f.operation);
 
     const specsDir = await args.langServiceConfig.getSpecsDirPosixPaths(args.document);
+    const routesDir = await args.langServiceConfig.getRoutesDirPosixPaths(args.document);
 
-    const result = args.swfCompletionItemServiceCatalogServices.flatMap((swfServiceCatalogService) =>
-      swfServiceCatalogService.functions
+    const result = args.swfCompletionItemServiceCatalogServices.flatMap((swfServiceCatalogService) => {
+      let dirRelativePosixPath: string;
+
+      if (swfServiceCatalogService.type === SwfServiceCatalogServiceType.camelroute) {
+        dirRelativePosixPath = routesDir.routesDirRelativePosixPath;
+      } else {
+        dirRelativePosixPath = specsDir.specsDirRelativePosixPath;
+      }
+
+      return swfServiceCatalogService.functions
         .filter(
           (swfServiceCatalogFunc) =>
             !existingFunctionOperations.includes(swfServiceCatalogFunc.operation) &&
@@ -478,7 +488,7 @@ export const SwfLanguageServiceCodeCompletion = {
               : CompletionItemKind.Reference;
 
           const label = args.codeCompletionStrategy.formatLabel(
-            toCompletionItemLabelPrefix(swfServiceCatalogFunc, specsDir.specsDirRelativePosixPath),
+            toCompletionItemLabelPrefix(swfServiceCatalogFunc, dirRelativePosixPath),
             kind
           );
 
@@ -499,8 +509,8 @@ export const SwfLanguageServiceCodeCompletion = {
               },
             },
           });
-        })
-    );
+        });
+    });
 
     const genericFunctionCompletion = createCompletionItem({
       ...args,

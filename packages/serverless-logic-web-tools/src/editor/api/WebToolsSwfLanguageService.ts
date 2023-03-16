@@ -80,6 +80,10 @@ export class WebToolsSwfLanguageService {
           specsDirRelativePosixPath: "",
           specsDirAbsolutePosixPath: "",
         }),
+        getRoutesDirPosixPaths: async (_textDocument) => ({
+          routesDirRelativePosixPath: "",
+          routesDirAbsolutePosixPath: "",
+        }),
         shouldConfigureServiceRegistries: () => false,
         shouldServiceRegistriesLogIn: () => false,
         canRefreshServices: () => true,
