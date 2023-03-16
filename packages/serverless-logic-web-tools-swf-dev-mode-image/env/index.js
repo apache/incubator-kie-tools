@@ -25,7 +25,7 @@ module.exports = composeEnv(
         description: "",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeKogitoVersion: {
-        default: "1.30.0",
+        default: "1.35.0",
         description: "",
       },
     }),
