@@ -14,4 +14,7 @@
  * limitations under the License.
  */
 
-export const KOGITO_DATA_INDEX_URL_KEY = "KOGITO_DATA_INDEX_URL";
+export const DeployConstants = {
+  KOGITO_DATA_INDEX_URL_KEY: "KOGITO_DATA_INDEX_URL",
+  KOGITO_DEV_UI_URL_KEY: "KOGITO_DEV_UI_URL",
+};

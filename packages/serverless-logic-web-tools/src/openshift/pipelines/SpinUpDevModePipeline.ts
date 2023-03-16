@@ -30,7 +30,7 @@ import {
 import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
 import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 import { commonLabels, runtimeLabels } from "@kie-tools-core/openshift/dist/template/TemplateConstants";
-import { KOGITO_DATA_INDEX_URL_KEY } from "../DeployConstants";
+import { DeployConstants } from "../DeployConstants";
 import { resolveDevModeResourceName } from "../devMode/DevModeContext";
 import { RESOURCE_OWNER } from "../OpenShiftConstants";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
@@ -175,7 +175,10 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
                       protocol: "TCP",
                     },
                   ],
-                  env: [{ name: KOGITO_DATA_INDEX_URL_KEY, value: routeUrl }],
+                  env: [
+                    { name: DeployConstants.KOGITO_DATA_INDEX_URL_KEY, value: routeUrl },
+                    { name: DeployConstants.KOGITO_DEV_UI_URL_KEY, value: routeUrl },
+                  ],
                 },
               ],
             },
