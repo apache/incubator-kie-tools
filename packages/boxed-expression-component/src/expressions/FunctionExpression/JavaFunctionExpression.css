@@ -43,7 +43,11 @@
 }
 
 .java-function-expression-label .java-function-parameter-help-icon {
-  margin-left: 5px;
+  bottom: 10px;
+  right: 10px;
+  color: var(--pf-global--info-color--100);
+  cursor: pointer;
+  position: absolute;
 }
 
 .java-function-parameter-help-popover .pf-c-title {

@@ -140,6 +140,7 @@ export const PopoverMenu = React.forwardRef(
         onShown={onPopoverShown}
         shouldClose={shouldClose}
         shouldOpen={shouldOpen}
+        flipBehavior={["bottom-start", "bottom", "bottom-end", "right-start", "left-start", "right-end", "left-end"]}
       >
         {children}
       </Popover>

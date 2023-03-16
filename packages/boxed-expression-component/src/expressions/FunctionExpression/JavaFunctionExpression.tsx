@@ -15,7 +15,7 @@
  */
 
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover/Popover";
-import QuestionCircleIcon from "@patternfly/react-icons/dist/js/icons/question-circle-icon";
+import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import _ from "lodash";
 import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
@@ -292,27 +292,35 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
     useCallback(() => label, [label])
   );
 
-  function getParameterLabelHelp(javaFunctionParameterLabel: string): React.ReactNode {
-    if (javaFunctionParameterLabel === "Class name") {
+  const getParameterLabelHelp = useCallback((): React.ReactNode => {
+    if (props.rowIndex === 1) {
       return <code>org.kie.kogito.MyClass</code>;
     } else {
       return <code>doSomething(java.lang.Integer, double)</code>;
     }
-  }
+  }, [props.rowIndex]);
+
+  const [isCellHovered, setIsCellHovered] = React.useState<boolean>();
 
   return (
-    <div className={"java-function-expression-label"}>
-      <div className={"name"}>
-        {label}
-        <Popover
-          className="java-function-parameter-help-popover"
-          headerContent={label + " example"}
-          bodyContent={getParameterLabelHelp(label)}
-        >
-          <QuestionCircleIcon size="sm" className="java-function-parameter-help-icon" />
-        </Popover>
+    <div
+      className={"java-function-expression-label"}
+      onMouseEnter={() => setIsCellHovered(true)}
+      onMouseLeave={() => setIsCellHovered(false)}
+    >
+      <div className={"name"}>{label}</div>
+      <div className={"data-type"}>
+        {`(string)`}
+        {isCellHovered && (
+          <Popover
+            className="java-function-parameter-help-popover"
+            headerContent={label + " example"}
+            bodyContent={getParameterLabelHelp}
+          >
+            <HelpIcon size="sm" className="java-function-parameter-help-icon" />
+          </Popover>
+        )}
       </div>
-      <div className={"data-type"}>{`(string)`}</div>
     </div>
   );
 }

@@ -16,17 +16,22 @@
 
 import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/esm/components/Dropdown";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core/dist/js/components/Menu";
-import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
-import CopyIcon from "@patternfly/react-icons/dist/js/icons/copy-icon";
-import CutIcon from "@patternfly/react-icons/dist/js/icons/cut-icon";
-import ListIcon from "@patternfly/react-icons/dist/js/icons/list-icon";
-import PasteIcon from "@patternfly/react-icons/dist/js/icons/paste-icon";
-import TableIcon from "@patternfly/react-icons/dist/js/icons/table-icon";
+import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
+import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
+import { MenuItem } from "@patternfly/react-core/dist/js/components/Menu/MenuItem";
+import { MenuList } from "@patternfly/react-core/dist/js/components/Menu/MenuList";
+import { CompressIcon } from "@patternfly/react-icons/dist/js/icons/compress-icon";
+import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
+import { CutIcon } from "@patternfly/react-icons/dist/js/icons/cut-icon";
+import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
+import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
+import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
+import _ from "lodash";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ExpressionDefinition, ExpressionDefinitionLogicType, generateUuid } from "../../../api";
 import { useCustomContextMenuHandler } from "../../../contextMenu";
+import { MenuItemWithHelp } from "../../../contextMenu/MenuWithHelp/MenuItemWithHelp";
 import { PopoverMenu } from "../../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../../i18n";
 import { useNestedExpressionContainer } from "../../../resizing/NestedExpressionContainerContext";
@@ -125,6 +130,8 @@ export function ExpressionDefinitionLogicTypeSelector({
     (_: React.MouseEvent, itemId?: string | number) => {
       onLogicTypeSelected(itemId as ExpressionDefinitionLogicType);
       setCurrentlyOpenContextMenu(undefined);
+      setPasteExpressionError("");
+      setVisibleHelp("");
     },
     [onLogicTypeSelected, setCurrentlyOpenContextMenu]
   );
@@ -217,18 +224,27 @@ export function ExpressionDefinitionLogicTypeSelector({
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
+  const [pasteExpressionError, setPasteExpressionError] = React.useState<string>("");
+
   const pasteExpression = useCallback(async () => {
-    const expression: ExpressionDefinition = JSON.parse(await navigator.clipboard.readText(), (key, value) => {
+    const parseFunction = (key: string, value: string) => {
       // We can't allow ids to be repeated, so we generate new ids for every expression that is part of the pasted expression.
       if (key === "id") {
         return generateUuid();
       } else {
         return value;
       }
-    });
-    setExpression(expression);
-    setDropdownOpen(false);
-    setCurrentlyOpenContextMenu(undefined);
+    };
+
+    try {
+      const expression = JSON.parse(await navigator.clipboard.readText(), parseFunction);
+      setExpression(expression);
+      setDropdownOpen(false);
+      setCurrentlyOpenContextMenu(undefined);
+      setPasteExpressionError("");
+    } catch (err) {
+      setPasteExpressionError(err);
+    }
   }, [setCurrentlyOpenContextMenu, setExpression]);
 
   const menuIconContainerStyle = useMemo(() => {
@@ -249,6 +265,27 @@ export function ExpressionDefinitionLogicTypeSelector({
       !nonSelectableLogicTypes.has(expression.logicType)
     );
   }, [expression.logicType, isNested, nonSelectableLogicTypes]);
+
+  const logicTypeHelp = useCallback((logicType: ExpressionDefinitionLogicType) => {
+    switch (logicType) {
+      case ExpressionDefinitionLogicType.Literal:
+        return "A boxed literal expression in DMN is a literal FEEL expression as text in a table cell, typically with a labeled column and an assigned data type.";
+      case ExpressionDefinitionLogicType.Context:
+        return "A boxed context expression in DMN is a set of variable names and values with a result value. Each name-value pair is a context entry.";
+      case ExpressionDefinitionLogicType.DecisionTable:
+        return "A decision table in DMN is a visual representation of one or more business rules in a tabular format.";
+      case ExpressionDefinitionLogicType.Relation:
+        return "A boxed relation expression in DMN is a traditional data table with information about given entities, listed as rows. You use boxed relation tables to define decision data for relevant entities in a decision at a particular node.";
+      case ExpressionDefinitionLogicType.Function:
+        return "A boxed function expression in DMN is a parameterized boxed expression containing a literal FEEL expression, a nested context expression of an external JAVA or PMML function, or a nested boxed expression of any type.";
+      case ExpressionDefinitionLogicType.Invocation:
+        return "A boxed invocation expression in DMN is a boxed expression that invokes a business knowledge model. A boxed invocation expression contains the name of the business knowledge model to be invoked and a list of parameter bindings.";
+      case ExpressionDefinitionLogicType.List:
+        return "A boxed list expression in DMN represents a FEEL list of items. You use boxed lists to define lists of relevant items for a particular node in a decision.";
+      default:
+        return "";
+    }
+  }, []);
 
   const contextMenuItems = useMemo(() => {
     return (
@@ -285,6 +322,8 @@ export function ExpressionDefinitionLogicTypeSelector({
           {i18n.terms.cut}
         </MenuItem>
         <MenuItem
+          className={pasteExpressionError ? "paste-from-clipboard-error" : ""}
+          description={pasteExpressionError ? "Paste operation was not successful" : ""}
           onClick={pasteExpression}
           icon={
             <div style={menuIconContainerStyle}>
@@ -296,7 +335,15 @@ export function ExpressionDefinitionLogicTypeSelector({
         </MenuItem>
       </MenuList>
     );
-  }, [copyExpression, cutExpression, i18n, menuIconContainerStyle, pasteExpression, resetLogicType]);
+  }, [
+    pasteExpressionError,
+    copyExpression,
+    cutExpression,
+    i18n,
+    menuIconContainerStyle,
+    pasteExpression,
+    resetLogicType,
+  ]);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
@@ -307,6 +354,11 @@ export function ExpressionDefinitionLogicTypeSelector({
   }, [isResetContextMenuOpen]);
 
   const nestedExpressionContainer = useNestedExpressionContainer();
+  const [visibleHelp, setVisibleHelp] = React.useState<string>("");
+
+  const toggleVisibleHelp = useCallback((help: string) => {
+    setVisibleHelp((previousHelp) => (previousHelp !== help ? help : ""));
+  }, []);
 
   return (
     <>
@@ -353,6 +405,10 @@ export function ExpressionDefinitionLogicTypeSelector({
 
         {!isLogicTypeSelected && (
           <PopoverMenu
+            onHide={() => {
+              setPasteExpressionError("");
+              setVisibleHelp("");
+            }}
             arrowPlacement={getPopoverArrowPlacement}
             appendTo={getPopoverContainer()}
             className="logic-type-popover"
@@ -360,26 +416,30 @@ export function ExpressionDefinitionLogicTypeSelector({
             body={
               <>
                 <Menu onSelect={selectLogicType}>
-                  <MenuList>
-                    {selectableLogicTypes.map((key) => (
-                      <MenuItem
-                        key={key}
-                        itemId={key}
-                        icon={
-                          <div style={menuIconContainerStyle}>
-                            <>{logicTypeIcon(key)}</>
-                          </div>
-                        }
-                      >
-                        {key}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                  <Divider style={{ padding: "16px" }} />
+                  <MenuGroup className="menu-with-help">
+                    <MenuList>
+                      <>
+                        {selectableLogicTypes.map((key) => (
+                          <MenuItemWithHelp
+                            key={key}
+                            menuItemKey={key}
+                            menuItemHelp={logicTypeHelp(key)}
+                            menuItemIcon={logicTypeIcon(key)}
+                            menuItemIconStyle={menuIconContainerStyle}
+                            setVisibleHelp={toggleVisibleHelp}
+                            visibleHelp={visibleHelp}
+                          />
+                        ))}
+                        <Divider style={{ padding: "16px" }} />
+                      </>
+                    </MenuList>
+                  </MenuGroup>
                 </Menu>
                 <Menu>
                   <MenuList>
                     <MenuItem
+                      className={pasteExpressionError ? "paste-from-clipboard-error" : ""}
+                      description={pasteExpressionError ? "Paste operation was not successful" : ""}
                       onClick={pasteExpression}
                       icon={
                         <div style={menuIconContainerStyle}>

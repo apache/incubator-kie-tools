@@ -47,7 +47,6 @@
 .expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header {
   color: black;
   padding: 0 0 2px 8px;
-  background-color: white;
   border-bottom: 1px solid var(--pf-global--palette--black-500);
   border-top: 1px solid var(--pf-global--palette--black-400);
   border-left: 1px solid var(--pf-global--palette--black-400);
@@ -64,4 +63,12 @@
 
 .expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header .pf-c-dropdown__toggle-icon {
   margin-left: 4px;
+}
+
+.logic-type-popover .pf-c-menu {
+  width: 300px;
+}
+
+.paste-from-clipboard-error .pf-c-menu__item-description {
+  color: var(--pf-global--danger-color--100);
 }

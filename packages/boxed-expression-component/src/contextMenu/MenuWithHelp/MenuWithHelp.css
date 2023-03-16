@@ -1,0 +1,20 @@
+.menu-item-with-help .pf-c-menu__item {
+  min-height: 40px;
+}
+
+.menu-item-with-help .pf-c-menu__item-description {
+  font-size: 10px;
+  word-break: keep-all;
+}
+
+.menu-item-with-help .pf-c-menu__item-action {
+  color: var(--pf-global--info-color--100);
+}
+
+.menu-item-with-help .pf-c-menu__item-action:hover {
+  background-color: var(--pf-global--palette--black-400);
+}
+
+.menu-with-help .pf-c-menu__group-title {
+  padding-bottom: 10px;
+}
