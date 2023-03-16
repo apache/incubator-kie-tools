@@ -28,7 +28,7 @@ export function DmnRunnerLoading(props: DmnRunnerLoading) {
 
   return (
     <>
-      {dmnRunnerState.isVisible ? (
+      {dmnRunnerState.canBeVisualized ? (
         props.children
       ) : (
         <Bullseye>

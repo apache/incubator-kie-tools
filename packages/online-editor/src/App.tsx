@@ -31,7 +31,7 @@ import { DevDeploymentsContextProvider } from "./devDeployments/DevDeploymentsCo
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { useRoutes } from "./navigation/Hooks";
 import { EnvContextProvider } from "./env/hooks/EnvContextProvider";
-import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsDispatchContextProvider";
+import { DmnRunnerPersistenceDispatchContextProvider } from "./dmnRunnerPersistence/DmnRunnerPersistenceDispatchContextProvider";
 import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
 import { AuthSessionsContextProvider } from "./authSessions/AuthSessionsContext";
 import { AccountsContextProvider } from "./accounts/AccountsContext";
@@ -51,7 +51,7 @@ export function App() {
         [AccountsContextProvider, {}],
         [GlobalAlertsContextProvider, []],
         [WorkspacesContextProviderWithCustomCommitMessagesModal, {}],
-        [DmnRunnerInputsDispatchContextProvider, {}],
+        [DmnRunnerPersistenceDispatchContextProvider, {}],
         [DevDeploymentsContextProvider, {}],
         [NavigationContextProvider, {}],
         [PreviewSvgsContextProvider, {}],

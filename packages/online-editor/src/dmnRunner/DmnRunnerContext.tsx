@@ -17,15 +17,18 @@
 import { InputRow, DmnSchema } from "@kie-tools/form-dmn";
 import * as React from "react";
 import { useContext } from "react";
-import { KieSandboxExtendedServicesModelPayload } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
+import { ConfigInputRow, DmnRunnerPersistenceJson } from "../dmnRunnerPersistence/DmnRunnerPersistenceService";
+import { KieSandboxExtendedServicesModelPayload } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 
 export interface DmnRunnerContextType {
+  configs: ConfigInputRow;
   currentInputRowIndex: number;
   error: boolean;
-  inputRows: Array<InputRow>;
+  dmnRunnerPersistenceJson: DmnRunnerPersistenceJson;
+  inputs: Array<InputRow>;
   isExpanded: boolean;
-  isVisible: boolean;
+  canBeVisualized: boolean;
   jsonSchema?: DmnSchema;
   mode: DmnRunnerMode;
   status: DmnRunnerStatus;
@@ -40,8 +43,16 @@ export interface DmnRunnerCallbacksContextType {
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;
-  setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
-  setMode: React.Dispatch<React.SetStateAction<DmnRunnerMode>>;
+  setDmnRunnerInputs: (newInputsRow: (previousInputs: Array<InputRow>) => Array<InputRow> | Array<InputRow>) => void;
+  setDmnRunnerMode: (newMode: DmnRunnerMode) => void;
+  setDmnRunnerConfigInputs: (
+    newConfigInputs: (previousConfigInputs: ConfigInputRow) => ConfigInputRow | ConfigInputRow
+  ) => void;
+  setDmnRunnerPersistenceJson: (args: {
+    newInputsRow?: (previousInputs: Array<InputRow>) => Array<InputRow> | Array<InputRow>;
+    newMode?: DmnRunnerMode;
+    newConfigInputs?: (previousConfigInputs: ConfigInputRow) => ConfigInputRow | ConfigInputRow;
+  }) => void;
 }
 
 export const DmnRunnerStateContext = React.createContext<DmnRunnerContextType>({} as any);

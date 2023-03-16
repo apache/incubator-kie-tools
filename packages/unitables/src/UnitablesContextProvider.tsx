@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,21 @@
  * limitations under the License.
  */
 
-export * from "./UnitablesWrapper";
-export * from "./UnitablesTypes";
-export * from "./UnitablesValidator";
+import * as React from "react";
+import { useState } from "react";
+import { UnitablesContext } from "./UnitablesContext";
+
+export function UnitablesContextProvider(props: React.PropsWithChildren<any>) {
+  const [internalChange, setInternalChange] = useState<boolean>(false);
+
+  return (
+    <UnitablesContext.Provider
+      value={{
+        internalChange,
+        setInternalChange,
+      }}
+    >
+      {props.children}
+    </UnitablesContext.Provider>
+  );
+}

@@ -19,7 +19,7 @@ import { DmnRunnerDrawerPanelContent } from "./DmnRunnerDrawerPanelContent";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { useDmnRunnerState } from "./DmnRunnerContext";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
+import { EditorPageDockDrawerRef } from "../editor/EditorPageDockDrawer";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 
 export function DmnRunnerDrawer(props: {

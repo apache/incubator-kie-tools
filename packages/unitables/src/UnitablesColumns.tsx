@@ -55,19 +55,20 @@ export function useUnitablesColumns(
     [jsonSchemaBridge]
   );
 
+  // Removes or updates the rows after a bridge change;
   useEffect(() => {
     if (previousBridge === undefined) {
       return;
     }
 
-    setRows((inputRows) => {
-      const newInputRows = [...inputRows];
+    setRows((currentRows) => {
+      const newRows = [...currentRows];
       const propertiesDifference = diff(
         getObjectByPath(previousBridge?.schema, propertiesEntryPath) ?? {},
         getObjectByPath(jsonSchemaBridge?.schema, propertiesEntryPath) ?? {}
       );
 
-      const updatedData = newInputRows.map((inputRow) => {
+      const updatedData = newRows.map((row) => {
         return Object.entries(propertiesDifference).reduce(
           (row, [property, value]) => {
             if (Object.keys(row).length === 0) {
@@ -81,7 +82,7 @@ export function useUnitablesColumns(
             }
             return row;
           },
-          { ...defaultInputValues, ...inputRow }
+          { ...defaultInputValues, ...row }
         );
       });
 

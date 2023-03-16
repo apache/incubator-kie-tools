@@ -428,7 +428,7 @@ export function BeeTableInternal<R extends object>({
       }
 
       // FIXME: Tiago -> This won't work well on non-macOS
-      // COPY/CUT/PASTE
+      // COPY/CUT/PASTE ctrlKey
       if (!e.shiftKey && e.metaKey && e.key.toLowerCase() === "c") {
         e.stopPropagation();
         e.preventDefault();

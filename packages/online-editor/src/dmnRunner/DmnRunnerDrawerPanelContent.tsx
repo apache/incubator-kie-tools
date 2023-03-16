@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState, useLayoutEffect } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
@@ -23,7 +23,7 @@ import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
-import { useOnlineI18n } from "../../i18n";
+import { useOnlineI18n } from "../i18n";
 import {
   DecisionResult,
   DecisionResultMessage,
@@ -36,12 +36,12 @@ import {
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
-import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
+import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
+import { EditorPageDockDrawerRef, PanelId } from "../editor/EditorPageDockDrawer";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -50,8 +50,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
-import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import isEqual from "lodash/isEqual";
+import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -78,9 +77,16 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const extendedServices = useExtendedServices();
   const { i18n, locale } = useOnlineI18n();
   const [formRef, setFormRef] = useState<HTMLFormElement | null>();
-  const { currentInputRowIndex, inputRows, error, mode, status, isExpanded, jsonSchema } = useDmnRunnerState();
-  const { onRowAdded, preparePayload, setError, setExpanded, setInputRows, setCurrentInputRowIndex, setMode } =
-    useDmnRunnerDispatch();
+  const { currentInputRowIndex, error, inputs, mode, status, isExpanded, jsonSchema } = useDmnRunnerState();
+  const {
+    onRowAdded,
+    preparePayload,
+    setCurrentInputRowIndex,
+    setError,
+    setExpanded,
+    setDmnRunnerInputs,
+    setDmnRunnerMode,
+  } = useDmnRunnerDispatch();
   const [drawerError, setDrawerError] = useState<boolean>(false);
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>();
@@ -94,9 +100,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const [selectedRow, selectRow] = useState<string>("");
   const [rowSelectionIsOpen, openRowSelection] = useState<boolean>(false);
 
-  const formInputs: InputRow = useMemo(() => {
-    return inputRows[currentInputRowIndex];
-  }, [inputRows, currentInputRowIndex]);
+  const formInputs: InputRow = useMemo(() => inputs[currentInputRowIndex], [inputs, currentInputRowIndex]);
 
   const onResize = useCallback((width: number) => {
     // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.
@@ -270,27 +274,19 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   // changing between rows re-calculate this function;
   const setFormInputs = useCallback(
-    (newFormInputs) => {
-      setInputRows((currentInputRows: Array<InputRow>) => {
-        const newInputs = [...currentInputRows];
-        if (typeof newFormInputs === "function") {
-          const formInput = newFormInputs(currentInputRows[currentInputRowIndex]);
-          // prevent unnecessary re-render after changing between rows;
-          if (!isEqual(formInput, newInputs[currentInputRowIndex])) {
-            newInputs[currentInputRowIndex] = formInput;
-            return newInputs;
-          }
-        } else {
-          // prevent unnecessary re-render after changing between rows;
-          if (!isEqual(newFormInputs, newInputs[currentInputRowIndex])) {
-            newInputs[currentInputRowIndex] = newFormInputs;
-            return newInputs;
-          }
+    (newFormInput: (previousInputRow: InputRow) => InputRow | InputRow) => {
+      setDmnRunnerInputs((perviousInputRows) => {
+        console.log("SET FORM INPUTS", perviousInputRows);
+        const newInputRows = [...perviousInputRows];
+        if (typeof newFormInput === "function") {
+          newInputRows[currentInputRowIndex] = newFormInput(newInputRows[currentInputRowIndex]);
+          return newInputRows;
         }
-        return currentInputRows;
+        newInputRows[currentInputRowIndex] = newFormInput;
+        return newInputRows;
       });
     },
-    [currentInputRowIndex, setInputRows]
+    [currentInputRowIndex, setDmnRunnerInputs]
   );
 
   const onSelectRow = useCallback((event) => {
@@ -301,7 +297,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const rowOptions = useMemo(
     () =>
-      inputRows.map((_, rowIndex) => (
+      inputs.map((_, rowIndex) => (
         <DropdownItem
           component={"button"}
           key={rowIndex}
@@ -313,7 +309,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           Row {rowIndex + 1}
         </DropdownItem>
       )),
-    [inputRows, setCurrentInputRowIndex, selectRow, getRow]
+    [inputs, setCurrentInputRowIndex, selectRow, getRow]
   );
 
   const onAddNewRow = useCallback(() => {
@@ -326,9 +322,9 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   }, [onRowAdded, setCurrentInputRowIndex, getRow]);
 
   const onChangeToTableView = useCallback(() => {
-    setMode(DmnRunnerMode.TABLE);
+    setDmnRunnerMode(DmnRunnerMode.TABLE);
     props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
-  }, [setMode, props.editorPageDock]);
+  }, [setDmnRunnerMode, props.editorPageDock]);
 
   return (
     <DrawerPanelContent
@@ -364,7 +360,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       alignItems={{ default: "alignItemsCenter" }}
                     >
                       <FlexItem>
-                        {inputRows.length <= 1 ? (
+                        {inputs.length <= 1 ? (
                           <Button
                             variant={ButtonVariant.plain}
                             className={"kie-tools--masthead-hoverable"}
@@ -433,7 +429,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                     <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                       <DmnForm
                         // force a re-render when the row is changed;
-                        key={selectedRow}
+                        key={formInputs?.id}
                         formInputs={formInputs}
                         setFormInputs={setFormInputs}
                         formError={error}

@@ -7259,6 +7259,9 @@ importers:
       "@kie-tools/form":
         specifier: workspace:*
         version: link:../form
+      "@kie-tools/form-dmn":
+        specifier: workspace:*
+        version: link:../form-dmn
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary

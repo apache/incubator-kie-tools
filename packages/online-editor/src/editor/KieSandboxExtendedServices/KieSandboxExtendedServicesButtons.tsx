@@ -26,14 +26,14 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { useDevDeployments } from "../../devDeployments/DevDeploymentsContext";
 import { useDevDeploymentsDeployDropdownItems } from "../../devDeployments/DevDeploymentsDeployDropdownItems";
-import { useDmnRunnerDispatch, useDmnRunnerState } from "../DmnRunner/DmnRunnerContext";
+import { useDmnRunnerDispatch, useDmnRunnerState } from "../../dmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import {
   DependentFeature,
   useExtendedServices,
 } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { DmnRunnerMode } from "../DmnRunner/DmnRunnerStatus";
+import { DmnRunnerMode } from "../../dmnRunner/DmnRunnerStatus";
 import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
@@ -43,7 +43,7 @@ import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
 import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import { DeleteDropdownWithConfirmation } from "../DeleteDropdownWithConfirmation";
-import { useDmnRunnerInputsDispatch } from "../../dmnRunnerInputs/DmnRunnerInputsDispatchContext";
+import { useDmnRunnerPersistenceDispatch } from "../../dmnRunnerPersistence/DmnRunnerPersistenceDispatchContext";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -55,10 +55,11 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
   const devDeployments = useDevDeployments();
-  const { mode, isExpanded } = useDmnRunnerState();
-  const { setExpanded, setCurrentInputRowIndex, setMode } = useDmnRunnerDispatch();
+  const { dmnRunnerPersistenceJson, isExpanded, mode } = useDmnRunnerState();
+  const { setDmnRunnerMode, setExpanded, setCurrentInputRowIndex } = useDmnRunnerDispatch();
   const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
-  const { getInputRowsForDownload, uploadInputRows, deletePersistedInputRows } = useDmnRunnerInputsDispatch();
+  const { getPersistenceJsonForDownload, uploadPersistenceJson, deletePersistenceJson } =
+    useDmnRunnerPersistenceDispatch();
   const downloadDmnRunnerInputsRef = useRef<HTMLAnchorElement>(null);
   const uploadDmnRunnerInputsRef = useRef<HTMLInputElement>(null);
 
@@ -95,23 +96,23 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
 
   const handleDmnRunnerInputsDownload = useCallback(async () => {
     if (downloadDmnRunnerInputsRef.current) {
-      const fileBlob = await getInputRowsForDownload(props.workspaceFile);
+      const fileBlob = await getPersistenceJsonForDownload(props.workspaceFile);
       if (fileBlob) {
         downloadDmnRunnerInputsRef.current.download = props.workspaceFile.name.split(".")[0] + ".json";
         downloadDmnRunnerInputsRef.current.href = URL.createObjectURL(fileBlob);
         downloadDmnRunnerInputsRef.current?.click();
       }
     }
-  }, [props.workspaceFile, getInputRowsForDownload]);
+  }, [props.workspaceFile, getPersistenceJsonForDownload]);
 
   const handleDmnRunnerInputsUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) {
-        uploadInputRows(props.workspaceFile, file);
+        uploadPersistenceJson(props.workspaceFile, file);
       }
     },
-    [uploadInputRows, props.workspaceFile]
+    [uploadPersistenceJson, props.workspaceFile]
   );
 
   return (
@@ -163,7 +164,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<ListIcon />}
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-                  setMode(DmnRunnerMode.FORM);
+                  setDmnRunnerMode(DmnRunnerMode.FORM);
                   props.editorPageDock?.close();
                   setExpanded(true);
                 }
@@ -177,7 +178,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<TableIcon />}
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-                  setMode(DmnRunnerMode.TABLE);
+                  setDmnRunnerMode(DmnRunnerMode.TABLE);
                   props.editorPageDock?.open(PanelId.DMN_RUNNER_TABLE);
                   setExpanded(true);
                 }
@@ -205,12 +206,11 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
             </DropdownItem>,
             <React.Fragment key={"dmn-runner--delete-inputs"}>
               <Divider />
-              <DropdownItem component={"button"} style={{ padding: "4px" }}>
+              <DropdownItem component={"div"} style={{ padding: "4px" }}>
                 <DeleteDropdownWithConfirmation
                   onDelete={() => {
-                    deletePersistedInputRows(props.workspaceFile).then(() => {
-                      setCurrentInputRowIndex(0);
-                    });
+                    setCurrentInputRowIndex(0);
+                    deletePersistenceJson(dmnRunnerPersistenceJson, props.workspaceFile);
                   }}
                   item={`Delete DMN Runner inputs`}
                   label={" Delete inputs"}

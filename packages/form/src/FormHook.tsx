@@ -132,6 +132,14 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
         getObjectByPath(bridge.schema ?? {}, propertiesEntryPath) ?? {}
       );
 
+      const defaultFormValues = Object.keys(bridge?.schema?.properties ?? {}).reduce((acc, property) => {
+        const field = bridge.getField(property);
+        if (field.default) {
+          acc[`${property}`] = field.default;
+        }
+        return acc;
+      }, {} as Record<string, any>);
+
       // Remove property that has been deleted;
       return Object.entries(propertiesDifference).reduce(
         (form, [property, value]) => {
@@ -143,7 +151,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
           }
           return form;
         },
-        { ...formInputs }
+        { ...defaultFormValues, ...formInputs }
       );
     },
     [propertiesEntryPath]

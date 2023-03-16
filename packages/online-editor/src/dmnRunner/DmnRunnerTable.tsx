@@ -19,21 +19,24 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DecisionResult } from "@kie-tools/form-dmn";
-import { PanelId } from "../EditorPageDockDrawer";
+import { PanelId } from "../editor/EditorPageDockDrawer";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
+import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ErrorBoundary } from "@kie-tools/form";
-import { useOnlineI18n } from "../../i18n";
-import { Unitables } from "@kie-tools/unitables/dist/Unitables";
+import { useOnlineI18n } from "../i18n";
+import { UnitablesWrapper } from "@kie-tools/unitables/dist/UnitablesWrapper";
 import { DmnRunnerOutputsTable } from "@kie-tools/unitables-dmn/dist/DmnRunnerOutputsTable";
 import { DmnUnitablesValidator } from "@kie-tools/unitables-dmn/dist/DmnUnitablesValidator";
-import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import "./DmnRunnerTable.css";
+import set from "lodash/set";
+import cloneDeep from "lodash/cloneDeep";
 
 interface Props {
   setPanelOpen: React.Dispatch<React.SetStateAction<PanelId>>;
@@ -41,7 +44,7 @@ interface Props {
 
 export function DmnRunnerTable({ setPanelOpen }: Props) {
   const extendedServices = useExtendedServices();
-  const { error, inputRows, jsonSchema } = useDmnRunnerState();
+  const { configs, error, inputs, jsonSchema } = useDmnRunnerState();
   const {
     onRowAdded,
     onRowDuplicated,
@@ -50,17 +53,15 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
     preparePayload,
     setCurrentInputRowIndex,
     setError,
-    setInputRows,
-    setMode,
+    setDmnRunnerInputs,
+    setDmnRunnerMode,
+    setDmnRunnerConfigInputs,
   } = useDmnRunnerDispatch();
   const [dmnRunnerTableError, setDmnRunnerTableError] = useState<boolean>(false);
   const dmnRunnerTableErrorBoundaryRef = useRef<ErrorBoundary>(null);
-
   const { i18n } = useOnlineI18n();
-
-  const rowCount = useMemo(() => {
-    return inputRows?.length ?? 1;
-  }, [inputRows?.length]);
+  const rowCount = useMemo(() => inputs?.length ?? 1, [inputs?.length]);
+  const hasInputs = useMemo(() => !!jsonSchema?.definitions?.InputSet?.properties, [jsonSchema]);
 
   const jsonSchemaBridge = useMemo(
     () => new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(jsonSchema ?? {}),
@@ -85,14 +86,14 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
 
   const openRow = useCallback(
     (rowIndex: number) => {
-      setMode(DmnRunnerMode.FORM);
+      setDmnRunnerMode(DmnRunnerMode.FORM);
       setCurrentInputRowIndex(rowIndex);
       setPanelOpen(PanelId.NONE);
     },
-    [setMode, setCurrentInputRowIndex, setPanelOpen]
+    [setDmnRunnerMode, setCurrentInputRowIndex, setPanelOpen]
   );
 
-  // FIXME: Tiago -> !
+  // FIXME: Prevent shortcuts when editing on dmn runner table;
   // useElementsThatStopKeyboardEventsPropagation(
   //   window,
   //   useMemo(() => [".kie-tools--dmn-runner-table--drawer"], [])
@@ -102,7 +103,7 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        Promise.all(inputRows.map((data) => preparePayload(data)))
+        Promise.all(inputs.map((data) => preparePayload(data)))
           .then((payloads) =>
             Promise.all(
               payloads.map((payload) => {
@@ -132,7 +133,7 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
             setDmnRunnerResults(runnerResults);
           });
       },
-      [preparePayload, setError, inputRows, extendedServices.client]
+      [preparePayload, setError, inputs, extendedServices.client]
     )
   );
 
@@ -145,6 +146,17 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
     outputsScrollableElementRef.current.current =
       document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-c-drawer__panel-main") ?? null;
   }, []);
+
+  const setWidth = useCallback(
+    (newWidth: number, fieldName: string) => {
+      setDmnRunnerConfigInputs((previousDmnRunnerConfigInputs) => {
+        const newDmnRunnerConfigInputs = cloneDeep(previousDmnRunnerConfigInputs);
+        set(newDmnRunnerConfigInputs, fieldName, newWidth);
+        return newDmnRunnerConfigInputs;
+      });
+    },
+    [setDmnRunnerConfigInputs]
+  );
 
   return (
     <div style={{ height: "100%" }}>
@@ -182,29 +194,49 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
                   }
                 >
                   {/* DMN Runner Inputs */}
-                  <Unitables
-                    scrollableParentRef={inputsScrollableElementRef.current}
-                    i18n={i18n.dmnRunner.table}
-                    jsonSchema={jsonSchema}
-                    openRow={openRow}
-                    rows={inputRows}
-                    setInputRows={setInputRows}
-                    error={error}
-                    setError={setError}
-                    jsonSchemaBridge={jsonSchemaBridge}
-                    propertiesEntryPath={"definitions.InputSet"}
-                    containerRef={inputsContainerRef}
-                    onRowAdded={onRowAdded}
-                    onRowDuplicated={onRowDuplicated}
-                    onRowReset={onRowReset}
-                    onRowDeleted={onRowDeleted}
-                  />
+                  {hasInputs ? (
+                    <UnitablesWrapper
+                      scrollableParentRef={inputsScrollableElementRef.current}
+                      i18n={i18n.dmnRunner.table}
+                      jsonSchema={jsonSchema}
+                      openRow={openRow}
+                      rows={inputs}
+                      setRows={setDmnRunnerInputs}
+                      error={error}
+                      setError={setError}
+                      jsonSchemaBridge={jsonSchemaBridge}
+                      propertiesEntryPath={"definitions.InputSet"}
+                      containerRef={inputsContainerRef}
+                      onRowAdded={onRowAdded}
+                      onRowDuplicated={onRowDuplicated}
+                      onRowReset={onRowReset}
+                      onRowDeleted={onRowDeleted}
+                      rowsWidth={configs}
+                      setWidth={setWidth}
+                    />
+                  ) : (
+                    <DmnRunnerTableEmpty />
+                  )}
                 </DrawerContent>
               </Drawer>
             </ErrorBoundary>
           ))}
       </DmnRunnerLoading>
     </div>
+  );
+}
+
+function DmnRunnerTableEmpty() {
+  return (
+    <EmptyState>
+      <EmptyStateIcon icon={CubeIcon} />
+      <TextContent>
+        <Text component={"h2"}>No inputs node yet...</Text>
+      </TextContent>
+      <EmptyStateBody>
+        <TextContent>Add an input node and see a custom table here.</TextContent>
+      </EmptyStateBody>
+    </EmptyState>
   );
 }
 

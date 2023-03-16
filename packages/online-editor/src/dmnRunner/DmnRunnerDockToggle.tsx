@@ -16,9 +16,9 @@
 
 import { ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import * as React from "react";
-import { PanelId } from "../EditorPageDockDrawer";
+import { PanelId } from "../editor/EditorPageDockDrawer";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
-import { EditorPageDockToggleItem } from "../EditorPageDockToggleItem";
+import { EditorPageDockToggleItem } from "../editor/EditorPageDockToggleItem";
 
 interface Props {
   isSelected: boolean;

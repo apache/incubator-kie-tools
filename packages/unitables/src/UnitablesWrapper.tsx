@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
-export * from "./UnitablesWrapper";
-export * from "./UnitablesTypes";
-export * from "./UnitablesValidator";
+import * as React from "react";
+import { Unitables, UnitablesProps } from "./Unitables";
+import { UnitablesContextProvider } from "./UnitablesContextProvider";
+
+export function UnitablesWrapper(props: UnitablesProps) {
+  return (
+    <UnitablesContextProvider>
+      <Unitables {...props} />
+    </UnitablesContextProvider>
+  );
+}

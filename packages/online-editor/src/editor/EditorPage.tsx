@@ -27,7 +27,7 @@ import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/component
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DevDeploymentsConfirmDeployModal } from "../devDeployments/DevDeploymentsConfirmDeployModal";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
-import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
+import { DmnRunnerDrawer } from "../dmnRunner/DmnRunnerDrawer";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
@@ -45,7 +45,7 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
-import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
+import { DmnRunnerProvider } from "../dmnRunner/DmnRunnerProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
 import { useFileValidation } from "./Validation";

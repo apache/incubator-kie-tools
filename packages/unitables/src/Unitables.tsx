@@ -22,23 +22,25 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useReducer } from "react";
 import nextId from "react-id-generator";
-import { ROWTYPE, UnitablesBeeTable } from "./bee";
+import { UnitablesBeeTable } from "./bee";
 import { UnitablesI18n } from "./i18n";
 import { FORMS_ID, UnitablesJsonSchemaBridge } from "./uniforms";
 import { useUnitablesColumns } from "./UnitablesColumns";
 import "./Unitables.css";
 import { UnitablesRow } from "./UnitablesRow";
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import isEqual from "lodash/isEqual";
+import set from "lodash/set";
+import get from "lodash/get";
+import { InputRow } from "@kie-tools/form-dmn";
+import { diff } from "deep-object-diff";
+import cloneDeep from "lodash/cloneDeep";
+import { useUnitablesContext } from "./UnitablesContext";
 
-const EMPTY_UNITABLES_INPUTS = [{}];
-
-interface Props {
+export interface UnitablesProps {
   jsonSchema: object;
   rows: object[];
-  setInputRows: React.Dispatch<React.SetStateAction<object[]>>;
+  setRows: (previousStateFunction: (previous: Array<InputRow>) => Array<InputRow>) => void;
   error: boolean;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   openRow: (rowIndex: number) => void;
@@ -51,11 +53,46 @@ interface Props {
   onRowDuplicated: (args: { rowIndex: number }) => void;
   onRowReset: (args: { rowIndex: number }) => void;
   onRowDeleted: (args: { rowIndex: number }) => void;
+  rowsWidth: object;
+  setWidth: (newWidth: number, fieldName: string) => void;
+}
+
+function isObject(item: any): item is Record<string, any> {
+  return item && typeof item === "object" && !Array.isArray(item);
+}
+
+// should set the deep key that is going to be changed;
+function recursiveCheckForChangedKey(
+  rowIndex: number,
+  previousInputRows: InputRow,
+  newInputRow: InputRow,
+  cachedKeysOfRows: Map<number, Set<string>>,
+  changedProperties: Record<string, any>,
+  parentKey?: string
+) {
+  for (const [key, value] of Object.entries(changedProperties)) {
+    const fullKey: string = parentKey ? `${parentKey}.${key}` : key;
+    if (isObject(value)) {
+      recursiveCheckForChangedKey(rowIndex, previousInputRows, newInputRow, cachedKeysOfRows, value, fullKey);
+    } else {
+      const keySet = cachedKeysOfRows.get(rowIndex);
+      if (keySet) {
+        if (keySet.has(fullKey)) {
+          // key shouldnt be updated;
+          set(newInputRow, fullKey, get(previousInputRows, fullKey));
+        } else {
+          keySet.add(fullKey);
+        }
+      } else {
+        cachedKeysOfRows.set(rowIndex, new Set([fullKey]));
+      }
+    }
+  }
 }
 
 export const Unitables = ({
   rows,
-  setInputRows,
+  setRows,
   setError,
   openRow,
   i18n,
@@ -67,25 +104,19 @@ export const Unitables = ({
   onRowDuplicated,
   onRowReset,
   onRowDeleted,
-}: Props) => {
-  const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
+  rowsWidth,
+  setWidth,
+}: UnitablesProps) => {
+  const { columns: unitablesColumns } = useUnitablesColumns(jsonSchemaBridge, setRows, propertiesEntryPath);
+  const { internalChange, setInternalChange } = useUnitablesContext();
+
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
-  const { columns: unitablesColumns } = useUnitablesColumns(jsonSchemaBridge, setInputRows, propertiesEntryPath);
+
   const inputUid = useMemo(() => nextId(), []);
-  const cachedRows = useRef<object[]>([...EMPTY_UNITABLES_INPUTS]);
 
-  // Erase cache;
-  useLayoutEffect(() => {
-    if (isEqual(rows, EMPTY_UNITABLES_INPUTS)) {
-      cachedRows.current = [...EMPTY_UNITABLES_INPUTS];
-    }
-  }, [rows]);
-
-  const beeTableRows = useMemo<ROWTYPE[]>(() => {
-    return rows.map((row) => {
-      return { id: generateUuid(), ...row };
-    });
-  }, [rows]);
+  // create cache to save inputs cache;
+  const cachedKeysOfRows = useRef<Map<number, Set<string>>>(new Map());
+  const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
 
   // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {
@@ -93,6 +124,8 @@ export const Unitables = ({
   }, [jsonSchemaBridge]);
 
   // Set in-cell input heights (begin)
+  // ensure the height of TimePicker, DatePicker and others;
+  // should set width too;
   const searchRecursively = useCallback((child: any) => {
     if (!child) {
       return;
@@ -116,34 +149,48 @@ export const Unitables = ({
     inputsCells.forEach((inputCell) => {
       searchRecursively(inputCell.childNodes[0]);
     });
-  }, [formsDivRendered, rows, containerRef, searchRecursively]);
+  }, [jsonSchemaBridge, formsDivRendered, rows, containerRef, searchRecursively]);
   // Set in-cell input heights (end)
 
-  // Perform a autosaveDelay and update all rows simultaneously;
   const timeout = useRef<number | undefined>(undefined);
   const onValidateRow = useCallback(
-    (rowInput: object, rowIndex: number) => {
-      // Save all rowInputs before timeout;
-      cachedRows.current[rowIndex] = rowInput;
+    (inputRow: InputRow, rowIndex: number, error: Record<string, any>) => {
+      // After this method is not called by a period, clear the cache and reset the internalChange;
+      if (internalChange) {
+        if (timeout.current) {
+          clearTimeout(timeout.current);
+        }
 
-      // Debounce;
-      if (timeout.current) {
-        window.clearTimeout(timeout.current);
+        timeout.current = window.setTimeout(() => {
+          cachedKeysOfRows.current.clear();
+          setInternalChange(false);
+          // FIXME: should trigger re-render of SelectField;
+        }, 0);
       }
 
-      timeout.current = window.setTimeout(() => {
-        // Update all rows if a value was changed;
-        setInputRows?.((currentInputRows) => {
-          // if cached length isn't equal to current a table event occured. e.g. add, delete;
-          // if cached has the same value as current
-          if (cachedRows.current.length !== currentInputRows.length || isEqual(cachedRows.current, currentInputRows)) {
-            return currentInputRows;
-          }
-          return [...cachedRows.current];
-        });
-      }, 400); // autoSaveDelay
+      // Before a cell is updated, the cell key is saved in a cache, and the new value is set;
+      // if the same cell is edited before the cache reset, the used value will be the previous one;
+      setRows((previousInputRows) => {
+        const newInputRows = cloneDeep(previousInputRows);
+        const newInputRow = cloneDeep(inputRow);
+        console.log(newInputRow);
+
+        if (internalChange) {
+          const changedValues: Record<string, any> = diff(inputRow, newInputRows[rowIndex]);
+          recursiveCheckForChangedKey(
+            rowIndex,
+            newInputRows[rowIndex],
+            newInputRow,
+            cachedKeysOfRows.current,
+            changedValues
+          );
+        }
+
+        newInputRows[rowIndex] = newInputRow;
+        return newInputRows;
+      });
     },
-    [setInputRows]
+    [internalChange, setRows]
   );
 
   const rowWrapper = useCallback(
@@ -182,7 +229,7 @@ export const Unitables = ({
             >
               <OutsideRowMenu height={63} isFirstChild={true}>{`#`}</OutsideRowMenu>
               <OutsideRowMenu height={64.2} borderBottomSizeBasis={1}>{`#`}</OutsideRowMenu>
-              {rows.map((e, rowIndex) => (
+              {rows.map((_, rowIndex) => (
                 <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
                   <OutsideRowMenu height={60.8} isLastChild={rowIndex === rows.length - 1}>
                     <Button
@@ -200,13 +247,15 @@ export const Unitables = ({
               rowWrapper={rowWrapper}
               scrollableParentRef={scrollableParentRef}
               i18n={i18n}
-              rows={beeTableRows}
+              rows={rows}
               columns={unitablesColumns}
               id={inputUid}
               onRowAdded={onRowAdded}
               onRowDuplicated={onRowDuplicated}
               onRowReset={onRowReset}
               onRowDeleted={onRowDeleted}
+              rowsWidth={rowsWidth}
+              setWidth={setWidth}
             />
           </div>
         </ErrorBoundary>
@@ -250,6 +299,7 @@ function OutsideRowMenu({
       style={{
         width: "60px",
         height: `${height + (isFirstChild ? 3 : 0) + (isLastChild ? 1.6 : 0)}px`,
+        minHeight: `${height + (isFirstChild ? 3 : 0) + (isLastChild ? 1.6 : 0)}px`,
         display: "flex",
         fontSize: "16px",
         color: "gray",

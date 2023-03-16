@@ -367,8 +367,7 @@ digraph G {
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/unitables" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
-  "@kie-tools/unitables" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
-  "@kie-tools/unitables-dmn" -> "@kie-tools/form-dmn" [ style = "solid", color = "blue" ];
+  "@kie-tools/unitables" -> "@kie-tools/form-dmn" [ style = "solid", color = "blue" ];
   "@kie-tools/unitables-dmn" -> "@kie-tools/unitables" [ style = "solid", color = "blue" ];
   "@kie-tools-core/vscode-extension" -> "@kie-tools-core/editor" [ style = "solid", color = "purple" ];
   "@kie-tools-core/vscode-extension" -> "@kie-tools-core/vscode-java-code-completion" [ style = "solid", color = "purple" ];
