@@ -62,7 +62,10 @@ export class FsWatchingServiceCatalogRelativeStore {
 
   private getConfigurationChangedCallback() {
     return vscode.workspace.onDidChangeConfiguration(async (e) => {
-      if (!e.affectsConfiguration(CONFIGURATION_SECTIONS.specsStoragePath)) {
+      if (
+        !e.affectsConfiguration(CONFIGURATION_SECTIONS.specsStoragePath) &&
+        !e.affectsConfiguration(CONFIGURATION_SECTIONS.routesStoragePath)
+      ) {
         return;
       }
 
