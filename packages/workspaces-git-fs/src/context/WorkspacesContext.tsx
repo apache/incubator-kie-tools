@@ -129,18 +129,6 @@ export interface WorkspacesContextType {
     };
   }): Promise<void>;
 
-  merge(args: {
-    workspaceId: string;
-    ours: string;
-    theirs: string;
-    gitConfig?: {
-      email: string;
-      name: string;
-    };
-    dryRun?: boolean;
-    fastForwardOnly?: boolean;
-  }): Promise<void>;
-
   deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
 
   branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void>;

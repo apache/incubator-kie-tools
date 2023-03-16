@@ -97,24 +97,6 @@ export function WorkspacesContextProvider(props: Props) {
     [workspacesSharedWorker]
   );
 
-  const merge = useCallback(
-    async (args: {
-      workspaceId: string;
-      ours: string;
-      theirs: string;
-      gitConfig?: {
-        email: string;
-        name: string;
-      };
-      dryRun?: boolean;
-      fastForwardOnly?: boolean;
-    }) =>
-      workspacesSharedWorker.withBus((workspacesWorkerBus) => {
-        return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_merge(args);
-      }),
-    [workspacesSharedWorker]
-  );
-
   const deleteBranch = useCallback(
     async (args: { workspaceId: string; ref: string }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) => {
@@ -564,7 +546,6 @@ export function WorkspacesContextProvider(props: Props) {
       addRemote,
       deleteRemote,
       push,
-      merge,
       deleteBranch,
       branch,
       checkout,
@@ -614,7 +595,6 @@ export function WorkspacesContextProvider(props: Props) {
       addRemote,
       deleteRemote,
       push,
-      merge,
       deleteBranch,
       branch,
       checkout,

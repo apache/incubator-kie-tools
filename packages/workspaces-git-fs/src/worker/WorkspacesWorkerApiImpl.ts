@@ -757,33 +757,6 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     );
   }
 
-  kieSandboxWorkspacesGit_merge(args: {
-    workspaceId: string;
-    ours: string;
-    theirs: string;
-    gitConfig?: {
-      email: string;
-      name: string;
-    };
-    dryRun?: boolean;
-    fastForwardOnly?: boolean;
-  }): Promise<void> {
-    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
-      args.workspaceId,
-      async ({ fs, broadcaster }) => {
-        return this.args.services.gitService.merge({
-          fs: fs,
-          dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
-          author: {
-            name: args.gitConfig?.name ?? this.GIT_DEFAULT_USER.name,
-            email: args.gitConfig?.email ?? this.GIT_DEFAULT_USER.email,
-          },
-          ...args,
-        });
-      }
-    );
-  }
-
   kieSandboxWorkspacesGit_deleteBranch(args: { workspaceId: string; ref: string }): Promise<void> {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,

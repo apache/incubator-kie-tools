@@ -225,29 +225,6 @@ export class GitService {
     });
   }
 
-  public async merge(args: {
-    fs: KieSandboxWorkspacesFs;
-    dir: string;
-    ours: string;
-    theirs: string;
-    author: {
-      name: string;
-      email: string;
-    };
-    dryRun?: boolean;
-    fastForwardOnly?: boolean;
-  }) {
-    await git.merge({
-      fs: args.fs,
-      dir: args.dir,
-      ours: args.ours,
-      theirs: args.theirs,
-      author: args.author,
-      dryRun: args.dryRun,
-      fastForwardOnly: args.fastForwardOnly,
-    });
-  }
-
   public async deleteBranch(args: { fs: KieSandboxWorkspacesFs; dir: string; ref: string }) {
     const currentBranch = await git.currentBranch({ fs: args.fs, dir: args.dir });
 
