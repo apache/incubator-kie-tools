@@ -219,7 +219,10 @@ export const GitStatusIndicatorActions = (
       description: (
         <>
           <span>{i18n.gitStatusIndicatorActions[id].description}</span>
+          <br />
+          <br />
           {workspaceFilesRendered}
+          <br />
         </>
       ),
       confirmButtonText: i18n.gitStatusIndicatorActions[id].confirmButtonText,
@@ -256,7 +259,10 @@ export const GitStatusIndicatorActions = (
         <Flex direction={{ default: "column" }}>
           <FlexItem>
             <TextContent>
-              <Text component="p">{`There are local changes to the following files in '${props.gitStatusProps.workspaceDescriptor.name}':`}</Text>
+              <Text component="p">
+                {`There are local changes to the following files in`}
+                <i>{`'${props.gitStatusProps.workspaceDescriptor.name}'`}</i>
+              </Text>
             </TextContent>
           </FlexItem>
           {workspaceFilesRendered}
@@ -316,6 +322,7 @@ const MultipleActionsPopoverWithDropdown = (props: {
       position={PopoverPosition.bottom}
       showClose={selectedActionId !== undefined} // showing close button just for the rendered alert
       isVisible={props.isOpen}
+      minWidth={"500px"}
       shouldClose={() => {
         // clicking close button when alert is displayed closes only alert itself
         if (selectedActionId !== undefined) {

@@ -629,13 +629,13 @@ export const en: OnlineI18n = {
     revert: {
       title: "Revert",
       warning: "This action is permanent",
-      description: "Are you sure you want to revert local changes of",
+      description: "Are you sure you want to revert local changes to:",
       confirmButtonText: "Yes, revert permanently",
     },
     revertAll: {
       title: "Revert all changes",
       warning: "This action is permanent",
-      description: "Are you sure? Following files will be reverted to the last commit:",
+      description: "Are you sure? The following files will be reverted to the last commit:",
       confirmButtonText: "Yes, revert permanently",
     },
   },
