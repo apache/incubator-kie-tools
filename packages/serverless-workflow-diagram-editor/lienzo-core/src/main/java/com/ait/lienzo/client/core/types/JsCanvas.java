@@ -125,7 +125,7 @@ public class JsCanvas implements JsCanvasNodeLister {
         return getViewport().getTransform().getScaleY();
     }
 
-    public NativeContext2D getNativeContent() {
+    public NativeContext2D getNativeContext() {
         Context2D context = getLayer().getContext();
         return context.getNativeContext();
     }
@@ -139,8 +139,8 @@ public class JsCanvas implements JsCanvasNodeLister {
                 child.setOffset(boundingBox.getWidth() / 2, boundingBox.getHeight() / 2);
                 if (duration > 0) {
                     child.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(
-                            AnimationProperty.Properties.ROTATION_DEGREES(degrees)
-                    ), duration)
+                                    AnimationProperty.Properties.ROTATION_DEGREES(degrees)
+                            ), duration)
                             .run();
                 } else {
                     child.setRotationDegrees(degrees);
@@ -196,12 +196,14 @@ public class JsCanvas implements JsCanvasNodeLister {
     }
 
     public JsWiresShape getWiresShape(String id) {
-        WiresShape[] shapes = getWiresManager().getShapes();
-        for (WiresShape shape : shapes) {
-            if (id.equals(shape.getID())) {
-                final JsWiresShape jsWiresShape = new JsWiresShape(shape);
-                jsWiresShape.linkLister(this);
-                return jsWiresShape;
+        if (id != null && !"".equals(id)) {
+            WiresShape[] shapes = getWiresManager().getShapes();
+            for (WiresShape shape : shapes) {
+                if (id.equals(shape.getID())) {
+                    final JsWiresShape jsWiresShape = new JsWiresShape(shape);
+                    jsWiresShape.linkLister(this);
+                    return jsWiresShape;
+                }
             }
         }
         return null;
