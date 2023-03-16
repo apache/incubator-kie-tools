@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -211,7 +212,7 @@ public class DMNGraphProcessorTest {
         doReturn(outputDecisionsId).when(processor).getDecisionIds(outputDecisions);
         doReturn(encapsulatedDecisionsId).when(processor).getDecisionIds(encapsulatedDecisions);
 
-        final HashSet<String> innerIds = processor.getInnerIds(decisionService);
+        final Set<String> innerIds = processor.getInnerIds(decisionService);
 
         assertEquals(2, innerIds.size());
         assertTrue(innerIds.contains(outputId));
@@ -305,7 +306,14 @@ public class DMNGraphProcessorTest {
         final List parentOutEdges = mock(List.class);
         final List parentInEdges = mock(List.class);
         final List innerOutEdges = mock(List.class);
-        final List innerInEdges = mock(List.class);
+        final List innerInEdges = new ArrayList();
+        final Edge olderParentEdge = mock(Edge.class);
+        final Edge someOtherNonRelatedEdge = mock(Edge.class);
+        final Child child = mock(Child.class);
+        when(olderParentEdge.getContent()).thenReturn(child);
+
+        innerInEdges.add(olderParentEdge);
+        innerInEdges.add(someOtherNonRelatedEdge);
 
         when(parentNode.getOutEdges()).thenReturn(parentOutEdges);
         when(parentNode.getInEdges()).thenReturn(parentInEdges);
@@ -317,9 +325,12 @@ public class DMNGraphProcessorTest {
         processor.connect(parentNode, innerNode);
 
         verify(parentOutEdges).add(edge);
-        verify(innerInEdges).add(edge);
         verify(parentInEdges, never()).add(edge);
         verify(innerOutEdges, never()).add(edge);
+
+        assertFalse(innerInEdges.contains(olderParentEdge));
+        assertTrue(innerInEdges.contains(edge));
+        assertTrue(innerInEdges.contains(someOtherNonRelatedEdge));
     }
 
     @Test

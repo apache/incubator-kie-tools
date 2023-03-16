@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -82,7 +83,7 @@ public class DMNGraphProcessor implements GraphProcessor {
     void replaceDecisionServiceInnerNodes(final List<Node> nodes,
                                           final String nodeUuid,
                                           final DecisionService decisionService) {
-        final HashSet<String> innerIds = getInnerIds(decisionService);
+        final Set<String> innerIds = getInnerIds(decisionService);
         final List<Node> removedNodes = new ArrayList<>();
         nodes.stream().filter(this::hasContentDefinitionId)
                 .forEach(node -> {
@@ -96,7 +97,7 @@ public class DMNGraphProcessor implements GraphProcessor {
         nodes.removeAll(removedNodes);
     }
 
-    HashSet<String> getInnerIds(final DecisionService decisionService) {
+    Set<String> getInnerIds(final DecisionService decisionService) {
         final HashSet<String> innerIds = new HashSet<>();
         innerIds.addAll(getDecisionIds(decisionService.getEncapsulatedDecision()));
         innerIds.addAll(getDecisionIds(decisionService.getOutputDecision()));
@@ -153,8 +154,14 @@ public class DMNGraphProcessor implements GraphProcessor {
     public void connect(final Node parentNode,
                         final Node innerNode) {
         final Edge<Child, Node> edge = createEdge(parentNode, innerNode);
+        removeParent(innerNode);
         innerNode.getInEdges().add(edge);
         parentNode.getOutEdges().add(edge);
+    }
+
+    private static void removeParent(final Node innerNode) {
+        innerNode.getInEdges().removeIf(innerEdge -> (innerEdge instanceof Edge)
+                && ((Edge) innerEdge).getContent() instanceof Child);
     }
 
     Edge<Child, Node> createEdge(final Node parentNode, final Node innerNode) {

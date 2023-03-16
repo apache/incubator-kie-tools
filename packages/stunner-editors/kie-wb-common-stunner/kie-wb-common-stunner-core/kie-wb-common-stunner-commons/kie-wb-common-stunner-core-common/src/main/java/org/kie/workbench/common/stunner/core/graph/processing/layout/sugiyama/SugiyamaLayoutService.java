@@ -255,30 +255,14 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
 
                 if (parentPosition.isPresent()) {
 
-                    // tem q ver se é output ou input
-                    // Isso teria que processar fora daqui
-                    // No GraphProcessor é o ideal. Lá já tem
                     final Optional<Node> parentNode = graphProcessor.getNodeFromGraph(parentId, graph);
                     parentNode.ifPresent(parent -> graphProcessor.connect(parent, childNode.get()));
-                    // graphProcessor.get
                     final double padding = parentNodesWidth.getOrDefault(parentId, 0.0)
                             + DEFAULT_INNER_HORIZONTAL_PADDING;
                     final VertexPosition position = graphProcessor.getChildVertexPosition(parentId,
                                                                                           childId,
                                                                                           padding,
                                                                                           graph);
-
-//                    final Point2D parentBottomRight = parentPosition.get().getBottomRight();
-//
-//                    final Point2D ulChild = new Point2D(x,
-//                                                        DEFAULT_PARENT_NODE_HEIGHT / 2 + DEFAULT_INNER_VERTICAL_PADDING);
-//                    final Point2D brChild = new Point2D(ulChild.getX() + DEFAULT_VERTEX_WIDTH,
-//                                                        ulChild.getY() + DEFAULT_VERTEX_HEIGHT);
-//
-//                    final VertexPosition position = new VertexPositionImpl(childId,
-//                                                                           ulChild,
-//                                                                           brChild);
-
                     layout.getNodePositions().add(position);
 
                     parentNodesWidth.put(parentId, position.getUpperLeft().getX() + DEFAULT_VERTEX_WIDTH);
