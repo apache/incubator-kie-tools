@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import git, { STAGE, WORKDIR } from "isomorphic-git";
+import git, { FetchResult, STAGE, WORKDIR } from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
@@ -145,8 +145,13 @@ export class GitService {
     });
   }
 
-  public async fetch(args: { fs: KieSandboxWorkspacesFs; dir: string; remote: string; ref: string }): Promise<void> {
-    await git.fetch({
+  public async fetch(args: {
+    fs: KieSandboxWorkspacesFs;
+    dir: string;
+    remote: string;
+    ref: string;
+  }): Promise<FetchResult> {
+    return await git.fetch({
       fs: args.fs,
       http: http,
       corsProxy: await this.corsProxy,
@@ -155,6 +160,7 @@ export class GitService {
       ref: args.ref,
       singleBranch: true,
       depth: 1,
+      tags: true,
     });
   }
 
@@ -230,6 +236,19 @@ export class GitService {
       singleBranch: true,
       author: args.author,
       onAuth: () => args.authInfo,
+    });
+  }
+
+  public async deleteBranch(args: { fs: KieSandboxWorkspacesFs; dir: string; ref: string }) {
+    const currentBranch = await git.currentBranch({ fs: args.fs, dir: args.dir });
+
+    if (args.ref === currentBranch) {
+      throw new Error("Can't delete current branch.");
+    }
+    await git.deleteBranch({
+      fs: args.fs,
+      dir: args.dir,
+      ref: args.ref,
     });
   }
 

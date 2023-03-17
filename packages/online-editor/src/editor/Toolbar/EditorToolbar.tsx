@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Dropdown,
   DropdownItem,
@@ -72,6 +72,7 @@ import { WorkspaceToolbar } from "./Workspace/WorkspaceToolbar";
 import { useWorkspaceNavigationBlocker } from "./Workspace/Hooks";
 import { FileStatus } from "./FileStatus";
 import { SyncDropdownMenu } from "./SyncDropdownMenu";
+import { AcceleratorsDropdown } from "./Accelerators/AcceleratorsDropdown";
 import { listDeletedFiles } from "../../workspace/components/WorkspaceStatusIndicator";
 import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 
@@ -305,6 +306,9 @@ export function EditorToolbarWithWorkspace(
             <Toolbar>
               <ToolbarContent style={{ paddingRight: 0 }}>
                 <ToolbarGroup>
+                  <ToolbarItem>
+                    <AcceleratorsDropdown workspaceFile={props.workspaceFile} />
+                  </ToolbarItem>
                   <ToolbarItem>
                     <ResponsiveDropdown
                       title={"Add file"}

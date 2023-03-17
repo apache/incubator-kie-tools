@@ -31,6 +31,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceStatusIndicator } from "../../../workspace/components/WorkspaceStatusIndicator";
+import { AcceleratorIndicator } from "../Accelerators/AcceleratorIndicator";
 import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { WorkspaceGitStatusType } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 
@@ -125,6 +126,9 @@ export function WorkspaceToolbar(props: Props) {
       </FlexItem>
       <FlexItem>
         <WorkspaceLabel descriptor={props.workspace.descriptor} />
+      </FlexItem>
+      <FlexItem>
+        <AcceleratorIndicator workspaceId={props.workspace.descriptor.workspaceId} />
       </FlexItem>
       <FlexItem
         style={{ minWidth: 0, padding: "0 8px 0 8px", flexShrink: 0 }}

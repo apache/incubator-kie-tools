@@ -29,6 +29,7 @@ import { decoder } from "../encoderdecoder/EncoderDecoder";
 import { parseWorkspaceFileRelativePath } from "../relativePath/WorkspaceFileRelativePathParser";
 import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 import { GitServerRef } from "../worker/api/GitServerRef";
+import { FetchResult } from "isomorphic-git";
 import { UnstagedModifiedFilesStatusEntryType } from "../services/GitService";
 
 export class WorkspaceFile {
@@ -129,6 +130,8 @@ export interface WorkspacesContextType {
     };
   }): Promise<void>;
 
+  deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
+
   branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void>;
 
   checkout(args: { workspaceId: string; ref: string; remote: string }): Promise<void>;
@@ -155,15 +158,29 @@ export interface WorkspacesContextType {
 
   isFileModified(args: { workspaceId: string; relativePath: string }): Promise<boolean>;
 
+  commit(args: {
+    workspaceId: string;
+    targetBranch: string;
+    gitConfig?: {
+      email: string;
+      name: string;
+    };
+    commitMessage: string;
+  }): Promise<void>;
+
   createSavePoint(args: {
     workspaceId: string;
     gitConfig?: {
       email: string;
       name: string;
     };
+    commitMessage?: string;
+    forceHasChanges?: boolean;
   }): Promise<void>;
 
-  fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<void>;
+  stageFile: (args: { workspaceId: string; relativePath: string }) => Promise<void>;
+
+  fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<FetchResult>;
 
   // storage
 

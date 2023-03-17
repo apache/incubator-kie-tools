@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-import { AuthProvider } from "../authProviders/AuthProvidersApi";
-import { AcceleratorConfig } from "../accelerators/AcceleratorsApi";
+import React from "react";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
-export interface EnvJson {
-  KIE_SANDBOX_EXTENDED_SERVICES_URL: string;
-  KIE_SANDBOX_GIT_CORS_PROXY_URL: string;
-  KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE: boolean;
-  KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL: string;
-  KIE_SANDBOX_AUTH_PROVIDERS: AuthProvider[];
-  KIE_SANDBOX_ACCELERATORS: AcceleratorConfig[];
+type Props = {
+  iconUrl?: string;
+};
+
+export function AcceleratorIcon(props: Props) {
+  return props.iconUrl ? (
+    <Icon isInline style={{ verticalAlign: "middle" }}>
+      <img src={props.iconUrl} />
+    </Icon>
+  ) : (
+    <span>🚀</span>
+  );
 }
