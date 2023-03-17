@@ -25,6 +25,8 @@ import {
   AlertProps,
   Page,
   PageSection,
+  Pagination,
+  SearchInput,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
@@ -58,64 +60,10 @@ export function RecentModels() {
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
   const queryParams = useQueryParams();
-  const [isLargeKebabOpen, setLargeKebabOpen] = useState(false);
-  const [isBulkDropDownOpen, setIsBulkDropDownOpen] = useState(false);
   const [selectedWorkspaceIds, setSelectedWorkspaceIds] = useState<WorkspaceDescriptor["workspaceId"][]>([]);
-  const modelsListPadding = "10px";
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const workspaces = useWorkspaces();
   const [alerts, setAlerts] = useState<Partial<AlertProps>[]>([]);
-
-  const isBulkCheckBoxChecked = useMemo(() => {
-    if (workspaceDescriptorsPromise.data && selectedWorkspaceIds.length) {
-      return selectedWorkspaceIds.length === workspaceDescriptorsPromise.data.length ? true : null;
-    }
-    return false;
-  }, [workspaceDescriptorsPromise, selectedWorkspaceIds]);
-
-  const closeExpandedWorkspace = useCallback(() => {
-    history.replace({
-      pathname: "/RecentModels",
-      search: queryParams.without(QueryParams.EXPAND).toString(),
-    });
-  }, [history, queryParams]);
-
-  const expandWorkspace = useCallback(
-    (workspaceId: string) => {
-      const expand = workspaceId !== expandedWorkspaceId ? workspaceId : undefined;
-      if (!expand) {
-        closeExpandedWorkspace();
-        return;
-      }
-
-      history.replace({
-        pathname: "/RecentModels",
-        search: routes.home.queryString({ expand }),
-      });
-    },
-    [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
-  );
-
-  const onBulkDropDownToggle = (isOpen: boolean) => {
-    setIsBulkDropDownOpen(isOpen);
-  };
-
-  const onBulkDropDownSelect = () => {
-    setIsBulkDropDownOpen(false);
-  };
-
-  useEffect(() => {
-    if (
-      workspaceDescriptorsPromise.data &&
-      !workspaceDescriptorsPromise.data.map((f) => f.workspaceId).includes(expandedWorkspaceId!)
-    ) {
-      closeExpandedWorkspace();
-    }
-  }, [workspaceDescriptorsPromise, closeExpandedWorkspace, expandedWorkspaceId]);
-
-  const onSelectAllWorkspace = useCallback((checked: boolean, workspaceDescriptors: WorkspaceDescriptor[]) => {
-    setSelectedWorkspaceIds(checked ? workspaceDescriptors.map((e) => e.workspaceId) : []);
-  }, []);
 
   const onConfirmDeleteModalClose = useCallback(() => setIsConfirmDeleteModalOpen(false), []);
 
@@ -152,43 +100,6 @@ export function RecentModels() {
         });
     },
     [selectedWorkspaceIds, addAlert, workspaces]
-  );
-
-  const onBulkDeleteButtonClick = useCallback(() => setIsConfirmDeleteModalOpen(true), []);
-
-  const deleteFileDropdownItem = useMemo(() => {
-    return (
-      <DropdownItem
-        key={"delete-dropdown-item"}
-        isDisabled={!selectedWorkspaceIds.length}
-        onClick={onBulkDeleteButtonClick}
-        ouiaId={"delete-file-button"}
-        aria-label="Open confirm delete modal"
-      >
-        <Flex flexWrap={{ default: "nowrap" }}>
-          <FlexItem>
-            <TrashIcon />
-            &nbsp;&nbsp;Delete <b>selected {selectedWorkspaceIds.length > 1 ? "models" : "model"}</b>
-          </FlexItem>
-        </Flex>
-      </DropdownItem>
-    );
-  }, [onBulkDeleteButtonClick, selectedWorkspaceIds]);
-
-  const bulkDropDownItems = useCallback(
-    (workspaceDescriptors: WorkspaceDescriptor[]) => [
-      <DropdownItem onClick={() => setSelectedWorkspaceIds([])} key="none" aria-label="Select none">
-        Select none (0)
-      </DropdownItem>,
-      <DropdownItem
-        onClick={() => setSelectedWorkspaceIds(workspaceDescriptors.map((e) => e.workspaceId))}
-        key="all"
-        aria-label="Select All"
-      >
-        Select all({workspaceDescriptors.length})
-      </DropdownItem>,
-    ],
-    []
   );
 
   const onWsToggle = useCallback((workspaceId: WorkspaceDescriptor["workspaceId"], checked: boolean) => {
@@ -240,47 +151,11 @@ export function RecentModels() {
                 <PageSection variant={"light"} padding={{ default: "noPadding" }}>
                   {workspaceDescriptors.length > 0 && (
                     <>
-                      <Toolbar>
-                        <ToolbarContent style={{ paddingLeft: modelsListPadding, paddingRight: modelsListPadding }}>
-                          <ToolbarItem alignment={{ default: "alignLeft" }}>
-                            <Dropdown
-                              onSelect={onBulkDropDownSelect}
-                              toggle={
-                                <DropdownToggle
-                                  splitButtonItems={[
-                                    <DropdownToggleCheckbox
-                                      onChange={(checked) => onSelectAllWorkspace(checked, workspaceDescriptors)}
-                                      isChecked={isBulkCheckBoxChecked}
-                                      id="split-button-text-checkbox"
-                                      key="bulk-check-box"
-                                      aria-label="Select all"
-                                    >
-                                      {selectedWorkspaceIds.length ? `${selectedWorkspaceIds.length} selected` : ""}
-                                    </DropdownToggleCheckbox>,
-                                  ]}
-                                  onToggle={onBulkDropDownToggle}
-                                  id="toggle-split-button-text"
-                                />
-                              }
-                              isOpen={isBulkDropDownOpen}
-                              dropdownItems={bulkDropDownItems(workspaceDescriptors)}
-                              aria-label="Bulk selection dropdown"
-                            />
-                          </ToolbarItem>
-                          <ToolbarItem alignment={{ default: "alignRight" }}>
-                            <KebabDropdown
-                              id={"kebab-lg"}
-                              state={[isLargeKebabOpen, setLargeKebabOpen]}
-                              items={[deleteFileDropdownItem]}
-                              menuAppendTo="parent"
-                            />
-                          </ToolbarItem>
-                        </ToolbarContent>
-                      </Toolbar>
                       <WorkspacesTable
                         workspaceDescriptors={workspaceDescriptors}
                         selectedWorkspaceIds={selectedWorkspaceIds}
                         setSelectedWorkspaceIds={setSelectedWorkspaceIds}
+                        setIsConfirmDeleteModalOpen={setIsConfirmDeleteModalOpen}
                         onWsToggle={onWsToggle}
                       />
                     </>

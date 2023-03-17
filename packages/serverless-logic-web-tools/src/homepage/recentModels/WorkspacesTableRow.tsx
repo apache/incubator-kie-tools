@@ -20,7 +20,7 @@ import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hook
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import "@patternfly/react-core/dist/styles/base.css";
-import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons";
+import { ExclamationTriangleIcon, SearchIcon } from "@patternfly/react-icons/dist/js/icons";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { ActionsColumn, Td, Tr } from "@patternfly/react-table";
@@ -33,6 +33,7 @@ import { routes } from "../../navigation/Routes";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 import { columnNames } from "./WorkspacesTable";
+import { Bullseye, Button, EmptyState, EmptyStateBody, EmptyStateIcon, Title } from "@patternfly/react-core/dist/js";
 
 export type WorkspacesTableRowProps = {
   rowIndex: TdSelectType["rowIndex"];
@@ -64,7 +65,11 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
     [isWsFolder, editableFiles, workspaceDescriptor.name]
   );
 
-  const renderModel = useCallback(() => {
+  const renderModel = useMemo(() => {
+    if (!editableFiles || !editableFiles[0]) {
+      return "";
+    }
+
     const linkTo = routes.workspaceWithFilePath.path({
       workspaceId: editableFiles[0].workspaceId,
       fileRelativePath: editableFiles[0].relativePathWithoutExtension,
@@ -87,34 +92,38 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
         <Td dataLabel={columnNames.lastUpdated}>
           <RelativeDate date={new Date(workspaceDescriptor.lastUpdatedDateISO ?? "")} />
         </Td>
-        <Td dataLabel={columnNames.editableFiles}></Td>
-        <Td dataLabel={columnNames.totalFiles}></Td>
+        <Td dataLabel={columnNames.editableFiles}>1</Td>
+        <Td dataLabel={columnNames.totalFiles}>1</Td>
       </>
     );
   }, [editableFiles, workspaceDescriptor, workspaceName]);
 
-  const renderFolder = useCallback(() => {
-    return (
-      <>
-        <Td dataLabel={columnNames.name}>
-          <FolderIcon />
-          &nbsp;&nbsp;&nbsp;
-          {workspaceName}
-        </Td>
-        <Td dataLabel={columnNames.type}>
-          <WorkspaceLabel descriptor={workspaceDescriptor} />
-        </Td>
-        <Td dataLabel={columnNames.created}>
-          <RelativeDate date={new Date(workspaceDescriptor.createdDateISO ?? "")} />
-        </Td>
-        <Td dataLabel={columnNames.lastUpdated}>
-          <RelativeDate date={new Date(workspaceDescriptor.lastUpdatedDateISO ?? "")} />
-        </Td>
-        <Td dataLabel={columnNames.editableFiles}>{editableFiles.length}</Td>
-        <Td dataLabel={columnNames.totalFiles}>{editableFiles.length + readonlyFiles.length}</Td>
-      </>
-    );
-  }, [editableFiles, readonlyFiles, workspaceDescriptor, workspaceName]);
+  const renderFolder = useMemo(
+    () =>
+      !editableFiles || !editableFiles[0] ? (
+        ""
+      ) : (
+        <>
+          <Td dataLabel={columnNames.name}>
+            <FolderIcon />
+            &nbsp;&nbsp;&nbsp;
+            {workspaceName}
+          </Td>
+          <Td dataLabel={columnNames.type}>
+            <WorkspaceLabel descriptor={workspaceDescriptor} />
+          </Td>
+          <Td dataLabel={columnNames.created}>
+            <RelativeDate date={new Date(workspaceDescriptor.createdDateISO ?? "")} />
+          </Td>
+          <Td dataLabel={columnNames.lastUpdated}>
+            <RelativeDate date={new Date(workspaceDescriptor.lastUpdatedDateISO ?? "")} />
+          </Td>
+          <Td dataLabel={columnNames.editableFiles}>{editableFiles.length}</Td>
+          <Td dataLabel={columnNames.totalFiles}>{editableFiles.length + readonlyFiles.length}</Td>
+        </>
+      ),
+    [editableFiles, readonlyFiles, workspaceDescriptor, workspaceName]
+  );
 
   return (
     <Tr key={workspaceDescriptor.name}>
@@ -132,7 +141,7 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
                   isSelected,
                 }}
               />
-              {isWsFolder ? renderFolder() : renderModel()}
+              {isWsFolder ? renderFolder : renderModel}
               <Td isActionCell>
                 <ActionsColumn
                   items={[
@@ -167,6 +176,26 @@ export function WorkspacesTableRowError(props: { workspaceDescriptor: WorkspaceD
       <Td></Td>
       <Td></Td>
     </>
+  );
+}
+
+export function WorkspacesTableRowEmptyState() {
+  /* TODO: WorkspacesTableRow: component to be tested */
+  return (
+    <Tr>
+      <Td colSpan={Object.keys(columnNames).length + 2}>
+        <Bullseye>
+          <EmptyState variant="small">
+            <EmptyStateIcon icon={SearchIcon} />
+            <Title headingLevel="h2" size="lg">
+              No results found
+            </Title>
+            <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
+            <Button variant="link">Clear all filters</Button>
+          </EmptyState>
+        </Bullseye>
+      </Td>
+    </Tr>
   );
 }
 
