@@ -74,6 +74,7 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
   }, [settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry, props]);
 
   useEffect(() => {
+    setReady(false);
     settingsDispatch.serviceRegistry.catalogStore.refresh().then(() => setReady(true));
   }, [settingsDispatch.serviceRegistry.catalogStore]);
 
