@@ -698,11 +698,6 @@ section.kie-tools--settings-tab {
 .kie-tools--git-status-indicator:hover .kie-tools--git-status-indicator-children-hoverable {
   visibility: visible;
 }
-/* GitStatusIndicatorActions dropdown render*/
-.kie-tools--git-status-indicator .kie-tools--no-whitespace-dropdown-toggle {
-  --pf-c-dropdown__toggle--PaddingLeft: 0;
-  --pf-c-dropdown__toggle-icon--MarginLeft: 0;
-}
 /* GitStatusIndicatorActions popover render */
 
 /* remove padding so that inline alert fills whole popover */

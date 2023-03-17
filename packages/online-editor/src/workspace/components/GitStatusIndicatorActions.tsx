@@ -392,7 +392,6 @@ const MultipleActionsPopoverWithDropdown = (props: {
       <Button
         variant="link"
         icon={<CaretDownIcon />}
-        className={"kie-tools--no-whitespace-dropdown-toggle"}
         onClick={(ev) => {
           ev.stopPropagation();
           ev.preventDefault();
