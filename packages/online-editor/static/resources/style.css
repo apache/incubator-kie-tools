@@ -705,12 +705,6 @@ section.kie-tools--settings-tab {
 }
 /* GitStatusIndicatorActions popover render */
 
-/* Override styles from PopoverMenu.css which were hiding the close popover button */
-.kie-tools--git-status-indicator__popover > .pf-c-popover__content > .pf-c-button {
-  display: inline-block;
-  z-index: 9999;
-}
-
 /* remove padding so that inline alert fills whole popover */
 .kie-tools--git-status-indicator__popover-no-padding > .pf-c-popover__content,
 .kie-tools--git-status-indicator__popover-no-padding > .pf-c-popover__content > .pf-c-popover__body {

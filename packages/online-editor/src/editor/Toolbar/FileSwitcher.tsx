@@ -1012,7 +1012,7 @@ const FilesMenuItemCarouselCard = (props: {
       isRounded={true}
       isCompact={true}
       isFullHeight={true}
-      onSelect={props.onSelectFile}
+      onClick={props.displayMode === FileListItemDisplayMode.enabled ? props.onSelectFile : undefined}
       className={switchExpression(props.displayMode, {
         enabled: "kie-tools--file-list-item-enabled",
         deleted: "kie-tools--file-list-item-deleted",

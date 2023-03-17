@@ -22,7 +22,12 @@ import {
 } from "@kie-tools-core/workspaces-git-fs/dist/services/GitService";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
-import { Alert, AlertActionLink, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
+import {
+  Alert,
+  AlertActionCloseButton,
+  AlertActionLink,
+  AlertVariant,
+} from "@patternfly/react-core/dist/js/components/Alert";
 import {
   Dropdown,
   DropdownItem,
@@ -129,6 +134,7 @@ export const GitStatusIndicatorActions = (
                   </small>
                 </Tooltip>
               ),
+              default: <></>,
             }
           )}
         </FlexItem>
@@ -315,31 +321,29 @@ const MultipleActionsPopoverWithDropdown = (props: {
   return (
     <Popover
       id={"popover-with-actions-dropdown"}
-      className={
-        "kie-tools--git-status-indicator__popover" +
-        (selectedActionId !== undefined ? " kie-tools--git-status-indicator__popover-no-padding" : "")
-      } // noPadding prop not working nice for the ActionsAlert
+      className={selectedActionId !== undefined ? " kie-tools--git-status-indicator__popover-no-padding" : ""} // noPadding prop not working nice for the ActionsAlert
       position={PopoverPosition.bottom}
-      showClose={selectedActionId !== undefined} // showing close button just for the rendered alert
+      showClose={false}
       isVisible={props.isOpen}
-      minWidth={"500px"}
-      shouldClose={() => {
-        // clicking close button when alert is displayed closes only alert itself
-        if (selectedActionId !== undefined) {
-          setSelectedActionId(undefined);
-        } else {
-          props.setOpen(false);
-        }
-      }}
       shouldOpen={() => props.setOpen(true)}
+      shouldClose={() => {
+        props.setOpen(false);
+        setSelectedActionId(undefined);
+      }}
+      minWidth={"500px"}
       bodyContent={
         selectedAction ? (
           <ActionsAlert
             alertVariant={selectedAction.alertVariant}
             description={selectedAction.description}
             titleText={selectedAction.warningText}
-            onConfirm={selectedAction.onConfirm}
+            onConfirm={() => {
+              selectedAction.onConfirm();
+              setSelectedActionId(undefined);
+              props.setOpen(false);
+            }}
             confirmButtonText={selectedAction.confirmButtonText}
+            onClose={() => setSelectedActionId(undefined)}
           />
         ) : (
           <Flex direction={{ default: "column" }} spacer={{ default: "spacerLg" }}>
@@ -413,11 +417,12 @@ const SingleActionPopover = (props: {
           confirmButtonText={props.action.confirmButtonText}
           alertVariant={props.action.alertVariant}
           onConfirm={props.action.onConfirm}
+          onClose={() => props.setOpen(false)}
         />
       }
-      className={"kie-tools--git-status-indicator__popover kie-tools--git-status-indicator__popover-no-padding"}
+      className={"kie-tools--git-status-indicator__popover-no-padding"}
       isVisible={props.isOpen}
-      showClose
+      showClose={false}
       shouldClose={() => props.setOpen(false)}
       shouldOpen={() => props.setOpen(true)}
     >
@@ -442,12 +447,14 @@ const ActionsAlert = (props: {
   alertVariant: AlertVariant;
   confirmButtonText: string;
   onConfirm: () => void;
+  onClose: () => void;
 }) => {
   return (
     <Alert
       isInline
       variant={props.alertVariant}
       title={props.titleText}
+      actionClose={<AlertActionCloseButton onClose={props.onClose} />}
       actionLinks={
         <>
           <AlertActionLink

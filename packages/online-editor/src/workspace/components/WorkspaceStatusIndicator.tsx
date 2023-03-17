@@ -146,6 +146,7 @@ export function GitStatusIndicator(
             alignItems={{ default: "alignItemsCenter" }}
             onClick={(e) => {
               e.stopPropagation();
+              e.preventDefault();
             }}
           >
             <FlexItem>
