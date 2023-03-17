@@ -376,6 +376,7 @@ export function FileSwitcher(props: {
                     drilldownMenu={
                       <DrilldownMenu id={`dd${props.workspace.descriptor.workspaceId}`}>
                         <FilesMenuItems
+                          shouldFocusOnSearch={activeMenu.startsWith(`dd${props.workspace.descriptor.workspaceId}`)}
                           filesMenuMode={filesMenuMode}
                           setFilesMenuMode={setFilesMenuMode}
                           workspace={props.workspace}
@@ -462,6 +463,7 @@ export function WorkspacesMenuItems(props: {
                         <DrilldownMenu id={`dd${descriptor.workspaceId}`} style={{ position: "fixed" }}>
                           {/* position:fixed important to render properly inside menugroup*/}
                           <FilesMenuItems
+                            shouldFocusOnSearch={props.activeMenu.startsWith(`dd${descriptor.workspaceId}`)}
                             filesMenuMode={props.filesMenuMode}
                             setFilesMenuMode={props.setFilesMenuMode}
                             workspace={{ descriptor, files: workspaceFiles.get(descriptor.workspaceId) ?? [] }}
@@ -606,6 +608,7 @@ export function FilesMenuItems(props: {
   onSelectFile: () => void;
   filesMenuMode: FilesMenuMode;
   setFilesMenuMode: React.Dispatch<React.SetStateAction<FilesMenuMode>>;
+  shouldFocusOnSearch: boolean;
 }) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
 
@@ -619,7 +622,7 @@ export function FilesMenuItems(props: {
     DRILLDOWN_NAVIGATION_MENU_ITEM_HEIGHT_IN_PX + MENU_DIVIDER_HEIGHT_IN_PX
   );
 
-  const [isScrollUsingRefEnabled, setScrollUsingRefEnabled] = useState(true);
+  const [isModelsMenuActive, setModelsMenuActive] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [filteredGitSyncStatus, setFilteredGitSyncStatus] = useState<WorkspaceGitLocalChangesStatus>();
 
@@ -671,7 +674,7 @@ export function FilesMenuItems(props: {
   );
 
   const computedInitialScrollOffset = useMemo(() => {
-    if (props.filesMenuMode !== FilesMenuMode.LIST || !isScrollUsingRefEnabled || !props.currentWorkspaceFile) {
+    if (props.filesMenuMode !== FilesMenuMode.LIST || !isModelsMenuActive || !props.currentWorkspaceFile) {
       return;
     }
     const index = filteredModels.findIndex((it) => it.relativePath === props.currentWorkspaceFile?.relativePath);
@@ -679,27 +682,30 @@ export function FilesMenuItems(props: {
       return 0;
     }
     return filteredModels.slice(0, index).reduce((sum, current) => sum + getFileDataListHeight(current), 0);
-  }, [filteredModels, isScrollUsingRefEnabled, props.currentWorkspaceFile, props.filesMenuMode]);
+  }, [filteredModels, isModelsMenuActive, props.currentWorkspaceFile, props.filesMenuMode]);
 
-  const searchInput = useMemo(() => {
-    return (
-      <MenuInput onKeyDown={(e) => e.stopPropagation()}>
-        <SearchInput
-          ref={searchInputRef}
-          value={searchValue}
-          type={"search"}
-          onChange={(_ev, value) => {
-            setSearchValue(value);
-          }}
-          placeholder={`In '${props.workspace.descriptor.name}'`}
-          style={{ fontSize: "small" }}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        />
-      </MenuInput>
-    );
-  }, [props.workspace.descriptor.name, searchValue]);
+  const searchInput = useCallback(
+    (searchRef?: React.RefObject<HTMLInputElement>) => {
+      return (
+        <MenuInput onKeyDown={(e) => e.stopPropagation()}>
+          <SearchInput
+            ref={searchRef}
+            value={searchValue}
+            type={"search"}
+            onChange={(_ev, value) => {
+              setSearchValue(value);
+            }}
+            placeholder={`In '${props.workspace.descriptor.name}'`}
+            style={{ fontSize: "small" }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          />
+        </MenuInput>
+      );
+    },
+    [props.workspace.descriptor.name, searchValue]
+  );
 
   const fileListMenuItemsHeightMaxLimitCss = useMemo(() => {
     return `calc(${MENU_HEIGHT_MAX_LIMIT_CSS} - ${
@@ -727,25 +733,28 @@ export function FilesMenuItems(props: {
 
   useEffect(() => {
     const task = setTimeout(() => {
-      if (props.filesMenuMode === FilesMenuMode.CAROUSEL && isScrollUsingRefEnabled) {
+      if (props.filesMenuMode === FilesMenuMode.CAROUSEL && isModelsMenuActive) {
         carouselScrollRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
       }
-      if (props.filesMenuMode === FilesMenuMode.LIST && isScrollUsingRefEnabled) {
+      if (props.filesMenuMode === FilesMenuMode.LIST && isModelsMenuActive) {
         listScrollRef.current?.scrollToItem(
           filteredModels.findIndex((it) => it.relativePath === props.currentWorkspaceFile?.relativePath)
         );
       }
-      searchInputRef.current?.focus({ preventScroll: true });
+      if (props.shouldFocusOnSearch) {
+        searchInputRef.current?.focus({ preventScroll: true });
+      }
     }, 500);
     return () => {
       clearTimeout(task);
     };
   }, [
     props.filesMenuMode,
-    isScrollUsingRefEnabled,
+    isModelsMenuActive,
     filteredGitSyncStatus,
     props.currentWorkspaceFile?.relativePath,
     filteredModels,
+    props.shouldFocusOnSearch,
   ]);
 
   return (
@@ -753,7 +762,7 @@ export function FilesMenuItems(props: {
       <MenuItem direction={"up"} itemId={`${props.workspace.descriptor.workspaceId}-breadcrumb`}>
         All
       </MenuItem>
-      {searchInput}
+      {searchInput(isModelsMenuActive ? searchInputRef : undefined)}
       <Flex
         justifyContent={{ default: "justifyContentFlexEnd" }}
         alignItems={{ default: "alignItemsCenter" }}
@@ -910,27 +919,27 @@ export function FilesMenuItems(props: {
         <>
           <Divider component={"li"} />
           <MenuItem
-            itemId={`other-${props.workspace.descriptor.workspaceId}`}
+            itemId={`${props.workspace.descriptor.workspaceId}-other`}
             direction={"down"}
             onClick={(_event) => {
-              setScrollUsingRefEnabled(false);
+              setModelsMenuActive(false);
               setBottomSectionHeightInPx(0);
               setTopSectionHeightInPx((prev) => prev - MENU_SHOW_CHANGED_CHECKBOX_HEIGHT_IN_PX);
             }}
             drilldownMenu={
-              <DrilldownMenu id={`dd-other-${props.workspace.descriptor.workspaceId}`} style={{ position: "fixed" }}>
+              <DrilldownMenu id={`dd${props.workspace.descriptor.workspaceId}-other`} style={{ position: "fixed" }}>
                 <MenuItem
                   itemId={"back-up"}
                   direction={"up"}
                   onClick={(_event) => {
-                    setScrollUsingRefEnabled(true);
+                    setModelsMenuActive(true);
                     setBottomSectionHeightInPx(MENU_DIVIDER_HEIGHT_IN_PX + DRILLDOWN_NAVIGATION_MENU_ITEM_HEIGHT_IN_PX);
                     setTopSectionHeightInPx((prev) => prev + MENU_SHOW_CHANGED_CHECKBOX_HEIGHT_IN_PX);
                   }}
                 >
                   Back
                 </MenuItem>
-                {searchInput}
+                {searchInput(isModelsMenuActive ? undefined : searchInputRef)}
                 <Divider component={"li"} />
                 <FilteredFilesMenuGroup
                   search={searchValue}
