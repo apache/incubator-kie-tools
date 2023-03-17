@@ -55,11 +55,6 @@ export class WorkspaceDescriptorService {
       lastUpdatedDateISO: new Date().toISOString(),
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
-
-    new Broadcaster().broadcast({
-      channel: workspaceId,
-      message: async () => ({ type: "WS_UPDATE_DESCRIPTOR" }),
-    });
   }
 
   public async get(fs: KieSandboxWorkspacesFs, workspaceId: string): Promise<WorkspaceDescriptor> {

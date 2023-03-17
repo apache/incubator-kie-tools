@@ -69,7 +69,7 @@ function Indicator(props: { workspace: ActiveWorkspace; isSynced: boolean; hasLo
 
 export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) {
   const routes = useRoutes();
-  const workspaceGitStatusPromise = useWorkspaceGitStatusPromise(props.workspace);
+  const workspaceGitStatusPromise = useWorkspaceGitStatusPromise(props.workspace.descriptor);
 
   const isEverythingPersistedByTheUser = useMemo(() => {
     return (

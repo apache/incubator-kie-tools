@@ -76,12 +76,19 @@ import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { FileDataList, FileLink, getFileDataListHeight, SingleFileWorkspaceListItem } from "../filesList/FileDataList";
+import {
+  FileDataList,
+  FileLink,
+  FileListItemDisplayMode,
+  getFileDataListHeight,
+  SingleFileWorkspaceListItem,
+} from "../filesList/FileDataList";
 import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
 import { WorkspaceLoadingCard } from "../workspace/components/WorkspaceLoadingCard";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
+import { listDeletedFiles } from "../workspace/components/WorkspaceStatusIndicator";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -560,7 +567,9 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                   {({ index, style }) => (
                     <FileDataList
                       file={arrayWithModelsThenOtherFiles[index]}
-                      isEditable={index < models.length}
+                      displayMode={
+                        index < models.length ? FileListItemDisplayMode.enabled : FileListItemDisplayMode.readonly
+                      }
                       style={style}
                     />
                   )}
