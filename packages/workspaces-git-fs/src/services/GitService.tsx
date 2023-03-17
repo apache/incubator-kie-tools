@@ -68,6 +68,15 @@ export interface RemoteRefArgs {
   };
 }
 
+export enum FileModificationStatus {
+  added = "added",
+  modified = "modified",
+  deleted = "deleted",
+}
+export type UnstagedModifiedFilesStatusEntryType = {
+  path: string;
+  status: FileModificationStatus;
+};
 export class GitService {
   public constructor(private readonly corsProxy: Promise<string>) {}
 
@@ -155,23 +164,28 @@ export class GitService {
     });
   }
 
-  public async checkout(args: {
-    fs: KieSandboxWorkspacesFs;
-    dir: string;
-    ref: string;
-    remote: string;
-    force?: boolean;
-    noUpdateHead?: boolean;
-    filepaths?: string[];
-  }) {
+  public async checkout(args: { fs: KieSandboxWorkspacesFs; dir: string; ref: string; remote: string }) {
     await git.checkout({
       fs: args.fs,
       dir: args.dir,
       ref: args.ref,
       remote: args.remote,
-      force: args.force,
-      noUpdateHead: args.noUpdateHead,
+    });
+  }
+
+  public async checkoutFilesFromLocalHead(args: {
+    fs: KieSandboxWorkspacesFs;
+    dir: string;
+    ref?: string;
+    filepaths: string[];
+  }) {
+    await git.checkout({
+      fs: args.fs,
+      dir: args.dir,
+      ref: args.ref,
       filepaths: args.filepaths,
+      noUpdateHead: true,
+      force: true,
     });
   }
 
@@ -349,15 +363,15 @@ export class GitService {
   }
 
   async hasLocalChanges(args: { fs: KieSandboxWorkspacesFs; dir: string; exclude: (filepath: string) => boolean }) {
-    const files = await this.unstagedModifiedFileRelativePaths(args);
+    const files = await this.unstagedModifiedFilesStatus(args);
     return files.length > 0;
   }
 
-  public async unstagedModifiedFileRelativePaths(args: {
+  public async unstagedModifiedFilesStatus(args: {
     fs: KieSandboxWorkspacesFs;
     dir: string;
     exclude: (filepath: string) => boolean;
-  }): Promise<string[]> {
+  }): Promise<UnstagedModifiedFilesStatusEntryType[]> {
     const now = performance.now();
     console.time(`${now}: hasLocalChanges`);
     const pseudoStatusMatrix = await git.walk({
@@ -404,7 +418,26 @@ export class GitService {
     const _WORKDIR = 2;
     const _STAGE = 3;
     const _FILE = 0;
-    const ret = pseudoStatusMatrix.filter((row: any) => row[_WORKDIR] !== row[_STAGE]).map((row: any) => row[_FILE]);
+    const ret = pseudoStatusMatrix
+      .filter((row: any) => row[_WORKDIR] !== row[_STAGE]) // filter differences with staged state
+      .map((row: any[]) => {
+        // if both _WORKDIR and _STAGE are set, the file is staged and modified (from above filter)
+        // if _WORKDIR is set only, it means the file is not yet staged
+        // if _STAGE is set only, it means the file has been deleted in workspace
+        let status: FileModificationStatus;
+        if (row[_WORKDIR] && !row[_STAGE]) {
+          status = FileModificationStatus.added;
+        } else if (!row[_WORKDIR] && row[_STAGE]) {
+          status = FileModificationStatus.deleted;
+        } else {
+          status = FileModificationStatus.modified;
+        }
+        const result: UnstagedModifiedFilesStatusEntryType = {
+          path: row[_FILE],
+          status,
+        };
+        return result;
+      });
     console.timeEnd(`${now}: hasLocalChanges`);
     return ret;
   }

@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.sw.client.selenium;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Rule;
@@ -435,6 +436,22 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
         assertThat(points.get(11)).isEqualTo(988.3333333333334D); // Y
         assertThat(points.get(12)).isEqualTo(1083.834862385321D); // X
         assertThat(points.get(13)).isEqualTo(1085L); // Y
+    }
+
+    @Test
+    public void testStateDimension() throws Exception {
+        String resource = "LoanBroker.sw.json";
+        final String expected = loadResource(resource);
+        setContent(expected);
+        waitCanvasPanel();
+
+        List<String> nodeIds = jsHelper.getNodeIds();
+
+        List<Long> dimension = new ArrayList<>();
+        dimension.add(new Long(250));
+        dimension.add(new Long(90));
+
+        assertThat(jsHelper.getDimension(nodeIds.get(1))).isEqualTo(dimension);
     }
 
     private void testExample(String exampleName) throws Exception {

@@ -76,7 +76,8 @@ function extractPathItemFunctions(
     .filter((pathOperation) => pathOperation.operationId)
     .forEach((pathOperation: OpenAPIV3.OperationObject) => {
       const body = pathOperation.requestBody as OpenAPIV3.RequestBodyObject;
-
+      const responses = pathOperation.responses as OpenAPIV3.ResponsesObject;
+      const response = responses["200"] as OpenAPIV3.ResponseObject;
       const name = pathOperation.operationId as string;
 
       const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {};
@@ -88,8 +89,21 @@ function extractPathItemFunctions(
 
       // Looking only at application/json mime types, we might consider others.
       if (body && body.content && body.content[APPLICATION_JSON] && body.content[APPLICATION_JSON].schema) {
-        extractFunctionArgumentsFromRequestBody(
+        extractFunctionArgumentsFromBody(
           body.content[APPLICATION_JSON].schema ?? {},
+          serviceOpenApiDocument,
+          functionArguments
+        );
+      }
+
+      if (
+        response &&
+        response.content &&
+        response.content[APPLICATION_JSON] &&
+        response.content[APPLICATION_JSON].schema
+      ) {
+        extractFunctionArgumentsFromBody(
+          response.content[APPLICATION_JSON].schema ?? {},
           serviceOpenApiDocument,
           functionArguments
         );
@@ -120,7 +134,7 @@ function extractFunctionArgumentsFromParams(
   });
 }
 
-function extractFunctionArgumentsFromRequestBody(
+function extractFunctionArgumentsFromBody(
   schema: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject,
   doc: OpenAPIV3.Document,
   functionParams: Record<string, SwfServiceCatalogFunctionArgumentType>

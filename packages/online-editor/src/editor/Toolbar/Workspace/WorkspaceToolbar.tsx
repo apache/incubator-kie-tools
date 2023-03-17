@@ -29,12 +29,17 @@ import { WorkspaceLabel } from "../../../workspace/components/WorkspaceLabel";
 import FolderIcon from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceStatusIndicator } from "../../../workspace/components/WorkspaceStatusIndicator";
 import { AcceleratorIndicator } from "../Accelerators/AcceleratorIndicator";
+import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { WorkspaceGitStatusType } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 
 type Props = {
   workspace: ActiveWorkspace;
+  currentWorkspaceFile: WorkspaceFile;
+  workspaceGitStatusPromise: PromiseState<WorkspaceGitStatusType>;
+  onDeletedWorkspaceFile: () => void;
 };
 
 export function WorkspaceToolbar(props: Props) {
@@ -157,7 +162,15 @@ export function WorkspaceToolbar(props: Props) {
         </div>
       </FlexItem>
       <FlexItem>
-        <WorkspaceStatusIndicator workspace={props.workspace} />
+        <WorkspaceStatusIndicator
+          gitStatusProps={{
+            workspaceDescriptor: props.workspace.descriptor,
+            workspaceGitStatusPromise: props.workspaceGitStatusPromise,
+          }}
+          currentWorkspaceFile={props.currentWorkspaceFile}
+          onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
+          workspaceFiles={props.workspace.files}
+        />
       </FlexItem>
     </Flex>
   );

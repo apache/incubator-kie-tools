@@ -67,7 +67,6 @@ export async function codeCompletionTester(
   trimContent = true
 ): Promise<{ completionItems: CompletionItem[]; cursorPosition: Position }> {
   const { content, cursorPosition } = treat(contentToParse, trimContent);
-
   return {
     completionItems: await ls.getCompletionItems({
       uri: documentUri,

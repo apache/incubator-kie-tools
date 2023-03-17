@@ -16,7 +16,6 @@
 
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { useRoutes } from "../../navigation/Hooks";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { join } from "path";
@@ -46,19 +45,14 @@ import { ThLargeIcon } from "@patternfly/react-icons/dist/js/icons/th-large-icon
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 import { PromiseStateWrapper, useCombinedPromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useWorkspacesFilesPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Card, CardBody, CardHeader, CardHeaderMain } from "@patternfly/react-core/dist/js/components/Card";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
-import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -66,6 +60,7 @@ import {
   FileDataList,
   FileLink,
   FileListItem,
+  FileListItemDisplayMode,
   getFileDataListHeight,
   SingleFileWorkspaceDataList,
 } from "../../filesList/FileDataList";
@@ -79,23 +74,42 @@ import {
 import { WorkspaceListItem } from "../../workspace/components/WorkspaceListItem";
 import { usePreviewSvg } from "../../previewSvgs/PreviewSvgHooks";
 import { WorkspaceLoadingMenuItem } from "../../workspace/components/WorkspaceLoadingCard";
+import {
+  listDeletedFiles,
+  resolveGitLocalChangesStatus,
+  WorkspaceGitLocalChangesStatus,
+} from "../../workspace/components/WorkspaceStatusIndicator";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
+import { switchExpression } from "../../switchExpression/switchExpression";
+import { GitStatusProps } from "../../workspace/components/GitStatusIndicatorActions";
 
 const ROOT_MENU_ID = "rootMenu";
 
-enum FilesDropdownMode {
-  LIST_MODELS,
-  LIST_MODELS_AND_OTHERS,
+enum FilesMenuMode {
+  LIST,
   CAROUSEL,
 }
 
 const MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX = 500;
 const MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN = 40;
+// properties to be used for menu height calculation
+const FILE_SWITCHER_INITIAL_HEIGHT_OFFSET_IN_PX = 204;
+const MENU_HEIGHT_MAX_LIMIT_CSS = `calc(100vh - ${FILE_SWITCHER_INITIAL_HEIGHT_OFFSET_IN_PX}px)` as const;
+const DRILLDOWN_NAVIGATION_MENU_ITEM_HEIGHT_IN_PX = 40;
+const MENU_SEARCH_HEIGHT_IN_PX = 64;
+const MENU_SHOW_CHANGED_CHECKBOX_HEIGHT_IN_PX = 36;
+const MENU_DIVIDER_HEIGHT_IN_PX = 17;
 
-export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile: WorkspaceFile }) {
+export function FileSwitcher(props: {
+  workspace: ActiveWorkspace;
+  gitStatusProps?: GitStatusProps;
+  workspaceFile: WorkspaceFile;
+  onDeletedWorkspaceFile: () => void;
+}) {
   const workspaces = useWorkspaces();
   const workspaceFileNameRef = useRef<HTMLInputElement>(null);
   const [newFileNameValid, setNewFileNameValid] = useState<boolean>(true);
-  const [filesDropdownMode, setFilesDropdownMode] = useState(FilesDropdownMode.LIST_MODELS);
 
   const resetWorkspaceFileName = useCallback(() => {
     if (workspaceFileNameRef.current) {
@@ -174,15 +188,11 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
   const [activeMenu, setActiveMenu] = useState(ROOT_MENU_ID);
 
-  useEffect(() => {
-    setMenuHeights({});
-  }, [props.workspace, filesDropdownMode, activeMenu]);
+  const [filesMenuMode, setFilesMenuMode] = useState(FilesMenuMode.LIST);
 
   useEffect(() => {
-    setFilesDropdownMode((prev) =>
-      prev === FilesDropdownMode.LIST_MODELS_AND_OTHERS ? FilesDropdownMode.LIST_MODELS : prev
-    );
-  }, [activeMenu]);
+    setMenuHeights({});
+  }, [props.workspace, filesMenuMode, activeMenu]);
 
   useEffect(() => {
     if (isFilesDropdownOpen) {
@@ -225,11 +235,11 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
         activeMenu={activeMenu}
         currentWorkspace={props.workspace}
         onSelectFile={() => setFilesDropdownOpen(false)}
-        filesDropdownMode={filesDropdownMode}
-        setFilesDropdownMode={setFilesDropdownMode}
+        filesMenuMode={filesMenuMode}
+        setFilesMenuMode={setFilesMenuMode}
       />
     );
-  }, [activeMenu, filesDropdownMode, props.workspace]);
+  }, [activeMenu, filesMenuMode, props.workspace]);
 
   return (
     <>
@@ -340,11 +350,6 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
               style={{
                 boxShadow: "none",
                 minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`,
-                width: `${
-                  filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
-                    ? MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX * 2
-                    : MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX
-                }px`,
               }}
               id={ROOT_MENU_ID}
               containsDrilldown={true}
@@ -354,15 +359,15 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
               onDrillIn={drillIn}
               onDrillOut={drillOut}
               onGetMenuHeight={setHeight}
+              className={"kie-sandbox--files-menu"}
             >
               <MenuContent
                 // MAGIC NUMBER ALERT
                 //
                 // 204px is the exact number that allows the menu to grow to
                 // the maximum size of the screen without adding scroll to the page.
-                maxMenuHeight={`calc(100vh - 204px)`}
+                maxMenuHeight={MENU_HEIGHT_MAX_LIMIT_CSS}
                 menuHeight={activeMenu === ROOT_MENU_ID ? undefined : `${menuHeights[activeMenu]}px`}
-                style={{ overflow: "hidden" }}
               >
                 <MenuList style={{ padding: 0 }}>
                   <MenuItem
@@ -371,20 +376,27 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                     drilldownMenu={
                       <DrilldownMenu id={`dd${props.workspace.descriptor.workspaceId}`}>
                         <FilesMenuItems
-                          shouldFocusOnSearch={activeMenu === `dd${props.workspace.descriptor.workspaceId}`}
-                          filesDropdownMode={filesDropdownMode}
-                          setFilesDropdownMode={setFilesDropdownMode}
-                          workspaceDescriptor={props.workspace.descriptor}
-                          workspaceFiles={props.workspace.files}
+                          filesMenuMode={filesMenuMode}
+                          setFilesMenuMode={setFilesMenuMode}
+                          workspace={props.workspace}
                           currentWorkspaceFile={props.workspaceFile}
                           onSelectFile={() => setFilesDropdownOpen(false)}
+                          currentWorkspaceGitStatusProps={props.gitStatusProps}
+                          onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
                         />
                       </DrilldownMenu>
                     }
                   >
                     Current
                   </MenuItem>
-                  {workspacesMenuItems}
+                  <MenuGroup
+                    style={{
+                      maxHeight: `calc(${MENU_HEIGHT_MAX_LIMIT_CSS} - ${DRILLDOWN_NAVIGATION_MENU_ITEM_HEIGHT_IN_PX}px)` /* height of menu minus the height of Current item*/,
+                      overflowY: "auto",
+                    }}
+                  >
+                    {workspacesMenuItems}
+                  </MenuGroup>
                 </MenuList>
               </MenuContent>
             </Menu>
@@ -399,8 +411,8 @@ export function WorkspacesMenuItems(props: {
   activeMenu: string;
   currentWorkspace: ActiveWorkspace;
   onSelectFile: () => void;
-  filesDropdownMode: FilesDropdownMode;
-  setFilesDropdownMode: React.Dispatch<React.SetStateAction<FilesDropdownMode>>;
+  filesMenuMode: FilesMenuMode;
+  setFilesMenuMode: React.Dispatch<React.SetStateAction<FilesMenuMode>>;
 }) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
@@ -447,13 +459,12 @@ export function WorkspacesMenuItems(props: {
                       itemId={descriptor.workspaceId}
                       direction={"down"}
                       drilldownMenu={
-                        <DrilldownMenu id={`dd${descriptor.workspaceId}`}>
+                        <DrilldownMenu id={`dd${descriptor.workspaceId}`} style={{ position: "fixed" }}>
+                          {/* position:fixed important to render properly inside menugroup*/}
                           <FilesMenuItems
-                            shouldFocusOnSearch={props.activeMenu === `dd${descriptor.workspaceId}`}
-                            filesDropdownMode={props.filesDropdownMode}
-                            setFilesDropdownMode={props.setFilesDropdownMode}
-                            workspaceDescriptor={descriptor}
-                            workspaceFiles={workspaceFiles.get(descriptor.workspaceId) ?? []}
+                            filesMenuMode={props.filesMenuMode}
+                            setFilesMenuMode={props.setFilesMenuMode}
+                            workspace={{ descriptor, files: workspaceFiles.get(descriptor.workspaceId) ?? [] }}
                             onSelectFile={props.onSelectFile}
                           />
                         </DrilldownMenu>
@@ -507,7 +518,19 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
   return (
     <>
       <PromiseStateWrapper
-        pending={<Skeleton height={"180px"} style={{ margin: "10px" }} />}
+        pending={
+          imgRef.current ? (
+            <Bullseye>
+              <img
+                style={{ height: "180px", margin: "10px" }}
+                ref={imgRef}
+                alt={`SVG for ${props.workspaceFile.relativePath}`}
+              />
+            </Bullseye>
+          ) : (
+            <Skeleton height={"180px"} style={{ margin: "10px" }} />
+          )
+        }
         rejected={() => (
           <div style={{ height: "180px", margin: "10px", borderRadius: "5px", backgroundColor: "#EEE" }}>
             <Bullseye>
@@ -530,78 +553,37 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
   );
 }
 
-export function SearchableFilesMenuGroup(props: {
-  shouldFocusOnSearch: boolean;
-  filesDropdownMode: FilesDropdownMode;
-  label: string;
+export function FilteredFilesMenuGroup(props: {
+  filesMenuMode: FilesMenuMode;
   allFiles: WorkspaceFile[];
+  filteredFiles: WorkspaceFile[];
   search: string;
-  setSearch: React.Dispatch<React.SetStateAction<string>>;
   children: (args: { filteredFiles: WorkspaceFile[] }) => React.ReactNode;
+  heightMaxLimitCss: string;
+  style?: React.CSSProperties;
 }) {
-  const searchInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (props.shouldFocusOnSearch) {
-      const task = setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 500);
-      return () => {
-        clearTimeout(task);
-      };
-    }
-  }, [props.shouldFocusOnSearch, props.filesDropdownMode]);
-
-  const filteredFiles = useMemo(
-    () => props.allFiles.filter((file) => file.name.toLowerCase().includes(props.search.toLowerCase())),
-    [props.allFiles, props.search]
-  );
-
   const height = useMemo(() => {
-    if (
-      props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
-      props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
-    ) {
+    if (props.filesMenuMode === FilesMenuMode.LIST) {
       // No reason to know the exact size.
       const sizeOfFirst50Elements = props.allFiles
         .slice(0, 50)
         .map((f) => getFileDataListHeight(f))
         .reduce((a, b) => a + b, 0);
-
-      // MAGIC NUMBER ALERT
-      //
-      // 440px is the exact number that allows the menu to grow to the end of the screen without adding scroll  to the
-      // entire page, It includes the first menu item, the search bar and the "View other files" button at the bottom.
-      return `max(300px, min(calc(100vh - 440px), ${sizeOfFirst50Elements}px))`;
-    } else if (props.filesDropdownMode === FilesDropdownMode.CAROUSEL) {
-      // MAGIC NUMBER ALERT
-      //
-      // 384px is the exact number that allows the menu to grow to the end of the screen without
-      // adding a scroll to the entire page. It includes the first menu item and the search bar.
-      //
+      return `max(300px, min(${props.heightMaxLimitCss}, ${sizeOfFirst50Elements}px))`;
+    } else if (props.filesMenuMode === FilesMenuMode.CAROUSEL) {
       // 280px is the size of a File SVG card.
-      return `min(calc(100vh - 384px), calc(${props.allFiles.length} * 280px))`;
+      return `min(${props.heightMaxLimitCss}, calc(${props.allFiles.length} * 280px))`;
     } else {
       return "";
     }
-  }, [props.allFiles, props.filesDropdownMode]);
+  }, [props.allFiles, props.filesMenuMode, props.heightMaxLimitCss]);
 
   return (
-    <MenuGroup label={props.label}>
+    <MenuGroup>
       {/* Allows for arrows to work when editing the text. */}
-      <MenuInput onKeyDown={(e) => e.stopPropagation()}>
-        <TextInput
-          ref={searchInputRef}
-          value={props.search}
-          aria-label={"Other files menu items"}
-          iconVariant={"search"}
-          type={"search"}
-          onChange={(value) => props.setSearch(value)}
-        />
-      </MenuInput>
-      <div style={{ overflowY: "auto", height }}>
-        {filteredFiles.length > 0 && props.children({ filteredFiles })}
-        {filteredFiles.length <= 0 && (
+      <div style={{ ...props.style, height }}>
+        {props.filteredFiles.length > 0 && props.children({ filteredFiles: props.filteredFiles })}
+        {props.filteredFiles.length <= 0 && (
           <Bullseye>
             <EmptyState>
               <EmptyStateIcon icon={CubesIcon} />
@@ -617,72 +599,347 @@ export function SearchableFilesMenuGroup(props: {
 }
 
 export function FilesMenuItems(props: {
-  workspaceDescriptor: WorkspaceDescriptor;
-  workspaceFiles: WorkspaceFile[];
+  workspace: ActiveWorkspace;
+  currentWorkspaceGitStatusProps?: GitStatusProps;
   currentWorkspaceFile?: WorkspaceFile;
+  onDeletedWorkspaceFile?: () => void;
   onSelectFile: () => void;
-  filesDropdownMode: FilesDropdownMode;
-  setFilesDropdownMode: React.Dispatch<React.SetStateAction<FilesDropdownMode>>;
-  shouldFocusOnSearch: boolean;
+  filesMenuMode: FilesMenuMode;
+  setFilesMenuMode: React.Dispatch<React.SetStateAction<FilesMenuMode>>;
 }) {
-  const history = useHistory();
-  const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
 
-  const sortedAndFilteredFiles = useMemo(
-    () =>
-      props.workspaceFiles
-        .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => file.relativePath !== props.currentWorkspaceFile?.relativePath),
-    [props.currentWorkspaceFile?.relativePath, props.workspaceFiles]
+  const [topSectionHeightInPx, setTopSectionHeightInPx] = useState<number>(
+    DRILLDOWN_NAVIGATION_MENU_ITEM_HEIGHT_IN_PX +
+      MENU_SEARCH_HEIGHT_IN_PX +
+      MENU_SHOW_CHANGED_CHECKBOX_HEIGHT_IN_PX +
+      MENU_DIVIDER_HEIGHT_IN_PX
+  );
+  const [bottomSectionHeightInPx, setBottomSectionHeightInPx] = useState<number>(
+    DRILLDOWN_NAVIGATION_MENU_ITEM_HEIGHT_IN_PX + MENU_DIVIDER_HEIGHT_IN_PX
   );
 
+  const [isScrollUsingRefEnabled, setScrollUsingRefEnabled] = useState(true);
+  const [searchValue, setSearchValue] = useState("");
+  const [filteredGitSyncStatus, setFilteredGitSyncStatus] = useState<WorkspaceGitLocalChangesStatus>();
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const carouselScrollRef = useRef<HTMLDivElement>(null);
+  const listScrollRef = useRef<VariableSizeList>(null);
+
+  const deletedWorkspaceFiles = useMemo(() => {
+    if (!props.currentWorkspaceGitStatusProps) {
+      return [];
+    }
+    return listDeletedFiles(props.currentWorkspaceGitStatusProps);
+  }, [props.currentWorkspaceGitStatusProps]);
+
+  const allFiles = useMemo(() => {
+    return [...props.workspace.files, ...deletedWorkspaceFiles];
+  }, [deletedWorkspaceFiles, props.workspace.files]);
+
+  const sortedFiles = useMemo(() => allFiles.sort((a, b) => a.relativePath.localeCompare(b.relativePath)), [allFiles]);
+
   const models = useMemo(
-    () => sortedAndFilteredFiles.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)),
-    [editorEnvelopeLocator, sortedAndFilteredFiles]
+    () => sortedFiles.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)),
+    [editorEnvelopeLocator, sortedFiles]
   );
 
   const otherFiles = useMemo(
-    () => sortedAndFilteredFiles.filter((file) => !editorEnvelopeLocator.hasMappingFor(file.relativePath)),
-    [editorEnvelopeLocator, sortedAndFilteredFiles]
+    () => sortedFiles.filter((file) => !editorEnvelopeLocator.hasMappingFor(file.relativePath)),
+    [editorEnvelopeLocator, sortedFiles]
   );
 
-  const [search, setSearch] = useState("");
-  const [otherFilesSearch, setOtherFilesSearch] = useState("");
+  const filteredModels = useMemo(
+    () =>
+      models
+        .filter((file) => file.name.toLowerCase().includes(searchValue.toLowerCase()))
+        .filter(
+          (file) =>
+            !filteredGitSyncStatus ||
+            resolveGitLocalChangesStatus({
+              workspaceGitStatus: props.currentWorkspaceGitStatusProps?.workspaceGitStatusPromise.data,
+              file,
+            }) === filteredGitSyncStatus
+        ),
+    [filteredGitSyncStatus, models, props.currentWorkspaceGitStatusProps?.workspaceGitStatusPromise.data, searchValue]
+  );
+
+  const filteredOtherFiles = useMemo(
+    () => otherFiles.filter((file) => file.name.toLowerCase().includes(searchValue.toLowerCase())),
+    [otherFiles, searchValue]
+  );
+
+  const computedInitialScrollOffset = useMemo(() => {
+    if (props.filesMenuMode !== FilesMenuMode.LIST || !isScrollUsingRefEnabled || !props.currentWorkspaceFile) {
+      return;
+    }
+    const index = filteredModels.findIndex((it) => it.relativePath === props.currentWorkspaceFile?.relativePath);
+    if (index < 0) {
+      return 0;
+    }
+    return filteredModels.slice(0, index).reduce((sum, current) => sum + getFileDataListHeight(current), 0);
+  }, [filteredModels, isScrollUsingRefEnabled, props.currentWorkspaceFile, props.filesMenuMode]);
+
+  const searchInput = useMemo(() => {
+    return (
+      <MenuInput onKeyDown={(e) => e.stopPropagation()}>
+        <SearchInput
+          ref={searchInputRef}
+          value={searchValue}
+          type={"search"}
+          onChange={(_ev, value) => {
+            setSearchValue(value);
+          }}
+          placeholder={`In '${props.workspace.descriptor.name}'`}
+          style={{ fontSize: "small" }}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        />
+      </MenuInput>
+    );
+  }, [props.workspace.descriptor.name, searchValue]);
+
+  const fileListMenuItemsHeightMaxLimitCss = useMemo(() => {
+    return `calc(${MENU_HEIGHT_MAX_LIMIT_CSS} - ${
+      topSectionHeightInPx + (otherFiles.length ? bottomSectionHeightInPx : 0)
+    }px)`;
+  }, [bottomSectionHeightInPx, otherFiles.length, topSectionHeightInPx]);
+
+  const isCurrentWorkspaceFile = useCallback(
+    (file: WorkspaceFile) => {
+      return (
+        props.workspace.descriptor.workspaceId === file.workspaceId &&
+        props.currentWorkspaceFile?.relativePath === file.relativePath
+      );
+    },
+    [props.currentWorkspaceFile?.relativePath, props.workspace.descriptor.workspaceId]
+  );
+
+  const getFileListItemDisplayMode = useCallback(
+    (file: WorkspaceFile) =>
+      deletedWorkspaceFiles.some((it) => it.relativePath === file.relativePath)
+        ? FileListItemDisplayMode.deleted
+        : FileListItemDisplayMode.enabled,
+    [deletedWorkspaceFiles]
+  );
+
+  useEffect(() => {
+    const task = setTimeout(() => {
+      if (props.filesMenuMode === FilesMenuMode.CAROUSEL && isScrollUsingRefEnabled) {
+        carouselScrollRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
+      if (props.filesMenuMode === FilesMenuMode.LIST && isScrollUsingRefEnabled) {
+        listScrollRef.current?.scrollToItem(
+          filteredModels.findIndex((it) => it.relativePath === props.currentWorkspaceFile?.relativePath)
+        );
+      }
+      searchInputRef.current?.focus({ preventScroll: true });
+    }, 500);
+    return () => {
+      clearTimeout(task);
+    };
+  }, [
+    props.filesMenuMode,
+    isScrollUsingRefEnabled,
+    filteredGitSyncStatus,
+    props.currentWorkspaceFile?.relativePath,
+    filteredModels,
+  ]);
 
   return (
     <>
-      <Split>
-        <SplitItem isFilled={true}>
-          <MenuItem direction="up" itemId={props.workspaceDescriptor.workspaceId}>
-            All
-          </MenuItem>
-        </SplitItem>
-        <SplitItem>
-          <FilesDropdownModeIcons
-            filesDropdownMode={props.filesDropdownMode}
-            setFilesDropdownMode={props.setFilesDropdownMode}
-          />
-          &nbsp; &nbsp;
-        </SplitItem>
-      </Split>
+      <MenuItem direction={"up"} itemId={`${props.workspace.descriptor.workspaceId}-breadcrumb`}>
+        All
+      </MenuItem>
+      {searchInput}
+      <Flex
+        justifyContent={{ default: "justifyContentFlexEnd" }}
+        alignItems={{ default: "alignItemsCenter" }}
+        style={{ paddingRight: "16px" }}
+      >
+        <FlexItem>
+          {props.currentWorkspaceGitStatusProps !== undefined && (
+            <Tooltip content={"Select to display only modified, added, or deleted files"} position={"bottom"}>
+              <Checkbox
+                label={"Only modified"}
+                id={"filter-git-status-modified-locally"}
+                aria-label={"Select to display only modified, added, or deleted files"}
+                isChecked={filteredGitSyncStatus === WorkspaceGitLocalChangesStatus.pending}
+                onChange={(checked) => {
+                  setFilteredGitSyncStatus(checked ? WorkspaceGitLocalChangesStatus.pending : undefined);
+                }}
+              />
+            </Tooltip>
+          )}
+        </FlexItem>
+        <FlexItem>
+          <Flex justifyContent={{ default: "justifyContentCenter" }}>
+            <FilesMenuModeIcons filesMenuMode={props.filesMenuMode} setFilesMenuMode={props.setFilesMenuMode} />
+          </Flex>
+        </FlexItem>
+      </Flex>
       <Divider component={"li"} />
 
-      <Split>
-        {(props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
-          props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS) && (
-          <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
-            <>
-              <SearchableFilesMenuGroup
-                search={search}
-                setSearch={setSearch}
-                filesDropdownMode={props.filesDropdownMode}
-                shouldFocusOnSearch={props.shouldFocusOnSearch}
-                label={`Models in '${props.workspaceDescriptor.name}'`}
-                allFiles={models}
+      {props.filesMenuMode === FilesMenuMode.LIST && (
+        <FilteredFilesMenuGroup
+          search={searchValue}
+          filesMenuMode={props.filesMenuMode}
+          allFiles={models}
+          filteredFiles={filteredModels}
+          heightMaxLimitCss={fileListMenuItemsHeightMaxLimitCss}
+        >
+          {({ filteredFiles }) => {
+            return (
+              <AutoSizer>
+                {({ height, width }) => (
+                  <VariableSizeList
+                    height={height}
+                    itemCount={filteredFiles.length}
+                    itemSize={(index) => getFileDataListHeight(filteredFiles[index])}
+                    width={width}
+                    initialScrollOffset={computedInitialScrollOffset}
+                    ref={listScrollRef}
+                  >
+                    {({ index, style }) => {
+                      const fileListItemDisplayMode = getFileListItemDisplayMode(filteredFiles[index]);
+                      return (
+                        <MenuItem
+                          key={filteredFiles[index].relativePath}
+                          onClick={
+                            fileListItemDisplayMode === FileListItemDisplayMode.enabled ? props.onSelectFile : undefined
+                          }
+                          className={"kie-tools--file-switcher-no-padding-menu-item"}
+                          isFocused={isCurrentWorkspaceFile(filteredFiles[index])}
+                          isActive={isCurrentWorkspaceFile(filteredFiles[index])}
+                          style={style}
+                          component={"div"}
+                        >
+                          <FileDataList
+                            file={filteredFiles[index]}
+                            displayMode={fileListItemDisplayMode}
+                            gitStatusProps={props.currentWorkspaceGitStatusProps}
+                            isCurrentWorkspaceFile={isCurrentWorkspaceFile(filteredFiles[index])}
+                            onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
+                          />
+                        </MenuItem>
+                      );
+                    }}
+                  </VariableSizeList>
+                )}
+              </AutoSizer>
+            );
+          }}
+        </FilteredFilesMenuGroup>
+      )}
+
+      {props.filesMenuMode === FilesMenuMode.CAROUSEL && (
+        <FilteredFilesMenuGroup
+          search={searchValue}
+          filesMenuMode={props.filesMenuMode}
+          allFiles={models}
+          filteredFiles={filteredModels}
+          heightMaxLimitCss={fileListMenuItemsHeightMaxLimitCss}
+          style={{ overflowY: "auto" }}
+        >
+          {({ filteredFiles }) => {
+            const isCurrentFileOutsideOfShownList =
+              props.currentWorkspaceFile &&
+              filteredFiles.findIndex((file) => file.relativePath === props.currentWorkspaceFile?.relativePath) >=
+                MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN;
+            const shouldScrollToTop =
+              props.currentWorkspaceFile &&
+              filteredFiles.findIndex((file) => file.relativePath === props.currentWorkspaceFile?.relativePath) < 0;
+            return (
+              <Gallery
+                hasGutter={true}
+                style={{
+                  paddingLeft: "8px",
+                  paddingRight: "8px",
+                  borderTop: "var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100)",
+                }}
               >
-                {({ filteredFiles }) => (
+                {shouldScrollToTop && <div ref={carouselScrollRef} />}
+                {filteredFiles.slice(0, MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN).map((file, index) => (
+                  <FilesMenuItemCarouselCard
+                    key={index}
+                    file={file}
+                    gitStatusProps={props.currentWorkspaceGitStatusProps}
+                    isCurrentWorkspaceFile={isCurrentWorkspaceFile(file)}
+                    displayMode={getFileListItemDisplayMode(file)}
+                    onSelectFile={props.onSelectFile}
+                    onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
+                    scrollRef={carouselScrollRef}
+                  />
+                ))}
+                {filteredFiles.length > MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN && (
                   <>
+                    {props.currentWorkspaceFile && isCurrentFileOutsideOfShownList && (
+                      <FilesMenuItemCarouselCard
+                        file={props.currentWorkspaceFile}
+                        gitStatusProps={props.currentWorkspaceGitStatusProps}
+                        isCurrentWorkspaceFile={isCurrentWorkspaceFile(props.currentWorkspaceFile)}
+                        displayMode={getFileListItemDisplayMode(props.currentWorkspaceFile)}
+                        onSelectFile={props.onSelectFile}
+                        onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
+                        scrollRef={carouselScrollRef}
+                      />
+                    )}
+                    <Card style={{ border: 0 }}>
+                      <CardBody>
+                        <Bullseye>
+                          <div>
+                            ...and{" "}
+                            {filteredFiles.length -
+                              MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN -
+                              (isCurrentFileOutsideOfShownList ? 1 : 0)}{" "}
+                            more.
+                          </div>
+                        </Bullseye>
+                      </CardBody>
+                    </Card>
+                  </>
+                )}
+              </Gallery>
+            );
+          }}
+        </FilteredFilesMenuGroup>
+      )}
+      {otherFiles.length > 0 && (
+        <>
+          <Divider component={"li"} />
+          <MenuItem
+            itemId={`other-${props.workspace.descriptor.workspaceId}`}
+            direction={"down"}
+            onClick={(_event) => {
+              setScrollUsingRefEnabled(false);
+              setBottomSectionHeightInPx(0);
+              setTopSectionHeightInPx((prev) => prev - MENU_SHOW_CHANGED_CHECKBOX_HEIGHT_IN_PX);
+            }}
+            drilldownMenu={
+              <DrilldownMenu id={`dd-other-${props.workspace.descriptor.workspaceId}`} style={{ position: "fixed" }}>
+                <MenuItem
+                  itemId={"back-up"}
+                  direction={"up"}
+                  onClick={(_event) => {
+                    setScrollUsingRefEnabled(true);
+                    setBottomSectionHeightInPx(MENU_DIVIDER_HEIGHT_IN_PX + DRILLDOWN_NAVIGATION_MENU_ITEM_HEIGHT_IN_PX);
+                    setTopSectionHeightInPx((prev) => prev + MENU_SHOW_CHANGED_CHECKBOX_HEIGHT_IN_PX);
+                  }}
+                >
+                  Back
+                </MenuItem>
+                {searchInput}
+                <Divider component={"li"} />
+                <FilteredFilesMenuGroup
+                  search={searchValue}
+                  filesMenuMode={FilesMenuMode.LIST} // always LIST for otherFiles, even for mode CAROUSEL
+                  allFiles={otherFiles}
+                  filteredFiles={filteredOtherFiles}
+                  heightMaxLimitCss={fileListMenuItemsHeightMaxLimitCss}
+                >
+                  {({ filteredFiles }) => (
                     <AutoSizer>
                       {({ height, width }) => (
                         <VariableSizeList
@@ -694,190 +951,112 @@ export function FilesMenuItems(props: {
                           {({ index, style }) => (
                             <MenuItem
                               key={filteredFiles[index].relativePath}
-                              onClick={props.onSelectFile}
                               style={style}
+                              component={"div"}
                               className={"kie-tools--file-switcher-no-padding-menu-item"}
                             >
-                              <FileDataList file={filteredFiles[index]} isEditable={true} />
+                              <FileDataList
+                                file={filteredFiles[index]}
+                                displayMode={FileListItemDisplayMode.readonly}
+                                gitStatusProps={props.currentWorkspaceGitStatusProps}
+                                onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
+                              />
                             </MenuItem>
                           )}
                         </VariableSizeList>
                       )}
                     </AutoSizer>
-                  </>
-                )}
-              </SearchableFilesMenuGroup>
-              {otherFiles.length > 0 && (
-                <>
-                  <Divider component={"li"} />
-                  <MenuGroup>
-                    <MenuList style={{ padding: 0 }}>
-                      <MenuItem
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          props.setFilesDropdownMode((prev) =>
-                            prev === FilesDropdownMode.LIST_MODELS
-                              ? FilesDropdownMode.LIST_MODELS_AND_OTHERS
-                              : FilesDropdownMode.LIST_MODELS
-                          );
-                        }}
-                      >
-                        {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS
-                          ? "View other files"
-                          : "Hide other files"}
-                        &nbsp;&nbsp;
-                        {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ? (
-                          <ArrowRightIcon />
-                        ) : (
-                          <ArrowLeftIcon />
-                        )}
-                      </MenuItem>
-                    </MenuList>
-                  </MenuGroup>
-                </>
-              )}
-            </>
-          </SplitItem>
-        )}
-
-        {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS && (
-          <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
-            <SearchableFilesMenuGroup
-              search={otherFilesSearch}
-              setSearch={setOtherFilesSearch}
-              filesDropdownMode={props.filesDropdownMode}
-              shouldFocusOnSearch={props.shouldFocusOnSearch}
-              label={`Other files in '${props.workspaceDescriptor.name}'`}
-              allFiles={otherFiles}
-            >
-              {({ filteredFiles }) => (
-                <>
-                  <AutoSizer>
-                    {({ height, width }) => (
-                      <VariableSizeList
-                        height={height}
-                        itemCount={filteredFiles.length}
-                        itemSize={(index) => getFileDataListHeight(filteredFiles[index])}
-                        width={width}
-                      >
-                        {({ index, style }) => (
-                          <MenuItem
-                            component={"span"}
-                            onClick={() => {}}
-                            style={style}
-                            className={"kie-tools--file-switcher-no-padding-menu-item"}
-                          >
-                            <FileDataList file={filteredFiles[index]} isEditable={false} />
-                          </MenuItem>
-                        )}
-                      </VariableSizeList>
-                    )}
-                  </AutoSizer>
-                </>
-              )}
-            </SearchableFilesMenuGroup>
-          </SplitItem>
-        )}
-
-        {props.filesDropdownMode === FilesDropdownMode.CAROUSEL && (
-          <SplitItem isFilled={true}>
-            <SearchableFilesMenuGroup
-              search={search}
-              setSearch={setSearch}
-              filesDropdownMode={props.filesDropdownMode}
-              shouldFocusOnSearch={props.shouldFocusOnSearch}
-              label={`Models in '${props.workspaceDescriptor.name}'`}
-              allFiles={models}
-            >
-              {({ filteredFiles }) => (
-                <Gallery
-                  hasGutter={true}
-                  style={{
-                    padding: "8px",
-                    borderTop: "var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100)",
-                  }}
-                >
-                  {filteredFiles.slice(0, MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN).map((file) => (
-                    <Card
-                      key={file.relativePath}
-                      isSelectable={true}
-                      isRounded={true}
-                      isCompact={true}
-                      isHoverable={true}
-                      isFullHeight={true}
-                      onClick={() => {
-                        history.push({
-                          pathname: routes.workspaceWithFilePath.path({
-                            workspaceId: file.workspaceId,
-                            fileRelativePath: file.relativePathWithoutExtension,
-                            extension: file.extension,
-                          }),
-                        });
-
-                        props.onSelectFile();
-                      }}
-                    >
-                      <FileLink file={file}>
-                        {/* The default display:flex makes the text overflow */}
-                        <CardHeader style={{ display: "block" }}>
-                          <CardHeaderMain>
-                            <FileListItem file={file} isEditable={true} />
-                          </CardHeaderMain>
-                        </CardHeader>
-                      </FileLink>
-                      <Divider inset={{ default: "insetMd" }} />
-                      <CardBody style={{ padding: 0 }}>
-                        <FileSvg workspaceFile={file} />
-                      </CardBody>
-                    </Card>
-                  ))}
-                  {filteredFiles.length > MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN && (
-                    <Card style={{ border: 0 }}>
-                      <CardBody>
-                        <Bullseye>
-                          <div>...and {filteredFiles.length - MAX_NUMBER_OF_CAROUSEL_ITEMS_SHOWN} more.</div>
-                        </Bullseye>
-                      </CardBody>
-                    </Card>
                   )}
-                </Gallery>
-              )}
-            </SearchableFilesMenuGroup>
-          </SplitItem>
-        )}
-      </Split>
+                </FilteredFilesMenuGroup>
+              </DrilldownMenu>
+            }
+          >
+            Other files
+          </MenuItem>
+        </>
+      )}
     </>
   );
 }
 
-export function FilesDropdownModeIcons(props: {
-  filesDropdownMode: FilesDropdownMode;
-  setFilesDropdownMode: React.Dispatch<React.SetStateAction<FilesDropdownMode>>;
+const FilesMenuItemCarouselCard = (props: {
+  file: WorkspaceFile;
+  gitStatusProps?: GitStatusProps;
+  isCurrentWorkspaceFile?: boolean;
+  onDeletedWorkspaceFile?: () => void;
+  displayMode: FileListItemDisplayMode;
+  onSelectFile: () => void;
+  scrollRef: React.RefObject<HTMLDivElement>;
+}) => {
+  const cardInternals = [
+    <CardHeader style={{ display: "block" }} key={0}>
+      <CardHeaderMain>
+        <FileListItem
+          file={props.file}
+          displayMode={props.displayMode}
+          gitStatusProps={props.gitStatusProps}
+          isCurrentWorkspaceFile={props.isCurrentWorkspaceFile}
+          onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
+        />
+      </CardHeaderMain>
+    </CardHeader>,
+    <Divider inset={{ default: "insetMd" }} key={1} />,
+    <CardBody style={{ padding: 0 }} key={2}>
+      <FileSvg workspaceFile={props.file} />
+    </CardBody>,
+  ];
+  return (
+    <Card
+      key={props.file.relativePath}
+      isSelectable={props.displayMode === FileListItemDisplayMode.enabled}
+      isRounded={true}
+      isCompact={true}
+      isFullHeight={true}
+      onClick={props.displayMode === FileListItemDisplayMode.enabled ? props.onSelectFile : undefined}
+      className={switchExpression(props.displayMode, {
+        enabled: "kie-tools--file-list-item-enabled",
+        deleted: "kie-tools--file-list-item-deleted",
+        readonly: "kie-tools--file-list-item-readonly",
+      })}
+    >
+      <div id={`scrollRef-${props.file.relativePath}`} ref={props.isCurrentWorkspaceFile ? props.scrollRef : undefined}>
+        {props.displayMode === FileListItemDisplayMode.enabled ? (
+          <FileLink file={props.file}>{cardInternals}</FileLink>
+        ) : (
+          cardInternals
+        )}
+      </div>
+    </Card>
+  );
+};
+
+export function FilesMenuModeIcons(props: {
+  filesMenuMode: FilesMenuMode;
+  setFilesMenuMode: React.Dispatch<React.SetStateAction<FilesMenuMode>>;
 }) {
   return (
     <>
-      {props.filesDropdownMode === FilesDropdownMode.CAROUSEL && (
+      {props.filesMenuMode === FilesMenuMode.CAROUSEL && (
         <Button
           className={"kie-tools--masthead-hoverable"}
           variant="plain"
           aria-label="Switch to list view"
           onClick={(e) => {
             e.stopPropagation();
-            props.setFilesDropdownMode(FilesDropdownMode.LIST_MODELS);
+            props.setFilesMenuMode(FilesMenuMode.LIST);
           }}
         >
           <ListIcon />
         </Button>
       )}
-      {(props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
-        props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS) && (
+      {props.filesMenuMode === FilesMenuMode.LIST && (
         <Button
           className={"kie-tools--masthead-hoverable"}
           variant="plain"
           aria-label="Switch to carousel view"
           onClick={(e) => {
             e.stopPropagation();
-            props.setFilesDropdownMode(FilesDropdownMode.CAROUSEL);
+            props.setFilesMenuMode(FilesMenuMode.CAROUSEL);
           }}
         >
           <ThLargeIcon />

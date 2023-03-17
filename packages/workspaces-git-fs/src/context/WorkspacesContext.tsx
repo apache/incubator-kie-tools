@@ -30,6 +30,7 @@ import { parseWorkspaceFileRelativePath } from "../relativePath/WorkspaceFileRel
 import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 import { GitServerRef } from "../worker/api/GitServerRef";
 import { FetchResult } from "isomorphic-git";
+import { UnstagedModifiedFilesStatusEntryType } from "../services/GitService";
 
 export class WorkspaceFile {
   private readonly parsedRelativePath;
@@ -133,14 +134,9 @@ export interface WorkspacesContextType {
 
   branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void>;
 
-  checkout(args: {
-    workspaceId: string;
-    ref: string;
-    remote: string;
-    force?: boolean;
-    noUpdateHead?: boolean;
-    filepaths?: string[];
-  }): Promise<void>;
+  checkout(args: { workspaceId: string; ref: string; remote: string }): Promise<void>;
+
+  checkoutFilesFromLocalHead(args: { workspaceId: string; ref?: string; filepaths?: string[] }): Promise<void>;
 
   addRemote(args: { workspaceId: string; name: string; url: string; force: boolean }): Promise<void>;
 
@@ -157,6 +153,8 @@ export interface WorkspacesContextType {
   }): Promise<GitServerRef[]>;
 
   hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
+
+  getUnstagedModifiedFilesStatus(args: { workspaceId: string }): Promise<UnstagedModifiedFilesStatusEntryType[]>;
 
   isFileModified(args: { workspaceId: string; relativePath: string }): Promise<boolean>;
 

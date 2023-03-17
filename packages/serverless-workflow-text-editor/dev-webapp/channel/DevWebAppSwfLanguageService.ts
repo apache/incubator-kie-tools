@@ -60,10 +60,22 @@ export class DevWebAppSwfLanguageService {
           specsDirRelativePosixPath: "",
           specsDirAbsolutePosixPath: "",
         }),
+        getRoutesDirPosixPaths: async (_textDocument) => ({
+          routesDirRelativePosixPath: "",
+          routesDirAbsolutePosixPath: "",
+        }),
         shouldConfigureServiceRegistries: () => false,
         shouldServiceRegistriesLogIn: () => false,
         canRefreshServices: () => false,
         ...configOverrides,
+      },
+      jqCompletions: {
+        remote: {
+          getJqAutocompleteProperties: (_args: any) => Promise.resolve([]),
+        },
+        relative: {
+          getJqAutocompleteProperties: (_args: any) => Promise.resolve([]),
+        },
       },
     };
   }

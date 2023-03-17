@@ -31,7 +31,7 @@ public class BottomDepiction extends Group {
     private final HandlerRegistration mouseClickHandler;
 
     public BottomDepiction(String icon) {
-        setLocation(new Point2D(STATE_SHAPE_WIDTH / 2 - 8, STATE_SHAPE_HEIGHT - 18));
+        setLocation(new Point2D(STATE_SHAPE_WIDTH / 2 - 8, STATE_SHAPE_HEIGHT - 20));
         Rectangle border = new Rectangle(20, 20)
                 .setFillColor("white")
                 .setFillAlpha(0.001)

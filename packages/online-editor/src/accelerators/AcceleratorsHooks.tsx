@@ -177,7 +177,6 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           workspaceId,
           ref: MOVED_FILES_BRANCH_NAME,
           remote: GIT_ORIGIN_REMOTE_NAME,
-          force: true,
         });
 
         // Move files
@@ -246,12 +245,12 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         }
 
         // Checkout Accelerator files, wiping everything else
-        await workspaces.checkout({
+        await workspaces.checkoutFilesFromLocalHead({
           workspaceId,
           ref: fetchResult.fetchHead,
-          remote: TEMP_ACCELERATOR_REMOTE_NAME,
-          force: true,
-          noUpdateHead: true,
+          // remote: TEMP_ACCELERATOR_REMOTE_NAME,
+          // force: true,
+          // noUpdateHead: true,
           filepaths: ["."],
         });
 
@@ -270,12 +269,12 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         );
 
         // Bring moved user files back
-        await workspaces.checkout({
+        await workspaces.checkoutFilesFromLocalHead({
           workspaceId,
           ref: MOVED_FILES_BRANCH_NAME,
-          remote: GIT_ORIGIN_REMOTE_NAME,
-          force: true,
-          noUpdateHead: true,
+          // remote: GIT_ORIGIN_REMOTE_NAME,
+          // force: true,
+          // noUpdateHead: true,
           filepaths: movedFilesPaths,
         });
 
@@ -342,12 +341,12 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         await workspaces.checkout({ workspaceId, ref: GIT_DEFAULT_BRANCH, remote: GIT_ORIGIN_REMOTE_NAME });
 
         // Revert repo
-        await workspaces.checkout({
+        await workspaces.checkoutFilesFromLocalHead({
           workspaceId,
           ref: BACKUP_BRANCH_NAME,
-          remote: GIT_ORIGIN_REMOTE_NAME,
-          force: true,
-          noUpdateHead: true,
+          // remote: GIT_ORIGIN_REMOTE_NAME,
+          // force: true,
+          // noUpdateHead: true,
           filepaths: ["."],
         });
 
