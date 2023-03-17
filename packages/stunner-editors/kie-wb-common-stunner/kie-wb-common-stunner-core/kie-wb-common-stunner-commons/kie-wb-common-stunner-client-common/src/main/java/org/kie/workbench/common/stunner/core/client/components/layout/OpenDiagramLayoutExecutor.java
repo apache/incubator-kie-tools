@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.HasBounds;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.Layout;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutExecutor;
+import org.kie.workbench.common.stunner.core.graph.processing.layout.SizeHandler;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.VertexPosition;
 
 /**
@@ -36,11 +37,11 @@ public final class OpenDiagramLayoutExecutor implements LayoutExecutor {
 
     @Override
     public void applyLayout(final Layout layout,
-                            final Graph graph) {
+                            final Graph graph,
+                            final SizeHandler sizeHandler) {
         if (layout.getNodePositions().size() == 0) {
             return;
         }
-
         final HashMap<String, Node> indexByUuid = new HashMap<>();
         for (final Object n : graph.nodes()) {
 
@@ -53,14 +54,29 @@ public final class OpenDiagramLayoutExecutor implements LayoutExecutor {
         for (final VertexPosition position : layout.getNodePositions()) {
 
             final Node indexed = indexByUuid.get(position.getId());
+
             if (indexed.getContent() instanceof HasBounds) {
-                ((HasBounds) indexed.getContent()).setBounds(Bounds.create(
-                        position.getUpperLeft().getX(),
-                        position.getUpperLeft().getY(),
-                        position.getBottomRight().getX(),
-                        position.getBottomRight().getY()
-                ));
+                setPosition(position, indexed);
+                setSize(sizeHandler, position, indexed);
             }
         }
+    }
+
+    void setSize(final SizeHandler sizeHandler,
+                 final VertexPosition position,
+                 final Node indexed) {
+        final double width = position.getBottomRight().getX() - position.getUpperLeft().getX();
+        final double height = position.getBottomRight().getY() - position.getUpperLeft().getY();
+
+        sizeHandler.setSize(indexed, width, height);
+    }
+
+    void setPosition(final VertexPosition position, final Node indexed) {
+        ((HasBounds) indexed.getContent()).setBounds(Bounds.create(
+                position.getUpperLeft().getX(),
+                position.getUpperLeft().getY(),
+                position.getBottomRight().getX(),
+                position.getBottomRight().getY()
+        ));
     }
 }
