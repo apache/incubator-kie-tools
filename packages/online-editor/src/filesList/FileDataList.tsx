@@ -61,7 +61,9 @@ export function FileListItem(props: {
 }) {
   const [keepGitStatusActionsDisplayed, setKeepGitStatusActionsDisplayed] = React.useState(false);
   const fileDirPath = props.file.relativeDirPath.split("/").join(" > ");
-
+  const fileName = [FileListItemDisplayMode.enabled, FileListItemDisplayMode.deleted].includes(props.displayMode)
+    ? props.file.nameWithoutExtension
+    : props.file.name;
   return (
     <>
       <Flex
@@ -83,13 +85,10 @@ export function FileListItem(props: {
           <Tooltip
             distance={5}
             position={"top-start"}
-            content={
-              props.file.nameWithoutExtension +
-              (props.displayMode === FileListItemDisplayMode.deleted ? " (Deleted)" : "")
-            }
+            content={fileName + (props.displayMode === FileListItemDisplayMode.deleted ? " (Deleted)" : "")}
           >
             <TextContent>
-              <Text component={TextVariants.p}>{props.file.nameWithoutExtension}</Text>
+              <Text component={TextVariants.p}>{fileName}</Text>
             </TextContent>
           </Tooltip>
         </FlexItem>
