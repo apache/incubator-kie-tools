@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { editor, KeyCode, KeyMod } from "monaco-editor";
+import { editor, KeyCode, KeyMod, Position } from "monaco-editor";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { EditorTheme } from "@kie-tools-core/editor/dist/api";
@@ -31,6 +31,7 @@ export interface DashbuilderMonacoEditorApi {
   getContent: () => string;
   setTheme: (theme: EditorTheme) => void;
   forceRedraw: () => void;
+  moveCursorToPosition: (position: Position) => void;
 }
 
 export enum MonacoEditorOperation {
@@ -133,5 +134,15 @@ export class DefaultDashbuilderMonacoEditorController implements DashbuilderMona
       default:
         return "vs";
     }
+  }
+
+  public moveCursorToPosition(position: Position): void {
+    if (!this.editor) {
+      return;
+    }
+
+    this.editor?.revealLineInCenter(position.lineNumber);
+    this.editor?.setPosition(position);
+    this.editor?.focus();
   }
 }
