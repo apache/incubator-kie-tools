@@ -248,9 +248,6 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         await workspaces.checkoutFilesFromLocalHead({
           workspaceId,
           ref: fetchResult.fetchHead,
-          // remote: TEMP_ACCELERATOR_REMOTE_NAME,
-          // force: true,
-          // noUpdateHead: true,
           filepaths: ["."],
         });
 
@@ -272,9 +269,6 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         await workspaces.checkoutFilesFromLocalHead({
           workspaceId,
           ref: MOVED_FILES_BRANCH_NAME,
-          // remote: GIT_ORIGIN_REMOTE_NAME,
-          // force: true,
-          // noUpdateHead: true,
           filepaths: movedFilesPaths,
         });
 
@@ -344,9 +338,6 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         await workspaces.checkoutFilesFromLocalHead({
           workspaceId,
           ref: BACKUP_BRANCH_NAME,
-          // remote: GIT_ORIGIN_REMOTE_NAME,
-          // force: true,
-          // noUpdateHead: true,
           filepaths: ["."],
         });
 
