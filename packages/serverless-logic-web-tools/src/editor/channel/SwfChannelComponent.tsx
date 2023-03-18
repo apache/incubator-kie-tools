@@ -134,7 +134,10 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
         kogitoEditorChannelApi: apiImpl,
         languageService: languageService,
         isReady,
-        onNotificationClick,
+        notificationHandler: {
+          isSupported: true,
+          onClick: onNotificationClick,
+        },
       };
     },
     [apiImpl, languageService, isReady, onNotificationClick]

@@ -210,7 +210,9 @@ export function EditorPage(props: Props) {
 
   const onNotificationClick = useCallback(
     (notification: Notification) => {
-      webToolsEditor?.onNotificationClick(notification);
+      if (webToolsEditor?.notificationHandler.isSupported) {
+        webToolsEditor?.notificationHandler.onClick(notification);
+      }
     },
     [webToolsEditor]
   );
@@ -237,7 +239,7 @@ export function EditorPage(props: Props) {
                 isEditorReady={isEditorReady}
                 workspaceFile={file.workspaceFile}
                 onNotificationClick={onNotificationClick}
-                isDisabled={!webToolsEditor?.isNotificationSupported}
+                isDisabled={!webToolsEditor?.notificationHandler.isSupported}
               >
                 <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor Section">
                   <div style={{ height: "100%" }}>

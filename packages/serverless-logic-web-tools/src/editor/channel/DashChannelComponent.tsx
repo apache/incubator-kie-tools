@@ -60,7 +60,10 @@ const RefForwardingDashChannelComponent: ForwardRefRenderFunction<
         kogitoEditorChannelApi: apiImpl,
         languageService: languageService,
         isReady: true,
-        onNotificationClick,
+        notificationHandler: {
+          isSupported: true,
+          onClick: onNotificationClick,
+        },
       };
     },
     [apiImpl, languageService, onNotificationClick]
