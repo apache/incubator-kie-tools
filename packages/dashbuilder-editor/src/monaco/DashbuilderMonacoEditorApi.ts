@@ -141,8 +141,8 @@ export class DefaultDashbuilderMonacoEditorController implements DashbuilderMona
       return;
     }
 
-    this.editor?.revealLineInCenter(position.lineNumber);
-    this.editor?.setPosition(position);
-    this.editor?.focus();
+    this.editor.revealLineInCenter(position.lineNumber);
+    this.editor.setPosition(position);
+    this.editor.focus();
   }
 }
