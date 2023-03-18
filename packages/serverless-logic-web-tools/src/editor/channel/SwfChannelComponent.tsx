@@ -44,6 +44,7 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Position } from "monaco-editor";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
   EditorChannelComponentRef,
@@ -73,10 +74,20 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
     }
   }, [settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry, props]);
 
-  useEffect(() => {
-    setReady(false);
-    settingsDispatch.serviceRegistry.catalogStore.refresh().then(() => setReady(true));
-  }, [settingsDispatch.serviceRegistry.catalogStore]);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        setReady(false);
+        settingsDispatch.serviceRegistry.catalogStore.refresh().then(() => {
+          if (canceled.get()) {
+            return;
+          }
+          setReady(true);
+        });
+      },
+      [settingsDispatch.serviceRegistry.catalogStore]
+    )
+  );
 
   const languageService = useMemo(() => {
     const webToolsSwfLanguageService = new WebToolsSwfLanguageService(settingsDispatch.serviceRegistry.catalogStore);

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { useEffect, useState } from "react";
-import { useAppI18n } from "../../i18n";
+import { useCallback, useState } from "react";
 import { WebToolsEmbeddedEditorRef } from "../WebToolsEmbeddedEditor";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DiagnosticSeverity } from "vscode-languageserver-types";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 interface HookArgs {
   webToolsEditor: WebToolsEmbeddedEditorRef | undefined;
@@ -27,40 +27,47 @@ interface HookArgs {
 }
 
 export function useEditorNotifications(args: HookArgs) {
-  const { i18n } = useAppI18n();
   const { webToolsEditor, content, fileRelativePath } = { ...args };
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  useEffect(() => {
-    if (!webToolsEditor?.isReady || !webToolsEditor?.languageService || content === undefined) {
-      return;
-    }
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!webToolsEditor?.isReady || !webToolsEditor?.languageService || content === undefined) {
+          return;
+        }
 
-    webToolsEditor.languageService
-      .getDiagnostics({
-        content: content,
-        uriPath: fileRelativePath,
-      })
-      .then((lsDiagnostics) => {
-        const mappedDiagnostics = lsDiagnostics.map(
-          (lsDiagnostic) =>
-            ({
-              path: "", // empty to not group them by path, as we're only validating one file.
-              severity: lsDiagnostic.severity === DiagnosticSeverity.Error ? "ERROR" : "WARNING",
-              message: `${lsDiagnostic.message} [Line ${lsDiagnostic.range.start.line + 1}]`,
-              type: "PROBLEM",
-              position: {
-                startLineNumber: lsDiagnostic.range.start.line + 1,
-                startColumn: lsDiagnostic.range.start.character + 1,
-                endLineNumber: lsDiagnostic.range.end.line + 1,
-                endColumn: lsDiagnostic.range.end.character + 1,
-              },
-            } as Notification)
-        );
-        setNotifications(mappedDiagnostics);
-      })
-      .catch((e) => console.error(e));
-  }, [content, fileRelativePath, webToolsEditor, i18n]);
+        webToolsEditor.languageService
+          .getDiagnostics({
+            content: content,
+            uriPath: fileRelativePath,
+          })
+          .then((lsDiagnostics) => {
+            if (canceled.get()) {
+              return;
+            }
+            const mappedDiagnostics = lsDiagnostics.map(
+              (lsDiagnostic) =>
+                ({
+                  path: "", // empty to not group them by path, as we're only validating one file.
+                  severity: lsDiagnostic.severity === DiagnosticSeverity.Error ? "ERROR" : "WARNING",
+                  message: `${lsDiagnostic.message} [Line ${lsDiagnostic.range.start.line + 1}]`,
+                  type: "PROBLEM",
+                  position: {
+                    startLineNumber: lsDiagnostic.range.start.line + 1,
+                    startColumn: lsDiagnostic.range.start.character + 1,
+                    endLineNumber: lsDiagnostic.range.end.line + 1,
+                    endColumn: lsDiagnostic.range.end.character + 1,
+                  },
+                } as Notification)
+            );
+            setNotifications(mappedDiagnostics);
+          })
+          .catch((e) => console.error(e));
+      },
+      [content, fileRelativePath, webToolsEditor]
+    )
+  );
 
   return notifications;
 }
