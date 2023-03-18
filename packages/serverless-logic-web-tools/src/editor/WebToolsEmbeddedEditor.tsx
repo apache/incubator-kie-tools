@@ -22,7 +22,7 @@ import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 import { SwfChannelComponent } from "./channel/SwfChannelComponent";
 import { DashChannelComponent } from "./channel/DashChannelComponent";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
-import { Case, Switch } from "react-if";
+import { When } from "react-if";
 import { isDashbuilder, isServerlessWorkflow } from "../extension";
 import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import {
@@ -129,26 +129,6 @@ const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
 
   return (
     <>
-      {editor && (
-        <Switch>
-          <Case condition={isServerlessWorkflow(props.workspaceFile.name)}>
-            <SwfChannelComponent
-              ref={swfChannelComponentRef}
-              channelApiImpl={channelApiImpl}
-              editor={editor}
-              workspaceFile={props.workspaceFile}
-            />
-          </Case>
-          <Case condition={isDashbuilder(props.workspaceFile.name)}>
-            <DashChannelComponent
-              ref={dashChannelComponentRef}
-              channelApiImpl={channelApiImpl}
-              editor={editor}
-              workspaceFile={props.workspaceFile}
-            />
-          </Case>
-        </Switch>
-      )}
       <EmbeddedEditor
         /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
          * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
@@ -163,6 +143,26 @@ const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
         stateControl={stateControl}
         isReady={isReady}
       />
+      {editor && (
+        <>
+          <When condition={isServerlessWorkflow(props.workspaceFile.name)}>
+            <SwfChannelComponent
+              ref={swfChannelComponentRef}
+              channelApiImpl={channelApiImpl}
+              editor={editor}
+              workspaceFile={props.workspaceFile}
+            />
+          </When>
+          <When condition={isDashbuilder(props.workspaceFile.name)}>
+            <DashChannelComponent
+              ref={dashChannelComponentRef}
+              channelApiImpl={channelApiImpl}
+              editor={editor}
+              workspaceFile={props.workspaceFile}
+            />
+          </When>
+        </>
+      )}
     </>
   );
 };

@@ -211,7 +211,7 @@ export function EditorPage(props: Props) {
   const onNotificationClick = useCallback(
     (notification: Notification) => {
       if (webToolsEditor?.notificationHandler.isSupported) {
-        webToolsEditor?.notificationHandler.onClick(notification);
+        webToolsEditor.notificationHandler.onClick(notification);
       }
     },
     [webToolsEditor]
