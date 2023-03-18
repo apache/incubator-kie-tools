@@ -40,9 +40,9 @@ import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { EditorToolbar } from "./EditorToolbar";
-import { DiagnosticSeverity } from "vscode-languageserver-types";
 import { APP_NAME } from "../AppConstants";
 import { WebToolsEmbeddedEditor, WebToolsEmbeddedEditorRef } from "./WebToolsEmbeddedEditor";
+import { useEditorNotifications } from "./hooks/useEditorNotifications";
 
 export interface Props {
   workspaceId: string;
@@ -66,6 +66,12 @@ export function EditorPage(props: Props) {
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
   const isEditorReady = useMemo(() => webToolsEditor?.editor?.isReady, [webToolsEditor]);
   const queryParams = useQueryParams();
+
+  const notifications = useEditorNotifications({
+    webToolsEditor,
+    content: lastContent.current,
+    fileRelativePath: props.fileRelativePath,
+  });
 
   useEffect(() => {
     document.title = `${APP_NAME} :: ${props.fileRelativePath}`;
@@ -199,41 +205,8 @@ export function EditorPage(props: Props) {
   }, [alerts]);
 
   useEffect(() => {
-    if (
-      !webToolsEditor?.isReady ||
-      lastContent.current === undefined ||
-      !workspaceFilePromise.data ||
-      !webToolsEditor?.languageService
-    ) {
-      return;
-    }
-
-    webToolsEditor.languageService
-      .getDiagnostics({
-        content: lastContent.current,
-        uriPath: workspaceFilePromise.data.workspaceFile.relativePath,
-      })
-      .then((lsDiagnostics) => {
-        const diagnostics = lsDiagnostics.map(
-          (lsDiagnostic) =>
-            ({
-              path: "", // empty to not group them by path, as we're only validating one file.
-              severity: lsDiagnostic.severity === DiagnosticSeverity.Error ? "ERROR" : "WARNING",
-              message: `${lsDiagnostic.message} [Line ${lsDiagnostic.range.start.line + 1}]`,
-              type: "PROBLEM",
-              position: {
-                startLineNumber: lsDiagnostic.range.start.line + 1,
-                startColumn: lsDiagnostic.range.start.character + 1,
-                endLineNumber: lsDiagnostic.range.end.line + 1,
-                endColumn: lsDiagnostic.range.end.character + 1,
-              },
-            } as Notification)
-        );
-
-        editorPageDock?.setNotifications(i18n.terms.validation, "", diagnostics);
-      })
-      .catch((e) => console.error(e));
-  }, [workspaceFilePromise.data, webToolsEditor, editorPageDock, i18n.terms.validation]);
+    editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
+  }, [editorPageDock, notifications, i18n]);
 
   const onNotificationClick = useCallback(
     (notification: Notification) => {
