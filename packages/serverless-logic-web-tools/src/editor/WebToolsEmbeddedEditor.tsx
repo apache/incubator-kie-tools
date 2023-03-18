@@ -51,7 +51,6 @@ export interface WebToolsEmbeddedEditorRef {
 export type WebToolsEmbeddedEditorProps = Props & {
   uniqueFileId: string | undefined;
   workspaceFile: WorkspaceFile;
-  locale: string;
 };
 
 export interface EditorChannelComponentRef {
@@ -67,125 +66,129 @@ export type EditorChannelComponentProps = {
   workspaceFile: WorkspaceFile;
 };
 
-export const noOpOnNotificationClickFn = (notification: Notification) => {};
+export const noOpOnNotificationClickFn = (_notification: Notification) => {
+  /* no-op */
+};
 
-const RefForwardingChannelComponent: ForwardRefRenderFunction<WebToolsEmbeddedEditorRef, WebToolsEmbeddedEditorProps> =
-  (props, fowardedRef) => {
-    const [isReady, setReady] = useState(false);
+const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
+  WebToolsEmbeddedEditorRef,
+  WebToolsEmbeddedEditorProps
+> = (props, fowardedRef) => {
+  const [isReady, setReady] = useState(false);
 
-    const stateControl = useMemo(() => new StateControl(), [props.file?.getFileContents]);
+  const stateControl = useMemo(() => new StateControl(), [props.file?.getFileContents]);
 
-    const [editor, editorRef] = useController<EmbeddedEditorRef>();
-    const [swfChannelComponent, swfChannelComponentRef] = useController<EditorChannelComponentRef>();
-    const [dashChannelComponent, dashChannelComponentRef] = useController<EditorChannelComponentRef>();
-    const [defaultChannelComponent, defaultChannelComponentRef] = useController<EditorChannelComponentRef>();
+  const [editor, editorRef] = useController<EmbeddedEditorRef>();
+  const [swfChannelComponent, swfChannelComponentRef] = useController<EditorChannelComponentRef>();
+  const [dashChannelComponent, dashChannelComponentRef] = useController<EditorChannelComponentRef>();
+  const [defaultChannelComponent, defaultChannelComponentRef] = useController<EditorChannelComponentRef>();
 
-    const isSwf = useMemo(() => isServerlessWorkflow(props.workspaceFile.name), [props]);
-    const isDash = useMemo(() => isDashbuilder(props.workspaceFile.name), [props]);
+  const isSwf = useMemo(() => isServerlessWorkflow(props.workspaceFile.name), [props.workspaceFile.name]);
+  const isDash = useMemo(() => isDashbuilder(props.workspaceFile.name), [props.workspaceFile.name]);
 
-    const isNotificationSupported = useMemo(() => isSwf || isDash, [isSwf, isDash]);
-    const hasCustomChannelApiImpl = useMemo(() => isSwf || isDash, [isSwf, isDash]);
+  const isNotificationSupported = useMemo(() => isSwf || isDash, [isSwf, isDash]);
+  const hasCustomChannelApiImpl = useMemo(() => isSwf || isDash, [isSwf, isDash]);
 
-    const channelApiImpl = useMemo(
-      () =>
-        new EmbeddedEditorChannelApiImpl(stateControl, props.file, props.locale, {
-          kogitoEditor_ready: () => {
-            setReady(true);
-          },
-        }),
-      [props.file, props.locale, stateControl]
-    );
+  const channelApiImpl = useMemo(
+    () =>
+      new EmbeddedEditorChannelApiImpl(stateControl, props.file, props.locale, {
+        kogitoEditor_ready: () => {
+          setReady(true);
+        },
+      }),
+    [props.file, props.locale, stateControl]
+  );
 
-    const component = useMemo<Partial<EditorChannelComponentRef>>(() => {
-      if (isSwf) {
-        return {
-          kogitoEditorChannelApi: swfChannelComponent?.kogitoEditorChannelApi,
-          languageService: swfChannelComponent?.languageService,
-          isReady: swfChannelComponent?.isReady,
-          onNotificationClick: swfChannelComponent?.onNotificationClick,
-        };
-      }
-
-      if (isDash) {
-        return {
-          kogitoEditorChannelApi: dashChannelComponent?.kogitoEditorChannelApi,
-          languageService: dashChannelComponent?.languageService,
-          isReady: dashChannelComponent?.isReady,
-          onNotificationClick: dashChannelComponent?.onNotificationClick,
-        };
-      }
-
+  const component = useMemo<Partial<EditorChannelComponentRef>>(() => {
+    if (isSwf) {
       return {
-        isReady: defaultChannelComponent?.isReady,
+        kogitoEditorChannelApi: swfChannelComponent?.kogitoEditorChannelApi,
+        languageService: swfChannelComponent?.languageService,
+        isReady: swfChannelComponent?.isReady,
+        onNotificationClick: swfChannelComponent?.onNotificationClick,
       };
-    }, [dashChannelComponent, defaultChannelComponent, swfChannelComponent, isDash, isSwf]);
+    }
 
-    useImperativeHandle(
-      fowardedRef,
-      () => {
-        return {
-          editor,
-          isReady: isReady && !!component.isReady,
-          languageService: component.languageService,
-          onNotificationClick: component.onNotificationClick ?? noOpOnNotificationClickFn,
-          isNotificationSupported,
-        };
-      },
-      [component, editor, isReady, isNotificationSupported]
-    );
+    if (isDash) {
+      return {
+        kogitoEditorChannelApi: dashChannelComponent?.kogitoEditorChannelApi,
+        languageService: dashChannelComponent?.languageService,
+        isReady: dashChannelComponent?.isReady,
+        onNotificationClick: dashChannelComponent?.onNotificationClick,
+      };
+    }
 
-    useEffect(() => {
-      if (!hasCustomChannelApiImpl && props.file && !isReady) {
-        setReady(true);
-      }
-    }, [hasCustomChannelApiImpl, isReady, props.file]);
+    return {
+      isReady: defaultChannelComponent?.isReady,
+    };
+  }, [dashChannelComponent, defaultChannelComponent, swfChannelComponent, isDash, isSwf]);
 
-    return (
-      <>
-        {editor && (
-          <Switch>
-            <Case condition={isSwf}>
-              <SwfChannelComponent
-                ref={swfChannelComponentRef}
-                channelApiImpl={channelApiImpl}
-                editor={editor}
-                workspaceFile={props.workspaceFile}
-              />
-            </Case>
-            <Case condition={isDash}>
-              <DashChannelComponent
-                ref={dashChannelComponentRef}
-                channelApiImpl={channelApiImpl}
-                editor={editor}
-                workspaceFile={props.workspaceFile}
-              />
-            </Case>
-            <Default>
-              <DefaultChannelComponent
-                ref={defaultChannelComponentRef}
-                channelApiImpl={channelApiImpl}
-                editor={editor}
-                workspaceFile={props.workspaceFile}
-              />
-            </Default>
-          </Switch>
-        )}
-        <EmbeddedEditor
-          /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
-           * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
-           */
-          key={props.uniqueFileId}
-          ref={editorRef}
-          file={props.file}
-          editorEnvelopeLocator={props.editorEnvelopeLocator}
-          channelType={ChannelType.ONLINE_MULTI_FILE}
-          locale={props.locale}
-          customChannelApiImpl={component.kogitoEditorChannelApi}
-          stateControl={stateControl}
-          isReady={isReady}
-        />
-      </>
-    );
-  };
+  useImperativeHandle(
+    fowardedRef,
+    () => {
+      return {
+        editor,
+        isReady: isReady && !!component.isReady,
+        languageService: component.languageService,
+        onNotificationClick: component.onNotificationClick ?? noOpOnNotificationClickFn,
+        isNotificationSupported,
+      };
+    },
+    [component, editor, isReady, isNotificationSupported]
+  );
 
-export const WebToolsEmbeddedEditor = forwardRef(RefForwardingChannelComponent);
+  useEffect(() => {
+    if (!hasCustomChannelApiImpl && props.file && !isReady) {
+      setReady(true);
+    }
+  }, [hasCustomChannelApiImpl, isReady, props.file]);
+
+  return (
+    <>
+      {editor && (
+        <Switch>
+          <Case condition={isSwf}>
+            <SwfChannelComponent
+              ref={swfChannelComponentRef}
+              channelApiImpl={channelApiImpl}
+              editor={editor}
+              workspaceFile={props.workspaceFile}
+            />
+          </Case>
+          <Case condition={isDash}>
+            <DashChannelComponent
+              ref={dashChannelComponentRef}
+              channelApiImpl={channelApiImpl}
+              editor={editor}
+              workspaceFile={props.workspaceFile}
+            />
+          </Case>
+          <Default>
+            <DefaultChannelComponent
+              ref={defaultChannelComponentRef}
+              channelApiImpl={channelApiImpl}
+              editor={editor}
+              workspaceFile={props.workspaceFile}
+            />
+          </Default>
+        </Switch>
+      )}
+      <EmbeddedEditor
+        /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+         * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+         */
+        key={props.uniqueFileId}
+        ref={editorRef}
+        file={props.file}
+        editorEnvelopeLocator={props.editorEnvelopeLocator}
+        channelType={ChannelType.ONLINE_MULTI_FILE}
+        locale={props.locale}
+        customChannelApiImpl={component.kogitoEditorChannelApi}
+        stateControl={stateControl}
+        isReady={isReady}
+      />
+    </>
+  );
+};
+
+export const WebToolsEmbeddedEditor = forwardRef(RefForwardingWebToolsEmbeddedEditor);
