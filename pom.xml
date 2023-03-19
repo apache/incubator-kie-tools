@@ -61,6 +61,16 @@
 
   <repositories>
     <repository>
+      <id>micord-public</id>
+      <name>micord-public</name>
+      <url>https://repo.micord.ru/repository/maven-public</url>
+    </repository>
+    <repository>
+      <id>micord</id>
+      <name>micord</name>
+      <url>https://repo.micord.ru/repository/maven-micord</url>
+    </repository>
+    <repository>
       <id>jboss</id>
       <name>JBoss Public Repo</name>
       <url>https://repository.jboss.org/nexus/content/groups/public</url>
