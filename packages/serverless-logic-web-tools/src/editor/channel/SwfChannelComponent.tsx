@@ -50,29 +50,27 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
   EditorChannelComponentRef,
   EditorChannelComponentProps
 > = (props, fowardedRef) => {
+  const { editor, workspaceFile, channelApiImpl } = { ...props };
   const [isReady, setReady] = useState(false);
   const settingsDispatch = useSettingsDispatch();
   const virtualServiceRegistry = useVirtualServiceRegistry();
-  const swfFeatureToggle = useSwfFeatureToggle(props.editor);
+  const swfFeatureToggle = useSwfFeatureToggle(editor);
 
-  useUpdateVirtualServiceRegistryOnWorkspaceFileEvents({ workspaceFile: props.workspaceFile });
+  useUpdateVirtualServiceRegistryOnWorkspaceFileEvents({ workspaceFile: workspaceFile });
   useUpdateVirtualServiceRegistryOnVsrWorkspaceEvents({ catalogStore: settingsDispatch.serviceRegistry.catalogStore });
   useUpdateVirtualServiceRegistryOnVsrFileEvents({
-    workspaceId: props.workspaceFile.workspaceId,
+    workspaceId: workspaceFile.workspaceId,
     catalogStore: settingsDispatch.serviceRegistry.catalogStore,
   });
 
   useEffect(() => {
     if (
       !settingsDispatch.serviceRegistry.catalogStore.virtualServiceRegistry ||
-      settingsDispatch.serviceRegistry.catalogStore.currentFile !== props.workspaceFile
+      settingsDispatch.serviceRegistry.catalogStore.currentFile !== workspaceFile
     ) {
-      settingsDispatch.serviceRegistry.catalogStore.setVirtualServiceRegistry(
-        virtualServiceRegistry,
-        props.workspaceFile
-      );
+      settingsDispatch.serviceRegistry.catalogStore.setVirtualServiceRegistry(virtualServiceRegistry, workspaceFile);
     }
-  }, [settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry, props]);
+  }, [settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry, workspaceFile]);
 
   useCancelableEffect(
     useCallback(
@@ -91,8 +89,8 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
 
   const languageService = useMemo(() => {
     const webToolsSwfLanguageService = new WebToolsSwfLanguageService(settingsDispatch.serviceRegistry.catalogStore);
-    return webToolsSwfLanguageService.getLs(props.workspaceFile.relativePath);
-  }, [props.workspaceFile, settingsDispatch.serviceRegistry.catalogStore]);
+    return webToolsSwfLanguageService.getLs(workspaceFile.relativePath);
+  }, [workspaceFile, settingsDispatch.serviceRegistry.catalogStore]);
 
   const apiImpl = useMemo(() => {
     const lsChannelApiImpl = new SwfLanguageServiceChannelApiImpl(languageService);
@@ -101,30 +99,27 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
     );
     const featureToggleChannelApiImpl = new SwfFeatureToggleChannelApiImpl(swfFeatureToggle);
     return new SwfCombinedEditorChannelApiImpl(
-      props.channelApiImpl,
+      channelApiImpl,
       featureToggleChannelApiImpl,
       serviceCatalogChannelApiImpl,
       lsChannelApiImpl
     );
-  }, [languageService, settingsDispatch.serviceRegistry.catalogStore, swfFeatureToggle, props.channelApiImpl]);
-
-  const messageBusClient = useMemo(
-    () =>
-      props.editor?.getEnvelopeServer()
-        .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>,
-    [props.editor]
-  );
+  }, [languageService, settingsDispatch.serviceRegistry.catalogStore, swfFeatureToggle, channelApiImpl]);
 
   const onNotificationClick = useCallback(
     (notification: Notification) => {
-      if (!notification.position) {
+      if (!editor || !notification.position) {
         return;
       }
+
+      const messageBusClient = editor.getEnvelopeServer()
+        .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>;
+
       messageBusClient.notifications.kogitoSwfCombinedEditor_moveCursorToPosition.send(
         new Position(notification.position.startLineNumber, notification.position.startColumn)
       );
     },
-    [messageBusClient]
+    [editor]
   );
 
   useImperativeHandle(

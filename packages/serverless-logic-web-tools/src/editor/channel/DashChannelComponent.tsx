@@ -29,28 +29,28 @@ const RefForwardingDashChannelComponent: ForwardRefRenderFunction<
   EditorChannelComponentRef,
   EditorChannelComponentProps
 > = (props, fowardedRef) => {
+  const { editor, channelApiImpl } = { ...props };
   const languageService = useMemo(() => new DashbuilderLanguageService(), []);
 
   const apiImpl = useMemo(() => {
     const lsChannelApiImpl = new DashbuilderLanguageServiceChannelApiImpl(languageService);
-    return new DashbuilderEditorChannelApiImpl(props.channelApiImpl, lsChannelApiImpl);
-  }, [props.channelApiImpl, languageService]);
-
-  const messageBusClient = useMemo(
-    () => props.editor?.getEnvelopeServer().envelopeApi as unknown as MessageBusClientApi<DashbuilderEditorChannelApi>,
-    [props.editor]
-  );
+    return new DashbuilderEditorChannelApiImpl(channelApiImpl, lsChannelApiImpl);
+  }, [channelApiImpl, languageService]);
 
   const onNotificationClick = useCallback(
     (notification: Notification) => {
-      if (!notification.position) {
+      if (!editor || !notification.position) {
         return;
       }
+
+      const messageBusClient = editor.getEnvelopeServer()
+        .envelopeApi as unknown as MessageBusClientApi<DashbuilderEditorChannelApi>;
+
       messageBusClient.notifications.kogitoDashbuilderTextEditor_moveCursorToPosition.send(
         new Position(notification.position.startLineNumber, notification.position.startColumn)
       );
     },
-    [messageBusClient]
+    [editor]
   );
 
   useImperativeHandle(

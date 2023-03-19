@@ -31,12 +31,8 @@ import {
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { DashbuilderLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 import { EmbeddedEditor, EmbeddedEditorChannelApiImpl, EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
-import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { ServerlessWorkflowCombinedEditorChannelApi } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
 import { Props } from "@kie-tools-core/editor/dist/embedded/embedded/EmbeddedEditor";
-import { DashbuilderEditorChannelApi } from "@kie-tools/dashbuilder-editor";
 
-type SupportedEditorChannelApi = ServerlessWorkflowCombinedEditorChannelApi | DashbuilderEditorChannelApi;
 type SupportedLanguageService = SwfYamlLanguageService | SwfJsonLanguageService | DashbuilderLanguageService;
 
 type NotificationHandler =
@@ -62,7 +58,6 @@ export interface EditorChannelComponentRef {
   isReady: boolean;
   notificationHandler: NotificationHandler;
   kogitoEditorChannelApi?: KogitoEditorChannelApi;
-  messageBusClient?: MessageBusClientApi<SupportedEditorChannelApi>;
   languageService?: SupportedLanguageService;
 }
 export type EditorChannelComponentProps = {
@@ -75,21 +70,24 @@ const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
   WebToolsEmbeddedEditorRef,
   WebToolsEmbeddedEditorProps
 > = (props, fowardedRef) => {
+  const { file, locale, uniqueFileId, editorEnvelopeLocator, workspaceFile } = { ...props };
   const [isReady, setReady] = useState(false);
 
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [swfChannelComponent, swfChannelComponentRef] = useController<EditorChannelComponentRef>();
   const [dashChannelComponent, dashChannelComponentRef] = useController<EditorChannelComponentRef>();
 
-  const stateControl = useMemo(() => new StateControl(), [props.file?.getFileContents]);
+  // Keep getFileContents in the dependency list to update the stateControl instance
+  const stateControl = useMemo(() => new StateControl(), [file?.getFileContents]);
+
   const channelApiImpl = useMemo(
     () =>
-      new EmbeddedEditorChannelApiImpl(stateControl, props.file, props.locale, {
+      new EmbeddedEditorChannelApiImpl(stateControl, file, locale, {
         kogitoEditor_ready: () => {
           setReady(true);
         },
       }),
-    [props.file, props.locale, stateControl]
+    [file, locale, stateControl]
   );
 
   const component = useMemo<EditorChannelComponentRef>(() => {
@@ -122,10 +120,10 @@ const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
   );
 
   useEffect(() => {
-    if (!component.kogitoEditorChannelApi && props.file && !isReady) {
+    if (!component.kogitoEditorChannelApi && file && !isReady) {
       setReady(true);
     }
-  }, [component, isReady, props.file]);
+  }, [component, isReady, file]);
 
   return (
     <>
@@ -133,32 +131,32 @@ const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
         /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
          * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
          */
-        key={props.uniqueFileId}
+        key={uniqueFileId}
         ref={editorRef}
-        file={props.file}
-        editorEnvelopeLocator={props.editorEnvelopeLocator}
+        file={file}
+        editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={ChannelType.ONLINE_MULTI_FILE}
-        locale={props.locale}
+        locale={locale}
         customChannelApiImpl={component.kogitoEditorChannelApi}
         stateControl={stateControl}
         isReady={isReady}
       />
       {editor && (
         <>
-          <When condition={isServerlessWorkflow(props.workspaceFile.name)}>
+          <When condition={isServerlessWorkflow(workspaceFile.name)}>
             <SwfChannelComponent
               ref={swfChannelComponentRef}
               channelApiImpl={channelApiImpl}
               editor={editor}
-              workspaceFile={props.workspaceFile}
+              workspaceFile={workspaceFile}
             />
           </When>
-          <When condition={isDashbuilder(props.workspaceFile.name)}>
+          <When condition={isDashbuilder(workspaceFile.name)}>
             <DashChannelComponent
               ref={dashChannelComponentRef}
               channelApiImpl={channelApiImpl}
               editor={editor}
-              workspaceFile={props.workspaceFile}
+              workspaceFile={workspaceFile}
             />
           </When>
         </>
