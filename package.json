@@ -33,7 +33,7 @@
   },
   "engines": {
     "node": ">=18",
-    "pnpm": "7.26.3"
+    "pnpm": ">=7.26.3"
   },
   "pnpm": {
     "packageExtensions": {
