@@ -183,12 +183,18 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
                                                                                  "Float",
                                                                                  "Integer",
                                                                                  "Object",
-                                                                                 "String"));
+                                                                                 "String",
+                                                                                 "Long",
+                                                                                 "Date",
+                                                                                 "Double"));
         final List<String> simpleDataTypeDisplayNames = new ArrayList<String>(Arrays.asList("Boolean",
                                                                                             "Float",
                                                                                             "Integer",
                                                                                             "Object",
-                                                                                            "String"));
+                                                                                            "String",
+                                                                                            "Long",
+                                                                                            "Date",
+                                                                                            "Double"));
 
         Set<String> types = StringUtils.getSetDataTypes(value);
 

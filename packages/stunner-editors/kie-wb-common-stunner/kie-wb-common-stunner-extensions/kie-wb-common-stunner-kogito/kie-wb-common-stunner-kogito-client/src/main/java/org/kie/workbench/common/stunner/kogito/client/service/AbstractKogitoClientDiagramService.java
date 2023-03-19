@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.kogito.client.service;
 
+import org.kie.workbench.common.stunner.core.util.UUID;
+
 import static org.kie.workbench.common.stunner.core.util.FileUtils.getFileName;
 import static org.kie.workbench.common.stunner.core.util.FileUtils.getFileNameWithoutExtension;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
@@ -42,6 +44,6 @@ public abstract class AbstractKogitoClientDiagramService implements KogitoClient
     }
 
     public String generateDefaultId() {
-        return DEFAULT_DIAGRAM_ID;
+        return UUID.customUuid();
     }
 }

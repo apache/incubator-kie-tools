@@ -26,6 +26,14 @@ public class LiveSearchEntry<TYPE> {
         this.value = value;
     }
 
+    public void setKey(TYPE key) {
+        this.key = key;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public TYPE getKey() {
         return key;
     }

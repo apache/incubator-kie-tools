@@ -23,4 +23,6 @@ public interface EntryCreationEditor<TYPE> {
 
     void init(ParameterizedCommand<LiveSearchEntry<TYPE>> okCommand, Command cancelCommand);
 
+    void initRolesEditor();
+
 }

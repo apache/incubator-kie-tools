@@ -300,8 +300,13 @@ public class VariableUtils {
                 }
             }
         }
+        addProcessName(diagram.getName());
         return variables.toString();
     }
+
+    public static native void addProcessName(String processName)/*-{
+        parent.parent.processName = processName;
+    }-*/;
 
     private static Optional<BiFunction<String, Pair<BPMNDefinition, Node<View<BPMNDefinition>, Edge>>, Collection<VariableUsage>>> lookupFindFunction(BPMNDefinition definition) {
         //This code should ideally be based on an iteration plus the invocation of Class.isAssignableFrom method, but unfortunately not available in GWT client classes

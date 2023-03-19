@@ -1,15 +1,15 @@
 /**
  * <copyright>
- * 
+ *
  * Copyright (c) 2010 SAP AG.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Reiner Hille-Doering (SAP AG) - initial API and implementation and/or initial documentation
- * 
+ *
  * </copyright>
  */
 package org.eclipse.bpmn2.impl;
@@ -93,11 +93,37 @@ public class CallActivityImpl extends ActivityImpl implements CallActivity {
 	@Override
 	public void setCalledElement(String newCalledElement) {
 		String oldCalledElement = calledElement;
-		calledElement = newCalledElement;
+		calledElement = getProcessName(newCalledElement);
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, Bpmn2Package.CALL_ACTIVITY__CALLED_ELEMENT,
 					oldCalledElement, calledElement));
 	}
+
+	private String getProcessName(String newCalledElement) {
+		String[] parsedResources = getJsonResourcesPaths();
+		return getProcessNameById(newCalledElement, parsedResources);
+	}
+
+  private static native String getProcessNameById(String newCalledElement, String[] parsedResources)/*-{
+		if (parsedResources) {
+			for (var key in parsedResources) {
+				if (key === newCalledElement) {
+					return parsedResources[key];
+				}
+				else if (parsedResources[key] === newCalledElement) {
+					return key;
+				}
+			}
+		}
+    return newCalledElement;
+  }-*/;
+
+	private static native String[] getJsonResourcesPaths()/*-{
+		if (parent.parent.resourcesPaths && Object.keys(parent.parent.resourcesPaths).length !== 0) {
+			return JSON.parse(parent.parent.resourcesPaths);
+		}
+		return null;
+	}-*/;
 
 	/**
 	 * <!-- begin-user-doc -->

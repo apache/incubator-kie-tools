@@ -54,7 +54,7 @@ import static org.kie.workbench.common.stunner.bpmn.util.XmlUtils.createValidId;
 @ApplicationScoped
 public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService {
 
-    static final String DEFAULT_PACKAGE = "com.example";
+    static final String DEFAULT_PACKAGE = "org.jbpm";
     static final String NO_DIAGRAM_MESSAGE = "No BPMN Diagram can be found.";
 
     private static final Logger LOGGER = Logger.getLogger(BPMNClientDiagramService.class.getName());
@@ -135,24 +135,33 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
         return promises.resolve(raw);
     }
 
-    private void updateDiagramSet(Node<Definition<BPMNDiagram>, ?> diagramNode, String name) {
+    private void updateDiagramSet(Node<Definition<BPMNDiagram>, ?> diagramNode, String processId) {
         final BaseDiagramSet diagramSet = diagramNode.getContent().getDefinition().getDiagramSet();
 
         if (diagramSet.getPackageProperty().getValue() == null ||
                 diagramSet.getName().getValue().isEmpty()) {
-            diagramSet.getName().setValue(name);
+            diagramSet.getName().setValue(getProcessNameFromBackend());
         }
 
         if (diagramSet.getPackageProperty().getValue() == null ||
                 diagramSet.getId().getValue().isEmpty()) {
-            diagramSet.getId().setValue(createValidId(name));
+            diagramSet.getId().setValue(createValidId(processId));
         }
+        sendProcessIdToBackend(diagramSet.getId().getValue());
 
         if (diagramSet.getPackageProperty().getValue() == null ||
                 diagramSet.getPackageProperty().getValue().isEmpty()) {
             diagramSet.getPackageProperty().setValue(DEFAULT_PACKAGE);
         }
     }
+
+    public static native String getProcessNameFromBackend()/*-{
+        return parent.parent.processName;
+    }-*/;
+
+    public static native String sendProcessIdToBackend(String processId)/*-{
+        return parent.parent.processId = processId;
+    }-*/;
 
     private Diagram createNewDiagram(String fileName) {
         final String title = createDiagramTitleFromFilePath(fileName);

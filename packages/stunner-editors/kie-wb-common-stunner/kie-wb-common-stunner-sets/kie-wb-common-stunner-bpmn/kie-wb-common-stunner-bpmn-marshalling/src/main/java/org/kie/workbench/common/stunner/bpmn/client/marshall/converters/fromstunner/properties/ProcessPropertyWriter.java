@@ -82,7 +82,6 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
     public void setId(String value) {
         // ids should be properly sanitized at a higher level
         String sanitized = Objects.nonNull(value) ? value.replaceAll("\\s", "") : null;
-        sanitized = Objects.nonNull(sanitized) ? sanitized.replace("-", "_") : null;
         process.setId(sanitized);
     }
 

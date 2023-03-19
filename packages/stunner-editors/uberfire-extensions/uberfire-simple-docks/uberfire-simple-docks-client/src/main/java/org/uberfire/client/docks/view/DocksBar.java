@@ -35,7 +35,7 @@ public class DocksBar {
     private Double expandedSize = expandedDefaultSize;
 
     private DockResizeBar dockResizeBar;
-    private Double dockResizeBarDefaultSize = 2.0;
+    private Double dockResizeBarDefaultSize = 7.0;
     private UberfireDock openDock;
 
     public DocksBar(UberfireDockPosition position) {

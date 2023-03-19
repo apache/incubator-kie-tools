@@ -42,6 +42,8 @@ public class SessionSingletonCommandsFactory {
 
     private static HashMap<ClientSession, CopySelectionSessionCommand> copySessionInstances = new HashMap<>();
 
+    private static HashMap<ClientSession, FullSelectionSessionCommand> fullSelectionSessionInstances = new HashMap<>();
+
     private static HashMap<ClientSession, DeleteSelectionSessionCommand> deleteSessionInstances = new HashMap<>();
 
     public static void createOrPut(AbstractSelectionAwareSessionCommand<EditorSession> command, SessionManager sessionManager) {
@@ -56,6 +58,12 @@ public class SessionSingletonCommandsFactory {
             }
 
             copySessionInstances.put(sessionManager.getCurrentSession(), (CopySelectionSessionCommand) command);
+        } else if (command instanceof FullSelectionSessionCommand) {
+            if (fullSelectionSessionInstances.containsKey(sessionManager.getCurrentSession())) {
+                throw new IllegalStateException("Only one instance of FullSelectionSessionCommand per Client Session can exist");
+            }
+
+            fullSelectionSessionInstances.put(sessionManager.getCurrentSession(), (FullSelectionSessionCommand) command);
         } else if (command instanceof DeleteSelectionSessionCommand) {
             if (deleteSessionInstances.containsKey(sessionManager.getCurrentSession())) { // there is one already one
                 throw new IllegalStateException("Only one instance of DeleteSelectionSessionCommand per Client Session can exist");
@@ -81,6 +89,17 @@ public class SessionSingletonCommandsFactory {
         final CopySelectionSessionCommand copySelectionSessionCommand = copySessionInstances.get(currentSession);
 
         return copySelectionSessionCommand;
+    }
+
+    public static FullSelectionSessionCommand getInstanceFullSelection(final Event<?> commandExecutedEvent,
+                                                                       SessionManager sessionManager) {
+        ClientSession currentSession = sessionManager.getCurrentSession();
+
+        if (!fullSelectionSessionInstances.containsKey(currentSession)) {
+            return new FullSelectionSessionCommand(
+                    (Event<FullSelectionSessionCommandExecutedEvent>) commandExecutedEvent, sessionManager);
+        }
+        return fullSelectionSessionInstances.get(currentSession);
     }
 
     public static DeleteSelectionSessionCommand getInstanceDelete(

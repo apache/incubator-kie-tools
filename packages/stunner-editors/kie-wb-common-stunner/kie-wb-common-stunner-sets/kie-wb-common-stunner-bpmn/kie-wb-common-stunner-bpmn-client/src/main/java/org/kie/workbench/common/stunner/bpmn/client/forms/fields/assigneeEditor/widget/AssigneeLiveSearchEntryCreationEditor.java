@@ -58,9 +58,32 @@ public class AssigneeLiveSearchEntryCreationEditor implements InlineCreationEdit
     }
 
     @Override
+    public void initRolesEditor() {
+        String roles = getRolesFromProject();
+
+        if (roles.isEmpty()){
+            throw new RuntimeException("No available roles");
+        }
+        String[] rolesArray = delimiterRoles(roles);
+        for(String role : rolesArray) {
+            if (isValid(role)) {
+                this.customEntryCommand.execute(role);
+            }
+        }
+    }
+
+    @Override
     public void clear() {
         view.clear();
     }
+
+    private String[] delimiterRoles(String roles){
+        return roles.split("&");
+    }
+
+    private static native String getRolesFromProject()/*-{
+        return parent.parent.projectRoles.projectRoles;
+    }-*/;
 
     @Override
     public void onAccept() {

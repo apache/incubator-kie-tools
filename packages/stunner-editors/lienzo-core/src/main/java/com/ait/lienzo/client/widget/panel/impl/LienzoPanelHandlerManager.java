@@ -748,8 +748,17 @@ public final class LienzoPanelHandlerManager {
         }
 
         Node<?> node = findPrimitiveForEventType(x, y, NodeMouseClickEvent.getType());
+        if (node.getNodeType().getValue().equals("Shape")) {
+            clearElementInfo();
+        }
         fireEvent(event, null, x, y, null, node, nodeMouseClickEvent);
     }
+
+    private static native void clearElementInfo()/*-{
+        parent.parent.nodeElementType = "";
+        parent.parent.nodeElementName = "";
+        parent.parent.proxyElementId.nodeElementId = "";
+    }-*/;
 
     private final void onNodeMouseDoubleClick(final MouseEvent event, int x, int y) {
         Node<?> node = findPrimitiveForEventType(x, y, NodeMouseDoubleClickEvent.getType());
