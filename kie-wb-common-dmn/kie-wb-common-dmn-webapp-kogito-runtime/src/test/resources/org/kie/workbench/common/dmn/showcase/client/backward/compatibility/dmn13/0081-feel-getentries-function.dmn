@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0081-feel-getentries-function" name="0081-feel-getentries-function" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'get entries(m)' in unspecified category</description>
+
+    <decision name="decision_001" id="_decision_001">
+        <description>Tests FEEL expression: 'get entries()' and expects result: 'null'</description>
+        <question>Result of FEEL expression 'get entries()'?</question>
+        <allowedAnswers>null</allowedAnswers>
+        <variable name="decision_001"/>
+        <literalExpression>
+            <text>get entries()</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_002" id="_decision_002">
+        <description>Tests FEEL expression: 'get entries({a: "foo"}, {b: "bar"})' and expects result: 'null'</description>
+        <question>Result of FEEL expression 'get entries({a: "foo"}, {b: "bar"})'?</question>
+        <allowedAnswers>null</allowedAnswers>
+        <variable name="decision_002"/>
+        <literalExpression>
+            <text>get entries({a: "foo"}, {b: "bar"})</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_003" id="_decision_003">
+        <description>Tests FEEL expression: 'get entries(null)' and expects result: 'null'</description>
+        <question>Result of FEEL expression 'get entries(null)'?</question>
+        <allowedAnswers>null</allowedAnswers>
+        <variable name="decision_003"/>
+        <literalExpression>
+            <text>get entries(null)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_004" id="_decision_004">
+        <description>Tests FEEL expression: 'get entries({a: "foo", b: "bar"})' and expects result: '[{key: "a": value: "foo"}, {key: "b": value: "bar"}]'</description>
+        <question>Result of FEEL expression 'get entries({a: "foo", b: "bar"})'?</question>
+        <allowedAnswers>[{key: "a": value: "foo"}, {key: "b": value: "bar"}]</allowedAnswers>
+        <variable name="decision_004"/>
+        <literalExpression>
+            <text>get entries({a: "foo", b: "bar"})</text>
+        </literalExpression>
+    </decision>
+
+<!--
+    <decision name="decision_005" id="_decision_005">
+        <description>Tests FEEL expression: 'get entries(m:{a: "foo", b: "bar"})' and expects result: '[{a: "foo}, {b: "bar"}]'</description>
+        <question>Result of FEEL expression 'get entries(m:{a: "foo", b: "bar"})'?</question>
+        <allowedAnswers>[{a: "foo}, {b: "bar"}]</allowedAnswers>
+        <variable name="decision_005"/>
+        <literalExpression>
+            <text>get entries(m:{a: "foo", b: "bar"})</text>
+        </literalExpression>
+    </decision>
+-->
+
+<!--
+    <decision name="decision_006" id="_decision_006">
+        <description>Tests FEEL expression: 'get entries(map:{a: "foo", b: "bar"})' and expects result: 'null'</description>
+        <question>Result of FEEL expression 'get entries(map:{a: "foo", b: "bar"})'?</question>
+        <allowedAnswers>null</allowedAnswers>
+        <variable name="decision_006"/>
+        <literalExpression>
+            <text>get entries(map:{a: "foo", b: "bar"})</text>
+        </literalExpression>
+    </decision>
+-->
+
+    <decision name="decision_007" id="_decision_007">
+        <description>Tests FEEL expression: 'get entries(123)' and expects result: 'null'</description>
+        <question>Result of FEEL expression 'get entries(123)'?</question>
+        <allowedAnswers>null</allowedAnswers>
+        <variable name="decision_007"/>
+        <literalExpression>
+            <text>get entries(123)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_008" id="_decision_008">
+        <description>Tests FEEL expression: 'get entries([1,2,3])' and expects result: 'null'</description>
+        <question>Result of FEEL expression 'get entries([1,2,3])'?</question>
+        <allowedAnswers>null</allowedAnswers>
+        <variable name="decision_008"/>
+        <literalExpression>
+            <text>get entries([1,2,3])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_009" id="_decision_009">
+        <description>Tests FEEL expression: 'get entries({})' and expects result: '[]'</description>
+        <question>Result of FEEL expression 'get entries({})'?</question>
+        <allowedAnswers>[]</allowedAnswers>
+        <variable name="decision_009"/>
+        <literalExpression>
+            <text>get entries({})</text>
+        </literalExpression>
+    </decision>
+
+</definitions>
+

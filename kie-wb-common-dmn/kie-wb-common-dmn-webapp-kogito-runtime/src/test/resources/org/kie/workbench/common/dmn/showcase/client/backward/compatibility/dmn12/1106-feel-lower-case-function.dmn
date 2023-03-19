@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.actico.com/spec/DMN/1106-feel-lower-case-function" name="1106-feel-lower-case-function" id="_jAaMwPUUEeesLuP4RHs4vA" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'lower case(string)' in category string functions</description>
+    <itemDefinition name="tfeel-lower-case-function_001_f6ff05bcfa_Result" id="_jAaMwvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-lower-case-function_002_0ecb21e1d8_Result" id="_jAaMxvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-lower-case-function_003_af9f3a8dab_Result" id="_jAaMyvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-lower-case-function_004_2dbf99e8c0_Result" id="_jAaMzvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-lower-case-function_005_ad33325968_Result" id="_jAaM0vUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-lower-case-function_006_d8257b3b92_Result" id="_jAaM1vUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-lower-case-function_007_a2ce59499a_Result" id="_jAaM2vUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-lower-case-function_008_9913ad454f_Result" id="_jAaM3vUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-lower-case-function_009_78e6b2969b_Result" id="_jAaM4vUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <decision name="feel-lower-case-function_001_f6ff05bcfa" id="_jAaMxPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'lower case("A")' and expects result: '"a" (string)'</description>
+        <question>Result of FEEL expression 'lower case("A")'?</question>
+        <allowedAnswers>"a" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-lower-case-function_001_f6ff05bcfa_Result" name="feel-lower-case-function_001_f6ff05bcfa" id="_jAaMxfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jAaMw_UUEeesLuP4RHs4vA">
+            <text>lower case("A")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-lower-case-function_002_0ecb21e1d8" id="_jAaMyPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'lower case("ABC")' and expects result: '"abc" (string)'</description>
+        <question>Result of FEEL expression 'lower case("ABC")'?</question>
+        <allowedAnswers>"abc" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-lower-case-function_002_0ecb21e1d8_Result" name="feel-lower-case-function_002_0ecb21e1d8" id="_jAaMyfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jAaMx_UUEeesLuP4RHs4vA">
+            <text>lower case("ABC")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-lower-case-function_003_af9f3a8dab" id="_jAaMzPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'lower case("abc")' and expects result: '"abc" (string)'</description>
+        <question>Result of FEEL expression 'lower case("abc")'?</question>
+        <allowedAnswers>"abc" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-lower-case-function_003_af9f3a8dab_Result" name="feel-lower-case-function_003_af9f3a8dab" id="_jAaMzfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jAaMy_UUEeesLuP4RHs4vA">
+            <text>lower case("abc")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-lower-case-function_004_2dbf99e8c0" id="_jAaM0PUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'lower case("aBc4")' and expects result: '"abc4" (string)'</description>
+        <question>Result of FEEL expression 'lower case("aBc4")'?</question>
+        <allowedAnswers>"abc4" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-lower-case-function_004_2dbf99e8c0_Result" name="feel-lower-case-function_004_2dbf99e8c0" id="_jAaM0fUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jAaMz_UUEeesLuP4RHs4vA">
+            <text>lower case("aBc4")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-lower-case-function_005_ad33325968" id="_jAaM1PUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'lower case("")' and expects result: '"" (string)'</description>
+        <question>Result of FEEL expression 'lower case("")'?</question>
+        <allowedAnswers>"" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-lower-case-function_005_ad33325968_Result" name="feel-lower-case-function_005_ad33325968" id="_jAaM1fUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jAaM0_UUEeesLuP4RHs4vA">
+            <text>lower case("")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-lower-case-function_006_d8257b3b92" id="_jAaM2PUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'lower case("?@{")' and expects result: '"?@{" (string)'</description>
+        <question>Result of FEEL expression 'lower case("?@{")'?</question>
+        <allowedAnswers>"?@{" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-lower-case-function_006_d8257b3b92_Result" name="feel-lower-case-function_006_d8257b3b92" id="_jAaM2fUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jAaM1_UUEeesLuP4RHs4vA">
+            <text>lower case("?@{")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-lower-case-function_007_a2ce59499a" id="_jAaM3PUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'lower case(string:"AbDcF")' and expects result: '"abdcf" (string)'</description>
+        <question>Result of FEEL expression 'lower case(string:"AbDcF")'?</question>
+        <allowedAnswers>"abdcf" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-lower-case-function_007_a2ce59499a_Result" name="feel-lower-case-function_007_a2ce59499a" id="_jAaM3fUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jAaM2_UUEeesLuP4RHs4vA">
+            <text>lower case(string:"AbDcF")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-lower-case-function_008_9913ad454f" id="_jAaM4PUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'lower case(string:"xyZ ")' and expects result: '"xyz " (string)'</description>
+        <question>Result of FEEL expression 'lower case(string:"xyZ ")'?</question>
+        <allowedAnswers>"xyz " (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-lower-case-function_008_9913ad454f_Result" name="feel-lower-case-function_008_9913ad454f" id="_jAaM4fUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jAaM3_UUEeesLuP4RHs4vA">
+            <text>lower case(string:"xyZ ")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-lower-case-function_009_78e6b2969b" id="_jAaM5PUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'lower case(string:"123ABC")' and expects result: '"123abc" (string)'</description>
+        <question>Result of FEEL expression 'lower case(string:"123ABC")'?</question>
+        <allowedAnswers>"123abc" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-lower-case-function_009_78e6b2969b_Result" name="feel-lower-case-function_009_78e6b2969b" id="_jAaM5fUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jAaM4_UUEeesLuP4RHs4vA">
+            <text>lower case(string:"123ABC")</text>
+        </literalExpression>
+    </decision>
+    <knowledgeSource name="DMN 1.1 - 10.3.4.3 Table 60" id="_jAaMwfUUEeesLuP4RHs4vA"/>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram name="Page 1" id="_jAaMwPUUEeesLuP4RHs4vA_D2">
+            <dmndi:DMNShape dmnElementRef="_jAaM4PUUEeesLuP4RHs4vA" id="_jAaMwPUUEeesLuP4RHs4vA_s1">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jAaM3PUUEeesLuP4RHs4vA" id="_jAaMwPUUEeesLuP4RHs4vA_s2">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="203.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jAaM5PUUEeesLuP4RHs4vA" id="_jAaMwPUUEeesLuP4RHs4vA_s3">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="300.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jAaMyPUUEeesLuP4RHs4vA" id="_jAaMwPUUEeesLuP4RHs4vA_s4">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jAaM1PUUEeesLuP4RHs4vA" id="_jAaMwPUUEeesLuP4RHs4vA_s5">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jAaMzPUUEeesLuP4RHs4vA" id="_jAaMwPUUEeesLuP4RHs4vA_s6">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jAaM2PUUEeesLuP4RHs4vA" id="_jAaMwPUUEeesLuP4RHs4vA_s7">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jAaMxPUUEeesLuP4RHs4vA" id="_jAaMwPUUEeesLuP4RHs4vA_s8">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jAaM0PUUEeesLuP4RHs4vA" id="_jAaMwPUUEeesLuP4RHs4vA_s9">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jAaMwfUUEeesLuP4RHs4vA" id="_jAaMwPUUEeesLuP4RHs4vA_s10">
+                <dc:Bounds height="69.0" width="100.0" x="303.0" y="199.0"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

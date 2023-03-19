@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0065-feel-disjunction" name="0065-feel-disjunction" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>Semantics of conjunction</description>
+    <decision name="decision001" id="_decision001">
+        <description>Tests FEEL expression: 'true or true' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'true or true'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision001"/>
+        <literalExpression>
+            <text>true or true</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision002" id="_decision002">
+        <description>Tests FEEL expression: 'true or false' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'true or false'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision002"/>
+        <literalExpression>
+            <text>true or false</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision003_a" id="_decision003_a">
+        <description>Tests FEEL expression: 'true or null' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'true or null'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision003_a"/>
+        <literalExpression>
+            <text>true or null</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision003_b" id="_decision003_b">
+        <description>Tests FEEL expression: 'true or 123' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'true or 123'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision003_b"/>
+        <literalExpression>
+            <text>true or 123</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision003_c" id="_decision003_c">
+        <description>Tests FEEL expression: 'true or "true"' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'true or "true"'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision003_c"/>
+        <literalExpression>
+            <text>true or "true"</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision004" id="_decision004">
+        <description>Tests FEEL expression: 'false or true' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'false or true'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision004"/>
+        <literalExpression>
+            <text>false or true</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision005" id="_decision005">
+        <description>Tests FEEL expression: 'false or false' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'false or false'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision005"/>
+        <literalExpression>
+            <text>false or false</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision006_a" id="_decision006_a">
+        <description>Tests FEEL expression: 'false or null' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'false or null'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision006_a"/>
+        <literalExpression>
+            <text>false or null</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision006_b" id="_decision006_b">
+        <description>Tests FEEL expression: 'false or 123' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'false or 123'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision006_b"/>
+        <literalExpression>
+            <text>false or 123</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision006_c" id="_decision006_c">
+        <description>Tests FEEL expression: 'false or "true"' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'false or "true"'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision006_c"/>
+        <literalExpression>
+            <text>false or "true"</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision007_a" id="_decision007_a">
+        <description>Tests FEEL expression: 'null or true' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'null or true'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision007_a"/>
+        <literalExpression>
+            <text>null or true</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision007_b" id="_decision007_b">
+        <description>Tests FEEL expression: '123 or true' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression '123 or true'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision007_b"/>
+        <literalExpression>
+            <text>123 or true</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision007_c" id="_decision007_c">
+        <description>Tests FEEL expression: '"true" or true' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression '"true" or true'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision007_c"/>
+        <literalExpression>
+            <text>"true" or true</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision008_a" id="_decision008_a">
+        <description>Tests FEEL expression: 'null or false' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'null or false'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision008_a"/>
+        <literalExpression>
+            <text>null or false</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision008_b" id="_decision008_b">
+        <description>Tests FEEL expression: '123 or false' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression '123 or false'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision008_b"/>
+        <literalExpression>
+            <text>123 or false</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision008_c" id="_decision008_c">
+        <description>Tests FEEL expression: '"true" or false' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression '"true" or false'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision008_c"/>
+        <literalExpression>
+            <text>"true" or false</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision009_a" id="_decision009_a">
+        <description>Tests FEEL expression: 'null or null' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'null or null'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision009_a"/>
+        <literalExpression>
+            <text>null or null</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision009_b" id="_decision009_b">
+        <description>Tests FEEL expression: '"true" or "true"' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression '"true" or "true"'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision009_b"/>
+        <literalExpression>
+            <text>"true" or "true"</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision009_c" id="_decision009_c">
+        <description>Tests FEEL expression: '0 or 0' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression '0 or 0'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision009_c"/>
+        <literalExpression>
+            <text>0 or 0</text>
+        </literalExpression>
+    </decision>
+</definitions>
+

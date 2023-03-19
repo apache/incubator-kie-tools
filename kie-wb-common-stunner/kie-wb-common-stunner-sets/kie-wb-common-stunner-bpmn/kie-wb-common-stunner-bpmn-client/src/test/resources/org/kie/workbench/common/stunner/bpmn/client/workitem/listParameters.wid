@@ -1,0 +1,25 @@
+[
+    [
+        "name" : "firstWID",
+        "parameters" : [
+            "Incident" : new ObjectDataType()
+        ]
+        "mavenDependencies" : []
+    ],
+
+    [
+        "name" : "secondWID",
+        "results" : [
+            "Result" : new ObjectDataType()
+        ],
+        "dependencies" : [""]
+    ],
+
+    [
+        "mavenDependencies" : [
+            "first",
+            "second"
+        ],
+        "name" : "thirdWID"
+    ]
+]

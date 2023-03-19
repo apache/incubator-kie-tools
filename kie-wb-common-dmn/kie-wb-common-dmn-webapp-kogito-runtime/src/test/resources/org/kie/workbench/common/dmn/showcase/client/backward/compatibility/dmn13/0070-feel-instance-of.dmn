@@ -1,0 +1,1024 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0070-feel-instance-of" name="0070-feel-instance-of" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <description>FEEL instance of</description>
+
+    <itemDefinition name="t_context_013">
+        <itemComponent name="a">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent name="b">
+            <typeRef>string</typeRef>
+        </itemComponent>
+    </itemDefinition>
+
+    <itemDefinition name="tNumberList" isCollection="true">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+
+    <itemDefinition name="tAnyList" isCollection="true">
+        <typeRef>Any</typeRef>
+    </itemDefinition>
+
+    <decision name="null_001" id="_null_001">
+        <variable name="null_001"/>
+        <literalExpression>
+            <text>null instance of Any</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="null_002" id="_null_002">
+        <variable name="null_002"/>
+        <literalExpression>
+            <text>null instance of number</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="null_003" id="_null_003">
+        <variable name="null_003"/>
+        <literalExpression>
+            <text>null instance of string</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="null_004" id="_null_004">
+        <variable name="null_004"/>
+        <literalExpression>
+            <text>null instance of boolean</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="null_005" id="_null_005">
+        <variable name="null_005"/>
+        <literalExpression>
+            <text>null instance of date</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="null_006" id="_null_006">
+        <variable name="null_006"/>
+        <literalExpression>
+            <text>null instance of time</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="null_007" id="_null_007">
+        <variable name="null_007"/>
+        <literalExpression>
+            <text>null instance of date and time</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="null_008" id="_null_008">
+        <variable name="null_008"/>
+        <literalExpression>
+            <text>null instance of list</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="null_009" id="_null_009">
+        <variable name="null_009"/>
+        <literalExpression>
+            <text>null instance of years and months duration</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="null_010" id="_null_010">
+        <variable name="null_010"/>
+        <literalExpression>
+            <text>null instance of days and time duration</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="null_011" id="_null_011">
+        <variable name="null_011"/>
+        <literalExpression>
+            <text>null instance of context</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="null_012" id="_null_012">
+        <variable name="null_012"/>
+        <literalExpression>
+            <text>null instance of function</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="number_001" id="_number_001">
+        <variable name="number_001"/>
+        <literalExpression>
+            <text>123.01 instance of Any</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_002" id="_number_002">
+        <variable name="number_002"/>
+        <literalExpression>
+            <text>123.01 instance of number</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_003" id="_number_003">
+        <variable name="number_003"/>
+        <literalExpression>
+            <text>123.01 instance of boolean</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_004" id="_number_004">
+        <variable name="number_004"/>
+        <literalExpression>
+            <text>123.01 instance of boolean</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_005" id="_number_005">
+        <variable name="number_005"/>
+        <literalExpression>
+            <text>123.01 instance of date</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_006" id="_number_006">
+        <variable name="number_006"/>
+        <literalExpression>
+            <text>123.01 instance of time</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_007" id="_number_007">
+        <variable name="number_007"/>
+        <literalExpression>
+            <text>123.01 instance of date and time</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="number_008" id="_number_008">
+        <variable name="number_008"/>
+        <literalExpression>
+            <text>123.01 instance of list</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="number_009" id="_number_009">
+        <variable name="number_009"/>
+        <literalExpression>
+            <text>123.01 instance of years and months duration</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_010" id="_number_010">
+        <variable name="number_010"/>
+        <literalExpression>
+            <text>123.01 instance of days and time duration</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="number_011" id="_number_011">
+        <variable name="number_011"/>
+        <literalExpression>
+            <text>123.01 instance of context</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="number_012" id="_number_012">
+        <variable name="number_012"/>
+        <literalExpression>
+            <text>123.01 instance of function</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="string_001" id="_string_001">
+        <variable name="string_001"/>
+        <literalExpression>
+            <text>"foo" instance of Any</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_002" id="_string_002">
+        <variable name="string_002"/>
+        <literalExpression>
+            <text>"foo" instance of number</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_003" id="_string_003">
+        <variable name="string_003"/>
+        <literalExpression>
+            <text>"foo" instance of string</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_004" id="_string_004">
+        <variable name="string_004"/>
+        <literalExpression>
+            <text>"foo" instance of boolean</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_005" id="_string_005">
+        <variable name="string_005"/>
+        <literalExpression>
+            <text>"foo" instance of date</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_006" id="_string_006">
+        <variable name="string_006"/>
+        <literalExpression>
+            <text>"foo" instance of time</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_007" id="_string_007">
+        <variable name="string_007"/>
+        <literalExpression>
+            <text>"foo" instance of date and time</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="string_008" id="_string_008">
+        <variable name="string_008"/>
+        <literalExpression>
+            <text>"foo" instance of list</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="string_009" id="_string_009">
+        <variable name="string_009"/>
+        <literalExpression>
+            <text>"foo" instance of years and months duration</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_010" id="_string_010">
+        <variable name="string_010"/>
+        <literalExpression>
+            <text>"foo" instance of days and time duration</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="string_011" id="_string_011">
+        <variable name="string_011"/>
+        <literalExpression>
+            <text>"foo" instance of context</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="string_012" id="_string_012">
+        <variable name="string_012"/>
+        <literalExpression>
+            <text>"foo" instance of function</text>
+        </literalExpression>
+    </decision> -->
+
+
+    <decision name="boolean_001" id="_boolean_001">
+        <variable name="boolean_001"/>
+        <literalExpression>
+            <text>true instance of Any</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="boolean_002" id="_boolean_002">
+        <variable name="boolean_002"/>
+        <literalExpression>
+            <text>true instance of number</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="boolean_003" id="_boolean_003">
+        <variable name="boolean_003"/>
+        <literalExpression>
+            <text>true instance of string</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="boolean_004" id="_boolean_004">
+        <variable name="boolean_004"/>
+        <literalExpression>
+            <text>true instance of boolean</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="boolean_005" id="_boolean_005">
+        <variable name="boolean_005"/>
+        <literalExpression>
+            <text>true instance of date</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="boolean_006" id="_boolean_006">
+        <variable name="boolean_006"/>
+        <literalExpression>
+            <text>true instance of time</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="boolean_007" id="_boolean_007">
+        <variable name="boolean_007"/>
+        <literalExpression>
+            <text>true instance of date and time</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="boolean_008" id="_boolean_008">
+        <variable name="boolean_008"/>
+        <literalExpression>
+            <text>true instance of list</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="boolean_009" id="_boolean_009">
+        <variable name="boolean_009"/>
+        <literalExpression>
+            <text>true instance of years and months duration</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="boolean_010" id="_boolean_010">
+        <variable name="boolean_010"/>
+        <literalExpression>
+            <text>true instance of days and time duration</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="boolean_011" id="_boolean_011">
+        <variable name="boolean_011"/>
+        <literalExpression>
+            <text>true instance of context</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="boolean_012" id="_boolean_012">
+        <variable name="boolean_012"/>
+        <literalExpression>
+            <text>true instance of function</text>
+        </literalExpression>
+    </decision> -->
+
+
+    <decision name="date_001" id="_date_001">
+        <variable name="date_001"/>
+        <literalExpression>
+            <text>date("2018-12-08") instance of Any</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_002" id="_date_002">
+        <variable name="date_002"/>
+        <literalExpression>
+            <text>date("2018-12-08") instance of number</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_003" id="_date_003">
+        <variable name="date_003"/>
+        <literalExpression>
+            <text>date("2018-12-08") instance of string</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_004" id="_date_004">
+        <variable name="date_004"/>
+        <literalExpression>
+            <text>date("2018-12-08") instance of boolean</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_005" id="_date_005">
+        <variable name="date_005"/>
+        <literalExpression>
+            <text>date("2018-12-08") instance of date</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_006" id="_date_006">
+        <variable name="date_006"/>
+        <literalExpression>
+            <text>date("2018-12-08") instance of time</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_007" id="_date_007">
+        <variable name="date_007"/>
+        <literalExpression>
+            <text>date("2018-12-08") instance of date and time</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="date_008" id="_date_008">
+        <variable name="date_008"/>
+        <literalExpression>
+            <text>date("2018-12-08") instance of list</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="date_009" id="_date_009">
+        <variable name="date_009"/>
+        <literalExpression>
+            <text>date("2018-12-08") instance of years and months duration</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_010" id="_date_010">
+        <variable name="date_010"/>
+        <literalExpression>
+            <text>date("2018-12-08") instance of days and time duration</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="date_011" id="_date_011">
+        <variable name="date_011"/>
+        <literalExpression>
+            <text>date("2018-12-08") instance of context</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="date_012" id="_date_012">
+        <variable name="date_012"/>
+        <literalExpression>
+            <text>date("2018-12-08") instance of function</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="time_001" id="_time_001">
+        <variable name="time_001"/>
+        <literalExpression>
+            <text>time("10:30:00") instance of Any</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_002" id="_time_002">
+        <variable name="time_002"/>
+        <literalExpression>
+            <text>time("10:30:00") instance of number</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_003" id="_time_003">
+        <variable name="time_003"/>
+        <literalExpression>
+            <text>time("10:30:00") instance of string</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_004" id="_time_004">
+        <variable name="time_004"/>
+        <literalExpression>
+            <text>time("10:30:00") instance of boolean</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_005" id="_time_005">
+        <variable name="time_005"/>
+        <literalExpression>
+            <text>time("10:30:00") instance of date</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_006" id="_time_006">
+        <variable name="time_006"/>
+        <literalExpression>
+            <text>time("10:30:00") instance of time</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_007" id="_time_007">
+        <variable name="time_007"/>
+        <literalExpression>
+            <text>time("10:30:00") instance of date and time</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="time_008" id="_time_008">
+        <variable name="time_008"/>
+        <literalExpression>
+            <text>time("10:30:00") instance of list</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="time_009" id="_time_009">
+        <variable name="time_009"/>
+        <literalExpression>
+            <text>time("10:30:00") instance of years and months duration</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_010" id="_time_010">
+        <variable name="time_010"/>
+        <literalExpression>
+            <text>time("10:30:00") instance of days and time duration</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="time_011" id="_time_011">
+        <variable name="time_011"/>
+        <literalExpression>
+            <text>time("10:30:00") instance of context</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="time_012" id="_time_012">
+        <variable name="time_012"/>
+        <literalExpression>
+            <text>time("10:30:00") instance of function</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="list_001" id="_list_001">
+        <variable name="list_001"/>
+        <literalExpression>
+            <text>[1,2,3] instance of Any</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="list_002" id="_list_002">
+        <variable name="list_002"/>
+        <literalExpression>
+            <text>[1,2,3] instance of number</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="list_003" id="_list_003">
+        <variable name="list_003"/>
+        <literalExpression>
+            <text>[1,2,3] instance of string</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="list_004" id="_list_004">
+        <variable name="list_004"/>
+        <literalExpression>
+            <text>[1,2,3] instance of boolean</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="list_005" id="_list_005">
+        <variable name="list_005"/>
+        <literalExpression>
+            <text>[1,2,3] instance of date</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="list_006" id="_list_006">
+        <variable name="list_006"/>
+        <literalExpression>
+            <text>[1,2,3] instance of time</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="list_007" id="_list_007">
+        <variable name="list_007"/>
+        <literalExpression>
+            <text>[1,2,3] instance of date and time</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="list_008" id="_list_008">
+        <variable name="list_008"/>
+        <literalExpression>
+            <text>[1,2,3] instance of list</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="list_009" id="_list_009">
+        <variable name="list_009"/>
+        <literalExpression>
+            <text>[1,2,3] instance of years and months duration</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="list_010" id="_list_010">
+        <variable name="list_010"/>
+        <literalExpression>
+            <text>[1,2,3] instance of days and time duration</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="list_011" id="_list_011">
+        <variable name="list_011"/>
+        <literalExpression>
+            <text>[1,2,3] instance of context</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="list_012" id="_list_012">
+        <variable name="list_012"/>
+        <literalExpression>
+            <text>[1,2,3] instance of function</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="list_013" id="_list_013">
+        <variable name="list_013"/>
+        <literalExpression>
+            <text>[1,2,3] instance of tNumberList</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="list_014" id="_list_014">
+        <variable name="list_014"/>
+        <literalExpression>
+            <text>[1,"2", date("2018-12-08")] instance of tAnyList</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="list_014_a" id="_list_014_a">
+        <variable name="list_014_a"/>
+        <literalExpression>
+            <text>[] instance of tAnyList</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="list_015" id="_list_015">
+        <variable name="list_015"/>
+        <literalExpression>
+            <text>[1,"2", date("2018-12-08")] instance of tNumberList</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="list_016" id="_list_016">
+        <variable name="list_016"/>
+        <literalExpression>
+            <text>[1] instance of number</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="list_017" id="_list_017">
+        <variable name="list_017"/>
+        <literalExpression>
+            <text>1 instance of tNumberList</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="ym_duration_001" id="_ym_duration_001">
+        <variable name="ym_duration_001"/>
+        <literalExpression>
+            <text>duration("P1Y") instance of Any</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_002" id="_ym_duration_002">
+        <variable name="ym_duration_002"/>
+        <literalExpression>
+            <text>duration("P1Y") instance of number</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_003" id="_ym_duration_003">
+        <variable name="ym_duration_003"/>
+        <literalExpression>
+            <text>duration("P1Y") instance of string</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_004" id="_ym_duration_004">
+        <variable name="ym_duration_004"/>
+        <literalExpression>
+            <text>duration("P1Y") instance of boolean</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_005" id="_ym_duration_005">
+        <variable name="ym_duration_005"/>
+        <literalExpression>
+            <text>duration("P1Y") instance of date</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_006" id="_ym_duration_006">
+        <variable name="ym_duration_006"/>
+        <literalExpression>
+            <text>duration("P1Y") instance of time</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_007" id="_ym_duration_007">
+        <variable name="ym_duration_007"/>
+        <literalExpression>
+            <text>duration("P1Y") instance of date and time</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="ym_duration_008" id="_ym_duration_008">
+        <variable name="ym_duration_008"/>
+        <literalExpression>
+            <text>duration("P1Y") instance of list</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="ym_duration_009" id="_ym_duration_009">
+        <variable name="ym_duration_009"/>
+        <literalExpression>
+            <text>duration("P1Y") instance of years and months duration</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_010" id="_ym_duration_010">
+        <variable name="ym_duration_010"/>
+        <literalExpression>
+            <text>duration("P1Y") instance of days and time duration</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="ym_duration_011" id="_ym_duration_011">
+        <variable name="ym_duration_011"/>
+        <literalExpression>
+            <text>duration("P1Y") instance of context</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="ym_duration_012" id="_ym_duration_012">
+        <variable name="ym_duration_012"/>
+        <literalExpression>
+            <text>duration("P1Y") instance of function</text>
+        </literalExpression>
+    </decision> -->
+
+
+    <decision name="dt_duration_001" id="_dt_duration_001">
+        <variable name="dt_duration_001"/>
+        <literalExpression>
+            <text>duration("P1D") instance of Any</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_002" id="_dt_duration_002">
+        <variable name="dt_duration_002"/>
+        <literalExpression>
+            <text>duration("P1D") instance of number</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_003" id="_dt_duration_003">
+        <variable name="dt_duration_003"/>
+        <literalExpression>
+            <text>duration("P1D") instance of string</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_004" id="_dt_duration_004">
+        <variable name="dt_duration_004"/>
+        <literalExpression>
+            <text>duration("P1D") instance of boolean</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_005" id="_dt_duration_005">
+        <variable name="dt_duration_005"/>
+        <literalExpression>
+            <text>duration("P1D") instance of date</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_006" id="_dt_duration_006">
+        <variable name="dt_duration_006"/>
+        <literalExpression>
+            <text>duration("P1D") instance of time</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_007" id="_dt_duration_007">
+        <variable name="dt_duration_007"/>
+        <literalExpression>
+            <text>duration("P1D") instance of date and time</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="dt_duration_008" id="_dt_duration_008">
+        <variable name="dt_duration_008"/>
+        <literalExpression>
+            <text>duration("P1D") instance of list</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="dt_duration_009" id="_dt_duration_009">
+        <variable name="dt_duration_009"/>
+        <literalExpression>
+            <text>duration("P1D") instance of years and months duration</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_010" id="_dt_duration_010">
+        <variable name="dt_duration_010"/>
+        <literalExpression>
+            <text>duration("P1D") instance of days and time duration</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="dt_duration_011" id="_dt_duration_011">
+        <variable name="dt_duration_011"/>
+        <literalExpression>
+            <text>duration("P1D") instance of context</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="dt_duration_012" id="_dt_duration_012">
+        <variable name="dt_duration_012"/>
+        <literalExpression>
+            <text>duration("P1D") instance of function</text>
+        </literalExpression>
+    </decision> -->
+
+
+    <decision name="context_001" id="_context_001">
+        <variable name="context_001"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of Any</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_002" id="_context_002">
+        <variable name="context_002"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of number</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_003" id="_context_003">
+        <variable name="context_003"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of string</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_004" id="_context_004">
+        <variable name="context_004"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of boolean</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_005" id="_context_005">
+        <variable name="context_005"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of date</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_006" id="_context_006">
+        <variable name="context_006"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of time</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_007" id="_context_007">
+        <variable name="context_007"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of date and time</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="context_008" id="_context_008">
+        <variable name="context_008"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of list</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="context_009" id="_context_009">
+        <variable name="context_009"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of years and months duration</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_010" id="_context_010">
+        <variable name="context_010"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of days and time duration</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="context_011" id="_context_011">
+        <variable name="context_011"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of context</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="context_012" id="_context_012">
+        <variable name="context_012"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of function</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="context_013" id="_context_013">
+        <variable name="context_013"/>
+        <literalExpression>
+            <text>{a: "foo", b: "bar"} instance of t_context_013</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_014" id="_context_014">
+        <variable name="context_014"/>
+        <literalExpression>
+            <text>{a: "foo", b: "bar"} instance of t_context_013</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_015" id="_context_015">
+        <variable name="context_015"/>
+        <literalExpression>
+            <text>{a: "foo"} instance of t_context_013</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_016" id="_context_016">
+        <variable name="context_016"/>
+        <literalExpression>
+            <text>{a: "foo", b: [1,2,3]} instance of t_context_013</text>
+        </literalExpression>
+    </decision> -->
+
+
+    <decision name="function_001" id="_function_001">
+        <variable name="function_001"/>
+        <literalExpression>
+            <text>(function() "foo") instance of Any</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="function_002" id="_function_002">
+        <variable name="function_002"/>
+        <literalExpression>
+            <text>(function() "foo") instance of number</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="function_003" id="_function_003">
+        <variable name="function_003"/>
+        <literalExpression>
+            <text>(function() "foo") instance of string</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="function_004" id="_function_004">
+        <variable name="function_004"/>
+        <literalExpression>
+            <text>(function() "foo") instance of boolean</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="function_005" id="_function_005">
+        <variable name="function_005"/>
+        <literalExpression>
+            <text>(function() "foo") instance of date</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="function_006" id="_function_006">
+        <variable name="function_006"/>
+        <literalExpression>
+            <text>(function() "foo") instance of time</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="function_007" id="_function_007">
+        <variable name="function_007"/>
+        <literalExpression>
+            <text>(function() "foo") instance of date and time</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="function_008" id="_function_008">
+        <variable name="function_008"/>
+        <literalExpression>
+            <text>(function() "foo") instance of list</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="function_009" id="_function_009">
+        <variable name="function_009"/>
+        <literalExpression>
+            <text>(function() "foo") instance of years and months duration</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="function_010" id="_function_010">
+        <variable name="function_010"/>
+        <literalExpression>
+            <text>(function() "foo") instance of days and time duration</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="function_011" id="_function_011">
+        <variable name="function_011"/>
+        <literalExpression>
+            <text>(function() "foo") instance of context</text>
+        </literalExpression>
+    </decision> -->
+
+<!--     <decision name="function_012" id="_function_012">
+        <variable name="function_012"/>
+        <literalExpression>
+            <text>(function() "foo") instance of function</text>
+        </literalExpression>
+    </decision> -->
+
+
+
+</definitions>
+

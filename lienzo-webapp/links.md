@@ -1,0 +1,2 @@
+- https://www.quirksmode.org/mobile/viewports.html
+- https://javascript.info/coordinates

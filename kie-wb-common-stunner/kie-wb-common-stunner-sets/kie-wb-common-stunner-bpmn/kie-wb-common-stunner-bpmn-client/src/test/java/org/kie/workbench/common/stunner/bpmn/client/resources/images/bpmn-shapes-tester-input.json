@@ -1,0 +1,519 @@
+{
+  "name": "BPMN",
+  "path": ".",
+  "css": "shapes/bpmn-shapes.css",
+  "stencils": [
+    {
+      "id": "parallelMultipleGateway",
+      "name": "Gateway - Parallel Multiple",
+      "shape": {
+        "path": "shapes/",
+        "file": "gateway.svg"
+      },
+      "icon": {
+        "path": "icons/gateway/",
+        "file": "parallel-multiple.svg"
+      }
+    },
+    {
+      "id": "exclusiveGateway",
+      "name": "Gateway - Exclusive",
+      "shape": {
+        "path": "shapes/",
+        "file": "gateway.svg"
+      },
+      "icon": {
+        "path": "icons/gateway/",
+        "file": "exclusive.svg"
+      }
+    },
+    {
+      "id": "inclusiveGateway",
+      "name": "Gateway - Inclusive",
+      "shape": {
+        "path": "shapes/",
+        "file": "gateway.svg"
+      },
+      "icon": {
+        "path": "icons/gateway/",
+        "file": "inclusive.svg"
+      }
+    },
+    {
+      "id": "lane",
+      "name": "Lane",
+      "shape": {
+        "path": "shapes/",
+        "file": "lane.svg"
+      },
+      "icon": {
+        "path": "icons/",
+        "file": "lane_icon.svg"
+      }
+    },
+    {
+      "id": "noneTask",
+      "name": "Task",
+      "shape": {
+        "path": "shapes/",
+        "file": "task.svg"
+      },
+      "icon": {
+        "path": "icons/task/",
+        "file": "task.svg"
+      }
+    },
+    {
+      "id": "userTask",
+      "name": "Task - User",
+      "shape": {
+        "path": "shapes/",
+        "file": "task.svg"
+      },
+      "icon": {
+        "path": "icons/task/",
+        "file": "task-user.svg"
+      }
+    },
+    {
+      "id": "scriptTask",
+      "name": "Task - Script",
+      "shape": {
+        "path": "shapes/",
+        "file": "task.svg"
+      },
+      "icon": {
+        "path": "icons/task/",
+        "file": "task-script.svg"
+      }
+    },
+    {
+      "id": "businessRuleTask",
+      "name": "Task - Business Rule",
+      "shape": {
+        "path": "shapes/",
+        "file": "task.svg"
+      },
+      "icon": {
+        "path": "icons/task/",
+        "file": "task-business-rule.svg"
+      }
+    },
+    {
+      "id": "serviceTask",
+      "name": "Task - Service",
+      "shape": {
+        "path": "shapes/",
+        "file": "task.svg"
+      },
+      "icon": {
+        "path": "icons/task/",
+        "file": "task.svg"
+      }
+    },
+    {
+      "id": "reusableSubProcess",
+      "name": "Subprocess - Reusable",
+      "shape": {
+        "path": "shapes/",
+        "file": "subprocess.svg"
+      },
+      "icon": {
+        "path": "icons/subprocess/",
+        "file": "subprocess.svg",
+        "refs": "subProcessReusable"
+      }
+    },
+    {
+      "id": "adHocSubProcess",
+      "name": "Subprocess - AdHoc",
+      "shape": {
+        "path": "shapes/",
+        "file": "subprocess-adhoc.svg"
+      },
+      "icon": {
+        "path": "icons/subprocess/",
+        "file": "subprocess.svg",
+        "refs": "subProcessAdHoc"
+      }
+    },
+    {
+      "id": "multipleInstanceSubProcess",
+      "name": "Subprocess - Multiple Instance",
+      "shape": {
+        "path": "shapes/",
+        "file": "subprocess-multiple-instance.svg"
+      },
+      "icon": {
+        "path": "icons/subprocess/",
+        "file": "subprocess.svg",
+        "refs": "subProcessMultipleInstance"
+      }
+    },
+    {
+      "id": "embeddedSubProcess",
+      "name": "Subprocess - Embedded",
+      "shape": {
+        "path": "shapes/",
+        "file": "subprocess-adhoc.svg"
+      },
+      "icon": {
+        "path": "icons/subprocess/",
+        "file": "subprocess.svg",
+        "refs": "subProcessEmbedded"
+      }
+    },
+    {
+      "id": "eventSubProcess",
+      "name": "Subprocess - Event",
+      "shape": {
+        "path": "shapes/",
+        "file": "subprocess-event.svg"
+      },
+      "icon": {
+        "path": "icons/subprocess/",
+        "file": "subprocess-event.svg",
+        "refs": "subProcessEvent"
+      }
+    },
+    {
+      "id": "startNoneEvent",
+      "name": "Start Event",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start-none.svg"
+      }
+    },
+    {
+      "id": "startSignalEvent",
+      "name": "Start Event - Signal",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start-signal.svg"
+      }
+    },
+    {
+      "id": "startMessageEvent",
+      "name": "Start Event - Message",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start-message.svg"
+      }
+    },
+    {
+      "id": "startTimerEvent",
+      "name": "Start Event - Timer",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start-timer.svg"
+      }
+    },
+    {
+      "id": "startErrorEvent",
+      "name": "Start Event - Error",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start-error.svg"
+      }
+    },
+    {
+      "id": "startConditionalEvent",
+      "name": "Start Event - Conditional",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start-conditional.svg"
+      }
+    },
+    {
+      "id": "startEscalationEvent",
+      "name": "Start Event - Escalation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start-escalation.svg"
+      }
+    },
+    {
+      "id": "startCompensationEvent",
+      "name": "Start Event - Compensation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start-compensation.svg"
+      }
+    },
+    {
+      "id": "intermediateTimerEvent",
+      "name": "Intermediate Event - Timer",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-timer.svg"
+      }
+    },
+    {
+      "id": "intermediateSignalCatchingEvent",
+      "name": "Catching Intermediate Event - Signal",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-signal.svg",
+        "refs": "eventSignal"
+      }
+    },
+    {
+      "id": "intermediateLinkCatchingEvent",
+      "name": "Catching Intermediate Event - Link",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-link.svg",
+        "refs": "eventLink"
+      }
+    },
+    {
+      "id": "intermediateMessageCatchingEvent",
+      "name": "Catching Intermediate Event - Message",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-message.svg"
+      }
+    },
+    {
+      "id": "intermediateConditionalEvent",
+      "name": "Catching Intermediate Event - Conditional",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-conditional.svg"
+      }
+    },
+    {
+      "id": "intermediateErrorCatchingEvent",
+      "name": "Catching Intermediate Event - Error",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-error.svg"
+      }
+    },
+    {
+      "id": "intermediateEscalationCatchingEvent",
+      "name": "Catching Intermediate Event - Escalation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-escalation.svg"
+      }
+    },
+    {
+      "id": "intermediateCompensationCatchingEvent",
+      "name": "Catching Intermediate Event - Compensation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-compensation.svg"
+      }
+    },
+    {
+      "id": "intermediateSignalThrowingEvent",
+      "name": "Throwing Intermediate Event - Signal",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-signal-throwing.svg"
+      }
+    },
+    {
+      "id": "intermediateLinkThrowingEvent",
+      "name": "Throwing Intermediate Event - Link",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-link-throwing.svg"
+      }
+    },
+    {
+      "id": "intermediateMessageThrowingEvent",
+      "name": "Throwing Intermediate Event - Message",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-message-throwing.svg"
+      }
+    },
+    {
+      "id": "intermediateEscalationThrowingEvent",
+      "name": "Throwing Intermediate Event - Escalation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-escalation-throwing.svg"
+      }
+    },
+    {
+      "id": "intermediateCompensationThrowingEvent",
+      "name": "Throwing Intermediate Event - Compensation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-compensation-throwing.svg"
+      }
+    },
+    {
+      "id": "endNoneEvent",
+      "name": "End Event",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end-none.svg"
+      }
+    },
+    {
+      "id": "endSignalEvent",
+      "name": "End Event - Signal",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end-signal.svg"
+      }
+    },
+    {
+      "id": "endMessageEvent",
+      "name": "End Event - Message",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end-message.svg"
+      }
+    },
+    {
+      "id": "endTerminateEvent",
+      "name": "End Event - Terminate",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end-terminate.svg"
+      }
+    },
+
+    {
+      "id": "endErrorEvent",
+      "name": "End Event - Error",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end-error.svg"
+      }
+    },
+    {
+      "id": "endEscalationEvent",
+      "name": "End Event - Escalation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end-escalation.svg"
+      }
+    },
+    {
+      "id": "endCompensationEvent",
+      "name": "End Event - Compensation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end-compensation.svg"
+      }
+    }
+  ]
+}

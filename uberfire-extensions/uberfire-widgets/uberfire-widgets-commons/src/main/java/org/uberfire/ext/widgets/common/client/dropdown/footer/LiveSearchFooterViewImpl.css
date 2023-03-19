@@ -1,0 +1,14 @@
+.appformer-live-search-selector-footer-panel {
+  border-top: 1px solid #bbb;
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.appformer-live-search-selector-action {
+  cursor: pointer;
+}
+
+.appformer-live-search-selector-action-icon {
+  padding-right: 5px;
+}

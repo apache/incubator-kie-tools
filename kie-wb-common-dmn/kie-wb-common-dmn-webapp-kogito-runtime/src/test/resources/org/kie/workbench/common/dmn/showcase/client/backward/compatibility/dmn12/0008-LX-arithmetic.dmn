@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.32.2; 1.0" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.trisotech.com/definitions/_1fedf2c0-0f4a-470c-bc66-a15528e8a49a" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" name="literal - arithmetic" triso:logoChoice="Default" xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../dmn.xsd" id="_1fedf2c0-0f4a-470c-bc66-a15528e8a49a" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <itemDefinition isCollection="false" name="tLoan" id="tLoan">
+        <itemComponent isCollection="false" name="principal" id="_561947e6-180a-416e-aa22-5e8e5d650624">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="rate" id="_c1751fa0-4da6-4cb5-a234-45765d6b35ac">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="termMonths" id="_006e0a06-26a6-42e1-9b3c-4b2502a567fe">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <decision name="payment" id="_ebf02591-49c6-448d-9f76-6358b0e011c3">
+        <variable typeRef="number" name="payment"/>
+        <informationRequirement id="e5d03276-c21e-40e7-8067-b8096e30d26a">
+            <requiredInput href="#_1f4ae444-2e4e-4d26-b1f7-87a645c3f50a"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>(loan.principal*loan.rate/12)/(1-(1+loan.rate/12)**-loan.termMonths)</text>
+        </literalExpression>
+    </decision>
+    <inputData name="loan" id="_1f4ae444-2e4e-4d26-b1f7-87a645c3f50a">
+        <variable typeRef="tns:tLoan" name="loan"/>
+    </inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_1fedf2c0-0f4a-470c-bc66-a15528e8a49a_D1">
+            <dmndi:Size height="650.0" width="650.0"/>
+            <dmndi:DMNShape dmnElementRef="_ebf02591-49c6-448d-9f76-6358b0e011c3" id="_1fedf2c0-0f4a-470c-bc66-a15528e8a49a_s1">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_1f4ae444-2e4e-4d26-b1f7-87a645c3f50a" id="_1fedf2c0-0f4a-470c-bc66-a15528e8a49a_s2">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="e5d03276-c21e-40e7-8067-b8096e30d26a" id="_1fedf2c0-0f4a-470c-bc66-a15528e8a49a_e1">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

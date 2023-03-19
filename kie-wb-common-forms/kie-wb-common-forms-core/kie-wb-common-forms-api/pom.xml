@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>kie-wb-common-forms-core</artifactId>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <version>${revision}</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-wb-common-forms-api</artifactId>
+  <name>Kie Workbench - Common - Forms - API</name>
+  <description>Kie Workbench - Common - Forms - API</description>
+
+  <properties>
+    <java.module.name>org.kie.wb.common.forms.api</java.module.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>errai-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>uberfire-layout-editor-api</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>

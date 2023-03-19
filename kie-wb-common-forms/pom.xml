@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>stunner-editors-parent</artifactId>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <version>${revision}</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-wb-common-forms</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Kie Workbench - Common - Forms</name>
+  <description>Kie Workbench - Common - Forms</description>
+
+  <modules>
+    <module>kie-wb-common-forms-core</module>
+    <module>kie-wb-common-forms-commons</module>
+    <module>kie-wb-common-dynamic-forms</module>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <!-- Entry needed to provide parsed version properties -->
+        <!-- Additionally it adds allows generated sources goes into -sources artifact -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>target/generated-sources/annotations/</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

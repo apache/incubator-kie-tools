@@ -1,0 +1,12 @@
+[[
+      "name" : "Email",
+      "documentation" : "Some documentation",
+      "icon" : "defaultemailicon.gif",
+      "parameters" : [
+        "From" : new StringDataType(),
+        "To" : new StringDataType(),
+        "Subject" : new StringDataType(),
+        "Body": new StringDataType()
+      ],
+
+]]

@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="https://github.com/agilepro/dmn-tck"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_0003-input-data-string-allowed-values" name="0003-input-data-string-allowed-values" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/agilepro/dmn-tck">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_98045828-5B78-4715-A5A0-F5B8D60AFB81" name="tEmploymentStatus" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues id="_EC2D6A4A-D3BA-40C0-A721-3FCA0AC46384">
+      <dmn:text>"UNEMPLOYED","EMPLOYED","SELF-EMPLOYED","STUDENT"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:decision id="d_EmploymentStatusStatement" name="Employment Status Statement">
+    <dmn:extensionElements/>
+    <dmn:variable id="_1CC985F5-3B4B-4A33-AFBD-67168BDCB07F" name="Employment Status Statement" typeRef="string"/>
+    <dmn:informationRequirement id="_0232CB3B-18B3-4E4E-9EE6-59AC1963B44A">
+      <dmn:requiredInput href="#i_EmploymentStatus"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_9233D838-9A9F-424E-86B8-CAEB40B736AA">
+      <dmn:text>"You are " + Employment Status</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:inputData id="i_EmploymentStatus" name="Employment Status">
+    <dmn:extensionElements/>
+    <dmn:variable id="_7EE86BD0-5490-4650-BA17-2A4C234D5282" name="Employment Status" typeRef="tEmploymentStatus"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_E94680F1-18EB-4386-B360-CB1B9F4157D3" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_9233D838-9A9F-424E-86B8-CAEB40B736AA"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-d_EmploymentStatusStatement" dmnElementRef="d_EmploymentStatusStatement" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-i_EmploymentStatus" dmnElementRef="i_EmploymentStatus" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_0232CB3B-18B3-4E4E-9EE6-59AC1963B44A" dmnElementRef="_0232CB3B-18B3-4E4E-9EE6-59AC1963B44A">
+		<di:waypoint x="100" y="250"/>
+		<di:waypoint x="100" y="75"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

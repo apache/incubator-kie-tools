@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.actico.com/spec/DMN/0.1.0/0031-user-defined-functions" name="0030-user-defined-functions" id="_pKGjoH6LEeePe9Zmt-encA" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <itemDefinition name="tFnLibrary" id="_fKdL0IDJEee-MeWXoLgrYg">
+        <itemComponent name="sumFn" id="_gtkkYIDJEee-MeWXoLgrYg"/>
+        <itemComponent name="subFn" id="_pRj-sIDJEee-MeWXoLgrYg"/>
+        <itemComponent name="multiplyFn" id="_l_GGYIDfEee-MeWXoLgrYg"/>
+        <itemComponent name="divideFn" id="_pOrn0IDfEee-MeWXoLgrYg"/>
+    </itemDefinition>
+    <itemDefinition name="tFnInvocationPositionalResult" id="_xuQ0YIJtEee4zOLdFxCBaA">
+        <itemComponent name="sumResult" id="_GDzKIIJuEee4zOLdFxCBaA">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="divisionResultPositional" id="_IpHmkIJuEee4zOLdFxCBaA">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="multiplicationResultPositional" id="_OmarcIJuEee4zOLdFxCBaA">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <itemDefinition name="tFnInvocationNamedResult" id="_0BpzUIJtEee4zOLdFxCBaA">
+        <itemComponent name="subResult" id="_Ua9c8IJuEee4zOLdFxCBaA">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="subResultMixed" id="_XCUgwIJuEee4zOLdFxCBaA">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="divisionResultNamed" id="_XKOfkIJuEee4zOLdFxCBaA">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="multiplicationResultNamed" id="_afyGIIJuEee4zOLdFxCBaA">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <itemDefinition name="tFnInvocationComplexParamsResult" id="_1O2mQIJtEee4zOLdFxCBaA">
+        <itemComponent name="functionInvocationLiteralExpressionInParameter" id="_fTiwEIJuEee4zOLdFxCBaA">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="functionInvocationInParameter" id="_fb73EIJuEee4zOLdFxCBaA">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="circumference" id="_fdbr4IJuEee4zOLdFxCBaA">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <decision name="fn library" id="_q2qzIH6LEeePe9Zmt-encA">
+        <variable typeRef="ns1:tFnLibrary" name="fn library" id="_mRL98YDJEee-MeWXoLgrYg"/>
+        <context id="_zl1isH6LEeePe9Zmt-encA">
+            <contextEntry>
+                <variable name="sumFn" id="_tc5HIH6OEeePe9Zmt-encA"/>
+                <literalExpression id="_tc5HIX6OEeePe9Zmt-encA">
+                    <text>function(a,b) a+b</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="subFn" id="_2WC5IH6OEeePe9Zmt-encA"/>
+                <literalExpression id="_oUtvYIDeEee-MeWXoLgrYg">
+                    <text>function(a,b) a-b</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="multiplyFn" id="_8_UCEIDREee-MeWXoLgrYg"/>
+                <functionDefinition id="_vB1ssID0Eeehqsf_bU54Lw">
+                    <formalParameter typeRef="number" name="a" id="_vqaIkID0Eeehqsf_bU54Lw"/>
+                    <formalParameter typeRef="number" name="b" id="_vqaIkYD0Eeehqsf_bU54Lw"/>
+                    <literalExpression id="_vHGAJYD0Eeehqsf_bU54Lw">
+                        <text>a*b</text>
+                    </literalExpression>
+                </functionDefinition>
+            </contextEntry>
+            <contextEntry>
+                <variable name="divideFn" id="_SgHREIDSEee-MeWXoLgrYg"/>
+                <literalExpression id="_kG65QIDeEee-MeWXoLgrYg">
+                    <text>function(a,b) if b = 0 then null else a/b</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <decision name="fn invocation positional parameters" id="_AfhOEH6QEeePe9Zmt-encA">
+        <variable typeRef="ns1:tFnInvocationPositionalResult" name="fn invocation positional parameters" id="_rwrh8YDIEee-MeWXoLgrYg"/>
+        <informationRequirement id="f1a77547-c863-4c5c-8c40-c7118c9c56a7">
+            <requiredDecision href="#_q2qzIH6LEeePe9Zmt-encA"/>
+        </informationRequirement>
+        <informationRequirement id="dca29f13-f7aa-45a6-8744-0cb9615c11b5">
+            <requiredInput href="#_48BAYH6PEeePe9Zmt-encA"/>
+        </informationRequirement>
+        <informationRequirement id="_1080c15e-bc84-4473-99f3-1b8ea7d12e61">
+            <requiredInput href="#_5eBhQH6PEeePe9Zmt-encA"/>
+        </informationRequirement>
+        <context typeRef="ns1:tFnInvocationResult" id="_JvSJQX6QEeePe9Zmt-encA">
+            <contextEntry>
+                <variable name="sumResult" id="_TEHYYH6VEeePe9Zmt-encA"/>
+                <literalExpression id="_TEHYYX6VEeePe9Zmt-encA">
+                    <text>fn library.sumFn(inputA,inputB)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="multiplicationResultPositional" id="_6AipMIDkEee-MeWXoLgrYg"/>
+                <literalExpression id="_6AipMYDkEee-MeWXoLgrYg">
+                    <text>fn library.multiplyFn(inputA,inputB)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="divisionResultPositional" id="_ML3Y4IDfEee-MeWXoLgrYg"/>
+                <literalExpression id="_ML3Y4YDfEee-MeWXoLgrYg">
+                    <text>fn library.divideFn(inputA, inputB)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <decision name="fn invocation named parameters" id="_yHl3UIDhEee-MeWXoLgrYg">
+        <variable typeRef="ns1:tFnInvocationNamedResult" name="fn invocation named parameters" id="_eApsUYDjEee-MeWXoLgrYg"/>
+        <informationRequirement id="_821bbeda-972a-489b-9467-9bdefd14b793">
+            <requiredInput href="#_5eBhQH6PEeePe9Zmt-encA"/>
+        </informationRequirement>
+        <informationRequirement id="_27388fbc-fcc5-42f8-8746-21e32ff59cc2">
+            <requiredInput href="#_48BAYH6PEeePe9Zmt-encA"/>
+        </informationRequirement>
+        <informationRequirement id="_763526d2-0b83-40c0-81cf-faf961f3e2ab">
+            <requiredDecision href="#_q2qzIH6LEeePe9Zmt-encA"/>
+        </informationRequirement>
+        <context id="_zq6EMYDhEee-MeWXoLgrYg">
+            <contextEntry>
+                <variable name="subResult" id="_zq6rRYDhEee-MeWXoLgrYg"/>
+                <literalExpression id="_zq6rR4DhEee-MeWXoLgrYg">
+                    <text>fn library.subFn(a:inputA,b:inputB)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="multiplicationResultNamed" id="_zq6rTYDhEee-MeWXoLgrYg"/>
+                <literalExpression id="_zq6rT4DhEee-MeWXoLgrYg">
+                    <text>fn library.multiplyFn(a:inputA,b:inputB)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="subResultMixed" id="_zq6rUYDhEee-MeWXoLgrYg"/>
+                <literalExpression id="_zq6rU4DhEee-MeWXoLgrYg">
+                    <text>fn library.subFn(a:inputB, b:inputA)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="divisionResultNamed" id="_zq6rWYDhEee-MeWXoLgrYg"/>
+                <literalExpression id="_zq6rW4DhEee-MeWXoLgrYg">
+                    <text>fn library.divideFn(a:inputA, b:inputB)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <decision name="fn invocation complex parameters" id="_b-gD0IDiEee-MeWXoLgrYg">
+        <variable typeRef="ns1:tFnInvocationComplexParamsResult" name="fn invocation complex parameters" id="_vU2_EYDjEee-MeWXoLgrYg"/>
+        <informationRequirement id="_9c0d7e05-550b-4b5d-a99f-455c098509f5">
+            <requiredInput href="#_48BAYH6PEeePe9Zmt-encA"/>
+        </informationRequirement>
+        <informationRequirement id="_7e19ca95-b730-48ee-9731-b53e9ffd3835">
+            <requiredInput href="#_5eBhQH6PEeePe9Zmt-encA"/>
+        </informationRequirement>
+        <informationRequirement id="ebeebf51-f5bd-4dd0-972c-f964100c6f0d">
+            <requiredDecision href="#_q2qzIH6LEeePe9Zmt-encA"/>
+        </informationRequirement>
+        <knowledgeRequirement id="_548a994a-9a94-4df4-8245-eaefde56cb58">
+            <requiredKnowledge href="#_8xmTAIDNEee-MeWXoLgrYg"/>
+        </knowledgeRequirement>
+        <context typeRef="ns1:tFnInvocationResult" id="_eA6AcYDiEee-MeWXoLgrYg">
+            <contextEntry>
+                <variable name="functionInvocationInParameter" id="_eA6Aj4DiEee-MeWXoLgrYg"/>
+                <literalExpression id="_eA6AkYDiEee-MeWXoLgrYg">
+                    <text>fn library.multiplyFn(fn library.sumFn(inputA,inputA), fn library.sumFn(a:inputB, b:inputB))</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="functionInvocationLiteralExpressionInParameter" id="_eA6Ak4DiEee-MeWXoLgrYg"/>
+                <literalExpression id="_eA6AlYDiEee-MeWXoLgrYg">
+                    <text>fn library.multiplyFn(inputA * inputA, if fn library.subFn(inputA,inputB)  in [0..10] then 5 else 10 )</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="circumference" id="_MrFpgID1Eeehqsf_bU54Lw"/>
+                <literalExpression id="_MrFpgYD1Eeehqsf_bU54Lw">
+                    <text>Circumference(inputA+inputB)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <businessKnowledgeModel name="Circumference" id="_8xmTAIDNEee-MeWXoLgrYg">
+        <variable name="Circumference"/>
+        <encapsulatedLogic id="_92KuYIDNEee-MeWXoLgrYg">
+            <formalParameter typeRef="number" name="radius" id="_3xWKkIDgEee-MeWXoLgrYg"/>
+            <literalExpression typeRef="number" id="_92KuYYDNEee-MeWXoLgrYg">
+                <text>(2*3.141592) * radius</text>
+            </literalExpression>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+    <inputData name="inputA" id="_48BAYH6PEeePe9Zmt-encA">
+        <variable typeRef="number" name="inputA" id="_XMnoAIDIEee-MeWXoLgrYg"/>
+    </inputData>
+    <inputData name="inputB" id="_5eBhQH6PEeePe9Zmt-encA">
+        <variable typeRef="number" name="inputB" id="_Y5qYoYDIEee-MeWXoLgrYg"/>
+    </inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_pKGjoH6LEeePe9Zmt-encA_D1">
+            <dmndi:Size height="650.0" width="1094.0"/>
+            <dmndi:DMNShape dmnElementRef="_q2qzIH6LEeePe9Zmt-encA" id="_pKGjoH6LEeePe9Zmt-encA_s1">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_AfhOEH6QEeePe9Zmt-encA" id="_pKGjoH6LEeePe9Zmt-encA_s2">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_yHl3UIDhEee-MeWXoLgrYg" id="_pKGjoH6LEeePe9Zmt-encA_s3">
+                <dc:Bounds height="61.0" width="154.0" x="364.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_b-gD0IDiEee-MeWXoLgrYg" id="_pKGjoH6LEeePe9Zmt-encA_s4">
+                <dc:Bounds height="61.0" width="154.0" x="578.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_8xmTAIDNEee-MeWXoLgrYg" id="_pKGjoH6LEeePe9Zmt-encA_s5">
+                <dc:Bounds height="61.0" width="154.0" x="790.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_48BAYH6PEeePe9Zmt-encA" id="_pKGjoH6LEeePe9Zmt-encA_s6">
+                <dc:Bounds height="60.0" width="153.0" x="364.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_5eBhQH6PEeePe9Zmt-encA" id="_pKGjoH6LEeePe9Zmt-encA_s7">
+                <dc:Bounds height="60.0" width="153.0" x="577.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="f1a77547-c863-4c5c-8c40-c7118c9c56a7" id="_pKGjoH6LEeePe9Zmt-encA_e1">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="dca29f13-f7aa-45a6-8744-0cb9615c11b5" id="_pKGjoH6LEeePe9Zmt-encA_e2">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_1080c15e-bc84-4473-99f3-1b8ea7d12e61" id="_pKGjoH6LEeePe9Zmt-encA_e3">
+                <di:waypoint x="653.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_821bbeda-972a-489b-9467-9bdefd14b793" id="_pKGjoH6LEeePe9Zmt-encA_e4">
+                <di:waypoint x="653.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_27388fbc-fcc5-42f8-8746-21e32ff59cc2" id="_pKGjoH6LEeePe9Zmt-encA_e5">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_763526d2-0b83-40c0-81cf-faf961f3e2ab" id="_pKGjoH6LEeePe9Zmt-encA_e6">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_548a994a-9a94-4df4-8245-eaefde56cb58" id="_pKGjoH6LEeePe9Zmt-encA_e7">
+                <di:waypoint x="867.0" y="331.0"/>
+                <di:waypoint x="655.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_9c0d7e05-550b-4b5d-a99f-455c098509f5" id="_pKGjoH6LEeePe9Zmt-encA_e8">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="655.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_7e19ca95-b730-48ee-9731-b53e9ffd3835" id="_pKGjoH6LEeePe9Zmt-encA_e9">
+                <di:waypoint x="653.0" y="331.0"/>
+                <di:waypoint x="655.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="ebeebf51-f5bd-4dd0-972c-f964100c6f0d" id="_pKGjoH6LEeePe9Zmt-encA_e10">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="655.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

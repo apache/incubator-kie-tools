@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>kie-wb-common-forms</artifactId>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <version>${revision}</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-wb-common-forms-commons</artifactId>
+
+  <name>Kie Workbench - Common - Forms - Commons</name>
+  <description>Kie Workbench - Common - Forms - Commons</description>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>kie-wb-common-forms-processing-engine</module>
+    <module>kie-wb-common-forms-crud-component</module>
+    <module>kie-wb-common-forms-common-rendering</module>
+  </modules>
+
+</project>

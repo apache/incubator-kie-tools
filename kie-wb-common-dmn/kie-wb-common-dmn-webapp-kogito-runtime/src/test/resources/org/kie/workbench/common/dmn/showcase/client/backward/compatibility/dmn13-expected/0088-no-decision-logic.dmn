@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_EBF07892-D449-49E8-B77A-08CDAAB2E820" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_BA898F11-9F63-4A74-AF32-235D82663253" name="x1" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_EBF07892-D449-49E8-B77A-08CDAAB2E820">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_1A35CDE5-592B-4C7D-A302-15043E11830C" name="tGrade" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_E9560012-0F49-44D2-96D8-BA655980F315">
+      <dmn:text>"A", "B", "C", "D", "E", "F"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:decisionService id="_7A9C80F8-4A44-4080-9031-F28EA411A35C" name="Evaluation DS">
+    <dmn:extensionElements/>
+    <dmn:variable id="_7D7F3394-69B4-46A6-BFED-4F71AFF6ABB3" name="Evaluation DS"/>
+  </dmn:decisionService>
+  <dmn:decision id="_2770588B-EF63-490A-BA13-B21D4EB1926D" name="Graduation DT">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A41CE5F4-5B2F-490B-90A3-9E5F53ED5B01" name="Graduation DT" typeRef="string"/>
+    <dmn:informationRequirement id="_84729018-9BDD-4607-B235-1806B18C89BB">
+      <dmn:requiredInput href="#_8B025B2F-6110-4A25-9F8B-2E76DB81298C"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_CD3DB28A-1220-41E4-B1E5-F4DA448FEC02" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_AF31943B-2A05-4F02-839A-4F1B6C5DC073">
+        <dmn:inputExpression id="_BB692782-9108-449A-9D15-27D06007E04E">
+          <dmn:text>Grade</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_5F1FEDAD-C742-445A-B194-47B0112573B8"/>
+      <dmn:annotation name=""/>
+      <dmn:rule id="_967C2799-CC1E-45C5-9F6B-BF3C2F5BCF36">
+        <dmn:inputEntry id="_47B77F78-DE9F-4CF3-A78D-AD274A951078">
+          <dmn:text>"A"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_BF4EB2E1-51E3-4087-A9B4-5FB39F646CCB">
+          <dmn:text>"Graduated with merit"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_CC4BEE1B-2A3D-4EE7-8C97-4382E8213EA0">
+        <dmn:inputEntry id="_1DA3FD5D-E479-4153-881A-4A087C9B7F9F">
+          <dmn:text>"B"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_2B336B1E-F6FC-4742-9C43-77D1A21746FC">
+          <dmn:text>"Graduated"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_95BBC24F-F50C-4D0E-A5B5-D07E328680C9">
+        <dmn:inputEntry id="_459FB1AA-8588-4C7B-AD2E-70A670569BD2">
+          <dmn:text>"C"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_92D429DE-3FD9-4E9F-864B-F9147B040121">
+          <dmn:text>"Graduated"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_161963E2-94C8-4391-A8BF-DEC458BEB62C">
+        <dmn:inputEntry id="_076CA1F7-DC4A-4D33-BAF9-3E3D0A4A3462">
+          <dmn:text>"D"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_E14D7E3E-DA88-409E-8506-10A7EE1AC18D">
+          <dmn:text>"Not graduated"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_A3513F68-6132-4535-95E0-739ACE67F456">
+        <dmn:inputEntry id="_F0479B26-22F1-4983-81A9-B53F7D8BCF41">
+          <dmn:text>"E"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_04CFBB41-21E0-456F-B9E5-AB8070DA84C8">
+          <dmn:text>"Not graduated"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_D9577634-8F7B-462D-BBAB-210F5FD586DC">
+        <dmn:inputEntry id="_79112C49-AD12-42B1-B056-8210E5AABF9A">
+          <dmn:text>"F"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_7C07ED74-5578-4906-B542-D294C426B2B9">
+          <dmn:text>"Not graduated"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:decision id="_874E905E-290A-4B2F-ADB9-EDB3CA24CA67" name="Graduation result">
+    <dmn:extensionElements/>
+    <dmn:variable id="_5F80DA91-A764-42C4-A526-3CADCD34E856" name="Graduation result" typeRef="string"/>
+    <dmn:informationRequirement id="_92B8883D-CEFA-4379-90F9-3C0F42E0569F">
+      <dmn:requiredDecision href="#_2770588B-EF63-490A-BA13-B21D4EB1926D"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_8DF42B20-5ECD-4A58-BF5B-5BF8765A5A76">
+      <dmn:requiredInput href="#_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_E7DA2900-46F8-4DC1-BCF7-2E928619926A">
+      <dmn:requiredInput href="#_8B025B2F-6110-4A25-9F8B-2E76DB81298C"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_92B4D37C-3DCB-4BD2-A4E8-28465566C79E">
+      <dmn:requiredDecision href="#_0C226138-201A-4073-8ED4-F28FA2A1BC64"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_7C49F288-73F5-41AB-97D8-C569099B2CC7">
+      <dmn:text>Student's name + " is " + Graduation DT + " with grade: " + Grade + " and evaluation: " + Teacher's Evaluation</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_0C226138-201A-4073-8ED4-F28FA2A1BC64" name="Teacher's Evaluation">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A2732FC7-2D94-4EFE-9A70-5A5D5F0EDCA3" name="Teacher's Evaluation"/>
+    <dmn:informationRequirement id="_E7C0F865-D014-4005-B313-6FA55BD4203C">
+      <dmn:requiredInput href="#_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794"/>
+    </dmn:informationRequirement>
+    <dmn:authorityRequirement id="_C0A26CA4-7328-4DB0-B626-BEB3D9BF2249">
+      <dmn:requiredAuthority href="#_2284D6C3-0DAD-4AF0-A758-C40D5A2A0A32"/>
+    </dmn:authorityRequirement>
+  </dmn:decision>
+  <dmn:knowledgeSource id="_2284D6C3-0DAD-4AF0-A758-C40D5A2A0A32" name="Teacher's knowledge" locationURI="">
+    <dmn:extensionElements/>
+    <dmn:type></dmn:type>
+  </dmn:knowledgeSource>
+  <dmn:inputData id="_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794" name="Student's name">
+    <dmn:extensionElements/>
+    <dmn:variable id="_9114ABD1-CD57-4E59-B6C7-FE7CD5AB1EFD" name="Student's name" typeRef="string"/>
+  </dmn:inputData>
+  <dmn:inputData id="_8B025B2F-6110-4A25-9F8B-2E76DB81298C" name="Grade">
+    <dmn:extensionElements/>
+    <dmn:variable id="_22CC6AB7-BBB7-4F30-AFB3-FA67486F2DBA" name="Grade" typeRef="tGrade"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_329FD8A1-95D6-4199-AB25-F5FCFEB4E6C5" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_CD3DB28A-1220-41E4-B1E5-F4DA448FEC02"/>
+          <kie:ComponentWidths dmnElementRef="_7C49F288-73F5-41AB-97D8-C569099B2CC7"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_7A9C80F8-4A44-4080-9031-F28EA411A35C" dmnElementRef="_7A9C80F8-4A44-4080-9031-F28EA411A35C" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="313" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+        <dmndi:DMNDecisionServiceDividerLine>
+          <di:waypoint x="313" y="150"/>
+          <di:waypoint x="413" y="150"/>
+        </dmndi:DMNDecisionServiceDividerLine>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_2770588B-EF63-490A-BA13-B21D4EB1926D" dmnElementRef="_2770588B-EF63-490A-BA13-B21D4EB1926D" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="313" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_874E905E-290A-4B2F-ADB9-EDB3CA24CA67" dmnElementRef="_874E905E-290A-4B2F-ADB9-EDB3CA24CA67" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="138" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_0C226138-201A-4073-8ED4-F28FA2A1BC64" dmnElementRef="_0C226138-201A-4073-8ED4-F28FA2A1BC64" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="138" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_2284D6C3-0DAD-4AF0-A758-C40D5A2A0A32" dmnElementRef="_2284D6C3-0DAD-4AF0-A758-C40D5A2A0A32" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="400" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794" dmnElementRef="_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="225" y="400" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_8B025B2F-6110-4A25-9F8B-2E76DB81298C" dmnElementRef="_8B025B2F-6110-4A25-9F8B-2E76DB81298C" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="400" y="400" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_84729018-9BDD-4607-B235-1806B18C89BB" dmnElementRef="_84729018-9BDD-4607-B235-1806B18C89BB">
+        <di:waypoint x="450" y="425"/>
+        <di:waypoint x="363" y="250"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_92B8883D-CEFA-4379-90F9-3C0F42E0569F" dmnElementRef="_92B8883D-CEFA-4379-90F9-3C0F42E0569F">
+        <di:waypoint x="363" y="250"/>
+        <di:waypoint x="188" y="75"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_8DF42B20-5ECD-4A58-BF5B-5BF8765A5A76" dmnElementRef="_8DF42B20-5ECD-4A58-BF5B-5BF8765A5A76">
+        <di:waypoint x="275" y="425"/>
+        <di:waypoint x="188" y="75"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_E7DA2900-46F8-4DC1-BCF7-2E928619926A" dmnElementRef="_E7DA2900-46F8-4DC1-BCF7-2E928619926A">
+        <di:waypoint x="450" y="425"/>
+        <di:waypoint x="188" y="75"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_92B4D37C-3DCB-4BD2-A4E8-28465566C79E" dmnElementRef="_92B4D37C-3DCB-4BD2-A4E8-28465566C79E">
+        <di:waypoint x="188" y="250"/>
+        <di:waypoint x="188" y="75"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_E7C0F865-D014-4005-B313-6FA55BD4203C" dmnElementRef="_E7C0F865-D014-4005-B313-6FA55BD4203C">
+        <di:waypoint x="275" y="425"/>
+        <di:waypoint x="188" y="250"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_C0A26CA4-7328-4DB0-B626-BEB3D9BF2249" dmnElementRef="_C0A26CA4-7328-4DB0-B626-BEB3D9BF2249">
+        <di:waypoint x="100" y="425"/>
+        <di:waypoint x="188" y="250"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -1,0 +1,853 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.actico.com/spec/DMN/1121-feel-years-and-months-duration-function" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_jHaMoPUUEeesLuP4RHs4vA" name="1121-feel-years-and-months-duration-function" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.actico.com/spec/DMN/1121-feel-years-and-months-duration-function">
+  <dmn:description>FEEL built-in function 'years and months duration(from [date and time], to [date and time])' in category conversion functions</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_jHaMovUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_001_b24a0c91f2_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaMpvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_002_4e7651ae0e_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaMqvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_003_0886738d31_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaMrvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_004_1bdfef922b_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaMsvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_005_d0a077da4e_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaMtvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_006_f20de28d3f_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaMuvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_007_0921c3d61a_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaMvvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_008_015d35b442_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaMwvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_009_635028a5d8_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaMxvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_010_caaa2e5002_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaMyvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_011_3fac022eb0_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaMzvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_012_331ef38ce0_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaM0vUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_013_2f3cc46d9d_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaM1vUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_014_1fadbba7cd_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaM2vUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_015_0e496f94fc_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaM3vUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_016_b38662aa93_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaM4vUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_017_86744b9a54_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaM5vUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_018_8a9ed1d66d_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaM6vUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_019_90c2084588_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaM7vUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_020_8ead9a0377_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaM8vUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_021_8a7d311ae9_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaM9vUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_022_87e369773b_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaM-vUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_023_6385c7a83e_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaM_vUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_024_e96d1bd93a_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaNAvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_025_161f6fca54_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaNBvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_026_fcc906b375_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaNCvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_027_3374dd86c6_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaNDvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_028_77600e7b35_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaNEvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_029_15a0d0d9c1_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaNFvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_030_ec16878596_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaNGvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_031_4fd9c09d89_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaNHvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_032_2a09ac80d0_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaNIvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_033_7333eca866_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaNJvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_034_c2cc06724c_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaNKvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_035_dc05f9555d_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jHaNLvUUEeesLuP4RHs4vA" name="tfeel-years-and-months-duration-function_036_f8c8b02ba3_Result" isCollection="false">
+    <dmn:typeRef>yearMonthDuration</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_jHaMzPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_011_3fac022eb0">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date("2016-01-21"),date("2015-01-21"))' and expects result: '-P1Y (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date("2016-01-21"),date("2015-01-21"))'?</dmn:question>
+    <dmn:allowedAnswers>-P1Y (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaMzfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_011_3fac022eb0" typeRef="ns1:tfeel-years-and-months-duration-function_011_3fac022eb0_Result"/>
+    <dmn:literalExpression id="_jHaMy_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date("2016-01-21"),date("2015-01-21"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaMuPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_006_f20de28d3f">
+    <dmn:description>Tests FEEL expression: 'years and months duration(null,date and time("2019-10-01T12:32:59"))' and expects result: 'null (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(null,date and time("2019-10-01T12:32:59"))'?</dmn:question>
+    <dmn:allowedAnswers>null (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaMufUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_006_f20de28d3f" typeRef="ns1:tfeel-years-and-months-duration-function_006_f20de28d3f_Result"/>
+    <dmn:literalExpression id="_jHaMt_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(null,date and time("2019-10-01T12:32:59"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaM1PUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_013_2f3cc46d9d">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2017-12-31T13:00:00"), date and time("2017-12-31T12:00:00"))' and expects result: 'P0M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2017-12-31T13:00:00"), date and time("2017-12-31T12:00:00"))'?</dmn:question>
+    <dmn:allowedAnswers>P0M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaM1fUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_013_2f3cc46d9d" typeRef="ns1:tfeel-years-and-months-duration-function_013_2f3cc46d9d_Result"/>
+    <dmn:literalExpression id="_jHaM0_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2017-12-31T13:00:00"), date and time("2017-12-31T12:00:00"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNHPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_031_4fd9c09d89">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date("2013-08-24"), date and time("2017-12-15T00:59:59"))' and expects result: 'P4Y3M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date("2013-08-24"), date and time("2017-12-15T00:59:59"))'?</dmn:question>
+    <dmn:allowedAnswers>P4Y3M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNHfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_031_4fd9c09d89" typeRef="ns1:tfeel-years-and-months-duration-function_031_4fd9c09d89_Result"/>
+    <dmn:literalExpression id="_jHaNG_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date("2013-08-24"), date and time("2017-12-15T00:59:59"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNGPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_030_ec16878596">
+    <dmn:description>Tests FEEL expression: 'years and months duration([],[])' and expects result: 'null (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration([],[])'?</dmn:question>
+    <dmn:allowedAnswers>null (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNGfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_030_ec16878596" typeRef="ns1:tfeel-years-and-months-duration-function_030_ec16878596_Result"/>
+    <dmn:literalExpression id="_jHaNF_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration([],[])</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNBPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_025_161f6fca54">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2015-12-31T23:59:59.9999999"), date and time("2018-10-01T12:32:59.111111"))' and expects result: 'P2Y9M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2015-12-31T23:59:59.9999999"), date and time("2018-10-01T12:32:59.111111"))'?</dmn:question>
+    <dmn:allowedAnswers>P2Y9M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNBfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_025_161f6fca54" typeRef="ns1:tfeel-years-and-months-duration-function_025_161f6fca54_Result"/>
+    <dmn:literalExpression id="_jHaNA_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2015-12-31T23:59:59.9999999"), date and time("2018-10-01T12:32:59.111111"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNMPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_036_f8c8b02ba3">
+    <dmn:description>Tests FEEL expression: 'years and months duration(from:date("2016-01-21"),to:date("2015-01-21"))' and expects result: '-P1Y (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(from:date("2016-01-21"),to:date("2015-01-21"))'?</dmn:question>
+    <dmn:allowedAnswers>-P1Y (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNMfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_036_f8c8b02ba3" typeRef="ns1:tfeel-years-and-months-duration-function_036_f8c8b02ba3_Result"/>
+    <dmn:literalExpression id="_jHaNL_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(from:date("2016-01-21"),to:date("2015-01-21"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaM5PUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_017_86744b9a54">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("-2016-01-30T09:05:00"), date and time("-2017-02-28T02:02:02"))' and expects result: '-P11M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("-2016-01-30T09:05:00"), date and time("-2017-02-28T02:02:02"))'?</dmn:question>
+    <dmn:allowedAnswers>-P11M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaM5fUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_017_86744b9a54" typeRef="ns1:tfeel-years-and-months-duration-function_017_86744b9a54_Result"/>
+    <dmn:literalExpression id="_jHaM4_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("-2016-01-30T09:05:00"), date and time("-2017-02-28T02:02:02"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaMpPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_001_b24a0c91f2">
+    <dmn:description>Tests FEEL expression: 'years and months duration(null)' and expects result: 'null (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(null)'?</dmn:question>
+    <dmn:allowedAnswers>null (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaMpfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_001_b24a0c91f2" typeRef="ns1:tfeel-years-and-months-duration-function_001_b24a0c91f2_Result"/>
+    <dmn:literalExpression id="_jHaMo_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaM7PUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_019_90c2084588">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2017-09-05T10:20:00-01:00"), date and time("-2019-10-01T12:32:59+02:00"))' and expects result: '-P4035Y11M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2017-09-05T10:20:00-01:00"), date and time("-2019-10-01T12:32:59+02:00"))'?</dmn:question>
+    <dmn:allowedAnswers>-P4035Y11M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaM7fUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_019_90c2084588" typeRef="ns1:tfeel-years-and-months-duration-function_019_90c2084588_Result"/>
+    <dmn:literalExpression id="_jHaM6_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2017-09-05T10:20:00-01:00"), date and time("-2019-10-01T12:32:59+02:00"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNDPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_027_3374dd86c6">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date(""),date(""))' and expects result: 'null (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date(""),date(""))'?</dmn:question>
+    <dmn:allowedAnswers>null (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNDfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_027_3374dd86c6" typeRef="ns1:tfeel-years-and-months-duration-function_027_3374dd86c6_Result"/>
+    <dmn:literalExpression id="_jHaNC_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date(""),date(""))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNKPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_034_c2cc06724c">
+    <dmn:description>Tests FEEL expression: 'years and months duration(from:date and time("2014-12-31T23:59:59"),to:date and time("2016-12-31T00:00:01"))' and expects result: 'P2Y (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(from:date and time("2014-12-31T23:59:59"),to:date and time("2016-12-31T00:00:01"))'?</dmn:question>
+    <dmn:allowedAnswers>P2Y (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNKfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_034_c2cc06724c" typeRef="ns1:tfeel-years-and-months-duration-function_034_c2cc06724c_Result"/>
+    <dmn:literalExpression id="_jHaNJ_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(from:date and time("2014-12-31T23:59:59"),to:date and time("2016-12-31T00:00:01"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaMtPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_005_d0a077da4e">
+    <dmn:description>Tests FEEL expression: 'years and months duration(null,date("2017-08-11"))' and expects result: 'null (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(null,date("2017-08-11"))'?</dmn:question>
+    <dmn:allowedAnswers>null (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaMtfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_005_d0a077da4e" typeRef="ns1:tfeel-years-and-months-duration-function_005_d0a077da4e_Result"/>
+    <dmn:literalExpression id="_jHaMs_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(null,date("2017-08-11"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaM0PUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_012_331ef38ce0">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date("2016-01-01"),date("2016-01-01"))' and expects result: 'P0M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date("2016-01-01"),date("2016-01-01"))'?</dmn:question>
+    <dmn:allowedAnswers>P0M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaM0fUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_012_331ef38ce0" typeRef="ns1:tfeel-years-and-months-duration-function_012_331ef38ce0_Result"/>
+    <dmn:literalExpression id="_jHaMz_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date("2016-01-01"),date("2016-01-01"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaMwPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_008_015d35b442">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date("2011-12-22"),date("2013-08-24"))' and expects result: 'P1Y8M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date("2011-12-22"),date("2013-08-24"))'?</dmn:question>
+    <dmn:allowedAnswers>P1Y8M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaMwfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_008_015d35b442" typeRef="ns1:tfeel-years-and-months-duration-function_008_015d35b442_Result"/>
+    <dmn:literalExpression id="_jHaMv_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date("2011-12-22"),date("2013-08-24"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaM4PUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_016_b38662aa93">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2014-12-31T23:59:59"), date and time("2019-10-01T12:32:59"))' and expects result: 'P4Y9M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2014-12-31T23:59:59"), date and time("2019-10-01T12:32:59"))'?</dmn:question>
+    <dmn:allowedAnswers>P4Y9M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaM4fUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_016_b38662aa93" typeRef="ns1:tfeel-years-and-months-duration-function_016_b38662aa93_Result"/>
+    <dmn:literalExpression id="_jHaM3_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2014-12-31T23:59:59"), date and time("2019-10-01T12:32:59"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNCPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_026_fcc906b375">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2016-09-05T22:20:55.123456+05:00"), date and time("2019-10-01T12:32:59.32415645"))' and expects result: 'P3Y (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2016-09-05T22:20:55.123456+05:00"), date and time("2019-10-01T12:32:59.32415645"))'?</dmn:question>
+    <dmn:allowedAnswers>P3Y (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNCfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_026_fcc906b375" typeRef="ns1:tfeel-years-and-months-duration-function_026_fcc906b375_Result"/>
+    <dmn:literalExpression id="_jHaNB_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2016-09-05T22:20:55.123456+05:00"), date and time("2019-10-01T12:32:59.32415645"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNLPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_035_dc05f9555d">
+    <dmn:description>Tests FEEL expression: 'years and months duration(from:date("2011-12-22"),to:date("2013-08-24"))' and expects result: 'P1Y8M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(from:date("2011-12-22"),to:date("2013-08-24"))'?</dmn:question>
+    <dmn:allowedAnswers>P1Y8M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNLfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_035_dc05f9555d" typeRef="ns1:tfeel-years-and-months-duration-function_035_dc05f9555d_Result"/>
+    <dmn:literalExpression id="_jHaNK_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(from:date("2011-12-22"),to:date("2013-08-24"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaMsPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_004_1bdfef922b">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2017-12-31T13:00:00"),null)' and expects result: 'null (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2017-12-31T13:00:00"),null)'?</dmn:question>
+    <dmn:allowedAnswers>null (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaMsfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_004_1bdfef922b" typeRef="ns1:tfeel-years-and-months-duration-function_004_1bdfef922b_Result"/>
+    <dmn:literalExpression id="_jHaMr_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2017-12-31T13:00:00"),null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaM8PUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_020_8ead9a0377">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2017-09-05T10:20:00+05:00"), date and time("2019-10-01T12:32:59"))' and expects result: 'P2Y (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2017-09-05T10:20:00+05:00"), date and time("2019-10-01T12:32:59"))'?</dmn:question>
+    <dmn:allowedAnswers>P2Y (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaM8fUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_020_8ead9a0377" typeRef="ns1:tfeel-years-and-months-duration-function_020_8ead9a0377_Result"/>
+    <dmn:literalExpression id="_jHaM7_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2017-09-05T10:20:00+05:00"), date and time("2019-10-01T12:32:59"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNEPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_028_77600e7b35">
+    <dmn:description>Tests FEEL expression: 'years and months duration(2017)' and expects result: 'null (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(2017)'?</dmn:question>
+    <dmn:allowedAnswers>null (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNEfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_028_77600e7b35" typeRef="ns1:tfeel-years-and-months-duration-function_028_77600e7b35_Result"/>
+    <dmn:literalExpression id="_jHaND_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(2017)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNJPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_033_7333eca866">
+    <dmn:description>Tests FEEL expression: 'years and months duration(from:date and time("2016-12-31T00:00:01"),to:date and time("2017-12-31T23:59:59"))' and expects result: 'P1Y (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(from:date and time("2016-12-31T00:00:01"),to:date and time("2017-12-31T23:59:59"))'?</dmn:question>
+    <dmn:allowedAnswers>P1Y (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNJfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_033_7333eca866" typeRef="ns1:tfeel-years-and-months-duration-function_033_7333eca866_Result"/>
+    <dmn:literalExpression id="_jHaNI_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(from:date and time("2016-12-31T00:00:01"),to:date and time("2017-12-31T23:59:59"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaM3PUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_015_0e496f94fc">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2010-05-30T03:55:58"), date and time("2017-12-15T00:59:59"))' and expects result: 'P7Y6M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2010-05-30T03:55:58"), date and time("2017-12-15T00:59:59"))'?</dmn:question>
+    <dmn:allowedAnswers>P7Y6M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaM3fUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_015_0e496f94fc" typeRef="ns1:tfeel-years-and-months-duration-function_015_0e496f94fc_Result"/>
+    <dmn:literalExpression id="_jHaM2_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2010-05-30T03:55:58"), date and time("2017-12-15T00:59:59"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaMxPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_009_635028a5d8">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date("2013-08-24"),date("2011-12-22"))' and expects result: '-P1Y8M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date("2013-08-24"),date("2011-12-22"))'?</dmn:question>
+    <dmn:allowedAnswers>-P1Y8M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaMxfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_009_635028a5d8" typeRef="ns1:tfeel-years-and-months-duration-function_009_635028a5d8_Result"/>
+    <dmn:literalExpression id="_jHaMw_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date("2013-08-24"),date("2011-12-22"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaMrPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_003_0886738d31">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date("2017-08-11"),null)' and expects result: 'null (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date("2017-08-11"),null)'?</dmn:question>
+    <dmn:allowedAnswers>null (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaMrfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_003_0886738d31" typeRef="ns1:tfeel-years-and-months-duration-function_003_0886738d31_Result"/>
+    <dmn:literalExpression id="_jHaMq_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date("2017-08-11"),null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:knowledgeSource id="_jHaMofUUEeesLuP4RHs4vA" name="DMN 1.1 - 10.3.4.1 Table 58">
+    <dmn:extensionElements/>
+  </dmn:knowledgeSource>
+  <dmn:decision id="_jHaM_PUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_023_6385c7a83e">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2017-09-05T10:20:00@Etc/UTC"), date and time("2018-10-01T23:59:59"))' and expects result: 'P1Y (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2017-09-05T10:20:00@Etc/UTC"), date and time("2018-10-01T23:59:59"))'?</dmn:question>
+    <dmn:allowedAnswers>P1Y (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaM_fUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_023_6385c7a83e" typeRef="ns1:tfeel-years-and-months-duration-function_023_6385c7a83e_Result"/>
+    <dmn:literalExpression id="_jHaM-_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2017-09-05T10:20:00@Etc/UTC"), date and time("2018-10-01T23:59:59"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaM9PUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_021_8a7d311ae9">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2016-08-25T15:20:59+02:00"), date and time("2017-08-10T10:20:00@Europe/Paris"))' and expects result: 'P11M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2016-08-25T15:20:59+02:00"), date and time("2017-08-10T10:20:00@Europe/Paris"))'?</dmn:question>
+    <dmn:allowedAnswers>P11M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaM9fUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_021_8a7d311ae9" typeRef="ns1:tfeel-years-and-months-duration-function_021_8a7d311ae9_Result"/>
+    <dmn:literalExpression id="_jHaM8_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2016-08-25T15:20:59+02:00"), date and time("2017-08-10T10:20:00@Europe/Paris"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaM2PUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_014_1fadbba7cd">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2016-09-30T23:25:00"), date and time("2017-12-28T12:12:12"))' and expects result: 'P1Y2M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2016-09-30T23:25:00"), date and time("2017-12-28T12:12:12"))'?</dmn:question>
+    <dmn:allowedAnswers>P1Y2M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaM2fUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_014_1fadbba7cd" typeRef="ns1:tfeel-years-and-months-duration-function_014_1fadbba7cd_Result"/>
+    <dmn:literalExpression id="_jHaM1_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2016-09-30T23:25:00"), date and time("2017-12-28T12:12:12"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaM-PUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_022_87e369773b">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2011-12-31T10:15:30@Etc/UTC"), date and time("2017-08-10T10:20:00@Europe/Paris"))' and expects result: 'P5Y7M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2011-12-31T10:15:30@Etc/UTC"), date and time("2017-08-10T10:20:00@Europe/Paris"))'?</dmn:question>
+    <dmn:allowedAnswers>P5Y7M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaM-fUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_022_87e369773b" typeRef="ns1:tfeel-years-and-months-duration-function_022_87e369773b_Result"/>
+    <dmn:literalExpression id="_jHaM9_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2011-12-31T10:15:30@Etc/UTC"), date and time("2017-08-10T10:20:00@Europe/Paris"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNFPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_029_15a0d0d9c1">
+    <dmn:description>Tests FEEL expression: 'years and months duration("2012T-12-2511:00:00Z")' and expects result: 'null (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration("2012T-12-2511:00:00Z")'?</dmn:question>
+    <dmn:allowedAnswers>null (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNFfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_029_15a0d0d9c1" typeRef="ns1:tfeel-years-and-months-duration-function_029_15a0d0d9c1_Result"/>
+    <dmn:literalExpression id="_jHaNE_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration("2012T-12-2511:00:00Z")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNIPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_032_2a09ac80d0">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2017-02-28T23:59:59"), date("2019-07-23") )' and expects result: 'P2Y4M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2017-02-28T23:59:59"), date("2019-07-23") )'?</dmn:question>
+    <dmn:allowedAnswers>P2Y4M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNIfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_032_2a09ac80d0" typeRef="ns1:tfeel-years-and-months-duration-function_032_2a09ac80d0_Result"/>
+    <dmn:literalExpression id="_jHaNH_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2017-02-28T23:59:59"), date("2019-07-23") )</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaMvPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_007_0921c3d61a">
+    <dmn:description>Tests FEEL expression: 'years and months duration()' and expects result: 'null (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration()'?</dmn:question>
+    <dmn:allowedAnswers>null (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaMvfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_007_0921c3d61a" typeRef="ns1:tfeel-years-and-months-duration-function_007_0921c3d61a_Result"/>
+    <dmn:literalExpression id="_jHaMu_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration()</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaMyPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_010_caaa2e5002">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date("2015-01-21"),date("2016-01-21"))' and expects result: 'P1Y (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date("2015-01-21"),date("2016-01-21"))'?</dmn:question>
+    <dmn:allowedAnswers>P1Y (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaMyfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_010_caaa2e5002" typeRef="ns1:tfeel-years-and-months-duration-function_010_caaa2e5002_Result"/>
+    <dmn:literalExpression id="_jHaMx_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date("2015-01-21"),date("2016-01-21"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaM6PUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_018_8a9ed1d66d">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2014-12-31T23:59:59"), date and time("-2019-10-01T12:32:59"))' and expects result: '-P4033Y2M (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2014-12-31T23:59:59"), date and time("-2019-10-01T12:32:59"))'?</dmn:question>
+    <dmn:allowedAnswers>-P4033Y2M (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaM6fUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_018_8a9ed1d66d" typeRef="ns1:tfeel-years-and-months-duration-function_018_8a9ed1d66d_Result"/>
+    <dmn:literalExpression id="_jHaM5_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2014-12-31T23:59:59"), date and time("-2019-10-01T12:32:59"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaNAPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_024_e96d1bd93a">
+    <dmn:description>Tests FEEL expression: 'years and months duration(date and time("2011-08-25T15:59:59@Europe/Paris"), date and time("2015-08-25T15:20:59+02:00"))' and expects result: 'P4Y (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(date and time("2011-08-25T15:59:59@Europe/Paris"), date and time("2015-08-25T15:20:59+02:00"))'?</dmn:question>
+    <dmn:allowedAnswers>P4Y (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaNAfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_024_e96d1bd93a" typeRef="ns1:tfeel-years-and-months-duration-function_024_e96d1bd93a_Result"/>
+    <dmn:literalExpression id="_jHaM__UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(date and time("2011-08-25T15:59:59@Europe/Paris"), date and time("2015-08-25T15:20:59+02:00"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jHaMqPUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_002_4e7651ae0e">
+    <dmn:description>Tests FEEL expression: 'years and months duration(null,null)' and expects result: 'null (years and months duration)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'years and months duration(null,null)'?</dmn:question>
+    <dmn:allowedAnswers>null (years and months duration)</dmn:allowedAnswers>
+    <dmn:variable id="_jHaMqfUUEeesLuP4RHs4vA" name="feel-years-and-months-duration-function_ErrorCase_002_4e7651ae0e" typeRef="ns1:tfeel-years-and-months-duration-function_002_4e7651ae0e_Result"/>
+    <dmn:literalExpression id="_jHaMp_UUEeesLuP4RHs4vA">
+      <dmn:text>years and months duration(null,null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_jHaMoPUUEeesLuP4RHs4vA_D2" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_jHaMy_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaMt_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaM0_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaNG_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaNF_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaNA_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaNL_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaM4_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaMo_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaM6_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaNC_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaNJ_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaMs_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaMz_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaMv_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaM3_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaNB_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaNK_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaMr_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaM7_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaND_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaNI_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaM2_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaMw_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaMq_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaM-_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaM8_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaM1_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaM9_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaNE_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaNH_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaMu_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaMx_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaM5_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaM__UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jHaMp_UUEeesLuP4RHs4vA"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaMzPUUEeesLuP4RHs4vA" dmnElementRef="_jHaMzPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaMuPUUEeesLuP4RHs4vA" dmnElementRef="_jHaMuPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="203" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaM1PUUEeesLuP4RHs4vA" dmnElementRef="_jHaM1PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="300" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNHPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNHPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNGPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNGPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNBPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNBPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNMPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNMPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaM5PUUEeesLuP4RHs4vA" dmnElementRef="_jHaM5PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaMpPUUEeesLuP4RHs4vA" dmnElementRef="_jHaMpPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaM7PUUEeesLuP4RHs4vA" dmnElementRef="_jHaM7PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="203" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNDPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNDPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="300" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNKPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNKPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaMtPUUEeesLuP4RHs4vA" dmnElementRef="_jHaMtPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaM0PUUEeesLuP4RHs4vA" dmnElementRef="_jHaM0PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaMwPUUEeesLuP4RHs4vA" dmnElementRef="_jHaMwPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaM4PUUEeesLuP4RHs4vA" dmnElementRef="_jHaM4PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNCPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNCPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNLPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNLPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="203" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaMsPUUEeesLuP4RHs4vA" dmnElementRef="_jHaMsPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="300" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaM8PUUEeesLuP4RHs4vA" dmnElementRef="_jHaM8PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNEPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNEPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNJPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNJPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaM3PUUEeesLuP4RHs4vA" dmnElementRef="_jHaM3PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaMxPUUEeesLuP4RHs4vA" dmnElementRef="_jHaMxPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaMrPUUEeesLuP4RHs4vA" dmnElementRef="_jHaMrPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaMofUUEeesLuP4RHs4vA" dmnElementRef="_jHaMofUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="643" y="199" width="100" height="69"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaM_PUUEeesLuP4RHs4vA" dmnElementRef="_jHaM_PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="300" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaM9PUUEeesLuP4RHs4vA" dmnElementRef="_jHaM9PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaM2PUUEeesLuP4RHs4vA" dmnElementRef="_jHaM2PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaM-PUUEeesLuP4RHs4vA" dmnElementRef="_jHaM-PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNFPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNFPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNIPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNIPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaMvPUUEeesLuP4RHs4vA" dmnElementRef="_jHaMvPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaMyPUUEeesLuP4RHs4vA" dmnElementRef="_jHaMyPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="203" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaM6PUUEeesLuP4RHs4vA" dmnElementRef="_jHaM6PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="300" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaNAPUUEeesLuP4RHs4vA" dmnElementRef="_jHaNAPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jHaMqPUUEeesLuP4RHs4vA" dmnElementRef="_jHaMqPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

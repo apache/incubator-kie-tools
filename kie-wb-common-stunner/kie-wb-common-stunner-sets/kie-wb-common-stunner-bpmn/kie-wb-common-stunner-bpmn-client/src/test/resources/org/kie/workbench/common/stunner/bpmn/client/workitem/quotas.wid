@@ -1,0 +1,19 @@
+[
+    [
+      "documentation" : 'Some \'documentation\'',
+      "icon" : 'defaultemailicon.gif',
+      'parameters' : [
+        "From" : new StringDataType(),
+        "To" : new StringDataType(),
+        'Subject' : new StringDataType(),
+        "Body": new StringDataType()
+      ],
+      "name" : "Email",
+      "displayName" : "Display Email",
+      "defaultHandler" : "new org.package.DefaultHandler()",
+      "description" : "Some \"description\"",
+      "results" : [
+        'Result' : new ObjectDataType()
+      ]
+    ]
+]

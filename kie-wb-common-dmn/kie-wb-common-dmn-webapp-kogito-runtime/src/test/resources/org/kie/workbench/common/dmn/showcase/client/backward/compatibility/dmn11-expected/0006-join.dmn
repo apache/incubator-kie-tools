@@ -1,0 +1,121 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="http://www.trisotech.com/definitions/_16bf03c7-8f3d-46d0-a921-6e335ccc7e29"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_16bf03c7-8f3d-46d0-a921-6e335ccc7e29" name="join01" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.trisotech.com/definitions/_16bf03c7-8f3d-46d0-a921-6e335ccc7e29">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="tEmployeeTable" name="tEmployeeTable" isCollection="true">
+    <dmn:itemComponent id="_008f96e5-b82b-4105-ab8f-52673390c75f" name="id" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_657371a7-e0a9-4f4c-987d-35cd10e2918b" name="name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_fa7afb54-265e-4244-97bf-4789c48e3629" name="deptNum" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_df562869-8cda-4a15-a37d-e121a4f7abac" name="mgrName" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="tDeptTable" name="tDeptTable" isCollection="true">
+    <dmn:itemComponent id="_f7e37827-f9ab-4fb1-b07e-9e4367242e65" name="number" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_fd0110de-a09b-4167-a5fe-103308ad6d0b" name="name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_ee4e552c-4e8d-4a0c-8451-bae3eb2d4bd9" name="manager" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:decision id="_24c9e583-a87c-462d-ade3-be545e228abd" name="Join">
+    <dmn:extensionElements/>
+    <dmn:variable id="_BF0575EB-A958-47EC-8A5E-C4C32BFCDA17" name="Join" typeRef="string"/>
+    <dmn:informationRequirement id="_E61EBDBF-6A03-4BE4-8564-4F9CCD658818">
+      <dmn:requiredInput href="#_7985579c-554c-4d98-aad6-c9dbacff726b"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_FA11668E-868E-4F46-8F97-50B1D4C09BE8">
+      <dmn:requiredInput href="#_35b4f57c-e574-4963-a149-83cc0030e809"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_A4A3386A-F250-4D4B-A7C8-CCEA0D6585B2">
+      <dmn:requiredInput href="#_7b08bda2-fcf4-44e8-8022-08d9043e1dee"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_104C1855-2CC7-4F4E-8634-B82969430A58">
+      <dmn:text>DeptTable[number = EmployeeTable[name=LastName].deptNum[1]].manager[1]</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:inputData id="_7985579c-554c-4d98-aad6-c9dbacff726b" name="EmployeeTable">
+    <dmn:extensionElements/>
+    <dmn:variable id="_4D298886-56B0-496B-B600-048073D7CFAD" name="EmployeeTable" typeRef="tEmployeeTable"/>
+  </dmn:inputData>
+  <dmn:inputData id="_35b4f57c-e574-4963-a149-83cc0030e809" name="DeptTable">
+    <dmn:extensionElements/>
+    <dmn:variable id="_7FD12F78-649D-4CE7-94D8-A71976965BAD" name="DeptTable" typeRef="tDeptTable"/>
+  </dmn:inputData>
+  <dmn:inputData id="_7b08bda2-fcf4-44e8-8022-08d9043e1dee" name="LastName">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C9A3D30E-961A-4E76-8F14-32612DBD6132" name="LastName" typeRef="string"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_5B6FA7CA-633B-45B0-9586-19826022BA97" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_104C1855-2CC7-4F4E-8634-B82969430A58"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_24c9e583-a87c-462d-ade3-be545e228abd" dmnElementRef="_24c9e583-a87c-462d-ade3-be545e228abd" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="225" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_7985579c-554c-4d98-aad6-c9dbacff726b" dmnElementRef="_7985579c-554c-4d98-aad6-c9dbacff726b" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_35b4f57c-e574-4963-a149-83cc0030e809" dmnElementRef="_35b4f57c-e574-4963-a149-83cc0030e809" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="225" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_7b08bda2-fcf4-44e8-8022-08d9043e1dee" dmnElementRef="_7b08bda2-fcf4-44e8-8022-08d9043e1dee" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="400" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_E61EBDBF-6A03-4BE4-8564-4F9CCD658818" dmnElementRef="_E61EBDBF-6A03-4BE4-8564-4F9CCD658818">
+        <di:waypoint x="100" y="250"/>
+        <di:waypoint x="275" y="75"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_FA11668E-868E-4F46-8F97-50B1D4C09BE8" dmnElementRef="_FA11668E-868E-4F46-8F97-50B1D4C09BE8">
+        <di:waypoint x="275" y="250"/>
+        <di:waypoint x="275" y="75"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_A4A3386A-F250-4D4B-A7C8-CCEA0D6585B2" dmnElementRef="_A4A3386A-F250-4D4B-A7C8-CCEA0D6585B2">
+        <di:waypoint x="450" y="250"/>
+        <di:waypoint x="275" y="75"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

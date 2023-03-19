@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.33.1; 1.0" namespace="http://www.trisotech.com/definitions/_69430b3e-17b8-430d-b760-c505bf6469f9" name="dateTime Table 58" triso:logoChoice="Default" id="_69430b3e-17b8-430d-b760-c505bf6469f9" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <itemDefinition name="tDateTimeComponents" id="tDateTimeComponents">
+        <itemComponent name="Year" id="_df05a420-dbc5-48cf-be85-4b41702c4f33">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="Month" id="_3e119228-7599-47e5-aa96-182e5ff66034">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="Day" id="_d5d22cac-3276-4dfd-9aee-353aa47bf2d4">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="Hour" id="_63defe21-0369-438e-b879-27df2bcf475e">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="Minute" id="_1ebad337-b2da-49ed-8ab2-b308d78e1b2f">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="Second" id="_4666a2d0-63b2-4822-b5b4-e266f4cca3d1">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <itemDefinition name="tDateVariants" id="tDateVariants">
+        <itemComponent name="fromString" id="_02d44cc2-24ac-4f64-a61f-7044684dc438">
+            <typeRef>date</typeRef>
+        </itemComponent>
+        <itemComponent name="fromDateTime" id="_13da5f5e-8fdd-4a33-9500-ceeaaeaccc91">
+            <typeRef>date</typeRef>
+        </itemComponent>
+        <itemComponent name="fromYearMonthDay" id="_c4e03aa1-d8f3-4ffa-aab2-42a17a4fb707">
+            <typeRef>date</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <inputData name="dateString" id="_74a9c3ad-a813-444e-88ee-8a91096ee233">
+        <variable typeRef="string" name="dateString"/>
+    </inputData>
+    <inputData name="timeString" id="_e5705a69-0114-4f64-8aca-22500a533a51">
+        <variable typeRef="string" name="timeString"/>
+    </inputData>
+    <decision name="Date" id="_bd547a08-c157-47ca-84d4-ac6f3d5bdeda">
+        <variable typeRef="tDateVariants" name="Date"/>
+        <informationRequirement id="_5ed07807-110d-4dd1-b721-c2a1965196ac">
+            <requiredInput href="#_74a9c3ad-a813-444e-88ee-8a91096ee233"/>
+        </informationRequirement>
+        <informationRequirement id="_6ae051c3-014c-4113-ba30-7664c6e9fea5">
+            <requiredInput href="#_178690e3-8936-4914-a735-6243a29b6068"/>
+        </informationRequirement>
+        <informationRequirement id="_319fca9b-1682-4452-83b2-bbc82ffcc7a6">
+            <requiredInput href="#_e3143b2d-e150-422e-8163-d3e4461988f4"/>
+        </informationRequirement>
+        <informationRequirement id="_04bc998f-14fd-45c0-820d-80db70891af6">
+            <requiredInput href="#_ec0d9542-257d-401b-ac6b-ce927014cf25"/>
+        </informationRequirement>
+        <informationRequirement id="_3a7338bd-a16c-4900-ab7f-0429d8b077b5">
+            <requiredDecision href="#_dfbb843a-bd34-4099-b700-0d9ca5b38d6a"/>
+        </informationRequirement>
+        <context>
+            <contextEntry>
+                <variable typeRef="date" name="fromString"/>
+                <literalExpression>
+                    <text>date(dateString)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="date" name="fromDateTime"/>
+                <literalExpression>
+                    <text>date(Date-Time)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="date" name="fromYearMonthDay"/>
+                <literalExpression>
+                    <text>date(Year,Month,Day)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <decision name="Date-Time" id="_dfbb843a-bd34-4099-b700-0d9ca5b38d6a">
+        <variable typeRef="dateTime" name="Date-Time"/>
+        <informationRequirement id="_8d312d4f-6650-45f9-8739-00e07e993176">
+            <requiredInput href="#_c796f29d-d800-4239-b9f6-d4d72f77b183"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>date and time(dateTimeString)</text>
+        </literalExpression>
+    </decision>
+    <decision name="Time" id="_9e8acf47-790a-4741-8ebb-e8a22a30744c">
+        <variable typeRef="time" name="Time"/>
+        <informationRequirement id="_5201382e-6f86-4846-9a56-1dd77102ccb6">
+            <requiredInput href="#_e5705a69-0114-4f64-8aca-22500a533a51"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>time(timeString)</text>
+        </literalExpression>
+    </decision>
+    <inputData name="Year" id="_178690e3-8936-4914-a735-6243a29b6068">
+        <variable typeRef="number" name="Year"/>
+    </inputData>
+    <inputData name="Month" id="_e3143b2d-e150-422e-8163-d3e4461988f4">
+        <variable typeRef="number" name="Month"/>
+    </inputData>
+    <inputData name="Day" id="_ec0d9542-257d-401b-ac6b-ce927014cf25">
+        <variable typeRef="number" name="Day"/>
+    </inputData>
+    <decision name="Date-Time2" id="_7df22028-4b5b-4594-89c7-a80b8aec526f">
+        <variable typeRef="dateTime" name="Date-Time2"/>
+        <informationRequirement id="f5fbf8c4-02f9-4dff-b0c8-a6e8321284b8">
+            <requiredDecision href="#_bd547a08-c157-47ca-84d4-ac6f3d5bdeda"/>
+        </informationRequirement>
+        <informationRequirement id="efe0f748-c173-422a-a9b3-733d6cefa0fb">
+            <requiredDecision href="#_9e8acf47-790a-4741-8ebb-e8a22a30744c"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>date and time(Date.fromString,Time)</text>
+        </literalExpression>
+    </decision>
+    <decision name="Time2" id="_1f2b08ce-3c6b-4e22-a747-8d9f378e9035">
+        <variable typeRef="time" name="Time2"/>
+        <informationRequirement id="_5900b0b2-0fb2-4fa5-839e-4ec7c11dc88b">
+            <requiredDecision href="#_7df22028-4b5b-4594-89c7-a80b8aec526f"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>time(Date-Time2)</text>
+        </literalExpression>
+    </decision>
+    <inputData name="dateTimeString" id="_c796f29d-d800-4239-b9f6-d4d72f77b183">
+        <variable typeRef="string" name="dateTimeString"/>
+    </inputData>
+    <inputData name="Hours" id="_0dffa0f8-4c84-401e-8403-94c201fbd976">
+        <variable typeRef="number" name="Hours"/>
+    </inputData>
+    <inputData name="Minutes" id="_03d8f475-0a28-4c67-8fc5-51d9b1f54781">
+        <variable typeRef="number" name="Minutes"/>
+    </inputData>
+    <inputData name="Seconds" id="_9225dbc5-fe5c-4fa9-b97c-0a41265abf20">
+        <variable typeRef="number" name="Seconds"/>
+    </inputData>
+    <inputData name="Timezone" id="_b133cbd3-884d-4cf9-a750-81d949d17e31">
+        <variable typeRef="dayTimeDuration" name="Timezone"/>
+    </inputData>
+    <decision name="Time3" id="_463b1a36-2505-413a-8056-f6a5efc2b52e">
+        <variable typeRef="time" name="Time3"/>
+        <informationRequirement id="_4274d006-c59f-403d-a944-a04238d91346">
+            <requiredInput href="#_0dffa0f8-4c84-401e-8403-94c201fbd976"/>
+        </informationRequirement>
+        <informationRequirement id="_5e5240d7-c390-4c06-b5f2-c3d7bf2377b6">
+            <requiredInput href="#_03d8f475-0a28-4c67-8fc5-51d9b1f54781"/>
+        </informationRequirement>
+        <informationRequirement id="fc9c1ed9-7c9b-4d47-a278-a343e0d91d43">
+            <requiredInput href="#_9225dbc5-fe5c-4fa9-b97c-0a41265abf20"/>
+        </informationRequirement>
+        <informationRequirement id="_8ac32b2a-d345-4a76-b2f7-21d3c0430b98">
+            <requiredInput href="#_b133cbd3-884d-4cf9-a750-81d949d17e31"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>time(Hours,Minutes,Seconds,Timezone)</text>
+        </literalExpression>
+    </decision>
+    <inputData name="durationString" id="_6f8bf858-eed1-4f41-93f2-73431540f91f">
+        <variable typeRef="string" name="durationString"/>
+    </inputData>
+    <decision name="dtDuration1" id="_972ecd98-1c70-4f0c-909c-786f23c61dbb">
+        <variable typeRef="dayTimeDuration" name="dtDuration1"/>
+        <informationRequirement id="_97285856-a25e-42a6-8ab3-2840c3f877ca">
+            <requiredInput href="#_6f8bf858-eed1-4f41-93f2-73431540f91f"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>duration(durationString)</text>
+        </literalExpression>
+    </decision>
+    <decision name="dtDuration2" id="_a2c48b03-6e72-4846-99cc-02f3747c6867">
+        <variable typeRef="dayTimeDuration" name="dtDuration2"/>
+        <informationRequirement id="c2b80b2f-3767-4c1a-87a4-926fd8a83df3">
+            <requiredDecision href="#_7df22028-4b5b-4594-89c7-a80b8aec526f"/>
+        </informationRequirement>
+        <informationRequirement id="_4714aa72-23ad-4964-9429-feef62f03e9b">
+            <requiredDecision href="#_dfbb843a-bd34-4099-b700-0d9ca5b38d6a"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>Date-Time - Date-Time2</text>
+        </literalExpression>
+    </decision>
+    <inputData name="oneHour" id="_d96a8f03-5cee-42ca-8646-4383ad5ecee2">
+        <variable typeRef="dayTimeDuration" name="oneHour"/>
+    </inputData>
+    <decision name="sumDurations" id="_14f9f361-8c3c-455b-9c97-fe15201e3b5e">
+        <variable typeRef="dayTimeDuration" name="sumDurations"/>
+        <informationRequirement id="_1dc50225-3087-448d-9cdc-e65c31bc654e">
+            <requiredDecision href="#_a2c48b03-6e72-4846-99cc-02f3747c6867"/>
+        </informationRequirement>
+        <informationRequirement id="bcac3502-a278-4806-9999-ff28fd763fd2">
+            <requiredDecision href="#_972ecd98-1c70-4f0c-909c-786f23c61dbb"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>dtDuration1 + dtDuration2</text>
+        </literalExpression>
+    </decision>
+    <decision name="ymDuration2" id="_cbac111e-ca71-4fac-a921-175ffd767055">
+        <variable typeRef="yearMonthDuration" name="ymDuration2"/>
+        <informationRequirement id="_5221210e-7f47-48d4-a4bf-fe930eaabb47">
+            <requiredDecision href="#_7df22028-4b5b-4594-89c7-a80b8aec526f"/>
+        </informationRequirement>
+        <informationRequirement id="_86f10707-9f4f-4ba1-be26-83ff133c8a5c">
+            <requiredDecision href="#_dfbb843a-bd34-4099-b700-0d9ca5b38d6a"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>years and months duration(Date-Time2,Date-Time)</text>
+        </literalExpression>
+    </decision>
+    <decision name="cDay" id="_04c6bedc-bc63-464f-8e61-c039d24a47bf">
+        <variable typeRef="number" name="cDay"/>
+        <informationRequirement id="_25eb94de-81ac-42cb-b2e9-a11f49c2def1">
+            <requiredDecision href="#_bd547a08-c157-47ca-84d4-ac6f3d5bdeda"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>Date.fromString.day</text>
+        </literalExpression>
+    </decision>
+    <decision name="cYear" id="_dc18ebe0-6762-4734-aeb3-ed4fb861865c">
+        <variable typeRef="number" name="cYear"/>
+        <informationRequirement id="edbe69a3-9a72-4c23-b1bb-a961d9f1adf3">
+            <requiredDecision href="#_bd547a08-c157-47ca-84d4-ac6f3d5bdeda"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>Date.fromString.year</text>
+        </literalExpression>
+    </decision>
+    <decision name="cMonth" id="_2cf37ed0-590d-4f97-b58b-46eaa424b965">
+        <variable typeRef="number" name="cMonth"/>
+        <informationRequirement id="a214e170-6edc-4936-b7d9-c75de86f08bd">
+            <requiredDecision href="#_bd547a08-c157-47ca-84d4-ac6f3d5bdeda"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>Date.fromString.month</text>
+        </literalExpression>
+    </decision>
+    <decision name="cHour" id="_087e3f57-8ea6-4857-a080-fadc5a1dd9e8">
+        <variable typeRef="number" name="cHour"/>
+        <informationRequirement id="_29232d62-dc42-48f0-98bf-5ebd3563006f">
+            <requiredDecision href="#_7df22028-4b5b-4594-89c7-a80b8aec526f"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>Date-Time2.hour</text>
+        </literalExpression>
+    </decision>
+    <decision name="cMinute" id="_6836a944-7f7b-4c98-8a7a-a573494110fd">
+        <variable typeRef="number" name="cMinute"/>
+        <informationRequirement id="_55acbac0-c512-4da8-9fe3-f815065b7034">
+            <requiredDecision href="#_7df22028-4b5b-4594-89c7-a80b8aec526f"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>Date-Time2.minute</text>
+        </literalExpression>
+    </decision>
+    <decision name="cSecond" id="_4af88a8f-92e4-4f2d-bde1-e8a36b27e5bf">
+        <variable typeRef="number" name="cSecond"/>
+        <informationRequirement id="c8b7fc1c-57bf-42fa-8580-f3260258ca93">
+            <requiredDecision href="#_7df22028-4b5b-4594-89c7-a80b8aec526f"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>Date-Time2.second</text>
+        </literalExpression>
+    </decision>
+    <decision name="cOffset" id="_81f97dd0-29ea-4bab-9540-b70a2fdf8ff3">
+        <variable typeRef="dayTimeDuration" name="cOffset"/>
+        <informationRequirement id="cf4ba237-0685-4ca5-95da-f889caca520c">
+            <requiredDecision href="#_7df22028-4b5b-4594-89c7-a80b8aec526f"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>Date-Time2.time offset</text>
+        </literalExpression>
+    </decision>
+    <decision name="years" id="_91fb395d-8173-4ed3-95f7-f790bd3967ab">
+        <variable typeRef="number" name="years"/>
+        <informationRequirement id="_7acd3f0b-3d4b-4901-976e-1aaa627273dc">
+            <requiredDecision href="#_cbac111e-ca71-4fac-a921-175ffd767055"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>ymDuration2.years</text>
+        </literalExpression>
+    </decision>
+    <decision name="seconds" id="_c2f1a1ae-1403-43a2-b176-dedf3da51e6b">
+        <variable typeRef="number" name="seconds"/>
+        <informationRequirement id="a8be0b63-799d-49fd-9edd-bf554198cb6a">
+            <requiredDecision href="#_972ecd98-1c70-4f0c-909c-786f23c61dbb"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>dtDuration1.seconds</text>
+        </literalExpression>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_69430b3e-17b8-430d-b760-c505bf6469f9_D1">
+            <dmndi:Size height="1265.0" width="2814.0"/>
+            <dmndi:DMNShape dmnElementRef="_74a9c3ad-a813-444e-88ee-8a91096ee233" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s1">
+                <dc:Bounds height="60.0" width="153.0" x="1440.0" y="874.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_e5705a69-0114-4f64-8aca-22500a533a51" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s2">
+                <dc:Bounds height="60.0" width="153.0" x="2292.0" y="874.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_bd547a08-c157-47ca-84d4-ac6f3d5bdeda" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s3">
+                <dc:Bounds height="61.0" width="154.0" x="1652.0" y="693.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_dfbb843a-bd34-4099-b700-0d9ca5b38d6a" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s4">
+                <dc:Bounds height="61.0" width="154.0" x="1226.0" y="874.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_9e8acf47-790a-4741-8ebb-e8a22a30744c" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s5">
+                <dc:Bounds height="61.0" width="154.0" x="2154.0" y="693.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_178690e3-8936-4914-a735-6243a29b6068" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s6">
+                <dc:Bounds height="60.0" width="153.0" x="1653.0" y="874.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_e3143b2d-e150-422e-8163-d3e4461988f4" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s7">
+                <dc:Bounds height="60.0" width="153.0" x="1866.0" y="874.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_ec0d9542-257d-401b-ac6b-ce927014cf25" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s8">
+                <dc:Bounds height="60.0" width="153.0" x="2079.0" y="874.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_7df22028-4b5b-4594-89c7-a80b8aec526f" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s9">
+                <dc:Bounds height="61.0" width="154.0" x="2017.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_1f2b08ce-3c6b-4e22-a747-8d9f378e9035" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s10">
+                <dc:Bounds height="61.0" width="154.0" x="1654.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_c796f29d-d800-4239-b9f6-d4d72f77b183" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s11">
+                <dc:Bounds height="60.0" width="153.0" x="1227.0" y="1055.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_0dffa0f8-4c84-401e-8403-94c201fbd976" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s12">
+                <dc:Bounds height="60.0" width="153.0" x="374.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_03d8f475-0a28-4c67-8fc5-51d9b1f54781" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s13">
+                <dc:Bounds height="60.0" width="153.0" x="587.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_9225dbc5-fe5c-4fa9-b97c-0a41265abf20" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s14">
+                <dc:Bounds height="60.0" width="153.0" x="800.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_b133cbd3-884d-4cf9-a750-81d949d17e31" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s15">
+                <dc:Bounds height="60.0" width="153.0" x="1013.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_463b1a36-2505-413a-8056-f6a5efc2b52e" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s16">
+                <dc:Bounds height="61.0" width="154.0" x="622.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_6f8bf858-eed1-4f41-93f2-73431540f91f" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s17">
+                <dc:Bounds height="60.0" width="153.0" x="161.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_972ecd98-1c70-4f0c-909c-786f23c61dbb" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s18">
+                <dc:Bounds height="61.0" width="154.0" x="160.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_a2c48b03-6e72-4846-99cc-02f3747c6867" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s19">
+                <dc:Bounds height="61.0" width="154.0" x="1226.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_14f9f361-8c3c-455b-9c97-fe15201e3b5e" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s20">
+                <dc:Bounds height="61.0" width="154.0" x="836.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_cbac111e-ca71-4fac-a921-175ffd767055" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s21">
+                <dc:Bounds height="61.0" width="154.0" x="1440.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_04c6bedc-bc63-464f-8e61-c039d24a47bf" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s22">
+                <dc:Bounds height="61.0" width="154.0" x="1375.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_dc18ebe0-6762-4734-aeb3-ed4fb861865c" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s23">
+                <dc:Bounds height="61.0" width="154.0" x="1589.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_2cf37ed0-590d-4f97-b58b-46eaa424b965" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s24">
+                <dc:Bounds height="61.0" width="154.0" x="1803.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_087e3f57-8ea6-4857-a080-fadc5a1dd9e8" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s25">
+                <dc:Bounds height="61.0" width="154.0" x="1868.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_6836a944-7f7b-4c98-8a7a-a573494110fd" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s26">
+                <dc:Bounds height="61.0" width="154.0" x="2082.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_4af88a8f-92e4-4f2d-bde1-e8a36b27e5bf" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s27">
+                <dc:Bounds height="61.0" width="154.0" x="2296.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_81f97dd0-29ea-4bab-9540-b70a2fdf8ff3" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s28">
+                <dc:Bounds height="61.0" width="154.0" x="2510.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_91fb395d-8173-4ed3-95f7-f790bd3967ab" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s29">
+                <dc:Bounds height="61.0" width="154.0" x="1440.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_c2f1a1ae-1403-43a2-b176-dedf3da51e6b" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s30">
+                <dc:Bounds height="61.0" width="154.0" x="160.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="_5ed07807-110d-4dd1-b721-c2a1965196ac" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e1">
+                <di:waypoint x="1516.0" y="874.0"/>
+                <di:waypoint x="1729.0" y="754.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_6ae051c3-014c-4113-ba30-7664c6e9fea5" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e2">
+                <di:waypoint x="1729.0" y="874.0"/>
+                <di:waypoint x="1729.0" y="754.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_319fca9b-1682-4452-83b2-bbc82ffcc7a6" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e3">
+                <di:waypoint x="1942.0" y="874.0"/>
+                <di:waypoint x="1729.0" y="754.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_04bc998f-14fd-45c0-820d-80db70891af6" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e4">
+                <di:waypoint x="2155.0" y="874.0"/>
+                <di:waypoint x="1729.0" y="754.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_3a7338bd-a16c-4900-ab7f-0429d8b077b5" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e5">
+                <di:waypoint x="1303.0" y="874.0"/>
+                <di:waypoint x="1729.0" y="754.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_8d312d4f-6650-45f9-8739-00e07e993176" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e6">
+                <di:waypoint x="1303.0" y="1055.0"/>
+                <di:waypoint x="1303.0" y="935.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_5201382e-6f86-4846-9a56-1dd77102ccb6" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e7">
+                <di:waypoint x="2368.0" y="874.0"/>
+                <di:waypoint x="2231.0" y="754.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="f5fbf8c4-02f9-4dff-b0c8-a6e8321284b8" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e8">
+                <di:waypoint x="1729.0" y="693.0"/>
+                <di:waypoint x="2094.0" y="573.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="efe0f748-c173-422a-a9b3-733d6cefa0fb" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e9">
+                <di:waypoint x="2231.0" y="693.0"/>
+                <di:waypoint x="2094.0" y="573.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_5900b0b2-0fb2-4fa5-839e-4ec7c11dc88b" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e10">
+                <di:waypoint x="2094.0" y="512.0"/>
+                <di:waypoint x="1731.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_4274d006-c59f-403d-a944-a04238d91346" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e11">
+                <di:waypoint x="450.0" y="331.0"/>
+                <di:waypoint x="699.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_5e5240d7-c390-4c06-b5f2-c3d7bf2377b6" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e12">
+                <di:waypoint x="663.0" y="331.0"/>
+                <di:waypoint x="699.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="fc9c1ed9-7c9b-4d47-a278-a343e0d91d43" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e13">
+                <di:waypoint x="876.0" y="331.0"/>
+                <di:waypoint x="699.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_8ac32b2a-d345-4a76-b2f7-21d3c0430b98" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e14">
+                <di:waypoint x="1089.0" y="331.0"/>
+                <di:waypoint x="699.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_97285856-a25e-42a6-8ab3-2840c3f877ca" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e15">
+                <di:waypoint x="237.0" y="512.0"/>
+                <di:waypoint x="237.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="c2b80b2f-3767-4c1a-87a4-926fd8a83df3" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e16">
+                <di:waypoint x="2094.0" y="512.0"/>
+                <di:waypoint x="1303.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_1dc50225-3087-448d-9cdc-e65c31bc654e" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e17">
+                <di:waypoint x="1303.0" y="331.0"/>
+                <di:waypoint x="913.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="bcac3502-a278-4806-9999-ff28fd763fd2" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e18">
+                <di:waypoint x="237.0" y="331.0"/>
+                <di:waypoint x="913.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_5221210e-7f47-48d4-a4bf-fe930eaabb47" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e19">
+                <di:waypoint x="2094.0" y="512.0"/>
+                <di:waypoint x="1517.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_25eb94de-81ac-42cb-b2e9-a11f49c2def1" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e20">
+                <di:waypoint x="1729.0" y="693.0"/>
+                <di:waypoint x="1452.0" y="573.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="edbe69a3-9a72-4c23-b1bb-a961d9f1adf3" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e21">
+                <di:waypoint x="1729.0" y="693.0"/>
+                <di:waypoint x="1666.0" y="573.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="a214e170-6edc-4936-b7d9-c75de86f08bd" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e22">
+                <di:waypoint x="1729.0" y="693.0"/>
+                <di:waypoint x="1880.0" y="573.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_29232d62-dc42-48f0-98bf-5ebd3563006f" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e23">
+                <di:waypoint x="2094.0" y="512.0"/>
+                <di:waypoint x="1945.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_55acbac0-c512-4da8-9fe3-f815065b7034" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e24">
+                <di:waypoint x="2094.0" y="512.0"/>
+                <di:waypoint x="2159.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="c8b7fc1c-57bf-42fa-8580-f3260258ca93" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e25">
+                <di:waypoint x="2094.0" y="512.0"/>
+                <di:waypoint x="2373.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="cf4ba237-0685-4ca5-95da-f889caca520c" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e26">
+                <di:waypoint x="2094.0" y="512.0"/>
+                <di:waypoint x="2587.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_7acd3f0b-3d4b-4901-976e-1aaa627273dc" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e27">
+                <di:waypoint x="1517.0" y="331.0"/>
+                <di:waypoint x="1517.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="a8be0b63-799d-49fd-9edd-bf554198cb6a" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e28">
+                <di:waypoint x="237.0" y="331.0"/>
+                <di:waypoint x="237.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_4714aa72-23ad-4964-9429-feef62f03e9b" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e29">
+                <di:waypoint x="1303.0" y="874.0"/>
+                <di:waypoint x="1303.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_86f10707-9f4f-4ba1-be26-83ff133c8a5c" id="_69430b3e-17b8-430d-b760-c505bf6469f9_e30">
+                <di:waypoint x="1303.0" y="874.0"/>
+                <di:waypoint x="1517.0" y="392.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNDiagram name="Page 2" id="_69430b3e-17b8-430d-b760-c505bf6469f9_D2">
+            <dmndi:DMNShape dmnElementRef="_d96a8f03-5cee-42ca-8646-4383ad5ecee2" id="_69430b3e-17b8-430d-b760-c505bf6469f9_s31">
+                <dc:Bounds height="60.0" width="153.0" x="106.0" y="106.0"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0054-feel-even-function" name="0054-feel-even-function" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'even(number)' in category numeric functions</description>
+    <decision name="decision001" id="_decision001">
+        <description>Tests FEEL expression: 'even(2)' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'even(2)'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision001"/>
+        <literalExpression>
+            <text>even(2)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision001_a" id="_decision001_a">
+        <description>Tests FEEL expression: 'even(1)' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'even(1)'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision001_a"/>
+        <literalExpression>
+            <text>even(1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision002" id="_decision002">
+        <description>Tests FEEL expression: 'even(-2)' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'even(-2)'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision002"/>
+        <literalExpression>
+            <text>even(-2)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision002_a" id="_decision002_a">
+        <description>Tests FEEL expression: 'even(-1)' and expects result: 'false (number)'</description>
+        <question>Result of FEEL expression 'even(-1)'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision002_a"/>
+        <literalExpression>
+            <text>even(-1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision003" id="_decision003">
+        <description>Tests FEEL expression: 'even(0)' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'even(0)'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision003"/>
+        <literalExpression>
+            <text>even(0)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision004" id="_decision004">
+        <description>Tests FEEL expression: 'even()' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'even()'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="boolean" name="decision004"/>
+        <literalExpression>
+            <text>even()</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision005" id="_decision005">
+        <description>Tests FEEL expression: 'even(4,4)' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'even(4,4)'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="boolean" name="decision005"/>
+        <literalExpression>
+            <text>even(4,4)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision006" id="_decision006">
+        <description>Tests FEEL expression: 'even(number:4)' and expects result: '2 (number)'</description>
+        <question>Result of FEEL expression 'even(number:4)'?</question>
+        <allowedAnswers>2 (number)</allowedAnswers>
+        <variable typeRef="boolean" name="decision006"/>
+        <literalExpression>
+            <text>even(number:4)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision007" id="_decision007">
+        <description>Tests FEEL expression: 'even(n:4)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'even(n:4)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision007"/>
+        <literalExpression>
+            <text>even(n:4)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision008" id="_decision008">
+        <description>Tests FEEL expression: 'even(null)' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'even(null)'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="boolean" name="decision008"/>
+        <literalExpression>
+            <text>even(null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision009" id="_decision009">
+        <description>Tests FEEL expression: 'even("4")' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'even("4")'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="boolean" name="decision009"/>
+        <literalExpression>
+            <text>even("4")</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision010" id="_decision010">
+        <description>Tests FEEL expression: 'even(true)' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'even(true)'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="boolean" name="decision010"/>
+        <literalExpression>
+            <text>even(true)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision011" id="_decision011">
+        <description>Tests FEEL expression: 'even(duration("P4D"))' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'even(duration("P4D"))'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="boolean" name="decision011"/>
+        <literalExpression>
+            <text>even(duration("P4D"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision012" id="_decision012">
+        <description>Tests FEEL expression: 'even(duration("P4Y"))' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'even(duration("P4Y"))'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="boolean" name="decision012"/>
+        <literalExpression>
+            <text>even(duration("P4Y"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision013" id="_decision013">
+        <description>Tests FEEL expression: 'even(date("2018-12-06"))' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'even(date("2018-12-06"))'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="boolean" name="decision013"/>
+        <literalExpression>
+            <text>even(date("2018-12-06"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision014" id="_decision014">
+        <description>Tests FEEL expression: 'even(time("00:00:00"))' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'even(time("00:00:00"))'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="boolean" name="decision014"/>
+        <literalExpression>
+            <text>even(time("00:00:00"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision015" id="_decision015">
+        <description>Tests FEEL expression: 'even(date and time("2018-12-06T00:00:00"))' and expects result: 'null (number)'</description>
+        <question>Result of FEEL expression 'even(date and time("2018-12-06T00:00:00"))'?</question>
+        <allowedAnswers>null (number)</allowedAnswers>
+        <variable typeRef="boolean" name="decision015"/>
+        <literalExpression>
+            <text>even(date and time("2018-12-06T00:00:00"))</text>
+        </literalExpression>
+    </decision>
+</definitions>
+
