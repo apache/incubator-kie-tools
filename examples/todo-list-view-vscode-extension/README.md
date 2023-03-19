@@ -19,4 +19,4 @@ This extensions has the following commands:
 
 ## Building
 
-Run `yarn run build:prod`. A `.vsix` file will be on the `dist` folder.
+Run `pnpm build:prod`. A `.vsix` file will be on the `dist` folder.

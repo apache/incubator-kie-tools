@@ -28,7 +28,7 @@ import {
   PMML,
   Predicate,
   Scorecard,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { PredicateEditor } from "./PredicateEditor";
 import { Operation } from "../Operation";
@@ -245,7 +245,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     }}
                     validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
                     isDisabled={!areReasonCodesUsed || characteristic?.reasonCode !== undefined}
-                    data-ouia-component-id="attribute-reason-code"
+                    ouiaId="attribute-reason-code"
                   />
                 </FormGroup>
               </StackItem>
@@ -288,7 +288,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                       });
                     }}
                     validated={partialScoreValidation.length > 0 ? "warning" : "default"}
-                    data-ouia-component-id="attribute-partial-score"
+                    ouiaId="attribute-partial-score"
                   />
                 </FormGroup>
               </StackItem>

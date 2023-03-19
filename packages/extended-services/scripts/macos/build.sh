@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-APP="target/KIE Tooling Extended Services.app"
+APP="target/KIE Sandbox Extended Services.app"
 CONTENTS=$APP/Contents
 MACOS=$CONTENTS/MacOs
 RESOURCES=$CONTENTS/Resources
@@ -13,7 +13,7 @@ mkdir -p "$CONTENTS"
 mkdir "$MACOS"
 mkdir "$RESOURCES"
 
-cp ../../dist/darwin/kie_tooling_extended_services "$MACOS"/kogito
+cp ../../dist/darwin/kie_sandbox_extended_services "$MACOS"/kogito
 cp src/Info.plist "$CONTENTS"
 cp src/KieLogo.png "$RESOURCES"
 ln -s /Applications $APPLICATIONS

@@ -15,7 +15,7 @@
  */
 import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { LandingPageToolbar } from "@kogito-tooling/pmml-editor/dist/editor/components/LandingPage/molecules";
+import { LandingPageToolbar } from "@kie-tools/pmml-editor/dist/editor/components/LandingPage/molecules";
 
 const setFilter = jest.fn((_filter: string) => {
   /*NOP*/

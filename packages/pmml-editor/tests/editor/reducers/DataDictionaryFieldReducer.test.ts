@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
-import { Actions, AllActions, DataDictionaryFieldReducer } from "@kogito-tooling/pmml-editor/dist/editor/reducers";
+import { DataField } from "@kie-tools/pmml-editor-marshaller";
+import { Actions, AllActions, DataDictionaryFieldReducer } from "@kie-tools/pmml-editor/dist/editor/reducers";
 import { Reducer } from "react";
-import { HistoryService } from "@kogito-tooling/pmml-editor/dist/editor/history";
-import { ValidationRegistry } from "@kogito-tooling/pmml-editor/dist/editor/validation";
+import { HistoryService } from "@kie-tools/pmml-editor/dist/editor/history";
+import { ValidationRegistry } from "@kie-tools/pmml-editor/dist/editor/validation";
 
 const historyService = new HistoryService([]);
 const validationRegistry = new ValidationRegistry();
-const dataFields: DataField[] = [{ name: "field1" as FieldName, dataType: "boolean", optype: "categorical" }];
+const dataFields: DataField[] = [{ name: "field1", dataType: "boolean", optype: "categorical" }];
 const pmml = { version: "1.0", DataDictionary: { DataField: dataFields }, Header: {} };
 const reducer: Reducer<DataField[], AllActions> = DataDictionaryFieldReducer(historyService, validationRegistry);
 
@@ -31,8 +31,8 @@ describe("DataDictionaryFieldReducer::Valid actions", () => {
       type: Actions.UpdateDataDictionaryField,
       payload: {
         dataDictionaryIndex: 0,
-        dataField: { name: "updated" as FieldName, dataType: "string", optype: "ordinal" },
-        originalName: "field1" as FieldName,
+        dataField: { name: "updated", dataType: "string", optype: "ordinal" },
+        originalName: "field1",
       },
     });
     const updated = historyService.commit(pmml)?.DataDictionary.DataField as DataField[];
@@ -49,8 +49,8 @@ describe("DataDictionaryFieldReducer::Valid actions", () => {
       type: Actions.UpdateDataDictionaryField,
       payload: {
         dataDictionaryIndex: -1,
-        dataField: { name: "updated" as FieldName, dataType: "boolean", optype: "categorical" },
-        originalName: "field1" as FieldName,
+        dataField: { name: "updated", dataType: "boolean", optype: "categorical" },
+        originalName: "field1",
       },
     });
     const updated = historyService.commit(pmml)?.DataDictionary.DataField as DataField[];
@@ -63,8 +63,8 @@ describe("DataDictionaryFieldReducer::Valid actions", () => {
       type: Actions.UpdateDataDictionaryField,
       payload: {
         dataDictionaryIndex: 1,
-        dataField: { name: "updated" as FieldName, dataType: "boolean", optype: "categorical" },
-        originalName: "field1" as FieldName,
+        dataField: { name: "updated", dataType: "boolean", optype: "categorical" },
+        originalName: "field1",
       },
     });
     const updated = historyService.commit(pmml)?.DataDictionary.DataField as DataField[];

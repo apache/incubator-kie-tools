@@ -1,100 +1,105 @@
-name: "Setup Kogito Tooling build environment"
+name: "Setup KIE Tools build environment"
 description: ""
 
 inputs:
-  os:
-    description: "Operating System"
-    required: true
-  path:
-    description: "kogito-tooling path"
+  working_dir:
+    description: "kie-tools path"
     required: false
     default: "."
 
 runs:
   using: "composite"
   steps:
-    - name: "Setup Node"
-      uses: actions/setup-node@v1
+    - name: "Print storage usage (before setup)"
+      shell: bash
+      run: |
+        echo "STEP: Print storage usage (before setup)"
+        cd ${{ inputs.working_dir }}
+        du -sh .
+
+    - name: "Setup pnpm"
+      uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd
       with:
-        node-version: 16.2.0
+        version: 7.26.3
+
+    - name: "Setup Node"
+      uses: actions/setup-node@v2
+      with:
+        node-version: 18.14.0
 
     - name: "Setup JDK 11"
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@de1bb2b0c5634f0fc4438d7aa9944e68f9bf86cc
       with:
         java-version: 11
+        distribution: "zulu"
 
-    - name: "Set up GOLANG 1.16"
-      uses: actions/setup-go@v2
+    - name: "Set up GOLANG 1.19"
+      uses: actions/setup-go@v3
       with:
-        go-version: "1.16"
+        go-version: "1.19"
 
-    - name: "Fetch Git tags"
+    - name: "Set up Maven"
+      uses: stCarolas/setup-maven@417e1a9899611c0350621d1fb0c2770f35105c69
+      with:
+        maven-version: 3.8.6
+
+    - name: "Setup network timeout"
       shell: bash
       run: |
-        echo "STEP: Fetch Git tags"
-        cd ${{ inputs.path }}
-        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-
-    - name: "Setup Yarn and Lerna"
-      shell: bash
-      run: |
-        echo "STEP: Setup Yarn and Lerna"
-        cd ${{ inputs.path }}
-        npm install -g lerna@4.0.0 yarn@1.22.10
-        yarn config set network-timeout 1000000
+        echo "STEP: Setup network timeout"
+        cd ${{ inputs.working_dir }}
+        pnpm config set network-timeout 1000000
 
     - name: "Setup default Maven args"
       shell: bash
       run: |
         echo "STEP: Setup default Maven args"
-        cd ${{ inputs.path }}
-        mkdir .mvn
-        echo '-B -ntp' > .mvn/maven.config
+        cd ${{ inputs.working_dir }}
+        pnpm -r exec 'bash' '-c' 'mkdir .mvn'
+        pnpm -r exec 'bash' '-c' 'echo -B -ntp > .mvn/maven.config'
+        pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
 
-    - name: "Bootstrap"
+    - name: "Install Fluxbox (Ubuntu only)"
       shell: bash
       run: |
-        echo "STEP: Bootstrap"
-        cd ${{ inputs.path }}
-        yarn bootstrap
-
-    - name: "Check yarn.lock"
-      shell: bash
-      run: |
-        echo "STEP: Check yarn.lock"
-        cd ${{ inputs.path }}
-        git diff yarn.lock;
-        [ "0" == "$(git diff yarn.lock | wc -l | tr -d ' ')" ]
-
-    - name: "Check dependencies mismatches"
-      shell: bash
-      run: |
-        echo "STEP: Check dependencies mismatches"
-        cd ${{ inputs.path }}
-        npx --yes syncpack list-mismatches
-
-    - name: "Check format"
-      shell: bash
-      run: |
-        echo "STEP: Check format"
-        cd ${{ inputs.path }}
-        yarn format:check
+        echo "STEP: Install Fluxbox (Ubuntu only)"
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
+          sudo apt-get -y install fluxbox > /dev/null 2>&1
+        fi
 
     - name: "Start Xvfb (Ubuntu only)"
       shell: bash
       run: |
         echo "STEP: Start Xvfb (Ubuntu only)"
-        cd ${{ inputs.path }}
-        if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
-            /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
+            /usr/bin/Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
         fi
+
+    - name: "Start Fluxbox (Ubuntu only)"
+      shell: bash
+      run: |
+        echo "STEP: Start Fluxbox (Ubuntu only)"
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
+            fluxbox -display :99 > /dev/null 2>&1 &
+        fi
+
+    - name: "Configure Pagefile (Windows only)"
+      if: runner.os == 'Windows'
+      uses: al-cheb/configure-pagefile-action@7e234852c937eea04d6ee627c599fb24a5bfffee
+      with:
+        minimum-size: 16GB
+        maximum-size: 16GB
+        disk-root: "C:"
 
     - name: "Increase inotify watches (Ubuntu only)"
       shell: bash
       run: |
         echo "STEP: Increase inotify watches (Ubuntu only)"
-        cd ${{ inputs.path }}
-        if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
           echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
         fi
 
@@ -102,8 +107,8 @@ runs:
       shell: bash
       run: |
         echo "STEP: Setup GOLANG packages (Linux)"
-        cd ${{ inputs.path }}
-        if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
           sudo apt update && \
           sudo apt install -y \
           build-essential \
@@ -111,3 +116,10 @@ runs:
           libappindicator3-dev \
           gir1.2-appindicator3-0.1
         fi
+
+    - name: "Print storage usage (after setup)"
+      shell: bash
+      run: |
+        echo "STEP: Print storage usage (after setup)"
+        cd ${{ inputs.working_dir }}
+        du -sh .

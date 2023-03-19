@@ -1,5 +1,3 @@
-import { BackendManagerService } from "../../api";
-
 /*
  * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
@@ -15,6 +13,8 @@ import { BackendManagerService } from "../../api";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { BackendManagerService } from "../../api";
 
 /**
  * Backend API exposed by an extension.

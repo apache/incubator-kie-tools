@@ -1,0 +1,28 @@
+{
+  "id": "start5Test",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "name": "Start 5 Test Workflow",
+  "description": "Start 5 Test Workflow - Object Type - Undefined Start",
+  "start": {
+    "schedule": "2017-08-12T07:00:00Z/PT2H"
+  },
+  "states": [
+    {
+      "name": "First State",
+      "type": "inject",
+      "data": {
+        "result": "First State!"
+      },
+      "end": true
+    },
+    {
+      "name": "Second State",
+      "type": "inject",
+      "data": {
+        "result": "Second State!"
+      },
+      "end": true
+    }
+  ]
+}

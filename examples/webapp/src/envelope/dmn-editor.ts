@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-import { init } from "@kie-tooling-core/editor/dist/envelope";
-import { EnvelopeBusMessage } from "@kie-tooling-core/envelope-bus/dist/api";
-import { DmnEditorFactory } from "@kogito-tooling/kie-bc-editors/dist/dmn/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { DmnEditorFactory } from "@kie-tools/kie-bc-editors/dist/dmn/envelope";
 
-init({
+EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
-  bus: {
-    postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any) {
-      window.parent.postMessage(message, "*", _);
-    },
-  },
+  bus: { postMessage: (message, targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
   editorFactory: new DmnEditorFactory({ shouldLoadResourcesDynamically: true }),
 });

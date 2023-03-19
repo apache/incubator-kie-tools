@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { connectField, HTMLFieldProps } from "uniforms/es5";
+import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { FormInput, InputReference } from "../api";
 import { useAddFormElementToContext } from "./CodeGenContext";

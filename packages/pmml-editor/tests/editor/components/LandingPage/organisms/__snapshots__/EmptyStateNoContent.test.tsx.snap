@@ -24,6 +24,9 @@ exports[`EmptyStateNoContent render 1`] = `
     </svg>
     <h4
       class="pf-c-title pf-m-lg"
+      data-ouia-component-id="OUIA-Generated-Title-1"
+      data-ouia-component-type="PF4/Title"
+      data-ouia-safe="true"
     >
       Editor content has not been set.
     </h4>

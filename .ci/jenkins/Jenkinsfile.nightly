@@ -1,10 +1,10 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
-settingsXMLId = 'kogito-tooling-prod'
+settingsXMLId = 'kie-tools-prod'
 
 pipeline {
     agent {
-        label 'kie-rhel8 && kie-mem16g && !master'
+        label 'kie-rhel8 && kie-mem16g && !built-in'
     }
     tools {
         nodejs "nodejs-16.2.0"
@@ -43,7 +43,7 @@ pipeline {
                 }
             }
         }
-        stage('prepare kogito-tooling dependencies') {
+        stage('prepare kie-tools dependencies') {
             steps {
                 script {
                     env['EXTERNAL_RESOURCE_PATH__bpmnEditor'] = "$WORKSPACE/kiegroup_kogito-editors-java/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime"
@@ -55,14 +55,14 @@ pipeline {
         stage('Build Nightly projects') {
             steps {
                 script {
-                    def projectCollection = ["kiegroup/kogito-editors-java", "kiegroup/kogito-tooling"]
+                    def projectCollection = ["kiegroup/kogito-editors-java", "kiegroup/kie-tools"]
                     println "Project Collection to build ${projectCollection}"
                     def buildConfigAdditionalVariables = [:]
                     def buildConfigPathFolder = "$WORKSPACE/build_config/kogito/nightly"
 
                     Map<String, Object> buildConfigMap = getBuildConfigMap(buildConfigPathFolder, buildConfigAdditionalVariables)
                     pmebuild.checkoutProjects(projectCollection, buildConfigMap, buildConfigAdditionalVariables)
-                    
+
                     projectCollection.each { project -> buildProject(project, buildConfigMap) }
                 }
             }
@@ -73,28 +73,28 @@ pipeline {
                     echo "[INFO] Start uploading ${env.WORKSPACE}/deployDirectory"
                     dir("${env.WORKSPACE}/deployDirectory") {
                         withCredentials([usernameColonPassword(credentialsId: "${env.NIGHTLY_DEPLOYMENT_CREDENTIAL}", variable: 'deploymentCredentials')]) {
-                            sh "zip -r kogito-tooling ."
-                            sh "curl --upload-file kogito-tooling.zip -u $deploymentCredentials -v ${DEPLOYMENT_REPO_URL}"
+                            sh "zip -r kie-tools ."
+                            sh "curl --upload-file kie-tools.zip -u $deploymentCredentials -v ${DEPLOYMENT_REPO_URL}"
                         }
                     }
                 }
             }
         }
-        stage ("Send Kogito-tooling UMB Message to QE.") {
+        stage ("Send KIE-tools UMB Message to QE.") {
             steps {
                 script {
-                    echo "[INFO] Sending kogito-tooling UMB message to QE."
+                    echo "[INFO] Sending kie-tools UMB message to QE."
                     def messageBody = """
 {
     \"npmRegistry\": \"${NPM_REGISTRY_PUBLISH_URL}",
     \"versions\": {
-        \"kogito-tooling\": \"${env.CURRENT_KOGITO_TOOLING_VERSION}\",
+        \"kie-tools\": \"${env.CURRENT_KIE_TOOLS_VERSION}\",
         \"kogito-editors-java\": \"${env.KOGITO_EDITORS_JAVA_VERSION}\"
     }
 }
                     """
-                    def topic = "VirtualTopic.qe.ci.ba.kogito-tooling.${env.UMB_VERSION}.nightly.trigger"
-                    def eventType = "kogito-tooling-${env.UMB_VERSION}-nightly-qe-trigger"
+                    def topic = "VirtualTopic.qe.ci.ba.kie-tools.${env.UMB_VERSION}.nightly.trigger"
+                    def eventType = "kie-tools-${env.UMB_VERSION}-nightly-qe-trigger"
 
                     echo "[INFO] Message Body: ${messageBody}"
                     echo "[INFO] Topic: ${topic}"
@@ -111,22 +111,22 @@ pipeline {
     }
     post {
         failure {
-            emailext body: 'kogito-tooling nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+            emailext body: 'kie-tools nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
                     'Please look here: ${BUILD_URL} \n' +
                     ' \n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'kogito-tooling nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
+                    '${BUILD_LOG, maxLines=750}', subject: 'kie-tools nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
         }
         unstable {
-            emailext body: 'kogito-tooling nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+            emailext body: 'kie-tools nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
                     'Please look here: ${BUILD_URL} \n' +
                     ' \n' +
                     'Failed tests: ${BUILD_URL}/testReport \n' +
                     ' \n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'kogito-tooling nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
+                    '${BUILD_LOG, maxLines=750}', subject: 'kie-tools nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
         }
         fixed {
-            emailext body: 'kogito-tooling nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
-                    'Please look here: ${BUILD_URL}', subject: 'kogito-tooling nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
+            emailext body: 'kie-tools nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                    'Please look here: ${BUILD_URL}', subject: 'kie-tools nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
         }
         cleanup {
             cleanWs()
@@ -143,9 +143,9 @@ def getBuildConfigMap(def buildConfigPathFolder, def buildConfigAdditionalVariab
 
 def buildProject(String project, Map<String, Object> buildConfig, String defaultGroup = "kiegroup") {
     println "[INFO] Building project ${project}"
-    if ("kiegroup/kogito-tooling" == project) {
-        env.CURRENT_KOGITO_TOOLING_VERSION = env.CURRENT_KOGITO_TOOLING_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' lerna.json')?.trim() + "-redhat-${env.DATE_TIME_SUFFIX}"
-        println "kogito-tooling prod version ${env.CURRENT_KOGITO_TOOLING_VERSION}"
+    if ("kiegroup/kie-tools" == project) {
+        env.CURRENT_KIE_TOOLS_VERSION = env.CURRENT_KIE_TOOLS_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' package.json')?.trim() + "-redhat-${env.DATE_TIME_SUFFIX}"
+        println "kie-tools prod version ${env.CURRENT_KIE_TOOLS_VERSION}"
     }
     def projectGroupName = util.getProjectGroupName(project, defaultGroup)
     def group = projectGroupName[0]

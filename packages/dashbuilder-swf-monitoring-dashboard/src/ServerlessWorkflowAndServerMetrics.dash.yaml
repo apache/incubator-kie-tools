@@ -1,0 +1,481 @@
+properties:
+  # SWF Charts size
+  swfChartsWidth: 400
+  swfChartsHeight: 300
+
+  # Data update in seconds (use -1 for no update)
+  dataUpdate: 5
+
+  # Style for Index Page Title
+  indexTitleStyle: >-
+    font-size: xx-large; padding: 10px; background-color: blue; color: white; font-weight: bold; opacity: 0.7
+
+  # Style for Pages Title
+  pageTitleStyle: >-
+    font-size: large; margin: 10px; padding: 5px; background-color: blue; color: white; font-weight: bold; opacity: 0.6
+
+  # Server cards
+  serverCardWidth: 200
+  serverCardHeight: 90
+
+datasets:
+  - uuid: metrics
+    url: /q/metrics
+    expression: >-
+      $map($, function($l) { [$l[0], $contains($l[1], "process_id") ? $replace($match($l[1], /process_id=".*?"/).match, "process_id", "workflow") : $l[1] , $l[2]]})
+    columns:
+      - id: metric
+        type: label
+      - id: labels
+        type: label
+      - id: value
+        type: number
+pages:
+  - name: index
+    components:
+      - html: >-
+          <p style="${indexTitleStyle}">Kogito Serverless Workflow Monitoring</p>
+      - type: TABS
+        properties:
+          targetDivId: default_div
+          navGroupId: default_group
+      - type: DIV
+        properties:
+          width: "100%"
+          ID_PARAMETER: default_div
+
+  - name: Metrics
+    components:
+      - html: >-
+          <p style="${pageTitleStyle}">Metrics</p>
+      - settings:
+          component: table
+          external:
+            width: 100%
+            height: 500px
+          lookup:
+            uuid: metrics
+  - name: Server
+    rows:
+      - columns:
+          - components:
+              - html: >-
+                  <p style="${pageTitleStyle}">Server Monitoring</p>
+      - columns:
+          - span: "2"
+            components:
+              - settings:
+                  type: METRIC
+                  general:
+                    title: Memory (MB)
+                    visible: "true"
+                  chart:
+                    width: "${serverCardWidth}"
+                    height: "${serverCardHeight}"
+                  refresh:
+                    interval: "${dataUpdate}"
+                  columns:
+                    - id: value
+                      expression: "(value / 1024 / 1024)"
+                  dataSetLookup:
+                    uuid: metrics
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - jvm_memory_used_bytes
+                    group:
+                      - groupFunctions:
+                          - source: value
+                            function: SUM
+          - span: "2"
+            components:
+              - settings:
+                  type: METRIC
+                  general:
+                    title: HTTP POST Requests
+                    visible: "true"
+                  chart:
+                    width: "${serverCardWidth}"
+                    height: "${serverCardHeight}"
+                  refresh:
+                    interval: "${dataUpdate}"
+                  columns:
+                    - id: value
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: metrics
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - http_server_requests_seconds_count
+                      - column: labels
+                        function: LIKE_TO
+                        args:
+                          - "%POST%"
+                    group:
+                      - groupFunctions:
+                          - source: value
+                            function: SUM
+          - span: "2"
+            components:
+              - settings:
+                  type: METRIC
+                  general:
+                    title: Running threads
+                    visible: "true"
+                  chart:
+                    width: "${serverCardWidth}"
+                    height: "${serverCardHeight}"
+                  refresh:
+                    interval: "${dataUpdate}"
+                  columns:
+                    - id: value
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: metrics
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - jvm_threads_states_threads
+                      - function: NOT
+                        args:
+                          - column: labels
+                            function: LIKE_TO
+                            args:
+                              - "%terminated%"
+                    group:
+                      - groupFunctions:
+                          - source: value
+                            function: SUM
+          - span: "2"
+            components:
+              - settings:
+                  type: METRIC
+                  general:
+                    title: Open Files
+                    visible: "true"
+                  chart:
+                    width: "${serverCardWidth}"
+                    height: "${serverCardHeight}"
+                  refresh:
+                    interval: "${dataUpdate}"
+                  columns:
+                    - id: value
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: metrics
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - process_files_open_files
+                    group:
+                      - groupFunctions:
+                          - source: value
+          - span: "2"
+            components:
+              - settings:
+                  type: METRIC
+                  general:
+                    title: CPU
+                    visible: "true"
+                  chart:
+                    width: "${serverCardWidth}"
+                    height: "${serverCardHeight}"
+                  refresh:
+                    interval: "${dataUpdate}"
+                  dataSetLookup:
+                    uuid: metrics
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - system_cpu_usage
+                    group:
+                      - groupFunctions:
+                          - source: value
+      - properties:
+          margin: 10px
+          margin-top: 30px
+        columns:
+          - components:
+              - settings:
+                  component: echarts
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  external:
+                    width: 100%
+                    height: 300px
+                  echarts:
+                    series:
+                      type: "bar"
+                    title:
+                      text: JVM Used Memory
+                  refresh:
+                    interval: "${dataUpdate}"
+                  dataSetLookup:
+                    uuid: metrics
+                    sort:
+                      - column: value
+                        sortOrder: DESCENDING
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - "jvm_memory_used_bytes"
+                    group:
+                      - columnGroup:
+                          source: labels
+                        groupFunctions:
+                          - source: labels
+                          - source: value
+              - settings:
+                  component: echarts
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  external:
+                    width: 100%
+                    height: 300px
+                  echarts:
+                    series:
+                      type: "bar"
+                    title:
+                      text: JVM Threads
+                  refresh:
+                    interval: "${dataUpdate}"
+                  dataSetLookup:
+                    uuid: metrics
+                    sort:
+                      - column: value
+                        sortOrder: DESCENDING
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - "jvm_threads_states_threads"
+                    group:
+                      - columnGroup:
+                          source: labels
+                        groupFunctions:
+                          - source: labels
+                          - source: value
+
+  - name: Serverless Workflow
+    rows:
+      - columns:
+          - components:
+              - html: >-
+                  <p style="${pageTitleStyle}">Serverless Workflow </p> <hr />
+      - columns:
+          - span: "4"
+            components:
+              - settings:
+                  component: echarts
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  external:
+                    width: ${swfChartsWidth}px
+                    height: ${swfChartsHeight}px
+                  echarts:
+                    series:
+                      type: "bar"
+                    title:
+                      text: Started
+                  refresh:
+                    interval: "${dataUpdate}"
+                  dataSetLookup:
+                    uuid: metrics
+                    sort:
+                      - column: value
+                        sortOrder: DESCENDING
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - "kogito_process_instance_started_total"
+                    group:
+                      - columnGroup:
+                          source: labels
+                        groupFunctions:
+                          - source: labels
+                          - source: value
+          - span: "4"
+            components:
+              - settings:
+                  component: echarts
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  external:
+                    width: ${swfChartsWidth}px
+                    height: ${swfChartsHeight}px
+                  echarts:
+                    series:
+                      type: "bar"
+                    title:
+                      text: Running
+                    option: ${chartConfiguration}
+                  refresh:
+                    interval: "${dataUpdate}"
+                  dataSetLookup:
+                    uuid: metrics
+                    sort:
+                      - column: value
+                        sortOrder: DESCENDING
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - "kogito_process_instance_running_total"
+                    group:
+                      - columnGroup:
+                          source: labels
+                        groupFunctions:
+                          - source: labels
+                          - source: value
+      - columns:
+          - span: "4"
+            components:
+              - settings:
+                  component: echarts
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  external:
+                    width: ${swfChartsWidth}px
+                    height: ${swfChartsHeight}px
+                  echarts:
+                    series:
+                      type: "bar"
+                    title:
+                      text: Completed
+                    option: ${chartConfiguration}
+                  refresh:
+                    interval: "${dataUpdate}"
+                  dataSetLookup:
+                    uuid: metrics
+                    sort:
+                      - column: value
+                        sortOrder: DESCENDING
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - "kogito_process_instance_completed_total"
+                    group:
+                      - columnGroup:
+                          source: labels
+                        groupFunctions:
+                          - source: labels
+                          - source: value
+          - span: "4"
+            components:
+              - settings:
+                  component: echarts
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  external:
+                    width: ${swfChartsWidth}px
+                    height: ${swfChartsHeight}px
+                  echarts:
+                    series:
+                      type: "bar"
+                    title:
+                      text: Total Duration
+                    option: ${chartConfiguration}
+                  refresh:
+                    interval: "${dataUpdate}"
+                  dataSetLookup:
+                    uuid: metrics
+                    sort:
+                      - column: value
+                        sortOrder: DESCENDING
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - "kogito_process_instance_duration_seconds_sum"
+                    group:
+                      - columnGroup:
+                          source: labels
+                        groupFunctions:
+                          - source: labels
+                          - source: value
+      - columns:
+          - span: "3"
+            components:
+              - properties:
+                  width: 150px
+                  float: left
+                settings:
+                  type: SELECTOR
+                  general:
+                    visible: "true"
+                    text: "Filter"
+                  filter:
+                    enabled: "true"
+                    notification: "true"
+                  refresh:
+                    interval: "${dataUpdate}"
+                  dataSetLookup:
+                    uuid: metrics
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - "kogito_process_instance_started_total"
+                    group:
+                      - columnGroup:
+                          source: labels
+                        groupFunctions:
+                          - source: labels
+                            column: Workflow
+          - span: "9"
+            components:
+              - properties:
+                  float: right
+                  text-align: right
+                settings:
+                  type: METRIC
+                  html:
+                    html: >-
+                      <p style="font-size: smallest; margin-right: 5px">
+                        <em><strong>Last Update:</strong> <em id="${this}""></em>
+                        <em ><strong>Uptime</strong> ${value}s </em>   
+                       </p>
+                    javascript: >-
+                      ${this}.textContent = new Date().toLocaleString()
+                  general:
+                    visible: "true"
+                    title: Uptime
+                  refresh:
+                    interval: "${dataUpdate}"
+                  columns:
+                    - id: value
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: metrics
+                    filter:
+                      - column: metric
+                        function: EQUALS_TO
+                        args:
+                          - "process_uptime_seconds"
+                    group:
+                      - groupFunctions:
+                          - source: value
+navTree:
+  root_items:
+    - id: default_group
+      name: Monitoring
+      type: GROUP
+      children:
+        - page: Serverless Workflow
+        - page: Metrics
+        - page: Server

@@ -1,10 +1,26 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import * as React from "react";
 import { BaseSyntheticEvent, useContext, useMemo } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import { DataDictionary, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, MiningField } from "@kie-tools/pmml-editor-marshaller";
 import { MiningSchemaContext } from "../MiningSchemaContainer/MiningSchemaContainer";
 import useOnclickOutside from "react-cool-onclickoutside";
 import MiningSchemaFieldLabels from "../MiningSchemaFieldLabels/MiningSchemaFieldLabels";
@@ -124,7 +140,7 @@ const MiningSchemaItem: React.FC<MiningSchemaFieldProps> = (props) => {
           data-ouia-component-id={field.name}
           data-ouia-component-type="edit-mining-field-row-"
           className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
-          key={field.name.value}
+          key={field.name}
           ref={ref}
           tabIndex={0}
           onKeyDown={(event) => {
@@ -159,7 +175,7 @@ const MiningSchemaItem: React.FC<MiningSchemaFieldProps> = (props) => {
           data-ouia-component-id={field.name}
           data-ouia-component-type="mining-field-row"
           className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
-          key={field.name.value}
+          key={field.name}
           onClick={(event) => handleEdit(event)}
           ref={ref}
           tabIndex={0}

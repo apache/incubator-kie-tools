@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="https://github.com/agilepro/dmn-tck" name="0003-input-data-string-allowed-values" id="_0003-input-data-string-allowed-values" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <itemDefinition name="tEmploymentStatus">
+        <typeRef>string</typeRef>
+        <allowedValues>
+            <text>"UNEMPLOYED","EMPLOYED","SELF-EMPLOYED","STUDENT"</text>
+        </allowedValues>
+    </itemDefinition>
+    <decision name="Employment Status Statement" id="d_EmploymentStatusStatement">
+        <variable typeRef="string" name="Employment Status Statement"/>
+        <informationRequirement id="f4a0451b-8db5-401a-b9b4-dc31416b6e7d">
+            <requiredInput href="#i_EmploymentStatus"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>"You are " + Employment Status</text>
+        </literalExpression>
+    </decision>
+    <inputData name="Employment Status" id="i_EmploymentStatus">
+        <variable typeRef="tck:tEmploymentStatus" name="Employment Status"/>
+    </inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_0003-input-data-string-allowed-values_D1">
+            <dmndi:Size height="650.0" width="650.0"/>
+            <dmndi:DMNShape dmnElementRef="d_EmploymentStatusStatement" id="_0003-input-data-string-allowed-values_s1">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="i_EmploymentStatus" id="_0003-input-data-string-allowed-values_s2">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="f4a0451b-8db5-401a-b9b4-dc31416b6e7d" id="_0003-input-data-string-allowed-values_e1">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

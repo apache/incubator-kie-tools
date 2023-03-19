@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        html, body, div#text-envelope-app {
+            margin: 0;
+            border: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+        }
+        body {
+            background-color: #fff !important
+        }
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script>
+        window.MonacoEditorWorkersHelper = {
+            <%
+              _.map(editorResources.workersJSResources, function(jsResource) {
+                print('getWorkerContent_' + jsResource.workerName + ': () => `' + jsResource.content + '`,\n');
+              });
+            %>
+            getMonacoEditorWorker: (workerId) => {
+                let workerSource;
+                switch(workerId) {
+                <%
+                  _.map(editorResources.workersJSResources, function(jsResource) {
+                    print('case "' + jsResource.workerName + '": workerSource = window.MonacoEditorWorkersHelper.getWorkerContent_' + jsResource.workerName + '();break;\n');
+                  });
+                %>
+                }
+                if(!workerSource) {
+                    throw new Error(`Cannot find worker for type: '${workerId}'`);
+                }
+                return  new Worker(window.URL.createObjectURL(new Blob([workerSource],{type:'text/javascript'})))
+            }
+        };
+    </script>
+    <%
+      _.map(editorResources.baseJsResources, function(jsResource) {
+        print('\n<script data-src="'+ jsResource.path +'">\n' + jsResource.content + '\n</script>\n');
+      });
+    %>
+
+    <%
+      _.map(editorResources.referencedJsResources, function(jsResource) {
+          print('\n<script data-src="'+ jsResource.path +'">\n' + jsResource.content + '\n</script>\n');
+      });
+    %>
+
+    <%
+      print('\n<script data-src="'+ editorResources.envelopeJsResource.path +'">\n' + editorResources.envelopeJsResource.content + '\n</script>\n');
+    %>
+
+    <%
+      _.map(editorResources.baseCssResources, function(cssResource) {
+        print('\n<style data-src="'+ cssResource.path +'">\n' + cssResource.content + '\n</style>\n');
+      });
+    %>
+
+    <%
+      _.map(editorResources.referencedCssResources, function(cssResource) {
+        print('\n<style data-src="'+ cssResource.path +'">\n' + cssResource.content + '\n</style>\n');
+      });
+    %>
+
+    <%
+      print('\n<style data-src="fonts">\n');
+      _.map(editorResources.fontResources, function(fontResource) {
+        print('\n@font-face { font-family:\'' + fontResource.family + '\'; src: ');
+        _.map(fontResource.sources, function(source, index, list) {
+          print(' url(data:' + source.mimeType + ';base64,' + source.content + ') format(\'' + source.format + '\')');
+          if (index < list.length - 1) {
+            print(', ');
+          }
+        });
+        print('; ' + fontResource.additionalStyle + ' }');
+      });
+      print('\n</style>\n');
+    %>
+</head>
+<body>
+    <div id="text-envelope-app" />
+</body>
+</html>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ClusteringModel, DataDictionary, Model, PMML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { ClusteringModel, DataDictionary, Model, PMML, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { CLUSTERING_MODEL_1 } from "./TestData_ClusteringModel";
 
 describe("ClusteringModel tests", () => {

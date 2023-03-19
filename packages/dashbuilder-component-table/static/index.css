@@ -1,0 +1,65 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+.selected-row {
+  background-color: #dfdfdf !important;
+}
+[mode="dark"] .selected-row {
+  background-color: #393555 !important;
+}
+[mode="dark"] {
+  --pf-global--Color--100: #eef1fa !important;
+  --pf-global--Color--200: var(--pf-global--Color--light-200) !important;
+  --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100) !important;
+  --pf-global--primary-color--100: var(--pf-global--primary-color--light-100) !important;
+  --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
+  --pf-global--link--Color--hover: var(--pf-global--link--Color--light) !important;
+  --pf-global--BackgroundColor--100: #100c2a !important;
+}
+
+[mode="dark"] body,
+[mode="dark"] .pf-c-table,
+[mode="dark"] .pf-c-input-group,
+[mode="dark"] .pf-c-options-menu__menu {
+  --pf-global--Color--100: #eef1fa !important;
+  --pf-global--Color--200: var(--pf-global--Color--light-200) !important;
+  --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100) !important;
+  --pf-global--primary-color--100: var(--pf-global--primary-color--light-100) !important;
+  --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
+  --pf-global--link--Color--hover: var(--pf-global--link--Color--light) !important;
+  --pf-global--BackgroundColor--100: #100c2a !important;
+}
+
+[mode="dark"] .pf-c-options-menu__menu,
+[mode="dark"] .pf-c-pagination__nav,
+[mode="dark"] .pf-c-pagination__total-items {
+  background-color: #100c2a !important;
+  color: #eef1fa;
+}
+
+[mode="dark"] .pf-c-options-menu__menu-item:hover,
+[mode="dark"] .pf-c-table tr.pf-m-hoverable:hover {
+  background-color: #393555;
+  color: #eef1fa;
+}
+
+[mode="dark"] .pf-c-form-control {
+  --pf-global--Color--100: #eef1fa !important;
+  --pf-global--BackgroundColor--100: #100c2a !important;
+}
+
+[mode="dark"] .pf-c-form-control:disabled {
+  --pf-c-form-control--BackgroundColor: #464545;
+}

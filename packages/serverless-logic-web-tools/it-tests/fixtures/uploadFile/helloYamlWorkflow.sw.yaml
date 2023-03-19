@@ -1,0 +1,22 @@
+---
+id: "yamlhello"
+version: "1.0"
+name: "Hello YAML workflow"
+description: "YAML based hello workflow"
+start: "helloYamlState"
+specVersion: "0.8"
+functions:
+  - name: "helloYamlFunction"
+    type: "custom"
+    operation: "sysout"
+states:
+  - name: "helloYamlState"
+    type: "operation"
+    actions:
+      - name: "helloYamlAction"
+        functionRef:
+          refName: "helloYamlFunction"
+          arguments:
+            message: '${"Hello "+ .name + "!"}'
+    end:
+      terminate: true

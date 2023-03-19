@@ -15,16 +15,16 @@
  */
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
-const externalAssets = require("@kogito-tooling/external-assets-base");
-
+const patternflyBase = require("@kie-tools-core/patternfly-base");
+const stunnerEditors = require("@kie-tools/stunner-editors");
+const vscodeJavaCodeCompletionExtensionPlugin = require("@kie-tools/vscode-java-code-completion-extension-plugin");
 const { merge } = require("webpack-merge");
-const common = require("../../config/webpack.common.config");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 
 const commonConfig = (env) =>
   merge(common(env), {
     output: {
-      library: "DmnEditor",
+      library: "BpmnEditor",
       libraryTarget: "umd",
       umdNamedDefine: true,
       globalObject: "this",
@@ -54,9 +54,14 @@ module.exports = async (env) => [
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: externalAssets.bpmnEditorPath(),
+            from: stunnerEditors.bpmnEditorPath(),
             to: "webview/editors/bpmn",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
+          },
+          {
+            from: vscodeJavaCodeCompletionExtensionPlugin.path(),
+            to: "server/",
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
           },
         ],
       }),

@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-import { GwtEditorWrapper } from "@kogito-tooling/kie-bc-editors/dist/common/GwtEditorWrapper";
-import { GwtStateControlService } from "@kogito-tooling/kie-bc-editors/dist/common/gwtStateControl";
-import { KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
-import { messageBusClientApiMock } from "@kie-tooling-core/envelope-bus/dist-tests/common";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
-import {
-  kieBcEditorsI18nDefaults,
-  kieBcEditorsI18nDictionaries,
-} from "@kogito-tooling/kie-bc-editors/dist/common/i18n";
+import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors/dist/common/GwtEditorWrapper";
+import { GwtStateControlService } from "@kie-tools/kie-bc-editors/dist/common/gwtStateControl";
+import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/common";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "@kie-tools/kie-bc-editors/dist/common/i18n";
 
 const MockEditor = jest.fn(() => ({
   undo: jest.fn(),
@@ -32,17 +29,18 @@ const MockEditor = jest.fn(() => ({
   isDirty: jest.fn(),
   getPreview: jest.fn(),
   validate: jest.fn(),
+  selectStateByName: jest.fn(() => Promise.resolve()),
 }));
 
 const mockEditor = new MockEditor();
-const mockChannelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
+const mockChannelApiImpl = messageBusClientApiMock<KogitoEditorChannelApi>();
 const mockXmlFormatter = { format: (c: string) => c };
 const i18n = new I18n(kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries);
 
 const wrapper = new GwtEditorWrapper(
   "MockEditorId",
   mockEditor,
-  mockChannelApi,
+  mockChannelApiImpl,
   mockXmlFormatter,
   new GwtStateControlService(),
   i18n

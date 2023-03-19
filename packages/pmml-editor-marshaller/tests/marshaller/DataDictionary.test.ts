@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataDictionary, DataField, FieldName, PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, DataField, PMML, PMML2XML, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 
 describe("DataDictionary tests", () => {
   test("Empty", () => {
     const pmml: PMML = XML2PMML(`
-      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary/>
       </PMML>
     `);
@@ -37,7 +37,7 @@ describe("DataDictionary tests", () => {
 
   test("Add DataField", () => {
     const pmml: PMML = XML2PMML(`
-      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary/>
       </PMML>
     `);
@@ -46,7 +46,7 @@ describe("DataDictionary tests", () => {
 
     const dataDictionary: DataDictionary = pmml.DataDictionary;
     const dataField: DataField = new DataField({
-      name: "field1" as FieldName,
+      name: "field1",
       dataType: "string",
       optype: "categorical",
     });
@@ -61,7 +61,7 @@ describe("DataDictionary tests", () => {
 
   test("Update DataField", () => {
     const pmml: PMML = XML2PMML(`
-      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary numberOfFields="1">
           <DataField name="field1" optype="categorical" dataType="string"/>
         </DataDictionary>
@@ -77,7 +77,7 @@ describe("DataDictionary tests", () => {
     expect(dataDictionary.DataField[0].optype).toBe("categorical");
     expect(dataDictionary.DataField[0].dataType).toBe("string");
 
-    dataDictionary.DataField[0].name = "field1-changed" as FieldName;
+    dataDictionary.DataField[0].name = "field1-changed";
     dataDictionary.DataField[0].optype = "continuous";
     dataDictionary.DataField[0].dataType = "integer";
 
@@ -89,7 +89,7 @@ describe("DataDictionary tests", () => {
 
   test("Delete DataField", () => {
     const pmml: PMML = XML2PMML(`
-      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary numberOfFields="1">
           <DataField name="field1" optype="categorical" dataType="string"/>
         </DataDictionary>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~     http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
+
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+	 viewBox="0 0 420 420" style="enable-background:new 0 0 420 420;" xml:space="preserve">
+<style type="text/css">
+	.sub-process-svg-css {fill:#4D5258;}
+</style>
+<path id="Icon" class="sub-process-svg-css" d="M380,80H40C17.9,80,0,97.9,0,120v180c0,22.1,17.9,40,40,40h340c22.1,0,40-17.9,40-40V120
+	C420,97.9,402.1,80,380,80z M380,300h-80.1v-40c0-22.1-17.9-40-40-40H160c-22.1,0-40,17.9-40,40v40H40V120h340V300z"/>
+</svg>

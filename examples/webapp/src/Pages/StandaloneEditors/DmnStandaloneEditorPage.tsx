@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { Page } from "@patternfly/react-core";
-import * as DmnEditor from "@kogito-tooling/kie-editors-standalone/dist/dmn";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import * as DmnEditor from "@kie-tools/kie-editors-standalone/dist/dmn";
 
 export function DmnStandaloneEditorPage() {
   const dmnEditorContainer = useRef<HTMLDivElement>(null);

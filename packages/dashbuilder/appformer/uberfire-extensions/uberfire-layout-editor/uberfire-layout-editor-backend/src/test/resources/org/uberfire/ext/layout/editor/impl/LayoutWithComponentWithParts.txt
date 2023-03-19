@@ -1,0 +1,36 @@
+{
+  "version": 3,
+  "name": "LayoutWithComponentWithParts",
+  "style": "PAGE",
+  "layoutProperties": {
+    "LAYOUT_TAGS": "teste|"
+  },
+  "rows": [
+    {
+      "height": "12",
+      "properties": {},
+      "layoutColumns": [
+        {
+          "span": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "\u003ch1\u003eyo\u003c/h1\u003e"
+              },
+              "parts": [
+                {
+                  "partId": "TEST",
+                  "cssProperties": {
+                    "prop1": "val1"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

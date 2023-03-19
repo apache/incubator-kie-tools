@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/workspace/dist/api";
-import { EmbeddedEditor, useEditorRef } from "@kie-tooling-core/editor/dist/embedded";
-import { ChannelType } from "@kie-tooling-core/editor/dist/api";
+import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
+import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useImperativeHandle, useMemo } from "react";
 import { runScriptOnPage } from "../../utils";
@@ -25,8 +25,6 @@ import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
 import { useChromeExtensionI18n } from "../../i18n";
-
-const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
 
 interface Props {
   openFileExtension: string;
@@ -86,11 +84,12 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
 
     const stateControlSubscription = editor.getStateControl().subscribe(() => {
       editor.getContent().then((content) => {
-        runScriptOnPage(
-          `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}")
-            .CodeMirror
-            .setValue('${content.split("\n").join("\\n")}')` //keep line breaks
-        );
+        const pre = (document.getElementById("kogito-content") ?? document.createElement("pre")) as HTMLPreElement;
+        pre.textContent = content;
+        pre.style.display = "none";
+        pre.id = "kogito-content";
+        document.body.appendChild(pre);
+        runScriptOnPage(chrome.runtime.getURL(`scripts/update_content.js`));
       });
     });
     return () => editor.getStateControl().unsubscribe(stateControlSubscription);

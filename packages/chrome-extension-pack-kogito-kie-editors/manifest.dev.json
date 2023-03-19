@@ -1,7 +1,7 @@
 {
   "name": "BPMN, DMN & Test Scenario Editors for GitHub",
   "version": "0.0.0",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "description": "Visualize and edit BPMN, DMN and Test Scenario files using a graphical editor on GitHub",
   "content_scripts": [
     {
@@ -9,19 +9,16 @@
       "js": ["content_scripts/github.js"],
       "matches": ["https://*.github.com/*"],
       "all_frames": true
-    },
-    {
-      "run_at": "document_idle",
-      "js": ["content_scripts/online-editor.js"],
-      "matches": ["http://localhost/*"],
-      "all_frames": true
     }
   ],
   "icons": { "16": "resources/icon_16.png", "48": "resources/icon_48.png", "128": "resources/icon_128.png" },
-  "browser_action": { "default_icon": "resources/icon_16.png" },
-  "background": { "scripts": ["background.js"], "persistent": true },
-  "web_accessible_resources": ["resources/*"],
-  "permissions": ["https://*.github.com/*", "http://*.github.com/*", "webRequest", "webRequestBlocking"],
-  "content_security_policy": "script-src 'self' https://raw.githubusercontent.com; object-src 'self'",
+  "action": { "default_icon": "resources/icon_16.png" },
+  "background": { "service_worker": "background.js" },
+  "web_accessible_resources": [{ "resources": ["resources/*", "scripts/*"], "matches": ["https://*/*", "http://*/*"] }],
+  "declarative_net_request": { "rule_resources": [{ "id": "rulesset_1", "enabled": true, "path": "rules.json" }] },
+  "permissions": ["declarativeNetRequest"],
+  "host_permissions": ["https://*.github.com/*", "http://*.github.com/*"],
+  "sandbox": { "pages": ["https://raw.githubusercontent.com"] },
+  "content_security_policy": { "sandbox": "sandbox allow-scripts; object-src 'self'" },
   "externally_connectable": { "matches": ["https://*.github.com/*", "http://*.github.com/*", "http://localhost/*"] }
 }

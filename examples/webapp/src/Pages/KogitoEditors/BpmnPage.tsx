@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kie-tooling-core/editor/dist/api";
+import { ChannelType, EnvelopeContentType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
-import { Page } from "@patternfly/react-core";
-import { EmbeddedEditor, useEditorRef } from "@kie-tooling-core/editor/dist/embedded";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { Sidebar } from "./Sidebar";
 
 /**
@@ -33,14 +33,15 @@ export function BpmnPage() {
   const { editor, editorRef } = useEditorRef();
 
   /**
-   * State that handles the file. It's important to type with the File type of the @kogito-tooling/dist/embedded.
+   * State that handles the file. It's important to type with the File type of the @kie-tools/dist/embedded.
    * It's initialized with an empty file with the bpmn extension. The file is used by the EmbeddedEditor to set the content on the Editor. Updating the file will trigger a re-render on the Editor because the EmbeddedEditor will set updated content on the Editor.
    */
-  const [file, setFile] = useState<File>({
+  const [file, setFile] = useState<EmbeddedEditorFile>({
     fileName: "new-file",
     fileExtension: "bpmn",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
+    path: "new-file.bpmn",
   });
 
   /**
@@ -48,25 +49,17 @@ export function BpmnPage() {
    * On this example, we're using the envelope located on the bpmn.new page.
    */
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(() => {
-    return {
-      targetOrigin: window.location.origin,
-      mapping: new Map([
-        [
-          "bpmn",
-          {
-            resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
-            envelopePath: "https://kiegroup.github.io/kogito-online/bpmn-envelope.html",
-          },
-        ],
-        [
-          "bpmn2",
-          {
-            resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
-            envelopePath: "https://kiegroup.github.io/kogito-online/bpmn-envelope.html",
-          },
-        ],
-      ]),
-    };
+    return new EditorEnvelopeLocator(window.location.origin, [
+      new EnvelopeMapping({
+        type: "bpmn",
+        filePathGlob: "**/*.bpmn?(2)",
+        resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
+        envelopeContent: {
+          type: EnvelopeContentType.PATH,
+          path: "https://kiegroup.github.io/kogito-online/bpmn-envelope.html",
+        },
+      }),
+    ]);
   }, []);
 
   return (

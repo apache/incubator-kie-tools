@@ -25,6 +25,19 @@ declare namespace Cypress {
      * Wait until Kogito editor is loaded.
      */
     loadEditor(): void;
+
+    /**
+     * Confirm 'Automatic Layout' dialogue.
+     * Please notice, such dialogue appears only if <DMNDI/> tag is missing in the diagram.
+     */
+    confirmAutomaticLayoutDialogue(): void;
+
+    /**
+     * Search elements by data-ouia component attributes.
+     * @param locator component type and component id according to OUIA specification
+     * @param opts optional - config object
+     */
+    ouia(locator: { ouiaType?: string; ouiaId?: string }, opts?: Record<string, any>): Chainable<Element>;
   }
 }
 
@@ -38,4 +51,33 @@ Cypress.Commands.add("loadEditor", () => {
     cy.get("[data-testid='loading-screen-div']", { timeout: 15000 }).should("be.visible");
     cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
   });
+});
+
+Cypress.Commands.add("confirmAutomaticLayoutDialogue", () => {
+  cy.getEditor().within(() => {
+    cy.get("[data-testid='loading-screen-div']", { timeout: 15000 }).should("exist");
+    cy.get(".spinner", { timeout: 15000 }).should("be.visible");
+    cy.get(".modal-title").contains("Automatic Layout").should("be.visible");
+    cy.get("[data-field='yes-button']").click();
+    cy.get(".spinner", { timeout: 15000 }).should("not.exist");
+    cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
+  });
+});
+
+Cypress.Commands.add("ouia", { prevSubject: "optional" }, (subject, locator, options = {}) => {
+  let selector = "";
+
+  if (locator.ouiaId !== undefined && locator.ouiaId !== "") {
+    selector = `[data-ouia-component-id='${locator.ouiaId}']`;
+  }
+
+  if (locator.ouiaType !== undefined && locator.ouiaType !== "") {
+    selector = `[data-ouia-component-type='${locator.ouiaType}']` + selector;
+  }
+
+  if (subject) {
+    cy.wrap(subject, options).find(selector, options);
+  } else {
+    cy.get(selector, options);
+  }
 });

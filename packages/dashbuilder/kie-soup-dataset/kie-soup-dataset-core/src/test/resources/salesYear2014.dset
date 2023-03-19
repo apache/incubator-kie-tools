@@ -1,0 +1,13 @@
+{
+    "uuid": "salesYear2014",
+    "provider": "BEAN",
+    "pushEnabled": true,
+    "pushMaxSize": 1024,
+    "isPublic": true,
+    "generatorClass": "org.dashbuilder.dataprovider.SalesPerYearDataSetGenerator",
+    "allColumns": false,
+    "columns": [
+        {"id": "month", "type": "label"},
+        {"id": "2014", "type": "number"}
+    ]
+}

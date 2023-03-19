@@ -26,13 +26,13 @@ import {
   KogitoEditorEnvelopeContextType,
   StateControlCommand,
 } from "../api";
-import { EnvelopeApiFactoryArgs } from "@kie-tooling-core/envelope";
+import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
-import { ChannelKeyboardEvent } from "@kie-tooling-core/keyboard-shortcuts/dist/api";
-import { DEFAULT_RECT } from "@kie-tooling-core/guided-tour/dist/api";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
+import { ChannelKeyboardEvent } from "@kie-tools-core/keyboard-shortcuts/dist/api";
+import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { EditorEnvelopeI18n, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
-import { ApiDefinition } from "@kie-tooling-core/envelope-bus/dist/api";
+import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";
 
 export class KogitoEditorEnvelopeApiImpl<
   E extends Editor,
@@ -40,6 +40,7 @@ export class KogitoEditorEnvelopeApiImpl<
   ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi
 > implements KogitoEditorEnvelopeApi
 {
+  protected view: () => EditorEnvelopeViewApi<E>;
   private capturedInitRequestYet = false;
   private editor: E;
 
@@ -66,7 +67,7 @@ export class KogitoEditorEnvelopeApiImpl<
   }
 
   public kogitoEditor_initRequest = async (association: Association, initArgs: EditorInitArgs) => {
-    this.args.envelopeBusController.associate(association.origin, association.envelopeServerId);
+    this.args.envelopeClient.associate(association.origin, association.envelopeServerId);
 
     if (this.hasCapturedInitRequestYet()) {
       return;
@@ -74,38 +75,43 @@ export class KogitoEditorEnvelopeApiImpl<
 
     this.ackCapturedInitRequest();
 
+    this.view = await this.args.viewDelegate();
+
     this.setupI18n(initArgs);
 
     this.editor = await this.editorFactory.createEditor(this.args.envelopeContext, initArgs);
 
-    await this.args.view().setEditor(this.editor);
+    await this.view().setEditor(this.editor);
 
     this.editor.af_onStartup?.();
     this.editor.af_onOpen?.();
 
-    this.args.view().setLoading();
+    this.view().setLoading();
 
     const editorContent = await this.args.envelopeContext.channelApi.requests.kogitoEditor_contentRequest();
 
     await this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
-      .catch((e) => this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError(editorContent))
-      .finally(() => this.args.view().setLoadingFinished());
+      .catch((e) => this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError.send(editorContent))
+      .finally(() => this.view().setLoadingFinished());
 
     this.registerDefaultShortcuts(initArgs);
 
-    this.args.envelopeContext.channelApi.notifications.kogitoEditor_ready();
+    this.args.envelopeContext.channelApi.notifications.kogitoEditor_ready.send();
   };
 
-  public kogitoEditor_contentChanged = (editorContent: EditorContent) => {
-    this.args.view().setLoading();
+  public kogitoEditor_contentChanged = (editorContent: EditorContent, args: { showLoadingOverlay: boolean }) => {
+    if (args.showLoadingOverlay) {
+      this.view().setLoading();
+    }
+
     return this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
       .catch((e) => {
-        this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError(editorContent);
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError.send(editorContent);
         throw e;
       })
-      .finally(() => this.args.view().setLoadingFinished());
+      .finally(() => this.view().setLoadingFinished());
   };
 
   public kogitoEditor_editorUndo() {
@@ -117,7 +123,7 @@ export class KogitoEditorEnvelopeApiImpl<
   }
 
   public kogitoEditor_contentRequest() {
-    return this.editor.getContent().then((content) => ({ content: content }));
+    return this.editor.getContent().then((content) => ({ content: sanitize(content) }));
   }
 
   public kogitoEditor_previewRequest() {
@@ -144,12 +150,16 @@ export class KogitoEditorEnvelopeApiImpl<
     this.i18n.setLocale(initArgs.initialLocale);
     this.args.envelopeContext.services.i18n.subscribeToLocaleChange((locale) => {
       this.i18n.setLocale(locale);
-      this.args.view().setLocale(locale);
+      this.view().setLocale(locale);
     });
   }
 
   private registerDefaultShortcuts(initArgs: EditorInitArgs) {
-    if (initArgs.channel === ChannelType.VSCODE || initArgs.isReadOnly) {
+    if (
+      initArgs.channel === ChannelType.VSCODE_DESKTOP ||
+      initArgs.channel === ChannelType.VSCODE_WEB ||
+      initArgs.isReadOnly
+    ) {
       return;
     }
 
@@ -159,7 +169,7 @@ export class KogitoEditorEnvelopeApiImpl<
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.redo}`,
       async () => {
         this.editor.redo();
-        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate(
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send(
           StateControlCommand.REDO
         );
       }
@@ -169,7 +179,7 @@ export class KogitoEditorEnvelopeApiImpl<
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.undo}`,
       async () => {
         this.editor.undo();
-        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate(
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send(
           StateControlCommand.UNDO
         );
       }
@@ -182,4 +192,22 @@ export class KogitoEditorEnvelopeApiImpl<
       this.registerDefaultShortcuts(initArgs);
     });
   }
+
+  /**
+   * Gets the view's editor or throws an error.
+   *
+   * @returns the editor
+   * @throws {"Editor not found"} if the editor is not found
+   */
+  protected getEditorOrThrowError(): E {
+    const editor = this.view().getEditor();
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor;
+  }
+}
+
+function sanitize(str: string): string {
+  return str.replace(/[\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069]/gu, "");
 }

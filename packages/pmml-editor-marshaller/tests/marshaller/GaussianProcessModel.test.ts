@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataDictionary, GaussianProcessModel, Model, PMML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, GaussianProcessModel, Model, PMML, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { GAUSSIAN_PROCESS_MODEL_1 } from "./TestData_GaussianProcessModel";
 
 describe("GaussianProcessModel tests", () => {

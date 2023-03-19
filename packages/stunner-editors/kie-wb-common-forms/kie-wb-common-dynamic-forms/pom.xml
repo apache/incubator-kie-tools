@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>kie-wb-common-forms</artifactId>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <version>${revision}</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-wb-common-dynamic-forms</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Kie Workbench - Common - Forms - Dynamic Forms</name>
+  <description>Kie Workbench - Common - Forms - Dynamic Forms</description>
+
+  <modules>
+    <module>kie-wb-common-dynamic-forms-api</module>
+    <module>kie-wb-common-dynamic-forms-client</module>
+  </modules>
+</project>

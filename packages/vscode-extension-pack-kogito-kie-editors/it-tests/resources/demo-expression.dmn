@@ -1,0 +1,112 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_DA082AFF-8D6C-4E2A-AAA3-AD8F1375C4AE" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_C1378688-21FD-41E8-9A98-874D69B6533B" name="demo-expression" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_DA082AFF-8D6C-4E2A-AAA3-AD8F1375C4AE">
+  <dmn:extensionElements/>
+  <dmn:businessKnowledgeModel id="_C2BA95EF-29DE-4935-B581-DA36EE52928A" name="function demo">
+    <dmn:extensionElements/>
+    <dmn:variable id="_CE6CCCCD-24A7-44CE-966A-034C9637578A" name="function demo" typeRef="string"/>
+    <dmn:encapsulatedLogic id="_AB34C323-0A1B-4C98-B9C8-BD503BF84E7D" kind="FEEL">
+      <dmn:literalExpression id="_BA24878C-304F-4C3B-8FD8-E38294C956DA">
+        <dmn:text>"demo"</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmn:decision id="_1321AB08-A097-412F-9CF5-1C6AED6ABF13" name="context demo">
+    <dmn:extensionElements/>
+    <dmn:variable id="_1DFED10D-2BFF-4077-A20C-E36117B410F5" name="context demo" typeRef="string"/>
+    <dmn:context id="_7D1849C5-5914-4776-8A08-4E57CCA18583">
+      <dmn:contextEntry>
+        <dmn:variable id="_C1534BE3-8A6C-43F9-9117-F34023B1A206" name="ContextEntry-1"/>
+        <dmn:literalExpression id="_8BE5D88A-1291-4EF0-80FC-2BD0ED9F6419">
+          <dmn:text>null // auto-filled by the editor to avoid missing empty expression.</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_22D50DB1-D4E7-4450-97E7-FC6D41E572C0">
+          <dmn:text>"demo"</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_8F5EC8DC-456D-4B93-BA97-E9FA8BDBE9D9" name="decision table demo">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C42863BD-3C5A-496C-A2C6-6686670B48B6" name="decision table demo" typeRef="string"/>
+    <dmn:decisionTable id="_35ED879B-212A-448A-8487-CA95DE80F44D" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_7AE93D59-E368-4376-84A0-072CEDA439EE">
+        <dmn:inputExpression id="_24A32A3A-2403-423A-8A3E-C3FA908CC961">
+          <dmn:text>input-1</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_E13BBDFD-1006-40BA-8916-4D72069D0E58"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_48826AB5-E48C-4CF1-9F12-383DE3042360">
+        <dmn:inputEntry id="_759DFDA4-4EAE-400B-8B40-F3BC89942D9F">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_A3D666A1-357D-4F18-99AA-1D5F236ACF79">
+          <dmn:text>"demo"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_76C2CA5F-476C-4B9F-89C1-FA9A9561A62A" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_BA24878C-304F-4C3B-8FD8-E38294C956DA">
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_AB34C323-0A1B-4C98-B9C8-BD503BF84E7D">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_7D1849C5-5914-4776-8A08-4E57CCA18583">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>300</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_8BE5D88A-1291-4EF0-80FC-2BD0ED9F6419">
+            <kie:width>300</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_22D50DB1-D4E7-4450-97E7-FC6D41E572C0">
+            <kie:width>300</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_35ED879B-212A-448A-8487-CA95DE80F44D">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_C2BA95EF-29DE-4935-B581-DA36EE52928A" dmnElementRef="_C2BA95EF-29DE-4935-B581-DA36EE52928A" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="139" y="191" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_1321AB08-A097-412F-9CF5-1C6AED6ABF13" dmnElementRef="_1321AB08-A097-412F-9CF5-1C6AED6ABF13" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="321" y="191" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_8F5EC8DC-456D-4B93-BA97-E9FA8BDBE9D9" dmnElementRef="_8F5EC8DC-456D-4B93-BA97-E9FA8BDBE9D9" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="521" y="191" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

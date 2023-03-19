@@ -33,18 +33,13 @@ beforeEach(async () => {
 
 test(TEST_NAME, async () => {
   const WEB_PAGE =
-    "https://github.com/kiegroup/kogito-tooling/tree/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
-  const EXPECTED_LINK =
-    "kiegroup/kogito-tooling/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn";
+    "https://github.com/kiegroup/kie-tools/tree/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
   const PROCESS_NAME = "myProcess";
   const FILE_NAME = "test.bpmn";
   const TASK_NODE_NAME = "MyTask";
 
-  // check link to online editor in the list
   const gitHubListPage: GitHubListPage = await tools.openPage(GitHubListPage, WEB_PAGE);
   const gitHubFile: GitHubListItem = await gitHubListPage.getFile(FILE_NAME);
-  const linkText: string = await gitHubFile.getLinkToOnlineEditor();
-  expect(linkText).toContain(EXPECTED_LINK);
 
   // open BPMN editor
   const editorPage: GitHubEditorPage = await gitHubFile.open();

@@ -1,0 +1,17 @@
+== Attention Eclipse (m2e or m2eclipse) Users ==
+
+The build configuration that Maven Integration for Eclipse creates from this
+POM yields an Eclipse project that won't compile. Here's how you fix it:
+
+In the Package Explorer view:
+
+ - Expand src/main/java
+ - Right click on the parent folder of this README
+     (which is errai-javax-enterprise > src/main/java > javax.enterprise)
+ - From the popup menu, choose Build Path -> Exclude
+
+The project should now compile, and dependent projects in your workspace
+should now also build cleanly.
+
+Note that you will have to repeat these steps every time you perform M2E's
+Update Project Configuration feature.

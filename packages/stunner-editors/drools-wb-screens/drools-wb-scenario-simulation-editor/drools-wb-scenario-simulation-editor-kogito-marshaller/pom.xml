@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <artifactId>drools-wb-scenario-simulation-editor</artifactId>
+    <version>${revision}</version>
+  </parent>
+
+  <artifactId>drools-wb-scenario-simulation-editor-kogito-marshaller</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Drools Workbench - Scenario Simulation Editor - Kogito - Marshaller</name>
+  <description>Drools Workbench - Scenario Simulation Editor - Kogito - Marshaller</description>
+
+  <properties>
+    <js.destination>${project.basedir}/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js</js.destination>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.gwtproject</groupId>
+      <artifactId>gwt-user</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.jsinterop</groupId>
+      <artifactId>base</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.jsinterop</groupId>
+      <artifactId>jsinterop-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <failOnError>false</failOnError>
+          <filesets>
+            <fileset>
+              <directory>src/main/java/org/drools/workbench/scenariosimulation/kogito/marshaller/js</directory>
+              <includes>
+                <include>**</include>
+              </includes>
+            </fileset>
+            <fileset>
+              <directory>src/main/java/org/drools/workbench/scenariosimulation/kogito/marshaller/mapper</directory>
+              <includes>
+                <include>JsUtils.java</include>
+                <include>JSIName.java</include>
+              </includes>
+            </fileset>
+            <fileset>
+              <directory>${js.destination}</directory>
+              <includes>
+                <include>SCESIM.js</include>
+                <include>Jsonix-all.js</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jvnet.jaxb2.maven2</groupId>
+        <artifactId>maven-jaxb2-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-javascript</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <extension>true</extension>
+              <addCompileSourceRoot>false</addCompileSourceRoot>
+              <debug>false</debug>
+              <verbose>false</verbose>
+              <args>
+                <arg>-Xgwtjsonix</arg>
+                <arg>-Xinheritance</arg>
+                <arg>-jsid=${project.build.sourceDirectory}</arg>
+                <arg>-jsmpkg=org.drools.workbench.scenariosimulation.kogito.marshaller.mapper</arg>
+                <arg>-jsmn=SCESIMMainJs</arg>
+              </args>
+              <plugins>
+                <plugin>
+                  <groupId>org.kogito</groupId>
+                  <artifactId>gwt-jsonix-schema-compiler</artifactId>
+                </plugin>
+              </plugins>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-javascript</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.hisrc.jsonix</groupId>
+                  <artifactId>jsonix-scripts</artifactId>
+                  <type>js</type>
+                  <classifier>all</classifier>
+                  <outputDirectory>${js.destination}</outputDirectory>
+                  <destFileName>Jsonix-all.js</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>move-generated-sources</id>
+            <phase>process-sources</phase>
+            <configuration>
+              <target>
+                <copy file="${project.build.directory}/generated-sources/xjc/SCESIM.js" tofile="${js.destination}/SCESIM.js"/>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Exclude generated code from checkstyle validation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <excludes>
+            org/drools/workbench/scenariosimulation/kogito/marshaller/js/**/*,
+            org/drools/workbench/scenariosimulation/kogito/marshaller/mapper/**/*
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.jvnet.jaxb2.maven2</groupId>
+          <artifactId>maven-jaxb2-plugin</artifactId>
+          <version>${version.org.jvnet.jaxb2.maven2.maven-jaxb2-plugin}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+  </build>
+
+</project>

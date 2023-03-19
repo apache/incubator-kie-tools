@@ -1,0 +1,38 @@
+.countries path {
+  stroke: #aaaaaa;
+  stroke-width: 0.4;
+  fill: #d4d4d4;
+}
+
+.map-legend-caption {
+  font: 14px sans-serif;
+  text-anchor: start;
+  font-weight: bold;
+  color: black;
+}
+
+.fill-region {
+  stroke-width: 0.4;
+}
+
+.fill-region:hover {
+  stroke-width: 2;
+  stroke: #777777;
+}
+
+.data-circle {
+  fill-opacity: 0.6;
+  stroke: #00dd00;
+  stroke-width: 0.4;
+}
+
+.data-circle:hover {
+  stroke-width: 2;
+}
+
+.map-legend-val {
+  font: italic 10px sans-serif;
+  text-anchor: start;
+  font-weight: bold;
+  color: black;
+}

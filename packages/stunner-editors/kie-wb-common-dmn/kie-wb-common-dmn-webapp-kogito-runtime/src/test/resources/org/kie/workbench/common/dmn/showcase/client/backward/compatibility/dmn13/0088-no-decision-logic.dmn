@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_BA898F11-9F63-4A74-AF32-235D82663253" name="x1" expressionLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/" typeLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/" namespace="https://kiegroup.org/dmn/_EBF07892-D449-49E8-B77A-08CDAAB2E820">
+  <extensionElements/>
+  <itemDefinition id="_1A35CDE5-592B-4C7D-A302-15043E11830C" name="tGrade" isCollection="false">
+    <typeRef>string</typeRef>
+    <allowedValues kie:constraintType="enumeration" id="_E9560012-0F49-44D2-96D8-BA655980F315">
+      <text>"A", "B", "C", "D", "E", "F"</text>
+    </allowedValues>
+  </itemDefinition>
+  <decision id="_2770588B-EF63-490A-BA13-B21D4EB1926D" name="Graduation DT">
+    <variable id="_A41CE5F4-5B2F-490B-90A3-9E5F53ED5B01" name="Graduation DT" typeRef="string"/>
+    <informationRequirement id="_50AC4BEA-CFAB-45A9-9F29-F6D3B037356A">
+      <requiredInput href="#_8B025B2F-6110-4A25-9F8B-2E76DB81298C"/>
+    </informationRequirement>
+    <decisionTable id="_CD3DB28A-1220-41E4-B1E5-F4DA448FEC02" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <input id="_AF31943B-2A05-4F02-839A-4F1B6C5DC073">
+        <inputExpression id="_BB692782-9108-449A-9D15-27D06007E04E">
+          <text>Grade</text>
+        </inputExpression>
+      </input>
+      <output id="_5F1FEDAD-C742-445A-B194-47B0112573B8" typeRef="string"/>
+      <rule id="_967C2799-CC1E-45C5-9F6B-BF3C2F5BCF36">
+        <inputEntry id="_47B77F78-DE9F-4CF3-A78D-AD274A951078">
+          <text>"A"</text>
+        </inputEntry>
+        <outputEntry id="_BF4EB2E1-51E3-4087-A9B4-5FB39F646CCB">
+          <text>"Graduated with merit"</text>
+        </outputEntry>
+      </rule>
+      <rule id="_CC4BEE1B-2A3D-4EE7-8C97-4382E8213EA0">
+        <inputEntry id="_1DA3FD5D-E479-4153-881A-4A087C9B7F9F">
+          <text>"B"</text>
+        </inputEntry>
+        <outputEntry id="_2B336B1E-F6FC-4742-9C43-77D1A21746FC">
+          <text>"Graduated"</text>
+        </outputEntry>
+      </rule>
+      <rule id="_95BBC24F-F50C-4D0E-A5B5-D07E328680C9">
+        <inputEntry id="_459FB1AA-8588-4C7B-AD2E-70A670569BD2">
+          <text>"C"</text>
+        </inputEntry>
+        <outputEntry id="_92D429DE-3FD9-4E9F-864B-F9147B040121">
+          <text>"Graduated"</text>
+        </outputEntry>
+      </rule>
+      <rule id="_161963E2-94C8-4391-A8BF-DEC458BEB62C">
+        <inputEntry id="_076CA1F7-DC4A-4D33-BAF9-3E3D0A4A3462">
+          <text>"D"</text>
+        </inputEntry>
+        <outputEntry id="_E14D7E3E-DA88-409E-8506-10A7EE1AC18D">
+          <text>"Not graduated"</text>
+        </outputEntry>
+      </rule>
+      <rule id="_A3513F68-6132-4535-95E0-739ACE67F456">
+        <inputEntry id="_F0479B26-22F1-4983-81A9-B53F7D8BCF41">
+          <text>"E"</text>
+        </inputEntry>
+        <outputEntry id="_04CFBB41-21E0-456F-B9E5-AB8070DA84C8">
+          <text>"Not graduated"</text>
+        </outputEntry>
+      </rule>
+      <rule id="_D9577634-8F7B-462D-BBAB-210F5FD586DC">
+        <inputEntry id="_79112C49-AD12-42B1-B056-8210E5AABF9A">
+          <text>"F"</text>
+        </inputEntry>
+        <outputEntry id="_7C07ED74-5578-4906-B542-D294C426B2B9">
+          <text>"Not graduated"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="_874E905E-290A-4B2F-ADB9-EDB3CA24CA67" name="Graduation result">
+    <variable id="_5F80DA91-A764-42C4-A526-3CADCD34E856" name="Graduation result" typeRef="string"/>
+    <informationRequirement id="_A572F522-9AC1-4B6C-8042-F8354E76E706">
+      <requiredDecision href="#_2770588B-EF63-490A-BA13-B21D4EB1926D"/>
+    </informationRequirement>
+    <informationRequirement id="_599BCBD3-6D72-4A50-9D4D-D6A994AF30C3">
+      <requiredInput href="#_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794"/>
+    </informationRequirement>
+    <informationRequirement id="_E58609E3-7FC3-4827-8AF1-A01ADC452B53">
+      <requiredInput href="#_8B025B2F-6110-4A25-9F8B-2E76DB81298C"/>
+    </informationRequirement>
+    <informationRequirement id="_18C96BC9-1530-40B4-BCA6-95FCFAB49548">
+      <requiredDecision href="#_0C226138-201A-4073-8ED4-F28FA2A1BC64"/>
+    </informationRequirement>
+    <literalExpression id="_7C49F288-73F5-41AB-97D8-C569099B2CC7">
+      <text>Student's name + " is " + Graduation DT + " with grade: " + Grade + " and evaluation: " + Teacher's Evaluation</text>
+    </literalExpression>
+  </decision>
+  <decision id="_0C226138-201A-4073-8ED4-F28FA2A1BC64" name="Teacher's Evaluation">
+    <variable id="_A2732FC7-2D94-4EFE-9A70-5A5D5F0EDCA3" name="Teacher's Evaluation"/>
+    <informationRequirement id="_003DBA4E-D12C-4EA7-B6F2-662081D0A654">
+      <requiredInput href="#_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794"/>
+    </informationRequirement>
+    <authorityRequirement id="_16EA50D8-7B0C-4C17-96E8-EC1910DB7EC0">
+      <requiredAuthority href="#_2284D6C3-0DAD-4AF0-A758-C40D5A2A0A32"/>
+    </authorityRequirement>
+    <!-- No decision logic, intentional -->
+  </decision>
+  <knowledgeSource id="_2284D6C3-0DAD-4AF0-A758-C40D5A2A0A32" name="Teacher's knowledge" locationURI="">
+    <type></type>
+  </knowledgeSource>
+  <inputData id="_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794" name="Student's name">
+    <variable id="_9114ABD1-CD57-4E59-B6C7-FE7CD5AB1EFD" name="Student's name" typeRef="string"/>
+  </inputData>
+  <decisionService id="_7A9C80F8-4A44-4080-9031-F28EA411A35C" name="Evaluation DS">
+    <variable id="_7D7F3394-69B4-46A6-BFED-4F71AFF6ABB3" name="Evaluation DS"/>
+    <outputDecision href="#_874E905E-290A-4B2F-ADB9-EDB3CA24CA67"/>
+    <encapsulatedDecision href="#_2770588B-EF63-490A-BA13-B21D4EB1926D"/>
+    <inputDecision href="#_0C226138-201A-4073-8ED4-F28FA2A1BC64"/>
+    <inputData href="#_8B025B2F-6110-4A25-9F8B-2E76DB81298C"/>
+    <inputData href="#_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794"/>
+  </decisionService>
+  <inputData id="_8B025B2F-6110-4A25-9F8B-2E76DB81298C" name="Grade">
+    <variable id="_22CC6AB7-BBB7-4F30-AFB3-FA67486F2DBA" name="Grade" typeRef="tGrade"/>
+  </inputData>
+</definitions>

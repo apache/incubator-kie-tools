@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ApiDefinition, EnvelopeBus } from "@kie-tooling-core/envelope-bus/dist/api";
-import { EnvelopeBusController } from "@kie-tooling-core/envelope-bus/dist/envelope";
+import { ApiDefinition, EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
+import { EnvelopeClient } from "@kie-tools-core/envelope-bus/dist/envelope";
 import { EnvelopeApiFactory } from "./EnvelopeApiFactory";
 import { ContainerType } from "./api";
 
@@ -37,30 +37,29 @@ export class Envelope<
   constructor(
     bus: EnvelopeBus,
     config: EnvelopeDivConfig | EnvelopeIFrameConfig = { containerType: ContainerType.IFRAME },
-    private readonly envelopeBusController = new EnvelopeBusController<ApiToProvide, ApiToConsume>(
+    private readonly envelopeClient = new EnvelopeClient<ApiToProvide, ApiToConsume>(
       bus,
       config.containerType === ContainerType.DIV ? config.envelopeId : undefined
     )
   ) {}
 
   public get channelApi() {
-    return this.envelopeBusController.channelApi;
+    return this.envelopeClient.channelApi;
   }
 
   public async start(
     viewDelegate: () => Promise<() => ViewType>,
-    context: ContextType,
+    envelopeContext: ContextType,
     apiFactory: EnvelopeApiFactory<ApiToProvide, ApiToConsume, ViewType, ContextType>
   ) {
-    const view = await viewDelegate();
-
-    const api = apiFactory.create({
-      view: view,
-      envelopeContext: context,
-      envelopeBusController: this.envelopeBusController,
+    const apiImpl = apiFactory.create({
+      viewDelegate,
+      envelopeContext,
+      envelopeClient: this.envelopeClient,
     });
 
-    this.envelopeBusController.startListening(api);
-    return this.envelopeBusController;
+    this.envelopeClient.startListening(apiImpl);
+
+    return this.envelopeClient;
   }
 }

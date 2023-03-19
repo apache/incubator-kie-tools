@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "build:dev",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "build",
+      "detail": "rimraf dist && pnpm build"
+    },
+    {
+      "type": "npm",
+      "script": "debug:clean",
+      "group": "none",
+      "problemMatcher": [],
+      "label": "clean",
+      "detail": "rimraf debug"
+    },
+    {
+      "type": "shell",
+      "group": "none",
+      "problemMatcher": [],
+      "label": "clean image",
+      "command": "docker image rm kn-workflow:debug"
+    }
+  ]
+}

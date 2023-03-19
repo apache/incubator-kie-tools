@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataDictionary, Model, NeuralNetwork, PMML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, Model, NeuralNetwork, PMML, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { NEURAL_NETWORK_MODEL_1 } from "./TestData_NeuralNetwork";
 
 describe("NeuralNetwork tests", () => {

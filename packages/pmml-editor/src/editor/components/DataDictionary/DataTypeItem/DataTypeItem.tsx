@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import * as React from "react";
 import { BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
 import useOnclickOutside from "react-cool-onclickoutside";
@@ -307,6 +323,8 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             event.preventDefault();
                             handleConstraints();
                           }}
+                          data-ouia-component-id="edit-props"
+                          data-ouia-component-type="link-label"
                         >
                           Edit Properties
                         </Label>
@@ -347,10 +365,20 @@ const DataTypeItem = (props: DataTypeItemProps) => {
               <span className="data-type-item__name">{name}</span>
             </SplitItem>
             <SplitItem isFilled={true}>
-              <Label color="blue" className="data-type-item__type-label">
+              <Label
+                color="blue"
+                className="data-type-item__type-label"
+                data-ouia-component-id={typeSelection}
+                data-ouia-component-type="data-type-label"
+              >
                 {typeSelection}
               </Label>{" "}
-              <Label color="blue" className="data-type-item__type-label">
+              <Label
+                color="blue"
+                className="data-type-item__type-label"
+                data-ouia-component-id={optypeSelection}
+                data-ouia-component-type="data-optype-label"
+              >
                 {optypeSelection}
               </Label>{" "}
               <PropertiesLabels dataType={dataType} />

@@ -1,0 +1,156 @@
+{
+  "id": "order",
+  "name": "Purchase Order Workflow",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "start": "StartNewOrder",
+  "timeouts": {
+    "workflowExecTimeout": {
+      "duration": "PT30D",
+      "runBefore": "CancelOrder"
+    }
+  },
+  "states": [
+    {
+      "name": "StartNewOrder",
+      "type": "event",
+      "onEvents": [
+        {
+          "eventRefs": ["OrderCreatedEvent"],
+          "actions": [
+            {
+              "functionRef": {
+                "refName": "LogNewOrderCreated"
+              }
+            }
+          ]
+        }
+      ],
+      "transition": {
+        "nextState": "WaitForOrderConfirmation"
+      }
+    },
+    {
+      "name": "WaitForOrderConfirmation",
+      "type": "event",
+      "onEvents": [
+        {
+          "eventRefs": ["OrderConfirmedEvent"],
+          "actions": [
+            {
+              "functionRef": {
+                "refName": "LogOrderConfirmed"
+              }
+            }
+          ]
+        }
+      ],
+      "transition": {
+        "nextState": "WaitOrderShipped"
+      }
+    },
+    {
+      "name": "WaitOrderShipped",
+      "type": "event",
+      "onEvents": [
+        {
+          "eventRefs": ["ShipmentSentEvent"],
+          "actions": [
+            {
+              "functionRef": {
+                "refName": "LogOrderShipped"
+              }
+            }
+          ]
+        }
+      ],
+      "end": {
+        "terminate": true,
+        "produceEvents": [
+          {
+            "eventRef": "OrderFinishedEvent"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CancelOrder",
+      "type": "operation",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "CancelOrder"
+          }
+        }
+      ],
+      "end": {
+        "terminate": true,
+        "produceEvents": [
+          {
+            "eventRef": "OrderCancelledEvent"
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "OrderCreatedEvent",
+      "type": "my.company.orders",
+      "source": "/orders/new",
+      "correlation": [
+        {
+          "contextAttributeName": "orderid"
+        }
+      ]
+    },
+    {
+      "name": "OrderConfirmedEvent",
+      "type": "my.company.orders",
+      "source": "/orders/confirmed",
+      "correlation": [
+        {
+          "contextAttributeName": "orderid"
+        }
+      ]
+    },
+    {
+      "name": "ShipmentSentEvent",
+      "type": "my.company.orders",
+      "source": "/orders/shipped",
+      "correlation": [
+        {
+          "contextAttributeName": "orderid"
+        }
+      ]
+    },
+    {
+      "name": "OrderFinishedEvent",
+      "type": "my.company.orders",
+      "kind": "produced"
+    },
+    {
+      "name": "OrderCancelledEvent",
+      "type": "my.company.orders",
+      "kind": "produced"
+    }
+  ],
+  "functions": [
+    {
+      "name": "LogNewOrderCreated",
+      "operation": "http.myorg.io/ordersservices.json#logcreated"
+    },
+    {
+      "name": "LogOrderConfirmed",
+      "operation": "http.myorg.io/ordersservices.json#logconfirmed"
+    },
+    {
+      "name": "LogOrderShipped",
+      "operation": "http.myorg.io/ordersservices.json#logshipped"
+    },
+    {
+      "name": "CancelOrder",
+      "operation": "http.myorg.io/ordersservices.json#calcelorder"
+    }
+  ]
+}

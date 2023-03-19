@@ -21,20 +21,14 @@ import PageFragment from "../PageFragment";
 
 export default class GitHubListItem extends PageFragment {
   private static readonly LINK_LOCATOR: By = By.className("js-navigation-open");
-  private static readonly LINK_TO_ONLINE_EDITOR: By = By.xpath(".//a[@title='Open in Online Editor']");
 
   public async waitUntilLoaded(): Promise<void> {
-    return await this.tools.by(GitHubListItem.LINK_TO_ONLINE_EDITOR).wait(5000).untilPresent();
+    return await this.tools.by(GitHubListItem.LINK_LOCATOR).wait(5000).untilPresent();
   }
 
   public async open(): Promise<GitHubEditorPage> {
     const link: Element = await this.root.findElement(GitHubListItem.LINK_LOCATOR);
     await link.click();
     return await this.tools.createPage(GitHubEditorPage);
-  }
-
-  public async getLinkToOnlineEditor(): Promise<string> {
-    const linkToOnlineEditor: Element = await this.root.findElement(GitHubListItem.LINK_TO_ONLINE_EDITOR);
-    return await linkToOnlineEditor.getAttribute("href");
   }
 }

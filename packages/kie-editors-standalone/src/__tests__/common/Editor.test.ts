@@ -15,11 +15,11 @@
  */
 
 import { createEditor } from "../../common/Editor";
-import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
-import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tooling-core/editor/dist/api";
-import { StateControl } from "@kie-tooling-core/editor/dist/channel";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
 
-jest.mock("@kie-tooling-core/editor/dist/api", () => {
+jest.mock("@kie-tools-core/editor/dist/api", () => {
   return {
     KogitoEditorEnvelopeApi: jest.fn().mockImplementation(),
   };
@@ -40,7 +40,7 @@ describe("createEditor", () => {
 
   test("setContent calls envelope with path and content", () => {
     const editor = createEditor(
-      envelopeServer,
+      envelopeServer.envelopeApi,
       stateControl,
       (message) => {
         /**/
@@ -54,9 +54,12 @@ describe("createEditor", () => {
     );
 
     editor.setContent("my-path", "my-content");
-    expect(spyOnContentChangedNotification).toHaveBeenCalledWith({
-      path: "my-path",
-      content: "my-content",
-    });
+    expect(spyOnContentChangedNotification).toHaveBeenCalledWith(
+      {
+        path: "my-path",
+        content: "my-content",
+      },
+      { showLoadingOverlay: true }
+    );
   });
 });

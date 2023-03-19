@@ -1,0 +1,49 @@
+{
+  "name": "@kie-tools/stunner-editors-dmn-loader",
+  "version": "0.0.0",
+  "description": "Common",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "main": "dist/dmn-loader.js",
+  "scripts": {
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "rimraf dist && webpack",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "watch": "webpack --watch --env live --env dev"
+  },
+  "dependencies": {
+    "@kie-tools-core/keyboard-shortcuts": "workspace:*",
+    "@kie-tools-core/monaco-editor": "workspace:*",
+    "@kie-tools/boxed-expression-component": "workspace:*",
+    "@kie-tools/import-java-classes-component": "workspace:*",
+    "lodash": "^4.17.21",
+    "monaco-editor": "^0.33.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/jest": "^26.0.23",
+    "@types/jest-when": "^2.7.4",
+    "@types/lodash": "^4.14.168",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
+    "jest": "^26.6.3",
+    "jest-when": "^3.5.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.4.2",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.8.0"
+  }
+}

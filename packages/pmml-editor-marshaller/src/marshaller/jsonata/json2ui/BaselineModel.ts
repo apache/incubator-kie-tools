@@ -49,7 +49,7 @@ elements.elements[(name = "BaselineModel")] ~> $map(function($v, $i) {
 export function baselineModelFactory(): BaselineModel {
   return new BaselineModel({
     MiningSchema: new MiningSchema({ MiningField: [] }),
-    TestDistributions: new TestDistributions({ Baseline: {}, field: {}, testStatistic: "CUSUM" }),
+    TestDistributions: new TestDistributions({ Baseline: {}, field: "", testStatistic: "CUSUM" }),
     functionName: "regression",
   });
 }

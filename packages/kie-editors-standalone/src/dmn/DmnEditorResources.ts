@@ -16,8 +16,8 @@
 
 import * as fs from "fs";
 import { BaseEditorResources, EditorResources } from "../common/EditorResources";
-import * as externalAssets from "@kogito-tooling/external-assets-base";
-import { getDmnLanguageData } from "@kogito-tooling/kie-bc-editors/dist/dmn/api";
+import * as stunnerEditors from "@kie-tools/stunner-editors";
+import { getDmnLanguageData } from "@kie-tools/kie-bc-editors/dist/dmn/api";
 
 export class DmnEditorResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {
@@ -122,7 +122,7 @@ export class DmnEditorResources extends BaseEditorResources {
   }
 
   public getEditorResourcesPath() {
-    return externalAssets.dmnEditorPath();
+    return stunnerEditors.dmnEditorPath();
   }
 
   public getTemplatePath() {

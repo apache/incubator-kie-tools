@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/dmn-tck/tck" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_feel-constants" name="feel-constants" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/dmn-tck/tck">
+  <dmn:extensionElements/>
+  <dmn:decision id="d_Decision3" name="Decision3">
+    <dmn:extensionElements/>
+    <dmn:variable id="_D346F9F5-244A-4A50-925B-07C450C66273" name="Decision3" typeRef="string"/>
+    <dmn:literalExpression id="_AA8BA5D1-8939-4EC5-9225-03B1B42F3AA2">
+      <dmn:text>"横綱"</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="d_Decision4" name="Decision4">
+    <dmn:extensionElements/>
+    <dmn:variable id="_798AB335-5930-4AB4-B5A1-881066B02055" name="Decision4" typeRef="string"/>
+    <dmn:literalExpression id="_CA157A58-F3A6-453D-BC92-921D267D850E">
+      <dmn:text>"thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong"</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="d_Decision1" name="Decision1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_7FC85B2D-FE38-49D1-A167-BBB055B02202" name="Decision1" typeRef="string"/>
+    <dmn:literalExpression id="_316C3630-0728-48CA-B6B6-9266694AC5E0">
+      <dmn:text>"foo bar"</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="d_Decision2" name="Decision2">
+    <dmn:extensionElements/>
+    <dmn:variable id="_D81AFC60-1485-49CA-9919-9C0F0F8BFD34" name="Decision2" typeRef="string"/>
+    <dmn:literalExpression id="_AD4228F1-BF2A-49E4-9A4E-2982AFC3B2D5">
+      <dmn:text>"šomeÚnicodeŠtriňg"</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_feel-constants_D2" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_AA8BA5D1-8939-4EC5-9225-03B1B42F3AA2"/>
+          <kie:ComponentWidths dmnElementRef="_CA157A58-F3A6-453D-BC92-921D267D850E"/>
+          <kie:ComponentWidths dmnElementRef="_316C3630-0728-48CA-B6B6-9266694AC5E0"/>
+          <kie:ComponentWidths dmnElementRef="_AD4228F1-BF2A-49E4-9A4E-2982AFC3B2D5"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-d_Decision3" dmnElementRef="d_Decision3" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-d_Decision4" dmnElementRef="d_Decision4" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-d_Decision1" dmnElementRef="d_Decision1" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="292" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-d_Decision2" dmnElementRef="d_Decision2" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="385" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

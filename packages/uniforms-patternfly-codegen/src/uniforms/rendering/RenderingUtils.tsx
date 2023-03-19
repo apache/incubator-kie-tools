@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
-import { Bridge } from "uniforms/es5";
+import { Bridge } from "uniforms/cjs";
 import { FormElement, FormInput } from "../../api";
 import FormInputs from "./FormInputs";
 import { CodeGenContext } from "../CodeGenContext";

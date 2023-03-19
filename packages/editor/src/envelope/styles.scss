@@ -15,18 +15,18 @@
  */
 
 :not(.vscode-dark) {
-  .kogito-tooling--loading-screen .pf-l-bullseye {
+  .kie-tools--loading-screen .pf-l-bullseye {
     color: var(--pf-global--Color--dark-100);
     background-color: var(--pf-global--BackgroundColor--light-100);
   }
 }
 
-.vscode-dark .kogito-tooling--loading-screen .pf-l-bullseye {
+.vscode-dark .kie-tools--loading-screen .pf-l-bullseye {
   color: var(--pf-global--Color--light-100);
   background-color: var(--pf-global--BackgroundColor--dark-100);
 }
 
-.kogito-tooling--loading-screen {
+.kie-tools--loading-screen {
   width: 100vw;
   height: 100vh;
   z-index: 999;
@@ -48,20 +48,19 @@
   }
 }
 
-.kogito-tooling--loading-screen-spinner {
+.kie-tools--loading-screen-spinner {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.kogito-tooling--keyboard-shortcuts-icon {
+.kie-tools--keyboard-shortcuts-icon {
   user-select: none;
   z-index: 999;
   left: 0;
   bottom: 5px;
   position: fixed;
   padding: 7px;
-  display: flex;
   align-items: center;
   justify-content: center;
   width: 35px;
@@ -73,7 +72,7 @@
 
 /* PF3 -> PF4 overrides */
 
-.kogito-tooling--keyboard-shortcuts {
+.kie-tools--keyboard-shortcuts {
   font-family: var(--pf-global--FontFamily--sans-serif);
   color: var(--pf-global--Color--dark-100);
 }

@@ -31,7 +31,7 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation } from "../Operation";
 import { Actions } from "../../../reducers";
 import { useSelector } from "react-redux";
-import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kie-tools/pmml-editor-marshaller";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 import { useOperation } from "../OperationContext";
 import { Builder } from "../../../paths";
@@ -237,7 +237,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                       });
                     }
                   }}
-                  data-ouia-component-id="characteristic-name-input"
+                  ouiaId="characteristic-name-input"
                 />
               </FormGroup>
             </SplitItem>
@@ -283,7 +283,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   }}
                   validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
                   isDisabled={!areReasonCodesUsed || isReasonCodeProvidedByAttributes}
-                  data-ouia-component-id="characteristic-reason-code-input"
+                  ouiaId="characteristic-reason-code-input"
                 />
               </FormGroup>
             </SplitItem>
@@ -329,7 +329,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                     });
                   }}
                   isDisabled={scorecardBaselineScore !== undefined}
-                  data-ouia-component-id="characteristic-baseline-score-input"
+                  ouiaId="characteristic-baseline-score-input"
                 />
               </FormGroup>
             </SplitItem>

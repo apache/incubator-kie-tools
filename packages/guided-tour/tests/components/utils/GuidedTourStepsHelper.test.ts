@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { getCurrentStep, getSteps } from "@kie-tooling-core/guided-tour/dist/components/utils";
-import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist";
-import { DemoMode, Mode, Step, SubTutorialMode } from "@kie-tooling-core/guided-tour/dist/api";
+import { getCurrentStep, getSteps } from "@kie-tools-core/guided-tour/dist/components/utils";
+import { KogitoGuidedTour } from "@kie-tools-core/guided-tour/dist";
+import { DemoMode, Mode, Step, SubTutorialMode } from "@kie-tools-core/guided-tour/dist/api";
 
 describe("GuidedTourStepsHelper", () => {
   const currentStep = 3;

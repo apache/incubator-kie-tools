@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "name": "@kie-tools/dashbuilder-images",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "pnpm cleanup",
+    "build:prod": "run-script-os",
+    "build:prod:darwin": "echo \"Build not supported on Mac\"",
+    "build:prod:linux": "pnpm cleanup && pnpm copy:assets && pnpm podman:build:runtime && pnpm podman:build:authoring",
+    "build:prod:win32": "echo \"Build not supported on Windows\"",
+    "cleanup": "rimraf dist/",
+    "copy:assets": "rimraf dist && mkdir dist && cp ../dashbuilder/dashbuilder-authoring/target/dashbuilder-authoring.war ./dist && cp ../dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-app/target/dashbuilder-runtime-app-runner.jar ./dist",
+    "podman:build:authoring": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dashbuilder.baseImage.buildTags) | xargs printf -- \"-t $(build-env dashbuilder.baseImage.registry)/$(build-env dashbuilder.baseImage.account)/$(build-env dashbuilder.baseImage.authoringName):%s\n\" | xargs echo) -f ContainerFile.DashBuilderAuthoring\" --else \"echo Podman not found, skipping image build.\"",
+    "podman:build:runtime": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dashbuilder.baseImage.buildTags) | xargs printf -- \"-t $(build-env dashbuilder.baseImage.registry)/$(build-env dashbuilder.baseImage.account)/$(build-env dashbuilder.baseImage.runtimeName):%s\n\" | xargs echo) -f ContainerFile.DashBuilderRuntime\" --else \"echo Podman not found, skipping image build.\""
+  },
+  "dependencies": {
+    "@kie-tools/dashbuilder": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  }
+}

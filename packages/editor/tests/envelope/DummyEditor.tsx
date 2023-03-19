@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { Editor } from "@kie-tooling-core/editor/dist/api";
-import { DEFAULT_RECT } from "@kie-tooling-core/guided-tour/dist/api";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { Editor, EditorTheme } from "@kie-tools-core/editor/dist/api";
+import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 
 export class DummyEditor implements Editor {
   private ref: DummyEditorComponent;
@@ -55,6 +55,10 @@ export class DummyEditor implements Editor {
 
   public validate(): Promise<Notification[]> {
     return Promise.resolve([]);
+  }
+
+  public setTheme(theme: EditorTheme): Promise<void> {
+    return Promise.resolve();
   }
 }
 

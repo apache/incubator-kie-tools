@@ -1,0 +1,13 @@
+{
+    "uuid": "expense_reports_columnset",
+    "provider": "SQL",
+    "dataSource": "jdbc:h2:mem:test",
+    "dbTable": "EXPENSE_REPORTS",
+    "allColumns": false,
+    "columns": [
+        {"id": "DEPARTMENT", "type": "label"},
+        {"id": "EMPLOYEE", "type": "label"},
+        {"id": "AMOUNT", "type": "number"},
+        {"id": "CREATION_DATE", "type": "date"}
+    ]
+}

@@ -1,0 +1,61 @@
+{
+   "name": "Complex",
+   "tags": [
+            "tg1",
+            "tg2",
+            "tg3"
+          ],
+   "rows": [
+     {
+       "rowSpam": [
+         "4",
+         "4",
+         "4"
+       ],
+       "columnEditors": [
+         {
+           "span": "4",
+           "rows": [],
+           "screens": [],
+           "htmls": [
+             {
+               "htmlCode": "\u003ch1\u003eeder\u003c/h1\u003e"
+             }
+           ]
+         },
+         {
+           "span": "4",
+           "rows": [],
+           "screens": [
+             {
+               "type": "DEFAULT",
+               "parameters": {
+                 "Place Name": "screen1"
+               },
+               "lastParametersSaved": {
+                 "Place Name": "screen1"
+               }
+             }
+           ],
+           "htmls": []
+         },
+         {
+                    "span": "4",
+                    "rows": [],
+                    "screens": [
+                      {
+                        "type": "EXTERNAL",
+                        "parameters": {
+                          "Place Name": "screen2"
+                        },
+                        "lastParametersSaved": {
+                          "Place Name": "screen2"
+                        }
+                      }
+                    ],
+                    "htmls": []
+          }
+       ]
+     }
+   ]
+ }

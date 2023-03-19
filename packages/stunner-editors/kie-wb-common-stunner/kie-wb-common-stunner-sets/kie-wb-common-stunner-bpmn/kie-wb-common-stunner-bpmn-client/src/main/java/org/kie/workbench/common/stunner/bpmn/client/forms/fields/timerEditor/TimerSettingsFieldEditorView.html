@@ -1,0 +1,110 @@
+<div id="timerConfigurationWidget">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
+            <label class="radio-inline radio-inline-option"
+              ><input type="radio" name="timer-type" data-field="duration-timer" /><span data-i18n-key="TimeDuration"
+                >Fire once after duration</span
+              ></label
+            >
+            <a
+              data-field="duration-timer-help"
+              role="button"
+              data-toggle="popover"
+              data-trigger="hover"
+              data-html="true"
+              title=""
+              data-placement="bottom"
+              data-container="body"
+            >
+              <i class="fa fa-info-circle"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="row" data-field="duration-timer-params">
+          <div class="col-md-12">
+            <input type="text" class="form-control" data-field="time-duration" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
+            <label class="radio-inline radio-inline-option"
+              ><input type="radio" name="timer-type" data-field="multiple-timer" /><span data-i18n-key="TimeCycle"
+                >Fire multiple times</span
+              ></label
+            >
+            <a
+              data-field="multiple-timer-help"
+              role="button"
+              data-toggle="popover"
+              data-trigger="hover"
+              data-html="true"
+              title=""
+              data-placement="bottom"
+              data-container="body"
+            >
+              <i class="fa fa-info-circle"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="row" data-field="multiple-timer-params">
+          <div class="col-md-3" style="padding-right: 0">
+            <select class="form-control" data-field="time-cycle-language"></select>
+          </div>
+          <div class="col-md-9">
+            <input type="text" class="form-control" data-field="time-cycle" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
+            <label class="radio-inline radio-inline-option"
+              ><input type="radio" name="timer-type" data-field="date-timer" /><span data-i18n-key="TimeDate"
+                >Fire at a specific date</span
+              ></label
+            >
+            <a
+              data-field="date-timer-help"
+              role="button"
+              data-toggle="popover"
+              data-trigger="hover"
+              data-html="true"
+              title=""
+              data-placement="bottom"
+              data-container="body"
+            >
+              <i class="fa fa-info-circle"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="row" data-field="date-timer-params">
+          <div class="col-md-12">
+            <div class="input-group">
+              <input type="text" class="form-control" data-field="time-date" />
+              <div data-field="time-date-time-picker"></div>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" data-field="time-date-time-picker-button">
+                  <i class="fa fa-calendar" aria-hidden="true"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

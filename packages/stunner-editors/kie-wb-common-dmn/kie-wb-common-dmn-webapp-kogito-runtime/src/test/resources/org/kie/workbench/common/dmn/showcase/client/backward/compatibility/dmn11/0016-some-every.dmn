@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_d7643a02-a8fc-4a6f-a8a9-5c2881afea70" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.34.1; 1.0" id="_d7643a02-a8fc-4a6f-a8a9-5c2881afea70" name="some-every" namespace="http://www.trisotech.com/definitions/_d7643a02-a8fc-4a6f-a8a9-5c2881afea70" triso:logoChoice="Default">
+	<itemDefinition id="tItemPrice" name="tItemPrice">
+		<itemComponent id="_de166af3-e625-4572-bc70-cb3c3aa01ca8" name="itemName">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_d68f500e-3997-409e-8152-d454c34487d8" name="price">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<itemDefinition id="tPriceTable" isCollection="true" name="tPriceTable">
+		<typeRef>tns:tItemPrice</typeRef>
+	</itemDefinition>
+	<inputData id="_87bb4ba6-43bb-4fc5-a120-0c15c3901278" name="priceTable2">
+		<variable name="priceTable2" typeRef="tns:tPriceTable"/>
+	</inputData>
+	<decision id="_a471e76a-64b1-44af-9ede-623f6c15b72e" name="priceTable1">
+		<variable name="priceTable1" typeRef="tns:tPriceTable"/>
+		<relation>
+			<column id="_b27cab6a-61cb-493c-9d68-b945a7a725f1" name="itemName"/>
+			<column id="_379f9074-2bd8-496d-8077-c8713d006504" name="price"/>
+			<row id="_bb0e1dff-05cd-49c2-9e39-caef85fa82a5">
+				<literalExpression>
+					<text>"widget"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>25</text>
+				</literalExpression>
+			</row>
+			<row id="_4f90e9d4-2244-4d63-bbb9-d47b3e1d62ee">
+				<literalExpression>
+					<text>"sprocket"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>15</text>
+				</literalExpression>
+			</row>
+			<row id="_cf9445b7-4f8e-4618-a39a-acca4ae5a48e">
+				<literalExpression>
+					<text>"trinket"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>1.5</text>
+				</literalExpression>
+			</row>
+		</relation>
+	</decision>
+	<decision id="_a747d388-e0c0-41e1-b3ef-2904ba1a5d63" name="everyGtTen1">
+		<variable name="everyGtTen1" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredDecision href="#_a471e76a-64b1-44af-9ede-623f6c15b72e"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>every i in priceTable1 satisfies i.price &gt; 10</text>
+		</literalExpression>
+	</decision>
+	<decision id="_e5194b4c-2191-45c3-a78c-723d04197dc6" name="everyGtTen2">
+		<variable name="everyGtTen2" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredInput href="#_87bb4ba6-43bb-4fc5-a120-0c15c3901278"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>every i in priceTable2 satisfies i.price &gt; 10</text>
+		</literalExpression>
+	</decision>
+	<decision id="_655236ba-669a-4a80-a07c-ec051f57a529" name="someGtTen1">
+		<variable name="someGtTen1" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredDecision href="#_a471e76a-64b1-44af-9ede-623f6c15b72e"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>some i in priceTable1 satisfies i.price &gt; 10</text>
+		</literalExpression>
+	</decision>
+	<decision id="_41ed4571-ad86-4c9d-9d3b-7b813ae5cd28" name="someGtTen2">
+		<variable name="someGtTen2" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredInput href="#_87bb4ba6-43bb-4fc5-a120-0c15c3901278"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>some i in priceTable2 satisfies i.price &gt; 10</text>
+		</literalExpression>
+	</decision>
+	<decision id="_72422ed3-5088-4ed0-9ab6-dbcfe3a6cf48" name="everyGtTen3">
+		<variable name="everyGtTen3" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredDecision href="#_a471e76a-64b1-44af-9ede-623f6c15b72e"/>
+		</informationRequirement>
+		<knowledgeRequirement>
+			<requiredKnowledge href="#_d59cc17d-7f21-4706-8d10-47f7ee297b15"/>
+		</knowledgeRequirement>
+		<literalExpression>
+			<text>every i in priceTable1 satisfies gtTen(i.price)=true</text>
+		</literalExpression>
+	</decision>
+	<businessKnowledgeModel id="_d59cc17d-7f21-4706-8d10-47f7ee297b15" name="gtTen">
+		<encapsulatedLogic>
+			<formalParameter name="theNumber" typeRef="feel:number"/>
+			<literalExpression expressionLanguage="FEEL">
+				<text>theNumber &gt; 10</text>
+			</literalExpression>
+		</encapsulatedLogic>
+		<variable name="gtTen" typeRef="feel:boolean"/>
+	</businessKnowledgeModel>
+</definitions>

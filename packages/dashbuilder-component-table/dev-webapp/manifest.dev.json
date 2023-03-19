@@ -1,0 +1,94 @@
+{
+  "init": [
+    {
+      "key": "alertColumn",
+      "value": "1"
+    },
+    {
+      "key": "alertDanger",
+      "value": "14964400"
+    },
+    {
+      "key": "alertGreat",
+      "value": "5812464"
+    },
+    {
+      "key": "alertGood",
+      "value": "5793455"
+    },
+    {
+      "key": "selectable",
+      "value": "true"
+    },
+    {
+      "key": "linkColumn",
+      "value": "Country"
+    },
+    {
+      "key": "hideHeader",
+      "value": "_true"
+    },
+    {
+      "key": "linkTargetSelf",
+      "value": "_true"
+    },
+    {
+      "key": "mode",
+      "value": "dark"
+    },
+    {
+      "key": "linkTemplate",
+      "value": "https://www.google.com/search?q=${value}"
+    }
+  ],
+  "dataSet": {
+    "columns": [
+      {
+        "name": "Country",
+        "type": "LABEL",
+        "settings": {
+          "columnId": "Country",
+          "columnName": "Country",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": null
+        }
+      },
+      {
+        "name": "GDP 2010",
+        "type": "NUMBER",
+        "settings": {
+          "columnId": "GDP 2010",
+          "columnName": "GDP 2010",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": "#,##0.00"
+        }
+      },
+      {
+        "name": "GDP 2015",
+        "type": "NUMBER",
+        "settings": {
+          "columnId": "GDP 2015",
+          "columnName": "GDP 2015",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": "#,##0.00"
+        }
+      }
+    ],
+    "data": [
+      ["United States", "14964400", "18036650"],
+      ["China", "5812464", "11226186"],
+      ["Japan", "5793455", "4382420"],
+      ["Germany", "3309668", "3365293"],
+      ["United Kingdom", "2246079", "2863304"],
+      ["France", "2560002", "2420163"],
+      ["Brazil", "2087889", "1801482"],
+      ["Italy", "2051412", "1825820"],
+      ["India", "1729010", "2088155"],
+      ["Russia", "1638463", "1356700"],
+      ["Canada", "1504900", "1552808"]
+    ]
+  }
+}

@@ -16,4 +16,3 @@
 
 export * from "./GuidedTourDomUtils";
 export * from "./GuidedTourEventBus";
-export * from "./GuidedTourCookie";

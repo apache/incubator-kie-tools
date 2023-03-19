@@ -1,0 +1,19 @@
+.uf-navconfig-body {
+  margin: 15px;
+}
+.uf-navconfig-selector-button {
+  min-width: 200px;
+  text-align: left;
+}
+.uf-navconfig-selector-menu {
+  margin-left: 20px;
+  min-width: 200px;
+}
+.uf-navconfig-selector-caret {
+  float: right;
+  margin-top: 5px;
+}
+.uf-navconfig-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

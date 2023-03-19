@@ -1,0 +1,9 @@
+.kie-wb-common-forms-lov-input-toolbar {
+  border-bottom: none;
+  box-shadow: none;
+  padding: 0px;
+}
+
+.gwt-PopupPanel {
+  z-index: 15000;
+}

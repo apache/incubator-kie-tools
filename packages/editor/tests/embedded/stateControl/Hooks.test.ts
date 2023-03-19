@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { act, renderHook } from "@testing-library/react-hooks";
-import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
-import { StateControl } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
 
 describe("useDirtyState", () => {
   let editorRef: EmbeddedEditorRef;
@@ -25,6 +26,7 @@ describe("useDirtyState", () => {
   beforeEach(() => {
     stateControl = new StateControl();
     editorRef = {
+      iframeRef: React.createRef(),
       isReady: true,
       getStateControl: () => stateControl,
       getEnvelopeServer: () => ({} as any),
@@ -34,6 +36,7 @@ describe("useDirtyState", () => {
       getPreview: jest.fn(),
       setContent: jest.fn(),
       validate: jest.fn(),
+      setTheme: jest.fn(),
       getElementPosition: jest.fn(),
     };
   });

@@ -18,12 +18,9 @@ import { By } from "selenium-webdriver";
 import EditorPage from "../editor/EditorPage";
 import Element from "../Element";
 import FullScreenPage from "../fullscreen-editor/FullScreenPage";
-import Locator from "../Locator";
-import OnlineEditorPage from "../online-editor/OnlineEditorPage";
 
 export default class GitHubEditorPage extends EditorPage {
   private static readonly SEE_AS_SOURCE_BUTTON_LOCATOR = By.xpath("//button[@data-testid='see-as-source-button']");
-  private static readonly ONLINE_EDITOR_BUTTON_LOCATOR = By.xpath("//button[@data-testid='open-ext-editor-button']");
   private static readonly COPY_LINK_BUTTON_LOCATOR = By.xpath("//button[@data-testid='copy-link-button']");
   private static readonly COPY_LINK_ALERT_LOCATOR = By.xpath("//div[@data-testid='link-copied-alert']");
   private static readonly SEE_AS_DIAGRAM_BUTTON_LOCATOR = By.xpath("//button[@data-testid='see-as-diagram-button']");
@@ -59,17 +56,6 @@ export default class GitHubEditorPage extends EditorPage {
 
   public async isEditorVisible(): Promise<boolean> {
     return await this.tools.by(GitHubEditorPage.KOGITO_CONTAINER_LOCATOR).wait(1000).isVisible();
-  }
-
-  public async openOnlineEditor(): Promise<OnlineEditorPage> {
-    const onlineEditorButtonLocator: Locator = this.tools.by(GitHubEditorPage.ONLINE_EDITOR_BUTTON_LOCATOR);
-    await onlineEditorButtonLocator.wait(2000).untilPresent();
-    const onlineEditorButton: Element = await onlineEditorButtonLocator.getElement();
-    onlineEditorButton.click();
-
-    await this.tools.window().switchToSecondWindow();
-
-    return await this.tools.createPage(OnlineEditorPage);
   }
 
   public async fullScreen(): Promise<FullScreenPage> {

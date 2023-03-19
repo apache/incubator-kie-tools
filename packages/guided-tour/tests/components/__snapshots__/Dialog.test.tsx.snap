@@ -52,6 +52,9 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
         </svg>
         <h4
           class="pf-c-title pf-m-lg"
+          data-ouia-component-id="OUIA-Generated-Title-3"
+          data-ouia-component-type="PF4/Title"
+          data-ouia-safe="true"
         >
           Great!
         </h4>
@@ -60,6 +63,9 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
         >
           <p
             class="pf-c-content"
+            data-ouia-component-id="OUIA-Generated-Text-3"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
             data-pf-content="true"
           >
             Try to click there!
@@ -137,6 +143,9 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
         </svg>
         <h4
           class="pf-c-title pf-m-lg"
+          data-ouia-component-id="OUIA-Generated-Title-2"
+          data-ouia-component-type="PF4/Title"
+          data-ouia-safe="true"
         >
           Do you want to stop the tour?
         </h4>
@@ -145,6 +154,9 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
         >
           <p
             class="pf-c-content"
+            data-ouia-component-id="OUIA-Generated-Text-1"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
             data-pf-content="true"
           >
             Seems like you didn't follow the suggested action. Do you want to stop the tour?
@@ -152,6 +164,9 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
           <br />
           <p
             class="pf-c-content"
+            data-ouia-component-id="OUIA-Generated-Text-2"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
             data-pf-content="true"
           >
             <p
@@ -229,6 +244,9 @@ exports[`Dialog when the step cannot be loaded renders empty state 1`] = `
         </svg>
         <h4
           class="pf-c-title pf-m-lg"
+          data-ouia-component-id="OUIA-Generated-Title-1"
+          data-ouia-component-type="PF4/Title"
+          data-ouia-safe="true"
         >
           Oops!
         </h4>

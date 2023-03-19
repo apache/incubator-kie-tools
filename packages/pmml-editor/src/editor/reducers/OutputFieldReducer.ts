@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
-import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { OutputField } from "@kie-tools/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { Builder } from "../paths";
 import { getMiningSchema } from "../PMMLModelHelper";

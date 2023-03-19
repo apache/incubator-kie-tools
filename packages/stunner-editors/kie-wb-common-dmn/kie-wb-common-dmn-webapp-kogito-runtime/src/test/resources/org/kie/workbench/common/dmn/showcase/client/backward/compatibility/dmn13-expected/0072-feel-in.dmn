@@ -1,0 +1,2028 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0072-feel-in" name="0072-feel-in" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <description>FEEL in</description>
+
+    <decision name="number_001" id="_number_001">
+        <variable name="number_001"/>
+        <literalExpression>
+            <text>1 in [2,3,1]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_001_a" id="_number_001_a">
+        <variable name="number_001_a"/>
+        <literalExpression>
+            <text>1 in [2,3,4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_002" id="_number_002">
+        <variable name="number_002"/>
+        <literalExpression>
+            <text>1 in [[2..4], [1..3]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_002_a" id="_number_002_a">
+        <variable name="number_002_a"/>
+        <literalExpression>
+            <text>5 in [[2..4], [1..3]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_003" id="_number_003">
+        <variable name="number_003"/>
+        <literalExpression>
+            <text>1 in &lt;= 10</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_003_1" id="_number_003_1">
+        <variable name="number_003_1"/>
+        <literalExpression>
+            <text>10 in &lt;= 10</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_003_a" id="_number_003_a">
+        <variable name="number_003_a"/>
+        <literalExpression>
+            <text>11 in &lt;= 10</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_004" id="_number_004">
+        <variable name="number_004"/>
+        <literalExpression>
+            <text>1 in &lt; 10</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_004_a" id="_number_004_a">
+        <variable name="number_004_a"/>
+        <literalExpression>
+            <text>10 in &lt; 10</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_005" id="_number_005">
+        <variable name="number_005"/>
+        <literalExpression>
+            <text>11 in &gt;= 10</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_005_1" id="_number_005_1">
+        <variable name="number_005_1"/>
+        <literalExpression>
+            <text>10 in &gt;= 10</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_005_a" id="_number_005_a">
+        <variable name="number_005_a"/>
+        <literalExpression>
+            <text>9 in &gt;= 10</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_006" id="_number_006">
+        <variable name="number_006"/>
+        <literalExpression>
+            <text>11 in &gt; 10</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_006_a" id="_number_006_a">
+        <variable name="number_006_a"/>
+        <literalExpression>
+            <text>10 in &gt; 10</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_007_a" id="_number_007_a">
+        <variable name="number_007_a"/>
+        <literalExpression>
+            <text>1 in (2..4)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_007_b" id="_number_007_b">
+        <variable name="number_007_b"/>
+        <literalExpression>
+            <text>2 in (2..4)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_007_c" id="_number_007_c">
+        <variable name="number_007_c"/>
+        <literalExpression>
+            <text>3 in (2..4)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_007_d" id="_number_007_d">
+        <variable name="number_007_d"/>
+        <literalExpression>
+            <text>4 in (2..4)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_007_e" id="_number_007_e">
+        <variable name="number_007_e"/>
+        <literalExpression>
+            <text>5 in (2..4)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_008_a" id="_number_008_a">
+        <variable name="number_008_a"/>
+        <literalExpression>
+            <text>1 in (2..4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_008_b" id="_number_008_b">
+        <variable name="number_008_b"/>
+        <literalExpression>
+            <text>2 in (2..4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_008_c" id="_number_008_c">
+        <variable name="number_008_c"/>
+        <literalExpression>
+            <text>3 in (2..4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_008_d" id="_number_008_d">
+        <variable name="number_008_d"/>
+        <literalExpression>
+            <text>4 in (2..4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_008_e" id="_number_008_e">
+        <variable name="number_008_e"/>
+        <literalExpression>
+            <text>5 in (2..4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_009_a" id="_number_009_a">
+        <variable name="number_009_a"/>
+        <literalExpression>
+            <text>1 in [2..4)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_009_b" id="_number_009_b">
+        <variable name="number_009_b"/>
+        <literalExpression>
+            <text>2 in [2..4)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_009_c" id="_number_009_c">
+        <variable name="number_009_c"/>
+        <literalExpression>
+            <text>3 in [2..4)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_009_d" id="_number_009_d">
+        <variable name="number_009_d"/>
+        <literalExpression>
+            <text>4 in [2..4)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_009_e" id="_number_009_e">
+        <variable name="number_009_e"/>
+        <literalExpression>
+            <text>5 in [2..4)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_010_a" id="_number_010_a">
+        <variable name="number_010_a"/>
+        <literalExpression>
+            <text>1 in [2..4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_010_b" id="_number_010_b">
+        <variable name="number_010_b"/>
+        <literalExpression>
+            <text>2 in [2..4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_010_c" id="_number_010_c">
+        <variable name="number_010_c"/>
+        <literalExpression>
+            <text>3 in [2..4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_010_d" id="_number_010_d">
+        <variable name="number_010_d"/>
+        <literalExpression>
+            <text>4 in [2..4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_010_e" id="_number_010_e">
+        <variable name="number_010_e"/>
+        <literalExpression>
+            <text>5 in [2..4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_011" id="_number_011">
+        <variable name="number_011"/>
+        <literalExpression>
+            <text>1 in 1</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_011_a" id="_number_011_a">
+        <variable name="number_011_a"/>
+        <literalExpression>
+            <text>1 in 2</text>
+        </literalExpression>
+    </decision>
+
+
+    <decision name="number_014" id="_number_014">
+        <variable name="number_014"/>
+        <literalExpression>
+            <text>10 in (1, &lt; 5, >=10)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="number_014_a" id="_number_014_a">
+        <variable name="number_014_a"/>
+        <literalExpression>
+            <text>10 in (1, 5, 9)</text>
+        </literalExpression>
+    </decision>
+
+
+    <decision name="string_001" id="_string_001">
+        <variable name="string_001"/>
+        <literalExpression>
+            <text>"a" in ["b","c","a"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_001_a" id="_string_001_a">
+        <variable name="string_001_a"/>
+        <literalExpression>
+            <text>"a" in ["b","c","d"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_002" id="_string_002">
+        <variable name="string_002"/>
+        <literalExpression>
+            <text>"b" in [["f".."h"], ["a".."c"]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_002_a" id="_string_002_a">
+        <variable name="string_002_a"/>
+        <literalExpression>
+            <text>"i" in [["f".."h"], ["a".."c"]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_003" id="_string_003">
+        <variable name="string_003"/>
+        <literalExpression>
+            <text>"a" in &lt;= "b"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_003_1" id="_string_003_1">
+        <variable name="string_003_1"/>
+        <literalExpression>
+            <text>"b" in &lt;= "b"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_003_a" id="_string_003_a">
+        <variable name="string_003_a"/>
+        <literalExpression>
+            <text>"c" in &lt;= "b"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_004" id="_string_004">
+        <variable name="string_004"/>
+        <literalExpression>
+            <text>"a" in &lt; "b"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_004_a" id="_string_004_a">
+        <variable name="string_004_a"/>
+        <literalExpression>
+            <text>"b" in &lt; "b"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_005" id="_string_005">
+        <variable name="string_005"/>
+        <literalExpression>
+            <text>"b" in &gt;= "a"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_005_1" id="_string_005_1">
+        <variable name="string_005_1"/>
+        <literalExpression>
+            <text>"b" in &gt;= "b"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_005_a" id="_string_005_a">
+        <variable name="string_005_a"/>
+        <literalExpression>
+            <text>"a" in &gt;= "b"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_006" id="_string_006">
+        <variable name="string_006"/>
+        <literalExpression>
+            <text>"b" in &gt; "a"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_006_a" id="_string_006_a">
+        <variable name="string_006_a"/>
+        <literalExpression>
+            <text>"b" in &gt; "b"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_007_a" id="_string_007_a">
+        <variable name="string_007_a"/>
+        <literalExpression>
+            <text>"a" in ("b".."d")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_007_b" id="_string_007_b">
+        <variable name="string_007_b"/>
+        <literalExpression>
+            <text>"b" in ("b".."d")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_007_c" id="_string_007_c">
+        <variable name="string_007_c"/>
+        <literalExpression>
+            <text>"c" in ("b".."d")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_007_d" id="_string_007_d">
+        <variable name="string_007_d"/>
+        <literalExpression>
+            <text>"d" in ("b".."d")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_007_e" id="_string_007_e">
+        <variable name="string_007_e"/>
+        <literalExpression>
+            <text>"e" in ("b".."d")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_008_a" id="_string_008_a">
+        <variable name="string_008_a"/>
+        <literalExpression>
+            <text>"a" in ("b".."d"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_008_b" id="_string_008_b">
+        <variable name="string_008_b"/>
+        <literalExpression>
+            <text>"b" in ("b".."d"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_008_c" id="_string_008_c">
+        <variable name="string_008_c"/>
+        <literalExpression>
+            <text>"c" in ("b".."d"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_008_d" id="_string_008_d">
+        <variable name="string_008_d"/>
+        <literalExpression>
+            <text>"d" in ("b".."d"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_008_e" id="_string_008_e">
+        <variable name="string_008_e"/>
+        <literalExpression>
+            <text>"e" in ("b".."d"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_009_a" id="_string_009_a">
+        <variable name="string_009_a"/>
+        <literalExpression>
+            <text>"a" in ["b".."d")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_009_b" id="_string_009_b">
+        <variable name="string_009_b"/>
+        <literalExpression>
+            <text>"b" in ["b".."d")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_009_c" id="_string_009_c">
+        <variable name="string_009_c"/>
+        <literalExpression>
+            <text>"c" in ["b".."d")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_009_d" id="_string_009_d">
+        <variable name="string_009_d"/>
+        <literalExpression>
+            <text>"d" in ["b".."d")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_009_e" id="_string_009_e">
+        <variable name="string_009_e"/>
+        <literalExpression>
+            <text>"e" in ["b".."d")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_010_a" id="_string_010_a">
+        <variable name="string_010_a"/>
+        <literalExpression>
+            <text>"a" in ["b".."d"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_010_b" id="_string_010_b">
+        <variable name="string_010_b"/>
+        <literalExpression>
+            <text>"b" in ["b".."d"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_010_c" id="_string_010_c">
+        <variable name="string_010_c"/>
+        <literalExpression>
+            <text>"c" in ["b".."d"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_010_d" id="_string_010_d">
+        <variable name="string_010_d"/>
+        <literalExpression>
+            <text>"d" in ["b".."d"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_010_e" id="_string_010_e">
+        <variable name="string_010_e"/>
+        <literalExpression>
+            <text>"e" in ["b".."d"]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_011" id="_string_011">
+        <variable name="string_011"/>
+        <literalExpression>
+            <text>"a" in "a"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_011_a" id="_string_011_a">
+        <variable name="string_011_a"/>
+        <literalExpression>
+            <text>"a" in "b"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_014" id="_string_014">
+        <variable name="string_014"/>
+        <literalExpression>
+            <text>"d" in ("c", &lt; "c", >="d")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="string_014_a" id="_string_014_a">
+        <variable name="string_014_a"/>
+        <literalExpression>
+            <text>"d" in ("c", >="e")</text>
+        </literalExpression>
+    </decision>
+
+
+    <decision name="boolean_001" id="_boolean_001">
+        <variable name="boolean_001"/>
+        <literalExpression>
+            <text>true in [true, false]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="boolean_001_a" id="_boolean_001_a">
+        <variable name="boolean_001_a"/>
+        <literalExpression>
+            <text>true in [false, 2, 3]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="boolean_011" id="_boolean_011">
+        <variable name="boolean_011"/>
+        <literalExpression>
+            <text>true in true</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="boolean_011_a" id="_boolean_011_a">
+        <variable name="boolean_011_a"/>
+        <literalExpression>
+            <text>true in false</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="boolean_014" id="_boolean_014">
+
+        <variable name="boolean_014"/>
+        <literalExpression>
+            <text>true in (false, true)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="boolean_014_a" id="_boolean_014_a">
+        <variable name="boolean_014_a"/>
+        <literalExpression>
+            <text>true in (false, false)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_001" id="_date_001">
+        <variable name="date_001"/>
+        <literalExpression>
+            <text>date("2018-12-08") in [date("2018-12-08"),date("2018-12-09"),date("2018-12-10")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_001_a" id="_date_001_a">
+        <variable name="date_001_a"/>
+        <literalExpression>
+            <text>date("2018-12-11") in [date("2018-12-08"),date("2018-12-09"),date("2018-12-10")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_002" id="_date_002">
+        <variable name="date_002"/>
+        <literalExpression>
+            <text>date("2018-12-11") in [[date("2018-12-05") .. date("2018-12-07")], [date("2018-12-10") .. date("2018-12-12")]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_002_a" id="_date_002_a">
+        <variable name="date_002_a"/>
+        <literalExpression>
+            <text>date("2018-12-04") in [[date("2018-12-05") .. date("2018-12-07")], [date("2018-12-10") .. date("2018-12-12")]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_003" id="_date_003">
+        <variable name="date_003"/>
+        <literalExpression>
+            <text>date("2018-12-04") in &lt;= date("2018-12-05")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_003_1" id="_date_003_1">
+        <variable name="date_003_1"/>
+        <literalExpression>
+            <text>date("2018-12-04") in &lt;= date("2018-12-04")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_003_a" id="_date_003_a">
+        <variable name="date_003_a"/>
+        <literalExpression>
+            <text>date("2018-12-05") in &lt;= date("2018-12-04")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_004" id="_date_004">
+        <variable name="date_004"/>
+        <literalExpression>
+            <text>date("2018-12-01") in &lt; date("2018-12-10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_004_a" id="_date_004_a">
+        <variable name="date_004_a"/>
+        <literalExpression>
+            <text>date("2018-12-10") in &lt; date("2018-12-10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_005" id="_date_005">
+        <variable name="date_005"/>
+        <literalExpression>
+            <text>date("2018-12-11") in &gt;= date("2018-12-10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_005_1" id="_date_005_1">
+        <variable name="date_005_1"/>
+        <literalExpression>
+            <text>date("2018-12-10") in &gt;= date("2018-12-10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_005_a" id="_date_005_a">
+        <variable name="date_005_a"/>
+        <literalExpression>
+            <text>date("2018-12-09") in &gt;= date("2018-12-10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_006" id="_date_006">
+        <variable name="date_006"/>
+        <literalExpression>
+            <text>date("2018-12-11") in &gt; date("2018-12-10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_006_a" id="_date_006_a">
+        <variable name="date_006_a"/>
+        <literalExpression>
+            <text>date("2018-12-10") in &gt; date("2018-12-10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_007_a" id="_date_007_a">
+        <variable name="date_007_a"/>
+        <literalExpression>
+            <text>date("2018-12-01") in (date("2018-12-02")..date("2018-12-04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_007_b" id="_date_007_b">
+        <variable name="date_007_b"/>
+        <literalExpression>
+            <text>date("2018-12-02") in (date("2018-12-02")..date("2018-12-04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_007_c" id="_date_007_c">
+        <variable name="date_007_c"/>
+        <literalExpression>
+            <text>date("2018-12-03") in (date("2018-12-02")..date("2018-12-04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_007_d" id="_date_007_d">
+        <variable name="date_007_d"/>
+        <literalExpression>
+            <text>date("2018-12-04") in (date("2018-12-02")..date("2018-12-04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_007_e" id="_date_007_e">
+        <variable name="date_007_e"/>
+        <literalExpression>
+            <text>date("2018-12-05") in (date("2018-12-02")..date("2018-12-04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_008_a" id="_date_008_a">
+        <variable name="date_008_a"/>
+        <literalExpression>
+            <text>date("2018-12-01") in (date("2018-12-02")..date("2018-12-04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_008_b" id="_date_008_b">
+        <variable name="date_008_b"/>
+        <literalExpression>
+            <text>date("2018-12-02") in (date("2018-12-02")..date("2018-12-04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_008_c" id="_date_008_c">
+        <variable name="date_008_c"/>
+        <literalExpression>
+            <text>date("2018-12-03") in (date("2018-12-02")..date("2018-12-04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_008_d" id="_date_008_d">
+        <variable name="date_008_d"/>
+        <literalExpression>
+            <text>date("2018-12-04") in (date("2018-12-02")..date("2018-12-04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_008_e" id="_date_008_e">
+        <variable name="date_008_e"/>
+        <literalExpression>
+            <text>date("2018-12-05") in (date("2018-12-02")..date("2018-12-04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_009_a" id="_date_009_a">
+        <variable name="date_009_a"/>
+        <literalExpression>
+            <text>date("2018-12-01") in [date("2018-12-02")..date("2018-12-04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_009_b" id="_date_009_b">
+        <variable name="date_009_b"/>
+        <literalExpression>
+            <text>date("2018-12-02") in [date("2018-12-02")..date("2018-12-04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_009_c" id="_date_009_c">
+        <variable name="date_009_c"/>
+        <literalExpression>
+            <text>date("2018-12-03") in [date("2018-12-02")..date("2018-12-04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_009_d" id="_date_009_d">
+        <variable name="date_009_d"/>
+        <literalExpression>
+            <text>date("2018-12-04") in [date("2018-12-02")..date("2018-12-04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_009_e" id="_date_009_e">
+        <variable name="date_009_e"/>
+        <literalExpression>
+            <text>date("2018-12-05") in [date("2018-12-02")..date("2018-12-04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_010_a" id="_date_010_a">
+        <variable name="date_010_a"/>
+        <literalExpression>
+            <text>date("2018-12-01") in [date("2018-12-02")..date("2018-12-04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_010_b" id="_date_010_b">
+        <variable name="date_010_b"/>
+        <literalExpression>
+            <text>date("2018-12-02") in [date("2018-12-02")..date("2018-12-04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_010_c" id="_date_010_c">
+        <variable name="date_010_c"/>
+        <literalExpression>
+            <text>date("2018-12-03") in [date("2018-12-02")..date("2018-12-04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_010_d" id="_date_010_d">
+        <variable name="date_010_d"/>
+        <literalExpression>
+            <text>date("2018-12-04") in [date("2018-12-02")..date("2018-12-04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_010_e" id="_date_010_e">
+        <variable name="date_010_e"/>
+        <literalExpression>
+            <text>date("2018-12-05") in [date("2018-12-02")..date("2018-12-04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_011" id="_date_011">
+        <variable name="date_011"/>
+        <literalExpression>
+            <text>date("2018-12-05") in date("2018-12-05")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_011_a" id="_date_011_a">
+        <variable name="date_011_a"/>
+        <literalExpression>
+            <text>date("2018-12-05") in date("2018-12-06")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_014" id="_date_014">
+        <variable name="date_014"/>
+        <literalExpression>
+            <text>date("2018-12-05") in (date("2018-12-04"), >=date("2018-12-05"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_014_a" id="_date_014_a">
+        <variable name="date_014_a"/>
+        <literalExpression>
+            <text>date("2018-12-05") in (date("2018-12-04"), >=date("2018-12-06"))</text>
+        </literalExpression>
+    </decision>
+
+
+    <decision name="time_001" id="_time_001">
+        <variable name="time_001"/>
+        <literalExpression>
+            <text>time("10:30:08") in [time("10:30:08"),time("10:30:09"),time("10:30:10")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_001_a" id="_time_001_a">
+        <variable name="time_001_a"/>
+        <literalExpression>
+            <text>time("10:30:11") in [time("10:30:08"),time("10:30:09"),time("10:30:10")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_002" id="_time_002">
+        <variable name="time_002"/>
+        <literalExpression>
+            <text>time("10:30:11") in [[time("10:30:05") .. time("10:30:07")], [time("10:30:10") .. time("10:30:12")]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_002_a" id="_time_002_a">
+        <variable name="time_002_a"/>
+        <literalExpression>
+            <text>time("10:30:04") in [[time("10:30:05") .. time("10:30:07")], [time("10:30:10") .. time("10:30:12")]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_003" id="_time_003">
+        <variable name="time_003"/>
+        <literalExpression>
+            <text>time("10:30:04") in &lt;= time("10:30:05")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_003_1" id="_time_003_1">
+        <variable name="time_003_1"/>
+        <literalExpression>
+            <text>time("10:30:04") in &lt;= time("10:30:04")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_003_a" id="_time_003_a">
+        <variable name="time_003_a"/>
+        <literalExpression>
+            <text>time("10:30:05") in &lt;= time("10:30:04")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_004" id="_time_004">
+        <variable name="time_004"/>
+        <literalExpression>
+            <text>time("10:30:01") in &lt; time("10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_004_a" id="_time_004_a">
+        <variable name="time_004_a"/>
+        <literalExpression>
+            <text>time("10:30:10") in &lt; time("10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_005" id="_time_005">
+        <variable name="time_005"/>
+        <literalExpression>
+            <text>time("10:30:11") in &gt;= time("10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_005_1" id="_time_005_1">
+        <variable name="time_005_1"/>
+        <literalExpression>
+            <text>time("10:30:10") in &gt;= time("10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_005_a" id="_time_005_a">
+        <variable name="time_005_a"/>
+        <literalExpression>
+            <text>time("10:30:09") in &gt;= time("10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_006" id="_time_006">
+        <variable name="time_006"/>
+        <literalExpression>
+            <text>time("10:30:11") in &gt; time("10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_006_a" id="_time_006_a">
+        <variable name="time_006_a"/>
+        <literalExpression>
+            <text>time("10:30:10") in &gt; time("10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_007_a" id="_time_007_a">
+        <variable name="time_007_a"/>
+        <literalExpression>
+            <text>time("10:30:01") in (time("10:30:02")..time("10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_007_b" id="_time_007_b">
+        <variable name="time_007_b"/>
+        <literalExpression>
+            <text>time("10:30:02") in (time("10:30:02")..time("10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_007_c" id="_time_007_c">
+        <variable name="time_007_c"/>
+        <literalExpression>
+            <text>time("10:30:03") in (time("10:30:02")..time("10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_007_d" id="_time_007_d">
+        <variable name="time_007_d"/>
+        <literalExpression>
+            <text>time("10:30:04") in (time("10:30:02")..time("10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_007_e" id="_time_007_e">
+        <variable name="time_007_e"/>
+        <literalExpression>
+            <text>time("10:30:05") in (time("10:30:02")..time("10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_008_a" id="_time_008_a">
+        <variable name="time_008_a"/>
+        <literalExpression>
+            <text>time("10:30:01") in (time("10:30:02")..time("10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_008_b" id="_time_008_b">
+        <variable name="time_008_b"/>
+        <literalExpression>
+            <text>time("10:30:02") in (time("10:30:02")..time("10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_008_c" id="_time_008_c">
+        <variable name="time_008_c"/>
+        <literalExpression>
+            <text>time("10:30:03") in (time("10:30:02")..time("10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_008_d" id="_time_008_d">
+        <variable name="time_008_d"/>
+        <literalExpression>
+            <text>time("10:30:04") in (time("10:30:02")..time("10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_008_e" id="_time_008_e">
+        <variable name="time_008_e"/>
+        <literalExpression>
+            <text>time("10:30:05") in (time("10:30:02")..time("10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_009_a" id="_time_009_a">
+        <variable name="time_009_a"/>
+        <literalExpression>
+            <text>time("10:30:01") in [time("10:30:02")..time("10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_009_b" id="_time_009_b">
+        <variable name="time_009_b"/>
+        <literalExpression>
+            <text>time("10:30:02") in [time("10:30:02")..time("10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_009_c" id="_time_009_c">
+        <variable name="time_009_c"/>
+        <literalExpression>
+            <text>time("10:30:03") in [time("10:30:02")..time("10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_009_d" id="_time_009_d">
+        <variable name="time_009_d"/>
+        <literalExpression>
+            <text>time("10:30:04") in [time("10:30:02")..time("10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_009_e" id="_time_009_e">
+        <variable name="time_009_e"/>
+        <literalExpression>
+            <text>time("10:30:05") in [time("10:30:02")..time("10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_010_a" id="_time_010_a">
+        <variable name="time_010_a"/>
+        <literalExpression>
+            <text>time("10:30:01") in [time("10:30:02")..time("10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_010_b" id="_time_010_b">
+        <variable name="time_010_b"/>
+        <literalExpression>
+            <text>time("10:30:02") in [time("10:30:02")..time("10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_010_c" id="_time_010_c">
+        <variable name="time_010_c"/>
+        <literalExpression>
+            <text>time("10:30:03") in [time("10:30:02")..time("10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_010_d" id="_time_010_d">
+        <variable name="time_010_d"/>
+        <literalExpression>
+            <text>time("10:30:04") in [time("10:30:02")..time("10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_010_e" id="_time_010_e">
+        <variable name="time_010_e"/>
+        <literalExpression>
+            <text>time("10:30:05") in [time("10:30:02")..time("10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_011" id="_time_011">
+        <variable name="time_011"/>
+        <literalExpression>
+            <text>time("10:30:05") in time("10:30:05")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_011_a" id="_time_011_a">
+        <variable name="time_011_a"/>
+        <literalExpression>
+            <text>time("10:30:05") in time("10:30:06")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_014" id="_time_014">
+        <variable name="time_014"/>
+        <literalExpression>
+            <text>time("10:30:05") in (time("10:30:04"), >=time("10:30:05"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_014_a" id="_time_014_a">
+        <variable name="time_014_a"/>
+        <literalExpression>
+            <text>time("10:30:05") in (time("10:30:04"), >=time("10:30:06"))</text>
+        </literalExpression>
+    </decision>
+
+
+    <decision name="dateTime_001" id="_dateTime_001">
+        <variable name="dateTime_001"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:08") in [date and time("2018-12-08T10:30:08"),date and time("2018-12-08T10:30:09"),date and time("2018-12-08T10:30:10")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_001_a" id="_dateTime_001_a">
+        <variable name="dateTime_001_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:11") in [date and time("2018-12-08T10:30:08"),date and time("2018-12-08T10:30:09"),date and time("2018-12-08T10:30:10")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_002" id="_dateTime_002">
+        <variable name="dateTime_002"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:11") in [[date and time("2018-12-08T10:30:05") .. date and time("2018-12-08T10:30:07")], [date and time("2018-12-08T10:30:10") .. date and time("2018-12-08T10:30:12")]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_002_a" id="_dateTime_002_a">
+        <variable name="dateTime_002_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:04") in [[date and time("2018-12-08T10:30:05") .. date and time("2018-12-08T10:30:07")], [date and time("2018-12-08T10:30:10") .. date and time("2018-12-08T10:30:12")]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_003" id="_dateTime_003">
+        <variable name="dateTime_003"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:04") in &lt;= date and time("2018-12-08T10:30:05")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_003_1" id="_dateTime_003_1">
+        <variable name="dateTime_003_1"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:04") in &lt;= date and time("2018-12-08T10:30:04")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_003_a" id="_dateTime_003_a">
+        <variable name="dateTime_003_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:05") in &lt;= date and time("2018-12-08T10:30:04")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_004" id="_dateTime_004">
+        <variable name="dateTime_004"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:01") in &lt; date and time("2018-12-08T10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_004_a" id="_dateTime_004_a">
+        <variable name="dateTime_004_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:10") in &lt; date and time("2018-12-08T10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_005" id="_dateTime_005">
+        <variable name="dateTime_005"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:11") in &gt;= date and time("2018-12-08T10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_005_1" id="_dateTime_005_1">
+        <variable name="dateTime_005_1"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:10") in &gt;= date and time("2018-12-08T10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_005_a" id="_dateTime_005_a">
+        <variable name="dateTime_005_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:09") in &gt;= date and time("2018-12-08T10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_006" id="_dateTime_006">
+        <variable name="dateTime_006"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:11") in &gt; date and time("2018-12-08T10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_006_a" id="_dateTime_006_a">
+        <variable name="dateTime_006_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:10") in &gt; date and time("2018-12-08T10:30:10")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_007_a" id="_dateTime_007_a">
+        <variable name="dateTime_007_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:01") in (date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_007_b" id="_dateTime_007_b">
+        <variable name="dateTime_007_b"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:02") in (date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_007_c" id="_dateTime_007_c">
+        <variable name="dateTime_007_c"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:03") in (date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_007_d" id="_dateTime_007_d">
+        <variable name="dateTime_007_d"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:04") in (date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_007_e" id="_dateTime_007_e">
+        <variable name="dateTime_007_e"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:05") in (date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_008_a" id="_dateTime_008_a">
+        <variable name="dateTime_008_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:01") in (date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_008_b" id="_dateTime_008_b">
+        <variable name="dateTime_008_b"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:02") in (date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_008_c" id="_dateTime_008_c">
+        <variable name="dateTime_008_c"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:03") in (date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_008_d" id="_dateTime_008_d">
+        <variable name="dateTime_008_d"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:04") in (date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_008_e" id="_dateTime_008_e">
+        <variable name="dateTime_008_e"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:05") in (date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_009_a" id="_dateTime_009_a">
+        <variable name="dateTime_009_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:01") in [date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_009_b" id="_dateTime_009_b">
+        <variable name="dateTime_009_b"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:02") in [date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_009_c" id="_dateTime_009_c">
+        <variable name="dateTime_009_c"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:03") in [date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_009_d" id="_dateTime_009_d">
+        <variable name="dateTime_009_d"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:04") in [date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_009_e" id="_dateTime_009_e">
+        <variable name="dateTime_009_e"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:05") in [date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_010_a" id="_dateTime_010_a">
+        <variable name="dateTime_010_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:01") in [date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_010_b" id="_dateTime_010_b">
+        <variable name="dateTime_010_b"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:02") in [date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_010_c" id="_dateTime_010_c">
+        <variable name="dateTime_010_c"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:03") in [date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_010_d" id="_dateTime_010_d">
+        <variable name="dateTime_010_d"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:04") in [date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_010_e" id="_dateTime_010_e">
+        <variable name="dateTime_010_e"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:05") in [date and time("2018-12-08T10:30:02")..date and time("2018-12-08T10:30:04")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_011" id="_dateTime_011">
+        <variable name="dateTime_011"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:05") in date and time("2018-12-08T10:30:05")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_011_a" id="_dateTime_011_a">
+        <variable name="dateTime_011_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:05") in date and time("2018-12-08T10:30:06")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_014" id="_dateTime_014">
+        <variable name="dateTime_014"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:05") in (date and time("2018-12-08T10:30:04"), >=date and time("2018-12-08T10:30:05"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_014_a" id="_dateTime_014_a">
+        <variable name="dateTime_014_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-08T10:30:05") in (date and time("2018-12-08T10:30:04"), >=date and time("2018-12-08T10:30:06"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="list_001" id="_list_001">
+        <variable name="list_001"/>
+        <literalExpression>
+            <text>[1,2,3] in [[1,2,3,4], [1,2,3]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="list_001_a" id="_list_001_a">
+        <variable name="list_001_a"/>
+        <literalExpression>
+            <text>[1,2,3,5] in [[1,2,3,4], [1,2,3]]</text>
+        </literalExpression>
+    </decision>
+
+<!--     <decision name="list_011" id="_list_011">
+        <variable name="list_011"/>
+        <literalExpression>
+            looks like it should be an equals form left to right .. but the list [1,2,3] does not
+            equal 1, 2 or 3] values
+            <text>[1,2,3] in [1,2,3]</text>
+        </literalExpression>
+    </decision> -->
+
+    <decision name="list_011_a" id="_list_011_a">
+        <variable name="list_011_a"/>
+        <literalExpression>
+            <text>[1,2,3] in [[1,2,3], [1,2,3,4]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="list_011_b" id="_list_011_b">
+        <variable name="list_011_b"/>
+        <literalExpression>
+            <text>[1,2,2] in [[1,2,3], [1,2,3,4]]</text>
+        </literalExpression>
+    </decision>
+
+<!--
+    <decision name="list_014" id="_list_014">
+        <variable name="list_014"/>
+        <literalExpression>
+            <text>[1,2,3] in ([1,2,3,4], [1,2,3])</text>
+        </literalExpression>
+    </decision>
+-->
+
+    <decision name="list_014_a" id="_list_014_a">
+        <variable name="list_014_a"/>
+        <literalExpression>
+            <text>[1,2,3] in ([[1,2,3,4]], [[1,2,3,5]])</text>
+        </literalExpression>
+    </decision>
+
+<!--    <decision name="list_014_b" id="_list_014_b">
+        <variable name="list_014_b"/>
+        <literalExpression>
+            <text>[1,2,3] in ([[1,2,3,4]], [[1,2,3]])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="list_015" id="_list_015">
+        <variable name="list_015"/>
+        <literalExpression>
+            <text>[1,2,3] in ([1,2,3])</text>
+        </literalExpression>
+    </decision>-->
+
+    <decision name="context_001" id="_context_001">
+        <variable name="context_001"/>
+        <literalExpression>
+            <text>{a: "foo"} in [{b: "bar"}, {a: "foo"}]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_001_a" id="_context_001_a">
+        <variable name="context_001_a"/>
+        <literalExpression>
+            <text>{c: "baz"} in [{b: "bar"}, {a: "foo"}]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_011" id="_context_011">
+        <variable name="context_011"/>
+        <literalExpression>
+            <text>{a: "foo"} in {a: "foo"}</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_011_a" id="_context_011_a">
+        <variable name="context_011_a"/>
+        <literalExpression>
+            <text>{a: "foo"} in {b: "bar"}</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_014" id="_context_014">
+        <variable name="context_014"/>
+        <literalExpression>
+            <text>{a: "foo"} in ({a: "bar"}, {a: "foo"})</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="context_014_a" id="_context_014_a">
+        <variable name="context_014_a"/>
+        <literalExpression>
+            <text>{a: "foo"} in ({a: "bar"}, {a: "baz"})</text>
+        </literalExpression>
+    </decision>
+
+
+
+    <decision name="ym_duration_001" id="_ym_duration_001">
+        <variable name="ym_duration_001"/>
+        <literalExpression>
+            <text>duration("P8Y") in [duration("P8Y"),duration("P9Y"),duration("P10Y")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_001_a" id="_ym_duration_001_a">
+        <variable name="ym_duration_001_a"/>
+        <literalExpression>
+            <text>duration("P11Y") in [duration("P8Y"),duration("P9Y"),duration("P10Y")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_002" id="_ym_duration_002">
+        <variable name="ym_duration_002"/>
+        <literalExpression>
+            <text>duration("P11Y") in [[duration("P5Y") .. duration("P7Y")], [duration("P10Y") .. duration("P12Y")]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_002_a" id="_ym_duration_002_a">
+        <variable name="ym_duration_002_a"/>
+        <literalExpression>
+            <text>duration("P4Y") in [[duration("P5Y") .. duration("P7Y")], [duration("P10Y") .. duration("P12Y")]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_003" id="_ym_duration_003">
+        <variable name="ym_duration_003"/>
+        <literalExpression>
+            <text>duration("P4Y") in &lt;= duration("P5Y")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_003_1" id="_ym_duration_003_1">
+        <variable name="ym_duration_003_1"/>
+        <literalExpression>
+            <text>duration("P4Y") in &lt;= duration("P4Y")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_003_a" id="_ym_duration_003_a">
+        <variable name="ym_duration_003_a"/>
+        <literalExpression>
+            <text>duration("P5Y") in &lt;= duration("P4Y")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_004" id="_ym_duration_004">
+        <variable name="ym_duration_004"/>
+        <literalExpression>
+            <text>duration("P1Y") in &lt; duration("P10Y")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_004_a" id="_ym_duration_004_a">
+        <variable name="ym_duration_004_a"/>
+        <literalExpression>
+            <text>duration("P10Y") in &lt; duration("P10Y")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_005" id="_ym_duration_005">
+        <variable name="ym_duration_005"/>
+        <literalExpression>
+            <text>duration("P11Y") in &gt;= duration("P10Y")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_005_1" id="_ym_duration_005_1">
+        <variable name="ym_duration_005_1"/>
+        <literalExpression>
+            <text>duration("P10Y") in &gt;= duration("P10Y")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_005_a" id="_ym_duration_005_a">
+        <variable name="ym_duration_005_a"/>
+        <literalExpression>
+            <text>duration("P9Y") in &gt;= duration("P10Y")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_006" id="_ym_duration_006">
+        <variable name="ym_duration_006"/>
+        <literalExpression>
+            <text>duration("P11Y") in &gt; duration("P10Y")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_006_a" id="_ym_duration_006_a">
+        <variable name="ym_duration_006_a"/>
+        <literalExpression>
+            <text>duration("P10Y") in &gt; duration("P10Y")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_007_a" id="_ym_duration_007_a">
+        <variable name="ym_duration_007_a"/>
+        <literalExpression>
+            <text>duration("P1Y") in (duration("P2Y")..duration("P4Y"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_007_b" id="_ym_duration_007_b">
+        <variable name="ym_duration_007_b"/>
+        <literalExpression>
+            <text>duration("P2Y") in (duration("P2Y")..duration("P4Y"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_007_c" id="_ym_duration_007_c">
+        <variable name="ym_duration_007_c"/>
+        <literalExpression>
+            <text>duration("P3Y") in (duration("P2Y")..duration("P4Y"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_007_d" id="_ym_duration_007_d">
+        <variable name="ym_duration_007_d"/>
+        <literalExpression>
+            <text>duration("P4Y") in (duration("P2Y")..duration("P4Y"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_007_e" id="_ym_duration_007_e">
+        <variable name="ym_duration_007_e"/>
+        <literalExpression>
+            <text>duration("P5Y") in (duration("P2Y")..duration("P4Y"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_008_a" id="_ym_duration_008_a">
+        <variable name="ym_duration_008_a"/>
+        <literalExpression>
+            <text>duration("P1Y") in (duration("P2Y")..duration("P4Y")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_008_b" id="_ym_duration_008_b">
+        <variable name="ym_duration_008_b"/>
+        <literalExpression>
+            <text>duration("P2Y") in (duration("P2Y")..duration("P4Y")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_008_c" id="_ym_duration_008_c">
+        <variable name="ym_duration_008_c"/>
+        <literalExpression>
+            <text>duration("P3Y") in (duration("P2Y")..duration("P4Y")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_008_d" id="_ym_duration_008_d">
+        <variable name="ym_duration_008_d"/>
+        <literalExpression>
+            <text>duration("P4Y") in (duration("P2Y")..duration("P4Y")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_008_e" id="_ym_duration_008_e">
+        <variable name="ym_duration_008_e"/>
+        <literalExpression>
+            <text>duration("P5Y") in (duration("P2Y")..duration("P4Y")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_009_a" id="_ym_duration_009_a">
+        <variable name="ym_duration_009_a"/>
+        <literalExpression>
+            <text>duration("P1Y") in [duration("P2Y")..duration("P4Y"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_009_b" id="_ym_duration_009_b">
+        <variable name="ym_duration_009_b"/>
+        <literalExpression>
+            <text>duration("P2Y") in [duration("P2Y")..duration("P4Y"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_009_c" id="_ym_duration_009_c">
+        <variable name="ym_duration_009_c"/>
+        <literalExpression>
+            <text>duration("P3Y") in [duration("P2Y")..duration("P4Y"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_009_d" id="_ym_duration_009_d">
+        <variable name="ym_duration_009_d"/>
+        <literalExpression>
+            <text>duration("P4Y") in [duration("P2Y")..duration("P4Y"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_009_e" id="_ym_duration_009_e">
+        <variable name="ym_duration_009_e"/>
+        <literalExpression>
+            <text>duration("P5Y") in [duration("P2Y")..duration("P4Y"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_010_a" id="_ym_duration_010_a">
+        <variable name="ym_duration_010_a"/>
+        <literalExpression>
+            <text>duration("P1Y") in [duration("P2Y")..duration("P4Y")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_010_b" id="_ym_duration_010_b">
+        <variable name="ym_duration_010_b"/>
+        <literalExpression>
+            <text>duration("P2Y") in [duration("P2Y")..duration("P4Y")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_010_c" id="_ym_duration_010_c">
+        <variable name="ym_duration_010_c"/>
+        <literalExpression>
+            <text>duration("P3Y") in [duration("P2Y")..duration("P4Y")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_010_d" id="_ym_duration_010_d">
+        <variable name="ym_duration_010_d"/>
+        <literalExpression>
+            <text>duration("P4Y") in [duration("P2Y")..duration("P4Y")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_010_e" id="_ym_duration_010_e">
+        <variable name="ym_duration_010_e"/>
+        <literalExpression>
+            <text>duration("P5Y") in [duration("P2Y")..duration("P4Y")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_011" id="_ym_duration_011">
+        <variable name="ym_duration_011"/>
+        <literalExpression>
+            <text>duration("P5Y") in duration("P5Y")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_011_a" id="_ym_duration_011_a">
+        <variable name="ym_duration_011_a"/>
+        <literalExpression>
+            <text>duration("P5Y") in duration("P6Y")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_014" id="_ym_duration_014">
+        <variable name="ym_duration_014"/>
+        <literalExpression>
+            <text>duration("P5Y") in (duration("P4Y"), >=duration("P5Y"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_014_a" id="_ym_duration_014_a">
+        <variable name="ym_duration_014_a"/>
+        <literalExpression>
+            <text>duration("P5Y") in (duration("P4Y"), >=duration("P6Y"))</text>
+        </literalExpression>
+    </decision>
+
+
+    <decision name="dt_duration_001" id="_dt_duration_001">
+        <variable name="dt_duration_001"/>
+        <literalExpression>
+            <text>duration("P8D") in [duration("P8D"),duration("P9D"),duration("P10D")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_001_a" id="_dt_duration_001_a">
+        <variable name="dt_duration_001_a"/>
+        <literalExpression>
+            <text>duration("P11D") in [duration("P8D"),duration("P9D"),duration("P10D")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_002" id="_dt_duration_002">
+        <variable name="dt_duration_002"/>
+        <literalExpression>
+            <text>duration("P11D") in [[duration("P5D") .. duration("P7D")], [duration("P10D") .. duration("P12D")]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_002_a" id="_dt_duration_002_a">
+        <variable name="dt_duration_002_a"/>
+        <literalExpression>
+            <text>duration("P4D") in [[duration("P5D") .. duration("P7D")], [duration("P10D") .. duration("P12D")]]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_003" id="_dt_duration_003">
+        <variable name="dt_duration_003"/>
+        <literalExpression>
+            <text>duration("P4D") in &lt;= duration("P5D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_003_1" id="_dt_duration_003_1">
+        <variable name="dt_duration_003_1"/>
+        <literalExpression>
+            <text>duration("P4D") in &lt;= duration("P4D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_003_a" id="_dt_duration_003_a">
+        <variable name="dt_duration_003_a"/>
+        <literalExpression>
+            <text>duration("P5D") in &lt;= duration("P4D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_004" id="_dt_duration_004">
+        <variable name="dt_duration_004"/>
+        <literalExpression>
+            <text>duration("P1D") in &lt; duration("P10D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_004_a" id="_dt_duration_004_a">
+        <variable name="dt_duration_004_a"/>
+        <literalExpression>
+            <text>duration("P10D") in &lt; duration("P10D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_005" id="_dt_duration_005">
+        <variable name="dt_duration_005"/>
+        <literalExpression>
+            <text>duration("P11D") in &gt;= duration("P10D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_005_1" id="_dt_duration_005_1">
+        <variable name="dt_duration_005_1"/>
+        <literalExpression>
+            <text>duration("P10D") in &gt;= duration("P10D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_005_a" id="_dt_duration_005_a">
+        <variable name="dt_duration_005_a"/>
+        <literalExpression>
+            <text>duration("P9D") in &gt;= duration("P10D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_006" id="_dt_duration_006">
+        <variable name="dt_duration_006"/>
+        <literalExpression>
+            <text>duration("P11D") in &gt; duration("P10D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_006_a" id="_dt_duration_006_a">
+        <variable name="dt_duration_006_a"/>
+        <literalExpression>
+            <text>duration("P10D") in &gt; duration("P10D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_007_a" id="_dt_duration_007_a">
+        <variable name="dt_duration_007_a"/>
+        <literalExpression>
+            <text>duration("P1D") in (duration("P2D")..duration("P4D"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_007_b" id="_dt_duration_007_b">
+        <variable name="dt_duration_007_b"/>
+        <literalExpression>
+            <text>duration("P2D") in (duration("P2D")..duration("P4D"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_007_c" id="_dt_duration_007_c">
+        <variable name="dt_duration_007_c"/>
+        <literalExpression>
+            <text>duration("P3D") in (duration("P2D")..duration("P4D"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_007_d" id="_dt_duration_007_d">
+        <variable name="dt_duration_007_d"/>
+        <literalExpression>
+            <text>duration("P4D") in (duration("P2D")..duration("P4D"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_007_e" id="_dt_duration_007_e">
+        <variable name="dt_duration_007_e"/>
+        <literalExpression>
+            <text>duration("P5D") in (duration("P2D")..duration("P4D"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_008_a" id="_dt_duration_008_a">
+        <variable name="dt_duration_008_a"/>
+        <literalExpression>
+            <text>duration("P1D") in (duration("P2D")..duration("P4D")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_008_b" id="_dt_duration_008_b">
+        <variable name="dt_duration_008_b"/>
+        <literalExpression>
+            <text>duration("P2D") in (duration("P2D")..duration("P4D")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_008_c" id="_dt_duration_008_c">
+        <variable name="dt_duration_008_c"/>
+        <literalExpression>
+            <text>duration("P3D") in (duration("P2D")..duration("P4D")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_008_d" id="_dt_duration_008_d">
+        <variable name="dt_duration_008_d"/>
+        <literalExpression>
+            <text>duration("P4D") in (duration("P2D")..duration("P4D")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_008_e" id="_dt_duration_008_e">
+        <variable name="dt_duration_008_e"/>
+        <literalExpression>
+            <text>duration("P5D") in (duration("P2D")..duration("P4D")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_009_a" id="_dt_duration_009_a">
+        <variable name="dt_duration_009_a"/>
+        <literalExpression>
+            <text>duration("P1D") in [duration("P2D")..duration("P4D"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_009_b" id="_dt_duration_009_b">
+        <variable name="dt_duration_009_b"/>
+        <literalExpression>
+            <text>duration("P2D") in [duration("P2D")..duration("P4D"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_009_c" id="_dt_duration_009_c">
+        <variable name="dt_duration_009_c"/>
+        <literalExpression>
+            <text>duration("P3D") in [duration("P2D")..duration("P4D"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_009_d" id="_dt_duration_009_d">
+        <variable name="dt_duration_009_d"/>
+        <literalExpression>
+            <text>duration("P4D") in [duration("P2D")..duration("P4D"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_009_e" id="_dt_duration_009_e">
+        <variable name="dt_duration_009_e"/>
+        <literalExpression>
+            <text>duration("P5D") in [duration("P2D")..duration("P4D"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_010_a" id="_dt_duration_010_a">
+        <variable name="dt_duration_010_a"/>
+        <literalExpression>
+            <text>duration("P1D") in [duration("P2D")..duration("P4D")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_010_b" id="_dt_duration_010_b">
+        <variable name="dt_duration_010_b"/>
+        <literalExpression>
+            <text>duration("P2D") in [duration("P2D")..duration("P4D")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_010_c" id="_dt_duration_010_c">
+        <variable name="dt_duration_010_c"/>
+        <literalExpression>
+            <text>duration("P3D") in [duration("P2D")..duration("P4D")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_010_d" id="_dt_duration_010_d">
+        <variable name="dt_duration_010_d"/>
+        <literalExpression>
+            <text>duration("P4D") in [duration("P2D")..duration("P4D")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_010_e" id="_dt_duration_010_e">
+        <variable name="dt_duration_010_e"/>
+        <literalExpression>
+            <text>duration("P5D") in [duration("P2D")..duration("P4D")]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_011" id="_dt_duration_011">
+        <variable name="dt_duration_011"/>
+        <literalExpression>
+            <text>duration("P5D") in duration("P5D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_011_a" id="_dt_duration_011_a">
+        <variable name="dt_duration_011_a"/>
+        <literalExpression>
+            <text>duration("P5D") in duration("P6D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_014" id="_dt_duration_014">
+        <variable name="dt_duration_014"/>
+        <literalExpression>
+            <text>duration("P5D") in (duration("P4D"), >=duration("P5D"))</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_014_a" id="_dt_duration_014_a">
+        <variable name="dt_duration_014_a"/>
+        <literalExpression>
+            <text>duration("P5D") in (duration("P4D"), >=duration("P6D"))</text>
+        </literalExpression>
+    </decision>
+
+</definitions>
+

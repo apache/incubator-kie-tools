@@ -1,0 +1,26 @@
+{
+  "id": "start2Test",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "name": "Start 2 Test Workflow",
+  "description": "Start 2 Test Workflow - String Type - Second State as Start",
+  "start": "Second State",
+  "states": [
+    {
+      "name": "First State",
+      "type": "inject",
+      "data": {
+        "result": "First State!"
+      },
+      "end": true
+    },
+    {
+      "name": "Second State",
+      "type": "inject",
+      "data": {
+        "result": "Second State!"
+      },
+      "end": true
+    }
+  ]
+}

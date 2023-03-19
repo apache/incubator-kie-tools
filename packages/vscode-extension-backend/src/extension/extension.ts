@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { BackendManagerService } from "@kie-tooling-core/backend/dist/api";
-import { BackendExtensionApi } from "@kie-tooling-core/backend/dist/channel-api";
-import { DefaultHttpBridge } from "@kie-tooling-core/backend/dist/http-bridge";
-import { QuarkusLocalServer } from "@kie-tooling-core/backend/dist/node";
-import { VsCodeTestScenarioRunnerService } from "@kie-tooling-core/backend/dist/vscode";
+import { BackendManagerService } from "@kie-tools-core/backend/dist/api";
+import { BackendExtensionApi } from "@kie-tools-core/backend/dist/channel-api";
+import { DefaultHttpBridge } from "@kie-tools-core/backend/dist/http-bridge";
+import { QuarkusLocalServer } from "@kie-tools-core/backend/dist/node";
+import { VsCodeTestScenarioRunnerService } from "@kie-tools-core/backend/dist/vscode";
 import * as path from "path";
 import * as vscode from "vscode";
 

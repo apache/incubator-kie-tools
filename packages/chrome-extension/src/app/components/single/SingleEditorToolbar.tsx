@@ -29,8 +29,8 @@ export function SingleEditorToolbar(props: {
   onFullScreen: () => void;
   onSeeAsSource: () => void;
   onSeeAsDiagram: () => void;
-  onOpenInExternalEditor: () => void;
-  linkToExternalEditor: string | undefined;
+  onOpenInExternalEditor?: () => void;
+  linkToExternalEditor?: string;
 }) {
   const globals = useGlobals();
   const [copyLinkSuccessAlertVisible, setCopyLinkSuccessAlertVisible] = useState(false);
@@ -55,7 +55,7 @@ export function SingleEditorToolbar(props: {
 
   const openInExternalEditor = useCallback((e: any) => {
     e.preventDefault();
-    props.onOpenInExternalEditor();
+    props.onOpenInExternalEditor?.();
   }, []);
 
   const copyLinkToExternalEditor = useCallback((e: any) => {
@@ -118,7 +118,7 @@ export function SingleEditorToolbar(props: {
             {i18n.seeAsDiagram}
           </button>
         )}
-        {globals.externalEditorManager && (
+        {globals.externalEditorManager && props.onOpenInExternalEditor && (
           <button
             data-testid={"open-ext-editor-button"}
             className={"btn d-none d-md-inline-block kogito-button"}

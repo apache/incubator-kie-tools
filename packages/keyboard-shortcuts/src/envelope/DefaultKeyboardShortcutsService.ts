@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { OperatingSystem } from "@kie-tooling-core/operating-system";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { ChannelKeyboardEvent } from "../api";
 import { KeyboardShortcutRegisterOpts } from "./KeyboardShortcutRegisterOpts";
+import { KeyboardShortcutsService } from "./KeyboardShortcutsService";
 
 export interface KeyBinding {
   combination: string;
@@ -82,7 +83,7 @@ const KEY_CODES = new Map<string, string>([
 
 const IGNORED_TAGS = ["INPUT", "TEXTAREA", "SELECT", "OPTION"];
 
-export class DefaultKeyboardShortcutsService {
+export class DefaultKeyboardShortcutsService implements KeyboardShortcutsService {
   private eventIdentifiers = 1;
 
   private readonly keyBindings = new Map<number, KeyBinding>();
@@ -92,8 +93,8 @@ export class DefaultKeyboardShortcutsService {
   public registerKeyDownThenUp(
     combination: string,
     label: string,
-    onKeyDown: (target: EventTarget | null) => Thenable<void>,
-    onKeyUp: (target: EventTarget | null) => Thenable<void>,
+    onKeyDown: (target: EventTarget | null) => Promise<void>,
+    onKeyUp: (target: EventTarget | null) => Promise<void>,
     opts?: KeyboardShortcutRegisterOpts
   ) {
     console.debug(`Registering shortcut (down/up) for ${combination} - ${label}: ${opts?.repeat}`);
@@ -145,7 +146,7 @@ export class DefaultKeyboardShortcutsService {
   public registerKeyPress(
     combination: string,
     label: string,
-    onKeyPress: (target: EventTarget | null) => Thenable<void>,
+    onKeyPress: (target: EventTarget | null) => Promise<void>,
     opts?: KeyboardShortcutRegisterOpts
   ) {
     console.debug(`Registering shortcut (press) for ${combination} - ${label}: ${opts?.repeat}`);
@@ -179,7 +180,7 @@ export class DefaultKeyboardShortcutsService {
 
   public registerKeyPressOnce(
     combination: string,
-    onKeyPress: (target: EventTarget | null) => Thenable<void>,
+    onKeyPress: (target: EventTarget | null) => Promise<void>,
     opts?: KeyboardShortcutRegisterOpts
   ) {
     const id = this.registerKeyPress(
@@ -247,6 +248,10 @@ export class DefaultKeyboardShortcutsService {
 
   public registered() {
     return Array.from(this.keyBindings.values());
+  }
+
+  public isEnabled(): boolean {
+    return true;
   }
 }
 

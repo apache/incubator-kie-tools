@@ -31,7 +31,7 @@ interface EmptyStateNoCharacteristicsProps {
 export const EmptyStateNoCharacteristics = (props: EmptyStateNoCharacteristicsProps) => (
   <EmptyState data-testid="empty-state-no-characteristics" variant={EmptyStateVariant.small}>
     <EmptyStateIcon icon={CalculatorIcon} />
-    <Title headingLevel="h4" size="lg" data-ouia-component-id="no-characteristics-defined-title">
+    <Title headingLevel="h4" size="lg" ouiaId="no-characteristics-defined-title">
       No Characteristics defined
     </Title>
     <EmptyStateBody>

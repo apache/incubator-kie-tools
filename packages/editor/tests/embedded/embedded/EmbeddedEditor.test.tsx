@@ -14,27 +14,36 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator, ChannelType } from "@kie-tooling-core/editor/dist/api";
-import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
+import {
+  ChannelType,
+  EditorEnvelopeLocator,
+  EnvelopeContentType,
+  EnvelopeMapping,
+} from "@kie-tools-core/editor/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
-import { File } from "@kie-tooling-core/editor/dist/channel";
-import { EmbeddedEditor, EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
+import { EmbeddedEditor, EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 import { render } from "@testing-library/react";
-import { EnvelopeBusMessagePurpose } from "@kie-tooling-core/envelope-bus/dist/api";
+import { EnvelopeBusMessagePurpose } from "@kie-tools-core/envelope-bus/dist/api";
 
 describe("EmbeddedEditor::ONLINE", () => {
-  const file: File = {
-    fileName: "test",
+  const file: EmbeddedEditorFile = {
+    fileName: "test.dmn",
     fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
   };
 
-  const editorEnvelopeLocator: EditorEnvelopeLocator = {
-    targetOrigin: "localhost:8888",
-    mapping: new Map([["dmn", { envelopePath: "envelope/envelope.html", resourcesPathPrefix: "envelope" }]]),
-  };
+  const editorEnvelopeLocator = new EditorEnvelopeLocator("localhost:8888", [
+    new EnvelopeMapping({
+      type: "dmn",
+      filePathGlob: "**/*.dmn",
+      resourcesPathPrefix: "envelope",
+      envelopeContent: { type: EnvelopeContentType.PATH, path: "envelope/envelope.html" },
+    }),
+  ]);
 
   const channelType = ChannelType.ONLINE;
   const editorRef = React.createRef<EmbeddedEditorRef>();
@@ -79,7 +88,10 @@ describe("EmbeddedEditor::ONLINE", () => {
 
     editorRef.current?.setContent("path", "content");
 
-    expect(spyOnContentChangedNotification).toBeCalledWith({ content: "content", path: "path" });
+    expect(spyOnContentChangedNotification).toBeCalledWith(
+      { content: "content", path: "path" },
+      { showLoadingOverlay: false }
+    );
   });
 
   test("EmbeddedEditor::requestContent", () => {
@@ -242,7 +254,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "kogitoWorkspace_newEdit",
-      data: [new KogitoEdit("1")],
+      data: [new WorkspaceEdit("1")],
     });
 
     expect(editorRef.current?.getStateControl().getCommandStack()).toEqual([{ id: "1" }]);

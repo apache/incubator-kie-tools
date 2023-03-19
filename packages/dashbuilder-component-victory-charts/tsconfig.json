@@ -1,0 +1,13 @@
+{
+  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "declaration": false,
+    "declarationMap": false,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es6"
+  },
+  "include": ["src"]
+}

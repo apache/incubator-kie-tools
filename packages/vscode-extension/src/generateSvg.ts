@@ -14,38 +14,75 @@
  * limitations under the License.
  */
 
-import { KogitoEditorStore } from "./KogitoEditorStore";
+import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
 import * as __path from "path";
 import * as vscode from "vscode";
-import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
+import { WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import { VsCodeI18n } from "./i18n";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import {
+  configurationTokenKeys,
+  definitelyPosixPath,
+  getInterpolatedConfigurationValue,
+} from "./ConfigurationInterpolation";
 
 const encoder = new TextEncoder();
 
 export async function generateSvg(args: {
-  editorStore: KogitoEditorStore;
-  workspaceApi: WorkspaceApi;
+  editorStore: VsCodeKieEditorStore;
+  workspaceApi: WorkspaceChannelApi;
   vsCodeI18n: I18n<VsCodeI18n>;
   displayNotification: boolean;
+  editorEnvelopeLocator: EditorEnvelopeLocator;
 }) {
   const i18n = args.vsCodeI18n.getCurrent();
 
-  const editor = args.editorStore.activeEditor;
+  const editor =
+    args.editorStore.activeEditor ??
+    Array.from(args.editorStore.openEditors)
+      .filter((e) => e.document.document.uri === vscode.window.activeTextEditor?.document.uri)
+      .pop();
+
   if (!editor) {
-    console.info(`Unable to create SVG because there's no Editor open.`);
+    console.info(`Unable to create SVG because there's no matching Editor that can generate SVGs.`);
     return;
   }
 
   const previewSvg = await editor.getPreview();
   if (!previewSvg) {
-    console.info(`Unable to create SVG for '${editor.document.uri.fsPath}'`);
+    console.info(`Unable to create SVG for '${editor.document.document.uri.fsPath}'`);
     return;
   }
 
-  const parsedPath = __path.parse(editor.document.uri.fsPath);
-  const svgFileName = `${parsedPath.name}-svg.svg`;
-  const svgUri = editor.document.uri.with({ path: __path.join(parsedPath.dir, svgFileName) });
+  const fileType = args.editorEnvelopeLocator.getEnvelopeMapping(
+    __path.parse(editor.document.document.uri.path).base
+  )?.type;
+  const svgFilenameTemplateId = `kogito.${fileType}.svgFilenameTemplate`;
+  const svgFilePathTemplateId = `kogito.${fileType}.svgFilePath`;
+
+  const svgFilenameTemplate = vscode.workspace.getConfiguration().get(svgFilenameTemplateId, "");
+  const svgFilePathTemplate = vscode.workspace.getConfiguration().get(svgFilePathTemplateId, "");
+
+  if (__path.parse(svgFilenameTemplate).dir) {
+    vscode.window.showErrorMessage(
+      `The kogito.${fileType}.svgFilenameTemplate setting should be a valid filename, without a path prefix. Current value: ${svgFilenameTemplate}`
+    );
+    return;
+  }
+
+  const svgFileName = getInterpolatedConfigurationValue({
+    currentFileAbsolutePosixPath: editor.document.document.uri.path,
+    value:
+      definitelyPosixPath(svgFilenameTemplate) || `${configurationTokenKeys["${fileBasenameNoExtension}"]}-svg.svg`,
+  });
+  const svgFilePath = getInterpolatedConfigurationValue({
+    currentFileAbsolutePosixPath: editor.document.document.uri.path,
+    value: definitelyPosixPath(svgFilePathTemplate) || `${configurationTokenKeys["${fileDirname}"]}`,
+  });
+
+  const svgUri = editor.document.document.uri.with({ path: __path.posix.resolve(svgFilePath, svgFileName) });
+
   await vscode.workspace.fs.writeFile(svgUri, encoder.encode(previewSvg));
 
   if (args.displayNotification) {
@@ -54,7 +91,7 @@ export async function generateSvg(args: {
         return;
       }
 
-      args.workspaceApi.kogitoWorkspace_openFile(svgUri.fsPath);
+      args.workspaceApi.kogitoWorkspace_openFile(svgUri.path);
     });
   }
 }

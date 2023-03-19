@@ -38,11 +38,16 @@ export class EnvelopeServer<
 
   public initPolling?: ReturnType<typeof setInterval>;
   public initPollingTimeout?: ReturnType<typeof setTimeout>;
+  public initialPollingSetting?: ReturnType<typeof setTimeout>;
 
   public readonly id: string;
 
   public get envelopeApi() {
     return this.manager.clientApi;
+  }
+
+  public get shared() {
+    return this.manager.shared;
   }
 
   constructor(
@@ -63,22 +68,32 @@ export class EnvelopeServer<
     this.id = this.generateRandomId();
   }
 
-  public startInitPolling() {
+  public startInitPolling(apiImpl: ApiToProvide) {
     // We can't wait for the setInterval to run, because messages can be sent during the current event-loop pass,
     // making the Envelope reply a message to an old EnvelopeServer instance.
-    this.pollInit(this).then(() => this.stopInitPolling());
-
-    this.initPolling = setInterval(() => {
-      this.pollInit(this).then(() => this.stopInitPolling());
-    }, EnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
-
-    this.initPollingTimeout = setTimeout(() => {
+    this.pollInit(this).then(() => {
       this.stopInitPolling();
-      console.info("Init polling timed out. Looks like the Envelope is not responding accordingly.");
-    }, EnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
+    });
+
+    this.manager.currentApiImpl = apiImpl;
+
+    // Set intervals and timeout only after first poll.
+    this.initialPollingSetting = setTimeout(() => {
+      this.initPolling = setInterval(() => {
+        this.pollInit(this).then(() => this.stopInitPolling());
+      }, EnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
+
+      this.initPollingTimeout = setTimeout(() => {
+        this.stopInitPolling();
+        console.info("Init polling timed out. Looks like the Envelope is not responding accordingly.");
+      }, EnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
+    }, EnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
   }
 
   public stopInitPolling() {
+    clearTimeout(this.initialPollingSetting!);
+    this.initialPollingSetting = undefined;
+    this.manager.currentApiImpl = undefined;
     clearInterval(this.initPolling!);
     this.initPolling = undefined;
     clearTimeout(this.initPollingTimeout!);
@@ -87,7 +102,7 @@ export class EnvelopeServer<
 
   public receive(
     message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
-    api: ApiToProvide
+    apiImpl: ApiToProvide
   ) {
     if (message.directSender === EnvelopeBusMessageDirectSender.ENVELOPE_SERVER) {
       // When a message came from another EnvelopeServer, it should be ignored
@@ -102,7 +117,7 @@ export class EnvelopeServer<
 
     if (message.targetEnvelopeServerId === this.id) {
       // Message was sent directly from the Envelope to this EnvelopeServer
-      this.manager.server.receive(message, api);
+      this.manager.server.receive(message, apiImpl);
     } else if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
       // Message was sent from any Envelope to some EnvelopeServer, so it should be forwarded to this Envelope
       this.manager.server.receive(message, {} as any);

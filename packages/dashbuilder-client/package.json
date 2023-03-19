@@ -1,0 +1,32 @@
+{
+  "name": "@kie-tools/dashbuilder-client",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && pnpm copy:dashbuilder",
+    "build:prod": "pnpm build:dev",
+    "copy:dashbuilder": "run-script-os",
+    "copy:dashbuilder:linux:darwin": "copyfiles -e \"../**/*/WEB-INF/**/*\" -e \"../**/*/ace/**/*\" -u 6 \"../dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/target/dashbuilder-runtime-client/**/*\" ./dist/",
+    "copy:dashbuilder:win32": "mkdir dist && touch dist/.keep && echo \"Build not supported on Windows\""
+  },
+  "devDependencies": {
+    "@kie-tools/dashbuilder": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  }
+}

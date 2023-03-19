@@ -15,9 +15,9 @@
  */
 
 const { merge } = require("webpack-merge");
-const common = require("../../config/webpack.common.config");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const CopyPlugin = require("copy-webpack-plugin");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
 
 module.exports = (env) => [
   merge(common(env), {

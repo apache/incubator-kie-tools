@@ -19,7 +19,6 @@ import {
   BaselineMethod,
   CompoundPredicate,
   False,
-  FieldName,
   MiningFunction,
   Predicate,
   ReasonCodeAlgorithm,
@@ -27,7 +26,7 @@ import {
   SimplePredicate,
   SimpleSetPredicate,
   True,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
 import { CharacteristicsActions } from "./CharacteristicsReducer";
@@ -381,8 +380,8 @@ export const ScorecardReducer: HistoryAwareValidatingReducer<Scorecard, AllActio
 const updatePredicateFieldName = (
   pathBuilder: PredicateBuilder,
   predicate: Predicate | undefined,
-  name: FieldName,
-  originalName: FieldName | undefined,
+  name: string,
+  originalName: string | undefined,
   service: HistoryService
 ) => {
   if (predicate === undefined) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-import { init } from "@kogito-tooling-examples/ping-pong-view/dist/envelope";
-import { EnvelopeBusMessage } from "@kie-tooling-core/envelope-bus/dist/api";
-import { PingPongReactImplFactory } from "@kogito-tooling-examples/ping-pong-view-react";
-import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
+import { pingPongEnvelopViewRender } from "@kie-tools-examples/ping-pong-view-react";
 
-init({
-  container: document.getElementById("envelope-app")!,
-  config: { containerType: ContainerType.IFRAME },
-  bus: {
-    postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, transfer?: any) {
-      window.parent.postMessage(message, "*", transfer);
-    },
-  },
-  pingPongViewFactory: new PingPongReactImplFactory(),
-});
+pingPongEnvelopViewRender(document.getElementById("envelope-app")!);

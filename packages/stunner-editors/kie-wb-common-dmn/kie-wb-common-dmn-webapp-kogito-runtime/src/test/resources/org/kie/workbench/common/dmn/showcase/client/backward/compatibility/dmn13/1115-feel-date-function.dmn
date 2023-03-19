@@ -1,0 +1,793 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.actico.com/spec/DMN/1115-feel-date-function" name="1115-feel-date-function" id="_jDiZQPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'date(from [string])', 'date(from [date and time])' and 'date(year,month,day)' in category conversion functions</description>
+    <itemDefinition name="tfeel-date-function_001_e9ae035ab9_Result" id="_jDiZQvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_002_9b9e6085ce_Result" id="_jDiZRvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_003_e4b7918d8f_Result" id="_jDiZSvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_004_f24ed41117_Result" id="_jDiZTvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_005_3540a22062_Result" id="_jDiZUvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_006_616e24dbb7_Result" id="_jDiZVvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_007_cda82a5d01_Result" id="_jDiZWvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_008_492649d3d0_Result" id="_jDiZXvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_009_9e00bbdad3_Result" id="_jDiZYvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_010_6d4d58d23a_Result" id="_jDiZZvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_011_5f0b42b1f8_Result" id="_jDiZavUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_012_d9e4b97438_Result" id="_jDiZbvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_013_d7e901ee86_Result" id="_jDiZcvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_014_fad7e00633_Result" id="_jDiZdvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_015_1dd66594cf_Result" id="_jDiZevUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_016_31f3fef4a0_Result" id="_jDiZfvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_017_887dfef005_Result" id="_jDiZgvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_018_fc0ef0c8cb_Result" id="_jDiZhvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_019_b2b82796ce_Result" id="_jDiZivUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_020_7d56b7bf63_Result" id="_jDiZjvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_021_95fb3d9984_Result" id="_jDiZkvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_022_4063db2d59_Result" id="_jDiZlvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_023_4a1f604006_Result" id="_jDiZmvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_024_3cb98a2bb8_Result" id="_jDiZnvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_025_cf0ad1313c_Result" id="_jDiZovUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_026_cedd7e5e5f_Result" id="_jDiZpvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_027_987c5be372_Result" id="_jDiZqvUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_028_35ca79a6cd_Result" id="_jDrjM_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_029_88f5c7c90f_Result" id="_jDrjN_UUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_030_9184a7bfc3_Result" id="_jDrjO_UUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_031_4f5ec70669_Result" id="_jDrjP_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_032_fc66cc2fec_Result" id="_jDrjQ_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_033_c3a5600c62_Result" id="_jDrjR_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_034_7d2e18a10c_Result" id="_jDrjS_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_035_e6c1bb43fd_Result" id="_jDrjT_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_036_b826a6b5f9_Result" id="_jDrjU_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_037_cfd70896b6_Result" id="_jDrjV_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_038_c26782f559_Result" id="_jDrjW_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_039_67a6eafa3f_Result" id="_jDrjX_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_040_dd2a2ed4a2_Result" id="_jDrjY_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_041_9e7e388146_Result" id="_jDrjZ_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_042_8f5dd97588_Result" id="_jDrja_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_043_8f82301fac_Result" id="_jDrjb_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_044_74893220b4_Result" id="_jDrjc_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_045_969723fed5_Result" id="_jDrjd_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_046_36bf30268a_Result" id="_jDrje_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_047_ba717eb672_Result" id="_jDrjf_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_048_25595a6420_Result" id="_jDrjg_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_049_a1644ce710_Result" id="_jDrjh_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_050_8f1e299951_Result" id="_jDrji_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_051_ad98079864_Result" id="_jDrjj_UUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-date-function_052_63457d78b7_Result" id="_jD1UMfUUEeesLuP4RHs4vA">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+    <decision name="feel-date-function_ErrorCase_001_e9ae035ab9" id="_jDiZRPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(null)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(null)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_001_e9ae035ab9_Result" name="feel-date-function_ErrorCase_001_e9ae035ab9" id="_jDiZRfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZQ_UUEeesLuP4RHs4vA">
+            <text>date(null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_002_9b9e6085ce" id="_jDiZSPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(null,null)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(null,null)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_002_9b9e6085ce_Result" name="feel-date-function_ErrorCase_002_9b9e6085ce" id="_jDiZSfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZR_UUEeesLuP4RHs4vA">
+            <text>date(null,null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_003_e4b7918d8f" id="_jDiZTPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(null,2,1)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(null,2,1)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_003_e4b7918d8f_Result" name="feel-date-function_ErrorCase_003_e4b7918d8f" id="_jDiZTfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZS_UUEeesLuP4RHs4vA">
+            <text>date(null,2,1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_004_f24ed41117" id="_jDiZUPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(2017,null,1)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(2017,null,1)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_004_f24ed41117_Result" name="feel-date-function_ErrorCase_004_f24ed41117" id="_jDiZUfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZT_UUEeesLuP4RHs4vA">
+            <text>date(2017,null,1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_005_3540a22062" id="_jDiZVPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(2017,1,null)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(2017,1,null)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_005_3540a22062_Result" name="feel-date-function_ErrorCase_005_3540a22062" id="_jDiZVfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZU_UUEeesLuP4RHs4vA">
+            <text>date(2017,1,null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_006_616e24dbb7" id="_jDiZWPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(null,null,1)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(null,null,1)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_006_616e24dbb7_Result" name="feel-date-function_ErrorCase_006_616e24dbb7" id="_jDiZWfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZV_UUEeesLuP4RHs4vA">
+            <text>date(null,null,1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_007_cda82a5d01" id="_jDiZXPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(null,02,null)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(null,02,null)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_007_cda82a5d01_Result" name="feel-date-function_ErrorCase_007_cda82a5d01" id="_jDiZXfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZW_UUEeesLuP4RHs4vA">
+            <text>date(null,02,null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_008_492649d3d0" id="_jDiZYPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(2017,null,null)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(2017,null,null)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_008_492649d3d0_Result" name="feel-date-function_ErrorCase_008_492649d3d0" id="_jDiZYfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZX_UUEeesLuP4RHs4vA">
+            <text>date(2017,null,null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_009_9e00bbdad3" id="_jDiZZPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(null,null,null)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(null,null,null)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_009_9e00bbdad3_Result" name="feel-date-function_ErrorCase_009_9e00bbdad3" id="_jDiZZfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZY_UUEeesLuP4RHs4vA">
+            <text>date(null,null,null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_010_6d4d58d23a" id="_jDiZaPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date()' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date()'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_010_6d4d58d23a_Result" name="feel-date-function_ErrorCase_010_6d4d58d23a" id="_jDiZafUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZZ_UUEeesLuP4RHs4vA">
+            <text>date()</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_011_5f0b42b1f8" id="_jDiZbPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("2017-12-31")' and expects result: '2017-12-31 (date)'</description>
+        <question>Result of FEEL expression 'date("2017-12-31")'?</question>
+        <allowedAnswers>2017-12-31 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_011_5f0b42b1f8_Result" name="feel-date-function_011_5f0b42b1f8" id="_jDiZbfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZa_UUEeesLuP4RHs4vA">
+            <text>date("2017-12-31")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_012_d9e4b97438" id="_jDiZcPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("2017-01-01")' and expects result: '2017-01-01 (date)'</description>
+        <question>Result of FEEL expression 'date("2017-01-01")'?</question>
+        <allowedAnswers>2017-01-01 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_012_d9e4b97438_Result" name="feel-date-function_012_d9e4b97438" id="_jDiZcfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZb_UUEeesLuP4RHs4vA">
+            <text>date("2017-01-01")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_013_d7e901ee86" id="_jDiZdPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("-2017-12-31")' and expects result: '-2017-12-31 (date)'</description>
+        <question>Result of FEEL expression 'date("-2017-12-31")'?</question>
+        <allowedAnswers>-2017-12-31 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_013_d7e901ee86_Result" name="feel-date-function_013_d7e901ee86" id="_jDiZdfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZc_UUEeesLuP4RHs4vA">
+            <text>date("-2017-12-31")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_014_fad7e00633" id="_jDiZePUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("-2017-01-01")' and expects result: '-2017-01-01 (date)'</description>
+        <question>Result of FEEL expression 'date("-2017-01-01")'?</question>
+        <allowedAnswers>-2017-01-01 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_014_fad7e00633_Result" name="feel-date-function_014_fad7e00633" id="_jDiZefUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZd_UUEeesLuP4RHs4vA">
+            <text>date("-2017-01-01")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_015_1dd66594cf" id="_jDiZfPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'string(date("999999999-12-31"))' and expects result: '"999999999-12-31" (string)'</description>
+        <question>Result of FEEL expression 'string(date("999999999-12-31"))'?</question>
+        <allowedAnswers>"999999999-12-31" (string)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_015_1dd66594cf_Result" name="feel-date-function_015_1dd66594cf" id="_jDiZffUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZe_UUEeesLuP4RHs4vA">
+            <text>string(date("999999999-12-31"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_016_31f3fef4a0" id="_jDiZgPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'string(date("-999999999-12-31"))' and expects result: '"-999999999-12-31" (string)'</description>
+        <question>Result of FEEL expression 'string(date("-999999999-12-31"))'?</question>
+        <allowedAnswers>"-999999999-12-31" (string)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_016_31f3fef4a0_Result" name="feel-date-function_016_31f3fef4a0" id="_jDiZgfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZf_UUEeesLuP4RHs4vA">
+            <text>string(date("-999999999-12-31"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_017_887dfef005" id="_jDiZhPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(date and time("2017-08-14T14:25:00"))' and expects result: '2017-08-14 (date)'</description>
+        <question>Result of FEEL expression 'date(date and time("2017-08-14T14:25:00"))'?</question>
+        <allowedAnswers>2017-08-14 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_017_887dfef005_Result" name="feel-date-function_017_887dfef005" id="_jDiZhfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZg_UUEeesLuP4RHs4vA">
+            <text>date(date and time("2017-08-14T14:25:00"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_018_fc0ef0c8cb" id="_jDiZiPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(date and time(date and time("2017-08-14T14:25:00"),time("10:50:00")))' and expects result: '2017-08-14 (date)'</description>
+        <question>Result of FEEL expression 'date(date and time(date and time("2017-08-14T14:25:00"),time("10:50:00")))'?</question>
+        <allowedAnswers>2017-08-14 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_018_fc0ef0c8cb_Result" name="feel-date-function_018_fc0ef0c8cb" id="_jDiZifUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZh_UUEeesLuP4RHs4vA">
+            <text>date(date and time(date and time("2017-08-14T14:25:00"),time("10:50:00")))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_019_b2b82796ce" id="_jDiZjPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(date and time("2017-08-14T14:25:00.123456789"))' and expects result: '2017-08-14 (date)'</description>
+        <question>Result of FEEL expression 'date(date and time("2017-08-14T14:25:00.123456789"))'?</question>
+        <allowedAnswers>2017-08-14 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_019_b2b82796ce_Result" name="feel-date-function_019_b2b82796ce" id="_jDiZjfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZi_UUEeesLuP4RHs4vA">
+            <text>date(date and time("2017-08-14T14:25:00.123456789"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_020_7d56b7bf63" id="_jDiZkPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(date and time("2017-09-03T09:45:30@Europe/Paris"))' and expects result: '2017-09-03 (date)'</description>
+        <question>Result of FEEL expression 'date(date and time("2017-09-03T09:45:30@Europe/Paris"))'?</question>
+        <allowedAnswers>2017-09-03 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_020_7d56b7bf63_Result" name="feel-date-function_020_7d56b7bf63" id="_jDiZkfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZj_UUEeesLuP4RHs4vA">
+            <text>date(date and time("2017-09-03T09:45:30@Europe/Paris"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_021_95fb3d9984" id="_jDiZlPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(date and time("2017-09-06T09:45:30@Asia/Dhaka"))' and expects result: '2017-09-06 (date)'</description>
+        <question>Result of FEEL expression 'date(date and time("2017-09-06T09:45:30@Asia/Dhaka"))'?</question>
+        <allowedAnswers>2017-09-06 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_021_95fb3d9984_Result" name="feel-date-function_021_95fb3d9984" id="_jDiZlfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZk_UUEeesLuP4RHs4vA">
+            <text>date(date and time("2017-09-06T09:45:30@Asia/Dhaka"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_022_4063db2d59" id="_jDiZmPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(date and time("2012-12-25T11:00:00Z"))' and expects result: '2012-12-25 (date)'</description>
+        <question>Result of FEEL expression 'date(date and time("2012-12-25T11:00:00Z"))'?</question>
+        <allowedAnswers>2012-12-25 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_022_4063db2d59_Result" name="feel-date-function_022_4063db2d59" id="_jDiZmfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZl_UUEeesLuP4RHs4vA">
+            <text>date(date and time("2012-12-25T11:00:00Z"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_023_4a1f604006" id="_jDiZnPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(date and time("2017-08-03T10:15:30+01:00"))' and expects result: '2017-08-03 (date)'</description>
+        <question>Result of FEEL expression 'date(date and time("2017-08-03T10:15:30+01:00"))'?</question>
+        <allowedAnswers>2017-08-03 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_023_4a1f604006_Result" name="feel-date-function_023_4a1f604006" id="_jDiZnfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZm_UUEeesLuP4RHs4vA">
+            <text>date(date and time("2017-08-03T10:15:30+01:00"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_024_3cb98a2bb8" id="_jDiZoPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(date("2017-10-11"))' and expects result: '2017-10-11 (date)'</description>
+        <question>Result of FEEL expression 'date(date("2017-10-11"))'?</question>
+        <allowedAnswers>2017-10-11 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_024_3cb98a2bb8_Result" name="feel-date-function_024_3cb98a2bb8" id="_jDiZofUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZn_UUEeesLuP4RHs4vA">
+            <text>date(date("2017-10-11"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_025_cf0ad1313c" id="_jDiZpPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(2017,12,31)' and expects result: '2017-12-31 (date)'</description>
+        <question>Result of FEEL expression 'date(2017,12,31)'?</question>
+        <allowedAnswers>2017-12-31 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_025_cf0ad1313c_Result" name="feel-date-function_025_cf0ad1313c" id="_jDiZpfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZo_UUEeesLuP4RHs4vA">
+            <text>date(2017,12,31)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_026_cedd7e5e5f" id="_jDiZqPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(2017,01,01)' and expects result: '2017-01-01 (date)'</description>
+        <question>Result of FEEL expression 'date(2017,01,01)'?</question>
+        <allowedAnswers>2017-01-01 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_026_cedd7e5e5f_Result" name="feel-date-function_026_cedd7e5e5f" id="_jDiZqfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDiZp_UUEeesLuP4RHs4vA">
+            <text>date(2017,01,01)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_027_987c5be372" id="_jDrjMfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(-2017,12,31)' and expects result: '-2017-12-31 (date)'</description>
+        <question>Result of FEEL expression 'date(-2017,12,31)'?</question>
+        <allowedAnswers>-2017-12-31 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_027_987c5be372_Result" name="feel-date-function_027_987c5be372" id="_jDrjMvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjMPUUEeesLuP4RHs4vA">
+            <text>date(-2017,12,31)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_028_35ca79a6cd" id="_jDrjNfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(-2017,01,01)' and expects result: '-2017-01-01 (date)'</description>
+        <question>Result of FEEL expression 'date(-2017,01,01)'?</question>
+        <allowedAnswers>-2017-01-01 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_028_35ca79a6cd_Result" name="feel-date-function_028_35ca79a6cd" id="_jDrjNvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjNPUUEeesLuP4RHs4vA">
+            <text>date(-2017,01,01)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_029_88f5c7c90f" id="_jDrjOfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'string(date(999999999,12,31))' and expects result: '"999999999-12-31" (string)'</description>
+        <question>Result of FEEL expression 'string(date(999999999,12,31))'?</question>
+        <allowedAnswers>"999999999-12-31" (string)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_029_88f5c7c90f_Result" name="feel-date-function_029_88f5c7c90f" id="_jDrjOvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjOPUUEeesLuP4RHs4vA">
+            <text>string(date(999999999,12,31))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_030_9184a7bfc3" id="_jDrjPfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'string(date(-999999999,12,31))' and expects result: '"-999999999-12-31" (string)'</description>
+        <question>Result of FEEL expression 'string(date(-999999999,12,31))'?</question>
+        <allowedAnswers>"-999999999-12-31" (string)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_030_9184a7bfc3_Result" name="feel-date-function_030_9184a7bfc3" id="_jDrjPvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjPPUUEeesLuP4RHs4vA">
+            <text>string(date(-999999999,12,31))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_031_4f5ec70669" id="_jDrjQfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("2012-12-25T")' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date("2012-12-25T")'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_031_4f5ec70669_Result" name="feel-date-function_ErrorCase_031_4f5ec70669" id="_jDrjQvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjQPUUEeesLuP4RHs4vA">
+            <text>date("2012-12-25T")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_032_fc66cc2fec" id="_jDrjRfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("")' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date("")'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_032_fc66cc2fec_Result" name="feel-date-function_ErrorCase_032_fc66cc2fec" id="_jDrjRvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjRPUUEeesLuP4RHs4vA">
+            <text>date("")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_033_c3a5600c62" id="_jDrjSfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("2012/12/25")' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date("2012/12/25")'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_033_c3a5600c62_Result" name="feel-date-function_ErrorCase_033_c3a5600c62" id="_jDrjSvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjSPUUEeesLuP4RHs4vA">
+            <text>date("2012/12/25")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_034_7d2e18a10c" id="_jDrjTfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("0000-12-25T")' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date("0000-12-25T")'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_034_7d2e18a10c_Result" name="feel-date-function_ErrorCase_034_7d2e18a10c" id="_jDrjTvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjTPUUEeesLuP4RHs4vA">
+            <text>date("0000-12-25T")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_035_e6c1bb43fd" id="_jDrjUfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("9999999999-12-25")' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date("9999999999-12-25")'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_035_e6c1bb43fd_Result" name="feel-date-function_ErrorCase_035_e6c1bb43fd" id="_jDrjUvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjUPUUEeesLuP4RHs4vA">
+            <text>date("9999999999-12-25")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_036_b826a6b5f9" id="_jDrjVfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("2017-13-10")' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date("2017-13-10")'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_036_b826a6b5f9_Result" name="feel-date-function_ErrorCase_036_b826a6b5f9" id="_jDrjVvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjVPUUEeesLuP4RHs4vA">
+            <text>date("2017-13-10")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_037_cfd70896b6" id="_jDrjWfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("2017-12-32")' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date("2017-12-32")'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_037_cfd70896b6_Result" name="feel-date-function_ErrorCase_037_cfd70896b6" id="_jDrjWvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjWPUUEeesLuP4RHs4vA">
+            <text>date("2017-12-32")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_038_c26782f559" id="_jDrjXfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("998-12-31")' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date("998-12-31")'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_038_c26782f559_Result" name="feel-date-function_ErrorCase_038_c26782f559" id="_jDrjXvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjXPUUEeesLuP4RHs4vA">
+            <text>date("998-12-31")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_039_67a6eafa3f" id="_jDrjYfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("01211-12-31")' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date("01211-12-31")'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_039_67a6eafa3f_Result" name="feel-date-function_ErrorCase_039_67a6eafa3f" id="_jDrjYvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjYPUUEeesLuP4RHs4vA">
+            <text>date("01211-12-31")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_040_dd2a2ed4a2" id="_jDrjZfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("2012T-12-2511:00:00Z")' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date("2012T-12-2511:00:00Z")'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_040_dd2a2ed4a2_Result" name="feel-date-function_ErrorCase_040_dd2a2ed4a2" id="_jDrjZvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjZPUUEeesLuP4RHs4vA">
+            <text>date("2012T-12-2511:00:00Z")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_041_9e7e388146" id="_jDrjafUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date("+2012-12-02")' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date("+2012-12-02")'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_041_9e7e388146_Result" name="feel-date-function_ErrorCase_041_9e7e388146" id="_jDrjavUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjaPUUEeesLuP4RHs4vA">
+            <text>date("+2012-12-02")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_042_8f5dd97588" id="_jDrjbfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(2017,13,31)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(2017,13,31)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_042_8f5dd97588_Result" name="feel-date-function_ErrorCase_042_8f5dd97588" id="_jDrjbvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjbPUUEeesLuP4RHs4vA">
+            <text>date(2017,13,31)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_043_8f82301fac" id="_jDrjcfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(2017,12,32)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(2017,12,32)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_043_8f82301fac_Result" name="feel-date-function_ErrorCase_043_8f82301fac" id="_jDrjcvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjcPUUEeesLuP4RHs4vA">
+            <text>date(2017,12,32)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_044_74893220b4" id="_jDrjdfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(2017,-8,2)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(2017,-8,2)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_044_74893220b4_Result" name="feel-date-function_ErrorCase_044_74893220b4" id="_jDrjdvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjdPUUEeesLuP4RHs4vA">
+            <text>date(2017,-8,2)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_045_969723fed5" id="_jDrjefUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(2017,8,-2)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(2017,8,-2)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_045_969723fed5_Result" name="feel-date-function_ErrorCase_045_969723fed5" id="_jDrjevUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjePUUEeesLuP4RHs4vA">
+            <text>date(2017,8,-2)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_046_36bf30268a" id="_jDrjffUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(-1000999999,12,01)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(-1000999999,12,01)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_046_36bf30268a_Result" name="feel-date-function_ErrorCase_046_36bf30268a" id="_jDrjfvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjfPUUEeesLuP4RHs4vA">
+            <text>date(-1000999999,12,01)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_047_ba717eb672" id="_jDrjgfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(1000999999,12,32)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(1000999999,12,32)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_047_ba717eb672_Result" name="feel-date-function_ErrorCase_047_ba717eb672" id="_jDrjgvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjgPUUEeesLuP4RHs4vA">
+            <text>date(1000999999,12,32)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_048_25595a6420" id="_jDrjhfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(1)' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date(1)'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_048_25595a6420_Result" name="feel-date-function_ErrorCase_048_25595a6420" id="_jDrjhvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjhPUUEeesLuP4RHs4vA">
+            <text>date(1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_ErrorCase_049_a1644ce710" id="_jDrjifUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date([])' and expects result: 'null (date)'</description>
+        <question>Result of FEEL expression 'date([])'?</question>
+        <allowedAnswers>null (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_049_a1644ce710_Result" name="feel-date-function_ErrorCase_049_a1644ce710" id="_jDrjivUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjiPUUEeesLuP4RHs4vA">
+            <text>date([])</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_050_8f1e299951" id="_jDrjjfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(from:"2012-12-25")' and expects result: '2012-12-25 (date)'</description>
+        <question>Result of FEEL expression 'date(from:"2012-12-25")'?</question>
+        <allowedAnswers>2012-12-25 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_050_8f1e299951_Result" name="feel-date-function_050_8f1e299951" id="_jDrjjvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjjPUUEeesLuP4RHs4vA">
+            <text>date(from:"2012-12-25")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_051_ad98079864" id="_jDrjkfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(from:date and time("2017-08-30T10:25:00"))' and expects result: '2017-08-30 (date)'</description>
+        <question>Result of FEEL expression 'date(from:date and time("2017-08-30T10:25:00"))'?</question>
+        <allowedAnswers>2017-08-30 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_051_ad98079864_Result" name="feel-date-function_051_ad98079864" id="_jD1UMPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jDrjkPUUEeesLuP4RHs4vA">
+            <text>date(from:date and time("2017-08-30T10:25:00"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-date-function_052_63457d78b7" id="_jD1UM_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'date(year:2017,month:08,day:30)' and expects result: '2017-08-30 (date)'</description>
+        <question>Result of FEEL expression 'date(year:2017,month:08,day:30)'?</question>
+        <allowedAnswers>2017-08-30 (date)</allowedAnswers>
+        <variable typeRef="tfeel-date-function_052_63457d78b7_Result" name="feel-date-function_052_63457d78b7" id="_jD1UNPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jD1UMvUUEeesLuP4RHs4vA">
+            <text>date(year:2017,month:08,day:30)</text>
+        </literalExpression>
+    </decision>
+    <knowledgeSource name="DMN 1.1 - 10.3.4.1 Table 58" id="_jDiZQfUUEeesLuP4RHs4vA"/>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram name="Page 1" id="_jDiZQPUUEeesLuP4RHs4vA_D2">
+            <dmndi:DMNShape dmnElementRef="_jDrjXfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s1">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjbfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s2">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZcPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s3">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjYfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s4">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZmPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s5">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjafUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s6">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjNfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s7">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZZPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s8">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjcfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s9">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZdPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s10">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZQfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s11">
+                <dc:Bounds height="69.0" width="100.0" x="303.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjZfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s12">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjkfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s13">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZWPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s14">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjMfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s15">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZlPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s16">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjQfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s17">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjdfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s18">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjifUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s19">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZVPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s20">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZkPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s21">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jD1UM_UUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s22">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZiPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s23">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZnPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s24">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjWfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s25">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjTfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s26">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjOfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s27">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZaPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s28">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZfPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s29">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZYPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s30">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZhPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s31">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZTPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s32">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjSfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s33">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjgfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s34">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZgPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s35">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZqPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s36">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZSPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s37">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjRfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s38">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjffUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s39">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjUfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s40">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZpPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s41">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZoPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s42">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjVfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s43">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZePUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s44">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZRPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s45">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjefUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s46">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjjfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s47">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjPfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s48">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDrjhfUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s49">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZXPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s50">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZbPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s51">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZUPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s52">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jDiZjPUUEeesLuP4RHs4vA" id="_jDiZQPUUEeesLuP4RHs4vA_s53">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="486.0"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

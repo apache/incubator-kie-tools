@@ -18,3 +18,8 @@ export enum DmnRunnerStatus {
   UNAVAILABLE,
   AVAILABLE,
 }
+
+export enum DmnRunnerMode {
+  FORM = "form",
+  TABLE = "table",
+}

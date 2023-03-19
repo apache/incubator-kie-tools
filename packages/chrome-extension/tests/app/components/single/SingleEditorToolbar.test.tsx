@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { fireEvent, render, waitForElementToBeRemoved } from "@testing-library/react";
-import { SingleEditorToolbar } from "@kie-tooling-core/chrome-extension/dist/app/components/single/SingleEditorToolbar";
+import { SingleEditorToolbar } from "@kie-tools-core/chrome-extension/dist/app/components/single/SingleEditorToolbar";
 import {
   usingTestingChromeExtensionI18nContext,
   usingTestingGitHubContext,

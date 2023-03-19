@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0060-feel-any-function" name="0060-feel-any-function" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'any(list)' in category list functions</description>
+    <decision name="decision001" id="_decision001">
+        <description>Tests FEEL expression: 'any([true, false, true])' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'any([true, false, true])'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision001"/>
+        <literalExpression>
+            <text>any([true, false, true])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision002" id="_decision002">
+        <description>Tests FEEL expression: 'any([false, false, false])' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'any([false, false, false])'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision002"/>
+        <literalExpression>
+            <text>any([false, false, false])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision004" id="_decision004">
+        <description>Tests FEEL expression: 'any([123, false])' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'any([123, false])'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision004"/>
+        <literalExpression>
+            <text>any([123, false])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision005" id="_decision005">
+        <description>Tests FEEL expression: 'any([])' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'any([])'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision005"/>
+        <literalExpression>
+            <text>any([])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision006" id="_decision006">
+        <description>Tests FEEL expression: 'any(true)' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'any(true)'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision006"/>
+        <literalExpression>
+            <text>any(true)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision007" id="_decision007">
+        <description>Tests FEEL expression: 'any(false)' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'any(false)'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision007"/>
+        <literalExpression>
+            <text>any(false)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision008" id="_decision008">
+        <description>Tests FEEL expression: 'any(null)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'any(null)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision008"/>
+        <literalExpression>
+            <text>any(null)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision009" id="_decision009">
+        <description>Tests FEEL expression: 'any(123)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'any(123)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision009"/>
+        <literalExpression>
+            <text>any(123)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision010" id="_decision010">
+        <description>Tests FEEL expression: 'any(true, false, true)' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'any(true, false, true)'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision010"/>
+        <literalExpression>
+            <text>any(true, false, true)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision011" id="_decision011">
+        <description>Tests FEEL expression: 'any(false, false)' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'any(false, false)'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision011"/>
+        <literalExpression>
+            <text>any(false, false)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision012" id="_decision012">
+        <description>Tests FEEL expression: 'any(null, false)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'any(null, false)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision012"/>
+        <literalExpression>
+            <text>any(null, false)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision014" id="_decision014">
+        <description>Tests FEEL expression: 'any()' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'any()'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision014"/>
+        <literalExpression>
+            <text>any()</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision015" id="_decision015">
+        <description>Tests FEEL expression: 'any(list:[true, false, true])' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'any(list:[true, false, true])'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision015"/>
+        <literalExpression>
+            <text>any(list:[true, false, true])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision016" id="_decision016">
+        <description>Tests FEEL expression: 'any(list:[false, false])' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'any(list:[false, false])'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision016"/>
+        <literalExpression>
+            <text>any(list:[false, false])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision017" id="_decision017">
+        <description>Tests FEEL expression: 'any(list:[null, false])' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'any(list:[null, false])'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision017"/>
+        <literalExpression>
+            <text>any(list:[null, false])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision018" id="_decision018">
+        <description>Tests FEEL expression: 'any(list:null)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'any(list:null)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision018"/>
+        <literalExpression>
+            <text>any(list:null)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision019" id="_decision019">
+        <description>Tests FEEL expression: 'any(l:[true])' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'any(l:[true])'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision019"/>
+        <literalExpression>
+            <text>any(l:[true])</text>
+        </literalExpression>
+    </decision>
+</definitions>
+

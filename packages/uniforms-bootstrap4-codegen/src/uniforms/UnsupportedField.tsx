@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { FormInput } from "../api";
-import { connectField, HTMLFieldProps } from "uniforms/es5";
+import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { renderCodeGenElement, UNSUPPORTED } from "./templates/templates";
 import { useAddFormElementToBootstrapContext } from "./BootstrapCodeGenContext";
 

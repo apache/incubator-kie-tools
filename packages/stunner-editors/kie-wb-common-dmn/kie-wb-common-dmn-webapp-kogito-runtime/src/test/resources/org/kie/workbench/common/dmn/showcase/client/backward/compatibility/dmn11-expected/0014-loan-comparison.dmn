@@ -1,0 +1,506 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="http://www.trisotech.com/definitions/_56c7d4a5-e6db-4bba-ac5f-dc082a16f719"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719" name="loanComparison" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.trisotech.com/definitions/_56c7d4a5-e6db-4bba-ac5f-dc082a16f719">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_1DF3027C-E5D7-48BF-B693-DF15C3BAA932" name="tLoanProduct" isCollection="false">
+    <dmn:itemComponent id="_e4e050fd-9198-4b62-8f99-15cb2a0a2373" name="lenderName" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_dc34919e-c7d1-4aab-b6d1-4be1174f6fd2" name="rate" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_9ca2f88a-3845-4b8d-864f-b86718eaa54d" name="points" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_5b870440-9692-4e81-959f-f2347c1768c9" name="fee" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_C1E491D2-6A0E-4C31-9E5A-4123B8AEBA57" name="tLoanTable" isCollection="true">
+    <dmn:typeRef>tLoanProduct</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_7EED6080-2698-4468-ADD4-DAB009D039AF" name="tMetric" isCollection="false">
+    <dmn:itemComponent id="_59994d58-3220-4cc6-8d91-783a008ac472" name="lenderName" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_63d8c69d-2431-43f5-bfa3-a014a6d2363e" name="rate" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_be9eaeb3-8d52-4d99-9d0a-325c15fa6b74" name="points" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_2a9fe07c-d72b-4f8b-9995-e1b194dd5aa9" name="fee" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_333f9092-d8a7-4e75-973d-82f30569e432" name="loanAmt" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_790093df-4886-405a-8ad6-34de25812bdc" name="downPmtAmt" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_8f37cdc9-ff7a-4b8c-8849-c0b6a6cbb960" name="paymentAmt" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_3f4568e7-be52-4ce2-8704-be14aa6cd1d5" name="equity36moPct" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_75BA5279-CCA5-423A-80C0-6B84C5F75966" name="tMetrics" isCollection="true">
+    <dmn:typeRef>tMetric</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_5435726D-47ED-4619-923E-A6C54DC05301" name="tRankedProducts" isCollection="false">
+    <dmn:itemComponent id="_0ee333d1-03fc-4a77-8798-d0b351a19a36" name="metricsTable" isCollection="false">
+      <dmn:typeRef>tMetrics</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_f0790a52-d95d-466a-bc51-5766c046c717" name="rankByRate" isCollection="false">
+      <dmn:typeRef>tMetrics</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_d54127c6-8418-45df-89da-2f84bedae37c" name="rankByDownPmt" isCollection="false">
+      <dmn:typeRef>tMetrics</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_7f98fed9-552a-4b57-99de-495cb96e8484" name="rankByMonthlyPmt" isCollection="false">
+      <dmn:typeRef>tMetrics</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_897183a6-2ca8-4437-b21d-8ba90555a9e0" name="rankByEquityPct" isCollection="false">
+      <dmn:typeRef>tMetrics</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:decision id="_c5dd7a17-b588-4daf-8c9b-677e65ce87be" name="Bankrates">
+    <dmn:extensionElements/>
+    <dmn:variable id="_2FA2C423-9B69-4C78-85DE-919B81EF08D1" name="Bankrates" typeRef="tLoanTable"/>
+    <dmn:relation id="_1DF555FB-D937-4A5D-8EDC-4B38A6250743">
+      <dmn:column id="_23af7b70-cc60-4d84-8e5f-60d5a4ebfe86" name="lenderName"/>
+      <dmn:column id="_11fb4b39-53a6-4670-90c7-7f1b21bf3936" name="rate"/>
+      <dmn:column id="_505d19fa-b5b3-4adc-8aca-5ecc1b58d4f5" name="points"/>
+      <dmn:column id="_e9ed23a8-88c6-4cb0-a1f3-2a895999ef06" name="fee"/>
+      <dmn:row id="_bc21b674-23cc-440d-b505-32d5f799e281">
+        <dmn:literalExpression id="_1B1D9DF9-7A0A-4F52-B136-606CBC6D6887">
+          <dmn:text>"Oceans Capital"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_64C244A6-AC34-4969-8C4D-D9A8A2C3B996">
+          <dmn:text>.03500</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_E910BF7C-EC84-4324-9DD5-8FEAE48D5090">
+          <dmn:text>0</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_337DFEE7-CA4C-4D29-B3A5-37AC363ED108">
+          <dmn:text>0</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+      <dmn:row id="_6f3eb485-dddc-40f0-a153-8c989dc4b68d">
+        <dmn:literalExpression id="_8DF0FB96-8446-4437-9807-70407F2151B6">
+          <dmn:text>"eClick Lending"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_0B01FF93-2F83-4FD7-8EB8-D5FF4A8C0277">
+          <dmn:text>.03200</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_F8993C34-6FA3-4262-B5DB-FC6930AA349F">
+          <dmn:text>1.1</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_85C7AD0C-5D96-455A-B6DA-8756EB335625">
+          <dmn:text>2700</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+      <dmn:row id="_36362bb9-5cd1-4b55-8ce2-a8cf02f6bed0">
+        <dmn:literalExpression id="_6AC0DD5F-9230-4AB0-B0B6-16624ADBFC3D">
+          <dmn:text>"eClickLending"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_F8C70D78-715B-4A1B-A56D-2B39B8145884">
+          <dmn:text>.03375</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_3EC48D54-2879-4E52-9C98-2C0940AEDCE5">
+          <dmn:text>0.1</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_E8CEF60F-13CB-43C2-97F5-4F2D2A12BF49">
+          <dmn:text>1200</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+      <dmn:row id="_922a8c6b-2bf0-4453-b1d2-1242c5527dce">
+        <dmn:literalExpression id="_BE062BA6-500F-42FC-ABE3-4B0879669E60">
+          <dmn:text>"AimLoan"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_91892B76-7EDC-4FD3-A681-EF621329916A">
+          <dmn:text>.03000</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_FB19BB74-AE5B-47CC-9B11-C7BCF9C29C23">
+          <dmn:text>1.1</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_F29E0A1B-82EC-4760-BC50-07B4715E33EE">
+          <dmn:text>3966</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+      <dmn:row id="_72d72621-d6aa-4c78-a6ee-b0086b27ea3a">
+        <dmn:literalExpression id="_00C4DAEF-CFA8-44F6-934C-D7ED6FC036D2">
+          <dmn:text>"Home Loans Today"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_4BB883D3-7134-415E-B2BE-C72CAEFFED7F">
+          <dmn:text>.03125</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_0892370F-163D-49D3-869F-ED21DBC4A986">
+          <dmn:text>1.1</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_50598652-BE27-483F-A9EC-3D9719E092FD">
+          <dmn:text>285</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+      <dmn:row id="_4fd60510-7767-4cd9-9f5e-9783b9e6f688">
+        <dmn:literalExpression id="_4D94CC2C-B5B4-46A1-8C43-4A74023C1F15">
+          <dmn:text>"Sebonic"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_450F34A8-11A6-45B4-83BA-505C9A060E21">
+          <dmn:text>.03125</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_26861A54-CE84-4598-9AC2-7B9EE74453E2">
+          <dmn:text>0.1</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_2595493D-EFAD-403C-B68F-B77383157692">
+          <dmn:text>4028</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+      <dmn:row id="_4a2aca46-7331-445b-b378-beb0a4b7064f">
+        <dmn:literalExpression id="_499AFD59-FE4A-42E4-B79C-22A1F98470AA">
+          <dmn:text>"AimLoan"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_6D0F4AB1-D9E1-4CC0-A42A-6829EFEDBA84">
+          <dmn:text>.03125</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_B85FC7CD-6686-4B9D-A251-CEE744413B80">
+          <dmn:text>0.1</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_E7D52F84-229C-4286-8992-1C86FAEC5A26">
+          <dmn:text>4317</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+      <dmn:row id="_3b1b71e2-7084-4869-bb08-52d5ad2bcf1e">
+        <dmn:literalExpression id="_34C345C8-0957-41C8-AC1B-62FC729DA1E3">
+          <dmn:text>"eRates Mortgage"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_6AA424CB-B287-4A7E-BA6C-90622D8B20BD">
+          <dmn:text>.03125</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_ABAAE3BA-0EDA-4FC6-B2EB-B2466EA58F16">
+          <dmn:text>1.1</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_93F7207F-BA2F-4F28-8615-8F9C15094DDF">
+          <dmn:text>2518</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+      <dmn:row id="_d0e4ef04-9127-4931-b802-a0d4128a78c9">
+        <dmn:literalExpression id="_8189227B-F307-4E85-9597-E174128A81C7">
+          <dmn:text>"Home Loans Today"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_EDF72F44-1A0C-4DD5-98D6-644C27B33E11">
+          <dmn:text>.03250</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_A8F9206F-D086-461F-8D66-C182451AA7B0">
+          <dmn:text>0.1</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_319DC76B-9B32-4E08-9567-855E5CA601ED">
+          <dmn:text>822</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+      <dmn:row id="_a254dd15-1c62-4f4f-9ce2-83f6bfbcb487">
+        <dmn:literalExpression id="_0FB6EF1D-15E0-452B-A010-C6D993EE6F5D">
+          <dmn:text>"AimLoan"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_3FCA4C0C-693A-4DCB-8467-8121AA9987DF">
+          <dmn:text>.03250</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_63ADF70D-2EA0-49CD-AFA4-DFCCC7A663FB">
+          <dmn:text>0</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_7CF549B0-D03F-4C41-8A7A-F9CBBDC661A7">
+          <dmn:text>1995</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+    </dmn:relation>
+  </dmn:decision>
+  <dmn:inputData id="_67c50a4c-3002-4d0a-9acf-4c76cb0364fa" name="RequestedAmt">
+    <dmn:extensionElements/>
+    <dmn:variable id="_0800A219-FD90-4E8E-BA95-2564E231655C" name="RequestedAmt" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:decision id="_715940be-0f5d-4701-8155-fcba85874aa1" name="RankedProducts">
+    <dmn:extensionElements/>
+    <dmn:variable id="_5ED3401E-7689-415D-897C-BBB1E8973F5B" name="RankedProducts" typeRef="tRankedProducts"/>
+    <dmn:informationRequirement id="_608B07F5-FDE8-4AD2-8816-DC77F980FA2C">
+      <dmn:requiredInput href="#_67c50a4c-3002-4d0a-9acf-4c76cb0364fa"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_7057F3DB-00F4-4613-BFD9-5CECB3119503">
+      <dmn:requiredDecision href="#_c5dd7a17-b588-4daf-8c9b-677e65ce87be"/>
+    </dmn:informationRequirement>
+    <dmn:knowledgeRequirement id="_E3757580-2571-47EB-B428-989DED1434F3">
+      <dmn:requiredKnowledge href="#_83059f2e-2862-45a9-97a7-71ffaa860586"/>
+    </dmn:knowledgeRequirement>
+    <dmn:context id="_9E76BE47-7581-4D87-A3BA-81FA2A9C8BB1">
+      <dmn:contextEntry>
+        <dmn:variable id="_32570EA7-6777-45B9-9BDC-36A1CA08D4EB" name="metricsTable" typeRef="tMetrics"/>
+        <dmn:literalExpression id="_877F1EB7-E054-4523-946E-3EA7B9D58940">
+          <dmn:text>for i in Bankrates return FinancialMetrics(i,RequestedAmt)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_8BDDC5C2-50B7-4D93-846B-1D0CC514FE7E" name="rankByRate" typeRef="tMetrics"/>
+        <dmn:literalExpression id="_782861F6-4BD7-4E37-8888-0A007F6B5F90">
+          <dmn:text>sort(metricsTable, function(x,y) x.rate&lt;y.rate)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_777C2078-31E5-4093-BBBF-F2DAFFA413DD" name="rankByDownPmt" typeRef="tMetrics"/>
+        <dmn:literalExpression id="_DD1D2890-5263-48FC-B86F-1751161BF3AB">
+          <dmn:text>sort(metricsTable, function(x,y) x.downPmtAmt&lt;y.downPmtAmt)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_42ED7AB0-8351-4C4E-B3ED-59348B8D9937" name="rankByMonthlyPmt" typeRef="tMetrics"/>
+        <dmn:literalExpression id="_BEE7285A-D2F7-4B3B-B65B-A2BD98C33135">
+          <dmn:text>sort(metricsTable, function(x,y) x.paymentAmt&lt;y.paymentAmt)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_3B0F8ABB-26C5-4A78-9C55-3C3F04EE3E86" name="rankByEquityPct" typeRef="tMetrics"/>
+        <dmn:literalExpression id="_0D69BA37-338C-44AC-91AF-7EF51029E5E3">
+          <dmn:text>sort(metricsTable, function(x,y) x.equity36moPct&gt;y.equity36moPct)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:businessKnowledgeModel id="_83059f2e-2862-45a9-97a7-71ffaa860586" name="FinancialMetrics">
+    <dmn:extensionElements/>
+    <dmn:variable id="_416324F7-9F4A-4709-B132-116C5C0CC0AF" name="FinancialMetrics" typeRef="tMetrics"/>
+    <dmn:encapsulatedLogic id="_8772BB2C-4644-4174-A271-59F9544B991A" kind="FEEL">
+      <dmn:formalParameter id="_9B638B68-EAFC-448C-9E8E-368D8E062D91" name="product" typeRef="tLoanProduct"/>
+      <dmn:formalParameter id="_CAE20F36-10E4-4FDC-9FEE-A82407D37459" name="requestedAmt" typeRef="number"/>
+      <dmn:context id="_46673250-1A65-4EF5-9C23-DA559D39E746">
+        <dmn:contextEntry>
+          <dmn:variable id="_DAD7E879-3646-4FC2-B509-536F0DBF307D" name="lenderName" typeRef="string"/>
+          <dmn:literalExpression id="_05941C74-67CF-4CCF-AD20-38FDF4EA3892">
+            <dmn:text>product.lenderName</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:variable id="_797D752C-C17D-468E-8788-0B0F1354DCB9" name="rate" typeRef="number"/>
+          <dmn:literalExpression id="_B5DE32AD-CA22-4B23-B40C-8F8ECC4BB0F3">
+            <dmn:text>product.rate</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:variable id="_2743AEDE-E462-45CC-AFCA-02613341EEE8" name="points" typeRef="number"/>
+          <dmn:literalExpression id="_67E4AA85-FF72-48C6-A41A-586CB86B6A3D">
+            <dmn:text>product.points</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:variable id="_27848B23-80DB-42D8-9F7E-089CF6EC5C37" name="fee" typeRef="number"/>
+          <dmn:literalExpression id="_030C87AC-F0FF-42F0-86DD-DE2A2A17683C">
+            <dmn:text>product.fee</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:variable id="_BE39E471-737A-424A-A322-8F1D67337DCE" name="loanAmt" typeRef="number"/>
+          <dmn:literalExpression id="_EA6C9F53-7A7F-4922-91F8-0DA02E83A610">
+            <dmn:text>requestedAmt*(1+points/100)+fee</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:variable id="_B347EC9E-E53F-4EF9-8D19-1AE34D93D665" name="downPmtAmt" typeRef="number"/>
+          <dmn:literalExpression id="_AD57FD3B-DF6C-452D-BADE-8A3FAA1259C4">
+            <dmn:text>0.2*loanAmt</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:variable id="_24E5D54F-B08B-4EB1-BD83-92F53BB48D9F" name="paymentAmt" typeRef="number"/>
+          <dmn:literalExpression id="_D9F6F60A-0903-4A89-B00D-E4E277637400">
+            <dmn:text>monthlyPayment(loanAmt,rate,360)</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:variable id="_860924B8-C81B-484E-AD30-49244EF727A7" name="equity36moPct" typeRef="number"/>
+          <dmn:literalExpression id="_F9088A7D-8704-464E-9DCE-8C2D373691C6">
+            <dmn:text>1 - equity36Mo(loanAmt,rate,36,paymentAmt)/requestedAmt*0.8</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+      </dmn:context>
+    </dmn:encapsulatedLogic>
+    <dmn:knowledgeRequirement id="_FE9BECB0-836E-4D5D-9CC4-1CAFAE5F9340">
+      <dmn:requiredKnowledge href="#_8702e1b6-213b-4f75-bf56-99ac3835cde7"/>
+    </dmn:knowledgeRequirement>
+    <dmn:knowledgeRequirement id="_69F0F987-6AE9-45F4-91E6-D179D0BA49C4">
+      <dmn:requiredKnowledge href="#_daec318a-135b-4d54-9e7f-85af3aa662f7"/>
+    </dmn:knowledgeRequirement>
+  </dmn:businessKnowledgeModel>
+  <dmn:businessKnowledgeModel id="_8702e1b6-213b-4f75-bf56-99ac3835cde7" name="monthlyPayment">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A15A6F47-FE29-4DA6-B74C-BC0C6E349565" name="monthlyPayment" typeRef="number"/>
+    <dmn:encapsulatedLogic id="_2927F71D-C56B-4BD8-8488-2524149799FB" kind="FEEL">
+      <dmn:formalParameter id="_D0DE68A1-F345-422F-BBA9-A13CCA91C75B" name="p" typeRef="number"/>
+      <dmn:formalParameter id="_E409F809-0827-41EA-B2B5-5F4CA904E5E5" name="r" typeRef="number"/>
+      <dmn:formalParameter id="_D4BB362D-0B7C-4742-AE3F-340FDE6F3FC4" name="n" typeRef="number"/>
+      <dmn:literalExpression id="_B67AF0FF-D2C1-43E6-936E-0DE650F09A04" expressionLanguage="FEEL">
+        <dmn:text>p*r/12/(1-(1+r/12)**-n)</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmn:businessKnowledgeModel id="_daec318a-135b-4d54-9e7f-85af3aa662f7" name="equity36Mo">
+    <dmn:extensionElements/>
+    <dmn:variable id="_1BB585FB-1A6B-484F-8379-1EAA257DBD9E" name="equity36Mo" typeRef="number"/>
+    <dmn:encapsulatedLogic id="_7F139AF4-123B-4494-9597-C4DE063DE530" kind="FEEL">
+      <dmn:formalParameter id="_C81E667A-E855-4F0A-B071-16F3B13AB927" name="p" typeRef="number"/>
+      <dmn:formalParameter id="_90EAAAD5-EBEA-47D3-803D-4F047478A082" name="r" typeRef="number"/>
+      <dmn:formalParameter id="_F02CFCED-97F2-4C14-BE89-A48DD4391B19" name="n" typeRef="number"/>
+      <dmn:formalParameter id="_B700D1CA-0787-473C-9518-B7156ADA2BAC" name="pmt" typeRef="number"/>
+      <dmn:literalExpression id="_19E769D0-0A0F-457A-BEAF-256C9A761ADC" expressionLanguage="FEEL">
+        <dmn:text>p*(1+r/12)**n - pmt*(-1+(1+r/12)**n)/r</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_11F3B119-FDBD-4B1A-868A-3DD4B7096071" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_1DF555FB-D937-4A5D-8EDC-4B38A6250743"/>
+          <kie:ComponentWidths dmnElementRef="_1B1D9DF9-7A0A-4F52-B136-606CBC6D6887"/>
+          <kie:ComponentWidths dmnElementRef="_64C244A6-AC34-4969-8C4D-D9A8A2C3B996"/>
+          <kie:ComponentWidths dmnElementRef="_E910BF7C-EC84-4324-9DD5-8FEAE48D5090"/>
+          <kie:ComponentWidths dmnElementRef="_337DFEE7-CA4C-4D29-B3A5-37AC363ED108"/>
+          <kie:ComponentWidths dmnElementRef="_8DF0FB96-8446-4437-9807-70407F2151B6"/>
+          <kie:ComponentWidths dmnElementRef="_0B01FF93-2F83-4FD7-8EB8-D5FF4A8C0277"/>
+          <kie:ComponentWidths dmnElementRef="_F8993C34-6FA3-4262-B5DB-FC6930AA349F"/>
+          <kie:ComponentWidths dmnElementRef="_85C7AD0C-5D96-455A-B6DA-8756EB335625"/>
+          <kie:ComponentWidths dmnElementRef="_6AC0DD5F-9230-4AB0-B0B6-16624ADBFC3D"/>
+          <kie:ComponentWidths dmnElementRef="_F8C70D78-715B-4A1B-A56D-2B39B8145884"/>
+          <kie:ComponentWidths dmnElementRef="_3EC48D54-2879-4E52-9C98-2C0940AEDCE5"/>
+          <kie:ComponentWidths dmnElementRef="_E8CEF60F-13CB-43C2-97F5-4F2D2A12BF49"/>
+          <kie:ComponentWidths dmnElementRef="_BE062BA6-500F-42FC-ABE3-4B0879669E60"/>
+          <kie:ComponentWidths dmnElementRef="_91892B76-7EDC-4FD3-A681-EF621329916A"/>
+          <kie:ComponentWidths dmnElementRef="_FB19BB74-AE5B-47CC-9B11-C7BCF9C29C23"/>
+          <kie:ComponentWidths dmnElementRef="_F29E0A1B-82EC-4760-BC50-07B4715E33EE"/>
+          <kie:ComponentWidths dmnElementRef="_00C4DAEF-CFA8-44F6-934C-D7ED6FC036D2"/>
+          <kie:ComponentWidths dmnElementRef="_4BB883D3-7134-415E-B2BE-C72CAEFFED7F"/>
+          <kie:ComponentWidths dmnElementRef="_0892370F-163D-49D3-869F-ED21DBC4A986"/>
+          <kie:ComponentWidths dmnElementRef="_50598652-BE27-483F-A9EC-3D9719E092FD"/>
+          <kie:ComponentWidths dmnElementRef="_4D94CC2C-B5B4-46A1-8C43-4A74023C1F15"/>
+          <kie:ComponentWidths dmnElementRef="_450F34A8-11A6-45B4-83BA-505C9A060E21"/>
+          <kie:ComponentWidths dmnElementRef="_26861A54-CE84-4598-9AC2-7B9EE74453E2"/>
+          <kie:ComponentWidths dmnElementRef="_2595493D-EFAD-403C-B68F-B77383157692"/>
+          <kie:ComponentWidths dmnElementRef="_499AFD59-FE4A-42E4-B79C-22A1F98470AA"/>
+          <kie:ComponentWidths dmnElementRef="_6D0F4AB1-D9E1-4CC0-A42A-6829EFEDBA84"/>
+          <kie:ComponentWidths dmnElementRef="_B85FC7CD-6686-4B9D-A251-CEE744413B80"/>
+          <kie:ComponentWidths dmnElementRef="_E7D52F84-229C-4286-8992-1C86FAEC5A26"/>
+          <kie:ComponentWidths dmnElementRef="_34C345C8-0957-41C8-AC1B-62FC729DA1E3"/>
+          <kie:ComponentWidths dmnElementRef="_6AA424CB-B287-4A7E-BA6C-90622D8B20BD"/>
+          <kie:ComponentWidths dmnElementRef="_ABAAE3BA-0EDA-4FC6-B2EB-B2466EA58F16"/>
+          <kie:ComponentWidths dmnElementRef="_93F7207F-BA2F-4F28-8615-8F9C15094DDF"/>
+          <kie:ComponentWidths dmnElementRef="_8189227B-F307-4E85-9597-E174128A81C7"/>
+          <kie:ComponentWidths dmnElementRef="_EDF72F44-1A0C-4DD5-98D6-644C27B33E11"/>
+          <kie:ComponentWidths dmnElementRef="_A8F9206F-D086-461F-8D66-C182451AA7B0"/>
+          <kie:ComponentWidths dmnElementRef="_319DC76B-9B32-4E08-9567-855E5CA601ED"/>
+          <kie:ComponentWidths dmnElementRef="_0FB6EF1D-15E0-452B-A010-C6D993EE6F5D"/>
+          <kie:ComponentWidths dmnElementRef="_3FCA4C0C-693A-4DCB-8467-8121AA9987DF"/>
+          <kie:ComponentWidths dmnElementRef="_63ADF70D-2EA0-49CD-AFA4-DFCCC7A663FB"/>
+          <kie:ComponentWidths dmnElementRef="_7CF549B0-D03F-4C41-8A7A-F9CBBDC661A7"/>
+          <kie:ComponentWidths dmnElementRef="_9E76BE47-7581-4D87-A3BA-81FA2A9C8BB1"/>
+          <kie:ComponentWidths dmnElementRef="_877F1EB7-E054-4523-946E-3EA7B9D58940"/>
+          <kie:ComponentWidths dmnElementRef="_782861F6-4BD7-4E37-8888-0A007F6B5F90"/>
+          <kie:ComponentWidths dmnElementRef="_DD1D2890-5263-48FC-B86F-1751161BF3AB"/>
+          <kie:ComponentWidths dmnElementRef="_BEE7285A-D2F7-4B3B-B65B-A2BD98C33135"/>
+          <kie:ComponentWidths dmnElementRef="_0D69BA37-338C-44AC-91AF-7EF51029E5E3"/>
+          <kie:ComponentWidths dmnElementRef="_46673250-1A65-4EF5-9C23-DA559D39E746"/>
+          <kie:ComponentWidths dmnElementRef="_05941C74-67CF-4CCF-AD20-38FDF4EA3892"/>
+          <kie:ComponentWidths dmnElementRef="_B5DE32AD-CA22-4B23-B40C-8F8ECC4BB0F3"/>
+          <kie:ComponentWidths dmnElementRef="_67E4AA85-FF72-48C6-A41A-586CB86B6A3D"/>
+          <kie:ComponentWidths dmnElementRef="_030C87AC-F0FF-42F0-86DD-DE2A2A17683C"/>
+          <kie:ComponentWidths dmnElementRef="_EA6C9F53-7A7F-4922-91F8-0DA02E83A610"/>
+          <kie:ComponentWidths dmnElementRef="_AD57FD3B-DF6C-452D-BADE-8A3FAA1259C4"/>
+          <kie:ComponentWidths dmnElementRef="_D9F6F60A-0903-4A89-B00D-E4E277637400"/>
+          <kie:ComponentWidths dmnElementRef="_F9088A7D-8704-464E-9DCE-8C2D373691C6"/>
+          <kie:ComponentWidths dmnElementRef="_8772BB2C-4644-4174-A271-59F9544B991A"/>
+          <kie:ComponentWidths dmnElementRef="_B67AF0FF-D2C1-43E6-936E-0DE650F09A04"/>
+          <kie:ComponentWidths dmnElementRef="_2927F71D-C56B-4BD8-8488-2524149799FB"/>
+          <kie:ComponentWidths dmnElementRef="_19E769D0-0A0F-457A-BEAF-256C9A761ADC"/>
+          <kie:ComponentWidths dmnElementRef="_7F139AF4-123B-4494-9597-C4DE063DE530"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_c5dd7a17-b588-4daf-8c9b-677e65ce87be" dmnElementRef="_c5dd7a17-b588-4daf-8c9b-677e65ce87be" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_67c50a4c-3002-4d0a-9acf-4c76cb0364fa" dmnElementRef="_67c50a4c-3002-4d0a-9acf-4c76cb0364fa" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="225" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_715940be-0f5d-4701-8155-fcba85874aa1" dmnElementRef="_715940be-0f5d-4701-8155-fcba85874aa1" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="225" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_83059f2e-2862-45a9-97a7-71ffaa860586" dmnElementRef="_83059f2e-2862-45a9-97a7-71ffaa860586" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="400" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_8702e1b6-213b-4f75-bf56-99ac3835cde7" dmnElementRef="_8702e1b6-213b-4f75-bf56-99ac3835cde7" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="138" y="400" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_daec318a-135b-4d54-9e7f-85af3aa662f7" dmnElementRef="_daec318a-135b-4d54-9e7f-85af3aa662f7" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="313" y="400" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_608B07F5-FDE8-4AD2-8816-DC77F980FA2C" dmnElementRef="_608B07F5-FDE8-4AD2-8816-DC77F980FA2C">
+        <di:waypoint x="275" y="250"/>
+        <di:waypoint x="275" y="75"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_7057F3DB-00F4-4613-BFD9-5CECB3119503" dmnElementRef="_7057F3DB-00F4-4613-BFD9-5CECB3119503">
+        <di:waypoint x="100" y="250"/>
+        <di:waypoint x="275" y="75"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_E3757580-2571-47EB-B428-989DED1434F3" dmnElementRef="_E3757580-2571-47EB-B428-989DED1434F3">
+        <di:waypoint x="450" y="250"/>
+        <di:waypoint x="275" y="75"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_FE9BECB0-836E-4D5D-9CC4-1CAFAE5F9340" dmnElementRef="_FE9BECB0-836E-4D5D-9CC4-1CAFAE5F9340">
+        <di:waypoint x="188" y="425"/>
+        <di:waypoint x="450" y="250"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_69F0F987-6AE9-45F4-91E6-D179D0BA49C4" dmnElementRef="_69F0F987-6AE9-45F4-91E6-D179D0BA49C4">
+        <di:waypoint x="363" y="425"/>
+        <di:waypoint x="450" y="250"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -1,0 +1,96 @@
+name: "Deploy to OpenShift"
+description: ""
+
+inputs:
+  image_tag:
+    description: "Container Image Tag"
+    required: true
+  image_url:
+    description: "Container Image URL"
+    required: true
+  app_name:
+    description: "Application name"
+    required: true
+  part_of:
+    description: "Label to gather resources"
+    required: true
+  openshift_server:
+    description: "OpenShift server URL"
+    required: true
+  openshift_token:
+    description: "OpenShift token"
+    required: true
+  openshift_namespace:
+    description: "OpenShift namespace"
+    required: true
+  deployment_envvars_file_path:
+    description: "Path to the file where deployment environment variables are stored"
+    required: false
+    default: ./deployment.env
+  deployment_icon:
+    description: "Deployment icon"
+    required: false
+    default: openshift
+
+outputs:
+  route_url:
+    description: "Application route URL"
+    value: ${{ steps.get_route_url.outputs.route_url }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Install oc"
+      uses: redhat-actions/openshift-tools-installer@v1
+      with:
+        oc: 4
+
+    - name: "Log in to OpenShift"
+      uses: redhat-actions/oc-login@v1
+      with:
+        openshift_server_url: ${{ inputs.openshift_server }}
+        openshift_token: ${{ inputs.openshift_token }}
+        insecure_skip_tls_verify: true
+        namespace: ${{ inputs.openshift_namespace }}
+
+    - name: "Create or update the OpenShift application"
+      shell: bash
+      run: |
+        if [ ! -f ${{ inputs.deployment_envvars_file_path }} ]; then
+          touch ${{ inputs.deployment_envvars_file_path }}
+        fi
+
+        if ! oc get deploy ${{ inputs.app_name }} > /dev/null 2>&1; then
+          echo "Create the app '${{ inputs.app_name }}'"
+
+          oc create imagestream ${{ inputs.app_name }}
+          oc import-image ${{ inputs.app_name }}:${{ inputs.image_tag }} --from=${{ inputs.image_url }} --confirm
+          oc tag ${{ inputs.app_name }}:${{ inputs.image_tag }} ${{ inputs.app_name }}:latest
+
+          oc label imagestreams/${{ inputs.app_name }} app=${{ inputs.app_name }}
+          oc label imagestreams/${{ inputs.app_name }} app.kubernetes.io/component=${{ inputs.app_name }}
+          oc label imagestreams/${{ inputs.app_name }} app.kubernetes.io/instance=${{ inputs.app_name }}
+          oc label imagestreams/${{ inputs.app_name }} app.kubernetes.io/part-of=${{ inputs.part_of }}
+
+          oc new-app ${{ inputs.app_name }}:latest --name=${{ inputs.app_name }} --env-file=${{ inputs.deployment_envvars_file_path }}
+          oc create route edge --service=${{ inputs.app_name }}
+
+          oc label services/${{ inputs.app_name }} app.kubernetes.io/part-of=${{ inputs.part_of }}
+          oc label routes/${{ inputs.app_name }} app.kubernetes.io/part-of=${{ inputs.part_of }}
+          oc label deployments/${{ inputs.app_name }} app.kubernetes.io/part-of=${{ inputs.part_of }}
+          oc label deployments/${{ inputs.app_name }} app.openshift.io/runtime=${{ inputs.deployment_icon }}
+        else
+          echo "App '${{ inputs.app_name }}' already exists. Update the ImageStream instead."
+          oc tag -d ${{ inputs.app_name }}:latest
+          oc import-image ${{ inputs.app_name }}:${{ inputs.image_tag }} --from=${{ inputs.image_url }} --confirm
+          oc tag ${{ inputs.app_name }}:${{ inputs.image_tag }} ${{ inputs.app_name }}:latest
+          cat ${{ inputs.deployment_envvars_file_path }} | oc set env deploy/${{ inputs.app_name }} -
+        fi
+
+    - name: "Get the route URL"
+      id: get_route_url
+      shell: bash
+      run: |
+        url=https://$(oc get route ${{ inputs.app_name }} -o jsonpath='{.spec.host}')
+        echo "Route URL: $url"
+        echo "route_url=$url" >> $GITHUB_OUTPUT

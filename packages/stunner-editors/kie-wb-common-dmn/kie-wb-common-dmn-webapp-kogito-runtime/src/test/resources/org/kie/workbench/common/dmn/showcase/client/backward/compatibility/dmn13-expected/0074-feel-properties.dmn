@@ -1,0 +1,761 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.montera.com.au/spec/DMN/0074-feel-properties" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_i9fboPUUEeesLuP4RHs4vA" name="0074-feel-properties" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.montera.com.au/spec/DMN/0074-feel-properties">
+  <dmn:description>FEEL properties</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:decision id="_context_001" name="context_001">
+    <dmn:extensionElements/>
+    <dmn:variable id="_9CFDB834-72BA-4189-A7DF-C68DD6762D9E" name="context_001"/>
+    <dmn:literalExpression id="_97BD156A-47DA-4C16-AEE0-392BEA7C1F17">
+      <dmn:text>{a: "foo"}.a</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_date_001" name="date_001">
+    <dmn:extensionElements/>
+    <dmn:variable id="_82D14169-515E-48E1-8210-0D00C20164B8" name="date_001"/>
+    <dmn:literalExpression id="_F21CD328-DD5A-4A0B-81A6-4863B58108EA">
+      <dmn:text>date("2018-12-10").year</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_date_002" name="date_002">
+    <dmn:extensionElements/>
+    <dmn:variable id="_3C6CCDFC-6E9C-4656-8658-73CC5A5902AA" name="date_002"/>
+    <dmn:literalExpression id="_5DC64F81-2C38-4BEA-AAEC-2FA79BF7D16C">
+      <dmn:text>date("2018-12-10").month</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_date_003" name="date_003">
+    <dmn:extensionElements/>
+    <dmn:variable id="_AEA0C7B5-71C5-4B3E-863D-70024CC992B6" name="date_003"/>
+    <dmn:literalExpression id="_C7CB7981-584A-49F7-84F1-6074D63FDB12">
+      <dmn:text>date("2018-12-10").day</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_date_004" name="date_004">
+    <dmn:extensionElements/>
+    <dmn:variable id="_D8793E98-883A-4B59-9C6A-896C6495F407" name="date_004"/>
+    <dmn:literalExpression id="_F487A1DC-85CA-4A87-82F4-691F8B325EA7">
+      <dmn:text>date("2018-12-10").weekday</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_001" name="dateTime_001">
+    <dmn:extensionElements/>
+    <dmn:variable id="_6BFC4CF5-646B-4523-BC92-715FE5293C7C" name="dateTime_001"/>
+    <dmn:literalExpression id="_9166A8FD-8109-48C1-A56F-14D1031E8056">
+      <dmn:text>date and time("2018-12-10T10:30:01").year</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_002" name="dateTime_002">
+    <dmn:extensionElements/>
+    <dmn:variable id="_D39B31D2-F69C-4E6D-943F-B0ADA6C46219" name="dateTime_002"/>
+    <dmn:literalExpression id="_DEEAA2FB-A37B-40A1-AA8A-A9627876C41A">
+      <dmn:text>date and time("2018-12-10T10:30:01").month</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_003" name="dateTime_003">
+    <dmn:extensionElements/>
+    <dmn:variable id="_CECB19AC-BDCB-4174-8C89-BF30A4C8F8AE" name="dateTime_003"/>
+    <dmn:literalExpression id="_30F6D925-7352-43DA-97E6-060576378D52">
+      <dmn:text>date and time("2018-12-10T10:30:01").day</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_004" name="dateTime_004">
+    <dmn:extensionElements/>
+    <dmn:variable id="_FA49E62A-BEE5-41F1-ACA5-7DCEF06AD2E5" name="dateTime_004"/>
+    <dmn:literalExpression id="_D8ED72BF-7099-4F66-844A-DE06CF3A7586">
+      <dmn:text>date and time("2018-12-10T10:30:01").weekday</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_005" name="dateTime_005">
+    <dmn:extensionElements/>
+    <dmn:variable id="_923313B0-CFB1-43CB-A798-7DC36A2D79F8" name="dateTime_005"/>
+    <dmn:literalExpression id="_C80C6EB4-BC98-4D57-98C8-CB1857012F7D">
+      <dmn:text>date and time("2018-12-10T10:30:01").hour</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_005_a" name="dateTime_005_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_058A83D2-DD7C-4B99-B16D-159A8CF626D5" name="dateTime_005_a"/>
+    <dmn:literalExpression id="_61030266-F841-4BA6-B03C-95439B4FF3E7">
+      <dmn:text>date and time("2018-12-10").hour</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_006" name="dateTime_006">
+    <dmn:extensionElements/>
+    <dmn:variable id="_4A284746-D29C-4381-9FD8-EA0876C4649D" name="dateTime_006"/>
+    <dmn:literalExpression id="_7E600D9C-CE50-4EC2-80AF-6FBBBC2FDC78">
+      <dmn:text>date and time("2018-12-10T10:30:01").minute</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_006_a" name="dateTime_006_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_3C3D219E-8DCA-4E83-B017-0C78E48593C9" name="dateTime_006_a"/>
+    <dmn:literalExpression id="_EE9CB5E1-F769-499B-8546-A71684A8A82F">
+      <dmn:text>date and time("2018-12-10").minute</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_007" name="dateTime_007">
+    <dmn:extensionElements/>
+    <dmn:variable id="_1C4B2933-F84D-4190-84E6-BF70C7227A76" name="dateTime_007"/>
+    <dmn:literalExpression id="_F03F9E61-ECC9-4D39-A5C3-E2BD0B87DF7D">
+      <dmn:text>date and time("2018-12-10T10:30:01").second</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_007_a" name="dateTime_007_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C6A7CB64-CCC4-4B66-B952-C22FC8EE9644" name="dateTime_007_a"/>
+    <dmn:literalExpression id="_1A918E17-3634-4DF7-834F-79B28C1A12BB">
+      <dmn:text>date and time("2018-12-10").second</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_008" name="dateTime_008">
+    <dmn:extensionElements/>
+    <dmn:variable id="_B60F3CA1-7901-4A76-B117-3E4D16792DCC" name="dateTime_008"/>
+    <dmn:literalExpression id="_79CFF441-5C1D-4E81-8920-96E0284FECE6">
+      <dmn:text>date and time("2018-12-10T10:30:00+05:00").time offset</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_008_a" name="dateTime_008_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_6C16DD03-50FB-44BD-B73D-EEFEA36AD8C6" name="dateTime_008_a"/>
+    <dmn:literalExpression id="_6FE4B484-13CB-4251-84A8-4BD917A43FB1">
+      <dmn:text>date and time("2018-12-10T10:30:00").time offset</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_009" name="dateTime_009">
+    <dmn:extensionElements/>
+    <dmn:variable id="_E4B67548-E136-4246-8503-2B90CCE736D7" name="dateTime_009"/>
+    <dmn:literalExpression id="_B9AE6236-DA2C-4893-B8C7-ABC72F7F912F">
+      <dmn:text>date and time("2018-12-10T10:30:00@Etc/UTC").timezone</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dateTime_009_a" name="dateTime_009_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C7A0D990-ADD1-4E29-BAF9-E11DEA3C1722" name="dateTime_009_a"/>
+    <dmn:literalExpression id="_EDFF9CC8-5549-46A8-9818-8C91E5CD2BBC">
+      <dmn:text>date and time("2018-12-10T10:30:00").timezone</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_time_001" name="time_001">
+    <dmn:extensionElements/>
+    <dmn:variable id="_678A5ED5-638E-455B-8E65-E84C3B1609BB" name="time_001"/>
+    <dmn:literalExpression id="_35AE01A2-2706-4BFC-88EE-06DB630F49E8">
+      <dmn:text>time("10:30:01").hour</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_time_002" name="time_002">
+    <dmn:extensionElements/>
+    <dmn:variable id="_03439187-E3B0-4A07-A4BE-078605214538" name="time_002"/>
+    <dmn:literalExpression id="_57706845-93A7-4319-B8F0-7ECB28FC5256">
+      <dmn:text>time("10:30:01").minute</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_time_003" name="time_003">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A17933A2-6F00-4F37-8ECA-F146343EA6E5" name="time_003"/>
+    <dmn:literalExpression id="_449C5435-65BD-4620-908B-E0CFC25DC718">
+      <dmn:text>time("10:30:01").second</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_time_004" name="time_004">
+    <dmn:extensionElements/>
+    <dmn:variable id="_BDA531B3-B047-4A03-998E-29D2217E42D6" name="time_004"/>
+    <dmn:literalExpression id="_E0AD7840-55C8-4037-BBF7-3E11378B28E6">
+      <dmn:text>time("10:30:00+05:00").time offset</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_time_004_a" name="time_004_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_05427B4D-3A6E-4324-8092-4BC7EC03BE49" name="time_004_a"/>
+    <dmn:literalExpression id="_67797480-6420-4CBE-A0AA-5EBE9012401A">
+      <dmn:text>time("10:30:00").time offset</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_time_005" name="time_005">
+    <dmn:extensionElements/>
+    <dmn:variable id="_57EEA5F1-6CFD-419E-820D-FC31B5EA24B3" name="time_005"/>
+    <dmn:literalExpression id="_700A82BC-E34A-400F-B9BC-A79874038B99">
+      <dmn:text>time("10:30:00@Etc/UTC").timezone</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_time_005_a" name="time_005_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_2C992B51-224B-410C-BDD7-3A8AD110AEDE" name="time_005_a"/>
+    <dmn:literalExpression id="_BB56BF09-377A-44D6-A847-1DDCE0D293FF">
+      <dmn:text>time("10:30:00").timezone</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_ym_duration_001" name="ym_duration_001">
+    <dmn:extensionElements/>
+    <dmn:variable id="_72794618-09D2-46B1-85BB-106FAA4ABD02" name="ym_duration_001"/>
+    <dmn:literalExpression id="_267507FC-E3AA-434C-AA0B-9211D1298C67">
+      <dmn:text>duration("P1Y2M").years</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_ym_duration_001_a" name="ym_duration_001_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_55C7F14D-EA2D-45C2-8427-1931135204C6" name="ym_duration_001_a"/>
+    <dmn:literalExpression id="_00D087D1-535E-4003-BE79-4A53CAC75A4E">
+      <dmn:text>duration("P2M").years</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_ym_duration_002" name="ym_duration_002">
+    <dmn:extensionElements/>
+    <dmn:variable id="_B0A60B72-B7DE-4D84-BFD9-94A94C309871" name="ym_duration_002"/>
+    <dmn:literalExpression id="_404F1D8F-26EA-4842-91F1-374E12F7C196">
+      <dmn:text>duration("P2M").months</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_ym_duration_002_a" name="ym_duration_002_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_F4E31148-DF37-4B8F-81D6-9BA041A5CAF3" name="ym_duration_002_a"/>
+    <dmn:literalExpression id="_BC0DE0DC-6DBA-4649-A3A7-8BC3352DBAED">
+      <dmn:text>duration("P1Y").months</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_ym_duration_003" name="ym_duration_003">
+    <dmn:extensionElements/>
+    <dmn:variable id="_562C4BBB-601A-42BB-B371-D0D6504DACBB" name="ym_duration_003"/>
+    <dmn:literalExpression id="_2D30197C-DF70-4A0A-8DA4-EF217E5B7D65">
+      <dmn:text>duration("P1Y").days</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_ym_duration_004" name="ym_duration_004">
+    <dmn:extensionElements/>
+    <dmn:variable id="_33D30BFE-84BB-4F89-A5B4-D95D247D8DDE" name="ym_duration_004"/>
+    <dmn:literalExpression id="_76FA72D3-8E39-4374-BF7C-E5277A986D84">
+      <dmn:text>duration("P1Y").hours</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_ym_duration_005" name="ym_duration_005">
+    <dmn:extensionElements/>
+    <dmn:variable id="_709E479E-24EB-4349-85E2-6628FF2FEB2E" name="ym_duration_005"/>
+    <dmn:literalExpression id="_C289241B-DC3E-4592-93F9-EF8FFEDA7E53">
+      <dmn:text>duration("P1Y").minutes</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_ym_duration_006" name="ym_duration_006">
+    <dmn:extensionElements/>
+    <dmn:variable id="_81C65F40-DB17-49F5-A8B3-2607228E9462" name="ym_duration_006"/>
+    <dmn:literalExpression id="_06030609-0A88-466E-B375-D45758E2F025">
+      <dmn:text>duration("P1Y").seconds</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dt_duration_001" name="dt_duration_001">
+    <dmn:extensionElements/>
+    <dmn:variable id="_E1B4E09B-D68E-4E12-99D5-C8E4B73E2C27" name="dt_duration_001"/>
+    <dmn:literalExpression id="_1F20CD52-C4A3-4A58-8F16-5D8986530E5D">
+      <dmn:text>duration("P1D").years</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dt_duration_002" name="dt_duration_002">
+    <dmn:extensionElements/>
+    <dmn:variable id="_D1317F44-7108-4181-8B54-B0D1BF81BA41" name="dt_duration_002"/>
+    <dmn:literalExpression id="_1E388759-19EC-4536-B97A-263D80C016C8">
+      <dmn:text>duration("P1D").months</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dt_duration_003" name="dt_duration_003">
+    <dmn:extensionElements/>
+    <dmn:variable id="_8D2F21DB-BC2F-4003-ABE1-157DE6005F47" name="dt_duration_003"/>
+    <dmn:literalExpression id="_47A6E307-5B54-4D69-B1BC-4A12E9129DA9">
+      <dmn:text>duration("P1D").days</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dt_duration_003_a" name="dt_duration_003_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_7FFABB3E-61EF-47CE-BB5F-90E959B4EE4F" name="dt_duration_003_a"/>
+    <dmn:literalExpression id="_595788BB-25AF-4FA0-899F-A782DF0901FD">
+      <dmn:text>duration("PT2H").days</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dt_duration_004" name="dt_duration_004">
+    <dmn:extensionElements/>
+    <dmn:variable id="_1CA1F05B-AB8D-435E-BBD8-AF188399A8B6" name="dt_duration_004"/>
+    <dmn:literalExpression id="_6AF5533E-8C2F-4D6F-9DFD-6E46274D9D21">
+      <dmn:text>duration("PT2H").hours</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dt_duration_004_a" name="dt_duration_004_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_5A7E9ACD-844A-4851-A7A7-5B461456C146" name="dt_duration_004_a"/>
+    <dmn:literalExpression id="_BC051E66-D494-4036-82C5-4CC8B2EA6AB5">
+      <dmn:text>duration("P1D").hours</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dt_duration_005" name="dt_duration_005">
+    <dmn:extensionElements/>
+    <dmn:variable id="_628F92B6-4A51-400B-9031-D146BA17EC84" name="dt_duration_005"/>
+    <dmn:literalExpression id="_B422D8E5-32DB-4635-8551-E6EE2E0230EF">
+      <dmn:text>duration("PT2M").minutes</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dt_duration_005_a" name="dt_duration_005_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_77745451-A3EB-4733-B0BD-13CAE3C65CF8" name="dt_duration_005_a"/>
+    <dmn:literalExpression id="_BE9F1686-1740-479B-B698-AF120D96F908">
+      <dmn:text>duration("P1D").minutes</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dt_duration_006" name="dt_duration_006">
+    <dmn:extensionElements/>
+    <dmn:variable id="_2F6DD28E-215B-4BFA-A804-8C85E5F7DB19" name="dt_duration_006"/>
+    <dmn:literalExpression id="_ABE5D072-987B-45D6-8990-8D6236EE26B8">
+      <dmn:text>duration("PT2S").seconds</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_dt_duration_006_a" name="dt_duration_006_a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_287F6EA6-9CA4-41E1-90DE-58AA7D9B294C" name="dt_duration_006_a"/>
+    <dmn:literalExpression id="_408B68D8-7C2D-44AF-B038-9D86E469CE8C">
+      <dmn:text>duration("P1D").seconds</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_9F8DCACC-DB08-4AD5-815E-131D1E3D3563" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_97BD156A-47DA-4C16-AEE0-392BEA7C1F17"/>
+          <kie:ComponentWidths dmnElementRef="_F21CD328-DD5A-4A0B-81A6-4863B58108EA"/>
+          <kie:ComponentWidths dmnElementRef="_5DC64F81-2C38-4BEA-AAEC-2FA79BF7D16C"/>
+          <kie:ComponentWidths dmnElementRef="_C7CB7981-584A-49F7-84F1-6074D63FDB12"/>
+          <kie:ComponentWidths dmnElementRef="_F487A1DC-85CA-4A87-82F4-691F8B325EA7"/>
+          <kie:ComponentWidths dmnElementRef="_9166A8FD-8109-48C1-A56F-14D1031E8056"/>
+          <kie:ComponentWidths dmnElementRef="_DEEAA2FB-A37B-40A1-AA8A-A9627876C41A"/>
+          <kie:ComponentWidths dmnElementRef="_30F6D925-7352-43DA-97E6-060576378D52"/>
+          <kie:ComponentWidths dmnElementRef="_D8ED72BF-7099-4F66-844A-DE06CF3A7586"/>
+          <kie:ComponentWidths dmnElementRef="_C80C6EB4-BC98-4D57-98C8-CB1857012F7D"/>
+          <kie:ComponentWidths dmnElementRef="_61030266-F841-4BA6-B03C-95439B4FF3E7"/>
+          <kie:ComponentWidths dmnElementRef="_7E600D9C-CE50-4EC2-80AF-6FBBBC2FDC78"/>
+          <kie:ComponentWidths dmnElementRef="_EE9CB5E1-F769-499B-8546-A71684A8A82F"/>
+          <kie:ComponentWidths dmnElementRef="_F03F9E61-ECC9-4D39-A5C3-E2BD0B87DF7D"/>
+          <kie:ComponentWidths dmnElementRef="_1A918E17-3634-4DF7-834F-79B28C1A12BB"/>
+          <kie:ComponentWidths dmnElementRef="_79CFF441-5C1D-4E81-8920-96E0284FECE6"/>
+          <kie:ComponentWidths dmnElementRef="_6FE4B484-13CB-4251-84A8-4BD917A43FB1"/>
+          <kie:ComponentWidths dmnElementRef="_B9AE6236-DA2C-4893-B8C7-ABC72F7F912F"/>
+          <kie:ComponentWidths dmnElementRef="_EDFF9CC8-5549-46A8-9818-8C91E5CD2BBC"/>
+          <kie:ComponentWidths dmnElementRef="_35AE01A2-2706-4BFC-88EE-06DB630F49E8"/>
+          <kie:ComponentWidths dmnElementRef="_57706845-93A7-4319-B8F0-7ECB28FC5256"/>
+          <kie:ComponentWidths dmnElementRef="_449C5435-65BD-4620-908B-E0CFC25DC718"/>
+          <kie:ComponentWidths dmnElementRef="_E0AD7840-55C8-4037-BBF7-3E11378B28E6"/>
+          <kie:ComponentWidths dmnElementRef="_67797480-6420-4CBE-A0AA-5EBE9012401A"/>
+          <kie:ComponentWidths dmnElementRef="_700A82BC-E34A-400F-B9BC-A79874038B99"/>
+          <kie:ComponentWidths dmnElementRef="_BB56BF09-377A-44D6-A847-1DDCE0D293FF"/>
+          <kie:ComponentWidths dmnElementRef="_267507FC-E3AA-434C-AA0B-9211D1298C67"/>
+          <kie:ComponentWidths dmnElementRef="_00D087D1-535E-4003-BE79-4A53CAC75A4E"/>
+          <kie:ComponentWidths dmnElementRef="_404F1D8F-26EA-4842-91F1-374E12F7C196"/>
+          <kie:ComponentWidths dmnElementRef="_BC0DE0DC-6DBA-4649-A3A7-8BC3352DBAED"/>
+          <kie:ComponentWidths dmnElementRef="_2D30197C-DF70-4A0A-8DA4-EF217E5B7D65"/>
+          <kie:ComponentWidths dmnElementRef="_76FA72D3-8E39-4374-BF7C-E5277A986D84"/>
+          <kie:ComponentWidths dmnElementRef="_C289241B-DC3E-4592-93F9-EF8FFEDA7E53"/>
+          <kie:ComponentWidths dmnElementRef="_06030609-0A88-466E-B375-D45758E2F025"/>
+          <kie:ComponentWidths dmnElementRef="_1F20CD52-C4A3-4A58-8F16-5D8986530E5D"/>
+          <kie:ComponentWidths dmnElementRef="_1E388759-19EC-4536-B97A-263D80C016C8"/>
+          <kie:ComponentWidths dmnElementRef="_47A6E307-5B54-4D69-B1BC-4A12E9129DA9"/>
+          <kie:ComponentWidths dmnElementRef="_595788BB-25AF-4FA0-899F-A782DF0901FD"/>
+          <kie:ComponentWidths dmnElementRef="_6AF5533E-8C2F-4D6F-9DFD-6E46274D9D21"/>
+          <kie:ComponentWidths dmnElementRef="_BC051E66-D494-4036-82C5-4CC8B2EA6AB5"/>
+          <kie:ComponentWidths dmnElementRef="_B422D8E5-32DB-4635-8551-E6EE2E0230EF"/>
+          <kie:ComponentWidths dmnElementRef="_BE9F1686-1740-479B-B698-AF120D96F908"/>
+          <kie:ComponentWidths dmnElementRef="_ABE5D072-987B-45D6-8990-8D6236EE26B8"/>
+          <kie:ComponentWidths dmnElementRef="_408B68D8-7C2D-44AF-B038-9D86E469CE8C"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_context_001" dmnElementRef="_context_001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_date_001" dmnElementRef="_date_001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="225" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_date_002" dmnElementRef="_date_002" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="400" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_date_003" dmnElementRef="_date_003" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="575" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_date_004" dmnElementRef="_date_004" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="750" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_001" dmnElementRef="_dateTime_001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="925" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_002" dmnElementRef="_dateTime_002" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1100" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_003" dmnElementRef="_dateTime_003" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1275" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_004" dmnElementRef="_dateTime_004" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1450" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_005" dmnElementRef="_dateTime_005" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1625" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_005_a" dmnElementRef="_dateTime_005_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1800" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_006" dmnElementRef="_dateTime_006" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1975" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_006_a" dmnElementRef="_dateTime_006_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="2150" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_007" dmnElementRef="_dateTime_007" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="2325" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_007_a" dmnElementRef="_dateTime_007_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="2500" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_008" dmnElementRef="_dateTime_008" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="2675" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_008_a" dmnElementRef="_dateTime_008_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="2850" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_009" dmnElementRef="_dateTime_009" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="3025" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dateTime_009_a" dmnElementRef="_dateTime_009_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="3200" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_time_001" dmnElementRef="_time_001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="3375" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_time_002" dmnElementRef="_time_002" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="3550" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_time_003" dmnElementRef="_time_003" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="3725" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_time_004" dmnElementRef="_time_004" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="3900" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_time_004_a" dmnElementRef="_time_004_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="4075" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_time_005" dmnElementRef="_time_005" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="4250" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_time_005_a" dmnElementRef="_time_005_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="4425" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_ym_duration_001" dmnElementRef="_ym_duration_001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="4600" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_ym_duration_001_a" dmnElementRef="_ym_duration_001_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="4775" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_ym_duration_002" dmnElementRef="_ym_duration_002" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="4950" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_ym_duration_002_a" dmnElementRef="_ym_duration_002_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="5125" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_ym_duration_003" dmnElementRef="_ym_duration_003" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="5300" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_ym_duration_004" dmnElementRef="_ym_duration_004" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="5475" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_ym_duration_005" dmnElementRef="_ym_duration_005" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="5650" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_ym_duration_006" dmnElementRef="_ym_duration_006" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="5825" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dt_duration_001" dmnElementRef="_dt_duration_001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="6000" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dt_duration_002" dmnElementRef="_dt_duration_002" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="6175" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dt_duration_003" dmnElementRef="_dt_duration_003" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="6350" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dt_duration_003_a" dmnElementRef="_dt_duration_003_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="6525" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dt_duration_004" dmnElementRef="_dt_duration_004" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="6700" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dt_duration_004_a" dmnElementRef="_dt_duration_004_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="6875" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dt_duration_005" dmnElementRef="_dt_duration_005" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="7050" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dt_duration_005_a" dmnElementRef="_dt_duration_005_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="7225" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dt_duration_006" dmnElementRef="_dt_duration_006" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="7400" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_dt_duration_006_a" dmnElementRef="_dt_duration_006_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="7575" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

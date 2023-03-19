@@ -15,28 +15,26 @@
  */
 
 import {
+  ChannelType,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContext,
   KogitoEditorEnvelopeContextType,
-} from "@kie-tooling-core/editor/dist/api";
-import { DefaultKeyboardShortcutsService } from "@kie-tooling-core/keyboard-shortcuts/dist/envelope";
+} from "@kie-tools-core/editor/dist/api";
+import { DefaultKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
 import * as React from "react";
-import { I18nService } from "@kie-tooling-core/i18n/dist/envelope";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tooling-core/i18n/dist/react-components";
+import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tools-core/i18n/dist/react-components";
 import {
   EditorEnvelopeI18n,
   EditorEnvelopeI18nContext,
   editorEnvelopeI18nDefaults,
   editorEnvelopeI18nDictionaries,
-} from "@kie-tooling-core/editor/dist/envelope/i18n";
+} from "@kie-tools-core/editor/dist/envelope/i18n";
 
 export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> = {
   channelApi: {} as any,
   services: {
     keyboardShortcuts: new DefaultKeyboardShortcutsService({} as any),
-    guidedTour: {
-      isEnabled: () => false,
-    },
     i18n: new I18nService(),
   },
 };

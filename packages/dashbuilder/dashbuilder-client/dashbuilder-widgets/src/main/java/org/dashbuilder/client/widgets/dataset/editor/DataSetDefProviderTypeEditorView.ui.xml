@@ -1,0 +1,25 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+
+  <ui:with field="i18n" type="org.dashbuilder.client.widgets.resources.i18n.DataSetEditorConstants"/>
+  
+  <ui:style>
+    
+  </ui:style>
+
+  <b:Container fluid="true">
+    
+    <b:Row>
+      <b:Column size="MD_12">
+        <g:VerticalPanel width="100%">
+          <g:HTML text="{i18n.selectType}:"/>
+          <g:IsWidget ui:field="listEditorView"/>
+        </g:VerticalPanel>
+      </b:Column>
+    </b:Row>
+    
+  </b:Container>
+  
+</ui:UiBinder>

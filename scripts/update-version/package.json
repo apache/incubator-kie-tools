@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "name": "@kie-tools-scripts/update-version",
+  "version": "0.0.0",
+  "keywords": [],
+  "bin": {
+    "kie-tools--update-version-to": "update_version.js"
+  }
+}

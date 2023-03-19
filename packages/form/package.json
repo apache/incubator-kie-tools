@@ -1,37 +1,64 @@
 {
-  "name": "@kogito-tooling/form",
+  "name": "@kie-tools/form",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:clearCache": "jest --clearCache",
-    "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "yarn lint && yarn test && rimraf dist && webpack"
-  },
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json && pnpm test",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "@kie-tooling-core/i18n": "0.0.0",
-    "@kie-tooling-core/notifications": "0.0.0",
-    "@kogito-tooling/i18n-common-dictionary": "0.0.0",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools/i18n-common-dictionary": "workspace:*",
+    "@kie-tools/uniforms-patternfly": "workspace:*",
+    "@patternfly/react-core": "^4.276.6",
+    "@patternfly/react-icons": "^4.93.6",
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",
     "deep-object-diff": "^1.1.0",
-    "uniforms": "^3.5.1",
-    "uniforms-bridge-json-schema": "^3.5.1",
-    "uniforms-patternfly": "^4.6.1"
+    "lodash": "^4.17.21",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "uniforms": "^3.10.2",
+    "uniforms-bridge-json-schema": "^3.10.2"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0",
-    "lodash": "^4.17.21"
-  },
-  "files": [
-    "dist"
-  ]
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@types/jest": "^26.0.23",
+    "@types/jest-when": "^2.7.4",
+    "@types/lodash": "^4.14.168",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
+    "@types/testing-library__jest-dom": "^5.9.1",
+    "jest": "^26.6.3",
+    "jest-junit": "^14.0.0",
+    "jest-when": "^3.5.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.4.2"
+  }
 }

@@ -1,37 +1,64 @@
 {
-  "name": "@kogito-tooling/form-generation-tool",
+  "name": "@kie-tools/form-generation-tool",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:clearCache": "jest --clearCache",
-    "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod:linux": "pkg dist/index.js --output dist/form-generation-cli-linux --target node16-linux-x64",
-    "build:prod:darwin": "pkg dist/index.js --output dist/form-generation-cli-macos --target node16-macos-x64",
-    "build:prod:win32": "pkg dist/index.js --output dist/form-generation-cli-win.exe --target node16-win-x64",
-    "build:prod:all": "yarn lint && yarn test && rimraf dist && webpack && yarn run && yarn run package:prod:linux && yarn run package:prod:darwin && yarn run package:prod:win32",
-    "build:prod": "yarn lint && yarn test && rimraf dist && webpack && run-script-os"
-  },
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   },
-  "dependencies": {
-    "@kogito-tooling/uniforms-bootstrap4-codegen": "0.0.0",
-    "@kogito-tooling/uniforms-patternfly-codegen": "0.0.0",
-    "inquirer": "^8.1.1",
-    "pkg": "^5.1.0",
-    "uniforms": "^3.5.1",
-    "uniforms-bridge-json-schema": "^3.5.1"
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
   },
-  "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
-  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
   "files": [
     "dist"
-  ]
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && run-script-os",
+    "build:prod:all": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm && pnpm package:prod:linux && pnpm package:prod:darwin && pnpm package:prod:win32",
+    "build:prod:darwin": "pkg dist/index.js --output dist/form-generation-cli-macos --target node16-macos-x64",
+    "build:prod:linux": "pkg dist/index.js --output dist/form-generation-cli-linux --target node16-linux-x64",
+    "build:prod:win32": "pkg dist/index.js --output dist/form-generation-cli-win.exe --target node16-win-x64",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+  },
+  "dependencies": {
+    "@kie-tools/uniforms-bootstrap4-codegen": "workspace:*",
+    "@kie-tools/uniforms-patternfly-codegen": "workspace:*",
+    "inquirer": "^8.1.1",
+    "lodash": "^4.17.21",
+    "uniforms": "^3.10.2",
+    "uniforms-bridge-json-schema": "^3.10.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/inquirer": "^7.3.2",
+    "@types/jest": "^26.0.23",
+    "@types/jest-when": "^2.7.4",
+    "@types/lodash": "^4.14.168",
+    "jest": "^26.6.3",
+    "jest-junit": "^14.0.0",
+    "jest-when": "^3.5.0",
+    "pkg": "^5.5.2",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.4.2",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.8.0",
+    "webpack-node-externals": "^3.0.0"
+  }
 }

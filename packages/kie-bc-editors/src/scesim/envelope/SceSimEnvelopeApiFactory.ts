@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { KogitoEditorEnvelopeContextType } from "@kie-tooling-core/editor/dist/api";
-import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kie-tooling-core/editor/dist/envelope";
-import { EnvelopeApiFactoryArgs } from "@kie-tooling-core/envelope";
+import { KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kie-tools-core/editor/dist/envelope";
+import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { SceSimEditorChannelApi, SceSimEditorEnvelopeApi } from "../api";
 import { SceSimEditor } from "./SceSimEditor";
 import { SceSimEditorFactory } from "./SceSimEditorFactory";
@@ -40,7 +40,7 @@ export class SceSimEditorEnvelopeApiImpl
   }
 
   public mySceSimEnvelopeMethod() {
-    const editor = this.sceSimArgs.view().getEditor();
+    const editor = this.view().getEditor();
     const ret = editor?.mySceSimMethod() ?? "scesim-specific--default";
     return Promise.resolve(ret);
   }

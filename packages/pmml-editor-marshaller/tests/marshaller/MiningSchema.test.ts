@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataDictionary, Model, PMML, Scorecard, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, Model, PMML, Scorecard, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { MINING_SCHEMA_1 } from "./TestData_MiningSchema";
 
 describe("MiningSchema tests", () => {

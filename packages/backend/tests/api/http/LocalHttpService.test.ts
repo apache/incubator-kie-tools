@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { HttpResponse, HttpService, LocalHttpService } from "@kie-tooling-core/backend/dist/api";
+import { HttpResponse, HttpService, LocalHttpService } from "@kie-tools-core/backend/dist/api";
 import { DummyLocalHttpService } from "../dummyServices";
 
 const testEndpoint = "/some/local/endpoint";

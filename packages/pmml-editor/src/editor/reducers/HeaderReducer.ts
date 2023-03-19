@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { Header } from "@kogito-tooling/pmml-editor-marshaller";
+import { Header } from "@kie-tools/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { Builder } from "../paths";

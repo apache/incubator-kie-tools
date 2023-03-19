@@ -1,0 +1,29 @@
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
+  <Header/>
+  <DataDictionary numberOfFields="6">
+    <DataField name="dt-string" optype="continuous" dataType="string"/>
+    <DataField name="dt-int" optype="ordinal" dataType="integer"/>
+    <DataField name="dt-double" optype="continuous" dataType="double"/>
+    <DataField name="dt-boolean" optype="continuous" dataType="boolean"/>
+    <DataField name="dt-float" optype="categorical" dataType="string"/>
+    <DataField name="dt-cardinal" optype="categorical" dataType="string">
+      <Value value="blue"/>
+      <Value value="green"/>
+      <Value value="red"/>
+    </DataField>
+  </DataDictionary>
+  <Scorecard modelName="EmptyModelWithSeveralDataTypes" functionName="regression">
+    <MiningSchema>
+      <MiningField name="dt-string"/>
+      <MiningField name="dt-int"/>
+      <MiningField name="dt-double"/>
+      <MiningField name="dt-boolean"/>
+      <MiningField name="dt-float"/>
+      <MiningField name="dt-cardinal"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="output" dataType="integer"/>
+    </Output>
+    <Characteristics/>
+  </Scorecard>
+</PMML>

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
-import { DmnEditorChannelApi, DmnEditorEnvelopeApi } from "@kogito-tooling/kie-bc-editors/dist/dmn/api";
-import { DmnEditor, DmnEditorEnvelopeApiImpl } from "@kogito-tooling/kie-bc-editors/dist/dmn/envelope";
+import { VsCodeDmnEditorFactory } from "@kie-tools/kie-bc-editors/dist/dmn/envelope/vscode";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
-EditorEnvelope.initCustom<DmnEditor, DmnEditorEnvelopeApi, DmnEditorChannelApi>({
+declare const acquireVsCodeApi: any;
+
+EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  apiImplFactory: { create: (args) => new DmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) },
+  editorFactory: new VsCodeDmnEditorFactory({ shouldLoadResourcesDynamically: true }),
 });

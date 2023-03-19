@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
-const common = require("../../config/webpack.common.config");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
 
 const commonConfig = (env) =>

@@ -1,0 +1,66 @@
+{
+  "init": [
+    {
+      "key": "option",
+      "value": "{        \"series\": [            { \"type\": \"bar\"},            { \"type\": \"line\"}        ]    }"
+    },
+    {
+      "key": "series.type",
+      "value": "line"
+    },
+    {
+      "key": "mode",
+      "value": "dark"
+    }
+  ],
+  "dataSet": {
+    "columns": [
+      {
+        "name": "Country",
+        "type": "LABEL",
+        "settings": {
+          "columnId": "Country",
+          "columnName": "Country",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": null
+        }
+      },
+      {
+        "name": "GDP 2010",
+        "type": "NUMBER",
+        "settings": {
+          "columnId": "GDP 2010",
+          "columnName": "GDP 2010",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": "#,"
+        }
+      },
+      {
+        "name": "GDP 2015",
+        "type": "NUMBER",
+        "settings": {
+          "columnId": "GDP 2015",
+          "columnName": "GDP 2015",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": "#,##0.00"
+        }
+      }
+    ],
+    "data": [
+      ["United States", "14964400", "18036650"],
+      ["China", "5812464", "11226186"],
+      ["Japan", "5793455", "4382420"],
+      ["Germany", "3309668", "3365293"],
+      ["United Kingdom", "2246079", "2863304"],
+      ["France", "2560002", "2420163"],
+      ["Brazil", "2087889", "1801482"],
+      ["Italy", "2051412", "1825820"],
+      ["India", "1729010", "2088155"],
+      ["Russia", "1638463", "1356700"],
+      ["Canada", "1504900", "1552808"]
+    ]
+  }
+}

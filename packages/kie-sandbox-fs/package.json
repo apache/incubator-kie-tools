@@ -1,0 +1,75 @@
+{
+  "name": "@kie-tools/kie-sandbox-fs",
+  "version": "0.0.0",
+  "description": "In-browser FS based on KieSandboxFs",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Tiago Bento",
+      "email": "tfernand@redhat.com"
+    },
+    {
+      "name": "William Hilton",
+      "email": "wmhilton@gmail.com"
+    }
+  ],
+  "keywords": [
+    "browser",
+    "fs",
+    "idb",
+    "indexeddb"
+  ],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "bin": {
+    "superblocktxt": "src/superblocktxt.js"
+  },
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.js",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && pnpm copy:src",
+    "build:prod": "rimraf dist && pnpm copy:src && pnpm test",
+    "copy:src": "copyfiles -u 1 \"src/**/*.{js,ts}\" dist/",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"karma start --single-run --watch\""
+  },
+  "dependencies": {
+    "@isomorphic-git/idb-keyval": "^3.3.2",
+    "dexie": "^3.2.2",
+    "isomorphic-textencoder": "^1.0.1",
+    "just-debounce-it": "^3.0.1",
+    "just-once": "^2.0.1"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "copyfiles": "^2.4.1",
+    "karma": "^6.3.9",
+    "karma-browserstack-launcher": "^1.5.1",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-edge-launcher": "^0.4.2",
+    "karma-fail-fast-reporter": "^1.0.5",
+    "karma-firefox-launcher": "^2.1.2",
+    "karma-ie-launcher": "^1.0.0",
+    "karma-jasmine": "^4.0.1",
+    "karma-junit-reporter": "^2.0.1",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-verbose-reporter": "^0.0.6",
+    "karma-webpack": "^5.0.0",
+    "puppeteer": "^13.1.2",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.4.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

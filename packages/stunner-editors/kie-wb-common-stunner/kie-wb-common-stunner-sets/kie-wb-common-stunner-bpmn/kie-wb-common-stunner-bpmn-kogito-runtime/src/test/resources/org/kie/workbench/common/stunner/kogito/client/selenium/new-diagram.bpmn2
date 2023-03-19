@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions id="_BJzCQEGHEDmB-vY_nZbDsQ" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:drools="http://www.jboss.org/drools" xmlns:xsi="xsi">
+  <bpmn2:collaboration id="_08979A00-BDE5-4176-8FB2-52E500C65209" name="Default Collaboration">
+      <bpmn2:participant id="_B1EC8F09-91C0-4F32-85CC-1AB4EF037D5F" name="Pool Participant" processRef="default" />
+  </bpmn2:collaboration>
+  <bpmn2:process id="default" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="default" isExecutable="true" processType="Public"/>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="default"/>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters/>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_BJzCQEGHEDmB-vY_nZbDsQ</bpmn2:source>
+    <bpmn2:target>_BJzCQEGHEDmB-vY_nZbDsQ</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>

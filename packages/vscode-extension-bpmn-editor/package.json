@@ -1,117 +1,150 @@
 {
   "name": "vscode-extension-bpmn-editor",
-  "publisher": "redhat",
-  "displayName": "BPMN Editor",
-  "description": "Edit BPMN files",
   "version": "0.0.0",
+  "description": "Edit BPMN files",
   "license": "Apache-2.0",
+  "publisher": "redhat",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "browser": "./dist/extension/extension.js",
+  "main": "dist/extension/extension.js",
   "scripts": {
-    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "build:prod": "rimraf dist && webpack && yarn pack:prod",
     "build:dev": "rimraf dist && webpack --env dev",
-    "pack:prod": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_bpmn_editor_$npm_package_version.vsix",
+    "build:prod": "rimraf dist && webpack && pnpm pack:prod",
     "compile": "webpack",
-    "watch": "webpack",
-    "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/vscode_extension_bpmn_editor_$npm_package_version.vsix",
+    "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
+    "watch": "webpack"
   },
   "dependencies": {
-    "@kie-tooling-core/editor": "0.0.0",
-    "@kie-tooling-core/patternfly-base": "0.0.0",
-    "@kie-tooling-core/vscode-extension": "0.0.0",
-    "@kogito-tooling/external-assets-base": "0.0.0",
-    "@kogito-tooling/kie-bc-editors": "0.0.0"
+    "@kie-tools-core/backend": "workspace:*",
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/vscode-extension": "workspace:*",
+    "@kie-tools/kie-bc-editors": "workspace:*",
+    "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*"
   },
   "devDependencies": {
-    "@kogito-tooling/bpmn-editor-unpacked": "^8.4.2",
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/stunner-editors": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/vscode": "^1.66.0",
+    "@vscode/test-web": "^0.0.30",
+    "@vscode/vsce": "^2.18.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "rimraf": "^3.0.2",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.8.0"
   },
-  "icon": "icon.png",
-  "main": "./dist/extension/extension.js",
-  "browser": "./dist/extension/extension.js",
   "engines": {
-    "vscode": "^1.46.0"
+    "vscode": "^1.66.0"
   },
+  "displayName": "BPMN Editor",
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCustomEditor:kieKogitoWebviewEditorsBpmn"
-  ],
-  "capabilities": {
-    "untrustedWorkspaces": {
-      "supported": false
-    }
-  },
   "contributes": {
-    "customEditors": [
-      {
-        "viewType": "kieKogitoWebviewEditorsBpmn",
-        "displayName": "BPMN Editor",
-        "selector": [
-          {
-            "filenamePattern": "*.{bpmn,bpmn2}"
-          }
-        ]
-      }
-    ],
-    "configuration": {
-      "title": "BPMN",
-      "properties": {
-        "kogito.bpmn.runOnSave": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "description": "Execute a command on each save operation of the BPMN file."
-        }
-      }
-    },
     "commands": [
       {
         "command": "extension.kogito.getPreviewSvgBpmn",
-        "title": "Get BPMN Editor Preview SVG",
         "icon": {
-          "light": "./static/svg-icon-light.png",
-          "dark": "./static/svg-icon-dark.png"
-        }
+          "dark": "./static/svg-icon-dark.png",
+          "light": "./static/svg-icon-light.png"
+        },
+        "title": "Get BPMN Editor Preview SVG"
       },
       {
         "command": "extension.kogito.silentlyGenerateSvgBpmn",
         "title": "Generate SVG without any notification"
       }
     ],
+    "configuration": {
+      "properties": {
+        "kogito.bpmn.runOnSave": {
+          "markdownDescription": "Execute a command on each save operation of the BPMN file.",
+          "type": "string"
+        },
+        "kogito.bpmn.svgFilePath": {
+          "default": "${fileDirname}",
+          "markdownDescription": "Where to save generated SVG files (defaults to same path as .bpmn file: `${fileDirname}`).",
+          "type": "string"
+        },
+        "kogito.bpmn.svgFilenameTemplate": {
+          "default": "${fileBasenameNoExtension}-svg.svg",
+          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`).",
+          "type": "string"
+        }
+      },
+      "title": "BPMN Editor"
+    },
+    "customEditors": [
+      {
+        "displayName": "BPMN Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.{bpmn,bpmn2}"
+          }
+        ],
+        "viewType": "kieKogitoWebviewEditorsBpmn"
+      }
+    ],
+    "javaExtensions": [
+      "./dist/server/vscode-java-code-completion-extension-plugin-core.jar"
+    ],
+    "languages": [
+      {
+        "aliases": [
+          "bpmn",
+          "bpmn2",
+          "BPMN",
+          "BPMN2",
+          "Business Process Model and Notation"
+        ],
+        "extensions": [
+          ".bpmn",
+          ".bpmn2",
+          ".BPMN",
+          ".BPMN2"
+        ],
+        "id": "bpmn"
+      }
+    ],
     "menus": {
       "commandPalette": [
         {
-          "when": "resourceLangId =~ /bpmn|bpmn2/",
-          "command": "extension.kogito.getPreviewSvgBpmn"
+          "command": "extension.kogito.getPreviewSvgBpmn",
+          "when": "resourceLangId =~ /bpmn|bpmn2/"
         }
       ],
       "editor/title": [
         {
-          "when": "resourceLangId =~ /bpmn|bpmn2/",
           "command": "extension.kogito.getPreviewSvgBpmn",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "resourceLangId =~ /bpmn|bpmn2/"
         }
       ]
-    },
-    "languages": [
-      {
-        "id": "bpmn",
-        "extensions": [
-          ".bpmn",
-          ".bpmn2"
-        ],
-        "aliases": [
-          "bpmn",
-          "bpmn2",
-          "Business Process Model and Notation"
-        ]
-      }
-    ]
+    }
+  },
+  "activationEvents": [
+    "onCustomEditor:kieKogitoWebviewEditorsBpmn"
+  ],
+  "icon": "icon.png",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
   }
 }

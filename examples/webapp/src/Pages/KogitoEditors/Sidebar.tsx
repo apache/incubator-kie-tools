@@ -15,14 +15,15 @@
  */
 
 import * as React from "react";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { useCallback, useRef, useState } from "react";
-import { Nav, NavItem, NavList, TextInput } from "@patternfly/react-core";
-import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 
 function extractFileExtension(fileName: string) {
-  return fileName.match(/[\.]/)
+  return fileName.match(/[.]/)
     ? fileName
         .split(".")
         ?.pop()
@@ -42,8 +43,8 @@ function removeFileExtension(fileName: string) {
 interface Props {
   editor?: EmbeddedEditorRef;
   editorEnvelopeLocator: EditorEnvelopeLocator;
-  file: File;
-  setFile: React.Dispatch<File>;
+  file: EmbeddedEditorFile;
+  setFile: React.Dispatch<EmbeddedEditorFile>;
   fileExtension: string;
   accept: string;
 }
@@ -88,6 +89,7 @@ export function Sidebar(props: Props) {
       fileExtension: props.fileExtension,
       fileName: "new-file",
       getFileContents: () => Promise.resolve(""),
+      path: `new-file.${props.fileExtension}`,
     });
   }, []);
 
@@ -98,6 +100,7 @@ export function Sidebar(props: Props) {
       fileExtension: props.fileExtension,
       fileName: "sample",
       getFileContents: () => fetch(`examples/sample.${props.fileExtension}`).then((response) => response.text()),
+      path: `sample.${props.fileExtension}`,
     });
   }, []);
 
@@ -108,11 +111,7 @@ export function Sidebar(props: Props) {
     }
 
     const currentFile = inputRef.current!.files![0];
-    const fileExtension = extractFileExtension(currentFile.name);
-    if (
-      !fileExtension ||
-      ![...props.editorEnvelopeLocator.mapping.keys()].find((element) => element === fileExtension)
-    ) {
+    if (!props.editorEnvelopeLocator.hasMappingFor(currentFile.name)) {
       return;
     }
 
@@ -121,6 +120,7 @@ export function Sidebar(props: Props) {
       isReadOnly: false,
       fileExtension: extractFileExtension(currentFile.name)!,
       fileName: removeFileExtension(currentFile.name),
+      path: currentFile.name,
       getFileContents: () =>
         new Promise<string | undefined>((resolve) => {
           const reader = new FileReader();

@@ -1,0 +1,61 @@
+---
+asyncapi: "2.0.0"
+id: "urn:com:http:server"
+info:
+  title: Http Application
+  version: "1.0.0"
+  description: Http Application
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+  production:
+    url: localhost:8080
+    description: Development server
+    protocol: http
+channels:
+  first:
+    description: A message channel
+    parameters:
+      userId:
+        description: Id of the user.
+        schema:
+          type: string
+    subscribe:
+      operationId: getMessages
+      summary: Get messages
+      message:
+        $ref: "#/components/messages/message"
+    publish:
+      operationId: sendMessages
+      summary: Send messages
+      message:
+        $ref: "#/components/messages/message"
+      traits:
+        - bindings:
+            flogo-kafka:
+              partitions: "0"
+              offset: 0
+components:
+  messages:
+    message:
+      name: message
+      summary: A message
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/message"
+  schemas:
+    message:
+      type: object
+      properties:
+        name:
+          type: string
+        age:
+          type: integer
+    test:
+      type: object
+      properties:
+        leftNumber:
+          type: string
+        rightNumber:
+          type: string

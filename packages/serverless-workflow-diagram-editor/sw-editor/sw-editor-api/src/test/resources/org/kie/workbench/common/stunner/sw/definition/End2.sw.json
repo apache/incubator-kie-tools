@@ -1,0 +1,39 @@
+{
+  "id": "end2Test",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "name": "End 2 Test Workflow",
+  "description": "End 2 Test Workflow - Object Type - First State as End",
+  "start": "First State",
+  "states": [
+    {
+      "name": "First State",
+      "type": "inject",
+      "data": {
+        "result": "First State!"
+      },
+      "end": {
+        "terminate": true,
+        "compensate": false
+      }
+    },
+    {
+      "name": "Second State",
+      "type": "inject",
+      "data": {
+        "result": "Second State!"
+      },
+      "end": {
+        "terminate": false,
+        "compensate": false
+      }
+    },
+    {
+      "name": "Third State",
+      "type": "inject",
+      "data": {
+        "result": "Third State!"
+      }
+    }
+  ]
+}

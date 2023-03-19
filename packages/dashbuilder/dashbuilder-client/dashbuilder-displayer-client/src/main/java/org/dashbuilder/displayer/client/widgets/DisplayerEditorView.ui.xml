@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2012 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+
+  <ui:with field="i18n" type="org.dashbuilder.displayer.client.resources.i18n.CommonConstants"/>
+
+  <ui:style>
+    .mainContainer {
+      margin-top: 15px;
+    }
+    .leftColumn {
+      overflow-x: hidden;
+      overflow-y: auto;
+      height: 370px;
+    }
+    .centerColumn {
+      height: 390px;
+      overflow: auto;
+    }
+    .viewAsTableButtonRow {
+      font-size: small;
+    }
+    .viewAsTableButton {
+      margin: 10px;
+    }
+  </ui:style>
+
+  <g:HTMLPanel>
+    <b:NavTabs>
+      <b:TabListItem ui:field="optionType" text="{i18n.displayer_editor_tab_type}" />
+      <b:TabListItem ui:field="optionData" text="{i18n.displayer_editor_tab_data}" />
+      <b:TabListItem ui:field="optionSettings" text="{i18n.displayer_editor_tab_display}" />
+      <b:TabListItem ui:field="optionComponentSettings" text="{i18n.componentEditor}" />      
+    </b:NavTabs>
+    
+    <b:Container fluid="true" addStyleNames="{style.mainContainer}">
+      <b:Row>
+        <b:Column size="MD_3" ui:field="westColumn">
+          <b:Row ui:field="viewAsTableButtonRow" visible="false" addStyleNames="{style.viewAsTableButtonRow}">
+            <b:Column size="MD_12">
+              <!-- View as table button -->
+              <b:CheckBox text="{i18n.displayer_editor_view_as_table}" ui:field="viewAsTableButton" addStyleNames="{style.viewAsTableButton}"/>
+            </b:Column>
+          </b:Row>
+          <b:Row>
+            <b:Column size="MD_12" ui:field="leftColumn" addStyleNames="{style.leftColumn}"/>
+          </b:Row>
+        </b:Column>
+        <b:Column size="MD_9" ui:field="centerColumn" addStyleNames="{style.centerColumn}"/>
+      </b:Row>
+    </b:Container>
+   
+  </g:HTMLPanel>
+  
+</ui:UiBinder>

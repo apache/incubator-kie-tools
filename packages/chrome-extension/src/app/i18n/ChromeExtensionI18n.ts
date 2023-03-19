@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ReferenceDictionary } from "@kie-tooling-core/i18n/dist/core";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
 interface ChromeExtensionDictionary extends ReferenceDictionary {
   openIn: (text: string) => string;
@@ -22,9 +22,6 @@ interface ChromeExtensionDictionary extends ReferenceDictionary {
   fullScreen: string;
   reset: string;
   note: string;
-  tree: {
-    openInOnlineEditor: string;
-  };
   single: {
     exitFullScreen: string;
     editorToolbar: {

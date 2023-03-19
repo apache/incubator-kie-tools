@@ -18,33 +18,32 @@ import * as React from "react";
 import {
   GlobalContext,
   GlobalContextType,
-} from "@kie-tooling-core/chrome-extension/dist/app/components/common/GlobalContext";
-import { ResourceContentServiceFactory } from "@kie-tooling-core/chrome-extension/dist/app/components/common/ChromeResourceContentService";
+} from "@kie-tools-core/chrome-extension/dist/app/components/common/GlobalContext";
+import { ResourceContentServiceFactory } from "@kie-tools-core/chrome-extension/dist/app/components/common/ChromeResourceContentService";
 import {
   GitHubContext,
   GitHubContextType,
-} from "@kie-tooling-core/chrome-extension/dist/app/components/common/GitHubContext";
-import { Logger } from "@kie-tooling-core/chrome-extension/dist/Logger";
-import { Dependencies } from "@kie-tooling-core/chrome-extension/dist/app/Dependencies";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tooling-core/i18n/dist/react-components";
+} from "@kie-tools-core/chrome-extension/dist/app/components/common/GitHubContext";
+import { Logger } from "@kie-tools-core/chrome-extension/dist/Logger";
+import { Dependencies } from "@kie-tools-core/chrome-extension/dist/app/Dependencies";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tools-core/i18n/dist/react-components";
 import {
   ChromeExtensionI18nContext,
   chromeExtensionI18nDictionaries,
   chromeExtensionI18nDefaults,
-} from "@kie-tooling-core/chrome-extension/dist/app/i18n";
-import { ChromeExtensionI18n } from "@kie-tooling-core/chrome-extension/dist/app/i18n";
+} from "@kie-tools-core/chrome-extension/dist/app/i18n";
+import { ChromeExtensionI18n } from "@kie-tools-core/chrome-extension/dist/app/i18n";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
-  const txtEnvelopeMapping: EnvelopeMapping = {
-    envelopePath: "chrome-testing://https://my-url.com/",
-    resourcesPathPrefix: "envelope",
-  };
-
-  const editorEnvelopeLocator: EditorEnvelopeLocator = {
-    targetOrigin: "localhost:8888",
-    mapping: new Map([["txt", txtEnvelopeMapping]]),
-  };
+  const editorEnvelopeLocator = new EditorEnvelopeLocator("localhost:8888", [
+    new EnvelopeMapping({
+      type: "txt",
+      filePathGlob: "**/*.txt",
+      resourcesPathPrefix: "envelope",
+      envelopeContent: { type: EnvelopeContentType.PATH, path: "chrome-testing://https://my-url.com/" },
+    }),
+  ]);
 
   const usedCtx: GlobalContextType = {
     id: "test-extension123",
@@ -57,7 +56,6 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     externalEditorManager: {
       name: "Test Online Editor",
       getLink: jest.fn((path) => `https://external-editor-link/${path}`),
-      listenToComeBack: jest.fn(),
       open: jest.fn(),
     },
     ...ctx,

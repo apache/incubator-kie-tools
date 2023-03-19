@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>kie-wb-common-kogito</artifactId>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <version>${revision}</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
+  <name>Kie Workbench - Common - WebApp - Base</name>
+  <description>Kie Workbench - Common - WebApp - Base</description>
+  <packaging>jar</packaging>
+
+  <properties>
+    <gwt.interop.utils.version>0.3.0</gwt.interop.utils.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>errai-javax-enterprise</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-ui</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>uberfire-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>uberfire-client-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-kogito-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-kogito-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>appformer-kogito-bridge</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>javax.servlet-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Test scope dependencies -->
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>lienzo-tests</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>javax.servlet-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-annotations</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+  </dependencies>
+
+</project>

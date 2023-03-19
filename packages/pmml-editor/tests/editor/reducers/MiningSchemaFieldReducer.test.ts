@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FieldName, MiningField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import { Actions, AllActions } from "@kogito-tooling/pmml-editor/dist/editor/reducers";
+import { MiningField, Model, PMML, Scorecard } from "@kie-tools/pmml-editor-marshaller";
+import { Actions, AllActions } from "@kie-tools/pmml-editor/dist/editor/reducers";
 import { Reducer } from "react";
-import { HistoryService } from "@kogito-tooling/pmml-editor/dist/editor/history";
-import { MiningSchemaFieldReducer } from "@kogito-tooling/pmml-editor/dist/editor/reducers/MiningSchemaFieldReducer";
-import { ValidationRegistry } from "@kogito-tooling/pmml-editor/dist/editor/validation";
+import { HistoryService } from "@kie-tools/pmml-editor/dist/editor/history";
+import { MiningSchemaFieldReducer } from "@kie-tools/pmml-editor/dist/editor/reducers/MiningSchemaFieldReducer";
+import { ValidationRegistry } from "@kie-tools/pmml-editor/dist/editor/validation";
 
 const historyService = new HistoryService([]);
 const validationRegistry = new ValidationRegistry();
-const miningFields: MiningField[] = [{ name: "field1" as FieldName }];
+const miningFields: MiningField[] = [{ name: "field1" }];
 const models: Model[] = [
   new Scorecard({
     MiningSchema: { MiningField: miningFields },
@@ -32,7 +32,7 @@ const models: Model[] = [
 ];
 const pmml: PMML = {
   version: "1.0",
-  DataDictionary: { DataField: [{ name: "field1" as FieldName, dataType: "boolean", optype: "categorical" }] },
+  DataDictionary: { DataField: [{ name: "field1", dataType: "boolean", optype: "categorical" }] },
   Header: {},
   models: models,
 };
@@ -45,8 +45,8 @@ describe("MiningSchemaFieldReducer::Valid actions", () => {
       payload: {
         modelIndex: 0,
         dataDictionaryIndex: 0,
-        dataField: { name: "updated" as FieldName, dataType: "string", optype: "ordinal" },
-        originalName: "field1" as FieldName,
+        dataField: { name: "updated", dataType: "string", optype: "ordinal" },
+        originalName: "field1",
       },
     });
     const updated = historyService.commit(pmml)?.models as Model[];
@@ -63,8 +63,8 @@ describe("MiningSchemaFieldReducer::Valid actions", () => {
       payload: {
         modelIndex: 0,
         miningSchemaIndex: 0,
-        name: "updated" as FieldName,
-        originalName: "field1" as FieldName,
+        name: "updated",
+        originalName: "field1",
         usageType: "active",
         optype: "ordinal",
         importance: 5,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ValidationEntry, ValidationLevel, ValidationStore } from "@kogito-tooling/pmml-editor/dist/editor/validation";
+import { ValidationEntry, ValidationLevel, ValidationStore } from "@kie-tools/pmml-editor/dist/editor/validation";
 
 let store: ValidationStore;
 beforeEach(() => {

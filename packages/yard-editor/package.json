@@ -1,0 +1,81 @@
+{
+  "name": "@kie-tools/yard-editor",
+  "version": "0.0.0",
+  "description": "Core module of the YARD editor, Yet Another Rule Definition editor",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "types": "./dist/editor/index.d.ts",
+  "main": "dist/editor/index.js",
+  "files": [
+    "dist/editor"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.json && pnpm test",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test:clearCache": "jest --clearCache",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/envelope-bus": "workspace:*",
+    "@kie-tools-core/guided-tour": "workspace:*",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools-core/operating-system": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/workspace": "workspace:*",
+    "@kie-tools/boxed-expression-component": "workspace:*",
+    "@kie-tools/i18n-common-dictionary": "workspace:*",
+    "@patternfly/react-core": "^4.276.6",
+    "@patternfly/react-icons": "^4.93.6",
+    "@types/js-yaml": "^4.0.5",
+    "csstype": "^3.0.11",
+    "js-yaml": "^4.1.0",
+    "json-schema": "^0.4.0",
+    "monaco-editor": "^0.33.0",
+    "monaco-yaml": "^4.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@types/jest": "^26.0.23",
+    "@types/jest-when": "^2.7.4",
+    "@types/json-schema": "^7.0.11",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
+    "@types/testing-library__jest-dom": "^5.9.1",
+    "copy-webpack-plugin": "^11.0.0",
+    "copyfiles": "^2.4.1",
+    "jest": "^26.6.3",
+    "jest-when": "^3.5.0",
+    "monaco-editor-webpack-plugin": "^7.0.1",
+    "rimraf": "^3.0.2",
+    "start-server-and-test": "^1.12.1",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.4.2",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.8.0"
+  }
+}

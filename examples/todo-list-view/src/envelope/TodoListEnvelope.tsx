@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { EnvelopeBus } from "@kie-tooling-core/envelope-bus/dist/api";
+import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { TodoListEnvelopeContext } from "./TodoListEnvelopeContext";
 import { TodoListEnvelopeApiImpl } from "./TodoListEnvelopeApiImpl";
 import { TodoListChannelApi, TodoListEnvelopeApi } from "../api";
 import { TodoListEnvelopeView, TodoListEnvelopeViewApi } from "./TodoListEnvelopeView";
-import { Envelope } from "@kie-tooling-core/envelope";
+import { Envelope } from "@kie-tools-core/envelope";
 
 /**
  * Function that starts an Envelope application.
@@ -49,11 +49,11 @@ export function init(args: { container: HTMLElement; bus: EnvelopeBus }) {
    */
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<TodoListEnvelopeViewApi>();
-    return new Promise<() => TodoListEnvelopeViewApi>((res) =>
+    return new Promise<() => TodoListEnvelopeViewApi>((res) => {
       ReactDOM.render(<TodoListEnvelopeView ref={ref} channelApi={envelope.channelApi} />, args.container, () =>
         res(() => ref.current!)
-      )
-    );
+      );
+    });
   };
 
   // Starts the Envelope application with the provided TodoListEnvelopeApi implementation.

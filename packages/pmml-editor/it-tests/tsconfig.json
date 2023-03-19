@@ -1,8 +1,8 @@
 {
-  "extends": "../tsconfig.dev.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "sourceMap": false,
     "types": ["cypress", "cypress-file-upload", "./support/commands"]
   },
-  "include": ["support", "integration"]
+  "include": ["support", "e2e"]
 }

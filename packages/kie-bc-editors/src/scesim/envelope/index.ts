@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import "@patternfly/react-core/dist/styles/base.css";
+
 export * from "./SceSimEditor";
 export * from "./SceSimEditorFactory";
 export * from "./SceSimEnvelopeApiFactory";

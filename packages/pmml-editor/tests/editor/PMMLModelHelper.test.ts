@@ -19,8 +19,8 @@ import {
   getModelType,
   isCollection,
   isSupportedModelType,
-} from "@kogito-tooling/pmml-editor";
-import { Scorecard, TreeModel } from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor";
+import { Scorecard, TreeModel } from "@kie-tools/pmml-editor-marshaller";
 
 describe("PMMLModelHelper::getModelIconUrl", () => {
   test("getModelIconUrlByType::Undefined", () => {

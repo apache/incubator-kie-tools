@@ -1,0 +1,35 @@
+# Copyright 2021 Red Hat
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi8/ubi-minimal:8.5
+
+COPY entrypoint.sh dist-dev/image-env-to-json-standalone dist-dev/EnvJson.schema.json /tmp/
+
+RUN microdnf --disableplugin=subscription-manager -y install httpd \
+  && microdnf --disableplugin=subscription-manager clean all \
+  && sed -i -e 's/Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf \
+  && sed -i -e 's/#ServerName www.example.com:80/ServerName 127.0.0.1:8080/' /etc/httpd/conf/httpd.conf \
+  && mkdir /kie-sandbox \
+  && mv -t /kie-sandbox /tmp/entrypoint.sh /tmp/image-env-to-json-standalone /tmp/EnvJson.schema.json \
+  && chgrp -R 0 /var/log/httpd /var/run/httpd /var/www/html /kie-sandbox \
+  && chmod -R g=u /var/log/httpd /var/run/httpd /var/www/html /kie-sandbox \
+  && chmod +x /kie-sandbox/entrypoint.sh /kie-sandbox/image-env-to-json-standalone
+
+COPY dist-dev/online-editor /var/www/html
+
+RUN if [ -f /var/www/html/env.json ]; then chmod a+w /var/www/html/env.json; fi
+
+EXPOSE 8080
+
+ENTRYPOINT [ "/kie-sandbox/entrypoint.sh" ]

@@ -17,7 +17,7 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
 import { usingCurrentTutorialContext } from "../test_context";
-import { GuidedTour } from "@kie-tooling-core/guided-tour/dist/components";
+import { GuidedTour } from "@kie-tools-core/guided-tour/dist/components";
 
 describe("GuidedTour", () => {
   it("renders", () => {

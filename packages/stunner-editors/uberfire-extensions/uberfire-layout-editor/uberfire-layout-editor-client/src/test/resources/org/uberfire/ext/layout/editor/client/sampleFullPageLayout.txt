@@ -1,0 +1,111 @@
+{
+  "version": 3,
+  "name": "CV",
+  "style": "PAGE",
+  "layoutProperties": {
+    "LAYOUT_TAGS": "a|"
+  },
+  "rows": [
+    {
+      "height": "2",
+      "properties": {},
+      "layoutColumns": [
+        {
+          "span": "12",
+          "height": "12",
+          "properties": {},
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "Add your HTML here..."
+              },
+              "parts": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "height": "10",
+      "properties": {},
+      "layoutColumns": [
+        {
+          "span": "4",
+          "height": "12",
+          "properties": {},
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "Add your HTML here..."
+              },
+              "parts": []
+            }
+          ]
+        },
+        {
+          "span": "8",
+          "height": "12",
+          "properties": {},
+          "rows": [
+            {
+              "height": "12",
+              "properties": {},
+              "layoutColumns": [
+                {
+                  "span": "12",
+                  "height": "3",
+                  "properties": {},
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivDragComponent",
+                      "properties": {
+                        "ID_PARAMETER": "-110184430"
+                      },
+                      "parts": []
+                    }
+                  ]
+                },
+                {
+                  "span": "12",
+                  "height": "3",
+                  "properties": {},
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+                      "properties": {
+                        "HTML_CODE": "Add your HTML here..."
+                      },
+                      "parts": []
+                    }
+                  ]
+                },
+                {
+                  "span": "12",
+                  "height": "6",
+                  "properties": {},
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+                      "properties": {
+                        "Place Name": "AppsHomePresenter"
+                      },
+                      "parts": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "layoutComponents": []
+        }
+      ]
+    }
+  ]
+}

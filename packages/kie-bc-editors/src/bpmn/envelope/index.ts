@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import "@patternfly/react-core/dist/styles/base.css";
+
 export * from "./BpmnEditor";
 export * from "./BpmnEditorFactory";
 export * from "./BpmnEnvelopeApiFactory";

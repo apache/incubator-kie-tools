@@ -1,0 +1,45 @@
+---
+openapi: 3.0.3
+info:
+  title: Generated API
+  version: "1.0"
+paths:
+  /:
+    get:
+      tags:
+        - Operation Resource
+      operationId: doGetOperation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MultiplicationOperation"
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+        - Operation Resource
+      operationId: doOperation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MultiplicationOperation"
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    MultiplicationOperation:
+      type: object
+      properties:
+        leftElement:
+          format: float
+          type: number
+        rightElement:
+          format: float
+          type: number
+        product:
+          format: float
+          type: number

@@ -19,9 +19,8 @@ import {
   EditorInitArgs,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
-} from "@kie-tooling-core/editor/dist/api";
+} from "@kie-tools-core/editor/dist/api";
 import { Base64PngEditorInterface } from "./Base64PngEditorInterface";
-import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
 
 /**
  * Factory to be used by the Envelope to create a Base64 PNG Editor, It implements an EditorFactory.

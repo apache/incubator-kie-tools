@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { ApiDefinition, EnvelopeBusMessage } from "@kie-tooling-core/envelope-bus/dist/api";
-import { EnvelopeServer, EnvelopeServerType } from "@kie-tooling-core/envelope-bus/dist/channel";
+import { ApiDefinition, EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
+import { EnvelopeServer, EnvelopeServerType } from "@kie-tools-core/envelope-bus/dist/channel";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef } from "react";
-import { useConnectedEnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/hooks";
+import { useConnectedEnvelopeServer } from "@kie-tools-core/envelope-bus/dist/hooks";
 import type * as CSS from "csstype";
 import { ContainerType } from "../api";
 
@@ -43,71 +43,71 @@ export interface EnvelopeIFrameConfig {
   envelopePath: string;
 }
 
-export interface Props<
+export interface EmbeddedEnvelopeProps<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,
   Ref
 > {
   refDelegate: (envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>) => Ref;
-  api: ApiToProvide;
+  apiImpl: ApiToProvide;
   origin: string;
+  config: EnvelopeDivConfig | EnvelopeIFrameConfig;
   pollInit: (
     envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>,
     container: () => HTMLDivElement | HTMLIFrameElement
   ) => Promise<any>;
-  config: EnvelopeDivConfig | EnvelopeIFrameConfig;
 }
 
-export function EmbeddedEnvelopeFactory<
+export function RefForwardingEmbeddedEnvelope<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,
   Ref
->(props: Props<ApiToProvide, ApiToConsume, Ref>) {
-  return React.forwardRef((_, forwardRef) => {
-    const iframeRef = useRef<HTMLIFrameElement>(null);
-    const divRef = useRef<HTMLDivElement>(null);
+>(props: EmbeddedEnvelopeProps<ApiToProvide, ApiToConsume, Ref>, forwardRef: React.RefObject<Ref>) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
 
-    const bus = useMemo(
-      () => ({
-        postMessage<D, T>(message: EnvelopeBusMessage<D, T>) {
-          if (props.config.containerType === ContainerType.DIV) {
-            window.postMessage(message, "*");
-          } else {
-            iframeRef.current?.contentWindow?.postMessage(message, "*");
-          }
-        },
-      }),
-      []
-    );
-
-    const envelopeServer = useMemo(
-      () =>
-        new EnvelopeServer<ApiToProvide, ApiToConsume>(
-          bus,
-          props.origin,
-          (self) =>
-            props.pollInit(self, () =>
-              props.config.containerType === ContainerType.DIV ? divRef.current! : iframeRef.current!
-            ),
-          props.config.containerType === ContainerType.DIV ? EnvelopeServerType.LOCAL : EnvelopeServerType.REMOTE
-        ),
-      [bus, props.origin, props.pollInit]
-    );
-
-    useImperativeHandle(
-      forwardRef,
-      () => {
-        return props.refDelegate(envelopeServer);
+  const bus = useMemo(
+    () => ({
+      postMessage<D, T>(message: EnvelopeBusMessage<D, T>) {
+        if (props.config.containerType === ContainerType.DIV) {
+          window.postMessage(message, "*");
+        } else {
+          iframeRef.current?.contentWindow?.postMessage(message, "*");
+        }
       },
-      [props.refDelegate]
-    );
+    }),
+    [props.config.containerType]
+  );
 
-    useConnectedEnvelopeServer<ApiToProvide>(envelopeServer, props.api);
+  const envelopeServer = useMemo(
+    () =>
+      new EnvelopeServer<ApiToProvide, ApiToConsume>(
+        bus,
+        props.origin,
+        (self) =>
+          props.pollInit(self, () =>
+            props.config.containerType === ContainerType.DIV ? divRef.current! : iframeRef.current!
+          ),
+        props.config.containerType === ContainerType.DIV ? EnvelopeServerType.LOCAL : EnvelopeServerType.REMOTE
+      ),
+    [bus, props.origin, props.pollInit, props.config.containerType]
+  );
 
-    if (props.config.containerType === ContainerType.DIV) {
-      return <div ref={divRef} />;
-    }
+  useImperativeHandle(
+    forwardRef,
+    () => {
+      return props.refDelegate(envelopeServer);
+    },
+    [envelopeServer, props.refDelegate]
+  );
 
-    return <iframe ref={iframeRef} src={props.config.envelopePath} style={containerStyles} title="X" />;
-  });
+  useConnectedEnvelopeServer<ApiToProvide>(envelopeServer, props.apiImpl);
+
+  if (props.config.containerType === ContainerType.DIV) {
+    return <div ref={divRef} />;
+  }
+
+  return <iframe ref={iframeRef} src={props.config.envelopePath} style={containerStyles} title="X" />;
 }
+
+export const EmbeddedEnvelope = React.forwardRef(RefForwardingEmbeddedEnvelope);

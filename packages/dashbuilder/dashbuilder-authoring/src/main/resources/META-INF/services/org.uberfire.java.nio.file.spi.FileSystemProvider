@@ -1,0 +1,2 @@
+org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider
+org.uberfire.java.nio.fs.file.SimpleFileSystemProvider

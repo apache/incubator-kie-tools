@@ -85,7 +85,11 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
           &nbsp;/&nbsp;Properties
         </Title>
       </StackItem>
-      <StackItem className="data-dictionary__properties-edit__form-container">
+      <StackItem
+        className="data-dictionary__properties-edit__form-container"
+        data-ouia-component-id="df-props"
+        data-ouia-component-type="editor-body"
+      >
         <Form className="data-dictionary__properties-edit__form">
           <Split hasGutter={true}>
             <SplitItem className="data-dictionary__properties-edit__form__left-column">
@@ -110,6 +114,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                           displayName: displayName === "" ? undefined : displayName,
                         })
                       }
+                      ouiaId="display-name"
                     />
                   </FormGroup>
                 </StackItem>
@@ -190,6 +195,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                           missingValue: missingValue === "" ? undefined : missingValue,
                         })
                       }
+                      ouiaId="missing-value"
                     />
                   </FormGroup>
                 </StackItem>
@@ -213,6 +219,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                           invalidValue: invalidValue === "" ? undefined : invalidValue,
                         })
                       }
+                      ouiaId="invalid-value"
                     />
                   </FormGroup>
                 </StackItem>
@@ -235,7 +242,13 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
         </Form>
       </StackItem>
       <StackItem>
-        <Button variant="primary" onClick={onClose} icon={<ArrowAltCircleLeftIcon />} iconPosition="left">
+        <Button
+          variant="primary"
+          onClick={onClose}
+          icon={<ArrowAltCircleLeftIcon />}
+          iconPosition="left"
+          ouiaId="back-to-DFs"
+        >
           Back
         </Button>
       </StackItem>

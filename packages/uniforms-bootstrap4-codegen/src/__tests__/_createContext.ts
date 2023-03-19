@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Context, randomIds } from "uniforms/es5";
+import { Context, BaseForm, randomIds } from "uniforms/cjs";
 
 import createSchema from "./_createSchema";
 
@@ -32,6 +32,16 @@ export default function createContext(schema?: {}, context?: Partial<Context<any
     randomId,
     submitting: false,
     validating: false,
+    formRef: new BaseForm<any>({
+      autosave: false,
+      autosaveDelay: 0,
+      error: false,
+      label: true,
+      model: {},
+      noValidate: false,
+      onSubmit: (event) => {},
+      schema: createSchema(schema),
+    }),
     ...context,
     schema: createSchema(schema),
     submitted: false,

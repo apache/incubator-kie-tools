@@ -10,4 +10,4 @@ Nothing should be considered concrete at this point.
 
 In order to run the development webapp:
 
-`yarn start`
+`pnpm start`

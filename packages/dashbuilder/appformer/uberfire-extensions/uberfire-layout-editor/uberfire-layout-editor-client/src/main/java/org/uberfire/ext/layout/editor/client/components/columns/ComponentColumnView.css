@@ -1,0 +1,123 @@
+.no-padding {
+  padding-right: 0px;
+  padding-left: 3px;
+}
+
+.eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.innerColumnPadding {
+}
+
+.page-col {
+  height: 100%;
+}
+.page-col-inner {
+  padding-bottom: 7px !important;
+  padding-top: 7px !important;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.el-resize-button {
+  padding: 0px;
+}
+
+.colUp {
+  height: 5px;
+}
+
+.componentDropInColumnPreview {
+  height: 15px;
+  margin-left: 15px;
+  margin-right: 20px;
+
+  background: #dde0e2; /* Old browsers */
+  background: -moz-linear-gradient(top, #eeeeee 0%, #dde0e2 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #eeeeee 0%, #dde0e2 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(
+    to bottom,
+    #eeeeee 0%,
+    #dde0e2 100%
+  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#dde0e2', GradientType=0); /* IE6-9 */
+}
+
+.colDown {
+  height: 5px;
+}
+
+.center {
+  display: inline-block;
+  width: 90%;
+  position: relative;
+}
+
+.centerPreview {
+  width: 50% !important;
+}
+
+.dropPreview {
+  width: 50% !important;
+  /* column drop gradient*/
+  background: #dde0e2; /* Old browsers */
+  background: -moz-linear-gradient(top, #eeeeee 0%, #dde0e2 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #eeeeee 0%, #dde0e2 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(
+    to bottom,
+    #eeeeee 0%,
+    #dde0e2 100%
+  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#dde0e2', GradientType=0); /* IE6-9 */
+}
+
+.columnDropPreview {
+  /*border: 1px dashed lightgray;*/
+  z-index: 1;
+}
+
+.buttonsPanel {
+  text-align: right;
+}
+
+.el-content {
+  border: 1px solid #b1caf2;
+  /*selected 97B4E2 */
+  -webkit-box-shadow: 2px 4px 6px 1px rgba(211, 211, 211, 0.25) !important;
+  -moz-box-shadow: 2px 4px 6px 1px rgba(211, 211, 211, 0.25) !important;
+  box-shadow: 2px 4px 6px 1px rgba(211, 211, 211, 0.25) !important;
+  padding-right: 7px;
+  padding-left: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.el-content-area {
+  padding: 0px;
+}
+
+.el-component-row {
+  margin-left: -3px !important;
+  margin-right: -3px !important;
+}
+
+.componentMovePreview {
+  border-color: #33a6cc !important;
+  cursor: move;
+}
+.colResizeLeft {
+  cursor: w-resize;
+}
+.colResizeRight {
+  cursor: e-resize;
+}

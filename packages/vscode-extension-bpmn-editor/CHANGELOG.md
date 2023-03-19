@@ -1,3 +1,68 @@
+# 0.26.0 (alpha)
+
+- [kie-issues#6](https://github.com/kiegroup/kie-issues/issues/6) - Bump `gwt` version to `2.10.0` version in `stunner-editors` module
+- [KOGITO-6974](https://issues.redhat.com/browse/KOGITO-6974) - Stunner Editors - Line control points are enabled in view only mode, but they should not
+
+# 0.25.0 (alpha)
+
+- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - KIE Tools Security updates (3rd round)
+
+# 0.24.0 (alpha)
+
+- _(No new features)_
+
+# 0.23.0 (alpha)
+
+- _(No new features)_
+
+# 0.22.0 (alpha)
+
+- _(No new features)_
+
+# 0.21.0 (alpha)
+
+- _(No new features)_
+
+# 0.20.0 (alpha)
+
+- _(No new features)_
+
+# 0.19.0 (alpha)
+
+- [KOGITO-6210](https://issues.redhat.com/browse/KOGITO-6210) - BPMN editor loses data assignment
+
+# 0.18.0 (alpha)
+
+- [KOGITO-5735](https://issues.redhat.com/browse/KOGITO-5735) - Stunner - Provide an initial JS / TS API to interact with nodes and connectors
+- [KOGITO-6830](https://issues.redhat.com/browse/KOGITO-6830) - Remove `kie-soup-bom`dependency from the `stunner-editors` package
+- [KOGITO-6832](https://issues.redhat.com/browse/KOGITO-6832) - Stunner - Update Tooltip message for Priority property in Task
+- [KOGITO-6841](https://issues.redhat.com/browse/KOGITO-6841) - Remove `kie-parent` from the `stunner-editors` package
+
+# 0.17.0 (alpha)
+
+- [KOGITO-4686](https://issues.redhat.com/browse/KOGITO-4686) - Cannot open DMN/BPMN files from command line with VS Code
+- [KOGITO-6496](https://issues.redhat.com/browse/KOGITO-6496) - Remove unused/unnecessary dependencies with KIE V7 from `stunner-editors`
+- [KOGITO-6181](https://issues.redhat.com/browse/KOGITO-6181) - Stunner-based editors are losing focus when asked for the SVG
+
+# 0.16.0 (alpha)
+
+- _(No new features)_
+
+# 0.15.0 (alpha)
+
+- [KOGITO-6036](https://issues.redhat.com/browse/KOGITO-6036) - Use html `<input type='color'>` picker
+
+# 0.14.1 (alpha)
+
+- [KOGITO-6226](https://issues.redhat.com/browse/KOGITO-6226) - Editor content sanitization
+
+# 0.14.0 (alpha)
+
+- [KOGITO-2099](https://issues.redhat.com/browse/KOGITO-2099) - Generate a SVG diagram automatically on each BPMN/DMN diagrams save
+- [KOGITO-5973](https://issues.redhat.com/browse/KOGITO-5973) - Stunner - Create an initial JS / TS API for accessing the canvas and its elements
+- [KOGITO-2133](https://issues.redhat.com/browse/KOGITO-2133) - [VSCode] Custom editor save issues
+- [KOGITO-2553](https://issues.redhat.com/browse/KOGITO-2553) - Editors - Editing the node name and pressing enter to confirm
+
 # 0.13.0 (alpha)
 
 - [KOGITO-5678](https://issues.redhat.com/browse/KOGITO-5678) - Metadata atrribute 'elementname' not present for events, intermediate events & gateways by default

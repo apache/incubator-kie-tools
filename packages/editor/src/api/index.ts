@@ -22,3 +22,4 @@ export * from "./KogitoEditorEnvelopeApi";
 export * from "./StateControlCommand";
 export * from "./EditorContent";
 export * from "./EditorEnvelopeLocator";
+export * from "./EditorTheme";

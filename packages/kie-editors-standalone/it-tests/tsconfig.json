@@ -8,11 +8,11 @@
     "sourceMap": true,
     "declaration": false,
     "declarationMap": false,
-    "noImplicitAny": false,
-    "noImplicitThis": false,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
     "strictNullChecks": true,
     "experimentalDecorators": false,
-    "downlevelIteration": false
+    "downlevelIteration": true
   },
   "include": ["src"]
 }

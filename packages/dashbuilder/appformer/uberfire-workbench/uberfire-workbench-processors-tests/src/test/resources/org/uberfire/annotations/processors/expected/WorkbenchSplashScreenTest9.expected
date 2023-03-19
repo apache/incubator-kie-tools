@@ -1,0 +1,83 @@
+/*
+ * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.uberfire.annotations.processors;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import javax.annotation.Generated;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import com.google.gwt.user.client.ui.InlineLabel;
+
+import org.jboss.errai.ioc.client.api.ActivatedBy;
+
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.AbstractSplashScreenActivity;
+import org.uberfire.client.workbench.widgets.splash.SplashView;
+import javax.inject.Named;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.SplashScreenFilter;
+import org.uberfire.client.mvp.IsSplashScreen;
+
+import com.google.gwt.user.client.ui.IsWidget;
+
+@ApplicationScoped
+@Generated("org.uberfire.annotations.processors.WorkbenchSplashScreenProcessor")
+@Named("test9")
+@IsSplashScreen
+@ActivatedBy(org.uberfire.annotations.processors.TestBeanActivator.class)
+/*
+ * WARNING! This class is generated. Do not modify.
+ */
+public class WorkbenchSplashScreenTest9Activity extends AbstractSplashScreenActivity {
+
+    @Inject
+    private WorkbenchSplashScreenTest9 realPresenter;
+
+    @Inject
+    //Constructor injection for testing
+    public WorkbenchSplashScreenTest9Activity( final PlaceManager placeManager, final SplashView view ) {
+        super( placeManager, view );
+    }
+
+    @Override
+    public String getTitle() {
+        return realPresenter.getTitle();
+    }
+
+    @Override
+    public IsWidget getWidget() {
+        return realPresenter.getView();
+    }
+
+    @Override
+    public SplashScreenFilter getFilter() {
+        return realPresenter.getFilter();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return "test9";
+    }
+
+}

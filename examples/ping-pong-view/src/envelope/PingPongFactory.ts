@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import { PingPongChannelApi, PingPongInitArgs } from "../api";
-import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
-import { PingPong } from "./PingPong";
+import { PingPongApi, PingPongChannelApi, PingPongInitArgs } from "../api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface PingPongFactory {
-  create(initArgs: PingPongInitArgs, channelApi: MessageBusClientApi<PingPongChannelApi>): PingPong;
+  create(initArgs: PingPongInitArgs, channelApi: MessageBusClientApi<PingPongChannelApi>): () => PingPongApi | null;
 }

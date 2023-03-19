@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { BpmnEditorFactory } from "@kogito-tooling/kie-bc-editors/dist/bpmn/envelope";
-import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
+import { VsCodeBpmnEditorFactory } from "@kie-tools/kie-bc-editors/dist/bpmn/envelope/vscode";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
 declare const acquireVsCodeApi: any;
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  editorFactory: new BpmnEditorFactory({ shouldLoadResourcesDynamically: true }),
+  editorFactory: new VsCodeBpmnEditorFactory({ shouldLoadResourcesDynamically: true }),
 });

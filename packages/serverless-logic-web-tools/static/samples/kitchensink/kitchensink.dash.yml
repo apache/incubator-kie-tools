@@ -1,0 +1,822 @@
+pages:
+  - name: index
+    properties:
+      margin: 10px
+    components:
+      - properties:
+          background-color: blue
+          opacity: 0.5
+          color: white
+          font-weight: bolder
+          padding: 20px
+          margin-bottom: 20px
+        html: >-
+          <strong style="font-size: xx-large; font-weight: bolder; font-family: sans-serif"> Dashbuilder Components </strong>
+          <br />
+      - type: TABS
+        properties:
+          width: 100%
+          navGroupId: MainGroup
+          targetDivId: all_div
+      - type: DIV
+        properties:
+          divId: all_div
+  - name: Tree
+    rows:
+      - columns:
+          - span: "3"
+            components:
+              - type: TREE
+                properties:
+                  width: 180px
+                  navGroupId: Displayers
+                  targetDivId: navigation_tree_div
+          - span: "9"
+            components:
+              - type: DIV
+                properties:
+                  divId: navigation_tree_div
+
+  - name: Menu
+    components:
+      - type: MENU
+        properties:
+          width: 100%
+          navGroupId: Displayers
+          targetDivId: navigation_menu_div
+      - type: DIV
+        properties:
+          divId: navigation_menu_div
+  - name: Carousel
+    components:
+      - type: CAROUSEL
+        properties:
+          navGroupId: Displayers
+  - name: Tiles
+    components:
+      - type: TILES
+        properties:
+          navGroupId: Displayers
+  - name: Navigation
+    components:
+      - html: >-
+          Multiple pages can be declared on the same dashboard. If the dashboard contains more than one page then a menu is available for displaying the pages. <br />
+          Pages can be organized in groups and then be embedded in other pages using Navigation Components. In fact, this example is built using TABS navigation component. <br />
+          Here are some other navigation components:
+      - type: TABS
+        properties:
+          width: 100%
+          navGroupId: Navigation
+          targetDivId: navigation_div
+      - type: DIV
+        properties:
+          divId: navigation_div
+  - name: Timeseries
+    components:
+      - settings:
+          component: timeseries
+          external:
+            width: 100%
+          lookup:
+            uuid: timeseries
+  - name: Forms
+    components:
+      - type: EXTERNAL
+        properties:
+          height: 500px
+          componentId: uniforms
+          uniforms.url: http://acme.com
+          uniforms.schema: >-
+            {
+               "title":"",
+               "type":"object",
+               "properties":{
+                  "workflowdata": {
+                      "title": "Sample Form",
+                      "default": { "language": "English", "name": "John" },
+                      "type": "object",
+                      "properties": {
+                          "name":{
+                             "type":"string"
+                          },
+                          "language":{
+                             "type":"string",
+                             "allowedValues": ["English", "Spanish"]
+                          }
+                      },
+                      "required":[
+                         "name", "language"
+                      ]
+                  }
+                  
+               }
+            }
+  - name: SVG Heatmap
+    components:
+      - settings:
+          component: svg-heatmap
+          external:
+            width: 100%
+          svg-heatmap:
+            svg: >-
+              <svg xmlns="http://www.w3.org/2000/svg">
+                <path id="svg_1" d="m23,23l82,0l0,51l-82,0l0,-51z" stroke-width="0" fill="#999999"/>
+                <path id="svg_2" d="m133,23l82,0l0,51l-82,0l0,-51z" stroke-width="0" fill="#999999"/>
+                <path id="svg_3" d="m240,23l82,0l0,51l-82,0l0,-51z" stroke-width="0" fill="#999999"/>
+                <path id="svg_4" d="m350,23l82,0l0,51l-82,0l0,-51z" stroke-width="0" fill="#999999"/>
+                <path id="svg_5" d="m461,24l82,0l0,51l-82,0l0,-51z" stroke-width="0" fill="#999999"/>
+                <path id="svg_6" d="m566,26l82,0l0,51l-82,0l0,-51z" stroke-width="0" fill="#999999"/>
+              </svg>
+          lookup:
+            uuid: svg-data
+  - name: ECharts
+    components:
+      - settings:
+          component: echarts
+          external:
+            width: 100%
+            height: 400px
+          echarts:
+            title:
+              text: Products
+              left: center
+            option: >-
+              {
+                "toolbox": {
+                    "feature": {
+                        "dataZoom": {},
+                        "magicType": {
+                            "type": ["line", "bar", "stack"]
+                        },
+                        "saveAsImage": {}
+                    }   
+                },
+                "series": [
+                        { 
+                            "type": "bar",
+                            "markLine": {
+                                "data": [
+                                    { "type": "max" }
+                                ]
+                            } 
+                        
+                        },
+                        { 
+                            "type": "bar",
+                            "markLine": {
+                                "data": [
+                                    { "type": "max" }
+                                ]
+                            } 
+                        
+                        }
+                ]
+                }
+          lookup:
+            uuid: products
+            group:
+              - columnGroup:
+                  source: product
+                functions:
+                  - source: product
+                  - source: quantity
+                  - source: quantity2
+  - name: Rich Table
+    components:
+      - settings:
+          component: table
+          external:
+            width: 100%
+          lookup:
+            uuid: products
+  - name: Geo Map
+    components:
+      - settings:
+          component: map
+          chart:
+            height: 400
+          lookup:
+            uuid: countries
+            group:
+              - columnGroup:
+                  source: Country
+                functions:
+                  - source: Country
+                  - source: Value
+  - name: External Components
+    components:
+      - properties:
+          margin-bottom: 20px
+        html: >-
+          It is possible to develop <a href="https://blog.kie.org/2021/02/dashbuilder-external-components-javascript-api-2.html">custom components</a> that can be rendered inside Dashbuilder. By default some external components are available for use:
+      - type: TABS
+        properties:
+          width: 100%
+          navGroupId: Components
+          targetDivId: external_components_div
+      - type: DIV
+        properties:
+          divId: external_components_div
+  - name: Meter
+    properties:
+      font-size: x-large
+      text-align: center
+    components:
+      - properties:
+          float: left
+        settings:
+          type: METERCHART
+          general:
+            title: "Memory Usage"
+            visible: "true"
+          chart:
+            legend:
+              show: "true"
+              position: bottom
+          meter:
+            end: "4120"
+            critical: "3000"
+            warning: "2000"
+          lookup:
+            uuid: memory_usage
+            group:
+              - columnGroup:
+                  source: Server
+                functions:
+                  - source: Server
+                  - source: Usage
+                    function: SUM
+  - name: Selectors
+    components:
+      - html: >-
+          Dashbuilder Displayers can filter each other. For filtering only we have selectors components. You can enable filter using the filter section:<br /> <pre>
+          filter:
+              enabled: 'true'
+              notification: 'true'</pre>
+
+      - html: >-
+          <strong> subtype DROPDOWN (default) </strong>
+      - settings:
+          type: SELECTOR
+          filter:
+            enabled: "true"
+            notification: "true"
+          lookup:
+            uuid: products
+            group:
+              - columnGroup:
+                  source: Section
+                functions:
+                  - source: Section
+      - html: >-
+          <br /><strong>subtype SELECTOR_LABELS (used only with LABEL column types)</strong>
+      - settings:
+          type: SELECTOR
+          subtype: SELECTOR_LABELS
+          filter:
+            enabled: "true"
+            notification: "true"
+          lookup:
+            uuid: products
+            group:
+              - columnGroup:
+                  source: Section
+                functions:
+                  - source: Section
+      - html: >-
+          <br /><strong> subtype SELECTOR_SLIDER (can't be used with LABEL columns)</strong>
+      - settings:
+          type: SELECTOR
+          subtype: SELECTOR_SLIDER
+          filter:
+            enabled: "true"
+            notification: "true"
+          lookup:
+            uuid: products
+            group:
+              - functions:
+                  - source: Quantity
+      - settings:
+          type: BARCHART
+          filter:
+            enabled: "true"
+            listening: "true"
+          lookup:
+            uuid: products
+            group:
+              - columnGroup:
+                  source: Product
+                functions:
+                  - source: Product
+                  - source: Quantity
+                  - source: Quantity2
+  - name: Metric
+    components:
+      - html: >-
+          Metric components render an HTML template based on data. Users can customize the HTML and Javascript based on data.
+      - html: "<h4><strong>Default Metric</strong></h4><br />"
+      - settings:
+          type: METRIC
+          chart:
+            height: "100"
+          general:
+            visible: "true"
+            title: Total Products
+          lookup:
+            uuid: products
+            group:
+              - functions:
+                  - source: Quantity
+                    function: SUM
+      - html: >-
+          <hr /> 
+          The following metric uses custom HTML and Javascript template:<br/>
+      - settings:
+          type: METRIC
+          html:
+            html: >-
+              <h2><strong>&#10026; Total Products:</strong>&nbsp;<span id="${this}">${value}</span></h2>
+            javascript: >-
+              ${this}.onmouseover = function() {
+                    ${this}.style.color = "red";
+                };
+                ${this}.onmouseout = function() {
+                    ${this}.style.color = "black";
+                };
+          general:
+            visible: "true"
+            title: Total Products
+          lookup:
+            uuid: products
+            group:
+              - functions:
+                  - source: Quantity
+                    function: SUM
+  - name: Map
+    rows:
+      - columns:
+          - span: "6"
+            components:
+              - html: "<h4><strong>subtype MAP_REGIONS (default)</strong></h4><br />"
+              - settings:
+                  type: MAP
+                  lookup:
+                    uuid: countries
+                    group:
+                      - columnGroup:
+                          source: Country
+                        functions:
+                          - source: Country
+                          - source: Value
+          - span: "6"
+            components:
+              - html: "<h4><strong>subtype MAP_MARKERS</strong></h4><br />"
+              - settings:
+                  type: MAP
+                  subtype: MAP_MARKERS
+                  lookup:
+                    uuid: countries
+                    group:
+                      - columnGroup:
+                          source: Country
+                        functions:
+                          - source: Country
+                          - source: Value
+  - name: Pie Chart
+    rows:
+      - columns:
+          - span: "6"
+            components:
+              - html: "<h4><strong>subtype PIE (default)</strong></h4><br />"
+              - settings:
+                  type: PIECHART
+                  lookup:
+                    uuid: products
+                    group:
+                      - columnGroup:
+                          source: Product
+                        functions:
+                          - source: Product
+                          - source: Quantity
+          - span: "6"
+            components:
+              - html: "<h4><strong>subtype DONUT</strong></h4><br />"
+              - settings:
+                  type: PIECHART
+                  subtype: DONUT
+                  lookup:
+                    uuid: products
+                    group:
+                      - columnGroup:
+                          source: Product
+                        functions:
+                          - source: Product
+                          - source: Quantity
+  - name: Bubble Chart
+    rows:
+      - columns:
+          - span: "6"
+            components:
+              - html: "<h4><strong>Bubble Chart</strong></h4><br />"
+              - settings:
+                  type: BUBBLECHART
+                  lookup:
+                    uuid: products
+                    group:
+                      - columnGroup:
+                          source: Product
+                        functions:
+                          - source: Product
+                          - source: Quantity
+                          - source: Quantity2
+                          - source: Product
+  - name: Area Chart
+    rows:
+      - columns:
+          - span: "6"
+            components:
+              - html: "<h4><strong>subtype AREA (default)</strong></h4><br />"
+
+              - settings:
+                  type: AREACHART
+                  lookup:
+                    uuid: products
+                    group:
+                      - columnGroup:
+                          source: Product
+                        functions:
+                          - source: Product
+                          - source: Quantity
+                          - source: Quantity2
+          - span: "6"
+            components:
+              - html: "<h4><strong>subtype AREA_STACKED</strong></h4><br />"
+              - settings:
+                  type: AREACHART
+                  subtype: AREA_STACKED
+                  lookup:
+                    uuid: products
+                    group:
+                      - columnGroup:
+                          source: Product
+                        functions:
+                          - source: Product
+                          - source: Quantity
+                          - source: Quantity2
+  - name: Bar Chart
+    rows:
+      - columns:
+          - span: "6"
+            components:
+              - html: "<h4><strong>subtype COLUMN (default)</strong></h4><br />"
+              - settings:
+                  type: BARCHART
+                  lookup:
+                    uuid: products
+                    group:
+                      - columnGroup:
+                          source: Product
+                        functions:
+                          - source: Product
+                          - source: Quantity
+                          - source: Quantity2
+          - span: "6"
+            components:
+              - html: "<h4><strong>subtype BAR</strong></h4><br />"
+              - settings:
+                  type: BARCHART
+                  subtype: BAR
+                  lookup:
+                    uuid: products
+                    group:
+                      - columnGroup:
+                          source: Product
+                        functions:
+                          - source: Product
+                          - source: Quantity
+                          - source: Quantity2
+      - columns:
+          - span: "6"
+            components:
+              - html: "<h4><strong>subtype COLUMN_STACKED</strong></h4><br />"
+              - settings:
+                  type: BARCHART
+                  subtype: COLUMN_STACKED
+                  lookup:
+                    uuid: products
+                    group:
+                      - columnGroup:
+                          source: Product
+                        functions:
+                          - source: Product
+                          - source: Quantity
+                          - source: Quantity2
+          - span: "6"
+            components:
+              - html: "<h4><strong>subType BAR</strong></h4><br />"
+              - settings:
+                  type: BARCHART
+                  subtype: BAR_STACKED
+                  lookup:
+                    uuid: products
+                    group:
+                      - columnGroup:
+                          source: Product
+                        functions:
+                          - source: Product
+                          - source: Quantity
+                          - source: Quantity2
+  - name: Line Chart
+    rows:
+      - columns:
+          - span: "6"
+            components:
+              - html: "<h4><strong>subtype line (default)</strong></h4><br />"
+              - settings:
+                  type: LINECHART
+                  lookup:
+                    uuid: products
+                    group:
+                      - columnGroup:
+                          source: Product
+                        functions:
+                          - source: Product
+                          - source: Quantity
+                          - source: Quantity2
+          - span: "6"
+            components:
+              - html: "<h4><strong>subtype smooth</strong></h4><br />"
+              - settings:
+                  type: LINECHART
+                  subtype: SMOOTH
+                  lookup:
+                    uuid: products
+                    group:
+                      - columnGroup:
+                          source: Product
+                        functions:
+                          - source: Product
+                          - source: Quantity
+                          - source: Quantity2
+  - name: Displayers
+    properties:
+      margin: 10px
+    components:
+      - properties:
+          margin-bottom: 20px
+        html: >-
+          Data can be displayed using <i>Displayers</i>. 
+          The usual charts types are supported and Dashbuilder internally use <a href="https://echarts.apache.org/en/index.html">ECharts library</a> to render them. <br />
+          Displayers configuration is described in the <a href="https://www.dashbuilder.org/docs/#chap-dashbuilder-yaml-guides">YML guide</a>
+      - type: TABS
+        properties:
+          width: 100%
+          navGroupId: Displayers
+          targetDivId: displayers_div
+      - type: DIV
+        properties:
+          divId: displayers_div
+  - name: Layout
+    properties:
+      margin: 10px
+    rows:
+      - columns:
+          - components:
+              - html: >-
+                  <p style="margin-top: 20px">
+                    A Dashbuilder application is composed of Pages. The smallest Dashbuilder YML application contain a single page with a single component
+                      <pre>pages:
+                    - name: Page
+                      components: 
+                        - html: Hello World</pre>
+                    Currently boostrap layout is used, which means that columns and rows can be used for organization:
+                  </p>
+      - columns:
+          - properties:
+              border: solid 1px
+              text-align: center
+              margin-bottom: 10px
+            components:
+              - html: ROW1
+      - columns:
+          - properties:
+              border: solid 1px
+              text-align: center
+            span: "3"
+            components:
+              - html: ROW2 CL1 SPAN 3
+          - properties:
+              border: solid 1px
+              text-align: center
+            span: "3"
+            components:
+              - html: ROW2 CL2 SPAN 3
+          - properties:
+              border: solid 1px
+              text-align: center
+            span: "6"
+            components:
+              - html: ROW2 CL3 SPAN 6
+      - columns:
+          - properties:
+              margin-top: 10px
+            components:
+              - html: >-
+                  This is the code for the layout above: <br /><br /> 
+                  <pre>pages:
+                    - name: Layout
+                      rows:
+                      - columns:
+                        - properties:
+                            border: solid 1px
+                            text-align: center
+                            margin-bottom: 10px
+                          components:
+                            - html: ROW1
+                      - columns:
+                        - properties:
+                            border: solid 1px
+                            text-align: center
+                          span: '3'          
+                          components:
+                            - html: ROW2 CL1 SPAN 3
+                        - properties:
+                            border: solid 1px
+                            text-align: center
+                          span: '3'
+                          components:
+                            - html: ROW2 CL2 SPAN 3
+                        - properties:
+                            border: solid 1px
+                            text-align: center
+                          span: '6'
+                          components:
+                            - html: ROW2 CL3 SPAN 6</pre>
+  - name: Data Sets
+    properties:
+      margin: 10px
+    components:
+      - html: >-
+          <p>
+            Data is retrieved using Datasets and it can be retrieved from JSON content. The content can be retrieved from a JSON URL or declared inline: <br />
+            <pre>datasets:
+              - uuid: products
+                content: >-
+                  [
+                    ["Computers", "Scanner", 5, 3],
+                    ["Computers", "Printer", 7, 4],
+                    ["Computers", "Laptop", 3, 2],
+                    ["Electronics", "Camera", 10, 7],
+                    ["Electronics", "Headphones", 5, 9]
+                  ]
+                columns:
+                  - id: Section
+                    type: LABEL
+                  - id: Product
+                    type: LABEL
+                  - id: Quantity
+                    type: NUMBER
+                  - id: Quantity2
+                    type: NUMBER
+            </pre>
+            Data Sets can be used with Displayers or External Components. For more information check <a href="https://blog.kie.org/2022/04/support-any-json-metrics-and-csv-as-dataset-in-dashbuilder.html">the article about datasets</a>.
+          </p>
+  - name: HTML & CSS
+    properties:
+      margin: 10px
+    components:
+      - html: >-
+          <p>Dashbuilder Support HTML components using the <i>html</i> element and CSS 2 properties using <i>properties</i> 
+          object that applies to any component (pages, row, columns and component). A page with font-size xxx-large could use the following declaration:
+            <pre>pages:
+           - components:
+                - html: Hello World
+                  properties:
+                    font-size: xxx-large</pre>
+          </p>
+          <p>
+            When using HTML you can make use of any library used by Dashbuilder. Currently it used Patternfly V3. Here's a sample panel:
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Patternfly 3 Components</h3>
+              </div>
+              <div class="panel-body">
+                You can use <a href="https://www.patternfly.org/v3/pattern-library/" class="alert-link">Patternfly 3</a> components. Bear in mind that libraries used by Dashbuilder can change in future, so be careful when using patternfly or other provided libraries.
+              </div>
+            </div>
+            <div class="alert alert-warning" style="margin-top: 20px">
+              <span class="pficon pficon-warning-triangle-o"></span>
+              <strong>Using internal libraries</strong> Internal visual libraries are always a subject of change. Currently Patternfly 3 is used, but this may change in future.
+            </div>
+            <div class="alert alert-info" style="margin-top: 20px">
+              <span class="pficon pficon-info"></span>
+              <strong>Javascript not supported</strong> Javascript is not supported inside HTML elements.
+            </div>
+          </p>
+navTree:
+  root_items:
+    - type: GROUP
+      id: MainGroup
+      children:
+        - page: Layout
+        - page: HTML & CSS
+        - page: Data Sets
+        - page: Displayers
+        - page: External Components
+        - page: Navigation
+    - type: GROUP
+      id: Displayers
+      children:
+        - page: Bar Chart
+        - page: Line Chart
+        - page: Area Chart
+        - page: Pie Chart
+        - page: Bubble Chart
+        - page: Meter
+        - page: Map
+        - page: Metric
+        - page: Selectors
+    - type: GROUP
+      id: Components
+      children:
+        - page: ECharts
+        - page: Timeseries
+        - page: SVG Heatmap
+        - page: Rich Table
+        - page: Geo Map
+        - page: Forms
+    - type: GROUP
+      id: Navigation
+      children:
+        - page: Tiles
+        - page: Carousel
+        - page: Menu
+        - page: Tree
+
+datasets:
+  - uuid: products
+    content: >-
+      [
+        ["Computers", "Scanner", 5, 3],
+        ["Computers", "Printer", 7, 4],
+        ["Computers", "Laptop", 3, 2],
+        ["Electronics", "Camera", 10, 7],
+        ["Electronics", "Headphones", 5, 9]
+      ]
+    columns:
+      - id: Section
+        type: LABEL
+      - id: Product
+        type: LABEL
+      - id: Quantity
+        type: NUMBER
+      - id: Quantity2
+        type: NUMBER
+  - uuid: countries
+    content: >-
+      [
+        ["Brazil", 6],
+        ["USA", 3],
+        ["China", 5],
+        ["India", 5],
+        ["Russia", 6],
+        ["Canada", 6],
+        ["Australia", 9],
+        ["Mali", 4],
+        ["South Africa", 11],
+      ]
+    columns:
+      - id: Country
+        type: LABEL
+      - id: Value
+        type: NUMBER
+  - uuid: svg-data
+    content: >-
+      [
+        ["svg_1", 1],
+        ["svg_2", 2],
+        ["svg_3", 3],
+        ["svg_4", 4],
+        ["svg_5", 5],
+        ["svg_6", 6]
+      ]
+    columns:
+      - id: id
+        type: LABEL
+      - id: v
+        type: NUMBER
+  - uuid: memory_usage
+    content: >-
+      [
+        ["Server 1", 2512],
+        ["Server 2", 1900],
+        ["Server 3", 3200],
+        ["Server 4", 1200]
+      ]
+    columns:
+      - id: Server
+        type: LABEL
+      - id: Usage
+        type: NUMBER
+  - uuid: timeseries
+    url: https://raw.githubusercontent.com/jesuino/dashbuilder-data/master/samples/timeseries.json

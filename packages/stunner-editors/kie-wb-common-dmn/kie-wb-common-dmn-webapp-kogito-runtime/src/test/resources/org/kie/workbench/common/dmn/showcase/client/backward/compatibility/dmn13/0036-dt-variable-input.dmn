@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler" exporterVersion="6.1.3" namespace="http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135" name="DT Using Variables" triso:logoChoice="Default" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <extensionElements/>
+    <itemDefinition isCollection="false" name="Complex" label="Complex">
+        <itemComponent isCollection="false" name="aBoolean" id="_97f54b71-c748-4868-ab2c-1395142d1330">
+            <typeRef>boolean</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="aNumber" id="_b94be943-6229-47e6-a0d2-1a7e915f4914">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="aString" id="_f9919c4c-26ac-42ff-b788-ff9a16a797e8">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent name="aDate" id="_6d00495f-be93-48dc-86e3-cc232ace5b6c">
+            <typeRef>date</typeRef>
+        </itemComponent>
+        <itemComponent name="aTime" id="_9c070417-4f8b-4bf1-8bfd-2adc2d7623a3">
+            <typeRef>time</typeRef>
+        </itemComponent>
+        <itemComponent name="aDateTime" id="_f305358d-dff6-4974-87a9-30f80ccfb7eb">
+            <typeRef>dateTime</typeRef>
+        </itemComponent>
+        <itemComponent name="aDaysAndTimeDuration" id="_5ae0f547-6fe6-46ea-a203-0c740e3753d6">
+            <typeRef>dayTimeDuration</typeRef>
+        </itemComponent>
+        <itemComponent name="aYearsAndMonthsDuration" id="_af3fccf6-8294-4a9d-bae7-dd74f8209cab">
+            <typeRef>yearMonthDuration</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <decision name="Compare Boolean" id="_29fcbd74-791b-4700-b6b9-93654a21f492">
+        <variable typeRef="string" name="Compare Boolean" id="_48418f5b-85be-4423-af2f-42f914744f0b"/>
+        <informationRequirement id="_4c1738f2-f903-43e9-b486-88bad979cb36">
+            <requiredInput href="#_36fc73e6-8f0e-4cbf-b1f8-3287376a912a"/>
+        </informationRequirement>
+        <informationRequirement id="_8c893e95-4785-41ff-82c8-40499b9ef3ae">
+            <requiredInput href="#_c714b876-f21c-429f-ab88-010b1f714eab"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="UNIQUE" outputLabel="Compare Boolean" typeRef="string" id="_74fb9c9b-4f00-40e4-aae4-f49f01839184">
+            <input id="_8ffeb4cd-33da-4c1e-97c8-360a6a28d37d">
+                <inputExpression typeRef="boolean">
+                    <text>Another boolean</text>
+                </inputExpression>
+            </input>
+            <output id="_b15510e8-3a5e-41d5-a71a-5c8b77996527"/>
+            <rule id="_0c4d562a-0720-46f0-8862-d5f8a8515fe8">
+                <inputEntry id="_0c4d562a-0720-46f0-8862-d5f8a8515fe8-1">
+                    <text>Complex.aBoolean</text>
+                </inputEntry>
+                <outputEntry id="_0c4d562a-0720-46f0-8862-d5f8a8515fe8-2">
+                    <text>"Same boolean"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_7b6189fc-fc3d-4bf1-b49f-363f071ecccf">
+                <inputEntry id="_7b6189fc-fc3d-4bf1-b49f-363f071ecccf-1">
+                    <text>not(Complex.aBoolean)</text>
+                </inputEntry>
+                <outputEntry id="_7b6189fc-fc3d-4bf1-b49f-363f071ecccf-2">
+                    <text>"Not same boolean"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <inputData name="Complex" id="_36fc73e6-8f0e-4cbf-b1f8-3287376a912a">
+        <variable typeRef="Complex" name="Complex" id="_3ddbaef1-1874-4a8d-aacc-9267ea422ddd"/>
+    </inputData>
+    <inputData name="Another boolean" id="_c714b876-f21c-429f-ab88-010b1f714eab">
+        <variable typeRef="boolean" name="Another boolean" id="_cde25348-e4b4-42fe-bd8b-fc0b64170f2f"/>
+    </inputData>
+    <inputData name="Another number" id="_a1395f8a-bf51-40f8-a8e9-89792e23c755">
+        <variable typeRef="number" name="Another number" id="_2fcde052-27a2-4154-bb13-fe634aa4ffc2"/>
+    </inputData>
+    <inputData name="Another String" id="_1fa4679e-196f-4274-85bf-6f50dbad41df">
+        <variable typeRef="string" name="Another String" id="_c1ab082d-1d61-4c92-a475-4631613c57ad"/>
+    </inputData>
+    <decision name="Compare String" id="_4f421adb-316c-42e0-b6ff-5243c365bdba">
+        <variable typeRef="string" name="Compare String" id="_1a8428bf-4bb1-431a-a7f4-b77b1d8437a8"/>
+        <informationRequirement id="_7c766bfa-802c-42fb-8729-53c0bd15ee46">
+            <requiredInput href="#_1fa4679e-196f-4274-85bf-6f50dbad41df"/>
+        </informationRequirement>
+        <informationRequirement id="aa83cef8-cc49-4d8b-9828-709d31339782">
+            <requiredInput href="#_36fc73e6-8f0e-4cbf-b1f8-3287376a912a"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="UNIQUE" outputLabel="Compare String" typeRef="string" id="_0cdb4ff9-d52e-4b6b-9f2a-a1477c9d9b53">
+            <input id="_fe365673-d56b-4a3e-89e0-3e6eadd6f1c4">
+                <inputExpression typeRef="string">
+                    <text>Another String</text>
+                </inputExpression>
+            </input>
+            <output id="_90449846-5fa1-4105-8f3f-54ba2f95699e"/>
+            <rule id="_3becfd70-616a-48e3-a439-78ad9aaa99ad">
+                <inputEntry id="_3becfd70-616a-48e3-a439-78ad9aaa99ad-1">
+                    <text>Complex.aString</text>
+                </inputEntry>
+                <outputEntry id="_3becfd70-616a-48e3-a439-78ad9aaa99ad-2">
+                    <text>"Same String"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_6628117c-e142-4d59-b9a2-8213759535a2">
+                <inputEntry id="_6628117c-e142-4d59-b9a2-8213759535a2-1">
+                    <text>not(Complex.aString)</text>
+                </inputEntry>
+                <outputEntry id="_6628117c-e142-4d59-b9a2-8213759535a2-2">
+                    <text>"Different String"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <decision name="Compare Number" id="_35583bbe-81b8-4797-afe9-d870c3e17d44">
+        <variable typeRef="string" name="Compare Number" id="_59f475cf-3411-4155-bd5d-9683108d3e89"/>
+        <informationRequirement id="fbae1bfa-58d6-4450-86ff-458b217107d6">
+            <requiredInput href="#_a1395f8a-bf51-40f8-a8e9-89792e23c755"/>
+        </informationRequirement>
+        <informationRequirement id="d78c7fad-8f61-4dc5-a12a-828f46bebb0e">
+            <requiredInput href="#_36fc73e6-8f0e-4cbf-b1f8-3287376a912a"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="UNIQUE" outputLabel="Compare Number" typeRef="string" id="_b3d18d7b-1ca5-4f81-a0b7-434fe4a51588">
+            <input id="_1ec860a8-2194-4748-a692-2544783c88d7">
+                <inputExpression typeRef="number">
+                    <text>Another number</text>
+                </inputExpression>
+            </input>
+            <output id="_3a602944-0ce0-43a8-86a7-092f7acd1e84"/>
+            <rule id="_9d94759c-9da4-48aa-ba97-2a42f18e75b3">
+                <inputEntry id="_9d94759c-9da4-48aa-ba97-2a42f18e75b3-1">
+                    <text>Complex.aNumber</text>
+                </inputEntry>
+                <outputEntry id="_9d94759c-9da4-48aa-ba97-2a42f18e75b3-2">
+                    <text>"Equals"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_275dc304-38e6-41bf-8b40-04144d181ede">
+                <inputEntry id="_275dc304-38e6-41bf-8b40-04144d181ede-1">
+                    <text>&gt;Complex.aNumber</text>
+                </inputEntry>
+                <outputEntry id="_275dc304-38e6-41bf-8b40-04144d181ede-2">
+                    <text>"Bigger"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_82e82d4c-2df5-4c3a-81f0-f20774fb1d29">
+                <inputEntry id="_82e82d4c-2df5-4c3a-81f0-f20774fb1d29-1">
+                    <text>&lt; Complex.aNumber</text>
+                </inputEntry>
+                <outputEntry id="_82e82d4c-2df5-4c3a-81f0-f20774fb1d29-2">
+                    <text>"Smaller"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <decision name="Compare Date" id="_6ea508a1-3414-4023-815c-1c9f9eb76604">
+        <variable typeRef="string" name="Compare Date" id="_f6b34443-8cb0-449a-b730-b867117fd25e"/>
+        <informationRequirement id="_10acf39b-e3ca-417f-92df-8ad4019fef65">
+            <requiredInput href="#_36fc73e6-8f0e-4cbf-b1f8-3287376a912a"/>
+        </informationRequirement>
+        <informationRequirement id="d398e3ca-27ef-4059-90d6-65293b73fd1b">
+            <requiredInput href="#_5c8f37a6-d3c0-480d-a327-401b87580369"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="UNIQUE" outputLabel="Compare Date" typeRef="string" id="_e2069796-71a5-4eab-a907-61bb10e298d7">
+            <input id="_1da4f660-5f79-45ee-bbb6-87495789bd2d">
+                <inputExpression typeRef="date">
+                    <text>Another Date</text>
+                </inputExpression>
+            </input>
+            <output id="_44c191e8-feb2-456d-b2bf-f2840cd7a93c"/>
+            <rule id="_a27d20e7-ed69-4173-8edb-5351ff50783f">
+                <inputEntry id="_8618c034-0676-4d2a-80fb-37f5e698aca1">
+                    <text>Complex.aDate</text>
+                </inputEntry>
+                <outputEntry id="_4735046c-8ffd-4960-9c49-3ed866604e01">
+                    <text>"Same Date"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_82a45810-3a67-4e65-b92f-958721d8337e">
+                <inputEntry id="_9bf777a0-59af-4dd6-828b-c255e9652755">
+                    <text>&gt; Complex.aDate</text>
+                </inputEntry>
+                <outputEntry id="_50f14cca-b00e-4ae2-adb5-fed65b21188b">
+                    <text>"Future Date"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_d3549e0c-316a-47f3-8bc9-9a06699420e5">
+                <inputEntry id="_27bd5bac-a6bd-42bb-a1c1-a8869709a498">
+                    <text>&lt; Complex.aDate</text>
+                </inputEntry>
+                <outputEntry id="_8d13b84d-824a-42e4-8a9e-6501102ca33b">
+                    <text>"Past Date"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <decision name="Compare Time" id="_d6407854-040f-4122-8173-3d3e266c6649">
+        <variable typeRef="string" name="Compare Time" id="_d0477755-3339-4602-b00f-85321217b20b"/>
+        <informationRequirement id="b48dc52e-b066-440f-9218-917b493e7b54">
+            <requiredInput href="#_36fc73e6-8f0e-4cbf-b1f8-3287376a912a"/>
+        </informationRequirement>
+        <informationRequirement id="b16dbf57-9120-4078-9c63-2dbe601e5f12">
+            <requiredInput href="#_61669f2c-9658-43d2-b5fa-0a58f0500412"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="UNIQUE" outputLabel="Compare Time" typeRef="string" id="_d52e015f-0c38-4ef3-bde6-64dc140eb93d">
+            <input id="_2d9bbfcb-b1cf-4ae7-bc32-53a4ebf05c78">
+                <inputExpression typeRef="time">
+                    <text>Another Time</text>
+                </inputExpression>
+            </input>
+            <output id="_75734c94-ab2c-4b5b-b17f-e6beb471da15"/>
+            <rule id="_2edd65eb-40a2-4284-b704-11e32451c34c">
+                <inputEntry id="_82b39273-c61d-4a88-9492-0955cf25d429">
+                    <text>Complex.aTime</text>
+                </inputEntry>
+                <outputEntry id="_81e6d8e7-074b-4db0-85b0-7c825b1038a3">
+                    <text>"Same Time"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_02bfe3ab-d6a0-4ce6-abc5-a143c8b86d34">
+                <inputEntry id="_6bf6fc38-1a6f-44a1-a0d8-f62010d77e97">
+                    <text>&gt; Complex.aTime</text>
+                </inputEntry>
+                <outputEntry id="_73c4b746-7e96-47d9-b8b4-a632abccd1ae">
+                    <text>"Future Time"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_fbc00136-8666-4267-9096-129877d5c9f7">
+                <inputEntry id="_5c95f78d-696a-4ec7-b4fd-42a43532c48c">
+                    <text>&lt; Complex.aTime</text>
+                </inputEntry>
+                <outputEntry id="_c94e88f1-f1df-4ca4-be06-2b963a75a524">
+                    <text>"Past Time"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <decision name="Compare Date and Time" id="_65c8e959-50df-4fd5-931c-be8e22f0005a">
+        <variable typeRef="string" name="Compare Date and Time" id="_de9e1bb6-49a2-4811-bc50-aa3e74eacd72"/>
+        <informationRequirement id="abc26a13-be60-4f03-a45f-03fc033804e2">
+            <requiredInput href="#_36fc73e6-8f0e-4cbf-b1f8-3287376a912a"/>
+        </informationRequirement>
+        <informationRequirement id="_27d55ae5-3f0d-4444-a0fd-7aab11b7222a">
+            <requiredInput href="#_00bb2a44-eb91-4256-92a6-909582594bee"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="UNIQUE" outputLabel="Compare Date and Time" typeRef="string" id="_271f03a4-74f1-4661-be53-45bd6ebdca41">
+            <input id="_31450328-30b2-46f9-ad4d-fddc68e424bf">
+                <inputExpression typeRef="dateTime">
+                    <text>Another Date and Time</text>
+                </inputExpression>
+            </input>
+            <output id="_a709e09f-7c46-489f-a23c-b55294de664d"/>
+            <rule id="_e75a21ec-13e8-4c36-85e3-52c858704cdc">
+                <inputEntry id="_06a78023-5acf-4ebb-bb5a-ed6562866f58">
+                    <text>Complex.aDateTime</text>
+                </inputEntry>
+                <outputEntry id="_9379173c-f3f3-4d05-8297-691dba1edd2a">
+                    <text>"Same date time"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_3904df05-065f-4071-a470-ae1ab1f0c8ca">
+                <inputEntry id="_85223768-af04-4bed-a23f-b8ba8d50783a">
+                    <text>&gt; Complex.aDateTime</text>
+                </inputEntry>
+                <outputEntry id="_cab3025c-3761-4e06-933b-85d644993ef0">
+                    <text>"Future date time"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_cd2e0284-ba39-431d-8cb6-7a613f87b948">
+                <inputEntry id="_00699881-d420-4953-86c4-776c5dd838f4">
+                    <text>&lt; Complex.aDateTime</text>
+                </inputEntry>
+                <outputEntry id="_f89edde0-e706-454d-9d8f-c48f60b6906c">
+                    <text>"Past date time"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <decision name="Compare Days and Time Duration" id="_88012dbc-db14-4c87-83b0-164a0f3fe602">
+        <variable typeRef="string" name="Compare Days and Time Duration" id="_6f6a8c1b-1613-46ec-ac3e-254b7136690b"/>
+        <informationRequirement id="_4a2764ff-97a6-4e04-b380-6e2cf32e3ac2">
+            <requiredInput href="#_36fc73e6-8f0e-4cbf-b1f8-3287376a912a"/>
+        </informationRequirement>
+        <informationRequirement id="_51776a4e-c0a0-4458-b404-122ba3d9791a">
+            <requiredInput href="#_25c2e1fa-5268-463d-8675-157b9b092aa4"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="UNIQUE" outputLabel="Compare Days and Time Duration" typeRef="string" id="_3b48acd9-9008-4410-9df8-c29aa4df2022">
+            <input id="_748e4641-b905-43c6-b9dd-b0f78df125f8">
+                <inputExpression typeRef="dayTimeDuration">
+                    <text>Another Days and Time Duration</text>
+                </inputExpression>
+            </input>
+            <output id="_ab8f536c-4cc1-495d-a0f1-b60ae1628d91"/>
+            <rule id="_37f10965-a8f3-4624-931a-b60cbf508636">
+                <inputEntry id="_3f16fba9-4c9f-475d-b909-31b09b6789dd">
+                    <text>Complex.aDaysAndTimeDuration</text>
+                </inputEntry>
+                <outputEntry id="_befbea2c-fd4f-4c56-820f-e4807e49a50d">
+                    <text>"Same duration"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_98ad6c85-c9af-4290-b125-f15001423415">
+                <inputEntry id="_7d5e0356-a188-4dad-be6a-54ef1521b0bf">
+                    <text>&gt; Complex.aDaysAndTimeDuration</text>
+                </inputEntry>
+                <outputEntry id="_d95c3950-2fcd-44b7-a5b3-fa2f4196fa8d">
+                    <text>"Longer duration"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_816eb72e-33b1-4bba-b30c-2bf29c4c8416">
+                <inputEntry id="_a6bd166c-0f0a-4501-9bde-47491de8ca3e">
+                    <text>&lt; Complex.aDaysAndTimeDuration</text>
+                </inputEntry>
+                <outputEntry id="_074603ea-f127-437a-94f1-ba4f4ef6d8f5">
+                    <text>"Shorter duration"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <decision name="Compare Years and Months Duration" id="_57cd8fab-8d6a-4a04-9f96-b04ae1674bf4">
+        <variable typeRef="string" name="Compare Years and Months Duration" id="_87936dd9-8693-425e-b95d-981f29762f88"/>
+        <informationRequirement id="a9d2f871-dc00-481e-843d-558739bd03fb">
+            <requiredInput href="#_36fc73e6-8f0e-4cbf-b1f8-3287376a912a"/>
+        </informationRequirement>
+        <informationRequirement id="_7a27f1a0-0c8c-4730-b6a9-3fec7aaf1e74">
+            <requiredInput href="#_b3addb8c-bca6-41fe-a59a-871315483d92"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="UNIQUE" outputLabel="Compare Years and Months Duration" typeRef="string" id="_7520243d-d209-48b1-a39f-b6d33c555fbb">
+            <input id="_55b8dfe9-7dc9-4be0-967b-f616910e4a54">
+                <inputExpression typeRef="yearMonthDuration">
+                    <text>Another Years and Months Duration</text>
+                </inputExpression>
+            </input>
+            <output id="_07d1795e-006a-47ec-b379-c56cfbef3bdc"/>
+            <rule id="_5c489616-bbac-4ae2-aafb-5c68c28149e7">
+                <inputEntry id="_2276323f-efe5-49ae-a6b1-3f4926258c20">
+                    <text>Complex.aYearsAndMonthsDuration</text>
+                </inputEntry>
+                <outputEntry id="_44ee05b9-4a84-49f7-8111-92e881cdc3bc">
+                    <text>"Same duration"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_9be84118-78b5-401e-913d-717bc33280d7">
+                <inputEntry id="_634a1c7f-e46b-42ee-b039-585ab4ee9563">
+                    <text>&gt; Complex.aYearsAndMonthsDuration</text>
+                </inputEntry>
+                <outputEntry id="_af5d3332-0a63-4155-96d9-96f6795be2ba">
+                    <text>"Longer duration"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_7db3aeea-2704-49e2-a496-37232218f33e">
+                <inputEntry id="_904092c1-3cc5-425e-939c-b9e50ccf35e7">
+                    <text>&lt; Complex.aYearsAndMonthsDuration</text>
+                </inputEntry>
+                <outputEntry id="_37035f5a-9631-4c9f-a20c-4ac3efe5f1d3">
+                    <text>"Shorter duration"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <inputData name="Another Date" id="_5c8f37a6-d3c0-480d-a327-401b87580369">
+        <variable typeRef="date" name="Another Date" id="_0eaf5959-4e2f-41fd-851a-61350af5941d"/>
+    </inputData>
+    <inputData name="Another Time" id="_61669f2c-9658-43d2-b5fa-0a58f0500412">
+        <variable typeRef="time" name="Another Time" id="_316b1e53-f43a-431e-adb2-e7328ddb74ee"/>
+    </inputData>
+    <inputData name="Another Date and Time" id="_00bb2a44-eb91-4256-92a6-909582594bee">
+        <variable typeRef="dateTime" name="Another Date and Time" id="_075fcb04-9093-4692-a58e-de65522a1089"/>
+    </inputData>
+    <inputData name="Another Days and Time Duration" id="_25c2e1fa-5268-463d-8675-157b9b092aa4">
+        <variable typeRef="dayTimeDuration" name="Another Days and Time Duration" id="_93ae7be4-ad1a-4542-9ad9-5ca82af2b392"/>
+    </inputData>
+    <inputData name="Another Years and Months Duration" id="_b3addb8c-bca6-41fe-a59a-871315483d92">
+        <variable typeRef="yearMonthDuration" name="Another Years and Months Duration" id="_1b9882e2-1985-443a-8145-c567fd5d24d4"/>
+    </inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_D1">
+            <dmndi:Size height="650.0" width="2157.0"/>
+            <dmndi:DMNShape dmnElementRef="_29fcbd74-791b-4700-b6b9-93654a21f492" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s1">
+                <dc:Bounds height="61.0" width="154.0" x="252.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_36fc73e6-8f0e-4cbf-b1f8-3287376a912a" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s2">
+                <dc:Bounds height="60.0" width="153.0" x="1002.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_c714b876-f21c-429f-ab88-010b1f714eab" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s3">
+                <dc:Bounds height="60.0" width="153.0" x="150.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_a1395f8a-bf51-40f8-a8e9-89792e23c755" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s4">
+                <dc:Bounds height="60.0" width="153.0" x="789.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_1fa4679e-196f-4274-85bf-6f50dbad41df" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s5">
+                <dc:Bounds height="60.0" width="153.0" x="576.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_4f421adb-316c-42e0-b6ff-5243c365bdba" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s6">
+                <dc:Bounds height="61.0" width="154.0" x="680.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_35583bbe-81b8-4797-afe9-d870c3e17d44" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s7">
+                <dc:Bounds height="61.0" width="154.0" x="894.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_6ea508a1-3414-4023-815c-1c9f9eb76604" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s8">
+                <dc:Bounds height="61.0" width="154.0" x="466.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_d6407854-040f-4122-8173-3d3e266c6649" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s9">
+                <dc:Bounds height="61.0" width="154.0" x="1108.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_65c8e959-50df-4fd5-931c-be8e22f0005a" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s10">
+                <dc:Bounds height="61.0" width="154.0" x="1322.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_88012dbc-db14-4c87-83b0-164a0f3fe602" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s11">
+                <dc:Bounds height="61.0" width="154.0" x="1536.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_57cd8fab-8d6a-4a04-9f96-b04ae1674bf4" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s12">
+                <dc:Bounds height="61.0" width="154.0" x="1750.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_5c8f37a6-d3c0-480d-a327-401b87580369" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s13">
+                <dc:Bounds height="60.0" width="153.0" x="363.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_61669f2c-9658-43d2-b5fa-0a58f0500412" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s14">
+                <dc:Bounds height="60.0" width="153.0" x="1215.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_00bb2a44-eb91-4256-92a6-909582594bee" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s15">
+                <dc:Bounds height="60.0" width="153.0" x="1428.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_25c2e1fa-5268-463d-8675-157b9b092aa4" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s16">
+                <dc:Bounds height="60.0" width="153.0" x="1641.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_b3addb8c-bca6-41fe-a59a-871315483d92" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_s17">
+                <dc:Bounds height="60.0" width="153.0" x="1854.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="_4c1738f2-f903-43e9-b486-88bad979cb36" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e1">
+                <di:waypoint x="1078.0" y="331.0"/>
+                <di:waypoint x="329.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_8c893e95-4785-41ff-82c8-40499b9ef3ae" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e2">
+                <di:waypoint x="226.0" y="331.0"/>
+                <di:waypoint x="329.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_7c766bfa-802c-42fb-8729-53c0bd15ee46" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e3">
+                <di:waypoint x="652.0" y="331.0"/>
+                <di:waypoint x="757.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="aa83cef8-cc49-4d8b-9828-709d31339782" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e4">
+                <di:waypoint x="1078.0" y="331.0"/>
+                <di:waypoint x="757.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="fbae1bfa-58d6-4450-86ff-458b217107d6" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e5">
+                <di:waypoint x="865.0" y="331.0"/>
+                <di:waypoint x="971.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="d78c7fad-8f61-4dc5-a12a-828f46bebb0e" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e6">
+                <di:waypoint x="1078.0" y="331.0"/>
+                <di:waypoint x="971.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_10acf39b-e3ca-417f-92df-8ad4019fef65" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e7">
+                <di:waypoint x="1078.0" y="331.0"/>
+                <di:waypoint x="543.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="d398e3ca-27ef-4059-90d6-65293b73fd1b" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e8">
+                <di:waypoint x="439.0" y="331.0"/>
+                <di:waypoint x="543.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="b48dc52e-b066-440f-9218-917b493e7b54" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e9">
+                <di:waypoint x="1078.0" y="331.0"/>
+                <di:waypoint x="1185.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="b16dbf57-9120-4078-9c63-2dbe601e5f12" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e10">
+                <di:waypoint x="1291.0" y="331.0"/>
+                <di:waypoint x="1185.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="abc26a13-be60-4f03-a45f-03fc033804e2" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e11">
+                <di:waypoint x="1078.0" y="331.0"/>
+                <di:waypoint x="1399.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_27d55ae5-3f0d-4444-a0fd-7aab11b7222a" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e12">
+                <di:waypoint x="1504.0" y="331.0"/>
+                <di:waypoint x="1399.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_4a2764ff-97a6-4e04-b380-6e2cf32e3ac2" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e13">
+                <di:waypoint x="1078.0" y="331.0"/>
+                <di:waypoint x="1613.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_51776a4e-c0a0-4458-b404-122ba3d9791a" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e14">
+                <di:waypoint x="1717.0" y="331.0"/>
+                <di:waypoint x="1613.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="a9d2f871-dc00-481e-843d-558739bd03fb" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e15">
+                <di:waypoint x="1078.0" y="331.0"/>
+                <di:waypoint x="1827.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_7a27f1a0-0c8c-4730-b6a9-3fec7aaf1e74" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135_e16">
+                <di:waypoint x="1930.0" y="331.0"/>
+                <di:waypoint x="1827.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

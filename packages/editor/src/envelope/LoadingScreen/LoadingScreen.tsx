@@ -46,14 +46,14 @@ export function LoadingScreen(props: { loading: boolean }) {
 
   return (
     (mustRender && (
-      <div id="loading-screen" className="kogito-tooling--loading-screen">
+      <div id="loading-screen" className="kie-tools--loading-screen">
         <div
-          className={`kogito-tooling--loading-screen ${loadingScreenClassName}`}
+          className={`kie-tools--loading-screen ${loadingScreenClassName}`}
           onAnimationEnd={onAnimationEnd}
           data-testid={"loading-screen-div"}
         >
           <Bullseye>
-            <div className={"kogito-tooling--loading-screen-spinner"}>
+            <div className={"kie-tools--loading-screen-spinner"}>
               <div>
                 <Spinner />
               </div>

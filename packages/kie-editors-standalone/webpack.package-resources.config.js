@@ -15,9 +15,10 @@
  */
 
 const { merge } = require("webpack-merge");
-const common = require("../../config/webpack.common.config");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const path = require("path");
-const buildEnv = require("@kogito-tooling/build-env");
+const { env } = require("./env");
+const buildEnv = env;
 
 module.exports = (env) =>
   merge(common(env), {
@@ -33,9 +34,7 @@ module.exports = (env) =>
     },
     devServer: {
       historyApiFallback: false,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist")],
+      static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
       port: buildEnv.standaloneEditors.dev.port,
     },

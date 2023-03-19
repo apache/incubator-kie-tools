@@ -17,7 +17,8 @@
 export enum GitHubPageType {
   VIEW,
   EDIT,
-  PR,
-  TREE,
+  PR_FILES_OR_COMMITS,
+  CAN_OPEN_REPO_IN_EXTERNAL_EDITOR,
   ANY,
+  PR_HOME,
 }

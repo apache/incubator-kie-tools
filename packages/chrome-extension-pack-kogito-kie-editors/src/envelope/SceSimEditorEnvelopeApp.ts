@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
-import { SceSimEditorChannelApi, SceSimEditorEnvelopeApi } from "@kogito-tooling/kie-bc-editors/dist/scesim/api";
-import { SceSimEditor, SceSimEditorEnvelopeApiImpl } from "@kogito-tooling/kie-bc-editors/dist/scesim/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { SceSimEditorChannelApi, SceSimEditorEnvelopeApi } from "@kie-tools/kie-bc-editors/dist/scesim/api";
+import { SceSimEditor, SceSimEditorEnvelopeApiImpl } from "@kie-tools/kie-bc-editors/dist/scesim/envelope";
 
 EditorEnvelope.initCustom<SceSimEditor, SceSimEditorEnvelopeApi, SceSimEditorChannelApi>({
   container: document.getElementById("envelope-app")!,

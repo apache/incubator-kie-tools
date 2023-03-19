@@ -1,0 +1,44 @@
+name: "Publish emscripten-fs"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version"
+        required: true
+  pull_request:
+    paths:
+      - ".github/supporting-files/publish_emscripten_fs"
+      - ".github/workflows/publish_emscripten_fs.yml"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout kie-tools"
+        uses: actions/checkout@v3
+
+      - name: "Build and publish"
+        working-directory: ./.github/supporting-files/publish_emscripten_fs
+        env:
+          NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
+        run: |
+          npm version ${{ github.event.inputs.version }}
+          ./build.sh
+          export ACTUAL=$(node ./test.js)
+          export EXPECTED='emscripten FS is alive!'
+          if [ "$ACTUAL" == "$EXPECTED" ]; then
+            echo "Test passed."
+            if [ ${{ github.event.pull_request }} ]; then
+              echo "CI. Publish skipped."
+            else
+              echo "Publishing."
+              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+              npm publish --access public
+            fi
+          else
+            echo "Test failed:"
+            echo "Actual: '$ACTUAL'"
+            echo "Expected: '$EXPECTED'"
+            false
+          fi

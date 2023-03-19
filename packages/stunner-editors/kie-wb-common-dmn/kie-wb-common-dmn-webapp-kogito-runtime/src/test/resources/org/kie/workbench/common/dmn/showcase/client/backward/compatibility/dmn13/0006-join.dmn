@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler" exporterVersion="5.0.33.1; 1.0; 1.0" namespace="http://www.trisotech.com/definitions/_16bf03c7-8f3d-46d0-a921-6e335ccc7e29" name="join01" triso:logoChoice="Default" id="_16bf03c7-8f3d-46d0-a921-6e335ccc7e29" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <itemDefinition isCollection="true" name="tEmployeeTable" id="tEmployeeTable">
+        <itemComponent name="id" id="_008f96e5-b82b-4105-ab8f-52673390c75f">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent name="name" id="_657371a7-e0a9-4f4c-987d-35cd10e2918b">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent name="deptNum" id="_fa7afb54-265e-4244-97bf-4789c48e3629">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="tDeptTable" id="tDeptTable">
+        <itemComponent name="number" id="_f7e37827-f9ab-4fb1-b07e-9e4367242e65">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="name" id="_fd0110de-a09b-4167-a5fe-103308ad6d0b">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent name="manager" id="_ee4e552c-4e8d-4a0c-8451-bae3eb2d4bd9">
+            <typeRef>string</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <decision name="Join" id="_24c9e583-a87c-462d-ade3-be545e228abd">
+        <variable typeRef="string" name="Join"/>
+        <informationRequirement id="b88078bd-613c-4ea6-907f-73f7dff21702">
+            <requiredInput href="#_7985579c-554c-4d98-aad6-c9dbacff726b"/>
+        </informationRequirement>
+        <informationRequirement id="a1fb9743-9ba3-4699-902a-3edeffa7879e">
+            <requiredInput href="#_35b4f57c-e574-4963-a149-83cc0030e809"/>
+        </informationRequirement>
+        <informationRequirement id="dda877ac-dde4-4f39-8aca-d78a984b8a6a">
+            <requiredInput href="#_7b08bda2-fcf4-44e8-8022-08d9043e1dee"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>DeptTable[number = EmployeeTable[name=LastName].deptNum[1]].manager[1]</text>
+        </literalExpression>
+    </decision>
+    <inputData name="EmployeeTable" id="_7985579c-554c-4d98-aad6-c9dbacff726b">
+        <variable typeRef="tEmployeeTable" name="EmployeeTable"/>
+    </inputData>
+    <inputData name="DeptTable" id="_35b4f57c-e574-4963-a149-83cc0030e809">
+        <variable typeRef="tDeptTable" name="DeptTable"/>
+    </inputData>
+    <inputData name="LastName" id="_7b08bda2-fcf4-44e8-8022-08d9043e1dee">
+        <variable typeRef="string" name="LastName"/>
+    </inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_16bf03c7-8f3d-46d0-a921-6e335ccc7e29_D1">
+            <dmndi:Size height="650.0" width="879.0"/>
+            <dmndi:DMNShape dmnElementRef="_24c9e583-a87c-462d-ade3-be545e228abd" id="_16bf03c7-8f3d-46d0-a921-6e335ccc7e29_s1">
+                <dc:Bounds height="61.0" width="154.0" x="362.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_7985579c-554c-4d98-aad6-c9dbacff726b" id="_16bf03c7-8f3d-46d0-a921-6e335ccc7e29_s2">
+                <dc:Bounds height="60.0" width="153.0" x="150.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_35b4f57c-e574-4963-a149-83cc0030e809" id="_16bf03c7-8f3d-46d0-a921-6e335ccc7e29_s3">
+                <dc:Bounds height="60.0" width="153.0" x="363.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_7b08bda2-fcf4-44e8-8022-08d9043e1dee" id="_16bf03c7-8f3d-46d0-a921-6e335ccc7e29_s4">
+                <dc:Bounds height="60.0" width="153.0" x="576.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="b88078bd-613c-4ea6-907f-73f7dff21702" id="_16bf03c7-8f3d-46d0-a921-6e335ccc7e29_e1">
+                <di:waypoint x="226.0" y="331.0"/>
+                <di:waypoint x="439.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="a1fb9743-9ba3-4699-902a-3edeffa7879e" id="_16bf03c7-8f3d-46d0-a921-6e335ccc7e29_e2">
+                <di:waypoint x="439.0" y="331.0"/>
+                <di:waypoint x="439.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="dda877ac-dde4-4f39-8aca-d78a984b8a6a" id="_16bf03c7-8f3d-46d0-a921-6e335ccc7e29_e3">
+                <di:waypoint x="652.0" y="331.0"/>
+                <di:waypoint x="439.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

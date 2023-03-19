@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        html, body, div#diagram-envelope-app {
+            margin: 0;
+            border: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+        }
+        body {
+            background-color: #fff !important
+        }
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script>
+        <!-- This function is called by GwtEditorWrapperFactory when the Editor envelope is ready -->
+        window.startStandaloneEditor = () => {
+            <%
+              _.map(editorResources.baseJsResources, function(jsResource) {
+                print('\nsetTimeout(() => { const jsResource = document.createElement("script"); jsResource.appendChild(document.createTextNode(`' + jsResource.content + '`)); document.head.append(jsResource); }, 0);');
+              });
+            %>
+
+            <%
+              _.map(editorResources.referencedJsResources, function(jsResource) {
+                print('\nsetTimeout(() => { const jsResource = document.createElement("script"); jsResource.appendChild(document.createTextNode(`' + jsResource.content + '`)); document.head.append(jsResource); }, 0);');
+              });
+            %>
+        };
+    </script>
+
+    <%
+      print('\n<script data-src="'+ editorResources.envelopeJsResource.path +'">\n' + editorResources.envelopeJsResource.content + '\n</script>\n');
+    %>
+
+    <%
+      _.map(editorResources.baseCssResources, function(cssResource) {
+        print('\n<style data-src="'+ cssResource.path +'">\n' + cssResource.content + '\n</style>\n');
+      });
+    %>
+
+    <%
+      _.map(editorResources.referencedCssResources, function(cssResource) {
+        print('\n<style data-src="'+ cssResource.path +'">\n' + cssResource.content + '\n</style>\n');
+      });
+    %>
+
+    <%
+      print('\n<style data-src="fonts">\n');
+      _.map(editorResources.fontResources, function(fontResource) {
+        print('\n@font-face { font-family:\'' + fontResource.family + '\'; src: ');
+        _.map(fontResource.sources, function(source, index, list) {
+          print(' url(data:' + source.mimeType + ';base64,' + source.content + ') format(\'' + source.format + '\')');
+          if (index < list.length - 1) {
+            print(', ');
+          }
+        });
+        print('; ' + fontResource.additionalStyle + ' }');
+      });
+      print('\n</style>\n');
+    %>
+</head>
+<body>
+    <div id="diagram-envelope-app" />
+</body>
+</html>

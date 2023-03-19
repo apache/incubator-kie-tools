@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessage } from "@kie-tooling-core/envelope-bus/dist/api";
+import { EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
 
 /**
  * Delay the event by the given number of miliseconds.

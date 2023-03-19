@@ -1,0 +1,37 @@
+{
+  "id": "solvemathproblems",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "name": "Solve Math Problems Workflow",
+  "description": "Solve math problems",
+  "start": "Solve",
+  "functions": [
+    {
+      "name": "solveMathExpressionFunction",
+      "operation": "http://myapis.org/mapthapis.json#solveExpression"
+    }
+  ],
+  "states": [
+    {
+      "name": "Solve",
+      "type": "foreach",
+      "inputCollection": "${ .expressions }",
+      "iterationParam": "singleexpression",
+      "outputCollection": "${ .results }",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "solveMathExpressionFunction",
+            "arguments": {
+              "expression": "${ .singleexpression }"
+            }
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "output": "${ .results }"
+      },
+      "end": true
+    }
+  ]
+}

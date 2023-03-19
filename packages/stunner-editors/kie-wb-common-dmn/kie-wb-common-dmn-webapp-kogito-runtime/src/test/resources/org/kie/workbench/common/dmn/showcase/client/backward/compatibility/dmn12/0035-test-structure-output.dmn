@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler" exporterVersion="6.0.7.2" namespace="http://www.trisotech.com/dmn/definitions/_a76ecb13-8ecb-4eb4-b590-41f33e8d5108" name="rgbcolor" triso:logoChoice="Default" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <extensionElements/>
+    <itemDefinition name="tValue" label="tValue">
+        <typeRef>number</typeRef>
+        <allowedValues triso:constraintsType="simple">
+            <text>[0..255]</text>
+        </allowedValues>
+    </itemDefinition>
+    <itemDefinition name="t015" label="t015">
+        <typeRef>number</typeRef>
+        <allowedValues triso:constraintsType="simple">
+            <text>[0..15]</text>
+        </allowedValues>
+    </itemDefinition>
+    <itemDefinition name="tCMYK" label="tCMYK">
+        <itemComponent name="C" id="_961de564-811a-478c-bb63-e46a028acaef">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="M" id="_aa7fe801-8a13-4d7e-856b-fc4798f4c75f">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="Y" id="_1dc22ac9-058f-4f65-85b0-9fdb8f59553f">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="K" id="_817f3567-e168-4fbe-88a0-bf6803776abd">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <itemDefinition isCollection="false" name="tRGB" label="tRGB">
+        <itemComponent isCollection="false" name="R" id="_4e556193-4c54-4cb9-93bd-b7692baf30ca">
+            <typeRef>tValue</typeRef>
+            <allowedValues triso:constraintsType="simple">
+                <text>[0..255]</text>
+            </allowedValues>
+        </itemComponent>
+        <itemComponent isCollection="false" name="G" id="_b186a9a4-69f0-45c3-b61d-d71cfe53d5d5">
+            <typeRef>tValue</typeRef>
+            <allowedValues triso:constraintsType="simple">
+                <text>[0..255]</text>
+            </allowedValues>
+        </itemComponent>
+        <itemComponent isCollection="false" name="B" id="_83c4bf71-8ed4-4163-af63-b81e2be7853c">
+            <typeRef>tValue</typeRef>
+            <allowedValues triso:constraintsType="simple">
+                <text>[0..255]</text>
+            </allowedValues>
+        </itemComponent>
+    </itemDefinition>
+    <itemDefinition isCollection="false" name="tProfileofColor" label="tProfileofColor">
+        <itemComponent isCollection="false" name="RGB notation" id="_a7eef908-98c5-48fa-957d-c73cab1f4864">
+            <typeRef>tRGB</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="Hex notation" id="_43236c49-e0a3-47d8-8c25-2007f90f9f6e">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="CMYK notation" id="_86f9cb6e-5ef9-4734-bef6-b856bfffd052">
+            <typeRef>tCMYK</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <businessKnowledgeModel name="remainder" id="_164dc6ba-de3d-44e6-8a19-b6480354e6b9">
+        <variable name="remainder" id="_1fe7cdad-f987-4257-bd57-bc20a1b083f8"/>
+        <encapsulatedLogic kind="FEEL" id="_5995b18a-65f6-4805-b0e8-b505ea742fe7">
+            <formalParameter typeRef="number" name="num" id="_0e114a11-569e-498c-a5c1-35cda7d48cae"/>
+            <formalParameter typeRef="number" name="divisor" id="_57b5a7e9-45fc-46df-8f78-48e529f35acd"/>
+            <literalExpression id="_462ea1ed-2fbb-4b4f-b240-fc9737578149">
+                <text>num-(floor(num/divisor)*divisor)</text>
+            </literalExpression>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+    <businessKnowledgeModel name="single encode to hex" id="_f184a8e1-8808-4e5b-95e2-5d232563d35d">
+        <variable name="single encode to hex" id="_67626047-2376-4f3f-a104-24030bf96a83"/>
+        <encapsulatedLogic kind="FEEL" id="_69e87c91-f53e-422e-badf-fcdb7e85214c">
+            <formalParameter typeRef="t015" name="digit" id="_b6afec0c-b966-4b57-b2b2-a9d0f24cf1e8"/>
+            <context id="_cf5ec156-65dd-4d53-bcbe-fbbde472e646">
+                <contextEntry>
+                    <variable typeRef="string" name="mapping" id="_e5001ab3-b31a-4842-896f-cee34757bf7d"/>
+                    <decisionTable hitPolicy="UNIQUE" outputLabel="mapping" id="_6cdd88cf-4641-469c-9cd8-de76a0117d9b">
+                        <input id="_06cdfb50-a239-4b4f-9499-e0230043bb3e">
+                            <inputExpression typeRef="t015">
+                                <text>digit</text>
+                            </inputExpression>
+                            <inputValues triso:constraintsType="simple">
+                                <text>[0..15]</text>
+                            </inputValues>
+                        </input>
+                        <output id="_d495dae7-84e1-4d7c-b722-6a1685488304"/>
+                        <rule id="_67d56550-572e-4809-ac54-f1969b240701">
+                            <inputEntry id="_f0c78afe-4e14-4b51-a0af-a27866494c07">
+                                <text>[0..9]</text>
+                            </inputEntry>
+                            <outputEntry id="_4b68683c-107d-4086-8e1a-aca08a387519">
+                                <text>string(digit)</text>
+                            </outputEntry>
+                        </rule>
+                        <rule id="_ebc5dfd0-4689-41d7-8f7d-8bc16221f99e">
+                            <inputEntry id="_da7f17d7-69c6-4666-9b8a-c23de8a824f1">
+                                <text>10</text>
+                            </inputEntry>
+                            <outputEntry id="_91a2de90-6692-4d28-a4e6-26706b8f1d4c">
+                                <text>"A"</text>
+                            </outputEntry>
+                        </rule>
+                        <rule id="_70b1e233-ec2b-402a-9a6b-998ac19df2b6">
+                            <inputEntry id="_73736c27-4142-4cf3-827f-732f755b1c6b">
+                                <text>11</text>
+                            </inputEntry>
+                            <outputEntry id="_d98c96a0-5e75-4bd9-8ca5-0a0e873bb840">
+                                <text>"B"</text>
+                            </outputEntry>
+                        </rule>
+                        <rule id="_bec3f1a9-6b46-4bac-9efc-1e650ba5cc7e">
+                            <inputEntry id="_8e50458c-aec6-4048-a81c-5904700f22f4">
+                                <text>12</text>
+                            </inputEntry>
+                            <outputEntry id="_e1a2b249-412b-4f74-a1a5-22554aaed39b">
+                                <text>"C"</text>
+                            </outputEntry>
+                        </rule>
+                        <rule id="_dbae577a-9875-4678-8c1a-b9554a4ec35c">
+                            <inputEntry id="_f91ddf49-2349-4fc1-b4a2-a66c76a1853c">
+                                <text>13</text>
+                            </inputEntry>
+                            <outputEntry id="_404e8564-609a-4aa1-8e09-24338a403d94">
+                                <text>"D"</text>
+                            </outputEntry>
+                        </rule>
+                        <rule id="_cda3e8bd-1c4c-4583-9ef2-74d60c31af34">
+                            <inputEntry id="_ea973684-e1e1-4467-b1f3-2cf8ad895532">
+                                <text>14</text>
+                            </inputEntry>
+                            <outputEntry id="_96dc8e49-4e2c-4400-8d6a-44139b7c9f4b">
+                                <text>"E"</text>
+                            </outputEntry>
+                        </rule>
+                        <rule id="_0c1bbb23-1b68-4bad-9ced-dbf677b87d6d">
+                            <inputEntry id="_a87ee56d-b1c6-4c06-8b7f-32456de33bfa">
+                                <text>15</text>
+                            </inputEntry>
+                            <outputEntry id="_d1183152-9178-41ae-b5d1-43ef8821e8ef">
+                                <text>"F"</text>
+                            </outputEntry>
+                        </rule>
+                    </decisionTable>
+                </contextEntry>
+                <contextEntry>
+                    <literalExpression id="_c512eb30-0587-4335-bbb6-b54c2fb9baca">
+                        <text>mapping</text>
+                    </literalExpression>
+                </contextEntry>
+            </context>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+    <businessKnowledgeModel name="to hex" id="_c36b4a7d-0eb1-4714-b6cd-ae50c8fabcc5">
+        <variable name="to hex" id="_e18903c9-019d-4a9f-b9d0-ea088be5524a"/>
+        <encapsulatedLogic kind="FEEL" id="_eef86b24-d4cb-4358-9640-fcb56edb5163">
+            <formalParameter typeRef="tValue" name="num" id="_da72fded-697c-410f-98a0-e957fd0fe8a7"/>
+            <literalExpression id="_266d4933-85e0-4441-b429-d9f190020580">
+                <text>if num &lt; 16
+then "0" + single encode to hex(num)
+else single encode to hex(floor(num/16)) + single encode to hex(remainder(num, 16))</text>
+            </literalExpression>
+        </encapsulatedLogic>
+        <knowledgeRequirement id="ce27566d-b787-4039-b233-f13088c0fc62">
+            <requiredKnowledge href="#_164dc6ba-de3d-44e6-8a19-b6480354e6b9"/>
+        </knowledgeRequirement>
+        <knowledgeRequirement id="_262fc1c7-b1b9-4e51-a8e8-a3adc1d3f1d7">
+            <requiredKnowledge href="#_f184a8e1-8808-4e5b-95e2-5d232563d35d"/>
+        </knowledgeRequirement>
+    </businessKnowledgeModel>
+    <decision name="hex Value" id="_4759c73a-7eff-420f-b856-d89332811121">
+        <variable typeRef="string" name="hex Value" id="_022c7f7f-28a4-4370-8c2d-72124fa6d07e"/>
+        <informationRequirement id="_04752c35-5a9f-46ad-baec-bcbccbdc0103">
+            <requiredInput href="#_76c4fb6d-9093-4b70-8b70-54bce203d401"/>
+        </informationRequirement>
+        <informationRequirement id="_7a3a5f2a-a21b-400c-bdf9-477961b25d57">
+            <requiredInput href="#_b4ef0ae3-fda6-4b02-8109-7ffabc6f218c"/>
+        </informationRequirement>
+        <informationRequirement id="a1875caa-2578-439d-87b6-f07a42a0918c">
+            <requiredInput href="#_7562a59d-4ec2-4686-aa92-34741382356f"/>
+        </informationRequirement>
+        <knowledgeRequirement id="_5b1fbb1b-45b5-4d74-82d9-dbdb95c877fe">
+            <requiredKnowledge href="#_c36b4a7d-0eb1-4714-b6cd-ae50c8fabcc5"/>
+        </knowledgeRequirement>
+        <literalExpression id="_a0147eeb-8f85-44f5-8c91-e1f140718dad">
+            <text>"#" + to hex(R Value) + to hex(G Value) + to hex(B Value)</text>
+        </literalExpression>
+    </decision>
+    <inputData name="R Value" id="_76c4fb6d-9093-4b70-8b70-54bce203d401">
+        <variable typeRef="tValue" name="R Value" id="_0c516ce4-cfce-4b62-9570-36b9ffa578c2"/>
+    </inputData>
+    <inputData name="G Value" id="_b4ef0ae3-fda6-4b02-8109-7ffabc6f218c">
+        <variable typeRef="tValue" name="G Value" id="_1c704638-2c81-41bb-ae9b-c359b357ea1f"/>
+    </inputData>
+    <inputData name="B Value" id="_7562a59d-4ec2-4686-aa92-34741382356f">
+        <variable typeRef="tValue" name="B Value" id="_bfa2c7fd-4786-4124-ba79-9bf789d3e89d"/>
+    </inputData>
+    <decision name="cmyk Value" id="_4969da0d-33af-4380-bcb3-19a85331f5a1">
+        <variable typeRef="tCMYK" name="cmyk Value" id="_c42af6eb-c147-491f-a4ab-f71cbd9dde97"/>
+        <informationRequirement id="_58ef01f7-adc6-465a-be11-7d887fb3a99b">
+            <requiredInput href="#_76c4fb6d-9093-4b70-8b70-54bce203d401"/>
+        </informationRequirement>
+        <informationRequirement id="fdbf98f0-20a3-4795-b24d-81067e2f1717">
+            <requiredInput href="#_b4ef0ae3-fda6-4b02-8109-7ffabc6f218c"/>
+        </informationRequirement>
+        <informationRequirement id="e99dae90-27a9-4d14-be69-70e92ea34686">
+            <requiredInput href="#_7562a59d-4ec2-4686-aa92-34741382356f"/>
+        </informationRequirement>
+        <context id="_5ae53635-a8bb-4d91-97cf-ab02215c2645">
+            <contextEntry>
+                <variable typeRef="number" name="Rn" id="_29668bf9-99dc-44eb-8185-79affe821451"/>
+                <literalExpression id="_78581190-3494-49ad-95c0-98ee46744d30">
+                    <text>R Value / 255 </text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="number" name="Gn" id="_ca2eac85-e940-45df-8d8d-67b15ca49106"/>
+                <literalExpression id="_40449677-ca6e-406b-a5d0-acdb572a8cfc">
+                    <text>G Value / 255</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="number" name="Bn" id="_7fbc054a-806f-4d17-9360-178e63ace3de"/>
+                <literalExpression id="_7e253f01-40eb-4500-8c79-678c88656139">
+                    <text>B Value / 255</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="number" name="Kn" id="_32295b7c-fa65-4c5f-9d49-221da22288da"/>
+                <literalExpression id="_bbba98e9-7682-47f8-8e17-dfe221601872">
+                    <text>1-max(Rn, Gn, Bn)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="number" name="Cn" id="_7b4e91b6-be23-49e7-bafe-3b4d2abd1e64"/>
+                <literalExpression id="_f49843ae-dc08-4c65-b0dd-36f0f23ccb79">
+                    <text>if Kn=1 then 0 else (1-Rn-Kn) / (1-Kn)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="number" name="Mn" id="_7965cc95-8c0b-4710-926f-676948b4e8d6"/>
+                <literalExpression id="_a58f764a-68d6-4cc0-9127-b9e1a4327bb9">
+                    <text>if Kn=1 then 0 else (1-Gn-Kn) / (1-Kn)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="number" name="Yn" id="_ca93d416-311a-447e-8c8a-82852008e28b"/>
+                <literalExpression id="_3511735d-5fc9-427f-ae06-07c369dc6d9f">
+                    <text>if Kn=1 then 0 else (1-Bn-Kn) / (1-Kn)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="tCMYK" name="cmyk" id="_1634e30a-2bf1-4be3-9065-e1f0413c06ee"/>
+                <context id="_36db5b09-91f5-4333-a354-11ff3df10927">
+                    <contextEntry>
+                        <variable typeRef="number" name="C" id="_2beb452a-deeb-40af-bcf6-12b7d5231f2e"/>
+                        <literalExpression id="_0af37aa1-9ce9-4cbb-92f6-2d04dc372e87">
+                            <text>decimal(Cn*100, 0)</text>
+                        </literalExpression>
+                    </contextEntry>
+                    <contextEntry>
+                        <variable typeRef="number" name="M" id="_c7964597-7979-43a0-8c34-19b033690729"/>
+                        <literalExpression id="_fc2ff920-ce53-48d9-a773-5f320d1db99e">
+                            <text>decimal(Mn*100, 0)</text>
+                        </literalExpression>
+                    </contextEntry>
+                    <contextEntry>
+                        <variable typeRef="number" name="Y" id="_05e92ab2-e6da-49f2-a112-76893f68c48d"/>
+                        <literalExpression id="_4ea289e2-7dd8-4183-b7c9-28cd22bccead">
+                            <text>decimal(Yn*100, 0)</text>
+                        </literalExpression>
+                    </contextEntry>
+                    <contextEntry>
+                        <variable typeRef="number" name="K" id="_04017620-47ee-4daa-b99b-3b72d7215ee4"/>
+                        <literalExpression id="_a6f42375-54c2-497b-b32c-eb576a819482">
+                            <text>decimal(Kn*100, 0)</text>
+                        </literalExpression>
+                    </contextEntry>
+                </context>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression id="_d8e15dc8-345e-45dd-8cf0-9e0c9eb6291b">
+                    <text>cmyk</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <decision name="Profile of Color" id="_70c6c572-8743-468f-8b77-e2d4940bec8f">
+        <variable typeRef="tProfileofColor" name="Profile of Color" id="_b431c9d0-4f5d-469b-a115-5b127f984646"/>
+        <informationRequirement id="c3333706-c3b6-415b-9a22-32418d4de44e">
+            <requiredDecision href="#_4759c73a-7eff-420f-b856-d89332811121"/>
+        </informationRequirement>
+        <informationRequirement id="_052cfd68-edeb-47a4-9256-7f568a0f168c">
+            <requiredDecision href="#_4969da0d-33af-4380-bcb3-19a85331f5a1"/>
+        </informationRequirement>
+        <informationRequirement id="d7965721-6fa1-4053-aad2-5e1043ac78af">
+            <requiredInput href="#_76c4fb6d-9093-4b70-8b70-54bce203d401"/>
+        </informationRequirement>
+        <informationRequirement id="db55ba0e-8fc0-4653-ad1d-dc5de31b7175">
+            <requiredInput href="#_b4ef0ae3-fda6-4b02-8109-7ffabc6f218c"/>
+        </informationRequirement>
+        <informationRequirement id="c827d880-b3dd-4615-8957-311338ed36ef">
+            <requiredInput href="#_7562a59d-4ec2-4686-aa92-34741382356f"/>
+        </informationRequirement>
+        <context id="_36cc7671-0380-4a96-8d51-93c1d1192d94">
+            <contextEntry>
+                <variable typeRef="tProfileofColor" name="Profile of Color" id="_f1f51c5a-e9f0-4369-bbd7-e88276b055ef"/>
+                <context id="_4ab5ac12-2e1c-408b-b4c3-03fc7e3e2588">
+                    <contextEntry>
+                        <variable typeRef="tRGB" name="RGB notation" id="_97625c3b-e3f7-4b16-9908-0ad210658d6c"/>
+                        <context id="_b49c4de8-1886-4a46-956d-931d4ac7893e">
+                            <contextEntry>
+                                <variable typeRef="tValue" name="R" id="_77235502-e4dc-4f54-a934-fe222d4559d1"/>
+                                <literalExpression id="_48e6bd27-c844-41dc-9bbc-f3a5b47a4cd6">
+                                    <text>R Value</text>
+                                </literalExpression>
+                            </contextEntry>
+                            <contextEntry>
+                                <variable typeRef="tValue" name="G" id="_5a974e63-0305-4a3a-b0b0-21f50a09340a"/>
+                                <literalExpression id="_001d3a71-9063-4986-a0bb-90ad957779ad">
+                                    <text>G Value</text>
+                                </literalExpression>
+                            </contextEntry>
+                            <contextEntry>
+                                <variable typeRef="tValue" name="B" id="_d5f489cf-dbf0-4110-9319-cd829efbf778"/>
+                                <literalExpression id="_1c918fce-dfc9-4d9b-bd4f-428700cb4858">
+                                    <text>B Value</text>
+                                </literalExpression>
+                            </contextEntry>
+                        </context>
+                    </contextEntry>
+                    <contextEntry>
+                        <variable typeRef="string" name="Hex notation" id="_10ea0dbb-5ad7-447d-b6ac-7836773dd4a3"/>
+                        <literalExpression id="_ef8ff37f-f4d3-4d87-ac13-3f3da345dc37">
+                            <text>hex Value</text>
+                        </literalExpression>
+                    </contextEntry>
+                    <contextEntry>
+                        <variable typeRef="tCMYK" name="CMYK notation" id="_abf3c3ff-4d32-4ad6-9ede-ef5f07612ae4"/>
+                        <literalExpression id="_cac637d5-a188-49f0-b0fa-2ea464595141">
+                            <text>cmyk Value</text>
+                        </literalExpression>
+                    </contextEntry>
+                </context>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression id="_e87e0b6f-401a-4bab-938e-07012e3bcf99">
+                    <text>Profile of Color</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_D1">
+            <dmndi:Size height="904.0" width="1200.0"/>
+            <dmndi:DMNShape dmnElementRef="_164dc6ba-de3d-44e6-8a19-b6480354e6b9" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_s1">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="693.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_f184a8e1-8808-4e5b-95e2-5d232563d35d" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_s2">
+                <dc:Bounds height="61.0" width="154.0" x="364.0" y="693.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_c36b4a7d-0eb1-4714-b6cd-ae50c8fabcc5" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_s3">
+                <dc:Bounds height="61.0" width="154.0" x="257.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_4759c73a-7eff-420f-b856-d89332811121" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_s4">
+                <dc:Bounds height="61.0" width="154.0" x="534.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_76c4fb6d-9093-4b70-8b70-54bce203d401" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_s5">
+                <dc:Bounds height="60.0" width="153.0" x="471.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_b4ef0ae3-fda6-4b02-8109-7ffabc6f218c" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_s6">
+                <dc:Bounds height="60.0" width="153.0" x="684.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_7562a59d-4ec2-4686-aa92-34741382356f" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_s7">
+                <dc:Bounds height="60.0" width="153.0" x="897.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_4969da0d-33af-4380-bcb3-19a85331f5a1" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_s8">
+                <dc:Bounds height="61.0" width="154.0" x="748.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_70c6c572-8743-468f-8b77-e2d4940bec8f" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_s9">
+                <dc:Bounds height="61.0" width="154.0" x="748.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="ce27566d-b787-4039-b233-f13088c0fc62" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e1">
+                <di:waypoint x="227.0" y="693.0"/>
+                <di:waypoint x="334.0" y="573.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_262fc1c7-b1b9-4e51-a8e8-a3adc1d3f1d7" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e2">
+                <di:waypoint x="441.0" y="693.0"/>
+                <di:waypoint x="334.0" y="573.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_5b1fbb1b-45b5-4d74-82d9-dbdb95c877fe" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e3">
+                <di:waypoint x="334.0" y="512.0"/>
+                <di:waypoint x="611.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_04752c35-5a9f-46ad-baec-bcbccbdc0103" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e4">
+                <di:waypoint x="547.0" y="512.0"/>
+                <di:waypoint x="611.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_7a3a5f2a-a21b-400c-bdf9-477961b25d57" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e5">
+                <di:waypoint x="760.0" y="512.0"/>
+                <di:waypoint x="611.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="a1875caa-2578-439d-87b6-f07a42a0918c" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e6">
+                <di:waypoint x="973.0" y="512.0"/>
+                <di:waypoint x="611.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_58ef01f7-adc6-465a-be11-7d887fb3a99b" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e7">
+                <di:waypoint x="547.0" y="512.0"/>
+                <di:waypoint x="825.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="fdbf98f0-20a3-4795-b24d-81067e2f1717" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e8">
+                <di:waypoint x="760.0" y="512.0"/>
+                <di:waypoint x="825.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="e99dae90-27a9-4d14-be69-70e92ea34686" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e9">
+                <di:waypoint x="973.0" y="512.0"/>
+                <di:waypoint x="825.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="c3333706-c3b6-415b-9a22-32418d4de44e" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e10">
+                <di:waypoint x="611.0" y="331.0"/>
+                <di:waypoint x="825.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_052cfd68-edeb-47a4-9256-7f568a0f168c" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e11">
+                <di:waypoint x="825.0" y="331.0"/>
+                <di:waypoint x="825.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="d7965721-6fa1-4053-aad2-5e1043ac78af" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e12">
+                <di:waypoint x="547.0" y="512.0"/>
+                <di:waypoint x="825.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="db55ba0e-8fc0-4653-ad1d-dc5de31b7175" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e13">
+                <di:waypoint x="760.0" y="512.0"/>
+                <di:waypoint x="825.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="c827d880-b3dd-4615-8957-311338ed36ef" id="_a76ecb13-8ecb-4eb4-b590-41f33e8d5108_e14">
+                <di:waypoint x="973.0" y="512.0"/>
+                <di:waypoint x="825.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

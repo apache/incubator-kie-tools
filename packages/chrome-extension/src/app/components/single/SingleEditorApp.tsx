@@ -96,32 +96,24 @@ export function SingleEditorApp(props: {
     setFullscreen(true);
   }, []);
 
-  const openExternalEditor = useCallback(() => {
-    props.getFileContents().then((fileContent) => {
-      globals.externalEditorManager?.open(props.getFileName(), fileContent!, props.readonly);
-    });
-  }, [globals.externalEditorManager]);
+  const { getFileContents, getFileName } = props;
+
+  const openExternalEditor = useMemo(
+    () =>
+      globals.externalEditorManager?.open &&
+      (() => {
+        getFileContents().then((fileContent) => {
+          globals.externalEditorManager?.open?.(getFileName(), fileContent!, props.readonly);
+        });
+      }),
+    [globals.externalEditorManager, getFileContents, getFileName, props.readonly]
+  );
 
   const linkToExternalEditor = useMemo(() => {
-    return globals.externalEditorManager?.getLink(
+    return globals.externalEditorManager?.getLink?.(
       `${props.fileInfo.org}/${props.fileInfo.repo}/${props.fileInfo.gitRef}/${props.fileInfo.path}`
     );
-  }, [globals.externalEditorManager]);
-
-  useEffect(() => {
-    const listener = globals.externalEditorManager?.listenToComeBack(
-      (fileName) => {
-        globals.dependencies.all.edit__githubFileNameInput()!.value = fileName;
-      },
-      (content) => {
-        isolatedEditor?.setContent(content);
-      }
-    );
-
-    return () => {
-      listener?.stopListening();
-    };
-  }, [globals.externalEditorManager, isolatedEditor]);
+  }, [globals.externalEditorManager, props.fileInfo]);
 
   const onEditorReady = useCallback(() => {
     setTextModeAvailable(true);

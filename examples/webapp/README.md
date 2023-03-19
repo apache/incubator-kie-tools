@@ -24,18 +24,18 @@ To get more the details please take a look on each implementation:
 To install all dependencies it's necessary to execute the following command on the root folder of the project:
 
 ```shell script
-yarn run init
+pnpm init
 ```
 
 ### Build
 
 ```shell script
-yarn run build:fast // Normal build
-yarn run build:prod // Optimized build, run TsLint
+pnpm build:fast // Normal build
+pnpm build:prod // Optimized build, run TsLint
 ```
 
 ### Run
 
 ```shell script
-yarn run start // Starts the dev server on localhost:9001
+pnpm start // Starts the dev server on localhost:9001
 ```

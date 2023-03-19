@@ -1,0 +1,56 @@
+/*!
+ * Copyright 2021 Red Hat; Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License; Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing; software
+ * distributed under the License is distributed on an AS IS BASIS;
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND; either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.kogito--editor__dmn-form-result__leaf-updated {
+  animation-name: highlight;
+  animation-duration: 1s;
+  border-radius: 4px;
+}
+
+@keyframes highlight {
+  0% {
+    background-color: var(--pf-global--palette--black-600);
+  }
+  100% {
+    background-color: var(--pf-global--palette--black-100);
+  }
+}
+
+.kie-tools__dmn-form-result__evaluation {
+  display: flex;
+  align-items: center;
+}
+
+.kogito--editor__dmn-form-result__evaluation-link {
+  padding-left: 5px;
+}
+
+.kogito--editor__dmn-form-result__results-date {
+  display: flex;
+  align-items: center;
+}
+
+.kogito--editor__dmn-form-result__results-date > p {
+  margin-right: 10px;
+}
+
+.kogito--editor__dmn-form-result__results {
+  padding: 0 10px 20px 10px;
+}
+
+.kogito--editor__dmn-form-result__results-card {
+  border: 0 !important;
+}

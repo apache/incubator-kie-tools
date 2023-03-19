@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import { GwtStateControlService } from "@kogito-tooling/kie-bc-editors/dist/common/gwtStateControl";
-import { StateControlApi } from "@kogito-tooling/kie-bc-editors/dist/common/api/StateControlApi";
+import { GwtStateControlService } from "@kie-tools/kie-bc-editors/dist/common/gwtStateControl";
+import { StateControlExposedInteropApi } from "@kie-tools/kie-bc-editors/dist/common/exposedInteropApi/StateControlExposedInteropApi";
 
 const innerMessageHandler = jest.fn();
 
 let messageBus;
 
 let stateControlService: GwtStateControlService;
-let stateControlApi: StateControlApi;
+let stateControlApi: StateControlExposedInteropApi;
 
 describe("StateControl", () => {
   beforeEach(() => {
     stateControlService = new GwtStateControlService();
     messageBus = new innerMessageHandler();
-    stateControlApi = stateControlService.exposeApi(messageBus);
+    stateControlApi = stateControlService.getExposedInteropApi(messageBus);
   });
 
   test("test undo redo without commands", () => {

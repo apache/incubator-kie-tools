@@ -1,0 +1,306 @@
+{
+  "definitions": {
+    "InputSetloan__pre__qualification": {
+      "required": ["Credit Score", "Applicant Data", "Requested Product"],
+      "type": "object",
+      "properties": {
+        "Credit Score": {
+          "$ref": "#/definitions/Credit__Score"
+        },
+        "Applicant Data": {
+          "$ref": "#/definitions/Applicant__Data"
+        },
+        "Requested Product": {
+          "$ref": "#/definitions/Requested__Product"
+        }
+      },
+      "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : InputSetloan_pre_qualification }",
+      "x-dmn-descriptions": {}
+    },
+    "InputSetTraffic_32Violation": {
+      "required": ["Violation", "Driver"],
+      "type": "object",
+      "properties": {
+        "Violation": {
+          "$ref": "#/definitions/tViolation"
+        },
+        "Driver": {
+          "$ref": "#/definitions/tDriver"
+        }
+      },
+      "x-dmn-type": "DMNType{ https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF : InputSetTraffic Violation }",
+      "x-dmn-descriptions": {}
+    },
+    "Applicant__Data": {
+      "type": "object",
+      "properties": {
+        "Age": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "Marital Status": {
+          "$ref": "#/definitions/Marital__Status"
+        },
+        "Employment Status": {
+          "$ref": "#/definitions/Applicant__Data__Employment_32Status"
+        },
+        "Existing Customer": {
+          "type": "boolean",
+          "x-dmn-type": "FEEL:boolean"
+        },
+        "Monthly": {
+          "$ref": "#/definitions/Applicant__Data__Monthly"
+        }
+      },
+      "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Applicant_Data }"
+    },
+    "Applicant__Data__Monthly": {
+      "type": "object",
+      "properties": {
+        "Income": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "Repayments": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "Expenses": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "Tax": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "Insurance": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        }
+      }
+    },
+    "Credit__Score__FICO": {
+      "maximum": 850,
+      "exclusiveMaximum": false,
+      "minimum": 300,
+      "exclusiveMinimum": false,
+      "type": "number",
+      "x-dmn-type": "FEEL:number",
+      "x-dmn-allowed-values": "[300..850]"
+    },
+    "tViolation": {
+      "type": "object",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "x-dmn-type": "FEEL:string"
+        },
+        "Date": {
+          "format": "date",
+          "type": "string",
+          "x-dmn-type": "FEEL:date"
+        },
+        "Type": {
+          "$ref": "#/definitions/tViolation__Type"
+        },
+        "Speed Limit": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "Actual Speed": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        }
+      },
+      "x-dmn-type": "DMNType{ https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF : tViolation }"
+    },
+    "OutputSetloan__pre__qualification": {
+      "type": "object",
+      "properties": {
+        "Front End Ratio": {
+          "$ref": "#/definitions/Front__End__Ratio"
+        },
+        "Back End Ratio": {
+          "$ref": "#/definitions/Back__End__Ratio"
+        },
+        "Credit Score Rating": {
+          "$ref": "#/definitions/Credit__Score__Rating"
+        },
+        "Loan Pre-Qualification": {
+          "$ref": "#/definitions/Loan__Qualification"
+        },
+        "Credit Score": {
+          "$ref": "#/definitions/Credit__Score"
+        },
+        "Applicant Data": {
+          "$ref": "#/definitions/Applicant__Data"
+        },
+        "Requested Product": {
+          "$ref": "#/definitions/Requested__Product"
+        }
+      },
+      "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : OutputSetloan_pre_qualification }",
+      "x-dmn-descriptions": {}
+    },
+    "tFine": {
+      "type": "object",
+      "properties": {
+        "Amount": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "Points": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        }
+      },
+      "x-dmn-type": "DMNType{ https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF : tFine }"
+    },
+    "Marital__Status": {
+      "enum": ["M", "D", "S"],
+      "type": "string",
+      "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Marital_Status }",
+      "x-dmn-allowed-values": "\"M\", \"D\", \"S\""
+    },
+    "tDriver__Age": {
+      "maximum": 90,
+      "exclusiveMaximum": false,
+      "minimum": 18,
+      "exclusiveMinimum": false,
+      "type": "number",
+      "x-dmn-type": "FEEL:number",
+      "x-dmn-allowed-values": "[18..90]"
+    },
+    "Requested__Product": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/Product__Type"
+        },
+        "Rate": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "Term": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "Amount": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        }
+      },
+      "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Requested_Product }"
+    },
+    "tViolation__Type": {
+      "enum": ["speed", "parking", "driving under the influence"],
+      "type": "string",
+      "x-dmn-type": "FEEL:string",
+      "x-dmn-allowed-values": "\"speed\", \"parking\", \"driving under the influence\""
+    },
+    "Applicant__Data__Employment_32Status": {
+      "enum": ["Unemployed", "Employed", "Self-employed", "Student"],
+      "type": "string",
+      "x-dmn-type": "FEEL:string",
+      "x-dmn-allowed-values": "\"Unemployed\", \"Employed\", \"Self-employed\", \"Student\""
+    },
+    "Credit__Score": {
+      "type": "object",
+      "properties": {
+        "FICO": {
+          "$ref": "#/definitions/Credit__Score__FICO"
+        }
+      },
+      "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Credit_Score }"
+    },
+    "tDriver": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "x-dmn-type": "FEEL:string"
+        },
+        "Age": {
+          "$ref": "#/definitions/tDriver__Age"
+        },
+        "State": {
+          "type": "string",
+          "x-dmn-type": "FEEL:string"
+        },
+        "City": {
+          "type": "string",
+          "x-dmn-type": "FEEL:string"
+        },
+        "Points": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        }
+      },
+      "x-dmn-type": "DMNType{ https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF : tDriver }"
+    },
+    "Front__End__Ratio": {
+      "enum": ["Sufficient", "Insufficient"],
+      "type": "string",
+      "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Front_End_Ratio }",
+      "x-dmn-allowed-values": "\"Sufficient\", \"Insufficient\""
+    },
+    "Loan__Qualification__Qualification": {
+      "enum": ["Qualified", "Not Qualified"],
+      "type": "string",
+      "x-dmn-type": "FEEL:string",
+      "x-dmn-allowed-values": "\"Qualified\", \"Not Qualified\""
+    },
+    "OutputSetTraffic_32Violation": {
+      "type": "object",
+      "properties": {
+        "Fine": {
+          "$ref": "#/definitions/tFine"
+        },
+        "Should the driver be suspended?": {
+          "type": "string",
+          "x-dmn-type": "FEEL:string"
+        },
+        "Violation": {
+          "$ref": "#/definitions/tViolation"
+        },
+        "Driver": {
+          "$ref": "#/definitions/tDriver"
+        }
+      },
+      "x-dmn-type": "DMNType{ https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF : OutputSetTraffic Violation }",
+      "x-dmn-descriptions": {}
+    },
+    "Credit__Score__Rating": {
+      "enum": ["Poor", "Bad", "Fair", "Good", "Excellent"],
+      "type": "string",
+      "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Credit_Score_Rating }",
+      "x-dmn-allowed-values": "\"Poor\", \"Bad\", \"Fair\", \"Good\", \"Excellent\""
+    },
+    "Product__Type": {
+      "enum": ["Standard Loan", "Special Loan"],
+      "type": "string",
+      "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Product_Type }",
+      "x-dmn-allowed-values": "\"Standard Loan\", \"Special Loan\""
+    },
+    "Back__End__Ratio": {
+      "enum": ["Insufficient", "Sufficient"],
+      "type": "string",
+      "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Back_End_Ratio }",
+      "x-dmn-allowed-values": "\"Insufficient\", \"Sufficient\""
+    },
+    "Loan__Qualification": {
+      "type": "object",
+      "properties": {
+        "Qualification": {
+          "$ref": "#/definitions/Loan__Qualification__Qualification"
+        },
+        "Reason": {
+          "type": "string",
+          "x-dmn-type": "FEEL:string"
+        }
+      },
+      "x-dmn-type": "DMNType{ https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB : Loan_Qualification }"
+    }
+  },
+  "$ref": "#/definitions/InputSetloan__pre__qualification"
+}

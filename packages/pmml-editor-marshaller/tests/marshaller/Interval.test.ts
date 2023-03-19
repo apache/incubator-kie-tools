@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataDictionary, DataField, Interval, PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, DataField, Interval, PMML, PMML2XML, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 
 describe("Interval tests", () => {
   test("Empty collection on DataField", () => {
     const pmml: PMML = XML2PMML(`
-      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string"/>
         </DataDictionary>
@@ -39,7 +39,7 @@ describe("Interval tests", () => {
 
   test("Add Interval", () => {
     const pmml: PMML = XML2PMML(`
-      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string"/>
         </DataDictionary>
@@ -60,7 +60,7 @@ describe("Interval tests", () => {
 
   test("Add Interval::No leftMargin", () => {
     const pmml: PMML = XML2PMML(`
-      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string"/>
         </DataDictionary>
@@ -81,7 +81,7 @@ describe("Interval tests", () => {
 
   test("Add Interval::No rightMargin", () => {
     const pmml: PMML = XML2PMML(`
-      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string"/>
         </DataDictionary>
@@ -140,7 +140,7 @@ describe("Interval tests", () => {
             <Interval closure="closedClosed" leftMargin="25" rightMargin="500"/>
           </DataField>
         </DataDictionary>
-      </PMML> 
+      </PMML>
     `);
 
     expect(pmml).not.toBeNull();

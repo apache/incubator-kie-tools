@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import * as React from "react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
@@ -82,7 +98,7 @@ const ConstraintsEnumEdit = (props: ConstraintsEnumEditProps) => {
             />
           </StackItem>
           <StackItem>
-            <Button variant={ButtonVariant.secondary} onClick={addOne}>
+            <Button variant={ButtonVariant.secondary} onClick={addOne} ouiaId="add-another-value">
               Add another value
             </Button>
           </StackItem>
@@ -179,10 +195,17 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
       className={`constraints-enum__item ${enumsCount === 1 ? "constraints-enum__item--sort-disabled" : ""}`}
       tabIndex={20 + position}
       ref={enumRef}
+      data-ouia-component-id={`val-${position}`}
     >
       <Flex>
         <FlexItem>
-          <Button variant="plain" aria-label="Drag to sort" component={"span"} isDisabled={enumsCount === 1}>
+          <Button
+            variant="plain"
+            aria-label="Drag to sort"
+            component={"span"}
+            isDisabled={enumsCount === 1}
+            ouiaId="drag-it"
+          >
             <GripVerticalIcon />
           </Button>
         </FlexItem>
@@ -199,10 +222,16 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
             onKeyDown={handleTabNavigation}
             autoComplete="off"
             validated={validations.current.length > 0 ? "warning" : "default"}
+            data-ouia-component-type="value-name"
           />
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>
-          <Button variant={ButtonVariant.plain} onClick={handleDelete} isDisabled={enumsCount === 1}>
+          <Button
+            variant={ButtonVariant.plain}
+            onClick={handleDelete}
+            isDisabled={enumsCount === 1}
+            ouiaId="delete-item"
+          >
             <TrashIcon />
           </Button>
         </FlexItem>

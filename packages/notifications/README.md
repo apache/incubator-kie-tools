@@ -1,13 +1,10 @@
-# Kogito Tooling Notifications
+# KIE Tools Notifications
 
 This package provides a type-safe Notifications library for a Typescript project.
 
 ## Install
 
-Can be installed with `yarn` or `npm`:
-
-- `yarn add @kie-tooling-core/notifications`
-- `npm install @kie-tooling-core/notifications`
+- `npm install @kie-tools-core/notifications`
 
 ## Usage
 
@@ -18,10 +15,10 @@ The library is separated into two submodules:
 
   to use the core:
 
-  - `import { NotificationsApi } from "@kie-tooling-core/notifications/dist/api"`
-  - `import { Notification } from "@kie-tooling-core/notifications/dist/api"`
-  - `import { NotificationSeverity } from "@kie-tooling-core/notifications/dist/api"`
-  - `import { NotificationType } from "@kie-tooling-core/notifications/dist/api"`
+  - `import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api"`
+  - `import { Notification } from "@kie-tools-core/notifications/dist/api"`
+  - `import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api"`
+  - `import { NotificationType } from "@kie-tools-core/notifications/dist/api"`
 
 - vscode
 
@@ -30,14 +27,14 @@ The library is separated into two submodules:
   to use the vscode classes:
 
   ```ts
-  import { VsCodeNotificationsApi } from "@kie-tooling-core/i18n/dist/react-components";
+  import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/vscode";
 
-  const api: NotificationsApi = new VsCodeNotificationsApi(workspaceApi, i18n);
+  const api: NotificationsChannelApi = new VsCodeNotificationsChannelApiImpl(workspaceApi, i18n);
   ```
 
 ## API
 
-NotificationsApi main attributes:
+Notifications main attributes:
 
 - messages: The text that will be shown to the user
 - path: File location.
@@ -46,7 +43,7 @@ NotificationsApi main attributes:
 
 ### VS Code
 
-The VsCodeNotificationsApi is the only "public" class users have access. Under the hood it contains two different implementations depending on `Notification.type`.
+The `VsCodeNotificationsChannelApiImpl` class is the only "public" class users have access. Under the hood it contains two different implementations depending on `Notification.type`.
 
 So if:
 

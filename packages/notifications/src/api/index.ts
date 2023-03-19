@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export * from "./NotificationsApi";
+export * from "./NotificationsChannelApi";
 export * from "./Notification";
 export * from "./NotificationSeverity";
 export * from "./NotificationType";

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <name>Errai::CDI</name>
+  <artifactId>cdi-integration-parent</artifactId>
+  <packaging>pom</packaging>
+
+  <url>http://jboss.org/errai/errai</url>
+
+  <parent>
+    <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+    <artifactId>stunner-editors-parent</artifactId>
+    <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <description>
+    CDI Integration for Errai
+  </description>
+
+  <developers>
+    <developer>
+      <name>Mike Brock</name>
+    </developer>
+    <developer>
+      <name>Christian Sadilek</name>
+    </developer>
+    <developer>
+      <name>Heiko Braun</name>
+    </developer>
+    <developer>
+      <name>Jonathan Fuerth</name>
+      <url>http://jonathan.fuerth.ca/</url>
+      <organization>JBoss, a division of Red Hat</organization>
+      <organizationUrl>http://community.jboss.org/</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:errai/errai-cdi.git</connection>
+    <developerConnection>scm:git:git@github.com:errai/errai-cdi.git</developerConnection>
+    <url>scm:git:git@github.com:errai/errai-cdi.git</url>
+  </scm>
+
+  <organization>
+    <name>JBoss, a division of Red Hat</name>
+    <url>http://www.jboss.org</url>
+  </organization>
+
+  <modules>
+    <module>errai-cdi-client</module>
+    <module>errai-cdi-shared</module>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <outputDirectory>target/classes</outputDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>integration-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <failIfNoTests>false</failIfNoTests>
+              <trimStackTrace>false</trimStackTrace>
+              <!-- DO NOT REMOVE THE errai.ioc.experimental.infer_dependent_by_reachability flag or the testsuite WILL fail. -->
+              <argLine>-Xmx1500m ${argLine} -Dgwt.args='-testBeginTimeout 5 ${gwtArgs}' -Derrai.hosted_mode_testing=true
+                -Derrai.ioc.experimental.infer_dependent_by_reachability=true
+              </argLine>
+              <systemProperties>
+                <property>
+                  <name>log4j.output.dir</name>
+                  <value>${project.build.directory}</value>
+                </property>
+              </systemProperties>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GuidedTourDomUtils } from "@kie-tooling-core/guided-tour/dist/core";
+import { GuidedTourDomUtils } from "@kie-tools-core/guided-tour/dist/core";
 import { act } from "react-dom/test-utils";
 
 describe("GuidedTourDomUtils", () => {

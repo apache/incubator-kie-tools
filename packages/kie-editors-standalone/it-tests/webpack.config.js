@@ -16,9 +16,10 @@
 
 const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
-const common = require("../../../config/webpack.common.config");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
-const buildEnv = require("@kogito-tooling/build-env");
+const { env } = require("../env");
+const buildEnv = env;
 
 module.exports = (env) =>
   merge(common(env), {
@@ -33,15 +34,16 @@ module.exports = (env) =>
       }),
     ],
     externals: {
-      "@kogito-tooling/kie-editors-standalone/dist/dmn": "DmnEditor",
-      "@kogito-tooling/kie-editors-standalone/dist/bpmn": "BpmnEditor",
+      "@kie-tools/kie-editors-standalone/dist/dmn": "DmnEditor",
+      "@kie-tools/kie-editors-standalone/dist/bpmn": "BpmnEditor",
     },
     devServer: {
-      contentBase: [path.join(__dirname, "dist"), path.join(__dirname, "../dist/")],
+      static: [{ directory: path.join(__dirname, "dist") }, { directory: path.join(__dirname, "../dist/") }],
       compress: true,
-      inline: true,
       historyApiFallback: true,
-      overlay: true,
+      client: {
+        overlay: true,
+      },
       open: false,
       port: buildEnv.standaloneEditors.dev.port,
     },

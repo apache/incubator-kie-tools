@@ -1,0 +1,70 @@
+{
+  "id": "finalizeCollegeApplication",
+  "name": "Finalize College Application",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "start": "FinalizeApplication",
+  "events": [
+    {
+      "name": "ApplicationSubmitted",
+      "type": "org.application.submitted",
+      "source": "applicationsource",
+      "correlation": [
+        {
+          "contextAttributeName": "applicantId"
+        }
+      ]
+    },
+    {
+      "name": "SATScoresReceived",
+      "type": "org.application.satscores",
+      "source": "applicationsource",
+      "correlation": [
+        {
+          "contextAttributeName": "applicantId"
+        }
+      ]
+    },
+    {
+      "name": "RecommendationLetterReceived",
+      "type": "org.application.recommendationLetter",
+      "source": "applicationsource",
+      "correlation": [
+        {
+          "contextAttributeName": "applicantId"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "finalizeApplicationFunction",
+      "operation": "http://myapis.org/collegeapplicationapi.json#finalize"
+    }
+  ],
+  "states": [
+    {
+      "name": "FinalizeApplication",
+      "type": "event",
+      "exclusive": false,
+      "onEvents": [
+        {
+          "eventRefs": ["ApplicationSubmitted", "SATScoresReceived", "RecommendationLetterReceived"],
+          "actions": [
+            {
+              "functionRef": {
+                "refName": "finalizeApplicationFunction",
+                "arguments": {
+                  "student": "${ .applicantId }"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "end": {
+        "terminate": true
+      }
+    }
+  ]
+}

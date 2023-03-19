@@ -18,7 +18,7 @@ import * as React from "react";
 import { act } from "react-dom/test-utils";
 import { useContextMock, renderedComponent, render, setupContainer, teardownContainer } from "../utils";
 
-import { HighlightLayer } from "@kie-tooling-core/guided-tour/dist/components";
+import { HighlightLayer } from "@kie-tools-core/guided-tour/dist/components";
 
 describe("HighlightLayer", () => {
   beforeEach(setupContainer);

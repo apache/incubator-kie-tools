@@ -1,0 +1,54 @@
+{
+  "private": true,
+  "name": "@kie-tools-examples/ping-pong-view-angular",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rimraf dist && pnpm build:wc && pnpm build:wc-lib && pnpm build:app",
+    "build:app": "ng build ping-pong-view-angular",
+    "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\"",
+    "build:prod": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build --configuration production\"",
+    "build:wc": "ng build ping-pong-view-wc && pnpm build:wc:concat",
+    "build:wc-lib": "tsc --project tsconfig.lib.json",
+    "build:wc:concat": "cat dist/wc/polyfills.js dist/wc/runtime.js dist/wc/main.js > dist/wc/index.js"
+  },
+  "dependencies": {
+    "@angular/animations": "^13.1.1",
+    "@angular/common": "^13.1.1",
+    "@angular/compiler": "^13.1.1",
+    "@angular/core": "^13.1.1",
+    "@angular/elements": "^13.1.1",
+    "@angular/forms": "^13.1.1",
+    "@angular/platform-browser": "^13.1.1",
+    "@angular/platform-browser-dynamic": "^13.1.1",
+    "@angular/router": "^13.1.1",
+    "@kie-tools-core/envelope": "workspace:*",
+    "@kie-tools-core/envelope-bus": "workspace:*",
+    "@kie-tools-examples/ping-pong-view": "workspace:*",
+    "rxjs": "^7.4.0",
+    "zone.js": "^0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^13.1.2",
+    "@angular/cli": "^13.1.2",
+    "@angular/compiler-cli": "^13.1.1",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.4.2"
+  }
+}

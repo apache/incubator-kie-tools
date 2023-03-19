@@ -29,6 +29,7 @@ export function getDmnLanguageData(resourcesPathPrefix: string): GwtLanguageData
       {
         type: "js",
         paths: [
+          `${resourcesPathPrefix}/kogito-editors-js/dmn-loader.js`,
           `${resourcesPathPrefix}/model/Jsonix-all.js`,
           `${resourcesPathPrefix}/model/DC.js`,
           `${resourcesPathPrefix}/model/DI.js`,

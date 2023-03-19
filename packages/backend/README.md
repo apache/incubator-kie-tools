@@ -1,1 +1,1 @@
-Kogito Tooling Backend API
+KIE Tools Backend API

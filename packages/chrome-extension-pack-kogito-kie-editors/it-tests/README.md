@@ -16,7 +16,7 @@ export UNZIPPED_CHROME_EXTENSION_PATH=/path/to/unzipped/dist
 
 2. Run the tests
 
-Use `yarn run test:it` command to run the tests.
+Use `pnpm test:it` command to run the tests.
 
 ## File structure
 

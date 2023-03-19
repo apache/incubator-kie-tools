@@ -1,0 +1,19 @@
+ {
+   "name": "Empty",
+   "tags": [],
+   "rows": [
+     {
+       "rowSpam": [
+         "12"
+       ],
+       "columnEditors": [
+         {
+           "span": "12",
+           "rows": [],
+           "screens": [],
+           "htmls": []
+         }
+       ]
+     }
+   ]
+ }

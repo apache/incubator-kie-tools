@@ -18,13 +18,14 @@ import {
   KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS,
   KOGITO_MAIN_CONTAINER_CLASS,
   KOGITO_MENU_CONTAINER_CLASS,
+  KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS,
 } from "./constants";
 import { Logger } from "../Logger";
 
-export function runScriptOnPage(scriptString: string) {
+export function runScriptOnPage(script: string) {
   const scriptTag = document.createElement("script");
-  scriptTag.setAttribute("type", "text/javascript");
-  scriptTag.innerText = scriptString;
+  scriptTag.setAttribute("src", script);
+  scriptTag.innerText = script;
   document.body.appendChild(scriptTag);
   scriptTag.remove();
 }
@@ -44,18 +45,7 @@ export function runAfterUriChange(logger: Logger, callback: () => void) {
     callback();
   };
 
-  runScriptOnPage(`
-  var _wr = function(type) {
-      var orig = history[type];
-      return function() {
-          var rv = orig.apply(this, arguments);
-          var e = new Event(type);
-          e.arguments = arguments;
-          window.dispatchEvent(e);
-          return rv;
-      };
-  };
-  history.replaceState = _wr('replaceState');`);
+  runScriptOnPage(chrome.runtime.getURL("scripts/check_url_change.js"));
 
   window.addEventListener("replaceState", () => {
     logger.log("replaceState event happened");
@@ -105,10 +95,35 @@ export function kogitoMenuContainer(id: string, container: HTMLElement) {
   return element();
 }
 
+export function openRepoInExternalEditorContainer(id: string, container: HTMLElement) {
+  const element = () => document.querySelector(`.${KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS}.${id}`)!;
+
+  if (!element()) {
+    container.insertAdjacentHTML(
+      "beforeend",
+      `<div class="${KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS} ${id}"></div>`
+    );
+  }
+
+  return element();
+}
+
 export function extractOpenFileExtension(url: string) {
   return url
     .split(".")
     .pop()
     ?.match(/[\w\d]+/)
     ?.pop();
+}
+
+export function extractOpenFilePath(url: string) {
+  const lastDotIndex = url.lastIndexOf(".");
+  const splittedUrl = url.split(".");
+  const fileExtension = splittedUrl
+    .pop()
+    ?.match(/[\w\d]+/)
+    ?.pop();
+  const filePathWithoutExtension = url.substring(0, lastDotIndex + 1);
+
+  return (filePathWithoutExtension ? filePathWithoutExtension : "") + (fileExtension ? fileExtension : "");
 }

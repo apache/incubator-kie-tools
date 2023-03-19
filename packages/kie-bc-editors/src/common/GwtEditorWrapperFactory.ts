@@ -14,47 +14,46 @@
  * limitations under the License.
  */
 
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
-import { ResourceContentOptions, ResourceListOptions } from "@kie-tooling-core/workspace/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { ResourceContentOptions, ResourceListOptions } from "@kie-tools-core/workspace/dist/api";
 import {
   EditorFactory,
   EditorInitArgs,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
-} from "@kie-tooling-core/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
+} from "@kie-tools-core/editor/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
-  EditorContextApi,
-  GuidedTourApi,
-  I18nServiceApi,
-  KeyboardShortcutsApi,
-  NotificationsApi,
-  ResourceContentApi,
-  StateControlApi,
-  WorkspaceServiceApi,
-} from "./api";
-import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
-import { GwtAppFormerApi } from "./GwtAppFormerApi";
+  EditorContextExposedInteropApi,
+  GuidedTourExposedInteropApi,
+  I18nExposedInteropApi,
+  KeyboardShortcutsExposedInteropApi,
+  NotificationsExposedInteropApi,
+  ResourceContentExposedInteropApi,
+  StateControlExposedInteropApi,
+  WorkspaceExposedInteropApi,
+} from "./exposedInteropApi";
+import { DefaultTextFormatter, TextFormatter } from "./TextFormatter";
+import { GwtAppFormerConsumedInteropApi } from "./consumedInteropApi/GwtAppFormerConsumedInteropApi";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { GwtStateControlService } from "./gwtStateControl";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
-import { XmlFormatter } from "./XmlFormatter";
 
 export interface CustomWindow extends Window {
   startStandaloneEditor?: () => void;
   gwt: {
-    stateControl: StateControlApi;
+    stateControlService: StateControlExposedInteropApi;
   };
   envelope: {
-    guidedTourService: GuidedTourApi;
-    editorContext: EditorContextApi;
-    resourceContentEditorService?: ResourceContentApi;
-    keyboardShortcuts: KeyboardShortcutsApi;
-    workspaceService: WorkspaceServiceApi;
-    i18nService: I18nServiceApi;
-    notificationsService: NotificationsApi;
+    guidedTourService: GuidedTourExposedInteropApi;
+    editorContext: EditorContextExposedInteropApi;
+    resourceContentEditorService?: ResourceContentExposedInteropApi;
+    keyboardShortcutsService: KeyboardShortcutsExposedInteropApi;
+    workspaceService: WorkspaceExposedInteropApi;
+    i18nService: I18nExposedInteropApi;
+    notificationsService: NotificationsExposedInteropApi;
   };
 }
 
@@ -65,8 +64,8 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
     private readonly languageData: GwtLanguageData,
     private readonly gwtEditorDelegate: (factory: GwtEditorWrapperFactory<E>, initArgs: EditorInitArgs) => E,
     public readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean },
-    public readonly xmlFormatter: XmlFormatter = new DefaultXmlFormatter(),
-    public readonly gwtAppFormerApi = new GwtAppFormerApi(),
+    public readonly textFormatter: TextFormatter = new DefaultTextFormatter(),
+    public readonly gwtAppFormerConsumedInteropApi = new GwtAppFormerConsumedInteropApi(),
     public readonly gwtStateControlService = new GwtStateControlService(),
     public readonly kieBcEditorsI18n = new I18n(kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries)
   ) {}
@@ -85,7 +84,7 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
     this.exposeEnvelopeContext(envelopeContext, initArgs);
 
     const gwtFinishedLoading = new Promise<E>((res) => {
-      this.gwtAppFormerApi.onFinishedLoading(() => {
+      this.gwtAppFormerConsumedInteropApi.onFinishedLoading(() => {
         res(this.gwtEditorDelegate(this, initArgs));
         return Promise.resolve();
       });
@@ -106,66 +105,68 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
     initArgs: EditorInitArgs
   ) {
     window.gwt = {
-      stateControl: this.gwtStateControlService.exposeApi(envelopeContext.channelApi),
+      stateControlService: this.gwtStateControlService.getExposedInteropApi(envelopeContext.channelApi),
+    };
+
+    const exposedInteropApi: CustomWindow["envelope"] = {
+      editorContext: {
+        operatingSystem: envelopeContext.operatingSystem,
+        channel: initArgs.channel,
+        readOnly: initArgs.isReadOnly,
+      },
+      keyboardShortcutsService: envelopeContext.services.keyboardShortcuts,
+      guidedTourService: {
+        refresh(userInteraction: UserInteraction): void {
+          envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourUserInteraction.send(userInteraction);
+        },
+        registerTutorial(tutorial: Tutorial): void {
+          envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourRegisterTutorial.send(tutorial);
+        },
+        isEnabled(): boolean {
+          return true;
+        },
+      },
+      resourceContentEditorService: {
+        get(path: string, opts?: ResourceContentOptions) {
+          return envelopeContext.channelApi.requests
+            .kogitoWorkspace_resourceContentRequest({ path, opts })
+            .then((r) => r?.content);
+        },
+        list(pattern: string, opts?: ResourceListOptions) {
+          return envelopeContext.channelApi.requests
+            .kogitoWorkspace_resourceListRequest({ pattern, opts })
+            .then((r) => r.paths.sort());
+        },
+      },
+      workspaceService: {
+        openFile(path: string): void {
+          envelopeContext.channelApi.notifications.kogitoWorkspace_openFile.send(path);
+        },
+      },
+      i18nService: {
+        getLocale: () => {
+          return envelopeContext.channelApi.requests.kogitoI18n_getLocale();
+        },
+        onLocaleChange: (onLocaleChange: (locale: string) => void) => {
+          envelopeContext.services.i18n.subscribeToLocaleChange(onLocaleChange);
+        },
+      },
+      notificationsService: {
+        createNotification: (notification: Notification) => {
+          envelopeContext.channelApi.notifications.kogitoNotifications_createNotification.send(notification);
+        },
+        removeNotifications: (path: string) => {
+          envelopeContext.channelApi.notifications.kogitoNotifications_removeNotifications.send(path);
+        },
+        setNotifications: (path: string, notifications: Notification[]) => {
+          envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(path, notifications);
+        },
+      },
     };
 
     window.envelope = {
       ...(window.envelope ?? {}),
-      ...{
-        editorContext: {
-          operatingSystem: envelopeContext.operatingSystem,
-          channel: initArgs.channel,
-          readOnly: initArgs.isReadOnly,
-        },
-        keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
-        guidedTourService: {
-          refresh(userInteraction: UserInteraction): void {
-            envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
-          },
-          registerTutorial(tutorial: Tutorial): void {
-            envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
-          },
-          isEnabled(): boolean {
-            return envelopeContext.services.guidedTour.isEnabled();
-          },
-        },
-        resourceContentEditorService: {
-          get(path: string, opts?: ResourceContentOptions) {
-            return envelopeContext.channelApi.requests
-              .kogitoWorkspace_resourceContentRequest({ path, opts })
-              .then((r) => r?.content);
-          },
-          list(pattern: string, opts?: ResourceListOptions) {
-            return envelopeContext.channelApi.requests
-              .kogitoWorkspace_resourceListRequest({ pattern, opts })
-              .then((r) => r.paths.sort());
-          },
-        },
-        workspaceService: {
-          openFile(path: string): void {
-            envelopeContext.channelApi.notifications.kogitoWorkspace_openFile(path);
-          },
-        },
-        i18nService: {
-          getLocale: () => {
-            return envelopeContext.channelApi.requests.kogitoI18n_getLocale();
-          },
-          onLocaleChange: (onLocaleChange: (locale: string) => void) => {
-            envelopeContext.services.i18n.subscribeToLocaleChange(onLocaleChange);
-          },
-        },
-        notificationsService: {
-          createNotification: (notification: Notification) => {
-            envelopeContext.channelApi.notifications.kogitoNotifications_createNotification(notification);
-          },
-          removeNotifications: (path: string) => {
-            envelopeContext.channelApi.notifications.kogitoNotifications_removeNotifications(path);
-          },
-          setNotifications: (path: string, notifications: Notification[]) => {
-            envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications(path, notifications);
-          },
-        },
-      },
+      ...exposedInteropApi,
     };
   }
 
@@ -183,7 +184,7 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         for (const sheet of resource.paths) {
           const link = document.createElement("link");
           link.href = sheet;
-          link.rel = "text/css";
+          link.rel = resource.rel ?? "text/css";
           document.head.appendChild(link);
         }
         return Promise.resolve();

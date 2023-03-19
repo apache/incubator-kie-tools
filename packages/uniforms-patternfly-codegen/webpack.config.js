@@ -15,7 +15,7 @@
  */
 
 const { merge } = require("webpack-merge");
-const common = require("../../config/webpack.common.config");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
 
@@ -28,6 +28,6 @@ module.exports = (env) => [
     output: {
       libraryTarget: "commonjs2",
     },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
+    externals: [nodeExternals()],
   }),
 ];

@@ -16,7 +16,7 @@
 
 import * as vscode from "vscode";
 
-const channel = vscode.window.createOutputChannel("Kogito");
+const channel = vscode.window.createOutputChannel("KIE");
 
 export class VsCodeOutputLogger {
   constructor(readonly id: string) {}

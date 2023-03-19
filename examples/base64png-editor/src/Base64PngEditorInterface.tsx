@@ -19,18 +19,19 @@ import {
   Editor,
   EditorApi,
   EditorInitArgs,
+  EditorTheme,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
-} from "@kie-tooling-core/editor/dist/api";
-import { Rect } from "@kie-tooling-core/guided-tour/dist/api";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
+} from "@kie-tools-core/editor/dist/api";
+import { Rect } from "@kie-tools-core/guided-tour/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Base64PngEditor } from "./Base64PngEditor";
 
 /**
- * This class implements the Editor interface, a contract made by the Kogito Tooling that determines what methods an Editor needs to implement and its properties.
+ * This class implements the Editor interface, a contract made by the KIE Tools that determines what methods an Editor needs to implement and its properties.
  * The implemented methods in this class are used to communicate with the Channel.
  *
- * @constructor envelopeContext All the features and information provided by the Kogito Tooling Envelope.
+ * @constructor envelopeContext All the features and information provided by the KIE Tools Envelope.
  * @constructor envelopeContext.services The services available to be used by the Editor.
  * @constructor envelopeContext.services.keyboardShortcuts Give the possibility to register keyboard shortcuts on your Editor
  * @constructor envelopeContext.services.i18n Give the possibility to subscribe to locale changes that happened on the Channel.
@@ -114,6 +115,13 @@ export class Base64PngEditorInterface implements Editor {
    */
   public validate(): Promise<Notification[]> {
     return this.editorRef.current!.validate()!;
+  }
+
+  /**
+   * Not supported.
+   */
+  public setTheme(theme: EditorTheme): Promise<void> {
+    return Promise.resolve();
   }
 
   /**

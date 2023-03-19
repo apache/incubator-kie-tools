@@ -14,43 +14,39 @@
  * limitations under the License.
  */
 
-import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
+import { InputRow, DmnSchema } from "@kie-tools/form-dmn";
 import * as React from "react";
 import { useContext } from "react";
-import { jsonParseWithDate } from "../../common/utils";
-import { DmnRunnerService } from "./DmnRunnerService";
-import { DmnRunnerStatus } from "./DmnRunnerStatus";
+import { KieSandboxExtendedServicesModelPayload } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
+import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 
 export interface DmnRunnerContextType {
+  currentInputRowIndex: number;
+  error: boolean;
+  inputRows: Array<InputRow>;
+  isExpanded: boolean;
+  isVisible: boolean;
+  jsonSchema?: DmnSchema;
+  mode: DmnRunnerMode;
   status: DmnRunnerStatus;
-  setStatus: React.Dispatch<DmnRunnerStatus>;
-  formSchema?: DmnFormSchema;
-  isDrawerExpanded: boolean;
-  setDrawerExpanded: React.Dispatch<boolean>;
-  formData: any;
-  setFormData: React.Dispatch<any>;
-  service: DmnRunnerService;
-  formError: boolean;
-  setFormError: React.Dispatch<boolean>;
 }
 
-export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({
-  status: DmnRunnerStatus.UNAVAILABLE,
-  isDrawerOpen: false,
-  isModalOpen: false,
-} as any);
-
-export function useDmnRunner() {
-  return useContext(DmnRunnerContext);
+export interface DmnRunnerCallbacksContextType {
+  preparePayload: (formData?: InputRow) => Promise<KieSandboxExtendedServicesModelPayload>;
+  setError: React.Dispatch<React.SetStateAction<boolean>>;
+  setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;
+  setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
+  setMode: React.Dispatch<React.SetStateAction<DmnRunnerMode>>;
 }
 
-export function extractFormInputsFromUrlParams(): any {
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has("formInputs")) {
-    try {
-      return jsonParseWithDate(decodeURIComponent(urlParams.get("formInputs")!));
-    } catch (e) {
-      console.error("Cannot parse formInputs", e);
-    }
-  }
+export const DmnRunnerStateContext = React.createContext<DmnRunnerContextType>({} as any);
+export const DmnRunnerDispatchContext = React.createContext<DmnRunnerCallbacksContextType>({} as any);
+
+export function useDmnRunnerState() {
+  return useContext(DmnRunnerStateContext);
+}
+
+export function useDmnRunnerDispatch() {
+  return useContext(DmnRunnerDispatchContext);
 }

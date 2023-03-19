@@ -1,0 +1,70 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div
+  class="btn-group shadow p-3 mb-5 bg-white rounded"
+  role="group"
+  style="display: inline-flex"
+  data-ouia-component-id="zoom-controls-panel"
+>
+  <button type="button" data-field="previewButton" class="btn btn-secondary">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      fill="currentColor"
+      class="bi bi-pip"
+      viewBox="0 -2 16 16"
+    >
+      <path
+        d="M0 3.5A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 12.5v-9zM1.5 3a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-13z"
+      ></path>
+      <path d="M8 8.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-3z"></path>
+    </svg>
+  </button>
+  <button type="button" data-field="resetButton" class="btn btn-secondary" data-ouia-component-id="reset-zoom-button">
+    <span class="glyphicon glyphicon-fullscreen"></span>
+  </button>
+  <button
+    type="button"
+    data-field="decreaseButton"
+    class="btn btn-secondary"
+    data-ouia-component-id="minus-zoom-button"
+  >
+    <span class="glyphicon glyphicon-minus"></span>
+  </button>
+  <div
+    data-field="dropDownPanelGroup"
+    class="btn-group bootstrap-select"
+    style="width: auto"
+    data-ouia-component-id="select-zoom-button"
+  >
+    <button type="button" data-field="dropDownButton" class="btn dropdown-toggle btn-default" data-toggle="dropdown">
+      <span id="dropDownText" class="filter-option pull-left zoom-selector-button-text"></span>&nbsp;
+      <span class="bs-caret">
+        <span class="caret"></span>
+      </span>
+    </button>
+    <div data-field="dropDownPanel" class="dropdown-menu open">
+      <ul data-field="dropDownMenu" class="dropdown-menu inner zoom-selector-menu" role="menu">
+        <!-- Here go the different levels (see ZoomLevelSelectorItem) -->
+      </ul>
+    </div>
+  </div>
+  <button type="button" data-field="increaseButton" class="btn btn-secondary" data-ouia-component-id="plus-zoom-button">
+    <span class="glyphicon glyphicon-plus"></span>
+  </button>
+</div>

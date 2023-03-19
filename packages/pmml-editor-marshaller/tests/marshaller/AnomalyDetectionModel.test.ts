@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AnomalyDetectionModel, DataDictionary, Model, PMML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { AnomalyDetectionModel, DataDictionary, Model, PMML, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { ANOMALY_DETECTION_MODEL_1 } from "./TestData_AnomalyDetectionModel";
 
 describe("AnomalyDetectionModel tests", () => {

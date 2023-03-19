@@ -15,12 +15,14 @@
  */
 
 import bpmnEnvelopeIndex from "!!raw-loader!../../dist/resources/bpmn/bpmnEnvelopeIndex.html";
-import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
-import { ChannelType, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tooling-core/editor/dist/api";
-import { KogitoEditorChannelApiImpl } from "../envelope/KogitoEditorChannelApiImpl";
-import { StateControl } from "@kie-tooling-core/editor/dist/channel";
-import { ContentType } from "@kie-tooling-core/workspace/dist/api";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEditorsEditorChannelApiImpl";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
+import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
+import { BpmnEditorEnvelopeApi } from "../../../kie-bc-editors/dist/bpmn/api";
+import { BpmnEditorDiagramApi } from "../jsdiagram/BpmnEditorDiagramApi";
 
 declare global {
   interface Window {
@@ -31,7 +33,7 @@ declare global {
 const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, origin?: string) => {
   const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
 
-  return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
+  return new EnvelopeServer<KogitoEditorChannelApi, BpmnEditorEnvelopeApi>(
     { postMessage: (message) => iframe.contentWindow?.postMessage(message, "*") },
     origin ?? defaultOrigin,
     (self) => {
@@ -59,7 +61,7 @@ export function open(args: {
   origin?: string;
   onError?: () => any;
   resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
-}): StandaloneEditorApi {
+}): StandaloneEditorApi & BpmnEditorDiagramApi {
   const iframe = document.createElement("iframe");
   iframe.srcdoc = bpmnEnvelopeIndex;
   iframe.style.width = "100%";
@@ -72,36 +74,72 @@ export function open(args: {
 
   let receivedSetContentError = false;
 
+  const channelApiImpl = new StandaloneEditorsEditorChannelApiImpl(
+    stateControl,
+    {
+      fileName: "",
+      fileExtension: "bpmn",
+      getFileContents: () => Promise.resolve(args.initialContent),
+      isReadOnly: args.readOnly ?? false,
+    },
+    "en-US",
+    {
+      kogitoEditor_setContentError() {
+        if (!receivedSetContentError) {
+          args.onError?.();
+          receivedSetContentError = true;
+        }
+      },
+    },
+    args.resources
+  );
+
   const listener = (message: MessageEvent) => {
-    envelopeServer.receive(
-      message.data,
-      new KogitoEditorChannelApiImpl(
-        stateControl,
-        {
-          fileName: "",
-          fileExtension: "bpmn",
-          getFileContents: () => Promise.resolve(args.initialContent),
-          isReadOnly: args.readOnly ?? false,
-        },
-        "en-US",
-        {
-          kogitoEditor_setContentError() {
-            if (!receivedSetContentError) {
-              args.onError?.();
-              receivedSetContentError = true;
-            }
-          },
-        },
-        args.resources
-      )
-    );
+    envelopeServer.receive(message.data, channelApiImpl);
   };
+
   window.addEventListener("message", listener);
 
   args.container.appendChild(iframe);
-  envelopeServer.startInitPolling();
+  envelopeServer.startInitPolling(channelApiImpl);
 
-  return createEditor(envelopeServer, stateControl, listener, iframe);
+  const editor = createEditor(envelopeServer.envelopeApi, stateControl, listener, iframe);
+
+  return {
+    ...editor,
+    canvas: {
+      getNodeIds: () => {
+        return envelopeServer.envelopeApi.requests.canvas_getNodeIds();
+      },
+      getBackgroundColor: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getBackgroundColor(uuid);
+      },
+      setBackgroundColor: (uuid: string, backgroundColor: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_setBackgroundColor(uuid, backgroundColor);
+      },
+      getBorderColor: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getBorderColor(uuid);
+      },
+      setBorderColor: (uuid: string, backgroundColor: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_setBorderColor(uuid, backgroundColor);
+      },
+      getLocation: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getLocation(uuid);
+      },
+      getAbsoluteLocation: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getAbsoluteLocation(uuid);
+      },
+      getDimensions: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getDimensions(uuid);
+      },
+      applyState: (uuid: string, state: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_applyState(uuid, state);
+      },
+      centerNode: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_centerNode(uuid);
+      },
+    },
+  };
 }
 
 window.BpmnEditor = { open };

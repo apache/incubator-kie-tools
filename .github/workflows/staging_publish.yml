@@ -1,0 +1,73 @@
+name: "Staging :: Publish"
+
+on:
+  push:
+    branches: ["**-prerelease"]
+
+concurrency:
+  group: staging-publish
+  cancel-in-progress: true
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_asset_url: ${{ steps.create_release_draft.outputs.upload_url }}
+      html_url: ${{ steps.create_release_draft.outputs.html_url }}
+      id: ${{ steps.create_release_draft.outputs.id }}
+      tag: ${{ steps.release_draft_tag.outputs.tag }}
+      commit_sha: ${{ steps.release_draft_tag.outputs.commit_sha }}
+      download_asset_url: ${{ steps.release_json_ext.outputs.download_url }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Parse `tag`"
+        id: release_draft_tag
+        shell: bash
+        # This bash script returns the `tag` name for the release.
+        # Will match "/refs/{tags,heads}/{tag}-prerelease"
+        run: |
+          echo "tag=$(node -p "'${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1]")" >> $GITHUB_OUTPUT
+          echo "commit_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+      - name: "Check `tag` against `package.json.version`"
+        shell: bash
+        run: |
+          [ "${{ steps.release_draft_tag.outputs.tag }}" == "$(node -p "require('./package.json').version")" ]
+
+      - name: "Create Release (draft)"
+        id: create_release_draft
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release_draft_tag.outputs.tag }}
+          release_name: ${{ steps.release_draft_tag.outputs.tag }} (alpha)
+          commitish: ${{ github.ref }}
+          draft: true
+          prerelease: true
+
+      - name: "Generate download URL for Release assets"
+        id: release_json_ext
+        shell: bash
+        run: |
+          url=$(echo ${{ steps.create_release_draft.outputs.html_url }} | sed "s#/tag/#/download/#")
+          echo "download_url=$url" >> $GITHUB_OUTPUT
+
+  build_and_publish:
+    needs: [create_release]
+    uses: ./.github/workflows/staging_build.yml
+    with:
+      dry_run: false
+      base_ref: ${{ github.ref }}
+      tag: ${{ needs.create_release.outputs.tag }}
+      commit_sha: ${{ needs.create_release.outputs.commit_sha }}
+      download_asset_url: ${{ needs.create_release.outputs.download_asset_url }}
+      upload_asset_url: ${{ needs.create_release.outputs.upload_asset_url }}
+    secrets:
+      kie_tools_bot_token: ${{ secrets.KIE_TOOLS_BOT_TOKEN }}
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
+      quay_registry_password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
+      openshift_server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}

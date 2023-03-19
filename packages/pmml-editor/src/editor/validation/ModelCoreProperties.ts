@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { Characteristic, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Characteristic, Scorecard } from "@kie-tools/pmml-editor-marshaller";
 import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 import { Builder } from "../paths";

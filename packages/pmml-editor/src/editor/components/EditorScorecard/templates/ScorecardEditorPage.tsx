@@ -19,14 +19,13 @@ import { PageSection, PageSectionVariants } from "@patternfly/react-core/dist/js
 import { EditorHeader } from "../../EditorCore/molecules";
 import {
   Characteristics,
-  FieldName,
   MiningSchema,
   Model,
   Output,
   OutputField,
   PMML,
   Scorecard,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { CharacteristicsContainer, CorePropertiesTable } from "../organisms";
 import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
@@ -61,7 +60,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const output: Output | undefined = useMemo(() => model?.Output, [model]);
 
   const validateOutputName = useCallback(
-    (index: number | undefined, name: FieldName): boolean => {
+    (index: number | undefined, name: string): boolean => {
       if (name.toString().trim().length === 0) {
         return false;
       }

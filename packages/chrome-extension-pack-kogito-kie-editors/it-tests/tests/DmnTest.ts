@@ -33,18 +33,13 @@ beforeEach(async () => {
 
 test(TEST_NAME, async () => {
   const WEB_PAGE =
-    "https://github.com/kiegroup/kogito-tooling/tree/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
-  const EXPECTED_LINK =
-    "kiegroup/kogito-tooling/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn";
+    "https://github.com/kiegroup/kie-tools/tree/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
   const DMN_NAME = "myDmn";
   const FILE_NAME = "test.dmn";
   const DATA_NODE_NAME = "MyInputData";
 
-  // check link to online editor in the list
   const gitHubListPage: GitHubListPage = await tools.openPage(GitHubListPage, WEB_PAGE);
   const gitHubFile: GitHubListItem = await gitHubListPage.getFile(FILE_NAME);
-  const linkText: string = await gitHubFile.getLinkToOnlineEditor();
-  expect(linkText).toContain(EXPECTED_LINK);
 
   // open DMN editor
   const editorPage: GitHubEditorPage = await gitHubFile.open();

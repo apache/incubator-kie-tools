@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import * as React from "react";
 import { PingPongReactImpl } from "./PingPongReactImpl";
-import { PingPong, PingPongFactory } from "@kogito-tooling-examples/ping-pong-view/dist/envelope";
-import { PingPongApi, PingPongChannelApi, PingPongInitArgs } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { PingPongFactory } from "@kie-tools-examples/ping-pong-view/dist/envelope";
+import { PingPongApi, PingPongChannelApi, PingPongInitArgs } from "@kie-tools-examples/ping-pong-view/dist/api";
 
 export class PingPongReactImplFactory implements PingPongFactory {
+  constructor(private setView: React.Dispatch<React.SetStateAction<React.ReactElement>>) {}
+
   public create(initArgs: PingPongInitArgs, channelApi: MessageBusClientApi<PingPongChannelApi>) {
     const ref = React.createRef<PingPongApi>();
 
-    const pingPongView: PingPong = {
-      reactComponent: () => <PingPongReactImpl initArgs={initArgs} channelApi={channelApi} ref={ref} />,
-    };
+    this.setView(<PingPongReactImpl initArgs={initArgs} channelApi={channelApi} ref={ref} />);
 
-    return pingPongView;
+    return () => ref.current;
   }
 }

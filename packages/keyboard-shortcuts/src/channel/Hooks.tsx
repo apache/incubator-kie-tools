@@ -15,7 +15,7 @@
  */
 
 import { useEffect } from "react";
-import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ChannelKeyboardEvent, KeyboardShortcutsEnvelopeApi } from "../api";
 
 function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardEvent {
@@ -30,6 +30,36 @@ function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardE
   };
 }
 
+export function useElementsThatStopKeyboardEventsPropagation(
+  element: HTMLElement | Window = window,
+  selectors: string[]
+) {
+  useEffect(() => {
+    const stopPropagation = (ev: KeyboardEvent) => {
+      ev.stopPropagation();
+    };
+
+    const target = element === window ? document : (element as HTMLElement);
+    const elementsStoppingPropagation = selectors.flatMap((selector) => {
+      const es = Array.from(target.querySelectorAll(selector));
+      for (const e of es) {
+        e.addEventListener("keydown", stopPropagation);
+        e.addEventListener("keyup", stopPropagation);
+        e.addEventListener("keypress", stopPropagation);
+      }
+      return es;
+    });
+
+    return () => {
+      elementsStoppingPropagation?.forEach((e) => {
+        e.removeEventListener("keydown", stopPropagation);
+        e.removeEventListener("keyup", stopPropagation);
+        e.removeEventListener("keypress", stopPropagation);
+      });
+    };
+  }, [element, selectors]);
+}
+
 export function useSyncedKeyboardEvents(
   envelopeApi: MessageBusClientApi<KeyboardShortcutsEnvelopeApi>,
   element: HTMLElement | Window = window
@@ -38,7 +68,7 @@ export function useSyncedKeyboardEvents(
     const listener = (keyboardEvent: KeyboardEvent) => {
       const channelKeyboardEvent = getChannelKeyboardEvent(keyboardEvent);
       console.debug(`New keyboard event (${JSON.stringify(channelKeyboardEvent)})!`);
-      envelopeApi.notifications.kogitoKeyboardShortcuts_channelKeyboardEvent(channelKeyboardEvent);
+      envelopeApi.notifications.kogitoKeyboardShortcuts_channelKeyboardEvent.send(channelKeyboardEvent);
     };
 
     element.addEventListener("keydown", listener);

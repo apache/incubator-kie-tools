@@ -1,0 +1,8 @@
+[
+    [
+      "documentation" : "Some documentation",
+      "name" : "Email",
+      "icon" : "defaultemailicon.gif",
+      "displayName" : "Display Email"
+    ]
+]

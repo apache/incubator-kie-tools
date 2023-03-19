@@ -16,7 +16,7 @@
 
 import React, { createContext, useContext } from "react";
 
-import { Bridge, context, Context, randomIds } from "uniforms/es5";
+import { Bridge, BaseForm, context, Context, randomIds } from "uniforms/cjs";
 
 import { FormElement } from "../api";
 
@@ -56,6 +56,16 @@ export const CodeGenContextProvider: React.FC<ProviderProps> = (props) => {
     onSubmit: (event) => {},
     randomId: randomIds(),
     schema: props.schema,
+    formRef: new BaseForm<any>({
+      autosave: false,
+      autosaveDelay: 0,
+      error: false,
+      label: true,
+      model: {},
+      noValidate: false,
+      onSubmit: (event) => {},
+      schema: props.schema,
+    }),
     state: {
       readOnly: false,
       disabled: false,

@@ -30,16 +30,18 @@ export class I18n<D extends ReferenceDictionary> {
     this.updateDictionary();
   }
 
-  public setLocale(locale: string): void {
+  public setLocale(locale: string): I18n<D> {
     this.locale = locale;
     this.updateDictionary();
+    return this;
   }
 
-  private updateDictionary() {
+  private updateDictionary(): I18n<D> {
     const selectedDictionary =
       this.dictionaries.get(this.locale) ?? this.dictionaries.get(this.locale.split("-").shift()!) ?? {};
 
     this.dictionary = immutableDeepMerge(this.defaults.dictionary, selectedDictionary) as D;
+    return this;
   }
 
   public getCurrent(): D {

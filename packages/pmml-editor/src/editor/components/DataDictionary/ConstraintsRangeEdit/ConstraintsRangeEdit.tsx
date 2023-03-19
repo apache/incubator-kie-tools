@@ -88,6 +88,7 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
           onClick={addRange}
           isDisabled={countLimit !== undefined && ranges.length >= countLimit}
           isSmall={true}
+          ouiaId="add-another-interval"
         >
           Add another interval
         </Button>
@@ -169,7 +170,7 @@ const RangeEdit = (props: RangeEditProps) => {
   );
 
   return (
-    <section ref={rangeRef}>
+    <section ref={rangeRef} data-ouia-component-id={`interval-${index}`} data-ouia-component-type="interval-item">
       <Split hasGutter={true} className="constraints__range-item">
         <SplitItem isFilled={true}>
           <FormGroup
@@ -187,6 +188,7 @@ const RangeEdit = (props: RangeEditProps) => {
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 1}
               autoComplete="off"
+              ouiaId="start-value"
             />
           </FormGroup>
           <FormGroup fieldId={`start-included-${index}`} className="constraints__include-range">
@@ -199,6 +201,7 @@ const RangeEdit = (props: RangeEditProps) => {
               onChange={handleRangeChange}
               onClick={saveChange}
               tabIndex={(index + 1) * 10 + 3}
+              ouiaId="is-start-included"
             />
           </FormGroup>
         </SplitItem>
@@ -218,6 +221,7 @@ const RangeEdit = (props: RangeEditProps) => {
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 2}
               autoComplete="off"
+              ouiaId="end-value"
             />
           </FormGroup>
           <FormGroup fieldId={`end-included-${index}`} className="constraints__include-range">
@@ -230,6 +234,7 @@ const RangeEdit = (props: RangeEditProps) => {
               onChange={handleRangeChange}
               onClick={saveChange}
               tabIndex={(index + 1) * 10 + 4}
+              ouiaId="is-end-included"
             />
           </FormGroup>
         </SplitItem>
@@ -246,6 +251,7 @@ const RangeEdit = (props: RangeEditProps) => {
                 onClick={handleDelete}
                 isDisabled={rangesCount === 1}
                 tabIndex={(index + 1) * 10 + 5}
+                ouiaId="delete-item"
               >
                 <TrashIcon />
               </Button>

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { By, WebElement, WebView } from "vscode-extension-tester";
+import { By, until, WebElement, WebView } from "vscode-extension-tester";
 import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
-import { expandedDocksBarE, h3ComponentWithText } from "./CommonLocators";
+import { expandedDocksBarE, h3ComponentWithText, spanComponentWithText } from "./CommonLocators";
 
 /**
  * Helper class to easen work with SCESIM editor inside of a webview.
@@ -118,5 +118,38 @@ export default class ScesimEditorTestHelper {
     );
     await assertWebElementIsDisplayedEnabled(expandedNavigatorPanel);
     return expandedNavigatorPanel;
+  };
+
+  /**
+   * In case you open empty scesim file a landing page prompts you to specify a file you want to test.
+   * This method sets specified dmn file to be tested.
+   *
+   * @param dmnFileName
+   *
+   */
+  public specifyDmnOnLandingPage = async (dmnFileName: String): Promise<void> => {
+    await (await this.webview.findWebElement(spanComponentWithText("DMN"))).click();
+
+    // wait until available DMNs appear
+    const availableDmns = await this.webview
+      .getDriver()
+      .wait(until.elementLocated(By.xpath("//div[@data-field='dmn-assets']")), 5000, "DMN Models not found");
+
+    // expand available DMNs
+    await (await availableDmns.findElement(By.xpath("//button[@title='Select']"))).click();
+    const options = await this.webview
+      .getDriver()
+      .wait(
+        until.elementLocated(By.xpath("//ul[@role='menu']")),
+        5000,
+        "DMN Models not not expanded after click on Select"
+      );
+
+    // select demanded DMN
+    await (await options.findElement(By.xpath(`//li/a/span[text()='${dmnFileName}']`))).click();
+
+    // finish landing page by click on Confirm button
+    await (await this.webview.findWebElement(By.xpath("//button[@data-field='ok-button']"))).click();
+    return;
   };
 }

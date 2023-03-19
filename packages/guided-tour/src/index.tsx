@@ -19,7 +19,7 @@ import * as ReactDOM from "react-dom";
 
 import { Rect, Tutorial, UserInteraction } from "./api";
 import { GuidedTour } from "./components";
-import { GuidedTourCookie, GuidedTourDomUtils, GuidedTourEventBus } from "./core";
+import { GuidedTourDomUtils, GuidedTourEventBus } from "./core";
 
 class KogitoGuidedTour {
   private static instance?: KogitoGuidedTour;
@@ -28,9 +28,9 @@ class KogitoGuidedTour {
 
   private eventBus = new GuidedTourEventBus();
 
-  private cookie = new GuidedTourCookie();
-
   private registeredTutorials: Tutorial[] = [];
+
+  private onTearDown = () => {};
 
   private positionProvider: (selector: string) => void;
 
@@ -50,10 +50,8 @@ class KogitoGuidedTour {
    * }, []);
    * ```
    */
-  public setup() {
-    if (this.cookie.isDisabled()) {
-      return;
-    }
+  public setup(onTearDown = () => {}) {
+    this.onTearDown = onTearDown;
     ReactDOM.render(<GuidedTour />, this.domUtils.getGuidedTourHTMLElement(), () => {
       this.eventBus.enableBus();
     });
@@ -64,19 +62,8 @@ class KogitoGuidedTour {
    * created by the `setup` method.
    */
   public teardown() {
-    if (this.cookie.isDisabled()) {
-      return;
-    }
+    this.onTearDown();
     this.domUtils.removeGuidedTourHTMLElement();
-    this.cookie.markAsDisabled();
-  }
-
-  /**
-   * Check if Guided Tour is enabled. When users already dismissed the Guided
-   * Tour, it returns false.
-   */
-  public isEnabled() {
-    return !this.cookie.isDisabled();
   }
 
   /**

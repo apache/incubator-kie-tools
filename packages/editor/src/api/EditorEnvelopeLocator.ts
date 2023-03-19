@@ -14,12 +14,64 @@
  * limitations under the License.
  */
 
-export interface EnvelopeMapping {
-  resourcesPathPrefix: string;
-  envelopePath: string;
+import { IMinimatch, Minimatch } from "minimatch";
+
+export enum EnvelopeContentType {
+  PATH,
+  CONTENT,
 }
 
-export interface EditorEnvelopeLocator {
-  targetOrigin: string;
-  mapping: Map<string, EnvelopeMapping>;
+export type EnvelopeContent =
+  | {
+      type: EnvelopeContentType.PATH;
+      path: string;
+    }
+  | {
+      type: EnvelopeContentType.CONTENT;
+      content: string;
+    };
+
+export class EnvelopeMapping {
+  public matcher: IMinimatch;
+
+  constructor(
+    private readonly args: {
+      type: string;
+      filePathGlob: string;
+      resourcesPathPrefix: string;
+      envelopeContent: EnvelopeContent;
+    }
+  ) {
+    this.matcher = new Minimatch(args.filePathGlob, { nocase: true, dot: true });
+  }
+
+  get type(): string {
+    return this.args.type;
+  }
+
+  get filePathGlob(): string {
+    return this.args.filePathGlob;
+  }
+
+  get resourcesPathPrefix(): string {
+    return this.args.resourcesPathPrefix;
+  }
+
+  get envelopeContent(): EnvelopeContent {
+    return this.args.envelopeContent;
+  }
+}
+
+export class EditorEnvelopeLocator {
+  constructor(public readonly targetOrigin: string, public readonly envelopeMappings: EnvelopeMapping[]) {}
+
+  public getEnvelopeMapping(path: string) {
+    return this.envelopeMappings.find((mapping) => {
+      return mapping.matcher.match(path);
+    });
+  }
+
+  public hasMappingFor(path: string) {
+    return this.getEnvelopeMapping(path) !== undefined;
+  }
 }

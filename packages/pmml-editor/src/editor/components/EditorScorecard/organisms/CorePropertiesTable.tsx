@@ -16,7 +16,7 @@
 import * as React from "react";
 import { BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
 import { GenericSelector } from "../atoms";
-import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
+import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kie-tools/pmml-editor-marshaller";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
@@ -281,7 +281,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                               algorithmName: algorithmName === "" ? undefined : algorithmName,
                             });
                           }}
-                          data-ouia-component-id="algorithm"
+                          ouiaId="algorithm"
                         />
                       </FormGroup>
                     </LevelItem>
@@ -295,7 +295,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                             onCommit({ initialScore: initialScore });
                           }}
                           type="number"
-                          data-ouia-component-id="initial-score"
+                          ouiaId="initial-score"
                         />
                       </FormGroup>
                     </LevelItem>
@@ -367,7 +367,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           type="number"
                           validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
                           isDisabled={props.isBaselineScoreDisabled}
-                          data-ouia-component-id="baseline-score"
+                          ouiaId="baseline-score"
                         />
                       </FormGroup>
                     </LevelItem>

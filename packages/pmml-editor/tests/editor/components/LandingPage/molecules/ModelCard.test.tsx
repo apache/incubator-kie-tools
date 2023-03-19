@@ -15,8 +15,8 @@
  */
 import { render } from "@testing-library/react";
 import * as React from "react";
-import { Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import { ModelCard } from "@kogito-tooling/pmml-editor/dist/editor/components/LandingPage/molecules";
+import { Scorecard } from "@kie-tools/pmml-editor-marshaller";
+import { ModelCard } from "@kie-tools/pmml-editor/dist/editor/components/LandingPage/molecules";
 
 describe("ModelCard", () => {
   test("render::Basics", () => {

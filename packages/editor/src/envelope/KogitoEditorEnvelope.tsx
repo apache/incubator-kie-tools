@@ -21,17 +21,16 @@ import {
   KogitoEditorEnvelopeContext,
   KogitoEditorEnvelopeContextType,
 } from "../api";
-import { DefaultKeyboardShortcutsService } from "@kie-tooling-core/keyboard-shortcuts/dist/envelope";
-import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist/envelope";
 import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
-import { Envelope, EnvelopeApiFactory } from "@kie-tooling-core/envelope";
-import { I18nService } from "@kie-tooling-core/i18n/dist/envelope";
+import { Envelope, EnvelopeApiFactory } from "@kie-tools-core/envelope";
+import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
 import { EditorEnvelopeI18nContext, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
-import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
-import { getOperatingSystem } from "@kie-tooling-core/operating-system";
-import { ApiDefinition } from "@kie-tooling-core/envelope-bus/dist/api";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
+import { getOperatingSystem } from "@kie-tools-core/operating-system";
+import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";
+import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 
 export class KogitoEditorEnvelope<
   E extends Editor,
@@ -45,7 +44,7 @@ export class KogitoEditorEnvelope<
       EditorEnvelopeViewApi<E>,
       KogitoEditorEnvelopeContextType<ChannelApi>
     >,
-    private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService,
+    private readonly keyboardShortcutsService: KeyboardShortcutsService,
     private readonly i18nService: I18nService,
     private readonly envelope: Envelope<
       EnvelopeApi,
@@ -58,7 +57,6 @@ export class KogitoEditorEnvelope<
       operatingSystem: getOperatingSystem(),
       services: {
         keyboardShortcuts: keyboardShortcutsService,
-        guidedTour: { isEnabled: () => KogitoGuidedTour.getInstance().isEnabled() },
         i18n: i18nService,
       },
     }
@@ -80,7 +78,13 @@ export class KogitoEditorEnvelope<
           initialLocale={navigator.language}
         >
           <EditorEnvelopeI18nContext.Consumer>
-            {({ setLocale }) => <EditorEnvelopeView ref={editorEnvelopeViewRef} setLocale={setLocale} />}
+            {({ setLocale }) => (
+              <EditorEnvelopeView
+                ref={editorEnvelopeViewRef}
+                setLocale={setLocale}
+                showKeyBindingsOverlay={this.keyboardShortcutsService.isEnabled()}
+              />
+            )}
           </EditorEnvelopeI18nContext.Consumer>
         </I18nDictionariesProvider>
       </KogitoEditorEnvelopeContext.Provider>

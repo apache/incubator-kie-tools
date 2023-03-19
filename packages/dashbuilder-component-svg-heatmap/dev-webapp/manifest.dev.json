@@ -1,0 +1,56 @@
+{
+  "init": [
+    {
+      "key": "svg",
+      "value": "http://localhost:9001/sample.svg"
+    },
+    {
+      "key": "opacity",
+      "value": "0.3"
+    },
+    {
+      "key": "size",
+      "value": "4.5"
+    },
+    {
+      "key": "blur",
+      "value": "0.6"
+    },
+    {
+      "key": "containsId",
+      "value": "true"
+    }
+  ],
+  "dataSet": {
+    "columns": [
+      {
+        "name": "NID",
+        "type": "LABEL",
+        "settings": {
+          "columnId": "NID",
+          "columnName": "NID",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": null
+        }
+      },
+      {
+        "name": "VALUE",
+        "type": "NUMBER",
+        "settings": {
+          "columnId": "NID",
+          "columnName": "NID",
+          "valueExpression": "value",
+          "emptyTemplate": "---",
+          "valuePattern": null
+        }
+      }
+    ],
+    "data": [
+      ["state-ChooseOnLanguage", "14000"],
+      ["state-GreetInEnglish", "120"],
+      ["state-GreetInSpanish", "16000"],
+      ["state-GreetPerson", "12000"]
+    ]
+  }
+}

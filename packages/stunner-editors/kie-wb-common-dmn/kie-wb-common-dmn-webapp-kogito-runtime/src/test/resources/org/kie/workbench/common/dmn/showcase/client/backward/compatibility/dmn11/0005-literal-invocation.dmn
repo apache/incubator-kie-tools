@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11" namespace="http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.33.1; 1.0" name="literal invocation1" triso:logoChoice="Default">
+	<itemDefinition name="tLoan" id="_f909c1d5-36e4-4f71-8392-fe3b14ddb6f7">
+		<itemComponent name="amount" id="_579041dc-2bad-42b4-9650-b2cf39175ecc">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent name="rate" id="_353c0e6f-b344-451e-944e-bec76817b29a">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent name="term" id="_c7b4a252-df93-4407-8bef-9d30d94125b6">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<decision id="d_MonthlyPayment" name="MonthlyPayment">
+		<variable name="MonthlyPayment" typeRef="feel:number"/>
+		<informationRequirement>
+			<requiredInput href="#i_Loan"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#i_fee"/>
+		</informationRequirement>
+		<knowledgeRequirement>
+			<requiredKnowledge href="#b_PMT"/>
+		</knowledgeRequirement>
+		<literalExpression>
+			<text>PMT(Loan.amount, Loan.rate, Loan.term)+fee</text>
+		</literalExpression>
+	</decision>
+	<businessKnowledgeModel id="b_PMT" name="PMT">
+		<encapsulatedLogic>
+			<formalParameter name="p" typeRef="feel:number"/>
+			<formalParameter name="r" typeRef="feel:number"/>
+			<formalParameter name="n" typeRef="feel:number"/>
+			<literalExpression expressionLanguage="FEEL">
+				<text>(p*r/12)/(1-(1+r/12)**-n)</text>
+			</literalExpression>
+		</encapsulatedLogic>
+		<variable name="PMT" typeRef="feel:number"/>
+	</businessKnowledgeModel>
+	<inputData id="i_Loan" name="Loan">
+		<variable name="Loan" typeRef="tns:tLoan"/>
+	</inputData>
+	<inputData id="i_fee" name="fee">
+		<variable name="fee" typeRef="feel:number"/>
+	</inputData>
+</definitions>

@@ -4,7 +4,8 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
 <body>
   <div>
     <div
-      class="kogito-tooling--keyboard-shortcuts kogito-tooling--keyboard-shortcuts-icon"
+      class="kie-tools--keyboard-shortcuts kie-tools--keyboard-shortcuts-icon"
+      data-ouia-component-id="keyboard-shortcuts-icon"
       data-testid="keyboard-shortcuts-help-overlay-icon"
     >
       <svg
@@ -33,7 +34,8 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
 <body>
   <div>
     <div
-      class="kogito-tooling--keyboard-shortcuts kogito-tooling--keyboard-shortcuts-icon"
+      class="kie-tools--keyboard-shortcuts kie-tools--keyboard-shortcuts-icon"
+      data-ouia-component-id="keyboard-shortcuts-icon"
       data-testid="keyboard-shortcuts-help-overlay-icon"
     >
       <svg
@@ -69,7 +71,8 @@ exports[`EditorEnvelopeView after set content 1`] = `
 <body>
   <div>
     <div
-      class="kogito-tooling--keyboard-shortcuts kogito-tooling--keyboard-shortcuts-icon"
+      class="kie-tools--keyboard-shortcuts kie-tools--keyboard-shortcuts-icon"
+      data-ouia-component-id="keyboard-shortcuts-icon"
       data-testid="keyboard-shortcuts-help-overlay-icon"
     >
       <svg
@@ -105,21 +108,22 @@ exports[`EditorEnvelopeView first open 1`] = `
 <body>
   <div>
     <div
-      class="kogito-tooling--loading-screen"
+      class="kie-tools--loading-screen"
       id="loading-screen"
     >
       <div
-        class="kogito-tooling--loading-screen "
+        class="kie-tools--loading-screen "
         data-testid="loading-screen-div"
       >
         <div
           class="pf-l-bullseye"
         >
           <div
-            class="kogito-tooling--loading-screen-spinner"
+            class="kie-tools--loading-screen-spinner"
           >
             <div>
               <span
+                aria-label="Contents"
                 aria-valuetext="Loading..."
                 class="pf-c-spinner pf-m-xl"
                 role="progressbar"
@@ -137,6 +141,9 @@ exports[`EditorEnvelopeView first open 1`] = `
             </div>
             <h5
               class="pf-c-title pf-m-md"
+              data-ouia-component-id="OUIA-Generated-Title-1"
+              data-ouia-component-type="PF4/Title"
+              data-ouia-safe="true"
             >
               Loading...
             </h5>

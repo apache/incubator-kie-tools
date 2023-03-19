@@ -15,15 +15,15 @@
  */
 
 import * as vscode from "vscode";
-import { Notification, NotificationsApi, NotificationSeverity } from "../api";
+import { Notification, NotificationsChannelApi, NotificationSeverity } from "../api";
 
 const DIAGNOSTIC_COLLECTION_NAME = "kogito";
 
-type NotificationSeverityConvertionType = {
+type NotificationSeverityConversionType = {
   [K in NotificationSeverity]: vscode.DiagnosticSeverity;
 };
 
-const KOGITO_NOTIFICATION_TO_VS_CODE_DIAGNOSTIC_SEVERITY_CONVERTION_MAP: NotificationSeverityConvertionType = {
+const KOGITO_NOTIFICATION_TO_VS_CODE_DIAGNOSTIC_SEVERITY_CONVERSION_MAP: NotificationSeverityConversionType = {
   INFO: vscode.DiagnosticSeverity.Information,
   WARNING: vscode.DiagnosticSeverity.Warning,
   ERROR: vscode.DiagnosticSeverity.Error,
@@ -31,7 +31,7 @@ const KOGITO_NOTIFICATION_TO_VS_CODE_DIAGNOSTIC_SEVERITY_CONVERTION_MAP: Notific
   SUCCESS: vscode.DiagnosticSeverity.Information,
 };
 
-export class ProblemsTabNotificationHandler implements NotificationsApi {
+export class ProblemsTabNotificationHandler implements NotificationsChannelApi {
   private readonly diagnosticCollection = vscode.languages.createDiagnosticCollection(DIAGNOSTIC_COLLECTION_NAME);
 
   public kogitoNotifications_createNotification(notification: Notification): void {
@@ -52,15 +52,19 @@ export class ProblemsTabNotificationHandler implements NotificationsApi {
   }
 
   private buildDiagnostic(notification: Notification): vscode.Diagnostic {
+    const startLineNumber = notification.position?.startLineNumber ? notification.position?.startLineNumber - 1 : 0;
+    const startColumn = notification.position?.startColumn ? notification.position?.startColumn - 1 : 0;
+    const endColumn = notification.position?.endColumn || 0;
+    const endLineNumber = notification.position?.endLineNumber ? notification.position?.endLineNumber - 1 : 0;
     return {
       message: notification.message,
-      range: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0)),
+      range: new vscode.Range(startLineNumber, startColumn, endLineNumber, endColumn),
       severity: this.getSeverity(notification.severity),
     };
   }
 
   private getSeverity(severity: NotificationSeverity): vscode.DiagnosticSeverity {
-    const diagnostic = KOGITO_NOTIFICATION_TO_VS_CODE_DIAGNOSTIC_SEVERITY_CONVERTION_MAP[severity];
+    const diagnostic = KOGITO_NOTIFICATION_TO_VS_CODE_DIAGNOSTIC_SEVERITY_CONVERSION_MAP[severity];
     return diagnostic ? vscode.DiagnosticSeverity.Information : diagnostic;
   }
 }

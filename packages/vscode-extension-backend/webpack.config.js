@@ -16,8 +16,8 @@
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
-const common = require("../../config/webpack.common.config");
-const backendExtendedServices = require("@kogito-tooling/backend-extended-services");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const backendExtendedServices = require("@kie-tools/backend-extended-services");
 
 module.exports = async (env) => [
   merge(common(env), {

@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.prod.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.json",
   "compilerOptions": {
     "rootDir": "./tests",
     "outDir": "dist-tests"

@@ -16,17 +16,19 @@
 
 import * as React from "react";
 import { cleanup, fireEvent, getByTestId, render, act } from "@testing-library/react";
-import { EditorEnvelopeView, EditorEnvelopeViewApi } from "@kie-tooling-core/editor/dist/envelope/EditorEnvelopeView";
+import { EditorEnvelopeView, EditorEnvelopeViewApi } from "@kie-tools-core/editor/dist/envelope/EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
 import { usingEditorEnvelopeI18nContext, usingEnvelopeContext } from "./utils";
-import { Editor } from "@kie-tooling-core/editor/dist/api";
+import { Editor } from "@kie-tools-core/editor/dist/api";
 
 function renderEditorEnvelopeView(): EditorEnvelopeViewApi<Editor> {
   const editorEnvelopeRef = React.createRef<EditorEnvelopeViewApi<Editor>>();
   const setLocale = jest.fn();
   render(
     usingEditorEnvelopeI18nContext(
-      usingEnvelopeContext(<EditorEnvelopeView ref={editorEnvelopeRef} setLocale={setLocale} />).wrapper
+      usingEnvelopeContext(
+        <EditorEnvelopeView ref={editorEnvelopeRef} setLocale={setLocale} showKeyBindingsOverlay={true} />
+      ).wrapper
     ).wrapper
   );
   return editorEnvelopeRef.current!;

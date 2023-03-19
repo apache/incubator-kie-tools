@@ -20,8 +20,8 @@ import {
   usePositionListener,
   useStartTutorialListener,
   useUserInteractionListener,
-} from "@kie-tooling-core/guided-tour/dist/components/utils";
-import { EventLabel } from "@kie-tooling-core/guided-tour/dist/core";
+} from "@kie-tools-core/guided-tour/dist/components/utils";
+import { EventLabel } from "@kie-tools-core/guided-tour/dist/core";
 
 testGuidedTourListener("useStartTutorialListener", "GuidedTour.startTutorial", useStartTutorialListener);
 testGuidedTourListener("useUserInteractionListener", "GuidedTour.userInteraction", useUserInteractionListener);

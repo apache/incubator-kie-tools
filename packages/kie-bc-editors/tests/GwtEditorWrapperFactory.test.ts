@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors/dist/common/GwtEditorWrapperFactory";
-import { GwtLanguageData, Resource } from "@kogito-tooling/kie-bc-editors/dist/common/GwtLanguageData";
-import { GwtStateControlService } from "@kogito-tooling/kie-bc-editors/dist/common/gwtStateControl";
-import { messageBusClientApiMock } from "@kie-tooling-core/envelope-bus/dist-tests/common";
-import { I18nService } from "@kie-tooling-core/i18n/dist/envelope";
-import { ChannelType, KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
-import { GwtEditorWrapper } from "@kogito-tooling/kie-bc-editors/dist/common/GwtEditorWrapper";
-import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
+import { GwtEditorWrapperFactory } from "@kie-tools/kie-bc-editors/dist/common/GwtEditorWrapperFactory";
+import { GwtLanguageData, Resource } from "@kie-tools/kie-bc-editors/dist/common/GwtLanguageData";
+import { GwtStateControlService } from "@kie-tools/kie-bc-editors/dist/common/gwtStateControl";
+import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/common";
+import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
+import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors/dist/common/GwtEditorWrapper";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { XmlFormatter } from "@kie-tools/kie-bc-editors/dist/common/XmlFormatter";
 
 const cssResource: Resource = {
   type: "css",
@@ -50,11 +51,6 @@ const jsResource: Resource = {
 };
 
 const xmlFormatter = { format: (c: string) => c };
-
-const gwtAppFormerApi = {
-  onFinishedLoading: (callback: () => Promise<any>) => (window.appFormerGwtFinishedLoading = callback),
-  getEditor: jest.fn(),
-};
 
 function waitForNScriptsToLoad(remaining: number) {
   if (remaining <= 0) {
@@ -86,16 +82,19 @@ describe("GwtEditorWrapperFactory", () => {
       (self) => {
         return new GwtEditorWrapper(
           testLanguageData.editorId,
-          self.gwtAppFormerApi.getEditor(testLanguageData.editorId),
+          self.gwtAppFormerConsumedInteropApi.getEditor(testLanguageData.editorId),
           channelApiMock,
-          self.xmlFormatter,
+          new XmlFormatter(),
           self.gwtStateControlService,
           self.kieBcEditorsI18n
         );
       },
       { shouldLoadResourcesDynamically: true },
       xmlFormatter,
-      gwtAppFormerApi,
+      {
+        onFinishedLoading: (callback: () => Promise<any>) => (window.appFormerGwtFinishedLoading = callback),
+        getEditor: jest.fn(),
+      },
       new GwtStateControlService()
     );
 
@@ -104,7 +103,6 @@ describe("GwtEditorWrapperFactory", () => {
         channelApi: channelApiMock,
         services: {
           keyboardShortcuts: {} as any,
-          guidedTour: {} as any,
           i18n: new I18nService(),
         },
       },

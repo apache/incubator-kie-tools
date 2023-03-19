@@ -16,11 +16,12 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
-const common = require("../../config/webpack.common.config");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
-const buildEnv = require("@kogito-tooling/build-env");
-const externalAssets = require("@kogito-tooling/external-assets-base");
+const stunnerEditors = require("@kie-tools/stunner-editors");
+const { env } = require("./env");
+const buildEnv = env;
 
 module.exports = (env) => [
   merge(common(env), {
@@ -42,17 +43,17 @@ module.exports = (env) => [
         patterns: [
           { from: "./envelope", to: "./envelope" },
           { from: "./static", to: "." },
-          { from: externalAssets.dmnEditorPath(), to: "./dmn-editor/dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          { from: "../ping-pong-view-angular/dist/app", to: "./envelope/angular" },
+          { from: stunnerEditors.dmnEditorPath(), to: "./dmn-editor/dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
         ],
       }),
     ],
     devServer: {
       historyApiFallback: false,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
-      port: buildEnv.examples.webapp.port,
+      port: buildEnv.exampleWebapp.port,
     },
+    ignoreWarnings: [/Failed to parse source map/],
   }),
 ];

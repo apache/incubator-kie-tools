@@ -1,0 +1,98 @@
+@import "/org/uberfire/client/views/static/uberfire-variables.less";
+
+.multi-screen {
+  background-color: @color-pf-white;
+  height: 100%;
+
+  // Page Content
+  .page-content-kie {
+    background-color: @color-pf-white;
+    padding-bottom: 1em;
+  }
+
+  .fixed-header + .page-content-kie {
+    padding-top: 4em;
+  }
+
+  .page-content-kie:after {
+    content: " ";
+    display: table;
+    clear: both;
+  }
+
+  .main-container .multi-screen-toolbar-pf {
+    background-color: @color-pf-white;
+    padding: 0.8em 0;
+    border: 0;
+  }
+
+  .multi-screen-toolbar-pf {
+    padding: 0.8em 1.5em;
+  }
+
+  .multi-screen-toolbar-pf .form-group,
+  .multi-screen-toolbar-pf .btn-group {
+    margin-bottom: 0;
+    display: flex;
+  }
+
+  .multi-screen-toolbar-pf .form-group {
+    padding-right: 10px;
+  }
+
+  .multi-screen-toolbar-pf .form-group:last-of-type {
+    border-right: none;
+  }
+
+  .multi-screen-toolbar-pf .toolbar-pf-actions {
+    margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .multi-screen-toolbar-pf .toolbar-pf-action-right .form-group .btn + .btn {
+    margin-left: 10px;
+  }
+
+  .multi-screen-toolbar-pf .form-group .btn-link {
+    color: @color-pf-blue;
+    font-size: 1em;
+  }
+
+  .multi-screen-toolbar-pf .form-group .btn-link .pficon,
+  .multi-screen-toolbar-pf .form-group .btn-link .fa {
+    font-size: 1.3em;
+    margin-left: 5px;
+  }
+
+  .multi-screen-toolbar-pf .form-group .btn-link .pficon-close:not(:hover) {
+    color: @color-pf-black;
+  }
+
+  // Title for toolbar inside content section
+  .toolbar-data-title-kie {
+    display: table-cell;
+    float: left;
+    font-size: 1.5em;
+    margin-right: 1em;
+  }
+
+  .btn-group button {
+    margin: 0px 4px;
+  }
+
+  .btn-group .separator-left {
+    margin-left: 4px !important;
+    padding-left: 8px;
+    border-left: 1px solid #d1d1d1;
+  }
+
+  .gwt-container {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+  }
+}

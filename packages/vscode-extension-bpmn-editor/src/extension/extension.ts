@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tooling-core/backend/dist/i18n";
-import { VsCodeBackendProxy } from "@kie-tooling-core/backend/dist/vscode";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
-import * as KogitoVsCode from "@kie-tooling-core/vscode-extension";
+import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
+import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 
 let backendProxy: VsCodeBackendProxy;
@@ -34,25 +35,14 @@ export function activate(context: vscode.ExtensionContext) {
     viewType: "kieKogitoWebviewEditorsBpmn",
     generateSvgCommandId: "extension.kogito.getPreviewSvgBpmn",
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgBpmn",
-    editorEnvelopeLocator: {
-      targetOrigin: "vscode",
-      mapping: new Map([
-        [
-          "bpmn",
-          {
-            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
-            resourcesPathPrefix: "dist/webview/editors/bpmn",
-          },
-        ],
-        [
-          "bpmn2",
-          {
-            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
-            resourcesPathPrefix: "dist/webview/editors/bpmn",
-          },
-        ],
-      ]),
-    },
+    editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
+      new EnvelopeMapping({
+        type: "bpmn",
+        filePathGlob: "**/*.bpmn?(2)",
+        resourcesPathPrefix: "dist/webview/editors/bpmn",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/BpmnEditorEnvelopeApp.js" },
+      }),
+    ]),
     backendProxy: backendProxy,
   });
 

@@ -1,0 +1,13 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+  <ui:style>
+    .contents {
+      display: inline;
+    }
+  </ui:style>
+  <g:HTMLPanel>
+    <b:Tooltip container="body" title="" ui:field="errorTooltip">
+      <g:SimplePanel ui:field="contents" stylePrimaryName="{style.contents}" />
+    </b:Tooltip>
+  </g:HTMLPanel>
+</ui:UiBinder>

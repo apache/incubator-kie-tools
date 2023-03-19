@@ -17,14 +17,13 @@ import { Reducer } from "react";
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
 import {
-  FieldName,
   InvalidValueTreatmentMethod,
   MiningField,
   MissingValueTreatmentMethod,
   OpType,
   OutlierTreatmentMethod,
   UsageType,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { ValidationRegistry } from "../validation";
 import { Builder } from "../paths";
 import {
@@ -42,8 +41,8 @@ interface MiningSchemaFieldPayload {
   [Actions.UpdateMiningSchemaField]: {
     readonly modelIndex: number;
     readonly miningSchemaIndex: number;
-    readonly name: FieldName;
-    readonly originalName: FieldName | undefined;
+    readonly name: string;
+    readonly originalName: string | undefined;
     readonly usageType: UsageType | undefined;
     readonly optype: OpType | undefined;
     readonly importance: number | undefined;

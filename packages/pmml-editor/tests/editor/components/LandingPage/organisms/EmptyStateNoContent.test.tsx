@@ -15,7 +15,7 @@
  */
 import { render } from "@testing-library/react";
 import * as React from "react";
-import { EmptyStateNoContent } from "@kogito-tooling/pmml-editor/dist/editor/components/LandingPage/organisms";
+import { EmptyStateNoContent } from "@kie-tools/pmml-editor/dist/editor/components/LandingPage/organisms";
 
 describe("EmptyStateNoContent", () => {
   test("render", () => {

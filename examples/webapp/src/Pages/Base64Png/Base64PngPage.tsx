@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kie-tooling-core/editor/dist/api";
+import { ChannelType, EnvelopeContentType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
-import { Page } from "@patternfly/react-core";
-import { EmbeddedEditor } from "@kie-tooling-core/editor/dist/embedded";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import { EmbeddedEditor } from "@kie-tools-core/editor/dist/embedded";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { Base64PngGallery } from "./Base64PngGallery";
 
 /**
@@ -29,33 +29,32 @@ import { Base64PngGallery } from "./Base64PngGallery";
  */
 export function Base64PngPage() {
   /**
-   * State that handles the file. It's important to type with the File type of the @kogito-tooling/dist/embedded.
+   * State that handles the file. It's important to type with the File type of the @kie-tools/dist/embedded.
    * It's initialized with an empty file with the base64png extension. The file is used by the EmbeddedEditor to set the content on the Editor. Updating the file will trigger a re-render on the Editor because the EmbeddedEditor will set updated content on the Editor.
    */
-  const [file, setFile] = useState<File>({
+  const [file, setFile] = useState<EmbeddedEditorFile>({
     fileName: "new-file",
     fileExtension: "base64png",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
+    path: "new-file.base64png",
   });
 
   /**
    * The editor envelope locator informs the EmbeddedEditor what file extension the Editor can open, and it maps to the respective envelope path and the Editor resources (like CSS, icons, etc).
    */
-  const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(() => {
-    return {
-      targetOrigin: window.location.origin,
-      mapping: new Map([
-        [
-          "base64png",
-          {
-            resourcesPathPrefix: `envelope/`,
-            envelopePath: `envelope/base64-editor.html`,
-          },
-        ],
+  const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
+    () =>
+      new EditorEnvelopeLocator(window.location.origin, [
+        new EnvelopeMapping({
+          type: "base64png",
+          filePathGlob: "**/*.base64png",
+          resourcesPathPrefix: "envelope/",
+          envelopeContent: { type: EnvelopeContentType.PATH, path: "envelope/base64-editor.html" },
+        }),
       ]),
-    };
-  }, [file]);
+    [file]
+  );
 
   return (
     <Page>

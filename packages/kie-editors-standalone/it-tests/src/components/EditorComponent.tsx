@@ -17,8 +17,8 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FileLoader, UploadedFile } from "./FileLoader";
-import { ContentType } from "@kie-tooling-core/workspace/dist/api";
-import { Editor, StandaloneEditorApi } from "@kogito-tooling/kie-editors-standalone/dist/common/Editor";
+import { ContentType } from "@kie-tools-core/workspace/dist/api";
+import { Editor, StandaloneEditorApi } from "@kie-tools/kie-editors-standalone/dist/common/Editor";
 
 export interface Props {
   id: string;
@@ -36,7 +36,7 @@ export type InternalProps = Props & {
 export const EditorComponent = (props: InternalProps) => {
   const [isDirty, setDirty] = useState(false);
   const editorRef = useRef<StandaloneEditorApi>(null);
-  const [modelName, setModelName] = useState(props.defaultModelName ?? "new-file");
+  const [modelName, setModelName] = useState(props.defaultModelName ?? "Untitled");
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
   const editorContainerDivRef = useRef<HTMLDivElement>(null);

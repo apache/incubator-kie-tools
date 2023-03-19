@@ -18,13 +18,12 @@ import {
   Characteristic,
   CompoundPredicate,
   False,
-  FieldName,
   MiningField,
   Predicate,
   SimplePredicate,
   SimpleSetPredicate,
   True,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 import { Builder, PredicateBuilder } from "../paths";
@@ -120,7 +119,7 @@ export const validateAttributes = (
 const validatePredicate = (
   pathBuilder: PredicateBuilder,
   predicate: Predicate | undefined,
-  fieldNames: FieldName[],
+  fieldNames: string[],
   validationRegistry: ValidationRegistry
 ) => {
   if (predicate === undefined) {

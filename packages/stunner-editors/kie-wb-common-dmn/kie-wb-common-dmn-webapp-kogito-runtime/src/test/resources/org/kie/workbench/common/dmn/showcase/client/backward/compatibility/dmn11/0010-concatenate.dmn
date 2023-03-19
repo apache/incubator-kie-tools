@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_e14a67c7-c9a2-4fd6-84fb-63722d1454d4" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.34; 1.0" id="_e14a67c7-c9a2-4fd6-84fb-63722d1454d4" name="concatenate" namespace="http://www.trisotech.com/definitions/_e14a67c7-c9a2-4fd6-84fb-63722d1454d4" triso:logoChoice="Default">
+	<itemDefinition id="tStringList" isCollection="true" name="tStringList">
+		<typeRef>feel:string</typeRef>
+	</itemDefinition>
+	<itemDefinition id="tNestedList" isCollection="true" name="tNestedList">
+		<typeRef>tns:tStringList</typeRef>
+	</itemDefinition>
+	<inputData id="_1296434e-6902-40fc-9a93-07c35dda7ec8" name="simpleList">
+		<variable name="simpleList" typeRef="tns:tStringList"/>
+	</inputData>
+	<inputData id="_4e72e88f-2239-43b8-9944-4893daf84127" name="nestedList">
+		<variable name="nestedList" typeRef="tns:tNestedList"/>
+	</inputData>
+	<decision id="_1bd696ab-0181-49e0-bb15-d090219c4943" name="literalSimpleList">
+		<variable name="literalSimpleList" typeRef="tns:tStringList"/>
+		<literalExpression>
+			<text>["a","b","c"]</text>
+		</literalExpression>
+	</decision>
+	<decision id="_d6152254-7ad2-4aeb-90a0-16b962a11257" name="literalNestedList">
+		<variable name="literalNestedList" typeRef="tns:tNestedList"/>
+		<literalExpression>
+			<text>[["w","x"],"y","z"]</text>
+		</literalExpression>
+	</decision>
+	<decision id="_f6e97b3b-d13c-47b5-b679-36cf46d4f904" name="concatenate1">
+		<variable name="concatenate1" typeRef="tns:tNestedList"/>
+		<informationRequirement>
+			<requiredDecision href="#_1bd696ab-0181-49e0-bb15-d090219c4943"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_1296434e-6902-40fc-9a93-07c35dda7ec8"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>concatenate(simpleList,literalSimpleList)</text>
+		</literalExpression>
+	</decision>
+	<decision id="_bf18b7c7-5f20-48a2-bd27-527c82cf0855" name="concatenate2">
+		<variable name="concatenate2" typeRef="tns:tNestedList"/>
+		<informationRequirement>
+			<requiredInput href="#_1296434e-6902-40fc-9a93-07c35dda7ec8"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_4e72e88f-2239-43b8-9944-4893daf84127"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>concatenate(simpleList,nestedList)</text>
+		</literalExpression>
+	</decision>
+	<decision id="_877fd216-703c-4b2f-8197-9f3ed144ff4d" name="concatenate3">
+		<variable name="concatenate3" typeRef="tns:tNestedList"/>
+		<informationRequirement>
+			<requiredDecision href="#_1bd696ab-0181-49e0-bb15-d090219c4943"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_4e72e88f-2239-43b8-9944-4893daf84127"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>concatenate(literalSimpleList,nestedList)</text>
+		</literalExpression>
+	</decision>
+	<decision id="_cf4db6c6-da6b-42fe-8f85-110f8d711111" name="concatenate4">
+		<variable name="concatenate4" typeRef="tns:tNestedList"/>
+		<informationRequirement>
+			<requiredDecision href="#_1bd696ab-0181-49e0-bb15-d090219c4943"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredDecision href="#_d6152254-7ad2-4aeb-90a0-16b962a11257"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>concatenate(literalSimpleList,literalNestedList)</text>
+		</literalExpression>
+	</decision>
+</definitions>

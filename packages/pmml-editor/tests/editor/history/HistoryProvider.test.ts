@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
-import { HistoryService } from "@kogito-tooling/pmml-editor/dist/editor/history";
+import { Header, PMML } from "@kie-tools/pmml-editor-marshaller";
+import { HistoryService } from "@kie-tools/pmml-editor/dist/editor/history";
 
 const service: HistoryService = new HistoryService([]);
 

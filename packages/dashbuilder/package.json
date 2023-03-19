@@ -1,0 +1,62 @@
+{
+  "private": true,
+  "name": "@kie-tools/dashbuilder",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "files": [
+    "**/dist/*"
+  ],
+  "scripts": {
+    "build:dev": "run-script-os && pnpm copy:components && pnpm build:dev:runtime",
+    "build:dev:linux:darwin": "mvn clean install -DskipTests -Dgwt.compiler.skip=true",
+    "build:dev:runtime": "run-script-os",
+    "build:dev:runtime:linux:darwin": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && mvn clean install -Psources -DskipTests",
+    "build:dev:runtime:win32": "echo \"Build not supported on Windows\"",
+    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-Dgwt.compiler.skip=true\"",
+    "build:prod": "pnpm copy:components && pnpm lint && run-script-os && pnpm build:prod:authoring && pnpm build:prod:runtime && pnpm dist && pnpm delete:components",
+    "build:prod:authoring": "run-script-os",
+    "build:prod:authoring:darwin": "cd ./dashbuilder-authoring/ && mvn clean install -Dfull -DskipTests",
+    "build:prod:authoring:linux": "cd ./dashbuilder-authoring/ && mvn clean install -Dfull -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
+    "build:prod:authoring:win32": "echo \"Build not supported on Windows\"",
+    "build:prod:darwin": "mvn clean install -Dgwt.compiler.skip=true -DskipTests",
+    "build:prod:linux": "mvn clean install -Dgwt.compiler.skip=true -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
+    "build:prod:runtime": "run-script-os",
+    "build:prod:runtime:darwin": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && mvn clean install -Dfull -DskipTests",
+    "build:prod:runtime:linux": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && mvn clean install -Dfull -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
+    "build:prod:runtime:win32": "echo \"Build not supported on Windows\"",
+    "build:prod:win32": "pnpm powershell \"mvn clean install `-Dgwt.compiler.skip=true `-DskipTests\"",
+    "copy:components": "pnpm delete:components && copyfiles -u 3 \"../dashbuilder-component-assembler/dist/**/*\" ./dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component",
+    "delete:components": "rimraf ./dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component",
+    "dist": "run-script-os",
+    "dist:linux:darwin": "rimraf dist/ && mkdir dist && zip -j dist/dashbuilder_dist.zip ./dashbuilder-authoring/target/dashbuilder-authoring.war ./dashbuilder-authoring/target/dashbuilder-authoring-bootable.jar ./dashbuilder-runtime-parent/dashbuilder-runtime-app/target/dashbuilder-runtime-app-runner.jar",
+    "dist:win32": "echo \"Not supported on Windows\"",
+    "install": "node install.js",
+    "lint": "echo 'Linting'",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+  },
+  "dependencies": {
+    "@kie-tools/dashbuilder-component-assembler": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}

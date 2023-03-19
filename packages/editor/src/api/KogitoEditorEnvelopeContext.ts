@@ -16,11 +16,11 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { ApiDefinition, MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
+import { ApiDefinition, MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
-import { DefaultKeyboardShortcutsService } from "@kie-tooling-core/keyboard-shortcuts/dist/envelope";
-import { I18nService } from "@kie-tooling-core/i18n/dist/envelope";
-import { OperatingSystem } from "@kie-tooling-core/operating-system";
+import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
+import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 
 export interface KogitoEditorEnvelopeContextType<
   ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>
@@ -28,8 +28,7 @@ export interface KogitoEditorEnvelopeContextType<
   channelApi: MessageBusClientApi<ChannelApi>;
   operatingSystem?: OperatingSystem;
   services: {
-    keyboardShortcuts: DefaultKeyboardShortcutsService;
-    guidedTour: { isEnabled: () => boolean };
+    keyboardShortcuts: KeyboardShortcutsService;
     i18n: I18nService;
   };
 }

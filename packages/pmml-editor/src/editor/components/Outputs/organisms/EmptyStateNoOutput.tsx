@@ -31,7 +31,7 @@ interface EmptyStateNoOutputProps {
 export const EmptyStateNoOutput = (props: EmptyStateNoOutputProps) => (
   <EmptyState data-testid="empty-state-no-output" variant={EmptyStateVariant.small}>
     <EmptyStateIcon icon={SignOutAltIcon} />
-    <Title headingLevel="h4" size="lg" data-ouia-component-id="no-outputs-title">
+    <Title headingLevel="h4" size="lg" ouiaId="no-outputs-title">
       No Outputs have been defined for this model.
     </Title>
     <EmptyStateBody>

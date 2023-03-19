@@ -22,6 +22,7 @@ import { useCallback, useImperativeHandle, useState } from "react";
 
 interface Props {
   setLocale: React.Dispatch<string>;
+  showKeyBindingsOverlay: boolean;
 }
 
 export interface EditorEnvelopeViewApi<E extends Editor> {
@@ -55,7 +56,7 @@ export const EditorEnvelopeViewRef: React.ForwardRefRenderFunction<EditorEnvelop
 
   return (
     <>
-      {!loading && <KeyBindingsHelpOverlay />}
+      {!loading && props.showKeyBindingsOverlay && <KeyBindingsHelpOverlay />}
       <LoadingScreen loading={loading} />
       <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0", left: "0" }}>
         {editor && editor.af_isReact && editor.af_componentRoot()}

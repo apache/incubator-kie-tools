@@ -1,0 +1,28 @@
+.uf-navitem-tile-body {
+  cursor: pointer;
+  float: left;
+  height: 160px;
+  width: 160px;
+  margin: 0 10px 10px 0;
+  font-size: 16px;
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+}
+.uf-navitem-tile-icon {
+  margin-top: 25px;
+  font-size: 46px;
+  color: #ffffff;
+}
+.uf-navitem-tile-text {
+  color: #ffffff;
+}
+.uf-navitem-tile-group {
+  background: rgba(76, 98, 154, 0.52);
+}
+.uf-navitem-tile-perspective {
+  background: rgba(67, 154, 99, 0.6);
+}
+.uf-navitem-tile-runtime-perspective {
+  background: rgba(67, 154, 99, 0.6);
+}

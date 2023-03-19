@@ -1,0 +1,15 @@
+{
+  "reporterEnabled": "mocha-jenkins-reporter, mocha-junit-reporter",
+  "mochaJenkinsReporterReporterOptions": {
+    "junit_report_name": "@kie-tools/vscode-extension-dashbuilder-editor",
+    "junit_report_path": "./dist-it-tests/junit-vscode-sl-tooling-it-tests.xml",
+    "junit_report_stack": 0
+  },
+  "mochaJunitReporterReporterOptions": {
+    "testsuitesTitle": "Dashbuilder Editor :: VS Code Extension",
+    "mochaFile": "./dist-it-tests/junit-report-[hash].xml",
+    "testCaseSwitchClassnameAndName": true,
+    "suiteTitleSeparatedBy": ".",
+    "useFullSuiteTitle": true
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "private": true,
+  "name": "chrome-extension-serverless-workflow-editor",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
+    "install": "node install.js",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "start": "webpack serve --env dev",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test test:it:start https-get://localhost:$(build-env swfChromeExtension.dev.port) test:it:run\"",
+    "test:it:run": "jest --runInBand -c ./jest.it.config.js",
+    "test:it:start": "pnpm start"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools-core/chrome-extension": "workspace:*",
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/keyboard-shortcuts": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
+    "@kie-tools/serverless-workflow-mermaid-viewer": "workspace:*",
+    "@kie-tools/serverless-workflow-text-editor": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/chrome": "^0.0.193",
+    "@types/jest": "^26.0.23",
+    "@types/jest-when": "^2.7.4",
+    "copy-webpack-plugin": "^11.0.0",
+    "jest": "^26.6.3",
+    "jest-when": "^3.5.0",
+    "monaco-editor": "^0.33.0",
+    "monaco-editor-webpack-plugin": "^7.0.1",
+    "monaco-yaml": "^4.0.0",
+    "rimraf": "^3.0.2",
+    "start-server-and-test": "^1.12.1",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.4.2",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.8.0",
+    "zip-webpack-plugin": "^4.0.1"
+  }
+}

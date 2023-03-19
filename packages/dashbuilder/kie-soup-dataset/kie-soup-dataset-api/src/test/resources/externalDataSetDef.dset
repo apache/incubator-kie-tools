@@ -1,0 +1,17 @@
+{
+    "uuid": "external-test-uuid",
+    "name": "external data set name",
+    "provider": "EXTERNAL",
+    "pushEnabled": false,
+    "pushMaxSize": 10,
+    "isPublic": true,
+    "cacheEnabled": false,
+    "cacheMaxRows": 100,
+    "refreshTime": "1second",
+    "refreshAlways": false,
+    "url": "http://datasets.com/dataset",
+    "headers": {
+    	"h1": "v1"
+    },
+    "dynamic": true
+}

@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
+export { VsCodeWorkspaceChannelApiImpl } from "./VsCodeWorkspaceChannelApiImpl";

@@ -15,7 +15,7 @@
  */
 import { render } from "@testing-library/react";
 import * as React from "react";
-import { ModelCardIcon } from "@kogito-tooling/pmml-editor/dist/editor/components/LandingPage/atoms";
+import { ModelCardIcon } from "@kie-tools/pmml-editor/dist/editor/components/LandingPage/atoms";
 
 describe("ModelCardIcon", () => {
   test("render::Undefined", () => {

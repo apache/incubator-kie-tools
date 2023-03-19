@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tooling-core/backend/dist/i18n";
-import { registerTestScenarioRunnerCommand, VsCodeBackendProxy } from "@kie-tooling-core/backend/dist/vscode";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
-import * as KogitoVsCode from "@kie-tooling-core/vscode-extension";
-import { VsCodeWorkspaceApi } from "@kie-tooling-core/workspace/dist/vscode";
-import { VsCodeNotificationsApi } from "@kie-tooling-core/notifications/dist/vscode";
+import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
+import { registerTestScenarioRunnerCommand, VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
+import { VsCodeWorkspaceChannelApiImpl } from "@kie-tools-core/workspace/dist/vscode";
+import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/notifications/dist/vscode";
 import * as vscode from "vscode";
 
 let backendProxy: VsCodeBackendProxy;
@@ -27,11 +28,9 @@ let backendProxy: VsCodeBackendProxy;
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
-  const envelopeTargetOrigin = "vscode";
-
-  const workspaceApi = new VsCodeWorkspaceApi();
+  const workspaceApi = new VsCodeWorkspaceChannelApiImpl();
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
-  const notificationsApi = new VsCodeNotificationsApi(workspaceApi);
+  const notificationsApi = new VsCodeNotificationsChannelApiImpl(workspaceApi);
   backendProxy = new VsCodeBackendProxy(context, backendI18n, "kie-group.vscode-extension-backend");
 
   registerTestScenarioRunnerCommand({
@@ -49,46 +48,32 @@ export async function activate(context: vscode.ExtensionContext) {
     viewType: "kieKogitoWebviewEditors",
     generateSvgCommandId: "extension.kogito.getPreviewSvg",
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvg",
-    editorEnvelopeLocator: {
-      targetOrigin: envelopeTargetOrigin,
-      mapping: new Map([
-        [
-          "bpmn",
-          {
-            resourcesPathPrefix: "dist/webview/editors/bpmn",
-            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "bpmn2",
-          {
-            resourcesPathPrefix: "dist/webview/editors/bpmn",
-            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "dmn",
-          {
-            resourcesPathPrefix: "dist/webview/editors/dmn",
-            envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "scesim",
-          {
-            resourcesPathPrefix: "dist/webview/editors/scesim",
-            envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "pmml",
-          {
-            resourcesPathPrefix: "dist/webview/editors/pmml",
-            envelopePath: "dist/webview/PMMLEditorEnvelopeApp.js",
-          },
-        ],
-      ]),
-    },
+    editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
+      new EnvelopeMapping({
+        type: "bpmn",
+        filePathGlob: "**/*.bpmn?(2)",
+        resourcesPathPrefix: "dist/webview/editors/bpmn",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/BpmnEditorEnvelopeApp.js" },
+      }),
+      new EnvelopeMapping({
+        type: "dmn",
+        filePathGlob: "**/*.dmn",
+        resourcesPathPrefix: "dist/webview/editors/dmn",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/DmnEditorEnvelopeApp.js" },
+      }),
+      new EnvelopeMapping({
+        type: "scesim",
+        filePathGlob: "**/*.scesim",
+        resourcesPathPrefix: "dist/webview/editors/scesim",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/SceSimEditorEnvelopeApp.js" },
+      }),
+      new EnvelopeMapping({
+        type: "pmml",
+        filePathGlob: "**/*.pmml",
+        resourcesPathPrefix: "dist/webview/editors/pmml",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/PMMLEditorEnvelopeApp.js" },
+      }),
+    ]),
     backendProxy: backendProxy,
   });
 

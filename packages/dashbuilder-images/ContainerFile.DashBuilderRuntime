@@ -1,0 +1,5 @@
+FROM openjdk:11-jre-slim-buster
+
+COPY ./dist/dashbuilder-runtime-app-runner.jar .
+
+ENTRYPOINT ["sh", "-c", "exec java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar dashbuilder-runtime-app-runner.jar"] 

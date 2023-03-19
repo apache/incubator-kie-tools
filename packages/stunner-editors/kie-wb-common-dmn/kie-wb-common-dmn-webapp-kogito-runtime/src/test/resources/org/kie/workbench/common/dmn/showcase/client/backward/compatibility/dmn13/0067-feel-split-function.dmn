@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0067-feel-split-function" name="0067-feel-split-function" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'split(string,delimiter)' in category string functions</description>
+
+    <itemDefinition name="tStringList" isCollection="true">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+
+    <decision name="decision001" id="_decision001">
+        <description>Tests FEEL expression: 'split("John Doe", "\s")' and expects result: '["John", "Doe"] (list)'</description>
+        <question>Result of FEEL expression 'split("John Doe", "\s")'?</question>
+        <allowedAnswers>["John", "Doe"] (list)</allowedAnswers>
+        <variable typeRef="tStringList" name="decision001"/>
+        <literalExpression>
+            <text>split("John Doe", "\s")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision001_a" id="_decision001_a">
+        <description>Tests FEEL expression: 'split("a;b;c;;", ";")' and expects result: '["a", "b", "c", "", ""] (list)'</description>
+        <question>Result of FEEL expression 'split(10, -4)'?</question>
+        <allowedAnswers>["a", "b", "c", "", ""]</allowedAnswers>
+        <variable typeRef="tStringList" name="decision001_a"/>
+        <literalExpression>
+            <text>split("a;b;c;;", ";")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision004" id="_decision004">
+        <description>Tests FEEL expression: 'split()' and expects result: 'null (list)'</description>
+        <question>Result of FEEL expression 'split()'?</question>
+        <allowedAnswers>null (list)</allowedAnswers>
+        <variable typeRef="tStringList" name="decision004"/>
+        <literalExpression>
+            <text>split()</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision005" id="_decision005">
+        <description>Tests FEEL expression: 'split("foo")' and expects result: 'null (list)'</description>
+        <question>Result of FEEL expression 'split("foo")'?</question>
+        <allowedAnswers>null (list)</allowedAnswers>
+        <variable typeRef="tStringList" name="decision005"/>
+        <literalExpression>
+            <text>split("foo")</text>
+        </literalExpression>
+    </decision>
+
+    <!--<decision name="decision005_a" id="_decision005_a">-->
+        <!--<description>Tests FEEL expression: 'split("foo","f","f")' and expects result: 'null (list)'</description>-->
+        <!--<question>Result of FEEL expression 'split("foo","f","f")'?</question>-->
+        <!--<allowedAnswers>null (list)</allowedAnswers>-->
+        <!--<variable typeRef="tStringList" name="decision005_a"/>-->
+        <!--<literalExpression>-->
+            <!--<text>split("foo","f","f")</text>-->
+        <!--</literalExpression>-->
+    <!--</decision>-->
+
+    <decision name="decision006" id="_decision006">
+        <description>Tests FEEL expression: 'split(delimiter: ",", string:"foo,bar")' and expects result: '["foo", "bar"] (lost)'</description>
+        <question>Result of FEEL expression 'split(delimiter: ",", string:"foo,bar")'?</question>
+        <allowedAnswers>2 (list)</allowedAnswers>
+        <variable typeRef="tStringList" name="decision006"/>
+        <literalExpression>
+            <text>split(delimiter: ",", string:"foo,bar")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision007" id="_decision007">
+        <description>Tests FEEL expression: 'split(delimiter: ",", str:"foo,bar")' and expects result: 'null (list)'</description>
+        <question>Result of FEEL expression 'split(delimiter: ",", str:"foo,bar")'?</question>
+        <allowedAnswers>null (list)</allowedAnswers>
+        <variable typeRef="tStringList" name="decision007"/>
+        <literalExpression>
+            <text>split(delimiter: ",", str:"foo,bar")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision008" id="_decision008">
+        <description>Tests FEEL expression: 'split(null, null)' and expects result: 'null (list)'</description>
+        <question>Result of FEEL expression 'split(null, null)'?</question>
+        <allowedAnswers>null (list)</allowedAnswers>
+        <variable typeRef="tStringList" name="decision008"/>
+        <literalExpression>
+            <text>split(null, null)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision008_a" id="_decision008_a">
+        <description>Tests FEEL expression: 'split("foo", null)' and expects result: 'null (list)'</description>
+        <question>Result of FEEL expression 'split("foo", null)'?</question>
+        <allowedAnswers>null (list)</allowedAnswers>
+        <variable typeRef="tStringList" name="decision008_a"/>
+        <literalExpression>
+            <text>split("foo", null)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision008_b" id="_decision008_b">
+        <description>Tests FEEL expression: 'split(null, ",")' and expects result: 'null (list)'</description>
+        <question>Result of FEEL expression 'split(null, ",")'?</question>
+        <allowedAnswers>null (list)</allowedAnswers>
+        <variable typeRef="tStringList" name="decision008_b"/>
+        <literalExpression>
+            <text>split(null, ",")</text>
+        </literalExpression>
+    </decision>
+
+</definitions>
+

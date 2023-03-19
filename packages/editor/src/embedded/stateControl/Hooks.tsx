@@ -30,3 +30,36 @@ export function useDirtyState(editor?: EmbeddedEditorRef) {
 
   return isDirty;
 }
+
+export function useStateControlSubscription(
+  editor: EmbeddedEditorRef | undefined,
+  callback: (isDirty: boolean) => void | Promise<void>,
+  args: { throttle: number } = { throttle: 0 }
+) {
+  useEffect(() => {
+    if (!editor?.isReady) {
+      return;
+    }
+
+    let timeout: number | undefined;
+    const subscription = editor?.getStateControl().subscribe((isDirty) => {
+      if (args.throttle <= 0) {
+        callback(isDirty);
+        return;
+      }
+
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = window.setTimeout(() => {
+        callback(isDirty);
+      }, args.throttle);
+    });
+
+    return () => {
+      if (subscription) {
+        return editor?.getStateControl().unsubscribe(subscription);
+      }
+    };
+  }, [editor, callback, args.throttle]);
+}

@@ -1,0 +1,6 @@
+**/tests
+**/it-tests
+**/src/main/test
+**/__test__
+**/__tests__
+**/*_test.go

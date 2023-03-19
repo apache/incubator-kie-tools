@@ -21,16 +21,17 @@ import {
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
 } from "../../api";
-import { useSyncedKeyboardEvents } from "@kie-tooling-core/keyboard-shortcuts/dist/channel";
-import { useGuidedTourPositionProvider } from "@kie-tooling-core/guided-tour/dist/channel";
+import { useSyncedKeyboardEvents } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
+import { useGuidedTourPositionProvider } from "@kie-tools-core/guided-tour/dist/channel";
 import type * as CSS from "csstype";
 import * as React from "react";
-import { useImperativeHandle, useMemo, useRef, useState } from "react";
-import { File, StateControl } from "../../channel";
+import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { EmbeddedEditorFile, StateControl } from "../../channel";
 import { useEffectAfterFirstRender } from "../common";
-import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
-import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
-import { useConnectedEnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/hooks";
+import { EmbeddedEditorChannelApiImpl } from "./EmbeddedEditorChannelApiImpl";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+import { useConnectedEnvelopeServer } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { getEditorIframeProps } from "../../channel/editorIframeProps";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -44,10 +45,13 @@ type EmbeddedEditorChannelApiOverrides = Partial<
 >;
 
 export type Props = EmbeddedEditorChannelApiOverrides & {
-  file: File;
+  file: EmbeddedEditorFile;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   channelType: ChannelType;
   locale: string;
+  customChannelApiImpl?: KogitoEditorChannelApi;
+  stateControl?: StateControl;
+  isReady?: boolean;
 };
 
 /**
@@ -55,6 +59,7 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
  */
 export type EmbeddedEditorRef = EditorApi & {
   isReady: boolean;
+  iframeRef: React.RefObject<HTMLIFrameElement>;
   getStateControl(): StateControl;
   getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
 };
@@ -76,23 +81,28 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   forwardedRef
 ) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const stateControl = useMemo(() => new StateControl(), [props.file.getFileContents]);
+  const stateControl = useMemo(
+    () => props.stateControl ?? new StateControl(),
+    [props.file.getFileContents, props.stateControl]
+  );
   const [isReady, setReady] = useState(false);
-
   const envelopeMapping = useMemo(
-    () => props.editorEnvelopeLocator.mapping.get(props.file.fileExtension),
+    () => props.editorEnvelopeLocator.getEnvelopeMapping(props.file.path ?? props.file.fileName),
     [props.editorEnvelopeLocator, props.file]
   );
 
   //Setup envelope bus communication
-  const kogitoEditorChannelApiImpl = useMemo(() => {
-    return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
-      ...props,
-      kogitoEditor_ready: () => {
-        setReady(true);
-        props.kogitoEditor_ready?.();
-      },
-    });
+  const channelApiImpl = useMemo(() => {
+    return (
+      props.customChannelApiImpl ??
+      new EmbeddedEditorChannelApiImpl(stateControl, props.file, props.locale, {
+        ...props,
+        kogitoEditor_ready: () => {
+          setReady(true);
+          props.kogitoEditor_ready?.();
+        },
+      })
+    );
   }, [stateControl, props]);
 
   const envelopeServer = useMemo(() => {
@@ -120,15 +130,18 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
     envelopeMapping?.resourcesPathPrefix,
   ]);
 
-  useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
+  useConnectedEnvelopeServer(envelopeServer, channelApiImpl);
 
   useEffectAfterFirstRender(() => {
-    envelopeServer.envelopeApi.notifications.kogitoI18n_localeChange(props.locale);
+    envelopeServer.envelopeApi.notifications.kogitoI18n_localeChange.send(props.locale);
   }, [props.locale]);
 
   useEffectAfterFirstRender(() => {
     props.file.getFileContents().then((content) => {
-      envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ content: content! });
+      envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
+        { content: content!, path: props.file.fileName },
+        { showLoadingOverlay: true }
+      );
     });
   }, [props.file.getFileContents]);
 
@@ -147,21 +160,26 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
       }
 
       return {
-        isReady: isReady,
+        iframeRef,
+        isReady: props.isReady ?? isReady,
         getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,
         getElementPosition: (s) =>
           envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(s),
-        undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorUndo()),
-        redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo()),
+        undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorUndo.send()),
+        redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo.send()),
         getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
         getPreview: () => envelopeServer.envelopeApi.requests.kogitoEditor_previewRequest(),
         setContent: (path, content) =>
-          envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ path, content }),
+          envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
+            { path, content },
+            { showLoadingOverlay: false }
+          ),
         validate: () => envelopeServer.envelopeApi.requests.kogitoEditor_validate(),
+        setTheme: (theme) => Promise.resolve(envelopeServer.shared.kogitoEditor_theme.set(theme)),
       };
     },
-    [envelopeServer, stateControl, isReady]
+    [props.isReady, isReady, stateControl, envelopeServer]
   );
 
   return (
@@ -173,14 +191,13 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
       )}
       {envelopeMapping && (
         <iframe
-          key={envelopeMapping.envelopePath}
           ref={iframeRef}
           id={"kogito-iframe"}
           data-testid={"kogito-iframe"}
-          src={envelopeMapping.envelopePath}
           title="Kogito editor"
           style={containerStyles}
           data-envelope-channel={props.channelType}
+          {...getEditorIframeProps(envelopeMapping)}
         />
       )}
     </>

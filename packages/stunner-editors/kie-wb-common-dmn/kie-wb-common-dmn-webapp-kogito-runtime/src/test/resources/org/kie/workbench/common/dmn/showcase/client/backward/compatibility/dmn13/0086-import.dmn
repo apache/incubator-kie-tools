@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<definitions xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" 
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" 
+                      xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/" 
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:include1="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36" 
+                      xmlns:trisofeed="http://trisotech.com/feed" 
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                      xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_f27bb64b-6fc7-4e1f-9848-11ba35e0df36" 
+                      namespace="http://www.trisotech.com/definitions/_c3e08836-7973-4e4d-af2b-d46b23725c13"          exporter="DMN Modeler" exporterVersion="6.2.1" 
+                      name="Import BKM and have a Decision Ctx with DT" triso:logoChoice="Default">
+    <import namespace="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36"
+                     name="myimport"
+                     importType="https://www.omg.org/spec/DMN/20191111/MODEL/"
+                     />
+    <inputData id="_9df2ca89-d100-4ba3-9a44-6a71cae5c001" name="A Person">
+        <variable name="A Person" id="_9e1f6cbc-584f-41f6-8748-97f579a3df43" typeRef="myimport.tPerson"/>
+    </inputData>
+    <decision id="_2d131943-c513-416b-acc6-6efe8fe01ba4" name="A Decision Ctx with DT" triso:useOutputTypeAsAnswer="false">
+        <variable name="A Decision Ctx with DT" id="_1a9b6949-afac-4c9e-afcd-178d9f720f29" typeRef="Any"/>
+        <informationRequirement id="_01a9f8c0-6333-45cf-a693-e2e67b23fa13">
+            <requiredInput href="#_9df2ca89-d100-4ba3-9a44-6a71cae5c001"/>
+        </informationRequirement>
+        <knowledgeRequirement id="_73d5099c-5a54-4a04-a9b5-80e1957ad8e9">
+            <requiredKnowledge href="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36#_32543811-b499-4608-b784-6c6f294b1c58"/>
+        </knowledgeRequirement>
+        <context id="_6bffe0cf-17b5-4372-afeb-161d2378dfc6" typeRef="Any" triso:expressionId="_3bfb7843-5fe3-4464-bd7e-272d096c75c8">
+            <contextEntry id="_e5683d24-4f8e-4b43-aebf-7bce7c6ab788">
+                <variable name="normal greeting" id="_5459fb02-6003-4c75-9660-bd5dc8111e92" typeRef="Any"/>
+                <literalExpression id="_c6977a3f-f3e0-411f-a1fc-590db1b97958">
+                    <text>myimport.Say Hello(A Person)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry id="_16bd5e23-c420-41a6-afc1-9fd4a59deaf2">
+                <variable name="override greeting" id="_2e57804f-68d1-4613-9cd5-2f9aa04c5d84" typeRef="string"/>
+                <decisionTable id="_beebc5ac-ba03-4330-b01a-9ced32ef17fe" hitPolicy="UNIQUE" outputLabel="override greeting">
+                    <input id="_d7a3e1e5-15c6-4b83-9fe6-f4ab8ce4be1c">
+                        <inputExpression typeRef="number">
+                            <text>A Person.age</text>
+                        </inputExpression>
+                    </input>
+                    <output id="_22740ea7-5a3a-45a2-ba08-95f0f0d98eea"/>
+                    <annotation/>
+                    <rule id="_5f3dad91-e3b0-483f-a259-c855a0e6d7d6">
+                        <inputEntry id="_6fe43313-b225-4b78-aac1-bf90794b80fd">
+                            <text>&lt;=30</text>
+                        </inputEntry>
+                        <outputEntry id="_25a3221c-9ee1-4b01-9b80-1553d376527e">
+                            <text>normal greeting</text>
+                        </outputEntry>
+                        <annotationEntry>
+                            <text></text>
+                        </annotationEntry>
+                    </rule>
+                    <rule id="_b73ea436-a867-43c7-b164-222bc5d65ae3">
+                        <inputEntry id="_c4f6a141-36c6-4e4c-b737-3dcafee8c60b">
+                            <text>&gt;30</text>
+                        </inputEntry>
+                        <outputEntry id="_28977b5a-e0ba-4266-957d-dad963e4c7cf">
+                            <text>"Respectfully, "+normal greeting</text>
+                        </outputEntry>
+                        <annotationEntry>
+                            <text></text>
+                        </annotationEntry>
+                    </rule>
+                </decisionTable>
+            </contextEntry>
+            <contextEntry id="_4d7d3489-a041-4c3c-a62e-07df40bfd210">
+                <literalExpression id="_67c0a864-cbb6-4fa7-a516-687778423717">
+                    <text>override greeting</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_c3e08836-7973-4e4d-af2b-d46b23725c13_D1" name="Page 1">
+            <dmndi:Size height="650" width="650"/>
+            <dmndi:DMNShape id="_c3e08836-7973-4e4d-af2b-d46b23725c13_s1" dmnElementRef="_9df2ca89-d100-4ba3-9a44-6a71cae5c001">
+                <dc:Bounds x="151" y="331" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_c3e08836-7973-4e4d-af2b-d46b23725c13_s2" dmnElementRef="_2d131943-c513-416b-acc6-6efe8fe01ba4">
+                <dc:Bounds x="150" y="150" width="154" height="61"/>
+                <dmndi:DMNLabel sharedStyle="LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_42d5102d-9f7a-4ba7-9f11-e4371b8527e6" dmnElementRef="include1:_32543811-b499-4608-b784-6c6f294b1c58">
+                <dc:Bounds x="394" y="151" width="152" height="59"/>
+                <dmndi:DMNLabel sharedStyle="LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="422" y="174"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_c3e08836-7973-4e4d-af2b-d46b23725c13_e1" dmnElementRef="_01a9f8c0-6333-45cf-a693-e2e67b23fa13">
+                <di:waypoint x="227" y="331"/>
+                <di:waypoint x="227" y="211"/>
+                <dmndi:DMNLabel sharedStyle="LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_1fa3820f-3254-4000-88f4-c7dc79996907" dmnElementRef="_73d5099c-5a54-4a04-a9b5-80e1957ad8e9">
+                <di:waypoint x="394" y="180"/>
+                <di:waypoint x="304" y="180.5"/>
+                <dmndi:DMNLabel sharedStyle="LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</definitions>

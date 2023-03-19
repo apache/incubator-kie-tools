@@ -106,7 +106,7 @@ export const processVariableNameInput = (): By => {
  * This select is used to manipulate or set data type of process variable.
  */
 export const processVariableDataTypeInput = (): By => {
-  return By.xpath("//select[@data-field='dataType']");
+  return By.xpath("//td/select[@data-field='dataType']");
 };
 
 /**

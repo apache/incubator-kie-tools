@@ -17,12 +17,14 @@
 const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
 const packageJson = require("./package.json");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("../../config/webpack.common.config");
-const externalAssets = require("@kogito-tooling/external-assets-base");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const stunnerEditors = require("@kie-tools/stunner-editors");
 const { EnvironmentPlugin } = require("webpack");
-const buildEnv = require("@kogito-tooling/build-env");
+const path = require("path");
+const { env } = require("./env");
+const buildEnv = env;
 
 function getRouterArgs() {
   const targetOrigin = buildEnv.chromeExtension.routerTargetOrigin;
@@ -51,16 +53,14 @@ module.exports = async (env) => {
   return merge(common(env), {
     entry: {
       "content_scripts/github": "./src/github-content-script.ts",
-      "content_scripts/online-editor": "./src/online-editor-content-script.ts",
       background: "./src/background.ts",
       "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
       "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
       "scesim-envelope": "./src/envelope/SceSimEditorEnvelopeApp.ts",
     },
     devServer: {
-      contentBase: ["dist"],
+      static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
-      watchContentBase: true,
       https: true,
       port: buildEnv.chromeExtension.dev.port,
     },
@@ -74,16 +74,29 @@ module.exports = async (env) => {
         patterns: [
           { from: "./static", to: "." },
           { from: `./${manifestFile}`, to: "./manifest.json" },
+          { from: `./rules.json`, to: "./rules.json" },
 
           // These are used for development only.
-          { from: externalAssets.dmnEditorPath(), to: "dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
-          { from: externalAssets.bpmnEditorPath(), to: "bpmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
-          { from: externalAssets.scesimEditorPath(), to: "scesim", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          {
+            from: stunnerEditors.dmnEditorPath(),
+            to: "dmn",
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
+          },
+          {
+            from: stunnerEditors.bpmnEditorPath(),
+            to: "bpmn",
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
+          },
+          {
+            from: stunnerEditors.scesimEditorPath(),
+            to: "scesim",
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
+          },
         ],
       }),
       new ZipPlugin({
         filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
-        include: ["manifest.json", "background.js", "content_scripts", "resources"],
+        include: ["manifest.json", "background.js", "content_scripts", "resources", "scripts", "rules.json"],
       }),
     ],
     module: {

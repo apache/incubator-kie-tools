@@ -19,12 +19,12 @@ import {
   Editor,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
-} from "@kie-tooling-core/editor/dist/api";
-import { PMMLEditorFactory, PMMLEditorInterface } from "@kogito-tooling/pmml-editor";
-import { DefaultKeyboardShortcutsService } from "@kie-tooling-core/keyboard-shortcuts/dist/envelope";
-import { OperatingSystem } from "@kie-tooling-core/operating-system";
-import { messageBusClientApiMock } from "@kie-tooling-core/envelope-bus/dist-tests/common";
-import { I18nService } from "@kie-tooling-core/i18n/dist/envelope";
+} from "@kie-tools-core/editor/dist/api";
+import { PMMLEditorFactory, PMMLEditorInterface } from "@kie-tools/pmml-editor";
+import { DefaultKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
+import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/common";
+import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
@@ -32,7 +32,6 @@ const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> =
   channelApi: channelApi,
   operatingSystem: OperatingSystem.LINUX,
   services: {
-    guidedTour: { isEnabled: () => false },
     keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: OperatingSystem.LINUX }),
     i18n: new I18nService(),
   },

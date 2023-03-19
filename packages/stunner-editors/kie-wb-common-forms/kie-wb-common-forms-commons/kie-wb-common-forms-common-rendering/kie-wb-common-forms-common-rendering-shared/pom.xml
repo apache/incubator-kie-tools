@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>kie-wb-common-forms-common-rendering</artifactId>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <version>${revision}</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-wb-common-forms-common-rendering-shared</artifactId>
+  <name>Kie Workbench - Common - Forms - Common Rendering - Shared</name>
+  <description>Kie Workbench - Common - Forms - Common Rendering - Shared</description>
+
+  <properties>
+    <java.module.name>org.kie.wb.common.forms.common.rendering.shared</java.module.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>errai-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
+
+
+  </dependencies>
+
+</project>

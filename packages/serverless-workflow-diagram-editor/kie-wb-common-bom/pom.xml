@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2021 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+  <artifactId>kie-wb-common-bom</artifactId>
+  <version>${revision}</version>
+  <packaging>pom</packaging>
+
+  <name>Kie-wb-common BOM</name>
+  <description>Kie-wb-common BOM</description>
+
+  <url>http://kogito.kie.org</url>
+  <inceptionYear>2021</inceptionYear>
+  <organization>
+    <name>JBoss by Red Hat</name>
+    <url>http://www.jboss.org/</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:kiegroup/kie-tools.git</connection>
+    <developerConnection>scm:git:git@github.com:kiegroup/kie-tools.git</developerConnection>
+    <url>scm:git:git@github.com:kiegroup/kie-tools.git</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>All developers are listed in the KIE GitHub organization</name>
+      <url>https://github.com/orgs/kiegroup/people</url>
+    </developer>
+  </developers>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.redhat.com/browse/KOGITO</url>
+  </issueManagement>
+
+  <repositories>
+    <repository>
+      <id>jboss</id>
+      <name>JBoss Public Repo</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public</url>
+    </repository>
+    <repository>
+      <id>sonatype-public</id>
+      <name>Sonatype Public Snapshots Repo</name>
+      <url>https://oss.sonatype.org/content/repositories/public</url>
+    </repository>
+  </repositories>
+
+  <properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- kie-wb-common internal modules -->
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-lienzo</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-shapes</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-shapes-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-shapes-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-widgets</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-backend-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-client-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-core-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-core-api</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-client-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-client-common</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-client-common</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-core-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-processors</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-extensions</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-lienzo-extensions</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-svg</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-widgets</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-ui</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- 3rd-party dependencies -->
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-api-mockito2</artifactId>
+        <version>${version.powermock.api.mockito2}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>

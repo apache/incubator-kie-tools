@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as index from "@kie-tooling-core/chrome-extension";
-import { GitHubPageType } from "@kie-tooling-core/chrome-extension/dist/app/github/GitHubPageType";
+import * as index from "@kie-tools-core/chrome-extension";
+import { GitHubPageType } from "@kie-tools-core/chrome-extension/dist/app/github/GitHubPageType";
 
 function setWindowLocationPathname(pathname: string) {
   window = Object.create(window);
@@ -49,28 +49,34 @@ describe("discoverCurrentGitHubPageType", () => {
     expect(type).toStrictEqual(GitHubPageType.EDIT);
   });
 
+  test("pr home", async () => {
+    setWindowLocationPathname("/org/repo/pull/1");
+    const type = index.discoverCurrentGitHubPageType();
+    expect(type).toStrictEqual(GitHubPageType.PR_HOME);
+  });
+
   test("pr files", async () => {
     setWindowLocationPathname("/org/repo/pull/1/files");
     const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.PR);
+    expect(type).toStrictEqual(GitHubPageType.PR_FILES_OR_COMMITS);
   });
 
   test("pr commit", async () => {
     setWindowLocationPathname("/org/repo/pull/1/commits");
     const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.PR);
+    expect(type).toStrictEqual(GitHubPageType.PR_FILES_OR_COMMITS);
   });
 
   test("tree repo", async () => {
     setWindowLocationPathname("/user/repo/tree/some_ref");
     const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.TREE);
+    expect(type).toStrictEqual(GitHubPageType.CAN_OPEN_REPO_IN_EXTERNAL_EDITOR);
   });
 
   test("tree repo root", async () => {
-    setWindowLocationPathname("/user/repo/");
+    setWindowLocationPathname("/user/repo");
     const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.TREE);
+    expect(type).toStrictEqual(GitHubPageType.CAN_OPEN_REPO_IN_EXTERNAL_EDITOR);
   });
 
   test("any", async () => {

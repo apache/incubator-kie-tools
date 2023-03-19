@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@
  */
 export interface PingPongEnvelopeApi {
   pingPongView__init(association: Association, initArgs: PingPongInitArgs): Promise<void>;
+  pingPongView__clearLogs(): Promise<void>;
+  pingPongView__getLastPingTimestamp(): Promise<number>;
 }
 
 export interface Association {

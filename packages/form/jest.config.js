@@ -15,13 +15,19 @@
  */
 
 module.exports = {
-  reporters: ["default"],
-  moduleDirectories: ["node_modules", "src"],
+  globals: {
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.json",
+    },
+  },
+  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
+  moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
+  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
+  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
+  transformIgnorePatterns: [],
   transform: {
-    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
     "^.+\\.tsx?$": "ts-jest",
   },
   moduleNameMapper: {

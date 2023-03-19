@@ -16,8 +16,10 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { Nav, NavItem, Title, Card, NavList } from "@patternfly/react-core";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Card } from "@patternfly/react-core/dist/js/components/Card";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 
 const samplePaths = [
   { fileName: "sample", path: "examples/sample.base64png" },
@@ -32,7 +34,7 @@ const samplePaths = [
  * @param props
  * @constructor
  */
-export function Base64PngGallery(props: { setFile: React.Dispatch<File> }) {
+export function Base64PngGallery(props: { setFile: React.Dispatch<EmbeddedEditorFile> }) {
   // Set the chosen file
   const openSample = useCallback((fileName: string, filePath: string) => {
     props.setFile({
@@ -40,6 +42,7 @@ export function Base64PngGallery(props: { setFile: React.Dispatch<File> }) {
       fileExtension: "base64png",
       fileName: fileName,
       getFileContents: () => fetch(filePath).then((response) => response.text()),
+      path: filePath,
     });
   }, []);
 

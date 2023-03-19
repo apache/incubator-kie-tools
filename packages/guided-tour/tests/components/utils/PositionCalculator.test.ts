@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { calculatePositionStyle } from "@kie-tooling-core/guided-tour/dist/components/utils";
-import { Rect } from "@kie-tooling-core/guided-tour/dist/api";
+import { calculatePositionStyle } from "@kie-tools-core/guided-tour/dist/components/utils";
+import { Rect } from "@kie-tools-core/guided-tour/dist/api";
 
 describe("PositionCalculator", () => {
   describe("calculatePositionStyle", () => {

@@ -1,1 +1,1 @@
-## Kogito Tooling GitHub Chrome extension library
+## KIE Tools GitHub Chrome extension library

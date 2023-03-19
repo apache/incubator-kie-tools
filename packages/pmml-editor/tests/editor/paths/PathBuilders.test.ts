@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Builder } from "@kogito-tooling/pmml-editor/dist/editor/paths";
+import { Builder } from "@kie-tools/pmml-editor/dist/editor/paths";
 
 describe("PathBuilders::Basic tests", () => {
   test("Header", () => {

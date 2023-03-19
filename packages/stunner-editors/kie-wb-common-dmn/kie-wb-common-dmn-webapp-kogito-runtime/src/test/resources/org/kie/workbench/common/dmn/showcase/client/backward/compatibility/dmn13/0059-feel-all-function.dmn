@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0059-feel-all-function" name="0059-feel-all-function" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'all(list)' in category list functions</description>
+    <decision name="decision001" id="_decision001">
+        <description>Tests FEEL expression: 'all([true, false, true])' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'all([true, false, true])'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision001"/>
+        <literalExpression>
+            <text>all([true, false, true])</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision002" id="_decision002">
+        <description>Tests FEEL expression: 'all([true, true, true])' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'all([true, true, true])'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision002"/>
+        <literalExpression>
+            <text>all([true, true, true])</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision003" id="_decision003">
+        <description>Tests FEEL expression: 'all([true, null, true])' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'all([true, null, true])'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision003"/>
+        <literalExpression>
+            <text>all([true, null, true])</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision004" id="_decision004">
+        <description>Tests FEEL expression: 'all([true, 123, true])' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'all([true, 123, true])'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision004"/>
+        <literalExpression>
+            <text>all([true, 123, true])</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision005" id="_decision005">
+        <description>Tests FEEL expression: 'all([])' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'all([])'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision005"/>
+        <literalExpression>
+            <text>all([])</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision006" id="_decision006">
+        <description>Tests FEEL expression: 'all(true)' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'all(true)'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision006"/>
+        <literalExpression>
+            <text>all(true)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision007" id="_decision007">
+        <description>Tests FEEL expression: 'all(false)' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'all(false)'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision007"/>
+        <literalExpression>
+            <text>all(false)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision008" id="_decision008">
+        <description>Tests FEEL expression: 'all(null)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'all(null)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision008"/>
+        <literalExpression>
+            <text>all(null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="decision009" id="_decision009">
+        <description>Tests FEEL expression: 'all(123)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'all(123)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision009"/>
+        <literalExpression>
+            <text>all(123)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision010" id="_decision010">
+        <description>Tests FEEL expression: 'all(true, false, true)' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'all(true, false, true)'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision010"/>
+        <literalExpression>
+            <text>all(true, false, true)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision011" id="_decision011">
+        <description>Tests FEEL expression: 'all(true, true, true)' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'all(true, true, true)'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision011"/>
+        <literalExpression>
+            <text>all(true, true, true)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision012" id="_decision012">
+        <description>Tests FEEL expression: 'all(true, null, true)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'all(true, null, true)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision012"/>
+        <literalExpression>
+            <text>all(true, null, true)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision013" id="_decision013">
+        <description>Tests FEEL expression: 'all(true, 123, true)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'all(true, 123, true)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision013"/>
+        <literalExpression>
+            <text>all(true, 123, true)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision014" id="_decision014">
+        <description>Tests FEEL expression: 'all()' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'all()'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision014"/>
+        <literalExpression>
+            <text>all()</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision015" id="_decision015">
+        <description>Tests FEEL expression: 'all(list:[true, false, true])' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'all(list:[true, false, true])'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision015"/>
+        <literalExpression>
+            <text>all(list:[true, false, true])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision016" id="_decision016">
+        <description>Tests FEEL expression: 'all(list:[true, true, true])' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'all(list:[true, true, true])'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision016"/>
+        <literalExpression>
+            <text>all(list:[true, true, true])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision017" id="_decision017">
+        <description>Tests FEEL expression: 'all(list:[true, null, true])' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'all(list:[true, null, true])'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision017"/>
+        <literalExpression>
+            <text>all(list:[true, null, true])</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision018" id="_decision018">
+        <description>Tests FEEL expression: 'all(list:null)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'all(list:null)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision018"/>
+        <literalExpression>
+            <text>all(list:null)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision019" id="_decision019">
+        <description>Tests FEEL expression: 'all(l:[true])' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'all(l:[true])'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision019"/>
+        <literalExpression>
+            <text>all(l:[true])</text>
+        </literalExpression>
+    </decision>
+</definitions>
+

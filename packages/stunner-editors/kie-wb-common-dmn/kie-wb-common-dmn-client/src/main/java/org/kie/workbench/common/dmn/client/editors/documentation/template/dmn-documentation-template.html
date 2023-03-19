@@ -1,0 +1,396 @@
+<!--
+  ~ Copyright {{currentYear}} Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>{{i18n.dmnModelDocumentation}} - {{diagramName}}</title>
+    <link type="text/css" rel="stylesheet" href="{{&moduleName}}/css/patternfly.min.css" media="print" />
+    <style type="text/css">
+      <!--
+        /* General spacing */
+        -->
+        .kie-dmn-documentation {
+        padding: 50px;
+      }
+
+      .kie-dmn-documentation h1,
+      .kie-dmn-documentation h2,
+      .kie-dmn-documentation .table-of-contents {
+        font-weight: 600;
+        margin: 30px 0 20px;
+      }
+
+      .kie-dmn-documentation ol,
+      .kie-dmn-documentation ul {
+        padding: 10px 15px;
+      }
+
+      .kie-dmn-documentation .diagram-image {
+        max-width: 100%;
+      }
+
+      .kie-dmn-documentation .pagebreak {
+        border-bottom: 1px solid #dddddd;
+      }
+
+      .kie-dmn-documentation .node-detail-title {
+        font-weight: bold;
+      }
+
+      .kie-dmn-documentation p {
+        white-space: pre-wrap;
+      }
+
+      <!--
+        /* Font Size */
+        -->
+
+        .kie-dmn-documentation h1,
+        .kie-dmn-documentation h2 {
+        font-size: 26px;
+      }
+
+      .kie-dmn-documentation p,
+      .kie-dmn-documentation li,
+      .kie-dmn-documentation .cover ul {
+        font-size: 14px;
+      }
+
+      <!--
+        /* Cover */
+        -->
+        .kie-dmn-documentation .cover ul {
+        color: #1a1919;
+        list-style: none;
+        padding: 0;
+      }
+
+      .kie-dmn-documentation .cover ul li {
+        border-bottom: 1px solid #9e9f9e;
+        padding: 7px;
+      }
+
+      .kie-dmn-documentation .cover ul li,
+      .kie-dmn-documentation .cover ul li b {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .kie-dmn-documentation .cover ul li b,
+      .kie-dmn-documentation .cover ul li.li-header {
+        font-weight: 600;
+      }
+
+      .kie-dmn-documentation .cover ul li.li-header {
+        background-color: #e4e4e3;
+        border-bottom: 1px solid #9e9f9e;
+      }
+
+      .kie-dmn-documentation .cover ul li b {
+        display: inline-block;
+        vertical-align: middle;
+        width: 20%;
+      }
+
+      .kie-dmn-documentation .cover .drools-logo {
+        width: 300px;
+        max-width: 50%;
+        margin: 200px 0 100px;
+      }
+
+      .kie-dmn-documentation .cover .supported-by-red-hat-logo {
+        width: 230px;
+        max-width: 40%;
+        float: right;
+        margin: 15px;
+      }
+
+      <!--
+        /* Table of Contents */
+        -->
+        .kie-dmn-documentation ol.table-of-contents li {
+        margin-bottom: 10px;
+      }
+
+      <!--
+        /* Data Types */
+        -->
+        .kie-dmn-documentation ul.data-types {
+        list-style: none;
+      }
+
+      .kie-dmn-documentation ul.data-types li {
+        padding: 10px;
+        border-top: 1px solid #9e9f9e;
+      }
+
+      .kie-dmn-documentation ul.data-types li.structure-data-type {
+        background-color: #def2ff;
+      }
+
+      .kie-dmn-documentation ul.data-types li span.sub-text {
+        font-style: italic;
+        color: #717171;
+      }
+
+      .kie-dmn-documentation ul.data-types li span.normal {
+        font-weight: normal;
+      }
+
+      .kie-dmn-documentation ul.data-types li:last-child {
+        border-bottom: 1px solid #9e9f9e;
+      }
+
+      .kie-dmn-documentation ul.data-types li span {
+        display: inline-block;
+        vertical-align: middle;
+        font-weight: bold;
+        padding-right: 5px;
+        white-space: pre-wrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .kie-dmn-documentation ul.data-types li span + span {
+        font-weight: normal;
+      }
+
+      <!--
+        /* No results */
+        -->
+        .kie-dmn-documentation .no-results {
+        font-style: italic;
+        opacity: 0.75;
+        padding: 20px;
+      }
+
+      .kie-dmn-documentation li.no-results {
+        margin-left: -15px;
+      }
+
+      <!--
+        /* Icons */
+        -->
+        .kie-dmn-documentation .fa {
+        font-weight: bold;
+        margin-right: 3px;
+        vertical-align: middle;
+      }
+
+      <!--
+        /* DRD components */
+        -->
+        .kie-dmn-documentation .drd-component {
+        padding: 10px 0 20px;
+      }
+
+      .kie-dmn-documentation .drd-component + .drd-component {
+        border-top: 1px solid #e5eef5;
+        padding: 20px 0;
+      }
+
+      .kie-dmn-documentation .drd-component h4 {
+        font-weight: 600;
+      }
+
+      .kie-dmn-documentation .drd-component h4 span {
+        font-weight: normal;
+      }
+
+      .kie-dmn-documentation .drd-component .diagram-image {
+        padding-top: 5px;
+      }
+
+      <!--
+        /* Media Queries */
+        -->
+        @media (max-width: 2100px) {
+        .kie-dmn-documentation .cover .supported-by-red-hat-logo {
+          margin-top: 30px;
+        }
+      }
+
+      @media screen {
+        .kie-print-preview-screen {
+          opacity: 0;
+        }
+
+        .kie-dmn-documentation .pagebreak {
+          margin: 75px 0;
+        }
+      }
+
+      @media print {
+        .kie-dmn-documentation .pagebreak {
+          margin: 25px 0;
+          page-break-before: always;
+        }
+
+        .kie-dmn-documentation .cover ul li.li-header,
+        .kie-dmn-documentation ul.data-types li.structure-data-type {
+          -webkit-print-color-adjust: exact !important;
+        }
+
+        .kie-dmn-documentation .cover ul li.li-header {
+          background-color: #e4e4e3 !important;
+        }
+
+        .kie-dmn-documentation ul.data-types li.structure-data-type {
+          background-color: #def2ff !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="kie-dmn-documentation">
+      <!-- ######################################################### -->
+      <!-- Cover -->
+
+      <div class="cover">
+        <img src="{{supportedByRedHatLogoURI}}" class="supported-by-red-hat-logo" alt="" />
+        <img src="{{droolsLogoURI}}" class="drools-logo" alt="" />
+
+        <h1>{{diagramName}}</h1>
+
+        <ul>
+          <li class="li-header">{{i18n.dmnModelDocumentation}}</li>
+          <li>
+            <b>{{i18n.namespace}}</b>
+            {{namespace}}
+          </li>
+          <li>
+            <b>{{i18n.generatedOn}}</b>
+            {{currentDate}}
+          </li>
+          {{#currentUser}}
+          <li>
+            <b>{{i18n.generatedBy}}</b>
+            {{currentUser}}
+          </li>
+          {{/currentUser}}
+          <li>
+            <b>{{i18n.generatedFrom}}</b>
+            {{diagramName}}
+          </li>
+        </ul>
+      </div>
+
+      <div class="pagebreak"></div>
+
+      <!-- ######################################################### -->
+      <!-- Table of Contents -->
+
+      <h2>{{i18n.tableOfContents}}</h2>
+
+      <ol class="table-of-contents">
+        <li>{{diagramName}} - {{i18n.dmnModel}}</li>
+        <li>{{diagramName}} - {{i18n.dataTypes}}</li>
+        <li>{{diagramName}} - {{i18n.drdComponents}}</li>
+      </ol>
+
+      <div class="pagebreak"></div>
+
+      <!-- ######################################################### -->
+      <!-- DMN model -->
+
+      <h2>1. {{diagramName}} - {{i18n.dmnModel}}</h2>
+
+      <p>{{diagramDescription}}</p>
+
+      {{^hasGraphNodes}}
+      <div class="no-results">{{i18n.diagramDoesNotHaveElements}}</div>
+      {{/hasGraphNodes}} {{#hasGraphNodes}}
+      <img src="{{diagramImage}}" alt="{{diagramName}}" class="diagram-image" />
+      {{/hasGraphNodes}}
+
+      <div class="pagebreak"></div>
+
+      <!-- ######################################################### -->
+      <!-- Data Types -->
+
+      <h2>2. {{diagramName}} - {{i18n.dataTypes}}</h2>
+
+      <ul class="data-types">
+        {{#dataTypes}}
+        <li
+          class="{{#isTopLevel}}structure-data-type{{/isTopLevel}}"
+          style="padding-left: calc(30px * {{level}} + 10px)"
+        >
+          {{#isTopLevel}}
+          <i class="fa fa-angle-right"></i>
+          {{/isTopLevel}}
+          <span>{{name}}</span>
+          <span>({{type}})</span>
+          {{#listLabel}}<span class="sub-text">- {{listLabel}}</span>{{/listLabel}} {{#constraint}}<span
+            class="sub-text"
+            >- {{constraint}}</span
+          >{{/constraint}}
+        </li>
+        {{/dataTypes}} {{^dataTypes}}
+        <li class="no-results">{{i18n.noDataTypes}}</li>
+        {{/dataTypes}}
+      </ul>
+
+      <div class="pagebreak"></div>
+
+      <!-- ######################################################### -->
+      <!-- DRD components -->
+
+      <h2>3. {{diagramName}} - {{i18n.drdComponents}}</h2>
+
+      {{#drds}}
+      <div class="drd-component">
+        <h4>
+          <i class="fa fa-angle-right"></i>
+          {{drdName}} {{#drdType}}
+          <span> ({{drdType}}) </span>
+          {{/drdType}}
+        </h4>
+        <p>{{drdDescription}}</p>
+        {{#drdQuestion}}
+        <p class="node-detail-title">{{i18n.question}}</p>
+        <p>{{drdQuestion}}</p>
+        {{/drdQuestion}} {{#drdAllowedAnswers}}
+        <p class="node-detail-title">{{i18n.allowedAnswers}}</p>
+        <p>{{drdAllowedAnswers}}</p>
+        {{/drdAllowedAnswers}}
+        <ul class="data-types">
+          {{#drdExternalLinks}}
+          <p class="node-detail-title">{{i18n.externalLinks}}</p>
+          <li style="padding-left: calc(30px * {{level}})">
+            <span class="normal">{{description}}</span>
+            <a href="{{url}}">({{url}})</a>
+          </li>
+          {{/drdExternalLinks}} {{^drdExternalLinks}}
+          <!-- recheck drdType presence -->
+          <!-- if not present, it is TextAnnotation -->
+          {{#drdType}}
+          <li class="no-results">{{i18n.noExternalLinks}}</li>
+          {{/drdType}} {{/drdExternalLinks}}
+        </ul>
+        {{#drdBoxedExpressionImage}}
+        <img src="{{drdBoxedExpressionImage}}" alt="{{drdName}}" class="diagram-image" />
+        {{/drdBoxedExpressionImage}}
+      </div>
+      {{/drds}} {{^drds}}
+      <div class="no-results">{{i18n.noDRDs}}</div>
+      {{/drds}}
+    </div>
+  </body>
+</html>
