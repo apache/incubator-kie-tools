@@ -19,7 +19,6 @@ import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-cor
 import { ToggleGroup } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
-import { isDashbuilder, isServerlessWorkflow } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
