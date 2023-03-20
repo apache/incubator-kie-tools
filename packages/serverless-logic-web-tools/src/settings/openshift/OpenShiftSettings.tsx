@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-import * as React from "react";
 import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
-import {
-  Alert,
-  Button,
-  ButtonVariant,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  Modal,
-  ModalVariant,
-  Page,
-  PageSection,
-  Text,
-  TextContent,
-  TextVariants,
-} from "@patternfly/react-core/dist/js/components";
-import { AddCircleOIcon, CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons";
+import { Modal, ModalVariant } from "@patternfly/react-core";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { AddCircleOIcon } from "@patternfly/react-icons";
+import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+import * as React from "react";
 import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";

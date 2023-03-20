@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components";
+import { Nav, NavItem, NavList } from "@patternfly/react-core";
 import { Link } from "react-router-dom";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
 

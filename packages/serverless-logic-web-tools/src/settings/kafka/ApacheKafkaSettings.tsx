@@ -14,41 +14,31 @@
  * limitations under the License.
  */
 
+import { Modal, ModalVariant } from "@patternfly/react-core";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { AddCircleOIcon } from "@patternfly/react-icons";
+import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
+import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
-import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
-import {
-  ActionGroup,
-  Alert,
-  Button,
-  ButtonVariant,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  Form,
-  FormAlert,
-  FormGroup,
-  InputGroup,
-  InputGroupText,
-  Modal,
-  ModalVariant,
-  Page,
-  PageSection,
-  Popover,
-  Text,
-  TextContent,
-  TextInput,
-  TextVariants,
-} from "@patternfly/react-core/dist/js/components";
-import { AddCircleOIcon, CheckCircleIcon, HelpIcon, TimesIcon } from "@patternfly/react-icons/dist/js/icons";
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { routes } from "../../navigation/Routes";
-import { QuickStartIds } from "../../quickstarts-data";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
-import { SettingsPageProps } from "../types";
 import { EMPTY_CONFIG, isKafkaConfigValid, resetConfigCookie, saveConfigCookie } from "./KafkaSettingsConfig";
+import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
+import { QuickStartIds } from "../../quickstarts-data";
+import { SettingsPageProps } from "../types";
 
 export function ApacheKafkaSettings(props: SettingsPageProps) {
   const settings = useSettings();

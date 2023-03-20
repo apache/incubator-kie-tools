@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { QuickStartContainer, QuickStartContainerProps } from "@patternfly/quickstarts";
 import {
   Brand,
@@ -23,22 +24,22 @@ import {
   MastheadContent,
   MastheadMain,
   MastheadToggle,
-  Page,
   PageSidebar,
   SkipToContent,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  Tooltip,
-} from "@patternfly/react-core/dist/js/components";
+} from "@patternfly/react-core";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { BarsIcon, ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";
-import * as React from "react";
 import { useMemo, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router";
 import { useLocation } from "react-router-dom";
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { useRoutes } from "../../navigation/Hooks";
+import { SettingsPageNav } from "../../settings/uiNav/SettingsPageNav";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
 import {
   ApplicationServicesIntegrationQuickStart,
@@ -46,7 +47,6 @@ import {
   OpenShiftIntegrationQuickStart,
 } from "../../quickstarts-data";
 import { SettingsButton } from "../../settings/SettingsButton";
-import { SettingsPageNav } from "../../settings/uiNav/SettingsPageNav";
 import { HomePageNav } from "../uiNav/HomePageNav";
 
 export type OnlineEditorPageProps = {
