@@ -63,8 +63,10 @@ export const AboutButton: React.FunctionComponent = () => {
                 <Brand
                   src={routes.static.images.kieHorizontalLogoDefault.path({})}
                   alt={"Logo"}
-                  style={{ display: "inline", height: "80px" }}
-                />
+                  heights={{ default: "80px" }}
+                >
+                  <source srcSet={routes.static.images.kieHorizontalLogoDefault.path({})} />
+                </Brand>
               </FlexItem>
               <FlexItem style={{ display: "flex", alignItems: "center" }}>
                 <TextContent>
