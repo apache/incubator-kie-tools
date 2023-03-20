@@ -14,21 +14,34 @@
  * limitations under the License.
  */
 
-import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
-import { Modal, ModalVariant } from "@patternfly/react-core";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { AddCircleOIcon, CheckCircleIcon } from "@patternfly/react-icons";
-import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import * as React from "react";
+import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
+import {
+  Button,
+  ButtonVariant,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  Form,
+  FormGroup,
+  InputGroup,
+  Modal,
+  ModalVariant,
+  Page,
+  PageSection,
+  Spinner,
+  Text,
+  TextContent,
+  TextInput,
+  TextVariants,
+} from "@patternfly/react-core/dist/js/components";
+import {
+  AddCircleOIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
+  ExternalLinkAltIcon,
+  GithubIcon,
+} from "@patternfly/react-icons/dist/js/icons";
 import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { makeCookieName } from "../../cookies";
 import { QuickStartIds } from "../../quickstarts-data";
