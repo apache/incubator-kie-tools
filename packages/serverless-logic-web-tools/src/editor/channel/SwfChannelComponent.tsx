@@ -52,51 +52,50 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
 > = (props, fowardedRef) => {
   const { editor, workspaceFile, channelApiImpl } = { ...props };
   const [isReady, setReady] = useState(false);
-  const settingsDispatch = useSettingsDispatch();
   const virtualServiceRegistry = useVirtualServiceRegistry();
   const swfFeatureToggle = useSwfFeatureToggle(editor);
+  const {
+    serviceRegistry: { catalogStore },
+  } = useSettingsDispatch();
 
   useUpdateVirtualServiceRegistryOnWorkspaceFileEvents({ workspaceFile: workspaceFile });
-  useUpdateVirtualServiceRegistryOnVsrWorkspaceEvents({ catalogStore: settingsDispatch.serviceRegistry.catalogStore });
+  useUpdateVirtualServiceRegistryOnVsrWorkspaceEvents({ catalogStore: catalogStore });
   useUpdateVirtualServiceRegistryOnVsrFileEvents({
     workspaceId: workspaceFile.workspaceId,
-    catalogStore: settingsDispatch.serviceRegistry.catalogStore,
+    catalogStore: catalogStore,
   });
 
   useEffect(() => {
-    if (
-      !settingsDispatch.serviceRegistry.catalogStore.virtualServiceRegistry ||
-      settingsDispatch.serviceRegistry.catalogStore.currentFile !== workspaceFile
-    ) {
-      settingsDispatch.serviceRegistry.catalogStore.setVirtualServiceRegistry(virtualServiceRegistry, workspaceFile);
+    if (catalogStore.virtualServiceRegistry || catalogStore.currentFile === workspaceFile) {
+      return;
     }
-  }, [settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry, workspaceFile]);
+
+    catalogStore.setVirtualServiceRegistry(virtualServiceRegistry, workspaceFile);
+  }, [catalogStore, virtualServiceRegistry, workspaceFile]);
 
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
         setReady(false);
-        settingsDispatch.serviceRegistry.catalogStore.refresh().then(() => {
+        catalogStore.refresh().then(() => {
           if (canceled.get()) {
             return;
           }
           setReady(true);
         });
       },
-      [settingsDispatch.serviceRegistry.catalogStore]
+      [catalogStore]
     )
   );
 
   const languageService = useMemo(() => {
-    const webToolsSwfLanguageService = new WebToolsSwfLanguageService(settingsDispatch.serviceRegistry.catalogStore);
+    const webToolsSwfLanguageService = new WebToolsSwfLanguageService(catalogStore);
     return webToolsSwfLanguageService.getLs(workspaceFile.relativePath);
-  }, [workspaceFile, settingsDispatch.serviceRegistry.catalogStore]);
+  }, [workspaceFile, catalogStore]);
 
   const apiImpl = useMemo(() => {
     const lsChannelApiImpl = new SwfLanguageServiceChannelApiImpl(languageService);
-    const serviceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl(
-      settingsDispatch.serviceRegistry.catalogStore
-    );
+    const serviceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl(catalogStore);
     const featureToggleChannelApiImpl = new SwfFeatureToggleChannelApiImpl(swfFeatureToggle);
     return new SwfCombinedEditorChannelApiImpl(
       channelApiImpl,
@@ -104,7 +103,7 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
       serviceCatalogChannelApiImpl,
       lsChannelApiImpl
     );
-  }, [languageService, settingsDispatch.serviceRegistry.catalogStore, swfFeatureToggle, channelApiImpl]);
+  }, [languageService, catalogStore, swfFeatureToggle, channelApiImpl]);
 
   const onNotificationClick = useCallback(
     (notification: Notification) => {

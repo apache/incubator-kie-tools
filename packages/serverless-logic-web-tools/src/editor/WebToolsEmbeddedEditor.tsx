@@ -42,18 +42,6 @@ type NotificationHandler =
       onClick: (notification: Notification) => void;
     };
 
-export interface WebToolsEmbeddedEditorRef {
-  isReady: boolean;
-  notificationHandler: NotificationHandler;
-  editor?: EmbeddedEditorRef;
-  languageService?: SupportedLanguageService;
-}
-
-export type WebToolsEmbeddedEditorProps = Props & {
-  uniqueFileId?: string;
-  workspaceFile: WorkspaceFile;
-};
-
 export interface EditorChannelComponentRef {
   isReady: boolean;
   notificationHandler: NotificationHandler;
@@ -66,16 +54,33 @@ export type EditorChannelComponentProps = {
   workspaceFile: WorkspaceFile;
 };
 
+export type WebToolsEmbeddedEditorRef = Pick<
+  EditorChannelComponentRef,
+  "isReady" | "notificationHandler" | "languageService"
+> & {
+  editor?: EmbeddedEditorRef;
+};
+
+export type WebToolsEmbeddedEditorProps = Props & {
+  uniqueFileId?: string;
+  workspaceFile: WorkspaceFile;
+};
+
 const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
   WebToolsEmbeddedEditorRef,
   WebToolsEmbeddedEditorProps
 > = (props, fowardedRef) => {
   const { file, locale, uniqueFileId, editorEnvelopeLocator, workspaceFile } = { ...props };
-  const [isReady, setReady] = useState(false);
 
+  const [isReady, setReady] = useState(false);
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
+
   const [swfChannelComponent, swfChannelComponentRef] = useController<EditorChannelComponentRef>();
   const [dashChannelComponent, dashChannelComponentRef] = useController<EditorChannelComponentRef>();
+  const availableComponents = useMemo(
+    () => [swfChannelComponent, dashChannelComponent],
+    [dashChannelComponent, swfChannelComponent]
+  );
 
   // Keep getFileContents in the dependency list to update the stateControl instance
   const stateControl = useMemo(() => new StateControl(), [file?.getFileContents]);
@@ -90,40 +95,38 @@ const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
     [file, locale, stateControl]
   );
 
-  const component = useMemo<EditorChannelComponentRef>(() => {
-    if (swfChannelComponent) {
-      return { ...swfChannelComponent };
+  const channelComponent = useMemo<EditorChannelComponentRef>(() => {
+    const loadedComponent = availableComponents.find((c) => !!c);
+
+    if (!loadedComponent) {
+      return {
+        isReady: true,
+        notificationHandler: {
+          isSupported: false,
+        },
+      };
     }
 
-    if (dashChannelComponent) {
-      return { ...dashChannelComponent };
-    }
-
-    return {
-      isReady: true,
-      notificationHandler: {
-        isSupported: false,
-      },
-    };
-  }, [dashChannelComponent, swfChannelComponent]);
+    return { ...loadedComponent };
+  }, [availableComponents]);
 
   useImperativeHandle(
     fowardedRef,
     () => {
       return {
         editor,
-        ...component,
-        isReady: isReady && !!component.isReady,
+        ...channelComponent,
+        isReady: isReady && !!channelComponent.isReady,
       };
     },
-    [component, editor, isReady]
+    [channelComponent, editor, isReady]
   );
 
   useEffect(() => {
-    if (!component.kogitoEditorChannelApi && file && !isReady) {
+    if (!channelComponent.kogitoEditorChannelApi && file && !isReady) {
       setReady(true);
     }
-  }, [component, isReady, file]);
+  }, [channelComponent, isReady, file]);
 
   return (
     <>
@@ -137,7 +140,7 @@ const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={ChannelType.ONLINE_MULTI_FILE}
         locale={locale}
-        customChannelApiImpl={component.kogitoEditorChannelApi}
+        customChannelApiImpl={channelComponent.kogitoEditorChannelApi}
         stateControl={stateControl}
         isReady={isReady}
       />
