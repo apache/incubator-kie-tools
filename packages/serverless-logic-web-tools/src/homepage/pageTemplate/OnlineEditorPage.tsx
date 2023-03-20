@@ -16,21 +16,18 @@
 
 import * as React from "react";
 import { QuickStartContainer, QuickStartContainerProps } from "@patternfly/quickstarts";
+import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import {
-  Brand,
-  Button,
   Masthead,
   MastheadBrand,
   MastheadContent,
   MastheadMain,
   MastheadToggle,
-  PageSidebar,
-  SkipToContent,
-  Toolbar,
-  ToolbarContent,
-  ToolbarGroup,
-  ToolbarItem,
-} from "@patternfly/react-core";
+} from "@patternfly/react-core/dist/js/components/Masthead";
+import { PageSidebar } from "@patternfly/react-core/dist/js/components/Page/PageSidebar";
+import { SkipToContent } from "@patternfly/react-core/dist/js/components/SkipToContent";
+import { Toolbar, ToolbarContent, ToolbarGroup, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { BarsIcon, ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";

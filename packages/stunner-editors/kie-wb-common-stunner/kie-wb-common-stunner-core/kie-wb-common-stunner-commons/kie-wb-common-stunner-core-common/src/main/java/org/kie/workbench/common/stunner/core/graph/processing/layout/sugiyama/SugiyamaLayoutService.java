@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -41,6 +43,8 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.st
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step04.LayerArrangement;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step04.VertexPositioning;
 
+import static org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step04.VertexPositioning.DEFAULT_VERTEX_WIDTH;
+
 /**
  * Implementation of the Sugiyama automatic layout method.
  * This method is developed by Kozo Sugiyama, and draws the graph in a layered way.
@@ -56,6 +60,10 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.st
 @Default
 public class SugiyamaLayoutService extends AbstractLayoutService {
 
+    public static final int DEFAULT_INNER_HORIZONTAL_PADDING = 20;
+    public static final int DEFAULT_INNER_VERTICAL_PADDING = 20;
+    public static final int DEFAULT_PARENT_NODE_HEIGHT = 200;
+
     private final CycleBreaker cycleBreaker;
     private final VertexLayerer vertexLayerer;
     private final VertexOrdering vertexOrdering;
@@ -65,11 +73,12 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
 
     /**
      * Default constructor.
-     * @param cycleBreaker The strategy used to break cycles in cycle graphs.
-     * @param vertexLayerer The strategy used to choose the layer for each vertex.
-     * @param vertexOrdering The strategy used to order vertices inside each layer.
+     *
+     * @param cycleBreaker      The strategy used to break cycles in cycle graphs.
+     * @param vertexLayerer     The strategy used to choose the layer for each vertex.
+     * @param vertexOrdering    The strategy used to order vertices inside each layer.
      * @param vertexPositioning The strategy used to position vertices on screen (x,y coordinates).
-     * @param graphProcessor Applies some pre-process in the graph to extract the nodes to be used.
+     * @param graphProcessor    Applies some pre-process in the graph to extract the nodes to be used.
      */
     @Inject
     public SugiyamaLayoutService(final CycleBreaker cycleBreaker,
@@ -87,6 +96,7 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
     /**
      * Performs the automatic layout in graph using Sugiyama method,
      * putting vertices in layers in order to reduce edges crossing.
+     *
      * @param graph The graph.
      * @return The Layout for the vertices.
      * @see Layout
@@ -102,10 +112,12 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
         this.vertexLayerer.createLayers(layeredGraph);
         this.vertexOrdering.orderVertices(layeredGraph);
         this.vertexPositioning.calculateVerticesPositions(layeredGraph,
-                                                          DEFAULT_LAYER_ARRANGEMENT);
+                                                          DEFAULT_LAYER_ARRANGEMENT,
+                                                          graphProcessor,
+                                                          graph);
 
         final List<GraphLayer> orderedLayers = layeredGraph.getLayers();
-        return buildLayout(indexByUuid, orderedLayers);
+        return buildLayout(indexByUuid, orderedLayers, graph);
     }
 
     HashMap<String, Node> createIndex(final Iterable<? extends Node> nodes) {
@@ -178,7 +190,8 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
     }
 
     Layout buildLayout(final HashMap<String, Node> indexByUuid,
-                       final List<GraphLayer> layers) {
+                       final List<GraphLayer> layers,
+                       final Graph<?, ?> graph) {
 
         final Layout layout = new Layout();
 
@@ -194,7 +207,7 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
                 final Bound lowerRight = currentBounds.getLowerRight();
                 final int x2;
                 if (isCloseToZero(lowerRight.getX())) {
-                    x2 = x + VertexPositioning.DEFAULT_VERTEX_WIDTH;
+                    x2 = x + DEFAULT_VERTEX_WIDTH;
                 } else {
                     x2 = (int) (x + lowerRight.getX());
                 }
@@ -214,6 +227,79 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
             }
         }
 
+        positionReplacedNodes(graph, layout);
+
         return layout;
+    }
+
+    private void positionReplacedNodes(final Graph<?, ?> graph,
+                                       final Layout layout) {
+
+        final Map<String, String> replacedNodes = graphProcessor.getReplacedNodes();
+        final Map<String, Double> parentNodesWidth = new HashMap<>();
+
+        for (final Map.Entry<String, String> entry : replacedNodes.entrySet()) {
+            final String childId = entry.getKey();
+            final String parentId = entry.getValue();
+            final Optional<Node> childNode = graphProcessor.getNodeFromGraph(childId, graph);
+
+            // We only set position for inner nodes that doesn't have a position yet
+            // because if the inner node has position, it moves with its parent.
+            if (childNode.isPresent()
+                    && !hasPositionSet(childNode.get())) {
+
+                final Optional<VertexPosition> parentPosition = layout.getNodePositions()
+                        .stream()
+                        .filter(p -> p.getId() == parentId)
+                        .findFirst();
+
+                if (parentPosition.isPresent()) {
+
+                    final Optional<Node> parentNode = graphProcessor.getNodeFromGraph(parentId, graph);
+                    parentNode.ifPresent(parent -> graphProcessor.connect(parent, childNode.get()));
+                    final double padding = parentNodesWidth.getOrDefault(parentId, 0.0)
+                            + DEFAULT_INNER_HORIZONTAL_PADDING;
+                    final VertexPosition position = graphProcessor.getChildVertexPosition(parentId,
+                                                                                          childId,
+                                                                                          padding,
+                                                                                          graph);
+                    layout.getNodePositions().add(position);
+
+                    parentNodesWidth.put(parentId, position.getUpperLeft().getX() + DEFAULT_VERTEX_WIDTH);
+                }
+            }
+        }
+
+        parentNodesWidth.forEach((parentId, width) -> {
+            final Optional<VertexPosition> parentPosition = layout.getNodePositions()
+                    .stream()
+                    .filter(p -> p.getId() == parentId)
+                    .findFirst();
+
+            parentPosition.ifPresent(position -> {
+                final Point2D upperLeft = position.getUpperLeft();
+                position.getBottomRight().setX(upperLeft.getX() + width + DEFAULT_INNER_HORIZONTAL_PADDING);
+                position.getBottomRight().setY(upperLeft.getY() + DEFAULT_PARENT_NODE_HEIGHT);
+            });
+        });
+    }
+
+    boolean hasPositionSet(final Node node) {
+        if (node.getContent() instanceof HasBounds) {
+            final Bounds bounds = ((HasBounds) node.getContent()).getBounds();
+            if (bounds.hasUpperLeft()
+                    && (isXSet(bounds.getUpperLeft()) || isYSet(bounds.getUpperLeft()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    boolean isXSet(final Bound bound) {
+        return bound.hasX() && !isCloseToZero(bound.getX());
+    }
+
+    boolean isYSet(final Bound bound) {
+        return bound.hasY() && !isCloseToZero(bound.getY());
     }
 }

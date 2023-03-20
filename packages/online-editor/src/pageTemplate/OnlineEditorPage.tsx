@@ -27,7 +27,8 @@ import { DevDeploymentsDropdown } from "../devDeployments/DevDeploymentsDropdown
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AccountsIcon } from "../accounts/AccountsIcon";
 import { AboutButton } from "../aboutModal/AboutButton";
-import { MastheadContent, Toolbar, ToolbarContent } from "@patternfly/react-core";
+import { MastheadContent } from "@patternfly/react-core/dist/js/components/Masthead";
+import { Toolbar, ToolbarContent } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { ToolbarGroup, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {

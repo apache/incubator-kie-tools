@@ -20,11 +20,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.HasBounds;
+import org.kie.workbench.common.stunner.core.graph.processing.layout.GraphProcessor;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.OrientedEdgeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.ReorderedGraph;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.Vertex;
@@ -37,6 +45,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.SugiyamaLayoutService.DEFAULT_INNER_HORIZONTAL_PADDING;
+import static org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.SugiyamaLayoutService.DEFAULT_PARENT_NODE_HEIGHT;
 import static org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step04.DefaultVertexPositioning.DEFAULT_LAYER_HORIZONTAL_PADDING;
 import static org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step04.DefaultVertexPositioning.DEFAULT_LAYER_VERTICAL_PADDING;
 import static org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step04.DefaultVertexPositioning.DEFAULT_VERTEX_SPACE;
@@ -45,7 +55,9 @@ import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -69,6 +81,8 @@ public class DefaultVertexPositioningTest {
         final HashMap layersStartX = mock(HashMap.class);
         final int largestWidth = 100;
         final int newY = 17;
+        final GraphProcessor graphProcessor = mock(GraphProcessor.class);
+        final Graph<?, ?> stunnerGraph = mock(Graph.class);
         doReturn(hash).when(tested).createHashForLayersWidth();
         doReturn(largestWidth).when(tested).calculateLayersWidth(layers, hash);
         doReturn(layersStartX).when(tested).getLayersStartX(layers.size(), hash, largestWidth);
@@ -86,7 +100,9 @@ public class DefaultVertexPositioningTest {
                                                        graph);
         tested.arrangeVertices(layers,
                                LayerArrangement.TopDown,
-                               graph);
+                               graph,
+                               stunnerGraph,
+                               graphProcessor);
 
         final InOrder inOrder = inOrder(tested);
 
@@ -114,6 +130,8 @@ public class DefaultVertexPositioningTest {
         final HashMap layersStartX = mock(HashMap.class);
         final int largestWidth = 100;
         final int newY = 17;
+        final GraphProcessor graphProcessor = mock(GraphProcessor.class);
+        final Graph<?, ?> stunnerGraph = mock(Graph.class);
         doReturn(hash).when(tested).createHashForLayersWidth();
         doReturn(largestWidth).when(tested).calculateLayersWidth(layers, hash);
         doReturn(layersStartX).when(tested).getLayersStartX(layers.size(), hash, largestWidth);
@@ -131,7 +149,9 @@ public class DefaultVertexPositioningTest {
                                                        graph);
         tested.arrangeVertices(layers,
                                LayerArrangement.BottomUp,
-                               graph);
+                               graph,
+                               stunnerGraph,
+                               graphProcessor);
 
         final InOrder inOrder = inOrder(tested);
 
@@ -146,8 +166,6 @@ public class DefaultVertexPositioningTest {
                                                   newY,
                                                   0,
                                                   graph);
-
-
     }
 
     @Test
@@ -157,14 +175,17 @@ public class DefaultVertexPositioningTest {
         final List<OrientedEdge> edges = mock(List.class);
         final LayerArrangement arrangement = LayerArrangement.BottomUp;
         final Set<Vertex> vertices = mock(Set.class);
+        final GraphProcessor graphProcessor = mock(GraphProcessor.class);
+        final Graph<?, ?> stunnerGraph = mock(Graph.class);
         when(tested.getVertices(graph)).thenReturn(vertices);
         final List<GraphLayer> layers = mock(List.class);
         when(graph.getLayers()).thenReturn(layers);
 
         when(graph.getEdges()).thenReturn(edges);
-        doCallRealMethod().when(tested).calculateVerticesPositions(graph, arrangement);
 
-        tested.calculateVerticesPositions(graph, arrangement);
+        doCallRealMethod().when(tested).calculateVerticesPositions(graph, arrangement, graphProcessor, stunnerGraph);
+
+        tested.calculateVerticesPositions(graph, arrangement, graphProcessor, stunnerGraph);
 
         final InOrder inOrder = inOrder(tested);
 
@@ -172,7 +193,7 @@ public class DefaultVertexPositioningTest {
         inOrder.verify(tested).getVertices(graph);
         inOrder.verify(tested).removeVirtualVertices(edges, vertices);
         inOrder.verify(tested).removeVirtualVerticesFromLayers(layers, vertices);
-        inOrder.verify(tested).arrangeVertices(layers, arrangement, graph);
+        inOrder.verify(tested).arrangeVertices(layers, arrangement, graph, stunnerGraph, graphProcessor);
     }
 
     @Test
@@ -254,6 +275,177 @@ public class DefaultVertexPositioningTest {
         assertEquals((int) layersWidth.get(0), expectedSize1);
         assertEquals((int) layersWidth.get(1), expectedSize2);
         assertEquals((int) layersWidth.get(2), expectedSize3);
+    }
+
+    @Test
+    public void testCalculateParentVerticesSize() {
+
+        final GraphProcessor graphProcessor = mock(GraphProcessor.class);
+        final ReorderedGraph reorderedGraph = mock(ReorderedGraph.class);
+        final Graph<?, ?> graph = mock(Graph.class);
+        final Map<String, String> replacedNodes = mock(Map.class);
+        final String parent1 = "parent1";
+        final String parent2 = "parent2";
+        final String parent3 = "parent3";
+        final Integer parentWidth1 = 11;
+        final Integer parentWidth2 = 22;
+        final Integer parentWidth3 = 33;
+        final Map<String, Integer> parentVertexWidth = new HashMap() {{
+            put(parent1, parentWidth1);
+            put(parent2, parentWidth2);
+            put(parent3, parentWidth3);
+        }};
+
+        final Node node1 = mock(Node.class);
+        final Node node2 = mock(Node.class);
+        final Node node3 = mock(Node.class);
+        final Optional<Node> optionalNode1 = Optional.of(node1);
+        final Optional<Node> optionalNode2 = Optional.of(node2);
+        final Optional<Node> optionalNode3 = Optional.of(node3);
+
+        when(graphProcessor.getReplacedNodes()).thenReturn(replacedNodes);
+        when(graphProcessor.getNodeFromGraph(parent1, graph)).thenReturn(optionalNode1);
+        when(graphProcessor.getNodeFromGraph(parent2, graph)).thenReturn(optionalNode2);
+        when(graphProcessor.getNodeFromGraph(parent3, graph)).thenReturn(optionalNode3);
+
+        doReturn(true).when(tested).hasPositionSet(node3);
+        doReturn(false).when(tested).hasPositionSet(node2);
+        doReturn(false).when(tested).hasPositionSet(node1);
+        doReturn(parentVertexWidth).when(tested).calculateParentVerticesWidth(replacedNodes);
+
+        tested.calculateParentVerticesSize(graph, graphProcessor, reorderedGraph);
+
+        verify(reorderedGraph).setVertexSize(parent1, parentWidth1, DEFAULT_PARENT_NODE_HEIGHT);
+        verify(reorderedGraph).setVertexSize(parent2, parentWidth2, DEFAULT_PARENT_NODE_HEIGHT);
+        verify(reorderedGraph, never()).setVertexSize(parent3, parentWidth3, DEFAULT_PARENT_NODE_HEIGHT);
+    }
+
+    @Test
+    public void testCalculateParentVerticesWidth() {
+
+        final String replacedNode1 = "replacedNode1";
+        final String replacedNode2 = "replacedNode2";
+        final String replacedNode3 = "replacedNode3";
+        final String replacedNode4 = "replacedNode4";
+        final String parent1 = "parent1";
+        final String parent2 = "parent2";
+
+        final Map<String, String> replacedNodes = new HashMap<>();
+
+        // Parent1 is parent of nodes 1-3
+        replacedNodes.put(replacedNode1, parent1);
+        replacedNodes.put(replacedNode2, parent1);
+        replacedNodes.put(replacedNode3, parent1);
+
+        // Parent2 is parent of node 4
+        replacedNodes.put(replacedNode4, parent2);
+
+        final Map<String, Integer> widths = tested.calculateParentVerticesWidth(replacedNodes);
+
+        // We want the width of Parent1 and Parent2 only
+        assertEquals(2, widths.size());
+        assertTrue(widths.containsKey(parent1));
+        assertTrue(widths.containsKey(parent2));
+
+        assertEquals(DEFAULT_VERTEX_WIDTH + DEFAULT_INNER_HORIZONTAL_PADDING, widths.get(parent2), 0.01);
+
+        final double expectedWidthFor3Children = (DEFAULT_INNER_HORIZONTAL_PADDING + DEFAULT_VERTEX_WIDTH) * 3;
+        assertEquals(expectedWidthFor3Children, widths.get(parent1), 0.01);
+    }
+
+    @Test
+    public void testHasPositionSet_WhenThereIsNoBounds() {
+
+        final Node node = mock(Node.class);
+        doReturn(Optional.empty()).when(tested).getBounds(node);
+
+        assertFalse(tested.hasPositionSet(node));
+    }
+
+    @Test
+    public void testHasPositionSet_WhenThereIsUpperLeft() {
+
+        final Node node = mock(Node.class);
+        final Bounds bounds = mock(Bounds.class);
+
+        when(bounds.hasUpperLeft()).thenReturn(false);
+        doReturn(Optional.of(bounds)).when(tested).getBounds(node);
+
+        assertFalse(tested.hasPositionSet(node));
+    }
+
+    @Test
+    public void testHasPositionSet_WhenXisSet() {
+
+        final Node node = mock(Node.class);
+        final Bounds bounds = mock(Bounds.class);
+
+        when(bounds.hasUpperLeft()).thenReturn(true);
+        final Bound upperLeft = mock(Bound.class);
+        when(bounds.getUpperLeft()).thenReturn(upperLeft);
+        doReturn(Optional.of(bounds)).when(tested).getBounds(node);
+        doReturn(true).when(tested).isXSet(upperLeft);
+
+        assertTrue(tested.hasPositionSet(node));
+    }
+
+    @Test
+    public void testHasPositionSet_WhenYisSet() {
+
+        final Node node = mock(Node.class);
+        final Bounds bounds = mock(Bounds.class);
+
+        when(bounds.hasUpperLeft()).thenReturn(true);
+        final Bound upperLeft = mock(Bound.class);
+        when(bounds.getUpperLeft()).thenReturn(upperLeft);
+        doReturn(Optional.of(bounds)).when(tested).getBounds(node);
+        doReturn(false).when(tested).isXSet(upperLeft);
+        doReturn(true).when(tested).isYSet(upperLeft);
+
+        assertTrue(tested.hasPositionSet(node));
+    }
+
+    @Test
+    public void testHasPositionSet_WhenIsNotSet() {
+
+        final Node node = mock(Node.class);
+        final Bounds bounds = mock(Bounds.class);
+
+        when(bounds.hasUpperLeft()).thenReturn(true);
+        final Bound upperLeft = mock(Bound.class);
+        when(bounds.getUpperLeft()).thenReturn(upperLeft);
+        doReturn(Optional.of(bounds)).when(tested).getBounds(node);
+        doReturn(false).when(tested).isXSet(upperLeft);
+        doReturn(false).when(tested).isYSet(upperLeft);
+
+        assertFalse(tested.hasPositionSet(node));
+    }
+
+    @Test
+    public void testGetBounds() {
+
+        final Node node = mock(Node.class);
+        final HasBounds hasBounds = mock(HasBounds.class);
+        final Bounds bounds = mock(Bounds.class);
+        when(hasBounds.getBounds()).thenReturn(bounds);
+        when(node.getContent()).thenReturn(hasBounds);
+
+        final Optional<Bounds> returnedBounds = tested.getBounds(node);
+
+        assertTrue(returnedBounds.isPresent());
+        assertEquals(bounds, returnedBounds.get());
+    }
+
+    @Test
+    public void testGetBounds_WhenThereIsNoBounds() {
+
+        final Node node = mock(Node.class);
+
+        when(node.getContent()).thenReturn(new Object());
+
+        final Optional<Bounds> returnedBounds = tested.getBounds(node);
+
+        assertFalse(returnedBounds.isPresent());
     }
 
     private int getExpectSize(final int totalOfVertices) {

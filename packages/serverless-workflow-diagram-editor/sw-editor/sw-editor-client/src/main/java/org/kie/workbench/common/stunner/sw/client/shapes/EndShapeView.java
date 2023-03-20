@@ -22,11 +22,11 @@ public class EndShapeView extends ServerlessWorkflowShapeView<EndShapeView> {
 
     private final static int END_SHAPE_SIZE = 46;
 
-    public EndShapeView() {
+    public EndShapeView(String title) {
         super(new MultiPath()
                       .rect(0, 0, END_SHAPE_SIZE, END_SHAPE_SIZE)
                       .setID("end"),
-              "End");
+              title);
         setTitleBoundaries(END_SHAPE_SIZE, END_SHAPE_SIZE);
         setTitleXOffsetPosition(0.0); // Looks like a bug in horizontal aligning without OffsetPosition 0
     }

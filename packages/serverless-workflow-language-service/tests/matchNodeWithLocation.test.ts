@@ -20,7 +20,7 @@ import {
   SwfJsonLanguageService,
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { defaultConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
+import { defaultConfig, defaultJqCompletionsConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
 import { treat } from "./testUtils";
 
 describe("matchNodeWithLocation", () => {
@@ -30,6 +30,7 @@ describe("matchNodeWithLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`🎯{}`);
       const root = ls.parseContent(content);
@@ -45,6 +46,7 @@ describe("matchNodeWithLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`
 {
@@ -63,6 +65,7 @@ describe("matchNodeWithLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`
 {
@@ -117,6 +120,7 @@ describe("matchNodeWithLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`
 {
@@ -175,6 +179,7 @@ describe("matchNodeWithLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`
 {
@@ -236,6 +241,7 @@ describe("matchNodeWithLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`
 {
@@ -272,6 +278,7 @@ describe("matchNodeWithLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`---🎯 `);
       const root = ls.parseContent(content);
@@ -287,6 +294,7 @@ describe("matchNodeWithLocation", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`
 
@@ -305,6 +313,7 @@ functions: [🎯]`);
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`
 ---
@@ -334,6 +343,7 @@ states:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`---
 functions:
@@ -375,6 +385,7 @@ states:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`---
 functions:
@@ -394,6 +405,7 @@ functions:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`---
 functions:
@@ -413,6 +425,7 @@ functions:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`---
 functions:

@@ -15,7 +15,8 @@
  */
 
 import * as React from "react";
-import { Page, PageSection, Text, TextContent } from "@patternfly/react-core";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 
 export function Home() {
   return (

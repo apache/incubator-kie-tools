@@ -379,7 +379,7 @@ public class DisplayerSettings {
     }
 
     public boolean isFilterEnabled() {
-        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.FILTER_ENABLED)));
+        return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.FILTER_ENABLED))) || isFilterListeningEnabled() || isFilterNotificationEnabled();
     }
 
     public void setFilterEnabled(boolean filterEnabled) {

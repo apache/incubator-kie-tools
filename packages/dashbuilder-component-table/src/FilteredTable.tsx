@@ -17,7 +17,9 @@ import * as React from "react";
 import { TableComposable, Thead, Tbody, Tr, Th, Td, selectable } from "@patternfly/react-table";
 
 import { useState, useCallback, useMemo } from "react";
-import { Flex, FlexItem, Pagination, SearchInput } from "@patternfly/react-core";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Pagination } from "@patternfly/react-core/dist/js/components/Pagination";
+import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PER_PAGE = 10;

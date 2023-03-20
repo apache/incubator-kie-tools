@@ -25,6 +25,7 @@ import { join } from "path";
 import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { decoder, encoder } from "../encoderdecoder/EncoderDecoder";
 import { FsSchema } from "../services/FsCache";
+import { FileModificationStatus, UnstagedModifiedFilesStatusEntryType } from "../services/GitService";
 import { KieSandboxWorkspacesFs } from "../services/KieSandboxWorkspaceFs";
 import { StorageFile } from "../services/StorageService";
 import { GitServerRef } from "./api/GitServerRef";
@@ -42,6 +43,7 @@ import { WorkspacesWorkerApi } from "./api/WorkspacesWorkerApi";
 import { WorkspaceWorkerFile } from "./api/WorkspaceWorkerFile";
 import { WorkspaceWorkerFileDescriptor } from "./api/WorkspaceWorkerFileDescriptor";
 import { WorkspaceServices } from "./createWorkspaceServices";
+import { FetchResult } from "isomorphic-git";
 
 export interface FileFilter {
   // Files with the highest priority
@@ -404,11 +406,21 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
       async ({ fs, broadcaster }) => {
-        return this.args.services.gitService.branch({
+        await this.args.services.gitService.branch({
           fs: fs,
           dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
           ...args,
         });
+
+        if (args.checkout) {
+          broadcaster.broadcast({
+            channel: args.workspaceId,
+            message: async () => ({
+              type: "WS_CHECKOUT",
+              workspaceId: args.workspaceId,
+            }),
+          });
+        }
       }
     );
   }
@@ -421,10 +433,45 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
       async ({ fs, broadcaster }) => {
-        return this.args.services.gitService.checkout({
+        await this.args.services.gitService.checkout({
           fs: fs,
           dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
           ...args,
+        });
+
+        broadcaster.broadcast({
+          channel: args.workspaceId,
+          message: async () => ({
+            type: "WS_CHECKOUT",
+            workspaceId: args.workspaceId,
+          }),
+        });
+      }
+    );
+  }
+
+  public async kieSandboxWorkspacesGit_checkoutFilesFromLocalHead(args: {
+    workspaceId: string;
+    ref?: string;
+    filepaths: string[];
+  }): Promise<void> {
+    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
+      args.workspaceId,
+      async ({ fs, broadcaster }) => {
+        const workspaceDir = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
+        await this.args.services.gitService.checkoutFilesFromLocalHead({
+          fs,
+          dir: workspaceDir,
+          ref: args.ref,
+          filepaths: args.filepaths,
+        });
+        broadcaster.broadcast({
+          channel: args.workspaceId,
+          message: async () => ({
+            type: "WS_CHECKOUT_FILES_FROM_LOCAL_HEAD",
+            workspaceId: args.workspaceId,
+            relativePaths: args.filepaths,
+          }),
         });
       }
     );
@@ -464,13 +511,13 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     });
   }
 
-  public async kieSandboxWorkspacesGit_getUnstagedModifiedFileRelativePaths(args: {
+  public async kieSandboxWorkspacesGit_getUnstagedModifiedFilesStatus(args: {
     workspaceId: string;
-  }): Promise<string[]> {
+  }): Promise<UnstagedModifiedFilesStatusEntryType[]> {
     const workspaceRootDirPath = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
 
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs }) => {
-      return await this.args.services.gitService.unstagedModifiedFileRelativePaths({
+      return await this.args.services.gitService.unstagedModifiedFilesStatus({
         fs,
         dir: workspaceRootDirPath,
         exclude: (filepath) => !this.args.fileFilter.isEditable(filepath),
@@ -478,7 +525,41 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     });
   }
 
+  public async kieSandboxWorkspacesGit_stageFile(args: { workspaceId: string; relativePath: string }) {
+    const workspaceRootDirPath = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
+
+    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs }) => {
+      await this.args.services.gitService.add({
+        fs,
+        dir: workspaceRootDirPath,
+        relativePath: args.relativePath,
+      });
+    });
+  }
+
   public async kieSandboxWorkspacesGit_commit(args: {
+    workspaceId: string;
+    gitConfig?: { email: string; name: string };
+    commitMessage: string;
+    targetBranch: string;
+  }): Promise<void> {
+    const workspaceRootDirPath = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
+
+    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs }) => {
+      await this.args.services.gitService.commit({
+        fs,
+        dir: workspaceRootDirPath,
+        targetBranch: args.targetBranch,
+        message: args.commitMessage,
+        author: {
+          name: args.gitConfig?.name ?? this.GIT_DEFAULT_USER.name,
+          email: args.gitConfig?.email ?? this.GIT_DEFAULT_USER.email,
+        },
+      });
+    });
+  }
+
+  public async kieSandboxWorkspacesGit_createSavePoint(args: {
     workspaceId: string;
     gitConfig?: { email: string; name: string };
     commitMessage?: string;
@@ -491,37 +572,26 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
 
     const defaultCommitMessage = `Changes from ${this.args.appName}`;
 
-    const fileRelativePaths = await this.kieSandboxWorkspacesGit_getUnstagedModifiedFileRelativePaths({
+    const unstagedModifiedFilesStatus = await this.kieSandboxWorkspacesGit_getUnstagedModifiedFilesStatus({
       workspaceId: args.workspaceId,
     });
-
-    if (fileRelativePaths.length === 0) {
-      console.debug("Nothing to commit.");
-      return;
-    }
 
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
       async ({ fs, broadcaster }) => {
         await Promise.all(
-          fileRelativePaths.map(async (relativePath) => {
-            if (
-              await this.args.services.workspaceService.existsFile({
-                fs,
-                workspaceId: args.workspaceId,
-                relativePath,
-              })
-            ) {
+          unstagedModifiedFilesStatus.map(async (stageStatusEntry) => {
+            if (stageStatusEntry.status !== FileModificationStatus.deleted) {
               await this.args.services.gitService.add({
                 fs,
                 dir: workspaceRootDirPath,
-                relativePath,
+                relativePath: stageStatusEntry.path,
               });
             } else {
               await this.args.services.gitService.rm({
                 fs,
                 dir: workspaceRootDirPath,
-                relativePath,
+                relativePath: stageStatusEntry.path,
               });
             }
           })
@@ -553,7 +623,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     workspaceId: string;
     remote: string;
     ref: string;
-  }): Promise<void> {
+  }): Promise<FetchResult> {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
       async ({ fs, broadcaster }) => {
@@ -696,6 +766,19 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       args.workspaceId,
       async ({ fs, broadcaster }) => {
         return this.args.services.gitService.push({
+          fs: fs,
+          dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
+          ...args,
+        });
+      }
+    );
+  }
+
+  kieSandboxWorkspacesGit_deleteBranch(args: { workspaceId: string; ref: string }): Promise<void> {
+    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
+      args.workspaceId,
+      async ({ fs, broadcaster }) => {
+        return this.args.services.gitService.deleteBranch({
           fs: fs,
           dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
           ...args,

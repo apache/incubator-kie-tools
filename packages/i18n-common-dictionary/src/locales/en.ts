@@ -20,6 +20,7 @@ import { names } from "../names";
 export const en: CommonI18n = {
   names,
   terms: {
+    apply: "Apply",
     available: "Available",
     back: "Back",
     cancel: "Cancel",

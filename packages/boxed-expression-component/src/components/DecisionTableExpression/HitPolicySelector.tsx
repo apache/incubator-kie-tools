@@ -19,7 +19,7 @@ import { BuiltinAggregation, getEnumKeyByEnumValue, HitPolicy } from "../../api"
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { PopoverMenu } from "../PopoverMenu";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpression } from "../../context";

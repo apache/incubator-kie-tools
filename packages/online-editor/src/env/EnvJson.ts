@@ -15,6 +15,7 @@
  */
 
 import { AuthProvider } from "../authProviders/AuthProvidersApi";
+import { AcceleratorConfig } from "../accelerators/AcceleratorsApi";
 
 export interface EnvJson {
   KIE_SANDBOX_EXTENDED_SERVICES_URL: string;
@@ -22,4 +23,5 @@ export interface EnvJson {
   KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE: boolean;
   KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL: string;
   KIE_SANDBOX_AUTH_PROVIDERS: AuthProvider[];
+  KIE_SANDBOX_ACCELERATORS: AcceleratorConfig[];
 }

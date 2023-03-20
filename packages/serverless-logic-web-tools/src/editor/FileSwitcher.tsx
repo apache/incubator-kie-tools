@@ -181,21 +181,25 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
     setActiveMenu(`dd${props.workspace.descriptor.workspaceId}`);
   }, [isFilesDropdownOpen, props.workspace.descriptor.workspaceId]);
 
-  const drillIn = useCallback((fromMenuId, toMenuId, pathId) => {
+  const drillIn = useCallback((_event, fromMenuId, toMenuId, pathId) => {
     setMenuDrilledIn((prev) => [...prev, fromMenuId]);
     setDrilldownPath((prev) => [...prev, pathId]);
     setActiveMenu(toMenuId);
   }, []);
 
-  const drillOut = useCallback((toMenuId) => {
+  const drillOut = useCallback((_event, toMenuId) => {
     setMenuDrilledIn((prev) => prev.slice(0, prev.length - 1));
     setDrilldownPath((prev) => prev.slice(0, prev.length - 1));
     setActiveMenu(toMenuId);
   }, []);
 
   const setHeight = useCallback((menuId: string, height: number) => {
-    // do not try to simplify this ternary's condition as some heights are 0, resulting in an infinite loop.
-    setMenuHeights((prev) => (prev[menuId] === height ? prev : { ...prev, [menuId]: height }));
+    setMenuHeights((prev) => {
+      if (prev[menuId] === undefined || (menuId !== ROOT_MENU_ID && prev[menuId] !== height)) {
+        return { ...prev, [menuId]: height };
+      }
+      return prev;
+    });
   }, []);
 
   const workspacesMenuItems = useMemo(() => {
@@ -342,7 +346,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                 menuHeight={activeMenu === ROOT_MENU_ID ? undefined : `${menuHeights[activeMenu]}px`}
                 style={{ overflow: "hidden" }}
               >
-                <MenuList>
+                <MenuList style={{ padding: 0 }}>
                   <MenuItem
                     itemId={props.workspace.descriptor.workspaceId}
                     description={"Current"}
@@ -637,7 +641,7 @@ export function FilesMenuItems(props: {
                 <>
                   <Divider component={"li"} />
                   <MenuGroup>
-                    <MenuList>
+                    <MenuList style={{ padding: 0 }}>
                       <MenuItem
                         onClick={(e) => {
                           e.stopPropagation();

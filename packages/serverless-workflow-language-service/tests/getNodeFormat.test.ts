@@ -21,7 +21,7 @@ import {
   SwfJsonLanguageService,
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { defaultConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
+import { defaultConfig, defaultJqCompletionsConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
 import { ContentWithCursor, treat } from "./testUtils";
 
 describe("getNodeFormat", () => {
@@ -41,6 +41,7 @@ describe("getNodeFormat", () => {
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     test("string value", async () => {
@@ -157,6 +158,7 @@ describe("getNodeFormat", () => {
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     test("string value", async () => {

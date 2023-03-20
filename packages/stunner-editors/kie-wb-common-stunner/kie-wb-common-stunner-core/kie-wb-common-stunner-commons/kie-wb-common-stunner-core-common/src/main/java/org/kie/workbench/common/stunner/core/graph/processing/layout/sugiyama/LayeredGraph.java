@@ -102,8 +102,7 @@ public class LayeredGraph implements ReorderedGraph {
 
     @Override
     public int getVertexWidth(final String vertexId) {
-        final int width = verticesWidth.getOrDefault(vertexId, DEFAULT_VERTEX_WIDTH);
-        return width;
+        return verticesWidth.getOrDefault(vertexId, DEFAULT_VERTEX_WIDTH);
     }
 
     @Override

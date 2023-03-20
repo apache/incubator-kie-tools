@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Nav, NavItem, NavList } from "@patternfly/react-core";
+import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";

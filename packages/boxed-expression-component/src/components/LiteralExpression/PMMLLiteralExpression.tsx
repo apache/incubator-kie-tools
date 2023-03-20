@@ -18,7 +18,7 @@ import "./PMMLLiteralExpression.css";
 import * as React from "react";
 import { useCallback, useRef, useState } from "react";
 import { PMMLLiteralExpressionProps } from "../../api";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as _ from "lodash";
 import { useBoxedExpression } from "../../context";
 

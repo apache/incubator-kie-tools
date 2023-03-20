@@ -1,3 +1,14 @@
+# 0.27.0 (alpha)
+
+- [KOGITO-8307](https://issues.redhat.com/browse/KOGITO-8307) - SWF Editor - States without incoming transition are shown in top left corner
+- [KOGITO-8277](https://issues.redhat.com/browse/KOGITO-8277) - FunctionRef.arguments could be String or JsObject
+- NO-ISSUE - Bump `postgresql` and `xstream` versions
+- [KOGITO-8345](https://issues.redhat.com/browse/KOGITO-8345) - [SWF Viewer] Icon rendering improvements based on metadata fields
+- [KOGITO-8237](https://issues.redhat.com/browse/KOGITO-8237) - [SWF Editor] Add support to Async API
+- [KOGITO-8506](https://issues.redhat.com/browse/KOGITO-8506) - SWF Viewer - display timeout and duration property
+- [KOGITO-8445](https://issues.redhat.com/browse/KOGITO-8445) - SWF Diagram Viewer - Orthogonal lines
+- [KOGITO-8639](https://issues.redhat.com/browse/KOGITO-8639) - SWF Viewer - display actions icon
+
 # 0.26.0 (alpha)
 
 - [KOGITO-7471](https://issues.redhat.com/browse/KOGITO-7471) - Auto-layout for SWF

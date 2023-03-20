@@ -17,3 +17,4 @@ export * from "./workflow-completions";
 export * from "./states-completions";
 export * from "./events-completions";
 export * from "./functions-completions";
+export * from "./empty-workflow-completions";

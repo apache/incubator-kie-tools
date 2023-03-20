@@ -16,7 +16,9 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Label, Nav, NavItem, NavList, Title } from "@patternfly/react-core";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 interface Props {
   lastPing: string;

@@ -27,7 +27,7 @@ import { UnitablesInputRule } from "./UnitablesBoxedTypes";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Button } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { FORMS_ID, UnitablesJsonSchemaBridge } from "./uniforms";
