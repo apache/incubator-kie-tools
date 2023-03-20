@@ -369,6 +369,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     public void onTryIt(final ClickEvent event) {
         toggleLegacyExpressionEditor(false);
         toggleBetaBoxedExpressionEditor(true);
+        loadNewBoxedExpressionEditor();
         preventDefault(event);
     }
 

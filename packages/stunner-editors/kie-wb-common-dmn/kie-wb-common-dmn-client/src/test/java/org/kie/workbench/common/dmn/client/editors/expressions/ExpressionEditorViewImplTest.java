@@ -561,6 +561,7 @@ public class ExpressionEditorViewImplTest {
 
         verify(view).toggleLegacyExpressionEditor(false);
         verify(view).toggleBetaBoxedExpressionEditor(true);
+        verify(view).loadNewBoxedExpressionEditor();
         verify(event).preventDefault();
         verify(event).stopPropagation();
     }
