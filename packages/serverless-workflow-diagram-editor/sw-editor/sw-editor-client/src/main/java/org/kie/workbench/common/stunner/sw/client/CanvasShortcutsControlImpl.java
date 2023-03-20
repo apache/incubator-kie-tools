@@ -24,8 +24,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.Abs
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.shortcut.KeyboardShortcut;
 import org.kie.workbench.common.stunner.sw.SWEditor;
 
-// TODO: This shoud be no necessary! (injection point evaluated only when NOT readOnly mode)
-// TODO: This is just a copye/paste of org.kie.workbench.common.stunner.bpmn.client.canvas.controls.BPMNCanvasShortcutsControlImpl
+// TODO: This should be no necessary! (injection point evaluated only when NOT readOnly mode)
+// TODO: This is just a copy/paste of org.kie.workbench.common.stunner.bpmn.client.canvas.controls.BPMNCanvasShortcutsControlImpl
 
 @SWEditor
 @Dependent

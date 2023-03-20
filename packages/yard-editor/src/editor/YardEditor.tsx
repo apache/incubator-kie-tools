@@ -15,7 +15,13 @@
  */
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Drawer, DrawerContent, DrawerContentBody, DrawerPanelBody, DrawerPanelContent } from "@patternfly/react-core";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerPanelBody,
+  DrawerPanelContent,
+} from "@patternfly/react-core/dist/js/components/Drawer";
 import { yardEditorDictionaries, YardEditorI18nContext, yardEditorI18nDefaults } from "../i18n";
 import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";

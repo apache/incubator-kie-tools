@@ -16,7 +16,9 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Nav, NavItem, NavList, Page, PageSection, Title } from "@patternfly/react-core";
+import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { EmbeddedTodoList, EmbeddedTodoListRef } from "@kie-tools-examples/todo-list-view/dist/embedded";
 import { useStateAsSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 

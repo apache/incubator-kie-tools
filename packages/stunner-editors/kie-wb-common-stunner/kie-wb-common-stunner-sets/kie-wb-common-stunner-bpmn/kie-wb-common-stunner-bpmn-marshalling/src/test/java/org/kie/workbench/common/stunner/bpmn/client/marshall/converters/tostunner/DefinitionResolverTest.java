@@ -44,6 +44,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -149,5 +150,18 @@ public class DefinitionResolverTest {
         setUp();
 
         assertEquals(parameter, definitionResolver.resolveSimulationParameters(elementRef).get());
+    }
+
+    @Test
+    public void testGetDefinitionsId() {
+        assertNotNull(definitionResolver.getDefinitionsId());
+
+        String definitionId = "12345";
+
+        when(definitions.getId()).thenReturn(definitionId);
+
+        definitionResolver = new DefinitionResolver(definitions, Collections.emptyList());
+
+        assertEquals(definitionId, definitionResolver.getDefinitionsId());
     }
 }

@@ -1,0 +1,7 @@
+- route:
+    id: "foo"
+    from:
+      uri: "direct:sendMessage"
+      steps:
+        - toD:
+          uri: cxf://example.com?serviceClass=com.dataaccess.webservicesserver.MessageSoapType&wsdlURL=/wsdl/sendMessage.wsdl

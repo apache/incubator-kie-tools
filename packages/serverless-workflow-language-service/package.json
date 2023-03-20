@@ -25,6 +25,7 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
+    "@kie-tools/serverless-workflow-jq-expressions": "workspace:*",
     "@kie-tools/serverless-workflow-service-catalog": "workspace:*",
     "@kie-tools/yaml-language-server": "workspace:*",
     "@severlessworkflow/sdk-typescript": "^3.0.3",

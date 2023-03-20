@@ -119,7 +119,7 @@ describe("Serverless workflow editor - autocompletion tests", () => {
       const textEditor = await swfTextEditor.getSwfTextEditor();
 
       // select the autocompletion
-      await selectFromContentAssist(textEditor, "Create your first Serverless Workflow");
+      await selectFromContentAssist(textEditor, "Serverless Workflow Example");
 
       // check the final editor content is the same as expected result
       const editorContent = await textEditor.getText();
@@ -196,7 +196,7 @@ end: true`);
       expect(editorContent).equal(expectedContent);
     });
 
-    it("Completes serverless workflow from an empty file", async function () {
+    it("Completes serverless workflow from an empty file and create Serverless Workflow Example", async function () {
       this.timeout(50000);
 
       const editorWebviews = await testHelper.openFileFromSidebar("emptyfile_autocompletion.sw.yaml");
@@ -204,12 +204,30 @@ end: true`);
       const textEditor = await swfTextEditor.getSwfTextEditor();
 
       // select the autocompletion
-      await selectFromContentAssist(textEditor, "Create your first Serverless Workflow");
+      await selectFromContentAssist(textEditor, "Serverless Workflow Example");
 
       // check the final editor content is the same as expected result
       const editorContent = await textEditor.getText();
       const expectedContent = fs.readFileSync(
         path.resolve(TEST_PROJECT_FOLDER, "emptyfile_autocompletion.sw.yaml.result"),
+        "utf-8"
+      );
+      expect(editorContent).equal(expectedContent);
+    });
+    it("Completes serverless workflow from an empty file and create Empty Serverless Workflow", async function () {
+      this.timeout(50000);
+
+      const editorWebviews = await testHelper.openFileFromSidebar("emptyworkflow_autocompletion.sw.json");
+      const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
+      const textEditor = await swfTextEditor.getSwfTextEditor();
+
+      // select the autocompletion
+      await selectFromContentAssist(textEditor, "Empty Serverless Workflow");
+
+      // check the final editor content is the same as expected result
+      const editorContent = await textEditor.getText();
+      const expectedContent = fs.readFileSync(
+        path.resolve(TEST_PROJECT_FOLDER, "emptyworkflow_autocompletion.sw.json.result"),
         "utf-8"
       );
       expect(editorContent).equal(expectedContent);

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step04;
 
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.processing.layout.GraphProcessor;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.ReorderedGraph;
 
 public interface VertexPositioning {
@@ -23,6 +25,8 @@ public interface VertexPositioning {
     int DEFAULT_VERTEX_WIDTH = 100;
     int DEFAULT_VERTEX_HEIGHT = 50;
 
-    void calculateVerticesPositions(ReorderedGraph graph,
-                                    LayerArrangement arrangement);
+    void calculateVerticesPositions(final ReorderedGraph graph,
+                                    final LayerArrangement arrangement,
+                                    final GraphProcessor graphProcessor,
+                                    final Graph<?,?> stunnerGraph);
 }

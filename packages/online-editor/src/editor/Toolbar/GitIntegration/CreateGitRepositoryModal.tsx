@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,17 +30,18 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { GIT_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { useSettingsDispatch } from "../settings/SettingsContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { useAuthSession } from "../authSessions/AuthSessionsContext";
-import { useBitbucketClient } from "../bitbucket/Hooks";
-import { GithubIcon, BitbucketIcon } from "@patternfly/react-icons";
-import { useGitHubClient } from "../github/Hooks";
-import { isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
-import { useAuthProvider } from "../authProviders/AuthProvidersContext";
-import { switchExpression } from "../switchExpression/switchExpression";
-import { useOnlineI18n } from "../i18n";
+import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
+import { useBitbucketClient } from "../../../bitbucket/Hooks";
+import { BitbucketIcon } from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
+import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
+import { useGitHubClient } from "../../../github/Hooks";
+import { isSupportedGitAuthProviderType } from "../../../authProviders/AuthProvidersApi";
+import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
+import { switchExpression } from "../../../switchExpression/switchExpression";
+import { useOnlineI18n } from "../../../i18n";
 import { LoadOrganizationsSelect, SelectOptionObjectType } from "./LoadOrganizationsSelect";
+import { useGitIntegration } from "./GitIntegrationContextProvider";
 
 export interface CreateRepositoryResponse {
   cloneUrl: string;
@@ -57,10 +58,9 @@ export function CreateGitRepositoryModal(props: {
   workspace: WorkspaceDescriptor;
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (args: { url: string }) => void;
+  onSuccess?: (args: { url: string }) => void;
 }) {
   const workspaces = useWorkspaces();
-  const settingsDispatch = useSettingsDispatch();
   const { authSession, gitConfig, authInfo } = useAuthSession(props.workspace.gitAuthSessionId);
   const authProvider = useAuthProvider(authSession);
   const bitbucketClient = useBitbucketClient(authSession);
@@ -72,6 +72,10 @@ export function CreateGitRepositoryModal(props: {
   const [name, setName] = useState(getSuggestedRepositoryName(props.workspace.name));
   const { i18n } = useOnlineI18n();
   const [selectedOrganization, setSelectedOrganization] = useState<SelectOptionObjectType>();
+
+  const {
+    alerts: { createRepositorySuccessAlert, errorAlert },
+  } = useGitIntegration();
 
   useEffect(() => {
     setName(getSuggestedRepositoryName(props.workspace.name));
@@ -196,8 +200,10 @@ export function CreateGitRepositoryModal(props: {
       });
 
       props.onClose();
-      props.onSuccess({ url: websiteUrl });
+      createRepositorySuccessAlert.show({ url: websiteUrl });
+      props.onSuccess?.({ url: websiteUrl });
     } catch (err) {
+      errorAlert.show();
       setError(err);
       throw err;
     } finally {
@@ -212,6 +218,8 @@ export function CreateGitRepositoryModal(props: {
     pushEmptyCommitIntoBitbucket,
     workspaces,
     props,
+    createRepositorySuccessAlert,
+    errorAlert,
   ]);
 
   const isNameValid = useMemo(() => {
@@ -229,6 +237,7 @@ export function CreateGitRepositoryModal(props: {
   if (!authProvider?.type || !isSupportedGitAuthProviderType(authProvider?.type)) {
     return <></>;
   }
+
   return (
     <Modal
       variant={ModalVariant.medium}

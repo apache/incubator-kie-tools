@@ -17,31 +17,35 @@
 import React, { useState, useCallback, useImperativeHandle, Ref } from "react";
 import { Modal, ModalProps } from "@patternfly/react-core/dist/js/components/Modal";
 
-export type PromiseModalChildren<T> = ({
+export type PromiseModalChildren<ExpectedReturnType, ExtraArgs> = ({
   onReturn,
   onClose,
+  args,
 }: {
-  onReturn: (value: T) => void;
+  onReturn: (value: ExpectedReturnType) => void;
   onClose: () => void;
+  args?: ExtraArgs;
 }) => JSX.Element;
 
-export type PromiseModalProps<T> = Omit<ModalProps, "isOpen" | "ref" | "children"> & {
-  children: PromiseModalChildren<T>;
-  forwardRef: Ref<PromiseModalRef<T>>;
+export type PromiseModalProps<ExpectedReturnType, ExtraArgs> = Omit<ModalProps, "isOpen" | "ref" | "children"> & {
+  children: PromiseModalChildren<ExpectedReturnType, ExtraArgs>;
+  forwardRef: Ref<PromiseModalRef<ExpectedReturnType, ExtraArgs>>;
 };
 
-export interface PromiseModalRef<T> {
-  open: () => Promise<T>;
+export interface PromiseModalRef<ExpectedReturnType, ExtraArgs> {
+  open: (args?: ExtraArgs) => Promise<ExpectedReturnType>;
   close: () => void;
 }
 
-export function PromiseModal<T>(props: PromiseModalProps<T>) {
+export function PromiseModal<ExpectedReturnType, ExtraArgs>(props: PromiseModalProps<ExpectedReturnType, ExtraArgs>) {
   const [isOpen, setIsOpen] = useState(false);
+  const [args, setArgs] = useState<ExtraArgs>();
   const [promiseCallbacks, setPromiseCallbacks] =
-    useState<{ resolve: (value: T) => void; reject: (reason?: any) => void }>();
+    useState<{ resolve: (value: ExpectedReturnType) => void; reject: (reason?: any) => void }>();
 
-  const open = useCallback(async () => {
-    return new Promise<T>((resolve, reject) => {
+  const open = useCallback(async (openArgs?: ExtraArgs) => {
+    setArgs(openArgs);
+    return new Promise<ExpectedReturnType>((resolve, reject) => {
       setPromiseCallbacks({
         resolve,
         reject,
@@ -56,7 +60,7 @@ export function PromiseModal<T>(props: PromiseModalProps<T>) {
   }, []);
 
   const onReturn = useCallback(
-    (value: T) => {
+    (value: ExpectedReturnType) => {
       promiseCallbacks?.resolve(value);
       close();
     },
@@ -81,7 +85,7 @@ export function PromiseModal<T>(props: PromiseModalProps<T>) {
 
   return (
     <Modal {...modalProps} isOpen={isOpen} onClose={onClose}>
-      {children({ onReturn, onClose })}
+      {children({ onReturn, onClose, args })}
     </Modal>
   );
 }

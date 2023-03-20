@@ -91,6 +91,7 @@ export function EditorPage(props: Props) {
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
   const isEditorReady = useMemo(() => editor?.isReady, [editor]);
   const [isReady, setReady] = useState(false);
+  const [isServiceRegistryReady, setServiceRegistryReady] = useState(false);
   const swfFeatureToggle = useSwfFeatureToggle(editor);
 
   const queryParams = useQueryParams();
@@ -279,8 +280,9 @@ export function EditorPage(props: Props) {
   // SWF-specific code should be isolated when having more capabilities for other editors.
 
   useEffect(() => {
+    setServiceRegistryReady(false);
     if (isSwf && isReady) {
-      settingsDispatch.serviceRegistry.catalogStore.refresh();
+      settingsDispatch.serviceRegistry.catalogStore.refresh().then(() => setServiceRegistryReady(true));
     }
   }, [isSwf, isReady, settingsDispatch.serviceRegistry.catalogStore]);
 
@@ -385,7 +387,14 @@ export function EditorPage(props: Props) {
         editorPageDock?.setNotifications(i18n.terms.validation, "", diagnostics);
       })
       .catch((e) => console.error(e));
-  }, [workspaceFilePromise.data, editor, swfLanguageService, editorPageDock, i18n.terms.validation]);
+  }, [
+    workspaceFilePromise.data,
+    editor,
+    swfLanguageService,
+    editorPageDock,
+    i18n.terms.validation,
+    isServiceRegistryReady,
+  ]);
 
   const swfEditorChannelApi = useMemo(
     () =>

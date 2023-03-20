@@ -29,6 +29,8 @@ import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.StartTransition;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
 
+import static org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler.RenderType.STROKE;
+
 public class TransitionShape<W>
         extends ConnectorShape<W, TransitionView> {
 
@@ -38,7 +40,7 @@ public class TransitionShape<W>
     public TransitionShape(TransitionView view) {
         super(view,
               new ShapeStateDefaultHandler()
-                      .setRenderType(ShapeStateDefaultHandler.RenderType.STROKE)
+                      .setRenderType(STROKE)
                       .setBorderShape(() -> view)
                       .setBackgroundShape(() -> view));
     }

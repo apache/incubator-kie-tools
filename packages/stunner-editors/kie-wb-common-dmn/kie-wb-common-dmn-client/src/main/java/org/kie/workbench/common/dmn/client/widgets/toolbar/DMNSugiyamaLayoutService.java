@@ -20,7 +20,9 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.graph.DMNSizeHandler;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutService;
+import org.kie.workbench.common.stunner.core.graph.processing.layout.SizeHandler;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.SugiyamaLayoutService;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step01.CycleBreaker;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step02.VertexLayerer;
@@ -32,11 +34,12 @@ public class DMNSugiyamaLayoutService extends SugiyamaLayoutService implements L
 
     /**
      * Default constructor.
-     * @param cycleBreaker The strategy used to break cycles in cycle graphs.
-     * @param vertexLayerer The strategy used to choose the layer for each vertex.
-     * @param vertexOrdering The strategy used to order vertices inside each layer.
+     *
+     * @param cycleBreaker      The strategy used to break cycles in cycle graphs.
+     * @param vertexLayerer     The strategy used to choose the layer for each vertex.
+     * @param vertexOrdering    The strategy used to order vertices inside each layer.
      * @param vertexPositioning The strategy used to position vertices on screen (x,y coordinates).
-     * @param graphProcessor Applies some pre-process in the graph to extract the nodes to be used.
+     * @param graphProcessor    Applies some pre-process in the graph to extract the nodes to be used.
      */
     @Inject
     public DMNSugiyamaLayoutService(final CycleBreaker cycleBreaker,
@@ -45,5 +48,10 @@ public class DMNSugiyamaLayoutService extends SugiyamaLayoutService implements L
                                     final VertexPositioning vertexPositioning,
                                     final @Any DMNGraphProcessor graphProcessor) {
         super(cycleBreaker, vertexLayerer, vertexOrdering, vertexPositioning, graphProcessor);
+    }
+
+    @Override
+    public SizeHandler getSizeHandler() {
+        return new DMNSizeHandler();
     }
 }

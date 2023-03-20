@@ -22,8 +22,19 @@ import {
   SwfJsonLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { CodeLens, Position } from "vscode-languageserver-types";
-import { defaultConfig, defaultServiceCatalogConfig, testRelativeService1 } from "./SwfLanguageServiceConfigs";
+import {
+  defaultConfig,
+  defaultJqCompletionsConfig,
+  defaultServiceCatalogConfig,
+  testRelativeService1,
+} from "./SwfLanguageServiceConfigs";
 import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, treat, trim } from "./testUtils";
+import {
+  getJqBuiltInFunctionTests,
+  getJqReusableFunctionTests,
+  getJqVariableTests,
+  getJsonLsForJqExpressionTests,
+} from "./SwfJqExpressionTestUtils";
 
 const documentUri = "test.sw.json";
 
@@ -34,6 +45,7 @@ describe("JsonCodeCompletionStrategy", () => {
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     test("string value", async () => {
@@ -351,6 +363,7 @@ describe("SWF LS JSON", () => {
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     const completionItems = await ls.getCompletionItems({
@@ -380,6 +393,7 @@ describe("SWF LS JSON", () => {
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
@@ -396,6 +410,7 @@ describe("SWF LS JSON", () => {
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
@@ -419,6 +434,7 @@ describe("SWF LS JSON", () => {
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const { content } = trim(`
@@ -444,6 +460,7 @@ describe("SWF LS JSON", () => {
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const { content } = trim(`{"functions":[]}`);
@@ -467,6 +484,7 @@ describe("SWF LS JSON", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`{"events":[]}`);
@@ -489,6 +507,7 @@ describe("SWF LS JSON", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`{"states":[]}`);
@@ -517,6 +536,7 @@ describe("SWF LS JSON", () => {
           shouldServiceRegistriesLogIn: () => true,
           canRefreshServices: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -542,6 +562,7 @@ describe("SWF LS JSON", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -578,6 +599,7 @@ describe("SWF LS JSON", () => {
           ...defaultConfig,
           shouldConfigureServiceRegistries: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -614,6 +636,7 @@ describe("SWF LS JSON", () => {
           ...defaultConfig,
           canRefreshServices: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -651,6 +674,7 @@ describe("SWF LS JSON", () => {
         relative: { getServices: async () => [testRelativeService1] },
       },
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     describe("empty file completion", () => {
@@ -697,7 +721,356 @@ describe("SWF LS JSON", () => {
         expect(completionItems).toMatchSnapshot();
       });
     });
-
+    describe("Jq completions", () => {
+      describe("operations completion", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqBuiltInFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+                "dataInputSchema": "path/to/schema",
+                "functions": [
+                    {
+                        "name": "testFunc1",
+                        "type": "asyncapi",
+                        "operation": "http://path_to_remote_asyncApiFile/"
+                    },
+                    {
+                        "name": "testFunc2",
+                        "type": "rest",
+                        "operation": "http://path_to_remote_openApiFile/"
+                    },
+                    {
+                        "name": "expressionFunc1",
+                        "type": "expression",
+                        "operation": "."
+                    },
+                    {
+                        "name": "expressionFunc2",
+                        "type": "expression",
+                        "operation": "."
+                    },
+                    {
+                      "name": "expressionFunc3",
+                      "type": "expression",
+                      "operation": ${nodeValue}
+                  }
+                ]
+            }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+      describe("state data filter completions", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+            "dataInputSchema": "/path/to/json_schema.json",
+            "functions":[
+              {
+                "name": "testFunc",
+                "type": "rest",
+                "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
+              }
+            ],
+            "states": [
+              {
+                "name": "testName",
+                "type": "inject",
+                "stateDataFilter": {
+                  "output": ${nodeValue}
+                }
+              }
+            ]
+        }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+      describe("event data filter completions", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+            "dataInputSchema": "/path/to/json_schema.json",
+            "functions":[
+              {
+                "name": "testFunc",
+                "type": "rest",
+                "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
+              }
+            ],
+            "states": [
+              {
+                "name": "testState",
+                "type": "callback",
+                "eventDataFilter": {
+                  "data": ${nodeValue},
+                  "toStateData": ${nodeValue}
+                }
+              },
+            ]
+        }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+      describe("data filter inside on onEvents completions", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+            "dataInputSchema": "/path/to/json_schema.json",
+            "functions":[
+              {
+                "name": "testFunc",
+                "type": "rest",
+                "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
+              }
+            ],
+            "states":[
+              {
+                "name": "testEvent",
+                "type": "event",
+                "onEvents": [
+                  {
+                    "eventDataFilter": {
+                      "data": ${nodeValue},
+                      "toStateData": ${nodeValue}
+                    },
+                  }
+                ],
+              }
+            ]
+        }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+      describe("data filter completions", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+            "dataInputSchema": "/path/to/json_schema.json",
+            "functions":[
+              {
+                "name": "testFunc",
+                "type": "rest",
+                "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
+              }
+            ],
+            "states": [
+              {
+                "name": "testState",
+                "type": "operation",
+                "actions": [
+                  {
+                    "name": "testAction",
+                    "functionRef": {
+                      "refName": "testRefName"
+                    },
+                    "actionDataFilter": {
+                       "results" : ${nodeValue}, 
+                       "toStateData" : ${nodeValue}
+                    }
+                  }
+                ],
+              },
+            ]
+        }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+      describe("functionRef arguments completions", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+            "dataInputSchema": "/path/to/json_schema.json",
+            "functions":[
+              {
+                "name": "testFunc",
+                "type": "rest",
+                "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
+              }
+            ],
+            "states": [
+              {
+                "name": "testState",
+                "type": "operation",
+                "actions": [
+                  {
+                    "functionRef": {
+                      "refName": "testRefName",
+                      "arguments": {
+                        "numberOfRunningPods": ${nodeValue},
+                      }
+                    }
+                  }
+                ],
+              },
+            ]
+        }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+      describe("data condition completions", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+            "dataInputSchema": "/path/to/json_schema.json",
+            "functions":[
+              {
+                "name": "testFunc",
+                "type": "rest",
+                "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
+              }
+            ],
+            "states": [
+            {
+              "name": "testState",
+              "type": "switch",
+              "dataConditions": [
+                {
+                  "condition": ${nodeValue},
+                  "transition": "Scale up on Ansible"
+                }
+              ],
+            }
+          ]
+        }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+    });
     describe("functionRef completion", () => {
       test.each([
         ["without same level content after", ` 🎯`],
@@ -994,6 +1367,7 @@ describe("SWF LS JSON", () => {
         relative: { getServices: async () => [] },
       },
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     test.each([

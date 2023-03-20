@@ -65,5 +65,26 @@ module.exports = {
         amd: true,
       },
     },
+    {
+      files: ["*.ts", "*.tsx"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            paths: [
+              {
+                name: "@patternfly/react-core",
+                message: "Please use specific imports from @patternfly/react-core/dist/js/**)",
+              },
+              {
+                name: "@patternfly/react-icons",
+                message: "Please use specific imports from @patternfly/react-icons/dist/js/**)",
+              },
+            ],
+            patterns: ["!@patternfly/react-core/dist/*", "!@patternfly/react-icons/dist/*"],
+          },
+        ],
+      },
+    },
   ],
 };

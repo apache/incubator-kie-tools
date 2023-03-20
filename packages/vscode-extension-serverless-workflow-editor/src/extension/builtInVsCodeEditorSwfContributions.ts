@@ -234,7 +234,8 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       },
       ` `,
       `:`,
-      `"`
+      `"`,
+      "."
     )
   );
 

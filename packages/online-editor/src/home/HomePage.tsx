@@ -69,19 +69,26 @@ import { UploadCard } from "./UploadCard";
 import { ImportFromUrlCard } from "../importFromUrl/ImportFromUrlHomePageCard";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
+import { NewFileDropdownMenu } from "../editor/Toolbar/NewFileDropdownMenu";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { FileDataList, FileLink, getFileDataListHeight, SingleFileWorkspaceListItem } from "../filesList/FileDataList";
+import {
+  FileDataList,
+  FileLink,
+  FileListItemDisplayMode,
+  getFileDataListHeight,
+  SingleFileWorkspaceListItem,
+} from "../filesList/FileDataList";
 import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
 import { WorkspaceLoadingCard } from "../workspace/components/WorkspaceLoadingCard";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
+import { listDeletedFiles } from "../workspace/components/WorkspaceStatusIndicator";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -115,10 +122,6 @@ export function HomePage() {
 
   useEffect(() => {
     document.title = "KIE Sandbox :: Home";
-  }, []);
-
-  const buildInfo = useMemo(() => {
-    return process.env["WEBPACK_REPLACE__buildInfo"];
   }, []);
 
   return (
@@ -243,11 +246,6 @@ export function HomePage() {
           }}
         />
       </PageSection>
-      {buildInfo && (
-        <div className={"kie-tools--build-info"}>
-          <Label>{buildInfo}</Label>
-        </div>
-      )}
     </OnlineEditorPage>
   );
 }
@@ -569,7 +567,9 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                   {({ index, style }) => (
                     <FileDataList
                       file={arrayWithModelsThenOtherFiles[index]}
-                      isEditable={index < models.length}
+                      displayMode={
+                        index < models.length ? FileListItemDisplayMode.enabled : FileListItemDisplayMode.readonly
+                      }
                       style={style}
                     />
                   )}

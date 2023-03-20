@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { Divider, Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
 import { useCallback, useState, useRef, useEffect } from "react";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
