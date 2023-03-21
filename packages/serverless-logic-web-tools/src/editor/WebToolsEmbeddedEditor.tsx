@@ -131,10 +131,7 @@ const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
   return (
     <>
       <EmbeddedEditor
-        /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
-         * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
-         */
-        key={uniqueFileId}
+        key={uniqueFileId} /* KOGITO-8892 */
         ref={editorRef}
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
