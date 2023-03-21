@@ -109,6 +109,16 @@ export function AuthProvidersGallery(props: {
                               ? accounts.onNewAuthSession
                               : undefined,
                         });
+                      } else if (authProvider.enabled && authProvider.type === "kubernetes") {
+                        accountsDispatch({
+                          kind: AccountsDispatchActionKind.SETUP_KUBERNETES_AUTH,
+                          selectedAuthProvider: authProvider,
+                          backActionKind: props.backActionKind,
+                          onNewAuthSession:
+                            accounts.section === AccountsSection.CONNECT_TO_AN_ACCOUNT
+                              ? accounts.onNewAuthSession
+                              : undefined,
+                        });
                       }
                     }}
                   >
