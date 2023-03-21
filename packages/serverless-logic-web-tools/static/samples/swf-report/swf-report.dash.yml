@@ -318,7 +318,6 @@ pages:
                     sort:
                       - column: startDate
                         order: ASCENDING
-                        sortOrder: ASCENDING
                     group:
                       - columnGroup:
                           emptyIntervals: true
