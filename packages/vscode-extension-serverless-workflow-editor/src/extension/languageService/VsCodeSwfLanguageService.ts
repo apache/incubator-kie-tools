@@ -150,6 +150,9 @@ export class VsCodeSwfLanguageService {
         getSpecsDirPosixPaths: async (textDocument) => {
           return this.getSpecsDirPosixPaths(textDocument);
         },
+        getRoutesDirPosixPaths: async (textDocument) => {
+          return this.getRoutesDirPosixPaths(textDocument);
+        },
         shouldConfigureServiceRegistries: () => {
           return !this.args.swfServiceCatalogGlobalStore.isServiceRegistryConfigured;
         },
@@ -184,6 +187,23 @@ export class VsCodeSwfLanguageService {
     const baseFileAbsolutePosixPath = vscode.Uri.parse(args.doc.uri).path;
     return baseFileAbsolutePosixPath.replace(/(\/.*)\/.+/, "$1").concat("/", args.schemaPath);
   }
+
+  private getRoutesDirPosixPaths(document: TextDocument) {
+    const baseFileAbsolutePosixPath = vscode.Uri.parse(document.uri).path;
+
+    const routesDirAbsolutePosixPath = definitelyPosixPath(
+      this.args.configuration.getInterpolatedRoutesDirAbsolutePosixPath({
+        baseFileAbsolutePosixPath,
+      })
+    );
+
+    const routesDirRelativePosixPath = definitelyPosixPath(
+      path.relative(path.dirname(baseFileAbsolutePosixPath), routesDirAbsolutePosixPath)
+    );
+
+    return { routesDirRelativePosixPath, routesDirAbsolutePosixPath };
+  }
+
   public dispose() {
     this.jsonLs.dispose();
     this.yamlLs.dispose();

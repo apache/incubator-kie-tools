@@ -60,6 +60,10 @@ export class DevWebAppSwfLanguageService {
           specsDirRelativePosixPath: "",
           specsDirAbsolutePosixPath: "",
         }),
+        getRoutesDirPosixPaths: async (_textDocument) => ({
+          routesDirRelativePosixPath: "",
+          routesDirAbsolutePosixPath: "",
+        }),
         shouldConfigureServiceRegistries: () => false,
         shouldServiceRegistriesLogIn: () => false,
         canRefreshServices: () => false,

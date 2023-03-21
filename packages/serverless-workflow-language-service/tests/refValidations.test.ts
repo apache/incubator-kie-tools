@@ -487,6 +487,7 @@ describe("test YAML refValidation method against source and target paths", () =>
     shouldServiceRegistriesLogIn: () => false,
     canRefreshServices: () => false,
     getSpecsDirPosixPaths: async () => ({ specsDirRelativePosixPath: "specs", specsDirAbsolutePosixPath: "" }),
+    getRoutesDirPosixPaths: async () => ({ routesDirRelativePosixPath: "routes", routesDirAbsolutePosixPath: "" }),
     shouldDisplayServiceRegistriesIntegration: async () => true,
     shouldReferenceServiceRegistryFunctionsWithUrls: async () => false,
     shouldIncludeJsonSchemaDiagnostics: async () => true,

@@ -41,6 +41,7 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
+import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNLayoutHelper;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
@@ -55,7 +56,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.ConfirmationDialog;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -90,7 +90,7 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final DecisionNavigatorDock decisionNavigatorDock,
                             final DiagramEditorPropertiesDock diagramPropertiesDock,
                             final PreviewDiagramDock diagramPreviewAndExplorerDock,
-                            final LayoutHelper layoutHelper,
+                            final @DMNEditor DMNLayoutHelper layoutHelper,
                             final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                             final DataTypesPage dataTypesPage,
                             final KogitoClientDiagramService diagramServices,

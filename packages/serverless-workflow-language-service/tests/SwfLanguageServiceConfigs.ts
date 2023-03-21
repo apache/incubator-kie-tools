@@ -61,6 +61,7 @@ export const defaultConfig: SwfLanguageServiceConfig = {
   shouldServiceRegistriesLogIn: () => false,
   canRefreshServices: () => false,
   getSpecsDirPosixPaths: async () => ({ specsDirRelativePosixPath: "specs", specsDirAbsolutePosixPath: "" }),
+  getRoutesDirPosixPaths: async () => ({ routesDirRelativePosixPath: "routes", routesDirAbsolutePosixPath: "" }),
   shouldDisplayServiceRegistriesIntegration: async () => true,
   shouldReferenceServiceRegistryFunctionsWithUrls: async () => false,
   shouldIncludeJsonSchemaDiagnostics: async () => true,

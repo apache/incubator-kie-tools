@@ -23,48 +23,62 @@ import { GIT_ORIGIN_REMOTE_NAME } from "../constants/GitConstants";
 import { WorkspaceBroadcastEvents } from "../worker/api/WorkspaceBroadcastEvents";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
+import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
+import { UnstagedModifiedFilesStatusEntryType } from "../services/GitService";
 
-export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefined) {
+export type WorkspaceGitStatusType = {
+  hasLocalChanges: boolean;
+  unstagedModifiedFilesStatus: UnstagedModifiedFilesStatusEntryType[];
+  isSynced: boolean;
+};
+
+export function useWorkspaceGitStatusPromise(workspaceDescriptor: WorkspaceDescriptor | undefined) {
   const workspaces = useWorkspaces();
-  const [isModifiedPromise, setModifiedPromise] = usePromiseState<{ hasLocalChanges: boolean; isSynced: boolean }>();
+  const [isModifiedPromise, setModifiedPromise] = usePromiseState<WorkspaceGitStatusType>();
 
   const refresh = useCallback(
     async (canceled: Holder<boolean>) => {
       setModifiedPromise({ loading: true });
 
-      if (!workspace) {
+      if (!workspaceDescriptor) {
         return;
       }
 
-      const hasLocalChanges = await workspaces.hasLocalChanges({ workspaceId: workspace.descriptor.workspaceId });
+      const unstagedModifiedFilesStatus = await workspaces.getUnstagedModifiedFilesStatus({
+        workspaceId: workspaceDescriptor.workspaceId,
+      });
+
+      const hasLocalChanges = unstagedModifiedFilesStatus.length > 0;
       if (canceled.get()) {
         return;
       }
 
-      if (workspace.descriptor.origin.kind === WorkspaceKind.LOCAL) {
-        setModifiedPromise({ data: { hasLocalChanges, isSynced: true } });
+      if (workspaceDescriptor.origin.kind === WorkspaceKind.LOCAL) {
+        setModifiedPromise({ data: { hasLocalChanges, unstagedModifiedFilesStatus, isSynced: true } });
         return;
       }
 
-      if (isGitBasedWorkspaceKind(workspace.descriptor.origin.kind)) {
+      if (isGitBasedWorkspaceKind(workspaceDescriptor.origin.kind)) {
         const head = await workspaces.resolveRef({
-          workspaceId: workspace.descriptor.workspaceId,
+          workspaceId: workspaceDescriptor.workspaceId,
           ref: "HEAD",
         });
 
         const remote = await workspaces.resolveRef({
-          workspaceId: workspace.descriptor.workspaceId,
-          ref: `${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}`,
+          workspaceId: workspaceDescriptor.workspaceId,
+          ref: `${GIT_ORIGIN_REMOTE_NAME}/${workspaceDescriptor.origin.branch}`,
         });
 
         if (canceled.get()) {
           return;
         }
 
-        setModifiedPromise({ data: { hasLocalChanges, isSynced: head === remote } });
+        setModifiedPromise({
+          data: { hasLocalChanges, unstagedModifiedFilesStatus, isSynced: head === remote },
+        });
       }
     },
-    [workspace, workspaces, setModifiedPromise]
+    [setModifiedPromise, workspaceDescriptor, workspaces]
   );
 
   useCancelableEffect(

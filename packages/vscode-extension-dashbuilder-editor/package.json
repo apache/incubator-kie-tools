@@ -61,7 +61,7 @@
     "rimraf": "^3.0.2",
     "selenium-webdriver": "^4.7.1",
     "typescript": "^4.4.2",
-    "vscode-extension-tester": "5.4.0",
+    "vscode-extension-tester": "5.5.1",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.7.3",
