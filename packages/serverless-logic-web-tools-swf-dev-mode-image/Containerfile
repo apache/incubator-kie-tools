@@ -26,15 +26,19 @@ COPY --chown=kogito:root dist-dev/serverless-logic-web-tools-swf-deployment-quar
 
 WORKDIR /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
 
-RUN mvn clean package -B -Dmaven.test.skip -Dquarkus-profiles=build,dev
+RUN mvn clean package \
+  quarkus:go-offline \
+  -B \
+  -Dmaven.test.skip \
+  -Dquarkus-profiles=build,dev
 
 USER root
 RUN chmod -R 775 /home/kogito
 USER kogito
 
 ENTRYPOINT mvn quarkus:dev \
+  quarkus:go-offline \
+  -nsu \
   -Ddebug=false \
   -Dmaven.repo.local=/home/kogito/.m2/repository \
-  -Dquarkus.http.port=8080 \
-  -Dquarkus.launch.devmode.strategy=local \
-  -Dquarkus.launch.always-up-to-date=false
+  -Dquarkus.http.port=8080
