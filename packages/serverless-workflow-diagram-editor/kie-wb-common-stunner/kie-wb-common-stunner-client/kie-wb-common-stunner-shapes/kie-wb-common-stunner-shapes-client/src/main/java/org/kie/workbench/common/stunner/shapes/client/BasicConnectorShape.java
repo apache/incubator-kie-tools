@@ -29,7 +29,7 @@ public class BasicConnectorShape<W, V extends WiresConnectorViewExt>
         super(view,
               new ShapeStateDefaultHandler()
                       .setBorderShape(() -> view)
-                      .setBackgroundShape(() -> view));
+                      .setBackgroundShape(view));
     }
 
     @Override

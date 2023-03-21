@@ -24,6 +24,8 @@ import com.ait.lienzo.client.core.shape.IDrawable;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
+import static java.util.Objects.isNull;
+
 /**
  * This class is responsible to encode the {@link ShapeView} properties within the {@link ShapeView#getUserData()}
  * that is used by the Diagram SVG generation.
@@ -42,23 +44,32 @@ public class ShapeViewUserDataEncoder {
     }
 
     public void applyShapeViewType(final Supplier<ShapeView> shapeSupplier, ShapeStateDefaultHandler.ShapeType shapeType) {
-        if (Objects.isNull(shapeType)) {
+        if (isNull(shapeSupplier)) {
             return;
         }
-        applyShapeViewUserData(shapeSupplier, "shapeType", shapeType.name());
+
+        applyShapeViewType(shapeSupplier.get(), shapeType);
     }
 
-    public void applyShapeViewUserData(final Supplier<ShapeView> shapeSupplier, String key, String value) {
-        if (Objects.isNull(shapeSupplier) || Objects.isNull(shapeSupplier.get())) {
+    public void applyShapeViewType(final ShapeView shapeView, ShapeStateDefaultHandler.ShapeType shapeType) {
+        if (isNull(shapeType)) {
             return;
         }
-        Object previousUserData = shapeSupplier.get().getUserData();
-        if (Objects.isNull(previousUserData) || String.valueOf(previousUserData).contains(key)) {
+
+        applyShapeViewUserData(shapeView, "shapeType", shapeType.name());
+    }
+
+    public void applyShapeViewUserData(final ShapeView shapeView, String key, String value) {
+        if (isNull(shapeView)) {
+            return;
+        }
+        Object previousUserData = shapeView.getUserData();
+        if (isNull(previousUserData) || String.valueOf(previousUserData).contains(key)) {
             previousUserData = "?";
         } else {
             previousUserData += "&";
         }
-        shapeSupplier.get().setUserData(previousUserData + key + "=" + value);
+        shapeView.setUserData(previousUserData + key + "=" + value);
     }
 
     @SuppressWarnings("all")

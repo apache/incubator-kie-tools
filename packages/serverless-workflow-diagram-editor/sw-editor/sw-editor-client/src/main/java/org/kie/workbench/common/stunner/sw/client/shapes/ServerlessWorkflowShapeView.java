@@ -44,7 +44,7 @@ public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflo
     private ServerlessWorkflowShape<VIEW> controller;
 
     private ShapeStateDefaultHandler shapeStateHandler = new ShapeStateDefaultHandler().setBorderShape((() -> this))
-            .setBackgroundShape(() -> this);
+            .setBackgroundShape(this);
 
     private HandlerRegistration mouseEnterHandler;
 

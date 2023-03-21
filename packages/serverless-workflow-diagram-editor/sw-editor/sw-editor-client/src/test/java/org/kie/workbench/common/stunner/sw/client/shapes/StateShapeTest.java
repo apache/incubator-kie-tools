@@ -16,6 +16,8 @@
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
 import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import elemental2.promise.Promise;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
@@ -288,7 +290,7 @@ public class StateShapeTest {
     public void exitFromSelectedShapeTest() {
         ShapeStateHandler stateHandler = mock(ShapeStateHandler.class);
 
-        StateShape shape = prepareShapeForExitTests(stateHandler, ShapeState.SELECTED);
+        StateShape shape = prepareShapeForExitTests(ShapeState.SELECTED);
         NodeMouseExitEvent exitEvent = prepareMouseExitEvent(49, 49);
 
         shape.getExitHandler().onNodeMouseExit(exitEvent);
@@ -298,57 +300,49 @@ public class StateShapeTest {
 
     @Test
     public void exitFromTheShapeToTopTest() {
-        ShapeStateHandler stateHandler = mock(ShapeStateHandler.class);
-
-        StateShape shape = prepareShapeForExitTests(stateHandler, ShapeState.HIGHLIGHT);
+        StateShape shape = prepareShapeForExitTests(ShapeState.HIGHLIGHT);
         NodeMouseExitEvent exitEvent = prepareMouseExitEvent(55, 49);
 
         shape.getExitHandler().onNodeMouseExit(exitEvent);
 
-        verify(stateHandler, times(1)).applyState(ShapeState.NONE);
+        verify(shape.getShapeView(), times(1)).applyState(ShapeState.NONE);
     }
 
     @Test
     public void exitFromTheLeftShapeTest() {
-        ShapeStateHandler stateHandler = mock(ShapeStateHandler.class);
-
-        StateShape shape = prepareShapeForExitTests(stateHandler, ShapeState.HIGHLIGHT);
+        StateShape shape = prepareShapeForExitTests(ShapeState.HIGHLIGHT);
         NodeMouseExitEvent exitEvent = prepareMouseExitEvent(SHAPE_X - 5, SHAPE_Y + 5);
 
         shape.getExitHandler().onNodeMouseExit(exitEvent);
 
-        verify(stateHandler, times(1)).applyState(ShapeState.NONE);
+        verify(shape.getShapeView(), times(1)).applyState(ShapeState.NONE);
     }
 
     @Test
     public void exitFromTheRightShapeTest() {
-        ShapeStateHandler stateHandler = mock(ShapeStateHandler.class);
-
-        StateShape shape = prepareShapeForExitTests(stateHandler, ShapeState.HIGHLIGHT);
+        StateShape shape = prepareShapeForExitTests(ShapeState.HIGHLIGHT);
         NodeMouseExitEvent exitEvent = prepareMouseExitEvent((int) STATE_SHAPE_WIDTH + SHAPE_X + 5, SHAPE_Y + 5);
 
         shape.getExitHandler().onNodeMouseExit(exitEvent);
 
-        verify(stateHandler, times(1)).applyState(ShapeState.NONE);
+        verify(shape.getShapeView(), times(1)).applyState(ShapeState.NONE);
     }
 
     @Test
     public void exitFromTheBottomShapeTest() {
-        ShapeStateHandler stateHandler = mock(ShapeStateHandler.class);
-
-        StateShape shape = prepareShapeForExitTests(stateHandler, ShapeState.HIGHLIGHT);
+        StateShape shape = prepareShapeForExitTests(ShapeState.HIGHLIGHT);
         NodeMouseExitEvent exitEvent = prepareMouseExitEvent(SHAPE_X + 5, (int) STATE_SHAPE_HEIGHT + SHAPE_Y + 5);
 
         shape.getExitHandler().onNodeMouseExit(exitEvent);
 
-        verify(stateHandler, times(1)).applyState(ShapeState.NONE);
+        verify(shape.getShapeView(), times(1)).applyState(ShapeState.NONE);
     }
 
     @Test
     public void raisedExitInsideOfTheShapeTest() {
         ShapeStateHandler stateHandler = mock(ShapeStateHandler.class);
 
-        StateShape shape = prepareShapeForExitTests(stateHandler, ShapeState.HIGHLIGHT);
+        StateShape shape = prepareShapeForExitTests(ShapeState.HIGHLIGHT);
         NodeMouseExitEvent exitEvent = prepareMouseExitEvent(SHAPE_X + 5, SHAPE_Y + 5);
 
         shape.getExitHandler().onNodeMouseExit(exitEvent);
@@ -368,13 +362,19 @@ public class StateShapeTest {
         return exitEvent;
     }
 
-    private StateShape prepareShapeForExitTests(ShapeStateHandler stateHandler, ShapeState currentState) {
+    @SuppressWarnings("rawtypes")
+    private StateShape prepareShapeForExitTests(ShapeState currentState) {
         State state = createState(INJECT);
         StateShape shape = spy(StateShape.create(state, kogitoService, translationService));
         shape.applyProperties(createElement(state), null);
-
-        when(stateHandler.getShapeState()).thenReturn(currentState);
-        //when(shape.getShapeStateHandler()).thenReturn(stateHandler);
+        StateShapeView view = mock(StateShapeView.class);
+        when(view.getShapeState()).thenReturn(currentState);
+        Shape shape1 = mock(Shape.class);
+        Layer layer = mock(Layer.class);
+        when(layer.batch()).thenReturn(null);
+        when(shape1.getLayer()).thenReturn(layer);
+        when(view.getShape()).thenReturn(shape1);
+        when(shape.getShapeView()).thenReturn(view);
 
         return shape;
     }

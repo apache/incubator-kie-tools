@@ -39,7 +39,7 @@ public class TransitionShape<W>
         super(view,
               new ShapeStateDefaultHandler()
                       .setBorderShape(() -> view)
-                      .setBackgroundShape(() -> view));
+                      .setBackgroundShape(view));
     }
 
     public TransitionShape<W> setAppearance(Object transitionType) {

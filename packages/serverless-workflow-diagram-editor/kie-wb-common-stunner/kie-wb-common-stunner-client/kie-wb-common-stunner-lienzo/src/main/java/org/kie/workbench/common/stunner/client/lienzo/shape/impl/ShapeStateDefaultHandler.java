@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasShadow;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 import static org.kie.workbench.common.stunner.core.client.shape.ShapeState.NONE;
+import static org.kie.workbench.common.stunner.core.client.shape.ShapeState.SELECTED;
 
 public class ShapeStateDefaultHandler
         implements ShapeStateHandler {
@@ -43,9 +44,9 @@ public class ShapeStateDefaultHandler
     private static final Shadow SHADOW_SELECTED = new Shadow(ColorName.BLACK.getColor().setA(0.40), 5, 2, 2);
 
     protected final ShapeStateAttributeHandler<ShapeView> handler;
-    public Supplier<ShapeView> backgroundShapeSupplier;
+    public ShapeView backgroundShape;
     public Supplier<ShapeView> borderShapeSupplier;
-    private ShapeViewUserDataEncoder shapeViewDataEncoder;
+    private final ShapeViewUserDataEncoder shapeViewDataEncoder;
 
     public ShapeStateDefaultHandler() {
         this(new ShapeStateAttributeHandler<>());
@@ -69,20 +70,14 @@ public class ShapeStateDefaultHandler
         return this;
     }
 
-    public ShapeStateDefaultHandler setBackgroundShape(final Supplier<ShapeView> shapeSupplier) {
-        backgroundShapeSupplier = shapeSupplier;
+    public ShapeStateDefaultHandler setBackgroundShape(final ShapeView shapeSupplier) {
+        backgroundShape = shapeSupplier;
 
         /**
          * TODO: need to fix when resolution of JBPM-7681 is available
          * @see <a href="https://issues.jboss.org/browse/JBPM-7681">JBPM-7681</a>
          */
         shapeViewDataEncoder.applyShapeViewType(shapeSupplier, ShapeType.BACKGROUND);
-        return this;
-    }
-
-    //TODO: this should be called on the SVGShapeView when a subprocess is identified
-    public ShapeStateDefaultHandler setContainerShape(final Supplier<ShapeView> shapeSupplier) {
-        shapeViewDataEncoder.applyShapeViewType(shapeSupplier, ShapeType.CONTAINER);
         return this;
     }
 
@@ -103,7 +98,7 @@ public class ShapeStateDefaultHandler
 
     @Override
     public ShapeState reset() {
-        getShadowShape().ifPresent(this::removeShadow);
+        getShadowShape().ifPresent(HasShadow::removeShadow);
         return handler.reset();
     }
 
@@ -112,42 +107,26 @@ public class ShapeStateDefaultHandler
         return handler.getShapeState();
     }
 
-    private void removeShadow(final HasShadow shape) {
-        shape.removeShadow();
-    }
-
-    private void updateShadow(final HasShadow shape) {
-        if (isStateSelected(handler.getShapeState())) {
+    protected void updateShadow(final HasShadow shape) {
+        if (isStateSelected()) {
             shape.setShadow(SHADOW_SELECTED.getColor(),
                             SHADOW_SELECTED.getBlur(),
                             SHADOW_SELECTED.getOffset().getX(),
                             SHADOW_SELECTED.getOffset().getY());
         } else {
-            removeShadow(shape);
+            shape.removeShadow();
         }
     }
 
     private Optional<HasShadow> getShadowShape() {
-        return getShadowShape(handler.getShapeView());
-    }
-
-    private Optional<HasShadow> getShadowShape(final ShapeView<?> shape) {
-        final ShapeView<?> candidate = null != getBackgroundShape() ? getBackgroundShape() : shape;
+        final ShapeView<?> candidate = null != backgroundShape ? backgroundShape : handler.getShapeView();
         if (candidate instanceof HasShadow) {
             return Optional.of((HasShadow) candidate);
         }
         return Optional.empty();
     }
 
-    ShapeView getBackgroundShape() {
-        return null != backgroundShapeSupplier ? backgroundShapeSupplier.get() : null;
-    }
-
-    private static boolean isStateSelected(ShapeState state) {
-        return ShapeState.SELECTED.equals(state);
-    }
-
-    private static boolean isStateHighlight(ShapeState state) {
-        return ShapeState.HIGHLIGHT.equals(state);
+    private boolean isStateSelected() {
+        return SELECTED.equals(getShapeState());
     }
 }
