@@ -80,6 +80,9 @@ describe("Serverless Logic Web Tools - Try samples test", () => {
             .should("contain.text", "Hold to Preview");
           cy.get(".kie-tools--keyboard-shortcuts.pf-c-modal-box .pf-c-button").click();
         });
+
+      // check there are no problems in JSON file
+      cy.get("#total-notifications").should("have.text", 0);
     });
   });
 
@@ -136,6 +139,9 @@ describe("Serverless Logic Web Tools - Try samples test", () => {
         cy.get(".uf-perspective-rendered-col:contains('Average Duration') .c3-event-rect").click();
         cy.get(".c3-tooltip-name--Total .value").should("have.text", 2.06);
       });
+
+      // check there are no problems in dashbuilder file
+      cy.get("#total-notifications").should("have.text", 0);
     });
   });
 });
