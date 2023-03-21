@@ -12,6 +12,9 @@
   "bugs": {
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
+  "publishConfig": {
+    "registry": "https://repo.micord.ru/repository/npm-private/"
+  },
   "files": [
     "dist/bpmn",
     "dist/common",
