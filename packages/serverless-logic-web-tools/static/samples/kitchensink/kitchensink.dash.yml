@@ -228,7 +228,6 @@ pages:
           type: METERCHART
           general:
             title: "Memory Usage"
-            visible: "true"
           chart:
             legend:
               show: "true"
@@ -320,7 +319,6 @@ pages:
           chart:
             height: "100"
           general:
-            visible: "true"
             title: Total Products
           lookup:
             uuid: products
@@ -344,7 +342,6 @@ pages:
                     ${this}.style.color = "black";
                 };
           general:
-            visible: "true"
             title: Total Products
           lookup:
             uuid: products
