@@ -13,8 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { basename, extname, parse } from "path";
+import {
+  FileTypes,
+  isDashbuilderYaml,
+  isDashbuilderYml,
+  isServerlessDecisionJson,
+  isServerlessDecisionYaml,
+  isServerlessDecisionYml,
+  isServerlessWorkflowJson,
+  isServerlessWorkflowYaml,
+  isServerlessWorkflowYml,
+} from "../constants/ExtensionHelper";
 
 export function parseWorkspaceFileRelativePath(relativePath: string) {
   const extension = extractExtension(relativePath);
@@ -29,15 +39,38 @@ export function parseWorkspaceFileRelativePath(relativePath: string) {
 
 export function extractExtension(relativePath: string) {
   const fileName = basename(relativePath).toLowerCase();
-  let extensionFinder = 0;
-  if (fileName.includes(".sw.")) {
-    extensionFinder = fileName.lastIndexOf(".sw.");
-  } else if (fileName.includes(".yard.")) {
-    extensionFinder = fileName.lastIndexOf(".yard.");
-  } else if (fileName.includes(".dash.")) {
-    extensionFinder = fileName.lastIndexOf(".dash.");
+  if (fileName.includes(".")) {
+    let extensionFinder = 0;
+    switch (true) {
+      case isServerlessWorkflowJson(fileName):
+        extensionFinder = fileName.lastIndexOf(FileTypes.SW_JSON);
+        return fileName.substring(extensionFinder);
+      case isServerlessWorkflowYml(fileName):
+        extensionFinder = fileName.lastIndexOf(FileTypes.SW_YML);
+        return fileName.substring(extensionFinder);
+      case isServerlessWorkflowYaml(fileName):
+        extensionFinder = fileName.lastIndexOf(FileTypes.SW_YAML);
+        return fileName.substring(extensionFinder);
+      case isServerlessDecisionJson(fileName):
+        extensionFinder = fileName.lastIndexOf(FileTypes.YARD_JSON);
+        return fileName.substring(extensionFinder);
+      case isServerlessDecisionYml(fileName):
+        extensionFinder = fileName.lastIndexOf(FileTypes.YARD_YML);
+        return fileName.substring(extensionFinder);
+      case isServerlessDecisionYaml(fileName):
+        extensionFinder = fileName.lastIndexOf(FileTypes.YARD_YAML);
+        return fileName.substring(extensionFinder);
+      case isDashbuilderYml(fileName):
+        extensionFinder = fileName.lastIndexOf(FileTypes.DASH_YML);
+        return fileName.substring(extensionFinder);
+      case isDashbuilderYaml(fileName):
+        extensionFinder = fileName.lastIndexOf(FileTypes.DASH_YAML);
+        return fileName.substring(extensionFinder);
+      default:
+        extensionFinder = fileName.lastIndexOf(".");
+        return fileName.substring(extensionFinder + 1);
+    }
   } else {
-    extensionFinder = fileName.lastIndexOf(".");
+    return extname(relativePath);
   }
-  return fileName.substring(extensionFinder + 1);
 }
