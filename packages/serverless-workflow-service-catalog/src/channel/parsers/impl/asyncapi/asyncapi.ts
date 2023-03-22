@@ -54,7 +54,6 @@ export function extractFunctions(
       return extractChannelItemFunctions(channelItem, endpoint, serviceAsyncApiDocument, source);
     }
   );
-
   return [].concat.apply([], swfServiceCatalogFunctions);
 }
 

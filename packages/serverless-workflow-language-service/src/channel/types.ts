@@ -77,3 +77,17 @@ export interface CodeCompletionStrategy {
   getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined;
   shouldCreateCodelens(args: ShouldCreateCodelensArgs): boolean;
 }
+export interface JqCompletions {
+  remote: {
+    getJqAutocompleteProperties(args: {
+      textDocument: TextDocument;
+      schemaPaths: string[];
+    }): Promise<Record<string, string>[]>;
+  };
+  relative: {
+    getJqAutocompleteProperties(args: {
+      textDocument: TextDocument;
+      schemaPaths: string[];
+    }): Promise<Record<string, string>[]>;
+  };
+}

@@ -79,4 +79,15 @@ export const defaultEnvJson: EnvJson = {
       group: AuthProviderGroup.CLOUD,
     },
   ],
+  KIE_SANDBOX_ACCELERATORS: [
+    {
+      name: "Quarkus",
+      iconUrl: `https://github.com/kiegroup/kie-sandbox-quarkus-accelerator/raw/${buildEnv.root.version}/quarkus-logo.png`,
+      gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator",
+      gitRepositoryGitRef: buildEnv.root.version,
+      dmnDestinationFolder: "src/main/resources/dmn",
+      bpmnDestinationFolder: "src/main/resources/bpmn",
+      otherFilesDestinationFolder: "src/main/resources/others",
+    },
+  ],
 };

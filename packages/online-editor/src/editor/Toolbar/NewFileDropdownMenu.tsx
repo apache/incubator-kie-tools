@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { FileLabel } from "../filesList/FileLabel";
+import { FileLabel } from "../../filesList/FileLabel";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
@@ -32,22 +32,23 @@ import {
 import {
   SupportedFileExtensions,
   useEditorEnvelopeLocator,
-} from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+} from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename, extname } from "path";
-import { ImportSingleFileFromUrlForm } from "../importFromUrl/ImportSingleFileFromUrlForm";
-import { ImportableUrl, UrlType, useImportableUrl } from "../importFromUrl/ImportableUrlHooks";
-import { useRoutes } from "../navigation/Hooks";
-import { fetchSingleFileContent } from "../importFromUrl/fetchSingleFileContent";
-import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
-import { useGitHubClient } from "../github/Hooks";
-import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
+import { ImportSingleFileFromUrlForm } from "../../importFromUrl/ImportSingleFileFromUrlForm";
+import { ImportableUrl, UrlType, useImportableUrl } from "../../importFromUrl/ImportableUrlHooks";
+import { useRoutes } from "../../navigation/Hooks";
+import { fetchSingleFileContent } from "../../importFromUrl/fetchSingleFileContent";
+import { useAuthSession, useAuthSessions } from "../../authSessions/AuthSessionsContext";
+import { useGitHubClient } from "../../github/Hooks";
+import { useAuthProviders } from "../../authProviders/AuthProvidersContext";
+import { getCompatibleAuthSessionWithUrlDomain } from "../../authSessions/CompatibleAuthSessions";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import { useGlobalAlert } from "../alerts";
-import { useBitbucketClient } from "../bitbucket/Hooks";
+import { useGlobalAlert } from "../../alerts";
+import { useBitbucketClient } from "../../bitbucket/Hooks";
+import { isEditable } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 
@@ -87,6 +88,7 @@ export function NewFileDropdownMenu(props: {
   const workspaces = useWorkspaces();
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
+  const { gitConfig } = useAuthSession(props.workspaceDescriptor.gitAuthSessionId);
 
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
@@ -153,12 +155,30 @@ export function NewFileDropdownMenu(props: {
         })
       );
 
+      // Since non-editable files are not checked for changes, manually stage and commit these files
+      await Promise.all(
+        uploadedFiles.map(async (file) => {
+          if (!isEditable(file.relativePath)) {
+            return workspaces.stageFile({
+              workspaceId: props.workspaceDescriptor.workspaceId,
+              relativePath: file.relativePath,
+            });
+          }
+        })
+      );
+      await workspaces.createSavePoint({
+        workspaceId: props.workspaceDescriptor.workspaceId,
+        gitConfig,
+        commitMessage: `KIE Sandbox: Added files${uploadedFiles.map((file) => `\n- ${file.relativePath}`)}`,
+        forceHasChanges: true,
+      });
+
       const fileToGoTo = uploadedFiles.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)).pop();
 
       await props.onAddFile(fileToGoTo);
       successfullyUploadedAlert.show({ qtt: uploadedFiles.length });
     },
-    [editorEnvelopeLocator, workspaces, props, successfullyUploadedAlert]
+    [editorEnvelopeLocator, workspaces, props, successfullyUploadedAlert, gitConfig]
   );
 
   const [url, setUrl] = useState("");

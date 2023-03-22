@@ -53,6 +53,7 @@ pages:
                 settings:
                   type: SELECTOR
                   general:
+                    title: "Filter"
                     visible: true
                     text: "Filter"
                   filter:
@@ -316,7 +317,7 @@ pages:
                     uuid: processInstances
                     sort:
                       - column: startDate
-                        sortOrder: ASCENDING
+                        order: ASCENDING
                     group:
                       - columnGroup:
                           emptyIntervals: true

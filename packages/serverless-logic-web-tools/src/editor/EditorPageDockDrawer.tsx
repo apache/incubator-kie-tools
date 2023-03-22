@@ -19,7 +19,6 @@ import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-cor
 import { ToggleGroup } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
-import { isServerlessWorkflow } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
@@ -38,6 +37,7 @@ interface EditorPageDockDrawerProps {
   isEditorReady?: boolean;
   onNotificationClick?: (notification: Notification) => void;
   workspaceFile: WorkspaceFile;
+  isDisabled: boolean;
 }
 
 export interface EditorPageDockDrawerRef {
@@ -100,17 +100,12 @@ export const EditorPageDockDrawer = React.forwardRef<
     [notificationsPanel, onToggle, setNotifications]
   );
 
-  const notificationsPanelIsDisabled = useMemo(
-    () => !isServerlessWorkflow(props.workspaceFile.name),
-    [props.workspaceFile.name]
-  );
-
   const notificationsPanelDisabledReason = useMemo(() => {
-    if (notificationsPanelIsDisabled) {
+    if (props.isDisabled) {
       return "This tab is not supported for this editor";
     }
     return "";
-  }, [notificationsPanelIsDisabled]);
+  }, [props.isDisabled]);
 
   useEffect(() => {
     setPanel(PanelId.NONE);
@@ -151,7 +146,7 @@ export const EditorPageDockDrawer = React.forwardRef<
       >
         <ToggleGroup>
           <NotificationsPanelDockToggle
-            isDisabled={notificationsPanelIsDisabled}
+            isDisabled={props.isDisabled}
             disabledReason={notificationsPanelDisabledReason}
             ref={notificationsToggleRef}
             isSelected={panel === PanelId.NOTIFICATIONS_PANEL}

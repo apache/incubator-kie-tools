@@ -21,7 +21,7 @@ import {
   SwfYamlLanguageService,
   SwfLsNode,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { defaultConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
+import { defaultConfig, defaultJqCompletionsConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
 import { treat } from "./testUtils";
 
 describe("nodeUpUntilType", () => {
@@ -70,6 +70,7 @@ describe("nodeUpUntilType", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`{
           "name": "testStateAction2",
@@ -94,6 +95,7 @@ describe("nodeUpUntilType", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`---
 name: testStateAction2
