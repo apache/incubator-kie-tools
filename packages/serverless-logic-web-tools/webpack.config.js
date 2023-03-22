@@ -113,7 +113,6 @@ module.exports = async (env) => {
           patterns: [
             { from: "./static/resources", to: "./resources" },
             { from: "./static/images", to: "./images" },
-            { from: "./static/samples", to: "./samples" },
             { from: "./static/favicon.svg", to: "./favicon.svg" },
             { from: "./static/env.json", to: "./env.json" },
             {

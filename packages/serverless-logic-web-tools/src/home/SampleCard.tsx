@@ -17,12 +17,13 @@ export enum SampleType {
   SW_JSON = "sw.json",
   SW_PROJECT = "sw.project",
   DASH_YML = "dash.yml",
+  DASH_YAML = "dash.yaml",
 }
 
 export type Sample = {
   name: string;
   fileName: string;
-  svg: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  svg: React.ReactElement;
   description: string;
   repoUrl?: string;
   type: SampleType;
@@ -54,12 +55,17 @@ const tagMap: Record<SampleType, { label: string; icon: React.ComponentClass; co
     icon: MonitoringIcon,
     color: labelColors[SampleType.DASH_YML].color,
   },
+  [SampleType.DASH_YAML]: {
+    label: labelColors[SampleType.DASH_YAML].label,
+    icon: MonitoringIcon,
+    color: labelColors[SampleType.DASH_YAML].color,
+  },
 };
 
-export function SampleCard({ sample }: { sample: Sample }) {
+export function SampleCard(props: { sample: Sample; loading: boolean }) {
   const routes = useRoutes();
 
-  const tag = useMemo(() => tagMap[sample.type], [sample.type]);
+  const tag = useMemo(() => tagMap[props.sample.type], [props.sample.type]);
 
   return (
     <Card isCompact={true} isFullHeight={true}>
@@ -74,30 +80,28 @@ export function SampleCard({ sample }: { sample: Sample }) {
               &nbsp;&nbsp;<b>{tag.label}</b>
             </Label>
           </div>
-          <sample.svg style={{ height: "100%", maxWidth: "100%", maxHeight: "400px" }} />
+          {props.sample.svg}
         </GridItem>
         <GridItem md={6} style={{ display: "flex", flexDirection: "column" }}>
-          <CardTitle data-ouia-component-type="sample-title">{sample.name}</CardTitle>
+          <CardTitle data-ouia-component-type="sample-title">{props.sample.name}</CardTitle>
           <CardBody isFilled={true}>
-            <Text component="p">{sample.description}</Text>
+            <Text component="p">{props.sample.description}</Text>
           </CardBody>
           <CardFooter style={{ alignItems: "baseline" }}>
             <Link
               to={{
-                pathname: routes.importModel.path({}),
-                search: routes.importModel.queryString({
+                pathname: routes.sampleShowcase.path({}),
+                search: routes.sampleShowcase.queryString({
                   url:
-                    sample.repoUrl ??
+                    props.sample.repoUrl ??
                     `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
-                      type: sample.type || FileTypes.SW_JSON,
-                      name: sample.fileName,
+                      type: props.sample.type || FileTypes.SW_JSON,
+                      name: props.sample.fileName,
                     })}`,
-                  renameWorkspace: sample.name,
-                  ...(sample.repoUrl ? { removeRemote: "true" } : {}),
                 }),
               }}
             >
-              <Button variant={ButtonVariant.tertiary} ouiaId={sample.fileName + `-try-swf-sample-button`}>
+              <Button variant={ButtonVariant.tertiary} ouiaId={props.sample.fileName + `-try-swf-sample-button`}>
                 Try it out!
               </Button>
             </Link>

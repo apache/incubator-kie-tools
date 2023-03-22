@@ -15,64 +15,108 @@
  */
 
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Sample, SampleCard, SampleType } from "./SampleCard";
-import { ReactComponent as GreetingsSvg } from "../../static/samples/greetings/greetings.svg";
-import { ReactComponent as GreetingsKafkaSvg } from "../../static/samples/greetings-kafka/greetings-kafka.svg";
-import { ReactComponent as ProductsDashboardSvg } from "../../static/samples/products-dashboard/products-dashboard.svg";
-import { ReactComponent as SwfReportSvg } from "../../static/samples/swf-report/swf-report.svg";
-import { ReactComponent as KitchensinkSvg } from "../../static/samples/kitchensink/kitchensink.svg";
-import { ReactComponent as CompensationSvg } from "../../static/samples/compensation/compensation.svg";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
+import { fetchFile, kieSamplesRepo, repoContentType } from "./api";
+import { useSettingsDispatch } from "../settings/SettingsContext";
+import { SampleCardSkeleton } from "./SampleCardSkeleton";
 
-export const samples: Array<Sample> = [
-  {
-    name: "Greetings",
-    fileName: "greetings",
-    svg: GreetingsSvg,
-    description: `This example shows a single Operation State with one action that calls the "greeting" function. The workflow data input is assumed to be the name of the person to greet. The results of the action is assumed to be the greeting for the provided persons name, which is added to the states data and becomes the workflow data output.`,
-    type: SampleType.SW_JSON,
-  },
-  {
-    name: "Greetings with Kafka events",
-    fileName: "greetings-kafka",
-    svg: GreetingsKafkaSvg,
-    description: `This example is similar to the Greetings sample, but this time the "greeting" function is triggered via an Apache Kafka event. The event payload is assumed to be the name of the person to greet and in which language. The results of the action is assumed to be the greeting for the provided persons name, which is added to the states data and becomes the workflow data output.`,
-    type: SampleType.SW_JSON,
-  },
-  {
-    name: "Compensation",
-    fileName: "compensation",
-    svg: CompensationSvg,
-    description: `This example contains a simple workflow service that illustrate compensation handling. This is simple workflow that expects a boolean shouldCompensate to indicate if compensation segment (which is composed by two inject states) should be executed or not. The process result is a boolean field compensated which value should match shouldCompensate.`,
-    type: SampleType.SW_JSON,
-  },
-  {
-    name: "Dashbuilder Kitchensink",
-    fileName: "kitchensink",
-    svg: KitchensinkSvg,
-    description: `Explore all Dashbuilder components. Navigate in tabs to learn about Dashbuilder concepts and check how to use and the look of all visual components available for use in Dashbuilder.`,
-    type: SampleType.DASH_YML,
-  },
-  {
-    name: "Products Dashboard",
-    fileName: "products-dashboard",
-    svg: ProductsDashboardSvg,
-    description:
-      'In this example we show a dashboard from a "products" dataset. It displays the dataset information in a bar chart grouping products by counting them. At the end we have a table listing all products.',
-    type: SampleType.DASH_YML,
-  },
-  {
-    name: "Serverless Workflow Report",
-    fileName: "swf-report",
-    svg: SwfReportSvg,
-    description:
-      "This example is for Serverless Workflow Data Index. It connects to data index to retrieve information about running and completed workflows. The top row shows a general overview of workflow states, the middle row contains charts to compare workflows execution. This information can be filtered using the small combo box on right side. Finally a table shows all the workflows details.",
-    type: SampleType.DASH_YML,
-  },
-];
+function RenderSvg(props: { svg: string }) {
+  return (
+    <div
+      dangerouslySetInnerHTML={{ __html: props.svg }}
+      style={{ height: "100%", maxWidth: "100%", maxHeight: "400px", paddingTop: "30px" }}
+    />
+  );
+}
 
 export function Showcase() {
+  const settingsDispatch = useSettingsDispatch();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [samples, setSamples] = useState<Sample[]>([]);
+
+  const fetchSamples = async () => {
+    const res = await fetchFile(
+      settingsDispatch.github.octokit,
+      kieSamplesRepo.org,
+      kieSamplesRepo.repo,
+      kieSamplesRepo.ref,
+      decodeURIComponent(kieSamplesRepo.path)
+    );
+
+    const sampleDirs = ((res as any)?.data).filter((sample: repoContentType) => sample.name !== "template");
+
+    const promises = sampleDirs.map((sample: repoContentType) => {
+      return fetchFile(
+        settingsDispatch.github.octokit,
+        kieSamplesRepo.org,
+        kieSamplesRepo.repo,
+        kieSamplesRepo.ref,
+        decodeURIComponent(`${kieSamplesRepo.path}/${sample.name}`)
+      );
+    });
+
+    Promise.all(promises).then((promiseData) => {
+      let svgElement: React.ReactElement;
+      Promise.all(
+        promiseData.map((sampleData) => {
+          return Promise.all(
+            sampleData.data.map(async (files: repoContentType) => {
+              let svgResponse;
+              let definitionRes;
+              if (files.name === "definition.json") {
+                const rawUrl = new URL((files as repoContentType).download_url);
+                definitionRes = await fetch(rawUrl.toString());
+                if (!definitionRes.ok) {
+                  console.log(
+                    `${definitionRes.status}${definitionRes.statusText ? `- ${definitionRes.statusText}` : ""}`
+                  );
+                  return;
+                }
+                const content = JSON.parse(await definitionRes?.text());
+                return { name: content.title, description: content.description };
+              } else if (files.name.split(".")[1] === "svg") {
+                const rawUrl = new URL((files as repoContentType).download_url);
+                svgResponse = await fetch(rawUrl.toString());
+                if (!svgResponse.ok) {
+                  console.log(`${svgResponse.status}${svgResponse.statusText ? `- ${svgResponse.statusText}` : ""}`);
+                  return;
+                }
+                const svg = await svgResponse.text();
+                if (svg) {
+                  const base64data = btoa(unescape(encodeURIComponent(svg)));
+                  svgElement = <RenderSvg svg={svg} />;
+                  return { svg: svgElement };
+                }
+              } else {
+                const file = files.name.split(".");
+                const type = `${file[1]}.${file[2]}` as unknown as SampleType;
+                const fileName = file[0];
+                const repoUrl = new URL((files as repoContentType).download_url);
+                return { type, fileName, repoUrl };
+              }
+            })
+          ).then((data) => {
+            return data?.reduce((r: any, c: any) => Object.assign(r, c), {});
+          });
+        })
+      ).then((data) => {
+        setSamples([...data]);
+        setLoading(false);
+      });
+    });
+  };
+
+  useEffect(() => {
+    fetchSamples();
+  }, []);
+
+  if (loading) {
+    return <SampleCardSkeleton />;
+  }
+
   return (
     <>
       <TextContent>
@@ -91,7 +135,7 @@ export function Showcase() {
         }}
       >
         {samples.map((sample) => (
-          <SampleCard sample={sample} key={sample.fileName} />
+          <SampleCard sample={sample} key={sample.fileName} loading={loading} />
         ))}
       </Gallery>
     </>
