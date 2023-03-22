@@ -29,7 +29,6 @@ import {
 import { useEnv } from "../../env/EnvContext";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
-import { AppDistributionMode } from "../../AppConstants";
 import { SpinUpDevModePipeline } from "../pipelines/SpinUpDevModePipeline";
 import { fetchWithTimeout } from "../../fetch";
 import { zipFiles } from "../../zip";
@@ -47,6 +46,7 @@ export const resolveDevModeResourceName = (webToolsId: string) => {
 };
 
 export interface DevModeContextType {
+  isEnabled: boolean;
   endpoints: DevModeEndpoints | undefined;
 }
 
@@ -71,14 +71,14 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
   const { env } = useEnv();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
+  const [isEnabled, setEnabled] = useState(false);
   const [endpoints, setEndpoints] = useState<DevModeEndpoints | undefined>();
 
   useEffect(() => {
-    if (
-      settings.openshift.status !== OpenShiftInstanceStatus.CONNECTED ||
-      env.FEATURE_FLAGS.MODE !== AppDistributionMode.OPERATE_FIRST
-    ) {
-      setEndpoints(undefined);
+    setEnabled(false);
+    setEndpoints(undefined);
+
+    if (settings.openshift.status !== OpenShiftInstanceStatus.CONNECTED || !settings.openshift.isDevModeEnabled) {
       return;
     }
 
@@ -93,6 +93,7 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
         .execute()
         .then((routeUrl) => {
           if (routeUrl) {
+            setEnabled(true);
             setEndpoints(buildEndpoints(routeUrl));
           }
         })
@@ -100,12 +101,7 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
     } catch (e) {
       console.debug(e);
     }
-  }, [
-    settings.openshift.status,
-    settings.openshift.config.namespace,
-    settingsDispatch.openshift.service,
-    env.FEATURE_FLAGS.MODE,
-  ]);
+  }, [settings.openshift, env.FEATURE_FLAGS.MODE, settingsDispatch.openshift.service]);
 
   const checkHealthReady = useCallback(async () => {
     if (!endpoints) {
@@ -185,7 +181,7 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
     restartDevModePipeline.execute().catch((e) => console.error(e));
   }, [settings.openshift.config.namespace, settingsDispatch.openshift.service]);
 
-  const value = useMemo(() => ({ endpoints }), [endpoints]);
+  const value = useMemo(() => ({ isEnabled, endpoints }), [isEnabled, endpoints]);
   const dispatch = useMemo(() => ({ upload, checkHealthReady, restart }), [upload, checkHealthReady, restart]);
 
   return (

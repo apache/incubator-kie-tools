@@ -29,7 +29,7 @@ import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KnativeDeploymentLoaderPipeline } from "./pipelines/KnativeDeploymentLoaderPipeline";
 import { DevModeDeploymentLoaderPipeline } from "./pipelines/DevModeDeploymentLoaderPipeline";
 import { useEnv } from "../env/EnvContext";
-import { resolveWebToolsId } from "./devMode/DevModeContext";
+import { resolveWebToolsId, useDevMode } from "./devMode/DevModeContext";
 import { AppDistributionMode } from "../AppConstants";
 
 interface Props {
@@ -44,6 +44,7 @@ export function OpenShiftContextProvider(props: Props) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const devMode = useDevMode();
   const { createDeploymentStrategy } = useDeploymentStrategy();
   const { fetchOpenApiContent } = useOpenApi();
   const { uploadArtifact } = useRemoteServiceRegistry();
@@ -53,24 +54,26 @@ export function OpenShiftContextProvider(props: Props) {
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
 
-  const deploymentLoaderPipeline = useMemo(
-    () =>
-      new KnativeDeploymentLoaderPipeline({
-        namespace: settings.openshift.config.namespace,
-        openShiftService: settingsDispatch.openshift.service,
-      }),
-    [settings.openshift.config.namespace, settingsDispatch.openshift.service]
-  );
+  const deploymentLoaderPipeline = useMemo(() => {
+    if (env.FEATURE_FLAGS.MODE !== AppDistributionMode.COMMUNITY) {
+      return;
+    }
+    return new KnativeDeploymentLoaderPipeline({
+      namespace: settings.openshift.config.namespace,
+      openShiftService: settingsDispatch.openshift.service,
+    });
+  }, [env.FEATURE_FLAGS.MODE, settings.openshift.config.namespace, settingsDispatch.openshift.service]);
 
-  const devModeDeploymentLoaderPipeline = useMemo(
-    () =>
-      new DevModeDeploymentLoaderPipeline({
-        webToolsId: resolveWebToolsId(),
-        namespace: settings.openshift.config.namespace,
-        openShiftService: settingsDispatch.openshift.service,
-      }),
-    [settings.openshift.config.namespace, settingsDispatch.openshift.service]
-  );
+  const devModeDeploymentLoaderPipeline = useMemo(() => {
+    if (!devMode.isEnabled) {
+      return;
+    }
+    return new DevModeDeploymentLoaderPipeline({
+      webToolsId: resolveWebToolsId(),
+      namespace: settings.openshift.config.namespace,
+      openShiftService: settingsDispatch.openshift.service,
+    });
+  }, [devMode.isEnabled, settings.openshift.config.namespace, settingsDispatch.openshift.service]);
 
   const onDisconnect = useCallback(() => {
     settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);
@@ -144,10 +147,8 @@ export function OpenShiftContextProvider(props: Props) {
 
           if (isConfigOk) {
             return Promise.all([
-              env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY
-                ? deploymentLoaderPipeline.execute()
-                : Promise.resolve([]),
-              devModeDeploymentLoaderPipeline.execute(),
+              deploymentLoaderPipeline?.execute() ?? Promise.resolve([]),
+              devModeDeploymentLoaderPipeline?.execute() ?? Promise.resolve([]),
             ]).then((res) => res.flat());
           }
           return [];
@@ -163,10 +164,8 @@ export function OpenShiftContextProvider(props: Props) {
       (function callImmediatelyAndPoll() {
         try {
           Promise.all([
-            env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY
-              ? deploymentLoaderPipeline.execute()
-              : Promise.resolve([]),
-            devModeDeploymentLoaderPipeline.execute(),
+            deploymentLoaderPipeline?.execute() ?? Promise.resolve([]),
+            devModeDeploymentLoaderPipeline?.execute() ?? Promise.resolve([]),
           ])
             .then((res) => res.flat())
             .then((ds) => setDeployments(ds));
@@ -184,7 +183,6 @@ export function OpenShiftContextProvider(props: Props) {
   }, [
     deploymentLoaderPipeline,
     devModeDeploymentLoaderPipeline,
-    env.FEATURE_FLAGS.MODE,
     isDeploymentsDropdownOpen,
     kieSandboxExtendedServices.status,
     onDisconnect,

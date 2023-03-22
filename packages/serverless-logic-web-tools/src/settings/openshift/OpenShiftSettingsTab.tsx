@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
@@ -43,6 +43,11 @@ export function OpenShiftSettingsTab() {
     saveConfigCookie(newConfig);
   }, [settings.openshift.config, settingsDispatch.openshift]);
 
+  const devModeEnabledLabel = useMemo(
+    () => (settings.openshift.isDevModeEnabled ? "enabled" : "disabled"),
+    [settings.openshift.isDevModeEnabled]
+  );
+
   return (
     <Page>
       <PageSection>
@@ -55,6 +60,10 @@ export function OpenShiftSettingsTab() {
             <EmptyStateBody>
               <TextContent>
                 Deploying models is <b>enabled</b>.
+              </TextContent>
+              <br />
+              <TextContent>
+                Uploading models to Dev Mode is <b>{devModeEnabledLabel}</b>.
               </TextContent>
               <br />
               <TextContent>

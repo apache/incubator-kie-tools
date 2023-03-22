@@ -15,6 +15,7 @@
  */
 
 import * as React from "react";
+import { useMemo } from "react";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { GitHubSettingsTab } from "./github/GitHubSettingsTab";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
@@ -42,6 +43,11 @@ export function SettingsModalBody() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
 
+  const isCommunityMode = useMemo(
+    () => env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY,
+    [env.FEATURE_FLAGS.MODE]
+  );
+
   return (
     <Tabs
       activeKey={settings.activeTab}
@@ -56,23 +62,23 @@ export function SettingsModalBody() {
       >
         <GitHubSettingsTab />
       </Tab>
-      {env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY && (
-        <>
-          <Tab
-            className="kie-tools--settings-tab"
-            eventKey={SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES}
-            title={<TabTitleText>KIE Sandbox Extended Services</TabTitleText>}
-          >
-            <KieSandboxExtendedServicesSettingsTab />
-          </Tab>
-          <Tab
-            className="kie-tools--settings-tab"
-            eventKey={SettingsTabs.OPENSHIFT}
-            title={<TabTitleText>OpenShift</TabTitleText>}
-          >
-            <OpenShiftSettingsTab />
-          </Tab>
-        </>
+      {isCommunityMode && (
+        <Tab
+          className="kie-tools--settings-tab"
+          eventKey={SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES}
+          title={<TabTitleText>KIE Sandbox Extended Services</TabTitleText>}
+        >
+          <KieSandboxExtendedServicesSettingsTab />
+        </Tab>
+      )}
+      {isCommunityMode && (
+        <Tab
+          className="kie-tools--settings-tab"
+          eventKey={SettingsTabs.OPENSHIFT}
+          title={<TabTitleText>OpenShift</TabTitleText>}
+        >
+          <OpenShiftSettingsTab />
+        </Tab>
       )}
       <Tab
         className="kie-tools--settings-tab"
@@ -88,7 +94,7 @@ export function SettingsModalBody() {
       >
         <ServiceRegistrySettingsTab />
       </Tab>
-      {env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY && (
+      {isCommunityMode && (
         <Tab
           className="kie-tools--settings-tab"
           eventKey={SettingsTabs.KAFKA}

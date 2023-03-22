@@ -183,10 +183,9 @@ export function useDeployDropdownItems(props: Props) {
     [settings.openshift.status]
   );
 
-  const isDevModeEnabled = useMemo(
-    () =>
-      env.FEATURE_FLAGS.MODE === AppDistributionMode.OPERATE_FIRST && isServerlessWorkflow(props.workspaceFile.name),
-    [env.FEATURE_FLAGS.MODE, props.workspaceFile.name]
+  const isUploadToDevModeEnabled = useMemo(
+    () => devMode.isEnabled && isServerlessWorkflow(props.workspaceFile.name),
+    [devMode.isEnabled, props.workspaceFile.name]
   );
 
   const onSetup = useCallback(() => {
@@ -281,7 +280,7 @@ export function useDeployDropdownItems(props: Props) {
                 )}
               </DropdownItem>
             )}
-            {isDevModeEnabled && (
+            {isUploadToDevModeEnabled && (
               <DropdownItem
                 icon={<UploadIcon />}
                 id="upload-dev-mode-button"
@@ -356,14 +355,15 @@ export function useDeployDropdownItems(props: Props) {
     ];
   }, [
     props.workspace,
-    canContentBeDeployed,
+    env.FEATURE_FLAGS.MODE,
     onDeploy,
     isKieSandboxExtendedServicesRunning,
     isOpenShiftConnected,
-    isDevModeEnabled,
+    canContentBeDeployed,
+    isUploadToDevModeEnabled,
     onUploadDevMode,
     needsDependencyDeployment,
-    i18n.deployments.virtualServiceRegistry,
+    i18n.deployments.virtualServiceRegistry.dependencyWarningTooltip,
     onSetup,
   ]);
 }
