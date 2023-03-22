@@ -137,10 +137,6 @@ export function useBeeTableResizableCell(
     )
   );
 
-  useEffect(() => {
-    updateColumnResizingWidths(new Map([[columnIndex, initialResizingWidth]]));
-  }, [initialResizingWidth, columnIndex, initialResizingWidthValue, updateColumnResizingWidths]);
-
   const _updateResizingWidth = useCallback(
     (newResizingWidth: ResizingWidth) => {
       updateColumnResizingWidths(new Map([[columnIndex, newResizingWidth]]));
@@ -154,6 +150,11 @@ export function useBeeTableResizableCell(
       deregisterResizableCellRef(columnIndex, ref);
     };
   }, [columnIndex, setWidth, registerResizableCellRef, deregisterResizableCellRef]);
+
+  // This needs to run AFTER the resizable cell is registered, otherwise its ref might not be there yet, thus missing the last row.
+  useEffect(() => {
+    updateColumnResizingWidths(new Map([[columnIndex, initialResizingWidth]]));
+  }, [initialResizingWidth, columnIndex, initialResizingWidthValue, updateColumnResizingWidths]);
 
   return { resizingWidth, setResizingWidth: _updateResizingWidth };
 }
