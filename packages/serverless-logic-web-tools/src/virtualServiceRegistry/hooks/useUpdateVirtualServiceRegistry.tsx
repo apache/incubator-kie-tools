@@ -155,7 +155,7 @@ export function useUpdateVirtualServiceRegistryOnWorkspaceFileEvents(args: {
   );
 }
 
-export function useUpdateVirtualServiceRegistryOnVsrFileEvent(args: {
+export function useUpdateVirtualServiceRegistryOnVsrFileEvents(args: {
   workspaceId: string;
   catalogStore: SwfServiceCatalogStore;
 }) {
@@ -188,7 +188,7 @@ export function useUpdateVirtualServiceRegistryOnVsrFileEvent(args: {
   );
 }
 
-export function useUpdateVirtualServiceRegistryOnVsrWorkspaceEvent(args: { catalogStore: SwfServiceCatalogStore }) {
+export function useUpdateVirtualServiceRegistryOnVsrWorkspaceEvents(args: { catalogStore: SwfServiceCatalogStore }) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {

@@ -5481,6 +5481,9 @@ importers:
       react-dropzone:
         specifier: ^11.4.2
         version: 11.4.2(react@17.0.2)
+      react-if:
+        specifier: ^4.1.4
+        version: 4.1.4(react@17.0.2)
       react-router:
         specifier: ^5.2.1
         version: 5.2.1(react@17.0.2)
@@ -27420,6 +27423,16 @@ packages:
       { integrity: sha512-d0rqWzZ6g0P9agHtA7wX/ErQ4iV/657/0Oz+SX3kid7nR4d0YwaWjjOTIrgYHv2lICZKrxIH4BaKppKrM8fRfw== }
     peerDependencies:
       react: ">= 16.8.0"
+    dependencies:
+      react: 17.0.2
+    dev: false
+
+  /react-if@4.1.4(react@17.0.2):
+    resolution:
+      { integrity: sha512-bjufPfCdPBiBy9EO/BeoxaqGc/xCwTu0coKtHfjpJw+v85DLMbpG43IUPISh+m3DzENx1rOYLpqbp2KaDmEYlg== }
+    engines: { node: ">=12" }
+    peerDependencies:
+      react: ^16.x || ^17.x || ^18.x
     dependencies:
       react: 17.0.2
     dev: false
