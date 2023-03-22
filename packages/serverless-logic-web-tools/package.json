@@ -96,7 +96,7 @@
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
     "copy-webpack-plugin": "^11.0.0",
-    "cypress": "^12.5.1",
+    "cypress": "^12.8.1",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
