@@ -23,7 +23,6 @@ import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { getDefaultExpressionDefinitionByLogicType } from "../defaultExpression";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 
@@ -43,28 +42,19 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   const { beeGwtService } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const getDefaultExpressionDefinition = useCallback(
-    (isNested, logicType, prev, containerWidth) => {
-      return isNested
-        ? getDefaultExpressionDefinitionByLogicType(logicType, prev, containerWidth)
-        : beeGwtService!.getDefaultExpressionDefinition(logicType);
-    },
-    [beeGwtService]
-  );
-
   const nestedExpressionContainer = useNestedExpressionContainer();
 
   const onLogicTypeSelected = useCallback(
     (logicType) => {
       setExpression((prev) => ({
-        ...getDefaultExpressionDefinition(isNested, logicType, prev, nestedExpressionContainer.resizingWidth.value),
+        ...beeGwtService!.getDefaultExpressionDefinition(logicType),
         logicType,
         isNested,
         id: prev.id ?? generateUuid(),
         name: prev.name ?? DEFAULT_EXPRESSION_NAME,
       }));
     },
-    [getDefaultExpressionDefinition, isNested, nestedExpressionContainer.resizingWidth.value, setExpression]
+    [beeGwtService, isNested, setExpression]
   );
 
   const onLogicTypeReset = useCallback(() => {

@@ -38,7 +38,8 @@ public class ExpressionEditorService {
     }
 
     /**
-     * Given a logic type, it returns its default Expression definition. Currently working for Root expressions only.
+     * Given a logic type, it returns its default Expression definition based on the current Expression.
+     * It supports both root and nested expressions.
      * @param logicType The selected logicType (see. ExpressionType.java)
      * @return The default Expression definition as ExpressionProps
      */

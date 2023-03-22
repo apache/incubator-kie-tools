@@ -195,11 +195,29 @@ export function getDefaultExpressionDefinitionByLogicType(
           dataType: DmnBuiltInDataType.Undefined,
           width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
         },
+        {
+          id: generateUuid(),
+          name: "input-2",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
+        },
       ],
       output: [
         {
           id: generateUuid(),
           name: "output-1",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+        },
+        {
+          id: generateUuid(),
+          name: "output-2",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+        },
+        {
+          id: generateUuid(),
+          name: "output-3",
           dataType: DmnBuiltInDataType.Undefined,
           width: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
         },
@@ -213,8 +231,12 @@ export function getDefaultExpressionDefinitionByLogicType(
       rules: [
         {
           id: generateUuid(),
-          inputEntries: [DECISION_TABLE_INPUT_DEFAULT_VALUE],
-          outputEntries: [DECISION_TABLE_OUTPUT_DEFAULT_VALUE],
+          inputEntries: [DECISION_TABLE_INPUT_DEFAULT_VALUE, DECISION_TABLE_INPUT_DEFAULT_VALUE],
+          outputEntries: [
+            DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+            DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+            DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+          ],
           annotationEntries: ["// Your annotations here"],
         },
       ],
