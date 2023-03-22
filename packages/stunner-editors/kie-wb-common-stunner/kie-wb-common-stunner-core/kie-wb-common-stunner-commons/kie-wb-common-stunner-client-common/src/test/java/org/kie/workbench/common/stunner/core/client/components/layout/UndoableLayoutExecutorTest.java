@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.Layout;
+import org.kie.workbench.common.stunner.core.graph.processing.layout.SizeHandler;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.VertexPosition;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -64,6 +65,9 @@ public class UndoableLayoutExecutorTest {
     @Mock
     private Node node;
 
+    @Mock
+    private SizeHandler sizeHandler;
+
     private UndoableLayoutExecutor executor;
 
     @Before
@@ -84,7 +88,7 @@ public class UndoableLayoutExecutorTest {
 
     @Test
     public void testApplyLayout() {
-        executor.applyLayout(layout, graph);
+        executor.applyLayout(layout, graph, sizeHandler);
 
         verify(executor).createCommand(layout, graph);
         verify(commandManager).execute(any(), any());

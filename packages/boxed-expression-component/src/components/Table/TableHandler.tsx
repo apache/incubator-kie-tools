@@ -19,7 +19,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { DataType, generateUuid, TableHandlerConfiguration, TableOperation } from "../../api";
 import * as _ from "lodash";
 import { Column, ColumnInstance, DataRecord } from "react-table";
-import { Popover } from "@patternfly/react-core";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { TableHandlerMenu } from "./TableHandlerMenu";
 import { useBoxedExpression } from "../../context";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";

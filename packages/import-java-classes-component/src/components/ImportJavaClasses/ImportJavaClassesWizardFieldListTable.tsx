@@ -18,7 +18,7 @@ import * as React from "react";
 import "./ImportJavaClassesWizardFieldListTable.css";
 import { ExpandableRowContent, TableComposable, Tbody, Td, Tr } from "@patternfly/react-table";
 import { JavaClass } from "./model/JavaClass";
-import { Button } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { JavaField } from "./model/JavaField";
 import { DMNSimpleType, JAVA_TO_DMN_MAP } from "./model/DMNSimpleType";
 import { getJavaClassSimpleName } from "./model/JavaClassUtils";

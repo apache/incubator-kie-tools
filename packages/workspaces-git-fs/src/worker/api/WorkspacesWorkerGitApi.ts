@@ -19,6 +19,8 @@ import { BitbucketOrigin, GistOrigin, GitHubOrigin, SnippetOrigin } from "./Work
 import { LocalFile } from "./LocalFile";
 import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
 import { GitServerRef } from "./GitServerRef";
+import { FetchResult } from "isomorphic-git";
+import { UnstagedModifiedFilesStatusEntryType } from "../../services/GitService";
 
 export interface WorkspacesWorkerGitApi {
   kieSandboxWorkspacesGit_getGitServerRefs(args: {
@@ -88,9 +90,17 @@ export interface WorkspacesWorkerGitApi {
     };
   }): Promise<void>;
 
+  kieSandboxWorkspacesGit_deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
+
   kieSandboxWorkspacesGit_branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void>;
 
   kieSandboxWorkspacesGit_checkout(args: { workspaceId: string; ref: string; remote: string }): Promise<void>;
+
+  kieSandboxWorkspacesGit_checkoutFilesFromLocalHead(args: {
+    workspaceId: string;
+    ref?: string;
+    filepaths: string[];
+  }): Promise<void>;
 
   kieSandboxWorkspacesGit_addRemote(args: {
     workspaceId: string;
@@ -101,10 +111,15 @@ export interface WorkspacesWorkerGitApi {
 
   kieSandboxWorkspacesGit_deleteRemote(args: { workspaceId: string; name: string }): Promise<void>;
 
-  kieSandboxWorkspacesGit_getUnstagedModifiedFileRelativePaths(args: { workspaceId: string }): Promise<string[]>;
+  kieSandboxWorkspacesGit_getUnstagedModifiedFilesStatus(args: {
+    workspaceId: string;
+  }): Promise<UnstagedModifiedFilesStatusEntryType[]>;
+
+  kieSandboxWorkspacesGit_stageFile(args: { workspaceId: string; relativePath: string }): Promise<void>;
 
   kieSandboxWorkspacesGit_commit(args: {
     workspaceId: string;
+    targetBranch: string;
     gitConfig?: {
       email: string;
       name: string;
@@ -112,7 +127,13 @@ export interface WorkspacesWorkerGitApi {
     commitMessage?: string;
   }): Promise<void>;
 
-  kieSandboxWorkspacesGit_fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<void>;
+  kieSandboxWorkspacesGit_createSavePoint(args: {
+    workspaceId: string;
+    gitConfig?: { email: string; name: string };
+    commitMessage?: string;
+  }): Promise<void>;
+
+  kieSandboxWorkspacesGit_fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<FetchResult>;
 
   kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {
     workspaceId: string;

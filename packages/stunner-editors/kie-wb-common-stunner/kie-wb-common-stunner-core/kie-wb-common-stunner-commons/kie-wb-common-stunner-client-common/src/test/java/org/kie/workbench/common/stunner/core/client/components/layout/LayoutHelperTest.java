@@ -131,7 +131,7 @@ public class LayoutHelperTest {
         final LayoutHelper helper = new LayoutHelper(layoutService);
         helper.applyLayout(diagram, layoutExecutor, false);
 
-        verify(layoutExecutor, never()).applyLayout(any(), any());
+        verify(layoutExecutor, never()).applyLayout(any(), any(), any());
     }
 
     @Test
@@ -140,7 +140,7 @@ public class LayoutHelperTest {
         final LayoutHelper helper = new LayoutHelper(layoutService);
         helper.applyLayout(diagram, layoutExecutor, true);
 
-        verify(layoutExecutor).applyLayout(any(), any());
+        verify(layoutExecutor).applyLayout(any(), any(), any());
     }
 
     private static void isCloseToZero(final Bound bound) {

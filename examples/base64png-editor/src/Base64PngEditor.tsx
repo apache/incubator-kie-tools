@@ -17,7 +17,11 @@
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { EditorApi, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
-import { EmptyState, EmptyStateIcon, Nav, NavItem, NavList, Page, Switch, Title } from "@patternfly/react-core";
+import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import "./styles.scss";

@@ -18,7 +18,6 @@ import { OnlineI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { en as en_unitables } from "@kie-tools/unitables/dist/i18n/locales/en";
 import { wrapped } from "@kie-tools-core/i18n/dist/core";
-import { names } from "@kie-tools/i18n-common-dictionary/dist/names";
 
 export const en: OnlineI18n = {
   ...en_common,
@@ -65,6 +64,28 @@ export const en: OnlineI18n = {
     cantUpdateSnippetTooltip: `You can't update your Snippet because you're either not logged in, not the owner, or your models are in nested directories.`,
     share: "Share",
     embed: "Embed",
+  },
+  accelerators: {
+    commitMessage: (acceleratorName: string) =>
+      `${en_common.names.businessModeler.online}: Applying ${acceleratorName} Accelerator`,
+    loadingAlert: (acceleratorName: string) => `Applying ${acceleratorName} Accelerator...`,
+    successAlert: (acceleratorName: string) => `Successfully applied ${acceleratorName} Accelerator`,
+    failAlert: (acceleratorName: string) => `Failed to apply ${acceleratorName} Accelerator`,
+    acceleratorDescription:
+      "An Accelerator is a template. Applying it will move your current files according to the Accelerator specifications and create a new commit for it.",
+    acceleratorDetails: "This Accelerator is hosted at",
+    dmnFilesMove: "Decisions (.dmn) will be moved to:",
+    dmnFilesLocation: "Decisions (.dmn) were moved to:",
+    pmmlFilesMove: "Score cards (.pmml) will moved to:",
+    pmmlFilesLocation: "Score cards (.pmml) were moved to:",
+    bpmnFilesMove: "Workflows (.bpmn, .bpmn2) will be moved to:",
+    bpmnFilesLocation: "Workflows (.bpmn, .bpmn2) were moved to:",
+    otherFilesMove: "Other files will be moved to:",
+    otherFilesLocation: "Other files were moved to:",
+    applyAccelerator: "Apply Accelerator",
+    appliedAt: "This Accelerator was applied at:",
+    applyDisclaimer:
+      "This action is permanent. Any changes made after applying an Accelerator may result in your files being in different directories.",
   },
   devDeployments: {
     common: {
@@ -624,6 +645,20 @@ export const en: OnlineI18n = {
     github: {
       user: "GitHub user",
       organizations: "GitHub organizations",
+    },
+  },
+  gitStatusIndicatorActions: {
+    revert: {
+      title: "Revert",
+      warning: "This action is permanent",
+      description: "Are you sure you want to revert local changes to:",
+      confirmButtonText: "Yes, revert permanently",
+    },
+    revertAll: {
+      title: "Revert all changes",
+      warning: "This action is permanent",
+      description: "Are you sure? The following files will be reverted to the last commit:",
+      confirmButtonText: "Yes, revert permanently",
     },
   },
 };

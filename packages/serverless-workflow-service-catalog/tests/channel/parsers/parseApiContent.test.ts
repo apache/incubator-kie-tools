@@ -50,7 +50,14 @@ describe("parserApiContent tests", () => {
     expect(parserResults.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
     expect(parserResults.functions).toHaveLength(1);
   });
-
+  it("parse jsonschema file", async () => {
+    const parserResults = parseContent("expression.json");
+    expect(parserResults).not.toBeNull();
+    expect(parserResults.type).toBe("jsonschema" as SwfCatalogSourceType);
+    expect(parserResults.name).toBe("Expression");
+    expect(parserResults.source.type).toBe(SwfCatalogSourceType.LOCAL_FS);
+    expect(parserResults.functions).toHaveLength(1);
+  });
   it("parse wrong spec file", async () => {
     expect(() => {
       parseContent("wrong.txt");

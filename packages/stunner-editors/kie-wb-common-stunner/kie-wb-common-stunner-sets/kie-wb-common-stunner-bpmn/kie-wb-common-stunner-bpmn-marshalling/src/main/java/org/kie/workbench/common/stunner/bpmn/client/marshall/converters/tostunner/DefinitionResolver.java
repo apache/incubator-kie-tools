@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import bpsim.BPSimDataType;
 import bpsim.BpsimPackage;
@@ -40,6 +42,7 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.MarshallingRequest.Mode;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
+import org.uberfire.commons.UUID;
 
 /**
  * An object that resolves child definitions.
@@ -57,12 +60,14 @@ import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
  * which is outdated w.r.t. upstream.
  */
 public class DefinitionResolver {
+    private final static Logger LOGGER = Logger.getLogger(DefinitionResolver.class.getName());
 
     static final double DEFAULT_RESOLUTION = 112.5d;
 
     private final Map<String, Signal> signals;
     private final Map<String, ElementParameters> simulationParameters;
     private final Collection<WorkItemDefinition> workItemDefinitions;
+    private final String definitionsId;
     private final Definitions definitions;
     private final Process process;
     private final BPMNDiagram diagram;
@@ -84,6 +89,7 @@ public class DefinitionResolver {
         this.resolutionFactor = calculateResolutionFactor(diagram);
         this.jbpm = jbpm;
         this.mode = mode;
+        this.definitionsId = calculateUniqueDefinitionsId(definitions);
     }
 
     public DefinitionResolver(Definitions definitions,
@@ -105,6 +111,10 @@ public class DefinitionResolver {
 
     public Definitions getDefinitions() {
         return definitions;
+    }
+
+    public String getDefinitionsId() {
+        return definitionsId;
     }
 
     public Process getProcess() {
@@ -246,6 +256,15 @@ public class DefinitionResolver {
         return resolution == 0 ?
                 1 :
                 obtainResolutionFactor() / resolution;
+    }
+
+    static String calculateUniqueDefinitionsId(final Definitions definitions) {
+        return Optional.ofNullable(definitions.getId())
+                .orElseGet(() -> {
+                    String uuid = UUID.uuid();
+                    LOGGER.log(Level.WARNING, "Cannot find the 'id' attribute in process Definitions. Setting a default value '" + uuid + "'");
+                    return uuid;
+                });
     }
 
     static double obtainResolutionFactor() {

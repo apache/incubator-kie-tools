@@ -27,22 +27,23 @@ import { LockIcon } from "@patternfly/react-icons/dist/js/icons/lock-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { GIST_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { useSettingsDispatch } from "../settings/SettingsContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { useAuthSession } from "../authSessions/AuthSessionsContext";
-import { useBitbucketClient } from "../bitbucket/Hooks";
-import { GithubIcon, BitbucketIcon } from "@patternfly/react-icons";
-import { useGitHubClient } from "../github/Hooks";
+import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
+import { useBitbucketClient } from "../../../bitbucket/Hooks";
+import { BitbucketIcon } from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
+import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
+import { useGitHubClient } from "../../../github/Hooks";
 import {
   AuthProviderType,
   GistEnabledAuthProviderType,
   isGistEnabledAuthProviderType,
   isSupportedGitAuthProviderType,
-} from "../authProviders/AuthProvidersApi";
-import { useAuthProvider } from "../authProviders/AuthProvidersContext";
-import { switchExpression } from "../switchExpression/switchExpression";
-import { useOnlineI18n } from "../i18n";
+} from "../../../authProviders/AuthProvidersApi";
+import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
+import { switchExpression } from "../../../switchExpression/switchExpression";
+import { useOnlineI18n } from "../../../i18n";
 import { LoadOrganizationsSelect, SelectOptionObjectType } from "./LoadOrganizationsSelect";
+import { useGitIntegration } from "./GitIntegrationContextProvider";
 
 export interface CreateGistOrSnippetResponse {
   cloneUrl: string;
@@ -52,11 +53,10 @@ export const CreateGistOrSnippetModal = (props: {
   workspace: WorkspaceDescriptor;
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (args: { url: string }) => void;
-  onError: () => void;
+  onSuccess?: (args: { url: string }) => void;
+  onError?: () => void;
 }) => {
   const workspaces = useWorkspaces();
-  const settingsDispatch = useSettingsDispatch();
   const { authSession, gitConfig, authInfo } = useAuthSession(props.workspace.gitAuthSessionId);
   const authProvider = useAuthProvider(authSession);
   const bitbucketClient = useBitbucketClient(authSession);
@@ -67,6 +67,10 @@ export const CreateGistOrSnippetModal = (props: {
   const { i18n } = useOnlineI18n();
   const [selectedOrganization, setSelectedOrganization] = useState<SelectOptionObjectType>();
   const [isGistOrSnippetLoading, setGistOrSnippetLoading] = useState(false);
+
+  const {
+    alerts: { successfullyUpdatedGistOrSnippetAlert, errorAlert },
+  } = useGitIntegration();
 
   const createGitHubGist: () => Promise<CreateGistOrSnippetResponse> = useCallback(async () => {
     const gist = await gitHubClient.gists.create({
@@ -193,16 +197,28 @@ If you are, it means that creating this Snippet failed and it can safely be dele
       });
 
       props.onClose();
-      props.onSuccess({ url: gistOrSnippet.cloneUrl });
+      successfullyUpdatedGistOrSnippetAlert.show({ url: gistOrSnippet.cloneUrl });
+      props.onSuccess?.({ url: gistOrSnippet.cloneUrl });
       return;
     } catch (err) {
       setError(err);
-      props.onError();
+      errorAlert.show();
+      props.onError?.();
       throw err;
     } finally {
       setGistOrSnippetLoading(false);
     }
-  }, [authInfo, authProvider?.type, createGitHubGist, createBitbucketSnippet, workspaces, props, gitConfig]);
+  }, [
+    authInfo,
+    authProvider?.type,
+    createGitHubGist,
+    createBitbucketSnippet,
+    workspaces,
+    props,
+    gitConfig,
+    successfullyUpdatedGistOrSnippetAlert,
+    errorAlert,
+  ]);
 
   if (!authProvider?.type || !isSupportedGitAuthProviderType(authProvider?.type)) {
     return <></>;

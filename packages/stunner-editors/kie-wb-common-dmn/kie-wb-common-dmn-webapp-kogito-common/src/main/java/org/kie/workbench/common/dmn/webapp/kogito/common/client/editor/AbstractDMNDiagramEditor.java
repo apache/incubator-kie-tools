@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
@@ -44,6 +45,7 @@ import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
+import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNLayoutHelper;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
@@ -57,7 +59,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.ConfirmationDialog;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -99,7 +100,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     protected final DecisionNavigatorDock decisionNavigatorDock;
     protected final DiagramEditorPropertiesDock diagramPropertiesDock;
     protected final PreviewDiagramDock diagramPreviewAndExplorerDock;
-    protected final LayoutHelper layoutHelper;
+    protected final DMNLayoutHelper layoutHelper;
     protected final OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
     protected final DataTypesPage dataTypesPage;
     protected final DMNEditorSearchIndex editorSearchIndex;
@@ -129,7 +130,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
                                        final DecisionNavigatorDock decisionNavigatorDock,
                                        final DiagramEditorPropertiesDock diagramPropertiesDock,
                                        final PreviewDiagramDock diagramPreviewAndExplorerDock,
-                                       final LayoutHelper layoutHelper,
+                                       final @DMNEditor DMNLayoutHelper layoutHelper,
                                        final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                                        final DataTypesPage dataTypesPage,
                                        final KogitoClientDiagramService diagramServices,

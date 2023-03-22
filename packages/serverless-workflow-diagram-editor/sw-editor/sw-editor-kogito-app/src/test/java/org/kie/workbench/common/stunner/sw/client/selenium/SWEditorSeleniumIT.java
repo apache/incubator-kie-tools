@@ -18,12 +18,14 @@ package org.kie.workbench.common.stunner.sw.client.selenium;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
@@ -192,11 +194,14 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
         waitCanvasPanel();
 
         List<String> nodeIds = jsHelper.getNodeIds();
+        // Number of states in the diagram
         assertThat(nodeIds.size()).isEqualTo(8);
 
         // First connector
-        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(1), 0, 0);
-        assertThat(points.size()).isEqualTo(10);
+        // Pick switch state then get points for the first connector connected to the center magnet
+        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(1), MagnetConnection.MAGNET_CENTER, 0);
+        // Number of points in the line
+        assertThat(points.size() / 2).isEqualTo(5);
         assertThat(points.get(0)).isEqualTo(558.5348837209302D); // X
         assertThat(points.get(1)).isEqualTo(319L); // Y
         assertThat(points.get(2)).isEqualTo(558.5348837209302D); // X
@@ -209,8 +214,10 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
         assertThat(points.get(9)).isEqualTo(434L); // Y
 
         // Second connector
-        List<Object> points2 = jsHelper.getConnectorPoints(nodeIds.get(1), 0, 1);
-        assertThat(points2.size()).isEqualTo(10);
+        // Pick switch state then get points for the second connector connected to the center magnet
+        List<Object> points2 = jsHelper.getConnectorPoints(nodeIds.get(1), MagnetConnection.MAGNET_CENTER, 1);
+        // Number of points in the line
+        assertThat(points2.size() / 2).isEqualTo(5);
         assertThat(points2.get(0)).isEqualTo(399.4651162790698D); // X
         assertThat(points2.get(1)).isEqualTo(319L); // Y
         assertThat(points2.get(2)).isEqualTo(399.4651162790698D); // X
@@ -223,8 +230,10 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
         assertThat(points2.get(9)).isEqualTo(434L); // Y
 
         // Third connector
-        List<Object> points3 = jsHelper.getConnectorPoints(nodeIds.get(1), 0, 2);
-        assertThat(points3.size()).isEqualTo(8);
+        // Pick switch state then get points for the third connector connected to the center magnet
+        List<Object> points3 = jsHelper.getConnectorPoints(nodeIds.get(1), MagnetConnection.MAGNET_CENTER, 2);
+        // Number of points in the line
+        assertThat(points3.size() / 2).isEqualTo(4);
         assertThat(points3.get(0)).isEqualTo(479L); // X
         assertThat(points3.get(1)).isEqualTo(319L); // Y
         assertThat(points3.get(2)).isEqualTo(479L); // X
@@ -243,11 +252,15 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
         waitCanvasPanel();
 
         List<String> nodeIds = jsHelper.getNodeIds();
+        // Number of states in the diagram
         assertThat(nodeIds.size()).isEqualTo(6);
 
         // First connector
-        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(1), 0, 0);
-        assertThat(points.size()).isEqualTo(10);
+        // Pick state with double connections to the same target
+        // then get points for the first connector connected to the center magnet
+        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(1), MagnetConnection.MAGNET_CENTER, 0);
+        // Number of points in the line
+        assertThat(points.size() / 2).isEqualTo(5);
         assertThat(points.get(0)).isEqualTo(366.7674418604651D); // X
         assertThat(points.get(1)).isEqualTo(319L); // Y
         assertThat(points.get(2)).isEqualTo(366.7674418604651D); // X
@@ -260,8 +273,11 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
         assertThat(points.get(9)).isEqualTo(434L); // Y
 
         // Second connector
-        List<Object> points2 = jsHelper.getConnectorPoints(nodeIds.get(1), 0, 1);
-        assertThat(points2.size()).isEqualTo(10);
+        // Pick state with double connections to the same target
+        // then get points for the second connector connected to the center magnet
+        List<Object> points2 = jsHelper.getConnectorPoints(nodeIds.get(1), MagnetConnection.MAGNET_CENTER, 1);
+        // Number of points in the line
+        assertThat(points2.size() / 2).isEqualTo(5);
         assertThat(points2.get(0)).isEqualTo(287.2325581395349D); // X
         assertThat(points2.get(1)).isEqualTo(319L); // Y
         assertThat(points2.get(2)).isEqualTo(287.2325581395349D); // X
@@ -274,8 +290,11 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
         assertThat(points2.get(9)).isEqualTo(434L); // Y
 
         // Third connector
-        List<Object> points3 = jsHelper.getConnectorPoints(nodeIds.get(1), 0, 2);
-        assertThat(points3.size()).isEqualTo(10);
+        // Pick state with double connections to the same target
+        // then get points for the third connector connected to the center magnet
+        List<Object> points3 = jsHelper.getConnectorPoints(nodeIds.get(1), MagnetConnection.MAGNET_CENTER, 2);
+        // Number of points in the line
+        assertThat(points3.size() / 2).isEqualTo(5);
         assertThat(points3.get(0)).isEqualTo(358.52073732718895D); // X
         assertThat(points3.get(1)).isEqualTo(319L); // Y
         assertThat(points3.get(2)).isEqualTo(358.52073732718895D); // X
@@ -296,25 +315,32 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
         waitCanvasPanel();
 
         List<String> nodeIds = jsHelper.getNodeIds();
+        // Number of states in the diagram
         assertThat(nodeIds.size()).isEqualTo(13);
 
         // Long backward connector
-        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(10), 3, 0);
-        assertThat(points.size()).isEqualTo(14);
-        assertThat(points.get(0)).isEqualTo(504L); // X
-        assertThat(points.get(1)).isEqualTo(1621L); // Y
-        assertThat(points.get(2)).isEqualTo(504L); // X
-        assertThat(points.get(3)).isEqualTo(1631L); // Y
+        // Pick timeout state then get points for the backward connector connected to the right magnet
+        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(10), MagnetConnection.MAGNET_CENTER, 1);
+        // Number of points in the line
+        assertThat(points.size() / 2).isEqualTo(9);
+        assertThat(points.get(0)).isEqualTo(629L); // X
+        assertThat(points.get(1)).isEqualTo(1541.8842794759826D); // Y
+        assertThat(points.get(2)).isEqualTo(639L); // X
+        assertThat(points.get(3)).isEqualTo(1541.8842794759826D); // Y
         assertThat(points.get(4)).isEqualTo(962L); // X
-        assertThat(points.get(5)).isEqualTo(1631L); // Y
+        assertThat(points.get(5)).isEqualTo(1541.8842794759826D); // Y
         assertThat(points.get(6)).isEqualTo(962L); // X
-        assertThat(points.get(7)).isEqualTo(1491L); // Y
+        assertThat(points.get(7)).isEqualTo(1451L); // Y
         assertThat(points.get(8)).isEqualTo(962L); // X
-        assertThat(points.get(9)).isEqualTo(578L); // Y
+        assertThat(points.get(9)).isEqualTo(1122L); // Y
         assertThat(points.get(10)).isEqualTo(962L); // X
-        assertThat(points.get(11)).isEqualTo(514.7445414847161D); // Y
-        assertThat(points.get(12)).isEqualTo(641L); // X
-        assertThat(points.get(13)).isEqualTo(514.7445414847161D); // Y
+        assertThat(points.get(11)).isEqualTo(905L); // Y
+        assertThat(points.get(12)).isEqualTo(962L); // X
+        assertThat(points.get(13)).isEqualTo(578L); // Y
+        assertThat(points.get(14)).isEqualTo(962L); // X
+        assertThat(points.get(15)).isEqualTo(514.7445414847161D); // Y
+        assertThat(points.get(16)).isEqualTo(641L); // X
+        assertThat(points.get(17)).isEqualTo(514.7445414847161D); // Y
     }
 
     @Test
@@ -325,11 +351,14 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
         waitCanvasPanel();
 
         List<String> nodeIds = jsHelper.getNodeIds();
+        // Number of states in the diagram
         assertThat(nodeIds.size()).isEqualTo(5);
 
         // Backward connector
-        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(3), 4, 0);
-        assertThat(points.size()).isEqualTo(10);
+        // Pick switch state then get points for the backward connector connected to the left magnet
+        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(3), MagnetConnection.MAGNET_LEFT, 0);
+        // Number of points in the line
+        assertThat(points.size() / 2).isEqualTo(5);
         assertThat(points.get(0)).isEqualTo(50L); // X
         assertThat(points.get(1)).isEqualTo(708L); // Y
         assertThat(points.get(2)).isEqualTo(40L); // X
@@ -340,6 +369,89 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
         assertThat(points.get(7)).isEqualTo(608L); // Y
         assertThat(points.get(8)).isEqualTo(149.07834101382488D); // X
         assertThat(points.get(9)).isEqualTo(548L); // Y
+    }
+
+    @Test
+    // Line shall not overlap the operation state in the way up towards the target
+    public void testAutoLayoutShortBackwardConnectionCPs() throws Exception {
+        String resource = "JobMonitoringExample.sw.json";
+        final String expected = loadResource(resource);
+        setContent(expected);
+        waitCanvasPanel();
+
+        List<String> nodeIds = jsHelper.getNodeIds();
+        // Number of states in the diagram
+        assertThat(nodeIds.size()).isEqualTo(9);
+
+        // Backward connector
+        // Pick switch state then get points for the backward connector connected to the right magnet
+        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(4), MagnetConnection.MAGNET_CENTER, 2);
+        // Number of points in the line
+        assertThat(points.size() / 2).isEqualTo(7);
+        assertThat(points.get(0)).isEqualTo(382.44D); // X
+        assertThat(points.get(1)).isEqualTo(880L); // Y
+        assertThat(points.get(2)).isEqualTo(382.44D); // X
+        assertThat(points.get(3)).isEqualTo(870L); // Y
+        assertThat(points.get(4)).isEqualTo(382.44D); // X
+        assertThat(points.get(5)).isEqualTo(800L); // Y
+        assertThat(points.get(6)).isEqualTo(481L); // X
+        assertThat(points.get(7)).isEqualTo(800L); // Y
+        assertThat(points.get(8)).isEqualTo(481L); // X
+        assertThat(points.get(9)).isEqualTo(638.6666666666666D); // Y
+        assertThat(points.get(10)).isEqualTo(349.4271844660194D); // X
+        assertThat(points.get(11)).isEqualTo(638.6666666666666D); // Y
+        assertThat(points.get(12)).isEqualTo(349.4271844660194D); // X
+        assertThat(points.get(13)).isEqualTo(548L); // Y
+    }
+
+    @Test
+    // Line shall not overlap the state beside in the way up towards the target
+    public void testAutoLayoutBackwardConnectionFromTopCPs() throws Exception {
+        String resource = "LoanBroker.sw.json";
+        final String expected = loadResource(resource);
+        setContent(expected);
+        waitCanvasPanel();
+
+        List<String> nodeIds = jsHelper.getNodeIds();
+        // Number of states in the diagram
+        assertThat(nodeIds.size()).isEqualTo(14);
+
+        // Backward connector
+        // Pick operation state then get points for the backward connector connected to the center magnet
+        List<Object> points = jsHelper.getConnectorPoints(nodeIds.get(12), MagnetConnection.MAGNET_CENTER, 0);
+
+        // Number of points in the line
+        assertThat(points.size() / 2).isEqualTo(7);
+        assertThat(points.get(0)).isEqualTo(758L); // X
+        assertThat(points.get(1)).isEqualTo(753L); // Y
+        assertThat(points.get(2)).isEqualTo(758L); // X
+        assertThat(points.get(3)).isEqualTo(763L); // Y
+        assertThat(points.get(4)).isEqualTo(758L); // X
+        assertThat(points.get(5)).isEqualTo(815L); // Y
+        assertThat(points.get(6)).isEqualTo(1064L); // X
+        assertThat(points.get(7)).isEqualTo(815L); // Y
+        assertThat(points.get(8)).isEqualTo(1064L); // X
+        assertThat(points.get(9)).isEqualTo(988.3333333333334D); // Y
+        assertThat(points.get(10)).isEqualTo(1083.834862385321D); // X
+        assertThat(points.get(11)).isEqualTo(988.3333333333334D); // Y
+        assertThat(points.get(12)).isEqualTo(1083.834862385321D); // X
+        assertThat(points.get(13)).isEqualTo(1085L); // Y
+    }
+
+    @Test
+    public void testStateDimension() throws Exception {
+        String resource = "LoanBroker.sw.json";
+        final String expected = loadResource(resource);
+        setContent(expected);
+        waitCanvasPanel();
+
+        List<String> nodeIds = jsHelper.getNodeIds();
+
+        List<Long> dimension = new ArrayList<>();
+        dimension.add(new Long(250));
+        dimension.add(new Long(90));
+
+        assertThat(jsHelper.getDimension(nodeIds.get(1))).isEqualTo(dimension);
     }
 
     private void testExample(String exampleName) throws Exception {

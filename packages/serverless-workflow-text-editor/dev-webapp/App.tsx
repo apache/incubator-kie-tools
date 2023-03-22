@@ -17,25 +17,35 @@
 import {
   ChannelType,
   EditorEnvelopeLocator,
-  EditorTheme,
   EnvelopeContentType,
   EnvelopeMapping,
 } from "@kie-tools-core/editor/dist/api";
-import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
-import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
+import { EmbeddedEditor, EmbeddedEditorChannelApiImpl, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { basename, extname } from "path";
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { DiagnosticSeverity } from "vscode-languageserver-types";
 import "./App.scss";
 import { ServerlessWorkflowEmptyState } from "./EmptyState";
 import { HistoryButtons } from "./HistoryButtons";
+import { DevWebAppSwfLanguageService } from "./channel/DevWebAppSwfLanguageService";
+import { SwfTextEditorChannelApiImpl } from "./channel/SwfTextEditorChannelApiImpl";
+import { SwfLanguageServiceChannelApiImpl } from "./channel/SwfLanguageServiceChannelApiImpl";
 
 export type ServerlessWorkflowType = "json" | "yml" | "yaml";
+
+const LOCALE = "en";
 
 export const App = () => {
   const { editor, editorRef } = useEditorRef();
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
+  const downloadRef = useRef<HTMLAnchorElement>(null);
+  const [isReady, setReady] = useState(false);
+
+  const stateControl = useMemo(() => new StateControl(), [embeddedEditorFile?.getFileContents]);
 
   const editorEnvelopeLocator = useMemo(
     () =>
@@ -50,6 +60,37 @@ export const App = () => {
     []
   );
 
+  useEffect(() => {
+    if (embeddedEditorFile && !isReady) {
+      setReady(true);
+    }
+  }, [embeddedEditorFile, isReady]);
+
+  const swfLanguageService = useMemo(() => {
+    if (!embeddedEditorFile) {
+      return;
+    }
+
+    const devWebAppSwfLanguageService = new DevWebAppSwfLanguageService();
+    return devWebAppSwfLanguageService.getLs(embeddedEditorFile.path!);
+  }, [embeddedEditorFile]);
+
+  const apiImpl = useMemo(() => {
+    if (!embeddedEditorFile || !swfLanguageService) {
+      return;
+    }
+
+    const defaultApiImpl = new EmbeddedEditorChannelApiImpl(stateControl, embeddedEditorFile, LOCALE, {
+      kogitoEditor_ready: () => {
+        setReady(true);
+      },
+    });
+
+    const swfLanguageServiceChannelApiImpl = new SwfLanguageServiceChannelApiImpl(swfLanguageService);
+
+    return new SwfTextEditorChannelApiImpl({ defaultApiImpl, swfLanguageServiceChannelApiImpl });
+  }, [embeddedEditorFile, stateControl, swfLanguageService]);
+
   const onUndo = useCallback(async () => {
     editor?.undo();
   }, [editor]);
@@ -58,23 +99,48 @@ export const App = () => {
     editor?.redo();
   }, [editor]);
 
-  const onGetContent = useCallback(async () => editor?.getContent() ?? "", [editor]);
-
-  const onSetTheme = useCallback(
-    async (theme: EditorTheme) => {
-      editor?.setTheme(theme);
-    },
-    [editor]
-  );
-
-  const onValidate = useCallback(async () => {
-    if (!editor) {
+  const onDownload = useCallback(async () => {
+    if (!editor || !embeddedEditorFile || !downloadRef.current) {
       return;
     }
 
-    const notifications = await editor.validate();
+    const content = await editor.getContent();
+    const fileBlob = new Blob([content], { type: "text/plain" });
+
+    downloadRef.current.href = URL.createObjectURL(fileBlob);
+    downloadRef.current.setAttribute("download", embeddedEditorFile.fileName);
+    downloadRef.current.click();
+  }, [editor, embeddedEditorFile]);
+
+  const onValidate = useCallback(async () => {
+    if (!editor || !swfLanguageService || !embeddedEditorFile) {
+      return;
+    }
+
+    const content = await editor.getContent();
+    const lsDiagnostics = await swfLanguageService.getDiagnostics({
+      content: content,
+      uriPath: embeddedEditorFile.path!,
+    });
+
+    const notifications = lsDiagnostics.map(
+      (lsDiagnostic) =>
+        ({
+          path: "", // empty to not group them by path, as we're only validating one file.
+          severity: lsDiagnostic.severity === DiagnosticSeverity.Error ? "ERROR" : "WARNING",
+          message: `${lsDiagnostic.message} [Line ${lsDiagnostic.range.start.line + 1}]`,
+          type: "PROBLEM",
+          position: {
+            startLineNumber: lsDiagnostic.range.start.line + 1,
+            startColumn: lsDiagnostic.range.start.character + 1,
+            endLineNumber: lsDiagnostic.range.end.line + 1,
+            endColumn: lsDiagnostic.range.end.character + 1,
+          },
+        } as Notification)
+    );
+
     window.alert(JSON.stringify(notifications, undefined, 2));
-  }, [editor]);
+  }, [editor, embeddedEditorFile, swfLanguageService]);
 
   const onSetContent = useCallback((path: string, content: string) => {
     const match = /\.sw\.(json|yml|yaml)$/.exec(path.toLowerCase());
@@ -109,13 +175,7 @@ export const App = () => {
       {embeddedEditorFile && (
         <>
           <PageSection padding={{ default: "noPadding" }}>
-            <HistoryButtons
-              undo={onUndo}
-              redo={onRedo}
-              get={onGetContent}
-              setTheme={onSetTheme}
-              validate={onValidate}
-            />
+            <HistoryButtons undo={onUndo} redo={onRedo} download={onDownload} validate={onValidate} />
           </PageSection>
           <PageSection padding={{ default: "noPadding" }} isFilled={true} hasOverflowScroll={false}>
             <div className="editor-container">
@@ -125,10 +185,14 @@ export const App = () => {
                   file={embeddedEditorFile}
                   channelType={ChannelType.ONLINE}
                   editorEnvelopeLocator={editorEnvelopeLocator}
-                  locale={"en"}
+                  locale={LOCALE}
+                  customChannelApiImpl={apiImpl}
+                  stateControl={stateControl}
+                  isReady={isReady}
                 />
               )}
             </div>
+            <a ref={downloadRef} />
           </PageSection>
         </>
       )}

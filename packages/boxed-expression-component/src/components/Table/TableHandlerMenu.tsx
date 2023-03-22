@@ -16,7 +16,7 @@
 
 import "./TableHandlerMenu.css";
 import * as React from "react";
-import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core";
+import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core/dist/js/components/Menu";
 import { AllowedOperations, GroupOperations, TableOperation } from "../../api";
 import * as _ from "lodash";
 

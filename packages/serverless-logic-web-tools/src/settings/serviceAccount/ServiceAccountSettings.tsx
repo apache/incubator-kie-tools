@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Modal, ModalVariant } from "@patternfly/react-core";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -24,7 +24,7 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { AddCircleOIcon } from "@patternfly/react-icons";
+import { AddCircleOIcon } from "@patternfly/react-icons/dist/js/icons/add-circle-o-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
