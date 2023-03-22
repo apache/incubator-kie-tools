@@ -55,7 +55,7 @@ const INIT_OPTION = {
 
 const validate = (columns: Column[]): string | undefined => {
   if (columns.length < 3) {
-    return "Data Set is Invalid! You must provide at least 3 columns containing the series, timestamp and the value";
+    return "Data Set is invalid! You must provide at least 3 columns containing the series, timestamp and the value";
   }
 };
 
