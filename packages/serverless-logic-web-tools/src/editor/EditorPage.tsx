@@ -43,7 +43,6 @@ import { APP_NAME } from "../AppConstants";
 import { WebToolsEmbeddedEditor, WebToolsEmbeddedEditorRef } from "./WebToolsEmbeddedEditor";
 import { useEditorNotifications } from "./hooks/useEditorNotifications";
 import { useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
-import { useEditorDispatch } from "./hooks/EditorContext";
 
 export interface Props {
   workspaceId: string;
@@ -67,7 +66,6 @@ export function EditorPage(props: Props) {
   const isEditorReady = useMemo(() => webToolsEditor?.editor?.isReady, [webToolsEditor]);
   const queryParams = useQueryParams();
   const alertsDispatch = useGlobalAlertsDispatchContext();
-  const editorDispatch = useEditorDispatch();
 
   const notifications = useEditorNotifications({
     webToolsEditor,
@@ -207,10 +205,8 @@ export function EditorPage(props: Props) {
   }, [alertsDispatch]);
 
   useEffect(() => {
-    //TODO CAPONETTO: review this context as it was created before EditorPage refactoring
-    editorDispatch.setNotifications(notifications);
     editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
-  }, [editorPageDock, notifications, i18n, editorDispatch]);
+  }, [editorPageDock, notifications, i18n]);
 
   const onNotificationClick = useCallback(
     (notification: Notification) => {
