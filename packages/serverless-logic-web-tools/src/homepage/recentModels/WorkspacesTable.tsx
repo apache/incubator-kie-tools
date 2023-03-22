@@ -13,27 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import {
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
-  DropdownToggleCheckbox,
-  Pagination,
-  SearchInput,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
-} from "@patternfly/react-core/dist/js";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+  PromiseStateStatus,
+  PromiseStateWrapper,
+  useLivePromiseState,
+} from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import "@patternfly/react-core/dist/styles/base.css";
-import { TrashIcon } from "@patternfly/react-icons/dist/js/icons";
-import { TableComposable, Tbody, Th, Thead, Tr } from "@patternfly/react-table";
+import {
+  TableComposable,
+  Tbody,
+  Th,
+  Thead,
+  Tr,
+  ThProps,
+} from "@patternfly/react-table/dist/js/components/TableComposable";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { KebabDropdown } from "../../editor/EditorToolbar";
+import { splitFiles } from "../../extension";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
-import { WorkspacesTableRow, WorkspacesTableRowEmptyState, WorkspacesTableRowError } from "./WorkspacesTableRow";
+import {
+  WorkspacesTableRow,
+  WorkspacesTableRowEmptyState,
+  WorkspacesTableRowError,
+  WorkspacesTableRowLoading,
+} from "./WorkspacesTableRow";
 
 export const columnNames = {
   name: "Name",
@@ -45,185 +50,155 @@ export const columnNames = {
 };
 
 export type WorkspacesTableProps = {
-  workspaceDescriptors: WorkspaceDescriptor[];
-  selectedWorkspaceIds: WorkspaceDescriptor["workspaceId"][];
-  setSelectedWorkspaceIds: React.Dispatch<React.SetStateAction<WorkspaceDescriptor["workspaceId"][]>>;
-  setIsConfirmDeleteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onClearFilters: () => void;
   onWsToggle: (workspaceId: WorkspaceDescriptor["workspaceId"], checked: boolean) => void;
+  searchValue: string;
+  selectedWorkspaceIds: WorkspaceDescriptor["workspaceId"][];
+  workspaceDescriptors: WorkspaceDescriptor[];
+};
+
+export type WorkspacesTableRowData = Pick<
+  WorkspaceDescriptor,
+  "workspaceId" | "origin" | "createdDateISO" | "lastUpdatedDateISO"
+> & {
+  descriptor: WorkspaceDescriptor;
+  editableFiles: WorkspaceFile[];
+  totalFiles: number;
+  name: string;
+  isWsFolder: boolean;
 };
 
 export function WorkspacesTable(props: WorkspacesTableProps) {
-  const modelsListPadding = "10px";
-  const { workspaceDescriptors, selectedWorkspaceIds, setSelectedWorkspaceIds, setIsConfirmDeleteModalOpen } = props;
-  const [isBulkDropDownOpen, setIsBulkDropDownOpen] = useState(false);
-  const [searchValue, setSearchValue] = React.useState("");
-  const [isLargeKebabOpen, setLargeKebabOpen] = useState(false);
+  const { workspaceDescriptors, selectedWorkspaceIds, onClearFilters, searchValue } = props;
+  const [activeSortIndex, setActiveSortIndex] = useState<number>(3);
+  const [activeSortDirection, setActiveSortDirection] = useState<"asc" | "desc">("desc");
+  const workspaces = useWorkspaces();
 
-  const tableData = useMemo(() => {
-    if (!searchValue) {
-      return workspaceDescriptors;
-    }
-    const regexp = new RegExp(searchValue, "i");
-    console.log(
-      "### workspaceDescriptors",
-      workspaceDescriptors.map((w) => w.name)
-    );
-    return workspaceDescriptors.filter((w) => w.name.search(regexp) >= 0);
-  }, [searchValue, workspaceDescriptors]);
+  const [allWorkspacePromises] = useLivePromiseState<WorkspaceFile[][]>(
+    useMemo(
+      () => () => Promise.all(workspaceDescriptors.map((w) => workspaces.getFiles(w))),
+      [workspaceDescriptors, workspaces]
+    )
+  );
 
-  const onBulkDropDownSelect = useCallback(() => setIsBulkDropDownOpen(false), []);
+  const tableData = useMemo<WorkspacesTableRowData[]>(
+    () =>
+      allWorkspacePromises.status !== PromiseStateStatus.RESOLVED
+        ? []
+        : workspaceDescriptors.map((workspace, index) => {
+            const { editableFiles, readonlyFiles } = splitFiles(allWorkspacePromises.data[index] ?? []);
+            const isWsFolder = editableFiles.length > 1 || readonlyFiles.length > 0;
 
-  const onBulkDropDownToggle = useCallback((isOpen: boolean) => setIsBulkDropDownOpen(isOpen), []);
+            return {
+              descriptor: workspace,
+              workspaceId: workspace.workspaceId,
+              name: !isWsFolder && editableFiles.length ? editableFiles[0].nameWithoutExtension : workspace.name,
+              origin: workspace.origin,
+              createdDateISO: workspace.createdDateISO,
+              lastUpdatedDateISO: workspace.lastUpdatedDateISO,
+              editableFiles: editableFiles,
+              totalFiles: editableFiles.length + readonlyFiles.length,
+              isWsFolder,
+            };
+          }),
+    [workspaceDescriptors, allWorkspacePromises.data, allWorkspacePromises.status]
+  );
+
+  const filteredTableData = useMemo(() => {
+    const searchRegex = new RegExp(searchValue, "i");
+    return searchValue ? tableData.filter((e) => e.name.search(searchRegex) >= 0) : tableData;
+  }, [searchValue, tableData]);
+
+  const sortedTableData = useMemo<WorkspacesTableRowData[]>(
+    () =>
+      filteredTableData.sort((a, b) => {
+        const aValue = getSortableRowValues(a)[activeSortIndex];
+        const bValue = getSortableRowValues(b)[activeSortIndex];
+        if (typeof aValue === "number") {
+          return activeSortDirection === "asc"
+            ? (aValue as number) - (bValue as number)
+            : (bValue as number) - (aValue as number);
+        } else {
+          return activeSortDirection === "asc"
+            ? (aValue as string).localeCompare(bValue as string)
+            : (bValue as string).localeCompare(aValue as string);
+        }
+      }),
+    [filteredTableData, activeSortIndex, activeSortDirection]
+  );
+
+  const visibleTableData = useMemo(() => sortedTableData, [sortedTableData]);
+
+  const getSortParams = useCallback(
+    (columnIndex: number): ThProps["sort"] => ({
+      sortBy: {
+        index: activeSortIndex,
+        direction: activeSortDirection,
+        defaultDirection: "asc",
+      },
+      onSort: (_event, index, direction) => {
+        setActiveSortIndex(index);
+        setActiveSortDirection(direction);
+      },
+      columnIndex,
+    }),
+    [activeSortIndex, activeSortDirection]
+  );
 
   const isWsCheckboxChecked = useCallback(
     (workspaceId: WorkspaceDescriptor["workspaceId"]) => selectedWorkspaceIds.includes(workspaceId),
     [selectedWorkspaceIds]
   );
 
-  const onSelectAllWorkspace = useCallback(
-    (checked: boolean, workspaceDescriptors: WorkspaceDescriptor[]) => {
-      setSelectedWorkspaceIds(checked ? workspaceDescriptors.map((e) => e.workspaceId) : []);
-    },
-    [setSelectedWorkspaceIds]
-  );
-
-  const isBulkCheckBoxChecked = useMemo(() => {
-    if (workspaceDescriptors.length && selectedWorkspaceIds.length) {
-      return selectedWorkspaceIds.length === workspaceDescriptors.length ? true : null;
-    }
-    return false;
-  }, [workspaceDescriptors, selectedWorkspaceIds]);
-
-  const onBulkDeleteButtonClick = useCallback(() => setIsConfirmDeleteModalOpen(true), [setIsConfirmDeleteModalOpen]);
-
-  const deleteFileDropdownItem = useMemo(() => {
-    return (
-      <DropdownItem
-        key={"delete-dropdown-item"}
-        isDisabled={!selectedWorkspaceIds.length}
-        onClick={onBulkDeleteButtonClick}
-        ouiaId={"delete-file-button"}
-        aria-label="Open confirm delete modal"
-      >
-        <Flex flexWrap={{ default: "nowrap" }}>
-          <FlexItem>
-            <TrashIcon />
-            &nbsp;&nbsp;Delete <b>selected {selectedWorkspaceIds.length > 1 ? "models" : "model"}</b>
-          </FlexItem>
-        </Flex>
-      </DropdownItem>
-    );
-  }, [selectedWorkspaceIds, onBulkDeleteButtonClick]);
-
-  const bulkDropDownItems = useCallback(
-    (workspaceDescriptors: WorkspaceDescriptor[]) => [
-      <DropdownItem onClick={() => setSelectedWorkspaceIds([])} key="none" aria-label="Select none">
-        Select none (0)
-      </DropdownItem>,
-      <DropdownItem
-        onClick={() => setSelectedWorkspaceIds(workspaceDescriptors.map((e) => e.workspaceId))}
-        key="all"
-        aria-label="Select All"
-      >
-        Select all({workspaceDescriptors.length})
-      </DropdownItem>,
-    ],
-    [setSelectedWorkspaceIds]
-  );
-
-  const onSearchChange = useCallback((value: string) => {
-    setSearchValue(value);
-  }, []);
-
-  /* TODO: WorkspacesTable: sort by lastUpdated */
   return (
     <>
-      <Toolbar>
-        <ToolbarContent style={{ paddingLeft: modelsListPadding, paddingRight: modelsListPadding }}>
-          <ToolbarItem alignment={{ default: "alignLeft" }}>
-            <Dropdown
-              onSelect={onBulkDropDownSelect}
-              toggle={
-                <DropdownToggle
-                  splitButtonItems={[
-                    <DropdownToggleCheckbox
-                      onChange={(checked) => onSelectAllWorkspace(checked, workspaceDescriptors)}
-                      isChecked={isBulkCheckBoxChecked}
-                      id="split-button-text-checkbox"
-                      key="bulk-check-box"
-                      aria-label="Select all"
-                    >
-                      {selectedWorkspaceIds.length ? `${selectedWorkspaceIds.length} selected` : ""}
-                    </DropdownToggleCheckbox>,
-                  ]}
-                  onToggle={onBulkDropDownToggle}
-                  id="toggle-split-button-text"
-                />
-              }
-              isOpen={isBulkDropDownOpen}
-              dropdownItems={bulkDropDownItems(workspaceDescriptors)}
-              aria-label="Bulk selection dropdown"
-            />
-          </ToolbarItem>
-          <ToolbarItem variant="search-filter">
-            <SearchInput
-              placeholder="Filter by server name"
-              value={searchValue}
-              onChange={(_event, value) => onSearchChange(value)}
-              onClear={() => onSearchChange("")}
-            />
-          </ToolbarItem>
-          <ToolbarItem>
-            <KebabDropdown
-              id={"kebab-lg"}
-              state={[isLargeKebabOpen, setLargeKebabOpen]}
-              items={[deleteFileDropdownItem]}
-              menuAppendTo="parent"
-            />
-          </ToolbarItem>
-          <ToolbarItem variant="pagination">
-            <Pagination
-              titles={{ paginationTitle: "Search filter pagination" }}
-              perPageComponent="button"
-              itemCount={workspaceDescriptors.length}
-              perPage={10}
-              page={1}
-              widgetId="search-input-mock-pagination"
-              isCompact
-            />
-          </ToolbarItem>
-        </ToolbarContent>
-      </Toolbar>
-
       <TableComposable aria-label="Selectable table">
         <Thead>
           <Tr>
             <Th>&nbsp;</Th>
-            <Th>{columnNames.name}</Th>
-            <Th>{columnNames.type}</Th>
-            <Th>{columnNames.created}</Th>
-            <Th>{columnNames.lastUpdated}</Th>
-            <Th>{columnNames.editableFiles}</Th>
-            <Th>{columnNames.totalFiles}</Th>
+            <Th sort={getSortParams(0)}>{columnNames.name}</Th>
+            <Th sort={getSortParams(1)}>{columnNames.type}</Th>
+            <Th sort={getSortParams(2)}>{columnNames.created}</Th>
+            <Th sort={getSortParams(3)}>{columnNames.lastUpdated}</Th>
+            <Th sort={getSortParams(4)}>{columnNames.editableFiles}</Th>
+            <Th sort={getSortParams(5)}>{columnNames.totalFiles}</Th>
             <Th></Th>
           </Tr>
         </Thead>
         <Tbody>
-          {tableData.map((workspace, rowIndex) => (
-            <ErrorBoundary
-              key={workspace.workspaceId}
-              error={<WorkspacesTableRowError workspaceDescriptor={workspace} />}
-            >
-              <WorkspacesTableRow
-                workspaceDescriptor={workspace}
-                rowIndex={rowIndex}
-                isSelected={isWsCheckboxChecked(workspace.workspaceId)}
-                onToggle={(checked) => props.onWsToggle(workspace.workspaceId, checked)}
-              />
-            </ErrorBoundary>
-          )) || <WorkspacesTableRowEmptyState />}
+          <PromiseStateWrapper
+            promise={allWorkspacePromises}
+            pending={<WorkspacesTableRowLoading />}
+            rejected={() => <>ERROR</>}
+            resolved={() =>
+              !visibleTableData.length ? (
+                <WorkspacesTableRowEmptyState onClearFilters={onClearFilters} />
+              ) : (
+                visibleTableData.map((rowData, rowIndex) => (
+                  <ErrorBoundary key={rowData.workspaceId} error={<WorkspacesTableRowError rowData={rowData} />}>
+                    <WorkspacesTableRow
+                      rowData={rowData}
+                      rowIndex={rowIndex}
+                      isSelected={isWsCheckboxChecked(rowData.workspaceId)}
+                      onToggle={(checked) => props.onWsToggle(rowData.workspaceId, checked)}
+                    />
+                  </ErrorBoundary>
+                ))
+              )
+            }
+          />
         </Tbody>
       </TableComposable>
     </>
   );
+}
+
+function getSortableRowValues(tableData: WorkspacesTableRowData): (string | number | boolean)[] {
+  const { name, isWsFolder, createdDateISO, lastUpdatedDateISO, editableFiles, totalFiles, descriptor } = tableData;
+  const workspaceType = !editableFiles.length
+    ? ""
+    : isWsFolder
+    ? "d_" + descriptor.origin.toString()
+    : "f_" + editableFiles[0].extension;
+  return [name, workspaceType, createdDateISO, lastUpdatedDateISO, editableFiles.length, totalFiles];
 }

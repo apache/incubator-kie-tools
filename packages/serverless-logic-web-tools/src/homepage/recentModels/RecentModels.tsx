@@ -18,52 +18,27 @@ import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseSta
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import {
-  Alert,
-  AlertActionCloseButton,
-  AlertGroup,
-  AlertProps,
-  Page,
-  PageSection,
-  Pagination,
-  SearchInput,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
-} from "@patternfly/react-core/dist/js";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
-  DropdownToggleCheckbox,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Alert, AlertActionCloseButton, AlertProps } from "@patternfly/react-core/dist/js/components/Alert";
+import { AlertGroup } from "@patternfly/react-core/dist/js/components/AlertGroup";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { TrashIcon } from "@patternfly/react-icons/dist/js/icons";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router";
-import { KebabDropdown } from "../../editor/EditorToolbar";
-import { useRoutes } from "../../navigation/Hooks";
-import { QueryParams } from "../../navigation/Routes";
-import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
+import { useCallback, useState } from "react";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
+import { MasTableToolbar } from "./MasTableToolbar";
 import { WorkspacesTable } from "./WorkspacesTable";
 
 export function RecentModels() {
-  const routes = useRoutes();
-  const history = useHistory();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
-  const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
-  const queryParams = useQueryParams();
   const [selectedWorkspaceIds, setSelectedWorkspaceIds] = useState<WorkspaceDescriptor["workspaceId"][]>([]);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
-  const workspaces = useWorkspaces();
   const [alerts, setAlerts] = useState<Partial<AlertProps>[]>([]);
+  const [searchValue, setSearchValue] = React.useState("");
+  const workspaces = useWorkspaces();
 
   const onConfirmDeleteModalClose = useCallback(() => setIsConfirmDeleteModalOpen(false), []);
 
@@ -109,6 +84,14 @@ export function RecentModels() {
     });
   }, []);
 
+  const onToggleAllElements = useCallback((checked: boolean, workspaceDescriptors: WorkspaceDescriptor[]) => {
+    setSelectedWorkspaceIds(checked ? workspaceDescriptors.map((e) => e.workspaceId) : []);
+  }, []);
+
+  const onClearFilters = useCallback(() => {
+    setSearchValue("");
+  }, []);
+
   return (
     <PromiseStateWrapper
       promise={workspaceDescriptorsPromise}
@@ -151,12 +134,20 @@ export function RecentModels() {
                 <PageSection variant={"light"} padding={{ default: "noPadding" }}>
                   {workspaceDescriptors.length > 0 && (
                     <>
+                      <MasTableToolbar
+                        elementsCount={workspaceDescriptors.length}
+                        onDeleteActionButtonClick={() => setIsConfirmDeleteModalOpen(true)}
+                        onToggleAllElements={(checked) => onToggleAllElements(checked, workspaceDescriptors)}
+                        searchValue={searchValue}
+                        selectedElementsCount={selectedWorkspaceIds.length}
+                        setSearchValue={setSearchValue}
+                      />
                       <WorkspacesTable
-                        workspaceDescriptors={workspaceDescriptors}
-                        selectedWorkspaceIds={selectedWorkspaceIds}
-                        setSelectedWorkspaceIds={setSelectedWorkspaceIds}
-                        setIsConfirmDeleteModalOpen={setIsConfirmDeleteModalOpen}
+                        onClearFilters={onClearFilters}
                         onWsToggle={onWsToggle}
+                        searchValue={searchValue}
+                        selectedWorkspaceIds={selectedWorkspaceIds}
+                        workspaceDescriptors={workspaceDescriptors}
                       />
                     </>
                   )}

@@ -44,6 +44,7 @@ import { useRoutes } from "../../navigation/Hooks";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 
+/* TODO: WorkspaceCard: delete this component during https://issues.redhat.com/browse/KOGITO-8890*/
 export function WorkspaceLoadingCard() {
   return (
     <Card>

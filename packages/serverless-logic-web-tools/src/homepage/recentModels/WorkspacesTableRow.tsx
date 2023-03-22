@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { useMemo } from "react";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
-import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { Bullseye, Button, EmptyState, EmptyStateBody, EmptyStateIcon, Title } from "@patternfly/react-core/dist/js";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import "@patternfly/react-core/dist/styles/base.css";
 import { ExclamationTriangleIcon, SearchIcon } from "@patternfly/react-icons/dist/js/icons";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
-import { ActionsColumn, Td, Tr } from "@patternfly/react-table";
+import { ActionsColumn, Td, Tr } from "@patternfly/react-table/dist/esm";
 import { TdSelectType } from "@patternfly/react-table/dist/esm/components/Table/base";
-import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { RelativeDate } from "../../dates/RelativeDate";
-import { splitFiles } from "../../extension";
 import { routes } from "../../navigation/Routes";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
-import { columnNames } from "./WorkspacesTable";
-import { Bullseye, Button, EmptyState, EmptyStateBody, EmptyStateIcon, Title } from "@patternfly/react-core/dist/js";
+import { columnNames, WorkspacesTableRowData } from "./WorkspacesTable";
 
 export type WorkspacesTableRowProps = {
   rowIndex: TdSelectType["rowIndex"];
-  workspaceDescriptor: WorkspaceDescriptor;
+  rowData: WorkspacesTableRowData;
   isSelected: boolean;
   /**
    * event fired when the Checkbox is toggled
@@ -46,140 +42,100 @@ export type WorkspacesTableRowProps = {
 };
 
 export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
-  const { isSelected, rowIndex, workspaceDescriptor } = props;
-  const workspacePromise = useWorkspacePromise(workspaceDescriptor.workspaceId);
+  const { isSelected, rowIndex } = props;
+  const { descriptor, editableFiles, totalFiles, name, isWsFolder, workspaceId, createdDateISO, lastUpdatedDateISO } =
+    props.rowData;
   const workspaces = useWorkspaces();
 
-  const { editableFiles, readonlyFiles } = useMemo(
-    () => splitFiles(workspacePromise.data?.files ?? []),
-    [workspacePromise.data?.files]
-  );
-
-  const isWsFolder = useMemo(
-    () => editableFiles.length > 1 || readonlyFiles.length > 0,
-    [editableFiles, readonlyFiles]
-  );
-
-  const workspaceName = useMemo(
-    () => (!isWsFolder && editableFiles.length ? editableFiles[0].nameWithoutExtension : workspaceDescriptor.name),
-    [isWsFolder, editableFiles, workspaceDescriptor.name]
-  );
-
-  const renderModel = useMemo(() => {
-    if (!editableFiles || !editableFiles[0]) {
-      return "";
-    }
-
-    const linkTo = routes.workspaceWithFilePath.path({
-      workspaceId: editableFiles[0].workspaceId,
-      fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-      extension: editableFiles[0].extension,
-    });
-
-    return (
-      <>
-        <Td dataLabel={columnNames.name}>
-          <TaskIcon />
-          &nbsp;&nbsp;&nbsp;
-          <Link to={linkTo}>{workspaceName}</Link>
-        </Td>
-        <Td dataLabel={columnNames.type}>
-          <FileLabel extension={editableFiles[0].extension} />
-        </Td>
-        <Td dataLabel={columnNames.created}>
-          <RelativeDate date={new Date(workspaceDescriptor.createdDateISO ?? "")} />
-        </Td>
-        <Td dataLabel={columnNames.lastUpdated}>
-          <RelativeDate date={new Date(workspaceDescriptor.lastUpdatedDateISO ?? "")} />
-        </Td>
-        <Td dataLabel={columnNames.editableFiles}>1</Td>
-        <Td dataLabel={columnNames.totalFiles}>1</Td>
-      </>
-    );
-  }, [editableFiles, workspaceDescriptor, workspaceName]);
-
-  const renderFolder = useMemo(
+  const linkTo = useMemo(
     () =>
-      !editableFiles || !editableFiles[0] ? (
-        ""
-      ) : (
-        <>
-          <Td dataLabel={columnNames.name}>
-            <FolderIcon />
-            &nbsp;&nbsp;&nbsp;
-            {workspaceName}
-          </Td>
-          <Td dataLabel={columnNames.type}>
-            <WorkspaceLabel descriptor={workspaceDescriptor} />
-          </Td>
-          <Td dataLabel={columnNames.created}>
-            <RelativeDate date={new Date(workspaceDescriptor.createdDateISO ?? "")} />
-          </Td>
-          <Td dataLabel={columnNames.lastUpdated}>
-            <RelativeDate date={new Date(workspaceDescriptor.lastUpdatedDateISO ?? "")} />
-          </Td>
-          <Td dataLabel={columnNames.editableFiles}>{editableFiles.length}</Td>
-          <Td dataLabel={columnNames.totalFiles}>{editableFiles.length + readonlyFiles.length}</Td>
-        </>
-      ),
-    [editableFiles, readonlyFiles, workspaceDescriptor, workspaceName]
+      routes.workspaceWithFilePath.path({
+        workspaceId: editableFiles[0].workspaceId,
+        fileRelativePath: editableFiles[0].relativePathWithoutExtension,
+        extension: editableFiles[0].extension,
+      }),
+    [editableFiles]
   );
 
   return (
-    <Tr key={workspaceDescriptor.name}>
-      <PromiseStateWrapper
-        promise={workspacePromise}
-        pending={<WorkspacesTableRowLoading />}
-        rejected={() => <>ERROR</>}
-        resolved={() => {
-          return (
-            <>
-              <Td
-                select={{
-                  rowIndex,
-                  onSelect: (_event, checked) => props.onToggle(checked),
-                  isSelected,
-                }}
-              />
-              {isWsFolder ? renderFolder : renderModel}
-              <Td isActionCell>
-                <ActionsColumn
-                  items={[
-                    {
-                      title: "Delete",
-                      onClick: () => workspaces.deleteWorkspace({ workspaceId: workspaceDescriptor.workspaceId }),
-                    },
-                  ]}
-                />
-              </Td>
-            </>
-          );
+    <Tr key={name}>
+      <Td
+        select={{
+          rowIndex,
+          onSelect: (_event, checked) => props.onToggle(checked),
+          isSelected,
         }}
       />
+      <Td dataLabel={columnNames.name}>
+        {isWsFolder ? (
+          <>
+            <FolderIcon />
+            &nbsp;&nbsp;&nbsp;{name}
+          </>
+        ) : (
+          <>
+            <TaskIcon />
+            &nbsp;&nbsp;&nbsp;<Link to={linkTo}>{name}</Link>
+          </>
+        )}
+      </Td>
+      <Td dataLabel={columnNames.type}>
+        {isWsFolder ? <WorkspaceLabel descriptor={descriptor} /> : <FileLabel extension={editableFiles[0].extension} />}
+      </Td>
+      <Td dataLabel={columnNames.created}>
+        <RelativeDate date={new Date(createdDateISO ?? "")} />
+      </Td>
+      <Td dataLabel={columnNames.lastUpdated}>
+        <RelativeDate date={new Date(lastUpdatedDateISO ?? "")} />
+      </Td>
+      <Td dataLabel={columnNames.editableFiles}>{editableFiles.length}</Td>
+      <Td dataLabel={columnNames.totalFiles}>{totalFiles}</Td>
+      <Td isActionCell>
+        <ActionsColumn
+          items={[
+            {
+              title: "Delete",
+              onClick: () => workspaces.deleteWorkspace({ workspaceId }),
+            },
+          ]}
+        />
+      </Td>
     </Tr>
   );
 }
 
-export function WorkspacesTableRowError(props: { workspaceDescriptor: WorkspaceDescriptor }) {
+export function WorkspacesTableRowError(props: { rowData: WorkspacesTableRowData }) {
+  const { rowData } = props;
+  const workspaces = useWorkspaces();
+
   return (
     <>
       <Td></Td>
       <Td>
         <ExclamationTriangleIcon />
         &nbsp;&nbsp;
-        {`There was an error obtaining information for '${props.workspaceDescriptor.workspaceId}'`}
+        {`There was an error obtaining information for '${rowData.workspaceId}'`}
       </Td>
       <Td></Td>
       <Td></Td>
       <Td></Td>
       <Td></Td>
       <Td></Td>
-      <Td></Td>
+      <Td isActionCell>
+        <ActionsColumn
+          items={[
+            {
+              title: "Delete",
+              onClick: () => workspaces.deleteWorkspace({ workspaceId: rowData.workspaceId }),
+            },
+          ]}
+        />
+      </Td>
     </>
   );
 }
 
-export function WorkspacesTableRowEmptyState() {
+export function WorkspacesTableRowEmptyState(props: { onClearFilters: () => void }) {
   /* TODO: WorkspacesTableRow: component to be tested */
   return (
     <Tr>
@@ -188,10 +144,12 @@ export function WorkspacesTableRowEmptyState() {
           <EmptyState variant="small">
             <EmptyStateIcon icon={SearchIcon} />
             <Title headingLevel="h2" size="lg">
-              No results found
+              No matching modules found
             </Title>
-            <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
-            <Button variant="link">Clear all filters</Button>
+            <EmptyStateBody>This filter criteria matches no groups. Try changing your filter settings.</EmptyStateBody>
+            <Button variant="link" onClick={props.onClearFilters}>
+              Clear all filters
+            </Button>
           </EmptyState>
         </Bullseye>
       </Td>
@@ -199,9 +157,9 @@ export function WorkspacesTableRowEmptyState() {
   );
 }
 
-function WorkspacesTableRowLoading() {
+export function WorkspacesTableRowLoading() {
   return (
-    <>
+    <tr>
       <Td>
         <Skeleton />
       </Td>
@@ -226,6 +184,6 @@ function WorkspacesTableRowLoading() {
       <Td>
         <Skeleton />
       </Td>
-    </>
+    </tr>
   );
 }
