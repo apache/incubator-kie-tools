@@ -28,6 +28,6 @@ jobs:
       - name: "Check code formatting"
         shell: bash
         run: |
-          export NODE_OPTIONS=--max_old_space_size=4096 
+          export NODE_OPTIONS=--max_old_space_size=6144
           pnpm bootstrap:root
           pnpm format:check
