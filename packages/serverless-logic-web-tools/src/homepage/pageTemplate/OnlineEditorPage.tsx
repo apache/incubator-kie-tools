@@ -158,6 +158,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
     [location, isRouteInSettingsSection]
   );
 
+  /* FIXME: OnlineEditorPage: when the page is small the sidebar should hide like in MAS */
   const sidebar = <PageSidebar nav={pageNav} isNavOpen={props.isNavOpen} theme="dark" />;
   const mainContainerId = "main-content-page-layout-tertiary-nav";
 

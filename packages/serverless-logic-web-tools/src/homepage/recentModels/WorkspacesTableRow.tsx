@@ -80,6 +80,7 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
         )}
       </Td>
       <Td dataLabel={columnNames.type}>
+        {/* FIXME: WorkspacesTableRow: when the model is a GIST the label here is "Serverless Workflow" instead of GIST label */}
         {isWsFolder ? <WorkspaceLabel descriptor={descriptor} /> : <FileLabel extension={editableFiles[0].extension} />}
       </Td>
       <Td dataLabel={columnNames.created}>
@@ -107,6 +108,7 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
 export function WorkspacesTableRowError(props: { rowData: WorkspacesTableRowData }) {
   const { rowData } = props;
   const workspaces = useWorkspaces();
+  /* TODO: WorkspacesTableRow: use a generic message and hide the workspaceId? And put a Learn more (?) or just (?) icon and when the user passes the cursor over (?) we show a more detailed message that includes the workspaceId */
 
   return (
     <>

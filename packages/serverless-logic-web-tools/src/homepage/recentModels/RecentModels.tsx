@@ -18,6 +18,7 @@ import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseSta
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { PerPageOptions } from "@patternfly/react-core/dist/js/components/Pagination";
 import { Alert, AlertActionCloseButton, AlertProps } from "@patternfly/react-core/dist/js/components/Alert";
 import { AlertGroup } from "@patternfly/react-core/dist/js/components/AlertGroup";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -31,6 +32,12 @@ import { useCallback, useState } from "react";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
 import { MasTableToolbar } from "./MasTableToolbar";
 import { WorkspacesTable } from "./WorkspacesTable";
+import { TablePagination } from "./TablePagination";
+
+const perPageOptions: PerPageOptions[] = [5, 10, 20, 50, 100].map((n) => ({
+  title: n.toString(),
+  value: n,
+}));
 
 export function RecentModels() {
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
@@ -38,6 +45,8 @@ export function RecentModels() {
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const [alerts, setAlerts] = useState<Partial<AlertProps>[]>([]);
   const [searchValue, setSearchValue] = React.useState("");
+  const [page, setPage] = React.useState(1);
+  const [perPage, setPerPage] = React.useState(5);
   const workspaces = useWorkspaces();
 
   const onConfirmDeleteModalClose = useCallback(() => setIsConfirmDeleteModalOpen(false), []);
@@ -97,6 +106,8 @@ export function RecentModels() {
       promise={workspaceDescriptorsPromise}
       rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
       resolved={(workspaceDescriptors: WorkspaceDescriptor[]) => {
+        const itemCount = workspaceDescriptors.length;
+
         return (
           <>
             <AlertGroup isToast isLiveRegion>
@@ -132,22 +143,38 @@ export function RecentModels() {
 
               <PageSection isFilled aria-label="workspaces-table-section">
                 <PageSection variant={"light"} padding={{ default: "noPadding" }}>
-                  {workspaceDescriptors.length > 0 && (
+                  {itemCount > 0 && (
                     <>
                       <MasTableToolbar
-                        elementsCount={workspaceDescriptors.length}
+                        itemCount={itemCount}
                         onDeleteActionButtonClick={() => setIsConfirmDeleteModalOpen(true)}
                         onToggleAllElements={(checked) => onToggleAllElements(checked, workspaceDescriptors)}
                         searchValue={searchValue}
                         selectedElementsCount={selectedWorkspaceIds.length}
                         setSearchValue={setSearchValue}
+                        page={page}
+                        perPage={perPage}
+                        perPageOptions={perPageOptions}
+                        setPage={setPage}
+                        setPerPage={setPerPage}
                       />
                       <WorkspacesTable
+                        page={page}
+                        perPage={perPage}
                         onClearFilters={onClearFilters}
                         onWsToggle={onWsToggle}
                         searchValue={searchValue}
                         selectedWorkspaceIds={selectedWorkspaceIds}
                         workspaceDescriptors={workspaceDescriptors}
+                      />
+                      <TablePagination
+                        itemCount={itemCount}
+                        page={page}
+                        perPage={perPage}
+                        perPageOptions={perPageOptions}
+                        setPage={setPage}
+                        setPerPage={setPerPage}
+                        variant="bottom"
                       />
                     </>
                   )}

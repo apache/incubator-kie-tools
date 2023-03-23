@@ -33,6 +33,7 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { splitFiles } from "../../extension";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
+import { TablePaginationProps } from "./TablePagination";
 import {
   WorkspacesTableRow,
   WorkspacesTableRowEmptyState,
@@ -49,7 +50,7 @@ export const columnNames = {
   totalFiles: "Total files",
 };
 
-export type WorkspacesTableProps = {
+export type WorkspacesTableProps = Pick<TablePaginationProps, "page" | "perPage"> & {
   onClearFilters: () => void;
   onWsToggle: (workspaceId: WorkspaceDescriptor["workspaceId"], checked: boolean) => void;
   searchValue: string;
@@ -69,7 +70,7 @@ export type WorkspacesTableRowData = Pick<
 };
 
 export function WorkspacesTable(props: WorkspacesTableProps) {
-  const { workspaceDescriptors, selectedWorkspaceIds, onClearFilters, searchValue } = props;
+  const { workspaceDescriptors, selectedWorkspaceIds, onClearFilters, searchValue, page, perPage } = props;
   const [activeSortIndex, setActiveSortIndex] = useState<number>(3);
   const [activeSortDirection, setActiveSortDirection] = useState<"asc" | "desc">("desc");
   const workspaces = useWorkspaces();
@@ -104,14 +105,14 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
     [workspaceDescriptors, allWorkspacePromises.data, allWorkspacePromises.status]
   );
 
-  const filteredTableData = useMemo(() => {
+  const filteredTableData = useMemo<WorkspacesTableRowData[]>(() => {
     const searchRegex = new RegExp(searchValue, "i");
     return searchValue ? tableData.filter((e) => e.name.search(searchRegex) >= 0) : tableData;
   }, [searchValue, tableData]);
 
   const sortedTableData = useMemo<WorkspacesTableRowData[]>(
     () =>
-      filteredTableData.sort((a, b) => {
+      filteredTableData.slice().sort((a, b) => {
         const aValue = getSortableRowValues(a)[activeSortIndex];
         const bValue = getSortableRowValues(b)[activeSortIndex];
         if (typeof aValue === "number") {
@@ -127,7 +128,10 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
     [filteredTableData, activeSortIndex, activeSortDirection]
   );
 
-  const visibleTableData = useMemo(() => sortedTableData, [sortedTableData]);
+  const visibleTableData = useMemo<WorkspacesTableRowData[]>(
+    () => sortedTableData.slice((page - 1) * perPage, page * perPage),
+    [sortedTableData, page, perPage]
+  );
 
   const getSortParams = useCallback(
     (columnIndex: number): ThProps["sort"] => ({

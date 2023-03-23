@@ -20,15 +20,14 @@ import {
   DropdownToggleCheckbox,
   KebabToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { Pagination } from "@patternfly/react-core/dist/js/components/Pagination";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
+import { TablePagination, TablePaginationProps } from "./TablePagination";
 
-export type MasTableToolbarProps = {
-  elementsCount: number;
+export type MasTableToolbarProps = TablePaginationProps & {
   onDeleteActionButtonClick: () => void;
   onToggleAllElements: (checked: boolean) => void;
   searchValue: string;
@@ -38,19 +37,24 @@ export type MasTableToolbarProps = {
 
 export function MasTableToolbar(props: MasTableToolbarProps) {
   const {
-    elementsCount,
+    itemCount: itemCount,
     onDeleteActionButtonClick: onDeleteActionButtonClick,
     selectedElementsCount,
     searchValue,
     setSearchValue,
     onToggleAllElements,
+    page,
+    perPage,
+    perPageOptions,
+    setPage,
+    setPerPage,
   } = props;
   const [isBulkDropDownOpen, setIsBulkDropDownOpen] = useState(false);
   const [isActionDropdownOpen, setIsActionDropdownOpen] = React.useState(false);
 
   const isBulkCheckBoxChecked = useMemo(
-    () => (elementsCount === selectedElementsCount ? true : selectedElementsCount === 0 ? false : null),
-    [elementsCount, selectedElementsCount]
+    () => (itemCount === selectedElementsCount ? true : selectedElementsCount === 0 ? false : null),
+    [itemCount, selectedElementsCount]
   );
 
   const onBulkDropDownSelect = useCallback(() => setIsBulkDropDownOpen(false), []);
@@ -81,10 +85,10 @@ export function MasTableToolbar(props: MasTableToolbarProps) {
         Select none (0)
       </DropdownItem>,
       <DropdownItem onClick={() => onToggleAllElements(true)} key="all" aria-label="Select All">
-        Select all({elementsCount})
+        Select all({itemCount})
       </DropdownItem>,
     ],
-    [elementsCount, onToggleAllElements]
+    [itemCount, onToggleAllElements]
   );
 
   const onSearchChange = useCallback(
@@ -140,12 +144,14 @@ export function MasTableToolbar(props: MasTableToolbarProps) {
           />
         </ToolbarItem>
         <ToolbarItem variant="pagination">
-          <Pagination
-            titles={{ paginationTitle: "Search filter pagination" }}
-            perPageComponent="button"
-            itemCount={elementsCount}
-            perPage={10}
-            page={1}
+          <TablePagination
+            itemCount={itemCount}
+            page={page}
+            perPage={perPage}
+            perPageOptions={perPageOptions}
+            setPage={setPage}
+            setPerPage={setPerPage}
+            variant="top"
             isCompact
           />
         </ToolbarItem>
