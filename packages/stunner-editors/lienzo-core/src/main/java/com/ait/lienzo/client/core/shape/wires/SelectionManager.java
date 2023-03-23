@@ -171,6 +171,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler,
         setSelectionManagerInstance(this);
     }
 
+    //SelectionManager not available in module with Shortcuts. Transferring the instance to the public
     public static native void setSelectionManagerInstance(Object instance) /*-{
         window.selectionManagerInstance = instance;
     }-*/;
