@@ -63,17 +63,26 @@ Monaco.editor.defineTheme(MONACO_FEEL_THEME, feelTheme());
 
 Monaco.languages.setMonarchTokensProvider(MONACO_FEEL_LANGUAGE, feelTokensConfig());
 
-// FIXME: Tiago -> This is breaking for DMN Editor Dev webapp
-// Don't remove this. It's necessary for Monaco to initialize correctly and display correct colors for FEEL.
-// Monaco.editor.create(document.body, { theme: MONACO_FEEL_THEME, language: MONACO_FEEL_LANGUAGE }).dispose();
-
-console.info("Registered FEEL language on Monaco Editor.");
+// Don't remove this mechanism. It's necessary for Monaco to initialize correctly and display correct colors for FEEL.
+let __firstTimeInitializingMonacoToEnableColorizingCorrectly = true;
 
 export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
   ({ enabled, value, suggestionProvider, onBlur, onPreviewChanged, onKeyDown, onChange, options }, forwardRef) => {
     const monacoContainer = useRef<HTMLDivElement>(null);
 
     const monacoRef = useRef<Monaco.editor.IStandaloneCodeEditor>();
+
+    useEffect(() => {
+      if (!__firstTimeInitializingMonacoToEnableColorizingCorrectly) {
+        return;
+      }
+
+      console.info("Registered FEEL language on Monaco Editor to enable correct 'colorize' call.");
+      Monaco.editor
+        .create(monacoContainer.current!, { theme: MONACO_FEEL_THEME, language: MONACO_FEEL_LANGUAGE })
+        .dispose();
+      __firstTimeInitializingMonacoToEnableColorizingCorrectly = false;
+    }, []);
 
     useEffect(() => {
       if (!enabled) {
