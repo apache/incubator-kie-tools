@@ -103,7 +103,7 @@ public class FullSelectionSessionCommand extends AbstractSelectionAwareSessionCo
                 commandExecutedEvent.fire(new FullSelectionSessionCommandExecutedEvent(this,
                         getSession()));
                 callback.onSuccess();
-                getSelectionManagerInstance().selectionEventHandlingComplete();
+                getSelectionManagerInstance().selectingAllItems();
             } catch (Exception e) {
                 LOGGER.severe("Error on Full selection." + e.getMessage());
                 return;

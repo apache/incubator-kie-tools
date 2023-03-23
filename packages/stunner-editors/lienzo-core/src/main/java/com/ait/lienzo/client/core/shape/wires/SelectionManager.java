@@ -387,9 +387,11 @@ public class SelectionManager implements NodeMouseDoubleClickHandler,
         }
     }
 
-    public void selectionEventHandlingComplete() {
+    public void selectingAllItems() {
+        //Simulate selection of the entire screen with the mouse
         Shape<?> shape = new Rectangle(m_selected.getBoundingBox().getWidth(), m_selected.getBoundingBox().getHeight());
         shape.setLocation(new Point2D(m_selected.getBoundingBox().getMaxX(), m_selected.getBoundingBox().getMaxY()));
+        //Get all items in the selected area
         getItemsInBoundingBox(shape.getComputedBoundingPoints().getBoundingBox(), shape);
         if (!m_selected.isEmpty()) {
             m_selectionShapeProvider.clear();
