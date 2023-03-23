@@ -18,44 +18,34 @@ package org.dashbuilder.dataset.engine.function;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.dashbuilder.dataset.group.AggregateFunction;
 import org.dashbuilder.dataset.group.AggregateFunctionType;
 
-/**
- * It calculates the average value of a set of numbers.
- */
-public class MedianFunction extends AbstractFunction {
+public class JoinFunction implements AggregateFunction {
 
-    public MedianFunction() {
+    private static final CharSequence DEFAULT_DELIMITER = " ";
+    private CharSequence delimiter;
+
+    public JoinFunction() {
+        this(DEFAULT_DELIMITER);
+    }
+
+    public JoinFunction(CharSequence delimiter) {
         super();
+        this.delimiter = delimiter;
     }
 
+    @Override
     public AggregateFunctionType getType() {
-        return AggregateFunctionType.MEDIAN;
+        return AggregateFunctionType.JOIN;
     }
 
+    @Override
     public Object aggregate(List values) {
-        if (values == null || values.isEmpty()) {
-            return 0d;
-        }
-
-        var n = values.size();
-
-        if (n == 1) {
-            return ((Number) values.get(0)).doubleValue();
-        }
-
-        var sortedValues = values.stream().mapToDouble(v -> ((Number) v).doubleValue()).sorted().toArray();
-
-        if (n % 2 == 1) {
-            return sortedValues[n / 2];
-        }
-        var middle = n / 2;
-        var ii = n == 2 ? 0 : middle - 1;
-        var is = n == 2 ? 1 : middle;
-        var v = (sortedValues[ii] + sortedValues[is]) / 2d;
-        return round(v, precission);
+        return values.stream().collect(Collectors.joining(delimiter));
     }
 
+    @Override
     public Object aggregate(List values, List<Integer> rows) {
         if (rows == null) {
             return aggregate(values);

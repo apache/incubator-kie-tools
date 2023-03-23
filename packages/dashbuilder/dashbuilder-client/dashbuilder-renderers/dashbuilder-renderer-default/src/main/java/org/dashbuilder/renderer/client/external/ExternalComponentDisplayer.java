@@ -43,6 +43,8 @@ import org.dashbuilder.displayer.external.ExternalFilterRequest;
 @Dependent
 public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalComponentDisplayer.View> {
 
+    private static final String DEFAULT_WIDTH = "100%";
+
     public interface View extends AbstractErraiDisplayer.View<ExternalComponentDisplayer> {
 
         void setSize(int chartWidth, int chartHeight);
@@ -125,10 +127,8 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
                 displayerSettings.getChartMarginLeft());
 
         var width = displayerSettings.getComponentWidth();
-        if (width != null && !width.trim().isEmpty()) {
-            view.setWidth(width);
-        }
-
+        var finalWidth = width != null && !width.trim().isEmpty() ? width : DEFAULT_WIDTH;
+        view.setWidth(finalWidth);
         var height = displayerSettings.getComponentHeight();
         if (height != null && !height.trim().isEmpty()) {
             view.setHeight(height);
