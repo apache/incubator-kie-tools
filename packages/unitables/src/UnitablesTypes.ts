@@ -30,3 +30,10 @@ export interface UnitablesColumnType {
 export interface UnitablesRowType {
   inputEntries: string[];
 }
+
+export interface UnitablesCellConfigs {
+  width?: number;
+}
+
+// Can't use Record<string, DmnRunnerConfig | ConfigInputRow>;
+export type UnitablesInputsConfigs = { [x: string]: UnitablesCellConfigs | UnitablesInputsConfigs };

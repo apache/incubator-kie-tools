@@ -29,15 +29,15 @@ import {
   useBeeTableSelectableCellRef,
 } from "@kie-tools/boxed-expression-component/dist/selection/BeeTableSelectionContext";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useReducer, useEffect, useRef } from "react";
 import * as ReactTable from "react-table";
-import { UnitablesColumnType } from "../UnitablesTypes";
+import { UnitablesColumnType, UnitablesInputsConfigs, UnitablesCellConfigs } from "../UnitablesTypes";
 import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import { AutoField } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { useField } from "uniforms";
 import { AUTO_ROW_ID } from "../uniforms/UnitablesJsonSchemaBridge";
-import get from "lodash/get";
+import getObjectValueByPath from "lodash/get";
 import { useUnitablesContext } from "../UnitablesContext";
 
 export const UNITABLES_COLUMN_MIN_WIDTH = 150;
@@ -55,7 +55,7 @@ export interface UnitablesBeeTable {
   onRowDuplicated: (args: { rowIndex: number }) => void;
   onRowReset: (args: { rowIndex: number }) => void;
   onRowDeleted: (args: { rowIndex: number }) => void;
-  rowsWidth: object;
+  configs: UnitablesInputsConfigs;
   setWidth: (newWidth: number, fieldName: string) => void;
 }
 
@@ -70,7 +70,7 @@ export function UnitablesBeeTable({
   onRowDuplicated,
   onRowReset,
   onRowDeleted,
-  rowsWidth,
+  configs,
   setWidth,
 }: UnitablesBeeTable) {
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
@@ -127,7 +127,7 @@ export function UnitablesBeeTable({
           dataType: column.dataType,
           isRowIndexColumn: false,
           width: undefined,
-          minWidth: UNITABLES_COLUMN_MIN_WIDTH,
+          minWidth: UNITABLES_COLUMN_MIN_WIDTH, // TODO: FIXME;
           columns: column.insideProperties.map((insideProperty) => {
             return {
               originalId: uuid + `field-${insideProperty.joinedName}`,
@@ -135,7 +135,9 @@ export function UnitablesBeeTable({
               accessor: getColumnAccessor(insideProperty),
               dataType: insideProperty.dataType,
               isRowIndexColumn: false,
-              width: get(rowsWidth, insideProperty.joinedName) ?? insideProperty.width,
+              width:
+                (getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ??
+                insideProperty.width,
               setWidth: setColumnWidth(insideProperty.joinedName),
               minWidth: UNITABLES_COLUMN_MIN_WIDTH,
             };
@@ -148,13 +150,13 @@ export function UnitablesBeeTable({
           accessor: getColumnAccessor(column),
           dataType: column.dataType,
           isRowIndexColumn: false,
-          width: get(rowsWidth, column.name) ?? (column.width as number),
+          width: (getObjectValueByPath(configs, column.name) as UnitablesCellConfigs)?.width ?? column.width,
           setWidth: setColumnWidth(column.name),
           minWidth: UNITABLES_COLUMN_MIN_WIDTH,
         };
       }
     });
-  }, [setColumnWidth, rowsWidth, columns, uuid]);
+  }, [setColumnWidth, configs, columns, uuid]);
 
   const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
     return column.originalId ?? column.id;
@@ -195,58 +197,120 @@ function getColumnAccessor(c: UnitablesColumnType) {
   return `field-${c.joinedName}`;
 }
 
+function replacer(_: any, value: string) {
+  return value.replace(/[^\w\s]/gi, "");
+}
+
 function UnitablesBeeTableCell({ joinedName }: BeeTableCellProps<ROWTYPE> & { joinedName: string }) {
   const { containerCellCoordinates } = useBeeTableCoordinates();
-  const { setInternalChange } = useUnitablesContext();
+  const { internalChange } = useUnitablesContext();
+  const [{ field, value, onChange }] = useField(joinedName, {});
+  const [autoFieldKey, forceUpdate] = useReducer((x) => x + 1, 0);
+  const cellRef = useRef<HTMLDivElement | null>(null);
 
-  const [{ field, value, onChange }, { schema }] = useField(joinedName, {});
-
+  // TODO: Fix: x-dmn-type from field property: Any, Undefined, string, number, ...;
   const setValue = useCallback(
-    (newValue) => {
-      console.log("NEW VALUE", newValue);
-      // parseInt
-      // parseFloat
+    (newValue: string) => {
+      internalChange.current = true;
+      const newValueWithoutSymbols = newValue.replace(/\r/g, "");
 
-      // JSON.parse()
-
-      //
-      setInternalChange(true);
-      if (
-        (field.type === "number" && typeof newValue !== "number") ||
-        (field.type === "boolean" && typeof newValue !== "boolean") ||
-        (field.type === "string" && typeof newValue !== "string") ||
-        (field.type === "array" && !Array.isArray(newValue)) ||
-        (field.type === "object" && typeof newValue !== "object")
-      ) {
-        onChange(null);
-      } else if (field.enum) {
+      if (field.enum) {
         onChange(field.placeholder);
+        // Changing the values using onChange will not re-render <select> nodes;
+        // This ensure a re-render of the SelectField;
+        forceUpdate();
+      } else if (field.type === "string") {
+        console.log("STRING", newValueWithoutSymbols);
+        onChange(newValueWithoutSymbols);
+      } else if (field.type === "number") {
+        console.log("NUMBER", newValueWithoutSymbols);
+        const numberValue = parseFloat(newValueWithoutSymbols);
+        onChange(isNaN(numberValue) ? undefined : numberValue);
+      } else if (field.type === "boolean") {
+        console.log("BOOLEAN", newValueWithoutSymbols);
+        onChange(newValueWithoutSymbols === "true");
+      } else if (field.type === "array") {
+        console.log("ARRAY", newValue);
+        // TODO: check ListField;
+        try {
+          const parsedValue = JSON.parse(newValue);
+          if (Array.isArray(parsedValue)) {
+            onChange(parsedValue);
+          } else {
+            onChange([]);
+          }
+        } catch (err) {
+          onChange([]);
+        }
+      } else if (field.type === "object" && typeof newValue !== "object") {
+        console.log("OBJECT", newValue);
+        try {
+          const parsedValue = JSON.parse(newValue);
+          if (parsedValue && typeof parsedValue === "object" && !Array.isArray(parsedValue)) {
+            onChange(parsedValue);
+          } else {
+            onChange({});
+          }
+        } catch (err) {
+          onChange({});
+        }
       } else {
         onChange(newValue);
       }
     },
-    [field, onChange, schema]
+    [internalChange, field, onChange]
   );
 
-  useBeeTableSelectableCellRef(
+  // TODO: use isEditing, stoppropagation for OnKeyDown BeeTable.tsx
+  const { isActive } = useBeeTableSelectableCellRef(
     containerCellCoordinates?.rowIndex ?? 0,
     containerCellCoordinates?.columnIndex ?? 0,
     setValue,
-    useCallback(() => {
-      console.log(value);
-      // remove " " from stringify
-      return JSON.stringify(value);
-    }, [value])
+    useCallback(() => `${value ?? ""}`, [value])
   );
 
+  // This useEffect forces the focus into the selected cell;
+  useEffect(() => {
+    if (isActive) {
+      const input = cellRef.current?.getElementsByTagName("input")?.[0] as HTMLInputElement | undefined;
+      const listener = (e: KeyboardEvent) => {
+        // ignore for "keydown"
+        if (
+          (e.ctrlKey || e.metaKey) &&
+          (e.key.toLowerCase() === "c" ||
+            e.key.toLowerCase() === "v" ||
+            e.key.toLowerCase() === "x" ||
+            e.key.toLowerCase() === "a")
+        ) {
+          return;
+        }
+
+        // ignore for "keyup"
+        if (e.key === "Control" || e.key === "Meta") {
+          return;
+        }
+
+        input?.select();
+      };
+
+      // keyup handles "enter" key
+      document?.addEventListener("keyup", listener);
+      document?.addEventListener("keydown", listener);
+      return () => {
+        document?.removeEventListener("keyup", listener);
+        document?.removeEventListener("keydown", listener);
+      };
+    }
+  }, [isActive]);
+
   return (
-    <>
+    <div ref={cellRef}>
       <AutoField
-        key={joinedName}
+        key={joinedName + autoFieldKey}
         name={joinedName}
         form={`${AUTO_ROW_ID}-${containerCellCoordinates?.rowIndex ?? 0}`}
         style={{ height: "60px" }}
       />
-    </>
+    </div>
   );
 }

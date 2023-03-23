@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import {
   DmnRunnerPersistenceReducerActionType,
@@ -25,14 +25,11 @@ import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/E
 import { CompanionFsServiceBroadcastEvents } from "../companionFs/CompanionFsService";
 import { DmnRunnerPersistenceJson } from "./DmnRunnerPersistenceService";
 import { getNewDefaultDmnRunnerPersistenceJson } from "./DmnRunnerPersistenceService";
-import { DmnRunnerPersistenceDebouncer } from "./DmnRunnerPersistenceDebouncer";
 
 // Handle the companion FS events;
 export function useDmnRunnerPersistence(workspaceId?: string, workspaceFileRelativePath?: string) {
-  const { dmnRunnerPersistenceService, dispatchDmnRunnerPersistenceJson } = useDmnRunnerPersistenceDispatch();
-  const dmnRunnerPersistenceDebouncer = useMemo(() => {
-    return new DmnRunnerPersistenceDebouncer(dmnRunnerPersistenceService.companionFsService);
-  }, [dmnRunnerPersistenceService.companionFsService]);
+  const { dmnRunnerPersistenceService, dmnRunnerPersistenceJsonDispatcher, updatePersistenceJsonDebouce } =
+    useDmnRunnerPersistenceDispatch();
 
   // When another TAB updates the FS, it should sync up
   useCancelableEffect(
@@ -65,12 +62,13 @@ export function useDmnRunnerPersistence(workspaceId?: string, workspaceFileRelat
             const dmnRunnerPersistenceJson: DmnRunnerPersistenceJson =
               dmnRunnerPersistenceService.parseDmnRunnerPersistenceJson(companionEvent.content);
 
-            dispatchDmnRunnerPersistenceJson({
-              dmnRunnerPersistenceDebouncer,
+            dmnRunnerPersistenceJsonDispatcher({
+              updatePersistenceJsonDebouce,
               workspaceId: workspaceId,
               workspaceFileRelativePath: workspaceFileRelativePath,
               type: DmnRunnerPersistenceReducerActionType.DEFAULT,
               newPersistenceJson: dmnRunnerPersistenceJson,
+              fsUpdate: true,
             });
           }
         };
@@ -81,11 +79,11 @@ export function useDmnRunnerPersistence(workspaceId?: string, workspaceFileRelat
         };
       },
       [
-        dmnRunnerPersistenceDebouncer,
+        updatePersistenceJsonDebouce,
         dmnRunnerPersistenceService,
         workspaceId,
         workspaceFileRelativePath,
-        dispatchDmnRunnerPersistenceJson,
+        dmnRunnerPersistenceJsonDispatcher,
       ]
     )
   );
@@ -121,22 +119,23 @@ export function useDmnRunnerPersistence(workspaceId?: string, workspaceFileRelat
               const dmnRunnerPersistenceJson = dmnRunnerPersistenceService.parseDmnRunnerPersistenceJson(
                 decoder.decode(content)
               );
-              dispatchDmnRunnerPersistenceJson({
-                dmnRunnerPersistenceDebouncer,
+              dmnRunnerPersistenceJsonDispatcher({
+                updatePersistenceJsonDebouce,
                 workspaceId: workspaceId,
                 workspaceFileRelativePath: workspaceFileRelativePath,
                 type: DmnRunnerPersistenceReducerActionType.DEFAULT,
                 newPersistenceJson: dmnRunnerPersistenceJson,
+                fsUpdate: true,
               });
             });
           });
       },
       [
-        dmnRunnerPersistenceDebouncer,
+        updatePersistenceJsonDebouce,
         dmnRunnerPersistenceService,
         workspaceId,
         workspaceFileRelativePath,
-        dispatchDmnRunnerPersistenceJson,
+        dmnRunnerPersistenceJsonDispatcher,
       ]
     )
   );

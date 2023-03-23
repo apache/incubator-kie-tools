@@ -24,11 +24,11 @@ interface DmnRunnerLoading {
 }
 
 export function DmnRunnerLoading(props: DmnRunnerLoading) {
-  const dmnRunnerState = useDmnRunnerState();
+  const { canBeVisualized } = useDmnRunnerState();
 
   return (
     <>
-      {dmnRunnerState.canBeVisualized ? (
+      {canBeVisualized ? (
         props.children
       ) : (
         <Bullseye>

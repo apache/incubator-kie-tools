@@ -17,7 +17,12 @@
 import { createContext, useContext } from "react";
 import { DmnRunnerPersistenceService, DmnRunnerPersistenceJson } from "./DmnRunnerPersistenceService";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { DmnRunnerPersistenceDebouncer } from "./DmnRunnerPersistenceDebouncer";
+
+export type DmnRunnerUpdatePersistenceJsonDeboucerArgs = {
+  workspaceId: string;
+  workspaceFileRelativePath: string;
+  content: string;
+};
 
 export enum DmnRunnerPersistenceReducerActionType {
   DEFAULT,
@@ -35,9 +40,10 @@ export interface DmnRunnerPersistenceReducerActionDefault {
 }
 
 export type DmnRunnerPersistenceReducerAction = {
-  dmnRunnerPersistenceDebouncer: DmnRunnerPersistenceDebouncer;
+  updatePersistenceJsonDebouce: (args: DmnRunnerUpdatePersistenceJsonDeboucerArgs) => void;
   workspaceFileRelativePath: string;
   workspaceId: string;
+  fsUpdate?: boolean;
 } & (DmnRunnerPersistenceReducerActionDefault | DmnRunnerPersistenceReducerActionPrevious);
 
 interface DmnRunnerPersistenceDispatchContextType {
@@ -49,7 +55,8 @@ interface DmnRunnerPersistenceDispatchContextType {
   getPersistenceJsonForDownload: (workspaceFile: WorkspaceFile) => Promise<Blob | undefined>;
   uploadPersistenceJson: (workspaceFile: WorkspaceFile, file: File) => void;
   dmnRunnerPersistenceJson: DmnRunnerPersistenceJson;
-  dispatchDmnRunnerPersistenceJson: React.Dispatch<DmnRunnerPersistenceReducerAction>;
+  dmnRunnerPersistenceJsonDispatcher: React.Dispatch<DmnRunnerPersistenceReducerAction>;
+  updatePersistenceJsonDebouce: (args: DmnRunnerUpdatePersistenceJsonDeboucerArgs) => void;
 }
 
 export const DmnRunnerPersistenceDispatchContext = createContext<DmnRunnerPersistenceDispatchContextType>({} as any);

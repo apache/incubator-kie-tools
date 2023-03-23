@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-import { InputRow, DmnSchema } from "@kie-tools/form-dmn";
 import * as React from "react";
 import { useContext } from "react";
-import { ConfigInputRow, DmnRunnerPersistenceJson } from "../dmnRunnerPersistence/DmnRunnerPersistenceService";
+import { DmnRunnerPersistenceJson } from "../dmnRunnerPersistence/DmnRunnerPersistenceService";
 import { KieSandboxExtendedServicesModelPayload } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
+import { UnitablesInputsConfigs } from "@kie-tools/unitables";
+import { DmnRunnerProviderAction } from "./DmnRunnerProvider";
+import { InputRow, DmnSchema } from "@kie-tools/form-dmn";
 
 export interface DmnRunnerContextType {
-  configs: ConfigInputRow;
-  currentInputRowIndex: number;
+  configs: UnitablesInputsConfigs;
+  currentInputIndex: number;
   error: boolean;
   dmnRunnerPersistenceJson: DmnRunnerPersistenceJson;
   inputs: Array<InputRow>;
@@ -35,23 +37,21 @@ export interface DmnRunnerContextType {
 }
 
 export interface DmnRunnerCallbacksContextType {
+  dmnRunnerDispatcher: React.Dispatch<DmnRunnerProviderAction>;
   onRowAdded: (args: { beforeIndex: number }) => void;
   onRowDuplicated: (args: { rowIndex: number }) => void;
   onRowReset: (args: { rowIndex: number }) => void;
   onRowDeleted: (args: { rowIndex: number }) => void;
   preparePayload: (formData?: InputRow) => Promise<KieSandboxExtendedServicesModelPayload>;
-  setError: React.Dispatch<React.SetStateAction<boolean>>;
-  setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
-  setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;
   setDmnRunnerInputs: (newInputsRow: (previousInputs: Array<InputRow>) => Array<InputRow> | Array<InputRow>) => void;
   setDmnRunnerMode: (newMode: DmnRunnerMode) => void;
   setDmnRunnerConfigInputs: (
-    newConfigInputs: (previousConfigInputs: ConfigInputRow) => ConfigInputRow | ConfigInputRow
+    newConfigInputs: (previousConfigInputs: UnitablesInputsConfigs) => UnitablesInputsConfigs | UnitablesInputsConfigs
   ) => void;
   setDmnRunnerPersistenceJson: (args: {
     newInputsRow?: (previousInputs: Array<InputRow>) => Array<InputRow> | Array<InputRow>;
     newMode?: DmnRunnerMode;
-    newConfigInputs?: (previousConfigInputs: ConfigInputRow) => ConfigInputRow | ConfigInputRow;
+    newConfigInputs?: (previousConfigInputs: UnitablesInputsConfigs) => UnitablesInputsConfigs | UnitablesInputsConfigs;
   }) => void;
 }
 

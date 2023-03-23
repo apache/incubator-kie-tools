@@ -35,34 +35,46 @@ import { DmnRunnerOutputsTable } from "@kie-tools/unitables-dmn/dist/DmnRunnerOu
 import { DmnUnitablesValidator } from "@kie-tools/unitables-dmn/dist/DmnUnitablesValidator";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import "./DmnRunnerTable.css";
-import set from "lodash/set";
+import setObjectValueByPath from "lodash/set";
 import cloneDeep from "lodash/cloneDeep";
+import { DmnRunnerProviderActionType } from "./DmnRunnerProvider";
 
-interface Props {
-  setPanelOpen: React.Dispatch<React.SetStateAction<PanelId>>;
-}
+export function DmnRunnerTable() {
+  // STATEs
+  const [dmnRunnerTableError, setDmnRunnerTableError] = useState<boolean>(false);
+  const [dmnRunnerResults, setDmnRunnerResults] = useState<Array<DecisionResult[] | undefined>>([]); // TODO: move results to provider;
 
-export function DmnRunnerTable({ setPanelOpen }: Props) {
+  // REFs
+  const dmnRunnerTableErrorBoundaryRef = useRef<ErrorBoundary>(null);
+  const inputsContainerRef = useRef<HTMLDivElement>(null);
+  const outputsContainerRef = useRef<HTMLDivElement>(null);
+  const inputsScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
+  const outputsScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
+
+  // CUSTOM HOOKs
   const extendedServices = useExtendedServices();
+  const { i18n } = useOnlineI18n();
   const { configs, error, inputs, jsonSchema } = useDmnRunnerState();
   const {
+    dmnRunnerDispatcher,
     onRowAdded,
     onRowDuplicated,
     onRowReset,
     onRowDeleted,
     preparePayload,
-    setCurrentInputRowIndex,
-    setError,
     setDmnRunnerInputs,
     setDmnRunnerMode,
     setDmnRunnerConfigInputs,
   } = useDmnRunnerDispatch();
-  const [dmnRunnerTableError, setDmnRunnerTableError] = useState<boolean>(false);
-  const dmnRunnerTableErrorBoundaryRef = useRef<ErrorBoundary>(null);
-  const { i18n } = useOnlineI18n();
+  const { drawerPanelDefaultSize, drawerPanelMinSize, drawerPanelMaxSize, forceDrawerPanelRefresh } =
+    useAnchoredUnitablesDrawerPanel({
+      inputsContainerRef,
+      outputsContainerRef,
+    });
+
+  // MEMOs
   const rowCount = useMemo(() => inputs?.length ?? 1, [inputs?.length]);
   const hasInputs = useMemo(() => !!jsonSchema?.definitions?.InputSet?.properties, [jsonSchema]);
-
   const jsonSchemaBridge = useMemo(
     () => new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(jsonSchema ?? {}),
     [i18n, jsonSchema]
@@ -72,14 +84,6 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
     dmnRunnerTableErrorBoundaryRef.current?.reset();
   }, [jsonSchema]);
 
-  const inputsContainerRef = useRef<HTMLDivElement>(null);
-  const outputsContainerRef = useRef<HTMLDivElement>(null);
-  const { drawerPanelDefaultSize, drawerPanelMinSize, drawerPanelMaxSize, forceDrawerPanelRefresh } =
-    useAnchoredUnitablesDrawerPanel({
-      inputsContainerRef,
-      outputsContainerRef,
-    });
-
   useEffect(() => {
     forceDrawerPanelRefresh();
   }, [forceDrawerPanelRefresh, jsonSchema]);
@@ -87,10 +91,9 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
   const openRow = useCallback(
     (rowIndex: number) => {
       setDmnRunnerMode(DmnRunnerMode.FORM);
-      setCurrentInputRowIndex(rowIndex);
-      setPanelOpen(PanelId.NONE);
+      dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { currentInputIndex: rowIndex } });
     },
-    [setDmnRunnerMode, setCurrentInputRowIndex, setPanelOpen]
+    [setDmnRunnerMode, dmnRunnerDispatcher]
   );
 
   // FIXME: Prevent shortcuts when editing on dmn runner table;
@@ -99,7 +102,6 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
   //   useMemo(() => [".kie-tools--dmn-runner-table--drawer"], [])
   // );
 
-  const [dmnRunnerResults, setDmnRunnerResults] = useState<Array<DecisionResult[] | undefined>>([]);
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -122,7 +124,7 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
             const runnerResults: Array<DecisionResult[] | undefined> = [];
             for (const result of results) {
               if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-                setError(true);
+                dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { error: true } });
                 break;
               }
               if (result) {
@@ -133,12 +135,9 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
             setDmnRunnerResults(runnerResults);
           });
       },
-      [preparePayload, setError, inputs, extendedServices.client]
+      [preparePayload, dmnRunnerDispatcher, inputs, extendedServices.client]
     )
   );
-
-  const inputsScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
-  const outputsScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
 
   useEffect(() => {
     inputsScrollableElementRef.current.current =
@@ -151,7 +150,7 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
     (newWidth: number, fieldName: string) => {
       setDmnRunnerConfigInputs((previousDmnRunnerConfigInputs) => {
         const newDmnRunnerConfigInputs = cloneDeep(previousDmnRunnerConfigInputs);
-        set(newDmnRunnerConfigInputs, fieldName, newWidth);
+        setObjectValueByPath(newDmnRunnerConfigInputs, `${fieldName}.width`, newWidth);
         return newDmnRunnerConfigInputs;
       });
     },
@@ -203,7 +202,9 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
                       rows={inputs}
                       setRows={setDmnRunnerInputs}
                       error={error}
-                      setError={setError}
+                      setError={(error: boolean) =>
+                        dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { error } })
+                      }
                       jsonSchemaBridge={jsonSchemaBridge}
                       propertiesEntryPath={"definitions.InputSet"}
                       containerRef={inputsContainerRef}
@@ -211,7 +212,7 @@ export function DmnRunnerTable({ setPanelOpen }: Props) {
                       onRowDuplicated={onRowDuplicated}
                       onRowReset={onRowReset}
                       onRowDeleted={onRowDeleted}
-                      rowsWidth={configs}
+                      configs={configs}
                       setWidth={setWidth}
                     />
                   ) : (

@@ -15,17 +15,16 @@
  */
 
 import * as React from "react";
-import { useState } from "react";
+import { useRef } from "react";
 import { UnitablesContext } from "./UnitablesContext";
 
 export function UnitablesContextProvider(props: React.PropsWithChildren<any>) {
-  const [internalChange, setInternalChange] = useState<boolean>(false);
+  const internalChange: React.MutableRefObject<boolean> = useRef<boolean>(false);
 
   return (
     <UnitablesContext.Provider
       value={{
         internalChange,
-        setInternalChange,
       }}
     >
       {props.children}

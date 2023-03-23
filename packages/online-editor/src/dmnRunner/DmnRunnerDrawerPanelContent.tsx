@@ -51,6 +51,7 @@ import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { DmnRunnerProviderActionType } from "./DmnRunnerProvider";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -74,22 +75,10 @@ interface DmnRunnerStylesConfig {
 }
 
 export function DmnRunnerDrawerPanelContent(props: Props) {
-  const extendedServices = useExtendedServices();
-  const { i18n, locale } = useOnlineI18n();
+  // STATEs
   const [formRef, setFormRef] = useState<HTMLFormElement | null>();
-  const { currentInputRowIndex, error, inputs, mode, status, isExpanded, jsonSchema } = useDmnRunnerState();
-  const {
-    onRowAdded,
-    preparePayload,
-    setCurrentInputRowIndex,
-    setError,
-    setExpanded,
-    setDmnRunnerInputs,
-    setDmnRunnerMode,
-  } = useDmnRunnerDispatch();
   const [drawerError, setDrawerError] = useState<boolean>(false);
-  const errorBoundaryRef = useRef<ErrorBoundary>(null);
-  const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>();
+  const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>(); // TODO: move results to provider;
   const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<object[]>();
   const [dmnRunnerStylesConfig, setDmnRunnerStylesConfig] = useState<DmnRunnerStylesConfig>({
     contentWidth: "50%",
@@ -97,10 +86,19 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     contentFlexDirection: "row",
     buttonPosition: ButtonPosition.OUTPUT,
   });
-  const [selectedRow, selectRow] = useState<string>("");
   const [rowSelectionIsOpen, openRowSelection] = useState<boolean>(false);
 
-  const formInputs: InputRow = useMemo(() => inputs[currentInputRowIndex], [inputs, currentInputRowIndex]);
+  // REFs
+  const errorBoundaryRef = useRef<ErrorBoundary>(null);
+
+  const extendedServices = useExtendedServices();
+  const { i18n, locale } = useOnlineI18n();
+  const { currentInputIndex, error, inputs, mode, status, isExpanded, jsonSchema } = useDmnRunnerState();
+  const { dmnRunnerDispatcher, onRowAdded, preparePayload, setDmnRunnerInputs, setDmnRunnerMode } =
+    useDmnRunnerDispatch();
+  const previousFormError = usePrevious(error);
+
+  const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
 
   const onResize = useCallback((width: number) => {
     // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.
@@ -172,7 +170,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         }
 
         if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-          setError(true);
+          dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { error: true } });
           return;
         }
 
@@ -191,7 +189,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         setDmnRunnerResults(undefined);
       }
     },
-    [extendedServices.client, status, preparePayload, setError, setExecutionNotifications]
+    [extendedServices.client, status, preparePayload, setExecutionNotifications, dmnRunnerDispatcher]
   );
 
   // Update outputs column on form change
@@ -206,7 +204,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     )
   );
 
-  const previousFormError = usePrevious(error);
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -227,12 +224,12 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   );
 
   const openValidationTab = useCallback(() => {
-    props.editorPageDock?.toggle(PanelId.NOTIFICATIONS_PANEL);
+    props.editorPageDock?.open(PanelId.NOTIFICATIONS_PANEL);
     props.editorPageDock?.getNotificationsPanel()?.setActiveTab(i18n.terms.validation);
   }, [props.editorPageDock, i18n]);
 
   const openExecutionTab = useCallback(() => {
-    props.editorPageDock?.toggle(PanelId.NOTIFICATIONS_PANEL);
+    props.editorPageDock?.open(PanelId.NOTIFICATIONS_PANEL);
     props.editorPageDock?.getNotificationsPanel()?.setActiveTab(i18n.terms.execution);
   }, [props.editorPageDock, i18n]);
 
@@ -276,17 +273,16 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const setFormInputs = useCallback(
     (newFormInput: (previousInputRow: InputRow) => InputRow | InputRow) => {
       setDmnRunnerInputs((perviousInputRows) => {
-        console.log("SET FORM INPUTS", perviousInputRows);
         const newInputRows = [...perviousInputRows];
         if (typeof newFormInput === "function") {
-          newInputRows[currentInputRowIndex] = newFormInput(newInputRows[currentInputRowIndex]);
+          newInputRows[currentInputIndex] = newFormInput(newInputRows[currentInputIndex]);
           return newInputRows;
         }
-        newInputRows[currentInputRowIndex] = newFormInput;
+        newInputRows[currentInputIndex] = newFormInput;
         return newInputRows;
       });
     },
-    [currentInputRowIndex, setDmnRunnerInputs]
+    [currentInputIndex, setDmnRunnerInputs]
   );
 
   const onSelectRow = useCallback((event) => {
@@ -302,29 +298,26 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           component={"button"}
           key={rowIndex}
           onClick={() => {
-            selectRow(getRow(rowIndex + 1));
-            setCurrentInputRowIndex(rowIndex);
+            dmnRunnerDispatcher({
+              type: DmnRunnerProviderActionType.DEFAULT,
+              newState: { currentInputIndex: rowIndex },
+            });
           }}
         >
-          Row {rowIndex + 1}
+          {getRow(rowIndex + 1)}
         </DropdownItem>
       )),
-    [inputs, setCurrentInputRowIndex, selectRow, getRow]
+    [inputs, dmnRunnerDispatcher, getRow]
   );
 
   const onAddNewRow = useCallback(() => {
-    setCurrentInputRowIndex((currentInputRowIndex) => {
-      const newInputRowIndex = currentInputRowIndex + 1;
-      onRowAdded({ beforeIndex: newInputRowIndex });
-      selectRow(getRow(newInputRowIndex));
-      return newInputRowIndex;
-    });
-  }, [onRowAdded, setCurrentInputRowIndex, getRow]);
+    onRowAdded({ beforeIndex: currentInputIndex + 1 });
+  }, [onRowAdded, currentInputIndex]);
 
   const onChangeToTableView = useCallback(() => {
     setDmnRunnerMode(DmnRunnerMode.TABLE);
-    props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
-  }, [setDmnRunnerMode, props.editorPageDock]);
+    props.editorPageDock?.open(PanelId.DMN_RUNNER_TABLE);
+  }, [props.editorPageDock, setDmnRunnerMode]);
 
   return (
     <DrawerPanelContent
@@ -383,7 +376,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                                 >
                                   <TextContent>
                                     <Text component={"h3"}>
-                                      {i18n.terms.inputs} (Row {currentInputRowIndex + 1}) <CaretDownIcon />
+                                      {i18n.terms.inputs} ({getRow(currentInputIndex + 1)}) <CaretDownIcon />
                                     </Text>
                                   </TextContent>
                                 </DropdownToggle>
@@ -422,7 +415,14 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       </FlexItem>
                     </Flex>
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
-                      <DrawerCloseButton onClick={() => setExpanded(false)} />
+                      <DrawerCloseButton
+                        onClick={() =>
+                          dmnRunnerDispatcher({
+                            type: DmnRunnerProviderActionType.DEFAULT,
+                            newState: { isExpanded: false },
+                          })
+                        }
+                      />
                     )}
                   </PageSection>
                   <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
@@ -433,7 +433,9 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                         formInputs={formInputs}
                         setFormInputs={setFormInputs}
                         formError={error}
-                        setFormError={setError}
+                        setFormError={(error: boolean) =>
+                          dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { error } })
+                        }
                         formSchema={jsonSchema}
                         id={"form"}
                         setFormRef={setFormRef}
@@ -464,7 +466,14 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       <Text component={"h3"}>{i18n.terms.outputs}</Text>
                     </TextContent>
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
-                      <DrawerCloseButton onClick={() => setExpanded(false)} />
+                      <DrawerCloseButton
+                        onClick={() =>
+                          dmnRunnerDispatcher({
+                            type: DmnRunnerProviderActionType.DEFAULT,
+                            newState: { isExpanded: false },
+                          })
+                        }
+                      />
                     )}
                   </PageSection>
                   <div

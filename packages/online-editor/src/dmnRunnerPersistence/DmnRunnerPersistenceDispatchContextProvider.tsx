@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useReducer } from "react";
+import { useCallback, useMemo, useReducer, useRef } from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import {
   DmnRunnerPersistenceService,
@@ -26,11 +26,51 @@ import {
   DmnRunnerPersistenceDispatchContext,
   DmnRunnerPersistenceReducerActionType,
   DmnRunnerPersistenceReducerAction,
+  DmnRunnerUpdatePersistenceJsonDeboucerArgs,
 } from "./DmnRunnerPersistenceDispatchContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { useSyncedCompanionFs } from "../companionFs/CompanionFsHooks";
 import isEqual from "lodash/isEqual";
-import { DmnRunnerPersistenceDebouncer } from "./DmnRunnerPersistenceDebouncer";
+
+let localUpdate = false;
+
+function checkIfHasChangesAndUpdateFs(
+  persistenceJson: DmnRunnerPersistenceJson,
+  newPersistenceJson: DmnRunnerPersistenceJson,
+  updatePersistenceJsonDebouce: (args: DmnRunnerUpdatePersistenceJsonDeboucerArgs) => void,
+  workspaceId: string,
+  workspaceFileRelativePath: string,
+  fsUpdate = false
+): DmnRunnerPersistenceJson {
+  // Check for changes before update;
+  if (isEqual(persistenceJson, newPersistenceJson)) {
+    localUpdate = false;
+    return persistenceJson;
+  }
+
+  // Updates from local FS and the current value is different from the change, hence, a change occured while the FS was updated;
+  if (fsUpdate) {
+    if (localUpdate) {
+      // the last change was made by this tab; invalidate fsUpdate;
+      localUpdate = false;
+      return persistenceJson;
+    } else {
+      // state wasn't changed by this tab; overwrite
+      localUpdate = false;
+      return newPersistenceJson;
+    }
+  }
+
+  // update FS;
+  updatePersistenceJsonDebouce({
+    workspaceId: workspaceId,
+    workspaceFileRelativePath: workspaceFileRelativePath,
+    content: JSON.stringify(newPersistenceJson),
+  });
+
+  localUpdate = true;
+  return newPersistenceJson;
+}
 
 // Update the state and update the FS;
 function dmnRunnerPersistenceJsonReducer(
@@ -38,61 +78,60 @@ function dmnRunnerPersistenceJsonReducer(
   action: DmnRunnerPersistenceReducerAction
 ) {
   if (action.type === DmnRunnerPersistenceReducerActionType.PREVIOUS) {
-    const newPersistenceJson = action.newPersistenceJson(persistenceJson);
-    // Check for changes before update;
-    if (isEqual(persistenceJson, newPersistenceJson)) {
-      return persistenceJson;
-    }
-
-    // update FS;
-    action.dmnRunnerPersistenceDebouncer.debounce({
-      method: action.dmnRunnerPersistenceDebouncer.companionFsService.update,
-      args: [
-        {
-          workspaceId: action.workspaceId,
-          workspaceFileRelativePath: action.workspaceFileRelativePath,
-        },
-        JSON.stringify(newPersistenceJson),
-      ],
-    });
-    return newPersistenceJson;
+    return checkIfHasChangesAndUpdateFs(
+      persistenceJson,
+      action.newPersistenceJson(persistenceJson),
+      action.updatePersistenceJsonDebouce,
+      action.workspaceId,
+      action.workspaceFileRelativePath,
+      action.fsUpdate
+    );
+  } else if (action.type === DmnRunnerPersistenceReducerActionType.DEFAULT) {
+    return checkIfHasChangesAndUpdateFs(
+      persistenceJson,
+      action.newPersistenceJson,
+      action.updatePersistenceJsonDebouce,
+      action.workspaceId,
+      action.workspaceFileRelativePath,
+      action.fsUpdate
+    );
+  } else {
+    throw new Error("Invalid action for DmnRunnerPersistence reducer");
   }
-
-  // Check for changes before update;
-  if (isEqual(persistenceJson, action.newPersistenceJson)) {
-    return persistenceJson;
-  }
-
-  // update FS;
-  action.dmnRunnerPersistenceDebouncer.debounce({
-    method: action.dmnRunnerPersistenceDebouncer.companionFsService.update,
-    args: [
-      {
-        workspaceId: action.workspaceId,
-        workspaceFileRelativePath: action.workspaceFileRelativePath,
-      },
-      JSON.stringify(action.newPersistenceJson),
-    ],
-  });
-  return action.newPersistenceJson;
 }
 
 const initialDmnRunnerPersistenceJson = getNewDefaultDmnRunnerPersistenceJson();
 
 export function DmnRunnerPersistenceDispatchContextProvider(props: React.PropsWithChildren<{}>) {
-  const [dmnRunnerPersistenceJson, dispatchDmnRunnerPersistenceJson] = useReducer(
+  const timeout = useRef<number | undefined>(undefined);
+
+  const [dmnRunnerPersistenceJson, dmnRunnerPersistenceJsonDispatcher] = useReducer(
     dmnRunnerPersistenceJsonReducer,
     initialDmnRunnerPersistenceJson
   );
 
-  const dmnRunnerPersistenceService = useMemo(() => {
-    return new DmnRunnerPersistenceService();
-  }, []);
-  const dmnRunnerPersistenceDebouncer = useMemo(() => {
-    return new DmnRunnerPersistenceDebouncer(dmnRunnerPersistenceService.companionFsService);
-  }, [dmnRunnerPersistenceService.companionFsService]);
+  const dmnRunnerPersistenceService = useMemo(() => new DmnRunnerPersistenceService(), []);
 
   useSyncedCompanionFs(dmnRunnerPersistenceService.companionFsService);
+
+  const updatePersistenceJsonDebouce = useCallback(
+    (args: DmnRunnerUpdatePersistenceJsonDeboucerArgs) => {
+      if (timeout.current) {
+        window.clearTimeout(timeout.current);
+      }
+
+      timeout.current = window.setTimeout(() => {
+        dmnRunnerPersistenceService.companionFsService.update(
+          {
+            workspaceId: args.workspaceId,
+            workspaceFileRelativePath: args.workspaceFileRelativePath,
+          },
+          args.content
+        );
+      }, 100);
+    },
+    [dmnRunnerPersistenceService]
+  );
 
   const deletePersistenceJson = useCallback(
     (previousDmnRunnerPersisnteceJson: DmnRunnerPersistenceJson, workspaceFile: WorkspaceFile) => {
@@ -101,15 +140,15 @@ export function DmnRunnerPersistenceDispatchContextProvider(props: React.PropsWi
       // keep current mode;
       newPersistenceJson.configs.mode = previousDmnRunnerPersisnteceJson.configs.mode;
 
-      dispatchDmnRunnerPersistenceJson({
-        dmnRunnerPersistenceDebouncer,
+      dmnRunnerPersistenceJsonDispatcher({
+        updatePersistenceJsonDebouce,
         workspaceId: workspaceFile.workspaceId,
         workspaceFileRelativePath: workspaceFile.relativePath,
         type: DmnRunnerPersistenceReducerActionType.DEFAULT,
         newPersistenceJson,
       });
     },
-    [dmnRunnerPersistenceDebouncer]
+    [updatePersistenceJsonDebouce]
   );
 
   const getPersistenceJsonForDownload = useCallback(
@@ -147,8 +186,9 @@ export function DmnRunnerPersistenceDispatchContextProvider(props: React.PropsWi
         deletePersistenceJson,
         getPersistenceJsonForDownload,
         uploadPersistenceJson,
+        updatePersistenceJsonDebouce,
         dmnRunnerPersistenceJson,
-        dispatchDmnRunnerPersistenceJson,
+        dmnRunnerPersistenceJsonDispatcher,
       }}
     >
       {props.children}

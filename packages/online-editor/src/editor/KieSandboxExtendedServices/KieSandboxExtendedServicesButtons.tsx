@@ -44,6 +44,7 @@ import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-ico
 import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import { DeleteDropdownWithConfirmation } from "../DeleteDropdownWithConfirmation";
 import { useDmnRunnerPersistenceDispatch } from "../../dmnRunnerPersistence/DmnRunnerPersistenceDispatchContext";
+import { DmnRunnerProviderActionType } from "../../dmnRunner/DmnRunnerProvider";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -56,7 +57,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const extendedServices = useExtendedServices();
   const devDeployments = useDevDeployments();
   const { dmnRunnerPersistenceJson, isExpanded, mode } = useDmnRunnerState();
-  const { setDmnRunnerMode, setExpanded, setCurrentInputRowIndex } = useDmnRunnerDispatch();
+  const { setDmnRunnerMode, dmnRunnerDispatcher } = useDmnRunnerDispatch();
   const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
   const { getPersistenceJsonForDownload, uploadPersistenceJson, deletePersistenceJson } =
     useDmnRunnerPersistenceDispatch();
@@ -67,14 +68,14 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
     if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
       if (mode === DmnRunnerMode.TABLE) {
         props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
-      } else {
-        setExpanded((prev) => !prev);
+        return;
       }
+      dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.TOGGLE_EXPANDED });
       return;
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     extendedServices.setModalOpen(true);
-  }, [mode, setExpanded, extendedServices, props.editorPageDock]);
+  }, [mode, dmnRunnerDispatcher, extendedServices, props.editorPageDock]);
 
   const toggleDevDeploymentsDropdown = useCallback(
     (isOpen: boolean) => {
@@ -153,7 +154,9 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
                 </DropdownToggleAction>,
               ]}
               splitButtonVariant="action"
-              onToggle={(isOpen) => setRunModeOpen(isOpen)}
+              onToggle={(isOpen) => {
+                setRunModeOpen(isOpen);
+              }}
             />
           }
           isOpen={runModeOpen}
@@ -165,8 +168,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
                   setDmnRunnerMode(DmnRunnerMode.FORM);
-                  props.editorPageDock?.close();
-                  setExpanded(true);
+                  dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { isExpanded: true } });
                 }
               }}
             >
@@ -180,7 +182,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
                   setDmnRunnerMode(DmnRunnerMode.TABLE);
                   props.editorPageDock?.open(PanelId.DMN_RUNNER_TABLE);
-                  setExpanded(true);
+                  dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { isExpanded: true } });
                 }
               }}
             >
@@ -209,7 +211,10 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               <DropdownItem component={"div"} style={{ padding: "4px" }}>
                 <DeleteDropdownWithConfirmation
                   onDelete={() => {
-                    setCurrentInputRowIndex(0);
+                    dmnRunnerDispatcher({
+                      type: DmnRunnerProviderActionType.DEFAULT,
+                      newState: { currentInputIndex: 0 },
+                    });
                     deletePersistenceJson(dmnRunnerPersistenceJson, props.workspaceFile);
                   }}
                   item={`Delete DMN Runner inputs`}

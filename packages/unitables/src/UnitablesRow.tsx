@@ -26,7 +26,7 @@ interface Props {
   rowIndex: number;
   jsonSchemaBridge: UnitablesJsonSchemaBridge;
   rowInput: Record<string, any>;
-  onValidateRow: (rowInput: Record<string, any>, index: number, error: Record<string, any>) => void;
+  onSubmitRow: (rowInput: Record<string, any>, index: number, error: Record<string, any>) => void;
 }
 
 export interface UnitablesRowApi {
@@ -39,23 +39,19 @@ export function UnitablesRow({
   rowIndex,
   jsonSchemaBridge,
   rowInput,
-  onValidateRow,
+  onSubmitRow,
 }: PropsWithChildren<Props>) {
   const autoRowRef = useRef<HTMLFormElement>(null);
 
   const onSubmit = useCallback(
     (rowInput: Record<string, any>) => {
       console.log("SUBMITTING ROW: " + rowIndex);
+      onSubmitRow(rowInput, rowIndex, {});
     },
-    [rowIndex]
+    [onSubmitRow, rowIndex]
   );
 
-  const onValidate = useCallback(
-    (rowInput: Record<string, any>, error: Record<string, any>) => {
-      onValidateRow(rowInput, rowIndex, error);
-    },
-    [onValidateRow, rowIndex]
-  );
+  const onValidate = useCallback((model, error) => {}, []);
 
   // Submits the table in the first render triggering the onValidate function
   useEffect(() => {
@@ -69,9 +65,10 @@ export function UnitablesRow({
         schema={jsonSchemaBridge}
         model={rowInput}
         onSubmit={onSubmit}
-        onValidate={onValidate}
         placeholder={true}
+        autosave={true}
         validate={"onChange"}
+        onValidate={onValidate}
       >
         <UniformsContext.Consumer>
           {(uniformsContext) => (

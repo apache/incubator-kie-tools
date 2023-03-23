@@ -15,6 +15,7 @@
  */
 
 import { InputRow } from "@kie-tools/form-dmn";
+import { UnitablesInputsConfigs, UnitablesCellConfigs } from "@kie-tools/unitables";
 import { CompanionFsService } from "../companionFs/CompanionFsService";
 import { v4 as uuid } from "uuid";
 import cloneDeep from "lodash/cloneDeep";
@@ -25,13 +26,6 @@ export const generateUuid = () => {
 
 const DMN_RUNNER_PERSISTENCE_JSON_VERSION = "v1";
 
-interface DmnRunnerPersistenceJsonConfig {
-  width?: number;
-}
-
-// Can't use Record<string, DmnRunnerConfig | ConfigInputRow>;
-export type ConfigInputRow = { [x: string]: DmnRunnerPersistenceJsonConfig | ConfigInputRow };
-
 // TODO: use it!
 export enum DmnRunnerMode {
   FORM = "form",
@@ -41,7 +35,7 @@ export enum DmnRunnerMode {
 interface DmnRunnerPersistenceJsonConfigs {
   version: string;
   mode: DmnRunnerMode;
-  inputs: ConfigInputRow;
+  inputs: UnitablesInputsConfigs;
 }
 
 export interface DmnRunnerPersistenceJson {
@@ -53,7 +47,7 @@ export interface DmnRunnerPersistenceJson {
 // TODO: defualt width?
 export const DEFAULT_DMN_RUNNER_CONFIG_INPUT_WIDTH = 150;
 
-export const DEFAULT_DMN_RUNNER_CONFIG_INPUT: DmnRunnerPersistenceJsonConfig = {
+export const DEFAULT_DMN_RUNNER_CONFIG_INPUT: UnitablesCellConfigs = {
   width: DEFAULT_DMN_RUNNER_CONFIG_INPUT_WIDTH,
 };
 
@@ -66,16 +60,6 @@ export function getNewDefaultDmnRunnerPersistenceJson(): DmnRunnerPersistenceJso
     },
     inputs: [{ id: generateUuid() }],
   };
-}
-
-export function deepCopyPersistenceJson(persistenceJson: DmnRunnerPersistenceJson): DmnRunnerPersistenceJson {
-  return cloneDeep(persistenceJson);
-  // return {
-  //   configs: {
-  //     ...persistenceJson.configs,
-  //     inputs: persistenceJson.configs.inputs.map((input) => ({ ...input }))
-  //   },
-  //   inputs: persistenceJson.inputs.map((input) => ({ ...input })) };
 }
 
 export class DmnRunnerPersistenceService {
@@ -98,7 +82,7 @@ export class DmnRunnerPersistenceService {
         !Object.prototype.hasOwnProperty.call(parsedDmnRunnerPersistenceJson, "inputs") ||
         !Object.prototype.hasOwnProperty.call(parsedDmnRunnerPersistenceJson, "configs")
       ) {
-        return deepCopyPersistenceJson(getNewDefaultDmnRunnerPersistenceJson());
+        return cloneDeep(getNewDefaultDmnRunnerPersistenceJson());
       }
       return parsedDmnRunnerPersistenceJson;
     }

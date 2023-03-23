@@ -15,7 +15,15 @@
  */
 
 import * as React from "react";
-import { PropsWithChildren, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useState,
+  useLayoutEffect,
+} from "react";
 import { ToggleGroup } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { DmnRunnerMode } from "../dmnRunner/DmnRunnerStatus";
 import { useDmnRunnerState, useDmnRunnerDispatch } from "../dmnRunner/DmnRunnerContext";
@@ -34,6 +42,7 @@ import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { DmnRunnerProviderActionType } from "../dmnRunner/DmnRunnerProvider";
 
 export enum PanelId {
   DMN_RUNNER_TABLE = "dmn-runner-table",
@@ -59,7 +68,7 @@ export const EditorPageDockDrawer = React.forwardRef<
 >((props, forwardRef) => {
   const { i18n } = useOnlineI18n();
   const { isExpanded, mode } = useDmnRunnerState();
-  const { setExpanded } = useDmnRunnerDispatch();
+  const { dmnRunnerDispatcher } = useDmnRunnerDispatch();
   const [panel, setPanel] = useState<PanelId>(PanelId.NONE);
   const [notificationsToggle, notificationsToggleRef] = useController<NotificationsPanelDockToggleRef>();
   const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelRef>();
@@ -75,6 +84,11 @@ export const EditorPageDockDrawer = React.forwardRef<
     return [i18n.terms.validation];
   }, [props.workspaceFile.extension, i18n.terms.validation, i18n.terms.execution, mode, isExpanded]);
 
+  const isDmnTableMode = useMemo(
+    () => mode === DmnRunnerMode.TABLE && props.workspaceFile.extension.toLowerCase() === "dmn",
+    [mode, props.workspaceFile.extension]
+  );
+
   useEffect(() => {
     if (!notificationsPanelTabNames.includes(i18n.terms.execution)) {
       notificationsToggle?.deleteNotificationsFromTab(i18n.terms.execution);
@@ -87,23 +101,6 @@ export const EditorPageDockDrawer = React.forwardRef<
     }
   }, [i18n, notificationsPanel, notificationsPanelTabNames, notificationsToggle]);
 
-  const onToggle = useCallback(
-    (panel: PanelId) => {
-      setPanel((currentPanel) => {
-        if (currentPanel !== panel) {
-          if (panel === PanelId.DMN_RUNNER_TABLE) {
-            setExpanded(true);
-          } else {
-            setExpanded(false);
-          }
-          return panel;
-        }
-        return PanelId.NONE;
-      });
-    },
-    [setExpanded]
-  );
-
   const setNotifications = useCallback(
     (tabName: string, path: string, notifications: Notification[]) => {
       notificationsToggle?.setNewNotifications(tabName, { path, notifications });
@@ -111,6 +108,27 @@ export const EditorPageDockDrawer = React.forwardRef<
     },
     [notificationsPanel, notificationsToggle]
   );
+
+  const onToggle = useCallback(
+    (panelId: PanelId) => {
+      setPanel((previousPanel) => {
+        if (previousPanel !== panelId) {
+          if (panelId === PanelId.DMN_RUNNER_TABLE && !isExpanded) {
+            dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { isExpanded: true } });
+          }
+          return panelId;
+        }
+        return PanelId.NONE;
+      });
+    },
+    [isExpanded, dmnRunnerDispatcher]
+  );
+
+  useLayoutEffect(() => {
+    if (mode === DmnRunnerMode.FORM && panel === PanelId.DMN_RUNNER_TABLE) {
+      setPanel(PanelId.NONE);
+    }
+  }, [mode, panel]);
 
   useImperativeHandle(
     forwardRef,
@@ -145,11 +163,6 @@ export const EditorPageDockDrawer = React.forwardRef<
     return "";
   }, [extendedServices.status, props.workspaceFile.extension]);
 
-  const isDmnTableMode = useMemo(
-    () => mode === DmnRunnerMode.TABLE && props.workspaceFile.extension.toLowerCase() === "dmn",
-    [mode, props.workspaceFile.extension]
-  );
-
   const toggleGroupItems = useMemo(() => {
     const items = [];
 
@@ -176,7 +189,7 @@ export const EditorPageDockDrawer = React.forwardRef<
     );
 
     return items;
-  }, [isDmnTableMode, dockIsDisabled, panel, dockIsDisabledReason, onToggle, notificationsToggleRef]);
+  }, [isDmnTableMode, dockIsDisabled, panel, dockIsDisabledReason, notificationsToggleRef, onToggle]);
 
   useEffect(() => {
     if (
@@ -198,7 +211,7 @@ export const EditorPageDockDrawer = React.forwardRef<
                 {panel === PanelId.NOTIFICATIONS_PANEL && (
                   <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
                 )}
-                {panel === PanelId.DMN_RUNNER_TABLE && isDmnTableMode && <DmnRunnerTable setPanelOpen={setPanel} />}
+                {panel === PanelId.DMN_RUNNER_TABLE && isDmnTableMode && isExpanded && <DmnRunnerTable />}
               </DrawerPanelContent>
             )
           }

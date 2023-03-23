@@ -39,6 +39,7 @@ import {
   useBeeTableSelectionDispatch,
 } from "../../selection/BeeTableSelectionContext";
 import { BeeTableCellWidthsToFitDataContextProvider } from "../../resizing/BeeTableCellWidthToFitDataContext";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 const ROW_INDEX_COLUMN_ACCESOR = "#";
 const ROW_INDEX_SUB_COLUMN_ACCESSOR = "0";
@@ -427,27 +428,27 @@ export function BeeTableInternal<R extends object>({
         resetSelectionAt(undefined);
       }
 
-      // FIXME: Tiago -> This won't work well on non-macOS
-      // COPY/CUT/PASTE ctrlKey
-      if (!e.shiftKey && e.metaKey && e.key.toLowerCase() === "c") {
+      const complementaryKey =
+        (getOperatingSystem() === OperatingSystem.MACOS && e.metaKey) ||
+        (getOperatingSystem() !== OperatingSystem.MACOS && e.ctrlKey);
+      if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "c") {
         e.stopPropagation();
         e.preventDefault();
         copy();
       }
-      if (!e.shiftKey && e.metaKey && e.key.toLowerCase() === "x") {
+      if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "x") {
         e.stopPropagation();
         e.preventDefault();
         cut();
       }
-      if (!e.shiftKey && e.metaKey && e.key.toLowerCase() === "v") {
+      if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "v") {
         e.stopPropagation();
         e.preventDefault();
         paste();
       }
 
-      // FIXME: Tiago -> This won't work well on non-macOS
       // SELECT ALL
-      if (!e.shiftKey && e.metaKey && e.key.toLowerCase() === "a") {
+      if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "a") {
         e.stopPropagation();
         e.preventDefault();
 

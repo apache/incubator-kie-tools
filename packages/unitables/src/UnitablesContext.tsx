@@ -18,8 +18,7 @@ import * as React from "react";
 import { useContext } from "react";
 
 export interface UnitablesContextType {
-  internalChange: boolean;
-  setInternalChange: React.Dispatch<React.SetStateAction<boolean>>;
+  internalChange: React.MutableRefObject<boolean>;
 }
 
 export const UnitablesContext = React.createContext<UnitablesContextType>({} as any);

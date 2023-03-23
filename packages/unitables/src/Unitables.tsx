@@ -30,12 +30,13 @@ import { FORMS_ID, UnitablesJsonSchemaBridge } from "./uniforms";
 import { useUnitablesColumns } from "./UnitablesColumns";
 import "./Unitables.css";
 import { UnitablesRow } from "./UnitablesRow";
-import set from "lodash/set";
-import get from "lodash/get";
+import setObjectValueByPath from "lodash/set";
+import getObjectValueByPath from "lodash/get";
 import { InputRow } from "@kie-tools/form-dmn";
 import { diff } from "deep-object-diff";
 import cloneDeep from "lodash/cloneDeep";
 import { useUnitablesContext } from "./UnitablesContext";
+import { UnitablesInputsConfigs } from "./UnitablesTypes";
 
 export interface UnitablesProps {
   jsonSchema: object;
@@ -53,7 +54,7 @@ export interface UnitablesProps {
   onRowDuplicated: (args: { rowIndex: number }) => void;
   onRowReset: (args: { rowIndex: number }) => void;
   onRowDeleted: (args: { rowIndex: number }) => void;
-  rowsWidth: object;
+  configs: UnitablesInputsConfigs;
   setWidth: (newWidth: number, fieldName: string) => void;
 }
 
@@ -79,7 +80,7 @@ function recursiveCheckForChangedKey(
       if (keySet) {
         if (keySet.has(fullKey)) {
           // key shouldnt be updated;
-          set(newInputRow, fullKey, get(previousInputRows, fullKey));
+          setObjectValueByPath(newInputRow, fullKey, getObjectValueByPath(previousInputRows, fullKey));
         } else {
           keySet.add(fullKey);
         }
@@ -104,19 +105,22 @@ export const Unitables = ({
   onRowDuplicated,
   onRowReset,
   onRowDeleted,
-  rowsWidth,
+  configs,
   setWidth,
 }: UnitablesProps) => {
-  const { columns: unitablesColumns } = useUnitablesColumns(jsonSchemaBridge, setRows, propertiesEntryPath);
-  const { internalChange, setInternalChange } = useUnitablesContext();
-
+  // STATEs
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
 
-  const inputUid = useMemo(() => nextId(), []);
-
-  // create cache to save inputs cache;
-  const cachedKeysOfRows = useRef<Map<number, Set<string>>>(new Map());
+  // REFs
+  const cachedKeysOfRows = useRef<Map<number, Set<string>>>(new Map()); // create cache to save changed keys;
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
+  const timeout = useRef<number | undefined>(undefined);
+
+  // CUSTOM HOOKs
+  const { internalChange } = useUnitablesContext();
+  const { columns: unitablesColumns } = useUnitablesColumns(jsonSchemaBridge, setRows, propertiesEntryPath);
+
+  const inputUid = useMemo(() => nextId(), []);
 
   // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {
@@ -124,8 +128,7 @@ export const Unitables = ({
   }, [jsonSchemaBridge]);
 
   // Set in-cell input heights (begin)
-  // ensure the height of TimePicker, DatePicker and others;
-  // should set width too;
+  // TODO: Ensure the width of TimePicker, DatePicker and others;
   const searchRecursively = useCallback((child: any) => {
     if (!child) {
       return;
@@ -149,22 +152,20 @@ export const Unitables = ({
     inputsCells.forEach((inputCell) => {
       searchRecursively(inputCell.childNodes[0]);
     });
-  }, [jsonSchemaBridge, formsDivRendered, rows, containerRef, searchRecursively]);
+  }, [internalChange, jsonSchemaBridge, formsDivRendered, rows, containerRef, searchRecursively]);
   // Set in-cell input heights (end)
 
-  const timeout = useRef<number | undefined>(undefined);
-  const onValidateRow = useCallback(
+  const onSubmitRow = useCallback(
     (inputRow: InputRow, rowIndex: number, error: Record<string, any>) => {
       // After this method is not called by a period, clear the cache and reset the internalChange;
-      if (internalChange) {
+      if (internalChange.current) {
         if (timeout.current) {
           clearTimeout(timeout.current);
         }
 
         timeout.current = window.setTimeout(() => {
           cachedKeysOfRows.current.clear();
-          setInternalChange(false);
-          // FIXME: should trigger re-render of SelectField;
+          internalChange.current = false;
         }, 0);
       }
 
@@ -173,9 +174,8 @@ export const Unitables = ({
       setRows((previousInputRows) => {
         const newInputRows = cloneDeep(previousInputRows);
         const newInputRow = cloneDeep(inputRow);
-        console.log(newInputRow);
 
-        if (internalChange) {
+        if (internalChange.current) {
           const changedValues: Record<string, any> = diff(inputRow, newInputRows[rowIndex]);
           recursiveCheckForChangedKey(
             rowIndex,
@@ -209,13 +209,13 @@ export const Unitables = ({
           rowIndex={rowIndex}
           rowInput={row}
           jsonSchemaBridge={jsonSchemaBridge}
-          onValidateRow={onValidateRow}
+          onSubmitRow={onSubmitRow}
         >
           {children}
         </UnitablesRow>
       );
     },
-    [jsonSchemaBridge, onValidateRow]
+    [jsonSchemaBridge, onSubmitRow]
   );
 
   return (
@@ -254,7 +254,7 @@ export const Unitables = ({
               onRowDuplicated={onRowDuplicated}
               onRowReset={onRowReset}
               onRowDeleted={onRowDeleted}
-              rowsWidth={rowsWidth}
+              configs={configs}
               setWidth={setWidth}
             />
           </div>
