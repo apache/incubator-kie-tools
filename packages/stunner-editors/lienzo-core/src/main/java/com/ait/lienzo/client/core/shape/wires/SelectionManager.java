@@ -168,7 +168,12 @@ public class SelectionManager implements NodeMouseDoubleClickHandler,
                                          }
                                      },
                                      wiresManager);
+        setSelectionManagerInstance(this);
     }
+
+    public static native void setSelectionManagerInstance(Object instance) /*-{
+        window.selectionManagerInstance = instance;
+    }-*/;
 
     protected boolean isSelectionCreationInProcess() {
         return m_selectionCreationInProcess;
@@ -309,7 +314,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler,
 
                     Layer layer = getSelectionShape().getLayer(); // this is in the drag layer, so also redraw there
                     if (x != m_start.getX() && y != m_start.getY()) {
-                        getItemsInBoundingBox(getSelectionShape().getComputedBoundingPoints().getBoundingBox());
+                        getItemsInBoundingBox(getSelectionShape().getComputedBoundingPoints().getBoundingBox(), null);
                         // can be null if there was no mousemove
                         if (!m_selected.isEmpty()) {
                             m_selectionShapeProvider.clear();
@@ -380,6 +385,18 @@ public class SelectionManager implements NodeMouseDoubleClickHandler,
         if (event.isButtonLeft()) {
             clearIfSelection();
         }
+    }
+
+    public void selectionEventHandlingComplete() {
+        Shape<?> shape = new Rectangle(m_selected.getBoundingBox().getWidth(), m_selected.getBoundingBox().getHeight());
+        shape.setLocation(new Point2D(m_selected.getBoundingBox().getMaxX(), m_selected.getBoundingBox().getMaxY()));
+        getItemsInBoundingBox(shape.getComputedBoundingPoints().getBoundingBox(), shape);
+        if (!m_selected.isEmpty()) {
+            m_selectionShapeProvider.clear();
+            drawSelectionShapeForSelection();
+            m_layer.draw();
+        }
+        getSelectedItems().selectShapes();
     }
 
     @Override
@@ -852,7 +869,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler,
         }
     }
 
-    public void getItemsInBoundingBox(BoundingBox selectionBox) {
+    public void getItemsInBoundingBox(BoundingBox selectionBox, Shape<?> selectedShape) {
         m_selected.setSelectionGroup(true);
         BoundingBox box = m_selected.getBoundingBox();
 
@@ -896,10 +913,12 @@ public class SelectionManager implements NodeMouseDoubleClickHandler,
 
         for (WiresConnector connector : m_wiresManager.getConnectorList().asList()) {
             boolean externallyConnected = isExternallyConnected(connector);
-
+            Shape<?> actualShape = selectedShape == null
+                    ? getSelectionShape()
+                    : selectedShape;
             Point2DArray points = new Point2DArray();
-            Point2D loc = getSelectionShape().getLocation();
-            BoundingBox boundingBox = getSelectionShape().getBoundingBox();
+            Point2D loc = actualShape.getLocation();
+            BoundingBox boundingBox = actualShape.getBoundingBox();
             points.pushXY(loc.getX(), loc.getY());
             points.pushXY(loc.getX() + boundingBox.getWidth(), loc.getY());
             points.pushXY(loc.getX() + boundingBox.getWidth(), loc.getY() + boundingBox.getHeight());

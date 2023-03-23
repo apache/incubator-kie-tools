@@ -182,6 +182,10 @@
       <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>lienzo-core</artifactId>
+    </dependency>
 
   </dependencies>
 

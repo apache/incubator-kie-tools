@@ -23,6 +23,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -102,12 +103,16 @@ public class FullSelectionSessionCommand extends AbstractSelectionAwareSessionCo
                 commandExecutedEvent.fire(new FullSelectionSessionCommandExecutedEvent(this,
                         getSession()));
                 callback.onSuccess();
+                getSelectionManagerInstance().selectionEventHandlingComplete();
             } catch (Exception e) {
                 LOGGER.severe("Error on Full selection." + e.getMessage());
                 return;
             }
         }
     }
+    public static native SelectionManager getSelectionManagerInstance() /*-{
+        return window.selectionManagerInstance;
+    }-*/;
 
     @Override
     protected void doDestroy() {
