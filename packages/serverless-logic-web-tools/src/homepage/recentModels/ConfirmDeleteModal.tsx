@@ -63,11 +63,11 @@ export function ConfirmDeleteModal(
   }, []);
 
   useEffect(() => {
-    const allPromises: Promise<void>[] = [];
-
     if (!isOpen) {
       return;
     }
+
+    const allPromises: Promise<void>[] = [];
 
     setIsDeleteCheck(false);
     setDataLoaded(false);
