@@ -15,7 +15,11 @@
   "files": [
     "dist/bpmn",
     "dist/common",
-    "dist/dmn"
+    "dist/envelope",
+    "dist/fonts",
+    "dist/jsdiagram",
+    "dist/preprocessor",
+    "dist/resources"
   ],
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
