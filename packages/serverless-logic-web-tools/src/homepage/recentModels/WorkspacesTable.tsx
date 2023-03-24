@@ -112,6 +112,7 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
 
   const sortedTableData = useMemo<WorkspacesTableRowData[]>(
     () =>
+      // slice() here is needed to create a copy of filteredTableData and sort the data
       filteredTableData.slice().sort((a, b) => {
         const aValue = getSortableRowValues(a)[activeSortIndex];
         const bValue = getSortableRowValues(b)[activeSortIndex];
