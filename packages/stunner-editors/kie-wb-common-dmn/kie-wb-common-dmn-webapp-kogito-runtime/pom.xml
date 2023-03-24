@@ -609,24 +609,6 @@
         </configuration>
       </plugin>
 
-      <!-- Include additional sources path for hot reload -->
-      <plugin>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-gwthelper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <excludes>${gwt.helper.excludes}</excludes> <!-- will include all GWT module whose configuration file name match that pattern -->
-              <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
@@ -637,14 +619,13 @@
           <module>org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp</module>
           <extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
           <optimizationLevel>9</optimizationLevel>
-          <style>OBFUSCATED</style>
-
+          <style>PRETTY</style>
           <noServer>false</noServer>
           <disableCastChecking>true</disableCastChecking>
           <runTarget>test.html</runTarget>
           <hostedWebapp>src/main/webapp</hostedWebapp>
           <gwtSdkFirstInClasspath>false</gwtSdkFirstInClasspath>
-          <logLevel>INFO</logLevel>
+          <logLevel>TRACE</logLevel>
           <generateJsInteropExports>true</generateJsInteropExports>
 
           <compileSourcesArtifacts>
@@ -848,6 +829,32 @@
         <skipITs>true</skipITs>
         <code.coverage.disabled>true</code.coverage.disabled>
       </properties>
+    </profile>
+
+    <!-- It enables HOT-RELOAD feature during DMN Editor Super Dev Mode usage -->
+    <profile>
+      <id>hot-reload</id>
+      <build>
+        <plugins>
+          <!-- Include additional sources path for hot reload -->
+          <plugin>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-gwthelper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-source</id>
+                <goals>
+                  <goal>add-source</goal>
+                </goals>
+                <configuration>
+                  <excludes>${gwt.helper.excludes}</excludes> <!-- will include all GWT module whose configuration file name match that pattern -->
+                  <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 

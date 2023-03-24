@@ -549,22 +549,6 @@
       </plugin>
 
       <plugin>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-gwthelper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
@@ -572,12 +556,12 @@
           <module>org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor</module>
           <localWorkers>8</localWorkers>
           <noServer>false</noServer>
-          <logLevel>WARN</logLevel>
+          <logLevel>TRACE</logLevel>
           <disableCastChecking>true</disableCastChecking>
           <optimizationLevel>9</optimizationLevel>
           <draftCompile>false</draftCompile>
           <strict>true</strict>
-          <style>OBFUSCATED</style>
+          <style>PRETTY</style>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <hostedWebapp>src/main/webapp</hostedWebapp>
           <runTarget>test.html</runTarget>
@@ -774,6 +758,31 @@
         <skipITs>true</skipITs>
         <code.coverage.disabled>true</code.coverage.disabled>
       </properties>
+    </profile>
+
+    <!-- It enables HOT-RELOAD feature during BPMN Editor Super Dev Mode usage -->
+    <profile>
+      <id>hot-reload</id>
+      <build>
+        <plugins>
+          <!-- Include additional sources path for hot reload -->
+          <plugin>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-gwthelper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-source</id>
+                <goals>
+                  <goal>add-source</goal>
+                </goals>
+                <configuration>
+                  <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 </project>
