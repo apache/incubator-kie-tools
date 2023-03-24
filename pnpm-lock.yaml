@@ -1068,8 +1068,8 @@ importers:
         specifier: ^2.7.4
         version: 2.7.4
       "@types/selenium-webdriver":
-        specifier: ^4.1.9
-        version: 4.1.9
+        specifier: ^4.1.12
+        version: 4.1.12
       chai:
         specifier: ^4.3.4
         version: 4.3.4
@@ -1089,8 +1089,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       selenium-webdriver:
-        specifier: ^4.7.1
-        version: 4.7.1
+        specifier: ^4.8.1
+        version: 4.8.1
       start-server-and-test:
         specifier: ^1.12.1
         version: 1.12.1
@@ -7782,7 +7782,7 @@ importers:
         specifier: ^17.0.6
         version: 17.0.21
       "@types/selenium-webdriver":
-        specifier: ^4.1.9
+        specifier: ^4.1.12
         version: 4.1.12
       "@types/vscode":
         specifier: ^1.66.0
@@ -7818,7 +7818,7 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       selenium-webdriver:
-        specifier: ^4.7.1
+        specifier: ^4.8.1
         version: 4.8.1
       typescript:
         specifier: ^4.4.2
@@ -8329,8 +8329,8 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2
       "@types/selenium-webdriver":
-        specifier: ^4.1.9
-        version: 4.1.9
+        specifier: ^4.1.12
+        version: 4.1.12
       "@types/vscode":
         specifier: ^1.66.0
         version: 1.66.0
@@ -8371,8 +8371,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       selenium-webdriver:
-        specifier: ^4.7.1
-        version: 4.7.1
+        specifier: ^4.8.1
+        version: 4.8.1
       typescript:
         specifier: ^4.4.2
         version: 4.5.4
@@ -8465,8 +8465,8 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2
       "@types/selenium-webdriver":
-        specifier: ^4.1.9
-        version: 4.1.9
+        specifier: ^4.1.12
+        version: 4.1.12
       "@types/vscode":
         specifier: ^1.66.0
         version: 1.66.0
@@ -8504,8 +8504,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       selenium-webdriver:
-        specifier: ^4.7.1
-        version: 4.7.1
+        specifier: ^4.8.1
+        version: 4.8.1
       typescript:
         specifier: ^4.4.2
         version: 4.5.4
@@ -14767,13 +14767,6 @@ packages:
   /@types/selenium-webdriver@4.1.12:
     resolution:
       { integrity: sha512-3DxuYHEbzIyUtuICRtxXtJomdOOkBeCbkXAlAPm/h8ArIn/ArWNnVSC6tIj/ECZ/sdxBoI0F/wuwcpxBew3hGw== }
-    dependencies:
-      "@types/ws": 8.2.2
-    dev: true
-
-  /@types/selenium-webdriver@4.1.9:
-    resolution:
-      { integrity: sha512-QNCYI3Rgjf3bZ2GZwXnUpOJUPR8p7+c9Um9MEKggLaUaF8UfjitH5aPCV1PF0DHVEiPYsXayGVS6+67DO3VILw== }
     dependencies:
       "@types/ws": 8.2.2
     dev: true
@@ -28378,19 +28371,6 @@ packages:
       { integrity: sha512-mEugaLK+YfkijB4fx0e6kImuJdCIt2LxCRcbEYPqRGCs4F2ogyfZU5IAZRdjCP8JPq2AtdNoC/Dux63d9Kiryg== }
     dev: true
 
-  /selenium-webdriver@4.7.1:
-    resolution:
-      { integrity: sha512-IfTM9OE8HtCKjOJwyudbAVtAHQKOJK8mu2qrXXbKyj4lqgXF+2lYW4rSZXCV6SLQRWZ+DVGkomCmFzq5orD/ZA== }
-    engines: { node: ">= 14.20.0" }
-    dependencies:
-      jszip: 3.10.1
-      tmp: 0.2.1
-      ws: 8.10.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: true
-
   /selenium-webdriver@4.8.1:
     resolution:
       { integrity: sha512-p4MtfhCQdcV6xxkS7eI0tQN6+WNReRULLCAuT4RDGkrjfObBNXMJ3WT8XdK+aXTr5nnBKuh+PxIevM0EjJgkxA== }
@@ -31658,20 +31638,6 @@ packages:
     resolution:
       { integrity: sha512-6GLgCqo2cy2A2rjCNFlxQS6ZljG/coZfZXclldI8FB/1G3CCI36Zd8xy2HrFVACi8tfk5XrgLQEk+P0Tnz9UcA== }
     engines: { node: ">=8.3.0" }
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: true
-
-  /ws@8.10.0:
-    resolution:
-      { integrity: sha512-+s49uSmZpvtAsd2h37vIPy1RBusaLawVe8of+GyEPsaJTCMpj/2v8NpeK1SHXjBlQ95lQTmQofOJnFiLoaN3yw== }
-    engines: { node: ">=10.0.0" }
     peerDependencies:
       bufferutil: ^4.0.1
       utf-8-validate: ^5.0.2
