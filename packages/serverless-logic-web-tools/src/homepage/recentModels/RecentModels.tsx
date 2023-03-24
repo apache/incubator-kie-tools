@@ -30,7 +30,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
-import { MasTableToolbar } from "./MasTableToolbar";
+import { TableToolbar } from "./TableToolbar";
 import { WorkspacesTable } from "./WorkspacesTable";
 import { TablePagination } from "./TablePagination";
 
@@ -145,7 +145,7 @@ export function RecentModels() {
                 <PageSection variant={"light"} padding={{ default: "noPadding" }}>
                   {itemCount > 0 && (
                     <>
-                      <MasTableToolbar
+                      <TableToolbar
                         itemCount={itemCount}
                         onDeleteActionButtonClick={() => setIsConfirmDeleteModalOpen(true)}
                         onToggleAllElements={(checked) => onToggleAllElements(checked, workspaceDescriptors)}

@@ -27,7 +27,7 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { TablePagination, TablePaginationProps } from "./TablePagination";
 
-export type MasTableToolbarProps = TablePaginationProps & {
+export type TableToolbarProps = TablePaginationProps & {
   onDeleteActionButtonClick: () => void;
   onToggleAllElements: (checked: boolean) => void;
   searchValue: string;
@@ -35,7 +35,7 @@ export type MasTableToolbarProps = TablePaginationProps & {
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export function MasTableToolbar(props: MasTableToolbarProps) {
+export function TableToolbar(props: TableToolbarProps) {
   const {
     itemCount: itemCount,
     onDeleteActionButtonClick: onDeleteActionButtonClick,
