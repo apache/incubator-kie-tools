@@ -16,10 +16,14 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { Bullseye, Button, EmptyState, EmptyStateBody, EmptyStateIcon, Title } from "@patternfly/react-core/dist/js";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import "@patternfly/react-core/dist/styles/base.css";
-import { ExclamationTriangleIcon, SearchIcon } from "@patternfly/react-icons/dist/js/icons";
+import { ExclamationTriangleIcon, OutlinedQuestionCircleIcon, SearchIcon } from "@patternfly/react-icons/dist/js/icons";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { ActionsColumn, Td, Tr } from "@patternfly/react-table/dist/esm";
@@ -30,6 +34,7 @@ import { routes } from "../../navigation/Routes";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 import { columnNames, WorkspacesTableRowData } from "./WorkspacesTable";
+import "./Table.css";
 
 export type WorkspacesTableRowProps = {
   rowIndex: TdSelectType["rowIndex"];
@@ -107,31 +112,37 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
 export function WorkspacesTableRowError(props: { rowData: WorkspacesTableRowData }) {
   const { rowData } = props;
   const workspaces = useWorkspaces();
-  /* TODO: WorkspacesTableRow: use a generic message and hide the workspaceId? And put a Learn more (?) or just (?) icon and when the user passes the cursor over (?) we show a more detailed message that includes the workspaceId */
 
   return (
     <>
-      <Td></Td>
-      <Td>
-        <ExclamationTriangleIcon />
-        &nbsp;&nbsp;
-        {`There was an error obtaining information for '${rowData.workspaceId}'`}
-      </Td>
-      <Td></Td>
-      <Td></Td>
-      <Td></Td>
-      <Td></Td>
-      <Td></Td>
-      <Td isActionCell>
-        <ActionsColumn
-          items={[
-            {
-              title: "Delete",
-              onClick: () => workspaces.deleteWorkspace({ workspaceId: rowData.workspaceId }),
-            },
-          ]}
-        />
-      </Td>
+      <Tr>
+        <Td>&nbsp;</Td>
+        <Td colSpan={Object.keys(columnNames).length}>
+          <ExclamationTriangleIcon />
+          &nbsp;&nbsp;
+          {`Error obtaining workspace information. `}
+          <Popover
+            bodyContent={
+              <>
+                Error obtaining information for workspace: <b>${rowData.workspaceId}</b>.<br />
+                To resolve the issue, try deleting the workspace and creating it again.
+              </>
+            }
+          >
+            <OutlinedQuestionCircleIcon className="pf-c-question-circle-icon" />
+          </Popover>
+        </Td>
+        <Td isActionCell>
+          <ActionsColumn
+            items={[
+              {
+                title: "Delete",
+                onClick: () => workspaces.deleteWorkspace({ workspaceId: rowData.workspaceId }),
+              },
+            ]}
+          />
+        </Td>
+      </Tr>
     </>
   );
 }
