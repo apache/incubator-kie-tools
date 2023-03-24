@@ -157,7 +157,6 @@ export function WorkspacesTableRowError(props: { rowData: WorkspacesTableRowData
 }
 
 export function WorkspacesTableRowEmptyState(props: { onClearFilters: () => void }) {
-  /* TODO: WorkspacesTableRow: component to be tested */
   return (
     <Tr>
       <Td colSpan={Object.keys(columnNames).length + 2}>
