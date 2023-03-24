@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export type ExpressionType = "Context" | "Decision Table" | "Function";
+export type ExpressionType = "Context" | "Decision table" | "Function";

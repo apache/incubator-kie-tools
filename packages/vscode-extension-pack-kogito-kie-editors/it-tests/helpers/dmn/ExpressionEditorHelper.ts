@@ -22,22 +22,9 @@ import { BuiltInType } from "./BuiltInType";
 /**
  * Class for accessing new DMN Expression editor
  *
- * Helper methods will not work until `activateBetaVersion` is called.
  */
 export default class ExpressionEditorHelper {
   constructor(private readonly root: WebElement) {}
-
-  /**
-   * Activates the beta version of the editor
-   * By default the stable is activated
-   */
-  public async activateBetaVersion(): Promise<ExpressionEditorHelper> {
-    const button = await this.root.findElement(
-      By.xpath("//div[@data-field='beta-boxed-expression-toggle']/span/a[@data-field='try-it']")
-    );
-    await button.click();
-    return this;
-  }
 
   public async assertExpressionDetails(
     expectedTitle: string,
