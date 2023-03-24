@@ -158,7 +158,6 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
     [location, isRouteInSettingsSection]
   );
 
-  /* FIXME: OnlineEditorPage: when the page is small the sidebar should hide like in MAS */
   const sidebar = <PageSidebar nav={pageNav} isNavOpen={props.isNavOpen} theme="dark" />;
   const mainContainerId = "main-content-page-layout-tertiary-nav";
 
@@ -167,7 +166,13 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
   return (
     <QuickStartContainer {...drawerProps}>
       <div id="page-container" ref={props.pageContainerRef}>
-        <Page header={masthead} sidebar={sidebar} skipToContent={pageSkipToContent} mainContainerId={mainContainerId}>
+        <Page
+          header={masthead}
+          sidebar={sidebar}
+          skipToContent={pageSkipToContent}
+          mainContainerId={mainContainerId}
+          isManagedSidebar
+        >
           {props.children}
         </Page>
       </div>
