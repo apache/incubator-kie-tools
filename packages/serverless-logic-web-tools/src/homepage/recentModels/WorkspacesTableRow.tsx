@@ -36,6 +36,8 @@ import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 import { columnNames, WorkspacesTableRowData } from "./WorkspacesTable";
 import "./Table.css";
 
+export const workspacesTableRowErrorContent = "Error obtaining workspace information";
+
 export type WorkspacesTableRowProps = {
   rowIndex: TdSelectType["rowIndex"];
   rowData: WorkspacesTableRowData;
@@ -120,12 +122,19 @@ export function WorkspacesTableRowError(props: { rowData: WorkspacesTableRowData
         <Td colSpan={Object.keys(columnNames).length}>
           <ExclamationTriangleIcon />
           &nbsp;&nbsp;
-          {`Error obtaining workspace information. `}
+          {workspacesTableRowErrorContent}&nbsp;
           <Popover
+            maxWidth="30%"
             bodyContent={
               <>
-                Error obtaining information for workspace: <b>${rowData.workspaceId}</b>.<br />
-                To resolve the issue, try deleting the workspace and creating it again.
+                Error obtaining information for the following element:
+                <br />
+                workspace name: <b>${rowData.descriptor.name}</b>
+                <br />
+                workspace id: <b>${rowData.workspaceId}</b>
+                <br />
+                <br />
+                To solve the issue, try deleting the workspace and creating it again.
               </>
             }
           >

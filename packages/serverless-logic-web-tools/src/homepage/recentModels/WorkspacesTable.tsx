@@ -39,6 +39,7 @@ import {
   WorkspacesTableRow,
   WorkspacesTableRowEmptyState,
   WorkspacesTableRowError,
+  workspacesTableRowErrorContent,
   WorkspacesTableRowLoading,
 } from "./WorkspacesTableRow";
 
@@ -65,9 +66,10 @@ export type WorkspacesTableRowData = Pick<
 > & {
   descriptor: WorkspaceDescriptor;
   editableFiles: WorkspaceFile[];
-  totalFiles: number;
-  name: string;
+  hasErrors: boolean;
   isWsFolder: boolean;
+  name: string;
+  totalFiles: number;
 };
 
 export function WorkspacesTable(props: WorkspacesTableProps) {
@@ -91,17 +93,20 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
             const { editableFiles, readonlyFiles } = splitFiles(allWorkspacePromises.data[index] ?? []);
             const isWsFolder =
               editableFiles.length > 1 || readonlyFiles.length > 0 || workspace.origin.kind !== WorkspaceKind.LOCAL;
+            const hasErrors = !editableFiles || !editableFiles[0];
+            const name = getWorkspaceName(workspace, isWsFolder, hasErrors, editableFiles);
 
             return {
-              descriptor: workspace,
-              workspaceId: workspace.workspaceId,
-              name: !isWsFolder && editableFiles.length ? editableFiles[0].nameWithoutExtension : workspace.name,
-              origin: workspace.origin,
               createdDateISO: workspace.createdDateISO,
-              lastUpdatedDateISO: workspace.lastUpdatedDateISO,
+              descriptor: workspace,
               editableFiles: editableFiles,
-              totalFiles: editableFiles.length + readonlyFiles.length,
+              hasErrors,
               isWsFolder,
+              lastUpdatedDateISO: workspace.lastUpdatedDateISO,
+              name,
+              origin: workspace.origin,
+              totalFiles: editableFiles.length + readonlyFiles.length,
+              workspaceId: workspace.workspaceId,
             };
           }),
     [workspaceDescriptors, allWorkspacePromises.data, allWorkspacePromises.status]
@@ -118,6 +123,10 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
       filteredTableData.slice().sort((a, b) => {
         const aValue = getSortableRowValues(a)[activeSortIndex];
         const bValue = getSortableRowValues(b)[activeSortIndex];
+        // put items with errors at the top
+        if (a.hasErrors) {
+          return -1;
+        }
         if (typeof aValue === "number") {
           return activeSortDirection === "asc"
             ? (aValue as number) - (bValue as number)
@@ -208,4 +217,16 @@ function getSortableRowValues(tableData: WorkspacesTableRowData): (string | numb
     ? "d_" + descriptor.origin.toString()
     : "f_" + editableFiles[0].extension;
   return [name, workspaceType, createdDateISO, lastUpdatedDateISO, editableFiles.length, totalFiles];
+}
+
+function getWorkspaceName(
+  workspace: WorkspaceDescriptor,
+  isWsFolder: boolean,
+  hasErrors: boolean,
+  editableFiles: WorkspaceFile[]
+) {
+  if (hasErrors) {
+    return workspacesTableRowErrorContent;
+  }
+  return !isWsFolder && editableFiles.length ? editableFiles[0].nameWithoutExtension : workspace.name;
 }
