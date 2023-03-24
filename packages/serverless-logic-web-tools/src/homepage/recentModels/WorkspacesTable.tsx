@@ -34,7 +34,7 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { splitFiles } from "../../extension";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
-import { TablePaginationProps } from "./TablePagination";
+import { TablePaginationProps } from "../../table/TablePagination";
 import {
   WorkspacesTableRow,
   WorkspacesTableRowEmptyState,

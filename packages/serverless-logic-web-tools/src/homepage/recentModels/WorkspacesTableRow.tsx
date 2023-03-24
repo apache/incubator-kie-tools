@@ -34,7 +34,7 @@ import { routes } from "../../navigation/Routes";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 import { columnNames, WorkspacesTableRowData } from "./WorkspacesTable";
-import "./Table.css";
+import "../../table/Table.css";
 
 export const workspacesTableRowErrorContent = "Error obtaining workspace information";
 

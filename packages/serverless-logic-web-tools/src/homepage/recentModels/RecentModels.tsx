@@ -30,9 +30,9 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
-import { TableToolbar } from "./TableToolbar";
+import { TableToolbar } from "../../table/TableToolbar";
 import { WorkspacesTable } from "./WorkspacesTable";
-import { TablePagination } from "./TablePagination";
+import { TablePagination } from "../../table/TablePagination";
 
 const perPageOptions: PerPageOptions[] = [5, 10, 20, 50, 100].map((n) => ({
   title: n.toString(),
