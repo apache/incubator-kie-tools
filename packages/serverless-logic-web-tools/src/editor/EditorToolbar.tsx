@@ -1311,11 +1311,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             {workspace && canSeeWorkspaceToolbar && (
               <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                 <FlexItem>
-                  {/* TODO: EditorToolbar: update the back button to point to RecentModels */}
                   <Button
                     className={"kie-tools--masthead-hoverable"}
                     variant={ButtonVariant.plain}
-                    onClick={() => history.push({ pathname: routes.home.path({}) })}
+                    onClick={() => history.push({ pathname: routes.recentModels.path({}) })}
                   >
                     <AngleLeftIcon />
                   </Button>

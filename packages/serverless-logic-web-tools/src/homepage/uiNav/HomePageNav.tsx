@@ -18,6 +18,7 @@ import * as React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { Link } from "react-router-dom";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
+import { routes } from "../../navigation/Routes";
 
 export function HomePageNav(props: { pathname: string }) {
   return (
@@ -25,24 +26,19 @@ export function HomePageNav(props: { pathname: string }) {
       <div className="chr-c-app-title">Serverless Logic Web Tools</div>
       <Nav aria-label="Global NAV" theme="dark">
         <NavList>
-          <NavItem itemId={0} key={"Overview-nav"} isActive={props.pathname === "/"}>
-            <Link to="/">Overview</Link>
+          <NavItem itemId={0} key={"Overview-nav"} isActive={props.pathname === routes.home.path({})}>
+            <Link to={routes.home.path({})}>Overview</Link>
           </NavItem>
 
-          <NavItem itemId={1} key={"Recent-models-nav"} isActive={props.pathname === "/RecentModels"}>
-            <Link to="/RecentModels">Recent Models</Link>
+          <NavItem itemId={1} key={"Recent-models-nav"} isActive={props.pathname === routes.recentModels.path({})}>
+            <Link to={routes.recentModels.path({})}>Recent Models</Link>
           </NavItem>
 
-          <NavItem itemId={2} key={"SampleCatalog-nav"} isActive={props.pathname === "/SampleCatalog"}>
-            <Link to="/SampleCatalog">Sample Catalog</Link>
+          <NavItem itemId={2} key={"SampleCatalog-nav"} isActive={props.pathname === routes.sampleCatalog.path({})}>
+            <Link to={routes.sampleCatalog.path({})}>Sample Catalog</Link>
           </NavItem>
 
-          <NavItem
-            itemId={3}
-            key={"Documentation-nav"}
-            className="chr-c-navigation__additional-links"
-            isActive={props.pathname === "/Documentation"}
-          >
+          <NavItem itemId={3} key={"Documentation-nav"} className="chr-c-navigation__additional-links">
             <a
               href="https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-overview.html"
               target="_blank"
