@@ -80,7 +80,6 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
         )}
       </Td>
       <Td dataLabel={columnNames.type}>
-        {/* FIXME: WorkspacesTableRow: when the model is a GIST the label here is "Serverless Workflow" instead of GIST label */}
         {isWsFolder ? <WorkspaceLabel descriptor={descriptor} /> : <FileLabel extension={editableFiles[0].extension} />}
       </Td>
       <Td dataLabel={columnNames.created}>

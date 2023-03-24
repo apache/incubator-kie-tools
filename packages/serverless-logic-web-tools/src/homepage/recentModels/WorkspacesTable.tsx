@@ -20,6 +20,7 @@ import {
 } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import "@patternfly/react-core/dist/styles/base.css";
 import {
   TableComposable,
@@ -88,7 +89,8 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
         ? []
         : workspaceDescriptors.map((workspace, index) => {
             const { editableFiles, readonlyFiles } = splitFiles(allWorkspacePromises.data[index] ?? []);
-            const isWsFolder = editableFiles.length > 1 || readonlyFiles.length > 0;
+            const isWsFolder =
+              editableFiles.length > 1 || readonlyFiles.length > 0 || workspace.origin.kind !== WorkspaceKind.LOCAL;
 
             return {
               descriptor: workspace,
