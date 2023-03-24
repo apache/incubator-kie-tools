@@ -24,7 +24,6 @@ import {
   DropdownGroup,
   DropdownItem,
   DropdownPosition,
-  DropdownProps,
   DropdownToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -1778,13 +1777,11 @@ export function PushToGitHubAlertActionLinks(props: {
   );
 }
 
-export function KebabDropdown(
-  props: {
-    id: string;
-    items: React.ReactNode[];
-    state: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-  } & Pick<DropdownProps, "menuAppendTo">
-) {
+export function KebabDropdown(props: {
+  id: string;
+  items: React.ReactNode[];
+  state: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+}) {
   return (
     <Dropdown
       className={"kie-tools--masthead-hoverable"}
@@ -1792,7 +1789,6 @@ export function KebabDropdown(
       isPlain={true}
       position={DropdownPosition.right}
       onSelect={() => props.state[1](false)}
-      menuAppendTo={props.menuAppendTo}
       toggle={
         <DropdownToggle
           id={props.id}

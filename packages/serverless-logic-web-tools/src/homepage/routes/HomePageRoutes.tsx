@@ -54,13 +54,13 @@ export function HomePageRoutes(props: { isNavOpen: boolean }) {
           />
         )}
       </Route>
-      <Route path="/" exact>
+      <Route path={routes.home.path({})} exact>
         <Overview isNavOpen={props.isNavOpen} />
       </Route>
-      <Route path="/RecentModels">
+      <Route path={routes.recentModels.path({})}>
         <RecentModels />
       </Route>
-      <Route path="/SampleCatalog">
+      <Route path={routes.sampleCatalog.path({})}>
         <SampleCatalog />
       </Route>
       <Route component={NoMatchPage} />
