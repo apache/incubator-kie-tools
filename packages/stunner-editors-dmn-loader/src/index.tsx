@@ -79,7 +79,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
       console.log("Sending expression update to GWT layer.");
       window.beeApiWrapper?.updateExpression(expressionWrapper.expression);
     }
-  }, [expressionWrapper.expression]);
+  }, [expressionWrapper]);
 
   const beeGwtService: BeeGwtService = {
     getDefaultExpressionDefinition(logicType: string): ExpressionDefinition {
