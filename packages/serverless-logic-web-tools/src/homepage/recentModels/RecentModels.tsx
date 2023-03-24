@@ -77,7 +77,10 @@ export function RecentModels() {
         })
         .catch((e) => {
           console.error(e);
-          addAlert(`There was an error deleting the ${modelsWord}`, "danger");
+          addAlert(
+            `Oops, something went wrong while trying to delete the selected ${modelsWord}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`,
+            "danger"
+          );
         })
         .finally(() => {
           setSelectedWorkspaceIds([]);
