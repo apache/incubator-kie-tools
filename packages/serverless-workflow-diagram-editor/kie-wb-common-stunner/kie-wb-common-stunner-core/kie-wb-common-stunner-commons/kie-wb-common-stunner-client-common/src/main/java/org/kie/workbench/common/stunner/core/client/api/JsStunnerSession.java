@@ -14,6 +14,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -31,6 +32,10 @@ public class JsStunnerSession {
 
     public Diagram getDiagram() {
         return session.getCanvasHandler().getDiagram();
+    }
+
+    public Graph getGraph() {
+        return getDiagram().getGraph();
     }
 
     public Node getNodeByUUID(String uuid) {

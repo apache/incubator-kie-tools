@@ -22,6 +22,7 @@ import java.util.List;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 @JsType
 public class NodeImpl<C> extends AbstractElement<C> implements Node<C, Edge> {
@@ -38,9 +39,31 @@ public class NodeImpl<C> extends AbstractElement<C> implements Node<C, Edge> {
         return inEdges;
     }
 
+    public Edge[] inEdgeArray() {
+        return inEdges.toArray(new Edge[0]);
+    }
+
+    public static Edge[] inConnectors(Node node) {
+        List<Edge> inEdges = node.getInEdges();
+        return inEdges.stream()
+                .filter(e -> e.getContent() instanceof ViewConnector)
+                .toArray(Edge[]::new);
+    }
+
     @Override
     public List<Edge> getOutEdges() {
         return outEdges;
+    }
+
+    public Edge[] outEdgeArray() {
+        return outEdges.toArray(new Edge[0]);
+    }
+
+    public static Edge[] outConnectors(Node node) {
+        List<Edge> outEdges = node.getOutEdges();
+        return outEdges.stream()
+                .filter(e -> e.getContent() instanceof ViewConnector)
+                .toArray(Edge[]::new);
     }
 
     @Override

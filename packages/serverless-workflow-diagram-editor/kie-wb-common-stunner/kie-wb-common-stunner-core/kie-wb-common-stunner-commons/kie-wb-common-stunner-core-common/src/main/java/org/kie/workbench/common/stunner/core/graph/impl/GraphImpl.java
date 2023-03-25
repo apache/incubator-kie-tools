@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.graph.impl;
 
 import java.util.Objects;
+import java.util.stream.StreamSupport;
 
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
@@ -61,6 +62,13 @@ public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
     @Override
     public Iterable<Node> nodes() {
         return nodeStore;
+    }
+
+    @SuppressWarnings("all")
+    public Node[] nodesArray() {
+        final Iterable<Node> nodes = nodes();
+        return StreamSupport.stream(nodes.spliterator(), true)
+                .toArray(Node[]::new);
     }
 
     @Override

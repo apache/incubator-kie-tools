@@ -44,7 +44,6 @@ import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.widgets.client.errorpage.ErrorPage;
 import org.mockito.Mock;
 
@@ -123,7 +122,7 @@ public class StunnerEditorTest {
         when(sessionEditorPresenter.getHandler()).thenReturn(canvasHandler);
         when(sessionViewerPresenter.getHandler()).thenReturn(canvasHandler);
         Metadata metadata = new MetadataImpl.MetadataImplBuilder("testSet").build();
-        diagram = new DiagramImpl("testDiagram", mock(Graph.class), metadata);
+        diagram = new DiagramImpl("testDiagram", metadata);
         when(editorSession.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvas.getView()).thenReturn(canvasView);

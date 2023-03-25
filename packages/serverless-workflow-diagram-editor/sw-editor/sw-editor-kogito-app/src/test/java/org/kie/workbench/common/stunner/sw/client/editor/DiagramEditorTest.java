@@ -223,9 +223,9 @@ public class DiagramEditorTest {
         metadata = spy(new MetadataImpl.MetadataImplBuilder("testSet")
                                .setTitle("testDiagram")
                                .build());
-        diagram = spy(new DiagramImpl("testDiagram",
-                                      graph,
-                                      metadata));
+        DiagramImpl d = new DiagramImpl("testDiagram", metadata);
+        d.setGraph(graph);
+        diagram = spy(d);
         when(session.getCanvasHandler()).thenReturn(canvasHandler2);
         when(canvasHandler2.getDiagram()).thenReturn(diagram);
         doReturn(stunnerEditor2).when(stunnerEditor2).close();
