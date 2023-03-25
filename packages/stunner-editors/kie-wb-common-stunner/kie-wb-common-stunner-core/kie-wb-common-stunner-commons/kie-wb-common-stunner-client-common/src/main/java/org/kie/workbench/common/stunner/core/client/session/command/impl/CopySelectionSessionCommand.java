@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -25,6 +28,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -42,6 +46,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
 import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.C;
@@ -142,11 +147,39 @@ public class CopySelectionSessionCommand extends AbstractSelectionAwareSessionCo
                 commandExecutedEvent.fire(new CopySelectionSessionCommandExecutedEvent(this,
                                                                                        getSession()));
                 callback.onSuccess();
+
+                List<Element> elements = new ArrayList<>();
+                clipboardControl.getElements().forEach((el) -> {
+                    if(GraphUtils.getComputedPosition(el.asNode()).getX() != 0
+                            && GraphUtils.getComputedPosition(el.asNode()).getY() != 0) {
+                        elements.add(el);
+                    }
+                });
+                //get max and min coordinates to create selection area
+                double[] minCoordinates = getCoordinates(elements, false);
+                double[] maxCoordinates = getCoordinates(elements, true);
+                double width = maxCoordinates[0] - minCoordinates[0];
+                double height = maxCoordinates[1] - minCoordinates[1];
+                getSelectionManagerInstance().selectionClipboardControlElements(
+                        minCoordinates[0], minCoordinates[1], width, height);
             } catch (Exception e) {
                 LOGGER.severe("Error on copy selection." + e.getMessage());
                 return;
             }
         }
+    }
+
+    public static native SelectionManager getSelectionManagerInstance() /*-{
+        return window.selectionManagerInstance;
+    }-*/;
+
+    private double[] getCoordinates(List<Element> elements, boolean max) {
+        List<Double> xCoordinates = new ArrayList<>();
+        List<Double> yCoordinates = new ArrayList<>();
+        elements.forEach((element) -> xCoordinates.add(GraphUtils.getComputedPosition(element.asNode()).getX()));
+        elements.forEach((element) -> yCoordinates.add(GraphUtils.getComputedPosition(element.asNode()).getY()));
+        return max ? new double[]{Collections.max(xCoordinates), Collections.max(yCoordinates)}
+                : new double[]{Collections.min(xCoordinates), Collections.min(yCoordinates)};
     }
 
     @Override

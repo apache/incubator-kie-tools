@@ -392,6 +392,16 @@ public class SelectionManager implements NodeMouseDoubleClickHandler,
         //Simulate selection of the entire screen with the mouse
         Shape<?> shape = new Rectangle(m_selected.getBoundingBox().getWidth(), m_selected.getBoundingBox().getHeight());
         shape.setLocation(new Point2D(m_selected.getBoundingBox().getMaxX(), m_selected.getBoundingBox().getMaxY()));
+        getItemsFromShape(shape);
+    }
+
+    public void selectionClipboardControlElements(double x, double y, double width, double height) {
+        Shape<?> shape = new Rectangle(width, height);
+        shape.setLocation(new Point2D(x, y));
+        getItemsFromShape(shape);
+    }
+
+    private void getItemsFromShape(Shape<?> shape) {
         //Get all items in the selected area
         getItemsInBoundingBox(shape.getComputedBoundingPoints().getBoundingBox(), shape);
         if (!m_selected.isEmpty()) {

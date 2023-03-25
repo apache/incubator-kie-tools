@@ -197,6 +197,12 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
 
             fireSelectedElementEvent();
             callback.onSuccess();
+
+            getSession().getSelectionControl().clearSelection();
+            //leave the selection only on the inserted nodes
+            for (String uuid : clonedElements.values()) {
+                getSession().getSelectionControl().select(uuid);
+            }
             clear();
 
             //copy the cloned node to the clipboard to allow pasting several times
