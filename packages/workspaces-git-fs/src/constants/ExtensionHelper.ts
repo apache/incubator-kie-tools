@@ -21,6 +21,7 @@ const REGEX = {
   swJson: /^.*\.sw\.json$/i,
   swYml: /^.*\.sw\.yml$/i,
   swYaml: /^.*\.sw\.yaml$/i,
+  yard: /^.*\.yard\.(json|yml|yaml)$/i,
   yardJson: /^.*\.yard\.json$/i,
   yardYml: /^.*\.yard\.yml$/i,
   yardYaml: /^.*\.yard\.yaml$/i,
@@ -66,6 +67,10 @@ export function isServerlessWorkflowYml(path: string): boolean {
 
 export function isServerlessWorkflowYaml(path: string): boolean {
   return REGEX.swYaml.test(path);
+}
+
+export function isServerlessDecision(path: string): boolean {
+  return REGEX.yard.test(path);
 }
 
 export function isServerlessDecisionJson(path: string): boolean {
