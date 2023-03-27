@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import java.util.Optional;
 
 import org.junit.Test;
+import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
@@ -147,5 +148,28 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         ErrorTransition onError = state1.getOnErrors()[0];
         assertNull(onError.getTransition());
         assertTrue(DefinitionTypeUtils.getEnd(onError.getEnd()));
+    }
+
+    @Test
+    public void testMarshallCompensationEdge() {
+        // Unmarshall the graph for the workflow example.
+        unmarshallWorkflow();
+
+        // Create a compensation state and transition from State1 to new State.
+        State compensationState = new State().setName("new State").setEnd(true);
+        CompensationTransition compensationTransition = new CompensationTransition();
+        compensationTransition.setTransition(compensationState.getName());
+        graphHandler.addEdgeTo(graphHandler.newEdge("Compensation_1", Optional.of(compensationTransition)),
+                               getNodeByName("State1"),
+                               graphHandler.newNode(compensationState.getName(), Optional.of(compensationState)));
+
+        // Assert the domain object gets properly updated once marshalling.
+        Workflow workflow = marshallWorkflow();
+        State state1 = workflow.getStates()[0];
+        assertNull(state1.getTransition());
+        assertFalse(DefinitionTypeUtils.getEnd(state1.getEnd()));
+        assertEquals(compensationState.getName(), state1.getCompensatedBy());
+        assertNull(state1.getTransition());
+        assertNull(state1.getOnErrors());
     }
 }
