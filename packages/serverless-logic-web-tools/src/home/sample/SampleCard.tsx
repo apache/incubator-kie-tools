@@ -3,12 +3,12 @@ import { useMemo } from "react";
 import { Card, CardTitle, CardFooter, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { useRoutes } from "../navigation/Hooks";
+import { useRoutes } from "../../navigation/Hooks";
 import { Link } from "react-router-dom";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
 import { FolderIcon, FileIcon, MonitoringIcon } from "@patternfly/react-icons/dist/js/icons";
-import { labelColors } from "../workspace/components/FileLabel";
+import { labelColors } from "../../workspace/components/FileLabel";
 import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 export enum SampleType {

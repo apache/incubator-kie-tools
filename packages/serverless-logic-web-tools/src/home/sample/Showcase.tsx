@@ -19,8 +19,8 @@ import { useEffect, useState } from "react";
 import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Sample, SampleCard, SampleType } from "./SampleCard";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { fetchFile, kieSamplesRepo, repoContentType } from "./api";
-import { useSettingsDispatch } from "../settings/SettingsContext";
+import { fetchFile, kieSamplesRepo, repoContentType } from "../api";
+import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { SampleCardSkeleton } from "./SampleCardSkeleton";
 
 function RenderSvg(props: { svg: string }) {

@@ -20,7 +20,7 @@ import { Card, CardTitle, CardFooter, CardBody } from "@patternfly/react-core/di
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
-import "./css/SampleCardSkeleton.css";
+import "./SampleCardSkeleton.css";
 
 export const SampleCardSkeleton = () => {
   return (
