@@ -17,20 +17,15 @@
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { basename } from "path";
 import { PROJECT_FILES } from "../project";
+import {
+  FileTypes,
+  isServerlessWorkflow,
+  isServerlessDecision,
+  isDashbuilder,
+  isSpec,
+} from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 const EDIT_NON_MODEL_ALLOW_LIST = [PROJECT_FILES.applicationProperties];
-
-const REGEX = {
-  supported: /(\.sw\.json|\.sw\.yaml|\.sw\.yml|\.yard\.json|\.yard\.yaml|\.yard\.yml|\.dash\.yml|\.dash\.yaml)$/i,
-  sw: /^.*\.sw\.(json|yml|yaml)$/i,
-  swJson: /^.*\.sw\.json$/i,
-  swYaml: /^.*\.sw\.(yml|yaml)$/i,
-  yard: /^.*\.yard\.(json|yml|yaml)$/i,
-  dash: /^.*\.dash\.(yml|yaml)$/i,
-  json: /^.*\.json$/i,
-  yaml: /^.*\.(yml|yaml)$/i,
-  spec: /^.*(\.spec|\.specs|spec|specs)\.(json|yml|yaml)$/i,
-};
 
 export const GLOB_PATTERN = {
   all: "**/*",
@@ -41,17 +36,6 @@ export const GLOB_PATTERN = {
   spec: "**/+(*.spec?(s)|spec?(s)).+(yml|yaml|json)",
   sw_spec: "**/+(*.sw|*.spec?(s)|spec?(s)).+(yml|yaml|json)",
 };
-
-export enum FileTypes {
-  SW_JSON = "sw.json",
-  SW_YML = "sw.yml",
-  SW_YAML = "sw.yaml",
-  YARD_JSON = "yard.json",
-  YARD_YML = "yard.yml",
-  YARD_YAML = "yard.yaml",
-  DASH_YAML = "dash.yaml",
-  DASH_YML = "dash.yml",
-}
 
 export const supportedFileExtensionArray = [
   FileTypes.SW_JSON,
@@ -64,26 +48,6 @@ export const supportedFileExtensionArray = [
   FileTypes.DASH_YML,
 ];
 
-export function isServerlessWorkflow(path: string): boolean {
-  return REGEX.sw.test(path);
-}
-
-export function isServerlessWorkflowJson(path: string): boolean {
-  return REGEX.swJson.test(path);
-}
-
-export function isServerlessWorkflowYaml(path: string): boolean {
-  return REGEX.swYaml.test(path);
-}
-
-export function isServerlessDecision(path: string): boolean {
-  return REGEX.yard.test(path);
-}
-
-export function isDashbuilder(path: string): boolean {
-  return REGEX.dash.test(path);
-}
-
 export function isModel(path: string): boolean {
   return isServerlessWorkflow(path) || isServerlessDecision(path) || isDashbuilder(path);
 }
@@ -94,18 +58,6 @@ export function isEditable(path: string): boolean {
 
 export function isSupportedByVirtualServiceRegistry(path: string): boolean {
   return isServerlessWorkflow(path) || isSpec(path);
-}
-
-export function isSpec(path: string): boolean {
-  return REGEX.spec.test(path);
-}
-
-export function isJson(path: string): boolean {
-  return REGEX.json.test(path);
-}
-
-export function isYaml(path: string): boolean {
-  return REGEX.yaml.test(path);
 }
 
 export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];

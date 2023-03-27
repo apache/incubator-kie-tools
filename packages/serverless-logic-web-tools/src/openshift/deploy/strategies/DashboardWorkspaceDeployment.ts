@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { GLOB_PATTERN, isDashbuilder } from "../../../extension";
+import { GLOB_PATTERN } from "../../../extension";
+import { isDashbuilder } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
 import { KnativeBuilderPipeline } from "../../pipelines/KnativeBuilderPipeline";
 import { DashbuilderViewer } from "../BaseContainerImages";

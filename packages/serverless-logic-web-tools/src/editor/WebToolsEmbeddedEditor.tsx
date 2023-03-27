@@ -23,7 +23,7 @@ import { SwfChannelComponent } from "./channel/SwfChannelComponent";
 import { DashChannelComponent } from "./channel/DashChannelComponent";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { When } from "react-if";
-import { isDashbuilder, isServerlessWorkflow } from "../extension";
+import { isDashbuilder, isServerlessWorkflow } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import {
   SwfJsonLanguageService,

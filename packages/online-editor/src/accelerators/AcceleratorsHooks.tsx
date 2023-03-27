@@ -42,7 +42,7 @@ import {
   GIT_DEFAULT_BRANCH,
   GIT_ORIGIN_REMOTE_NAME,
 } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { isDecision, isScorecard, isWorkflow } from "../envelopeLocator/EditorEnvelopeLocatorFactory";
+import { isDecision, isScorecard, isWorkflow } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 const TEMP_ACCELERATOR_REMOTE_NAME = "__kie-sandbox__accelerator-remote";
 const BACKUP_BRANCH_NAME = "__kie-sandbox__accelerator-backup-branch";

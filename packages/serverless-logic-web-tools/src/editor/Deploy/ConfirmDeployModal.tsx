@@ -23,7 +23,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { useCallback, useMemo, useState } from "react";
 import { AlertsController, useAlert } from "../../alerts/Alerts";
-import { isDashbuilder, isServerlessWorkflow } from "../../extension";
+import { isDashbuilder, isServerlessWorkflow } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { useAppI18n } from "../../i18n";
 import { CompletedDeployOperation } from "../../openshift/deploy/types";
 import { useOpenShift } from "../../openshift/OpenShiftContext";

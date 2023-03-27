@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { isJson, isSpec } from "../../extension";
+import { isJson, isSpec } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { generateOpenApiSpec } from "./BaseOpenApiSpec";
 import * as yaml from "yaml";

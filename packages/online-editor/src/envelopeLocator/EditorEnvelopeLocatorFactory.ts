@@ -20,13 +20,13 @@ import {
   EnvelopeMapping,
 } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
 
-const REGEX = {
-  supported: /(\.bpmn|\.bpmn2|\.dmn|\.pmml|\.scesim)$/i,
-  dmn: /^.*\.dmn$/i,
-  bpmn: /^.*\.(bpmn|bpmn2)$/i,
-  scesim: /^.*\.scesim$/i,
-  pmml: /^.*\.pmml$/i,
-};
+import {
+  FileTypes,
+  isDecision,
+  isWorkflow,
+  isScorecard,
+  isTestScenario,
+} from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 export const GLOB_PATTERN = {
   all: "**/*",
@@ -35,14 +35,6 @@ export const GLOB_PATTERN = {
   scesim: "**/*.scesim",
   pmml: "**/*.pmml",
 };
-
-export enum FileTypes {
-  DMN = "dmn",
-  BPMN = "bpmn",
-  BPMN2 = "bpmn2",
-  SCESIM = "scesim",
-  PMML = "pmml",
-}
 
 export const supportedFileExtensionArray = [
   FileTypes.DMN,
@@ -53,22 +45,6 @@ export const supportedFileExtensionArray = [
 ];
 
 export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];
-
-export function isDecision(path: string): boolean {
-  return REGEX.dmn.test(path);
-}
-
-export function isWorkflow(path: string): boolean {
-  return REGEX.bpmn.test(path);
-}
-
-export function isTestScenario(path: string): boolean {
-  return REGEX.scesim.test(path);
-}
-
-export function isScorecard(path: string): boolean {
-  return REGEX.pmml.test(path);
-}
 
 export function isModel(path: string): boolean {
   return isDecision(path) || isWorkflow(path) || isScorecard(path);

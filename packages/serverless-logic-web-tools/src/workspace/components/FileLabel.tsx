@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
-import { FileTypes } from "../../extension";
+import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 type LabelColorType = { color: LabelProps["color"]; label: string };
 
