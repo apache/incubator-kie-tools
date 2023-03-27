@@ -31,6 +31,11 @@ public class DiagramApiInteropWrapper {
      */
     public native void onNodeSelected(String nodeName);
 
+    /**
+     * Notify that the diagram finished setting its content
+     */
+    public native void setContentSuccess();
+
     @JsProperty(name = "diagramService")
     public static native DiagramApiInteropWrapper get();
 }
