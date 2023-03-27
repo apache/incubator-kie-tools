@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.openjdk
-version: "2.0.0-snapshot"
+version: "11"
 
 labels:
   - name: "com.redhat.component"
@@ -25,5 +25,5 @@ execute:
 
 packages:
   install:
-    - java-11-openjdk-devel
+  - java-11-openjdk-devel
 

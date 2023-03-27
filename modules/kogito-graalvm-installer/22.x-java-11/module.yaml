@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.graalvm.installer
-version: "2.0.0-snapshot"
+version: "22.2.0-java-11"
 
 envs:
   - name: "JAVA_HOME"
@@ -14,12 +14,12 @@ envs:
     value: "11"
 
 artifacts:
-  - name: graalvm-ce-java11-linux-amd64-22.2.0.tar.gz
-    url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.2.0/graalvm-ce-java11-linux-amd64-22.2.0.tar.gz
-    md5: 41a1653fcdee605a21d8e03763a861c4
-  - name: native-image-installable-svm-java11-linux-amd64-22.2.0.jar
-    url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.2.0/native-image-installable-svm-java11-linux-amd64-22.2.0.jar
-    md5: 120c14c5db31732d4e1751c79b6dc8a8
+- name: graalvm-ce-java11-linux-amd64-22.2.0.tar.gz
+  url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.2.0/graalvm-ce-java11-linux-amd64-22.2.0.tar.gz
+  md5: 41a1653fcdee605a21d8e03763a861c4
+- name: native-image-installable-svm-java11-linux-amd64-22.2.0.jar
+  url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.2.0/native-image-installable-svm-java11-linux-amd64-22.2.0.jar
+  md5: 120c14c5db31732d4e1751c79b6dc8a8
 
 execute:
-  - script: configure
+- script: configure

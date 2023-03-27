@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.openjdk
-version: "2.0.0-snapshot"
+version: "11-headless"
 
 labels:
   - name: "com.redhat.component"
@@ -22,4 +22,4 @@ envs:
 
 packages:
   install:
-    - java-11-openjdk-headless
+  - java-11-openjdk-headless

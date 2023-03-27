@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.epel
-version: "2.0.0-snapshot"
+version: "7"
 
 execute:
   - script: configure.sh
