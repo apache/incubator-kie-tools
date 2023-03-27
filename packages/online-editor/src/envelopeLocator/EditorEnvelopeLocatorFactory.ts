@@ -21,7 +21,7 @@ import {
 } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
 
 import {
-  FileTypes,
+  FileTypesSandbox,
   isDecision,
   isWorkflow,
   isScorecard,
@@ -37,11 +37,11 @@ export const GLOB_PATTERN = {
 };
 
 export const supportedFileExtensionArray = [
-  FileTypes.DMN,
-  FileTypes.BPMN,
-  FileTypes.BPMN2,
-  FileTypes.SCESIM,
-  FileTypes.PMML,
+  FileTypesSandbox.DMN,
+  FileTypesSandbox.BPMN,
+  FileTypesSandbox.BPMN2,
+  FileTypesSandbox.SCESIM,
+  FileTypesSandbox.PMML,
 ];
 
 export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];
@@ -58,19 +58,19 @@ export class EditorEnvelopeLocatorFactory {
   public create(args: { targetOrigin: string }) {
     return new EditorEnvelopeLocator(args.targetOrigin, [
       new EnvelopeMapping({
-        type: FileTypes.BPMN,
+        type: FileTypesSandbox.BPMN,
         filePathGlob: GLOB_PATTERN.bpmn,
         resourcesPathPrefix: "gwt-editors/bpmn",
         envelopeContent: { type: EnvelopeContentType.PATH, path: "bpmn-envelope.html" },
       }),
       new EnvelopeMapping({
-        type: FileTypes.DMN,
+        type: FileTypesSandbox.DMN,
         filePathGlob: GLOB_PATTERN.dmn,
         resourcesPathPrefix: "gwt-editors/dmn",
         envelopeContent: { type: EnvelopeContentType.PATH, path: "dmn-envelope.html" },
       }),
       new EnvelopeMapping({
-        type: FileTypes.PMML,
+        type: FileTypesSandbox.PMML,
         filePathGlob: GLOB_PATTERN.pmml,
         resourcesPathPrefix: "",
         envelopeContent: { type: EnvelopeContentType.PATH, path: "pmml-envelope.html" },

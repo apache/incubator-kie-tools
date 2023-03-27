@@ -46,6 +46,9 @@ export enum FileTypes {
   YARD_YAML = "yard.yaml",
   DASH_YAML = "dash.yaml",
   DASH_YML = "dash.yml",
+}
+
+export enum FileTypesSandbox {
   DMN = "dmn",
   BPMN = "bpmn",
   BPMN2 = "bpmn2",
