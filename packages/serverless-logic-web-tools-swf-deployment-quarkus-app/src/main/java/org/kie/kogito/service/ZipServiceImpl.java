@@ -16,6 +16,8 @@
 
 package org.kie.kogito.service;
 
+import org.kie.kogito.api.ZipService;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

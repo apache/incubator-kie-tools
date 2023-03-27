@@ -28,7 +28,7 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.kie.kogito.service.UploadService;
+import org.kie.kogito.api.UploadService;
 
 @Path("/")
 public class SwfDeploymentResource {

@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.service;
+package org.kie.kogito;
 
-import java.io.IOException;
-import java.util.List;
+import java.nio.file.Paths;
 
-public interface ZipService {
+public interface FileStructureConstants {
+    String UPLOADED_ZIP_FILE = "file.zip";
+    String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
 
-    List<String> unzip(String zipFile, String destination) throws IOException;
+    String WORK_FOLDER = "/tmp/serverless-logic";
+    String UNZIP_FOLDER = Paths.get(FileStructureConstants.WORK_FOLDER, "unzip").toString();
+    String PROJECT_RESOURCES_FOLDER = "src/main/resources";
+    String APPLICATION_PROPERTIES_FILE_PATH = Paths.get(FileStructureConstants.PROJECT_RESOURCES_FOLDER, APPLICATION_PROPERTIES_FILE_NAME).toString();
 }

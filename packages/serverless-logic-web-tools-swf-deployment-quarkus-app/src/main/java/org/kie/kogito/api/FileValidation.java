@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.service;
+package org.kie.kogito.api;
 
-import java.io.InputStream;
+import java.nio.file.Path;
 
-public interface UploadService {
-
-    void upload(InputStream inputStream);
+public interface FileValidation {
+    boolean isValid(Path path);
 }
