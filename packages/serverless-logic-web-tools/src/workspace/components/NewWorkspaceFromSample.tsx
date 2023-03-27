@@ -38,7 +38,7 @@ export function NewWorkspaceFromSample() {
   const routes = useRoutes();
   const history = useHistory();
   const settingsDispatch = useSettingsDispatch();
-  const [importingError, setImportingError] = useState("");
+  const [openingError, setOpeningError] = useState("");
 
   const sampleId = useQueryParam(QueryParams.SAMPLE_ID);
 
@@ -71,6 +71,12 @@ export function NewWorkspaceFromSample() {
           kieSamplesRepo.ref,
           decodeURIComponent(`${kieSamplesRepo.path}/${sampleId}`)
         );
+
+        if (res === undefined) {
+          setOpeningError(`Sample ${sampleId} not found`);
+          return;
+        }
+
         const sampleFiles = [] as LocalFile[];
         const promise = (res as any)?.data?.map(async (file: repoContentType) => {
           if (file.name === "definition.json" || file.name.split(".")[1] === "svg") {
@@ -79,7 +85,7 @@ export function NewWorkspaceFromSample() {
           const rawUrl = new URL((file as repoContentType).download_url);
           const response = await fetch(rawUrl.toString());
           if (!response.ok) {
-            setImportingError(`${response.status}${response.statusText ? `- ${response.statusText}` : ""}`);
+            setOpeningError(`${response.status}${response.statusText ? `- ${response.statusText}` : ""}`);
             return;
           }
           const content = await response?.text();
@@ -90,11 +96,11 @@ export function NewWorkspaceFromSample() {
           });
         });
 
-        Promise.all(promise).then((data) => {
+        Promise.all(promise).then(() => {
           createWorkspaceForFiles(sampleFiles);
         });
       } catch (e) {
-        setImportingError(e.toString());
+        setOpeningError(e.toString());
         return;
       }
     }
@@ -105,10 +111,8 @@ export function NewWorkspaceFromSample() {
   return (
     <>
       <OnlineEditorPage>
-        {importingError && (
-          <EditorPageErrorPage path={`${kieSamplesRepo.path}/${sampleId}`} errors={[importingError]} />
-        )}
-        {!importingError && (
+        {openingError && <EditorPageErrorPage path={`${kieSamplesRepo.path}/${sampleId}`} errors={[openingError]} />}
+        {!openingError && (
           <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
             <Bullseye>
               <TextContent>
