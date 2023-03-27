@@ -125,6 +125,7 @@ export function DevDeploymentsDropdownItem(props: Props) {
   }, [i18n, props.deployment.state, props.id]);
 
   const onItemClicked = useCallback(() => {
+    console.log({ url: `${props.deployment.routeUrl}/#/form/${props.deployment.uri}` });
     window.open(`${props.deployment.routeUrl}/#/form/${props.deployment.uri}`, "_blank");
   }, [props.deployment.routeUrl, props.deployment.uri]);
 

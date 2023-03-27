@@ -23,7 +23,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "",
     },
     DMN_DEV_DEPLOYMENT__baseImageAccount: {
-      default: "kie-tools",
+      default: "thiagoelg",
       description: "",
     },
     DMN_DEV_DEPLOYMENT__baseImageName: {

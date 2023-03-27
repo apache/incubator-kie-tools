@@ -19,6 +19,7 @@ import {
   BuildConfigDescriptor,
   DeploymentDescriptor,
   ImageStreamDescriptor,
+  IngressDescriptor,
   KafkaSourceDescriptor,
   KnativeServiceDescriptor,
   RouteDescriptor,
@@ -167,6 +168,46 @@ export const ROUTE_TEMPLATE = (args: CommonTemplateArgs): RouteDescriptor => ({
       termination: "edge",
       insecureEdgeTerminationPolicy: "None",
     },
+  },
+});
+
+export const INGRESS_TEMPLATE = (args: CommonTemplateArgs): IngressDescriptor => ({
+  apiVersion: KubernetesApiVersions.INGRESS,
+  kind: "Ingress",
+  metadata: {
+    name: args.resourceName,
+    namespace: args.namespace,
+    labels: {
+      ...commonLabels({ ...args }),
+      ...runtimeLabels(),
+    },
+    annotations: {
+      "nginx.ingress.kubernetes.io/rewrite-target": "/$2",
+      // "nginx.ingress.kubernetes.io/ssl-redirect": "false",
+      "nginx.ingress.kubernetes.io/backend-protocol": "HTTP",
+    },
+  },
+  spec: {
+    rules: [
+      {
+        http: {
+          paths: [
+            {
+              path: `/${args.resourceName}(/|$)(.*)`,
+              pathType: "Prefix",
+              backend: {
+                service: {
+                  name: args.resourceName,
+                  port: {
+                    number: 8080,
+                  },
+                },
+              },
+            },
+          ],
+        },
+      },
+    ],
   },
 });
 

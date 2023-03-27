@@ -1,48 +1,64 @@
-import { Resource } from "@kie-tools-core/openshift/dist/api/types";
-import { KubernetesConnection } from "./KieSandboxKubernetesService";
-import { ResourceFetch } from "@kie-tools-core/openshift/dist/fetch/ResourceFetch";
-import { ContentTypes, HeaderKeys } from "@kie-tools-core/openshift/dist/fetch/FetchConstants";
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-export class KubernetesResourceFetcher {
-  constructor(private readonly args: { connection: KubernetesConnection; proxyUrl?: string }) {}
+// import { Resource } from "@kie-tools-core/openshift/dist/api/types";
+// import { KubernetesConnection } from "./KieSandboxKubernetesService";
+// import { ResourceFetch } from "@kie-tools-core/openshift/dist/fetch/ResourceFetch";
+// import { ContentTypes, HeaderKeys } from "@kie-tools-core/openshift/dist/fetch/FetchConstants";
 
-  public async execute<T = Resource>(args: {
-    target: ResourceFetch;
-    rollbacks?: ResourceFetch[];
-  }): Promise<Readonly<T>> {
-    const targetUrl = `${this.args.connection.host}${args.target.endpoint()}`;
-    const urlToFetch = this.args.proxyUrl ?? targetUrl;
+// export class KubernetesResourceFetcher {
+//   constructor(private readonly args: { connection: KubernetesConnection; proxyUrl?: string }) {}
 
-    const headers: HeadersInit = {
-      [HeaderKeys.AUTHORIZATION]: `Bearer ${this.args.connection.token}`,
-      [HeaderKeys.ACCEPT]: ContentTypes.APPLICATION_JSON,
-      [HeaderKeys.CONTENT_TYPE]: args.target.contentType(),
-    };
+//   public async execute<T = Resource>(args: {
+//     target: ResourceFetch;
+//     rollbacks?: ResourceFetch[];
+//   }): Promise<Readonly<T>> {
+//     const targetUrl = `${this.args.connection.host}${args.target.endpoint()}`;
+//     const urlToFetch = this.args.proxyUrl ?? targetUrl;
 
-    if (this.args.proxyUrl) {
-      headers[HeaderKeys.TARGET_URL] = targetUrl;
-    }
+//     const headers: HeadersInit = {
+//       [HeaderKeys.AUTHORIZATION]: `Bearer ${this.args.connection.token}`,
+//       [HeaderKeys.ACCEPT]: ContentTypes.APPLICATION_JSON,
+//       [HeaderKeys.CONTENT_TYPE]: args.target.contentType(),
+//     };
 
-    try {
-      const response = await fetch(urlToFetch, {
-        method: args.target.method(),
-        body: args.target.body(),
-        headers,
-      });
+//     if (this.args.proxyUrl) {
+//       headers[HeaderKeys.TARGET_URL] = targetUrl;
+//     }
 
-      if (response.ok) {
-        return (await response.json()) as T;
-      }
-    } catch (e) {
-      // No-op
-    }
+//     try {
+//       const response = await fetch(urlToFetch, {
+//         method: args.target.method(),
+//         body: args.target.body(),
+//         headers,
+//       });
 
-    if (args.rollbacks && args.rollbacks.length > 0) {
-      for (const resource of args.rollbacks) {
-        await this.execute({ target: resource });
-      }
-    }
+//       if (response.ok) {
+//         return (await response.json()) as T;
+//       }
+//     } catch (e) {
+//       // No-op
+//     }
 
-    throw new Error(`Error fetching ${args.target.name()}`);
-  }
-}
+//     if (args.rollbacks && args.rollbacks.length > 0) {
+//       for (const resource of args.rollbacks) {
+//         await this.execute({ target: resource });
+//       }
+//     }
+
+//     throw new Error(`Error fetching ${args.target.name()}`);
+//   }
+// }

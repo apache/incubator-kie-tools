@@ -34,7 +34,10 @@ import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/Acc
 import { KieSandboxOpenShiftDeployedModel } from "../openshift/KieSandboxOpenShiftService";
 import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
-import { openshiftAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
+import {
+  deploymentTargetAuthSessionSelectFilter,
+  openshiftAuthSessionSelectFilter,
+} from "../authSessions/CompatibleAuthSessions";
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -74,7 +77,7 @@ export function DevDeploymentsDropdown() {
 
   const [deployments, refresh] = useLivePromiseState<KieSandboxOpenShiftDeployedModel[]>(
     useMemo(() => {
-      if (!authSession || authSession.type !== "openshift") {
+      if (!authSession || (authSession.type !== "openshift" && authSession.type !== "kubernetes")) {
         return { error: "Can't load Dev deployments with this AuthSession." };
       }
 
@@ -277,7 +280,7 @@ export function DevDeploymentsDropdown() {
                     }}
                     isPlain={false}
                     title={"Select Cloud provider..."}
-                    filter={openshiftAuthSessionSelectFilter()}
+                    filter={deploymentTargetAuthSessionSelectFilter()}
                     showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
                   />
                   {authSessionId && (

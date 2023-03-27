@@ -26,7 +26,8 @@ export type KubernetesKind =
   | "Project"
   | "Secret"
   | "Service"
-  | "Route";
+  | "Route"
+  | "Ingress";
 
 export type KnativeKind = "KafkaSource" | "Service";
 
@@ -50,7 +51,7 @@ export interface ObjectMeta {
   namespace: string;
   creationTimestamp?: string;
   labels?: Record<string, string>;
-  annotations?: Record<string, string>;
+  annotations?: Record<string, any>;
   finalizers?: string[];
 }
 
@@ -240,6 +241,17 @@ export interface RouteDescriptor extends ResourceDescriptor {
 }
 
 export type RouteGroupDescriptor = ResourceGroupDescriptor<RouteDescriptor>;
+
+export interface IngressSpec {
+  ingressClassName?: string;
+  rules: any[];
+}
+
+export interface IngressDescriptor extends ResourceDescriptor {
+  spec: IngressSpec;
+}
+
+export type IngressGroupDescriptor = ResourceGroupDescriptor<IngressDescriptor>;
 
 // KafkaSource
 

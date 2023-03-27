@@ -267,7 +267,7 @@ export function AuthSessionSelect(props: {
                   ];
                 }
 
-                if (authSession.type === "openshift") {
+                if (authSession.type === "openshift" || authSession.type === "kubernetes") {
                   return [
                     <SelectOption key={authSession.id} value={authSession.id} description={<i>{authProvider?.name}</i>}>
                       <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>

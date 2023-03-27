@@ -69,7 +69,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
   );
 
   const onConfirm = useCallback(async () => {
-    if (isConfirmLoading || authSession?.type !== "openshift") {
+    if (isConfirmLoading || (authSession?.type !== "openshift" && authSession?.type !== "kubernetes")) {
       return;
     }
 

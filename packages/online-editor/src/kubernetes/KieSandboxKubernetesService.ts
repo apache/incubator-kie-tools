@@ -20,11 +20,13 @@ import {
   GetDeployment,
   ListDeployments,
 } from "@kie-tools-core/openshift/dist/api/kubernetes/Deployment";
-import { CreateRoute, DeleteRoute, ListRoutes } from "@kie-tools-core/openshift/dist/api/kubernetes/Route";
+import { CreateIngress, DeleteIngress, ListIngress } from "@kie-tools-core/openshift/dist/api/kubernetes/Ingress";
 import { CreateService, DeleteService } from "@kie-tools-core/openshift/dist/api/kubernetes/Service";
 import {
   DeploymentDescriptor,
   DeploymentGroupDescriptor,
+  IngressDescriptor,
+  IngressGroupDescriptor,
   RouteDescriptor,
   RouteGroupDescriptor,
 } from "@kie-tools-core/openshift/dist/api/types";
@@ -32,8 +34,11 @@ import { OpenShiftService, OpenShiftServiceArgs } from "@kie-tools-core/openshif
 import { OpenShiftDeployedModel, OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 import { ResourceLabelNames } from "@kie-tools-core/openshift/dist/template/TemplateConstants";
 import { getUploadStatus, postUpload, UploadStatus } from "../devDeployments/DmnDevDeploymentQuarkusAppApi";
-import { KubernetesResourceFetcher } from "./KubernetesResourceFetcher";
+// import { KubernetesResourceFetcher } from "./KubernetesResourceFetcher";
 import { PingCluster } from "./PingResource";
+import { KubernetesService } from "@kie-tools-core/openshift/dist/service/KubernetesService";
+import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
 
 const RESOURCE_PREFIX = "dmn-dev-deployment";
 const RESOURCE_OWNER = "kie-sandbox";
@@ -51,42 +56,28 @@ interface DeployArgs {
   onlineEditorUrl: (baseUrl: string) => string;
 }
 
-export interface KubernetesConnection {
-  namespace: string;
-  host: string;
-  token: string;
-}
-
 export type KieSandboxKubernetesServiceArgs = {
-  connection: KubernetesConnection;
+  connection: OpenShiftConnection;
   proxyUrl: string;
 };
 
 export class KieSandboxKubernetesService {
-  constructor(private readonly args: KieSandboxKubernetesServiceArgs) {}
+  fetcher: ResourceFetcher;
+  kubernetesService: KubernetesService;
+  constructor(private readonly args: KieSandboxKubernetesServiceArgs) {
+    this.fetcher = new ResourceFetcher({
+      connection: this.args.connection,
+    });
+    this.kubernetesService = new KubernetesService({ fetcher: this.fetcher, namespace: args.connection.namespace });
+  }
+
+  public composeIngressUrl(ingress: IngressDescriptor) {
+    return `http://localhost/${ingress.metadata.name}`;
+  }
 
   public async isConnectionEstablished(): Promise<boolean> {
-    console.log("here");
-    console.log(this.args);
-    // return fetch(this.args.proxyUrl, {
-    //   method: "GET",
-    //   headers: {
-    //     Authorization: `Bearer ${this.args.connection.token}`,
-    //     "Target-Url": `${this.args.connection.host}/api/v1`,
-    //     Accept: "application/json"
-    //   },
-    // })
-    //   .then((r) => {
-    //     console.log(r);
-    //     return true;
-    //   })
-    //   .catch(() => false);
     try {
-      const testConnectionFetcher = new KubernetesResourceFetcher({
-        connection: this.args.connection,
-        proxyUrl: this.args.proxyUrl,
-      });
-      await testConnectionFetcher.execute({ target: new PingCluster({ namespace: this.args.connection.namespace }) });
+      await this.fetcher.execute({ target: new PingCluster({ namespace: this.args.connection.namespace }) });
 
       return true;
     } catch (error) {
@@ -94,194 +85,184 @@ export class KieSandboxKubernetesService {
     }
   }
 
-  // public newResourceName(): string {
-  //   return this.openShiftService.newResourceName(RESOURCE_PREFIX);
-  // }
+  public newResourceName(): string {
+    const randomPart = Math.random().toString(36).substring(2, 9);
+    const milliseconds = new Date().getMilliseconds();
+    const suffix = `${randomPart}${milliseconds}`;
+    return `${RESOURCE_PREFIX}-${suffix}`;
+  }
 
-  // public async loadDeployments(): Promise<KieSandboxOpenShiftDeployedModel[]> {
-  //   const deployments = await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-  //     fetcher.execute<DeploymentGroupDescriptor>({
-  //       target: new ListDeployments({
-  //         namespace: this.args.connection.namespace,
-  //         labelSelector: ResourceLabelNames.CREATED_BY,
-  //       }),
-  //     })
-  //   );
+  public async loadDeployments(): Promise<KieSandboxOpenShiftDeployedModel[]> {
+    const deployments = await this.fetcher.execute<DeploymentGroupDescriptor>({
+      target: new ListDeployments({
+        namespace: this.args.connection.namespace,
+        labelSelector: ResourceLabelNames.CREATED_BY,
+      }),
+    });
 
-  //   if (deployments.items.length === 0) {
-  //     return [];
-  //   }
+    if (deployments.items.length === 0) {
+      return [];
+    }
 
-  //   const routes = (
-  //     await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-  //       fetcher.execute<RouteGroupDescriptor>({
-  //         target: new ListRoutes({
-  //           namespace: this.args.connection.namespace,
-  //         }),
-  //       })
-  //     )
-  //   ).items.filter(
-  //     (route) => route.metadata.labels && route.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER
-  //   );
+    const ingresses = (
+      await this.fetcher.execute<IngressGroupDescriptor>({
+        target: new ListIngress({
+          namespace: this.args.connection.namespace,
+        }),
+      })
+    ).items.filter(
+      (ingress) => ingress.metadata.labels && ingress.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER
+    );
 
-  //   const uploadStatuses = await Promise.all(
-  //     routes
-  //       .map((route) => this.openShiftService.kubernetes.composeRouteUrl(route))
-  //       .map(async (url) => ({ url: url, uploadStatus: await getUploadStatus({ baseUrl: url }) }))
-  //   );
-  //   return deployments.items
-  //     .filter(
-  //       (deployment) =>
-  //         deployment.status &&
-  //         deployment.metadata.annotations &&
-  //         deployment.metadata.labels &&
-  //         deployment.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER &&
-  //         routes.some((route) => route.metadata.name === deployment.metadata.name)
-  //     )
-  //     .map((deployment) => {
-  //       const route = routes.find((route) => route.metadata.name === deployment.metadata.name)!;
-  //       const baseUrl = this.openShiftService.kubernetes.composeRouteUrl(route);
-  //       const uploadStatus = uploadStatuses.find((status) => status.url === baseUrl)!.uploadStatus;
-  //       return {
-  //         resourceName: deployment.metadata.name,
-  //         uri: deployment.metadata.annotations![ResourceLabelNames.URI],
-  //         routeUrl: baseUrl,
-  //         creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
-  //         state: this.extractDeploymentStateWithUploadStatus(deployment, uploadStatus),
-  //         workspaceName: deployment.metadata.annotations![ResourceLabelNames.WORKSPACE_NAME],
-  //       };
-  //     });
-  // }
+    const uploadStatuses = await Promise.all(
+      ingresses
+        .map((ingress) => this.composeIngressUrl(ingress))
+        .map(async (url) => ({ url: url, uploadStatus: await getUploadStatus({ baseUrl: url }) }))
+    );
+    return deployments.items
+      .filter(
+        (deployment) =>
+          deployment.status &&
+          deployment.metadata.annotations &&
+          deployment.metadata.labels &&
+          deployment.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER &&
+          ingresses.some((ingress) => ingress.metadata.name === deployment.metadata.name)
+      )
+      .map((deployment) => {
+        const ingress = ingresses.find((ingress) => ingress.metadata.name === deployment.metadata.name)!;
+        const baseUrl = this.composeIngressUrl(ingress);
+        const uploadStatus = uploadStatuses.find((status) => status.url === baseUrl)!.uploadStatus;
+        return {
+          resourceName: deployment.metadata.name,
+          uri: deployment.metadata.annotations![ResourceLabelNames.URI],
+          routeUrl: baseUrl,
+          creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
+          state: this.extractDeploymentStateWithUploadStatus(deployment, uploadStatus),
+          workspaceName: deployment.metadata.annotations![ResourceLabelNames.WORKSPACE_NAME],
+        };
+      });
+  }
 
-  // public async deploy(args: DeployArgs): Promise<void> {
-  //   const resourceArgs = {
-  //     namespace: this.args.connection.namespace,
-  //     resourceName: this.newResourceName(),
-  //     createdBy: RESOURCE_OWNER,
-  //   };
+  public async deploy(args: DeployArgs): Promise<void> {
+    const resourceArgs = {
+      namespace: this.args.connection.namespace,
+      resourceName: this.newResourceName(),
+      createdBy: RESOURCE_OWNER,
+    };
 
-  //   const rollbacks = [new DeleteRoute(resourceArgs), new DeleteService(resourceArgs)];
-  //   let rollbacksCount = rollbacks.length;
+    const rollbacks = [new DeleteIngress(resourceArgs), new DeleteService(resourceArgs)];
+    let rollbacksCount = rollbacks.length;
 
-  //   await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-  //     fetcher.execute({ target: new CreateService(resourceArgs) })
-  //   );
+    await this.fetcher.execute({ target: new CreateService(resourceArgs) });
 
-  //   const route = await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-  //     fetcher.execute<RouteDescriptor>({
-  //       target: new CreateRoute(resourceArgs),
-  //       rollbacks: rollbacks.slice(--rollbacksCount),
-  //     })
-  //   );
+    const ingress = await this.fetcher.execute<IngressDescriptor>({
+      target: new CreateIngress(resourceArgs),
+      rollbacks: rollbacks.slice(--rollbacksCount),
+    });
 
-  //   const routeUrl = this.openShiftService.kubernetes.composeRouteUrl(route);
+    const routeUrl = this.composeIngressUrl(ingress);
 
-  //   const deployment = await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-  //     fetcher.execute<DeploymentDescriptor>({
-  //       target: new CreateDeployment({
-  //         ...resourceArgs,
-  //         uri: args.targetFilePath,
-  //         baseUrl: routeUrl,
-  //         workspaceName: args.workspaceName,
-  //         containerImageUrl: process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl!,
-  //         envVars: [
-  //           {
-  //             name: "BASE_URL",
-  //             value: routeUrl,
-  //           },
-  //           {
-  //             name: "QUARKUS_PLATFORM_VERSION",
-  //             value: process.env.WEBPACK_REPLACE__quarkusPlatformVersion!,
-  //           },
-  //           {
-  //             name: "KOGITO_RUNTIME_VERSION",
-  //             value: process.env.WEBPACK_REPLACE__kogitoRuntimeVersion!,
-  //           },
-  //         ],
-  //       }),
-  //       rollbacks: rollbacks.slice(--rollbacksCount),
-  //     })
-  //   );
+    const deployment = await this.fetcher.execute<DeploymentDescriptor>({
+      target: new CreateDeployment({
+        ...resourceArgs,
+        uri: args.targetFilePath,
+        baseUrl: routeUrl,
+        workspaceName: args.workspaceName,
+        containerImageUrl:
+          "quay.io/thiagoelg/dmn-dev-deployment-base-image@sha256:72106f31afa1c5b07ba2b4a52855b9a7dc31bd882ff37d18f95b24993919a8ad", //process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl!,
+        envVars: [
+          {
+            name: "BASE_URL",
+            value: routeUrl,
+          },
+          {
+            name: "QUARKUS_PLATFORM_VERSION",
+            value: process.env.WEBPACK_REPLACE__quarkusPlatformVersion!,
+          },
+          {
+            name: "KOGITO_RUNTIME_VERSION",
+            value: process.env.WEBPACK_REPLACE__kogitoRuntimeVersion!,
+          },
+          {
+            name: "ROOT_PATH",
+            value: `/${resourceArgs.resourceName}`,
+          },
+        ],
+      }),
+      rollbacks: rollbacks.slice(--rollbacksCount),
+    });
 
-  //   new Promise<void>((resolve, reject) => {
-  //     let deploymentState = this.openShiftService.kubernetes.extractDeploymentState({ deployment });
-  //     const interval = setInterval(async () => {
-  //       if (deploymentState !== OpenShiftDeploymentState.UP) {
-  //         const deployment = await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-  //           fetcher.execute<DeploymentDescriptor>({
-  //             target: new GetDeployment(resourceArgs),
-  //           })
-  //         );
+    new Promise<void>((resolve, reject) => {
+      let deploymentState = this.kubernetesService.extractDeploymentState({ deployment });
+      const interval = setInterval(async () => {
+        if (deploymentState !== OpenShiftDeploymentState.UP) {
+          const deployment = await this.fetcher.execute<DeploymentDescriptor>({
+            target: new GetDeployment(resourceArgs),
+          });
 
-  //         deploymentState = this.openShiftService.kubernetes.extractDeploymentState({ deployment });
-  //       } else {
-  //         try {
-  //           const uploadStatus = await getUploadStatus({ baseUrl: routeUrl });
-  //           if (uploadStatus === "NOT_READY") {
-  //             return;
-  //           }
-  //           clearInterval(interval);
-  //           if (uploadStatus === "WAITING") {
-  //             await postUpload({ baseUrl: routeUrl, workspaceZipBlob: args.workspaceZipBlob });
-  //             resolve();
-  //           }
-  //         } catch (e) {
-  //           console.error(e);
-  //           reject(e);
-  //           clearInterval(interval);
-  //         }
-  //       }
-  //     }, CHECK_UPLOAD_STATUS_POLLING_TIME);
-  //   });
-  // }
+          deploymentState = this.kubernetesService.extractDeploymentState({ deployment });
+        } else {
+          try {
+            const uploadStatus = await getUploadStatus({ baseUrl: routeUrl });
+            if (uploadStatus === "NOT_READY") {
+              return;
+            }
+            clearInterval(interval);
+            if (uploadStatus === "WAITING") {
+              await postUpload({ baseUrl: routeUrl, workspaceZipBlob: args.workspaceZipBlob });
+              resolve();
+            }
+          } catch (e) {
+            console.error(e);
+            reject(e);
+            clearInterval(interval);
+          }
+        }
+      }, CHECK_UPLOAD_STATUS_POLLING_TIME);
+    });
+  }
 
-  // public async deleteDeployment(resourceName: string) {
-  //   await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-  //     fetcher.execute({
-  //       target: new DeleteDeployment({
-  //         resourceName,
-  //         namespace: this.args.connection.namespace,
-  //       }),
-  //     })
-  //   );
+  public async deleteDeployment(resourceName: string) {
+    await this.fetcher.execute({
+      target: new DeleteDeployment({
+        resourceName,
+        namespace: this.args.connection.namespace,
+      }),
+    });
 
-  //   await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-  //     fetcher.execute({
-  //       target: new DeleteService({
-  //         resourceName,
-  //         namespace: this.args.connection.namespace,
-  //       }),
-  //     })
-  //   );
+    await this.fetcher.execute({
+      target: new DeleteService({
+        resourceName,
+        namespace: this.args.connection.namespace,
+      }),
+    });
 
-  //   await this.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-  //     fetcher.execute({
-  //       target: new DeleteRoute({
-  //         resourceName,
-  //         namespace: this.args.connection.namespace,
-  //       }),
-  //     })
-  //   );
-  // }
+    await this.fetcher.execute({
+      target: new DeleteIngress({
+        resourceName,
+        namespace: this.args.connection.namespace,
+      }),
+    });
+  }
 
-  // private extractDeploymentStateWithUploadStatus(
-  //   deployment: DeploymentDescriptor,
-  //   uploadStatus: UploadStatus
-  // ): OpenShiftDeploymentState {
-  //   const state = this.openShiftService.kubernetes.extractDeploymentState({ deployment });
+  private extractDeploymentStateWithUploadStatus(
+    deployment: DeploymentDescriptor,
+    uploadStatus: UploadStatus
+  ): OpenShiftDeploymentState {
+    const state = this.kubernetesService.extractDeploymentState({ deployment });
 
-  //   if (state !== OpenShiftDeploymentState.UP) {
-  //     return state;
-  //   }
+    if (state !== OpenShiftDeploymentState.UP) {
+      return state;
+    }
 
-  //   if (uploadStatus === "ERROR") {
-  //     return OpenShiftDeploymentState.ERROR;
-  //   }
+    if (uploadStatus === "ERROR") {
+      return OpenShiftDeploymentState.ERROR;
+    }
 
-  //   if (uploadStatus !== "UPLOADED") {
-  //     return OpenShiftDeploymentState.IN_PROGRESS;
-  //   }
+    if (uploadStatus !== "UPLOADED") {
+      return OpenShiftDeploymentState.IN_PROGRESS;
+    }
 
-  //   return OpenShiftDeploymentState.UP;
-  // }
+    return OpenShiftDeploymentState.UP;
+  }
 }

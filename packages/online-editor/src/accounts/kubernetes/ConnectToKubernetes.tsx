@@ -25,13 +25,16 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
-import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import {
+  OpenShiftConnection,
+  isOpenShiftConnectionValid,
+} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
 import { KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
-import { KieSandboxKubernetesService, KubernetesConnection } from "../../kubernetes/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "../../kubernetes/KieSandboxKubernetesService";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
 
 enum FormValiationOptions {
@@ -42,8 +45,8 @@ enum FormValiationOptions {
 
 export function ConnectToKubernetes(props: {
   kubernetesService: KieSandboxKubernetesService;
-  connection: KubernetesConnection;
-  setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
+  connection: OpenShiftConnection;
+  setConnection: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
   status: KubernetesInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<KubernetesInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<KubernetesAuthSession>>;

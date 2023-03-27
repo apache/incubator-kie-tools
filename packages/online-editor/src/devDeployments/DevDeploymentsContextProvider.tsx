@@ -24,6 +24,7 @@ import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/Open
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { DevDeploymentsConfirmDeleteModal } from "./DevDeploymentsConfirmDeleteModal";
+import { KieSandboxKubernetesService } from "../kubernetes/KieSandboxKubernetesService";
 
 interface Props {
   children: React.ReactNode;
@@ -75,7 +76,12 @@ export function DevDeploymentsContextProvider(props: Props) {
 
   const loadDeployments = useCallback(
     async (args: { connection: OpenShiftConnection }) => {
-      const service = new KieSandboxOpenShiftService({
+      // const service = new KieSandboxOpenShiftService({
+      //   connection: args.connection,
+      //   proxyUrl: extendedServices.config.url.corsProxy,
+      // });
+
+      const service = new KieSandboxKubernetesService({
         connection: args.connection,
         proxyUrl: extendedServices.config.url.corsProxy,
       });
@@ -90,12 +96,18 @@ export function DevDeploymentsContextProvider(props: Props) {
 
   const deploy = useCallback(
     async (workspaceFile: WorkspaceFile, connection: OpenShiftConnection) => {
-      const service = new KieSandboxOpenShiftService({
+      // const service = new KieSandboxOpenShiftService({
+      //   connection,
+      //   proxyUrl: extendedServices.config.url.corsProxy,
+      // });
+
+      const service = new KieSandboxKubernetesService({
         connection,
         proxyUrl: extendedServices.config.url.corsProxy,
       });
 
       if (!(await service.isConnectionEstablished())) {
+        console.log("Not connected?");
         return false;
       }
 

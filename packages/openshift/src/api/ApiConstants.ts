@@ -21,6 +21,7 @@ export enum KubernetesApiVersions {
   IMAGE_STREAM = "image.openshift.io/v1",
   PROJECT = "project.openshift.io/v1",
   ROUTE = "route.openshift.io/v1",
+  INGRESS = "networking.k8s.io/v1",
   SERVICE = "v1",
   SECRET = "v1",
 }
