@@ -62,7 +62,7 @@ const tagMap: Record<SampleType, { label: string; icon: React.ComponentClass; co
   },
 };
 
-export function SampleCard(props: { sample: Sample; loading: boolean }) {
+export function SampleCard(props: { sample: Sample }) {
   const routes = useRoutes();
 
   const tag = useMemo(() => tagMap[props.sample.type], [props.sample.type]);
@@ -91,14 +91,7 @@ export function SampleCard(props: { sample: Sample; loading: boolean }) {
             <Link
               to={{
                 pathname: routes.sampleShowcase.path({}),
-                search: routes.sampleShowcase.queryString({
-                  url:
-                    props.sample.repoUrl ??
-                    `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
-                      type: props.sample.type || FileTypes.SW_JSON,
-                      name: props.sample.fileName,
-                    })}`,
-                }),
+                search: routes.sampleShowcase.queryString({ sampleId: props.sample.fileName }),
               }}
             >
               <Button variant={ButtonVariant.tertiary} ouiaId={props.sample.fileName + `-try-swf-sample-button`}>

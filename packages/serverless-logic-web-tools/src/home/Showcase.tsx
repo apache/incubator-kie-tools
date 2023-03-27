@@ -135,7 +135,7 @@ export function Showcase() {
         }}
       >
         {samples.map((sample) => (
-          <SampleCard sample={sample} key={sample.fileName} loading={loading} />
+          <SampleCard sample={sample} key={sample.fileName} />
         ))}
       </Gallery>
     </>

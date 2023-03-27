@@ -20,7 +20,7 @@ import { Route, Switch } from "react-router-dom";
 import { EditorPage } from "../editor/EditorPage";
 import { supportedFileExtensionArray } from "../extension";
 import { HomePage } from "../home/HomePage";
-import { NewWorkspaceFromSampleShowcase } from "../workspace/components/NewWorkspaceFromSampleShowcase";
+import { NewWorkspaceFromSample } from "../workspace/components/NewWorkspaceFromSample";
 import { NewWorkspaceFromUrlPage } from "../workspace/components/NewWorkspaceFromUrlPage";
 import { NewWorkspaceWithEmptyFilePage } from "../workspace/components/NewWorkspaceWithEmptyFilePage";
 import { useRoutes } from "./Hooks";
@@ -39,7 +39,7 @@ export function RoutesSwitch() {
         <NewWorkspaceFromUrlPage />
       </Route>
       <Route path={routes.sampleShowcase.path({})}>
-        <NewWorkspaceFromSampleShowcase />
+        <NewWorkspaceFromSample />
       </Route>
       <Route
         path={routes.workspaceWithFilePath.path({

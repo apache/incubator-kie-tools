@@ -126,12 +126,12 @@ export function NewWorkspaceFromUrlPage() {
     isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
     urlString: queryParamUrl,
   });
-  console.log("j", importableUrl);
+
   useEffect(() => {
     async function run() {
       const singleFile = [UrlType.FILE, UrlType.GIST_FILE, UrlType.GITHUB_FILE].includes(importableUrl.type);
       const shouldAttemptImportingAsGitRepository = !singleFile && importableUrl.type !== UrlType.GIST;
-      console.log("importableUrl", importableUrl);
+
       if (shouldAttemptImportingAsGitRepository) {
         // try to import the URL as a git repository first
         try {
@@ -220,7 +220,6 @@ export function NewWorkspaceFromUrlPage() {
           let rawUrl = importableUrl.url as URL;
 
           if (importableUrl.type === UrlType.GITHUB_FILE) {
-            console.log("here", importableUrl);
             const res = await settingsDispatch.github.octokit.repos.getContent({
               repo: importableUrl.repo,
               owner: importableUrl.org,

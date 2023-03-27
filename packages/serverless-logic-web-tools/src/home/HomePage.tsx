@@ -91,8 +91,6 @@ import { splitFiles, SupportedFileExtensions } from "../extension";
 import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { APP_NAME } from "../AppConstants";
 
-import { Sample, SampleType } from "./SampleCard";
-
 export function HomePage() {
   const routes = useRoutes();
   const history = useHistory();
