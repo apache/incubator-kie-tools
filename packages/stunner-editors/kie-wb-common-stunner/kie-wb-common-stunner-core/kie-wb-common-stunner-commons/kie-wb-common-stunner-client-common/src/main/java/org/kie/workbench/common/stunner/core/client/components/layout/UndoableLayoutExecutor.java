@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.Layout;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutExecutor;
+import org.kie.workbench.common.stunner.core.graph.processing.layout.SizeHandler;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.VertexPosition;
 
 /**
@@ -43,7 +44,7 @@ public class UndoableLayoutExecutor implements LayoutExecutor {
 
     @SuppressWarnings("Duplicates")
     @Override
-    public void applyLayout(final Layout layout, final Graph graph) {
+    public void applyLayout(final Layout layout, final Graph graph, final SizeHandler sizeHandler) {
         if (layout.getNodePositions().size() == 0) {
             return;
         }

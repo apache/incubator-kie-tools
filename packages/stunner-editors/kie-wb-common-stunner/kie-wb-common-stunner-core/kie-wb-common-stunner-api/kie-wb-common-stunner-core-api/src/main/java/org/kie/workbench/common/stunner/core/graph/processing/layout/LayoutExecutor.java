@@ -21,5 +21,6 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 public interface LayoutExecutor {
 
     void applyLayout(final Layout layout,
-                     final Graph graph);
+                     final Graph graph,
+                     final SizeHandler sizeHandler);
 }

@@ -100,10 +100,7 @@ export class SwfYamlLanguageService {
     const doc = TextDocument.create(args.uri, FileLanguage.YAML, 0, args.content);
     const cursorOffset = doc.offsetAt(args.cursorPosition);
 
-    if (
-      args.content.slice(cursorOffset - 1, cursorOffset) === ":" ||
-      args.content.slice(cursorOffset - 1, cursorOffset) === "-"
-    ) {
+    if (shouldNotComplete(args.content.slice(0, cursorOffset))) {
       return [];
     }
 
@@ -225,6 +222,17 @@ export const isNodeUncompleted = (args: {
 
   return nodeAtPrevOffset.offset + nodeAtPrevOffset.length === args.cursorOffset - 1;
 };
+
+/**
+ * Check if a string should not be completed.
+ * Gets the last line of the content, check if we are after the first ":" without a space OR after a "-" without a space.
+ * Eg. https://regex101.com/r/AaUWZg/1
+ * @param content the content of the file until the point where the completion should be triggered.
+ * @returns
+ */
+function shouldNotComplete(content: string): boolean {
+  return /(^|\n)\s*(([^:]+:)|(-))$/.test(content);
+}
 
 const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
   const convertedNode: SwfLsNode = {

@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@kie-tools/editor-language-service": "workspace:^0.0.0",
+    "@kie-tools/serverless-workflow-jq-expressions": "workspace:*",
     "@kie-tools/serverless-workflow-service-catalog": "workspace:*",
     "@kie-tools/yaml-language-server": "workspace:*",
     "@severlessworkflow/sdk-typescript": "^3.0.3",

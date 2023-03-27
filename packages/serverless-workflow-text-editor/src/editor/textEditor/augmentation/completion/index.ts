@@ -28,7 +28,7 @@ export function initCompletion(
   channelApi: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>
 ): monaco.IDisposable {
   return monaco.languages.registerCompletionItemProvider(["json", "yaml"], {
-    triggerCharacters: [" ", ":", '"'],
+    triggerCharacters: [" ", ":", '"', "."],
     provideCompletionItems: async (
       model: monaco.editor.ITextModel,
       cursorPosition: monaco.Position,
@@ -55,7 +55,6 @@ export function initCompletion(
           },
         },
       });
-
       if (cancellationToken.isCancellationRequested) {
         return undefined;
       }
@@ -83,7 +82,6 @@ export function initCompletion(
           endColumn: (c.textEdit as ls.TextEdit).range.end.character + 1,
         },
       }));
-
       return {
         suggestions: monacoCompletionItems,
       };

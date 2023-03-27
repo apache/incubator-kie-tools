@@ -1,0 +1,13 @@
+diff --git a/bidi/index.js b/bidi/index.js
+index 5c5580e166291455147001ccf51782ee23a9211f..c5106acd9c545c85518e5849e65c881f4c497bd1 100755
+--- a/bidi/index.js
++++ b/bidi/index.js
+@@ -15,7 +15,7 @@
+ // specific language governing permissions and limitations
+ // under the License.
+ 
+-const { EventEmitter } = require('node:events')
++const { EventEmitter } = require('events')
+ const WebSocket = require('ws')
+ 
+ const RESPONSE_TIMEOUT = 1000 * 30

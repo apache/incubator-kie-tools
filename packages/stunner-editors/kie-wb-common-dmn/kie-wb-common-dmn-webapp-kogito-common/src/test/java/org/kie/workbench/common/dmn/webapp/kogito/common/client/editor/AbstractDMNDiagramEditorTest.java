@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
+import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNLayoutHelper;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
@@ -46,7 +47,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.ConfirmationDialog;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -122,7 +122,7 @@ public class AbstractDMNDiagramEditorTest {
     private PreviewDiagramDock diagramPreviewAndExplorerDock;
 
     @Mock
-    private LayoutHelper layoutHelper;
+    private DMNLayoutHelper layoutHelper;
 
     @Mock
     private OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
@@ -462,7 +462,7 @@ public class AbstractDMNDiagramEditorTest {
                                                final DecisionNavigatorDock decisionNavigatorDock,
                                                final DiagramEditorPropertiesDock diagramPropertiesDock,
                                                final PreviewDiagramDock diagramPreviewAndExplorerDock,
-                                               final LayoutHelper layoutHelper,
+                                               final DMNLayoutHelper layoutHelper,
                                                final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                                                final DataTypesPage dataTypesPage,
                                                final KogitoClientDiagramService diagramServices,

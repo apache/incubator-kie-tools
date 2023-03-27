@@ -66,7 +66,7 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P, F, C>
     public Result<BpmnNode> convertProcess() {
 
         Process process = delegate.definitionResolver.getProcess();
-        String definitionsId = delegate.definitionResolver.getDefinitions().getId();
+        String definitionsId = delegate.definitionResolver.getDefinitionsId();
         BpmnNode processRoot = convertProcessNode(definitionsId, process);
 
         Result<Map<String, BpmnNode>> nodesResult = delegate.convertChildNodes(processRoot,

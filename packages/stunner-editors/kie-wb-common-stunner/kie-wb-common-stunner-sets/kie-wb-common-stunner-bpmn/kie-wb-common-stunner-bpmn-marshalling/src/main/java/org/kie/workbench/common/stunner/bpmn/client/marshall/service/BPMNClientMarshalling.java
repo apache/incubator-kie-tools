@@ -122,7 +122,7 @@ public class BPMNClientMarshalling {
                                                                              definitionsHandler.isJbpm(),
                                                                              mode);
 
-        metadata.setCanvasRootUUID(definitionResolver.getDefinitions().getId());
+        metadata.setCanvasRootUUID(definitionResolver.getDefinitionsId());
         metadata.setTitle(definitionResolver.getProcess().getName());
 
         final BaseConverterFactory converterFactory = new org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.ConverterFactory(definitionResolver, typedFactoryManager);
@@ -131,13 +131,13 @@ public class BPMNClientMarshalling {
         final BpmnNode diagramRoot = result.value();
         dataTypeCache.initCache(diagramRoot);
 
-        // the root node contains all of the information
+        // the root node contains all the information
         // needed to build the entire graph (including parent/child relationships)
         // thus, we can now walk the graph to issue all the commands
         // to draw it on our canvas
         final Diagram<Graph<DefinitionSet, Node>, Metadata> diagram =
                 typedFactoryManager.newDiagram(
-                        definitionResolver.getDefinitions().getId(),
+                        definitionResolver.getDefinitionsId(),
                         getDefinitionSetClass(),
                         metadata);
         final Graph<DefinitionSet, Node> graph = diagram.getGraph();

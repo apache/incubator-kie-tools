@@ -18,10 +18,17 @@ import * as yaml from "js-yaml";
 import { posix as posixPath } from "path";
 import { SupportArtifactTypes, SwfServiceCatalogService, SwfServiceCatalogServiceSource } from "../../api";
 import { AsyncApiParser } from "./impl/asyncapi/AsyncApiParser";
+import { JsonSchemaParser } from "./impl/jsonschema/JsonSchemaParser";
 import { OpenApiParser } from "./impl/openapi/OpenApiParser";
 import { ArgsType, SpecParser } from "./impl/SpecParser";
+import { CamelRoutesParser } from "./impl/camelRoutes/CamelRoutesParser";
 
-const specParsers: SpecParser<any>[] = [new OpenApiParser(), new AsyncApiParser()];
+const specParsers: SpecParser<any>[] = [
+  new OpenApiParser(),
+  new AsyncApiParser(),
+  new JsonSchemaParser(),
+  new CamelRoutesParser(),
+];
 
 export const supportArtifactTypes: SupportArtifactTypes[] = [
   SupportArtifactTypes.Openapi,
@@ -38,16 +45,16 @@ export function parseApiContent(args: {
 
 function serviceFileContentToApiDocument(args: ArgsType) {
   let specContent: any;
-
   if (posixPath.extname(args.serviceFileName) === ".json") {
     specContent = JSON.parse(args.serviceFileContent);
   } else {
     specContent = yaml.load(args.serviceFileContent);
   }
-  const parser = specParsers.find((parser) => parser.canParse(specContent));
+
+  const parser = specContent && specParsers.find((parser) => parser.canParse(specContent));
+
   if (!parser) {
     throw new Error(`'${args.serviceFileName}' is not a supported spec file`);
   }
-
   return parser.parse(specContent, args);
 }

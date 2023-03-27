@@ -25,10 +25,17 @@ public interface LayoutService {
 
     /**
      * Creates a layout for the graph.
+     *
      * @param graph The graph.
      * @return The layout for the graph.
      */
     Layout createLayout(final Graph<?, ?> graph);
 
     boolean hasLayoutInformation(final Graph<?, ?> graph);
+
+    default SizeHandler getSizeHandler() {
+        return (node, width, height) -> {
+            // Do nothing if there is no specialized SizeHandler
+        };
+    }
 }

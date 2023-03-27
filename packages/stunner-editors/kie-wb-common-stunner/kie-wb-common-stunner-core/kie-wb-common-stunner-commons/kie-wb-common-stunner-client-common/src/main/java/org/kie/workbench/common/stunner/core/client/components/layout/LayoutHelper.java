@@ -49,7 +49,7 @@ public class LayoutHelper {
         final Graph<?, Node> graph = diagram.getGraph();
         if (graph != null && (overrideCurrentLayout || !this.layoutService.hasLayoutInformation(graph))) {
             final Layout layout = this.layoutService.createLayout(graph);
-            layoutExecutor.applyLayout(layout, graph);
+            layoutExecutor.applyLayout(layout, graph, layoutService.getSizeHandler());
 
             for (final Node node : graph.nodes()) {
                 if (CanvasLayoutUtils.isCanvasRoot(diagram, node)) {
@@ -65,7 +65,4 @@ public class LayoutHelper {
         return layoutService.hasLayoutInformation(diagram.getGraph());
     }
 
-    public LayoutService getLayoutService() {
-        return this.layoutService;
-    }
 }

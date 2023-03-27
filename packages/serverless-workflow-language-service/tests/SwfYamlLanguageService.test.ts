@@ -22,7 +22,19 @@ import {
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, Position } from "vscode-languageserver-types";
-import { defaultConfig, defaultServiceCatalogConfig, testRelativeService1 } from "./SwfLanguageServiceConfigs";
+import {
+  getJqBuiltInFunctionTests,
+  getJqReusableFunctionTests,
+  getJqVariableTests,
+  getSingleQuoteTestForYaml,
+  getYamlLsForJqExpressionTests,
+} from "./SwfJqExpressionTestUtils";
+import {
+  defaultConfig,
+  defaultJqCompletionsConfig,
+  defaultServiceCatalogConfig,
+  testRelativeService1,
+} from "./SwfLanguageServiceConfigs";
 import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, treat, trim } from "./testUtils";
 
 const documentUri = "test.sw.yaml";
@@ -34,6 +46,7 @@ describe("YamlCodeCompletionStrategy", () => {
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     describe("string value", () => {
@@ -224,6 +237,7 @@ describe("SWF LS YAML", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -252,6 +266,7 @@ functions: []
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -294,6 +309,7 @@ functions:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -324,6 +340,7 @@ states:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`---
@@ -346,6 +363,7 @@ functions:
         relative: { getServices: async () => [testRelativeService1] },
       },
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     const parseContentTester = (contentToParse: ContentWithCursor) => {
@@ -435,6 +453,7 @@ states:
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     const completionItems = await ls.getCompletionItems({
@@ -464,6 +483,7 @@ states:
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
@@ -480,6 +500,7 @@ states:
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
@@ -503,6 +524,7 @@ states:
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const { content } = trim(`functions:\n- `);
@@ -525,6 +547,7 @@ states:
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const { content } = trim(`functions: [] `);
@@ -540,6 +563,7 @@ states:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`events:\n- `);
@@ -562,6 +586,7 @@ states:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`states:\n- `);
@@ -590,6 +615,7 @@ states:
           shouldServiceRegistriesLogIn: () => true,
           canRefreshServices: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -615,6 +641,7 @@ functions:
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -651,6 +678,7 @@ functions:
           ...defaultConfig,
           shouldConfigureServiceRegistries: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -687,6 +715,7 @@ functions:
           ...defaultConfig,
           canRefreshServices: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -724,6 +753,7 @@ functions:
         relative: { getServices: async () => [testRelativeService1] },
       },
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     describe("empty file completion", () => {
@@ -787,7 +817,272 @@ functions:
         expect(completionItems).toMatchSnapshot();
       });
     });
+    describe("Jq completions", () => {
+      describe("operation completions", () => {
+        describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
+              dataInputSchema: "path/to/schema"
+              functions:
+                - name: "testFunc1"
+                  type: "asyncapi"
+                  "operation": "http://path_to_remote_asyncApiFile/"
+                - name: "testFunc2"
+                  type: "rest"
+                  operation: "http://path_to_remote_openApiFile/"
+                - name: "expressionFunc1"
+                  type: "expression"
+                  operation: "."
+                - name: "expressionFunc2"
+                  type: "expression"
+                  operation: "."
+                - name: "expressionFunc3"
+                  type: "expression"
+                  operation: ${nodeValue}` as ContentWithCursor;
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
+        });
+      });
+      describe("data condition completion", () => {
+        describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
+              dataInputSchema: "path/to/schema"
+              functions:
+               - name: "testFunc"
+                 type: "asyncapi"
+                 "operation": "http://path_to_remote_asyncApiFile/"
+               - name: "expressionFunc1"
+                 type: "expression"
+                 operation: "."
+               - name: "expressionFunc2"
+                 type: "expression"
+                 operation: "."
+              states:
+              - name: testState
+                type: switch
+                dataConditions:
+                  - condition: ${nodeValue}
+                    transition: nextTransition` as ContentWithCursor;
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
+        });
+      });
+      describe("state data filter completions", () => {
+        describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
+              dataInputSchema: "path/to/schema"
+              functions:
+               - name: "testFunc"
+                 type: "asyncapi"
+                 "operation": "http://path_to_remote_asyncApiFile/"
+               - name: "expressionFunc1"
+                 type: "expression"
+                 operation: "."
+               - name: "expressionFunc2"
+                 type: "expression"
+                 operation: "."
+              states:
+              - name: testState
+                type: inject
+                stateDataFilter:
+                  output: ${nodeValue}` as ContentWithCursor;
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
+        });
+      });
+      describe("event data filter completions", () => {
+        describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
+              dataInputSchema: "path/to/schema"
+              functions:
+               - name: "testFunc"
+                 type: "asyncapi"
+                 "operation": "http://path_to_remote_asyncApiFile/"
+               - name: "expressionFunc1"
+                 type: "expression"
+                 operation: "."
+               - name: "expressionFunc2"
+                 type: "expression"
+                 operation: "."
+              states:
+              - name: testEvent
+                type: callBack
+                eventDataFilter:
+                  data: ${nodeValue}
+                  toStateData: ${nodeValue}` as ContentWithCursor;
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
+        });
+      });
+      describe("event data filter inside onEvents completion", () => {
+        describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
+              dataInputSchema: "path/to/schema"
+              functions:
+               - name: "testFunc"
+                 type: "asyncapi"
+                 "operation": "http://path_to_remote_asyncApiFile/"
+               - name: "expressionFunc1"
+                 type: "expression"
+                 operation: "."
+               - name: "expressionFunc2"
+                 type: "expression"
+                 operation: "."
+              states:
+              - name: testEvent
+                type: event
+                onEvents:
+                  - eventDataFilter:
+                      data: ${nodeValue}
+                      toStateData: ${nodeValue}` as ContentWithCursor;
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
+        });
+      });
+      describe("action data filter completions", () => {
+        describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
+              dataInputSchema: "path/to/schema"
+              functions:
+               - name: "testFunc"
+                 type: "asyncapi"
+                 "operation": "http://path_to_remote_asyncApiFile/"
+               - name: "expressionFunc1"
+                 type: "expression"
+                 operation: "."
+               - name: "expressionFunc2"
+                 type: "expression"
+                 operation: "."
+              states:
+              - name: testState
+                type: operation
+                actions:
+                  - name: testName
+                    actionDataFilter:
+                      results: ${nodeValue}
+                      toStateData: ${nodeValue}` as ContentWithCursor;
 
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
+        });
+      });
+      describe("functionRef arguments completions", () => {
+        describe.each([["built-in functions"], ["variables"]])(`%s completion`, () => {
+          test.each([
+            ...getJqBuiltInFunctionTests(),
+            ...getJqReusableFunctionTests(),
+            ...getJqVariableTests(),
+            ...getSingleQuoteTestForYaml(),
+          ])("%s", async (_description, nodeValue) => {
+            const content = `---
+    dataInputSchema: path/to/schema
+    functions:
+      - name: "testFunc"
+        type: "asyncapi"
+        "operation": "http://path_to_remote_asyncApiFile/"
+      - name: "expressionFunc1"
+        type: "expression"
+        operation: "."
+      - name: "expressionFunc2"
+        type: "expression"
+        operation: "."
+    states:
+      - name: testState
+        type: operation
+        actions:
+          - functionRef:
+              refName: testRefName
+              arguments:
+                numberOfRunningPods: ${nodeValue}` as ContentWithCursor;
+            const { completionItems } = await codeCompletionTester(
+              getYamlLsForJqExpressionTests(),
+              documentUri,
+              content,
+              false
+            );
+            expect(completionItems.length).toMatchSnapshot();
+            expect(completionItems.slice(0, 5)).toMatchSnapshot();
+          });
+        });
+      });
+    });
     describe("functionRef completion", () => {
       test("without same level content after / without space after property name", async () => {
         const { completionItems } = await codeCompletionTester(
@@ -919,6 +1214,7 @@ states:
             relative: { getServices: async () => [testRelativeService1WithEmptyFunctionArgs] },
           },
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const { completionItems } = await codeCompletionTester(
@@ -1149,6 +1445,7 @@ states:
         relative: { getServices: async () => [] },
       },
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     describe("using JSON format", () => {

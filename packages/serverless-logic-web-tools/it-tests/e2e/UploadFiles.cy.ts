@@ -39,6 +39,9 @@ describe("Serverless Logic Web Tools - Upload files test", () => {
         cy.ouia({ ouiaId: "hello-text" }).should("have.text", "Hello");
       });
     });
+
+    // check there are no problems in dashbuilder file
+    cy.get("#total-notifications").should("have.text", 0);
   });
 
   it("should upload 2 files (JSON and YAML) and check editors and diagrams content", () => {
