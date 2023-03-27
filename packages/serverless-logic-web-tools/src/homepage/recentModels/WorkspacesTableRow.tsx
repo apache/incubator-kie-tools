@@ -129,9 +129,9 @@ export function WorkspacesTableRowError(props: { rowData: WorkspacesTableRowData
               <>
                 Error obtaining information for the following element:
                 <br />
-                workspace name: <b>${rowData.descriptor.name}</b>
+                workspace name: <b>{rowData.descriptor.name}</b>
                 <br />
-                workspace id: <b>${rowData.workspaceId}</b>
+                workspace id: <b>{rowData.workspaceId}</b>
                 <br />
                 <br />
                 To solve the issue, try deleting the workspace and creating it again.
