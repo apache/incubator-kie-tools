@@ -17,6 +17,7 @@
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -80,35 +81,44 @@ export function useDeployDropdownItems(props: Props) {
   }, [notifications, props.workspaceFile]);
 
   const devModeUploadingAlert = useGlobalAlert(
-    useCallback(
-      ({ close }) => {
-        return (
-          <Alert
-            className="pf-u-mb-md"
-            variant="info"
-            title={
-              <>
-                <Spinner size={"sm"} />
-                &nbsp;&nbsp; {`Uploading '${props.workspaceFile.nameWithoutExtension}'...`}
-              </>
-            }
-            aria-live="polite"
-            data-testid="alert-dev-mode-uploading"
-            actionClose={<AlertActionCloseButton onClose={close} />}
-          />
-        );
-      },
-      [props.workspaceFile.nameWithoutExtension]
-    )
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="info"
+          title={
+            <>
+              <Spinner size={"sm"} />
+              &nbsp;&nbsp; {`Uploading files to Dev Mode...`}
+            </>
+          }
+          aria-live="polite"
+          data-testid="alert-dev-mode-uploading"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
   );
 
-  const devModeReadyAlert = useGlobalAlert<{ routeUrl: string }>(
-    useCallback(({ close }, { routeUrl }) => {
+  const devModeReadyAlert = useGlobalAlert<{ routeUrl: string; filePaths: string[] }>(
+    useCallback(({ close }, { routeUrl, filePaths }) => {
       return (
         <Alert
           className="pf-u-mb-md"
           variant="success"
-          title={`Your Dev Mode has been updated.`}
+          title={
+            <>
+              Your Dev Mode has been updated with the following files:
+              <br />
+              <br />
+              <List>
+                {filePaths.map((p) => (
+                  <ListItem key={`uploaded-file-path-${p}`}>{p}</ListItem>
+                ))}
+              </List>
+              <br />
+            </>
+          }
           aria-live="polite"
           data-testid="alert-dev-mode-ready"
           actionClose={<AlertActionCloseButton onClose={close} />}
@@ -121,26 +131,23 @@ export function useDeployDropdownItems(props: Props) {
   );
 
   const uploadToDevModeSuccessAlert = useGlobalAlert(
-    useCallback(
-      ({ close }) => {
-        return (
-          <Alert
-            className="pf-u-mb-md"
-            variant="info"
-            title={
-              <>
-                <Spinner size={"sm"} />
-                &nbsp;&nbsp; {`Updating Dev Mode deployment with '${props.workspaceFile.nameWithoutExtension}'...`}
-              </>
-            }
-            aria-live="polite"
-            data-testid="alert-dev-mode-updating"
-            actionClose={<AlertActionCloseButton onClose={close} />}
-          />
-        );
-      },
-      [props.workspaceFile.nameWithoutExtension]
-    )
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="info"
+          title={
+            <>
+              <Spinner size={"sm"} />
+              &nbsp;&nbsp; {`Updating the Dev Mode deployment...`}
+            </>
+          }
+          aria-live="polite"
+          data-testid="alert-dev-mode-updating"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
   );
 
   const uploadToDevModeErrorAlert = useGlobalAlert(
@@ -216,7 +223,7 @@ export function useDeployDropdownItems(props: Props) {
             return;
           }
           uploadToDevModeSuccessAlert.close();
-          devModeReadyAlert.show({ routeUrl: devMode.endpoints!.devUi });
+          devModeReadyAlert.show({ routeUrl: devMode.endpoints!.devUi, filePaths: result.uploadedPaths });
           window.clearInterval(fetchDevModeDeploymentTask);
         }, FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME);
       } else {

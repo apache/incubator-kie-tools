@@ -29,6 +29,7 @@ const REGEX = {
   dash: /^.*\.dash\.(yml|yaml)$/i,
   json: /^.*\.json$/i,
   yaml: /^.*\.(yml|yaml)$/i,
+  applicationProperties: /.*\/?application\.properties$/i,
   spec: /^.*(\.spec|\.specs|spec|specs)\.(json|yml|yaml)$/i,
   // TODO CAPONETTO: this regex might become too complex
   devModeAssets: /^((?:[^/]+\/)*specs\/.*\.(json|ya?ml)|.*\/(application\.properties|spec\.(ya?ml|json)))$/i,
@@ -100,6 +101,10 @@ export function isSupportedByVirtualServiceRegistry(path: string): boolean {
 
 export function isSupportedByDevMode(path: string): boolean {
   return REGEX.devModeAssets.test(path);
+}
+
+export function isApplicationProperties(path: string): boolean {
+  return REGEX.applicationProperties.test(path);
 }
 
 export function isSpec(path: string): boolean {

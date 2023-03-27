@@ -32,7 +32,7 @@ import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
 import { SpinUpDevModePipeline } from "../pipelines/SpinUpDevModePipeline";
 import { fetchWithTimeout } from "../../fetch";
 import { zipFiles } from "../../zip";
-import { isServerlessWorkflow } from "../../extension";
+import { isApplicationProperties, isServerlessWorkflow } from "../../extension";
 import { RestartDevModePipeline } from "../pipelines/RestartDevModePipeline";
 
 export const resolveWebToolsId = () => {
@@ -144,15 +144,13 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
       }
 
       try {
-        // TODO CAPONETTO: no need to have `targetFile` if uploading all sw files.
-        // Uncomment when supporting other assets like application.properties and spec files
-        // const filesToUpload = [
-        //   args.targetFile,
-        //   ...args.allFiles.filter(
-        //     (f) => f.relativePath !== args.targetFile.relativePath && isSupportedByDevMode(f.relativePath)
-        //   ),
-        // ];
         const filesToUpload = [args.targetFile];
+        // TODO CAPONETTO: supporting the targetFile + the first `application.properties` for now.
+        const applicationPropertiesFile = args.allFiles.find((f) => isApplicationProperties(f.relativePath));
+        if (applicationPropertiesFile) {
+          filesToUpload.push(applicationPropertiesFile);
+        }
+
         const zipBlob = await zipFiles(filesToUpload);
 
         const formData = new FormData();
@@ -160,7 +158,7 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
 
         await fetch(endpoints.upload, { method: "POST", body: formData });
 
-        return { success: true };
+        return { success: true, uploadedPaths: filesToUpload.map((f) => f.relativePath) };
       } catch (e) {
         console.debug(e);
       }

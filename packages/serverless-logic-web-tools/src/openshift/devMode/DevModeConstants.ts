@@ -20,6 +20,7 @@ export const ZIP_FILE_NAME = "file.zip";
 export type DevModeUploadResult =
   | {
       success: true;
+      uploadedPaths: string[];
     }
   | {
       success: false;
