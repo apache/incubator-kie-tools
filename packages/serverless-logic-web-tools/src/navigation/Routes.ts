@@ -129,6 +129,9 @@ export const routes = {
       `/${workspaceId}/file/${fileRelativePath}${extension ? "." + extension : ""}`
   ),
 
+  recentModels: new Route<{}>(() => `/RecentModels`),
+  sampleCatalog: new Route<{}>(() => `/SampleCatalog`),
+
   settings: {
     home: new Route<{}>(() => SETTINGS_ROUTE),
     github: new Route<{}>(() => `${SETTINGS_ROUTE}/github`),

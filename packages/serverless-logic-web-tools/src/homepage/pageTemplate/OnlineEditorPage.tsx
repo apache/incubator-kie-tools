@@ -166,7 +166,13 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
   return (
     <QuickStartContainer {...drawerProps}>
       <div id="page-container" ref={props.pageContainerRef}>
-        <Page header={masthead} sidebar={sidebar} skipToContent={pageSkipToContent} mainContainerId={mainContainerId}>
+        <Page
+          header={masthead}
+          sidebar={sidebar}
+          skipToContent={pageSkipToContent}
+          mainContainerId={mainContainerId}
+          isManagedSidebar
+        >
           {props.children}
         </Page>
       </div>
