@@ -147,7 +147,7 @@ if __name__ == "__main__":
     version = get_next_rc_version(find_current_rc_version(), args.override_tags)
     common.update_community_image_version(version)
     common.update_image_stream(version)
-    common.update_modules_version(version)
+    common.update_kogito_modules_version(version)
     common.update_artifacts_version_env_in_modules(version)
 
     find_next_tag(args.override_tags)

@@ -61,13 +61,13 @@ if __name__ == "__main__":
 
             # modules
             if args.prod:
+                common.update_kogito_modules_version(args.bump_to, args.prod)
                 common.update_prod_image_version(args.bump_to)
                 common.update_image_stream(args.bump_to, args.prod)
-                common.update_modules_version(args.bump_to, args.prod)
             else:
+                common.update_kogito_modules_version(args.bump_to) # Need to be done before updating the main image version
                 common.update_community_image_version(args.bump_to)
                 common.update_image_stream(args.bump_to)
-                common.update_modules_version(args.bump_to)
                 common.update_artifacts_version_in_build(artifacts_version)
 
                 # tests default values

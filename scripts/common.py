@@ -140,7 +140,6 @@ def get_all_module_dirs():
 
     return modules
 
-
 def get_community_module_dirs():
     """
     Retrieve the Kogito module directories
@@ -225,7 +224,7 @@ def get_swf_builder_images():
     return SWF_BUILDER_IMAGES
 
 
-def update_modules_version(target_version, prod=False):
+def update_kogito_modules_version(target_version, prod=False):
     """
     Update every Kogito module.yaml to the given version.
     :param prod: if the module to be updated is prod version.
@@ -238,25 +237,30 @@ def update_modules_version(target_version, prod=False):
         modules = get_community_module_dirs()
 
     for module_dir in modules:
-        update_module_version(module_dir, target_version)
+        update_kogito_module_version(module_dir, target_version)
 
 
-def update_module_version(module_dir, target_version):
+def update_kogito_module_version(module_dir, target_version):
     """
     Set Kogito module.yaml to given version.
     :param module_dir: directory where cekit modules are hold
     :param target_version: version to set into the module
     """
+    image_version = retrieve_image_version()
+    file_updated = False
     try:
         module_file = os.path.join(module_dir, "module.yaml")
         with open(module_file) as module:
             data = yaml_loader().load(module)
-            print(
-                "Updating module {0} version from {1} to {2}".format(data['name'], data['version'], target_version))
-            data['version'] = target_version
+            if data['version'] == image_version:
+                print(
+                    "Updating module {0} version from {1} to {2}".format(data['name'], data['version'], target_version))
+                data['version'] = target_version
+                file_updated = True
 
-        with open(module_file, 'w') as module:
-            yaml_loader().dump(data, module)
+        if file_updated:
+            with open(module_file, 'w') as module:
+                yaml_loader().dump(data, module)
 
     except TypeError:
         raise
@@ -271,6 +275,18 @@ def retrieve_artifacts_version():
             for index, env in enumerate(data['envs'], start=0):
                 if env['name'] == KOGITO_VERSION_ENV_KEY:
                     return data['envs'][index]['value']
+
+    except TypeError:
+        raise
+
+def retrieve_image_version():
+    """
+    Retrieve the image version from main image.yaml
+    """
+    try:
+        with open(IMAGE_FILENAME) as imageFile:
+            data = yaml_loader().load(imageFile)
+            return data['version']
 
     except TypeError:
         raise
