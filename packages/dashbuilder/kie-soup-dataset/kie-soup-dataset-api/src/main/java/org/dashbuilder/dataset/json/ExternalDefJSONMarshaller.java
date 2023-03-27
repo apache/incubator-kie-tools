@@ -33,6 +33,7 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
     public static final String EXPRESSION = "expression";
     public static final String CONTENT = "content";
     public static final String HEADERS = "headers";
+    public static final String ACCUMULATE = "accumulate";
 
     @Override
     public void fromJson(ExternalDataSetDef def, JsonObject json) {
@@ -41,6 +42,7 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         var content = json.getString(CONTENT);
         var expression = json.getString(EXPRESSION);
         var headers = json.getObject(HEADERS);
+        var accumulate = json.getBoolean(ACCUMULATE);
         
         if (isBlank(url) && isBlank(content)) {
             throw new IllegalArgumentException("External Data Sets must have \"url\" or \"content\" field");
@@ -64,6 +66,7 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         }
 
         def.setDynamic(dynamic);
+        def.setAccumulate(accumulate);
     }
 
     @Override
@@ -72,6 +75,7 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         json.put(URL, def.getUrl());
         json.put(EXPRESSION, def.getExpression());
         json.put(CONTENT, def.getContent());
+        json.put(ACCUMULATE, def.isAccumulate());
 
         if (def.getHeaders() != null) {
             var headers = Json.createObject();

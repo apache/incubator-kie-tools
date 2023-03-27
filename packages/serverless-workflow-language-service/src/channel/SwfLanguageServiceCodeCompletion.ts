@@ -152,13 +152,6 @@ function getStateNameCompletion(
   });
 }
 
-function validateFunction(serviceCatalogFunction: SwfServiceCatalogFunction) {
-  if (isVirtualRegistry(serviceCatalogFunction)) {
-    return true;
-  }
-  return !(serviceCatalogFunction.name === undefined);
-}
-
 function extractFunctionsPath(functionsNode: SwfLsNode[]) {
   const relativeList: string[] = [];
   const remoteList: string[] = [];
@@ -464,8 +457,7 @@ export const SwfLanguageServiceCodeCompletion = {
       return swfServiceCatalogService.functions
         .filter(
           (swfServiceCatalogFunc) =>
-            !existingFunctionOperations.includes(swfServiceCatalogFunc.operation) &&
-            validateFunction(swfServiceCatalogFunc)
+            swfServiceCatalogFunc.name && !existingFunctionOperations.includes(swfServiceCatalogFunc.operation)
         )
         .map((swfServiceCatalogFunc) => {
           const swfFunction: Omit<Specification.Function, "normalize"> = {

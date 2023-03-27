@@ -51,7 +51,7 @@ public class MedianFunction extends AbstractFunction {
         }
         var middle = n / 2;
         var ii = n == 2 ? 0 : middle - 1;
-        var is = n == 2 ? 1 : middle + 1;
+        var is = n == 2 ? 1 : middle;
         var v = (sortedValues[ii] + sortedValues[is]) / 2d;
         return round(v, precission);
     }

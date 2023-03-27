@@ -81,6 +81,9 @@ describe("Serverless Logic Web Tools - Try samples test", () => {
           cy.get(".kie-tools--keyboard-shortcuts.pf-c-modal-box .pf-c-button").click();
         });
     });
+
+    // check there are no problems in JSON file
+    cy.get("#total-notifications").should("have.text", 0);
   });
 
   it("should check swf-report example of dashboard", () => {
@@ -137,5 +140,8 @@ describe("Serverless Logic Web Tools - Try samples test", () => {
         cy.get(".c3-tooltip-name--Total .value").should("have.text", 2.06);
       });
     });
+
+    // check there are no problems in dashbuilder file
+    cy.get("#total-notifications").should("have.text", 0);
   });
 });
