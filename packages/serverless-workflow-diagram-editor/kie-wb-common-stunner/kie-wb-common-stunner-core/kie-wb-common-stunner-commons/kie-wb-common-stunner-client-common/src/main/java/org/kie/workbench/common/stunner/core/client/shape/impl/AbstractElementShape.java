@@ -67,7 +67,6 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
         applyCustomProperties(element, mutationContext);
         getShape()
                 .getShapeStateHandler()
-                .shapeAttributesChanged()
                 .applyState(shapeState);
     }
 

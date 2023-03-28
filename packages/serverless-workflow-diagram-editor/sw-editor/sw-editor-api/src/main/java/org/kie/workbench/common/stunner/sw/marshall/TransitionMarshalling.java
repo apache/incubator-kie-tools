@@ -105,12 +105,7 @@ public interface TransitionMarshalling {
                     Node targetNode = edge.getTargetNode();
                     if (null != targetNode) {
                         State sourceState = getElementDefinition(sourceNode);
-
-                        if (sourceState.getTransition() instanceof String) {
-                            sourceState.setTransition(getStateNodeName(targetNode));
-                        } else {
-                            ((StateTransition) sourceState.getTransition()).setNextState(getStateNodeName(targetNode));
-                        }
+                        sourceState.setCompensatedBy(getStateNodeName(targetNode));
                     }
                 }
 
