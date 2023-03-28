@@ -75,14 +75,14 @@ public class BindableProxyLoaderGenerator extends AbstractAsyncGenerator {
 
     final Set<MetaClass> allBindableTypes = DataBindingUtil.getAllBindableTypes(context);
     // TEMPORARY LOG FOR TRACING ERRAI CACHE ISSUE
-    System.out.println("ERRAI ISSUE - ALL BINDABLE TYPES BEFORE 'addCacheRelevantClasses'" + allBindableTypes);
+    log.warn("ERRAI ISSUE - ALL BINDABLE TYPES BEFORE 'addCacheRelevantClasses'" + allBindableTypes);
     addCacheRelevantClasses(allBindableTypes);
     // TEMPORARY LOG FOR TRACING ERRAI CACHE ISSUE
-    System.out.println("ERRAI ISSUE - ALL BINDABLE TYPES AFTER 'addCacheRelevantClasses'" + allBindableTypes);
+    log.warn("ERRAI ISSUE - ALL BINDABLE TYPES AFTER 'addCacheRelevantClasses'" + allBindableTypes);
 
     for (final MetaClass bindable : allBindableTypes) {
       // TEMPORARY LOG FOR TRACING ERRAI CACHE ISSUE
-      System.out.println("ERRAI ISSUE - PROCESSED CLASS in FOR " + bindable.getFullyQualifiedName());
+      log.warn("ERRAI ISSUE - PROCESSED CLASS in FOR " + bindable.getFullyQualifiedName());
 
       if (bindable.isFinal()) {
         throw new RuntimeException("@Bindable type cannot be final: " + bindable.getFullyQualifiedName());
