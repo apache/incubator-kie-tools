@@ -187,11 +187,11 @@ public class MouseWheelZoomMediator extends AbstractMediator {
 
         if (event.deltaY < 0 == m_downZoomOut) // down
         {
-            // zoom out
-            scaleDelta = 1 / (1 + m_zoomFactor);
-        } else {
             // zoom in
             scaleDelta = 1 + m_zoomFactor;
+        } else {
+            // zoom out
+            scaleDelta = 1 / (1 + m_zoomFactor);
         }
         // ASSUMPTION: scaleX == scaleY
 
