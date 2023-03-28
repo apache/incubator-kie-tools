@@ -148,13 +148,10 @@ public class CopySelectionSessionCommand extends AbstractSelectionAwareSessionCo
                                                                                        getSession()));
                 callback.onSuccess();
 
-                List<Element> elements = new ArrayList<>();
-                clipboardControl.getElements().forEach((el) -> {
-                    if(GraphUtils.getComputedPosition(el.asNode()).getX() != 0
-                            && GraphUtils.getComputedPosition(el.asNode()).getY() != 0) {
-                        elements.add(el);
-                    }
-                });
+                List<Element> elements = clipboardControl.getElements().stream().filter((el) -> {
+                    return GraphUtils.getComputedPosition(el.asNode()).getX() != 0
+                            && GraphUtils.getComputedPosition(el.asNode()).getY() != 0;
+                }).collect(Collectors.toList());
                 //get max and min coordinates to create selection area
                 double[] minCoordinates = getCoordinates(elements, false);
                 double[] maxCoordinates = getCoordinates(elements, true);
