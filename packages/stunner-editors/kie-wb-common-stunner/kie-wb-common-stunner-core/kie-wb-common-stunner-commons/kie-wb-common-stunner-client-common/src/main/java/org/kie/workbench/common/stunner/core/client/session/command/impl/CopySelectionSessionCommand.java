@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
