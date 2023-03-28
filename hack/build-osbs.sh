@@ -204,5 +204,11 @@ fi
 
 cd ../
 # hack to replace the branch overrides as cekit detects two osbs sections and don't know which one to override.
-sed -i 's/rhba-7-rhel-8/rhba-7-rhel-8-nightly/g' rhpam-image.yaml
+sed -i 's/rhba-7-rhel-8/rhba-7-rhel-8-nightly/g' rhpam-image-prod.yaml
+# hack to replace the git ref
+commit=$(git rev-parse HEAD)
+echo "Using commit ${commit}"
+git log -1 --pretty=%B
+sed  '/ref: /s/.*/          ref: '${commit}'/g' rhpam-image-prod.yaml
+
 make -f Makefile.rhpam container-build-osbs
