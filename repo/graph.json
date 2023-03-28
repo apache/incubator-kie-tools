@@ -723,6 +723,11 @@
       { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-language-service",
+        "target": "@kie-tools/editor-language-service",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-language-service",
         "target": "@kie-tools/serverless-workflow-jq-expressions",
         "weight": 1
       },

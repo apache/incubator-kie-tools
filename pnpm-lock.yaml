@@ -6164,6 +6164,9 @@ importers:
 
   packages/serverless-workflow-language-service:
     dependencies:
+      "@kie-tools/editor-language-service":
+        specifier: workspace:^0.0.0
+        version: link:../editor-language-service
       "@kie-tools/serverless-workflow-jq-expressions":
         specifier: workspace:*
         version: link:../serverless-workflow-jq-expressions
@@ -28440,6 +28443,7 @@ packages:
       - bufferutil
       - utf-8-validate
     dev: true
+    patched: true
 
   /selfsigned@2.0.0:
     resolution:
