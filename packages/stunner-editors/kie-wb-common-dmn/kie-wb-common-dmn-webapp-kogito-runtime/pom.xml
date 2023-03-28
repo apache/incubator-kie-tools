@@ -847,7 +847,7 @@
                   <goal>add-source</goal>
                 </goals>
                 <configuration>
-                  <excludes>${gwt.helper.excludes}</excludes> <!-- will include all GWT module whose configuration file name match that pattern -->
+                  <excludes>${gwt.helper.excludes}</excludes> <!-- will exclude all GWT module whose configuration file name match that pattern -->
                   <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
                 </configuration>
               </execution>
