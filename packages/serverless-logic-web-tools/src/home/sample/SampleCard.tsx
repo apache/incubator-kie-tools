@@ -9,7 +9,6 @@ import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
 import { FolderIcon, FileIcon, MonitoringIcon } from "@patternfly/react-icons/dist/js/icons";
 import { labelColors } from "../../workspace/components/FileLabel";
-import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 export enum SampleType {
   SW_YML = "sw.yml",
@@ -23,9 +22,8 @@ export enum SampleType {
 export type Sample = {
   name: string;
   fileName: string;
-  svg: React.ReactElement;
+  svg: string;
   description: string;
-  repoUrl?: string;
   type: SampleType;
 };
 
@@ -61,6 +59,22 @@ const tagMap: Record<SampleType, { label: string; icon: React.ComponentClass; co
     color: labelColors[SampleType.DASH_YAML].color,
   },
 };
+const useSvg = (svg: string) => {
+  const svgWrapperRef = React.useRef<any>(null);
+  React.useEffect(() => {
+    svgWrapperRef.current.innerHTML = svg;
+  }, []);
+  return {
+    svgWrapperRef,
+  };
+};
+
+export function RenderSvg(props: { svg: string }) {
+  const { svgWrapperRef } = useSvg(props.svg);
+  return (
+    <div ref={svgWrapperRef} style={{ height: "100%", maxWidth: "100%", maxHeight: "400px", paddingTop: "30px" }}></div>
+  );
+}
 
 export function SampleCard(props: { sample: Sample }) {
   const routes = useRoutes();
@@ -80,7 +94,7 @@ export function SampleCard(props: { sample: Sample }) {
               &nbsp;&nbsp;<b>{tag.label}</b>
             </Label>
           </div>
-          {props.sample.svg}
+          <RenderSvg svg={props.sample.svg} />
         </GridItem>
         <GridItem md={6} style={{ display: "flex", flexDirection: "column" }}>
           <CardTitle data-ouia-component-type="sample-title">{props.sample.name}</CardTitle>

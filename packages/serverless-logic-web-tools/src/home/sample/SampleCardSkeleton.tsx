@@ -19,40 +19,40 @@ import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Card, CardTitle, CardFooter, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
 import "./SampleCardSkeleton.css";
 
-export const SampleCardSkeleton = () => {
+export function SampleCardSkeleton(props: { numberOfCards: number }) {
   return (
     <>
-      <TextContent>
-        <Text component="h1">Samples Showcase</Text>
-      </TextContent>
-      <br />
       <Gallery
         hasGutter={true}
         minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}
-        className="card-skeleton-gallery"
+        className="sample-card-skeleton--gallery"
       >
-        {Array(4)
+        {Array(props.numberOfCards)
           .fill(undefined)
           .map((item, index) => (
             <Card isCompact={true} key={index} isFullHeight={true}>
-              <Grid className="grid-style">
-                <GridItem md={6} className="card-grid-item">
-                  <div className="card-label-skeleton">
+              <Grid className="sample-card-skeleton--grid">
+                <GridItem md={6} className="sample-card-skeleton--grid-item">
+                  <div className="sample-card-skeleton--label">
                     <Skeleton width="90%" />
                   </div>
-                  <Skeleton shape="square" width="90%" screenreaderText="Loading svg" className="svg-skeleton" />
+                  <Skeleton
+                    shape="square"
+                    width="90%"
+                    screenreaderText="Loading svg"
+                    className="sample-card-skeleton--svg"
+                  />
                 </GridItem>
-                <GridItem md={6} className="grid-content-item">
+                <GridItem md={6} className="sample-card-skeleton--grid-content-item">
                   <CardTitle data-ouia-component-type="sample-title">
                     <Skeleton width="90%" />
                   </CardTitle>
                   <CardBody isFilled={true}>
                     <Skeleton shape="square" width="90%" screenreaderText="Loading description" />
                   </CardBody>
-                  <CardFooter className="card-footer-style">
+                  <CardFooter className="sample-card-skeleton--card-footer-style">
                     <Skeleton width="90%" />
                   </CardFooter>
                 </GridItem>
@@ -62,4 +62,4 @@ export const SampleCardSkeleton = () => {
       </Gallery>
     </>
   );
-};
+}

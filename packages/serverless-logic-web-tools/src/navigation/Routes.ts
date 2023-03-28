@@ -122,7 +122,7 @@ export const routes = {
     queryParams: QueryParams.URL | QueryParams.BRANCH | QueryParams.REMOVE_REMOTE | QueryParams.RENAME_WORKSPACE;
   }>(() => `/import`),
 
-  sampleShowcase: new Route<{ queryParams: QueryParams.SAMPLE_ID }>(({}) => `/sample`),
+  sampleShowcase: new Route<{ queryParams: QueryParams.SAMPLE_ID }>(() => `/sample`),
 
   workspaceWithFilePath: new Route<{
     pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH | PathParams.EXTENSION;

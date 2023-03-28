@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-.card-skeleton-gallery {
+.sample-card-skeleton--gallery {
   overflow-x: auto;
   grid-auto-flow: column;
   grid-auto-columns: minmax(calc(100% / 3.1 - 16px), 1fr);
@@ -22,18 +22,18 @@
   padding-right: var(--pf-c-page__main-section--xl--PaddingRight);
 }
 
-.grid-style {
+.sample-card-skeleton--grid {
   height: 100%;
 }
 
-.card-grid-item {
+.sample-card-skeleton--grid-item {
   overflow: hidden;
   text-align: center;
   vertical-align: middle;
   position: relative;
 }
 
-.card-label-skeleton {
+.sample-card-skeleton--label {
   position: absolute;
   bottom: 16px;
   right: 0;
@@ -41,15 +41,15 @@
   margin-left: 20px;
 }
 
-.svg-skeleton {
+.sample-card-skeleton--svg {
   margin: 20px;
 }
 
-.grid-content-item {
+.sample-card-skeleton--grid-content-item {
   display: flex;
   flex-direction: column;
 }
 
-.card-footer-style {
+.sample-card-skeleton--card-footer-style {
   align-items: baseline;
 }

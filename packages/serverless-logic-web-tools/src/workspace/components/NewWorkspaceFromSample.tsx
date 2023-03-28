@@ -29,9 +29,7 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
-import { basename } from "path";
-import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
-import { fetchFile, kieSamplesRepo, repoContentType } from "../../home/api";
+import { fetchSample, kieSamplesRepo } from "../../home/sample/sampleApi";
 
 export function NewWorkspaceFromSample() {
   const workspaces = useWorkspaces();
@@ -40,7 +38,7 @@ export function NewWorkspaceFromSample() {
   const settingsDispatch = useSettingsDispatch();
   const [openingError, setOpeningError] = useState("");
 
-  const sampleId = useQueryParam(QueryParams.SAMPLE_ID);
+  const sampleId = useQueryParam(QueryParams.SAMPLE_ID) ?? "";
 
   const createWorkspaceForFiles = useCallback(
     async (files: LocalFile[]) => {
@@ -64,39 +62,7 @@ export function NewWorkspaceFromSample() {
     async function run() {
       // proceed normally
       try {
-        const res = await fetchFile(
-          settingsDispatch.github.octokit,
-          kieSamplesRepo.org,
-          kieSamplesRepo.repo,
-          kieSamplesRepo.ref,
-          decodeURIComponent(`${kieSamplesRepo.path}/${sampleId}`)
-        );
-
-        if (res === undefined) {
-          setOpeningError(`Sample ${sampleId} not found`);
-          return;
-        }
-
-        const sampleFiles = [] as LocalFile[];
-        const promise = (res as any)?.data?.map(async (file: repoContentType) => {
-          if (file.name === "definition.json" || file.name.split(".")[1] === "svg") {
-            return;
-          }
-          const rawUrl = new URL((file as repoContentType).download_url);
-          const response = await fetch(rawUrl.toString());
-          if (!response.ok) {
-            setOpeningError(`${response.status}${response.statusText ? `- ${response.statusText}` : ""}`);
-            return;
-          }
-          const content = await response?.text();
-
-          sampleFiles.push({
-            path: basename(decodeURIComponent(rawUrl.pathname)),
-            fileContents: encoder.encode(content),
-          });
-        });
-
-        Promise.all(promise).then(() => {
+        fetchSample({ octokit: settingsDispatch.github.octokit, sampleId }).then((sampleFiles) => {
           createWorkspaceForFiles(sampleFiles);
         });
       } catch (e) {
