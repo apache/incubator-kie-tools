@@ -190,7 +190,7 @@ export function NewWorkspaceFromUrlPage() {
       history.replace({
         pathname: routes.workspaceWithFilePath.path({
           workspaceId: workspace.workspaceId,
-          fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+          fileRelativePath: suggestedFirstFile.nameWithoutExtension,
           extension: suggestedFirstFile.extension,
         }),
       });
@@ -213,7 +213,7 @@ export function NewWorkspaceFromUrlPage() {
           history.replace({
             pathname: routes.workspaceWithFilePath.path({
               workspaceId: workspace.workspaceId,
-              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+              fileRelativePath: suggestedFirstFile.nameWithoutExtension,
               extension: suggestedFirstFile.extension,
             }),
           });

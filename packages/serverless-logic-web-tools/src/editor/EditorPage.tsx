@@ -86,7 +86,7 @@ export function EditorPage(props: Props) {
     history.replace({
       pathname: routes.workspaceWithFilePath.path({
         workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
-        fileRelativePath: workspaceFilePromise.data.workspaceFile.relativePathWithoutExtension,
+        fileRelativePath: workspaceFilePromise.data.workspaceFile.nameWithoutExtension,
         extension: workspaceFilePromise.data.workspaceFile.extension,
       }),
       search: queryParams.toString(),

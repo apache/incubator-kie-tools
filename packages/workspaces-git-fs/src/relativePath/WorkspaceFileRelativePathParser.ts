@@ -33,7 +33,6 @@ import {
 export function parseWorkspaceFileRelativePath(relativePath: string) {
   const extension = extractExtension(relativePath);
   return {
-    relativePathWithoutExtension: relativePath.replace(`.${extension}`, ""),
     relativeDirPath: parse(relativePath).dir,
     extension: extension,
     nameWithoutExtension: basename(relativePath, `.${extension}`),

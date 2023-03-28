@@ -796,7 +796,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     history.push({
       pathname: routes.workspaceWithFilePath.path({
         workspaceId: nextFile.workspaceId,
-        fileRelativePath: nextFile.relativePathWithoutExtension,
+        fileRelativePath: nextFile.nameWithoutExtension,
         extension: nextFile.extension,
       }),
     });
@@ -1530,7 +1530,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             history.push({
                               pathname: routes.workspaceWithFilePath.path({
                                 workspaceId: file.workspaceId,
-                                fileRelativePath: file.relativePathWithoutExtension,
+                                fileRelativePath: file.nameWithoutExtension,
                                 extension: file.extension,
                               }),
                             });

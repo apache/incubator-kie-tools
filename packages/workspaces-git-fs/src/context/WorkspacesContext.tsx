@@ -60,10 +60,6 @@ export class WorkspaceFile {
     return this.args.relativePath;
   }
 
-  get relativePathWithoutExtension() {
-    return this.parsedRelativePath.relativePathWithoutExtension;
-  }
-
   get relativeDirPath() {
     return this.parsedRelativePath.relativeDirPath;
   }

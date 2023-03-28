@@ -711,7 +711,7 @@ export function FilesMenuItems(props: {
                         history.push({
                           pathname: routes.workspaceWithFilePath.path({
                             workspaceId: file.workspaceId,
-                            fileRelativePath: file.relativePathWithoutExtension,
+                            fileRelativePath: file.nameWithoutExtension,
                             extension: file.extension,
                           }),
                         });
@@ -775,7 +775,7 @@ export function FileMenuItem(props: { file: WorkspaceFile; onSelectFile: () => v
       <Link
         to={routes.workspaceWithFilePath.path({
           workspaceId: props.file.workspaceId,
-          fileRelativePath: props.file.relativePathWithoutExtension,
+          fileRelativePath: props.file.nameWithoutExtension,
           extension: props.file.extension,
         })}
       >
