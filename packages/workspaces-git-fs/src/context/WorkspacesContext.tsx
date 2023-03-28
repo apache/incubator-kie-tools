@@ -61,7 +61,6 @@ export class WorkspaceFile {
   }
 
   get relativePathWithoutExtension() {
-    console.log("path " + this.parsedRelativePath.relativePathWithoutExtension);
     return this.parsedRelativePath.relativePathWithoutExtension;
   }
 
@@ -74,7 +73,6 @@ export class WorkspaceFile {
   }
 
   get nameWithoutExtension() {
-    console.log("name " + this.parsedRelativePath.nameWithoutExtension);
     return this.parsedRelativePath.nameWithoutExtension;
   }
 
