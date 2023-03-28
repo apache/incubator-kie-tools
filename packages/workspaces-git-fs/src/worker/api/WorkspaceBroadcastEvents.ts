@@ -18,6 +18,7 @@ export type WorkspaceBroadcastEvents =
   | { type: "WS_ADD"; workspaceId: string }
   | { type: "WS_CREATE_SAVE_POINT"; workspaceId: string }
   | { type: "WS_PULL"; workspaceId: string }
+  | { type: "WS_CHECKOUT_FILES_FROM_LOCAL_HEAD"; workspaceId: string; relativePaths: string[] }
   | { type: "WS_RENAME"; workspaceId: string }
   | { type: "WS_DELETE"; workspaceId: string }
   | { type: "WS_ADD_FILE"; relativePath: string }
@@ -25,4 +26,5 @@ export type WorkspaceBroadcastEvents =
   | { type: "WS_RENAME_FILE"; newRelativePath: string; oldRelativePath: string }
   | { type: "WS_UPDATE_FILE"; relativePath: string }
   | { type: "WS_DELETE_FILE"; relativePath: string }
-  | { type: "WS_UPDATE_DESCRIPTOR" };
+  | { type: "WS_UPDATE_DESCRIPTOR" }
+  | { type: "WS_CHECKOUT" };

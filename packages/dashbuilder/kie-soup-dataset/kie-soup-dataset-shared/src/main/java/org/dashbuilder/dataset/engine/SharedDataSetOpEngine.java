@@ -491,7 +491,8 @@ public class SharedDataSetOpEngine implements DataSetOpEngine {
                     // Columns based on aggregation functions
                     AggregateFunctionType aggF = gf.getFunction();
                     if (aggF != null) {
-                        DataColumnImpl column = new DataColumnImpl(columnId, ColumnType.NUMBER);
+                        var columnType = aggF.getResultType(null);
+                        DataColumnImpl column = new DataColumnImpl(columnId, columnType);
                         column.setGroupFunction(gf);
                         result.addColumn(column);
                     }

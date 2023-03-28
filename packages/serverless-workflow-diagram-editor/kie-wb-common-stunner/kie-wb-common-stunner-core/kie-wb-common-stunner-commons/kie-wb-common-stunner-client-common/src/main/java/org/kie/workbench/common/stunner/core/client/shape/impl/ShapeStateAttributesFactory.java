@@ -27,7 +27,6 @@ public class ShapeStateAttributesFactory {
     static final String COLOR_INVALID = "#FF0000";
 
     static final String FILL_COLOR_SELECTED = "#E7F1FA";
-    static final String FILL_COLOR_HIGHLIGHT = "#fff";
     static final String FILL_COLOR_INVALID = "#fff";
 
     public static ShapeStateAttributes buildStateAttributes(final ShapeState state) {
@@ -35,6 +34,12 @@ public class ShapeStateAttributesFactory {
         final String FILL_COLOR = getFillAttributeColorByState(state);
         if (null == COLOR) {
             return buildAttributes();
+        }
+
+        if (null == FILL_COLOR) {
+            return buildAttributes()
+                    .set(ShapeStateAttribute.STROKE_ALPHA, 1d)
+                    .set(ShapeStateAttribute.STROKE_COLOR, COLOR);
         }
 
         return buildAttributes()
@@ -61,8 +66,6 @@ public class ShapeStateAttributesFactory {
         switch (state) {
             case SELECTED:
                 return FILL_COLOR_SELECTED;
-            case HIGHLIGHT:
-                return FILL_COLOR_HIGHLIGHT;
             case INVALID:
                 return FILL_COLOR_INVALID;
             default:

@@ -42,6 +42,9 @@
           "monaco-yaml": "*"
         }
       }
+    },
+    "patchedDependencies": {
+      "selenium-webdriver@4.8.1": "patches/selenium-webdriver@4.8.1.patch"
     }
   },
   "kieTools": {

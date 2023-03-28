@@ -16,24 +16,82 @@
 
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 
+const REGEX = {
+  supported: /(\.bpmn|\.bpmn2|\.dmn|\.pmml|\.scesim)$/i,
+  dmn: /^.*\.dmn$/i,
+  bpmn: /^.*\.(bpmn|bpmn2)$/i,
+  scesim: /^.*\.scesim$/i,
+  pmml: /^.*\.pmml$/i,
+};
+
+export const GLOB_PATTERN = {
+  all: "**/*",
+  dmn: "**/*.dmn",
+  bpmn: "**/*.bpmn?(2)",
+  scesim: "**/*.scesim",
+  pmml: "**/*.pmml",
+};
+
+export enum FileTypes {
+  DMN = "dmn",
+  BPMN = "bpmn",
+  BPMN2 = "bpmn2",
+  SCESIM = "scesim",
+  PMML = "pmml",
+}
+
+export const supportedFileExtensionArray = [
+  FileTypes.DMN,
+  FileTypes.BPMN,
+  FileTypes.BPMN2,
+  FileTypes.SCESIM,
+  FileTypes.PMML,
+];
+
+export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];
+
+export function isDecision(path: string): boolean {
+  return REGEX.dmn.test(path);
+}
+
+export function isWorkflow(path: string): boolean {
+  return REGEX.bpmn.test(path);
+}
+
+export function isTestScenario(path: string): boolean {
+  return REGEX.scesim.test(path);
+}
+
+export function isScorecard(path: string): boolean {
+  return REGEX.pmml.test(path);
+}
+
+export function isModel(path: string): boolean {
+  return isDecision(path) || isWorkflow(path) || isScorecard(path);
+}
+
+export function isEditable(path: string): boolean {
+  return isModel(path) || isTestScenario(path);
+}
+
 export class EditorEnvelopeLocatorFactory {
   public create(args: { targetOrigin: string }) {
     return new EditorEnvelopeLocator(args.targetOrigin, [
       new EnvelopeMapping({
-        type: "bpmn",
-        filePathGlob: "**/*.bpmn?(2)",
+        type: FileTypes.BPMN,
+        filePathGlob: GLOB_PATTERN.bpmn,
         resourcesPathPrefix: "gwt-editors/bpmn",
         envelopeContent: { type: EnvelopeContentType.PATH, path: "bpmn-envelope.html" },
       }),
       new EnvelopeMapping({
-        type: "dmn",
-        filePathGlob: "**/*.dmn",
+        type: FileTypes.DMN,
+        filePathGlob: GLOB_PATTERN.dmn,
         resourcesPathPrefix: "gwt-editors/dmn",
         envelopeContent: { type: EnvelopeContentType.PATH, path: "dmn-envelope.html" },
       }),
       new EnvelopeMapping({
-        type: "pmml",
-        filePathGlob: "**/*.pmml",
+        type: FileTypes.PMML,
+        filePathGlob: GLOB_PATTERN.pmml,
         resourcesPathPrefix: "",
         envelopeContent: { type: EnvelopeContentType.PATH, path: "pmml-envelope.html" },
       }),

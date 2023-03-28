@@ -18,6 +18,7 @@ import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 import { DmnUnitablesI18n } from "@kie-tools/unitables-dmn/dist/i18n";
 import { GistEnabledAuthProviderType, SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
+import { SupportedActions } from "../workspace/components/GitStatusIndicatorActions";
 
 interface OnlineDictionary extends ReferenceDictionary {
   editorPage: {
@@ -63,6 +64,25 @@ interface OnlineDictionary extends ReferenceDictionary {
     cantUpdateSnippetTooltip: string;
     share: string;
     embed: string;
+  };
+  accelerators: {
+    commitMessage: (acceleratorName: string) => string;
+    loadingAlert: (acceleratorName: string) => string;
+    successAlert: (acceleratorName: string) => string;
+    failAlert: (acceleratorName: string) => string;
+    acceleratorDescription: string;
+    acceleratorDetails: string;
+    dmnFilesMove: string;
+    dmnFilesLocation: string;
+    pmmlFilesMove: string;
+    pmmlFilesLocation: string;
+    bpmnFilesMove: string;
+    bpmnFilesLocation: string;
+    otherFilesMove: string;
+    otherFilesLocation: string;
+    applyAccelerator: string;
+    appliedAt: string;
+    applyDisclaimer: string;
   };
   devDeployments: {
     common: {
@@ -514,6 +534,14 @@ interface OnlineDictionary extends ReferenceDictionary {
     [key in SupportedGitAuthProviders]: {
       user: string;
       organizations: string;
+    };
+  };
+  gitStatusIndicatorActions: {
+    [key in SupportedActions]: {
+      title: string;
+      warning: string;
+      description: string;
+      confirmButtonText: string;
     };
   };
 }

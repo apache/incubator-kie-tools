@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Dropdown,
   DropdownItem,
@@ -40,7 +40,11 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../../filesList/FileLabel";
-import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
+import {
+  useWorkspaceGitStatusPromise,
+  useWorkspacePromise,
+  WorkspaceGitStatusType,
+} from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import { FileSwitcher } from "./FileSwitcher";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { KieSandboxExtendedServicesDropdownGroup } from "../KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
@@ -68,6 +72,9 @@ import { WorkspaceToolbar } from "./Workspace/WorkspaceToolbar";
 import { useWorkspaceNavigationBlocker } from "./Workspace/Hooks";
 import { FileStatus } from "./FileStatus";
 import { SyncDropdownMenu } from "./SyncDropdownMenu";
+import { AcceleratorsDropdown } from "./Accelerators/AcceleratorsDropdown";
+import { listDeletedFiles } from "../../workspace/components/WorkspaceStatusIndicator";
+import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -99,7 +106,9 @@ const hideWhenTiny: ToolbarItemProps["visibility"] = {
   md: "hidden",
 };
 
-export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWorkspace }) {
+export function EditorToolbarWithWorkspace(
+  props: Props & { workspace: ActiveWorkspace; workspaceGitStatusPromise: PromiseState<WorkspaceGitStatusType> }
+) {
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const history = useHistory();
@@ -133,13 +142,7 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
     [props.editor, props.workspaceFile, props.workspace]
   );
 
-  const deleteWorkspaceFile = useCallback(async () => {
-    if (props.workspace.files.length === 1) {
-      await workspaces.deleteWorkspace({ workspaceId: props.workspaceFile.workspaceId });
-      history.push({ pathname: routes.home.path({}) });
-      return;
-    }
-
+  const handleDeletedWorkspaceFile = useCallback(() => {
     const nextFile = props.workspace.files
       .filter((f) => {
         return (
@@ -147,11 +150,6 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
         );
       })
       .pop();
-
-    await workspaces.deleteFile({
-      file: props.workspaceFile,
-    });
-
     if (!nextFile) {
       history.push({ pathname: routes.home.path({}) });
       return;
@@ -164,7 +162,28 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
         extension: nextFile.extension,
       }),
     });
-  }, [routes, history, props.workspace, props.workspaceFile, workspaces, editorEnvelopeLocator]);
+  }, [
+    editorEnvelopeLocator,
+    history,
+    props.workspace.files,
+    props.workspaceFile.relativePath,
+    routes.home,
+    routes.workspaceWithFilePath,
+  ]);
+
+  const deleteWorkspaceFile = useCallback(async () => {
+    if (props.workspace.files.length === 1) {
+      await workspaces.deleteWorkspace({ workspaceId: props.workspaceFile.workspaceId });
+      history.push({ pathname: routes.home.path({}) });
+      return;
+    }
+
+    await workspaces.deleteFile({
+      file: props.workspaceFile,
+    });
+
+    handleDeletedWorkspaceFile();
+  }, [props.workspace.files.length, props.workspaceFile, workspaces, handleDeletedWorkspaceFile, history, routes.home]);
 
   const deleteFileDropdownItem = useMemo(() => {
     return (
@@ -223,8 +242,15 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
   ]);
 
   const canSeeWorkspaceToolbar = useMemo(
-    () => props.workspace.descriptor.origin.kind !== WorkspaceKind.LOCAL || props.workspace.files.length > 1,
-    [props.workspace.descriptor.origin.kind, props.workspace.files.length]
+    () =>
+      props.workspace.descriptor.origin.kind !== WorkspaceKind.LOCAL ||
+      props.workspace.files.length +
+        listDeletedFiles({
+          workspaceDescriptor: props.workspace.descriptor,
+          workspaceGitStatusPromise: props.workspaceGitStatusPromise,
+        }).length >
+        1,
+    [props.workspace.descriptor, props.workspace.files.length, props.workspaceGitStatusPromise]
   );
 
   return (
@@ -237,7 +263,12 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
             spaceItems={{ default: "spaceItemsMd" }}
           >
             <FlexItem style={{ minWidth: 0 }}>
-              <WorkspaceToolbar workspace={props.workspace} />
+              <WorkspaceToolbar
+                workspace={props.workspace}
+                workspaceGitStatusPromise={props.workspaceGitStatusPromise}
+                currentWorkspaceFile={props.workspaceFile}
+                onDeletedWorkspaceFile={handleDeletedWorkspaceFile}
+              />
             </FlexItem>
             <VsCodeDropdownMenu workspace={props.workspace} />
           </Flex>
@@ -253,7 +284,19 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
             <PageHeaderToolsItem visibility={{ default: "visible" }}>
               <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
                 <FlexItem style={{ minWidth: 0 }}>
-                  <FileSwitcher workspace={props.workspace} workspaceFile={props.workspaceFile} />
+                  <FileSwitcher
+                    workspace={props.workspace}
+                    gitStatusProps={
+                      canSeeWorkspaceToolbar
+                        ? {
+                            workspaceDescriptor: props.workspace.descriptor,
+                            workspaceGitStatusPromise: props.workspaceGitStatusPromise,
+                          }
+                        : undefined
+                    }
+                    workspaceFile={props.workspaceFile}
+                    onDeletedWorkspaceFile={handleDeletedWorkspaceFile}
+                  />
                 </FlexItem>
                 <FileStatus workspace={props.workspace} workspaceFile={props.workspaceFile} editor={props.editor} />
               </Flex>
@@ -263,6 +306,9 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
             <Toolbar>
               <ToolbarContent style={{ paddingRight: 0 }}>
                 <ToolbarGroup>
+                  <ToolbarItem>
+                    <AcceleratorsDropdown workspaceFile={props.workspaceFile} />
+                  </ToolbarItem>
                   <ToolbarItem>
                     <ResponsiveDropdown
                       title={"Add file"}
@@ -375,14 +421,18 @@ export function EditorToolbarWithWorkspace(props: Props & { workspace: ActiveWor
 
 export function EditorToolbar(props: Props) {
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
-
+  const workspaceGitStatusPromise = useWorkspaceGitStatusPromise(workspacePromise.data?.descriptor);
   if (!workspacePromise.data) {
     return <></>;
   }
 
   return (
     <EditorToolbarContextProvider {...props} workspace={workspacePromise.data}>
-      <EditorToolbarWithWorkspace {...props} workspace={workspacePromise.data} />
+      <EditorToolbarWithWorkspace
+        {...props}
+        workspace={workspacePromise.data}
+        workspaceGitStatusPromise={workspaceGitStatusPromise}
+      />
     </EditorToolbarContextProvider>
   );
 }

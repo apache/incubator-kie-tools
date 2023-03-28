@@ -38,6 +38,8 @@ public class ExternalDataSetDef extends DataSetDef {
 
     private Map<String, String> headers;
 
+    private boolean accumulate;
+
     public ExternalDataSetDef() {
         super.setProvider(DataSetProviderType.EXTERNAL);
     }
@@ -89,6 +91,14 @@ public class ExternalDataSetDef extends DataSetDef {
         this.headers = headers;
     }
 
+    public boolean isAccumulate() {
+        return accumulate;
+    }
+
+    public void setAccumulate(boolean accumulate) {
+        this.accumulate = accumulate;
+    }
+
     @Override
     public DataSetDef clone() {
         var def = new ExternalDataSetDef();
@@ -96,6 +106,7 @@ public class ExternalDataSetDef extends DataSetDef {
         def.setUrl(getUrl());
         def.setDynamic(isDynamic());
         def.setHeaders(getHeaders());
+        def.setAccumulate(isAccumulate());
         return def;
     }
 
@@ -112,7 +123,8 @@ public class ExternalDataSetDef extends DataSetDef {
                dynamic == other.dynamic &&
                Objects.equals(expression, other.expression) &&
                Objects.equals(headers, other.headers) &&
-               Objects.equals(url, other.url);
+               Objects.equals(url, other.url) &&
+               Objects.equals(accumulate, other.accumulate);
     }
 
     public String toString() {
@@ -126,7 +138,8 @@ public class ExternalDataSetDef extends DataSetDef {
         out.append("Dynamic=").append(dynamic).append("\n");
         out.append("Expression=").append(expression).append("\n");
         out.append("Content=").append(content).append("\n");
-        out.append("Headers=").append(headers);
+        out.append("Headers=").append(headers).append("\n");
+        out.append("Accumulate=").append(accumulate);
         return out.toString();
     }
 

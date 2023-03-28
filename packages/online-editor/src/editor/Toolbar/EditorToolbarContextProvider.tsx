@@ -46,10 +46,12 @@ export type EditorToolbarContextType = {
   isLargeKebabOpen: boolean;
   isSmallKebabOpen: boolean;
   isNewFileDropdownMenuOpen: boolean;
+  isAcceleratorsDropdownOpen: boolean;
   downloadRef: RefObject<HTMLAnchorElement>;
   downloadAllRef: RefObject<HTMLAnchorElement>;
   downloadPreviewRef: RefObject<HTMLAnchorElement>;
   downloadWorkspaceZip: () => Promise<void>;
+  workspace: ActiveWorkspace;
 };
 
 export type EditorToolbarDispatchContextType = {
@@ -62,6 +64,7 @@ export type EditorToolbarDispatchContextType = {
   setLargeKebabOpen: Dispatch<SetStateAction<boolean>>;
   setSmallKebabOpen: Dispatch<SetStateAction<boolean>>;
   setNewFileDropdownMenuOpen: Dispatch<SetStateAction<boolean>>;
+  setAcceleratorsDropdownOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export const EditorToolbarContext = createContext<EditorToolbarContextType>({} as any);
@@ -81,6 +84,7 @@ export function EditorToolbarContextProvider(props: Props) {
   const [isShareDropdownOpen, setShareDropdownOpen] = useState(false);
   const [isSyncGistOrSnippetDropdownOpen, setSyncGistOrSnippetDropdownOpen] = useState(false);
   const [isSyncGitRepositoryDropdownOpen, setSyncGitRepositoryDropdownOpen] = useState(false);
+  const [isAcceleratorsDropdownOpen, setAcceleratorsDropdownOpen] = useState(false);
   const [isLargeKebabOpen, setLargeKebabOpen] = useState(false);
   const [isSmallKebabOpen, setSmallKebabOpen] = useState(false);
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
@@ -120,6 +124,7 @@ export function EditorToolbarContextProvider(props: Props) {
       isShareDropdownOpen,
       isSyncGistOrSnippetDropdownOpen,
       isSyncGitRepositoryDropdownOpen,
+      isAcceleratorsDropdownOpen,
       isLargeKebabOpen,
       isSmallKebabOpen,
       isNewFileDropdownMenuOpen,
@@ -127,6 +132,7 @@ export function EditorToolbarContextProvider(props: Props) {
       downloadAllRef,
       downloadPreviewRef,
       downloadWorkspaceZip,
+      workspace: props.workspace,
     }),
     [
       isCreateGistOrSnippetModalOpen,
@@ -138,7 +144,9 @@ export function EditorToolbarContextProvider(props: Props) {
       isSmallKebabOpen,
       isSyncGistOrSnippetDropdownOpen,
       isSyncGitRepositoryDropdownOpen,
+      isAcceleratorsDropdownOpen,
       downloadWorkspaceZip,
+      props.workspace,
     ]
   );
 
@@ -153,6 +161,7 @@ export function EditorToolbarContextProvider(props: Props) {
       setLargeKebabOpen,
       setSmallKebabOpen,
       setNewFileDropdownMenuOpen,
+      setAcceleratorsDropdownOpen,
     }),
     []
   );

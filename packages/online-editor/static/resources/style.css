@@ -647,3 +647,58 @@ section.kie-tools--settings-tab {
 .pf-c-menu__item-description {
   word-break: normal !important;
 }
+
+/* FilesMenu */
+
+.kie-sandbox--files-menu .kie-sandbox--files-menu--label {
+  --kie-sandbox--files-menu--title-padding: var(--pf-global--spacer--md);
+  padding-left: var(--kie-sandbox--files-menu--title-padding);
+  padding-right: var(--kie-sandbox--files-menu--title-padding);
+}
+
+.kie-sandbox--files-menu .pf-c-menu__group-title {
+  display: none;
+}
+
+/* FileSwitcher menu items display mode */
+.kie-tools--file-list-item-enabled a,
+.kie-tools--file-list-item-deleted a,
+.kie-tools--file-list-item-readonly a {
+  text-decoration: none;
+  color: var(--pf-global--Color--100);
+}
+
+.kie-tools--file-list-item-enabled {
+  cursor: pointer;
+}
+.kie-tools--file-list-item-enabled:hover .pf-c-content {
+  text-decoration: underline;
+}
+.kie-tools--file-list-item-deleted {
+  cursor: not-allowed;
+}
+
+.kie-tools--file-list-item-readonly:hover {
+  cursor: default;
+}
+
+/* GitStatusIndicator, GitStatusIndicatorActions */
+/* GitStatusIndicatorActions hoverable */
+.kie-tools--git-status-indicator-children-hoverable {
+  visibility: hidden;
+}
+.kie-tools--git-status-indicator:hover .kie-tools--git-status-indicator-children-hoverable {
+  visibility: visible;
+}
+/* GitStatusIndicatorActions popover render */
+
+/* remove padding so that inline alert fills whole popover */
+.kie-tools--git-status-indicator__popover-no-padding > .pf-c-popover__content,
+.kie-tools--git-status-indicator__popover-no-padding > .pf-c-popover__content > .pf-c-popover__body {
+  padding: 0;
+}
+.kie-sandbox--files-menu .kie-tools--git-status-indicator button {
+  /* For the padding not to mess with surrounding layout */
+  margin-top: -4px;
+  margin-bottom: -4px;
+}

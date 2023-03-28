@@ -140,7 +140,7 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
     @Override
     public void lookupDataSet(DataSetDef def, DataSetLookup lookup, DataSetReadyCallback listener) throws Exception {
         var clientDataSet = clientDataSetManager.lookupDataSet(lookup);
-        if (clientDataSet != null) {
+        if (!isAccumulate(lookup.getDataSetUUID()) && clientDataSet != null) {
             listener.callback(clientDataSet);
             return;
         }
@@ -151,7 +151,7 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
 
                     @Override
                     public boolean onError(ClientRuntimeError error) {
-                        if (loader.isEditor() || loader.isClient() ) {
+                        if (loader.isEditor() || loader.isClient()) {
                             listener.onError(error);
                         } else {
                             DomGlobal.console.debug("Error retrieving dataset from client, trying from backend");
@@ -170,6 +170,10 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
                         listener.callback(dataSet);
                     }
                 });
+    }
+
+    private boolean isAccumulate(String uuid) {
+        return externalDataSetClientProvider.get(uuid).map(def -> def.isAccumulate()).orElse(false);
     }
 
     @Override

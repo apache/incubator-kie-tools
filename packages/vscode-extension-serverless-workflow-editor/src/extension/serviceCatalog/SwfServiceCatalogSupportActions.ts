@@ -51,11 +51,24 @@ export class SwfServiceCatalogSupportActions {
       baseFileAbsolutePosixPath: vscode.Uri.parse(args.documentUri).path,
     });
 
+    const routesDirAbsolutePosixPath = this.args.configuration.getInterpolatedRoutesDirAbsolutePosixPath({
+      baseFileAbsolutePosixPath: vscode.Uri.parse(args.documentUri).path,
+    });
+
     const serviceFileAbsolutePosixPath = posixPath.join(specsDirAbsolutePosixPath, serviceFileName);
+
+    const routesServiceFileAbsolutePosixPath = posixPath.join(routesDirAbsolutePosixPath, serviceFileName);
     vscode.workspace.fs.writeFile(
       vscode.Uri.parse(serviceFileAbsolutePosixPath),
       encoder.encode(args.containingService.rawContent)
     );
-    vscode.window.showInformationMessage(`Wrote ${serviceFileAbsolutePosixPath}.`);
+
+    vscode.workspace.fs.writeFile(
+      vscode.Uri.parse(routesServiceFileAbsolutePosixPath),
+      encoder.encode(args.containingService.rawContent)
+    );
+    vscode.window.showInformationMessage(
+      `Wrote ${serviceFileAbsolutePosixPath} and ${routesServiceFileAbsolutePosixPath}.`
+    );
   }
 }

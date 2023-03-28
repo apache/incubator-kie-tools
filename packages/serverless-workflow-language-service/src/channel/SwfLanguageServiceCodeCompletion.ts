@@ -18,6 +18,7 @@ import {
   SwfServiceCatalogFunction,
   SwfCatalogSourceType,
   SwfServiceCatalogService,
+  SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import {
@@ -149,13 +150,6 @@ function getStateNameCompletion(
       }),
     ];
   });
-}
-
-function validateFunction(serviceCatalogFunction: SwfServiceCatalogFunction) {
-  if (isVirtualRegistry(serviceCatalogFunction)) {
-    return true;
-  }
-  return !(serviceCatalogFunction.name === undefined);
 }
 
 function extractFunctionsPath(functionsNode: SwfLsNode[]) {
@@ -449,13 +443,21 @@ export const SwfLanguageServiceCodeCompletion = {
     const existingFunctionOperations = swfModelQueries.getFunctions(args.rootNode).map((f) => f.operation);
 
     const specsDir = await args.langServiceConfig.getSpecsDirPosixPaths(args.document);
+    const routesDir = await args.langServiceConfig.getRoutesDirPosixPaths(args.document);
 
-    const result = args.swfCompletionItemServiceCatalogServices.flatMap((swfServiceCatalogService) =>
-      swfServiceCatalogService.functions
+    const result = args.swfCompletionItemServiceCatalogServices.flatMap((swfServiceCatalogService) => {
+      let dirRelativePosixPath: string;
+
+      if (swfServiceCatalogService.type === SwfServiceCatalogServiceType.camelroute) {
+        dirRelativePosixPath = routesDir.routesDirRelativePosixPath;
+      } else {
+        dirRelativePosixPath = specsDir.specsDirRelativePosixPath;
+      }
+
+      return swfServiceCatalogService.functions
         .filter(
           (swfServiceCatalogFunc) =>
-            !existingFunctionOperations.includes(swfServiceCatalogFunc.operation) &&
-            validateFunction(swfServiceCatalogFunc)
+            swfServiceCatalogFunc.name && !existingFunctionOperations.includes(swfServiceCatalogFunc.operation)
         )
         .map((swfServiceCatalogFunc) => {
           const swfFunction: Omit<Specification.Function, "normalize"> = {
@@ -478,7 +480,7 @@ export const SwfLanguageServiceCodeCompletion = {
               : CompletionItemKind.Reference;
 
           const label = args.codeCompletionStrategy.formatLabel(
-            toCompletionItemLabelPrefix(swfServiceCatalogFunc, specsDir.specsDirRelativePosixPath),
+            toCompletionItemLabelPrefix(swfServiceCatalogFunc, dirRelativePosixPath),
             kind
           );
 
@@ -499,8 +501,8 @@ export const SwfLanguageServiceCodeCompletion = {
               },
             },
           });
-        })
-    );
+        });
+    });
 
     const genericFunctionCompletion = createCompletionItem({
       ...args,

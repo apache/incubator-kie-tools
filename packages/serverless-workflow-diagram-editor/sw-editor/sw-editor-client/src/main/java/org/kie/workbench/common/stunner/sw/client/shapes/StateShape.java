@@ -24,7 +24,6 @@ import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOption
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.HasShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
-import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -165,7 +164,7 @@ public class StateShape extends ServerlessWorkflowShape<StateShapeView> implemen
 
     public NodeMouseExitHandler getExitHandler() {
         return event -> {
-            if (getShapeStateHandler().getShapeState() == SELECTED) {
+            if (getShapeView().getShapeState() == SELECTED) {
                 return;
             }
 
@@ -174,13 +173,9 @@ public class StateShape extends ServerlessWorkflowShape<StateShapeView> implemen
                 return;
             }
 
-            getShapeStateHandler().applyState(NONE);
+            getShapeView().applyState(NONE);
             shapeView.batch();
         };
-    }
-
-    protected ShapeStateHandler getShapeStateHandler() {
-        return getView().getShapeStateHandler();
     }
 
     protected boolean isInsideOfTheState(double x, double y) {

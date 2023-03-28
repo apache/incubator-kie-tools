@@ -454,6 +454,26 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
         assertThat(jsHelper.getDimension(nodeIds.get(1))).isEqualTo(dimension);
     }
 
+    @Test
+    public void testPreserveColorAfterStateChange() throws Exception {
+        String resource = "LoanBroker.sw.json";
+        final String expected = loadResource(resource);
+        setContent(expected);
+        waitCanvasPanel();
+
+        List<String> nodeIds = jsHelper.getNodeIds();
+        String nodeId = nodeIds.get(1);
+        jsHelper.setBackgroundColor(nodeId, "red");
+        assertThat(jsHelper.getGetBackgroundColor(nodeId)).isEqualTo("red");
+        jsHelper.draw();
+
+        jsHelper.applyState(nodeId, "selected");
+        assertThat(jsHelper.getGetBackgroundColor(nodeId)).isEqualTo("#E7F1FA");
+        jsHelper.applyState(nodeId, "none");
+
+        assertThat(jsHelper.getGetBackgroundColor(nodeId)).isEqualTo("red");
+    }
+
     private void testExample(String exampleName) throws Exception {
         final String expected = loadResource(exampleName);
         setContent(expected);
