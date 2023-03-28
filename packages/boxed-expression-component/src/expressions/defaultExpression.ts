@@ -174,9 +174,9 @@ export function getDefaultExpressionDefinitionByLogicType(
         {
           id: generateUuid(),
           cells: [
-            RELATION_EXPRESSION_DEFAULT_VALUE,
-            RELATION_EXPRESSION_DEFAULT_VALUE,
-            RELATION_EXPRESSION_DEFAULT_VALUE,
+            { id: generateUuid(), content: RELATION_EXPRESSION_DEFAULT_VALUE },
+            { id: generateUuid(), content: RELATION_EXPRESSION_DEFAULT_VALUE },
+            { id: generateUuid(), content: RELATION_EXPRESSION_DEFAULT_VALUE },
           ],
         },
       ],
@@ -231,11 +231,11 @@ export function getDefaultExpressionDefinitionByLogicType(
       rules: [
         {
           id: generateUuid(),
-          inputEntries: [DECISION_TABLE_INPUT_DEFAULT_VALUE, DECISION_TABLE_INPUT_DEFAULT_VALUE],
+          inputEntries: [{ id: generateUuid(), content: DECISION_TABLE_INPUT_DEFAULT_VALUE }],
           outputEntries: [
-            DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
-            DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
-            DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+                    { id: generateUuid(), content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE },
+                    { id: generateUuid(), content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE },
+                    { id: generateUuid(), content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE },
           ],
           annotationEntries: ["// Your annotations here"],
         },

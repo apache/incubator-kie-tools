@@ -137,7 +137,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   }, [literalExpression.dataType, literalExpression.name, literalExpression.width, minWidth, setWidth]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
-    return [{ "literal-expression": literalExpression.content ?? "" }];
+    return [{ "literal-expression": { content: literalExpression.content ?? "", id: literalExpression.id } }];
   }, [literalExpression]);
 
   const beeTableHeaderVisibility = useMemo(() => {

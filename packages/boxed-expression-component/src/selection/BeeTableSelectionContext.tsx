@@ -227,13 +227,6 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
     return coincides(parentActiveCell, containerCellCoordinates) && isParentSelectionThere;
   }, [containerCellCoordinates, isParentSelectionThere, parentActiveCell]);
 
-  // FIXME: Tiago -> Missing UUID.
-  // useEffect(() => {
-  //   if (isSelectionHere) {
-  //     beeGwtService?.selectObject();
-  //   }
-  // }, [beeGwtService, isSelectionHere]);
-
   const selection = useMemo(() => {
     if (depth === activeDepth && isSelectionHere) {
       return _selection;

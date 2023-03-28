@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,14 @@ package org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props;
 import jsinterop.annotations.JsType;
 
 @JsType
-public class Row {
+public class RuleEntry {
 
     public final String id;
-    public final Cell[] cells;
+    public final String content;
 
-    public Row(final String id, final Cell[] cells) {
+    public RuleEntry(final String id,
+                     final String content) {
         this.id = id;
-        this.cells = cells;
+        this.content = content;
     }
 }

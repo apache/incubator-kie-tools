@@ -39,6 +39,7 @@ import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Annotation;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Cell;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Clause;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Column;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextEntryProps;
@@ -56,6 +57,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PmmlFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RuleEntry;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -143,12 +145,12 @@ public class ExpressionModelFillerTest {
         final String secondColumnName = "Another Column Name";
         final String secondColumnDataType = BuiltInType.DATE.asQName().getLocalPart();
         final double secondColumnWidth = 315d;
-        final String firstCell = "first cell";
-        final String secondCell = "second cell";
-        final String thirdCell = "third cell";
-        final String fourthCell = "fourth cell";
+        final Cell firstCell = new Cell("firstCellId", "first cell");
+        final Cell secondCell = new Cell("secondCellId", "second cell");
+        final Cell thirdCell = new Cell("thirdCellId", "third cell");
+        final Cell fourthCell = new Cell("fourthCellId", "fourth cell");
         final Column[] columns = new Column[]{new Column(firstColumnId, firstColumnName, firstColumnDataType, firstColumnWidth), new Column(secondColumnId, secondColumnName, secondColumnDataType, secondColumnWidth)};
-        final Row[] rows = new Row[]{new Row("first-row", new String[]{firstCell, secondCell}), new Row("second-id", new String[]{thirdCell, fourthCell})};
+        final Row[] rows = new Row[]{new Row("first-row", new Cell[]{firstCell, secondCell}), new Row("second-id", new Cell[]{thirdCell, fourthCell})};
         final RelationProps relationProps = new RelationProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, columns, rows);
 
         ExpressionModelFiller.fillRelationExpression(relationExpression, relationProps, qName -> qName);
@@ -306,7 +308,7 @@ public class ExpressionModelFillerTest {
         final String inputValue = "input value";
         final String outputValue = "output value";
         final String annotationValue = "annotation value";
-        DecisionTableRule[] rules = new DecisionTableRule[]{new DecisionTableRule("rule-1", new String[]{inputValue}, new String[]{outputValue}, new String[]{annotationValue})};
+        DecisionTableRule[] rules = new DecisionTableRule[]{new DecisionTableRule("rule-1", new RuleEntry[]{new RuleEntry("someId", inputValue)}, new RuleEntry[]{new RuleEntry("anotherId", outputValue)}, new String[]{annotationValue})};
         final DecisionTableProps decisionTableProps = new DecisionTableProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, HitPolicy.COLLECT.value(), BuiltinAggregator.MAX.getCode(), annotations, input, output, rules);
 
         ExpressionModelFiller.fillDecisionTableExpression(decisionTableExpression, decisionTableProps, qName -> qName);
@@ -375,7 +377,7 @@ public class ExpressionModelFillerTest {
         assertThat(componentWidths).element(2).isEqualTo(ENTRY_EXPRESSION_WIDTH);
     }
 
-    private Consumer<List> checkRelationRow(final String firstCell, final String secondCell) {
+    private Consumer<List> checkRelationRow(final Cell firstCell, final Cell secondCell) {
         return param -> {
             assertThat(param).extracting(list -> list.getExpression().size()).isEqualTo(2);
             assertThat(param).extracting(list -> list.getExpression().get(0).getExpression()).isExactlyInstanceOf(LiteralExpression.class);
@@ -403,7 +405,6 @@ public class ExpressionModelFillerTest {
                     assertThat(param.getTypeRef().getLocalPart()).isEqualTo(PARAM_DATA_TYPE);
                 });
     }
-
 
     private void assertParameterWidth(FunctionDefinition functionExpression) {
         assertThat(functionExpression.getComponentWidths())

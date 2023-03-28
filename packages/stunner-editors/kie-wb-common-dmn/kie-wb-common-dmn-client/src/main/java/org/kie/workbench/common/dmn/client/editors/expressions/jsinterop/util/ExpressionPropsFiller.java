@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Annotation;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Cell;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Clause;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Column;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextEntryProps;
@@ -56,6 +57,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PmmlFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RuleEntry;
 
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.UNDEFINED;
 
@@ -135,10 +137,13 @@ public class ExpressionPropsFiller {
                 .getRow()
                 .stream()
                 .map(list -> {
-                         final String[] cells = list
+                         final Cell[] cells = list
                                  .getExpression()
                                  .stream()
-                                 .map(wrappedLiteralExpression -> ((LiteralExpression) wrappedLiteralExpression.getExpression()).getText().getValue()).toArray(String[]::new);
+                                 .map(wrappedLiteralExpression -> new Cell(wrappedLiteralExpression.getExpression().getId().getValue(),
+                                                                           ((LiteralExpression) wrappedLiteralExpression.getExpression()).getText().getValue())
+                                 )
+                                 .toArray(Cell[]::new);
                          return new Row(list.getId().getValue(), cells);
                      }
                 )
@@ -249,8 +254,10 @@ public class ExpressionPropsFiller {
                 .stream()
                 .map(rule -> new DecisionTableRule(
                         rule.getId().getValue(),
-                        rule.getInputEntry().stream().map(inputEntry -> inputEntry.getText().getValue()).toArray(String[]::new),
-                        rule.getOutputEntry().stream().map(outputEntry -> outputEntry.getText().getValue()).toArray(String[]::new),
+                        rule.getInputEntry().stream().map(inputEntry -> new RuleEntry(inputEntry.getDomainObjectUUID(),
+                                                                                      inputEntry.getText().getValue())).toArray(RuleEntry[]::new),
+                        rule.getOutputEntry().stream().map(outputEntry -> new RuleEntry(outputEntry.getDomainObjectUUID(),
+                                                                                        outputEntry.getText().getValue())).toArray(RuleEntry[]::new),
                         rule.getAnnotationEntry().stream().map(annotationClauseText -> annotationClauseText.getText().getValue()).toArray(String[]::new)))
                 .toArray(DecisionTableRule[]::new);
     }

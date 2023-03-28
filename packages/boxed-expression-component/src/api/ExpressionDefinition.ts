@@ -52,7 +52,14 @@ export interface RelationExpressionDefinitionRow {
   /** Row identifier */
   id: string;
   /** Cells */
-  cells: string[];
+  cells: RelationExpressionDefinitionCell[];
+}
+
+export interface RelationExpressionDefinitionCell {
+  /** Relation identifier */
+  id: string;
+  /** The content of the relation */
+  content: string;
 }
 
 export interface RelationExpressionDefinitionColumn {
@@ -149,13 +156,20 @@ export interface DecisionTableExpressionDefinitionAnnotation {
   width: number | undefined;
 }
 
+export interface DecisionTableExpressionDefinitionRuleEntry {
+  /** Clause identifier */
+  id: string;
+  /** The content of the clause */
+  content: string;
+}
+
 export interface DecisionTableExpressionDefinitionRule {
   /** Rule identifier */
   id: string;
   /** Values for the input columns */
-  inputEntries: string[];
+  inputEntries: DecisionTableExpressionDefinitionRuleEntry[];
   /** Values for the output columns */
-  outputEntries: string[];
+  outputEntries: DecisionTableExpressionDefinitionRuleEntry[];
   /** Values for the annotation columns */
   annotationEntries: string[];
 }

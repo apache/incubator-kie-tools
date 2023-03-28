@@ -54,6 +54,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QNameHolder;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Annotation;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Cell;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Clause;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Column;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextEntryProps;
@@ -72,6 +73,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.P
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
+import org.kie.workbench.common.stunner.core.util.UUID;
 
 import static org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocument.VARIABLE_DOCUMENT;
 import static org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocumentModel.VARIABLE_MODEL;
@@ -237,9 +239,10 @@ public class ExpressionModelFiller {
                     list.setId(new Id(row.id));
                     list.getExpression().addAll(
                             IntStream.range(0, Optional.ofNullable(relationProps.columns).orElse(new Column[0]).length).mapToObj(columnIndex -> {
-                                final String cell = row.cells.length <= columnIndex ? "" : row.cells[columnIndex];
+                                final Cell cell = row.cells.length <= columnIndex ? new Cell(UUID.uuid(), "") : row.cells[columnIndex];
                                 final LiteralExpression wrappedExpression = new LiteralExpression();
-                                wrappedExpression.setText(new Text(cell));
+                                wrappedExpression.setText(new Text(cell.content));
+                                wrappedExpression.setId(new Id(cell.id));
                                 return HasExpression.wrap(list, wrappedExpression);
                             }).collect(Collectors.toList())
                     );
@@ -360,12 +363,14 @@ public class ExpressionModelFiller {
                     }).collect(Collectors.toList()));
                     decisionRule.getOutputEntry().addAll(Arrays.stream(rule.outputEntries).map(outputEntry -> {
                         final LiteralExpression literalExpression = new LiteralExpression();
-                        literalExpression.setText(new Text(outputEntry));
+                        literalExpression.setText(new Text(outputEntry.content));
+                        literalExpression.setId(new Id(outputEntry.id));
                         return literalExpression;
                     }).collect(Collectors.toList()));
                     decisionRule.getInputEntry().addAll(Arrays.stream(rule.inputEntries).map(inputEntry -> {
                         final UnaryTests unaryTests = new UnaryTests();
-                        unaryTests.setText(new Text(inputEntry));
+                        unaryTests.setText(new Text(inputEntry.content));
+                        unaryTests.setId(new Id(inputEntry.id));
                         return unaryTests;
                     }).collect(Collectors.toList()));
                     return decisionRule;

@@ -21,9 +21,11 @@ import {
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
+  BeeTableProps,
   DecisionTableExpressionDefinition,
   DecisionTableExpressionDefinitionBuiltInAggregation,
   DecisionTableExpressionDefinitionHitPolicy,
+  DecisionTableExpressionDefinitionRuleEntry,
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
@@ -45,6 +47,7 @@ import {
   BeeTable,
   BeeTableCellUpdate,
   BeeTableColumnUpdate,
+  BeeTableEditableCellContent,
   BeeTableRef,
   getColumnsAtLastLevel,
 } from "../../table/BeeTable";
@@ -313,13 +316,19 @@ export function DecisionTableExpression(
           switch (groupType) {
             case DecisionTableColumnType.InputClause:
               const newInputEntries = [...newRules[u.rowIndex].inputEntries];
-              newInputEntries[u.columnIndex] = u.value;
+              newInputEntries[u.columnIndex] = {
+                id: generateUuid(),
+                content: u.value,
+              };
               newRules[u.rowIndex].inputEntries = newInputEntries;
               n.rules = newRules;
               break;
             case DecisionTableColumnType.OutputClause:
               const newOutputEntries = [...newRules[u.rowIndex].outputEntries];
-              newOutputEntries[u.columnIndex - (prev.input?.length ?? 0)] = u.value;
+              newOutputEntries[u.columnIndex - (prev.input?.length ?? 0)] = {
+                id: generateUuid(),
+                content: u.value,
+              };
               newRules[u.rowIndex].outputEntries = newOutputEntries;
               n.rules = newRules;
               break;
@@ -443,8 +452,18 @@ export function DecisionTableExpression(
         const newRules = [...(prev.rules ?? [])];
         newRules.splice(args.beforeIndex, 0, {
           id: generateUuid(),
-          inputEntries: Array.from(new Array(prev.input?.length ?? 0)).map(() => DECISION_TABLE_INPUT_DEFAULT_VALUE),
-          outputEntries: Array.from(new Array(prev.output?.length ?? 0)).map(() => DECISION_TABLE_OUTPUT_DEFAULT_VALUE),
+          inputEntries: Array.from(new Array(prev.input?.length ?? 0)).map(() => {
+            return {
+              id: generateUuid(),
+              content: DECISION_TABLE_INPUT_DEFAULT_VALUE,
+            };
+          }),
+          outputEntries: Array.from(new Array(prev.output?.length ?? 0)).map(() => {
+            return {
+              id: generateUuid(),
+              content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+            };
+          }),
           annotationEntries: Array.from(new Array(prev.annotations?.length ?? 0)).map(
             () => DECISION_TABLE_ANNOTATION_DEFAULT_VALUE
           ),
@@ -499,7 +518,12 @@ export function DecisionTableExpression(
               width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
             });
 
-            newRules.forEach((r) => r.inputEntries.splice(sectionIndex, 0, DECISION_TABLE_INPUT_DEFAULT_VALUE));
+            newRules.forEach((r) =>
+              r.inputEntries.splice(sectionIndex, 0, {
+                id: generateUuid(),
+                content: DECISION_TABLE_INPUT_DEFAULT_VALUE,
+              })
+            );
 
             return {
               ...prev,
@@ -515,7 +539,12 @@ export function DecisionTableExpression(
               width: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
             });
 
-            newRules.forEach((r) => r.outputEntries.splice(sectionIndex, 0, DECISION_TABLE_OUTPUT_DEFAULT_VALUE));
+            newRules.forEach((r) =>
+              r.outputEntries.splice(sectionIndex, 0, {
+                id: generateUuid(),
+                content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+              })
+            );
 
             return {
               ...prev,

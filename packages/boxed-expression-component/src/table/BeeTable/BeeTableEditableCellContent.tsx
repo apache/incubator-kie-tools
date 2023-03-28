@@ -62,7 +62,6 @@ export function BeeTableEditableCellContent({
   const [preview, setPreview] = useState<string>(value);
   const [previousValue, setPreviousValue] = useState(value);
   const [editingValue, setEditingValue] = useState(value);
-
   const feelInputRef = useRef<FeelInputRef>(null);
 
   const mode = useMemo(() => {

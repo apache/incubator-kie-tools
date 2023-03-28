@@ -26,6 +26,7 @@ import {
   generateUuid,
   getNextAvailablePrefixedName,
   RelationExpressionDefinition,
+  RelationExpressionDefinitionCell,
   RelationExpressionDefinitionColumn,
   RelationExpressionDefinitionRow,
 } from "../../api";
@@ -144,7 +145,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
       rows.map((row) => {
         const beeTableRow = columns.reduce(
           (tableRow, column, columnIndex) => {
-            (tableRow as any)[column.id] = row.cells[columnIndex] || "";
+            (tableRow as any)[column.id] = row.cells[columnIndex] || { id: generateUuid(), content: "" };
             return tableRow;
           },
           { id: row.id } as ROWTYPE
@@ -162,7 +163,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
           const newRows = [...(n.rows ?? [])];
 
           const newCells = [...newRows[u.rowIndex].cells];
-          newCells[u.columnIndex] = u.value;
+          newCells[u.columnIndex] = { id: generateUuid(), content: u.value };
 
           newRows[u.rowIndex] = {
             ...newRows[u.rowIndex],
@@ -214,7 +215,9 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         const newRows = [...(prev.rows ?? [])];
         newRows.splice(args.beforeIndex, 0, {
           id: generateUuid(),
-          cells: Array.from(new Array(prev.columns?.length ?? 0)).map(() => ""),
+          cells: Array.from(new Array(prev.columns?.length ?? 0)).map(() => {
+            return { id: generateUuid(), content: RELATION_EXPRESSION_DEFAULT_VALUE };
+          }),
         });
 
         return {
@@ -239,7 +242,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
 
         const newRows = [...(prev.rows ?? [])].map((row) => {
           const newCells = [...row.cells];
-          newCells.splice(args.beforeIndex, 0, RELATION_EXPRESSION_DEFAULT_VALUE);
+          newCells.splice(args.beforeIndex, 0, { id: generateUuid(), content: RELATION_EXPRESSION_DEFAULT_VALUE });
           return {
             ...row,
             cells: newCells,
