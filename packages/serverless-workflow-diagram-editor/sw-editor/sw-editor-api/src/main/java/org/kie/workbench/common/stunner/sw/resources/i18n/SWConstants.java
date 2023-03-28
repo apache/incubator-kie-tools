@@ -57,4 +57,14 @@ public interface SWConstants {
     String DATA_FILTER_INPUT = "Datafilter.input";
     @TranslationKey(defaultValue = "")
     String DATA_FILTER_OUTPUT = "Datafilter.output";
+
+    @TranslationKey(defaultValue = "")
+    String BRANCHES_NOT_DEFINED = "Branches.null";
+    @TranslationKey(defaultValue = "")
+    String BRANCH = "Branch.title";
+
+    @TranslationKey(defaultValue = "")
+    String ENUM_ATLEAST = "Enum.atleast";
+    @TranslationKey(defaultValue = "")
+    String ENUM_ALLOF = "Enum.allof";
 }
