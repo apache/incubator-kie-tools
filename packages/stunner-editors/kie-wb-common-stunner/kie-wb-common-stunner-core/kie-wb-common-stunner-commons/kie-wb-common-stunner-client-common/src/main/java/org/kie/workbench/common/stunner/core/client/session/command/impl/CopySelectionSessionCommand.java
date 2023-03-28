@@ -171,10 +171,10 @@ public class CopySelectionSessionCommand extends AbstractSelectionAwareSessionCo
     }-*/;
 
     private double[] getCoordinates(List<Element> elements, boolean max) {
-        List<Double> xCoordinates = new ArrayList<>();
-        List<Double> yCoordinates = new ArrayList<>();
-        elements.forEach((element) -> xCoordinates.add(GraphUtils.getComputedPosition(element.asNode()).getX()));
-        elements.forEach((element) -> yCoordinates.add(GraphUtils.getComputedPosition(element.asNode()).getY()));
+        List<Double> xCoordinates = elements.stream().map((element) ->
+                GraphUtils.getComputedPosition(element.asNode()).getX()).collect(Collectors.toList());
+        List<Double> yCoordinates = elements.stream().map((element) ->
+                GraphUtils.getComputedPosition(element.asNode()).getY()).collect(Collectors.toList());
         return max ? new double[]{Collections.max(xCoordinates), Collections.max(yCoordinates)}
                 : new double[]{Collections.min(xCoordinates), Collections.min(yCoordinates)};
     }
