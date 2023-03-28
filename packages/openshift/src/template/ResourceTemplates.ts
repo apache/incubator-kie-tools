@@ -182,8 +182,8 @@ export const INGRESS_TEMPLATE = (args: CommonTemplateArgs): IngressDescriptor =>
       ...runtimeLabels(),
     },
     annotations: {
-      "nginx.ingress.kubernetes.io/rewrite-target": "/$2",
-      // "nginx.ingress.kubernetes.io/ssl-redirect": "false",
+      // "nginx.ingress.kubernetes.io/rewrite-target": "/$2",
+      "nginx.ingress.kubernetes.io/ssl-redirect": "false",
       "nginx.ingress.kubernetes.io/backend-protocol": "HTTP",
     },
   },
