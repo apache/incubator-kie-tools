@@ -25,6 +25,7 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/api/ExpressionDefinition";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api/DmnBuiltInDataType";
 import { ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api/ExpressionDefinitionLogicType";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function generateDecisionExpressionDefinition(element: Element): ExpressionDefinition {
   const decisionType = element.logic.type;
@@ -71,8 +72,8 @@ function generateDecisionTableRule(
     decisionTableRules.push({
       annotationEntries: [""],
       id: index.toString(),
-      inputEntries: rule.slice(0, l),
-      outputEntries: rule.slice(l),
+      inputEntries: rule.slice(0, l).map((c) => ({ id: generateUuid(), content: c })),
+      outputEntries: rule.slice(l).map((c) => ({ id: generateUuid(), content: c })),
     });
     index++;
   });
