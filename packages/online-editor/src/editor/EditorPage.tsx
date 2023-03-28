@@ -112,7 +112,7 @@ export function EditorPage(props: Props) {
     history.replace({
       pathname: routes.workspaceWithFilePath.path({
         workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
-        fileRelativePath: workspaceFilePromise.data.workspaceFile.nameWithoutExtension,
+        fileRelativePath: workspaceFilePromise.data.workspaceFile.relativePathWithoutExtension,
         extension: workspaceFilePromise.data.workspaceFile.extension,
       }),
       search: queryParams.toString(),
@@ -330,7 +330,7 @@ export function EditorPage(props: Props) {
       history.push({
         pathname: routes.workspaceWithFilePath.path({
           workspaceId: file.workspaceId,
-          fileRelativePath: file.nameWithoutExtension,
+          fileRelativePath: file.relativePathWithoutExtension,
           extension: file.extension,
         }),
       });

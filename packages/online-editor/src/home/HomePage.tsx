@@ -321,7 +321,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                 history.push({
                   pathname: routes.workspaceWithFilePath.path({
                     workspaceId: editableFiles[0].workspaceId,
-                    fileRelativePath: editableFiles[0].nameWithoutExtension,
+                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
                     extension: editableFiles[0].extension,
                   }),
                 });

@@ -358,7 +358,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                   history.push({
                     pathname: routes.workspaceWithFilePath.path({
                       workspaceId: editableFiles[0].workspaceId,
-                      fileRelativePath: editableFiles[0].nameWithoutExtension,
+                      fileRelativePath: editableFiles[0].relativePathWithoutExtension,
                       extension: editableFiles[0].extension,
                     }),
                   });
@@ -368,7 +368,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                   <Link
                     to={routes.workspaceWithFilePath.path({
                       workspaceId: editableFiles[0].workspaceId,
-                      fileRelativePath: editableFiles[0].nameWithoutExtension,
+                      fileRelativePath: editableFiles[0].relativePathWithoutExtension,
                       extension: editableFiles[0].extension,
                     })}
                   >
@@ -642,7 +642,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                     key={file.relativePath}
                     to={routes.workspaceWithFilePath.path({
                       workspaceId: workspace.descriptor.workspaceId ?? "",
-                      fileRelativePath: file.nameWithoutExtension,
+                      fileRelativePath: file.relativePathWithoutExtension,
                       extension: file.extension,
                     })}
                   >
@@ -663,7 +663,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                         key={file.relativePath}
                         to={routes.workspaceWithFilePath.path({
                           workspaceId: workspace.descriptor.workspaceId ?? "",
-                          fileRelativePath: file.nameWithoutExtension,
+                          fileRelativePath: file.relativePathWithoutExtension,
                           extension: file.extension,
                         })}
                       >

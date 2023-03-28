@@ -158,7 +158,7 @@ export function EditorToolbarWithWorkspace(
     history.push({
       pathname: routes.workspaceWithFilePath.path({
         workspaceId: nextFile.workspaceId,
-        fileRelativePath: nextFile.nameWithoutExtension,
+        fileRelativePath: nextFile.relativePathWithoutExtension,
         extension: nextFile.extension,
       }),
     });
@@ -338,7 +338,7 @@ export function EditorToolbarWithWorkspace(
                           history.push({
                             pathname: routes.workspaceWithFilePath.path({
                               workspaceId: file.workspaceId,
-                              fileRelativePath: file.nameWithoutExtension,
+                              fileRelativePath: file.relativePathWithoutExtension,
                               extension: file.extension,
                             }),
                           });

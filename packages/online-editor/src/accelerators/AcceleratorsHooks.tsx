@@ -316,7 +316,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         history.replace({
           pathname: routes.workspaceWithFilePath.path({
             extension: currentFileAfterAccelerator.extension,
-            fileRelativePath: currentFileAfterAccelerator.nameWithoutExtension,
+            fileRelativePath: currentFileAfterAccelerator.relativePathWithoutExtension,
             workspaceId,
           }),
         });
@@ -356,7 +356,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         history.replace({
           pathname: routes.workspaceWithFilePath.path({
             extension: currentFile.extension,
-            fileRelativePath: currentFile.nameWithoutExtension,
+            fileRelativePath: currentFile.relativePathWithoutExtension,
             workspaceId,
           }),
         });

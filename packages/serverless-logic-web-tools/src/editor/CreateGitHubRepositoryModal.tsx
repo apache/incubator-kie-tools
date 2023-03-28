@@ -185,7 +185,7 @@ export function CreateGitHubRepositoryModal(props: {
         history.replace({
           pathname: routes.workspaceWithFilePath.path({
             workspaceId: props.workspace.descriptor.workspaceId,
-            fileRelativePath: currentFileAfterMoving.nameWithoutExtension,
+            fileRelativePath: currentFileAfterMoving.relativePathWithoutExtension,
             extension: currentFileAfterMoving.extension,
           }),
         });

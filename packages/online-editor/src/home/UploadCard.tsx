@@ -124,7 +124,7 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
         history.push({
           pathname: routes.workspaceWithFilePath.path({
             workspaceId: workspace.workspaceId,
-            fileRelativePath: suggestedFirstFile.nameWithoutExtension,
+            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
             extension: suggestedFirstFile.extension,
           }),
         });
