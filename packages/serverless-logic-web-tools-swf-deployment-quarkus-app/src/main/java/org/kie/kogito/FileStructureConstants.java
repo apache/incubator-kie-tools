@@ -23,7 +23,11 @@ public interface FileStructureConstants {
     String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
 
     String WORK_FOLDER = "/tmp/serverless-logic";
-    String UNZIP_FOLDER = Paths.get(FileStructureConstants.WORK_FOLDER, "unzip").toString();
+    String BACKUP_FOLDER = Paths.get(WORK_FOLDER, "backup").toString();
+    String UNZIP_FOLDER = Paths.get(WORK_FOLDER, "unzip").toString();
     String PROJECT_RESOURCES_FOLDER = "src/main/resources";
-    String APPLICATION_PROPERTIES_FILE_PATH = Paths.get(FileStructureConstants.PROJECT_RESOURCES_FOLDER, APPLICATION_PROPERTIES_FILE_NAME).toString();
+
+    String APPLICATION_PROPERTIES_FILE_PATH = Paths.get(PROJECT_RESOURCES_FOLDER, APPLICATION_PROPERTIES_FILE_NAME).toString();
+    String BACKUP_APPLICATION_PROPERTIES_FILE_PATH = Paths.get(BACKUP_FOLDER, APPLICATION_PROPERTIES_FILE_NAME).toString();
+    String UPLOADED_ZIP_FILE_PATH = Paths.get(UNZIP_FOLDER, UPLOADED_ZIP_FILE).toString();
 }

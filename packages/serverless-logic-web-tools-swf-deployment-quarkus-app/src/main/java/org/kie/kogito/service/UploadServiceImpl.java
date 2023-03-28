@@ -42,10 +42,10 @@ public class UploadServiceImpl implements UploadService {
     @Override
     public void upload(final InputStream inputStream) {
         LOGGER.info("Upload files ...");
-        final Path zipPath = Paths.get(FileStructureConstants.WORK_FOLDER,
-                FileStructureConstants.UPLOADED_ZIP_FILE);
+        final Path zipPath = Paths.get(FileStructureConstants.UPLOADED_ZIP_FILE_PATH);
         try {
             Files.copy(inputStream, zipPath, StandardCopyOption.REPLACE_EXISTING);
+
             final List<String> unzippedFilePaths = zipService.unzip(zipPath.toString(),
                     FileStructureConstants.UNZIP_FOLDER);
             final List<String> validFilePaths = fileService.validateFiles(unzippedFilePaths);
@@ -55,30 +55,39 @@ public class UploadServiceImpl implements UploadService {
                 return;
             }
 
-            LOGGER.info("Uploading " + validFilePaths.size() + " validated file(s).");
-
-            var blockList = new ArrayList<FileType>();
-            blockList.add(FileType.APPLICATION_PROPERTIES);
-
             final boolean hasAnySwf = validFilePaths
                     .stream()
                     .map(Paths::get)
-                    .map(path -> fileService.getFileType(path))
-                    .anyMatch(t -> t == FileType.SERVERLESS_WORKFLOW);
+                    .anyMatch(path -> fileService.getFileType(path) == FileType.SERVERLESS_WORKFLOW);
 
             if (!hasAnySwf) {
-                blockList.add(FileType.SERVERLESS_WORKFLOW);
+                LOGGER.warn("No valid serverless workflow file has been found. Upload skipped.");
+                return;
             }
 
-            fileService.cleanUpFolder(FileStructureConstants.PROJECT_RESOURCES_FOLDER, blockList);
+            LOGGER.info("Uploading " + validFilePaths.size() + " validated file(s).");
+
+            fileService.cleanUpFolder(FileStructureConstants.PROJECT_RESOURCES_FOLDER);
+
+            final Optional<Path> applicationPropertiesPath = validFilePaths
+                    .stream()
+                    .map(Paths::get)
+                    .filter(path -> fileService.getFileType(path) == FileType.APPLICATION_PROPERTIES)
+                    .findFirst();
+
+            if (applicationPropertiesPath.isPresent()) {
+                fileService.mergePropertiesFiles(applicationPropertiesPath.get().toString(),
+                                                 FileStructureConstants.BACKUP_APPLICATION_PROPERTIES_FILE_PATH,
+                                                 applicationPropertiesPath.get().toString());
+                LOGGER.info("Merging incoming application.properties with default file.");
+            } else {
+                validFilePaths.add(FileStructureConstants.BACKUP_APPLICATION_PROPERTIES_FILE_PATH);
+                LOGGER.info("Using default application.properties file since no one was sent.");
+            }
 
             fileService.copyResources(validFilePaths);
 
-            fileService.cleanUpFolder(FileStructureConstants.UNZIP_FOLDER, Collections.emptyList());
-
-            if (!zipPath.toFile().delete()) {
-                LOGGER.warn("Could not delete file at " + zipPath);
-            }
+            fileService.cleanUpFolder(FileStructureConstants.UNZIP_FOLDER);
 
             LOGGER.info("Upload files ... done");
         } catch (Exception e) {

@@ -26,15 +26,17 @@ import java.util.List;
 public interface FileService {
     void createFolder(String folderPath);
 
-    void cleanUpFolder(final String folderPath, final List<FileType> blockList) throws IOException;
+    void cleanUpFolder(String folderPath) throws IOException;
 
-    FileType getFileType(final Path filePath);
+    FileType getFileType(Path filePath);
 
-    void deleteDirectory(final File directory);
+    void deleteDirectory(File directory);
 
-    void mergePropertiesFiles(final String pathA, final String pathB, final String mergedPath) throws IOException;
+    void mergePropertiesFiles(String pathA, String pathB, String mergedPath) throws IOException;
 
-    List<String> validateFiles(final List<String> filePaths);
+    List<String> validateFiles(List<String> filePaths);
 
-    void copyResources(final List<String> filePaths) throws IOException;
+    void copyResources(List<String> filePaths) throws IOException;
+
+    boolean exists(String path);
 }

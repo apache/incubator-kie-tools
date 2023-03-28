@@ -51,18 +51,35 @@ public class FileServiceImpl implements FileService {
     public void postConstruct() {
         LOGGER.info("PostConstruct");
 
-        final Path workFolderPath = Paths.get(FileStructureConstants.WORK_FOLDER);
+        createFolder(FileStructureConstants.WORK_FOLDER);
+
         final Path unzipFolder = Paths.get(FileStructureConstants.UNZIP_FOLDER);
-
-        deleteDirectory(workFolderPath.toFile());
         deleteDirectory(unzipFolder.toFile());
+        createFolder(FileStructureConstants.UNZIP_FOLDER);
 
-        createFolder(workFolderPath.toString());
-        createFolder(unzipFolder.toString());
+        createBackupFiles();
+    }
+
+    private void createBackupFiles() {
+        try {
+            final File applicationPropertiesBackup = new File(FileStructureConstants.BACKUP_APPLICATION_PROPERTIES_FILE_PATH);
+            if (!applicationPropertiesBackup.exists()) {
+                final File applicationProperties = new File(FileStructureConstants.APPLICATION_PROPERTIES_FILE_PATH);
+                FileUtils.copyFile(applicationProperties, applicationPropertiesBackup);
+                LOGGER.info("Backup created for the default application.properties");
+            } else {
+                LOGGER.info("No need to create backup for the default application.properties");
+            }
+        } catch (IOException e) {
+            LOGGER.error("Error when creating backup file for application.properties");
+        }
     }
 
     @Override
     public void createFolder(final String folderPath) {
+        if (exists(folderPath)) {
+            return;
+        }
         LOGGER.info("Create folder: " + folderPath);
         final File folder = new File(folderPath);
         if (!folder.mkdirs()) {
@@ -71,13 +88,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void cleanUpFolder(final String folderPath, final List<FileType> blockList) throws IOException {
+    public void cleanUpFolder(final String folderPath) throws IOException {
+        if (!exists(folderPath)) {
+            return;
+        }
         LOGGER.info("Clean up folder: " + folderPath + "...");
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(folderPath))) {
             for (Path path : stream) {
-                if (blockList.contains(getFileType(path))) {
-                    continue;
-                }
                 final File file = path.toFile();
                 if (file.isDirectory()) {
                     deleteDirectory(file);
@@ -169,14 +186,9 @@ public class FileServiceImpl implements FileService {
         LOGGER.info("Copying resources ...");
         for (String filePath : filePaths) {
             final Path path = Paths.get(filePath);
-            final FileType fileType = getFileType(path);
 
             final File source = path.toFile();
             final File target = Paths.get(FileStructureConstants.PROJECT_RESOURCES_FOLDER, source.getName()).toFile();
-
-            if (fileType == FileType.APPLICATION_PROPERTIES) {
-                mergePropertiesFiles(filePath, FileStructureConstants.APPLICATION_PROPERTIES_FILE_PATH, filePath);
-            }
 
             LOGGER.info("Copy file: " + source.getPath() + " -> " + target.getPath());
 
@@ -191,5 +203,10 @@ public class FileServiceImpl implements FileService {
             }
         }
         LOGGER.info("Copying resources ... done");
+    }
+
+    @Override
+    public boolean exists(final String path) {
+        return new File(path).exists();
     }
 }
