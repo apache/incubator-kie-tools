@@ -25,9 +25,9 @@ import { SampleCardSkeleton } from "./SampleCardSkeleton";
 import { SamplesLoadError } from "./SamplesLoadError";
 
 const priority = {
-  ["serverless-workflow"]: 3,
-  ["serverless-decision"]: 2,
-  ["dashbuilder"]: 1,
+  ["serverless-workflow"]: 1,
+  ["dashbuilder"]: 2,
+  ["serverless-decision"]: 3,
 };
 
 export function Showcase() {

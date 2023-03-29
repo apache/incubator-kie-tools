@@ -44,7 +44,7 @@ const tagMap: Record<SamplesCategory, { label: string; icon: React.ComponentClas
 };
 
 export function RenderSvg(props: { svg: string }) {
-  const modifiedContent: any = useMemo(() => {
+  const modifiedContent = useMemo(() => {
     try {
       const parser = new DOMParser();
       const xml = parser.parseFromString(props.svg, "image/svg+xml");
@@ -63,7 +63,7 @@ export function RenderSvg(props: { svg: string }) {
   return (
     <div
       style={{ height: "100%", maxWidth: "100%", maxHeight: "400px", paddingTop: "30px" }}
-      dangerouslySetInnerHTML={{ __html: modifiedContent }}
+      dangerouslySetInnerHTML={{ __html: modifiedContent! }}
     />
   );
 }
@@ -103,10 +103,7 @@ export function SampleCard(props: { sample: Sample }) {
                   whiteSpace: "pre-wrap",
                 }}
               >
-                {props.sample.description +
-                  props.sample.description +
-                  props.sample.description +
-                  props.sample.description}
+                {props.sample.description}
               </Text>
             </Tooltip>
           </CardBody>

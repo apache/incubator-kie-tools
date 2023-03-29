@@ -16,11 +16,18 @@
 
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
 import { Octokit } from "@octokit/rest";
-import { basename, extname, dirname, join } from "path";
+import { extname, dirname, join } from "path";
 import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { Sample } from "./SampleCard";
 
-export const kieSamplesRepo = {
+interface GitHubFileInfo {
+  org: string;
+  repo: string;
+  ref: string;
+  path: string;
+}
+
+export const kieSamplesRepo: GitHubFileInfo = {
   org: "kiegroup",
   repo: "kie-samples",
   ref: process.env["WEBPACK_REPLACE__samplesRepositoryRef"]!,
@@ -29,15 +36,24 @@ export const kieSamplesRepo = {
 
 export type SampleCategory = "serverless-workflow" | "serverless-decision" | "dashbuilder";
 
-const fileExtns = ["sw.yml", "sw.yaml", "sw.json", "sw.project", "dash.yml", "dash.yaml"];
+const SAMPLE_DEFINITION_FILE = "definition.json";
 
-const definitionJson = "definition.json";
+const SAMPLE_TEMPLATE_FOLDER = "template";
 
-const template = "template";
+const SVG_EXTENSION = ".svg";
 
-const svg = ".svg";
+type SampleStatus = "ok" | "out of date" | "deprecated";
 
-export interface repoContentType {
+interface SampleDefinition {
+  category: SampleCategory;
+  status: SampleStatus;
+  title: string;
+  description: string;
+  cover: string;
+  tags: string[];
+}
+
+export interface RepoContentType {
   download_url: string;
   git_url: string;
   html_url: string;
@@ -54,56 +70,58 @@ export interface repoContentType {
   };
 }
 
-export function fetchFile(octokit: Octokit, org: string, repo: string, ref: string, path: string) {
-  return octokit.repos
+export function fetchFile(args: { octokit: Octokit; fileInfo: GitHubFileInfo }) {
+  return args.octokit.repos
     .getContent({
-      repo: repo,
-      owner: org,
-      ref: ref,
-      path: path,
+      repo: args.fileInfo.repo,
+      owner: args.fileInfo.org,
+      ref: args.fileInfo.ref,
+      path: args.fileInfo.path,
     })
     .then((res) => res)
     .catch((e) => {
-      console.debug(`Error fetching ${path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
-      return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then((res) =>
-        res.ok ? res.text() : Promise.resolve(undefined)
-      );
+      console.debug(`Error fetching ${args.fileInfo.path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
+      return fetch(
+        `https://raw.githubusercontent.com/${args.fileInfo.org}/${args.fileInfo.repo}/${args.fileInfo.ref}/${args.fileInfo.path}`
+      ).then((res) => (res.ok ? res.text() : Promise.resolve(undefined)));
     });
 }
 
 export const fetchSampleDefinitions = async (octokit: Octokit): Promise<Sample[]> => {
-  const res = await fetchFile(
+  const res = await fetchFile({
     octokit,
-    kieSamplesRepo.org,
-    kieSamplesRepo.repo,
-    kieSamplesRepo.ref,
-    decodeURIComponent(kieSamplesRepo.path)
-  );
+    fileInfo: {
+      org: kieSamplesRepo.org,
+      repo: kieSamplesRepo.repo,
+      ref: kieSamplesRepo.ref,
+      path: decodeURIComponent(kieSamplesRepo.path),
+    },
+  });
 
-  const sampleDirs = ((res as any)?.data).filter((sample: repoContentType) => sample.name !== template);
+  const sampleDirs = ((res as any)?.data).filter((sample: RepoContentType) => sample.name !== SAMPLE_TEMPLATE_FOLDER);
 
-  const promises = sampleDirs.map((sample: repoContentType) => {
-    return fetchFile(
+  const promises = sampleDirs.map((sample: RepoContentType) => {
+    return fetchFile({
       octokit,
-      kieSamplesRepo.org,
-      kieSamplesRepo.repo,
-      kieSamplesRepo.ref,
-      decodeURIComponent(`${kieSamplesRepo.path}/${sample.name}`)
-    );
+      fileInfo: {
+        org: kieSamplesRepo.org,
+        repo: kieSamplesRepo.repo,
+        ref: kieSamplesRepo.ref,
+        path: decodeURIComponent(`${kieSamplesRepo.path}/${sample.name}`),
+      },
+    });
   });
 
   return Promise.all(promises).then((promiseData) => {
     return Promise.all(
       promiseData.map((sampleData) => {
         return Promise.all(
-          sampleData.data.map(async (files: repoContentType) => {
+          sampleData.data.map(async (files: RepoContentType) => {
             let svgResponse;
             let definitionRes;
-            const file = files.name.split(".");
-            const type = `${file[1]}.${file[2]}` as string;
-            const sampleId = file[0];
-            if (files.name === definitionJson) {
-              const rawUrl = new URL((files as repoContentType).download_url);
+
+            if (files.name === SAMPLE_DEFINITION_FILE) {
+              const rawUrl = new URL((files as RepoContentType).download_url);
               definitionRes = await fetch(rawUrl.toString());
               if (!definitionRes.ok) {
                 throw new Error(
@@ -111,25 +129,29 @@ export const fetchSampleDefinitions = async (octokit: Octokit): Promise<Sample[]
                     definitionRes.statusText ? `- ${definitionRes.statusText}` : ""
                   }`
                 );
-                return;
               }
-              const content = JSON.parse(await definitionRes?.text());
+              const content = JSON.parse(await definitionRes?.text()) as SampleDefinition;
 
               if (content) {
-                const svgUrl = new URL(join(dirname(rawUrl.href), content.cover));
+                const sampleDirPath = dirname(rawUrl.href);
+                const sampleId = sampleDirPath.split("/").pop()!;
+                const svgUrl = new URL(join(sampleDirPath, content.cover));
                 svgResponse = await fetch(svgUrl.toString());
                 if (!svgResponse.ok) {
                   throw new Error(
                     `SVG Error ${svgResponse.status}${svgResponse.statusText ? `- ${svgResponse.statusText}` : ""}`
                   );
                 }
-                const svg = await svgResponse.text();
+                const svgContent = await svgResponse.text();
 
-                return { name: content.title, description: content.description, category: content.category, svg };
+                return {
+                  sampleId,
+                  name: content.title,
+                  description: content.description,
+                  category: content.category,
+                  svg: svgContent,
+                };
               }
-            } else if (fileExtns.includes(type)) {
-              const repoUrl = new URL((files as repoContentType).download_url);
-              return { sampleId, repoUrl };
             }
           })
         ).then((data) => {
@@ -141,13 +163,15 @@ export const fetchSampleDefinitions = async (octokit: Octokit): Promise<Sample[]
 };
 
 export const fetchSample = async (args: { octokit: Octokit; sampleId: string }) => {
-  const res = await fetchFile(
-    args.octokit,
-    kieSamplesRepo.org,
-    kieSamplesRepo.repo,
-    kieSamplesRepo.ref,
-    decodeURIComponent(`${kieSamplesRepo.path}/${args.sampleId}`)
-  );
+  const res = await fetchFile({
+    octokit: args.octokit,
+    fileInfo: {
+      org: kieSamplesRepo.org,
+      repo: kieSamplesRepo.repo,
+      ref: kieSamplesRepo.ref,
+      path: decodeURIComponent(`${kieSamplesRepo.path}/${args.sampleId}`),
+    },
+  });
   if (res === undefined) {
     throw new Error(`Sample ${args.sampleId} not found`);
   }
@@ -155,11 +179,11 @@ export const fetchSample = async (args: { octokit: Octokit; sampleId: string }) 
   const sampleFiles = [] as LocalFile[];
 
   return Promise.all(
-    (res as any)?.data?.map(async (file: repoContentType) => {
-      if (file.name === definitionJson || extname(file.name) === svg) {
+    (res as any)?.data?.map(async (file: RepoContentType) => {
+      if (file.name === SAMPLE_DEFINITION_FILE || extname(file.name) === SVG_EXTENSION) {
         return;
       }
-      const rawUrl = new URL((file as repoContentType).download_url);
+      const rawUrl = new URL((file as RepoContentType).download_url);
       const response = await fetch(rawUrl.toString());
       if (!response.ok) {
         throw new Error(`${response.status}${response.statusText ? `- ${response.statusText}` : ""}`);
@@ -167,7 +191,7 @@ export const fetchSample = async (args: { octokit: Octokit; sampleId: string }) 
       const content = await response?.text();
 
       sampleFiles.push({
-        path: basename(decodeURIComponent(rawUrl.pathname)),
+        path: decodeURIComponent(rawUrl.pathname),
         fileContents: encoder.encode(content),
       });
     })
