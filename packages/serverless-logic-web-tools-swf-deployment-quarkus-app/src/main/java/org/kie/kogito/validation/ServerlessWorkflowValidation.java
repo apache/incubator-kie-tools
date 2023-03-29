@@ -20,6 +20,7 @@ import io.serverlessworkflow.api.Workflow;
 import org.jboss.logging.Logger;
 import org.kie.kogito.api.FileValidation;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 
 import javax.lang.model.SourceVersion;
 import java.io.FileInputStream;
@@ -33,7 +34,7 @@ public class ServerlessWorkflowValidation implements FileValidation {
     @Override
     public boolean isValid(final Path path) {
         try {
-            final String format = resolveFormat(path);
+            final WorkflowFormat format = resolveFormat(path);
             if (format == null) {
                 LOGGER.warn("Not a serverless workflow file: " + path);
                 return false;
@@ -54,13 +55,13 @@ public class ServerlessWorkflowValidation implements FileValidation {
         }
     }
 
-    private String resolveFormat(final Path path) {
+    private WorkflowFormat resolveFormat(final Path path) {
         final String fileName = path.getFileName().toString();
         if (fileName.endsWith(".sw.json")) {
-            return "json";
+            return WorkflowFormat.JSON;
         }
         if (fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
-            return "yml";
+            return WorkflowFormat.YAML;
         }
         return null;
     }
