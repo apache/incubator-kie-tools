@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { basename, extname, parse } from "path";
+import { basename, extname, parse, relative } from "path";
 import { isOfKind, FileTypes } from "../constants/ExtensionHelper";
 
 export function parseWorkspaceFileRelativePath(relativePath: string) {
   const extension = extractExtension(relativePath);
   return {
-    relativePathWithoutExtension: relativePath.substring(0, relativePath.lastIndexOf("." + extension)),
+    relativePathWithoutExtension: relativePath.substring(0, relativePath.lastIndexOf("." + extension)) || relativePath,
     relativeDirPath: parse(relativePath).dir,
     extension: extension,
     nameWithoutExtension: basename(relativePath, `.${extension}`),
