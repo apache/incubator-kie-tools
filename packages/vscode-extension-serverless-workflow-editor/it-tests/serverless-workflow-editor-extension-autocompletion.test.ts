@@ -162,7 +162,7 @@ describe("Serverless workflow editor - autocompletion tests", () => {
 
       // add function from specs directory
       await selectFromContentAssist(textEditor, "functions");
-      await textEditor.typeText(":\n- ");
+      await textEditor.typeText(":\n  - ");
       await selectFromContentAssist(textEditor, "specs»api.yaml#testFuncId");
 
       // add test state
@@ -172,11 +172,11 @@ describe("Serverless workflow editor - autocompletion tests", () => {
       await textEditor.typeText(`name: testState
   type: operation
 actions:
-- functionRef:
+  - functionRef:
 end: true`);
 
       // complete the state with refName
-      await textEditor.moveCursor(22, 19);
+      await textEditor.moveCursor(22, 21);
       await textEditor.typeText(Key.ENTER);
       await textEditor.typeText(Key.TAB);
       await textEditor.typeText(Key.TAB);
