@@ -619,7 +619,7 @@
           <module>org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp</module>
           <extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
           <optimizationLevel>9</optimizationLevel>
-          <style>PRETTY</style>
+          <style>OBFUSCATED</style>
           <noServer>false</noServer>
           <disableCastChecking>true</disableCastChecking>
           <runTarget>test.html</runTarget>

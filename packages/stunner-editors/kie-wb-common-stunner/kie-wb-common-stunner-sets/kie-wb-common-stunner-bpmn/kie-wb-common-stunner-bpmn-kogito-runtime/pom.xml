@@ -561,7 +561,7 @@
           <optimizationLevel>9</optimizationLevel>
           <draftCompile>false</draftCompile>
           <strict>true</strict>
-          <style>PRETTY</style>
+          <style>OBFUSCATED</style>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <hostedWebapp>src/main/webapp</hostedWebapp>
           <runTarget>test.html</runTarget>
