@@ -373,7 +373,7 @@ public class DiagramEditor {
         if (!selectionControl.getSelectedItems().isEmpty()) {
             String uuid = selectionControl.getSelectedItems().iterator().next();
             if (!jsCanvas.isShapeVisible(uuid)) {
-                jsCanvas.centerNode(uuid);
+                jsCanvas.center(uuid);
             }
         }
     }

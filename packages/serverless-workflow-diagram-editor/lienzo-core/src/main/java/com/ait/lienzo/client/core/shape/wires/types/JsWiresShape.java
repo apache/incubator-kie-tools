@@ -121,7 +121,7 @@ public class JsWiresShape {
         for (int i = 0; i < childNodes.size(); i++) {
             IPrimitive<?> child = childNodes.get(i);
             if (child instanceof IContainer) {
-                if (lister != null && lister.getNodeIdSet().contains(child.getID())) {
+                if (lister != null && lister.getNodeIds().contains(child.getID())) {
                     continue;
                 }
 

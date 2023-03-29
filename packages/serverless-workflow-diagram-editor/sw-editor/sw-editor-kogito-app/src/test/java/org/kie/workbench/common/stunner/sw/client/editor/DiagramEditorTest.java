@@ -407,7 +407,7 @@ public class DiagramEditorTest {
         // Keep selection
         verify(selectionControl, times(1)).addSelection("uuid");
         // Center selected node
-        verify(jsCanvas, times(1)).centerNode("uuid");
+        verify(jsCanvas, times(1)).center("uuid");
     }
 
     @Test
