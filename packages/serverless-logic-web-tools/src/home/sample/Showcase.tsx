@@ -22,43 +22,63 @@ import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { fetchSampleDefinitions } from "./sampleApi";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { SampleCardSkeleton } from "./SampleCardSkeleton";
+import { SamplesLoadError } from "./SamplesLoadError";
+
+const priority = {
+  ["serverless-workflow"]: 3,
+  ["serverless-decision"]: 2,
+  ["dashbuilder"]: 1,
+};
 
 export function Showcase() {
   const settingsDispatch = useSettingsDispatch();
   const [loading, setLoading] = useState<boolean>(true);
   const [samples, setSamples] = useState<Sample[]>([]);
+  const [sampleLoadingError, setSampleLoadingError] = useState("");
 
   useEffect(() => {
-    fetchSampleDefinitions(settingsDispatch.github.octokit).then((data) => {
-      setSamples([...data]);
-      setLoading(false);
-    });
+    fetchSampleDefinitions(settingsDispatch.github.octokit)
+      .then((data) => {
+        const sortedSamples = data.sort((a: Sample, b: Sample) => priority[a.category] - priority[b.category]);
+        setSamples([...sortedSamples]);
+      })
+      .catch((e) => {
+        setSampleLoadingError(e.toString());
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   return (
     <>
-      <TextContent>
-        <Text component="h1">Samples Showcase</Text>
-      </TextContent>
-      <br />
-      {loading ? (
-        <SampleCardSkeleton numberOfCards={4} />
-      ) : (
-        <Gallery
-          hasGutter={true}
-          minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}
-          style={{
-            overflowX: "auto",
-            gridAutoFlow: "column",
-            gridAutoColumns: "minmax(calc(100%/3.1 - 16px),1fr)",
-            paddingBottom: "8px",
-            paddingRight: "var(--pf-c-page__main-section--xl--PaddingRight)",
-          }}
-        >
-          {samples.map((sample) => (
-            <SampleCard sample={sample} key={Math.random()} />
-          ))}
-        </Gallery>
+      {sampleLoadingError && <SamplesLoadError errors={[sampleLoadingError]} />}
+      {!sampleLoadingError && (
+        <>
+          <TextContent>
+            <Text component="h1">Samples Showcase</Text>
+          </TextContent>
+          <br />
+          {loading ? (
+            <SampleCardSkeleton numberOfCards={4} />
+          ) : (
+            <Gallery
+              hasGutter={true}
+              minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}
+              style={{
+                overflowX: "auto",
+                gridAutoFlow: "column",
+                gridAutoColumns: "minmax(calc(100%/3.1 - 16px),1fr)",
+                paddingBottom: "8px",
+                paddingRight: "var(--pf-c-page__main-section--xl--PaddingRight)",
+              }}
+            >
+              {samples.map((sample) => (
+                <SampleCard sample={sample} key={Math.random()} />
+              ))}
+            </Gallery>
+          )}
+        </>
       )}
     </>
   );

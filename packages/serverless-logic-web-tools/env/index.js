@@ -31,6 +31,10 @@ module.exports = composeEnv(
         default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
         description: "",
       },
+      SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef: {
+        default: "main",
+        description: "",
+      },
       SERVERLESS_LOGIC_WEB_TOOLS__gtmId: {
         default: undefined,
         description: "",
@@ -101,6 +105,7 @@ module.exports = composeEnv(
             },
           },
           gitCorsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl),
+          samplesRepositoryRef: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef),
         },
       };
     },

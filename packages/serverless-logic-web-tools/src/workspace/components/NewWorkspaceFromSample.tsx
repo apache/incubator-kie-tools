@@ -18,7 +18,7 @@ import * as React from "react";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -28,7 +28,6 @@ import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
-import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
 import { fetchSample, kieSamplesRepo } from "../../home/sample/sampleApi";
 
 export function NewWorkspaceFromSample() {
@@ -40,9 +39,10 @@ export function NewWorkspaceFromSample() {
 
   const sampleId = useQueryParam(QueryParams.SAMPLE_ID) ?? "";
 
-  const createWorkspaceForFiles = useCallback(
-    async (files: LocalFile[]) => {
-      workspaces.createWorkspaceFromLocal({ localFiles: files }).then(({ workspace, suggestedFirstFile }) => {
+  useEffect(() => {
+    fetchSample({ octokit: settingsDispatch.github.octokit, sampleId })
+      .then((sampleFiles) => workspaces.createWorkspaceFromLocal({ localFiles: sampleFiles }))
+      .then(({ workspace, suggestedFirstFile }) => {
         if (!suggestedFirstFile) {
           return;
         }
@@ -53,26 +53,11 @@ export function NewWorkspaceFromSample() {
             extension: suggestedFirstFile.extension,
           }),
         });
-      });
-    },
-    [routes, history, workspaces]
-  );
-
-  useEffect(() => {
-    async function run() {
-      // proceed normally
-      try {
-        fetchSample({ octokit: settingsDispatch.github.octokit, sampleId }).then((sampleFiles) => {
-          createWorkspaceForFiles(sampleFiles);
-        });
-      } catch (e) {
+      })
+      .catch((e) => {
         setOpeningError(e.toString());
-        return;
-      }
-    }
-
-    run();
-  }, [sampleId]);
+      });
+  }, [history, routes.workspaceWithFilePath, sampleId, settingsDispatch.github.octokit, workspaces]);
 
   return (
     <>

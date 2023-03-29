@@ -8,78 +8,70 @@ import { Link } from "react-router-dom";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
 import { FolderIcon, FileIcon, MonitoringIcon } from "@patternfly/react-icons/dist/js/icons";
-import { labelColors } from "../../workspace/components/FileLabel";
+import { SampleCategory } from "./sampleApi";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
-export enum SampleType {
-  SW_YML = "sw.yml",
-  SW_YAML = "sw.yaml",
-  SW_JSON = "sw.json",
-  SW_PROJECT = "sw.project",
-  DASH_YML = "dash.yml",
-  DASH_YAML = "dash.yaml",
+export enum SamplesCategory {
+  SWF = "serverless-workflow",
+  SD = "serverless-decision",
+  DASH = "dashbuilder",
 }
 
 export type Sample = {
   name: string;
-  fileName: string;
+  sampleId: string;
   svg: string;
   description: string;
-  type: SampleType;
+  category: SampleCategory;
 };
 
-const tagMap: Record<SampleType, { label: string; icon: React.ComponentClass; color: LabelProps["color"] }> = {
-  [SampleType.SW_YML]: {
-    label: labelColors[SampleType.SW_YML].label,
+const tagMap: Record<SamplesCategory, { label: string; icon: React.ComponentClass; color: LabelProps["color"] }> = {
+  [SamplesCategory.SWF]: {
+    label: "Serverless Workflow",
     icon: FileIcon,
-    color: labelColors[SampleType.SW_YML].color,
-  },
-  [SampleType.SW_YAML]: {
-    label: labelColors[SampleType.SW_YAML].label,
-    icon: FileIcon,
-    color: labelColors[SampleType.SW_YAML].color,
-  },
-  [SampleType.SW_JSON]: {
-    label: labelColors[SampleType.SW_JSON].label,
-    icon: FileIcon,
-    color: labelColors[SampleType.SW_JSON].color,
-  },
-  [SampleType.SW_PROJECT]: {
-    label: "Serverless Project",
-    icon: FolderIcon,
     color: "orange",
   },
-  [SampleType.DASH_YML]: {
-    label: labelColors[SampleType.DASH_YML].label,
-    icon: MonitoringIcon,
-    color: labelColors[SampleType.DASH_YML].color,
+  [SamplesCategory.SD]: {
+    label: "Serverless Decision",
+    icon: FolderIcon,
+    color: "blue",
   },
-  [SampleType.DASH_YAML]: {
-    label: labelColors[SampleType.DASH_YAML].label,
+  [SamplesCategory.DASH]: {
+    label: "Dashboard",
     icon: MonitoringIcon,
-    color: labelColors[SampleType.DASH_YAML].color,
+    color: "purple",
   },
-};
-const useSvg = (svg: string) => {
-  const svgWrapperRef = React.useRef<any>(null);
-  React.useEffect(() => {
-    svgWrapperRef.current.innerHTML = svg;
-  }, []);
-  return {
-    svgWrapperRef,
-  };
 };
 
 export function RenderSvg(props: { svg: string }) {
-  const { svgWrapperRef } = useSvg(props.svg);
+  const modifiedContent: any = useMemo(() => {
+    try {
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(props.svg, "image/svg+xml");
+      const svg = xml.getElementsByTagName("svg")[0];
+      if (svg) {
+        svg.setAttribute("width", "400px");
+        svg.setAttribute("height", "300px");
+      }
+      const serializer = new XMLSerializer();
+      return serializer.serializeToString(xml);
+    } catch (e) {
+      console.log("SVG render error", e);
+    }
+  }, [props.svg]);
+
   return (
-    <div ref={svgWrapperRef} style={{ height: "100%", maxWidth: "100%", maxHeight: "400px", paddingTop: "30px" }}></div>
+    <div
+      style={{ height: "100%", maxWidth: "100%", maxHeight: "400px", paddingTop: "30px" }}
+      dangerouslySetInnerHTML={{ __html: modifiedContent }}
+    />
   );
 }
 
 export function SampleCard(props: { sample: Sample }) {
   const routes = useRoutes();
 
-  const tag = useMemo(() => tagMap[props.sample.type], [props.sample.type]);
+  const tag = useMemo(() => tagMap[props.sample.category], [props.sample.category]);
 
   return (
     <Card isCompact={true} isFullHeight={true}>
@@ -99,16 +91,33 @@ export function SampleCard(props: { sample: Sample }) {
         <GridItem md={6} style={{ display: "flex", flexDirection: "column" }}>
           <CardTitle data-ouia-component-type="sample-title">{props.sample.name}</CardTitle>
           <CardBody isFilled={true}>
-            <Text component="p">{props.sample.description}</Text>
+            <Tooltip content={<div>{props.sample.description}</div>}>
+              <Text
+                component="p"
+                style={{
+                  display: "-webkit-box",
+                  WebkitBoxOrient: "vertical",
+                  WebkitLineClamp: 5,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {props.sample.description +
+                  props.sample.description +
+                  props.sample.description +
+                  props.sample.description}
+              </Text>
+            </Tooltip>
           </CardBody>
           <CardFooter style={{ alignItems: "baseline" }}>
             <Link
               to={{
                 pathname: routes.sampleShowcase.path({}),
-                search: routes.sampleShowcase.queryString({ sampleId: props.sample.fileName }),
+                search: routes.sampleShowcase.queryString({ sampleId: props.sample.sampleId }),
               }}
             >
-              <Button variant={ButtonVariant.tertiary} ouiaId={props.sample.fileName + `-try-swf-sample-button`}>
+              <Button variant={ButtonVariant.tertiary} ouiaId={props.sample.sampleId + `-try-swf-sample-button`}>
                 Try it out!
               </Button>
             </Link>
