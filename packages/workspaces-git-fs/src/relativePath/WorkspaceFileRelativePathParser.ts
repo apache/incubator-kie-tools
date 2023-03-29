@@ -16,7 +16,6 @@
 import { basename, extname, parse } from "path";
 import {
   FileTypes,
-  FileTypesSandbox,
   isDashbuilderYaml,
   isDashbuilderYml,
   isDecision,
@@ -62,11 +61,11 @@ export function extractExtension(relativePath: string) {
       case isDashbuilderYaml(fileName):
         return FileTypes.DASH_YAML;
       case isDecision(fileName):
-        return FileTypesSandbox.DMN;
+        return FileTypes.DMN;
       case isWorkflow(fileName):
-        return FileTypesSandbox.BPMN;
+        return FileTypes.BPMN;
       case isScorecard(fileName):
-        return FileTypesSandbox.PMML;
+        return FileTypes.PMML;
       default:
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }

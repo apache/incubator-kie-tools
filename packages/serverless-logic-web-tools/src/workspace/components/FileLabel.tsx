@@ -24,7 +24,7 @@ const swfLabel: LabelColorType = { color: "green", label: "Serverless Workflow" 
 const sdLabel: LabelColorType = { color: "blue", label: "Serverless Decision" };
 const dashboardLabel: LabelColorType = { color: "purple", label: "Dashboard" };
 
-export const labelColors: Record<FileTypes, LabelColorType> = {
+export const labelColors: Record<string, LabelColorType> = {
   [FileTypes.SW_JSON]: swfLabel,
   [FileTypes.SW_YML]: swfLabel,
   [FileTypes.SW_YAML]: swfLabel,
@@ -37,7 +37,7 @@ export const labelColors: Record<FileTypes, LabelColorType> = {
 
 export function FileLabel(props: { style?: LabelProps["style"]; extension: string }) {
   const parsedExtension = props.extension.toLowerCase();
-  const labelColor = labelColors[parsedExtension as FileTypes];
+  const labelColor = labelColors[parsedExtension as string];
 
   return (
     <>

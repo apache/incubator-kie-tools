@@ -15,8 +15,6 @@
  */
 
 const REGEX = {
-  supported:
-    /(\.sw\.json|\.sw\.yaml|\.sw\.yml|\.yard\.json|\.yard\.yaml|\.yard\.yml|\.dash\.yml|\.dash\.yaml\.bpmn|\.bpmn2|\.dmn|\.pmml|\.scesim)$/i,
   sw: /^.*\.sw\.(json|yml|yaml)$/i,
   swJson: /^.*\.sw\.json$/i,
   swYml: /^.*\.sw\.yml$/i,
@@ -46,9 +44,6 @@ export enum FileTypes {
   YARD_YAML = "yard.yaml",
   DASH_YAML = "dash.yaml",
   DASH_YML = "dash.yml",
-}
-
-export enum FileTypesSandbox {
   DMN = "dmn",
   BPMN = "bpmn",
   BPMN2 = "bpmn2",
