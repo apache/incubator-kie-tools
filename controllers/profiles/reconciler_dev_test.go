@@ -16,6 +16,7 @@ package profiles
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -93,12 +94,14 @@ func Test_newDevProfile(t *testing.T) {
 
 	defCM := test.MustGetConfigMap(t, client, workflow)
 	assert.NotEmpty(t, defCM.Data[workflow.Name+kogitoWorkflowJSONFileExt])
-	assert.Equal(t, configMapWorkflowDefMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
+	assert.Equal(t, fmt.Sprintf("%s/greeting%s", configMapWorkflowDefMountPath, kogitoWorkflowJSONFileExt), deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
+	assert.Equal(t, fmt.Sprintf("greeting%s", kogitoWorkflowJSONFileExt), deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].SubPath)
 
 	propCM := &v1.ConfigMap{}
 	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: getWorkflowPropertiesConfigMapName(workflow)}, propCM)
 	assert.NotEmpty(t, propCM.Data[applicationPropertiesFileName])
-	assert.Equal(t, quarkusDevConfigMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1].MountPath)
+	assert.Equal(t, fmt.Sprintf("%s/%s", quarkusDevConfigMountPath, applicationPropertiesFileName), deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1].MountPath)
+	assert.Equal(t, applicationPropertiesFileName, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1].SubPath)
 	assert.Contains(t, propCM.Data[applicationPropertiesFileName], "quarkus.http.port")
 
 	service := test.MustGetService(t, client, workflow)

@@ -41,7 +41,6 @@ const (
 	configMapWorkflowDefVolumeName          = "workflow-definition"
 	configMapWorkflowDefMountPath           = "/home/kogito/serverless-workflow-project/src/main/resources/workflows"
 	// quarkusDevConfigMountPath mount path for application properties file in the Workflow Quarkus Application
-	//
 	// See: https://quarkus.io/guides/config-reference#application-properties-file
 	quarkusDevConfigMountPath    = "/home/kogito/serverless-workflow-project/src/main/resources"
 	requeueAfterFailure          = 3 * time.Minute
@@ -301,7 +300,6 @@ func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *v1.ConfigMap) mutateVis
 					VolumeSource: v1.VolumeSource{
 						ConfigMap: &v1.ConfigMapVolumeSource{
 							LocalObjectReference: v1.LocalObjectReference{Name: propsCM.Name},
-							Items:                []v1.KeyToPath{{Key: applicationPropertiesFileName, Path: applicationPropertiesFileName}},
 						},
 					},
 				})
@@ -310,12 +308,14 @@ func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *v1.ConfigMap) mutateVis
 				v1.VolumeMount{
 					Name:      configMapWorkflowDefVolumeName,
 					ReadOnly:  true,
-					MountPath: configMapWorkflowDefMountPath,
+					MountPath: fmt.Sprintf("%s/%s%s", configMapWorkflowDefMountPath, flowDefCM.Name, kogitoWorkflowJSONFileExt),
+					SubPath:   fmt.Sprintf("%s%s", flowDefCM.Name, kogitoWorkflowJSONFileExt),
 				},
 				v1.VolumeMount{
 					Name:      configMapWorkflowPropsVolumeName,
 					ReadOnly:  true,
-					MountPath: quarkusDevConfigMountPath,
+					MountPath: fmt.Sprintf("%s/%s", quarkusDevConfigMountPath, applicationPropertiesFileName),
+					SubPath:   applicationPropertiesFileName,
 				},
 			)
 
