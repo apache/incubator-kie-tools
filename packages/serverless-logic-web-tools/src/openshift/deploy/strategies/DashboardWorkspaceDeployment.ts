@@ -15,7 +15,7 @@
  */
 
 import { GLOB_PATTERN } from "../../../extension";
-import { isDashbuilder } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
 import { KnativeBuilderPipeline } from "../../pipelines/KnativeBuilderPipeline";
 import { DashbuilderViewer } from "../BaseContainerImages";
@@ -33,7 +33,7 @@ export class DashboardWorkspaceDeployment extends DeploymentStrategy {
     const dockerIgnoreFile = await this.createDockerignoreFile();
 
     const otherDashFiles = filesToBeDeployed.filter(
-      (f) => isDashbuilder(f.name) && f.relativePath !== this.args.targetFile.relativePath
+      (f) => isOfKind("dash", f.name) && f.relativePath !== this.args.targetFile.relativePath
     );
 
     const appDataFile = createDashbuilderViewerAppDataFile({

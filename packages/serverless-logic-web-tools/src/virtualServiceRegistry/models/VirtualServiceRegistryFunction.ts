@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { isJson, isSpec } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { generateOpenApiSpec } from "./BaseOpenApiSpec";
 import * as yaml from "yaml";
@@ -39,12 +39,12 @@ export class VirtualServiceRegistryFunction {
       return;
     }
 
-    if (isSpec(this.relativePath)) {
+    if (isOfKind("spec", this.relativePath)) {
       return content;
     }
 
     try {
-      const parsedContent = isJson(this.file.relativePath) ? JSON.parse(content) : yaml.parse(content);
+      const parsedContent = isOfKind("json", this.file.relativePath) ? JSON.parse(content) : yaml.parse(content);
       if (parsedContent.id) {
         return generateOpenApiSpec(parsedContent.id);
       } else {
@@ -64,7 +64,7 @@ export async function getVirtualServiceRegistryDependencies(file: WorkspaceFile)
 
   let parsedContent: Record<string, unknown>;
   try {
-    parsedContent = isJson(file.relativePath) ? JSON.parse(content) : yaml.parse(content);
+    parsedContent = isOfKind("json", file.relativePath) ? JSON.parse(content) : yaml.parse(content);
   } catch (e) {
     // Invalid file.
     return [];

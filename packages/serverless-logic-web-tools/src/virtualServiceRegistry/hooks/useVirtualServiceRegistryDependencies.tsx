@@ -18,7 +18,7 @@ import * as React from "react";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useState, useEffect, useMemo } from "react";
-import { isServerlessWorkflow } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { getVirtualServiceRegistryDependencies } from "../models/VirtualServiceRegistryFunction";
 import { useVirtualServiceRegistry } from "../VirtualServiceRegistryContext";
 
@@ -34,7 +34,7 @@ export function useVirtualServiceRegistryDependencies(props: { workspace: Active
       const dependencies: Array<string> = (
         await Promise.all(
           props.workspace.files
-            .map((file) => isServerlessWorkflow(file.relativePath) && getVirtualServiceRegistryDependencies(file))
+            .map((file) => isOfKind("sw", file.relativePath) && getVirtualServiceRegistryDependencies(file))
             .filter((value): value is Promise<Array<string>> => Boolean(value))
         )
       ).flat();

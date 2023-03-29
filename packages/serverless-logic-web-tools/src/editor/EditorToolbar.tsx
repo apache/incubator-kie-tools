@@ -60,7 +60,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
-import { isDashbuilder, isServerlessWorkflow } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { useAppI18n } from "../i18n";
 import {
   useNavigationBlockersBypass,
@@ -180,7 +180,7 @@ export function EditorToolbar(props: Props) {
   }, [isSaved]);
 
   const canBeDeployed = useMemo(
-    () => isServerlessWorkflow(props.workspaceFile.relativePath) || isDashbuilder(props.workspaceFile.relativePath),
+    () => isOfKind("sw", props.workspaceFile.relativePath) || isOfKind("dash", props.workspaceFile.relativePath),
     [props.workspaceFile.relativePath]
   );
 
@@ -307,7 +307,7 @@ export function EditorToolbar(props: Props) {
   );
 
   const shouldIncludeDownloadSvgDropdownItem = useMemo(() => {
-    return isServerlessWorkflow(props.workspaceFile.relativePath);
+    return isOfKind("sw", props.workspaceFile.relativePath);
   }, [props.workspaceFile]);
 
   const onDownload = useCallback(() => {

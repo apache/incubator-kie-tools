@@ -20,13 +20,7 @@ import {
   EnvelopeMapping,
 } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
 
-import {
-  FileTypes,
-  isDecision,
-  isWorkflow,
-  isScorecard,
-  isTestScenario,
-} from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { FileTypes, isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 export const GLOB_PATTERN = {
   all: "**/*",
@@ -47,11 +41,11 @@ export const supportedFileExtensionArray = [
 export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];
 
 export function isModel(path: string): boolean {
-  return isDecision(path) || isWorkflow(path) || isScorecard(path);
+  return isOfKind("dmn", path) || isOfKind("bpmn", path) || isOfKind("pmml", path);
 }
 
 export function isEditable(path: string): boolean {
-  return isModel(path) || isTestScenario(path);
+  return isModel(path) || isOfKind("scesim", path);
 }
 
 export class EditorEnvelopeLocatorFactory {

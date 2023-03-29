@@ -14,20 +14,7 @@
  * limitations under the License.
  */
 import { basename, extname, parse } from "path";
-import {
-  FileTypes,
-  isDashbuilderYaml,
-  isDashbuilderYml,
-  isDecision,
-  isScorecard,
-  isServerlessDecisionJson,
-  isServerlessDecisionYaml,
-  isServerlessDecisionYml,
-  isServerlessWorkflowJson,
-  isServerlessWorkflowYaml,
-  isServerlessWorkflowYml,
-  isWorkflow,
-} from "../constants/ExtensionHelper";
+import { isOfKind, FileTypes } from "../constants/ExtensionHelper";
 
 export function parseWorkspaceFileRelativePath(relativePath: string) {
   const extension = extractExtension(relativePath);
@@ -43,31 +30,40 @@ export function parseWorkspaceFileRelativePath(relativePath: string) {
 export function extractExtension(relativePath: string) {
   const fileName = basename(relativePath).toLowerCase();
   if (fileName.includes(".")) {
-    switch (true) {
-      case isServerlessWorkflowJson(fileName):
-        return FileTypes.SW_JSON;
-      case isServerlessWorkflowYml(fileName):
-        return FileTypes.SW_YML;
-      case isServerlessWorkflowYaml(fileName):
-        return FileTypes.SW_YAML;
-      case isServerlessDecisionJson(fileName):
-        return FileTypes.YARD_JSON;
-      case isServerlessDecisionYml(fileName):
-        return FileTypes.YARD_YML;
-      case isServerlessDecisionYaml(fileName):
-        return FileTypes.YARD_YAML;
-      case isDashbuilderYml(fileName):
-        return FileTypes.DASH_YML;
-      case isDashbuilderYaml(fileName):
-        return FileTypes.DASH_YAML;
-      case isDecision(fileName):
-        return FileTypes.DMN;
-      case isWorkflow(fileName):
-        return FileTypes.BPMN;
-      case isScorecard(fileName):
-        return FileTypes.PMML;
-      default:
-        return fileName.substring(fileName.lastIndexOf(".") + 1);
+    if (isOfKind("swJson", fileName)) {
+      return FileTypes.SW_JSON;
+    }
+    if (isOfKind("swYml", fileName)) {
+      return FileTypes.SW_YML;
+    }
+    if (isOfKind("swYaml", fileName)) {
+      return FileTypes.SW_YAML;
+    }
+    if (isOfKind("yardJson", fileName)) {
+      return FileTypes.YARD_JSON;
+    }
+    if (isOfKind("yardYml", fileName)) {
+      return FileTypes.YARD_YML;
+    }
+    if (isOfKind("yardYaml", fileName)) {
+      return FileTypes.YARD_YAML;
+    }
+    if (isOfKind("dashYml", fileName)) {
+      return FileTypes.DASH_YML;
+    }
+    if (isOfKind("dashYaml", fileName)) {
+      return FileTypes.DASH_YAML;
+    }
+    if (isOfKind("dmn", fileName)) {
+      return FileTypes.DMN;
+    }
+    if (isOfKind("bpmn", fileName)) {
+      return FileTypes.BPMN;
+    }
+    if (isOfKind("pmml", fileName)) {
+      return FileTypes.PMML;
+    } else {
+      return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
   } else {
     return extname(relativePath);

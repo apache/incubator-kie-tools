@@ -17,13 +17,7 @@
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { basename } from "path";
 import { PROJECT_FILES } from "../project";
-import {
-  FileTypes,
-  isServerlessWorkflow,
-  isServerlessDecision,
-  isDashbuilder,
-  isSpec,
-} from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { FileTypes, isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 const EDIT_NON_MODEL_ALLOW_LIST = [PROJECT_FILES.applicationProperties];
 
@@ -49,7 +43,7 @@ export const supportedFileExtensionArray = [
 ];
 
 export function isModel(path: string): boolean {
-  return isServerlessWorkflow(path) || isServerlessDecision(path) || isDashbuilder(path);
+  return isOfKind("sw", path) || isOfKind("yardJson", path) || isOfKind("dashYml", path);
 }
 
 export function isEditable(path: string): boolean {
@@ -57,7 +51,7 @@ export function isEditable(path: string): boolean {
 }
 
 export function isSupportedByVirtualServiceRegistry(path: string): boolean {
-  return isServerlessWorkflow(path) || isSpec(path);
+  return isOfKind("sw", path) || isOfKind("spec", path);
 }
 
 export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];

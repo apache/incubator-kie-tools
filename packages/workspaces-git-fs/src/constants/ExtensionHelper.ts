@@ -51,74 +51,13 @@ export enum FileTypes {
   PMML = "pmml",
 }
 
-export function isServerlessWorkflow(path: string): boolean {
-  return REGEX.sw.test(path);
+type FileRegexKind = keyof typeof REGEX;
+const matchers: Record<FileRegexKind, (path: string) => boolean> = {} as any;
+for (const key in REGEX) {
+  const kind = key as FileRegexKind;
+  matchers[kind] = (path: string): boolean => REGEX[kind].test(path);
 }
 
-export function isServerlessWorkflowJson(path: string): boolean {
-  return REGEX.swJson.test(path);
-}
-
-export function isServerlessWorkflowYml(path: string): boolean {
-  return REGEX.swYml.test(path);
-}
-
-export function isServerlessWorkflowYaml(path: string): boolean {
-  return REGEX.swYaml.test(path);
-}
-
-export function isServerlessDecision(path: string): boolean {
-  return REGEX.yard.test(path);
-}
-
-export function isServerlessDecisionJson(path: string): boolean {
-  return REGEX.yardJson.test(path);
-}
-
-export function isServerlessDecisionYml(path: string): boolean {
-  return REGEX.yardYml.test(path);
-}
-
-export function isServerlessDecisionYaml(path: string): boolean {
-  return REGEX.yardYaml.test(path);
-}
-
-export function isDashbuilder(path: string): boolean {
-  return REGEX.dash.test(path);
-}
-
-export function isDashbuilderYml(path: string): boolean {
-  return REGEX.dashYml.test(path);
-}
-
-export function isDashbuilderYaml(path: string): boolean {
-  return REGEX.dashYaml.test(path);
-}
-
-export function isDecision(path: string): boolean {
-  return REGEX.dmn.test(path);
-}
-
-export function isWorkflow(path: string): boolean {
-  return REGEX.bpmn.test(path);
-}
-
-export function isTestScenario(path: string): boolean {
-  return REGEX.scesim.test(path);
-}
-
-export function isScorecard(path: string): boolean {
-  return REGEX.pmml.test(path);
-}
-
-export function isSpec(path: string): boolean {
-  return REGEX.spec.test(path);
-}
-
-export function isJson(path: string): boolean {
-  return REGEX.json.test(path);
-}
-
-export function isYaml(path: string): boolean {
-  return REGEX.yaml.test(path);
+export function isOfKind(kind: FileRegexKind, path: string) {
+  return matchers[kind](path);
 }
