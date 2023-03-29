@@ -33,12 +33,20 @@ function configure() {
     ignore_maven_self_signed_certificates
     set_kogito_maven_repo
     add_maven_repo
+    configureMavenHome
 
     if [ "${SCRIPT_DEBUG}" = "true" ] ; then
         cat "${MAVEN_SETTINGS_PATH}"
     fi
 
     rm -rf *.bak
+}
+
+# When Running on OpenShift with AnyUID the HOME environment variable gets overridden to "/"
+# Maven build might fail with this issue:  'Could not create local repository at /.m2/repository'
+# Set the property maven.home to $KOGITO_HOME so the HOME env is ignored.
+function configureMavenHome() {
+  export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} -Duser.home=${KOGITO_HOME}"
 }
 
 # insert settings for HTTP proxy into maven settings.xml if supplied

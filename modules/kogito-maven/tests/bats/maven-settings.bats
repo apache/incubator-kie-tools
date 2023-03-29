@@ -413,3 +413,15 @@ function _generate_random_id() {
     echo "company_plugin_repository_result  =${company_plugin_repository_result}"
     [ "${company_plugin_repository_expected}" = "${company_plugin_repository_result}" ]
 }
+
+@test "test maven args if it contains the user.home pointing to /home/kogito" {
+    # it is expected that KOGITO_HOME is already set.
+    export KOGITO_HOME=/home/kogito
+    prepareEnv
+    configureMavenHome
+    expected=" -Duser.home=/home/kogito"
+    result="${MAVEN_ARGS_APPEND}"
+    echo "expected=${expected}"
+    echo "result=${result}"
+    [ "${expected}" = "${result}" ]
+}

@@ -29,13 +29,24 @@ function configure() {
     configure_proxy
     configure_mirrors
     configure_maven_download_output
+    configure_maven_offline_mode
     ignore_maven_self_signed_certificates
     set_kogito_maven_repo
     add_maven_repo
+    configureMavenHome
 
     if [ "${SCRIPT_DEBUG}" = "true" ] ; then
         cat "${MAVEN_SETTINGS_PATH}"
     fi
+
+    rm -rf *.bak
+}
+
+# When Running on OpenShift with AnyUID the HOME environment variable gets overridden to "/"
+# Maven build main fail with this issue Could not create local repository at /.m2/repository
+# Set the property maven.home to $KOGITO_HOME so the HOME env is ignored.
+function configureMavenHome() {
+  export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} -Duser.home=${KOGITO_HOME}"
 }
 
 # insert settings for HTTP proxy into maven settings.xml if supplied
@@ -79,7 +90,7 @@ function configure_proxy() {
         fi
         xml="$xml\
        </proxy>"
-        sed -i "s|<!-- ### configured http proxy ### -->|${xml}|" "${MAVEN_SETTINGS_PATH}"
+        sed -i.bak "s|<!-- ### configured http proxy ### -->|${xml}|" "${MAVEN_SETTINGS_PATH}"
     fi
 }
 
@@ -91,7 +102,7 @@ function configure_mirrors() {
       <url>$MAVEN_MIRROR_URL</url>\
       <mirrorOf>external:*</mirrorOf>\
     </mirror>"
-        sed -i "s|<!-- ### configured mirrors ### -->|$xml|" "${MAVEN_SETTINGS_PATH}"
+        sed -i.bak "s|<!-- ### configured mirrors ### -->|$xml|" "${MAVEN_SETTINGS_PATH}"
     fi
 }
 
@@ -117,7 +128,7 @@ function ignore_maven_self_signed_certificates() {
 function set_kogito_maven_repo() {
     local kogito_maven_repo_url="${JBOSS_MAVEN_REPO_URL}"
     if [ -n "${kogito_maven_repo_url}" ]; then
-        sed -i "s|https://repository.jboss.org/nexus/content/groups/public/|${kogito_maven_repo_url}|" "${MAVEN_SETTINGS_PATH}"
+        sed -i.bak "s|https://repository.jboss.org/nexus/content/groups/public/|${kogito_maven_repo_url}|" "${MAVEN_SETTINGS_PATH}"
     fi
 }
 
@@ -176,7 +187,7 @@ function _add_maven_repo() {
                     </snapshots>\n\
                 </repository>\n\
                 <!-- ### configured repositories ### -->"
-    sed -i "s|<!-- ### configured repositories ### -->|${repo}|" "${MAVEN_SETTINGS_PATH}"
+    sed -i.bak "s|<!-- ### configured repositories ### -->|${repo}|" "${MAVEN_SETTINGS_PATH}"
 
     local pluginRepo="\n\
                 <pluginRepository>\n\
@@ -197,10 +208,10 @@ function _add_maven_repo() {
                 </pluginRepository>\n\
                 <!-- ### configured plugin repositories ### -->"
 
-    sed -i "s|<!-- ### configured plugin repositories ### -->|${pluginRepo}|" "${MAVEN_SETTINGS_PATH}"
+    sed -i.bak "s|<!-- ### configured plugin repositories ### -->|${pluginRepo}|" "${MAVEN_SETTINGS_PATH}"
 
     # new repo should be skipped by mirror if exists
-    sed -i "s|</mirrorOf>|,!${repo_id}</mirrorOf>|g" "${MAVEN_SETTINGS_PATH}"
+    sed -i.bak "s|</mirrorOf>|,!${repo_id}</mirrorOf>|g" "${MAVEN_SETTINGS_PATH}"
 }
 
 # Finds the environment variable  and returns its value if found.

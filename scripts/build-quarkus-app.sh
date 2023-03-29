@@ -57,7 +57,7 @@ mvn ${MAVEN_OPTIONS} \
 echo "Build quarkus app"
 cd "serverless-workflow-project"
 # Quarkus version is enforced if some dependency pulled has older version of Quarkus set.
-# This avoids to have, for example, Quarkus BOMs or orther artifacts with multiple versions.
+# This avoids to have, for example, Quarkus BOMs or other artifacts with multiple versions.
 mvn ${MAVEN_OPTIONS} \
     -DskipTests \
     -Dmaven.repo.local=${mvn_local_repo} \
@@ -76,7 +76,7 @@ rm -rfv serverless-workflow-project/src/test
 rm -rfv serverless-workflow-project/*.bak
 
 # Maven useless files
-# Needed to avoid Maven to automatically redownload from original Maven repository ...
+# Needed to avoid Maven to automatically re-download from original Maven repository ...
 find ${mvn_local_repo} -name _remote.repositories -type f -delete
 find ${mvn_local_repo} -name _maven.repositories -type f -delete
 find ${mvn_local_repo} -name *.lastUpdated -type f -delete
