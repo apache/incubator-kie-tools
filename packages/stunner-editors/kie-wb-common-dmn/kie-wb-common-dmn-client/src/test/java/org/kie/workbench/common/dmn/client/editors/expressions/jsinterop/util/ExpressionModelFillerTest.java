@@ -381,8 +381,8 @@ public class ExpressionModelFillerTest {
         return param -> {
             assertThat(param).extracting(list -> list.getExpression().size()).isEqualTo(2);
             assertThat(param).extracting(list -> list.getExpression().get(0).getExpression()).isExactlyInstanceOf(LiteralExpression.class);
-            assertThat(param).extracting(list -> ((LiteralExpression) list.getExpression().get(0).getExpression()).getText().getValue()).isEqualTo(firstCell);
-            assertThat(param).extracting(list -> ((LiteralExpression) list.getExpression().get(1).getExpression()).getText().getValue()).isEqualTo(secondCell);
+            assertThat(param).extracting(list -> ((LiteralExpression) list.getExpression().get(0).getExpression()).getText().getValue()).isEqualTo(firstCell.content);
+            assertThat(param).extracting(list -> ((LiteralExpression) list.getExpression().get(1).getExpression()).getText().getValue()).isEqualTo(secondCell.content);
         };
     }
 
