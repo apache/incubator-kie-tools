@@ -43,7 +43,7 @@ export const supportedFileExtensionArray = [
 ];
 
 export function isModel(path: string): boolean {
-  return isOfKind("sw", path) || isOfKind("yardJson", path) || isOfKind("dashYml", path);
+  return isOfKind("sw", path) || isOfKind("yard", path) || isOfKind("dash", path);
 }
 
 export function isEditable(path: string): boolean {
