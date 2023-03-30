@@ -1,7 +1,7 @@
 schema_version: 1
 
 name: "rhpam-7/rhpam-kogito-runtime-native-rhel8"
-version: "7.11.0"
+version: "7.13.3"
 from: "registry.redhat.io/ubi8/ubi-minimal:latest"
 description: "RHPAM Runtime image for Kogito based on Quarkus native image"
 

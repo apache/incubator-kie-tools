@@ -24,6 +24,14 @@ Feature: rhpam-kogito-builder-rhel8 feature.
     And file /home/kogito/.m2/settings.xml should contain <id>redhat-techpreview-repository</id>
     And file /home/kogito/.m2/settings.xml should contain <url>https://maven.repository.redhat.com/techpreview/all</url>
 
+  Scenario: Check if the expected message is printed if native build is enabled
+    Given s2i build /tmp/kogito-examples from dmn-example using nightly-main and runtime-image rhpam-7/rhpam-kogito-runtime-jvm-rhel8:latest
+      | variable       | value          |
+      | RUNTIME_TYPE   | quarkus        |
+      | NATIVE         | true           |
+      | KOGITO_VERSION | 2.0.0-SNAPSHOT |
+    Then s2i build log should contain Container Image rhpam-7/rhpam-kogito-builder-rhel8 does not supports native builds, please refer to the documentation.
+
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly
     Given s2i build /tmp/kogito-examples from dmn-example using nightly-main and runtime-image rhpam-7/rhpam-kogito-runtime-jvm-rhel8:latest
       | variable       | value          |
@@ -56,7 +64,7 @@ Feature: rhpam-kogito-builder-rhel8 feature.
       | variable            | value          |
       | RUNTIME_TYPE        | quarkus        |
       | NATIVE              | false          |
-      | KOGITO_VERSION | 2.0.0-SNAPSHOT |        
+      | KOGITO_VERSION      | 2.0.0-SNAPSHOT |
       | PROJECT_GROUP_ID    | com.mycompany  |
       | PROJECT_ARTIFACT_ID | myproject      |
       | PROJECT_VERSION     | 2.0-SNAPSHOT   |

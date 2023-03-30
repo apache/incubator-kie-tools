@@ -246,8 +246,10 @@ def update_kogito_module_version(module_dir, target_version):
     :param module_dir: directory where cekit modules are hold
     :param target_version: version to set into the module
     """
+
     image_version = retrieve_image_version()
     file_updated = False
+
     try:
         module_file = os.path.join(module_dir, "module.yaml")
         with open(module_file) as module:

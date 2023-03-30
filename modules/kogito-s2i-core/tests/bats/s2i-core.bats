@@ -347,6 +347,8 @@ teardown() {
     echo "result= ${lines[@]}"
     echo "status= $status"
 
+    echo "${lines[1]}"
+
     [ "$status" -eq 0 ]
     [ "${lines[0]}" = "---> Installing native application binaries" ]
     [ "${lines[1]}" = "'target/app-runner' -> '"${KOGITO_HOME}"/bin/app-runner'" ]
@@ -455,6 +457,17 @@ teardown() {
     [ "${result}" = "${expected}" ]
 }
 
+@test "Check if the expected message is printed if native build is enabled" {
+    QUARKUS_PLATFORM_VERSION="1.2.3.4"
+    JBOSS_IMAGE_NAME="rhpam-7/kogito-builder"
+    NATIVE=true
+    mkdir /tmp/src
+    run build_kogito_app
+    echo "result   = $(echo ${lines[0]} |  sed -r 's/\x1B\[(;?[0-9]{1,3})+[mGK]//g')"
+    [ "$status" -eq 10 ]
+    # remove color from the log_warning func
+    [ "$(echo ${lines[0]} |  sed -r 's/\x1B\[(;?[0-9]{1,3})+[mGK]//g')" = "WARN Container Image rhpam-7/kogito-builder does not supports native builds, please refer to the documentation." ]
+}
 
 @test "test if the Quarkus platform properties are correctly returned for using custom values" {
     QUARKUS_PLATFORM_VERSION="12"

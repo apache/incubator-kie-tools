@@ -1,7 +1,7 @@
 schema_version: 1
 
 name: "rhpam-7/rhpam-kogito-builder-rhel8"
-version: "7.11.0"
+version: "7.13.3"
 from: "registry.redhat.io/ubi8/ubi-minimal:latest"
 description: "RHPAM Platform for building Kogito based on Quarkus or SpringBoot"
 
@@ -25,8 +25,8 @@ envs:
     example: "springboot"
     description: "Defines the runtime type of your kogito application. Allowed values are 'springboot' or 'quarkus'. Default value is quarkus."
   - name: NATIVE
-    example: true
-    description: If set to true, perform a native build. Only supported for RUNTIME_TYPE is 'quarkus'.
+    value: false
+    description: Not supported on RHPAM Kogito builder image, please refer the documentation.
   - name: JAVA_OPTIONS
     example: "-Dquarkus.log.level=DEBUG"
     description: JVM options passed to the Java command.
@@ -46,9 +46,6 @@ modules:
     - name: org.kie.kogito.system.user
     - name: org.kie.kogito.logging
     - name: org.kie.kogito.launch.scripts
-    - name: org.kie.kogito.graalvm.installer
-      version: "22.2.0-java-11"
-    - name: org.kie.kogito.graalvm.scripts
     - name: org.kie.kogito.openjdk
       version: "11"
     - name: org.kie.kogito.dynamic.resources

@@ -21,25 +21,25 @@ log_info "----> RUNTIME_TYPE has been set to $runtime_type"
 
 case ${runtime_type} in 
     "quarkus")
-	if [ "${NATIVE^^}" == "TRUE" ]; then
-	      CONFIGURE_SCRIPTS=(
+        if [ "${NATIVE^^}" == "TRUE" ] && [[ ! "${JBOSS_IMAGE_NAME}" =~ "rhpam-7" ]]; then
+            CONFIGURE_SCRIPTS=(
                 "${KOGITO_HOME}"/launch/configure-maven.sh
                 "${KOGITO_HOME}"/launch/memory-limit.sh
-              )
-	else
-	      CONFIGURE_SCRIPTS=(
+            )
+        else
+            CONFIGURE_SCRIPTS=(
                 "${KOGITO_HOME}"/launch/configure-maven.sh
-              )
-	fi
+            )
+        fi
     ;;
     "springboot") 
-              CONFIGURE_SCRIPTS=(
-                "${KOGITO_HOME}"/launch/configure-maven.sh
-              )
+        CONFIGURE_SCRIPTS=(
+            "${KOGITO_HOME}"/launch/configure-maven.sh
+        )
     ;;
     *)
-              log_error "${runtime_type} is not supported."
-              exit 1
+        log_error "${runtime_type} is not supported."
+        exit 1
 esac
 
 

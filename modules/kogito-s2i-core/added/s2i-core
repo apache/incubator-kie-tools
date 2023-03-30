@@ -89,7 +89,12 @@ function build_kogito_app() {
 
     nativeBuild=""
     if [ "${NATIVE^^}" == "TRUE" ]; then
-        nativeBuild="-Dnative"
+        if [[ "${JBOSS_IMAGE_NAME}" =~ "rhpam-7" ]]; then
+            log_warning "Container Image ${JBOSS_IMAGE_NAME} does not supports native builds, please refer to the documentation."
+            exit 10
+        else
+            nativeBuild="-Dnative"
+        fi
     fi
 
     if [ "${SCRIPT_DEBUG}" != "true" ]; then

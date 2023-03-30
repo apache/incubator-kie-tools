@@ -30,6 +30,10 @@ DYNAMIC_RESOURCES_OPTS="$(${JBOSS_CONTAINER_JAVA_JVM_MODULE}/java-default-option
 case ${runtime_type} in 
     "quarkus")  
         if [ "${NATIVE^^}" == "TRUE" ]; then
+            if [[ "${JBOSS_IMAGE_NAME}" =~ "rhpam-7" ]]; then
+                log_warning "Container Image ${JBOSS_IMAGE_NAME} does not supports native builds, please refer to the documentation."
+                exit 10
+            fi
             # shellcheck disable=SC2086
             exec "${KOGITO_HOME}"/bin/*-runner ${JAVA_OPTIONS} ${KOGITO_QUARKUS_S2I_PROPS} \
                 -Dquarkus.http.host=0.0.0.0 -Djava.library.path="${KOGITO_HOME}"/ssl-libs \

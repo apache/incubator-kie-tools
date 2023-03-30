@@ -15,18 +15,18 @@ items:
         openshift.io/provider-display-name: Kie Group.
     spec:
       tags:
-        - name: '7.11.0'
+        - name: '7.13.3'
           annotations:
             description: RHPAM Runtime image for Kogito based on Quarkus or SpringBoot JVM image
             iconClass: icon-jbpm
             tags: rhpam-kogito,runtime,kogito,quarkus,springboot,jvm
             supports: quarkus
-            version: '7.11.0'
+            version: '7.13.3'
           referencePolicy:
             type: Local
           from:
             kind: DockerImage
-            name: registry.redhat.io/rhpam-7/rhpam-kogito-runtime-jvm-rhel8:7.11.0
+            name: registry.redhat.io/rhpam-7/rhpam-kogito-runtime-jvm-rhel8:7.13.3
   - kind: ImageStream
     apiVersion: v1
     metadata:
@@ -36,18 +36,18 @@ items:
         openshift.io/provider-display-name: Kie Group.
     spec:
       tags:
-        - name: '7.11.0'
+        - name: '7.13.3'
           annotations:
             description: RHPAM Runtime image for Kogito based on Quarkus native image
             iconClass: icon-jbpm
             tags: rhpam-kogito,runtime,kogito,quarkus,native
             supports: quarkus
-            version: '7.11.0'
+            version: '7.13.3'
           referencePolicy:
             type: Local
           from:
             kind: DockerImage
-            name: registry.redhat.io/rhpam-7/rhpam-kogito-runtime-native-rhel8:7.11.0
+            name: registry.redhat.io/rhpam-7/rhpam-kogito-runtime-native-rhel8:7.13.3
   - kind: ImageStream
     apiVersion: v1
     metadata:
@@ -57,16 +57,16 @@ items:
         openshift.io/provider-display-name: Kie Group.
     spec:
       tags:
-        - name: '7.11.0'
+        - name: '7.13.3'
           annotations:
             description: RHPAM Platform for building Kogito based on Quarkus or SpringBoot
             iconClass: icon-jbpm
             tags: rhpam-kogito,builder,kogito,quarkus,springboot
             supports: quarkus
-            version: '7.11.0'
+            version: '7.13.3'
           referencePolicy:
             type: Local
           from:
             kind: DockerImage
-            name: registry.redhat.io/rhpam-7/rhpam-kogito-builder-rhel8:7.11.0
+            name: registry.redhat.io/rhpam-7/rhpam-kogito-builder-rhel8:7.13.3
 
