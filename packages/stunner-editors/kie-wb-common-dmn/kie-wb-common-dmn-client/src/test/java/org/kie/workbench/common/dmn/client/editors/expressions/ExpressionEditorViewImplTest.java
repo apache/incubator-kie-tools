@@ -827,14 +827,18 @@ public class ExpressionEditorViewImplTest {
 
         view.setExpression(NODE_UUID, hasExpression, Optional.empty(), false);
 
-        ExpressionProps expressionProps = view.getDefaultExpressionDefinition(LITERAL_EXPRESSION.getText());
+        ExpressionProps expressionProps = view.getDefaultExpressionDefinition(LITERAL_EXPRESSION.getText(), BuiltInType.UNDEFINED.getName());
 
-        verify(literalExpressionEditorDefinition).enrich(any(), any(), any());
+        verify(literalExpressionEditorDefinition).enrichRootExpression(any(), any(), any(), eq(BuiltInType.UNDEFINED.getName()));
 
         assertThat(expressionProps)
                 .isInstanceOf(LiteralProps.class)
                 .isNotNull()
                 .extracting(expression -> expression.logicType)
                 .isEqualTo(LITERAL_EXPRESSION.getText());
+
+        assertThat(expressionProps)
+                .extracting(expression -> expression.dataType)
+                .isEqualTo(BuiltInType.UNDEFINED.getName());
     }
 }

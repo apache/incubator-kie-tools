@@ -115,11 +115,11 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
     []
   );
 
-  const getDefaultListItem = useCallback((): ExpressionDefinition => {
+  const getDefaultListItem = useCallback((dataType: DmnBuiltInDataType): ExpressionDefinition => {
     return {
       id: generateUuid(),
       logicType: ExpressionDefinitionLogicType.Undefined,
-      dataType: DmnBuiltInDataType.Undefined,
+      dataType: dataType,
     };
   }, []);
 
@@ -127,7 +127,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
     (args: { beforeIndex: number }) => {
       setExpression((prev: ListExpressionDefinition) => {
         const newItems = [...prev.items];
-        newItems.splice(args.beforeIndex, 0, getDefaultListItem());
+        newItems.splice(args.beforeIndex, 0, getDefaultListItem(prev.dataType));
         return { ...prev, items: newItems };
       });
     },
@@ -152,7 +152,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
     (args: { rowIndex: number }) => {
       setExpression((prev: ListExpressionDefinition) => {
         const newItems = [...(prev.items ?? [])];
-        newItems.splice(args.rowIndex, 1, getDefaultListItem());
+        newItems.splice(args.rowIndex, 1, getDefaultListItem(prev.dataType));
         return {
           ...prev,
           items: newItems,

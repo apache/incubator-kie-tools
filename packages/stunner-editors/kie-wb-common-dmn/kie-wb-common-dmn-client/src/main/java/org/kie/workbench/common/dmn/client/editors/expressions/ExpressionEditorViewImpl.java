@@ -521,17 +521,21 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         dataTypePageActiveEvent.fire(new DataTypePageTabActiveEvent());
     }
 
-    public ExpressionProps getDefaultExpressionDefinition(String logicType) {
+    public ExpressionProps getDefaultExpressionDefinition(String logicType, String dataType) {
         return expressionEditorDefinitionsSupplier
                 .get()
                 .getExpressionEditorDefinition(ExpressionType.getTypeByText(logicType))
-                .map(this::generateExpressionProps)
+                .map(expressionExpressionEditorDefinition -> generateExpressionProps(expressionExpressionEditorDefinition, dataType))
                 .orElseThrow(IllegalStateException::new);
     }
 
-    private ExpressionProps generateExpressionProps(final ExpressionEditorDefinition<Expression> expressionExpressionEditorDefinition) {
+    private ExpressionProps generateExpressionProps(final ExpressionEditorDefinition<Expression> expressionExpressionEditorDefinition,
+                                                    final String dataType) {
         final Optional<Expression> modelExpression = expressionExpressionEditorDefinition.getModelClass();
-        expressionExpressionEditorDefinition.enrich(Optional.of(getNodeUUID()), hasExpression, modelExpression);
+        expressionExpressionEditorDefinition.enrichRootExpression(getNodeUUID(),
+                                                                  hasExpression,
+                                                                  modelExpression.orElse(null),
+                                                                  dataType);
         return modelExpression
                 .map(expression -> ExpressionPropsFiller.buildAndFillJsInteropProp(expression, getExpressionName(), getTypeRef()))
                 .orElseThrow(IllegalStateException::new);

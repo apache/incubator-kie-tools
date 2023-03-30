@@ -47,7 +47,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   const onLogicTypeSelected = useCallback(
     (logicType) => {
       setExpression((prev) => ({
-        ...beeGwtService!.getDefaultExpressionDefinition(logicType),
+        ...beeGwtService!.getDefaultExpressionDefinition(logicType, prev.dataType),
         logicType,
         isNested,
         id: prev.id ?? generateUuid(),

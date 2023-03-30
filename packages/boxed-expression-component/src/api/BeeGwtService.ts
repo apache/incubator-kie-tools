@@ -20,7 +20,7 @@ import { ExpressionDefinition } from "./ExpressionDefinition";
  * This interface defines all the API methods which BoxedExpressionEditor component can use to dialog with GWT Layer
  */
 export interface BeeGwtService {
-  getDefaultExpressionDefinition(logicType: string): ExpressionDefinition;
+  getDefaultExpressionDefinition(logicType: string, dataType: string): ExpressionDefinition;
   openDataTypePage: () => void; // Just open the data types tab
   selectObject: (uuid?: string) => void; // Changes the Properties panel
 }

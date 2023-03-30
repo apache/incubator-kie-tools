@@ -41,11 +41,12 @@ public class ExpressionEditorService {
      * Given a logic type, it returns its default Expression definition based on the current Expression.
      * It supports both root and nested expressions.
      * @param logicType The selected logicType (see. ExpressionType.java)
+     * @param dataType The expression dataType
      * @return The default Expression definition as ExpressionProps
      */
     @JsMethod
-    public static ExpressionProps getDefaultExpressionDefinition(final String logicType) {
-        return expressionEditorView.getDefaultExpressionDefinition(logicType);
+    public static ExpressionProps getDefaultExpressionDefinition(final String logicType, final String dataType) {
+        return expressionEditorView.getDefaultExpressionDefinition(logicType, dataType);
     }
 
     /**
