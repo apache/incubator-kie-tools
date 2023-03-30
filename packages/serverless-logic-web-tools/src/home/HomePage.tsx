@@ -87,7 +87,8 @@ import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Showcase } from "./Showcase";
-import { FileTypes, splitFiles, SupportedFileExtensions } from "../extension";
+import { splitFiles, SupportedFileExtensions } from "../extension";
+import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { APP_NAME } from "../AppConstants";
 
 export function HomePage() {
