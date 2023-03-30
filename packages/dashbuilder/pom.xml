@@ -469,7 +469,6 @@
     <module>kie-soup-dataset</module>
     <module>dashbuilder-project-storage</module>
     <module>appformer</module>
-    <module>dashbuilder-backend</module>
     <module>dashbuilder-shared</module>
     <module>dashbuilder-client</module>
     <module>dashbuilder-runtime-parent</module>
