@@ -28,6 +28,5 @@
     <description>Uberfire Widgets Commons Services</description>
     <modules>
         <module>uberfire-widgets-service-api</module>
-        <module>uberfire-widgets-service-backend</module>
     </modules>
 </project>
