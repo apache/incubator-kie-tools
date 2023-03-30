@@ -144,7 +144,7 @@ public class HasActionsTest extends HasTranslationGeneralTest {
 
     @Test
     public void actionsArrayNullTest() {
-        assertTranslations(TEST_STRING,
+        assertTranslations(TEST_STRING + "\r\n",
                            hasAction.getActionStringFromArray(null),
                            "Actions.null");
     }
@@ -153,7 +153,7 @@ public class HasActionsTest extends HasTranslationGeneralTest {
     public void actionsArrayEmptyTest() {
         ActionNode[] actions = new ActionNode[0];
 
-        assertTranslations(TEST_STRING,
+        assertTranslations(TEST_STRING + "\r\n",
                            hasAction.getActionStringFromArray(actions),
                            "Actions.null");
     }

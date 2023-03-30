@@ -43,7 +43,7 @@ public class HasBranchesTest extends HasTranslationGeneralTest {
 
     @Test
     public void oneBranchNoNameNoActionsTest() {
-        assertTranslations(TEST_STRING + ": null\r\n" + TEST_STRING + "\r\n",
+        assertTranslations(TEST_STRING + ": null\r\n" + TEST_STRING + "\r\n\r\n",
                            hasBranches.getBranchesString(array(new ParallelStateBranch())),
                            "Branch.title", "Actions.null");
     }
@@ -52,7 +52,7 @@ public class HasBranchesTest extends HasTranslationGeneralTest {
     public void oneBranchWithNameNoActionsTest() {
         ParallelStateBranch branch = new ParallelStateBranch();
         branch.setName(NAME);
-        assertTranslations(TEST_STRING + ": " + NAME + "\r\n" + TEST_STRING + "\r\n",
+        assertTranslations(TEST_STRING + ": " + NAME + "\r\n" + TEST_STRING + "\r\n\r\n",
                            hasBranches.getBranchesString(array(branch)),
                            "Branch.title", "Actions.null");
     }
@@ -73,7 +73,8 @@ public class HasBranchesTest extends HasTranslationGeneralTest {
     public void twoBranchesWithNameNoActionTest() {
         ParallelStateBranch branch = new ParallelStateBranch();
         branch.setName(NAME);
-        assertTranslations(TEST_STRING + ": " + NAME + "\r\n" + TEST_STRING + "\r\n" + TEST_STRING + ": " + NAME + "\r\n" + TEST_STRING + "\r\n",
+        assertTranslations(TEST_STRING + ": " + NAME + "\r\n" + TEST_STRING +
+                                   "\r\n\r\n" + TEST_STRING + ": " + NAME + "\r\n" + TEST_STRING + "\r\n\r\n",
                            hasBranches.getBranchesString(array(branch, branch)),
                            "Branch.title", "Actions.null", "Branch.title", "Actions.null");
     }

@@ -29,12 +29,13 @@ public interface HasBranches extends HasActions {
 
         StringBuilder result = new StringBuilder();
         for (ParallelStateBranch branch : branches) {
-            result.append(getTranslation(BRANCH))
+            result
+                    .append(getTranslation(BRANCH))
                     .append(": ")
                     .append(branch.getName())
+                    .append("\r\n")
+                    .append(getActionStringFromArray(branch.getActions()))
                     .append("\r\n");
-            result.append(getActionStringFromArray(branch.getActions()));
-            result.append("\r\n");
         }
 
         return result.toString();
