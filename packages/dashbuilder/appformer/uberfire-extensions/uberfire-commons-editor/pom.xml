@@ -32,7 +32,6 @@
 
   <modules>
     <module>uberfire-commons-editor-api</module>
-    <module>uberfire-commons-editor-backend</module>
     <module>uberfire-commons-editor-client</module>
   </modules>
 </project>

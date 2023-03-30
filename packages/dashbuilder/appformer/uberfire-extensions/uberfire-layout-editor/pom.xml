@@ -32,7 +32,6 @@
 
   <modules>
     <module>uberfire-layout-editor-api</module>
-    <module>uberfire-layout-editor-backend</module>
     <module>uberfire-layout-editor-client</module>
   </modules>
 </project>

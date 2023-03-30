@@ -51,7 +51,6 @@
     <module>dashbuilder-displayer-editor</module>
     <module>dashbuilder-renderers</module>
     <module>dashbuilder-navigation-client</module>
-    <module>dashbuilder-cms-client</module>
   </modules>
 
   <dependencies>

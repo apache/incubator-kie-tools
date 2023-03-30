@@ -657,7 +657,6 @@
     <module>uberfire-commons</module>
     <module>uberfire-api</module>
     <module>uberfire-client-api</module>
-    <module>uberfire-server</module>
     <module>uberfire-testing-utils</module>
     <module>uberfire-workbench</module>
     <module>uberfire-client-all</module>

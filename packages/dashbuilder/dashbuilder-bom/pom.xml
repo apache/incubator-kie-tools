@@ -190,19 +190,6 @@
         <artifactId>kie-soup-dataset-external</artifactId>
         <version>${project.version}</version>
       </dependency>      
-      <!-- APPFORMER -->
-      <!-- Server -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-server</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-server</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
 
       <!-- Workbench -->
       <dependency>
@@ -407,19 +394,6 @@
 
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-commons-editor-backend</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-commons-editor-backend</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
         <artifactId>uberfire-commons-editor-client</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -442,19 +416,6 @@
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-runtime-plugins-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-runtime-plugins-backend</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-runtime-plugins-backend</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -759,13 +720,6 @@
         <classifier>sources</classifier>
       </dependency>
 
-      <!-- Dashbuilder Backend -->
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-project-storage</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      
       <!-- Dashbuilder Client -->
 
       <dependency>
@@ -921,19 +875,6 @@
       <dependency>
         <groupId>org.dashbuilder</groupId>
         <artifactId>dashbuilder-navigation-client</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-cms-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-cms-client</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

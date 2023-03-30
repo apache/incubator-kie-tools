@@ -467,7 +467,6 @@
   <modules>
     <module>dashbuilder-bom</module>
     <module>kie-soup-dataset</module>
-    <module>dashbuilder-project-storage</module>
     <module>appformer</module>
     <module>dashbuilder-shared</module>
     <module>dashbuilder-client</module>
