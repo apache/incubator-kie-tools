@@ -360,7 +360,7 @@ public class DiagramEditorTest {
         tested.setContent("", rawJSON);
 
         verify(tested, times(1)).updateContent("", rawJSON, DocType.JSON);
-        verify(tested, never()).setNewContent("", rawJSON, any(DocType.class));
+        verify(tested, never()).setNewContent("", rawJSON, DocType.JSON);
         verify(diagramApi).setContentSuccess();
     }
 

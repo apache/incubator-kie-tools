@@ -18,9 +18,9 @@ secrets: http://testsecret.com
 states:
   - name: testState
     type: operation
+    end: true
     actions:
       - functionRef:
           refName: testFuncId
-    end: true
 specVersion: "0.8"
 version: "1.0"

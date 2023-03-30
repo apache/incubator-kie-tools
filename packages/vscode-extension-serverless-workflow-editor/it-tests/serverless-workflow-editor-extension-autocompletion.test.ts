@@ -173,21 +173,22 @@ describe("Serverless workflow editor - autocompletion tests", () => {
       await selectFromContentAssist(textEditor, "states");
       await textEditor.typeText(`name: testState
   type: operation
+end: true
 actions:
-  - functionRef:
-end: true`);
+  - functionRef:`);
 
       // complete the state with refName
-      await textEditor.moveCursor(22, 21);
+      await textEditor.moveCursor(23, 21);
       await textEditor.typeText(Key.ENTER);
       await textEditor.typeText(Key.TAB);
       await textEditor.typeText(Key.TAB);
       await selectFromContentAssist(textEditor, "refName");
+      await textEditor.moveCursor(24, 20);
       await selectFromContentAssist(textEditor, "testFuncId");
 
-      // check there are 3 nodes: start, testState, end
-      const nodes = await swfEditor.getAllNodesInMermaidDiagram();
-      expect(nodes.length).equal(3);
+      // check there are 2 nodes: testState, end
+      const nodeIds = await swfEditor.getAllNodeIds();
+      expect(nodeIds.length).equal(2);
 
       // check the final editor content is the same as expected result
       const editorContent = await textEditor.getText();
