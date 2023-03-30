@@ -16,6 +16,7 @@
 package org.dashbuilder.shared.marshalling;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +63,7 @@ public class LayoutTemplateJSONMarshaller {
     private static final String STYLE = "style";
     private static final String HEIGHT = "height";
     public static final String SETTINGS = "settings";
+    public static final String DISPLAYER = "displayer";
 
     // default values
     static final String DEFAULT_HEIGHT = "1";
@@ -212,7 +214,7 @@ public class LayoutTemplateJSONMarshaller {
         var dragTypeName = findDragComponent(object);
         var component = findComponentByShortcut(object).orElse(new LayoutComponent(dragTypeName));
         var propertiesObject = object.getObject(PROPERTIES);
-        var settings = object.getObject(SETTINGS);
+        var settings = object.getObject(Arrays.asList(SETTINGS, DISPLAYER));
         extractProperties(propertiesObject, component::addProperty);
         extractParts(object.getArray(PARTS)).forEach(part -> component.addPartProperties(part.getPartId(), part
                 .getCssProperties()));

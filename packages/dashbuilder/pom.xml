@@ -472,7 +472,6 @@
     <module>dashbuilder-backend</module>
     <module>dashbuilder-shared</module>
     <module>dashbuilder-client</module>
-    <module>dashbuilder-authoring</module>
     <module>dashbuilder-runtime-parent</module>
   </modules>
   <dependencies>
