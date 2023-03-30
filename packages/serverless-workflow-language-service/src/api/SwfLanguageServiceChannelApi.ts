@@ -20,7 +20,7 @@ import {
   EditorLanguageServiceCommandHandlers,
   EditorLanguageServiceCommandIds,
   EditorLanguageServiceCommandTypes,
-} from "@kie-tools/editor-language-service";
+} from "@kie-tools/editor-language-service/dist/api";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 

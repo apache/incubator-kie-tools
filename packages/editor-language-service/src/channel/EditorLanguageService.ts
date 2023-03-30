@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-export * from "./SwfJsonLanguageService";
-export * from "./SwfLanguageService";
-export * from "./SwfYamlLanguageService";
-export * from "./matchNodeWithLocation";
-export * from "./refValidation";
-export * from "./nodeUpUntilType";
-export * from "./types";
-export * from "./indentText";
-export * from "./getNodeFormat";
-export * from "./getLineContentFromOffset";
+import * as jsonc from "jsonc-parser";
+import { posix as posixPath } from "path";
+import { TextDocument } from "vscode-languageserver-textdocument";
+import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
+import { FileLanguage } from "../api";
+import { findNodesAtLocation } from "./findNodesAtLocation";

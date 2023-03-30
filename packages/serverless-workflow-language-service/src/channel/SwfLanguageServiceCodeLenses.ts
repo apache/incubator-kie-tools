@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { findNodesAtLocation } from "@kie-tools/editor-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, Position } from "vscode-languageserver-types";
 import {
@@ -21,7 +22,6 @@ import {
   SwfLanguageServiceCommandExecution,
   SwfLanguageServiceCommandTypes,
 } from "../api";
-import { findNodesAtLocation } from "./findNodesAtLocation";
 import { SwfLanguageServiceConfig } from "./SwfLanguageService";
 import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode, SwfLsNodeType } from "./types";
 

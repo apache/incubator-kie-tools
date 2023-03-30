@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import { findNodesAtLocation } from "@kie-tools/editor-language-service/dist/channel";
 import { nodeUpUntilType } from "./nodeUpUntilType";
-import { findNodesAtLocation } from "./findNodesAtLocation";
 import { SwfJsonPath, SwfLsNode } from "./types";
 
 /**

@@ -15,8 +15,8 @@
  */
 
 import { SwfRef, swfRefValidationMap } from "./swfRefValidationMap";
-import { findNodesAtLocation } from "./findNodesAtLocation";
 import { SwfLsNode } from "./types";
+import { findNodesAtLocation } from "@kie-tools/editor-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { Diagnostic } from "vscode-languageserver-types";
 

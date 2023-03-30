@@ -15,10 +15,10 @@
  */
 import {
   findNodeAtOffset,
-  findNodesAtLocation,
   SwfYamlLanguageService,
   SwfJsonLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { findNodesAtLocation } from "@kie-tools/editor-language-service/dist/channel";
 import { defaultConfig, defaultJqCompletionsConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
 import { treat } from "./testUtils";
 

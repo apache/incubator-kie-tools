@@ -3105,6 +3105,12 @@ importers:
       jsonata:
         specifier: ^1.8.3
         version: 1.8.3
+      jsonc-parser:
+        specifier: ^3.0.0
+        version: 3.2.0
+      vscode-languageserver-textdocument:
+        specifier: ^1.0.4
+        version: 1.0.7
       vscode-languageserver-types:
         specifier: ^3.16.0
         version: 3.17.2
@@ -6168,7 +6174,7 @@ importers:
   packages/serverless-workflow-language-service:
     dependencies:
       "@kie-tools/editor-language-service":
-        specifier: workspace:^0.0.0
+        specifier: workspace:*
         version: link:../editor-language-service
       "@kie-tools/serverless-workflow-jq-expressions":
         specifier: workspace:*

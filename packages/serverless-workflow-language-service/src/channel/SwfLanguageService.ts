@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { findNodesAtLocation } from "@kie-tools/editor-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
   SwfCatalogSourceType,
@@ -26,7 +27,6 @@ import { posix as posixPath } from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
-import { findNodesAtLocation } from "./findNodesAtLocation";
 import { doRefValidation } from "./refValidation";
 import {
   SwfCompletionItemServiceCatalogService,
