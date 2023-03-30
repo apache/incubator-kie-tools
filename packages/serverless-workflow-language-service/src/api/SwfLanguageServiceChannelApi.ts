@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import {
   EditorLanguageServiceCommandArgs,
+  EditorLanguageServiceCommandExecution,
+  EditorLanguageServiceCommandHandlers,
+  EditorLanguageServiceCommandIds,
   EditorLanguageServiceCommandTypes,
 } from "@kie-tools/editor-language-service";
-import { EditorLanguageServiceCommandExecution } from "@kie-tools/editor-language-service";
-import { EditorLanguageServiceCommandIds } from "@kie-tools/editor-language-service";
-import { EditorLanguageServiceCommandHandlers } from "@kie-tools/editor-language-service";
+import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
 export interface SwfLanguageServiceChannelApi {
   kogitoSwfLanguageService__getCompletionItems(args: {
@@ -64,4 +64,4 @@ export type SwfLanguageServiceCommandHandlers = EditorLanguageServiceCommandHand
 >;
 
 export interface SwfLanguageServiceCommandExecution<T extends SwfLanguageServiceCommandTypes>
-  extends EditorLanguageServiceCommandExecution<T, SwfLanguageServiceCommandArgs[T]> {}
+  extends EditorLanguageServiceCommandExecution<T, SwfLanguageServiceCommandArgs> {}

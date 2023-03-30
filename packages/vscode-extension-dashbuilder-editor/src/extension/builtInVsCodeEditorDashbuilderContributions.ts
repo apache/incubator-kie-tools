@@ -37,7 +37,7 @@ export function setupBuiltInVsCodeEditorDashbuilderContributions(args: {
   kieEditorsStore: VsCodeKieEditorStore;
 }) {
   const dashbuilderLsCommandHandlers: DashbuilderLanguageServiceCommandHandlers = {
-    "dashbuilder.ls.commands.OpenCompletionItems": (cmdArgs: any) => {
+    "editor.ls.commands.OpenCompletionItems": (cmdArgs: any) => {
       if (!vscode.window.activeTextEditor) {
         return;
       }

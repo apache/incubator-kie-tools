@@ -28,9 +28,9 @@ export function initAugmentationCommands(
   channelApi: MessageBusClientApi<DashbuilderEditorChannelApi>
 ): DashbuilderLanguageServiceCommandIds {
   return {
-    "dashbuilder.ls.commands.OpenCompletionItems": editorInstance.addCommand(
+    "editor.ls.commands.OpenCompletionItems": editorInstance.addCommand(
       0,
-      async (ctx, args: DashbuilderLanguageServiceCommandArgs["dashbuilder.ls.commands.OpenCompletionItems"]) => {
+      async (ctx, args: DashbuilderLanguageServiceCommandArgs["editor.ls.commands.OpenCompletionItems"]) => {
         editorInstance.setPosition({
           lineNumber: args.newCursorPosition.line + 1,
           column: args.newCursorPosition.character + 1,

@@ -31,7 +31,7 @@ export type DashBuilderLanguageServiceCodeLensesFunctionsArgs = {
 export const DashbuilderLanguageServiceCodeLenses = {
   createNewDashboard: (): CodeLens[] => {
     const position = Position.create(0, 0);
-    const command: DashbuilderLanguageServiceCommandTypes = "dashbuilder.ls.commands.OpenCompletionItems";
+    const command: DashbuilderLanguageServiceCommandTypes = "editor.ls.commands.OpenCompletionItems";
 
     return [
       {

@@ -50,7 +50,7 @@ describe("Code lenses", () => {
       range: { start: position, end: position },
       command: {
         title: "Create a dashboard",
-        command: "dashbuilder.ls.commands.OpenCompletionItems",
+        command: "editor.ls.commands.OpenCompletionItems",
         arguments: [{ newCursorPosition: position }],
       },
     } as CodeLens);

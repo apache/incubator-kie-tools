@@ -2424,6 +2424,9 @@ importers:
 
   packages/dashbuilder-language-service:
     dependencies:
+      "@kie-tools/editor-language-service":
+        specifier: workspace:^0.0.0
+        version: link:../editor-language-service
       "@kie-tools/yaml-language-server":
         specifier: workspace:*
         version: link:../yaml-language-server

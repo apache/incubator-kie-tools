@@ -22,5 +22,22 @@ export enum FileLanguage {
   YAML = "yaml",
 }
 
+/**
+ * Get the file language from a filename or path
+ *
+ * @param fileName the filename or path
+ * @returns the file language, null if not found
+ */
+export const getFileLanguage = (fileName: string): FileLanguage | null => {
+  if (/\.json$/i.test(fileName)) {
+    return FileLanguage.JSON;
+  }
+
+  if (/\.(yml|yaml)$/i.test(fileName)) {
+    return FileLanguage.YAML;
+  }
+
+  return null;
+};
+
 export * from "./EditorLanguageServiceChannelApi";
-export * from "./EditorOffsetsApi";

@@ -27,7 +27,7 @@ export interface EditorLanguageServiceChannelApi {
   kogitoEditorLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]>;
 }
 
-export type EditorLanguageServiceCommandTypes<T extends string> = T | "editor.ls.commands.OpenCompletionItems";
+export type EditorLanguageServiceCommandTypes<T extends string = never> = T | "editor.ls.commands.OpenCompletionItems";
 
 export type EditorLanguageServiceCommandArgs = {
   "editor.ls.commands.OpenCompletionItems": { newCursorPosition: Position };
@@ -35,11 +35,11 @@ export type EditorLanguageServiceCommandArgs = {
 
 export type EditorLanguageServiceCommandIds<T extends string> = Record<T, string>;
 
-export type EditorLanguageServiceCommandHandlers<T extends string, A extends EditorLanguageServiceCommandArgs> = {
-  [K in T]: (args: A) => any;
+export type EditorLanguageServiceCommandHandlers<T extends keyof A, A extends EditorLanguageServiceCommandArgs> = {
+  [K in T]: (args: A[K]) => any;
 };
 
-export interface EditorLanguageServiceCommandExecution<T, A> {
+export interface EditorLanguageServiceCommandExecution<T extends keyof A, A extends EditorLanguageServiceCommandArgs> {
   name: T;
-  args: A;
+  args: A[T];
 }

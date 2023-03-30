@@ -15,6 +15,8 @@
  */
 import * as jsonata from "jsonata";
 
+/* TODO: SwfOffsetsApi: rewrite the SwfOffsetsApi adding those functionalities to SwfLanguageService */
+
 export type StateBlockOffset = {
   start: number;
   end: number;
