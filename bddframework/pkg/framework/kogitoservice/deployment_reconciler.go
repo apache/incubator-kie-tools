@@ -77,11 +77,7 @@ func (d *deploymentReconciler) Reconcile() error {
 	}
 
 	// Process Delta
-	if err = d.processDelta(requestedResources, deployedResources); err != nil {
-		return err
-	}
-
-	return nil
+	return d.processDelta(requestedResources, deployedResources)
 }
 
 func (d *deploymentReconciler) createRequiredResources(imageName string) (map[reflect.Type][]client.Object, error) {

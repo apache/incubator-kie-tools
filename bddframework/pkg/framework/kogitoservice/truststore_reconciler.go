@@ -65,11 +65,7 @@ func (t *trustStoreReconciler) Reconcile() error {
 	}
 
 	t.mapTrustStorePassword(secret)
-	if err := t.mountTrustStoreFile(secret); err != nil {
-		return err
-	}
-
-	return nil
+	return t.mountTrustStoreFile(secret)
 }
 
 func (t *trustStoreReconciler) fetchAndValidateTrustStoreSecret() (*v1.Secret, error) {

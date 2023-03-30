@@ -56,10 +56,7 @@ func (d *deploymentProcessor) Process() (err error) {
 	if err = d.injectSupportingServiceEndpointIntoDeployment(); err != nil {
 		return err
 	}
-	if err = d.injectSecurityContextDefaults(); err != nil {
-		return err
-	}
-	return nil
+	return d.injectSecurityContextDefaults()
 }
 
 func (d *deploymentProcessor) injectSupportingServiceEndpointIntoDeployment() error {
@@ -73,10 +70,7 @@ func (d *deploymentProcessor) injectSupportingServiceEndpointIntoDeployment() er
 	if err := urlHandler.InjectTrustyEndpointOnDeployment(d.deployment); err != nil {
 		return err
 	}
-	if err := kubernetes.ResourceC(d.Client).Update(d.deployment); err != nil {
-		return err
-	}
-	return nil
+	return kubernetes.ResourceC(d.Client).Update(d.deployment)
 }
 
 func (d *deploymentProcessor) injectKogitoAnnotations() error {

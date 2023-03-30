@@ -59,10 +59,7 @@ func (r *resource) CreateIfNotExists(resource client.Object) error {
 	log.Info("Create resource if not exists", "kind", resource.GetObjectKind().GroupVersionKind().Kind, "name", resource.GetName(), "namespace", resource.GetNamespace())
 
 	if exists, err := r.ResourceReader.Fetch(resource); err == nil && !exists {
-		if err := r.ResourceWriter.Create(resource); err != nil {
-			return err
-		}
-		return nil
+		return r.ResourceWriter.Create(resource)
 	} else if err != nil {
 		log.Error(err, "Failed to fetch object. ")
 		return err
@@ -84,10 +81,7 @@ func (r *resource) CreateForOwner(resource client.Object, owner metav1.Object, s
 	if err != nil {
 		return err
 	}
-	if err := r.ResourceWriter.Create(resource); err != nil {
-		return err
-	}
-	return nil
+	return r.ResourceWriter.Create(resource)
 }
 
 func (r *resource) CreateFromYamlContent(yamlFileContent, namespace string, resourceRef client.Object, beforeCreate func(object interface{})) error {

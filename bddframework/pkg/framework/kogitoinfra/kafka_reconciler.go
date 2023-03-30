@@ -78,10 +78,7 @@ func (k *kafkaInfraReconciler) Reconcile() (resultErr error) {
 	if resultErr = k.updateKafkaRuntimePropsInStatus(kafkaInstance, api.QuarkusRuntimeType); resultErr != nil {
 		return resultErr
 	}
-	if resultErr = k.updateKafkaRuntimePropsInStatus(kafkaInstance, api.SpringBootRuntimeType); resultErr != nil {
-		return resultErr
-	}
-	return nil
+	return k.updateKafkaRuntimePropsInStatus(kafkaInstance, api.SpringBootRuntimeType)
 }
 
 func (k *kafkaInfraReconciler) getLatestKafkaCondition(kafka *v1beta2.Kafka) *v1beta2.KafkaCondition {
@@ -122,8 +119,5 @@ func (k *kafkaInfraReconciler) mustParseKafkaTransition(transitionTime string) (
 func (k *kafkaInfraReconciler) updateKafkaRuntimePropsInStatus(kafkaInstance *v1beta2.Kafka, runtime api.RuntimeType) error {
 	k.Log.Debug("going to Update Kafka runtime properties in kogito infra instance status", "runtime", runtime)
 	kafkaConfigReconciler := newKafkaConfigReconciler(k.infraContext, kafkaInstance, runtime)
-	if err := kafkaConfigReconciler.Reconcile(); err != nil {
-		return err
-	}
-	return nil
+	return kafkaConfigReconciler.Reconcile()
 }

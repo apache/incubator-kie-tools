@@ -72,11 +72,7 @@ func (i *routeReconciler) Reconcile() error {
 	}
 
 	// Process Delta
-	if err = i.processDelta(requestedResources, deployedResources); err != nil {
-		return err
-	}
-
-	return nil
+	return i.processDelta(requestedResources, deployedResources)
 }
 
 func (i *routeReconciler) createRequiredResources() (map[reflect.Type][]client.Object, error) {

@@ -55,8 +55,5 @@ func (m *mgmtConsoleSupportingServiceResource) Reconcile() (err error) {
 
 func (m *mgmtConsoleSupportingServiceResource) mgmtConsoleOnDeploymentCreate(deployment *appsv1.Deployment) error {
 	urlHandler := connector.NewURLHandler(m.Context, m.runtimeHandler, m.supportingServiceHandler)
-	if err := urlHandler.InjectDataIndexEndpointOnDeployment(deployment); err != nil {
-		return err
-	}
-	return nil
+	return urlHandler.InjectDataIndexEndpointOnDeployment(deployment)
 }

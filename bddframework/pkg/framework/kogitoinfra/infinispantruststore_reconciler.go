@@ -57,10 +57,7 @@ func (i *infinispanTrustStoreReconciler) Reconcile() error {
 	if err := i.addTrustStoreVolumeSource(); err != nil {
 		return err
 	}
-	if err := i.addTrustStoreSecret(); err != nil {
-		return err
-	}
-	return nil
+	return i.addTrustStoreSecret()
 }
 
 func (i *infinispanTrustStoreReconciler) isInfinispanCertEncryptionEnabled(infinispanInstance *infinispan.Infinispan) bool {
@@ -121,18 +118,12 @@ func (i *infinispanTrustStoreReconciler) createTrustStoreSecret() error {
 	if err := framework.SetOwner(i.instance, i.Scheme, kogitoInfraEncryptionSecret); err != nil {
 		return err
 	}
-	if err = kubernetes.ResourceC(i.Client).Create(kogitoInfraEncryptionSecret); err != nil {
-		return err
-	}
-	return nil
+	return kubernetes.ResourceC(i.Client).Create(kogitoInfraEncryptionSecret)
 }
 
 func (i *infinispanTrustStoreReconciler) addTrustStoreSecret() error {
 	if err := newInfinispanTrustStoreSecretReconciler(i.infraContext, api.QuarkusRuntimeType).Reconcile(); err != nil {
 		return err
 	}
-	if err := newInfinispanTrustStoreSecretReconciler(i.infraContext, api.SpringBootRuntimeType).Reconcile(); err != nil {
-		return err
-	}
-	return nil
+	return newInfinispanTrustStoreSecretReconciler(i.infraContext, api.SpringBootRuntimeType).Reconcile()
 }

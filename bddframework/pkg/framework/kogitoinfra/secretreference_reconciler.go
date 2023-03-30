@@ -49,11 +49,7 @@ func (s *secretReferenceReconciler) Reconcile() error {
 	}
 
 	// reconcileSecretVolumeReferences
-	if err := s.reconcileSecretVolumeReferences(); err != nil {
-		return err
-	}
-
-	return nil
+	return s.reconcileSecretVolumeReferences()
 }
 
 func (s *secretReferenceReconciler) reconcileSecretEnvFromReferences() error {

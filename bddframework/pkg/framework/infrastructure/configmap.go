@@ -87,10 +87,7 @@ func (c *configMapHandler) FetchConfigMapsForLabel(namespace string, labels map[
 
 func (c *configMapHandler) MountAsVolume(deployment *appsv1.Deployment, volumeReference api.VolumeReferenceInterface) error {
 	c.appendVolumeIntoDeployment(deployment, volumeReference)
-	if err := c.appendVolumeMountIntoDeployment(deployment, volumeReference); err != nil {
-		return err
-	}
-	return nil
+	return c.appendVolumeMountIntoDeployment(deployment, volumeReference)
 }
 
 func (c *configMapHandler) appendVolumeIntoDeployment(deployment *appsv1.Deployment, configMapReference api.VolumeReferenceInterface) {

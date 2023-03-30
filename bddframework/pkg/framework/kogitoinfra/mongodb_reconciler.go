@@ -135,8 +135,5 @@ func (i *mongoDBInfraReconciler) updateMongoDBRuntimePropsInStatus(mongoDBInstan
 	}
 
 	mongoDBCredentialReconciler := newMongoDBCredentialReconciler(i.infraContext, mongoDBInstance, runtime)
-	if err := mongoDBCredentialReconciler.Reconcile(); err != nil {
-		return err
-	}
-	return nil
+	return mongoDBCredentialReconciler.Reconcile()
 }

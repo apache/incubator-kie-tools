@@ -141,10 +141,7 @@ func (i *infinispanInfraReconciler) Reconcile() (resultErr error) {
 
 func (i *infinispanInfraReconciler) updateTrustStoreSecretReferenceInStatus(infinispanInstance *infinispan.Infinispan) error {
 	infinispanTrustStoreReconciler := newInfinispanTrustStoreReconciler(i.infraContext, infinispanInstance)
-	if err := infinispanTrustStoreReconciler.Reconcile(); err != nil {
-		return err
-	}
-	return nil
+	return infinispanTrustStoreReconciler.Reconcile()
 }
 
 func (i *infinispanInfraReconciler) updateInfinispanRuntimePropsInStatus(infinispanInstance *infinispan.Infinispan, runtime api.RuntimeType) error {
@@ -155,8 +152,5 @@ func (i *infinispanInfraReconciler) updateInfinispanRuntimePropsInStatus(infinis
 	}
 
 	infinispanCredentialReconciler := newInfinispanCredentialReconciler(i.infraContext, infinispanInstance, runtime)
-	if err := infinispanCredentialReconciler.Reconcile(); err != nil {
-		return err
-	}
-	return nil
+	return infinispanCredentialReconciler.Reconcile()
 }

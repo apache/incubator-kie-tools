@@ -190,8 +190,5 @@ func (s *statusHandler) setSuccessfulConditions(conditions *[]metav1.Condition, 
 }
 
 func (s *statusHandler) updateStatus(instance api.KogitoBuildInterface) error {
-	if err := kubernetes.ResourceC(s.Client).UpdateStatus(instance); err != nil {
-		return err
-	}
-	return nil
+	return kubernetes.ResourceC(s.Client).UpdateStatus(instance)
 }

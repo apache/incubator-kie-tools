@@ -49,11 +49,7 @@ func (i *configMapReferenceReconciler) Reconcile() error {
 	}
 
 	// reconcileConfigMapVolumeReferences
-	if err := i.reconcileConfigMapVolumeReferences(); err != nil {
-		return err
-	}
-
-	return nil
+	return i.reconcileConfigMapVolumeReferences()
 }
 
 func (i *configMapReferenceReconciler) reconcileConfigMapEnvFromReferences() error {

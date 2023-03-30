@@ -74,10 +74,7 @@ func (c *secretHandler) MustFetchSecret(key types.NamespacedName) (*corev1.Secre
 
 func (c *secretHandler) MountAsVolume(deployment *appsv1.Deployment, volumeReference api.VolumeReferenceInterface) error {
 	c.appendVolumeIntoDeployment(deployment, volumeReference)
-	if err := c.appendVolumeMountIntoDeployment(deployment, volumeReference); err != nil {
-		return err
-	}
-	return nil
+	return c.appendVolumeMountIntoDeployment(deployment, volumeReference)
 }
 
 func (c *secretHandler) appendVolumeIntoDeployment(deployment *appsv1.Deployment, secretReference api.VolumeReferenceInterface) {

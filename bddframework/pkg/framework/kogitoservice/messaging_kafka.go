@@ -32,10 +32,7 @@ func (k *kafkaMessagingDeployer) CreateRequiredResources(service api.KogitoServi
 	if err != nil || infra == nil {
 		return err
 	}
-	if err := k.createRequiredKafkaTopics(infra, service); err != nil {
-		return err
-	}
-	return nil
+	return k.createRequiredKafkaTopics(infra, service)
 }
 
 func (k *kafkaMessagingDeployer) createRequiredKafkaTopics(infra api.KogitoInfraInterface, service api.KogitoService) error {
