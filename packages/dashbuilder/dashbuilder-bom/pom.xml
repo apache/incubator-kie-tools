@@ -727,19 +727,6 @@
 
       <dependency>
         <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-dataset-editor</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-dataset-editor</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
         <artifactId>dashbuilder-renderer-default</artifactId>
         <version>${project.version}</version>
       </dependency>

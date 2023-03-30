@@ -46,7 +46,6 @@
     <module>dashbuilder-dataset-client</module>
     <module>dashbuilder-displayer-client</module>
     <module>dashbuilder-widgets</module>
-    <module>dashbuilder-dataset-editor</module>
     <module>dashbuilder-displayer-screen</module>
     <module>dashbuilder-displayer-editor</module>
     <module>dashbuilder-renderers</module>
