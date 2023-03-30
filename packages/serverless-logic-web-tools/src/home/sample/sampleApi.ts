@@ -16,23 +16,31 @@
 
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
 import { Octokit } from "@octokit/rest";
-import { extname, dirname, join } from "path";
-import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
-import { Sample } from "./SampleCard";
+import { extname, join } from "path";
+import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 
-interface GitHubFileInfo {
+interface GitTreeItem {
+  path: string;
+  type: "blob" | "tree";
+}
+
+interface FileData {
+  content: string;
+  encoding: BufferEncoding;
+}
+
+interface SampleDefinitionFile {
+  sampleId: string;
+  definitionPath: string;
+}
+
+interface GitHubRepoInfo {
   org: string;
   repo: string;
   ref: string;
-  path: string;
 }
 
-export const kieSamplesRepo: GitHubFileInfo = {
-  org: "kiegroup",
-  repo: "kie-samples",
-  ref: process.env["WEBPACK_REPLACE__samplesRepositoryRef"]!,
-  path: "samples",
-};
+type GitHubFileInfo = GitHubRepoInfo & { path: string };
 
 export type SampleCategory = "serverless-workflow" | "serverless-decision" | "dashbuilder";
 
@@ -41,6 +49,10 @@ const SAMPLE_DEFINITION_FILE = "definition.json";
 const SAMPLE_TEMPLATE_FOLDER = "template";
 
 const SVG_EXTENSION = ".svg";
+
+const SAMPLE_FOLDER = "samples";
+
+const SAMPLE_TEMPLATE_DEFINITION_FILE = `${SAMPLE_TEMPLATE_FOLDER}/${SAMPLE_DEFINITION_FILE}`;
 
 type SampleStatus = "ok" | "out of date" | "deprecated";
 
@@ -53,7 +65,8 @@ interface SampleDefinition {
   tags: string[];
 }
 
-export interface RepoContentType {
+interface ContentData {
+  type: string;
   download_url: string;
   git_url: string;
   html_url: string;
@@ -61,139 +74,181 @@ export interface RepoContentType {
   path: string;
   sha: string;
   size: number;
-  type: string;
   url: string;
-  _links: {
-    self: string;
-    git: string;
-    html: string;
-  };
 }
 
-export function fetchFile(args: { octokit: Octokit; fileInfo: GitHubFileInfo }) {
-  return args.octokit.repos
-    .getContent({
+export type Sample = {
+  sampleId: string;
+  definition: SampleDefinition;
+  svgContent: string;
+};
+
+export const KIE_SAMPLES_REPO: GitHubFileInfo = {
+  org: "kiegroup",
+  repo: "kie-samples",
+  ref: process.env["WEBPACK_REPLACE__samplesRepositoryRef"]!,
+  path: "samples",
+};
+
+async function fetchFileContent(args: { octokit: Octokit; fileInfo: GitHubFileInfo }): Promise<string | undefined> {
+  try {
+    const content = await args.octokit.repos.getContent({
       repo: args.fileInfo.repo,
       owner: args.fileInfo.org,
       ref: args.fileInfo.ref,
       path: args.fileInfo.path,
-    })
-    .then((res) => res)
-    .catch((e) => {
-      console.debug(`Error fetching ${args.fileInfo.path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
-      return fetch(
-        `https://raw.githubusercontent.com/${args.fileInfo.org}/${args.fileInfo.repo}/${args.fileInfo.ref}/${args.fileInfo.path}`
-      ).then((res) => (res.ok ? res.text() : Promise.resolve(undefined)));
+    });
+    if (content) {
+      const fileData = content.data as FileData;
+      return decoder.decode(new Uint8Array(Buffer.from(fileData.content, fileData.encoding)));
+    }
+  } catch (e) {
+    console.debug(`Error fetching ${args.fileInfo.path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
+    const rawFileResponse = await fetch(
+      `https://raw.githubusercontent.com/${args.fileInfo.org}/${args.fileInfo.repo}/${args.fileInfo.ref}/${args.fileInfo.path}`
+    );
+    if (rawFileResponse.ok) {
+      return await rawFileResponse.text();
+    }
+  }
+}
+
+async function fetchFolderFiles(args: {
+  octokit: Octokit;
+  fileInfo: GitHubFileInfo;
+}): Promise<ContentData[] | undefined> {
+  try {
+    const folderContent = await args.octokit.repos.getContent({
+      repo: args.fileInfo.repo,
+      owner: args.fileInfo.org,
+      ref: args.fileInfo.ref,
+      path: args.fileInfo.path,
+    });
+
+    if (!folderContent || !folderContent.data) {
+      return;
+    }
+
+    return folderContent.data as ContentData[];
+  } catch (e) {
+    console.debug(`Error fetching ${args.fileInfo.path} with Octokit.`);
+  }
+}
+
+async function listSampleDefinitionFiles(args: {
+  octokit: Octokit;
+  repoInfo: GitHubRepoInfo;
+}): Promise<SampleDefinitionFile[]> {
+  const response = await args.octokit.request("GET /repos/:org/:repo/git/trees/:ref", {
+    org: args.repoInfo.org,
+    repo: args.repoInfo.repo,
+    ref: args.repoInfo.ref,
+    recursive: 1,
+  });
+
+  return response.data.tree
+    .filter((item: GitTreeItem) => item.type === "blob")
+    .map((item: GitTreeItem) => item.path)
+    .filter(
+      (path: string) =>
+        path.startsWith(`${SAMPLE_FOLDER}/`) &&
+        path.endsWith(`/${SAMPLE_DEFINITION_FILE}`) &&
+        path !== join(SAMPLE_FOLDER, SAMPLE_TEMPLATE_DEFINITION_FILE)
+    )
+    .map((path: string) => {
+      const match = path.match(/^samples\/(.+?)\//)!;
+      const sampleId = decodeURIComponent(match[1]);
+      return { sampleId, definitionPath: path };
     });
 }
 
-export const fetchSampleDefinitions = async (octokit: Octokit): Promise<Sample[]> => {
-  const res = await fetchFile({
+export async function fetchSampleDefinitions(octokit: Octokit): Promise<Sample[]> {
+  const sampleDefinitionFiles = await listSampleDefinitionFiles({
     octokit,
-    fileInfo: {
-      org: kieSamplesRepo.org,
-      repo: kieSamplesRepo.repo,
-      ref: kieSamplesRepo.ref,
-      path: decodeURIComponent(kieSamplesRepo.path),
-    },
+    repoInfo: { ...KIE_SAMPLES_REPO },
   });
 
-  const sampleDirs = ((res as any)?.data).filter((sample: RepoContentType) => sample.name !== SAMPLE_TEMPLATE_FOLDER);
-
-  const promises = sampleDirs.map((sample: RepoContentType) => {
-    return fetchFile({
+  const samples: Sample[] = [];
+  for (const definitionFile of sampleDefinitionFiles) {
+    const fileContent = await fetchFileContent({
       octokit,
       fileInfo: {
-        org: kieSamplesRepo.org,
-        repo: kieSamplesRepo.repo,
-        ref: kieSamplesRepo.ref,
-        path: decodeURIComponent(`${kieSamplesRepo.path}/${sample.name}`),
+        ...KIE_SAMPLES_REPO,
+        path: definitionFile.definitionPath,
       },
     });
-  });
 
-  return Promise.all(promises).then((promiseData) => {
-    return Promise.all(
-      promiseData.map((sampleData) => {
-        return Promise.all(
-          sampleData.data.map(async (files: RepoContentType) => {
-            let svgResponse;
-            let definitionRes;
+    if (!fileContent) {
+      console.error(`Could not read sample definition for ${definitionFile.sampleId}`);
+      continue;
+    }
 
-            if (files.name === SAMPLE_DEFINITION_FILE) {
-              const rawUrl = new URL((files as RepoContentType).download_url);
-              definitionRes = await fetch(rawUrl.toString());
-              if (!definitionRes.ok) {
-                throw new Error(
-                  `Sample definition Error ${definitionRes.status}${
-                    definitionRes.statusText ? `- ${definitionRes.statusText}` : ""
-                  }`
-                );
-              }
-              const content = JSON.parse(await definitionRes?.text()) as SampleDefinition;
+    const definition = JSON.parse(fileContent) as SampleDefinition;
+    const svgContent = await fetchFileContent({
+      octokit,
+      fileInfo: {
+        org: KIE_SAMPLES_REPO.org,
+        repo: KIE_SAMPLES_REPO.repo,
+        ref: KIE_SAMPLES_REPO.ref,
+        path: join("samples", definitionFile.sampleId, definition.cover),
+      },
+    });
 
-              if (content) {
-                const sampleDirPath = dirname(rawUrl.href);
-                const sampleId = sampleDirPath.split("/").pop()!;
-                const svgUrl = new URL(join(sampleDirPath, content.cover));
-                svgResponse = await fetch(svgUrl.toString());
-                if (!svgResponse.ok) {
-                  throw new Error(
-                    `SVG Error ${svgResponse.status}${svgResponse.statusText ? `- ${svgResponse.statusText}` : ""}`
-                  );
-                }
-                const svgContent = await svgResponse.text();
+    if (!svgContent) {
+      console.error(`Could not read sample svg for ${definitionFile.sampleId}`);
+      continue;
+    }
 
-                return {
-                  sampleId,
-                  name: content.title,
-                  description: content.description,
-                  category: content.category,
-                  svg: svgContent,
-                };
-              }
-            }
-          })
-        ).then((data) => {
-          return data?.reduce((r: any, c: any) => Object.assign(r, c), {});
-        });
-      })
-    );
-  });
-};
+    samples.push({
+      sampleId: definitionFile.sampleId,
+      definition,
+      svgContent,
+    });
+  }
 
-export const fetchSample = async (args: { octokit: Octokit; sampleId: string }) => {
-  const res = await fetchFile({
+  if (samples.length === 0) {
+    throw new Error("No samples could be loaded.");
+  }
+
+  return samples;
+}
+
+export async function fetchSampleFiles(args: { octokit: Octokit; sampleId: string }): Promise<LocalFile[]> {
+  const sampleFolderFiles = await fetchFolderFiles({
     octokit: args.octokit,
     fileInfo: {
-      org: kieSamplesRepo.org,
-      repo: kieSamplesRepo.repo,
-      ref: kieSamplesRepo.ref,
-      path: decodeURIComponent(`${kieSamplesRepo.path}/${args.sampleId}`),
+      ...KIE_SAMPLES_REPO,
+      path: decodeURIComponent(`${KIE_SAMPLES_REPO.path}/${args.sampleId}`),
     },
   });
-  if (res === undefined) {
+
+  if (!sampleFolderFiles) {
     throw new Error(`Sample ${args.sampleId} not found`);
   }
 
-  const sampleFiles = [] as LocalFile[];
+  const sampleFiles: LocalFile[] = [];
+  for (const file of sampleFolderFiles) {
+    if (file.name === SAMPLE_DEFINITION_FILE || extname(file.name) === SVG_EXTENSION) {
+      continue;
+    }
 
-  return Promise.all(
-    (res as any)?.data?.map(async (file: RepoContentType) => {
-      if (file.name === SAMPLE_DEFINITION_FILE || extname(file.name) === SVG_EXTENSION) {
-        return;
-      }
-      const rawUrl = new URL((file as RepoContentType).download_url);
-      const response = await fetch(rawUrl.toString());
-      if (!response.ok) {
-        throw new Error(`${response.status}${response.statusText ? `- ${response.statusText}` : ""}`);
-      }
-      const content = await response?.text();
+    const fileContent = await fetchFileContent({
+      octokit: args.octokit,
+      fileInfo: {
+        org: KIE_SAMPLES_REPO.org,
+        repo: KIE_SAMPLES_REPO.repo,
+        ref: KIE_SAMPLES_REPO.ref,
+        path: file.path,
+      },
+    });
 
-      sampleFiles.push({
-        path: decodeURIComponent(rawUrl.pathname),
-        fileContents: encoder.encode(content),
-      });
-    })
-  ).then(() => sampleFiles);
-};
+    if (!fileContent) {
+      throw new Error(`Could not get file contents for ${file.path}`);
+    }
+    sampleFiles.push({
+      path: decodeURIComponent(file.path).split(`${SAMPLE_FOLDER}/${args.sampleId}`)[1],
+      fileContents: encoder.encode(fileContent),
+    });
+  }
+  return sampleFiles;
+}

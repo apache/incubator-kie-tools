@@ -17,9 +17,9 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
-import { Sample, SampleCard } from "./SampleCard";
+import { SampleCard } from "./SampleCard";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { fetchSampleDefinitions } from "./sampleApi";
+import { fetchSampleDefinitions, Sample } from "./sampleApi";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { SampleCardSkeleton } from "./SampleCardSkeleton";
 import { SamplesLoadError } from "./SamplesLoadError";
@@ -39,7 +39,9 @@ export function Showcase() {
   useEffect(() => {
     fetchSampleDefinitions(settingsDispatch.github.octokit)
       .then((data) => {
-        const sortedSamples = data.sort((a: Sample, b: Sample) => priority[a.category] - priority[b.category]);
+        const sortedSamples = data.sort(
+          (a: Sample, b: Sample) => priority[a.definition.category] - priority[b.definition.category]
+        );
         setSamples([...sortedSamples]);
       })
       .catch((e) => {
@@ -48,7 +50,7 @@ export function Showcase() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [settingsDispatch.github.octokit]);
 
   return (
     <>
@@ -74,7 +76,7 @@ export function Showcase() {
               }}
             >
               {samples.map((sample) => (
-                <SampleCard sample={sample} key={Math.random()} />
+                <SampleCard sample={sample} key={`sample-${sample.sampleId}`} />
               ))}
             </Gallery>
           )}

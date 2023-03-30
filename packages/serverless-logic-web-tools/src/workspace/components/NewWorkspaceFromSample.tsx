@@ -28,7 +28,7 @@ import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
-import { fetchSample, kieSamplesRepo } from "../../home/sample/sampleApi";
+import { fetchSampleFiles, KIE_SAMPLES_REPO } from "../../home/sample/sampleApi";
 
 export function NewWorkspaceFromSample() {
   const workspaces = useWorkspaces();
@@ -40,7 +40,7 @@ export function NewWorkspaceFromSample() {
   const sampleId = useQueryParam(QueryParams.SAMPLE_ID) ?? "";
 
   useEffect(() => {
-    fetchSample({ octokit: settingsDispatch.github.octokit, sampleId })
+    fetchSampleFiles({ octokit: settingsDispatch.github.octokit, sampleId })
       .then((sampleFiles) => workspaces.createWorkspaceFromLocal({ localFiles: sampleFiles }))
       .then(({ workspace, suggestedFirstFile }) => {
         if (!suggestedFirstFile) {
@@ -62,7 +62,7 @@ export function NewWorkspaceFromSample() {
   return (
     <>
       <OnlineEditorPage>
-        {openingError && <EditorPageErrorPage path={`${kieSamplesRepo.path}/${sampleId}`} errors={[openingError]} />}
+        {openingError && <EditorPageErrorPage path={`${KIE_SAMPLES_REPO.path}/${sampleId}`} errors={[openingError]} />}
         {!openingError && (
           <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
             <Bullseye>

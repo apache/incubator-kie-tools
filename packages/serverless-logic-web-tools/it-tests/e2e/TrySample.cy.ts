@@ -23,13 +23,19 @@ describe("Serverless Logic Web Tools - Try samples test", () => {
 
   it("should check all samples are present", () => {
     cy.ouia({ ouiaType: "sample-title" }).should(($titles) => {
-      expect($titles).length(6);
-      expect($titles.eq(0)).text("Greetings");
-      expect($titles.eq(1)).text("Greetings with Kafka events");
-      expect($titles.eq(2)).text("Compensation");
-      expect($titles.eq(3)).text("Dashbuilder Kitchensink");
-      expect($titles.eq(4)).text("Products Dashboard");
-      expect($titles.eq(5)).text("Serverless Workflow Report");
+      expect($titles).length(13);
+      expect($titles.eq(0)).text("Greetings workflow");
+      expect($titles.eq(1)).text("Dashbuilder Forms");
+      expect($titles.eq(2)).text("Dashbuilder Kitchensink");
+      expect($titles.eq(3)).text("FIFA World Cup 2023 Dashboard");
+      expect($titles.eq(4)).text("Github Repository Starts Dashboard");
+      expect($titles.eq(5)).text("Jupyter Hub Metrics");
+      expect($titles.eq(6)).text("Model Mesh Metrics");
+      expect($titles.eq(7)).text("Products Dashboard");
+      expect($titles.eq(8)).text("Quarkus Micrometer Monitoring");
+      expect($titles.eq(9)).text("Serverless Workflow Report");
+      expect($titles.eq(10)).text("Dashbuilder Simple Dashboard");
+      expect($titles.eq(11)).text("SVG Heatmap");
     });
   });
 

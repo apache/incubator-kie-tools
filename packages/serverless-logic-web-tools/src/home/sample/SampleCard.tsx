@@ -8,35 +8,21 @@ import { Link } from "react-router-dom";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
 import { FolderIcon, FileIcon, MonitoringIcon } from "@patternfly/react-icons/dist/js/icons";
-import { SampleCategory } from "./sampleApi";
+import { Sample, SampleCategory } from "./sampleApi";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
-export enum SamplesCategory {
-  SWF = "serverless-workflow",
-  SD = "serverless-decision",
-  DASH = "dashbuilder",
-}
-
-export type Sample = {
-  name: string;
-  sampleId: string;
-  svg: string;
-  description: string;
-  category: SampleCategory;
-};
-
-const tagMap: Record<SamplesCategory, { label: string; icon: React.ComponentClass; color: LabelProps["color"] }> = {
-  [SamplesCategory.SWF]: {
+const tagMap: Record<SampleCategory, { label: string; icon: React.ComponentClass; color: LabelProps["color"] }> = {
+  ["serverless-workflow"]: {
     label: "Serverless Workflow",
     icon: FileIcon,
     color: "orange",
   },
-  [SamplesCategory.SD]: {
+  ["serverless-decision"]: {
     label: "Serverless Decision",
     icon: FolderIcon,
     color: "blue",
   },
-  [SamplesCategory.DASH]: {
+  ["dashbuilder"]: {
     label: "Dashboard",
     icon: MonitoringIcon,
     color: "purple",
@@ -56,14 +42,14 @@ export function RenderSvg(props: { svg: string }) {
       const serializer = new XMLSerializer();
       return serializer.serializeToString(xml);
     } catch (e) {
-      console.log("SVG render error", e);
+      return "Cannot render SVG!";
     }
   }, [props.svg]);
 
   return (
     <div
       style={{ height: "100%", maxWidth: "100%", maxHeight: "400px", paddingTop: "30px" }}
-      dangerouslySetInnerHTML={{ __html: modifiedContent! }}
+      dangerouslySetInnerHTML={{ __html: modifiedContent }}
     />
   );
 }
@@ -71,7 +57,7 @@ export function RenderSvg(props: { svg: string }) {
 export function SampleCard(props: { sample: Sample }) {
   const routes = useRoutes();
 
-  const tag = useMemo(() => tagMap[props.sample.category], [props.sample.category]);
+  const tag = useMemo(() => tagMap[props.sample.definition.category], [props.sample.definition.category]);
 
   return (
     <Card isCompact={true} isFullHeight={true}>
@@ -86,12 +72,12 @@ export function SampleCard(props: { sample: Sample }) {
               &nbsp;&nbsp;<b>{tag.label}</b>
             </Label>
           </div>
-          <RenderSvg svg={props.sample.svg} />
+          <RenderSvg svg={props.sample.svgContent} />
         </GridItem>
         <GridItem md={6} style={{ display: "flex", flexDirection: "column" }}>
-          <CardTitle data-ouia-component-type="sample-title">{props.sample.name}</CardTitle>
+          <CardTitle data-ouia-component-type="sample-title">{props.sample.definition.title}</CardTitle>
           <CardBody isFilled={true}>
-            <Tooltip content={<div>{props.sample.description}</div>}>
+            <Tooltip content={<div>{props.sample.definition.description}</div>}>
               <Text
                 component="p"
                 style={{
@@ -103,7 +89,7 @@ export function SampleCard(props: { sample: Sample }) {
                   whiteSpace: "pre-wrap",
                 }}
               >
-                {props.sample.description}
+                {props.sample.definition.description}
               </Text>
             </Tooltip>
           </CardBody>

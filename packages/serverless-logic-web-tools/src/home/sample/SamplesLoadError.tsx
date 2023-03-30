@@ -36,7 +36,7 @@ export function SamplesLoadError(props: Props) {
   }, [props.errors]);
 
   return (
-    <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
+    <PageSection variant={"light"} isFilled={true} style={{ marginRight: "25px" }}>
       <EmptyState>
         <EmptyStateIcon icon={ExclamationTriangleIcon} />
         <TextContent>
