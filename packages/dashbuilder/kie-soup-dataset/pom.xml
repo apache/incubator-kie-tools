@@ -63,11 +63,6 @@
     <module>kie-soup-dataset-api</module>
     <module>kie-soup-dataset-shared</module>
     <module>kie-soup-dataset-core</module>
-    <module>kie-soup-dataset-sql</module>
-    <module>kie-soup-dataset-sql-tests</module>
-    <module>kie-soup-dataset-csv</module>
-    <module>kie-soup-dataset-prometheus</module>
-    <module>kie-soup-dataset-kafka</module>
     <module>kie-soup-dataset-external</module>
   </modules>
 
