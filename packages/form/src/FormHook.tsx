@@ -125,38 +125,6 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
     [onValidate, setFormInputs]
   );
 
-  const removeDeletedPropertiesAndAddDefaultValues = useCallback(
-    (formInputs: object, bridge: FormJsonSchemaBridge, previousBridge?: FormJsonSchemaBridge) => {
-      const propertiesDifference = diff(
-        getObjectByPath(previousBridge?.schema ?? { ...bridge.schema }, propertiesEntryPath) ?? {},
-        getObjectByPath(bridge.schema ?? {}, propertiesEntryPath) ?? {}
-      );
-
-      const defaultFormValues = Object.keys(bridge?.schema?.properties ?? {}).reduce((acc, property) => {
-        const field = bridge.getField(property);
-        if (field.default) {
-          acc[`${property}`] = field.default;
-        }
-        return acc;
-      }, {} as Record<string, any>);
-
-      // Remove property that has been deleted;
-      return Object.entries(propertiesDifference).reduce(
-        (form, [property, value]) => {
-          if (!value || value.type || value.$ref) {
-            delete (form as any)[property];
-          }
-          if (value?.format) {
-            (form as any)[property] = undefined;
-          }
-          return form;
-        },
-        { ...defaultFormValues, ...formInputs }
-      );
-    },
-    [propertiesEntryPath]
-  );
-
   // When the schema is updated it's necessary to update the bridge and the formInputs (remove deleted properties and
   // add default values to it)
   useEffect(() => {
@@ -167,28 +135,13 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
         delete entry.required;
         delete form.required;
       }
-      const bridge = formValidator.getBridge(form);
-      setJsonSchemaBridge((previousBridge) => {
-        setFormInputs((currentFormInputs) => {
-          const newFormInputs = removeDeletedPropertiesAndAddDefaultValues(
-            currentFormInputs,
-            bridge,
-            previousBridge
-          ) as Input;
-
-          if (Object.keys(diff(currentFormInputs ?? {}, newFormInputs ?? {})).length > 0) {
-            return newFormInputs;
-          }
-          return currentFormInputs;
-        });
-        return bridge;
-      });
+      setJsonSchemaBridge(formValidator.getBridge(form));
 
       setFormStatus(FormStatus.WITHOUT_ERROR);
     } catch (err) {
       setFormStatus(FormStatus.VALIDATOR_ERROR);
     }
-  }, [setFormInputs, formSchema, formValidator, entryPath, removeDeletedPropertiesAndAddDefaultValues, removeRequired]);
+  }, [setFormInputs, formSchema, formValidator, entryPath, removeRequired]);
 
   // Manage form status
   useEffect(() => {

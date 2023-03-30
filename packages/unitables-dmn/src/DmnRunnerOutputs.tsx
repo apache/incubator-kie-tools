@@ -15,11 +15,12 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
-import { DecisionResult, DmnSchemaProperties } from "./DmnTypes";
+import { DmnSchemaProperties } from "./DmnTypes";
 import { DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH } from "./DmnRunnerOutputsTable";
+import { DecisionResult } from "@kie-tools/form-dmn";
 
 interface OutputField {
   dataType: DmnBuiltInDataType;
@@ -156,17 +157,6 @@ function deepGenerateOutputTypesMapFields(
       outputTypeMap.set(name, { type: data.type, dataType, name, joinedName: name });
     }
     return { name, dataType: data.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH } as OutputTypesField;
-  });
-}
-
-// TODO: not used;
-function deepFlattenOutput(acc: any, entry: string, value: object) {
-  return Object.entries(value).map(([deepEntry, deepValue]) => {
-    if (typeof deepValue === "object" && deepValue !== null) {
-      deepFlattenOutput(acc, deepEntry, deepValue);
-    }
-    acc[`${entry}-${deepEntry}`] = deepValue;
-    return acc;
   });
 }
 

@@ -34,7 +34,7 @@ export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
 
   public getType(name: string) {
     const { format: fieldFormat, type } = super.getField(name);
-    // TODO: create custom components
+    // TODO: Luiz - create custom components
     if (fieldFormat === DAYS_AND_TIME_DURATION_FORMAT) {
       return String;
     }

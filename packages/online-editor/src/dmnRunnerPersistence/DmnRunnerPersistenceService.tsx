@@ -26,7 +26,6 @@ export const generateUuid = () => {
 
 const DMN_RUNNER_PERSISTENCE_JSON_VERSION = "v1";
 
-// TODO: use it!
 export enum DmnRunnerMode {
   FORM = "form",
   TABLE = "table",
@@ -42,14 +41,6 @@ export interface DmnRunnerPersistenceJson {
   configs: DmnRunnerPersistenceJsonConfigs;
   inputs: Array<InputRow>;
 }
-
-// DEFAULT VALUES
-// TODO: defualt width?
-export const DEFAULT_DMN_RUNNER_CONFIG_INPUT_WIDTH = 150;
-
-export const DEFAULT_DMN_RUNNER_CONFIG_INPUT: UnitablesCellConfigs = {
-  width: DEFAULT_DMN_RUNNER_CONFIG_INPUT_WIDTH,
-};
 
 export function getNewDefaultDmnRunnerPersistenceJson(): DmnRunnerPersistenceJson {
   return {

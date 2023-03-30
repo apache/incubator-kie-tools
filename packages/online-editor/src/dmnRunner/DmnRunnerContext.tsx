@@ -17,11 +17,10 @@
 import * as React from "react";
 import { useContext } from "react";
 import { DmnRunnerPersistenceJson } from "../dmnRunnerPersistence/DmnRunnerPersistenceService";
-import { KieSandboxExtendedServicesModelPayload } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { UnitablesInputsConfigs } from "@kie-tools/unitables";
 import { DmnRunnerProviderAction } from "./DmnRunnerProvider";
-import { InputRow, DmnSchema } from "@kie-tools/form-dmn";
+import { InputRow, DmnSchema, DecisionResult } from "@kie-tools/form-dmn";
 
 export interface DmnRunnerContextType {
   configs: UnitablesInputsConfigs;
@@ -33,6 +32,8 @@ export interface DmnRunnerContextType {
   canBeVisualized: boolean;
   jsonSchema?: DmnSchema;
   mode: DmnRunnerMode;
+  results: Array<DecisionResult[] | undefined>;
+  resultsDifference: Array<Array<object>>;
   status: DmnRunnerStatus;
 }
 
@@ -42,7 +43,6 @@ export interface DmnRunnerCallbacksContextType {
   onRowDuplicated: (args: { rowIndex: number }) => void;
   onRowReset: (args: { rowIndex: number }) => void;
   onRowDeleted: (args: { rowIndex: number }) => void;
-  preparePayload: (formData?: InputRow) => Promise<KieSandboxExtendedServicesModelPayload>;
   setDmnRunnerInputs: (newInputsRow: (previousInputs: Array<InputRow>) => Array<InputRow> | Array<InputRow>) => void;
   setDmnRunnerMode: (newMode: DmnRunnerMode) => void;
   setDmnRunnerConfigInputs: (

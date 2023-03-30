@@ -764,7 +764,9 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         refs.current?.get(rowIndex)?.set(columnIndex, new Set([...prev, ref]));
         // FIXME: Tiago
         //
-        // Having this commented introduces a bug where if you open a header cell popover, make a change, and click on another cell on the table, the popover will close but you won't be able to start typing directly on the active cell.
+        // Having this commented introduces a bug where if you open a header cell popover, make a change,
+        // and click on another cell on the table, the popover will close but you won't be able to start
+        // typing directly on the active cell.
         // On the other hand, if this is not commented, there's a very bad selection bug when adding/deleting rows/column.
         //
         // It's better to have the first bug for the first version, so let's leave this commented for now.

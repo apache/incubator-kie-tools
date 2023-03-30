@@ -41,13 +41,13 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
+const DATE_REGEX = /\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])T(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\dZ/;
+
 enum DmnFormResultStatus {
   EMPTY,
   ERROR,
   VALID,
 }
-
-const DATE_REGEX = /\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])T(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\dZ/;
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -63,13 +63,13 @@ export interface DecisionResultMessage {
   level: string;
 }
 
-export type Result = boolean | number | null | object | object[] | string;
+export type Result = boolean | number | null | object | object[] | string | Result[];
 
 export interface DecisionResult {
   decisionId: string;
   decisionName: string;
   result: Result;
-  messages: DecisionResultMessage[];
+  messages?: DecisionResultMessage[];
   evaluationStatus: EvaluationStatus;
 }
 
@@ -92,13 +92,21 @@ export interface DmnResult {
   messages: DecisionResultMessage[];
 }
 
-export function extractDifferences(current: DecisionResult[], previous: DecisionResult[]): object[] {
-  return current
-    .map((decisionResult: DecisionResult, index: number) => diff(previous?.[index] ?? {}, decisionResult ?? {}))
-    .map((difference: any) => {
-      delete difference.messages;
-      return difference;
-    });
+export function extractDifferences(
+  current: Array<DecisionResult[] | undefined>,
+  previous: Array<DecisionResult[] | undefined>
+): object[][] {
+  return current.map(
+    (decisionResults, index) =>
+      decisionResults
+        ?.map(
+          (decisionResult, jndex): Partial<DecisionResult> => diff(previous?.[index]?.[jndex] ?? [], decisionResult)
+        )
+        ?.map((difference) => {
+          delete difference.messages;
+          return difference;
+        }) ?? []
+  );
 }
 
 export function DmnFormResult({ openExecutionTab, ...props }: DmnFormResultProps) {

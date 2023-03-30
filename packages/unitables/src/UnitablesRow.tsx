@@ -51,7 +51,10 @@ export function UnitablesRow({
     [onSubmitRow, rowIndex]
   );
 
-  const onValidate = useCallback((model, error) => {}, []);
+  const onValidate = useCallback((inputs, error) => {
+    // returns the validation errors;
+    return null;
+  }, []);
 
   // Submits the table in the first render triggering the onValidate function
   useEffect(() => {

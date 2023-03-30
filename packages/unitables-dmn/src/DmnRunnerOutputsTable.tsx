@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { ErrorBoundary } from "@kie-tools/form";
+import { ErrorBoundary } from "@kie-tools/form/dist/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
@@ -23,7 +23,6 @@ import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamati
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import nextId from "react-id-generator";
 import { useDmnRunnerOutputs as useDmnRunnerOutputs } from "./DmnRunnerOutputs";
-import { DecisionResult, Result } from "./DmnTypes";
 import { DmnUnitablesI18n } from "./i18n";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import * as ReactTable from "react-table";
@@ -40,6 +39,7 @@ import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component
 import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import "./DmnRunnerOutputsTable.css";
+import { DecisionResult, Result } from "@kie-tools/form-dmn";
 
 interface Props {
   i18n: DmnUnitablesI18n;

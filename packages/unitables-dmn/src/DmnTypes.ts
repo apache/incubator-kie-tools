@@ -14,30 +14,4 @@
  * limitations under the License.
  */
 
-import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
-
-export enum EvaluationStatus {
-  SUCCEEDED = "SUCCEEDED",
-  SKIPPED = "SKIPPED",
-  FAILED = "FAILED",
-}
-
-export interface DecisionResultMessage {
-  severity: NotificationSeverity;
-  message: string;
-  messageType: string;
-  sourceId: string;
-  level: string;
-}
-
-export type Result = string | boolean | number | null | object | Result[];
-
 export type DmnSchemaProperties = { "x-dmn-type": string; type: string; $ref: string };
-
-export interface DecisionResult {
-  decisionId: string;
-  decisionName: string;
-  result: Result;
-  messages: DecisionResultMessage[];
-  evaluationStatus: EvaluationStatus;
-}

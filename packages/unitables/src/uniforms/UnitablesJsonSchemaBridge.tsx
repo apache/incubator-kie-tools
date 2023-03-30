@@ -26,8 +26,9 @@ import { UnitablesColumnType } from "../UnitablesTypes";
 export const FORMS_ID = "unitables-forms";
 export const AUTO_ROW_ID = "unitables-row";
 
-const DEFAULT_DATE_TIME_CELL_WDITH = 296;
-const DEFAULT_DATE_CELL_WIDTH = 180;
+const DEFAULT_DATE_TIME_CELL_WDITH = 340;
+const DEFAULT_DATE_CELL_WIDTH = 193;
+const DEFAULT_TIME_CELL_WIDTH = 152;
 
 export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   constructor(
@@ -50,26 +51,32 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
 
   public getField(name: string) {
     const field = super.getField(name);
-
-    if (field.type === "object") {
-      field.default = {};
-    } else if (field.type === "array") {
-      field.default = [];
-    } else if (field.type === "boolean") {
-      field.default = false;
-    } else if ((field.type === "string" || field.type === "number") && field.enum) {
+    if ((field.type === "string" || field.type === "number") && field.enum) {
       field.placeholder = this.i18n.schema.selectPlaceholder;
       field.direction = SelectDirection.up;
       field.menuAppendTo = document.body;
     } else if (!field.type) {
       field.type = "string";
     }
-
     return field;
   }
 
   public getDataType(field: Record<string, any>) {
-    const type = field.type ?? "string";
+    const xDmnType: string | undefined = field["x-dmn-type"];
+
+    let type: string | undefined;
+    if (!xDmnType) {
+      type = field.type;
+    } else {
+      const splitedXDmnType: string[] | undefined = xDmnType.split(":");
+      if (!splitedXDmnType) {
+        type = undefined;
+      } else if (splitedXDmnType.length > 2) {
+        type = splitedXDmnType[2].split("}")?.[0]?.trim();
+      } else {
+        type = splitedXDmnType[1];
+      }
+    }
 
     switch (type) {
       case "<Undefined>":
@@ -91,7 +98,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
       case "string":
         return { dataType: DmnBuiltInDataType.String, width: UNITABLES_COLUMN_MIN_WIDTH };
       case "time":
-        return { dataType: DmnBuiltInDataType.Time, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return { dataType: DmnBuiltInDataType.Time, width: DEFAULT_TIME_CELL_WIDTH };
       case "years and months duration":
         return { dataType: DmnBuiltInDataType.YearsMonthsDuration, width: UNITABLES_COLUMN_MIN_WIDTH };
       default:

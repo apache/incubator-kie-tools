@@ -390,6 +390,7 @@ export function EditorPage(props: Props) {
               workspaceFile={file.workspaceFile}
               isEditorReady={editor?.isReady}
               dmnLanguageService={dmnLanguageService}
+              editorPageDock={editorPageDock}
             >
               <Page>
                 <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />

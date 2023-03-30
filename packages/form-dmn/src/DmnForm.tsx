@@ -18,7 +18,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DmnValidator } from "./DmnValidator";
 import { dmnFormI18n } from "./i18n";
-import { FormComponent, FormComponentProps, FormProps } from "@kie-tools/form";
+import { FormComponent, FormProps } from "@kie-tools/form";
 import { DmnAutoFieldProvider } from "./uniforms/DmnAutoFieldProvider";
 
 export type InputRow = Record<string, string>;

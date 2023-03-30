@@ -28,6 +28,7 @@
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
     "@kie-tools/form": "workspace:*",
     "@kie-tools/form-dmn": "workspace:*",

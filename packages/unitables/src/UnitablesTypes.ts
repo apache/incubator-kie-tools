@@ -35,5 +35,5 @@ export interface UnitablesCellConfigs {
   width?: number;
 }
 
-// Can't use Record<string, DmnRunnerConfig | ConfigInputRow>;
+// Can't use Record<string, UnitablesCellConfigs | UnitablesInputsConfigs> because it can't handle recursive types;
 export type UnitablesInputsConfigs = { [x: string]: UnitablesCellConfigs | UnitablesInputsConfigs };

@@ -18,22 +18,18 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
-import { DecisionResult } from "@kie-tools/form-dmn";
-import { PanelId } from "../editor/EditorPageDockDrawer";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
-import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { ErrorBoundary } from "@kie-tools/form";
+import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { useOnlineI18n } from "../i18n";
 import { UnitablesWrapper } from "@kie-tools/unitables/dist/UnitablesWrapper";
 import { DmnRunnerOutputsTable } from "@kie-tools/unitables-dmn/dist/DmnRunnerOutputsTable";
 import { DmnUnitablesValidator } from "@kie-tools/unitables-dmn/dist/DmnUnitablesValidator";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import "./DmnRunnerTable.css";
 import setObjectValueByPath from "lodash/set";
 import cloneDeep from "lodash/cloneDeep";
@@ -42,7 +38,6 @@ import { DmnRunnerProviderActionType } from "./DmnRunnerProvider";
 export function DmnRunnerTable() {
   // STATEs
   const [dmnRunnerTableError, setDmnRunnerTableError] = useState<boolean>(false);
-  const [dmnRunnerResults, setDmnRunnerResults] = useState<Array<DecisionResult[] | undefined>>([]); // TODO: move results to provider;
 
   // REFs
   const dmnRunnerTableErrorBoundaryRef = useRef<ErrorBoundary>(null);
@@ -52,16 +47,14 @@ export function DmnRunnerTable() {
   const outputsScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
 
   // CUSTOM HOOKs
-  const extendedServices = useExtendedServices();
   const { i18n } = useOnlineI18n();
-  const { configs, error, inputs, jsonSchema } = useDmnRunnerState();
+  const { configs, error, inputs, jsonSchema, results } = useDmnRunnerState();
   const {
     dmnRunnerDispatcher,
     onRowAdded,
     onRowDuplicated,
     onRowReset,
     onRowDeleted,
-    preparePayload,
     setDmnRunnerInputs,
     setDmnRunnerMode,
     setDmnRunnerConfigInputs,
@@ -101,43 +94,6 @@ export function DmnRunnerTable() {
   //   window,
   //   useMemo(() => [".kie-tools--dmn-runner-table--drawer"], [])
   // );
-
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        Promise.all(inputs.map((data) => preparePayload(data)))
-          .then((payloads) =>
-            Promise.all(
-              payloads.map((payload) => {
-                if (canceled.get() || payload === undefined) {
-                  return;
-                }
-                return extendedServices.client.result(payload);
-              })
-            )
-          )
-          .then((results) => {
-            if (canceled.get()) {
-              return;
-            }
-
-            const runnerResults: Array<DecisionResult[] | undefined> = [];
-            for (const result of results) {
-              if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-                dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { error: true } });
-                break;
-              }
-              if (result) {
-                runnerResults.push(result.decisionResults);
-              }
-            }
-
-            setDmnRunnerResults(runnerResults);
-          });
-      },
-      [preparePayload, dmnRunnerDispatcher, inputs, extendedServices.client]
-    )
-  );
 
   useEffect(() => {
     inputsScrollableElementRef.current.current =
@@ -185,7 +141,7 @@ export function DmnRunnerTable() {
                             scrollableParentRef={outputsScrollableElementRef.current}
                             i18n={i18n.dmnRunner.table}
                             jsonSchemaBridge={jsonSchemaBridge}
-                            results={dmnRunnerResults}
+                            results={results}
                           />
                         </div>
                       </DrawerPanelContent>
@@ -206,7 +162,6 @@ export function DmnRunnerTable() {
                         dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { error } })
                       }
                       jsonSchemaBridge={jsonSchemaBridge}
-                      propertiesEntryPath={"definitions.InputSet"}
                       containerRef={inputsContainerRef}
                       onRowAdded={onRowAdded}
                       onRowDuplicated={onRowDuplicated}

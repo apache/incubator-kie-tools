@@ -20,22 +20,10 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
-import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
+import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { useOnlineI18n } from "../i18n";
-import {
-  DecisionResult,
-  DecisionResultMessage,
-  DmnForm,
-  DmnFormResult,
-  DmnResult,
-  InputRow,
-  extractDifferences,
-} from "@kie-tools/form-dmn";
-import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
-import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
+import { DmnForm, DmnFormResult, InputRow } from "@kie-tools/form-dmn";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
@@ -50,8 +38,9 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { DmnRunnerProviderActionType } from "./DmnRunnerProvider";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -78,8 +67,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   // STATEs
   const [formRef, setFormRef] = useState<HTMLFormElement | null>();
   const [drawerError, setDrawerError] = useState<boolean>(false);
-  const [dmnRunnerResults, setDmnRunnerResults] = useState<DecisionResult[]>(); // TODO: move results to provider;
-  const [dmnRunnerResponseDiffs, setDmnRunnerResponseDiffs] = useState<object[]>();
   const [dmnRunnerStylesConfig, setDmnRunnerStylesConfig] = useState<DmnRunnerStylesConfig>({
     contentWidth: "50%",
     contentHeight: "100%",
@@ -91,12 +78,10 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   // REFs
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
 
-  const extendedServices = useExtendedServices();
   const { i18n, locale } = useOnlineI18n();
-  const { currentInputIndex, error, inputs, mode, status, isExpanded, jsonSchema } = useDmnRunnerState();
-  const { dmnRunnerDispatcher, onRowAdded, preparePayload, setDmnRunnerInputs, setDmnRunnerMode } =
-    useDmnRunnerDispatch();
-  const previousFormError = usePrevious(error);
+  const { currentInputIndex, error, inputs, jsonSchema, results, resultsDifference } = useDmnRunnerState();
+  const { dmnRunnerDispatcher, onRowAdded, setDmnRunnerInputs, setDmnRunnerMode } = useDmnRunnerDispatch();
+  const previousError = usePrevious(error);
 
   const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
 
@@ -123,94 +108,11 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     }
   }, []);
 
-  const setExecutionNotifications = useCallback(
-    (result: DmnResult) => {
-      const decisionNameByDecisionId = result.decisionResults?.reduce(
-        (acc: Map<string, string>, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
-        new Map<string, string>()
-      );
-
-      const messagesBySourceId = result.messages?.reduce((acc, message) => {
-        const messageEntry = acc.get(message.sourceId);
-        if (!messageEntry) {
-          acc.set(message.sourceId, [message]);
-        } else {
-          acc.set(message.sourceId, [...messageEntry, message]);
-        }
-        return acc;
-      }, new Map<string, DecisionResultMessage[]>());
-
-      const notifications: Notification[] = [...(messagesBySourceId?.entries() ?? [])].flatMap(
-        ([sourceId, messages]) => {
-          const path = decisionNameByDecisionId?.get(sourceId) ?? "";
-          return messages.map((message: any) => ({
-            type: "PROBLEM",
-            path,
-            severity: message.severity,
-            message: `${message.messageType}: ${message.message}`,
-          }));
-        }
-      );
-      props.editorPageDock?.setNotifications(i18n.terms.execution, "", notifications);
-    },
-    [props.editorPageDock, i18n.terms.execution]
-  );
-
-  const updateDmnRunnerResults = useCallback(
-    async (formInputs: InputRow, canceled: Holder<boolean>) => {
-      if (status !== DmnRunnerStatus.AVAILABLE) {
-        return;
-      }
-
-      try {
-        const payload = await preparePayload(formInputs);
-        const result = await extendedServices.client.result(payload);
-        if (canceled.get()) {
-          return;
-        }
-
-        if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-          dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { error: true } });
-          return;
-        }
-
-        setExecutionNotifications(result);
-        setDmnRunnerResults((previousDmnRunnerResult: DecisionResult[]) => {
-          if (!result || !result.decisionResults) {
-            return;
-          }
-          const differences = extractDifferences(result.decisionResults, previousDmnRunnerResult);
-          if (differences?.length !== 0) {
-            setDmnRunnerResponseDiffs(differences);
-          }
-          return result.decisionResults;
-        });
-      } catch (e) {
-        setDmnRunnerResults(undefined);
-      }
-    },
-    [extendedServices.client, status, preparePayload, setExecutionNotifications, dmnRunnerDispatcher]
-  );
-
-  // Update outputs column on form change
+  // When the form breaks, if the user makes a new edit that fixes it, it will reset the form, and re-submit the inputs;
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (isExpanded && mode === DmnRunnerMode.FORM) {
-          updateDmnRunnerResults(formInputs ?? {}, canceled);
-        }
-      },
-      [formInputs, updateDmnRunnerResults, isExpanded, mode]
-    )
-  );
-
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        if (error) {
-          // if there is an error generating the form, the last form data is submitted
-          updateDmnRunnerResults(formInputs ?? {}, canceled);
-        } else if (previousFormError) {
+        if (previousError) {
           setTimeout(() => {
             formRef?.submit();
             Object.keys(formInputs ?? {}).forEach((propertyName) => {
@@ -219,7 +121,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           }, 0);
         }
       },
-      [formRef, error, formInputs, updateDmnRunnerResults, previousFormError]
+      [formRef, formInputs, previousError]
     )
   );
 
@@ -482,8 +384,8 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                   >
                     <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
                       <DmnFormResult
-                        results={dmnRunnerResults}
-                        differences={dmnRunnerResponseDiffs}
+                        results={results[currentInputIndex]}
+                        differences={resultsDifference[currentInputIndex]}
                         locale={locale}
                         notificationsPanel={true}
                         openExecutionTab={openExecutionTab}
