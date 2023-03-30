@@ -31,7 +31,6 @@
 
   <modules>
     <module>uberfire-widgets-properties-editor-api</module>
-    <module>uberfire-widgets-properties-editor-backend</module>
     <module>uberfire-widgets-properties-editor-client</module>
   </modules>
 </project>
