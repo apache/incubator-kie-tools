@@ -88,6 +88,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.CreatedBy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Description;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.FileName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Independent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
@@ -1530,6 +1531,7 @@ public class HashCodeAndEqualityTest {
 
                 .addTrueCase(new BusinessRuleTaskExecutionSet(new RuleLanguage(),
                                                               new RuleFlowGroup(),
+                                                              new FileName(),
                                                               new Namespace(),
                                                               new DecisionName(),
                                                               new DmnModelName(),
@@ -1540,6 +1542,7 @@ public class HashCodeAndEqualityTest {
                                                               new SLADueDate()),
                              new BusinessRuleTaskExecutionSet(new RuleLanguage(),
                                                               new RuleFlowGroup(),
+                                                              new FileName(),
                                                               new Namespace(),
                                                               new DecisionName(),
                                                               new DmnModelName(),
