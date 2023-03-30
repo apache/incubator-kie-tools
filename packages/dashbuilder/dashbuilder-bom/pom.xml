@@ -580,19 +580,6 @@
 
       <dependency>
         <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-kie-server-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-kie-server-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
         <artifactId>dashbuilder-navigation-api</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -613,33 +600,6 @@
       <dependency>
         <groupId>org.dashbuilder</groupId>
         <artifactId>dashbuilder-services-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <!-- Dashbuilder Shared -->
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-validations</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-validations</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-dsl</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-dsl</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -762,19 +722,6 @@
         <groupId>org.dashbuilder</groupId>
         <artifactId>dashbuilder-renderer-c3</artifactId>
         <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-widgets</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-widgets</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
       </dependency>
 
       <dependency>

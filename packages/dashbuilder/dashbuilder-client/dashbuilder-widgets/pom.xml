@@ -78,11 +78,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-validations</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-dataset-api</artifactId>
     </dependency>
@@ -115,11 +110,6 @@
     <dependency>
       <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-renderer-default</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-kie-server-api</artifactId>
     </dependency>
 
     <!-- Test dependencies -->

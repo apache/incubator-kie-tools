@@ -503,9 +503,6 @@
 
             <!-- Dashbuilder -->
             <compileSourcesArtifact>org.kie.soup:kie-soup-json</compileSourcesArtifact>
-            <compileSourcesArtifact>org.dashbuilder:dashbuilder-kie-server-api</compileSourcesArtifact>
-            <!-- <compileSourcesArtifact>org.dashbuilder:dashbuilder-widgets</compileSourcesArtifact> -->
-            <compileSourcesArtifact>org.dashbuilder:dashbuilder-validations</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-common-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-services-api</compileSourcesArtifact>
