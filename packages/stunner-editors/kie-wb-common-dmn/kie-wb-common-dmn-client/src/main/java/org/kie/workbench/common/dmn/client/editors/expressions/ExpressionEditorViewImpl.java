@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -355,16 +356,23 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     DomainObject findDomainObject(final String uuid) {
 
         if (innerExpressionMatches(uuid)) {
-            return (DomainObject) hasExpression;
+            return (DomainObject) getHasExpression();
         } else if (businessKnowledgeModelMatches(uuid)) {
             return getBusinessKnowledgeModel();
         } else {
-            final Optional<DomainObject> domainObject = hasExpression.getExpression().findDomainObject(uuid);
+            return findDomainObjectInCurrentExpression(uuid);
+        }
+    }
+
+    DomainObject findDomainObjectInCurrentExpression(final String uuid) {
+
+        if (!Objects.isNull(getHasExpression().getExpression())) {
+            final Optional<DomainObject> domainObject = getHasExpression().getExpression().findDomainObject(uuid);
             if (domainObject.isPresent()) {
                 return domainObject.get();
             }
-            return new NOPDomainObject();
         }
+        return new NOPDomainObject();
     }
 
     BusinessKnowledgeModel getBusinessKnowledgeModel() {
@@ -489,6 +497,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     /**
      * It executes a given expression command. Before executing it, it creates and UNDO command with the current model
      * status. Statement ordering matters: the UNDO command MUST be called before executing the expression command change.
+     *
      * @param expressionCommand
      */
     void executeUndoableExpressionCommand(final FillExpressionCommand expressionCommand) {

@@ -38,6 +38,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
@@ -83,6 +85,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
@@ -225,7 +228,7 @@ public class ExpressionEditorViewImplTest {
     @Mock
     private BaseExpressionGrid editor;
 
-    @Mock
+    @Mock(extraInterfaces = DomainObject.class)
     private HasExpression hasExpression;
 
     @Mock
@@ -778,5 +781,89 @@ public class ExpressionEditorViewImplTest {
         assertThat(expressionProps)
                 .extracting(expression -> expression.dataType)
                 .isEqualTo(BuiltInType.UNDEFINED.getName());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenObjectIsInsideHasExpression() {
+
+        final String uuid = "someUuid";
+        final DomainObject domainObject = mock(DomainObject.class);
+
+        doReturn(false).when(view).innerExpressionMatches(uuid);
+        doReturn(false).when(view).businessKnowledgeModelMatches(uuid);
+        doReturn(domainObject).when(view).findDomainObject(uuid);
+
+        final DomainObject foundDomainObject = view.findDomainObject(uuid);
+
+        assertEquals(domainObject, foundDomainObject);
+    }
+
+    @Test
+    public void testFindDomainObject_WhenObjectIsInsideBkm() {
+
+        final String uuid = "someUuid";
+        final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
+
+        doReturn(false).when(view).innerExpressionMatches(uuid);
+        doReturn(true).when(view).businessKnowledgeModelMatches(uuid);
+        doReturn(bkm).when(view).getBusinessKnowledgeModel();
+
+        final DomainObject foundDomainObject = view.findDomainObject(uuid);
+
+        assertEquals(bkm, foundDomainObject);
+    }
+
+    @Test
+    public void testFindDomainObject_WhenObjectIsTheInnerExpression() {
+
+        final String uuid = "someUuid";
+
+        doReturn(true).when(view).innerExpressionMatches(uuid);
+
+        final DomainObject foundDomainObject = view.findDomainObject(uuid);
+
+        assertEquals(hasExpression, foundDomainObject);
+    }
+
+    @Test
+    public void testFindDomainObjectInCurrentExpression_WhenInnerExpressionIsNull() {
+
+        when(hasExpression.getExpression()).thenReturn(null);
+
+        final DomainObject domainObject = view.findDomainObjectInCurrentExpression("randomUuid");
+
+        assertTrue(domainObject instanceof NOPDomainObject);
+    }
+
+    @Test
+    public void testFindDomainObjectInCurrentExpression_WhenIsNotFound() {
+
+        final String uuid = "uuid";
+        final Expression expression = mock(Expression.class);
+
+        when(expression.findDomainObject(uuid)).thenReturn(Optional.empty());
+        when(hasExpression.getExpression()).thenReturn(expression);
+
+        final DomainObject domainObject = view.findDomainObjectInCurrentExpression(uuid);
+
+        assertTrue(domainObject instanceof NOPDomainObject);
+        verify(expression).findDomainObject(uuid);
+    }
+
+    @Test
+    public void testFindDomainObjectInCurrentExpression_WhenIsFound() {
+
+        final String uuid = "uuid";
+        final Expression expression = mock(Expression.class);
+
+        final DomainObject domainObject = mock(DomainObject.class);
+        when(expression.findDomainObject(uuid)).thenReturn(Optional.of(domainObject));
+        when(hasExpression.getExpression()).thenReturn(expression);
+
+        final DomainObject result = view.findDomainObjectInCurrentExpression(uuid);
+
+        verify(expression).findDomainObject(uuid);
+        assertFalse(result instanceof NOPDomainObject);
+        assertEquals(domainObject, result);
     }
 }
