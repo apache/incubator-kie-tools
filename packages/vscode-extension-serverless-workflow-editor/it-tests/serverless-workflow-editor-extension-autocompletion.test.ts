@@ -142,7 +142,7 @@ describe("Serverless workflow editor - autocompletion tests", () => {
       const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
       const textEditor = await swfTextEditor.getSwfTextEditor();
 
-      await textEditor.moveCursor(8, 19);
+      await textEditor.moveCursor(9, 17);
       await textEditor.typeText(Key.ENTER);
 
       // check available content assist parameters
@@ -156,7 +156,6 @@ describe("Serverless workflow editor - autocompletion tests", () => {
         "events",
         "functions",
         "retries",
-        "start",
         "states",
         "timeouts",
       ]);
@@ -168,27 +167,30 @@ describe("Serverless workflow editor - autocompletion tests", () => {
       await selectFromContentAssist(textEditor, "specs»api.yaml#testFuncId");
 
       // add test state
-      await textEditor.moveCursor(17, 31);
+      await textEditor.moveCursor(19, 19);
       await textEditor.typeText(Key.ENTER);
       await selectFromContentAssist(textEditor, "states");
       await textEditor.typeText(`name: testState
   type: operation
-end: true
 actions:
-  - functionRef:`);
+  - functionRef: `);
 
       // complete the state with refName
-      await textEditor.moveCursor(23, 21);
+      await textEditor.moveCursor(24, 21);
       await textEditor.typeText(Key.ENTER);
       await textEditor.typeText(Key.TAB);
       await textEditor.typeText(Key.TAB);
       await selectFromContentAssist(textEditor, "refName");
-      await textEditor.moveCursor(24, 20);
       await selectFromContentAssist(textEditor, "testFuncId");
+      await textEditor.typeText(Key.ENTER);
+      await textEditor.typeText(Key.BACK_SPACE);
+      await textEditor.typeText(Key.BACK_SPACE);
+      await textEditor.typeText(Key.BACK_SPACE);
+      await textEditor.typeText("end: true");
 
-      // check there are 2 nodes: testState, end
-      const nodeIds = await swfEditor.getAllNodeIds();
-      expect(nodeIds.length).equal(2);
+      // check there are 3 nodes: start, testState, end
+      const nodes = await swfEditor.getAllNodeIds();
+      expect(nodes.length).equal(3);
 
       // check the final editor content is the same as expected result
       const editorContent = await textEditor.getText();
@@ -239,9 +241,15 @@ actions:
 
   async function selectFromContentAssist(textEditor: TextEditor, value: string): Promise<void> {
     const contentAssist = await textEditor.toggleContentAssist(true);
-    const item = await contentAssist?.getItem(value);
-    await sleep(500);
-    expect(await item?.getLabel()).contain(value);
-    await item?.click();
+    try {
+      const item = await contentAssist?.getItem(value);
+      await sleep(500);
+      expect(await item?.getLabel()).contain(value);
+      await item?.click();
+    } catch (e) {
+      throw new Error(
+        `The ContentAssist menu is not available or it was not possible to select the element '${value}'!`
+      );
+    }
   }
 });
