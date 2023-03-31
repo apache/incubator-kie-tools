@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { KnativeLabelNames, KubernetesLabelNames } from "@kie-tools-core/openshift/dist/api/ApiConstants";
-import { ListKnativeServices } from "@kie-tools-core/openshift/dist/api/knative/KnativeService";
-import { ListBuilds } from "@kie-tools-core/openshift/dist/api/kubernetes/Build";
-import { ListDeployments } from "@kie-tools-core/openshift/dist/api/kubernetes/Deployment";
+import { KnativeLabelNames, KubernetesLabelNames } from "@kie-tools-core/kubernetes-bridge/dist/api/ApiConstants";
+import { ListKnativeServices } from "@kie-tools-core/kubernetes-bridge/dist/api/knative/KnativeService";
+import { ListBuilds } from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/Build";
+import { ListDeployments } from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/Deployment";
 import {
   BuildDescriptor,
   BuildGroupDescriptor,
@@ -25,9 +25,9 @@ import {
   DeploymentGroupDescriptor,
   KnativeServiceDescriptor,
   KnativeServiceGroupDescriptor,
-} from "@kie-tools-core/openshift/dist/api/types";
-import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
-import { ResourceLabelNames } from "@kie-tools-core/openshift/dist/template/TemplateConstants";
+} from "@kie-tools-core/kubernetes-bridge/dist/api/types";
+import { ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch/ResourceFetcher";
+import { ResourceLabelNames } from "@kie-tools-core/kubernetes-bridge/dist/template/TemplateConstants";
 import { RESOURCE_OWNER } from "../OpenShiftConstants";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { OpenShiftPipeline } from "../OpenShiftPipeline";

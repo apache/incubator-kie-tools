@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import { OpenShiftConnection } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftConnection";
 import { makeCookieName, getCookie, setCookie } from "../../cookies";
 
 export const OPENSHIFT_NAMESPACE_COOKIE_NAME = makeCookieName("openshift", "namespace");

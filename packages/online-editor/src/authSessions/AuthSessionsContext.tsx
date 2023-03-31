@@ -24,9 +24,9 @@ import { createContext, PropsWithChildren, useCallback, useContext, useEffect, u
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { fetchAuthenticatedBitbucketUser, fetchAuthenticatedGitHubUser } from "../accounts/git/ConnectToGitSection";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
-import { OpenShiftService } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
+import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftService";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxOpenShiftService } from "../openshift/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
 import { switchExpression } from "../switchExpression/switchExpression";
 

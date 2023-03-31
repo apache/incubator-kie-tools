@@ -18,13 +18,13 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useRoutes } from "../navigation/Hooks";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxOpenShiftService } from "../openshift/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "./services/openshift/KieSandboxOpenShiftService";
 import { ConfirmDeployModalState, DeleteDeployModalState, DevDeploymentsContext } from "./DevDeploymentsContext";
-import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { DevDeploymentsConfirmDeleteModal } from "./DevDeploymentsConfirmDeleteModal";
-import { KieSandboxKubernetesService } from "../kubernetes/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "./services/kubernetes/KieSandboxKubernetesService";
+import { CloudAuthSession } from "../authSessions/AuthSessionApi";
 
 interface Props {
   children: React.ReactNode;
@@ -43,12 +43,27 @@ export function DevDeploymentsContextProvider(props: Props) {
   const [confirmDeployModalState, setConfirmDeployModalState] = useState<ConfirmDeployModalState>({ isOpen: false });
   const [confirmDeleteModalState, setConfirmDeleteModalState] = useState<DeleteDeployModalState>({ isOpen: false });
 
+  // Service
+  const getService = useCallback(
+    (authSession: CloudAuthSession) => {
+      if (authSession.type === "openshift") {
+        return new KieSandboxOpenShiftService({
+          connection: authSession,
+          proxyUrl: extendedServices.config.url.corsProxy,
+        });
+      } else if (authSession.type === "kubernetes") {
+        return new KieSandboxKubernetesService({
+          connection: authSession,
+        });
+      }
+      throw new Error("Invalid AuthSession type.");
+    },
+    [extendedServices.config.url.corsProxy]
+  );
+
   const deleteDeployment = useCallback(
-    async (args: { connection: OpenShiftConnection; resourceName: string }) => {
-      const service = new KieSandboxOpenShiftService({
-        connection: args.connection,
-        proxyUrl: extendedServices.config.url.corsProxy,
-      });
+    async (args: { authSession: CloudAuthSession; resourceName: string }) => {
+      const service = getService(args.authSession);
 
       try {
         await service.deleteDeployment(args.resourceName);
@@ -58,14 +73,14 @@ export function DevDeploymentsContextProvider(props: Props) {
         return false;
       }
     },
-    [extendedServices.config.url.corsProxy]
+    [getService]
   );
 
   const deleteDeployments = useCallback(
-    async (args: { connection: OpenShiftConnection; resourceNames: string[] }) => {
+    async (args: { authSession: CloudAuthSession; resourceNames: string[] }) => {
       const result = await Promise.all(
         args.resourceNames.map((resourceName) => {
-          return deleteDeployment({ connection: args.connection, resourceName });
+          return deleteDeployment({ authSession: args.authSession, resourceName });
         })
       );
 
@@ -75,36 +90,20 @@ export function DevDeploymentsContextProvider(props: Props) {
   );
 
   const loadDeployments = useCallback(
-    async (args: { connection: OpenShiftConnection }) => {
-      // const service = new KieSandboxOpenShiftService({
-      //   connection: args.connection,
-      //   proxyUrl: extendedServices.config.url.corsProxy,
-      // });
+    async (args: { authSession: CloudAuthSession }) => {
+      const service = getService(args.authSession);
 
-      const service = new KieSandboxKubernetesService({
-        connection: args.connection,
-        proxyUrl: extendedServices.config.url.corsProxy,
-      });
-
-      return service.loadDeployments().catch((e) => {
+      return service.loadDeployedModels().catch((e) => {
         console.error(e);
         throw e;
       });
     },
-    [extendedServices.config.url.corsProxy]
+    [getService]
   );
 
   const deploy = useCallback(
-    async (workspaceFile: WorkspaceFile, connection: OpenShiftConnection) => {
-      // const service = new KieSandboxOpenShiftService({
-      //   connection,
-      //   proxyUrl: extendedServices.config.url.corsProxy,
-      // });
-
-      const service = new KieSandboxKubernetesService({
-        connection,
-        proxyUrl: extendedServices.config.url.corsProxy,
-      });
+    async (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => {
+      const service = getService(authSession);
 
       if (!(await service.isConnectionEstablished())) {
         console.log("Not connected?");
@@ -138,7 +137,7 @@ export function DevDeploymentsContextProvider(props: Props) {
         return false;
       }
     },
-    [extendedServices.config.url.corsProxy, routes.import, workspaces]
+    [getService, routes.import, workspaces]
   );
 
   const value = useMemo(

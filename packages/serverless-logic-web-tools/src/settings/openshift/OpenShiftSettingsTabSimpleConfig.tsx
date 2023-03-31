@@ -30,7 +30,7 @@ import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus
 import {
   isOpenShiftConnectionValid,
   OpenShiftConnection,
-} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+} from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftConnection";
 import { EMPTY_CONFIG, saveConfigCookie } from "./OpenShiftSettingsConfig";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";

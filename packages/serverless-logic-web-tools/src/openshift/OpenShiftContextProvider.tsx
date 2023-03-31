@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import { isOpenShiftConnectionValid } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftConnection";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";

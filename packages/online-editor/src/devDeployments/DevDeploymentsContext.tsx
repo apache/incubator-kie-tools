@@ -17,8 +17,9 @@
 import * as React from "react";
 import { useContext } from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
-import { KieSandboxOpenShiftDeployedModel } from "../openshift/KieSandboxOpenShiftService";
+import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
+import { KieSandboxDeployedModel } from "./services/KieSandboxBaseKubernetesService";
+import { AuthSession, CloudAuthSession } from "../authSessions/AuthSessionApi";
 
 export interface DeploymentFile {
   path: string;
@@ -58,10 +59,10 @@ export interface DevDeploymentsContextType {
   setConfirmDeleteModalState: React.Dispatch<React.SetStateAction<DeleteDeployModalState>>;
 
   // Actions
-  deploy: (workspaceFile: WorkspaceFile, connection: OpenShiftConnection) => Promise<boolean>;
-  loadDeployments: (args: { connection: OpenShiftConnection }) => Promise<KieSandboxOpenShiftDeployedModel[]>;
-  deleteDeployment: (args: { connection: OpenShiftConnection; resourceName: string }) => Promise<boolean>;
-  deleteDeployments: (args: { connection: OpenShiftConnection; resourceNames: string[] }) => Promise<boolean>;
+  deploy: (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => Promise<boolean>;
+  loadDeployments: (args: { authSession: CloudAuthSession }) => Promise<KieSandboxDeployedModel[]>;
+  deleteDeployment: (args: { authSession: CloudAuthSession; resourceName: string }) => Promise<boolean>;
+  deleteDeployments: (args: { authSession: CloudAuthSession; resourceNames: string[] }) => Promise<boolean>;
 }
 
 export const DevDeploymentsContext = React.createContext<DevDeploymentsContextType>({

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import { isOpenShiftConnectionValid } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftConnection";
 import { useCallback } from "react";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 

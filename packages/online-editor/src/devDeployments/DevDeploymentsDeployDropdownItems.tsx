@@ -29,11 +29,7 @@ import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/Acc
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
-import {
-  deploymentTargetAuthSessionSelectFilter,
-  kubernetesAuthSessionSelectFilter,
-  openshiftAuthSessionSelectFilter,
-} from "../authSessions/CompatibleAuthSessions";
+import { deploymentTargetAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 
 export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace | undefined) {
@@ -43,7 +39,9 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
   const { authSessions } = useAuthSessions();
 
   const suggestedAuthSessionForDeployment = useMemo(() => {
-    return [...authSessions.values()].find((authSession) => authSession.type === "openshift");
+    return [...authSessions.values()].find(
+      (authSession) => authSession.type === "openshift" || authSession.type === "kubernetes"
+    );
   }, [authSessions]);
 
   const [authSessionId, setAuthSessionId] = useState<string | undefined>();

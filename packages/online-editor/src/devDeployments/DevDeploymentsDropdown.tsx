@@ -31,13 +31,9 @@ import CaretDownIcon from "@patternfly/react-icons/dist/js/icons/caret-down-icon
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
-import { KieSandboxOpenShiftDeployedModel } from "../openshift/KieSandboxOpenShiftService";
 import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
-import {
-  deploymentTargetAuthSessionSelectFilter,
-  openshiftAuthSessionSelectFilter,
-} from "../authSessions/CompatibleAuthSessions";
+import { deploymentTargetAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -46,6 +42,7 @@ import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useOnlineI18n } from "../i18n";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { KieSandboxDeployedModel } from "./services/KieSandboxBaseKubernetesService";
 
 const REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS = 30;
 
@@ -75,7 +72,7 @@ export function DevDeploymentsDropdown() {
     }
   }, [authSessionId, authSessions, suggestedAuthSessionForDeployment]);
 
-  const [deployments, refresh] = useLivePromiseState<KieSandboxOpenShiftDeployedModel[]>(
+  const [deployments, refresh] = useLivePromiseState<KieSandboxDeployedModel[]>(
     useMemo(() => {
       if (!authSession || (authSession.type !== "openshift" && authSession.type !== "kubernetes")) {
         return { error: "Can't load Dev deployments with this AuthSession." };
@@ -83,7 +80,7 @@ export function DevDeploymentsDropdown() {
 
       return () => {
         setRefreshCountdownInSeconds(REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS);
-        return devDeployments.loadDeployments({ connection: authSession });
+        return devDeployments.loadDeployments({ authSession });
       };
     }, [authSession, devDeployments])
   );

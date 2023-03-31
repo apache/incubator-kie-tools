@@ -29,21 +29,20 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
-import {
-  isOpenShiftConnectionValid,
-  isHostValid,
-  isNamespaceValid,
-  isTokenValid,
-  OpenShiftConnection,
-} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
-import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "@kie-tools-core/openshift/dist/service/OpenShiftConstants";
+import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftConstants";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
-import { KieSandboxOpenShiftService } from "../../openshift/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { v4 as uuid } from "uuid";
-import { useAccountsDispatch } from "../AccountsContext";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
+import {
+  KubernetesConnection,
+  isHostValid,
+  isKubernetesConnectionValid,
+  isNamespaceValid,
+  isTokenValid,
+} from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
 
 enum WizardStepIds {
   NAMESPACE = "NAMESPACE",
@@ -54,8 +53,8 @@ enum WizardStepIds {
 export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   openshiftService: KieSandboxOpenShiftService;
   setMode: React.Dispatch<React.SetStateAction<OpenShiftSettingsTabMode>>;
-  connection: OpenShiftConnection;
-  setConnection: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
+  connection: KubernetesConnection;
+  setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
   status: OpenShiftInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<OpenShiftAuthSession>>;
@@ -83,7 +82,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   }, [props.connection.token]);
 
   useEffect(() => {
-    setConnectionValidated(isOpenShiftConnectionValid(props.connection));
+    setConnectionValidated(isKubernetesConnectionValid(props.connection));
   }, [props.connection]);
 
   const onCancel = useCallback(() => {
@@ -91,7 +90,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   }, [props]);
 
   const resetConnection = useCallback(
-    (connection: OpenShiftConnection) => {
+    (connection: KubernetesConnection) => {
       setConnectionValidated(false);
       setConnecting(false);
       setConnectLoading(false);
@@ -137,7 +136,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
       return;
     }
 
-    if (!isOpenShiftConnectionValid(props.connection)) {
+    if (!isKubernetesConnectionValid(props.connection)) {
       return;
     }
 

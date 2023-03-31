@@ -71,7 +71,7 @@ export function DevDeploymentsConfirmDeleteModal() {
 
     setLoading(true);
     const deleteStarted = await devDeployments.deleteDeployments({
-      connection: authSession,
+      authSession,
       resourceNames: devDeployments.confirmDeleteModalState.resourceNames,
     });
     await delay(600);

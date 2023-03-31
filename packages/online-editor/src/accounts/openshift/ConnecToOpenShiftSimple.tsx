@@ -27,17 +27,17 @@ import * as React from "react";
 import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
-import {
-  isOpenShiftConnectionValid,
-  OpenShiftConnection,
-} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { KieSandboxOpenShiftService } from "../../openshift/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
 import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
+import {
+  KubernetesConnection,
+  isKubernetesConnectionValid,
+} from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -48,8 +48,8 @@ enum FormValiationOptions {
 export function ConnecToOpenShiftSimple(props: {
   openshiftService: KieSandboxOpenShiftService;
   setMode: React.Dispatch<React.SetStateAction<OpenShiftSettingsTabMode>>;
-  connection: OpenShiftConnection;
-  setConnection: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
+  connection: KubernetesConnection;
+  setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
   status: OpenShiftInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<OpenShiftAuthSession>>;
@@ -65,7 +65,7 @@ export function ConnecToOpenShiftSimple(props: {
       return;
     }
 
-    if (!isOpenShiftConnectionValid(props.connection)) {
+    if (!isKubernetesConnectionValid(props.connection)) {
       setConnectionValidated(FormValiationOptions.INVALID);
       return;
     }

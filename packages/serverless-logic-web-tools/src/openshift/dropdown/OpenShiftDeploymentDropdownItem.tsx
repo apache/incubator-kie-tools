@@ -23,7 +23,7 @@ import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import * as React from "react";
 import { useMemo } from "react";
-import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
+import { OpenShiftDeploymentState } from "@kie-tools-core/kubernetes-bridge/dist/service/types";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { basename } from "path";
 

@@ -26,7 +26,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { OpenShiftSettingsTabSimpleConfig } from "./OpenShiftSettingsTabSimpleConfig";
 import { obfuscate } from "../github/GitHubSettingsTab";
 import { saveConfigCookie } from "./OpenShiftSettingsConfig";
-import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import { OpenShiftConnection } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftConnection";
 
 export function OpenShiftSettingsTab() {
   const settings = useSettings();

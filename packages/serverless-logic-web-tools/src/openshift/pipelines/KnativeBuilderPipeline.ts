@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-import { CreateKafkaSource, DeleteKafkaSource } from "@kie-tools-core/openshift/dist/api/knative/KafkaSource";
-import { CreateKnativeService, DeleteKnativeService } from "@kie-tools-core/openshift/dist/api/knative/KnativeService";
+import { CreateKafkaSource, DeleteKafkaSource } from "@kie-tools-core/kubernetes-bridge/dist/api/knative/KafkaSource";
+import {
+  CreateKnativeService,
+  DeleteKnativeService,
+} from "@kie-tools-core/kubernetes-bridge/dist/api/knative/KnativeService";
 import {
   CreateBuildConfig,
   DeleteBuildConfig,
   InstantiateBinary,
-} from "@kie-tools-core/openshift/dist/api/kubernetes/BuildConfig";
-import { CreateImageStream, DeleteImageStream } from "@kie-tools-core/openshift/dist/api/kubernetes/ImageStream";
-import { CreateSecret, DeleteSecret } from "@kie-tools-core/openshift/dist/api/kubernetes/Secret";
-import { ResourceFetch } from "@kie-tools-core/openshift/dist/fetch/ResourceFetch";
-import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
+} from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/BuildConfig";
+import {
+  CreateImageStream,
+  DeleteImageStream,
+} from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/ImageStream";
+import { CreateSecret, DeleteSecret } from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/Secret";
+import { ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch/ResourceFetch";
+import { ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch/ResourceFetcher";
 import {
   KAFKA_SOURCE_CLIENT_ID_KEY,
   KAFKA_SOURCE_CLIENT_MECHANISM_KEY,
   KAFKA_SOURCE_CLIENT_MECHANISM_PLAIN,
   KAFKA_SOURCE_CLIENT_SECRET_KEY,
-} from "@kie-tools-core/openshift/dist/template/TemplateConstants";
+} from "@kie-tools-core/kubernetes-bridge/dist/template/TemplateConstants";
 import { RESOURCE_OWNER } from "../OpenShiftConstants";
 import { KafkaSourceArgs } from "../deploy/types";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";

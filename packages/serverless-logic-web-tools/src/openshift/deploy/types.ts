@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { OpenShiftService } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
-import { OpenShiftDeployedModel } from "@kie-tools-core/openshift/dist/service/types";
+import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftService";
+import { OpenShiftDeployedModel } from "@kie-tools-core/kubernetes-bridge/dist/service/types";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 

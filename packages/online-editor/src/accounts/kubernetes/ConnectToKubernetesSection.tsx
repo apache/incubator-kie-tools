@@ -32,7 +32,7 @@ import { AuthSessionDescriptionList } from "../../authSessions/AuthSessionsList"
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import PficonSatelliteIcon from "@patternfly/react-icons/dist/js/icons/pficon-satellite-icon";
-import { KieSandboxKubernetesService } from "../../kubernetes/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "../../devDeployments/services/kubernetes/KieSandboxKubernetesService";
 
 export function ConnectToKubernetesSection() {
   const extendedServices = useExtendedServices();
@@ -57,9 +57,8 @@ export function ConnectToKubernetesSection() {
     () =>
       new KieSandboxKubernetesService({
         connection,
-        proxyUrl: extendedServices.config.url.corsProxy,
       }),
-    [connection, extendedServices.config.url.corsProxy]
+    [connection]
   );
 
   const successPrimaryAction = useMemo(() => {

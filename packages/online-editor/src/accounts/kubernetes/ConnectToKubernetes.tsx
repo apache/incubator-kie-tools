@@ -25,17 +25,18 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
-import {
-  OpenShiftConnection,
-  isOpenShiftConnectionValid,
-} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
 import { KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
-import { KieSandboxKubernetesService } from "../../kubernetes/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "../../devDeployments/services/kubernetes/KieSandboxKubernetesService";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
+import {
+  KubernetesConnection,
+  isKubernetesConnectionValid,
+} from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -45,8 +46,8 @@ enum FormValiationOptions {
 
 export function ConnectToKubernetes(props: {
   kubernetesService: KieSandboxKubernetesService;
-  connection: OpenShiftConnection;
-  setConnection: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
+  connection: KubernetesConnection;
+  setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
   status: KubernetesInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<KubernetesInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<KubernetesAuthSession>>;
@@ -62,7 +63,7 @@ export function ConnectToKubernetes(props: {
       return;
     }
 
-    if (!isOpenShiftConnectionValid(props.connection)) {
+    if (!isKubernetesConnectionValid(props.connection)) {
       setConnectionValidated(FormValiationOptions.INVALID);
       return;
     }

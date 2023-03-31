@@ -24,17 +24,17 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { basename } from "path";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../i18n";
-import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
-import { KieSandboxOpenShiftDeployedModel } from "../openshift/KieSandboxOpenShiftService";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useDevDeployments } from "./DevDeploymentsContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
+import { KieSandboxDeployedModel } from "./services/KieSandboxBaseKubernetesService";
+import { DeploymentState } from "@kie-tools-core/kubernetes-bridge/dist/service/types";
 
 interface Props {
   id: number;
-  deployment: KieSandboxOpenShiftDeployedModel;
+  deployment: KieSandboxDeployedModel;
   cloudAuthSession: AuthSession;
 }
 
@@ -62,7 +62,7 @@ export function DevDeploymentsDropdownItem(props: Props) {
   }, [props.deployment.uri, props.deployment.workspaceName]);
 
   const stateIcon = useMemo(() => {
-    if (props.deployment.state === OpenShiftDeploymentState.UP) {
+    if (props.deployment.state === DeploymentState.UP) {
       return (
         <Tooltip
           key={`deployment-up-${props.id}`}
@@ -78,8 +78,8 @@ export function DevDeploymentsDropdownItem(props: Props) {
     }
 
     if (
-      props.deployment.state === OpenShiftDeploymentState.IN_PROGRESS ||
-      props.deployment.state === OpenShiftDeploymentState.PREPARING
+      props.deployment.state === DeploymentState.IN_PROGRESS ||
+      props.deployment.state === DeploymentState.PREPARING
     ) {
       return (
         <Tooltip
@@ -95,7 +95,7 @@ export function DevDeploymentsDropdownItem(props: Props) {
       );
     }
 
-    if (props.deployment.state === OpenShiftDeploymentState.ERROR) {
+    if (props.deployment.state === DeploymentState.ERROR) {
       return (
         <Tooltip
           key={`deployment-error-${props.id}`}

@@ -55,6 +55,8 @@ export type KubernetesAuthSession = {
   host: string;
 };
 
+export type CloudAuthSession = OpenShiftAuthSession | KubernetesAuthSession;
+
 export enum AuthSessionStatus {
   VALID,
   INVALID,
