@@ -1316,6 +1316,8 @@ jobs:
 
   serverless_logic_web_tools:
     env:
+      SERVERLESS_LOGIC_WEB_TOOLS__version: "${{ inputs.tag }}"
+      SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef: "${{ inputs.tag }}"
       SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: ""
       SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
       SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"

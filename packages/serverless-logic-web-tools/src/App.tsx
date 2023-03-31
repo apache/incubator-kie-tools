@@ -26,6 +26,7 @@ import { OpenShiftContextProvider } from "./openshift/OpenShiftContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { VirtualServiceRegistryContextProvider } from "./virtualServiceRegistry/VirtualServiceRegistryContextProvider";
 import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
+import { SampleContextProvider } from "./home/sample/hooks/SampleContext";
 
 export const App = () => (
   <HashRouter>
@@ -41,6 +42,7 @@ export const App = () => (
       ],
       [OpenShiftContextProvider, {}],
       [VirtualServiceRegistryContextProvider, {}],
+      [SampleContextProvider, {}],
       [NavigationContextProvider, {}],
       [RoutesSwitch, {}]
     )}

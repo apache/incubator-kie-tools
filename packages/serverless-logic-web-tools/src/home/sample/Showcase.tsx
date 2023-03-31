@@ -19,10 +19,10 @@ import { useEffect, useState } from "react";
 import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
 import { SampleCard } from "./SampleCard";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { fetchSampleDefinitions, Sample } from "./sampleApi";
-import { useSettingsDispatch } from "../../settings/SettingsContext";
+import { Sample } from "./sampleApi";
 import { SampleCardSkeleton } from "./SampleCardSkeleton";
 import { SamplesLoadError } from "./SamplesLoadError";
+import { useSampleDispatch } from "./hooks/SampleContext";
 
 const priority = {
   ["serverless-workflow"]: 1,
@@ -31,13 +31,14 @@ const priority = {
 };
 
 export function Showcase() {
-  const settingsDispatch = useSettingsDispatch();
+  const sampleDispatch = useSampleDispatch();
   const [loading, setLoading] = useState<boolean>(true);
   const [samples, setSamples] = useState<Sample[]>([]);
   const [sampleLoadingError, setSampleLoadingError] = useState("");
 
   useEffect(() => {
-    fetchSampleDefinitions(settingsDispatch.github.octokit)
+    sampleDispatch
+      .getSamples()
       .then((data) => {
         const sortedSamples = data.sort(
           (a: Sample, b: Sample) => priority[a.definition.category] - priority[b.definition.category]
@@ -50,7 +51,7 @@ export function Showcase() {
       .finally(() => {
         setLoading(false);
       });
-  }, [settingsDispatch.github.octokit]);
+  }, [sampleDispatch]);
 
   return (
     <>

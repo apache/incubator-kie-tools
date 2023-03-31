@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,21 +26,22 @@ import { QueryParams } from "../../navigation/Routes";
 import { useQueryParam } from "../../queryParams/QueryParamsContext";
 import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
-import { fetchSampleFiles, KIE_SAMPLES_REPO } from "../../home/sample/sampleApi";
+import { KIE_SAMPLES_REPO } from "../../home/sample/sampleApi";
+import { useSampleDispatch } from "../../home/sample/hooks/SampleContext";
 
 export function NewWorkspaceFromSample() {
+  const sampleDispatch = useSampleDispatch();
   const workspaces = useWorkspaces();
   const routes = useRoutes();
   const history = useHistory();
-  const settingsDispatch = useSettingsDispatch();
   const [openingError, setOpeningError] = useState("");
 
   const sampleId = useQueryParam(QueryParams.SAMPLE_ID) ?? "";
 
   useEffect(() => {
-    fetchSampleFiles({ octokit: settingsDispatch.github.octokit, sampleId })
+    sampleDispatch
+      .getSampleFiles(sampleId)
       .then((sampleFiles) => workspaces.createWorkspaceFromLocal({ localFiles: sampleFiles }))
       .then(({ workspace, suggestedFirstFile }) => {
         if (!suggestedFirstFile) {
@@ -57,7 +58,7 @@ export function NewWorkspaceFromSample() {
       .catch((e) => {
         setOpeningError(e.toString());
       });
-  }, [history, routes.workspaceWithFilePath, sampleId, settingsDispatch.github.octokit, workspaces]);
+  }, [history, routes.workspaceWithFilePath, sampleId, workspaces, sampleDispatch]);
 
   return (
     <>
