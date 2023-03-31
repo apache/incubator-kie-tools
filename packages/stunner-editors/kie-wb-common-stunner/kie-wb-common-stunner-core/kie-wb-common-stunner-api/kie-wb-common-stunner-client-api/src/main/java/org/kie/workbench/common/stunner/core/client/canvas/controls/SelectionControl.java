@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -37,6 +38,8 @@ public interface SelectionControl<C extends CanvasHandler, E extends Element>
     boolean isSelected(E item);
 
     Collection<String> getSelectedItems();
+
+    Map<String, Boolean> getItems();
 
     SelectionControl<C, E> clearSelection();
 

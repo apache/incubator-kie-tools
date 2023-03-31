@@ -69,6 +69,10 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
         this.clearSelectionEventConsumer = clearSelectionEventConsumer;
     }
 
+    public Map<String, Boolean> getItems() {
+        return items;
+    }
+
     @Override
     protected void doInit() {
         // Click handler for the canvas area - cleans current selection, if any.
