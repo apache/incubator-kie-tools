@@ -29,7 +29,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
 import elemental2.dom.DOMTokenList;
-import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.common.client.dom.Span;
@@ -108,7 +107,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorViewImpl.ENABLED_BETA_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.CONTEXT;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.LITERAL_EXPRESSION;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.UNDEFINED;
@@ -234,22 +232,7 @@ public class ExpressionEditorViewImplTest {
     private HasName hasName;
 
     @Mock
-    private HTMLAnchorElement tryIt;
-
-    @Mock
-    private HTMLAnchorElement switchBack;
-
-    @Mock
     private HTMLDivElement betaBoxedExpressionToggle;
-
-    @Mock
-    private HTMLDivElement newBoxedExpression;
-
-    @Mock
-    private HTMLDivElement dmnExpressionType;
-
-    @Mock
-    private HTMLDivElement dmnExpressionEditor;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -319,13 +302,7 @@ public class ExpressionEditorViewImplTest {
                                                      dataTypePageActiveEvent,
                                                      pmmlDocumentMetadataProvider,
                                                      definitionUtils,
-                                                     itemDefinitionUtils,
-                                                     tryIt,
-                                                     switchBack,
-                                                     betaBoxedExpressionToggle,
-                                                     newBoxedExpression,
-                                                     dmnExpressionType,
-                                                     dmnExpressionEditor));
+                                                     itemDefinitionUtils));
         view.init(presenter);
         view.bind(session);
 
@@ -364,9 +341,6 @@ public class ExpressionEditorViewImplTest {
         doAnswer((i) -> i.getArguments()[0]).when(translationService).getTranslation(Mockito.<String>any());
 
         betaBoxedExpressionToggle.classList = mock(DOMTokenList.class);
-        newBoxedExpression.classList = mock(DOMTokenList.class);
-        dmnExpressionType.classList = mock(DOMTokenList.class);
-        dmnExpressionEditor.classList = mock(DOMTokenList.class);
     }
 
     @Test
@@ -550,23 +524,6 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testOnTryIt() {
-        final ClickEvent event = mock(ClickEvent.class);
-        view.setExpression(NODE_UUID,
-                           hasExpression,
-                           Optional.of(HasName.NOP),
-                           false);
-
-        view.onTryIt(event);
-
-        verify(view).toggleLegacyExpressionEditor(false);
-        verify(view).toggleBetaBoxedExpressionEditor(true);
-        verify(view).loadNewBoxedExpressionEditor();
-        verify(event).preventDefault();
-        verify(event).stopPropagation();
-    }
-
-    @Test
     public void testEditingExpression() {
         final Optional<HasName> hasName = Optional.of(HasName.NOP);
         view.setExpression(NODE_UUID,
@@ -575,12 +532,6 @@ public class ExpressionEditorViewImplTest {
                            false);
 
         verify(view).setExpressionNameText(hasName);
-    }
-
-    @Test
-    public void testToggleBoxedExpressionAndEnableIt() {
-        view.toggleBetaBoxedExpressionEditor(true);
-        verify(betaBoxedExpressionToggle.classList).toggle(ENABLED_BETA_CSS_CLASS, true);
     }
 
     private void assertCommandParameters(final FillExpressionCommand command,
@@ -771,25 +722,12 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testReloadIfIsNewEditor_WhenItIs() {
-        doReturn(true).when(view).isReactBoxedExpressionVisible();
+    public void testReloadEditor() {
         doNothing().when(view).loadNewBoxedExpressionEditor();
 
         view.reloadEditor();
 
         verify(view).loadNewBoxedExpressionEditor();
-        verify(view, never()).syncExpressionWithOlderEditor();
-    }
-
-    @Test
-    public void testReloadIfIsNewEditor_WhenItIsNot() {
-        doReturn(false).when(view).isReactBoxedExpressionVisible();
-        doNothing().when(view).loadNewBoxedExpressionEditor();
-
-        view.reloadEditor();
-
-        verify(view, never()).loadNewBoxedExpressionEditor();
-        verify(view).syncExpressionWithOlderEditor();
     }
 
     @Test

@@ -27,10 +27,7 @@ import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.event.dom.client.ClickEvent;
-import elemental2.dom.DomGlobal;
-import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
-import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -79,7 +76,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
-import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.js.DMNLoader;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -125,8 +121,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     static final double VP_SCALE = 1.0;
 
-    static final String ENABLED_BETA_CSS_CLASS = "kie-beta-boxed-expression-editor--enabled";
-
     private ExpressionEditorView.Presenter presenter;
 
     @DataField("returnToDRGLink")
@@ -143,24 +137,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @DataField("dmn-table")
     private DMNGridPanelContainer gridPanelContainer;
-
-    @DataField("try-it")
-    private HTMLAnchorElement tryIt;
-
-    @DataField("switch-back")
-    private HTMLAnchorElement switchBack;
-
-    @DataField("beta-boxed-expression-toggle")
-    private HTMLDivElement betaBoxedExpressionToggle;
-
-    @DataField("dmn-new-expression-editor")
-    private HTMLDivElement newBoxedExpression;
-
-    @DataField("dmn-expression-type")
-    private HTMLDivElement dmnExpressionType;
-
-    @DataField("dmn-expression-editor")
-    private HTMLDivElement dmnExpressionEditor;
 
     private TranslationService translationService;
     private ListSelectorView.Presenter listSelector;
@@ -208,13 +184,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final Event<DataTypePageTabActiveEvent> dataTypePageActiveEvent,
                                     final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider,
                                     final DefinitionUtils definitionUtils,
-                                    final ItemDefinitionUtils itemDefinitionUtils,
-                                    final HTMLAnchorElement tryIt,
-                                    final HTMLAnchorElement switchBack,
-                                    final HTMLDivElement betaBoxedExpressionToggle,
-                                    final HTMLDivElement newBoxedExpression,
-                                    final HTMLDivElement dmnExpressionType,
-                                    final HTMLDivElement dmnExpressionEditor) {
+                                    final ItemDefinitionUtils itemDefinitionUtils) {
         this.returnToDRGLink = returnToDRGLink;
         this.returnToDRGLabel = returnToDRGLabel;
         this.expressionName = expressionName;
@@ -232,12 +202,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.dataTypePageActiveEvent = dataTypePageActiveEvent;
         this.pmmlDocumentMetadataProvider = pmmlDocumentMetadataProvider;
         this.itemDefinitionUtils = itemDefinitionUtils;
-        this.tryIt = tryIt;
-        this.switchBack = switchBack;
-        this.betaBoxedExpressionToggle = betaBoxedExpressionToggle;
-        this.newBoxedExpression = newBoxedExpression;
-        this.dmnExpressionType = dmnExpressionType;
-        this.dmnExpressionEditor = dmnExpressionEditor;
         this.updateCanvasNodeNameCommand = new UpdateCanvasNodeNameCommand(sessionManager,
                                                                            definitionUtils,
                                                                            canvasCommandFactory);
@@ -365,14 +329,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         reloadEditor();
     }
 
-    @EventHandler("try-it")
-    public void onTryIt(final ClickEvent event) {
-        toggleLegacyExpressionEditor(false);
-        toggleBetaBoxedExpressionEditor(true);
-        loadNewBoxedExpressionEditor();
-        preventDefault(event);
-    }
-
     void loadNewBoxedExpressionEditor() {
         ExpressionProps expression = ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef());
         String decisionNodeId = null;
@@ -389,17 +345,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                 hasExpression.isClearSupported(),
                 buildPmmlParams()
         );
-    }
-
-    @EventHandler("switch-back")
-    public void onSwitchBack(final ClickEvent event) {
-        getExpressionGridCacheSupplier()
-                .get()
-                .removeExpressionGrid(nodeUUID);
-        syncExpressionWithOlderEditor();
-        toggleLegacyExpressionEditor(true);
-        toggleBetaBoxedExpressionEditor(false);
-        preventDefault(event);
     }
 
     @Override
@@ -552,24 +497,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         updateCanvasNodeNameCommand.execute(getNodeUUID(), getHasName().orElse(null));
     }
 
-    void toggleBetaBoxedExpressionEditor(final boolean enabled) {
-        betaBoxedExpressionToggle.classList.toggle(ENABLED_BETA_CSS_CLASS, enabled);
-        newBoxedExpression.classList.toggle(HiddenHelper.HIDDEN_CSS_CLASS, !enabled);
-    }
-
-    void toggleLegacyExpressionEditor(final boolean enabled) {
-        dmnExpressionType.classList.toggle(HiddenHelper.HIDDEN_CSS_CLASS, !enabled);
-        dmnExpressionEditor.classList.toggle(HiddenHelper.HIDDEN_CSS_CLASS, !enabled);
-        if (enabled) {
-            gridPanel.setFocus(true);
-            onResize();
-        }
-    }
-
-    protected boolean isReactBoxedExpressionVisible() {
-        return DomGlobal.document.getElementsByClassName("kie-dmn-new-expression-editor").length > 0;
-    }
-
     Stream<DataTypeProps> retrieveDefaultDataTypeProps() {
         return Stream.of(BuiltInType.values())
                 .sorted(BUILT_IN_TYPE_COMPARATOR)
@@ -585,11 +512,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                     final String itemDefinitionName = itemDefinition.getName().getValue();
                     return new DataTypeProps(itemDefinitionName, itemDefinitionName, true);
                 });
-    }
-
-    private void preventDefault(final ClickEvent event) {
-        event.preventDefault();
-        event.stopPropagation();
     }
 
     private String getExpressionName() {
@@ -654,11 +576,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Override
     public void reloadEditor() {
-        if (isReactBoxedExpressionVisible()) {
-            loadNewBoxedExpressionEditor();
-        } else {
-            syncExpressionWithOlderEditor();
-        }
+        loadNewBoxedExpressionEditor();
     }
 
     void syncExpressionWithOlderEditor() {
@@ -671,8 +589,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Override
     public void setFocus() {
-        toggleBetaBoxedExpressionEditor(true);
-        toggleLegacyExpressionEditor(false);
         loadNewBoxedExpressionEditor();
     }
 
