@@ -61,7 +61,7 @@ export function DmnFormPage(props: Props) {
       });
 
       setFormOutputs((previousOutputs: DecisionResult[]) => {
-        const differences = extractDifferences(formOutputs, previousOutputs);
+        const [differences] = extractDifferences([formOutputs], [previousOutputs]);
         if (differences?.length !== 0) {
           setFormOutputDiffs(differences);
         }
