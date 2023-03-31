@@ -32,10 +32,6 @@
   <description>Uberfire Runtime PlugIns API</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons-editor-api</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -50,11 +46,6 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-common</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons-editor-client</artifactId>
     </dependency>
 
     <dependency>

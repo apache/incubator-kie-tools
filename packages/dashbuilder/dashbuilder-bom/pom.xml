@@ -327,34 +327,6 @@
         <classifier>sources</classifier>
       </dependency>
 
-      <!-- Commons editor -->
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-commons-editor-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-commons-editor-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-commons-editor-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-commons-editor-client</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
       <!-- Runtime plugins -->
 
       <dependency>

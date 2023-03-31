@@ -195,18 +195,6 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons-editor-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons-editor-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -505,8 +493,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-layout-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-layout-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>

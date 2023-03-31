@@ -25,7 +25,6 @@ import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.client.navigation.widget.HasDefaultNavItem;
 import org.dashbuilder.client.navigation.widget.HasTargetDiv;
-import org.dashbuilder.client.navigation.widget.NavComponentConfigModal;
 import org.dashbuilder.client.navigation.widget.NavWidget;
 import org.dashbuilder.client.navigation.widget.TargetDivNavWidget;
 import org.dashbuilder.navigation.NavGroup;
@@ -41,7 +40,6 @@ public abstract class AbstractNavDragComponent implements NavDragComponent {
 
     NavigationManager navigationManager;
     PerspectivePluginManager pluginManager;
-    NavComponentConfigModal navComponentConfigModal;
     NavWidget navWidget;
     String navGroupId = null;
     LayoutTemplate layoutTemplate;
@@ -50,11 +48,9 @@ public abstract class AbstractNavDragComponent implements NavDragComponent {
 
     public AbstractNavDragComponent(NavigationManager navigationManager,
                                     PerspectivePluginManager pluginManager,
-                                    NavComponentConfigModal navComponentConfigModal,
                                     NavWidget navWidget) {
         this.navigationManager = navigationManager;
         this.pluginManager = pluginManager;
-        this.navComponentConfigModal = navComponentConfigModal;
         this.navWidget = navWidget;
         this.navWidget.setOnStaleCommand(this::showNavWidget);
     }

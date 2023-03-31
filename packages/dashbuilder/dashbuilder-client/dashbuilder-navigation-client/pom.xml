@@ -100,11 +100,6 @@
       <artifactId>uberfire-runtime-plugins-client</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons-editor-client</artifactId>
-    </dependency>
-
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>

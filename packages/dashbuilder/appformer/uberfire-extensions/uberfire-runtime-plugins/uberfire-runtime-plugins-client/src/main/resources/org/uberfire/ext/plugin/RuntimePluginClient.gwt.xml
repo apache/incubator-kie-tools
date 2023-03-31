@@ -22,7 +22,6 @@
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
   <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorClient"/>
-  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>
   <inherits name="org.uberfire.ext.plugin.RuntimePluginAPI"/>
 
   <source path='client'/>
