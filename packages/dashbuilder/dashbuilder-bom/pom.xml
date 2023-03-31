@@ -482,34 +482,6 @@
         <classifier>sources</classifier>
       </dependency>
 
-      <!-- Property editor widget -->
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-properties-editor-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-properties-editor-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-properties-editor-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-properties-editor-client</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
       <!-- Security Management Workbench & widgets & webapp. -->
 
       <dependency>

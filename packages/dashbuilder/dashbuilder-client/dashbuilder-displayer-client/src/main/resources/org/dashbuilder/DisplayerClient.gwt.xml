@@ -30,7 +30,6 @@
 
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
   <inherits name="org.uberfire.ext.widgets.common.UberfireAceEditor"/>
-  <inherits name="org.uberfire.ext.properties.editor.PropertiesEditorClient"/>
 
   <inherits name="org.dashbuilder.DatasetClient"/>
   <inherits name="org.dashbuilder.DisplayerAPI"/>
