@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,13 @@ import { CreateResourceFetchArgs, UniqueResourceFetchArgs, ResourceFetch } from 
 import { ContentTypes, HttpMethod } from "../../fetch/FetchConstants";
 import { OpenshiftApiVersions } from "./api";
 import { IObjectReference, IResourceRequirements } from "kubernetes-models/v1";
-import { ResourceDescriptor } from "../types";
-import { CommonTemplateArgs } from "../../template/types";
-import { commonLabels, runtimeLabels } from "../../template/TemplateConstants";
-import { BUILD_IMAGE_TAG_VERSION } from "../api";
+import {
+  ResourceDescriptor,
+  BUILD_IMAGE_TAG_VERSION,
+  CommonTemplateArgs,
+  commonLabels,
+  runtimeLabels,
+} from "../common";
 
 export interface DockerBuildStrategy {
   type: "Docker";
@@ -96,7 +99,7 @@ export class CreateBuildConfig extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${OpenshiftApiVersions.BUILD_CONFIG}/namespaces/${this.args.namespace}/buildconfigs`;
+    return `/apis/${OpenshiftApiVersions.BUILD_CONFIG}/namespaces/${this.args.namespace}/buildconfigs`;
   }
 }
 
@@ -110,7 +113,7 @@ export class DeleteBuildConfig extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${OpenshiftApiVersions.BUILD_CONFIG}/namespaces/${this.args.namespace}/buildconfigs/${this.args.resourceName}`;
+    return `/apis/${OpenshiftApiVersions.BUILD_CONFIG}/namespaces/${this.args.namespace}/buildconfigs/${this.args.resourceName}`;
   }
 }
 
@@ -132,6 +135,6 @@ export class InstantiateBinary extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${OpenshiftApiVersions.BUILD_CONFIG}/namespaces/${this.args.namespace}/buildconfigs/${this.args.resourceName}/instantiatebinary?name=${this.args.resourceName}&namespace=${this.args.namespace}`;
+    return `/apis/${OpenshiftApiVersions.BUILD_CONFIG}/namespaces/${this.args.namespace}/buildconfigs/${this.args.resourceName}/instantiatebinary?name=${this.args.resourceName}&namespace=${this.args.namespace}`;
   }
 }

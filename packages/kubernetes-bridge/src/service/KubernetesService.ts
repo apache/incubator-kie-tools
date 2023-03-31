@@ -15,11 +15,10 @@
  */
 
 import { ResourceFetcher } from "../fetch/ResourceFetcher";
-import { DeploymentState } from "./types";
-import { IngressDescriptor } from "../api/kubernetes/Ingress";
+import { IngressDescriptor } from "../resources/kubernetes/Ingress";
 import { KubernetesConnection, isKubernetesConnectionValid } from "./KubernetesConnection";
-import { DeploymentCondition, DeploymentDescriptor, ListDeployments } from "../api/kubernetes/Deployment";
-import { Resource } from "../api/types";
+import { DeploymentCondition, DeploymentDescriptor, ListDeployments } from "../resources/kubernetes/Deployment";
+import { DeploymentState, Resource } from "../resources/common";
 
 export interface KubernetesServiceArgs {
   connection: KubernetesConnection;

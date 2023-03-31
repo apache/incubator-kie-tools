@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service";
-
-export interface OpenShiftPipelineArgs {
-  openShiftService: OpenShiftService;
-  namespace: string;
+export enum OpenshiftApiVersions {
+  BUILD = "build.openshift.io/v1",
+  BUILD_CONFIG = "build.openshift.io/v1",
+  IMAGE_STREAM = "image.openshift.io/v1",
+  PROJECT = "project.openshift.io/v1",
+  ROUTE = "route.openshift.io/v1",
 }
 
-export abstract class OpenShiftPipeline<T = void> {
-  constructor(protected readonly args: OpenShiftPipelineArgs) {}
-
-  public abstract execute(): Promise<T>;
-}
+export const OpenShiftLabelNames = {
+  RUNTIME: "app.openshift.io/runtime",
+  VERSION: "app.openshift.io/runtime-version",
+  TRIGGERS: "image.openshift.io/triggers",
+};

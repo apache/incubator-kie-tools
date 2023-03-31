@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { isOpenShiftConnectionValid } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftConnection";
+import { isKubernetesConnectionValid } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useCallback } from "react";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 
@@ -26,7 +26,7 @@ export function useOpenApi() {
 
   const fetchOpenApiContent = useCallback(
     async (resourceName: string) => {
-      if (!isOpenShiftConnectionValid(settings.openshift.config)) {
+      if (!isKubernetesConnectionValid(settings.openshift.config)) {
         throw new Error("Invalid OpenShift config");
       }
 

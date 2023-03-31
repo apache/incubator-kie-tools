@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
 
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
 import { HttpMethod } from "../../fetch/FetchConstants";
-import { CommonTemplateArgs } from "../../template/types";
 import { Service, IService } from "kubernetes-models/v1";
-import { commonLabels, runtimeLabels } from "../../template/TemplateConstants";
+import { CommonTemplateArgs, commonLabels, runtimeLabels } from "../common";
 
 export type ServiceDescriptor = IService;
 
@@ -93,6 +92,6 @@ export class DeleteService extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api${Service.apiVersion}/namespaces/${this.args.namespace}/services/${this.args.resourceName}`;
+    return `/api/${Service.apiVersion}/namespaces/${this.args.namespace}/services/${this.args.resourceName}`;
   }
 }

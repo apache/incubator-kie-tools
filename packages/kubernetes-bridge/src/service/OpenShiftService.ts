@@ -14,26 +14,29 @@
  * limitations under the License.
  */
 
-import { GetProject } from "../api/openshift/Project";
+import { GetProject } from "../resources/openshift/Project";
 import { ResourceFetcher } from "../fetch/ResourceFetcher";
-import { KnativeService } from "./support/KnativeService";
+import { KnativeSupportService } from "./support";
 import { KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
-import { DeploymentCondition, DeploymentDescriptor } from "../api/kubernetes/Deployment";
-import { BuildDescriptor, BuildPhase } from "../api/openshift/Build";
-import { DeploymentState } from "./types";
-import { RouteDescriptor } from "../api/openshift/Route";
+import { DeploymentCondition, DeploymentDescriptor } from "../resources/kubernetes/Deployment";
+import { BuildDescriptor, BuildPhase } from "../resources/openshift/Build";
+import { RouteDescriptor } from "../resources/openshift/Route";
 import { KubernetesConnection } from "./KubernetesConnection";
+import { DeploymentState } from "../resources/common";
 
 export class OpenShiftService extends KubernetesService {
-  private readonly knativeService: KnativeService;
+  private readonly knativeSupportService: KnativeSupportService;
 
   constructor(readonly args: KubernetesServiceArgs) {
     super(args);
-    this.knativeService = new KnativeService({ fetcher: this.fetcher, namespace: args.connection.namespace });
+    this.knativeSupportService = new KnativeSupportService({
+      fetcher: this.fetcher,
+      namespace: args.connection.namespace,
+    });
   }
 
-  public get knative(): KnativeService {
-    return this.knativeService;
+  public get knative(): KnativeSupportService {
+    return this.knativeSupportService;
   }
 
   public composeDeploymentUrlFromRoute(route: RouteDescriptor): string {

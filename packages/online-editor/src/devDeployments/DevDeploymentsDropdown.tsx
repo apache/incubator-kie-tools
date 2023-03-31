@@ -59,18 +59,21 @@ export function DevDeploymentsDropdown() {
   );
 
   const suggestedAuthSessionForDeployment = useMemo(() => {
-    return [...authSessions.values()].find((authSession) => authSession.type === "openshift");
+    return [...authSessions.values()].find(
+      (authSession) => authSession.type === "openshift" || authSession.type === "kubernetes"
+    );
   }, [authSessions]);
 
   useEffect(() => {
-    if (suggestedAuthSessionForDeployment) {
-      setAuthSessionId(suggestedAuthSessionForDeployment.id);
-    }
-
-    if (authSessionId && !authSessions.has(authSessionId)) {
-      setAuthSessionId(undefined);
-    }
-  }, [authSessionId, authSessions, suggestedAuthSessionForDeployment]);
+    setAuthSessionId((currentAuthSessionId) => {
+      if (suggestedAuthSessionForDeployment) {
+        return suggestedAuthSessionForDeployment.id;
+      } else if (currentAuthSessionId && !authSessions.has(currentAuthSessionId)) {
+        return undefined;
+      }
+      return currentAuthSessionId;
+    });
+  }, [authSessions, suggestedAuthSessionForDeployment]);
 
   const [deployments, refresh] = useLivePromiseState<KieSandboxDeployedModel[]>(
     useMemo(() => {

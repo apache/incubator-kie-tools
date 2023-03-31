@@ -21,17 +21,15 @@ import {
   DeploymentGroupDescriptor,
   GetDeployment,
   ListDeployments,
-} from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/Deployment";
-import { CreateService, DeleteService } from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/Service";
-import { ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch/ResourceFetcher";
-import { ResourceLabelNames } from "@kie-tools-core/kubernetes-bridge/dist/template/TemplateConstants";
-import {
-  KubernetesService,
-  KubernetesServiceArgs,
-} from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesService";
-import { DeployedModel, DeploymentState } from "@kie-tools-core/kubernetes-bridge/dist/service/types";
-import { ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch/ResourceFetch";
-import { ResourceDescriptor } from "@kie-tools-core/kubernetes-bridge/dist/api/types";
+  CreateService,
+  DeleteService,
+  DeployedModel,
+  DeploymentState,
+  ResourceDescriptor,
+  ResourceLabelNames,
+} from "@kie-tools-core/kubernetes-bridge/dist/resources";
+import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
+import { KubernetesService, KubernetesServiceArgs } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { UploadStatus, getUploadStatus, postUpload } from "../DmnDevDeploymentQuarkusAppApi";
 
 export const RESOURCE_PREFIX = "dmn-dev-deployment";
@@ -144,7 +142,9 @@ export abstract class KieSandboxBaseKubernetesService {
           uri: args.targetFilePath,
           baseUrl: routeUrl,
           workspaceName: args.workspaceName,
-          containerImageUrl: process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl!,
+          // TODO: return value to process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl
+          containerImageUrl:
+            "quay.io/thiagoelg/dmn-dev-deployment-base-image@sha256:6f7df7b8ec64afec3148f02c154b15b25fca177328b7e2a21708401b98a9d84f",
           envVars: [
             {
               name: "BASE_URL",
@@ -157,6 +157,10 @@ export abstract class KieSandboxBaseKubernetesService {
             {
               name: "KOGITO_RUNTIME_VERSION",
               value: process.env.WEBPACK_REPLACE__kogitoRuntimeVersion!,
+            },
+            {
+              name: "ROOT_PATH",
+              value: "/",
             },
           ],
         }),

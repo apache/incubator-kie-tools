@@ -14,29 +14,24 @@
  * limitations under the License.
  */
 
-import { CreateKafkaSource, DeleteKafkaSource } from "@kie-tools-core/kubernetes-bridge/dist/api/knative/KafkaSource";
-import {
-  CreateKnativeService,
-  DeleteKnativeService,
-} from "@kie-tools-core/kubernetes-bridge/dist/api/knative/KnativeService";
+import { ResourceFetch, ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import {
   CreateBuildConfig,
-  DeleteBuildConfig,
-  InstantiateBinary,
-} from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/BuildConfig";
-import {
   CreateImageStream,
+  CreateKafkaSource,
+  CreateKnativeService,
+  CreateSecret,
+  DeleteBuildConfig,
   DeleteImageStream,
-} from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/ImageStream";
-import { CreateSecret, DeleteSecret } from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/Secret";
-import { ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch/ResourceFetch";
-import { ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch/ResourceFetcher";
-import {
+  DeleteKafkaSource,
+  DeleteKnativeService,
+  DeleteSecret,
+  InstantiateBinary,
   KAFKA_SOURCE_CLIENT_ID_KEY,
   KAFKA_SOURCE_CLIENT_MECHANISM_KEY,
   KAFKA_SOURCE_CLIENT_MECHANISM_PLAIN,
   KAFKA_SOURCE_CLIENT_SECRET_KEY,
-} from "@kie-tools-core/kubernetes-bridge/dist/template/TemplateConstants";
+} from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { RESOURCE_OWNER } from "../OpenShiftConstants";
 import { KafkaSourceArgs } from "../deploy/types";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";

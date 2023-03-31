@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,50 @@
  * limitations under the License.
  */
 
-import { KubernetesLabelNames } from "../api/kubernetes/api";
-import { OpenShiftLabelNames } from "../api/openshift/api";
+import { IObjectMeta } from "@kubernetes-models/apimachinery/apis/meta/v1/ObjectMeta";
+import { KubernetesLabelNames } from "./kubernetes/api";
+import { OpenShiftLabelNames } from "./openshift/api";
+
+export type IpProtocol = "TCP" | "UDP" | "SCTP";
+
+export type ResourceRequirements = {
+  limits: {
+    memory: string;
+  };
+};
+
+export interface ResourceDescriptor {
+  apiVersion: string;
+  kind: string;
+  metadata?: IObjectMeta;
+}
+
+export interface ResourceGroupDescriptor<T extends ResourceDescriptor> {
+  items: T[];
+}
+
+export type Resource<T extends ResourceDescriptor = ResourceDescriptor> =
+  | ResourceDescriptor
+  | ResourceGroupDescriptor<T>;
+
+export interface EnvVar {
+  name: string;
+  value: string;
+}
+
+export const BUILD_IMAGE_TAG_VERSION = "1.0";
 
 export const ResourceLabelNames = {
   URI: "kogito.kie.org/uri",
   CREATED_BY: "kogito.kie.org/created-by",
   WORKSPACE_NAME: "kogito.kie.org/workspace-name",
 };
+
+export interface CommonTemplateArgs {
+  resourceName: string;
+  namespace: string;
+  createdBy: string;
+}
 
 export const commonLabels = (args: { resourceName: string; createdBy: string }) => ({
   [KubernetesLabelNames.APP]: args.resourceName,
@@ -36,3 +72,18 @@ export const runtimeLabels = () => ({
   [OpenShiftLabelNames.RUNTIME]: "quarkus",
   [OpenShiftLabelNames.VERSION]: "openjdk-11-el7",
 });
+
+export enum DeploymentState {
+  UP = "UP",
+  DOWN = "DOWN",
+  IN_PROGRESS = "IN_PROGRESS",
+  PREPARING = "PREPARING",
+  ERROR = "ERROR",
+}
+
+export interface DeployedModel {
+  resourceName: string;
+  routeUrl: string;
+  creationTimestamp: Date;
+  state: DeploymentState;
+}

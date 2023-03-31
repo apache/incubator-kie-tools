@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,7 @@
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { OpenshiftApiVersions } from "./api";
-import { ResourceDescriptor } from "../types";
-import { CommonTemplateArgs } from "../../template/types";
-import { commonLabels, runtimeLabels } from "../../template/TemplateConstants";
+import { CommonTemplateArgs, ResourceDescriptor, commonLabels, runtimeLabels } from "../common";
 
 export interface ImageStreamSpec {
   lookupPolicy: {
@@ -63,7 +61,7 @@ export class CreateImageStream extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${OpenshiftApiVersions.IMAGE_STREAM}}/namespaces/${this.args.namespace}/imagestreams`;
+    return `/apis/${OpenshiftApiVersions.IMAGE_STREAM}/namespaces/${this.args.namespace}/imagestreams`;
   }
 }
 
@@ -77,6 +75,6 @@ export class DeleteImageStream extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${OpenshiftApiVersions.IMAGE_STREAM}}/namespaces/${this.args.namespace}/imagestreams/${this.args.resourceName}`;
+    return `/apis/${OpenshiftApiVersions.IMAGE_STREAM}/namespaces/${this.args.namespace}/imagestreams/${this.args.resourceName}`;
   }
 }

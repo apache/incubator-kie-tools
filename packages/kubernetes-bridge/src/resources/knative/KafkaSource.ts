@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,9 @@
  */
 
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
-import { ResourceDescriptor } from "../types";
+import { CommonTemplateArgs, ResourceDescriptor, commonLabels } from "../common";
 import { HttpMethod } from "../../fetch/FetchConstants";
-import { CommonTemplateArgs } from "../../template/types";
 import { KAFKA_SOURCE_FINALIZER, KnativeApiVersions } from "./api";
-import { commonLabels } from "../../template/TemplateConstants";
 
 export interface SecretKeyRef {
   key: string;
@@ -139,7 +137,7 @@ export class CreateKafkaSource extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${KnativeApiVersions.KAFKA_SOURCE}/namespaces/${this.args.namespace}/kafkasources`;
+    return `/apis/${KnativeApiVersions.KAFKA_SOURCE}/namespaces/${this.args.namespace}/kafkasources`;
   }
 }
 
@@ -153,6 +151,6 @@ export class DeleteKafkaSource extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${KnativeApiVersions.KAFKA_SOURCE}/namespaces/${this.args.namespace}/kafkasources/${this.args.resourceName}`;
+    return `/apis/${KnativeApiVersions.KAFKA_SOURCE}/namespaces/${this.args.namespace}/kafkasources/${this.args.resourceName}`;
   }
 }

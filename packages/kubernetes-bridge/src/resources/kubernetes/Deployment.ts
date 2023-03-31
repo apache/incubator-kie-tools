@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,15 @@ import {
   ResourceFetchArgs,
   UniqueResourceFetchArgs,
 } from "../../fetch/ResourceFetch";
-import { ResourceLabelNames, commonLabels, runtimeLabels } from "../../template/TemplateConstants";
-import { CommonTemplateArgs } from "../../template/types";
 import { Deployment, IDeployment, IDeploymentCondition } from "kubernetes-models/apps/v1";
-import { EnvVar, ResourceGroupDescriptor } from "../types";
+import {
+  CommonTemplateArgs,
+  EnvVar,
+  ResourceGroupDescriptor,
+  ResourceLabelNames,
+  commonLabels,
+  runtimeLabels,
+} from "../common";
 
 export interface CreateDeploymentArgs {
   uri: string;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,15 @@ import {
   ResourceFetchArgs,
   UniqueResourceFetchArgs,
 } from "../../fetch/ResourceFetch";
-import { CommonTemplateArgs } from "../../template/types";
-import { commonLabels, ResourceLabelNames, runtimeLabels } from "../../template/TemplateConstants";
 import { OpenShiftLabelNames } from "../openshift/api";
-import { BUILD_IMAGE_TAG_VERSION } from "../api";
+import {
+  BUILD_IMAGE_TAG_VERSION,
+  CommonTemplateArgs,
+  ResourceGroupDescriptor,
+  ResourceLabelNames,
+  commonLabels,
+  runtimeLabels,
+} from "../common";
 import {
   Service as KnativeService,
   IService as IKnativeService,
@@ -36,6 +41,8 @@ export interface CreateKnativeServiceArgs {
 }
 
 export type KnativeServiceDescriptor = IKnativeService;
+
+export type KnativeServiceGroupDescriptor = ResourceGroupDescriptor<KnativeServiceDescriptor>;
 
 export interface Trigger {
   from: {
@@ -105,7 +112,7 @@ export class CreateKnativeService extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${KnativeService.apiVersion}/namespaces/${this.args.namespace}/services`;
+    return `/apis/${KnativeService.apiVersion}/namespaces/${this.args.namespace}/services`;
   }
 }
 
@@ -120,7 +127,7 @@ export class ListKnativeServices extends ResourceFetch {
 
   public endpoint(): string {
     const selector = this.args.labelSelector ? `?labelSelector=${this.args.labelSelector}` : "";
-    return `/api/${KnativeService.apiVersion}/namespaces/${this.args.namespace}/services${selector}`;
+    return `/apis/${KnativeService.apiVersion}/namespaces/${this.args.namespace}/services${selector}`;
   }
 }
 
@@ -134,7 +141,7 @@ export class DeleteKnativeService extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${KnativeService.apiVersion}/namespaces/${this.args.namespace}/services/${this.args.resourceName}`;
+    return `/apis/${KnativeService.apiVersion}/namespaces/${this.args.namespace}/services/${this.args.resourceName}`;
   }
 }
 
@@ -148,6 +155,6 @@ export class GetKnativeService extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${KnativeService.apiVersion}/namespaces/${this.args.namespace}/services/${this.args.resourceName}`;
+    return `/apis/${KnativeService.apiVersion}/namespaces/${this.args.namespace}/services/${this.args.resourceName}`;
   }
 }

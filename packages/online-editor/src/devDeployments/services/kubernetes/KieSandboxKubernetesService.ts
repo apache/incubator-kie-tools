@@ -20,25 +20,19 @@ import {
   ListIngresses,
   IngressDescriptor,
   IngressGroupDescriptor,
-} from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/Ingress";
-import { ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch/ResourceFetcher";
-import { ResourceLabelNames } from "@kie-tools-core/kubernetes-bridge/dist/template/TemplateConstants";
-import {
-  KubernetesService,
-  KubernetesServiceArgs,
-} from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesService";
+  CreateDeployment,
+  DeploymentDescriptor,
+  ResourceDescriptor,
+  ResourceLabelNames,
+} from "@kie-tools-core/kubernetes-bridge/dist/resources";
+import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
+import { KubernetesService, KubernetesServiceArgs } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import {
   DeployArgs,
   KieSandboxBaseKubernetesService,
   RESOURCE_OWNER,
   ResourceArgs,
 } from "../KieSandboxBaseKubernetesService";
-import { ResourceDescriptor } from "@kie-tools-core/kubernetes-bridge/dist/api/types";
-import { ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch/ResourceFetch";
-import {
-  CreateDeployment,
-  DeploymentDescriptor,
-} from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/Deployment";
 
 export class KieSandboxKubernetesService extends KieSandboxBaseKubernetesService {
   service: KubernetesService;
@@ -99,7 +93,7 @@ export class KieSandboxKubernetesService extends KieSandboxBaseKubernetesService
           workspaceName: args.workspaceName,
           // TODO: return value to process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl
           containerImageUrl:
-            "quay.io/thiagoelg/dmn-dev-deployment-base-image@sha256:72106f31afa1c5b07ba2b4a52855b9a7dc31bd882ff37d18f95b24993919a8ad",
+            "quay.io/thiagoelg/dmn-dev-deployment-base-image@sha256:6f7df7b8ec64afec3148f02c154b15b25fca177328b7e2a21708401b98a9d84f",
           envVars: [
             {
               name: "BASE_URL",

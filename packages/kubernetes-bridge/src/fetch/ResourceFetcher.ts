@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Resource } from "../api/types";
+import { Resource } from "../resources/common";
 import { KubernetesConnection } from "../service/KubernetesConnection";
 import { ContentTypes, HeaderKeys } from "./FetchConstants";
 import { ResourceFetch } from "./ResourceFetch";

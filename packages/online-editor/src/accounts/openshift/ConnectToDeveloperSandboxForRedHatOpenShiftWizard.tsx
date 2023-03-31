@@ -29,7 +29,6 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
-import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftConstants";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
@@ -42,7 +41,8 @@ import {
   isKubernetesConnectionValid,
   isNamespaceValid,
   isTokenValid,
-} from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
+  DEVELOPER_SANDBOX_GET_STARTED_URL,
+} from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 enum WizardStepIds {
   NAMESPACE = "NAMESPACE",

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,8 @@
 
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
 import { HttpMethod } from "../../fetch/FetchConstants";
-import { CommonTemplateArgs } from "../../template/types";
 import { Ingress, IIngress } from "kubernetes-models/networking.k8s.io/v1";
-import { commonLabels, runtimeLabels } from "../../template/TemplateConstants";
-import { ResourceGroupDescriptor } from "../types";
+import { CommonTemplateArgs, ResourceGroupDescriptor, commonLabels, runtimeLabels } from "../common";
 
 export type IngressDescriptor = IIngress;
 

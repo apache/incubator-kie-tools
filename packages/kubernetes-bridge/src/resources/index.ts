@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,7 @@
  * limitations under the License.
  */
 
-import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service";
-
-export interface OpenShiftPipelineArgs {
-  openShiftService: OpenShiftService;
-  namespace: string;
-}
-
-export abstract class OpenShiftPipeline<T = void> {
-  constructor(protected readonly args: OpenShiftPipelineArgs) {}
-
-  public abstract execute(): Promise<T>;
-}
+export * from "./common";
+export * from "./knative";
+export * from "./kubernetes";
+export * from "./openshift";

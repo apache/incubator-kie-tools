@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { ResourceFetch } from "../../fetch/ResourceFetch";
-import { ResourceDescriptor } from "../types";
+import { ResourceDescriptor } from "../common";
 import { OpenshiftApiVersions } from "./api";
 
 export interface ProjectDescriptor extends ResourceDescriptor {
@@ -29,6 +29,6 @@ export class GetProject extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${OpenshiftApiVersions.PROJECT}/projects/${this.args.namespace}`;
+    return `/apis/${OpenshiftApiVersions.PROJECT}/projects/${this.args.namespace}`;
   }
 }

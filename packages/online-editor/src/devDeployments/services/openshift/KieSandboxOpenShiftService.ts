@@ -20,14 +20,12 @@ import {
   ListRoutes,
   RouteDescriptor,
   RouteGroupDescriptor,
-} from "@kie-tools-core/kubernetes-bridge/dist/api/openshift/Route";
-import { ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch/ResourceFetcher";
-import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftService";
-import { ResourceLabelNames } from "@kie-tools-core/kubernetes-bridge/dist/template/TemplateConstants";
-import { KubernetesServiceArgs } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesService";
+  ResourceDescriptor,
+  ResourceLabelNames,
+} from "@kie-tools-core/kubernetes-bridge/dist/resources";
+import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
+import { OpenShiftService, KubernetesServiceArgs } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { KieSandboxBaseKubernetesService, RESOURCE_OWNER, ResourceArgs } from "../KieSandboxBaseKubernetesService";
-import { ResourceDescriptor } from "@kie-tools-core/kubernetes-bridge/dist/api/types";
-import { ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch/ResourceFetch";
 
 export class KieSandboxOpenShiftService extends KieSandboxBaseKubernetesService {
   service: OpenShiftService;

@@ -15,7 +15,6 @@
  */
 
 import * as React from "react";
-import { isOpenShiftConnectionValid } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftConnection";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
@@ -27,6 +26,7 @@ import { useRemoteServiceRegistry } from "./hooks/useRemoteServiceRegistry";
 import { OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KnativeDeploymentLoaderPipeline } from "./pipelines/KnativeDeploymentLoaderPipeline";
+import { isKubernetesConnectionValid } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 interface Props {
   children: React.ReactNode;
@@ -114,7 +114,7 @@ export function OpenShiftContextProvider(props: Props) {
       return;
     }
 
-    if (!isOpenShiftConnectionValid(settings.openshift.config)) {
+    if (!isKubernetesConnectionValid(settings.openshift.config)) {
       setDeployments([]);
       return;
     }

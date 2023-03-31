@@ -47,14 +47,15 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
   const [authSessionId, setAuthSessionId] = useState<string | undefined>();
 
   useEffect(() => {
-    if (suggestedAuthSessionForDeployment) {
-      setAuthSessionId(suggestedAuthSessionForDeployment.id);
-    }
-
-    if (authSessionId && !authSessions.has(authSessionId)) {
-      setAuthSessionId(undefined);
-    }
-  }, [authSessionId, authSessions, suggestedAuthSessionForDeployment]);
+    setAuthSessionId((currentAuthSessionId) => {
+      if (suggestedAuthSessionForDeployment) {
+        return suggestedAuthSessionForDeployment.id;
+      } else if (currentAuthSessionId && !authSessions.has(currentAuthSessionId)) {
+        return undefined;
+      }
+      return currentAuthSessionId;
+    });
+  }, [authSessions, suggestedAuthSessionForDeployment]);
 
   const isExtendedServicesRunning = useMemo(
     () => extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,

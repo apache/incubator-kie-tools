@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { GetKnativeService, KnativeServiceDescriptor } from "../../api/knative/KnativeService";
+import { GetKnativeService, KnativeServiceDescriptor } from "../../resources/knative/KnativeService";
 import { ResourceFetcher } from "../../fetch/ResourceFetcher";
 
-export class KnativeService {
+export class KnativeSupportService {
   constructor(private readonly args: { fetcher: ResourceFetcher; namespace: string }) {}
 
   public async getDeploymentRoute(resourceName: string): Promise<string | undefined> {

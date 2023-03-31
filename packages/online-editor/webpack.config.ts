@@ -160,6 +160,11 @@ export default async (env: any, argv: any) => {
         module: {
           rules: [...patternflyBase.webpackModuleRules],
         },
+        ignoreWarnings: [
+          {
+            module: /@kubernetes-models/,
+          },
+        ],
       }),
       devServer: {
         https: true,

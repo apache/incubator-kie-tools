@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-import { KnativeLabelNames, KubernetesLabelNames } from "@kie-tools-core/kubernetes-bridge/dist/api/ApiConstants";
-import { ListKnativeServices } from "@kie-tools-core/kubernetes-bridge/dist/api/knative/KnativeService";
-import { ListBuilds } from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/Build";
-import { ListDeployments } from "@kie-tools-core/kubernetes-bridge/dist/api/kubernetes/Deployment";
+import { RESOURCE_OWNER } from "../OpenShiftConstants";
+import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
+import { OpenShiftPipeline } from "../OpenShiftPipeline";
+import { ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import {
   BuildDescriptor,
   BuildGroupDescriptor,
   DeploymentDescriptor,
   DeploymentGroupDescriptor,
+  KnativeLabelNames,
   KnativeServiceDescriptor,
   KnativeServiceGroupDescriptor,
-} from "@kie-tools-core/kubernetes-bridge/dist/api/types";
-import { ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch/ResourceFetcher";
-import { ResourceLabelNames } from "@kie-tools-core/kubernetes-bridge/dist/template/TemplateConstants";
-import { RESOURCE_OWNER } from "../OpenShiftConstants";
-import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
-import { OpenShiftPipeline } from "../OpenShiftPipeline";
+  KubernetesLabelNames,
+  ListBuilds,
+  ListDeployments,
+  ListKnativeServices,
+  ResourceLabelNames,
+} from "@kie-tools-core/kubernetes-bridge/dist/resources";
 
 export class KnativeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsOpenShiftDeployedModel[]> {
   public async execute(): Promise<WebToolsOpenShiftDeployedModel[]> {
@@ -66,37 +67,37 @@ export class KnativeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
       ]);
 
       const sortDeploymentsByCreationTimeFn = (a: DeploymentDescriptor, b: DeploymentDescriptor) =>
-        new Date(a.metadata.creationTimestamp!).getTime() - new Date(b.metadata.creationTimestamp!).getTime();
+        new Date(a.metadata!.creationTimestamp!).getTime() - new Date(b.metadata!.creationTimestamp!).getTime();
 
       return knServices.items
         .filter(
           (kns: KnativeServiceDescriptor) =>
             kns.status &&
-            kns.metadata.annotations &&
+            kns.metadata?.annotations &&
             kns.metadata.labels &&
             kns.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER
         )
         .map((kns: KnativeServiceDescriptor) => {
           const build = allBuilds.items.find(
             (b: BuildDescriptor) =>
-              b.metadata.labels &&
-              kns.metadata.labels &&
+              b.metadata?.labels &&
+              kns.metadata?.labels &&
               b.metadata.labels[KubernetesLabelNames.APP] === kns.metadata.labels[KubernetesLabelNames.APP]
           );
           const resourceDeployments = allDeployments.items
             .filter(
               (d: DeploymentDescriptor) =>
-                d.metadata.labels && d.metadata.labels[KnativeLabelNames.SERVICE] === kns.metadata.name
+                d.metadata?.labels && d.metadata.labels[KnativeLabelNames.SERVICE] === kns.metadata?.name
             )
             .sort(sortDeploymentsByCreationTimeFn);
           const deployment = resourceDeployments.length > 0 ? resourceDeployments[0] : undefined;
           return {
-            resourceName: kns.metadata.name,
-            uri: kns.metadata.annotations![ResourceLabelNames.URI],
-            routeUrl: kns.status!.url,
-            creationTimestamp: new Date(kns.metadata.creationTimestamp!),
-            state: this.args.openShiftService.kubernetes.extractDeploymentState({ deployment, build }),
-            workspaceName: kns.metadata.annotations![ResourceLabelNames.WORKSPACE_NAME],
+            resourceName: kns.metadata!.name!,
+            uri: kns.metadata!.annotations![ResourceLabelNames.URI],
+            routeUrl: kns.status!.url!,
+            creationTimestamp: new Date(kns.metadata!.creationTimestamp!),
+            state: this.args.openShiftService.extractDeploymentState({ deployment, build }),
+            workspaceName: kns.metadata!.annotations![ResourceLabelNames.WORKSPACE_NAME],
           };
         });
     } catch (e) {

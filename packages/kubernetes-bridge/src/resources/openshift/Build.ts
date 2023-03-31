@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { ResourceFetch } from "../../fetch/ResourceFetch";
-import { ResourceDescriptor, ResourceGroupDescriptor } from "../types";
+import { ResourceDescriptor, ResourceGroupDescriptor } from "../common";
 import { OpenshiftApiVersions } from "./api";
 
 export type BuildPhase = "New" | "Pending" | "Running" | "Complete" | "Failed" | "Error" | "Cancelled";
@@ -35,6 +35,6 @@ export class ListBuilds extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${OpenshiftApiVersions.BUILD}/namespaces/${this.args.namespace}/builds`;
+    return `/apis/${OpenshiftApiVersions.BUILD}/namespaces/${this.args.namespace}/builds`;
   }
 }

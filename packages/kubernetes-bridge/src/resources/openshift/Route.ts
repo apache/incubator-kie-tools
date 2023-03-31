@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,13 @@ import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from 
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { OpenshiftApiVersions } from "./api";
 import { IObjectReference } from "kubernetes-models/v1";
-import { ResourceDescriptor, ResourceGroupDescriptor } from "../types";
-import { CommonTemplateArgs } from "../../template/types";
-import { commonLabels, runtimeLabels } from "../../template/TemplateConstants";
+import {
+  CommonTemplateArgs,
+  ResourceDescriptor,
+  ResourceGroupDescriptor,
+  commonLabels,
+  runtimeLabels,
+} from "../common";
 
 export interface TLSConfig {
   insecureEdgeTerminationPolicy?: "None" | "Allow" | "Redirect";
@@ -82,7 +86,7 @@ export class CreateRoute extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${OpenshiftApiVersions.ROUTE}/namespaces/${this.args.namespace}/routes`;
+    return `/apis/${OpenshiftApiVersions.ROUTE}/namespaces/${this.args.namespace}/routes`;
   }
 }
 
@@ -92,7 +96,7 @@ export class ListRoutes extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${OpenshiftApiVersions.ROUTE}/namespaces/${this.args.namespace}/routes`;
+    return `/apis/${OpenshiftApiVersions.ROUTE}/namespaces/${this.args.namespace}/routes`;
   }
 }
 
@@ -112,6 +116,6 @@ export class DeleteRoute extends ResourceFetch {
   }
 
   public endpoint(): string {
-    return `/api/${OpenshiftApiVersions.ROUTE}/namespaces/${this.args.namespace}/routes/${this.args.resourceName}`;
+    return `/apis/${OpenshiftApiVersions.ROUTE}/namespaces/${this.args.namespace}/routes/${this.args.resourceName}`;
   }
 }
