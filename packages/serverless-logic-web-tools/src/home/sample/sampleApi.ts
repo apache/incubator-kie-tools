@@ -133,7 +133,9 @@ async function listSampleDefinitionFiles(args: {
   });
 
   if (!samplesFolders) {
-    throw new Error("Cannot fetch samples folder");
+    throw new Error(
+      `Cannot fetch samples folder at https://github.com/${KIE_SAMPLES_REPO.owner}/${KIE_SAMPLES_REPO.repo}`
+    );
   }
 
   return samplesFolders
@@ -147,41 +149,44 @@ export async function fetchSampleDefinitions(octokit: Octokit): Promise<Sample[]
     repoInfo: { ...KIE_SAMPLES_REPO },
   });
 
-  const samples: Sample[] = [];
-  for (const definitionFile of sampleDefinitionFiles) {
-    const fileContent = await fetchFileContent({
-      octokit,
-      fileInfo: {
-        ...KIE_SAMPLES_REPO,
-        path: definitionFile.definitionPath,
-      },
-    });
+  const samples = (
+    await Promise.all(
+      sampleDefinitionFiles.map(async (definitionFile) => {
+        const fileContent = await fetchFileContent({
+          octokit,
+          fileInfo: {
+            ...KIE_SAMPLES_REPO,
+            path: definitionFile.definitionPath,
+          },
+        });
 
-    if (!fileContent) {
-      console.error(`Could not read sample definition for ${definitionFile.sampleId}`);
-      continue;
-    }
+        if (!fileContent) {
+          console.error(`Could not read sample definition for ${definitionFile.sampleId}`);
+          return null;
+        }
 
-    const definition = JSON.parse(fileContent) as SampleDefinition;
-    const svgContent = await fetchFileContent({
-      octokit,
-      fileInfo: {
-        ...KIE_SAMPLES_REPO,
-        path: join("samples", definitionFile.sampleId, definition.cover),
-      },
-    });
+        const definition = JSON.parse(fileContent) as SampleDefinition;
+        const svgContent = await fetchFileContent({
+          octokit,
+          fileInfo: {
+            ...KIE_SAMPLES_REPO,
+            path: join("samples", definitionFile.sampleId, definition.cover),
+          },
+        });
 
-    if (!svgContent) {
-      console.error(`Could not read sample svg for ${definitionFile.sampleId}`);
-      continue;
-    }
+        if (!svgContent) {
+          console.error(`Could not read sample svg for ${definitionFile.sampleId}`);
+          return null;
+        }
 
-    samples.push({
-      sampleId: definitionFile.sampleId,
-      definition,
-      svgContent,
-    });
-  }
+        return {
+          sampleId: definitionFile.sampleId,
+          definition,
+          svgContent,
+        };
+      })
+    )
+  ).filter((sample) => sample !== null) as Sample[];
 
   if (samples.length === 0) {
     throw new Error("No samples could be loaded.");
@@ -203,27 +208,25 @@ export async function fetchSampleFiles(args: { octokit: Octokit; sampleId: strin
     throw new Error(`Sample ${args.sampleId} not found`);
   }
 
-  const sampleFiles: LocalFile[] = [];
-  for (const file of sampleFolderFiles) {
-    if (file.name === SAMPLE_DEFINITION_FILE || extname(file.name) === SVG_EXTENSION) {
-      continue;
-    }
+  const sampleFiles = sampleFolderFiles
+    .filter((file) => file.name !== SAMPLE_DEFINITION_FILE && extname(file.name) !== SVG_EXTENSION)
+    .map(async (file) => {
+      const fileContent = await fetchFileContent({
+        octokit: args.octokit,
+        fileInfo: {
+          ...KIE_SAMPLES_REPO,
+          path: file.path,
+        },
+      });
 
-    const fileContent = await fetchFileContent({
-      octokit: args.octokit,
-      fileInfo: {
-        ...KIE_SAMPLES_REPO,
-        path: file.path,
-      },
-    });
+      if (!fileContent) {
+        throw new Error(`Could not get file contents for ${file.path}`);
+      }
 
-    if (!fileContent) {
-      throw new Error(`Could not get file contents for ${file.path}`);
-    }
-    sampleFiles.push({
-      path: decodeURIComponent(file.path).split(`${SAMPLE_FOLDER}/${args.sampleId}`)[1],
-      fileContents: encoder.encode(fileContent),
+      return {
+        path: decodeURIComponent(file.path).split(`${SAMPLE_FOLDER}/${args.sampleId}`)[1],
+        fileContents: encoder.encode(fileContent),
+      };
     });
-  }
-  return sampleFiles;
+  return Promise.all(sampleFiles);
 }
