@@ -19,7 +19,6 @@ package org.uberfire.ext.layout.editor.client.infra;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -31,7 +30,6 @@ import org.jboss.errai.ioc.client.container.Factory;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.client.api.HasDragAndDropSettings;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 
 @Dependent
@@ -39,7 +37,6 @@ public class LayoutDragComponentHelper {
 
     private SyncBeanManager beanManager;
 
-    private DndDataJSONConverter converter = new DndDataJSONConverter();
     private List<Object> instances = new ArrayList<>();
 
     @Inject
@@ -84,34 +81,11 @@ public class LayoutDragComponentHelper {
         return Factory.maybeUnwrapProxy(instance).getClass().getName();
     }
 
-    public LayoutComponent getLayoutComponentFromDrop(String dropData) {
-        LayoutDragComponent component = extractComponent(dropData);
-        LayoutComponent layoutComponent = getLayoutComponent(component);
-        return layoutComponent;
-    }
-
     public LayoutComponent getLayoutComponent(LayoutDragComponent dragComponent) {
 
         LayoutComponent layoutComponent = new LayoutComponent(getRealBeanClass(dragComponent));
 
-        if (dragComponent instanceof HasDragAndDropSettings) {
-            Map<String, String> properties = ((HasDragAndDropSettings) dragComponent).getMapSettings();
-
-            if (properties != null) {
-                layoutComponent.addProperties(properties);
-            }
-        }
-
         return layoutComponent;
-    }
-
-    private LayoutDragComponent extractComponent(String dropData) {
-        return converter
-                .readJSONDragComponent(dropData);
-    }
-
-    private boolean hasComponent(LayoutComponent component) {
-        return component != null;
     }
 
     protected void destroy(Object o) {

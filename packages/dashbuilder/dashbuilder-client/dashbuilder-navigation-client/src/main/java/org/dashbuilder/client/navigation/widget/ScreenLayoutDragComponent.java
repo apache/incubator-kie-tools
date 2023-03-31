@@ -14,41 +14,45 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
+package org.dashbuilder.client.navigation.widget;
 
-import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
+import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 
 @ApplicationScoped
-public class TargetDivDragComponent implements LayoutDragComponent {
+public class ScreenLayoutDragComponent implements LayoutDragComponent {
 
-    public static final String ID_PARAMETER = "ID_PARAMETER";
-    public static final String DIV_ID = "divId";
+    public static final String SCREEN_NAME_PARAMETER = "Screen Name";
+    protected List<String> availableWorkbenchScreensIds = new ArrayList<String>();
+    PerspectivePluginManager perspectivePluginManager;
 
-
-    @PostConstruct
-    public void setup() {}
+    @Inject
+    public ScreenLayoutDragComponent(PerspectivePluginManager perspectivePluginManager) {
+        this.perspectivePluginManager = perspectivePluginManager;
+    }
 
     @Override
     public IsWidget getShowWidget(RenderingContext ctx) {
-        String id = ctx.getComponent().getProperties().get(ID_PARAMETER);
-        if (id == null) {
-            id = ctx.getComponent().getProperties().get(DIV_ID);
-        }
-        return createDiv(id);
-    }
-
-    private FlowPanel createDiv(String id) {
         FlowPanel panel = GWT.create(FlowPanel.class);
         panel.asWidget().getElement().addClassName("uf-perspective-col");
-        panel.asWidget().getElement().addClassName("screen dnd component");
-        panel.getElement().setId(id);
+        var perspectiveId = ctx.getComponent().getProperties().get(SCREEN_NAME_PARAMETER);
+        if (perspectiveId == null) {
+            return null;
+        }
+
+        perspectivePluginManager.buildPerspectiveWidget(perspectiveId, screen -> panel.add(screen), issue -> panel
+                .add(new Label("Error with infinite recursion. Review the embedded page")));
         return panel;
     }
 

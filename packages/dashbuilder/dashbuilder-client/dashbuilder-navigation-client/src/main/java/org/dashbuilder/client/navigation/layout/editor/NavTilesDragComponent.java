@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
-import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.dashbuilder.client.navigation.widget.NavComponentConfigModal;
 import org.dashbuilder.client.navigation.widget.NavTilesWidget;
 
@@ -38,21 +37,12 @@ public class NavTilesDragComponent extends AbstractNavDragComponent {
                                  NavComponentConfigModal navComponentConfigModal,
                                  NavTilesWidget navWidget) {
         super(navigationManager,
-                pluginManager,
-                navComponentConfigModal,
-                navWidget);
+              pluginManager,
+              navComponentConfigModal,
+              navWidget);
 
         this.navWidget.setHideEmptyGroups(true);
 
     }
 
-    @Override
-    public String getDragComponentTitle() {
-        return NavigationConstants.INSTANCE.navTilesDragComponent();
-    }
-
-    @Override
-    public String getDragComponentNavGroupHelp() {
-        return NavigationConstants.INSTANCE.navTilesDragComponentNavGroupHelp();
-    }
 }

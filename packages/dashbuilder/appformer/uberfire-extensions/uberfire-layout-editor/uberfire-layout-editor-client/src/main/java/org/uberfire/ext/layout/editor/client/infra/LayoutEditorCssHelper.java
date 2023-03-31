@@ -27,10 +27,7 @@ import org.uberfire.ext.layout.editor.api.css.CssAllowedValue;
 import org.uberfire.ext.layout.editor.api.css.CssProperty;
 import org.uberfire.ext.layout.editor.api.css.CssValue;
 import org.uberfire.ext.layout.editor.api.css.CssValueType;
-import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutElementWithProperties;
-import org.uberfire.ext.layout.editor.client.components.container.Container;
-import org.uberfire.ext.layout.editor.client.components.rows.Row;
 import org.uberfire.ext.layout.editor.client.resources.i18n.CssAllowedValueConstants;
 import org.uberfire.ext.layout.editor.client.resources.i18n.PropertiesConstants;
 import org.uberfire.ext.layout.editor.client.validator.LayoutEditorPropertyLengthValidator;
@@ -43,10 +40,10 @@ import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidato
 @ApplicationScoped
 public class LayoutEditorCssHelper {
 
-    private Map<CssValueType,PropertyFieldValidator> valueTypeValidatorMap = new HashMap<>();
-    private Map<String,String> propertyCategoryMapI18n = new HashMap<>();
-    private Map<CssProperty,String> propertyNameMapI18n = new HashMap<>();
-    private Map<CssProperty,String> propertyHelpMapI18n = new HashMap<>();
+    private Map<CssValueType, PropertyFieldValidator> valueTypeValidatorMap = new HashMap<>();
+    private Map<String, String> propertyCategoryMapI18n = new HashMap<>();
+    private Map<CssProperty, String> propertyNameMapI18n = new HashMap<>();
+    private Map<CssProperty, String> propertyHelpMapI18n = new HashMap<>();
 
     public static final String CSS_CATEGORY_PANEL = "panel";
     public static final String CSS_CATEGORY_TEXT = "text";
@@ -130,7 +127,7 @@ public class LayoutEditorCssHelper {
         return createField(element.getProperties(), property);
     }
 
-    public PropertyEditorFieldInfo createField(Map<String,String> propertyMap, CssProperty property) {
+    public PropertyEditorFieldInfo createField(Map<String, String> propertyMap, CssProperty property) {
         String propValue = propertyMap.get(property.getName());
         return createPropertyField(property, propValue == null ? "" : propValue);
     }
@@ -185,132 +182,15 @@ public class LayoutEditorCssHelper {
         return null;
     }
 
-    public List<CssValue> readCssValues(Map<String,String> propertyMap) {
+    public List<CssValue> readCssValues(Map<String, String> propertyMap) {
         if (propertyMap == null || propertyMap.isEmpty()) {
             return new ArrayList<>();
         }
 
         return propertyMap.entrySet().stream()
-            .filter(entry -> CssProperty.get(entry.getKey()) != null)
-            .map(entry -> new CssValue(entry.getKey(), entry.getValue()))
-            .collect(Collectors.toList());
+                .filter(entry -> CssProperty.get(entry.getKey()) != null)
+                .map(entry -> new CssValue(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 
-    // Layout element properties
-
-    public List<PropertyEditorCategory> getContainerPropertyCategories(Container container) {
-        List<PropertyEditorCategory> result = new ArrayList<>();
-
-        PropertyEditorCategory category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PANEL);
-        category.withField(createField(container, CssProperty.WIDTH));
-        category.withField(createField(container, CssProperty.HEIGHT));
-        category.withField(createField(container, CssProperty.FLOAT));
-        category.withField(createField(container, CssProperty.BACKGROUND_COLOR));
-        result.add(category);
-
-        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_MARGIN);
-        category.withField(createField(container, CssProperty.MARGIN_TOP));
-        category.withField(createField(container, CssProperty.MARGIN_BOTTOM));
-        category.withField(createField(container, CssProperty.MARGIN_LEFT));
-        category.withField(createField(container, CssProperty.MARGIN_RIGHT));
-        result.add(category);
-
-        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PADDING);
-        category.withField(createField(container, CssProperty.PADDING_TOP));
-        category.withField(createField(container, CssProperty.PADDING_BOTTOM));
-        category.withField(createField(container, CssProperty.PADDING_LEFT));
-        category.withField(createField(container, CssProperty.PADDING_RIGHT));
-        result.add(category);
-
-        return result;
-    }
-
-    public List<PropertyEditorCategory> getRowPropertyCategories(Row row) {
-        List<PropertyEditorCategory> result = new ArrayList<>();
-
-        PropertyEditorCategory category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PANEL);
-        category.withField(createField(row, CssProperty.WIDTH));
-        category.withField(createField(row, CssProperty.HEIGHT));
-        category.withField(createField(row, CssProperty.FLOAT));
-        category.withField(createField(row, CssProperty.BACKGROUND_COLOR));
-        result.add(category);
-
-        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_MARGIN);
-        category.withField(createField(row, CssProperty.MARGIN_TOP));
-        category.withField(createField(row, CssProperty.MARGIN_BOTTOM));
-        category.withField(createField(row, CssProperty.MARGIN_LEFT));
-        category.withField(createField(row, CssProperty.MARGIN_RIGHT));
-        result.add(category);
-
-        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PANEL);
-        category.withField(createField(row, CssProperty.PADDING_TOP));
-        category.withField(createField(row, CssProperty.PADDING_BOTTOM));
-        category.withField(createField(row, CssProperty.PADDING_LEFT));
-        category.withField(createField(row, CssProperty.PADDING_RIGHT));
-        result.add(category);
-
-        return result;
-    }
-
-    public List<PropertyEditorCategory> getComponentPropertyCategories(LayoutComponent layoutComponent) {
-        List<PropertyEditorCategory> result = new ArrayList<>();
-        Map<String,String> propertyMap = layoutComponent.getProperties();
-
-        PropertyEditorCategory category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PANEL);
-        category.withField(createField(propertyMap, CssProperty.WIDTH));
-        category.withField(createField(propertyMap, CssProperty.HEIGHT));
-        category.withField(createField(propertyMap, CssProperty.BACKGROUND_COLOR));
-        result.add(category);
-
-        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_MARGIN);
-        category.withField(createField(propertyMap, CssProperty.MARGIN_TOP));
-        category.withField(createField(propertyMap, CssProperty.MARGIN_BOTTOM));
-        category.withField(createField(propertyMap, CssProperty.MARGIN_LEFT));
-        category.withField(createField(propertyMap, CssProperty.MARGIN_RIGHT));
-        result.add(category);
-
-        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PADDING);
-        category.withField(createField(propertyMap, CssProperty.PADDING_TOP));
-        category.withField(createField(propertyMap, CssProperty.PADDING_BOTTOM));
-        category.withField(createField(propertyMap, CssProperty.PADDING_LEFT));
-        category.withField(createField(propertyMap, CssProperty.PADDING_RIGHT));
-        result.add(category);
-
-        return result;
-    }
-    
-    public List<PropertyEditorCategory> allCategories(Map<String,String> propertyMap) {
-        List<PropertyEditorCategory> result = new ArrayList<>();
-
-        PropertyEditorCategory category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PANEL);
-        category.withField(createField(propertyMap, CssProperty.WIDTH));
-        category.withField(createField(propertyMap, CssProperty.HEIGHT));
-        category.withField(createField(propertyMap, CssProperty.BACKGROUND_COLOR));
-        category.withField(createField(propertyMap, CssProperty.FLOAT));
-        result.add(category);
-
-        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_MARGIN);
-        category.withField(createField(propertyMap, CssProperty.MARGIN_TOP));
-        category.withField(createField(propertyMap, CssProperty.MARGIN_BOTTOM));
-        category.withField(createField(propertyMap, CssProperty.MARGIN_LEFT));
-        category.withField(createField(propertyMap, CssProperty.MARGIN_RIGHT));
-        result.add(category);
-
-        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PADDING);
-        category.withField(createField(propertyMap, CssProperty.PADDING_TOP));
-        category.withField(createField(propertyMap, CssProperty.PADDING_BOTTOM));
-        category.withField(createField(propertyMap, CssProperty.PADDING_LEFT));
-        category.withField(createField(propertyMap, CssProperty.PADDING_RIGHT));
-        result.add(category);
-        
-        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_TEXT);
-        category.withField(createField(propertyMap, CssProperty.FONT_SIZE));
-        category.withField(createField(propertyMap, CssProperty.FONT_WEIGHT));
-        category.withField(createField(propertyMap, CssProperty.TEXT_ALIGN));
-        category.withField(createField(propertyMap, CssProperty.TEXT_DECORATION));
-        category.withField(createField(propertyMap, CssProperty.COLOR));
-        result.add(category);
-
-        return result;
-    }    
 }
