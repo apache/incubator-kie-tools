@@ -99,6 +99,7 @@ module.exports = async (env) => {
           },
         ]),
         new EnvironmentPlugin({
+          WEBPACK_REPLACE__version: buildEnv.serverlessLogicWebTools.version,
           WEBPACK_REPLACE__buildInfo: buildInfo,
           WEBPACK_REPLACE__swfBuilderImageFullUrl: `${swfBuilderImageRegistry}/${swfBuilderImageAccount}/${swfBuilderImageName}:${swfBuilderImageTag}`,
           WEBPACK_REPLACE__baseBuilderImageFullUrl: `${baseBuilderImageRegistry}/${baseBuilderImageAccount}/${baseBuilderImageName}:${baseBuilderImageTag}`,
