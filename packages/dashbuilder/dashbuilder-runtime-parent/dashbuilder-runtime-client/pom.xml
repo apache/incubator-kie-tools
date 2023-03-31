@@ -255,12 +255,6 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-service-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -513,7 +507,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-layout-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-widgets-service-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>

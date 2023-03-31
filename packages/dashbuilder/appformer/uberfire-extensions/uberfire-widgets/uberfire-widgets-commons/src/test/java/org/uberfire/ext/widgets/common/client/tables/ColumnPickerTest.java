@@ -40,15 +40,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.uberfire.ext.services.shared.preferences.GridColumnPreference;
 import org.uberfire.ext.widgets.table.client.ColumnMeta;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -151,22 +150,6 @@ public class ColumnPickerTest {
         verify(dataGrid).insertColumn(0, column0, meta0.getHeader());
         verify(dataGrid).insertColumn(1, column1, meta1.getHeader());
         assertEquals(2, dataGrid.getColumnCount());
-    }
-
-    @Test
-    public void testColumnPreference() {
-        final Column column = mock(Column.class);
-        when(column.getDataStoreName()).thenReturn("id");
-        final ColumnMeta meta = new ColumnMeta(column, "caption");
-        meta.setHeader(new TextHeader("header"));
-
-        columnPicker.addColumn(meta);
-        final List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
-        assertEquals(1, columnsState.size());
-
-        final GridColumnPreference preference = columnsState.get(0);
-        assertEquals(preference.getName(), column.getDataStoreName());
-        assertEquals(0, preference.getPosition().intValue());
     }
 
     @Test

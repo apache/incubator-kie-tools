@@ -400,19 +400,6 @@
 
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-service-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-service-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
         <artifactId>uberfire-widgets-table</artifactId>
         <version>${project.version}</version>
       </dependency>
