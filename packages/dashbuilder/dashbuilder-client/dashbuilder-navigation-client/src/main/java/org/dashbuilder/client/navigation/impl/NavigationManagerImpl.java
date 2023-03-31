@@ -22,7 +22,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.dashbuilder.client.navigation.NavigationManager;
-import org.dashbuilder.client.navigation.event.NavItemGotoEvent;
 import org.dashbuilder.client.navigation.event.NavTreeLoadedEvent;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
@@ -35,7 +34,6 @@ import org.uberfire.mvp.Command;
 public class NavigationManagerImpl implements NavigationManager {
 
     private Caller<NavigationServices> navServices;
-    private Event<NavItemGotoEvent> navItemGotoEvent;
     private Event<NavTreeLoadedEvent> navTreeLoadedEvent;
     private Event<NavTreeChangedEvent> navTreeChangedEvent;
     private NavTree navTree;
@@ -44,12 +42,10 @@ public class NavigationManagerImpl implements NavigationManager {
     @Inject
     public NavigationManagerImpl(Caller<NavigationServices> navServices,
                                  Event<NavTreeLoadedEvent> navTreeLoadedEvent,
-                                 Event<NavTreeChangedEvent> navTreeChangedEvent,
-                                 Event<NavItemGotoEvent> navItemGotoEvent) {
+                                 Event<NavTreeChangedEvent> navTreeChangedEvent) {
         this.navServices = navServices;
         this.navTreeLoadedEvent = navTreeLoadedEvent;
         this.navTreeChangedEvent = navTreeChangedEvent;
-        this.navItemGotoEvent = navItemGotoEvent;
     }
 
     @Override
@@ -97,7 +93,7 @@ public class NavigationManagerImpl implements NavigationManager {
 
     @Override
     public void navItemClicked(NavItem navItem) {
-        navItemGotoEvent.fire(new NavItemGotoEvent(navItem));
+        // no op
     }
 
     @Override
