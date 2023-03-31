@@ -25,7 +25,6 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.URLSearchParams;
 import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.RuntimeCommunication;
-import org.dashbuilder.client.navbar.AppNavBar;
 import org.dashbuilder.client.perspective.ContentErrorPerspective;
 import org.dashbuilder.client.perspective.DashboardsListPerspective;
 import org.dashbuilder.client.perspective.EmptyPerspective;
@@ -83,9 +82,6 @@ public class RouterScreen {
     PlaceManager placeManager;
 
     @Inject
-    AppNavBar appNavBar;
-
-    @Inject
     View view;
 
     private DashbuilderRuntimeMode mode;
@@ -114,7 +110,6 @@ public class RouterScreen {
         }
         clientLoader.load(this::route,
                 (a, t) -> {
-                    appNavBar.setHide(true);
                     DomGlobal.console.log("Error loading models: " + a);
                     DomGlobal.console.debug(t);
                     goToNoModelsScreen();
@@ -124,7 +119,6 @@ public class RouterScreen {
     protected void route(RuntimeServiceResponse response) {
         mode = response.getMode();
         var runtimeModelOp = response.getRuntimeModelOp();
-        appNavBar.setHide(true);
 
         if (runtimeModelOp.isPresent()) {
             var runtimeModel = runtimeModelOp.get();

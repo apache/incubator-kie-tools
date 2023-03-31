@@ -18,12 +18,9 @@ package org.dashbuilder.displayer.client.component;
 
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.dashbuilder.displayer.client.component.function.ComponentFunctionLocator;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
-import org.dashbuilder.displayer.external.ExternalComponentFunction;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
 import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
 import org.dashbuilder.displayer.external.ExternalComponentMessageType;
@@ -32,14 +29,11 @@ import org.dashbuilder.displayer.external.FunctionCallRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -56,16 +50,10 @@ public class ExternalComponentDispatcherTest {
     ExternalComponentMessageHelper messageHelper;
 
     @Mock
-    ComponentFunctionLocator functionLocator;
-
-    @Mock
     ExternalComponentListener listener;
 
     @InjectMocks
     ExternalComponentDispatcher dispatcher;
-
-    @Captor
-    ArgumentCaptor<Consumer<Object>> functionExecutionCaptor;
 
     @Before
     public void setup() {
@@ -105,104 +93,6 @@ public class ExternalComponentDispatcherTest {
         dispatcher.onMessage(message);
 
         verify(listener).onFilter(eq(filterRequest));
-    }
-
-    @Test
-    public void testFunctionCallWithoutDestination() {
-        ExternalComponentMessage message = functionCallMessage();
-        noId(message);
-
-        dispatcher.onMessage(message);
-
-        verify(functionLocator, times(0)).findFunctionByName(any());
-    }
-
-    @Test
-    public void testFunctionCallWithoutRequest() {
-        ExternalComponentMessage message = functionCallMessage();
-        ExternalComponentMessage noRequestMessage = mock(ExternalComponentMessage.class);
-
-        when(messageHelper.newFunctionRequestNotFound()).thenReturn(noRequestMessage);
-        withId(message, of(DEST1));
-
-        dispatcher.onMessage(message);
-
-        verify(functionLocator, times(0)).findFunctionByName(any());
-        verify(messageHelper).functionCallRequest(eq(message));
-        verify(listener).sendMessage(noRequestMessage);
-    }
-
-    @Test
-    public void testFunctionCallFunctionNotFound() {
-        FunctionCallRequest callRequest = mock(FunctionCallRequest.class);
-        Optional<FunctionCallRequest> callRequestOp = Optional.of(callRequest);
-        ExternalComponentMessage message = functionCallMessage(callRequestOp);
-        ExternalComponentMessage functionNotFoundMessage = mock(ExternalComponentMessage.class);
-        String functionName = "f1";
-
-        when(callRequest.getFunctionName()).thenReturn(functionName);
-        when(messageHelper.newFunctionNotFound(eq(callRequest))).thenReturn(functionNotFoundMessage);
-        when(functionLocator.findFunctionByName(eq(functionName))).thenReturn(empty());
-        withId(message, of(DEST1));
-
-        dispatcher.onMessage(message);
-
-        verify(messageHelper).functionCallRequest(eq(message));
-        verify(functionLocator).findFunctionByName(eq(functionName));
-        verify(listener).sendMessage(functionNotFoundMessage);
-    }
-
-    @Test
-    public void testFunctionCallError() {
-        ExternalComponentFunction function = mock(ExternalComponentFunction.class);
-        FunctionCallRequest callRequest = mock(FunctionCallRequest.class);
-        Optional<FunctionCallRequest> callRequestOp = Optional.of(callRequest);
-        ExternalComponentMessage message = functionCallMessage(callRequestOp);
-        ExternalComponentMessage functionErrorMessage = mock(ExternalComponentMessage.class);
-        String functionName = "f1";
-        String functionError = "error";
-
-        Mockito.doThrow(new RuntimeException(functionError)).when(function).exec(any(), any(), any());
-        when(callRequest.getFunctionName()).thenReturn(functionName);
-        when(messageHelper.newFunctionError(eq(callRequest), eq(functionError))).thenReturn(functionErrorMessage);
-        when(functionLocator.findFunctionByName(eq(functionName))).thenReturn(Optional.of(function));
-
-        withId(message, of(DEST1));
-
-        dispatcher.onMessage(message);
-
-        verify(messageHelper).functionCallRequest(eq(message));
-        verify(functionLocator).findFunctionByName(eq(functionName));
-        verify(function).exec(any(), any(), any());
-        verify(listener).sendMessage(functionErrorMessage);
-    }
-
-    @Test
-    public void testFunctionCallSuccess() {
-        ExternalComponentFunction function = mock(ExternalComponentFunction.class);
-        FunctionCallRequest callRequest = mock(FunctionCallRequest.class);
-        Optional<FunctionCallRequest> callRequestOp = Optional.of(callRequest);
-        ExternalComponentMessage message = functionCallMessage(callRequestOp);
-        ExternalComponentMessage functionSuccessMessage = mock(ExternalComponentMessage.class);
-        String functionName = "f1";
-
-        String result = "success";
-        when(callRequest.getFunctionName()).thenReturn(functionName);
-        when(messageHelper.newFunctionSuccess(eq(callRequest), eq(result))).thenReturn(functionSuccessMessage);
-        when(functionLocator.findFunctionByName(eq(functionName))).thenReturn(Optional.of(function));
-
-        withId(message, of(DEST1));
-
-        dispatcher.onMessage(message);
-
-        verify(messageHelper).functionCallRequest(eq(message));
-        verify(functionLocator).findFunctionByName(eq(functionName));
-        verify(function).exec(any(), functionExecutionCaptor.capture(), any());
-
-        functionExecutionCaptor.getValue().accept(result);
-
-        verify(messageHelper).newFunctionSuccess(eq(callRequest), eq(result));
-        verify(listener).sendMessage(eq(functionSuccessMessage));
     }
 
     @Test
@@ -250,10 +140,6 @@ public class ExternalComponentDispatcherTest {
 
     private ExternalComponentMessage filterMessage() {
         return filterMessage(empty());
-    }
-
-    private ExternalComponentMessage functionCallMessage() {
-        return functionCallMessage(empty());
     }
 
     private void withId(ExternalComponentMessage message, Optional<String> id) {
