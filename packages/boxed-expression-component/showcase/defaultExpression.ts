@@ -234,7 +234,10 @@ export function getDefaultExpressionDefinitionByLogicType(
       rules: [
         {
           id: generateUuid(),
-          inputEntries: [{ id: generateUuid(), content: DECISION_TABLE_INPUT_DEFAULT_VALUE }],
+          inputEntries: [
+            { id: generateUuid(), content: DECISION_TABLE_INPUT_DEFAULT_VALUE },
+            { id: generateUuid(), content: DECISION_TABLE_INPUT_DEFAULT_VALUE },
+          ],
           outputEntries: [
             { id: generateUuid(), content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE },
             { id: generateUuid(), content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE },
