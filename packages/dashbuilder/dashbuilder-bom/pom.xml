@@ -443,19 +443,6 @@
 
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-core-ace</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-core-ace</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
         <artifactId>uberfire-widgets-core-editors</artifactId>
         <version>${project.version}</version>
       </dependency>
