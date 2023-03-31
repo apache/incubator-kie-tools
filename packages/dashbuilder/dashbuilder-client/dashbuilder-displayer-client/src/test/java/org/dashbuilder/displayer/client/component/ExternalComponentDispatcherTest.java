@@ -25,7 +25,6 @@ import org.dashbuilder.displayer.external.ExternalComponentMessage;
 import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
 import org.dashbuilder.displayer.external.ExternalComponentMessageType;
 import org.dashbuilder.displayer.external.ExternalFilterRequest;
-import org.dashbuilder.displayer.external.FunctionCallRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -150,13 +149,6 @@ public class ExternalComponentDispatcherTest {
         ExternalComponentMessage message = Mockito.mock(ExternalComponentMessage.class);
         when(messageHelper.messageType(eq(message))).thenReturn(ExternalComponentMessageType.FILTER);
         when(messageHelper.filterRequest(eq(message))).thenReturn(filterRequestOp);
-        return message;
-    }
-
-    private ExternalComponentMessage functionCallMessage(Optional<FunctionCallRequest> callRequestOp) {
-        ExternalComponentMessage message = Mockito.mock(ExternalComponentMessage.class);
-        when(messageHelper.messageType(eq(message))).thenReturn(ExternalComponentMessageType.FUNCTION_CALL);
-        when(messageHelper.functionCallRequest(eq(message))).thenReturn(callRequestOp);
         return message;
     }
 

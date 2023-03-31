@@ -303,19 +303,6 @@
 
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-layout-editor-backend</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-layout-editor-backend</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
         <artifactId>uberfire-layout-editor-client</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -575,19 +562,6 @@
         <artifactId>dashbuilder-displayer-client</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-displayer-screen</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-displayer-screen</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
       </dependency>
 
       <dependency>
