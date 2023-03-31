@@ -1,0 +1,88 @@
+import { K8sApiServerEndpointByResourceKind } from "./types";
+
+type K8sApiResourceList = {
+  resources: Array<{
+    verbs: string[];
+    name: string;
+    kind: string;
+    namespaced: boolean;
+  }>;
+};
+
+type K8sApiGroups = {
+  groups: Array<{ versions: { groupVersion: string } }>;
+};
+
+export async function buildK8sApiServerEndpointsByResourceKind(kubeApiServerUrl: string, token?: string) {
+  const fetchOpts = token // Optional, as local k8s won't require authentication...
+    ? { headers: { Authorization: `Bearer ${token}` } }
+    : {};
+
+  // Resource kind --> API Group version --> URLs (global and namespaced)
+  const map: K8sApiServerEndpointByResourceKind = new Map();
+
+  function ackApiResourceList(apiResourceList: K8sApiResourceList, apiGroupEndpoint: string, apiGroupVersion: string) {
+    for (const apiResource of apiResourceList.resources) {
+      // We can't accept resources that don't allow being created. E.g., apps/v1/deployment/status
+      if (!new Set(apiResource.verbs).has("create")) {
+        continue;
+      }
+
+      const globalUrl = `${apiGroupEndpoint}/${apiResource.name}`;
+      const namespacedUrl = `${apiGroupEndpoint}/namespaces/:namespace/${apiResource.name}`;
+
+      // That's just for debugging purposes (begin)
+      if (map.get(apiResource.kind)?.get(apiGroupVersion)) {
+        console.info(`CONFLICT ON '${apiResource.kind}':`);
+        console.log(map.get(apiResource.kind)?.get(apiGroupVersion));
+        console.log(
+          `${apiResource.namespaced}` === "true"
+            ? { url: { namespaced: namespacedUrl, global: globalUrl } }
+            : { url: { global: globalUrl } }
+        );
+      }
+      // That's just for debugging purposes (end)
+
+      map.set(
+        apiResource.kind,
+        new Map([
+          ...[...(map.get(apiResource.kind) ?? new Map()).entries()],
+          [
+            apiGroupVersion,
+            `${apiResource.namespaced}` === "true"
+              ? { url: { namespaced: namespacedUrl, global: globalUrl } }
+              : { url: { global: globalUrl } },
+          ],
+        ])
+      );
+    }
+  }
+
+  // Print k8s version
+  console.info("Fetching Kubernetes version...");
+  const version = await (await fetch(`${kubeApiServerUrl}/version`, fetchOpts)).json();
+  console.info(version);
+  console.info("");
+
+  // Need to do this separately because the Core API (`/api/v1`) is not listed as part of `/apis`.
+  const coreApiEndpoint = `${kubeApiServerUrl}/api/v1`;
+  console.info(`Fetching Resources of '${coreApiEndpoint}'`);
+  const coreApi: K8sApiResourceList = await (await fetch(`${coreApiEndpoint}`, fetchOpts)).json();
+  ackApiResourceList(coreApi, `${coreApiEndpoint}`, "v1");
+
+  // Now we list every API available on `kubeApiServerUrl`
+  const apiGroups: K8sApiGroups = await (await fetch(`${kubeApiServerUrl}/apis`, fetchOpts)).json();
+  await Promise.all(
+    apiGroups.groups
+      .flatMap((group) => group.versions)
+      .map(async (version) => {
+        const endpoint = `${kubeApiServerUrl}/apis/${version.groupVersion}`;
+        console.info(`Fetching Resources of '${endpoint}'`);
+        const apiResourceList: K8sApiResourceList = await (await fetch(`${endpoint}`, fetchOpts)).json();
+
+        ackApiResourceList(apiResourceList, `${endpoint}`, version.groupVersion);
+      })
+  );
+
+  return map;
+}

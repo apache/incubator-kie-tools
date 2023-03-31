@@ -96,6 +96,7 @@
       { "id": "@kie-tools/git-cors-proxy-image" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/import-java-classes-component" },
+      { "id": "@kie-tools-core/k8s-yaml-to-apiserver-requests" },
       { "id": "@kie-tools/kie-sandbox-extended-services-image" },
       { "id": "@kie-tools/kie-sandbox-image" },
       { "id": "@kie-tools/online-editor" },
@@ -612,6 +613,9 @@
         "weight": 1
       },
       { "source": "@kie-tools/import-java-classes-component", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
         "source": "@kie-tools/kie-sandbox-extended-services-image",
         "target": "@kie-tools/extended-services",
@@ -892,6 +896,7 @@
     ["@kie-tools/i18n-common-dictionary", "packages/i18n-common-dictionary"],
     ["@kie-tools/image-env-to-json", "packages/image-env-to-json"],
     ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
+    ["@kie-tools-core/k8s-yaml-to-apiserver-requests", "packages/k8s-yaml-to-apiserver-requests"],
     ["@kie-tools-core/keyboard-shortcuts", "packages/keyboard-shortcuts"],
     ["@kie-tools/kie-bc-editors", "packages/kie-bc-editors"],
     ["@kie-tools/kie-editors-standalone", "packages/kie-editors-standalone"],
