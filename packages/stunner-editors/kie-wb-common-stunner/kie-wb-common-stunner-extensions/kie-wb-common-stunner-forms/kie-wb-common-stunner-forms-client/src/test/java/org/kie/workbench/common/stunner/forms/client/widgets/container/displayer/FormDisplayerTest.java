@@ -34,6 +34,7 @@ import org.kie.workbench.common.forms.processing.engine.handling.Form;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
+import org.kie.workbench.common.stunner.forms.client.widgets.container.displayer.domainChangeHandlers.DomainObjectFieldChangeHandlerRegistry;
 import org.kie.workbench.common.stunner.forms.context.PathAwareFormContext;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -103,6 +104,9 @@ public class FormDisplayerTest {
     @Mock
     private StaticModelFormRenderingContext renderingContext;
 
+    @Mock
+    private DomainObjectFieldChangeHandlerRegistry registry;
+
     private int renderedCount = 0;
 
     private FormDisplayer displayer;
@@ -141,7 +145,7 @@ public class FormDisplayerTest {
         when(formRenderer.getCurrentForm()).thenReturn(form);
         when(dynamicFormModelGenerator.getContextForModel(any(), anyVararg())).thenReturn(renderingContext);
 
-        displayer = new FormDisplayer(view, formRenderer, dynamicFormModelGenerator);
+        displayer = new FormDisplayer(view, formRenderer, dynamicFormModelGenerator, registry);
     }
 
     @Test

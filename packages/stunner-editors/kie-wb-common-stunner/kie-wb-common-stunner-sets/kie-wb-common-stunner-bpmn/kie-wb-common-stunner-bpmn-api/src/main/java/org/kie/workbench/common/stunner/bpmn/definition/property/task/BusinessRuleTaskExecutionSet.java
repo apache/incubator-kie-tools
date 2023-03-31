@@ -40,6 +40,7 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     public static final String RULE_LANGUAGE = "ruleLanguage";
     public static final String RULE_FLOW_GROUP = "ruleFlowGroup";
+    public static final String FILE_NAME = "fileName";
     public static final String NAMESPACE = "namespace";
     public static final String DECISON_NAME = "decisionName";
     public static final String DMN_MODEL_NAME = "dmnModelName";
@@ -68,14 +69,30 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
-            afterElement = "ruleFlowGroup"
+            afterElement = "ruleFlowGroup",
+            type = ComboBoxFieldType.class
+    )
+    @SelectorDataProvider(
+            type = SelectorDataProvider.ProviderType.CLIENT,
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.FileNameFormProvider")
+    @Valid
+    private FileName fileName;
+
+    @Property
+    @FormField(
+            afterElement = "fileName"
     )
     @Valid
     private Namespace namespace;
 
     @Property
     @FormField(
-            afterElement = "namespace"
+            afterElement = "namespace",
+            type = ComboBoxFieldType.class
+    )
+    @SelectorDataProvider(
+            type = SelectorDataProvider.ProviderType.CLIENT,
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.DecisionNameFormProvider"
     )
     @Valid
     private DecisionName decisionName;
@@ -117,6 +134,7 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
     public BusinessRuleTaskExecutionSet() {
         this(new RuleLanguage(),
              new RuleFlowGroup(),
+             new FileName(),
              new Namespace(),
              new DecisionName(),
              new DmnModelName(),
@@ -131,6 +149,7 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     public BusinessRuleTaskExecutionSet(final @MapsTo("ruleLanguage") RuleLanguage ruleLanguage,
                                         final @MapsTo("ruleFlowGroup") RuleFlowGroup ruleFlowGroup,
+                                        final @MapsTo("fileName") FileName fileName,
                                         final @MapsTo("namespace") Namespace namespace,
                                         final @MapsTo("decisionName") DecisionName decisionName,
                                         final @MapsTo("dmnModelName") DmnModelName dmnModelName,
@@ -141,6 +160,7 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
                                         final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
         this.ruleLanguage = ruleLanguage;
         this.ruleFlowGroup = ruleFlowGroup;
+        this.fileName = fileName;
         this.namespace = namespace;
         this.decisionName = decisionName;
         this.dmnModelName = dmnModelName;
@@ -165,6 +185,14 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     public void setRuleFlowGroup(final RuleFlowGroup ruleFlowGroup) {
         this.ruleFlowGroup = ruleFlowGroup;
+    }
+
+    public FileName getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(FileName fileName) {
+        this.fileName = fileName;
     }
 
     public Namespace getNamespace() {
@@ -235,6 +263,7 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
     public int hashCode() {
         return HashUtil.combineHashCodes(Objects.hashCode(ruleLanguage),
                                          Objects.hashCode(ruleFlowGroup),
+                                         Objects.hashCode(fileName),
                                          Objects.hashCode(namespace),
                                          Objects.hashCode(decisionName),
                                          Objects.hashCode(dmnModelName),
@@ -251,6 +280,7 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
             BusinessRuleTaskExecutionSet other = (BusinessRuleTaskExecutionSet) o;
             return Objects.equals(ruleLanguage, other.ruleLanguage) &&
                     Objects.equals(ruleFlowGroup, other.ruleFlowGroup) &&
+                    Objects.equals(fileName, other.fileName) &&
                     Objects.equals(namespace, other.namespace) &&
                     Objects.equals(decisionName, other.decisionName) &&
                     Objects.equals(dmnModelName, other.dmnModelName) &&

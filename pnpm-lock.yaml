@@ -4174,6 +4174,9 @@ importers:
       "@kie-tools-core/workspace":
         specifier: workspace:*
         version: link:../workspace
+      "@kie-tools/dmn-language-service":
+        specifier: workspace:*
+        version: link:../dmn-language-service
       "@kie-tools/pmml-editor-marshaller":
         specifier: workspace:*
         version: link:../pmml-editor-marshaller

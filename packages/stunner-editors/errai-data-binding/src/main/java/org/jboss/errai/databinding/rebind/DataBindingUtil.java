@@ -378,12 +378,45 @@ public class DataBindingUtil {
    *         annotated and configured in ErraiApp.properties).
    */
   public static Set<MetaClass> getAllBindableTypes(final GeneratorContext context) {
+    // TEMPORARY LOG FOR TRACING ERRAI CACHE ISSUE
+    Set<String> translatablePackages = RebindUtils.findTranslatablePackages(context);
+    log.warn("**********");
+    log.warn("translatablePackages");
+    translatablePackages.forEach(log::warn);
+
     final Collection<MetaClass> annotatedBindableTypes = ClassScanner.getTypesAnnotatedWith(Bindable.class,
-        RebindUtils.findTranslatablePackages(context), context);
+            translatablePackages,
+            context);
+
+    // TEMPORARY LOG FOR TRACING ERRAI CACHE ISSUE
+    log.warn("**********");
+    log.warn("annotatedBindableTypes");
+    annotatedBindableTypes.forEach(metaClass -> log.warn(metaClass.getFullyQualifiedName()));
 
     final Set<MetaClass> bindableTypes = new HashSet<>(annotatedBindableTypes);
-    bindableTypes.addAll(DataBindingUtil.getConfiguredBindableTypes());
-    bindableTypes.removeAll(DataBindingUtil.getConfiguredNonBindableTypes());
+    Set<MetaClass> configuredBindableTypes1 = DataBindingUtil.getConfiguredBindableTypes();
+
+    // TEMPORARY LOG FOR TRACING ERRAI CACHE ISSUE
+    log.warn("**********");
+    log.warn("configuredBindableTypes1");
+    configuredBindableTypes1.forEach(metaClass -> log.warn(metaClass.getFullyQualifiedName()));
+
+    bindableTypes.addAll(configuredBindableTypes1);
+
+    Set<MetaClass> configuredNonBindableTypes1 = DataBindingUtil.getConfiguredNonBindableTypes();
+
+    // TEMPORARY LOG FOR TRACING ERRAI CACHE ISSUE
+    log.warn("**********");
+    log.warn("configuredNonBindableTypes1");
+    configuredNonBindableTypes1.forEach(metaClass -> log.warn(metaClass.getFullyQualifiedName()));
+
+    bindableTypes.removeAll(configuredNonBindableTypes1);
+
+    // TEMPORARY LOG FOR TRACING ERRAI CACHE ISSUE
+    log.warn("**********");
+    log.warn("bindableTypes");
+    bindableTypes.forEach(metaClass -> log.warn(metaClass.getFullyQualifiedName()));
+
     return bindableTypes;
   }
 

@@ -42,7 +42,7 @@ import {
   GIT_DEFAULT_BRANCH,
   GIT_ORIGIN_REMOTE_NAME,
 } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { isDecision, isScorecard, isWorkflow } from "../envelopeLocator/EditorEnvelopeLocatorFactory";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 const TEMP_ACCELERATOR_REMOTE_NAME = "__kie-sandbox__accelerator-remote";
 const BACKUP_BRANCH_NAME = "__kie-sandbox__accelerator-backup-branch";
@@ -185,9 +185,9 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           workspaceFiles.map(async (file) => {
             let fileNewDestination: string;
 
-            if (isDecision(file.relativePath) || isScorecard(file.relativePath)) {
+            if (isOfKind("dmn", file.relativePath) || isOfKind("pmml", file.relativePath)) {
               fileNewDestination = accelerator.dmnDestinationFolder;
-            } else if (isWorkflow(file.relativePath)) {
+            } else if (isOfKind("bpmn", file.relativePath)) {
               fileNewDestination = accelerator.bpmnDestinationFolder;
             } else {
               fileNewDestination = accelerator.otherFilesDestinationFolder;

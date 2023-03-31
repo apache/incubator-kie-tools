@@ -82,7 +82,7 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
     return this.getEditorOrThrowError().centerNode(uuid);
   }
 
-  public kogitoSwfDiagramEditor__highlightNode(args: { nodeName: string }) {
+  public kogitoSwfDiagramEditor__highlightNode(args: { nodeName: string | null }) {
     return this.getEditorOrThrowError().selectStateByName(args.nodeName);
   }
 }
