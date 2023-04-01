@@ -253,12 +253,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-simple-docks-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Errai -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -488,7 +482,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-layout-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
 

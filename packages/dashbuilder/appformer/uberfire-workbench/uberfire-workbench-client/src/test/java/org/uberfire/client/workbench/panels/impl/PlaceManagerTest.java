@@ -68,7 +68,6 @@ import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
-import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
@@ -140,8 +139,6 @@ public class PlaceManagerTest {
     PerspectiveActivity defaultPerspective;
     @Mock
     SyncBeanManager iocManager;
-    @Mock
-    UberfireDocks uberfireDock;
     @Mock
     Event<BeforeClosePlaceEvent> workbenchPartBeforeCloseEvent;
     @Mock

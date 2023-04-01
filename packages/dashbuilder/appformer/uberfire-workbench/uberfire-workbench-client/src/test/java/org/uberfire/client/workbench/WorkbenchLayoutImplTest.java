@@ -24,7 +24,6 @@ import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,10 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.client.workbench.events.WorkbenchProfileCssClass;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.mock;
@@ -53,26 +49,16 @@ import static org.mockito.Mockito.withSettings;
 @WithClassesToStub(DockLayoutPanel.class)
 public class WorkbenchLayoutImplTest {
 
-    @Mock
-    UberfireDocksContainer uberfireDocksContainer;
-    @Mock
-    WorkbenchPickupDragController dragController;
     private WorkbenchLayoutImpl workbenchLayout;
     private Widget widget;
     @Mock
     private SyncBeanManager iocManager;
     @Mock
-    private HeaderPanel root;
-    @Mock
-    private WorkbenchDragAndDropManager dndManager;
+    private SimpleLayoutPanel root;
 
     @Before
     public void setup() {
-        workbenchLayout = new WorkbenchLayoutImpl(iocManager,
-                root,
-                dndManager,
-                uberfireDocksContainer,
-                dragController) {
+        workbenchLayout = new WorkbenchLayoutImpl(iocManager, root) {
 
             @Override
             ElementWrapperWidget<?> createWidgetFrom(HTMLElement h) {

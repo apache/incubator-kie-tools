@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
@@ -33,7 +32,6 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
  * <p>
  * between the '#' and '|' there is the perspective name
  * between the '|' and '$' there is the CSV list of the screens opened when loading the perspective
- * between the '[' and ']'there is the CSV list of the docked Screens
  * after the '$' there is the CSV list of the screens not belonging to the current perspective
  * <p>
  * '~' denotes a closed screen
@@ -43,12 +41,9 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 public class BookmarkableUrlHelper {
 
     public final static String PERSPECTIVE_SEP = "|";
-    public final static String DOCK_BEGIN_SEP = "[";
-    public final static String DOCK_CLOSE_SEP = "]";
     public final static String SEPARATOR = ",";
     public final static String OTHER_SCREEN_SEP = "$";
     public final static String CLOSED_PREFIX = "~";
-    public final static String CLOSED_DOCK_PREFIX = "!";
     public final static int MAX_NAV_URL_SIZE = 1900;
 
     private static boolean isNotBlank(final String str) {
@@ -232,44 +227,6 @@ public class BookmarkableUrlHelper {
     }
 
     /**
-     * Return the docked screens in the URL
-     * @param url
-     * @return
-     */
-    public static Set<String> getDockedScreensFromUrl(final String url) {
-        int start;
-        int end;
-        String docks;
-
-        if (!isNotBlank(url)) {
-            return new HashSet<>();
-        }
-        start = url.indexOf(DOCK_BEGIN_SEP) + 1;
-        end = url.indexOf(DOCK_CLOSE_SEP) - 1;
-
-        if (start > 0) {
-            docks = url.substring(start,
-                                  end);
-            String[] token = docks.split(SEPARATOR);
-            return new HashSet<>(Arrays.asList(token));
-        }
-        return new HashSet<>();
-    }
-
-    /**
-     * Return all the docked screens
-     * @param place
-     * @return
-     * @note non-docked screens are not taken into consideration
-     */
-    public static Set<String> getDockedScreensFromPlace(final PlaceRequest place) {
-        if (null != place) {
-            return getDockedScreensFromUrl(place.getFullIdentifier());
-        }
-        return new HashSet<>();
-    }
-
-    /**
      * Return all the screens (opened or closed) that is, everything
      * after the perspective declaration
      * @param place
@@ -278,10 +235,6 @@ public class BookmarkableUrlHelper {
      */
     public static Set<String> getScreensFromPlace(final PlaceRequest place) {
         String url;
-        int start;
-        int end;
-        String docks;
-
         if (!isNotBlank(place)) {
             return new HashSet<>();
         }
@@ -294,14 +247,6 @@ public class BookmarkableUrlHelper {
             url = place.getFullIdentifier();
         }
 
-        start = url.indexOf(DOCK_BEGIN_SEP);
-        end = url.indexOf(DOCK_CLOSE_SEP) + 1;
-        if (start > 0) {
-            docks = url.substring(start,
-                                  end);
-            url = url.replace(docks,
-                              "");
-        }
         // replace the '$' with a comma ','
         url = url.replace(OTHER_SCREEN_SEP,
                           SEPARATOR);
@@ -352,55 +297,6 @@ public class BookmarkableUrlHelper {
     public static String registerOpenedPerspective(String currentBookmarkableURLStatus,
                                                    PlaceRequest place) {
         return place.getFullIdentifier().concat(PERSPECTIVE_SEP).concat(currentBookmarkableURLStatus);
-    }
-
-    private static String getDockId(UberfireDock targetDock) {
-        return targetDock.getDockPosition().getShortName()
-                + targetDock.getPlaceRequest().getFullIdentifier() + SEPARATOR;
-    }
-
-    public static String registerOpenedDock(String currentBookmarkableURLStatus,
-                                            UberfireDock targetDock) {
-        if (targetDock == null) {
-            return currentBookmarkableURLStatus;
-        }
-        final String id = getDockId(targetDock);
-        final String closed = CLOSED_DOCK_PREFIX.concat(id);
-
-        if (currentBookmarkableURLStatus.contains(DOCK_CLOSE_SEP)) {
-            String result = null;
-
-            if (!currentBookmarkableURLStatus.contains(id)) {
-                // the screen is not in the URL, insert in last position
-                result = currentBookmarkableURLStatus.replace(DOCK_CLOSE_SEP,
-                                                              (id + DOCK_CLOSE_SEP));
-            } else if (currentBookmarkableURLStatus.contains(closed)) {
-                // the screen is closed
-                result = currentBookmarkableURLStatus.replace(closed,
-                                                              id);
-            } else {
-                // screen already in URL
-                result = currentBookmarkableURLStatus;
-            }
-            return result;
-        } else {
-            return currentBookmarkableURLStatus + DOCK_BEGIN_SEP + (getDockId(targetDock) + DOCK_CLOSE_SEP);
-        }
-    }
-
-    public static String registerClosedDock(String currentBookmarkableURLStatus,
-                                            UberfireDock targetDock) {
-        if (!isNotBlank(currentBookmarkableURLStatus)
-                || null == targetDock) {
-            return currentBookmarkableURLStatus;
-        }
-        final String id = getDockId(targetDock);
-        final String closed = CLOSED_DOCK_PREFIX.concat(id);
-        if (!currentBookmarkableURLStatus.contains(closed)) {
-            return currentBookmarkableURLStatus.replace(id,
-                                                        CLOSED_DOCK_PREFIX.concat(id));
-        }
-        return currentBookmarkableURLStatus;
     }
 
     /**

@@ -35,8 +35,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
 import org.uberfire.client.util.MockIOCBeanDef;
-import org.uberfire.client.workbench.docks.UberfireDock;
-import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -48,12 +46,13 @@ public class BookmarkableUrlHelperTest extends TestCase {
     public static void setupBeans() {
         ((SyncBeanManagerImpl) IOC.getBeanManager()).reset();
 
-        IOC.getBeanManager().registerBean(new MockIOCBeanDef<ObservablePath, ObservablePathImpl>(new ObservablePathImpl(),
-                                                                                                 ObservablePath.class,
-                                                                                                 Dependent.class,
-                                                                                                 new HashSet<Annotation>(Arrays.asList(QualifierUtil.DEFAULT_QUALIFIERS)),
-                                                                                                 null,
-                                                                                                 true));
+        IOC.getBeanManager().registerBean(new MockIOCBeanDef<ObservablePath, ObservablePathImpl>(
+                new ObservablePathImpl(),
+                ObservablePath.class,
+                Dependent.class,
+                new HashSet<Annotation>(Arrays.asList(QualifierUtil.DEFAULT_QUALIFIERS)),
+                null,
+                true));
     }
 
     @Test
@@ -66,27 +65,27 @@ public class BookmarkableUrlHelperTest extends TestCase {
         String url = "";
 
         url = BookmarkableUrlHelper.registerOpenedScreen(url,
-                                                         req1);
+                req1);
         assertEquals(req1.getFullIdentifier(),
-                     url);
+                url);
         url = BookmarkableUrlHelper.registerOpenedScreen(url,
-                                                         req2);
+                req2);
         assertEquals("screen1,screen2",
-                     url);
+                url);
 
         // add the perspective, want to test screen not belonging to the current perspective
         url = perspective.concat(BookmarkableUrlHelper.PERSPECTIVE_SEP)
                 .concat(url);
         url = BookmarkableUrlHelper.registerOpenedScreen(url,
-                                                         req3);
+                req3);
 
         assertEquals("perspective|screen1,screen2$screen3",
-                     url);
+                url);
 
         url = BookmarkableUrlHelper.registerOpenedScreen(url,
-                                                         req4);
+                req4);
         assertEquals("perspective|screen1,screen2$screen3,screen4",
-                     url);
+                url);
 
         // test with screen closed (we compose the URL)
         final String closedScreen = "closedScreen";
@@ -95,21 +94,21 @@ public class BookmarkableUrlHelperTest extends TestCase {
                 .concat(BookmarkableUrlHelper.CLOSED_PREFIX)
                 .concat(closedScreen).concat(",openScreen$externalScreen");
         url = BookmarkableUrlHelper.registerOpenedScreen(url,
-                                                         closed);
+                closed);
         String expected = "perspective|"
                 .concat(closedScreen).concat(",openScreen$externalScreen");
         assertEquals(expected,
-                     url);
+                url);
         // compose a big URL
         StringBuilder bigUrl = new StringBuilder(perspective);
         while (bigUrl.length() < BookmarkableUrlHelper.MAX_NAV_URL_SIZE) {
             bigUrl.append(",screen");
         }
         url = BookmarkableUrlHelper.registerOpenedScreen(bigUrl.toString(),
-                                                         req1);
+                req1);
         assertNotNull(url);
         assertEquals(bigUrl.toString(),
-                     url);
+                url);
     }
 
     @Test
@@ -118,50 +117,50 @@ public class BookmarkableUrlHelperTest extends TestCase {
 
         // close screens not belonging to the current perspective
         url = BookmarkableUrlHelper.registerClose(url,
-                                                  "screen3");
+                "screen3");
         assertEquals("perspective|screen1,screen2$screen4",
-                     url);
+                url);
         url = BookmarkableUrlHelper.registerClose(url,
-                                                  "screen4");
+                "screen4");
         assertEquals("perspective|screen1,screen2",
-                     url);
+                url);
 
         // close screens belonging to the current perspective
 
         url = BookmarkableUrlHelper.registerClose(url,
-                                                  "screen1");
+                "screen1");
         assertEquals("perspective|~screen1,screen2",
-                     url);
+                url);
 
         url = BookmarkableUrlHelper.registerClose(url,
-                                                  "screen2");
+                "screen2");
         assertEquals("perspective|~screen1,~screen2",
-                     url);
+                url);
 
         // screen already closed
         url = "perspective|screen1,~screen2$screen3";
         url = BookmarkableUrlHelper.registerClose(url,
-                                                  "screen2");
+                "screen2");
         assertEquals("perspective|screen1,~screen2$screen3",
-                     url);
+                url);
 
         url = "perspective|screen1$screen2";
         url = BookmarkableUrlHelper.registerClose(url,
-                                                  "screen2");
+                "screen2");
         assertEquals("perspective|screen1",
-                     url);
+                url);
 
         url = "perspective|screen1$screen2,screen3";
         url = BookmarkableUrlHelper.registerClose(url,
-                                                  "screen2");
+                "screen2");
         assertEquals("perspective|screen1$screen3",
-                     url);
+                url);
 
         url = "perspective|screen1$screen2,screen3,screen4";
         url = BookmarkableUrlHelper.registerClose(url,
-                                                  "screen3");
+                "screen3");
         assertEquals("perspective|screen1$screen2,screen4",
-                     url);
+                url);
     }
 
     @Test
@@ -175,18 +174,18 @@ public class BookmarkableUrlHelperTest extends TestCase {
 
         assertNotNull(place);
         assertNotSame(req,
-                      place);
+                place);
         assertEquals(perspectiveName,
-                     place.getFullIdentifier());
+                place.getFullIdentifier());
 
         // return the same object if no perspective in URL
         final PlaceRequest empty = new DefaultPlaceRequest("screenOpened,~screenClosed");
         empty.addParameter("param",
-                           "value");
+                "value");
         place = BookmarkableUrlHelper.getPerspectiveFromPlace(empty);
         assertNotNull(place);
         assertEquals(empty.getFullIdentifier(),
-                     place.getFullIdentifier());
+                place.getFullIdentifier());
     }
 
     @Test
@@ -197,16 +196,16 @@ public class BookmarkableUrlHelperTest extends TestCase {
         final PlaceRequest req = new DefaultPlaceRequest(bookmarkableUrl);
 
         req.addParameter("param",
-                         "value");
+                "value");
         PlaceRequest place = BookmarkableUrlHelper.getPerspectiveFromPlace(req);
 
         assertNotNull(place);
         assertNotSame(req,
-                      place);
+                place);
         StringBuilder expected = new StringBuilder(perspectiveName);
         expected.append("?param=value");
         assertEquals(expected.toString(),
-                     place.getFullIdentifier());
+                place.getFullIdentifier());
     }
 
     @Test
@@ -214,19 +213,19 @@ public class BookmarkableUrlHelperTest extends TestCase {
         final String url = "perspective|screen1,screen2$screen3,screen4";
 
         assertTrue(BookmarkableUrlHelper.isPerspectiveScreen(url,
-                                                             "screen1"));
+                "screen1"));
         assertTrue(BookmarkableUrlHelper.isPerspectiveScreen(url,
-                                                             "screen2"));
+                "screen2"));
         assertFalse(BookmarkableUrlHelper.isPerspectiveScreen(url,
-                                                              "screen3"));
+                "screen3"));
         assertFalse(BookmarkableUrlHelper.isPerspectiveScreen(url,
-                                                              "screen4"));
+                "screen4"));
         assertFalse(BookmarkableUrlHelper.isPerspectiveScreen(null,
-                                                              "screen2"));
+                "screen2"));
         assertFalse(BookmarkableUrlHelper.isPerspectiveScreen("",
-                                                              "screen2"));
+                "screen2"));
         assertFalse(BookmarkableUrlHelper.isPerspectiveScreen(url,
-                                                              null));
+                null));
     }
 
     @Test
@@ -257,31 +256,31 @@ public class BookmarkableUrlHelperTest extends TestCase {
         final String url2 = "!screen1,#screen2";
 
         assertEquals("!screen1",
-                     BookmarkableUrlHelper.getUrlToken(url2,
-                                                       "screen1"));
+                BookmarkableUrlHelper.getUrlToken(url2,
+                        "screen1"));
         assertEquals("#screen2",
-                     BookmarkableUrlHelper.getUrlToken(url2,
-                                                       "screen2"));
+                BookmarkableUrlHelper.getUrlToken(url2,
+                        "screen2"));
 
         assertEquals("§screen2",
-                     BookmarkableUrlHelper.getUrlToken(url1,
-                                                       "screen2"));
+                BookmarkableUrlHelper.getUrlToken(url1,
+                        "screen2"));
         assertEquals("#screen1",
-                     BookmarkableUrlHelper.getUrlToken(url1,
-                                                       "screen1"));
+                BookmarkableUrlHelper.getUrlToken(url1,
+                        "screen1"));
         assertEquals("#screen3",
-                     BookmarkableUrlHelper.getUrlToken(url1,
-                                                       "screen3"));
+                BookmarkableUrlHelper.getUrlToken(url1,
+                        "screen3"));
         assertEquals("!screen4",
-                     BookmarkableUrlHelper.getUrlToken(url1,
-                                                       "screen4"));
+                BookmarkableUrlHelper.getUrlToken(url1,
+                        "screen4"));
     }
 
     @Test
     public void testGetScreensFromPlace() {
         final String url = "perspective|~screen1,screen2$!screen3,screen4";
-        final String url2 = "UFWidgets|PagedTableScreen[ESimpleDockScreen,!WSimpleDockScreen,ESimpleDockScreen,]";
-        final String url3 = "PagedTableScreen[ESimpleDockScreen,!WSimpleDockScreen,ESimpleDockScreen,]";
+        final String url2 = "UFWidgets|PagedTableScreen";
+        final String url3 = "PagedTableScreen";
         final PlaceRequest place = new DefaultPlaceRequest(url);
         final PlaceRequest place2 = new DefaultPlaceRequest(url2);
         final PlaceRequest placeNoPerspective = new DefaultPlaceRequest(url3);
@@ -292,7 +291,7 @@ public class BookmarkableUrlHelperTest extends TestCase {
         assertFalse(set.isEmpty());
 
         assertEquals(4,
-                     set.size());
+                set.size());
         assertTrue(set.contains("~screen1"));
         assertTrue(set.contains("screen2"));
         assertTrue(set.contains("!screen3"));
@@ -303,7 +302,7 @@ public class BookmarkableUrlHelperTest extends TestCase {
 
         assertFalse(set.isEmpty());
         assertEquals(1,
-                     set.size());
+                set.size());
         assertTrue(set.contains("PagedTableScreen"));
 
         set = BookmarkableUrlHelper.getScreensFromPlace(placeNull);
@@ -328,7 +327,7 @@ public class BookmarkableUrlHelperTest extends TestCase {
         assertNotNull(set);
         assertFalse(set.isEmpty());
         assertEquals(2,
-                     set.size());
+                set.size());
         assertTrue(set.contains("~screen1"));
         assertTrue(set.contains("~screen3"));
 
@@ -340,7 +339,7 @@ public class BookmarkableUrlHelperTest extends TestCase {
     @Test
     public void testGetOpenedScreenFromPlace() {
         final String url = "perspective|~screen1,screen2$~screen3,screen4";
-        final String url2 = "UFWidgets|PagedTableScreen[ESimpleDockScreen,!WSimpleDockScreen,ESimpleDockScreen,]";
+        final String url2 = "UFWidgets|PagedTableScreen";
         final PlaceRequest place = new DefaultPlaceRequest(url);
         final PlaceRequest place2 = new DefaultPlaceRequest(url2);
 
@@ -354,55 +353,6 @@ public class BookmarkableUrlHelperTest extends TestCase {
         assertNotNull(set);
         assertFalse(set.isEmpty());
         assertTrue(set.contains("PagedTableScreen"));
-    }
-
-    @Test
-    public void testGDockedScreensFromPlace() {
-        final String url = "perspective|~screen1,screen2$~screen3,screen4";
-        final String url2 = "UFWidgets|PagedTableScreen[ESimpleDockScreen,!WSimpleDockScreen,ESimpleDockScreen,]";
-        final PlaceRequest place = new DefaultPlaceRequest(url);
-        final PlaceRequest place2 = new DefaultPlaceRequest(url2);
-
-        Set<String> set = BookmarkableUrlHelper.getDockedScreensFromPlace(place);
-        assertNotNull(set);
-        assertTrue(set.isEmpty());
-
-        set = BookmarkableUrlHelper.getDockedScreensFromPlace(place2);
-        assertNotNull(set);
-        assertFalse(set.isEmpty());
-        assertEquals(2,
-                     set.size());
-        assertTrue(set.contains("ESimpleDockScreen"));
-        assertTrue(set.contains("!WSimpleDockScreen"));
-
-        // test with invalid URL
-        set = BookmarkableUrlHelper.getDockedScreensFromPlace(null);
-        assertNotNull(set);
-        assertTrue(set.isEmpty());
-    }
-
-    @Test
-    public void testGDockedScreensFromPlaceString() {
-        final String url = "perspective|~screen1,screen2$~screen3,screen4";
-        final String url2 = "UFWidgets|PagedTableScreen[ESimpleDockScreen,!WSimpleDockScreen,EAnotherDockScreen,]";
-
-        Set<String> set = BookmarkableUrlHelper.getDockedScreensFromUrl(url);
-        assertNotNull(set);
-        assertTrue(set.isEmpty());
-
-        set = BookmarkableUrlHelper.getDockedScreensFromUrl(url2);
-        assertNotNull(set);
-        assertFalse(set.isEmpty());
-        assertEquals(3,
-                     set.size());
-        assertTrue(set.contains("ESimpleDockScreen"));
-        assertTrue(set.contains("!WSimpleDockScreen"));
-        assertTrue(set.contains("EAnotherDockScreen"));
-
-        // test with invalid URL
-        set = BookmarkableUrlHelper.getDockedScreensFromUrl(null);
-        assertNotNull(set);
-        assertTrue(set.isEmpty());
     }
 
     @Test
@@ -446,176 +396,16 @@ public class BookmarkableUrlHelperTest extends TestCase {
         String url = screens;
 
         url = BookmarkableUrlHelper.registerOpenedPerspective(url,
-                                                              place);
+                place);
 
         assertEquals(perspective.concat(BookmarkableUrlHelper.PERSPECTIVE_SEP).concat(screens),
-                     url);
-    }
-
-    @Test
-    public void testRegisterOpenDock() {
-        final String screens = "screen1";
-        final String dockName = "dockedScreen";
-        final String perspectiveName = "perspectiveName";
-        String url = perspectiveName
-                .concat(BookmarkableUrlHelper.PERSPECTIVE_SEP)
-                .concat(screens);
-        final UberfireDock dock1 = createUberfireDockForTest(dockName,
-                                                             perspectiveName);
-        final UberfireDock dock2 = createUberfireDockForTest(dockName.concat("New"),
-                                                             perspectiveName);
-
-        url = BookmarkableUrlHelper.registerOpenedDock(url,
-                                                       dock1);
-        assertEquals(perspectiveName
-                             .concat(BookmarkableUrlHelper.PERSPECTIVE_SEP)
-                             .concat("screen1[WdockedScreen,]"),
-                     url);
-        url = BookmarkableUrlHelper.registerOpenedDock(url,
-                                                       dock2);
-        assertEquals(perspectiveName
-                             .concat(BookmarkableUrlHelper.PERSPECTIVE_SEP)
-                             .concat("screen1[WdockedScreen,WdockedScreenNew,]"),
-                     url);
-
-        // test with a closed dock
-        url = perspectiveName
-                .concat(BookmarkableUrlHelper.PERSPECTIVE_SEP)
-                .concat("screen1[!WdockedScreen,]");
-        String expected = perspectiveName
-                .concat(BookmarkableUrlHelper.PERSPECTIVE_SEP)
-                .concat("screen1[WdockedScreen,]");
-        url = BookmarkableUrlHelper.registerOpenedDock(url,
-                                                       dock1);
-        assertEquals(expected,
-                     url);
-
-        // test with invalid dock and URL
-        expected = BookmarkableUrlHelper.registerOpenedDock(url,
-                                                            null);
-        assertNotNull(expected);
-        assertEquals(expected,
-                     url);
-
-        url = "  ";
-        expected = BookmarkableUrlHelper.registerOpenedDock(url,
-                                                            null);
-        assertNotNull(expected);
-        assertEquals(expected,
-                     url);
-    }
-
-    @Test
-    public void testDoubleRegisterOpenDock() {
-        final String screens = "screen1";
-        final String dockName = "dockedScreen";
-        final String perspectiveName = "perspectiveName";
-        String url = perspectiveName
-                .concat(BookmarkableUrlHelper.PERSPECTIVE_SEP)
-                .concat(screens);
-        final UberfireDock dock1 = createUberfireDockForTest(dockName,
-                                                             perspectiveName);
-        final UberfireDock dock2 = createUberfireDockForTest(dockName.concat("New"),
-                                                             perspectiveName);
-
-        // open the same docked screen twice
-        url = BookmarkableUrlHelper.registerOpenedDock(url,
-                                                       dock1);
-        url = BookmarkableUrlHelper.registerOpenedDock(url,
-                                                       dock1);
-        assertEquals(perspectiveName
-                             .concat(BookmarkableUrlHelper.PERSPECTIVE_SEP)
-                             .concat("screen1[WdockedScreen,]"),
-                     url);
-        // open the another docked screen twice
-        url = BookmarkableUrlHelper.registerOpenedDock(url,
-                                                       dock2);
-        url = BookmarkableUrlHelper.registerOpenedDock(url,
-                                                       dock2);
-        assertEquals(perspectiveName
-                             .concat(BookmarkableUrlHelper.PERSPECTIVE_SEP)
-                             .concat("screen1[WdockedScreen,WdockedScreenNew,]"),
-                     url);
-    }
-
-    @Test
-    public void testRegisterClosedDock() {
-        final String dockName1 = "dockedScreen1";
-        final String dockName2 = "dockedScreen2";
-        String perspectiveName = "perspective";
-        String url = "perspectiveName|screen[W" + dockName1 + ",W" + dockName2 + ",]";
-        UberfireDock dock1 = createUberfireDockForTest(dockName1,
-                                                       perspectiveName);
-        UberfireDock dock2 = createUberfireDockForTest(dockName2,
-                                                       perspectiveName);
-
-        url = BookmarkableUrlHelper.registerClosedDock(url,
-                                                       dock1);
-        assertNotNull(url);
-        assertTrue(url.contains("!W" + dockName1));
-
-        url = BookmarkableUrlHelper.registerClosedDock(url,
-                                                       dock2);
-        assertNotNull(url);
-        assertTrue(url.contains("!W" + dockName2));
-    }
-
-    @Test
-    public void testDoubleRegisterClosedDock() {
-        final String dockName1 = "dockedScreen1";
-        final String dockName2 = "dockedScreen2";
-        String perspectiveName = "perspective";
-        String url = "perspectiveName|screen[W" + dockName1 + ",W" + dockName2 + ",]";
-        UberfireDock dock1 = createUberfireDockForTest(dockName1,
-                                                       perspectiveName);
-        UberfireDock dock2 = createUberfireDockForTest(dockName2,
-                                                       perspectiveName);
-
-        // close the same dock twice
-        url = BookmarkableUrlHelper.registerClosedDock(url,
-                                                       dock1);
-        url = BookmarkableUrlHelper.registerClosedDock(url,
-                                                       dock1);
-        assertNotNull(url);
-        assertTrue(url.contains("!W" + dockName1));
-        // close another dock twice
-        url = BookmarkableUrlHelper.registerClosedDock(url,
-                                                       dock2);
-        url = BookmarkableUrlHelper.registerClosedDock(url,
-                                                       dock2);
-        assertNotNull(url);
-        assertTrue(url.contains("!W" + dockName2));
-
-        // test with invalid dock and URl
-        String expected = "anyBookmarkableUrl";
-        url = BookmarkableUrlHelper.registerClosedDock(expected,
-                                                       null);
-        assertNotNull(url);
-        assertEquals(expected,
-                     url);
-
-        expected = "    "; // empty string for URL
-        url = BookmarkableUrlHelper.registerClosedDock(expected,
-                                                       dock2);
-        assertNotNull(url);
-        assertEquals(expected,
-                     url);
-    }
-
-    @Test
-    public void testOpenADockWithEmptyBookmark() {
-        UberfireDock dock1 = createUberfireDockForTest("dock",
-                                                       "perspective");
-        String url = BookmarkableUrlHelper.registerOpenedDock("",
-                                                              dock1);
-        assertEquals("[Wdock,]",
-                     url);
+                url);
     }
 
     @Test
     public void testRegisterCloseEditor() {
         final Path path = PathFactory.newPath("file",
-                                              "default://main@repo/path/to/file");
+                "default://main@repo/path/to/file");
         final PlaceRequest ppr = new PathPlaceRequest(path);
 
         ppr.setIdentifier("Perspective Editor");
@@ -624,25 +414,25 @@ public class BookmarkableUrlHelperTest extends TestCase {
 
         String url = BookmarkableUrlHelper
                 .registerCloseEditor(perspectiveOpenUrl,
-                                     ppr);
+                        ppr);
 
         assertEquals(perspectiveClosedUrl,
-                     url);
+                url);
 
         // invoke with invalid field type
         final PlaceRequest dpr = new DefaultPlaceRequest("default://main@repo/path/to/file");
 
         url = BookmarkableUrlHelper
                 .registerCloseEditor(perspectiveOpenUrl,
-                                     dpr);
+                        dpr);
         assertEquals(perspectiveOpenUrl,
-                     url);
+                url);
     }
 
     @Test
     public void testRegisterCloseEditorWithScreens() {
         final Path path = PathFactory.newPath("file",
-                                              "default://main@repo/path/to/file");
+                "default://main@repo/path/to/file");
         final PlaceRequest ppr = new PathPlaceRequest(path);
 
         ppr.setIdentifier("Perspective Editor");
@@ -651,34 +441,17 @@ public class BookmarkableUrlHelperTest extends TestCase {
 
         String url = BookmarkableUrlHelper
                 .registerCloseEditor(perspectiveOpenUrl,
-                                     ppr);
+                        ppr);
         final String expectedUrl = "PlugInAuthoringPerspective|[WPlugins Explorer,]$screen1";
         assertEquals(expectedUrl,
-                     url);
+                url);
 
         // invoke with NULL
         url = BookmarkableUrlHelper
                 .registerCloseEditor(expectedUrl,
-                                     null);
+                        null);
         assertEquals(expectedUrl,
-                     url);
+                url);
     }
 
-    /**
-     * Get a dock for the test
-     * @param dockName
-     * @param perspectiveName
-     * @return
-     */
-    private UberfireDock createUberfireDockForTest(String dockName,
-                                                   String perspectiveName) {
-        final PlaceRequest req = new DefaultPlaceRequest(dockName);
-        UberfireDock dock = new UberfireDock(
-                UberfireDockPosition.WEST,
-                "iconType",
-                req,
-                perspectiveName);
-
-        return dock;
-    }
 }

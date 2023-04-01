@@ -84,11 +84,10 @@ public class LayoutGeneratorTest {
 
         @Override
         protected void generateComponents(LayoutTemplate layoutTemplate,
-                LayoutInstance layoutInstance,
-                LayoutGeneratorDriver driver,
-                LayoutColumn layoutColumn,
-                HTMLElement column) {
-        }
+                                          LayoutInstance layoutInstance,
+                                          LayoutGeneratorDriver driver,
+                                          LayoutColumn layoutColumn,
+                                          HTMLElement column) {}
 
         @Override
         public LayoutInstance build(LayoutTemplate layoutTemplate) {
@@ -119,6 +118,6 @@ public class LayoutGeneratorTest {
         generator.build(template);
 
         verify(containerElement).setId(AbstractLayoutGenerator.CONTAINER_ID);
-        
+
     }
 }

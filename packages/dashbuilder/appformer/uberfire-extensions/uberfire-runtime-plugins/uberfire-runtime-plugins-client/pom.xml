@@ -47,12 +47,6 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-simple-docks-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-layout-editor-client</artifactId>
     </dependency>
 

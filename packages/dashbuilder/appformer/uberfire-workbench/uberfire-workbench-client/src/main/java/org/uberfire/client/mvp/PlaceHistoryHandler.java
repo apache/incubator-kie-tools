@@ -18,7 +18,6 @@ package org.uberfire.client.mvp;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -27,7 +26,6 @@ import com.google.gwt.user.client.History;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import org.jboss.errai.bus.client.util.BusToolsCli;
-import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -208,25 +206,6 @@ public class PlaceHistoryHandler {
 
     public String getToken() {
         return (historian.getToken());
-    }
-
-    public void registerOpenDock(@Observes UberfireDocksInteractionEvent event) {
-        if (event.getType() == UberfireDocksInteractionEvent.InteractionType.OPENED) {
-            currentBookmarkableURLStatus =
-                    BookmarkableUrlHelper.registerOpenedDock(currentBookmarkableURLStatus,
-                                                             event.getTargetDock());
-            updateHistoryBar();
-        }
-    }
-
-    public void registerCloseDock(@Observes UberfireDocksInteractionEvent event) {
-        if (event.getType() == UberfireDocksInteractionEvent.InteractionType.CLOSED) {
-
-            currentBookmarkableURLStatus =
-                    BookmarkableUrlHelper.registerClosedDock(currentBookmarkableURLStatus,
-                                                             event.getTargetDock());
-            updateHistoryBar();
-        }
     }
 
     /**

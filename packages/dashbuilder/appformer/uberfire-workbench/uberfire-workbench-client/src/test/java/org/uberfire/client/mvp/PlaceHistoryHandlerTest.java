@@ -23,9 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.uberfire.client.workbench.docks.UberfireDock;
-import org.uberfire.client.workbench.docks.UberfireDockPosition;
-import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.ActivityResourceType;
@@ -292,85 +289,6 @@ public class PlaceHistoryHandlerTest {
                      placeHistoryHandler.getCurrentBookmarkableURLStatus());
     }
 
-    /**
-     * Open a dock and then close it
-     */
-    @Test
-    public void testRegisterOpenDock() {
-        final String dockName = "testDock";
-        final String placeRequestName = "testPlacerequest";
-
-        // simulate an opened screen first
-        PlaceRequest place = new DefaultPlaceRequest(placeRequestName);
-        placeHistoryHandler.registerOpen(screenActivity,
-                                         place);
-        // mock a dock
-        PlaceRequest dockPlace = new DefaultPlaceRequest(dockName);
-        UberfireDocksInteractionEvent openEvent = mock(UberfireDocksInteractionEvent.class);
-
-        UberfireDock dock = mock(UberfireDock.class);
-        // simulate a docked screen in west position
-        when(dock.getDockPosition()).thenReturn(UberfireDockPosition.WEST);
-        when(dock.getIdentifier()).thenReturn(dockName);
-        when(dock.getIconType()).thenReturn("iconType");
-        when(dock.getPlaceRequest()).thenReturn(dockPlace);
-
-        when(openEvent.getType()).thenReturn(UberfireDocksInteractionEvent.InteractionType.OPENED);
-        when(openEvent.getTargetDock()).thenReturn(dock);
-        placeHistoryHandler.registerOpenDock(openEvent);
-
-        // compose the expected URL
-        StringBuilder expected = new StringBuilder(placeRequestName);
-        expected.append(BookmarkableUrlHelper.DOCK_BEGIN_SEP);
-        expected.append("W"); // dock was mocked in WEST position
-        expected.append(dockName);
-        expected.append(BookmarkableUrlHelper.SEPARATOR);
-        expected.append(BookmarkableUrlHelper.DOCK_CLOSE_SEP);
-        assertEquals(expected.toString(),
-                     placeHistoryHandler.getCurrentBookmarkableURLStatus());
-    }
-
-    @Test
-    public void testRegisterCloseDock() {
-        final String dockName = "testDock";
-        final String placeRequestName = "testPlacerequest";
-
-        // simulate an opened screen first
-        PlaceRequest place = new DefaultPlaceRequest(placeRequestName);
-        placeHistoryHandler.registerOpen(screenActivity,
-                                         place);
-        // mock a dock
-        PlaceRequest dockPlace = new DefaultPlaceRequest(dockName);
-        UberfireDocksInteractionEvent openEvent = mock(UberfireDocksInteractionEvent.class);
-        UberfireDocksInteractionEvent closeEvent = mock(UberfireDocksInteractionEvent.class);
-
-        UberfireDock dock = mock(UberfireDock.class);
-        // simulate a docked screen in west position
-        when(dock.getDockPosition()).thenReturn(UberfireDockPosition.WEST);
-        when(dock.getIdentifier()).thenReturn(dockName);
-        when(dock.getIconType()).thenReturn("iconType");
-        when(dock.getPlaceRequest()).thenReturn(dockPlace);
-
-        when(openEvent.getType()).thenReturn(UberfireDocksInteractionEvent.InteractionType.OPENED);
-        when(openEvent.getTargetDock()).thenReturn(dock);
-        when(closeEvent.getType()).thenReturn(UberfireDocksInteractionEvent.InteractionType.CLOSED);
-        when(closeEvent.getTargetDock()).thenReturn(dock);
-        // open...
-        placeHistoryHandler.registerOpenDock(openEvent);
-        // ...close dock
-        placeHistoryHandler.registerCloseDock(closeEvent);
-
-        // compose the expected URL
-        StringBuilder expected = new StringBuilder(placeRequestName);
-        expected.append(BookmarkableUrlHelper.DOCK_BEGIN_SEP);
-        expected.append(BookmarkableUrlHelper.CLOSED_DOCK_PREFIX);
-        expected.append("W"); // dock was mocked in WEST position
-        expected.append(dockName);
-        expected.append(BookmarkableUrlHelper.SEPARATOR);
-        expected.append(BookmarkableUrlHelper.DOCK_CLOSE_SEP);
-        assertEquals(expected.toString(),
-                     placeHistoryHandler.getCurrentBookmarkableURLStatus());
-    }
 
     @Test
     public void testUrlLimit() {
