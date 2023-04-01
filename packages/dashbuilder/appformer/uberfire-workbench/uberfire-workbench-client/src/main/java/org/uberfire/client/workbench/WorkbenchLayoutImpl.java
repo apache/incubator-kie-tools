@@ -43,8 +43,6 @@ import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -93,13 +91,6 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
      * the RootLayoutPanel.
      */
     private HeaderPanel root;
-    /**
-     * The panel within which the current perspective's footer widgets reside. This panel lasts the lifetime of the app;
-     * it's cleared and repopulated with the new perspective's root view each time
-     * {@link #setFooterContents(java.util.List)} gets called. The actual panel that's used for this is specified by the
-     * concrete subclass's constructor.
-     */
-    private Div footerPanel;
     private WorkbenchDragAndDropManager dndManager;
     /**
      * An abstraction for DockLayoutPanel used by Uberfire Docks.
@@ -119,21 +110,18 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
                                HeaderPanel root,
                                WorkbenchDragAndDropManager dndManager,
                                UberfireDocksContainer uberfireDocksContainer,
-                               WorkbenchPickupDragController dragController,
-                               Div footerPanel) {
+                               WorkbenchPickupDragController dragController) {
 
         this.iocManager = iocManager;
         this.root = root;
         this.dndManager = dndManager;
         this.uberfireDocksContainer = uberfireDocksContainer;
         this.dragController = dragController;
-        this.footerPanel = footerPanel;
     }
 
     @PostConstruct
     private void init() {
         perspectiveRootContainer.ensureDebugId("perspectiveRootContainer");
-        footerPanel.setId("workbenchFooterPanel");
         dragController.getBoundaryPanel().ensureDebugId("workbenchDragBoundary");
         root.addStyleName(UF_ROOT_CSS_CLASS);
     }
@@ -148,15 +136,6 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         return perspectiveRootContainer;
     }
 
-    void setFooterContents(List<Footer> footers) {
-        DOMUtil.removeAllChildren(footerPanel);
-        if (!footers.isEmpty()) {
-            for (Footer f : footers) {
-                footerPanel.appendChild(f.getElement());
-            }
-            root.setFooterWidget(createWidgetFrom(footerPanel));
-        }
-    }
 
     ElementWrapperWidget<?> createWidgetFrom(HTMLElement h) {
         return ElementWrapperWidget.getWidget(h);
@@ -268,9 +247,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     @Override
     public void setMarginWidgets(boolean isStandaloneMode,
                                  Set<String> headersToKeep) {
-        setFooterContents(discoverMarginWidgets(isStandaloneMode,
-                headersToKeep,
-                Footer.class));
+        // no op
     }
 
     private <T extends Orderable> List<T> discoverMarginWidgets(boolean isStandaloneMode,
@@ -314,10 +291,6 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         root.removeStyleName(root.getStyleName());
         root.addStyleName(UF_ROOT_CSS_CLASS);
         root.addStyleName(workbenchProfileCssClass.getClassName());
-    }
-
-    protected Div getFooterPanel() {
-        return footerPanel;
     }
 
     protected static abstract class AbstractResizeAnimation extends Animation {

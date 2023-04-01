@@ -18,10 +18,7 @@
 
 package org.uberfire.client.workbench;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Style;
@@ -33,7 +30,6 @@ import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
-import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -47,10 +43,8 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
@@ -70,13 +64,7 @@ public class WorkbenchLayoutImplTest {
     @Mock
     private HeaderPanel root;
     @Mock
-    private Div footerPanel;
-    @Mock
     private WorkbenchDragAndDropManager dndManager;
-
-    private Footer footer1;
-
-    private Footer footer2;
 
     @Before
     public void setup() {
@@ -84,8 +72,7 @@ public class WorkbenchLayoutImplTest {
                 root,
                 dndManager,
                 uberfireDocksContainer,
-                dragController,
-                footerPanel) {
+                dragController) {
 
             @Override
             ElementWrapperWidget<?> createWidgetFrom(HTMLElement h) {
@@ -98,8 +85,6 @@ public class WorkbenchLayoutImplTest {
         when(element.getStyle()).thenReturn(mock(Style.class));
         when(widget.getElement()).thenReturn(element);
 
-        footer1 = mock(Footer.class);
-        footer2 = mock(Footer.class);
     }
 
     @Test
@@ -180,34 +165,6 @@ public class WorkbenchLayoutImplTest {
 
         verify(((RequiresResize) widget)).onResize();
         verify(callback).execute();
-    }
-
-    @Test
-    public void setEmptyFooterContentsTest() {
-
-        Div footerPanel = workbenchLayout.getFooterPanel();
-
-        workbenchLayout.setFooterContents(new ArrayList<>());
-
-        verify(footerPanel,
-                never()).appendChild(any());
-        verify(root,
-                never()).setFooterWidget(any());
-    }
-
-    @Test
-    public void setFooterContentsTest() {
-
-        Div footerPanel = workbenchLayout.getFooterPanel();
-
-        List<Footer> footers = Arrays.asList(footer1,
-                footer2);
-
-        workbenchLayout.setFooterContents(footers);
-
-        verify(footerPanel,
-                times(2)).appendChild(any());
-        verify(root).setFooterWidget(any());
     }
 
     @Test
