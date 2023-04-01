@@ -497,7 +497,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-backend</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
 
           </compileSourcesArtifacts>
