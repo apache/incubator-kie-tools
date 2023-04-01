@@ -41,7 +41,6 @@ import org.dashbuilder.dataset.events.DataSetPushingEvent;
 import org.dashbuilder.dataset.events.DataSetStaleEvent;
 import org.dashbuilder.dataset.group.AggregateFunctionManager;
 import org.dashbuilder.dataset.service.DataSetDefServices;
-import org.dashbuilder.dataset.service.DataSetExportServices;
 import org.dashbuilder.dataset.service.DataSetLookupServices;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -66,7 +65,6 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
     private Event<DataSetModifiedEvent> dataSetModifiedEvent;
     private Caller<DataSetLookupServices> dataSetLookupServices;
     private Caller<DataSetDefServices> dataSetDefServices;
-    private Caller<DataSetExportServices> dataSetExportServices;
 
     /**
      * A cache of DataSetMetadata instances
@@ -83,20 +81,18 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
      */
     private Map<String, DataSetPushHandler> pushRequestMap = new HashMap<String, DataSetPushHandler>();
 
-    public DataSetClientServicesImpl() {
-    }
+    public DataSetClientServicesImpl() {}
 
     @Inject
     public DataSetClientServicesImpl(ClientDataSetManager clientDataSetManager,
-                                 PathUrlFactory pathUrlFactory,
-                                 AggregateFunctionManager aggregateFunctionManager,
-                                 IntervalBuilderLocator intervalBuilderLocator,
-                                 Event<DataSetPushingEvent> dataSetPushingEvent,
-                                 Event<DataSetPushOkEvent> dataSetPushOkEvent,
-                                 Event<DataSetModifiedEvent> dataSetModifiedEvent,
-                                 Caller<DataSetLookupServices> dataSetLookupServices,
-                                 Caller<DataSetDefServices> dataSetDefServices,
-                                 Caller<DataSetExportServices> dataSetExportServices) {
+                                     PathUrlFactory pathUrlFactory,
+                                     AggregateFunctionManager aggregateFunctionManager,
+                                     IntervalBuilderLocator intervalBuilderLocator,
+                                     Event<DataSetPushingEvent> dataSetPushingEvent,
+                                     Event<DataSetPushOkEvent> dataSetPushOkEvent,
+                                     Event<DataSetModifiedEvent> dataSetModifiedEvent,
+                                     Caller<DataSetLookupServices> dataSetLookupServices,
+                                     Caller<DataSetDefServices> dataSetDefServices) {
 
         this.clientDataSetManager = clientDataSetManager;
         this.pathUrlFactory = pathUrlFactory;
@@ -107,7 +103,6 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
         this.dataSetModifiedEvent = dataSetModifiedEvent;
         this.dataSetLookupServices = dataSetLookupServices;
         this.dataSetDefServices = dataSetDefServices;
-        this.dataSetExportServices = dataSetExportServices;
     }
 
     public boolean isPushRemoteDataSetEnabled() {
@@ -138,17 +133,17 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
                 listener.callback(remoteMetadataMap.get(uuid));
             } else {
                 dataSetLookupServices.call((DataSetMetadata result) -> {
-                                               if (result == null) {
-                                                   listener.notFound();
-                                               } else {
-                                                   remoteMetadataMap.put(uuid,
-                                                                         result);
-                                                   listener.callback(result);
-                                               }
-                                           },
-                                           (message, throwable) -> {
-                                               return listener.onError(new ClientRuntimeError(throwable));
-                                           }).lookupDataSetMetadata(uuid);
+                    if (result == null) {
+                        listener.notFound();
+                    } else {
+                        remoteMetadataMap.put(uuid,
+                                result);
+                        listener.callback(result);
+                    }
+                },
+                        (message, throwable) -> {
+                            return listener.onError(new ClientRuntimeError(throwable));
+                        }).lookupDataSetMetadata(uuid);
             }
         } else {
             listener.notFound();
@@ -182,50 +177,12 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
     public void exportDataSetCSV(final DataSetLookup request,
                                  final DataSetExportReadyCallback listener) throws Exception {
 
-        if (dataSetLookupServices != null) {
-            // Look always into the client data set manager.
-            if (clientDataSetManager.getDataSet(request.getDataSetUUID()) != null) {
-                DataSet dataSet = clientDataSetManager.lookupDataSet(request);
-                dataSetExportServices.call(
-                        new RemoteCallback<Path>() {
-                            public void callback(Path csvFilePath) {
-                                listener.exportReady(csvFilePath);
-                            }
-                        }
-                        ,
-                        new ErrorCallback<Message>() {
-                            public boolean error(Message message,
-                                                 Throwable throwable) {
-                                listener.onError(new ClientRuntimeError(throwable));
-                                return true;
-                            }
-                        }).exportDataSetCSV(dataSet);
-            }
-            // Data set not found on client.
-            else {
-                // If the data set is not in client, then look up remotely (only if the remote access is available).
-                try {
-                    dataSetExportServices.call(
-                            new RemoteCallback<Path>() {
-                                public void callback(Path csvFilePath) {
-                                    listener.exportReady(csvFilePath);
-                                }
-                            }
-                            ,
-                            new ErrorCallback<Message>() {
-                                public boolean error(Message message,
-                                                     Throwable throwable) {
-                                    listener.onError(new ClientRuntimeError(throwable));
-                                    return true;
-                                }
-                            }).exportDataSetCSV(request);
-                } catch (Exception e) {
-                    listener.onError(new ClientRuntimeError(e));
-                }
-            }
-        } else {
+        if (dataSetLookupServices != null && clientDataSetManager.getDataSet(request.getDataSetUUID()) != null) {
+            // TODO: implement the dataset export
+            //var dataSet = clientDataSetManager.lookupDataSet(request);
             listener.onError(new ClientRuntimeError(CommonConstants.INSTANCE.exc_no_client_side_data_export()));
         }
+
     }
 
     /**
@@ -237,45 +194,15 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
     public void exportDataSetExcel(final DataSetLookup request,
                                    final DataSetExportReadyCallback listener) throws Exception {
 
-        if (dataSetLookupServices != null) {
-            // Look always into the client data set manager.
-            if (clientDataSetManager.getDataSet(request.getDataSetUUID()) != null) {
-                DataSet dataSet = clientDataSetManager.lookupDataSet(request);
-                try {
-                    dataSetExportServices.call(
-                            new RemoteCallback<Path>() {
-                                public void callback(Path excelFilePath) {
-                                    listener.exportReady(excelFilePath);
-                                }
-                            }).exportDataSetExcel(dataSet);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+        if (dataSetLookupServices != null && clientDataSetManager.getDataSet(request.getDataSetUUID()) != null) {
+            // TODO: Create dataset export to excel
+            //var dataSet = clientDataSetManager.lookupDataSet(request);
+            try {
+                listener.onError(new ClientRuntimeError(CommonConstants.INSTANCE.exc_no_client_side_data_export()));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+
             }
-            // Data set not found on client.
-            else {
-                // If the data set is not in client, then look up remotely (only if the remote access is available).
-                try {
-                    dataSetExportServices.call(
-                            new RemoteCallback<Path>() {
-                                public void callback(Path excelFilePath) {
-                                    listener.exportReady(excelFilePath);
-                                }
-                            }
-                            ,
-                            new ErrorCallback<Message>() {
-                                public boolean error(Message message,
-                                                     Throwable throwable) {
-                                    listener.onError(new ClientRuntimeError(throwable));
-                                    return true;
-                                }
-                            }).exportDataSetExcel(request);
-                } catch (Exception e) {
-                    listener.onError(new ClientRuntimeError(e));
-                }
-            }
-        } else {
-            listener.onError(new ClientRuntimeError(CommonConstants.INSTANCE.exc_no_client_side_data_export()));
         }
     }
 
@@ -305,6 +232,7 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
             try {
                 dataSetLookupServices.call(
                         new RemoteCallback<DataSet>() {
+
                             public void callback(DataSet result) {
                                 if (result == null) {
                                     listener.notFound();
@@ -314,6 +242,7 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
                             }
                         },
                         new ErrorCallback<Message>() {
+
                             @Override
                             public boolean error(Message message,
                                                  Throwable throwable) {
@@ -321,7 +250,7 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
                             }
                         })
                         .lookupDataSet(def,
-                                       request);
+                                request);
             } catch (Exception e) {
                 listener.onError(new ClientRuntimeError(e));
             }
@@ -351,49 +280,51 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
 
             // First of all, get the target data set estimated size.
             fetchMetadata(request.getDataSetUUID(),
-                          new DataSetMetadataCallback() {
-                              public void callback(DataSetMetadata metatada) {
+                    new DataSetMetadataCallback() {
 
-                                  // Push the data set to client if and only if the push feature is enabled, the data set is
-                                  // pushable & the data set is smaller than the max push size defined.
-                                  DataSetDef dsetDef = metatada.getDefinition();
-                                  int estimatedSize = metatada.getEstimatedSize() / 1000;
-                                  boolean isPushable = dsetDef != null && dsetDef.isPushEnabled() && estimatedSize < dsetDef.getPushMaxSize();
-                                  if (pushRemoteDataSetEnabled && isPushable) {
+                        public void callback(DataSetMetadata metatada) {
 
-                                      // Check if a push is already in progress.
-                                      // (This is necessary in order to avoid repeating multiple push requests over the same data set).
-                                      DataSetPushHandler pushHandler = pushRequestMap.get(request.getDataSetUUID());
-                                      if (pushHandler == null) {
-                                          // Create a push handler.
-                                          pushHandler = new DataSetPushHandler(metatada);
+                            // Push the data set to client if and only if the push feature is enabled, the data set is
+                            // pushable & the data set is smaller than the max push size defined.
+                            DataSetDef dsetDef = metatada.getDefinition();
+                            int estimatedSize = metatada.getEstimatedSize() / 1000;
+                            boolean isPushable = dsetDef != null && dsetDef.isPushEnabled() && estimatedSize < dsetDef
+                                    .getPushMaxSize();
+                            if (pushRemoteDataSetEnabled && isPushable) {
 
-                                          // Send the lookup request to the server...
-                                          DataSetLookup lookupSourceDataSet = new DataSetLookup(request.getDataSetUUID());
-                                          _lookupDataSet(lookupSourceDataSet,
-                                                         pushHandler);
-                                      }
-                                      // Register the lookup request into the current handler.
-                                      pushHandler.registerLookup(request,
-                                                                 listener);
-                                  }
-                                  // Lookup the remote data set otherwise.
-                                  else {
-                                      _lookupDataSet(request,
-                                                     listener);
-                                  }
-                              }
+                                // Check if a push is already in progress.
+                                // (This is necessary in order to avoid repeating multiple push requests over the same data set).
+                                DataSetPushHandler pushHandler = pushRequestMap.get(request.getDataSetUUID());
+                                if (pushHandler == null) {
+                                    // Create a push handler.
+                                    pushHandler = new DataSetPushHandler(metatada);
 
-                              // Data set metadata not found
-                              public void notFound() {
-                                  listener.notFound();
-                              }
+                                    // Send the lookup request to the server...
+                                    DataSetLookup lookupSourceDataSet = new DataSetLookup(request.getDataSetUUID());
+                                    _lookupDataSet(lookupSourceDataSet,
+                                            pushHandler);
+                                }
+                                // Register the lookup request into the current handler.
+                                pushHandler.registerLookup(request,
+                                        listener);
+                            }
+                            // Lookup the remote data set otherwise.
+                            else {
+                                _lookupDataSet(request,
+                                        listener);
+                            }
+                        }
 
-                              @Override
-                              public boolean onError(final ClientRuntimeError error) {
-                                  return listener.onError(error);
-                              }
-                          });
+                        // Data set metadata not found
+                        public void notFound() {
+                            listener.notFound();
+                        }
+
+                        @Override
+                        public boolean onError(final ClientRuntimeError error) {
+                            return listener.onError(error);
+                        }
+                    });
         }
         // Data set not found on client.
         else {
@@ -406,6 +337,7 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
         try {
             dataSetLookupServices.call(
                     new RemoteCallback<DataSet>() {
+
                         public void callback(DataSet result) {
                             if (result == null) {
                                 listener.notFound();
@@ -415,6 +347,7 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
                         }
                     },
                     new ErrorCallback<Message>() {
+
                         @Override
                         public boolean error(Message message,
                                              Throwable throwable) {
@@ -455,7 +388,7 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
 
     private void onDataSetStaleEvent(@Observes DataSetStaleEvent event) {
         checkNotNull("event",
-                     event);
+                event);
         String uuid = event.getDataSetDef().getUUID();
 
         // Remove any stale data existing on the client.
@@ -470,7 +403,7 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
 
     private void onDataSetRemovedEvent(@Observes DataSetDefRemovedEvent event) {
         checkNotNull("event",
-                     event);
+                event);
         String uuid = event.getDataSetDef().getUUID();
         clientDataSetManager.removeDataSet(uuid);
         remoteMetadataMap.remove(uuid);
@@ -509,7 +442,7 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
             this.dataSetMetadata = metadata;
 
             pushRequestMap.put(dataSetMetadata.getUUID(),
-                               this);
+                    this);
 
             dataSetPushingEvent.fire(new DataSetPushingEvent(dataSetMetadata));
         }
@@ -517,7 +450,7 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
         public void registerLookup(DataSetLookup lookup,
                                    DataSetReadyCallback listener) {
             listenerList.add(new DataSetLookupListenerPair(lookup,
-                                                           listener));
+                    listener));
         }
 
         public void callback(DataSet dataSet) {

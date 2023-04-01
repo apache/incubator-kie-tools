@@ -225,7 +225,6 @@ public class DataSetClientServicesImplTest {
                                          null,
                                          null,
                                          dataSetLookupServicesCallerMock,
-                                         null,
                                          null);
     }
 }

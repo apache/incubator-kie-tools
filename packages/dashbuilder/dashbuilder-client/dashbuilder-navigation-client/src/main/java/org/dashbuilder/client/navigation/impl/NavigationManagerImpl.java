@@ -18,46 +18,19 @@ package org.dashbuilder.client.navigation.impl;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 import org.dashbuilder.client.navigation.NavigationManager;
-import org.dashbuilder.client.navigation.event.NavTreeLoadedEvent;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
-import org.dashbuilder.navigation.event.NavTreeChangedEvent;
-import org.dashbuilder.navigation.service.NavigationServices;
-import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.mvp.Command;
 
 @ApplicationScoped
 public class NavigationManagerImpl implements NavigationManager {
 
-    private Caller<NavigationServices> navServices;
-    private Event<NavTreeLoadedEvent> navTreeLoadedEvent;
-    private Event<NavTreeChangedEvent> navTreeChangedEvent;
     private NavTree navTree;
     private NavTree defaultNavTree;
 
-    @Inject
-    public NavigationManagerImpl(Caller<NavigationServices> navServices,
-                                 Event<NavTreeLoadedEvent> navTreeLoadedEvent,
-                                 Event<NavTreeChangedEvent> navTreeChangedEvent) {
-        this.navServices = navServices;
-        this.navTreeLoadedEvent = navTreeLoadedEvent;
-        this.navTreeChangedEvent = navTreeChangedEvent;
-    }
-
-    @Override
-    public void init(Command afterInit) {
-        navServices.call((NavTree n) -> {
-            navTree = n;
-            if (afterInit != null) {
-                afterInit.execute();
-            }
-            navTreeLoadedEvent.fire(new NavTreeLoadedEvent(getNavTree()));
-        }).loadNavTree();
-    }
+    public NavigationManagerImpl() {}
 
     @Override
     public NavTree getDefaultNavTree() {
@@ -81,15 +54,8 @@ public class NavigationManagerImpl implements NavigationManager {
 
     @Override
     public void saveNavTree(NavTree newTree, Command afterSave) {
-        navServices.call((Void v) -> {
-            navTree = newTree;
-            navTreeChangedEvent.fire(new NavTreeChangedEvent(newTree));
-            if (afterSave != null) {
-                afterSave.execute();
-            }
-        }).saveNavTree(newTree);
+        // no save
     }
-
 
     @Override
     public void navItemClicked(NavItem navItem) {
@@ -99,5 +65,11 @@ public class NavigationManagerImpl implements NavigationManager {
     @Override
     public void update(NavTree navTree) {
         this.defaultNavTree = navTree;
+    }
+
+    @Override
+    public void init(Command afterInit) {
+        // ignored
+
     }
 }
