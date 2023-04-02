@@ -19,6 +19,7 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
 import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 import com.ait.lienzo.client.core.shape.Group;
@@ -136,8 +137,9 @@ public class WiresShapeTest {
         WiresManager.addWiresShapeHandler(tested,
                                           handlerRegistrationManager,
                                           handler);
-        verify(group, times(1)).addNodeMouseDownHandler(any(NodeMouseDownHandler.class));
-        verify(group, times(1)).addNodeMouseUpHandler(any(NodeMouseUpHandler.class));
+        verify(path, times(1)).addNodeMouseClickHandler(any(NodeMouseClickHandler.class));
+        verify(path, times(1)).addNodeMouseDownHandler(any(NodeMouseDownHandler.class));
+        verify(path, times(1)).addNodeMouseUpHandler(any(NodeMouseUpHandler.class));
         verify(group, times(1)).setDragConstraints(any(DragConstraintEnforcer.class));
         verify(group, times(1)).addNodeDragEndHandler(any(NodeDragEndHandler.class));
         verify(handlerRegistrationManager, times(4)).register(any(HandlerRegistration.class));

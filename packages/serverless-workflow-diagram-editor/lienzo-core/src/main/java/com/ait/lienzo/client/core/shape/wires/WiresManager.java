@@ -240,9 +240,9 @@ public final class WiresManager {
     public static void addWiresShapeHandler(final WiresShape shape,
                                             final HandlerRegistrationManager registrationManager,
                                             final WiresShapeHandler handler) {
-        registrationManager.register(shape.getGroup().addNodeMouseClickHandler(handler));
-        registrationManager.register(shape.getGroup().addNodeMouseDownHandler(handler));
-        registrationManager.register(shape.getGroup().addNodeMouseUpHandler(handler));
+        registrationManager.register(shape.getPath().addNodeMouseClickHandler(handler));
+        registrationManager.register(shape.getPath().addNodeMouseDownHandler(handler));
+        registrationManager.register(shape.getPath().addNodeMouseUpHandler(handler));
         registrationManager.register(shape.getGroup().addNodeDragEndHandler(handler));
         shape.getGroup().setDragConstraints(handler);
     }
