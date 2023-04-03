@@ -223,10 +223,10 @@ export const Unitables = ({
               style={{ display: "flex", flexDirection: "column" }}
             >
               <OutsideRowMenu height={63} isFirstChild={true}>{`#`}</OutsideRowMenu>
-              <OutsideRowMenu height={64.2} borderBottomSizeBasis={1}>{`#`}</OutsideRowMenu>
+              <OutsideRowMenu height={65} borderBottomSizeBasis={1}>{`#`}</OutsideRowMenu>
               {rows.map((_, rowIndex) => (
                 <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
-                  <OutsideRowMenu height={60.8} isLastChild={rowIndex === rows.length - 1}>
+                  <OutsideRowMenu height={61} isLastChild={rowIndex === rows.length - 1}>
                     <Button
                       className={"kie-tools--masthead-hoverable"}
                       variant={ButtonVariant.plain}
