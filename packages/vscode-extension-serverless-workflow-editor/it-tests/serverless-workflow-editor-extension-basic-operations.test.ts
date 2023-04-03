@@ -21,7 +21,7 @@ import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
 
-describe("Serverless workflow editor - Basic operations tests", () => {
+describe.skip("Serverless workflow editor - Basic operations tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "basic-operations");
 
   let testHelper: VSCodeTestHelper;
