@@ -236,7 +236,7 @@ export function BeeTableHeader<R extends object>({
                       }}
                     />
                   ) : (
-                    <p className="expression-info-name pf-u-text-truncate label">{column.label}</p>
+                    <p className="expression-info-name pf-u-text-truncate name">{column.label}</p>
                   )}
                   {column.dataType ? (
                     <p className="expression-info-data-type pf-u-text-truncate data-type">({column.dataType})</p>
