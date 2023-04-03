@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.function.Consumer;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
 import jsinterop.annotations.JsIgnore;
@@ -26,8 +24,6 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.Position;
-import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.model.toolbar.ToolBar;
 
 /**
  * WorkbenchActivity and its subinterfaces define the interface between UberFire framework behaviour and
@@ -121,10 +117,6 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
         IsWidget widget = getWidget();
         return (widget == null) ? null : widget.asWidget().getElement();
     }
-
-    void getMenus(Consumer<Menus> menusConsumer);
-
-    ToolBar getToolBar();
 
     String contextId();
 

@@ -16,8 +16,6 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.generator;
 
-import java.util.function.Consumer;
-
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
@@ -30,8 +28,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.NamedPosition;
 import org.uberfire.workbench.model.Position;
-import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.model.toolbar.ToolBar;
 
 public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity {
 
@@ -124,15 +120,6 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
         return mainPanel;
     }
 
-    @Override
-    public void getMenus(final Consumer<Menus> menusConsumer) {
-        menusConsumer.accept(null);
-    }
-
-    @Override
-    public ToolBar getToolBar() {
-        return null;
-    }
 
     @Override
     public void onOpen() {

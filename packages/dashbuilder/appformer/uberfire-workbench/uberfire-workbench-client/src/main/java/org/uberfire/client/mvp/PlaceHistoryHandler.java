@@ -135,16 +135,6 @@ public class PlaceHistoryHandler {
     }
 
     /**
-     * Return true if the given screen is already closed.
-     * @param screen
-     * @return
-     */
-    private boolean isScreenClosed(String screen) {
-        return BookmarkableUrlHelper.isScreenClosed(screen,
-                                                    currentBookmarkableURLStatus);
-    }
-
-    /**
      * Extract a perspective from a place
      * @param place
      * @return
@@ -165,10 +155,6 @@ public class PlaceHistoryHandler {
                 currentBookmarkableURLStatus = BookmarkableUrlHelper.registerOpenedPerspective(currentBookmarkableURLStatus,
                                                                                                place);
             } else if (activity.isType(ActivityResourceType.SCREEN.name())) {
-                currentBookmarkableURLStatus =
-                        BookmarkableUrlHelper.registerOpenedScreen(currentBookmarkableURLStatus,
-                                                                   place);
-            } else if (activity.isType(ActivityResourceType.EDITOR.name())) {
                 currentBookmarkableURLStatus =
                         BookmarkableUrlHelper.registerOpenedScreen(currentBookmarkableURLStatus,
                                                                    place);

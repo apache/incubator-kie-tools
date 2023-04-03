@@ -506,38 +506,6 @@ public class GeneratorUtils {
     }
 
     /**
-     * Get the method name annotated with {@code @WorkbenchMenu}. The method
-     * must be public, non-static, have a return-type of WorkbenchMenuBar and
-     * take zero parameters.
-     * @param classElement
-     * @param processingEnvironment
-     * @return null if none found
-     * @throws GenerationException
-     */
-    public static String getMenuBarMethodName(final TypeElement classElement,
-                                              final ProcessingEnvironment processingEnvironment) throws GenerationException {
-        return getMenuBarMethodName(classElement,
-                processingEnvironment,
-                ClientAPIModule.getWorkbenchMenuClass());
-    }
-
-    /**
-     * Get the method name annotated with {@code @WorkbenchToolBar}. The method
-     * must be public, non-static, have a return-type of WorkbenchToolBar and
-     * take zero parameters.
-     * @param classElement
-     * @param processingEnvironment
-     * @return null if none found
-     * @throws GenerationException
-     */
-    public static String getToolBarMethodName(final TypeElement classElement,
-                                              final ProcessingEnvironment processingEnvironment) throws GenerationException {
-        return getToolBarMethodName(classElement,
-                processingEnvironment,
-                ClientAPIModule.getWorkbenchToolBarClass());
-    }
-
-    /**
      * Get the method name annotated with {@code @Perspective}. The method must
      * be public, non-static, have a return-type of PerspectiveDefinition and
      * take zero parameters.
@@ -1212,54 +1180,6 @@ public class GeneratorUtils {
                 continue;
             }
             if (e.getParameters().size() != 1) {
-                continue;
-            }
-            if (e.getModifiers().contains(Modifier.STATIC)) {
-                continue;
-            }
-            if (!e.getModifiers().contains(Modifier.PUBLIC)) {
-                continue;
-            }
-            if (match != null) {
-                throw new GenerationException("Multiple methods with @" + fqcnToSimpleName(annotationName) +
-                        " detected.");
-            }
-            match = e;
-        }
-        if (match == null) {
-            return null;
-        }
-        return match.getSimpleName().toString();
-    }
-
-    // Lookup a public method name with the given annotation. The method must be
-    // public, non-static, have a return-type of WorkbenchToolBar and take zero
-    // parameters.
-    private static String getToolBarMethodName(final TypeElement classElement,
-                                               final ProcessingEnvironment processingEnvironment,
-                                               final String annotationName) throws GenerationException {
-        final Types typeUtils = processingEnvironment.getTypeUtils();
-        final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement(
-                "org.uberfire.workbench.model.toolbar.ToolBar").asType();
-        final List<ExecutableElement> methods = ElementFilter.methodsIn(classElement.getEnclosedElements());
-
-        ExecutableElement match = null;
-        for (ExecutableElement e : methods) {
-
-            final TypeMirror actualReturnType = e.getReturnType();
-
-            //Check method
-            if (getAnnotation(elementUtils,
-                    e,
-                    annotationName) == null) {
-                continue;
-            }
-            if (!typeUtils.isAssignable(actualReturnType,
-                    requiredReturnType)) {
-                continue;
-            }
-            if (e.getParameters().size() != 0) {
                 continue;
             }
             if (e.getModifiers().contains(Modifier.STATIC)) {

@@ -29,7 +29,6 @@ import org.uberfire.workbench.model.CustomPanelDefinition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * Internal framework component that handles the creation, destruction, layout, and composition (parent-child nesting)
@@ -68,7 +67,6 @@ public interface PanelManager {
     void addWorkbenchPart(final PlaceRequest place,
                           final PartDefinition part,
                           final PanelDefinition panel,
-                          final Menus menus,
                           final UIPart uiPart,
                           final String contextId,
                           final Integer minInitialWidth,

@@ -16,7 +16,6 @@
 
 package org.uberfire.client.mvp;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -32,10 +31,8 @@ import org.uberfire.client.util.Layouts;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -212,13 +209,4 @@ public interface PlaceManager {
     void registerPerspectiveCloseChain(String perspectiveIdentifier,
                                        BiParameterizedCommand<Command, PlaceRequest> closeChain);
 
-    /**
-     * Finds the <i>currently open</i> PlaceRequests for Activities that handle the given ResourceTypeDefinition.
-     *
-     * @param type the ResourceTypeDefinition whose activity to search for
-     * @return an unmodifiable collection of PlaceRequests for the <i>currently open</i> WorkbenchEditorActivities that
-     * can handle the ResourceTypeDefinition. Returns an empty collection if no match was found.
-     */
-    @JsIgnore
-    Collection<PathPlaceRequest> getActivitiesForResourceType(final ResourceTypeDefinition type);
 }

@@ -54,8 +54,6 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
-import org.uberfire.workbench.model.menu.MenuFactory;
-import org.uberfire.workbench.model.menu.Menus;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -64,7 +62,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -135,7 +132,6 @@ public class PanelManagerTest {
         when(beanFactory.newWorkbenchPart(any(),
                                           any(),
                                           any(),
-                                          any(),
                                           any())).thenReturn(partPresenter);
 
         when(beanFactory.newWorkbenchPanel(any())).thenAnswer(new Answer<WorkbenchPanelPresenter>() {
@@ -173,14 +169,12 @@ public class PanelManagerTest {
     public void addPartToRootPanelShouldWork() throws Exception {
         PlaceRequest rootPartPlace = new DefaultPlaceRequest("rootPartPlace");
         PartDefinition rootPart = new PartDefinitionImpl(rootPartPlace);
-        Menus rootPartMenus = MenuFactory.newContributedMenu("RootPartMenu").endMenu().build();
         UIPart rootUiPart = new UIPart("RootUiPart",
                                        null,
                                        mock(IsWidget.class));
         panelManager.addWorkbenchPart(rootPartPlace,
                                       rootPart,
                                       panelManager.getRoot(),
-                                      rootPartMenus,
                                       rootUiPart,
                                       "rootContextId",
                                       100,
@@ -194,9 +188,6 @@ public class PanelManagerTest {
         assertEquals(rootPart,
                      panelManager.getPartForPlace(rootPartPlace));
 
-        // the panel manager should select the place, firing a general notification
-        verify(selectPlaceEvent).fire(refEq(new SelectPlaceEvent(rootPartPlace)));
-
         // the panel manager should have modified the panel or part definitions (this is the responsibility of the parent panel)
         assertEquals(null,
                      rootPart.getParentPanel());
@@ -207,7 +198,6 @@ public class PanelManagerTest {
     public void addPartToUnknownPanelShouldFail() throws Exception {
         PlaceRequest partPlace = new DefaultPlaceRequest("partPlace");
         PartDefinition part = new PartDefinitionImpl(partPlace);
-        Menus partMenus = MenuFactory.newContributedMenu("PartMenu").endMenu().build();
         UIPart uiPart = new UIPart("uiPart",
                                    null,
                                    mock(IsWidget.class));
@@ -217,7 +207,6 @@ public class PanelManagerTest {
             panelManager.addWorkbenchPart(partPlace,
                                           part,
                                           randomUnattachedPanel,
-                                          partMenus,
                                           uiPart,
                                           "contextId",
                                           null,
@@ -238,9 +227,6 @@ public class PanelManagerTest {
         assertEquals(null,
                      panelManager.getPartForPlace(partPlace));
 
-        // the failed part/place should not be selected
-        verify(selectPlaceEvent,
-               never()).fire(refEq(new SelectPlaceEvent(partPlace)));
     }
 
     @Test
@@ -248,14 +234,12 @@ public class PanelManagerTest {
         // add
         PlaceRequest rootPartPlace = new DefaultPlaceRequest("rootPartPlace");
         PartDefinition rootPart = new PartDefinitionImpl(rootPartPlace);
-        Menus rootPartMenus = MenuFactory.newContributedMenu("RootPartMenu").endMenu().build();
         UIPart rootUiPart = new UIPart("RootUiPart",
                                        null,
                                        mock(IsWidget.class));
         panelManager.addWorkbenchPart(rootPartPlace,
                                       rootPart,
                                       panelManager.getRoot(),
-                                      rootPartMenus,
                                       rootUiPart,
                                       "rootContextId",
                                       null,

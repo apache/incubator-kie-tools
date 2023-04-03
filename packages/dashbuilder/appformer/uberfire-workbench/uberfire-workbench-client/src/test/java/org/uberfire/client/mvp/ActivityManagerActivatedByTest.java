@@ -32,7 +32,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -61,9 +60,6 @@ public class ActivityManagerActivatedByTest {
     @Mock
     private SyncBeanManager iocManager;
 
-    @Mock
-    private ResourceTypeManagerCache resourceTypeManagerCache;
-
     private Activity activatedActivity;
 
     @Before
@@ -89,11 +85,9 @@ public class ActivityManagerActivatedByTest {
         // We set this up assuming ActivityBeansCache is well-behaved, and hides the existence of inactive beans.
         // (of course this assumption is verified in a separate test)
         ActivityAndMetaInfo activatedActivityAndMetaInfo =
-                new ActivityAndMetaInfo(iocManager,
-                                        activatedActivityBean,
-                                        0,
-                                        Collections.<String>emptyList());
-        when(resourceTypeManagerCache.getResourceActivities()).thenReturn(singletonList(activatedActivityAndMetaInfo));
+                new ActivityAndMetaInfo(activatedActivityBean,
+                        0,
+                        Collections.<String> emptyList());
         when(activityBeansCache.getActivity("activated activity")).thenReturn(activatedActivityBean);
     }
 
@@ -102,9 +96,9 @@ public class ActivityManagerActivatedByTest {
 
         // no matter what else we're testing, the non-activated bean should never be instantiated
         verify(nonActivatedActivityBean,
-               never()).getInstance();
+                never()).getInstance();
         verify(nonActivatedActivityBean,
-               never()).newInstance();
+                never()).newInstance();
     }
 
     @Test
@@ -112,9 +106,9 @@ public class ActivityManagerActivatedByTest {
         Set<Activity> activities = activityManager.getActivities(Activity.class);
 
         assertEquals(1,
-                     activities.size());
+                activities.size());
         assertSame(activatedActivity,
-                   activities.iterator().next());
+                activities.iterator().next());
     }
 
     @Test
@@ -122,9 +116,9 @@ public class ActivityManagerActivatedByTest {
         Set<Activity> activities = activityManager.getActivities(new DefaultPlaceRequest("activated activity"));
 
         assertEquals(1,
-                     activities.size());
+                activities.size());
         assertSame(activatedActivity,
-                   activities.iterator().next());
+                activities.iterator().next());
     }
 
     @Test
@@ -132,22 +126,22 @@ public class ActivityManagerActivatedByTest {
         Set<Activity> activities = activityManager.getActivities(new DefaultPlaceRequest("non-activated activity"));
 
         assertEquals(0,
-                     activities.size());
+                activities.size());
     }
 
     @Test
     public void getActivityForActivePlaceRequestShouldReturnActivity() throws Exception {
         Activity activity = activityManager.getActivity(Activity.class,
-                                                        new DefaultPlaceRequest("activated activity"));
+                new DefaultPlaceRequest("activated activity"));
 
         assertSame(activatedActivity,
-                   activity);
+                activity);
     }
 
     @Test
     public void getActivityForInactivePlaceRequestShouldReturnNull() throws Exception {
         Activity activity = activityManager.getActivity(Activity.class,
-                                                        new DefaultPlaceRequest("non-activated activity"));
+                new DefaultPlaceRequest("non-activated activity"));
 
         assertNull(activity);
     }

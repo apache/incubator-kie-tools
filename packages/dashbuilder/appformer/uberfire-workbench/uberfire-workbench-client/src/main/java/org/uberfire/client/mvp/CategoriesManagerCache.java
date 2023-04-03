@@ -19,14 +19,11 @@ package org.uberfire.client.mvp;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.category.Undefined;
 
@@ -52,16 +49,6 @@ public class CategoriesManagerCache {
 
     public void addAll(Collection<Category> category) {
         this.categories.addAll(category);
-    }
-
-    public void addAllFromResourceTypes(List<ClientResourceType> clientResourceType) {
-        this.addAll(this.getCategories(clientResourceType));
-    }
-
-    private List<Category> getCategories(List<ClientResourceType> resourceTypes) {
-        return resourceTypes.stream()
-                .filter(clientResourceType -> clientResourceType.getCategory() != null)
-                .map(ClientResourceType::getCategory).collect(Collectors.toList());
     }
 
     public Category getCategory(String filterType) {

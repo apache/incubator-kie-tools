@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.uberfire.lifecycle;
 
-package org.uberfire.annotations.processors;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.uberfire.client.annotations.Perspective;
-import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-
-@WorkbenchPerspective(identifier = "PerspectiveTest10")
-public class PerspectiveTest10 {
-
-    @Perspective
-    public PerspectiveDefinition getPerspective() {
-        return null;
-    }
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+public @interface OnContextAttach {
 
 }

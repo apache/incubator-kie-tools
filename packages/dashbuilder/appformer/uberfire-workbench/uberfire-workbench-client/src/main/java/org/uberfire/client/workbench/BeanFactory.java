@@ -24,7 +24,6 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * A Factory definition to create new instances of managed beans.
@@ -44,8 +43,7 @@ public interface BeanFactory {
      * @param partType The new part type.
      * @return
      */
-    public WorkbenchPartPresenter newWorkbenchPart(final Menus menus,
-                                                   final String title,
+    public WorkbenchPartPresenter newWorkbenchPart(final String title,
                                                    final IsWidget titleDecoration,
                                                    final PartDefinition definition,
                                                    final Class<? extends WorkbenchPartPresenter> partType);

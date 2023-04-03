@@ -16,6 +16,5 @@
 
 org.uberfire.annotations.processors.WorkbenchContextProcessor
 org.uberfire.annotations.processors.WorkbenchScreenProcessor
-org.uberfire.annotations.processors.WorkbenchClientEditorProcessor
 org.uberfire.annotations.processors.WorkbenchPopupProcessor
 org.uberfire.annotations.processors.PerspectiveProcessor

@@ -72,7 +72,6 @@ import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static java.util.Collections.unmodifiableCollection;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -127,14 +126,15 @@ public class PlaceManagerImpl implements PlaceManager {
     private LayoutSelection layoutSelection;
 
     public interface AppFormerActivityLoader {
+
         boolean triggerLoadOfMatchingEditors(final Path path, final Runnable callback);
     }
 
     @PostConstruct
     public void initPlaceHistoryHandler() {
         getPlaceHistoryHandler().initialize(this,
-                                            produceEventBus(),
-                                            DefaultPlaceRequest.NOWHERE);
+                produceEventBus(),
+                DefaultPlaceRequest.NOWHERE);
         workbenchLayout = layoutSelection.get();
     }
 
@@ -147,33 +147,33 @@ public class PlaceManagerImpl implements PlaceManager {
                      final PanelDefinition panel) {
         final DefaultPlaceRequest place = new DefaultPlaceRequest(identifier);
         goTo(place,
-             panel);
+                panel);
     }
 
     @Override
     public void goTo(final String identifier) {
         final DefaultPlaceRequest place = new DefaultPlaceRequest(identifier);
         goTo(place,
-             (PanelDefinition) null);
+                (PanelDefinition) null);
     }
 
     @Override
     public void goTo(PlaceRequest place) {
         goTo(place,
-             (PanelDefinition) null);
+                (PanelDefinition) null);
     }
 
     @Override
     public void goTo(final Path path,
                      final PanelDefinition panel) {
         goTo(new PathPlaceRequest(path),
-             panel);
+                panel);
     }
 
     @Override
     public void goTo(final Path path) {
         goTo(new PathPlaceRequest(path),
-             (PanelDefinition) null);
+                (PanelDefinition) null);
     }
 
     @Override
@@ -181,24 +181,24 @@ public class PlaceManagerImpl implements PlaceManager {
                      final PlaceRequest placeRequest,
                      final PanelDefinition panel) {
         goTo(getPlace(path,
-                      placeRequest),
-             panel);
+                placeRequest),
+                panel);
     }
 
     @Override
     public void goTo(final Path path,
                      final PlaceRequest placeRequest) {
         goTo(getPlace(path,
-                      placeRequest),
-             (PanelDefinition) null);
+                placeRequest),
+                (PanelDefinition) null);
     }
 
     @Override
     public void goTo(final PlaceRequest place,
                      final PanelDefinition panel) {
         goTo(place,
-             panel,
-             Commands.DO_NOTHING);
+                panel,
+                Commands.DO_NOTHING);
     }
 
     @Override
@@ -207,8 +207,8 @@ public class PlaceManagerImpl implements PlaceManager {
 
         closeOpenPlacesAt(panelsOfThisHasWidgets(addTo));
         goToTargetPanel(place,
-                        panelManager.addCustomPanel(addTo,
-                                                    UnanchoredStaticWorkbenchPanelPresenter.class.getName()));
+                panelManager.addCustomPanel(addTo,
+                        UnanchoredStaticWorkbenchPanelPresenter.class.getName()));
     }
 
     @Override
@@ -225,8 +225,8 @@ public class PlaceManagerImpl implements PlaceManager {
         closeOpenPlacesAt(panelsOfThisHTMLElement(addTo));
 
         goToTargetPanel(place,
-                        panelManager.addCustomPanel(addTo,
-                                                    UnanchoredStaticWorkbenchPanelPresenter.class.getName()));
+                panelManager.addCustomPanel(addTo,
+                        UnanchoredStaticWorkbenchPanelPresenter.class.getName()));
     }
 
     @Override
@@ -235,8 +235,8 @@ public class PlaceManagerImpl implements PlaceManager {
         closeOpenPlacesAt(panelsOfThisHTMLElement(addTo));
 
         goToTargetPanel(place,
-                        panelManager.addCustomPanel(addTo,
-                                                    UnanchoredStaticWorkbenchPanelPresenter.class.getName()));
+                panelManager.addCustomPanel(addTo,
+                        UnanchoredStaticWorkbenchPanelPresenter.class.getName()));
     }
 
     private void closeOpenPlacesAt(Predicate<CustomPanelDefinition> filterPanels) {
@@ -255,7 +255,8 @@ public class PlaceManagerImpl implements PlaceManager {
     }
 
     private Predicate<CustomPanelDefinition> panelsOfThisHTMLElement(elemental2.dom.HTMLElement addTo) {
-        return p -> p.getElemental2HtmlElementContainer().isPresent() && p.getElemental2HtmlElementContainer().get().equals(addTo);
+        return p -> p.getElemental2HtmlElementContainer().isPresent() && p.getElemental2HtmlElementContainer().get()
+                .equals(addTo);
     }
 
     private void goToTargetPanel(final PlaceRequest place,
@@ -263,14 +264,14 @@ public class PlaceManagerImpl implements PlaceManager {
         if (existingWorkbenchActivities.containsKey(place)) {
             // if already open, behaviour is to select the place where it already lives
             goTo(place,
-                 null,
-                 Commands.DO_NOTHING);
+                    null,
+                    Commands.DO_NOTHING);
         } else {
             customPanels.put(place,
-                             adoptedPanel);
+                    adoptedPanel);
             goTo(place,
-                 adoptedPanel,
-                 Commands.DO_NOTHING);
+                    adoptedPanel,
+                    Commands.DO_NOTHING);
         }
     }
 
@@ -285,34 +286,35 @@ public class PlaceManagerImpl implements PlaceManager {
 
         if (resolved.getActivity() != null) {
             final Activity activity = resolved.getActivity();
-            if (activity.isType(ActivityResourceType.SCREEN.name()) || activity.isType(ActivityResourceType.EDITOR.name())) {
+            if (activity.isType(ActivityResourceType.SCREEN.name())) {
                 final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
 
                 // check if we need to open the owning perspective before launching this screen/editor
-                if (workbenchActivity.getOwningPlace() != null && getStatus(workbenchActivity.getOwningPlace()) == PlaceStatus.CLOSE) {
+                if (workbenchActivity.getOwningPlace() != null && getStatus(workbenchActivity
+                        .getOwningPlace()) == PlaceStatus.CLOSE) {
                     goTo(workbenchActivity.getOwningPlace(),
-                         null,
-                         () -> goTo(place, panel, doWhenFinished));
+                            null,
+                            () -> goTo(place, panel, doWhenFinished));
                     return;
                 }
                 launchWorkbenchActivityAtPosition(resolved.getPlaceRequest(),
-                                                  workbenchActivity,
-                                                  workbenchActivity.getDefaultPosition(),
-                                                  panel);
+                        workbenchActivity,
+                        workbenchActivity.getDefaultPosition(),
+                        panel);
                 doWhenFinished.execute();
             } else if (activity.isType(ActivityResourceType.POPUP.name())) {
                 launchPopupActivity(resolved.getPlaceRequest(),
-                                    (PopupActivity) activity);
+                        (PopupActivity) activity);
                 doWhenFinished.execute();
             } else if (activity.isType(ActivityResourceType.PERSPECTIVE.name())) {
                 launchPerspectiveActivity(place,
-                                          doWhenFinished,
-                                          (PerspectiveActivity) activity);
+                        doWhenFinished,
+                        (PerspectiveActivity) activity);
             }
         } else {
             goTo(resolved.getPlaceRequest(),
-                 panel,
-                 doWhenFinished);
+                    panel,
+                    doWhenFinished);
         }
     }
 
@@ -322,21 +324,23 @@ public class PlaceManagerImpl implements PlaceManager {
         final Command launchPerspectiveCommand = () -> {
             placeHistoryHandler.flush();
             launchPerspectiveActivity(place,
-                                      activity,
-                                      doWhenFinished);
+                    activity,
+                    doWhenFinished);
         };
 
         final PerspectiveActivity currentPerspective = perspectiveManager.getCurrentPerspective();
         final boolean thereIsAnOpenedPerspective = currentPerspective != null;
-        final boolean isDifferentPerspective = thereIsAnOpenedPerspective && !place.equals(currentPerspective.getPlace());
+        final boolean isDifferentPerspective = thereIsAnOpenedPerspective && !place.equals(currentPerspective
+                .getPlace());
         final boolean isForcedPlaceRequest = place instanceof ForcedPlaceRequest;
 
         // Before launching the perspective, checks if there is some close chain to be executed for the current perspective
         if (thereIsAnOpenedPerspective && (isDifferentPerspective || isForcedPlaceRequest)) {
-            final BiParameterizedCommand<Command, PlaceRequest> closeChain = this.perspectiveCloseChain.get(currentPerspective.getIdentifier());
+            final BiParameterizedCommand<Command, PlaceRequest> closeChain = this.perspectiveCloseChain.get(
+                    currentPerspective.getIdentifier());
             if (closeChain != null) {
                 closeChain.execute(launchPerspectiveCommand,
-                                   currentPerspective.getPlace());
+                        currentPerspective.getPlace());
             } else {
                 launchPerspectiveCommand.execute();
             }
@@ -349,10 +353,10 @@ public class PlaceManagerImpl implements PlaceManager {
         boolean result = true;
         for (final PlaceRequest placeRequest : placeRequests) {
             final Activity activity = existingWorkbenchActivities.get(placeRequest);
-            if (activity != null && (activity.isType(ActivityResourceType.SCREEN.name()) || activity.isType(ActivityResourceType.EDITOR.name()))) {
+            if (activity != null && (activity.isType(ActivityResourceType.SCREEN.name()))) {
                 if (((WorkbenchActivity) activity).onMayClose()) {
                     onMayCloseList.put(placeRequest,
-                                       activity);
+                            activity);
                 } else {
                     result = false;
                     break;
@@ -406,31 +410,32 @@ public class PlaceManagerImpl implements PlaceManager {
         if (activities == null || activities.size() == 0) {
             final PlaceRequest notFoundPopup = new DefaultPlaceRequest("workbench.activity.notfound");
             notFoundPopup.addParameter("requestedPlaceIdentifier",
-                                       resolvedPlaceRequest.getIdentifier());
+                    resolvedPlaceRequest.getIdentifier());
 
             if (activityManager.containsActivity(notFoundPopup)) {
                 return new ResolvedRequest(null,
-                                           notFoundPopup);
+                        notFoundPopup);
             } else {
                 final PlaceRequest ufNotFoundPopup = new DefaultPlaceRequest("uf.workbench.activity.notfound");
                 ufNotFoundPopup.addParameter("requestedPlaceIdentifier",
-                                             place.getIdentifier());
+                        place.getIdentifier());
                 return new ResolvedRequest(null,
-                                           ufNotFoundPopup);
+                        ufNotFoundPopup);
             }
         } else if (activities.size() > 1) {
-            final PlaceRequest multiplePlaces = new DefaultPlaceRequest("workbench.activities.multiple").addParameter("requestedPlaceIdentifier",
-                                                                                                                      null);
+            final PlaceRequest multiplePlaces = new DefaultPlaceRequest("workbench.activities.multiple").addParameter(
+                    "requestedPlaceIdentifier",
+                    null);
 
             return new ResolvedRequest(null,
-                                       multiplePlaces);
+                    multiplePlaces);
         }
 
         Activity unambigousActivity = activities.iterator().next();
         existingWorkbenchActivities.put(resolvedPlaceRequest,
-                                        unambigousActivity);
+                unambigousActivity);
         return new ResolvedRequest(unambigousActivity,
-                                   resolvedPlaceRequest);
+                resolvedPlaceRequest);
     }
 
     private void closeLazyLoadingScreenAndGoToPlace(final PlaceRequest place) {
@@ -457,7 +462,7 @@ public class PlaceManagerImpl implements PlaceManager {
 
         if (activity != null) {
             return new ResolvedRequest(activity,
-                                       place);
+                    place);
         }
 
         if (place instanceof PathPlaceRequest) {
@@ -468,9 +473,10 @@ public class PlaceManagerImpl implements PlaceManager {
                 if (pr instanceof PathPlaceRequest) {
                     final Path visiblePath = ((PathPlaceRequest) pr).getPath();
                     final String visiblePathURI = visiblePath.toURI();
-                    if ((visiblePathURI != null && visiblePathURI.compareTo(path.toURI()) == 0) || visiblePath.compareTo(path) == 0) {
+                    if ((visiblePathURI != null && visiblePathURI.compareTo(path.toURI()) == 0) || visiblePath
+                            .compareTo(path) == 0) {
                         return new ResolvedRequest(getActivity(pr),
-                                                   pr);
+                                pr);
                     }
                 }
             }
@@ -492,16 +498,15 @@ public class PlaceManagerImpl implements PlaceManager {
         if (resolved.getActivity() != null) {
             final Activity activity = resolved.getActivity();
 
-            if (activity.isType(ActivityResourceType.EDITOR.name()) ||
-                    activity.isType(ActivityResourceType.CLIENT_EDITOR.name()) ||
-                    activity.isType(ActivityResourceType.SCREEN.name())) {
+            if (activity.isType(ActivityResourceType.SCREEN.name())) {
                 final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
                 launchWorkbenchActivityInPanel(place,
-                                               workbenchActivity,
-                                               part,
-                                               panel);
+                        workbenchActivity,
+                        part,
+                        panel);
             } else {
-                throw new IllegalArgumentException("placeRequest does not represent a WorkbenchActivity. Only WorkbenchActivities can be launched in a specific targetPanel.");
+                throw new IllegalArgumentException(
+                        "placeRequest does not represent a WorkbenchActivity. Only WorkbenchActivities can be launched in a specific targetPanel.");
             }
         } else {
             goTo(resolved.getPlaceRequest());
@@ -514,7 +519,7 @@ public class PlaceManagerImpl implements PlaceManager {
 
         for (final String name : ensureIterable(placeRequest.getParameterNames())) {
             request.addParameter(name,
-                                 placeRequest.getParameters().get(name));
+                    placeRequest.getParameters().get(name));
         }
 
         return request;
@@ -556,7 +561,7 @@ public class PlaceManagerImpl implements PlaceManager {
             return;
         }
         closePlace(placeToClose,
-                   false);
+                false);
     }
 
     @Override
@@ -566,8 +571,8 @@ public class PlaceManagerImpl implements PlaceManager {
             return;
         }
         closePlace(placeToClose,
-                   false,
-                   doAfterClose);
+                false,
+                doAfterClose);
     }
 
     @Override
@@ -596,7 +601,7 @@ public class PlaceManagerImpl implements PlaceManager {
             return;
         }
         closePlace(placeToClose,
-                   true);
+                true);
     }
 
     @Override
@@ -613,7 +618,7 @@ public class PlaceManagerImpl implements PlaceManager {
         final List<PlaceRequest> placesToClose = new ArrayList<PlaceRequest>(visibleWorkbenchParts.keySet());
         for (PlaceRequest placeToClose : placesToClose) {
             closePlace(placeToClose,
-                       force);
+                    force);
         }
     }
 
@@ -652,15 +657,15 @@ public class PlaceManagerImpl implements PlaceManager {
     public void registerOnOpenCallback(final PlaceRequest place,
                                        final Command callback) {
         checkNotNull("place",
-                     place);
+                place);
         checkNotNull("callback",
-                     callback);
+                callback);
 
         List<Command> callbacks = getOnOpenCallbacks(place);
         if (callbacks == null) {
             callbacks = new ArrayList<>();
             this.onOpenCallbacks.put(place,
-                                     callbacks);
+                    callbacks);
         }
 
         callbacks.add(callback);
@@ -669,7 +674,7 @@ public class PlaceManagerImpl implements PlaceManager {
     @Override
     public void unregisterOnOpenCallbacks(final PlaceRequest place) {
         checkNotNull("place",
-                     place);
+                place);
         this.onOpenCallbacks.remove(place);
     }
 
@@ -677,15 +682,15 @@ public class PlaceManagerImpl implements PlaceManager {
     public void registerOnCloseCallback(final PlaceRequest place,
                                         final Command callback) {
         checkNotNull("place",
-                     place);
+                place);
         checkNotNull("callback",
-                     callback);
+                callback);
 
         List<Command> callbacks = getOnCloseCallbacks(place);
         if (callbacks == null) {
             callbacks = new ArrayList<>();
             this.onCloseCallbacks.put(place,
-                                      callbacks);
+                    callbacks);
         }
 
         callbacks.add(callback);
@@ -694,7 +699,7 @@ public class PlaceManagerImpl implements PlaceManager {
     @Override
     public void unregisterOnCloseCallbacks(final PlaceRequest place) {
         checkNotNull("place",
-                     place);
+                place);
         this.onCloseCallbacks.remove(place);
     }
 
@@ -702,26 +707,12 @@ public class PlaceManagerImpl implements PlaceManager {
     public void registerPerspectiveCloseChain(final String perspectiveIdentifier,
                                               final BiParameterizedCommand<Command, PlaceRequest> closeChain) {
         checkNotNull("perspectiveIdentifier",
-                     perspectiveIdentifier);
+                perspectiveIdentifier);
         checkNotNull("closeChain",
-                     closeChain);
+                closeChain);
 
         perspectiveCloseChain.put(perspectiveIdentifier,
-                                  closeChain);
-    }
-
-    @Override
-    public Collection<PathPlaceRequest> getActivitiesForResourceType(final ResourceTypeDefinition type) {
-        final ArrayList<PathPlaceRequest> activities = new ArrayList<>();
-        for (final PlaceRequest placeRequest : existingWorkbenchActivities.keySet()) {
-            if (placeRequest instanceof PathPlaceRequest) {
-                final PathPlaceRequest ppr = (PathPlaceRequest) placeRequest;
-                if (type.accept(ppr.getPath())) {
-                    activities.add(ppr);
-                }
-            }
-        }
-        return unmodifiableCollection(activities);
+                closeChain);
     }
 
     /**
@@ -768,17 +759,17 @@ public class PlaceManagerImpl implements PlaceManager {
             panel = _panel;
         } else {
             panel = panelManager.addWorkbenchPanel(panelManager.getRoot(),
-                                                   position,
-                                                   activity.preferredHeight(),
-                                                   activity.preferredWidth(),
-                                                   null,
-                                                   null);
+                    position,
+                    activity.preferredHeight(),
+                    activity.preferredWidth(),
+                    null,
+                    null);
         }
 
         launchWorkbenchActivityInPanel(place,
-                                       activity,
-                                       part,
-                                       panel);
+                activity,
+                part,
+                panel);
     }
 
     private void launchWorkbenchActivityInPanel(final PlaceRequest place,
@@ -791,41 +782,38 @@ public class PlaceManagerImpl implements PlaceManager {
         }
 
         visibleWorkbenchParts.put(place,
-                                  part);
+                part);
 
         final IsWidget titleDecoration = maybeWrapExternalWidget(activity,
-                                                                 () -> activity.getTitleDecorationElement(),
-                                                                 () -> activity.getTitleDecoration());
+                () -> activity.getTitleDecorationElement(),
+                () -> activity.getTitleDecoration());
 
         final IsWidget widget = maybeWrapExternalWidget(activity,
-                                                        () -> activity.getWidgetElement(),
-                                                        () -> activity.getWidget());
+                () -> activity.getWidgetElement(),
+                () -> activity.getWidget());
 
         final UIPart uiPart = new UIPart(activity.getTitle(),
-                                         titleDecoration,
-                                         widget);
+                titleDecoration,
+                widget);
 
-        activity.getMenus(menus -> {
-            panelManager.addWorkbenchPart(place,
-                                          part,
-                                          panel,
-                                          menus,
-                                          uiPart,
-                                          activity.contextId(),
-                                          toInteger(panel.getWidthAsInt()),
-                                          toInteger(panel.getHeightAsInt()));
+        panelManager.addWorkbenchPart(place,
+                part,
+                panel,
+                uiPart,
+                activity.contextId(),
+                toInteger(panel.getWidthAsInt()),
+                toInteger(panel.getHeightAsInt()));
 
-            try {
-                activity.onOpen();
-                getPlaceHistoryHandler().registerOpen(activity,
-                                                      place);
-            } catch (Exception ex) {
-                lifecycleErrorHandler.handle(activity,
-                                             LifecyclePhase.OPEN,
-                                             ex);
-                closePlace(place);
-            }
-        });
+        try {
+            activity.onOpen();
+            getPlaceHistoryHandler().registerOpen(activity,
+                    place);
+        } catch (Exception ex) {
+            lifecycleErrorHandler.handle(activity,
+                    LifecyclePhase.OPEN,
+                    ex);
+            closePlace(place);
+        }
     }
 
     private IsWidget maybeWrapExternalWidget(WorkbenchActivity activity,
@@ -848,17 +836,17 @@ public class PlaceManagerImpl implements PlaceManager {
         }
 
         activePopups.put(place.getIdentifier(),
-                         activity);
+                activity);
 
         try {
             activity.onOpen();
             getPlaceHistoryHandler().registerOpen(activity,
-                                                  place);
+                    place);
         } catch (Exception ex) {
             activePopups.remove(place.getIdentifier());
             lifecycleErrorHandler.handle(activity,
-                                         LifecyclePhase.OPEN,
-                                         ex);
+                    LifecyclePhase.OPEN,
+                    ex);
         }
     }
 
@@ -874,19 +862,20 @@ public class PlaceManagerImpl implements PlaceManager {
                                            final Command doWhenFinished) {
 
         checkNotNull("doWhenFinished",
-                     doWhenFinished);
+                doWhenFinished);
 
         if (place instanceof ForcedPlaceRequest) {
             switchToPerspective(place,
-                                activity,
-                                new ParameterizedCommand<PerspectiveDefinition>() {
-                                    @Override
-                                    public void execute(PerspectiveDefinition perspectiveDef) {
-                                        openPartsRecursively(perspectiveDef.getRoot());
-                                        doWhenFinished.execute();
-                                        workbenchLayout.onResize();
-                                    }
-                                });
+                    activity,
+                    new ParameterizedCommand<PerspectiveDefinition>() {
+
+                        @Override
+                        public void execute(PerspectiveDefinition perspectiveDef) {
+                            openPartsRecursively(perspectiveDef.getRoot());
+                            doWhenFinished.execute();
+                            workbenchLayout.onResize();
+                        }
+                    });
         } else {
             final PerspectiveActivity oldPerspectiveActivity = perspectiveManager.getCurrentPerspective();
             if (oldPerspectiveActivity != null && place.equals(oldPerspectiveActivity.getPlace())) {
@@ -894,6 +883,7 @@ public class PlaceManagerImpl implements PlaceManager {
             }
 
             perspectiveManager.savePerspectiveState(new Command() {
+
                 @Override
                 public void execute() {
                     // first try to open the new perspective, so we can avoid leaving the user on a blank screen if the onOpen() method fails
@@ -901,8 +891,8 @@ public class PlaceManagerImpl implements PlaceManager {
                         activity.onOpen();
                     } catch (Exception ex) {
                         lifecycleErrorHandler.handle(activity,
-                                                     LifecyclePhase.OPEN,
-                                                     ex);
+                                LifecyclePhase.OPEN,
+                                ex);
                         try {
                             activity.onClose();
                         } catch (Exception ex2) {
@@ -914,28 +904,29 @@ public class PlaceManagerImpl implements PlaceManager {
                     }
 
                     switchToPerspective(place,
-                                        activity,
-                                        new ParameterizedCommand<PerspectiveDefinition>() {
-                                            @Override
-                                            public void execute(PerspectiveDefinition perspectiveDef) {
-                                                if (oldPerspectiveActivity != null) {
-                                                    try {
-                                                        oldPerspectiveActivity.onClose();
-                                                    } catch (Exception ex) {
-                                                        lifecycleErrorHandler.handle(oldPerspectiveActivity,
-                                                                                     LifecyclePhase.CLOSE,
-                                                                                     ex);
-                                                    }
-                                                    existingWorkbenchActivities.remove(oldPerspectiveActivity.getPlace());
-                                                    activityManager.destroyActivity(oldPerspectiveActivity);
-                                                }
-                                                openPartsRecursively(perspectiveDef.getRoot());
-                                                doWhenFinished.execute();
-                                                workbenchLayout.onResize();
-                                                placeHistoryHandler.registerOpen(activity,
-                                                                                 place);
-                                            }
-                                        });
+                            activity,
+                            new ParameterizedCommand<PerspectiveDefinition>() {
+
+                                @Override
+                                public void execute(PerspectiveDefinition perspectiveDef) {
+                                    if (oldPerspectiveActivity != null) {
+                                        try {
+                                            oldPerspectiveActivity.onClose();
+                                        } catch (Exception ex) {
+                                            lifecycleErrorHandler.handle(oldPerspectiveActivity,
+                                                    LifecyclePhase.CLOSE,
+                                                    ex);
+                                        }
+                                        existingWorkbenchActivities.remove(oldPerspectiveActivity.getPlace());
+                                        activityManager.destroyActivity(oldPerspectiveActivity);
+                                    }
+                                    openPartsRecursively(perspectiveDef.getRoot());
+                                    doWhenFinished.execute();
+                                    workbenchLayout.onResize();
+                                    placeHistoryHandler.registerOpen(activity,
+                                            place);
+                                }
+                            });
                 }
             });
         }
@@ -946,8 +937,8 @@ public class PlaceManagerImpl implements PlaceManager {
                                      final ParameterizedCommand<PerspectiveDefinition> closeOldPerspectiveOpenPartsAndExecuteChainedCallback) {
         if (closeAllCurrentPanels()) {
             perspectiveManager.switchToPerspective(place,
-                                                   newPerspectiveActivity,
-                                                   closeOldPerspectiveOpenPartsAndExecuteChainedCallback);
+                    newPerspectiveActivity,
+                    closeOldPerspectiveOpenPartsAndExecuteChainedCallback);
         } else {
 
             // some panels didn't want to close, so not going to launch new perspective. clean up its activity.
@@ -955,8 +946,8 @@ public class PlaceManagerImpl implements PlaceManager {
                 newPerspectiveActivity.onClose();
             } catch (Exception ex) {
                 lifecycleErrorHandler.handle(newPerspectiveActivity,
-                                             LifecyclePhase.OPEN,
-                                             ex);
+                        LifecyclePhase.OPEN,
+                        ex);
             }
             existingWorkbenchActivities.remove(newPerspectiveActivity.getPlace());
             activityManager.destroyActivity(newPerspectiveActivity);
@@ -982,8 +973,8 @@ public class PlaceManagerImpl implements PlaceManager {
     private void closePlace(final PlaceRequest place,
                             final boolean force) {
         closePlace(place,
-                   force,
-                   null);
+                force,
+                null);
     }
 
     private void closePlace(final PlaceRequest place,
@@ -996,17 +987,18 @@ public class PlaceManagerImpl implements PlaceManager {
         }
 
         final Command closeCommand = getCloseCommand(place,
-                                                     force,
-                                                     onAfterClose);
+                force,
+                onAfterClose);
 
         if (force) {
             closeCommand.execute();
         } else {
             final PerspectiveActivity currentPerspective = perspectiveManager.getCurrentPerspective();
-            final BiParameterizedCommand<Command, PlaceRequest> closeChain = this.perspectiveCloseChain.getOrDefault(currentPerspective.getIdentifier(),
-                                                                                                                     (chain, placeRequest) -> chain.execute());
+            final BiParameterizedCommand<Command, PlaceRequest> closeChain = this.perspectiveCloseChain.getOrDefault(
+                    currentPerspective.getIdentifier(),
+                    (chain, placeRequest) -> chain.execute());
             closeChain.execute(closeCommand,
-                               place);
+                    place);
         }
     }
 
@@ -1021,12 +1013,12 @@ public class PlaceManagerImpl implements PlaceManager {
             }
 
             workbenchPartBeforeCloseEvent.fire(new BeforeClosePlaceEvent(place,
-                                                                         force,
-                                                                         true));
+                    force,
+                    true));
 
             activePopups.remove(place.getIdentifier());
 
-            if (activity.isType(ActivityResourceType.SCREEN.name()) || activity.isType(ActivityResourceType.EDITOR.name())) {
+            if (activity.isType(ActivityResourceType.SCREEN.name())) {
                 WorkbenchActivity activity1 = (WorkbenchActivity) activity;
                 if (force || onMayCloseList.containsKey(place) || activity1.onMayClose()) {
                     onMayCloseList.remove(place);
@@ -1034,8 +1026,8 @@ public class PlaceManagerImpl implements PlaceManager {
                         activity1.onClose();
                     } catch (Exception ex) {
                         lifecycleErrorHandler.handle(activity1,
-                                                     LifecyclePhase.CLOSE,
-                                                     ex);
+                                LifecyclePhase.CLOSE,
+                                ex);
                     }
                 } else {
                     return;
@@ -1047,8 +1039,8 @@ public class PlaceManagerImpl implements PlaceManager {
                         activity1.onClose();
                     } catch (Exception ex) {
                         lifecycleErrorHandler.handle(activity1,
-                                                     LifecyclePhase.CLOSE,
-                                                     ex);
+                                LifecyclePhase.CLOSE,
+                                ex);
                     }
                 } else {
                     return;
@@ -1058,7 +1050,7 @@ public class PlaceManagerImpl implements PlaceManager {
             }
 
             getPlaceHistoryHandler().registerClose(activity,
-                                                   place);
+                    place);
             workbenchPartCloseEvent.fire(new ClosePlaceEvent(place));
 
             panelManager.removePartForPlace(place);
@@ -1091,7 +1083,7 @@ public class PlaceManagerImpl implements PlaceManager {
             return false;
         }
 
-        if (activity.isType(ActivityResourceType.SCREEN.name()) || activity.isType(ActivityResourceType.EDITOR.name())) {
+        if (activity.isType(ActivityResourceType.SCREEN.name())) {
             WorkbenchActivity activity1 = (WorkbenchActivity) activity;
             if (onMayCloseList.containsKey(place) || activity1.onMayClose()) {
                 return true;
@@ -1189,7 +1181,8 @@ public class PlaceManagerImpl implements PlaceManager {
             if (activity != null ? !activity.equals(resolvedRequest.activity) : resolvedRequest.activity != null) {
                 return false;
             }
-            if (placeRequest != null ? !placeRequest.equals(resolvedRequest.placeRequest) : resolvedRequest.placeRequest != null) {
+            if (placeRequest != null ? !placeRequest.equals(resolvedRequest.placeRequest)
+                    : resolvedRequest.placeRequest != null) {
                 return false;
             }
 

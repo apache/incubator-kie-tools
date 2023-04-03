@@ -15,7 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -32,10 +31,8 @@ import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
  * This {@link PlaceManager} implementation is active for plugins only, to
@@ -272,9 +269,4 @@ public class PluginPlaceManagerImpl implements PlaceManager {
         return null;
     }
 
-    @Override
-    public Collection<PathPlaceRequest> getActivitiesForResourceType(ResourceTypeDefinition type) {
-        fail();
-        return null;
-    }
 }

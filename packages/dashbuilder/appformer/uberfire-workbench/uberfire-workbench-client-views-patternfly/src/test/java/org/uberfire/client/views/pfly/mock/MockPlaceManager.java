@@ -16,7 +16,6 @@
 
 package org.uberfire.client.views.pfly.mock;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.enterprise.inject.Alternative;
@@ -30,10 +29,8 @@ import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @Alternative
 public class MockPlaceManager implements PlaceManager {
@@ -221,11 +218,6 @@ public class MockPlaceManager implements PlaceManager {
 
     @Override
     public void executeOnOpenCallbacks(final PlaceRequest place) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public Collection<PathPlaceRequest> getActivitiesForResourceType(final ResourceTypeDefinition type) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 

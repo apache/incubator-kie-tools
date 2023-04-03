@@ -18,12 +18,10 @@ package org.uberfire.client.workbench.panels.impl;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.enterprise.context.Dependent;
@@ -88,8 +86,6 @@ import org.uberfire.workbench.model.impl.CustomPanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
-import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static java.util.Collections.singleton;
 import static org.junit.Assert.assertEquals;
@@ -98,7 +94,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -295,10 +290,6 @@ public class PlaceManagerTest {
 
         WorkbenchScreenActivity doraActivity = mock(WorkbenchScreenActivity.class);
         when(doraActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(doraActivity).getMenus(any());
         when(activityManager.getActivities(dora)).thenReturn(singleton((Activity) doraActivity));
 
         placeManager.goTo(dora);
@@ -319,14 +310,6 @@ public class PlaceManagerTest {
         WorkbenchScreenActivity otherActivity = mock(WorkbenchScreenActivity.class);
         when(doraActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
         when(otherActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(doraActivity).getMenus(any());
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(otherActivity).getMenus(any());
         when(activityManager.getActivities(dora)).thenReturn(singleton((Activity) doraActivity));
         when(activityManager.getActivities(other)).thenReturn(singleton((Activity) otherActivity));
 
@@ -349,10 +332,6 @@ public class PlaceManagerTest {
         when(ozActivity.isDynamic()).thenReturn(false);
         when(ozActivity.preferredWidth()).thenReturn(-1);
         when(ozActivity.preferredHeight()).thenReturn(-1);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(ozActivity).getMenus(any());
         when(activityManager.getActivities(oz)).thenReturn(singleton((Activity) ozActivity));
 
         placeManager.goTo(oz,
@@ -416,10 +395,6 @@ public class PlaceManagerTest {
         WorkbenchScreenActivity ozActivity = mock(WorkbenchScreenActivity.class);
 
         when(ozActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(ozActivity).getMenus(any());
         when(activityManager.getActivities(yellowBrickRoad)).thenReturn(singleton((Activity) ozActivity));
 
         placeManager.goTo(yellowBrickRoad,
@@ -809,10 +784,6 @@ public class PlaceManagerTest {
         when(ozPerspectiveActivity.getDefaultPerspectiveLayout()).thenReturn(ozPerspectiveDef);
         when(ozPerspectiveActivity.getPlace()).thenReturn(ozPerspectivePlace);
         when(ozPerspectiveActivity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(ozPerspectiveActivity).getMenus(any());
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest("emerald_city");
         WorkbenchScreenActivity emeraldCityActivity = mock(WorkbenchScreenActivity.class);
@@ -820,10 +791,6 @@ public class PlaceManagerTest {
                 .thenReturn(singleton((Activity) emeraldCityActivity));
         when(emeraldCityActivity.getOwningPlace()).thenReturn(ozPerspectivePlace);
         when(emeraldCityActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(emeraldCityActivity).getMenus(any());
 
         placeManager.goTo(emeraldCityPlace,
                 (PanelDefinition) null);
@@ -962,10 +929,6 @@ public class PlaceManagerTest {
         WorkbenchScreenActivity emeraldCityActivity = mock(WorkbenchScreenActivity.class);
         when(emeraldCityActivity.preferredWidth()).thenReturn(555);
         when(emeraldCityActivity.preferredHeight()).thenReturn(-1);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(emeraldCityActivity).getMenus(any());
         when(activityManager.getActivities(emeraldCityPlace))
                 .thenReturn(singleton((Activity) emeraldCityActivity));
         when(emeraldCityActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
@@ -981,7 +944,6 @@ public class PlaceManagerTest {
         verify(panelManager).addWorkbenchPart(eq(emeraldCityPlace),
                 eq(new PartDefinitionImpl(emeraldCityPlace)),
                 eq(customPanelDef),
-                isNull(Menus.class),
                 any(UIPart.class),
                 isNull(String.class),
                 isNull(Integer.class),
@@ -1007,11 +969,6 @@ public class PlaceManagerTest {
         when(activityManager.getActivities(emeraldCityPlace))
                 .thenReturn(singleton((Activity) emeraldCityActivity));
         when(emeraldCityActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(emeraldCityActivity).getMenus(any());
-
         PlaceRequest emeraldCityPlace2 = new DefaultPlaceRequest("emerald_city2");
         WorkbenchScreenActivity emeraldCityActivity2 = mock(WorkbenchScreenActivity.class);
         when(emeraldCityActivity2.preferredWidth()).thenReturn(555);
@@ -1019,10 +976,6 @@ public class PlaceManagerTest {
         when(activityManager.getActivities(emeraldCityPlace2))
                 .thenReturn(singleton((Activity) emeraldCityActivity2));
         when(emeraldCityActivity2.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(emeraldCityActivity2).getMenus(any());
 
         placeManagerSpy.goTo(emeraldCityPlace,
                 panel);
@@ -1033,7 +986,6 @@ public class PlaceManagerTest {
         verify(panelManager).addWorkbenchPart(eq(emeraldCityPlace),
                 eq(new PartDefinitionImpl(emeraldCityPlace)),
                 eq(customPanelDef),
-                isNull(Menus.class),
                 any(UIPart.class),
                 isNull(String.class),
                 isNull(Integer.class),
@@ -1056,7 +1008,6 @@ public class PlaceManagerTest {
         verify(panelManager).addWorkbenchPart(eq(emeraldCityPlace2),
                 eq(new PartDefinitionImpl(emeraldCityPlace2)),
                 eq(customPanelDef),
-                isNull(Menus.class),
                 any(UIPart.class),
                 isNull(String.class),
                 isNull(Integer.class),
@@ -1082,10 +1033,6 @@ public class PlaceManagerTest {
         WorkbenchScreenActivity emeraldCityActivity = mock(WorkbenchScreenActivity.class);
         when(emeraldCityActivity.preferredWidth()).thenReturn(555);
         when(emeraldCityActivity.preferredHeight()).thenReturn(-1);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(emeraldCityActivity).getMenus(any());
         when(activityManager.getActivities(emeraldCityPlace))
                 .thenReturn(singleton((Activity) emeraldCityActivity));
         when(emeraldCityActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
@@ -1094,10 +1041,6 @@ public class PlaceManagerTest {
         WorkbenchScreenActivity emeraldCityActivity2 = mock(WorkbenchScreenActivity.class);
         when(emeraldCityActivity2.preferredWidth()).thenReturn(555);
         when(emeraldCityActivity2.preferredHeight()).thenReturn(-1);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(emeraldCityActivity2).getMenus(any());
         when(activityManager.getActivities(emeraldCityPlace2))
                 .thenReturn(singleton((Activity) emeraldCityActivity2));
         when(emeraldCityActivity2.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
@@ -1111,7 +1054,6 @@ public class PlaceManagerTest {
         verify(panelManager).addWorkbenchPart(eq(emeraldCityPlace),
                 eq(new PartDefinitionImpl(emeraldCityPlace)),
                 eq(customPanelDef),
-                isNull(Menus.class),
                 any(UIPart.class),
                 isNull(String.class),
                 isNull(Integer.class),
@@ -1134,7 +1076,6 @@ public class PlaceManagerTest {
         verify(panelManager).addWorkbenchPart(eq(emeraldCityPlace2),
                 eq(new PartDefinitionImpl(emeraldCityPlace2)),
                 eq(customPanelDef),
-                isNull(Menus.class),
                 any(UIPart.class),
                 isNull(String.class),
                 isNull(Integer.class),
@@ -1222,10 +1163,6 @@ public class PlaceManagerTest {
         WorkbenchScreenActivity emeraldCityActivity = mock(WorkbenchScreenActivity.class);
         when(emeraldCityActivity.preferredWidth()).thenReturn(555);
         when(emeraldCityActivity.preferredHeight()).thenReturn(-1);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(emeraldCityActivity).getMenus(any());
         when(activityManager.getActivities(emeraldCityPlace))
                 .thenReturn(singleton((Activity) emeraldCityActivity));
         when(emeraldCityActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
@@ -1241,7 +1178,6 @@ public class PlaceManagerTest {
         verify(panelManager).addWorkbenchPart(eq(emeraldCityPlace),
                 eq(new PartDefinitionImpl(emeraldCityPlace)),
                 eq(customPanelDef),
-                isNull(Menus.class),
                 any(UIPart.class),
                 isNull(String.class),
                 isNull(Integer.class),
@@ -1320,10 +1256,6 @@ public class PlaceManagerTest {
 
         when(activityManager.getActivities(yellowBrickRoad)).thenReturn(singleton((Activity) ozActivity));
         when(ozActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(ozActivity).getMenus(any());
 
         placeManager.goTo(yellowBrickRoad);
 
@@ -1331,14 +1263,6 @@ public class PlaceManagerTest {
                 ozActivity,
                 null);
 
-        final ResourceTypeDefinition resourceType = mock(ResourceTypeDefinition.class);
-        when(resourceType.accept(path)).thenReturn(false);
-
-        final Collection<PathPlaceRequest> resolvedActivities = placeManager
-                .getActivitiesForResourceType(resourceType);
-        assertNotNull(resolvedActivities);
-        assertEquals(0,
-                resolvedActivities.size());
     }
 
     @Test
@@ -1349,10 +1273,6 @@ public class PlaceManagerTest {
 
         when(activityManager.getActivities(yellowBrickRoad)).thenReturn(singleton((Activity) ozActivity));
         when(ozActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(ozActivity).getMenus(any());
 
         placeManager.goTo(yellowBrickRoad);
 
@@ -1360,22 +1280,6 @@ public class PlaceManagerTest {
                 ozActivity,
                 null);
 
-        final ResourceTypeDefinition resourceType = mock(ResourceTypeDefinition.class);
-        when(resourceType.accept(path)).thenReturn(true);
-
-        final Collection<PathPlaceRequest> resolvedActivities = placeManager
-                .getActivitiesForResourceType(resourceType);
-        assertNotNull(resolvedActivities);
-        assertEquals(1,
-                resolvedActivities.size());
-
-        try {
-            resolvedActivities.clear();
-
-            fail("PlaceManager.getActivitiesForResourceType() should return an unmodifiable collection.");
-        } catch (UnsupportedOperationException uoe) {
-            //This is correct. The result should be an unmodifiable collection
-        }
     }
 
     @Test
@@ -1565,7 +1469,6 @@ public class PlaceManagerTest {
                 eq(new PartDefinitionImpl(placeRequest)),
                 expectedPanel == null ? any(PanelDefinition.class) : eq(
                         expectedPanel),
-                isNull(Menus.class),
                 any(UIPart.class),
                 isNull(String.class),
                 eq(expectedPartWidth),

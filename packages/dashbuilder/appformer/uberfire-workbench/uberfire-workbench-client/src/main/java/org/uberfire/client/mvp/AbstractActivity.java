@@ -43,7 +43,7 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public void onStartup(PlaceRequest place) {
         this.place = checkNotNull("place",
-                                  place);
+                place);
     }
 
     /**

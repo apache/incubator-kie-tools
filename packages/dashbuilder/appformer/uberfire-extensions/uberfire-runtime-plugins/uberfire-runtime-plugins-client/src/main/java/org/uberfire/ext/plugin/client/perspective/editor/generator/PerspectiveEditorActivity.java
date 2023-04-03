@@ -16,8 +16,6 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.generator;
 
-import java.util.function.Consumer;
-
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -29,8 +27,6 @@ import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
-import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.model.toolbar.ToolBar;
 
 public class PerspectiveEditorActivity implements PerspectiveActivity {
 
@@ -112,16 +108,6 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
     @Override
     public boolean isTransient() {
         return false;
-    }
-
-    @Override
-    public void getMenus(final Consumer<Menus> menusConsumer) {
-        menusConsumer.accept(null);
-    }
-
-    @Override
-    public ToolBar getToolBar() {
-        return null;
     }
 
     @Override

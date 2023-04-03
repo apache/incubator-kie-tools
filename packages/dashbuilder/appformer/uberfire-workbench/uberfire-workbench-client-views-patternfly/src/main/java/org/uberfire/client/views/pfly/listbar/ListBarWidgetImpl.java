@@ -15,12 +15,10 @@
  */
 package org.uberfire.client.views.pfly.listbar;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -43,18 +41,11 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
-import elemental2.dom.HTMLElement;
-import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
-import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.Pull;
-import org.gwtbootstrap3.client.ui.constants.Toggle;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.util.Layouts;
@@ -70,15 +61,9 @@ import org.uberfire.client.workbench.widgets.listbar.ResizeFocusPanel;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.menu.MenuCustom;
-import org.uberfire.workbench.model.menu.MenuGroup;
-import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.MenuItemCommand;
-import org.uberfire.workbench.model.menu.impl.BaseMenuVisitor;
 
 import static com.google.gwt.dom.client.Style.Display.BLOCK;
 import static com.google.gwt.dom.client.Style.Display.NONE;
-import static org.uberfire.plugin.PluginUtil.ensureIterable;
 
 /**
  * Implementation of ListBarWidget based on PatternFly components.
@@ -278,7 +263,6 @@ public class ListBarWidgetImpl
 
         if (part.isSelectable()) {
             titleDropDown.selectPart(part);
-            setupContextMenu();
             header.setVisible(true);
         } else {
             header.setVisible(false);
@@ -291,23 +275,6 @@ public class ListBarWidgetImpl
                 part);
 
         return true;
-    }
-
-    void setupContextMenu() {
-        contextMenu.clear();
-        final WorkbenchPartPresenter.View part = (WorkbenchPartPresenter.View) currentPart.getK2().getWidget(0);
-        part.getPresenter().getMenus(menus -> {
-            if (menus != null && menus.getItems().size() > 0) {
-                for (final MenuItem menuItem : menus.getItems()) {
-                    final Widget result = makeItem(menuItem,
-                            true);
-                    if (result != null) {
-                        contextMenu.add(result);
-                    }
-                }
-            }
-            contextMenu.setVisible(contextMenu.getWidgetCount() > 0);
-        });
     }
 
     @Override
@@ -415,123 +382,6 @@ public class ListBarWidgetImpl
                 ((RequiresResize) containedWidget).onResize();
             }
         }
-    }
-
-    protected Widget makeItem(final MenuItem item,
-                              boolean isRoot) {
-
-        Widget[] menuWidget = new Widget[]{null};
-        item.accept(
-                new BaseMenuVisitor() {
-
-                    @Override
-                    public boolean visitEnter(MenuGroup menuGroup) {
-                        menuWidget[0] = makeMenuGroup(menuGroup,
-                                isRoot);
-                        return false;
-                    }
-
-                    @Override
-                    public void visit(MenuItemCommand menuItemCommand) {
-                        menuWidget[0] = makeMenuItemCommand(menuItemCommand,
-                                isRoot);
-                    }
-
-                    @Override
-                    public void visit(MenuCustom<?> menuCustom) {
-                        menuWidget[0] = makeMenuCustom(menuCustom);
-                    }
-                });
-        return menuWidget[0];
-    }
-
-    private Widget makeMenuItemCommand(final MenuItemCommand cmdItem,
-                                       final boolean isRoot) {
-        if (isRoot) {
-            final Button button = GWT.create(Button.class);
-            button.setText(cmdItem.getCaption());
-            button.setSize(ButtonSize.SMALL);
-            button.setEnabled(cmdItem.isEnabled());
-            button.addClickHandler(event -> cmdItem.getCommand().execute());
-            cmdItem.addEnabledStateChangeListener(button::setEnabled);
-            return button;
-        } else {
-            final AnchorListItem navbarLink = GWT.create(AnchorListItem.class);
-            navbarLink.setText(cmdItem.getCaption());
-            if (!cmdItem.isEnabled()) {
-                navbarLink.addStyleName("disabled");
-            }
-            navbarLink.addClickHandler(event -> cmdItem.getCommand().execute());
-            cmdItem.addEnabledStateChangeListener(enabled -> {
-                if (enabled) {
-                    navbarLink.removeStyleName("disabled");
-                } else {
-                    navbarLink.addStyleName("disabled");
-                }
-            });
-            return navbarLink;
-        }
-    }
-
-    private Widget makeMenuGroup(final MenuGroup groups,
-                                 final boolean isRoot) {
-        if (isRoot) {
-            final List<Widget> widgetList = new ArrayList<>();
-            for (final MenuItem _item : ensureIterable(groups.getItems())) {
-                final Widget widget = makeItem(_item,
-                        false);
-                if (widget != null) {
-                    widgetList.add(widget);
-                }
-            }
-            if (widgetList.isEmpty()) {
-                return null;
-            }
-            return makeDropDownMenuButton(groups.getCaption(),
-                    widgetList);
-        } else {
-            final List<Widget> widgetList = new ArrayList<>();
-            for (final MenuItem _item : groups.getItems()) {
-                final Widget result = makeItem(_item,
-                        false);
-                if (result != null) {
-                    widgetList.add(result);
-                }
-            }
-            if (widgetList.isEmpty()) {
-                return null;
-            }
-            return makeDropDownMenuButton(groups.getCaption(),
-                    widgetList);
-        }
-    }
-
-    private Widget makeMenuCustom(final MenuCustom item) {
-        final Object result = item.build();
-        if (result instanceof Widget) {
-            return (Widget) result;
-        }
-        if (result instanceof HTMLElement) {
-            return ElementWrapperWidget.getWidget((HTMLElement) result);
-        }
-        return null;
-    }
-
-    private Widget makeDropDownMenuButton(final String caption,
-                                          final List<Widget> widgetList) {
-        final ButtonGroup buttonGroup = GWT.create(ButtonGroup.class);
-        final Button dropdownButton = GWT.create(Button.class);
-        dropdownButton.setText(caption);
-        dropdownButton.setDataToggle(Toggle.DROPDOWN);
-        dropdownButton.setSize(ButtonSize.SMALL);
-        final DropDownMenu dropDownMenu = GWT.create(DropDownMenu.class);
-        dropDownMenu.setPull(Pull.RIGHT);
-        for (final Widget _item : widgetList) {
-            dropDownMenu.add(_item);
-        }
-        buttonGroup.add(dropdownButton);
-        buttonGroup.add(dropDownMenu);
-        return buttonGroup;
     }
 
     private void scheduleResize() {

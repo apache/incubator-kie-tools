@@ -15,14 +15,10 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.function.Consumer;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
-import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.model.toolbar.ToolBar;
 
 /**
  * Implementation of behaviour common to all workbench editors and screens.
@@ -72,16 +68,6 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity impleme
 
     @Override
     public void onFocus() {
-    }
-
-    @Override
-    public void getMenus(final Consumer<Menus> menusConsumer) {
-        menusConsumer.accept(null);
-    }
-
-    @Override
-    public ToolBar getToolBar() {
-        return null;
     }
 
     @Override

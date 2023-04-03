@@ -78,17 +78,12 @@ public class ActivityManagerImpl implements ActivityManager {
     public Set<Activity> getActivities(final PlaceRequest placeRequest,
                                        boolean secure) {
 
-        final Collection<SyncBeanDef<Activity>> beans;
-        if (placeRequest instanceof PathPlaceRequest) {
-            beans = resolveByPath((PathPlaceRequest) placeRequest);
-        } else {
-            beans = resolveById(placeRequest.getIdentifier());
-        }
+        final Collection<SyncBeanDef<Activity>> beans = resolveById(placeRequest.getIdentifier());
 
         final var activities = startIfNecessary(createInstances(beans), placeRequest);
 
         if (placeRequest instanceof PathPlaceRequest) {
-            resolvePathPlaceRequestIdentifier(placeRequest,  activities);
+            resolvePathPlaceRequestIdentifier(placeRequest, activities);
         }
 
         return activities;
@@ -212,8 +207,8 @@ public class ActivityManagerImpl implements ActivityManager {
                 continue;
             }
             final T instance = activityBean.getInstance();
-                activities.add(instance);
-            
+            activities.add(instance);
+
         }
 
         return activities;
@@ -254,9 +249,9 @@ public class ActivityManagerImpl implements ActivityManager {
     private Set<Activity> startIfNecessary(Collection<Activity> activities,
                                            PlaceRequest place) {
         return activities.stream()
-                         .map(a -> startIfNecessary(a, place))
-                         .filter(Objects::nonNull)
-                         .collect(Collectors.toSet());
+                .map(a -> startIfNecessary(a, place))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -274,19 +269,6 @@ public class ActivityManagerImpl implements ActivityManager {
             return emptyList();
         }
         return singletonList(beanDefActivity);
-    }
-
-    private Set<SyncBeanDef<Activity>> resolveByPath(final PathPlaceRequest place) {
-        if (place == null) {
-            return emptySet();
-        }
-        final SyncBeanDef<Activity> result = activityBeansCache.getActivity(place.getIdentifier());
-
-        if (result != null) {
-            return singleton(result);
-        }
-
-        return asSet(activityBeansCache.getActivity(place.getPath()));
     }
 
     private Set<SyncBeanDef<Activity>> asSet(final SyncBeanDef<Activity> activity) {

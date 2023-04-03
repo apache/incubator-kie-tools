@@ -33,7 +33,6 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * BeanFactory using Errai IOCBeanManager to instantiate (CDI) beans
@@ -46,15 +45,13 @@ public class DefaultBeanFactory
     protected SyncBeanManager iocManager;
 
     @Override
-    public WorkbenchPartPresenter newWorkbenchPart(final Menus menus,
-                                                   final String title,
+    public WorkbenchPartPresenter newWorkbenchPart(final String title,
                                                    final IsWidget titleDecoration,
                                                    final PartDefinition definition,
                                                    final Class<? extends WorkbenchPartPresenter> partType) {
         final WorkbenchPartPresenter part = iocManager.lookupBean(partType).getInstance();
 
         part.setTitle(title);
-        part.setMenus(menus);
         part.setTitleDecoration(titleDecoration);
         part.setDefinition(definition);
 
@@ -101,6 +98,6 @@ public class DefaultBeanFactory
 
     @Override
     public void destroy(final Object o) {
-        iocManager.destroyBean(o);
+        iocManager.destroyBean(o);        
     }
 }

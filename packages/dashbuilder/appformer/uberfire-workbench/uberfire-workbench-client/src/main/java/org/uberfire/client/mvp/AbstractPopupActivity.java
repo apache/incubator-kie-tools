@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchPopup.WorkbenchPopupSize;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
-import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 
 /**
@@ -53,7 +52,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
     }
 
     @Override
-    public ResourceType getResourceType() {
+    public ActivityResourceType getResourceType() {
         return ActivityResourceType.POPUP;
     }
 
@@ -116,4 +115,5 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
     public boolean onMayClose() {
         return true;
     }
+    
 }

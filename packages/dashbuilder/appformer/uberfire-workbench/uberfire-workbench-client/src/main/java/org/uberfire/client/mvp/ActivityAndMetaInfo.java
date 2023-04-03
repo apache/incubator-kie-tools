@@ -17,28 +17,20 @@
 
 package org.uberfire.client.mvp;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.workbench.type.ClientResourceType;
 
 public class ActivityAndMetaInfo {
 
-    private SyncBeanManager iocManager;
     private final SyncBeanDef<Activity> activityBean;
 
     private final int priority;
     final List<String> resourceTypesNames;
-    ClientResourceType[] resourceTypes;
 
-    @SuppressWarnings("rawtypes")
-    ActivityAndMetaInfo(final SyncBeanManager iocManager,
-                        final SyncBeanDef<Activity> activityBean,
+    ActivityAndMetaInfo(final SyncBeanDef<Activity> activityBean,
                         final int priority,
                         final List<String> resourceTypesNames) {
-        this.iocManager = iocManager;
         this.activityBean = activityBean;
         this.priority = priority;
         this.resourceTypesNames = resourceTypesNames;
@@ -52,23 +44,4 @@ public class ActivityAndMetaInfo {
         return priority;
     }
 
-    public ClientResourceType[] getResourceTypes() {
-        if (resourceTypes == null) {
-            dynamicLookupResourceTypes();
-        }
-        return resourceTypes;
-    }
-
-    private void dynamicLookupResourceTypes() {
-        this.resourceTypes = new ClientResourceType[resourceTypesNames.size()];
-        for (int i = 0; i < resourceTypesNames.size(); i++) {
-            final String resourceTypeIdentifier = resourceTypesNames.get(i);
-            final Collection<SyncBeanDef> resourceTypeBeans = iocManager.lookupBeans(resourceTypeIdentifier);
-            if (resourceTypeBeans.isEmpty()) {
-                throw new RuntimeException("ClientResourceType " + resourceTypeIdentifier + " not found");
-            }
-
-            this.resourceTypes[i] = (ClientResourceType) resourceTypeBeans.iterator().next().getInstance();
-        }
-    }
 }
