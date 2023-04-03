@@ -16,10 +16,9 @@
 
 import { Position, TextDocument } from "vscode-languageserver-textdocument";
 import { CompletionItemKind, Range } from "vscode-languageserver-types";
-import { EditorLanguageServiceCommandTypes } from "../api";
 
 // types ElsJsonPath, ELsNode, ELsNodeType need to be compatible with jsonc types
-export declare type ElsJsonPath = (string | number)[];
+export declare type ELsJsonPath = (string | number)[];
 export declare type ELsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
 
 type OmitDistributive<T, K extends PropertyKey> = T extends any
@@ -51,14 +50,14 @@ export interface ShouldCompleteArgs {
   cursorOffset: number;
   cursorPosition: Position;
   node: ELsNode | undefined;
-  path: ElsJsonPath;
+  path: ELsJsonPath;
   root: ELsNode | undefined;
 }
 
-export interface ShouldCreateCodelensArgs {
+export interface ELsShouldCreateCodelensArgs<CommandTypes> {
   content: string;
   node: ELsNode;
-  commandName: EditorLanguageServiceCommandTypes;
+  commandName: CommandTypes;
 }
 
 export interface TranslateArgs {
@@ -70,10 +69,10 @@ export interface TranslateArgs {
   overwriteRange?: Range;
 }
 
-export interface CodeCompletionStrategy {
+export interface ELsCodeCompletionStrategy<CommandTypes> {
   translate(args: TranslateArgs): string;
   formatLabel(label: string, completionItemKind: CompletionItemKind): string;
   shouldComplete(args: ShouldCompleteArgs): boolean;
   getStartNodeValuePosition(document: TextDocument, node: ELsNode): Position | undefined;
-  shouldCreateCodelens(args: ShouldCreateCodelensArgs): boolean;
+  shouldCreateCodelens(args: ELsShouldCreateCodelensArgs<CommandTypes>): boolean;
 }

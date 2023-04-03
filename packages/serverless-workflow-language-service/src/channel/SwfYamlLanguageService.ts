@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { TranslateArgs, ELsNode, ShouldCompleteArgs } from "@kie-tools/editor-language-service/dist/channel";
 import {
   getLanguageService,
   LanguageSettings,
@@ -51,13 +52,7 @@ import { getNodeFormat } from "./getNodeFormat";
 import { indentText } from "./indentText";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { findNodeAtOffset, positions_equals, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import {
-  CodeCompletionStrategy,
-  ShouldCompleteArgs,
-  ShouldCreateCodelensArgs,
-  SwfLsNode,
-  TranslateArgs,
-} from "./types";
+import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -75,7 +70,7 @@ export class SwfYamlLanguageService {
     this.codeCompletionStrategy = new YamlCodeCompletionStrategy();
   }
 
-  parseContent(content: string): SwfLsNode | undefined {
+  parseContent(content: string): ELsNode | undefined {
     if (!content.trim()) {
       return;
     }
@@ -207,7 +202,7 @@ export class SwfYamlLanguageService {
 export const isNodeUncompleted = (args: {
   content: string;
   uri: string;
-  rootNode: SwfLsNode;
+  rootNode: ELsNode;
   cursorOffset: number;
 }): boolean => {
   if (args.content.slice(args.cursorOffset - 1, args.cursorOffset) !== " ") {
@@ -234,8 +229,8 @@ function shouldNotComplete(content: string): boolean {
   return /(^|\n)\s*(([^:]+:)|(-))$/.test(content);
 }
 
-const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
-  const convertedNode: SwfLsNode = {
+const astConvert = (node: YAMLNode, parentNode?: ELsNode): ELsNode => {
+  const convertedNode: ELsNode = {
     type: "object",
     offset: node.startPosition,
     length: node.endPosition - node.startPosition,
@@ -299,7 +294,7 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
       : label;
   }
 
-  public getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined {
+  public getStartNodeValuePosition(document: TextDocument, node: ELsNode): Position | undefined {
     const position = document.positionAt(node.offset);
     const nextPosition = document.positionAt(node.offset + 1);
     const charAtPosition = document.getText(Range.create(position, nextPosition));

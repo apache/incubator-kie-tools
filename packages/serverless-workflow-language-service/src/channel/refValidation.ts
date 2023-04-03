@@ -15,12 +15,12 @@
  */
 
 import { SwfRef, swfRefValidationMap } from "./swfRefValidationMap";
-import { SwfLsNode } from "./types";
 import { findNodesAtLocation } from "@kie-tools/editor-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { Diagnostic } from "vscode-languageserver-types";
+import { ELsNode } from "@kie-tools/editor-language-service/dist/channel";
 
-export function doRefValidation(args: { textDocument: TextDocument; rootNode: SwfLsNode }): Diagnostic[] {
+export function doRefValidation(args: { textDocument: TextDocument; rootNode: ELsNode }): Diagnostic[] {
   return [...swfRefValidationMap.entries()].flatMap(([src, refs]) => {
     // here, we assume that all source nodes return terminal values.
     // i.e. a source node will never be an "object"
@@ -68,7 +68,7 @@ export function doRefValidation(args: { textDocument: TextDocument; rootNode: Sw
   });
 }
 
-function areArraysOfMatchingType(args: { ref: SwfRef; refNode: SwfLsNode }) {
+function areArraysOfMatchingType(args: { ref: SwfRef; refNode: ELsNode }) {
   return (
     args.ref.isArray &&
     args.refNode.type === "array" &&

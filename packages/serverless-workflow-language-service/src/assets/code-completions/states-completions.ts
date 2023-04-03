@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Specification } from "@severlessworkflow/sdk-typescript";
-import { OmitRecursively } from "../../channel";
+import { OmitRecursively } from "@kie-tools/editor-language-service/dist/channel";
 
 export const genericStateCompletion = {
   name: "${1:Unique State name}",

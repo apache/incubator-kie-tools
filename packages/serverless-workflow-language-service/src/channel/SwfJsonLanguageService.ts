@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { TranslateArgs, ELsNode, ShouldCompleteArgs } from "@kie-tools/editor-language-service/dist/channel";
 import * as jsonc from "jsonc-parser";
 import { getLanguageService } from "vscode-json-languageservice";
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -21,13 +22,7 @@ import { CodeLens, CompletionItem, CompletionItemKind, Diagnostic, Position, Ran
 import { FileLanguage } from "../api";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import {
-  CodeCompletionStrategy,
-  ShouldCompleteArgs,
-  ShouldCreateCodelensArgs,
-  SwfLsNode,
-  TranslateArgs,
-} from "./types";
+import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
 
 /**
  * Check if a node has a comma after the end
@@ -70,7 +65,7 @@ export class SwfJsonLanguageService {
     this.codeCompletionStrategy = new JsonCodeCompletionStrategy();
   }
 
-  parseContent(content: string): SwfLsNode | undefined {
+  parseContent(content: string): ELsNode | undefined {
     return jsonc.parseTree(content);
   }
 
@@ -148,7 +143,7 @@ export class JsonCodeCompletionStrategy implements CodeCompletionStrategy {
       : label;
   }
 
-  public getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined {
+  public getStartNodeValuePosition(document: TextDocument, node: ELsNode): Position | undefined {
     const position = document.positionAt(node.offset);
     const nextPosition = document.positionAt(node.offset + 1);
     return node.type === "boolean" ? position : nextPosition;

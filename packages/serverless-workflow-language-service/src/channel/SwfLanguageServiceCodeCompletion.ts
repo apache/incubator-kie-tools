@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
+import { ELsNode } from "@kie-tools/editor-language-service/dist/channel";
+import { jqBuiltInFunctions } from "@kie-tools/serverless-workflow-jq-expressions/dist/utils";
 import {
-  SwfServiceCatalogFunction,
   SwfCatalogSourceType,
+  SwfServiceCatalogFunction,
   SwfServiceCatalogService,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
-import {
-  CompletionItem,
-  CompletionItemKind,
-  InsertTextFormat,
-  Position,
-  Range,
-  TextEdit,
-} from "vscode-languageserver-types";
-import { getNodePath, isVirtualRegistry } from "./SwfLanguageService";
+import { TextDocument } from "vscode-languageserver-textdocument";
+import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
 import { SwfLanguageServiceCommandExecution } from "../api";
 import {
+  emptyWorkflowCompletion,
   eventCompletion,
   eventStateCompletion,
   functionCompletion,
@@ -39,14 +35,11 @@ import {
   operationStateCompletion,
   switchStateCompletion,
   workflowCompletion,
-  emptyWorkflowCompletion,
 } from "../assets/code-completions";
 import * as swfModelQueries from "./modelQueries";
 import { nodeUpUntilType } from "./nodeUpUntilType";
-import { findNodeAtLocation, SwfLanguageServiceConfig } from "./SwfLanguageService";
-import { CodeCompletionStrategy, SwfLsNode, JqCompletions } from "./types";
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { jqBuiltInFunctions } from "@kie-tools/serverless-workflow-jq-expressions/dist/utils";
+import { findNodeAtLocation, getNodePath, SwfLanguageServiceConfig } from "./SwfLanguageService";
+import { CodeCompletionStrategy, JqCompletions } from "./types";
 
 type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
 export type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "functions"> & {
@@ -55,13 +48,13 @@ export type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogServi
 
 export type SwfLanguageServiceCodeCompletionFunctionsArgs = {
   codeCompletionStrategy: CodeCompletionStrategy;
-  currentNode: SwfLsNode;
+  currentNode: ELsNode;
   currentNodeRange: Range;
   cursorOffset: number;
   document: TextDocument;
   langServiceConfig: SwfLanguageServiceConfig;
   overwriteRange: Range;
-  rootNode: SwfLsNode;
+  rootNode: ELsNode;
   swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
   cursorPosition: Position;
   jqCompletions: JqCompletions;
@@ -152,10 +145,10 @@ function getStateNameCompletion(
   });
 }
 
-function extractFunctionsPath(functionsNode: SwfLsNode[]) {
+function extractFunctionsPath(functionsNode: ELsNode[]) {
   const relativeList: string[] = [];
   const remoteList: string[] = [];
-  functionsNode.forEach((func: SwfLsNode) => {
+  functionsNode.forEach((func: ELsNode) => {
     const functionType = findNodeAtLocation(func, ["type"])?.value.trim() ?? "rest";
     if (functionType == "rest" || functionType == "asyncapi") {
       const path = findNodeAtLocation(func, ["operation"])?.value.split("#")[0];
@@ -194,7 +187,7 @@ const getJqInputVariablesCompletions: JqFunctionCompletion = async function getJ
 ): Promise<CompletionItem[]> {
   const showAllCompletion = !args.wordToSearch.length ? true : false;
   const { relativeList, remoteList } = extractFunctionsPath(
-    findNodeAtLocation(args.rootNode, ["functions"])?.children as SwfLsNode[]
+    findNodeAtLocation(args.rootNode, ["functions"])?.children as ELsNode[]
   );
   const dataInputSchemaPath = findNodeAtLocation(args.rootNode, ["dataInputSchema"])?.value;
   if (dataInputSchemaPath) {
@@ -255,7 +248,7 @@ const getJqInputVariablesCompletions: JqFunctionCompletion = async function getJ
 const getReusableFunctionCompletion: JqFunctionCompletion = async function (
   args: SwfLanguageServiceCodeCompletionFunctionsArgs & { wordToSearch: string }
 ): Promise<CompletionItem[]> {
-  const reusalbeFunctions: SwfLsNode = findNodeAtLocation(args.rootNode, ["functions"])!;
+  const reusalbeFunctions: ELsNode = findNodeAtLocation(args.rootNode, ["functions"])!;
   const functionNamesArray: string[] = [];
   const isWordToSearchExist = args.wordToSearch.length ? true : false;
   const overwriteRange = Range.create(

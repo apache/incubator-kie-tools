@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+import { ELsNode } from "@kie-tools/editor-language-service/dist/channel";
 import * as jsonc from "jsonc-parser";
 import { load } from "yaml-language-server-parser";
-import { SwfLsNode } from "./types";
 import { FileLanguage } from "../api";
 
 /**
@@ -27,7 +27,7 @@ import { FileLanguage } from "../api";
  * @param node the node
  * @returns the FileLanguage, undefined if unrecognized
  */
-export function getNodeFormat(content: string, node: SwfLsNode): FileLanguage | undefined {
+export function getNodeFormat(content: string, node: ELsNode): FileLanguage | undefined {
   const nodeContent = content.slice(node.offset, node.offset + node.length);
 
   if (jsonc.parseTree(nodeContent) !== undefined) {

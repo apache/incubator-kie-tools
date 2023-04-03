@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { findNodesAtLocation } from "@kie-tools/editor-language-service/dist/channel";
+import { ELsJsonPath, findNodesAtLocation, ELsNode } from "@kie-tools/editor-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
   SwfCatalogSourceType,
@@ -36,7 +36,7 @@ import {
   SwfLanguageServiceCodeLenses,
   SwfLanguageServiceCodeLensesFunctionsArgs,
 } from "./SwfLanguageServiceCodeLenses";
-import { CodeCompletionStrategy, JqCompletions, SwfJsonPath, SwfLsNode } from "./types";
+import { CodeCompletionStrategy, JqCompletions } from "./types";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -102,7 +102,7 @@ export class SwfLanguageService {
     uri: string;
     cursorPosition: Position;
     cursorWordRange: Range;
-    rootNode: SwfLsNode | undefined;
+    rootNode: ELsNode | undefined;
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CompletionItem[]> {
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
@@ -200,7 +200,7 @@ export class SwfLanguageService {
   public async getDiagnostics(args: {
     content: string;
     uriPath: string;
-    rootNode: SwfLsNode | undefined;
+    rootNode: ELsNode | undefined;
     getSchemaDiagnostics: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
   }): Promise<Diagnostic[]> {
     if (!args.rootNode) {
@@ -234,7 +234,7 @@ export class SwfLanguageService {
   public async getCodeLenses(args: {
     content: string;
     uri: string;
-    rootNode: SwfLsNode | undefined;
+    rootNode: ELsNode | undefined;
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CodeLens[]> {
     if (!args.content.trim().length) {
@@ -315,17 +315,17 @@ export class SwfLanguageService {
 }
 
 const completions = new Map<
-  SwfJsonPath,
+  ELsJsonPath,
   (args: {
     codeCompletionStrategy: CodeCompletionStrategy;
-    currentNode: SwfLsNode;
+    currentNode: ELsNode;
     currentNodeRange: Range;
     cursorOffset: number;
     cursorPosition: Position;
     document: TextDocument;
     langServiceConfig: SwfLanguageServiceConfig;
     overwriteRange: Range;
-    rootNode: SwfLsNode;
+    rootNode: ELsNode;
     swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
     jqCompletions: JqCompletions;
   }) => Promise<CompletionItem[]>
@@ -357,15 +357,15 @@ const completions = new Map<
   [["states", "*", "eventConditions", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
 ]);
 
-export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNode | undefined {
+export function findNodeAtLocation(root: ELsNode, path: ELsJsonPath): ELsNode | undefined {
   return findNodesAtLocation({ root, path })[0];
 }
 
-export function findNodeAtOffset(root: SwfLsNode, offset: number, includeRightBound?: boolean): SwfLsNode | undefined {
-  return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as SwfLsNode;
+export function findNodeAtOffset(root: ELsNode, offset: number, includeRightBound?: boolean): ELsNode | undefined {
+  return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as ELsNode;
 }
 
-export function getNodePath(node: SwfLsNode): SwfJsonPath {
+export function getNodePath(node: ELsNode): ELsJsonPath {
   return jsonc.getNodePath(node as jsonc.Node);
 }
 

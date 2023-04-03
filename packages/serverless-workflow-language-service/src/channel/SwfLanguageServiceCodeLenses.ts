@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { findNodesAtLocation } from "@kie-tools/editor-language-service/dist/channel";
+import {
+  findNodesAtLocation,
+  ELsJsonPath,
+  ELsNodeType,
+  ELsNode,
+} from "@kie-tools/editor-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, Position } from "vscode-languageserver-types";
 import {
@@ -23,23 +28,23 @@ import {
   SwfLanguageServiceCommandTypes,
 } from "../api";
 import { SwfLanguageServiceConfig } from "./SwfLanguageService";
-import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode, SwfLsNodeType } from "./types";
+import { CodeCompletionStrategy } from "./types";
 
 export type SwfLanguageServiceCodeLensesFunctionsArgs = {
   config: SwfLanguageServiceConfig;
   document: TextDocument;
   content: string;
-  rootNode: SwfLsNode;
+  rootNode: ELsNode;
   codeCompletionStrategy: CodeCompletionStrategy;
 };
 
 const createCodeLenses = (args: {
   document: TextDocument;
-  rootNode: SwfLsNode;
-  jsonPath: SwfJsonPath;
+  rootNode: ELsNode;
+  jsonPath: ELsJsonPath;
   commandDelegates: (args: {
     position: Position;
-    node: SwfLsNode;
+    node: ELsNode;
   }) => ({ title: string } & SwfLanguageServiceCommandExecution<any>)[];
   positionLensAt: "begin" | "end";
 }): CodeLens[] => {
@@ -79,7 +84,7 @@ const createOpenCompletionItemsCodeLenses = (
   args: {
     jsonPath: string[];
     title: string;
-    nodeType: SwfLsNodeType;
+    nodeType: ELsNodeType;
     commandName?: SwfLanguageServiceCommandTypes;
   } & SwfLanguageServiceCodeLensesFunctionsArgs
 ): CodeLens[] =>
