@@ -34,7 +34,7 @@ export class KubernetesService {
   }
 
   public composeDeploymentUrlFromIngress(ingress: IngressDescriptor): string {
-    return `http://localhost/${ingress.metadata?.name}`;
+    return `${new URL(this.args.connection.host).origin}/${ingress.metadata?.name}`;
   }
 
   public extractDeploymentState(args: { deployment?: DeploymentDescriptor }): DeploymentState {
