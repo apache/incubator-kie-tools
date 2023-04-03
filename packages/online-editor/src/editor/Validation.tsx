@@ -4,7 +4,7 @@ import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/E
 import { useEffect } from "react";
 import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { useOnlineI18n } from "../i18n";
-import { KieSandboxExtendedServicesModelPayload } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
+import { ExtendedServicesModelPayload } from "@kie-tools/extended-services-api";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { DmnLanguageService, DmnLanguageServiceImportedModel } from "@kie-tools/dmn-language-service";
@@ -39,7 +39,7 @@ export function useFileValidation(
     workspaceFile
       .getFileContents()
       .then((fileContents) => {
-        const payload: KieSandboxExtendedServicesModelPayload = {
+        const payload: ExtendedServicesModelPayload = {
           mainURI: workspaceFile.relativePath,
           resources: [
             {
@@ -90,7 +90,7 @@ export function useFileValidation(
               { content: decodedFileContent, relativePath: workspaceFile.relativePath },
               ...importedModelsResources,
             ];
-            const payload: KieSandboxExtendedServicesModelPayload = {
+            const payload: ExtendedServicesModelPayload = {
               mainURI: workspaceFile.relativePath,
               resources: resources.map((resource) => ({
                 URI: resource.relativePath,

@@ -39,7 +39,7 @@ import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component
 import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import "./DmnRunnerOutputsTable.css";
-import { DecisionResult, Result } from "@kie-tools/form-dmn";
+import { DecisionResult, DmnEvaluationResult } from "@kie-tools/extended-services-api";
 
 interface Props {
   i18n: DmnUnitablesI18n;
@@ -125,7 +125,7 @@ const EMPTY_SYMBOL = "";
 interface OutputsTableProps {
   id: string;
   i18n: BoxedExpressionEditorI18n;
-  rows: { outputEntries: Result[] }[];
+  rows: { outputEntries: DmnEvaluationResult[] }[];
   outputs?: UnitablesColumnType[];
   scrollableParentRef: React.RefObject<HTMLElement>;
 }
@@ -146,7 +146,7 @@ function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: Outpu
   }, []);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
-    return (rows?.[0]?.outputEntries ?? []).flatMap((outputEntry: Result, outputIndex: number) => {
+    return (rows?.[0]?.outputEntries ?? []).flatMap((outputEntry: DmnEvaluationResult, outputIndex: number) => {
       const output: UnitablesColumnType | undefined = outputs?.[outputIndex];
 
       // Primitives and null;
@@ -238,22 +238,25 @@ function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: Outpu
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
     return rows.map((row, rowIndex) => {
-      const rowArray = row.outputEntries.reduce((acc: Result[], entry: Result): Result[] => {
-        if (entry === undefined) {
-          return acc;
-        } else if (entry === null) {
-          return [...acc, "null"];
-        } else if (Array.isArray(entry)) {
-          return [...acc, ...entry.map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:"))];
-        } else if (typeof entry === "object") {
-          return [
-            ...acc,
-            ...Object.values(entry).map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:")),
-          ];
-        } else {
-          return [...acc, JSON.stringify(entry)];
-        }
-      }, []) as Result[]; // compiler could not infer correctly
+      const rowArray = row.outputEntries.reduce(
+        (acc: DmnEvaluationResult[], entry: DmnEvaluationResult): DmnEvaluationResult[] => {
+          if (entry === undefined) {
+            return acc;
+          } else if (entry === null) {
+            return [...acc, "null"];
+          } else if (Array.isArray(entry)) {
+            return [...acc, ...entry.map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:"))];
+          } else if (typeof entry === "object") {
+            return [
+              ...acc,
+              ...Object.values(entry).map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:")),
+            ];
+          } else {
+            return [...acc, JSON.stringify(entry)];
+          }
+        },
+        []
+      ) as DmnEvaluationResult[]; // compiler could not infer correctly
 
       return getColumnsAtLastLevel(beeTableColumns).reduce((tableRow: any, column, columnIndex) => {
         tableRow[column.accessor] = rowArray[columnIndex] || EMPTY_SYMBOL;

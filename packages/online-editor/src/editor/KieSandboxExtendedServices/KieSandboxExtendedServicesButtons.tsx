@@ -44,7 +44,7 @@ import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-ico
 import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import { DeleteDropdownWithConfirmation } from "../DeleteDropdownWithConfirmation";
 import { useDmnRunnerPersistenceDispatch } from "../../dmnRunnerPersistence/DmnRunnerPersistenceDispatchContext";
-import { DmnRunnerProviderActionType } from "../../dmnRunner/DmnRunnerProvider";
+import { DmnRunnerProviderActionType } from "../../dmnRunner/DmnRunnerTypes";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -57,7 +57,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const extendedServices = useExtendedServices();
   const devDeployments = useDevDeployments();
   const { dmnRunnerPersistenceJson, isExpanded, mode } = useDmnRunnerState();
-  const { setDmnRunnerMode, dmnRunnerDispatcher } = useDmnRunnerDispatch();
+  const { setDmnRunnerMode, setDmnRunnerContextProviderState } = useDmnRunnerDispatch();
   const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
   const { getPersistenceJsonForDownload, uploadPersistenceJson, deletePersistenceJson } =
     useDmnRunnerPersistenceDispatch();
@@ -70,12 +70,12 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
         props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
         return;
       }
-      dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.TOGGLE_EXPANDED });
+      setDmnRunnerContextProviderState({ type: DmnRunnerProviderActionType.TOGGLE_EXPANDED });
       return;
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     extendedServices.setModalOpen(true);
-  }, [mode, dmnRunnerDispatcher, extendedServices, props.editorPageDock]);
+  }, [mode, setDmnRunnerContextProviderState, extendedServices, props.editorPageDock]);
 
   const toggleDevDeploymentsDropdown = useCallback(
     (isOpen: boolean) => {
@@ -168,7 +168,10 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
                   setDmnRunnerMode(DmnRunnerMode.FORM);
-                  dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { isExpanded: true } });
+                  setDmnRunnerContextProviderState({
+                    type: DmnRunnerProviderActionType.DEFAULT,
+                    newState: { isExpanded: true },
+                  });
                 }
               }}
             >
@@ -182,7 +185,10 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
                   setDmnRunnerMode(DmnRunnerMode.TABLE);
                   props.editorPageDock?.open(PanelId.DMN_RUNNER_TABLE);
-                  dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { isExpanded: true } });
+                  setDmnRunnerContextProviderState({
+                    type: DmnRunnerProviderActionType.DEFAULT,
+                    newState: { isExpanded: true },
+                  });
                 }
               }}
             >
@@ -211,7 +217,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               <DropdownItem component={"div"} style={{ padding: "4px" }}>
                 <DeleteDropdownWithConfirmation
                   onDelete={() => {
-                    dmnRunnerDispatcher({
+                    setDmnRunnerContextProviderState({
                       type: DmnRunnerProviderActionType.DEFAULT,
                       newState: { currentInputIndex: 0 },
                     });

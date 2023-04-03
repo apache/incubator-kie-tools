@@ -32,7 +32,7 @@ const DEFAULT_TIME_CELL_WIDTH = 152;
 
 export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   constructor(
-    public readonly formSchema: object,
+    public readonly formSchema: Record<string, any>,
     public readonly validator: (model: object) => void,
     public readonly i18n: UnitablesI18n
   ) {
@@ -61,8 +61,8 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     return field;
   }
 
-  public getDataType(field: Record<string, any>) {
-    const xDmnType: string | undefined = field["x-dmn-type"];
+  public getFieldDataType(field: Record<string, any>) {
+    const xDmnType: string | undefined = field["x-dmn-type"]; // FIXME: Luiz - shouldn't have any reference to DMN!
 
     let type: string | undefined;
     if (!xDmnType) {
@@ -115,7 +115,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
 
     if (field.type !== "object") {
       return {
-        ...this.getDataType(field),
+        ...this.getFieldDataType(field),
         name: removeFieldName(joinedName),
         joinedName: joinedName,
       };
@@ -134,7 +134,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     );
 
     return {
-      ...this.getDataType(field),
+      ...this.getFieldDataType(field),
       insideProperties,
       name: joinedName,
       joinedName: joinedName,

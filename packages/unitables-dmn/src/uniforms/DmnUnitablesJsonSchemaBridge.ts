@@ -20,8 +20,11 @@ import {
   YEARS_AND_MONTHS_DURATION_FORMAT,
 } from "@kie-tools/form-dmn/dist/uniforms";
 import { UnitablesJsonSchemaBridge } from "@kie-tools/unitables/dist/uniforms";
+import { DmnInputFieldProperties, ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 
 export class DmnUnitablesJsonSchemaBridge extends UnitablesJsonSchemaBridge {
+  schema: ExtendedServicesDmnJsonSchema;
+
   public getField(name: string) {
     const field = super.getField(name);
     if (field.format === DAYS_AND_TIME_DURATION_FORMAT) {
@@ -36,10 +39,17 @@ export class DmnUnitablesJsonSchemaBridge extends UnitablesJsonSchemaBridge {
     return field;
   }
 
-  public getBoxedFieldType(field: Record<string, any>): string {
+  public getFieldDataType(field: DmnInputFieldProperties) {
+    return super.getFieldDataType(field);
+  }
+
+  public getBoxedFieldType(field: DmnInputFieldProperties): string {
     let extractedType = (field["x-dmn-type"] ?? "").split("FEEL:").pop();
     if ((extractedType?.length ?? 0) > 1) {
       extractedType = (field["x-dmn-type"] ?? "").split(":").pop()?.split("}").join("").trim();
+    }
+    if (!extractedType) {
+      extractedType = field.type ?? "string";
     }
     return extractedType;
   }

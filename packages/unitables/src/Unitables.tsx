@@ -31,7 +31,6 @@ import "./Unitables.css";
 import { UnitablesRow } from "./UnitablesRow";
 import setObjectValueByPath from "lodash/set";
 import getObjectValueByPath from "lodash/get";
-import { InputRow } from "@kie-tools/form-dmn";
 import { diff } from "deep-object-diff";
 import cloneDeep from "lodash/cloneDeep";
 import { useUnitablesContext } from "./UnitablesContext";
@@ -40,7 +39,7 @@ import { UnitablesInputsConfigs } from "./UnitablesTypes";
 export interface UnitablesProps {
   jsonSchema: object;
   rows: object[];
-  setRows: (previousStateFunction: (previous: Array<InputRow>) => Array<InputRow>) => void;
+  setRows: (previousStateFunction: (previous: Array<Record<string, any>>) => Array<Record<string, any>>) => void;
   error: boolean;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   openRow: (rowIndex: number) => void;
@@ -63,8 +62,8 @@ function isObject(item: any): item is Record<string, any> {
 // should set the deep key that is going to be changed;
 function recursiveCheckForChangedKey(
   rowIndex: number,
-  previousInputRows: InputRow,
-  newInputRow: InputRow,
+  previousInputRows: Record<string, any>,
+  newInputRow: Record<string, any>,
   cachedKeysOfRows: Map<number, Set<string>>,
   changedProperties: Record<string, any>,
   parentKey?: string
@@ -152,7 +151,7 @@ export const Unitables = ({
   // Set in-cell input heights (end)
 
   const onSubmitRow = useCallback(
-    (inputRow: InputRow, rowIndex: number, error: Record<string, any>) => {
+    (inputRow: Record<string, any>, rowIndex: number, error: Record<string, any>) => {
       // After this method is not called by a period, clear the cache and reset the internalChange;
       if (internalChange.current) {
         if (timeout.current) {

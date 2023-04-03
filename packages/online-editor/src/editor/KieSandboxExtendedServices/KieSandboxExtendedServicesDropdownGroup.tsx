@@ -30,14 +30,14 @@ import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServic
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
-import { DmnRunnerProviderActionType } from "../../dmnRunner/DmnRunnerProvider";
+import { DmnRunnerProviderActionType } from "../../dmnRunner/DmnRunnerTypes";
 
 export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace | undefined }) {
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
   const dmnRunnerState = useDmnRunnerState();
   const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
-  const { dmnRunnerDispatcher } = useDmnRunnerDispatch();
+  const { setDmnRunnerContextProviderState } = useDmnRunnerDispatch();
 
   const isKieSandboxExtendedServicesRunning = useMemo(
     () => extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
@@ -46,12 +46,12 @@ export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: Acti
 
   const onToggleDmnRunner = useCallback(() => {
     if (isKieSandboxExtendedServicesRunning) {
-      dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.TOGGLE_EXPANDED });
+      setDmnRunnerContextProviderState({ type: DmnRunnerProviderActionType.TOGGLE_EXPANDED });
       return;
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     extendedServices.setModalOpen(true);
-  }, [dmnRunnerDispatcher, isKieSandboxExtendedServicesRunning, extendedServices]);
+  }, [setDmnRunnerContextProviderState, isKieSandboxExtendedServicesRunning, extendedServices]);
 
   return (
     <>

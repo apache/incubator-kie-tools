@@ -44,6 +44,7 @@
     "@kie-tools/boxed-expression-component": "workspace:*",
     "@kie-tools/dmn-language-service": "workspace:*",
     "@kie-tools/emscripten-fs": "^0.0.2",
+    "@kie-tools/extended-services-api": "workspace:*",
     "@kie-tools/form": "workspace:*",
     "@kie-tools/form-dmn": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",

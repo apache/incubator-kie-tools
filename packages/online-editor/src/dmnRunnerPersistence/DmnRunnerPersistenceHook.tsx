@@ -17,14 +17,11 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import {
-  DmnRunnerPersistenceReducerActionType,
-  useDmnRunnerPersistenceDispatch,
-} from "./DmnRunnerPersistenceDispatchContext";
+import { useDmnRunnerPersistenceDispatch } from "./DmnRunnerPersistenceDispatchContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { CompanionFsServiceBroadcastEvents } from "../companionFs/CompanionFsService";
-import { DmnRunnerPersistenceJson } from "./DmnRunnerPersistenceService";
 import { getNewDefaultDmnRunnerPersistenceJson } from "./DmnRunnerPersistenceService";
+import { DmnRunnerPersistenceReducerActionType, DmnRunnerPersistenceJson } from "./DmnRunnerPersistenceTypes";
 
 // Handle the companion FS events;
 export function useDmnRunnerPersistence(workspaceId?: string, workspaceFileRelativePath?: string) {
@@ -51,6 +48,7 @@ export function useDmnRunnerPersistence(workspaceId?: string, workspaceFileRelat
           if (canceled.get()) {
             return;
           }
+
           console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(companionEvent)}`);
           if (companionEvent.type === "CFSF_MOVE" || companionEvent.type == "CFSF_RENAME") {
             // Ignore, as content remains the same.
@@ -68,7 +66,7 @@ export function useDmnRunnerPersistence(workspaceId?: string, workspaceFileRelat
               workspaceFileRelativePath: workspaceFileRelativePath,
               type: DmnRunnerPersistenceReducerActionType.DEFAULT,
               newPersistenceJson: dmnRunnerPersistenceJson,
-              fsUpdate: true,
+              shouldUpdateFS: false,
             });
           }
         };
@@ -125,7 +123,7 @@ export function useDmnRunnerPersistence(workspaceId?: string, workspaceFileRelat
                 workspaceFileRelativePath: workspaceFileRelativePath,
                 type: DmnRunnerPersistenceReducerActionType.DEFAULT,
                 newPersistenceJson: dmnRunnerPersistenceJson,
-                fsUpdate: true,
+                shouldUpdateFS: false,
               });
             });
           });

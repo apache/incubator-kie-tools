@@ -32,7 +32,6 @@ import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/
 import { DmnRunnerTable } from "../dmnRunner/DmnRunnerTable";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { DecisionResult } from "@kie-tools/form-dmn";
 import {
   NotificationsPanelDockToggle,
   NotificationsPanelDockToggleRef,
@@ -42,7 +41,7 @@ import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { DmnRunnerProviderActionType } from "../dmnRunner/DmnRunnerProvider";
+import { DmnRunnerProviderActionType } from "../dmnRunner/DmnRunnerTypes";
 
 export enum PanelId {
   DMN_RUNNER_TABLE = "dmn-runner-table",
@@ -68,7 +67,7 @@ export const EditorPageDockDrawer = React.forwardRef<
 >((props, forwardRef) => {
   const { i18n } = useOnlineI18n();
   const { isExpanded, mode } = useDmnRunnerState();
-  const { dmnRunnerDispatcher } = useDmnRunnerDispatch();
+  const { setDmnRunnerContextProviderState } = useDmnRunnerDispatch();
   const [panel, setPanel] = useState<PanelId>(PanelId.NONE);
   const [notificationsToggle, notificationsToggleRef] = useController<NotificationsPanelDockToggleRef>();
   const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelRef>();
@@ -114,21 +113,26 @@ export const EditorPageDockDrawer = React.forwardRef<
       setPanel((previousPanel) => {
         if (previousPanel !== panelId) {
           if (panelId === PanelId.DMN_RUNNER_TABLE && !isExpanded) {
-            dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { isExpanded: true } });
+            setDmnRunnerContextProviderState({
+              type: DmnRunnerProviderActionType.DEFAULT,
+              newState: { isExpanded: true },
+            });
           }
           return panelId;
         }
         return PanelId.NONE;
       });
     },
-    [isExpanded, dmnRunnerDispatcher]
+    [isExpanded, setDmnRunnerContextProviderState]
   );
 
   useLayoutEffect(() => {
     if (mode === DmnRunnerMode.FORM && panel === PanelId.DMN_RUNNER_TABLE) {
       setPanel(PanelId.NONE);
+    } else if (props.workspaceFile.extension.toLowerCase() !== "dmn" && panel === PanelId.DMN_RUNNER_TABLE) {
+      setPanel(PanelId.NONE);
     }
-  }, [mode, panel]);
+  }, [mode, panel, props.workspaceFile.extension]);
 
   useImperativeHandle(
     forwardRef,

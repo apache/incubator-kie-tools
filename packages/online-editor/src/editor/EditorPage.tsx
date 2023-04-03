@@ -45,7 +45,7 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
-import { DmnRunnerProvider } from "../dmnRunner/DmnRunnerProvider";
+import { DmnRunnerContextProvider } from "../dmnRunner/DmnRunnerContextProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
 import { useFileValidation } from "./Validation";
@@ -386,7 +386,7 @@ export function EditorPage(props: Props) {
         )}
         resolved={(file) => (
           <>
-            <DmnRunnerProvider
+            <DmnRunnerContextProvider
               workspaceFile={file.workspaceFile}
               isEditorReady={editor?.isReady}
               dmnLanguageService={dmnLanguageService}
@@ -419,7 +419,7 @@ export function EditorPage(props: Props) {
                   </DmnRunnerDrawer>
                 </PageSection>
               </Page>
-            </DmnRunnerProvider>
+            </DmnRunnerContextProvider>
             <TextEditorModal
               editor={editor}
               workspaceFile={file.workspaceFile}

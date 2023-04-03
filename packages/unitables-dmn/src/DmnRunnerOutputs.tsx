@@ -18,9 +18,8 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
-import { DmnSchemaProperties } from "./DmnTypes";
 import { DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH } from "./DmnRunnerOutputsTable";
-import { DecisionResult } from "@kie-tools/form-dmn";
+import { DecisionResult, DmnInputFieldProperties } from "@kie-tools/extended-services-api";
 
 interface OutputField {
   dataType: DmnBuiltInDataType;
@@ -51,20 +50,20 @@ export function useDmnRunnerOutputs(
     }
 
     // generate a map that contains output types
-    const outputTypeMap = Object.entries(jsonSchemaBridge.schema?.definitions?.OutputSet?.properties ?? []).reduce(
-      (outputTypeMap: Map<string, OutputTypesFields>, [name, properties]: [string, DmnSchemaProperties]) => {
+    const outputTypeMap = Object.entries(jsonSchemaBridge.schema.definitions?.OutputSet?.properties ?? []).reduce(
+      (outputTypeMap: Map<string, OutputTypesFields>, [name, properties]: [string, DmnInputFieldProperties]) => {
         if (properties["x-dmn-type"]) {
-          const dataType = jsonSchemaBridge.getDataType(properties).dataType;
+          const dataType = jsonSchemaBridge.getFieldDataType(properties).dataType;
           outputTypeMap.set(name, {
-            type: properties.type,
+            type: properties.type!,
             dataType,
             name,
             joinedName: name,
           });
         } else {
-          const path = properties.$ref.split("/").slice(1); // remove #
-          const data = path.reduce((acc: any, property: string) => acc[property], jsonSchemaBridge.schema);
-          const dataType = jsonSchemaBridge.getDataType(data).dataType;
+          const path = properties.$ref?.split("/").slice(1); // remove #
+          const data = path?.reduce((acc: any, property: string) => acc[property], jsonSchemaBridge.schema);
+          const dataType = jsonSchemaBridge.getFieldDataType(data).dataType;
           if (data.properties) {
             const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
             outputTypeMap.set(name, {
@@ -135,28 +134,28 @@ export function useDmnRunnerOutputs(
 
 function deepGenerateOutputTypesMapFields(
   outputTypeMap: Map<string, OutputTypesFields>,
-  properties: DmnSchemaProperties[],
+  properties: DmnInputFieldProperties[],
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge
 ) {
-  return Object.entries(properties).map(([name, property]: [string, DmnSchemaProperties]) => {
+  return Object.entries(properties).map(([name, property]: [string, DmnInputFieldProperties]) => {
     if (property["x-dmn-type"]) {
-      const dataType = jsonSchemaBridge.getDataType(property).dataType;
-      outputTypeMap.set(name, { type: property.type, dataType, name, joinedName: name });
-      return { name, type: property.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH, dataType, joinedName: name };
+      const dataType = jsonSchemaBridge.getFieldDataType(property).dataType;
+      outputTypeMap.set(name, { type: property.type!, dataType, name, joinedName: name });
+      return { name, type: property.type!, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH, dataType, joinedName: name };
     }
-    const path: string[] = property.$ref.split("/").slice(1); // remove #
-    const data = path.reduce(
-      (acc: { [x: string]: object }, property: string) => acc[property],
+    const path = property.$ref?.split("/").slice(1); // remove #
+    const field: DmnInputFieldProperties = path?.reduce(
+      (acc: Record<string, any>, property: string) => acc[property],
       jsonSchemaBridge.schema
     );
-    const dataType = jsonSchemaBridge.getDataType(data).dataType;
-    if (data.properties) {
-      const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
-      outputTypeMap.set(name, { type: data.type, insideProperties, dataType, name, joinedName: name });
+    const dataType = jsonSchemaBridge.getFieldDataType(field).dataType;
+    if (field.properties) {
+      const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, field.properties, jsonSchemaBridge);
+      outputTypeMap.set(name, { type: field.type!, insideProperties, dataType, name, joinedName: name });
     } else {
-      outputTypeMap.set(name, { type: data.type, dataType, name, joinedName: name });
+      outputTypeMap.set(name, { type: field.type!, dataType, name, joinedName: name });
     }
-    return { name, dataType: data.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH } as OutputTypesField;
+    return { name, dataType: field.type, width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH } as OutputTypesField;
   });
 }
 

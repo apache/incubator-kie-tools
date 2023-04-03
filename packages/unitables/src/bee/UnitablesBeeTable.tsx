@@ -232,6 +232,7 @@ function UnitablesBeeTableCell({
   const { containerCellCoordinates } = useBeeTableCoordinates();
   const { internalChange } = useUnitablesContext();
 
+  // FIXME: Luiz - shouldn't have any reference to DMN!
   // TODO: Luiz - Fix: x-dmn-type from field property: Any, Undefined, string, number, ...;
   // this is useful in case we have a "time", "date", "date and time" fields;
   const setValue = useCallback(

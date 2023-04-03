@@ -20,50 +20,11 @@ import { DmnValidator } from "./DmnValidator";
 import { dmnFormI18n } from "./i18n";
 import { FormComponent, FormProps } from "@kie-tools/form";
 import { DmnAutoFieldProvider } from "./uniforms/DmnAutoFieldProvider";
+import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 
 export type InputRow = Record<string, string>;
 
-type DmnDecisionNodes = "InputSet" | string;
-
-export interface DmnSchema {
-  definitions?: Record<
-    DmnDecisionNodes,
-    {
-      type: string;
-      properties: Record<string, DmnDeepProperty>;
-    }
-  >;
-}
-
-export interface DmnFormData {
-  definitions: DmnFormDefinitions;
-}
-
-type DmnFormDefinitions = Record<
-  DmnDecisionNodes,
-  {
-    required?: string[];
-    properties: object;
-    type: string;
-    placeholder?: string;
-    title?: string;
-    format?: string;
-    items: object[] & { properties: object };
-    "x-dmn-type"?: string;
-  }
->;
-
-interface DmnDeepProperty {
-  $ref?: string;
-  type?: string;
-  placeholder?: string;
-  title?: string;
-  format?: string;
-  "x-dmn-type"?: string;
-  properties?: DmnDeepProperty;
-}
-
-export function DmnForm(props: FormProps<InputRow, DmnSchema>) {
+export function DmnForm(props: FormProps<InputRow, ExtendedServicesDmnJsonSchema>) {
   const i18n = useMemo(() => {
     dmnFormI18n.setLocale(props.locale ?? navigator.language);
     return dmnFormI18n.getCurrent();

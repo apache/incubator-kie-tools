@@ -14,33 +14,16 @@
  * limitations under the License.
  */
 
-import { InputRow } from "@kie-tools/form-dmn";
-import { UnitablesInputsConfigs, UnitablesCellConfigs } from "@kie-tools/unitables";
 import { CompanionFsService } from "../companionFs/CompanionFsService";
 import { v4 as uuid } from "uuid";
 import cloneDeep from "lodash/cloneDeep";
+import { DmnRunnerMode, DmnRunnerPersistenceJson } from "./DmnRunnerPersistenceTypes";
 
 export const generateUuid = () => {
   return `_${uuid()}`.toLocaleUpperCase();
 };
 
 const DMN_RUNNER_PERSISTENCE_JSON_VERSION = "v1";
-
-export enum DmnRunnerMode {
-  FORM = "form",
-  TABLE = "table",
-}
-
-interface DmnRunnerPersistenceJsonConfigs {
-  version: string;
-  mode: DmnRunnerMode;
-  inputs: UnitablesInputsConfigs;
-}
-
-export interface DmnRunnerPersistenceJson {
-  configs: DmnRunnerPersistenceJsonConfigs;
-  inputs: Array<InputRow>;
-}
 
 export function getNewDefaultDmnRunnerPersistenceJson(): DmnRunnerPersistenceJson {
   return {

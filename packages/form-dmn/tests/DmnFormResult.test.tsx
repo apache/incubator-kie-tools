@@ -16,7 +16,8 @@
 
 import * as React from "react";
 import { render } from "@testing-library/react";
-import { DecisionResult, DmnFormResult, DmnFormResultProps, EvaluationStatus } from "../src";
+import { DmnFormResult, DmnFormResultProps } from "../src";
+import { DecisionResult, DmnEvaluationStatus } from "@kie-tools/extended-services-api";
 
 const props: DmnFormResultProps = {
   results: [],
@@ -40,7 +41,7 @@ describe("DmnFormResult tests", () => {
         decisionName: "Decision-1",
         result: null,
         messages: [],
-        evaluationStatus: EvaluationStatus.FAILED,
+        evaluationStatus: DmnEvaluationStatus.FAILED,
       },
     ];
 
@@ -56,21 +57,21 @@ describe("DmnFormResult tests", () => {
         decisionName: "Decision-1",
         result: null,
         messages: [],
-        evaluationStatus: EvaluationStatus.FAILED,
+        evaluationStatus: DmnEvaluationStatus.FAILED,
       },
       {
         decisionId: "_9BD7BB23-0B23-488F-8DED-F5462CF89E0B",
         decisionName: "Decision-2",
         result: null,
         messages: [],
-        evaluationStatus: EvaluationStatus.SUCCEEDED,
+        evaluationStatus: DmnEvaluationStatus.SUCCEEDED,
       },
       {
         decisionId: "_9BD7BB23-0B23-488F-8DED-F5462CF89E0B",
         decisionName: "Decision-3",
         result: null,
         messages: [],
-        evaluationStatus: EvaluationStatus.SKIPPED,
+        evaluationStatus: DmnEvaluationStatus.SKIPPED,
       },
     ];
 
@@ -88,7 +89,7 @@ describe("DmnFormResult tests", () => {
         decisionName: "Decision-1",
         result: null,
         messages: [],
-        evaluationStatus: EvaluationStatus.FAILED,
+        evaluationStatus: DmnEvaluationStatus.FAILED,
       },
     ];
 
@@ -105,7 +106,7 @@ describe("DmnFormResult tests", () => {
         decisionName: "Decision-1",
         result: null,
         messages: [],
-        evaluationStatus: EvaluationStatus.FAILED,
+        evaluationStatus: DmnEvaluationStatus.FAILED,
       },
     ];
 

@@ -17,22 +17,20 @@
 import * as React from "react";
 import { useCallback, useMemo, useReducer, useRef } from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import {
-  DmnRunnerPersistenceService,
-  DmnRunnerPersistenceJson,
-  getNewDefaultDmnRunnerPersistenceJson,
-} from "./DmnRunnerPersistenceService";
-import {
-  DmnRunnerPersistenceDispatchContext,
-  DmnRunnerPersistenceReducerActionType,
-  DmnRunnerPersistenceReducerAction,
-  DmnRunnerUpdatePersistenceJsonDeboucerArgs,
-} from "./DmnRunnerPersistenceDispatchContext";
+import { DmnRunnerPersistenceService, getNewDefaultDmnRunnerPersistenceJson } from "./DmnRunnerPersistenceService";
+import { DmnRunnerPersistenceDispatchContext } from "./DmnRunnerPersistenceDispatchContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { useSyncedCompanionFs } from "../companionFs/CompanionFsHooks";
 import isEqual from "lodash/isEqual";
+import {
+  DmnRunnerPersistenceJson,
+  DmnRunnerPersistenceReducerAction,
+  DmnRunnerPersistenceReducerActionType,
+  DmnRunnerUpdatePersistenceJsonDeboucerArgs,
+} from "./DmnRunnerPersistenceTypes";
 
-let localUpdate = false;
+// This variable ensures that a new update from the FS will NOT override the new value.
+let LOCK = false;
 
 function checkIfHasChangesAndUpdateFs(
   persistenceJson: DmnRunnerPersistenceJson,
@@ -40,23 +38,23 @@ function checkIfHasChangesAndUpdateFs(
   updatePersistenceJsonDebouce: (args: DmnRunnerUpdatePersistenceJsonDeboucerArgs) => void,
   workspaceId: string,
   workspaceFileRelativePath: string,
-  fsUpdate = false
+  shouldUpdateFs: boolean
 ): DmnRunnerPersistenceJson {
   // Check for changes before update;
   if (isEqual(persistenceJson, newPersistenceJson)) {
-    localUpdate = false;
+    LOCK = false;
     return persistenceJson;
   }
 
   // Updates from local FS and the current value is different from the change, hence, a change occured while the FS was updated;
-  if (fsUpdate) {
-    if (localUpdate) {
+  if (!shouldUpdateFs) {
+    if (LOCK) {
       // the last change was made by this tab; invalidate fsUpdate;
-      localUpdate = false;
+      LOCK = false;
       return persistenceJson;
     } else {
       // state wasn't changed by this tab; overwrite
-      localUpdate = false;
+      LOCK = false;
       return newPersistenceJson;
     }
   }
@@ -68,7 +66,7 @@ function checkIfHasChangesAndUpdateFs(
     content: JSON.stringify(newPersistenceJson),
   });
 
-  localUpdate = true;
+  LOCK = true;
   return newPersistenceJson;
 }
 
@@ -84,7 +82,7 @@ function dmnRunnerPersistenceJsonReducer(
       action.updatePersistenceJsonDebouce,
       action.workspaceId,
       action.workspaceFileRelativePath,
-      action.fsUpdate
+      action.shouldUpdateFS
     );
   } else if (action.type === DmnRunnerPersistenceReducerActionType.DEFAULT) {
     return checkIfHasChangesAndUpdateFs(
@@ -93,7 +91,7 @@ function dmnRunnerPersistenceJsonReducer(
       action.updatePersistenceJsonDebouce,
       action.workspaceId,
       action.workspaceFileRelativePath,
-      action.fsUpdate
+      action.shouldUpdateFS
     );
   } else {
     throw new Error("Invalid action for DmnRunnerPersistence reducer");
@@ -146,6 +144,7 @@ export function DmnRunnerPersistenceDispatchContextProvider(props: React.PropsWi
         workspaceFileRelativePath: workspaceFile.relativePath,
         type: DmnRunnerPersistenceReducerActionType.DEFAULT,
         newPersistenceJson,
+        shouldUpdateFS: true,
       });
     },
     [updatePersistenceJsonDebouce]

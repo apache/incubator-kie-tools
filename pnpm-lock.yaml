@@ -2812,6 +2812,9 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools/extended-services-api":
+        specifier: workspace:*
+        version: link:../extended-services-api
       "@kie-tools/form-dmn":
         specifier: workspace:*
         version: link:../form-dmn
@@ -3262,6 +3265,46 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
+  packages/extended-services-api:
+    dependencies:
+      "@kie-tools-core/notifications":
+        specifier: workspace:*
+        version: link:../notifications
+    devDependencies:
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      "@types/jest-when":
+        specifier: ^2.7.4
+        version: 2.7.4
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      jest-when:
+        specifier: ^3.5.0
+        version: 3.5.0(jest@26.6.3)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.4.2
+        version: 4.8.4
+
   packages/feel-input-component:
     dependencies:
       "@kie-tools-core/i18n":
@@ -3485,6 +3528,9 @@ importers:
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
+      "@kie-tools/extended-services-api":
+        specifier: workspace:*
+        version: link:../extended-services-api
       "@kie-tools/form":
         specifier: workspace:*
         version: link:../form
@@ -4697,6 +4743,9 @@ importers:
       "@kie-tools/emscripten-fs":
         specifier: ^0.0.2
         version: 0.0.2
+      "@kie-tools/extended-services-api":
+        specifier: workspace:*
+        version: link:../extended-services-api
       "@kie-tools/form":
         specifier: workspace:*
         version: link:../form
@@ -7279,12 +7328,12 @@ importers:
       "@kie-tools/boxed-expression-component":
         specifier: workspace:*
         version: link:../boxed-expression-component
+      "@kie-tools/extended-services-api":
+        specifier: workspace:*
+        version: link:../extended-services-api
       "@kie-tools/form":
         specifier: workspace:*
         version: link:../form
-      "@kie-tools/form-dmn":
-        specifier: workspace:*
-        version: link:../form-dmn
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
@@ -7403,6 +7452,9 @@ importers:
       "@kie-tools/boxed-expression-component":
         specifier: workspace:*
         version: link:../boxed-expression-component
+      "@kie-tools/extended-services-api":
+        specifier: workspace:*
+        version: link:../extended-services-api
       "@kie-tools/form":
         specifier: workspace:*
         version: link:../form
@@ -29917,7 +29969,7 @@ packages:
       lodash: 4.17.21
       make-error: 1.3.6
       mkdirp: 1.0.4
-      semver: 7.3.7
+      semver: 7.3.8
       yargs-parser: 20.2.7
     dev: true
 
@@ -29939,7 +29991,7 @@ packages:
       lodash: 4.17.21
       make-error: 1.3.6
       mkdirp: 1.0.4
-      semver: 7.3.7
+      semver: 7.3.8
       typescript: 4.5.4
       yargs-parser: 20.2.7
     dev: true
@@ -29962,7 +30014,7 @@ packages:
       lodash: 4.17.21
       make-error: 1.3.6
       mkdirp: 1.0.4
-      semver: 7.3.7
+      semver: 7.3.8
       typescript: 4.8.4
       yargs-parser: 20.2.7
     dev: true

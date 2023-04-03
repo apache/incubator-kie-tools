@@ -38,9 +38,9 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
-import { DmnRunnerProviderActionType } from "./DmnRunnerProvider";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
+import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -80,7 +80,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const { i18n, locale } = useOnlineI18n();
   const { currentInputIndex, error, inputs, jsonSchema, results, resultsDifference } = useDmnRunnerState();
-  const { dmnRunnerDispatcher, onRowAdded, setDmnRunnerInputs, setDmnRunnerMode } = useDmnRunnerDispatch();
+  const { setDmnRunnerContextProviderState, onRowAdded, setDmnRunnerInputs, setDmnRunnerMode } = useDmnRunnerDispatch();
   const previousError = usePrevious(error);
 
   const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
@@ -200,7 +200,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           component={"button"}
           key={rowIndex}
           onClick={() => {
-            dmnRunnerDispatcher({
+            setDmnRunnerContextProviderState({
               type: DmnRunnerProviderActionType.DEFAULT,
               newState: { currentInputIndex: rowIndex },
             });
@@ -209,7 +209,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           {getRow(rowIndex + 1)}
         </DropdownItem>
       )),
-    [inputs, dmnRunnerDispatcher, getRow]
+    [inputs, setDmnRunnerContextProviderState, getRow]
   );
 
   const onAddNewRow = useCallback(() => {
@@ -319,7 +319,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
                       <DrawerCloseButton
                         onClick={() =>
-                          dmnRunnerDispatcher({
+                          setDmnRunnerContextProviderState({
                             type: DmnRunnerProviderActionType.DEFAULT,
                             newState: { isExpanded: false },
                           })
@@ -336,7 +336,10 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                         setFormInputs={setFormInputs}
                         formError={error}
                         setFormError={(error: boolean) =>
-                          dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { error } })
+                          setDmnRunnerContextProviderState({
+                            type: DmnRunnerProviderActionType.DEFAULT,
+                            newState: { error },
+                          })
                         }
                         formSchema={jsonSchema}
                         id={"form"}
@@ -370,7 +373,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                     {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
                       <DrawerCloseButton
                         onClick={() =>
-                          dmnRunnerDispatcher({
+                          setDmnRunnerContextProviderState({
                             type: DmnRunnerProviderActionType.DEFAULT,
                             newState: { isExpanded: false },
                           })

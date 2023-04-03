@@ -33,7 +33,7 @@ import { DmnUnitablesValidator } from "@kie-tools/unitables-dmn/dist/DmnUnitable
 import "./DmnRunnerTable.css";
 import setObjectValueByPath from "lodash/set";
 import cloneDeep from "lodash/cloneDeep";
-import { DmnRunnerProviderActionType } from "./DmnRunnerProvider";
+import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 
 export function DmnRunnerTable() {
   // STATEs
@@ -50,7 +50,7 @@ export function DmnRunnerTable() {
   const { i18n } = useOnlineI18n();
   const { configs, error, inputs, jsonSchema, results } = useDmnRunnerState();
   const {
-    dmnRunnerDispatcher,
+    setDmnRunnerContextProviderState,
     onRowAdded,
     onRowDuplicated,
     onRowReset,
@@ -84,9 +84,12 @@ export function DmnRunnerTable() {
   const openRow = useCallback(
     (rowIndex: number) => {
       setDmnRunnerMode(DmnRunnerMode.FORM);
-      dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { currentInputIndex: rowIndex } });
+      setDmnRunnerContextProviderState({
+        type: DmnRunnerProviderActionType.DEFAULT,
+        newState: { currentInputIndex: rowIndex },
+      });
     },
-    [setDmnRunnerMode, dmnRunnerDispatcher]
+    [setDmnRunnerMode, setDmnRunnerContextProviderState]
   );
 
   // FIXME: Prevent shortcuts when editing on dmn runner table;
@@ -159,7 +162,10 @@ export function DmnRunnerTable() {
                       setRows={setDmnRunnerInputs}
                       error={error}
                       setError={(error: boolean) =>
-                        dmnRunnerDispatcher({ type: DmnRunnerProviderActionType.DEFAULT, newState: { error } })
+                        setDmnRunnerContextProviderState({
+                          type: DmnRunnerProviderActionType.DEFAULT,
+                          newState: { error },
+                        })
                       }
                       jsonSchemaBridge={jsonSchemaBridge}
                       containerRef={inputsContainerRef}

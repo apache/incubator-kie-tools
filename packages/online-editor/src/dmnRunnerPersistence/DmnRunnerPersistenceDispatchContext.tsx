@@ -15,36 +15,13 @@
  */
 
 import { createContext, useContext } from "react";
-import { DmnRunnerPersistenceService, DmnRunnerPersistenceJson } from "./DmnRunnerPersistenceService";
+import { DmnRunnerPersistenceService } from "./DmnRunnerPersistenceService";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-
-export type DmnRunnerUpdatePersistenceJsonDeboucerArgs = {
-  workspaceId: string;
-  workspaceFileRelativePath: string;
-  content: string;
-};
-
-export enum DmnRunnerPersistenceReducerActionType {
-  DEFAULT,
-  PREVIOUS,
-}
-
-export interface DmnRunnerPersistenceReducerActionPrevious {
-  type: DmnRunnerPersistenceReducerActionType.PREVIOUS;
-  newPersistenceJson: (previous: DmnRunnerPersistenceJson) => DmnRunnerPersistenceJson;
-}
-
-export interface DmnRunnerPersistenceReducerActionDefault {
-  type: DmnRunnerPersistenceReducerActionType.DEFAULT;
-  newPersistenceJson: DmnRunnerPersistenceJson;
-}
-
-export type DmnRunnerPersistenceReducerAction = {
-  updatePersistenceJsonDebouce: (args: DmnRunnerUpdatePersistenceJsonDeboucerArgs) => void;
-  workspaceFileRelativePath: string;
-  workspaceId: string;
-  fsUpdate?: boolean;
-} & (DmnRunnerPersistenceReducerActionDefault | DmnRunnerPersistenceReducerActionPrevious);
+import {
+  DmnRunnerPersistenceJson,
+  DmnRunnerPersistenceReducerAction,
+  DmnRunnerUpdatePersistenceJsonDeboucerArgs,
+} from "./DmnRunnerPersistenceTypes";
 
 interface DmnRunnerPersistenceDispatchContextType {
   dmnRunnerPersistenceService: DmnRunnerPersistenceService;

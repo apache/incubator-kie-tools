@@ -20,7 +20,7 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 export interface UnitablesColumnType {
   name: string;
   joinedName: string;
-  dataType: DmnBuiltInDataType;
+  dataType: DmnBuiltInDataType; // FIXME: Luiz - shouldn't have any reference to DMN!
   width?: number;
 
   cellDelegate?: (id: string) => React.ReactNode;

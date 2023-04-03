@@ -15,7 +15,8 @@
  */
 
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
-import { DecisionResult, DmnForm, DmnFormResult, extractDifferences } from "@kie-tools/form-dmn";
+import { DmnForm, DmnFormResult, extractDifferences } from "@kie-tools/form-dmn";
+import { DecisionResult } from "@kie-tools/extended-services-api";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
