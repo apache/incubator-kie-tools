@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,17 +71,13 @@ public class FullSelectionSessionCommand extends AbstractSelectionAwareSessionCo
         super.bind(session);
         session.getKeyboardControl().addKeyShortcutCallback(new KeyboardControl.KogitoKeyPress(
                 new KeyboardEvent.Key[]{CONTROL, A}, "Full process selection", this::execute));
-        session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+        session.getKeyboardControl().addKeyShortcutCallback(this::handleCtrlA);
         this.clipboardControl = session.getClipboardControl();
     }
 
     @Override
     public boolean accepts(final ClientSession session) {
         return session instanceof EditorSession;
-    }
-
-    protected void onKeyDownEvent(final KeyboardEvent.Key... keys) {
-        handleCtrlA(keys);
     }
 
     private void handleCtrlA(final KeyboardEvent.Key[] keys) {
@@ -96,7 +92,7 @@ public class FullSelectionSessionCommand extends AbstractSelectionAwareSessionCo
             try {
                 final SelectionControl<AbstractCanvasHandler, Element> selectionControl = getSession().getSelectionControl();
                 for(String item : selectionControl.getItems().keySet()) {
-                    getSession().getSelectionControl().select(item);
+                    selectionControl.select(item);
                 }
 
                 commandExecutedEvent.fire(new FullSelectionSessionCommandExecutedEvent(this,
