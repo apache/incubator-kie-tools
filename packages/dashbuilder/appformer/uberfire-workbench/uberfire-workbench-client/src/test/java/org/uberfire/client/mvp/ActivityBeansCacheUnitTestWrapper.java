@@ -16,15 +16,10 @@
 
 package org.uberfire.client.mvp;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.commons.data.Pair;
@@ -36,12 +31,6 @@ import static org.mockito.Mockito.when;
 
 public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
 
-
-    @IsSplashScreen
-    @ApplicationScoped
-    private static class SplashScreenForTesting {
-
-    }
 
     private String idMock;
     private SyncBeanDef mockDef;
@@ -55,14 +44,6 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
         idMock = "mockDef1";
         when(mockDef.getName()).thenReturn(idMock);
         availableActivities.add(mockDef);
-    }
-
-    public void mockSplashScreenBehaviour() {
-        Set<Annotation> annotations = new HashSet<Annotation>(Arrays.asList(SplashScreenForTesting.class.getAnnotations()));
-        when(mockDef.getQualifiers()).thenReturn(annotations);
-
-        activity = mock(AbstractSplashScreenActivity.class);
-        when(mockDef.getInstance()).thenReturn(activity);
     }
 
     public void createActivitiesAndMetaInfo(int priority1,

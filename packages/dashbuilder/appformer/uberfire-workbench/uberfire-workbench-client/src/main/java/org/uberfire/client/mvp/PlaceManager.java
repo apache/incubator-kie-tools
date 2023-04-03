@@ -25,7 +25,6 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -43,7 +42,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 /**
  * A Workbench-centric abstraction over the browser's history mechanism. Allows the application to initiate navigation
  * to any displayable thing: a {@link WorkbenchPerspective}, a {@link WorkbenchScreen}, a {@link WorkbenchPopup}, a
- * {@link WorkbenchEditor}, a {@link WorkbenchPart} within a screen or editor, or the editor associated with a VFS file
+ * a {@link WorkbenchPart} within a screen or editor, or the editor associated with a VFS file
  * located at a particular {@link Path}.
  */
 @JsType
@@ -212,9 +211,6 @@ public interface PlaceManager {
      */
     void registerPerspectiveCloseChain(String perspectiveIdentifier,
                                        BiParameterizedCommand<Command, PlaceRequest> closeChain);
-
-    @JsIgnore
-    Collection<SplashScreenActivity> getActiveSplashScreens();
 
     /**
      * Finds the <i>currently open</i> PlaceRequests for Activities that handle the given ResourceTypeDefinition.

@@ -16,7 +16,6 @@
 
 package org.uberfire.client.mvp;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -54,10 +52,6 @@ public class ActivityBeansCache {
      * All active Activities that have an {@link AssociatedResources} annotation and are not splash screens.
      */
 
-    /**
-     * All active activities that are splash screens.
-     */
-    private final List<SplashScreenActivity> splashActivities = new ArrayList<SplashScreenActivity>();
     private SyncBeanManager iocManager;
     private Event<NewPerspectiveEvent> newPerspectiveEventEvent;
     private Event<NewWorkbenchScreenEvent> newWorkbenchScreenEventEvent;
@@ -86,14 +80,10 @@ public class ActivityBeansCache {
             final var id = activityBean.getName();
             validateUniqueness(id);
             activitiesById.put(id, activityBean);
-            if (isSplashScreen(activityBean.getQualifiers())) {
-                splashActivities.add((SplashScreenActivity) activityBean.getInstance());
-            } else {
-                final Pair<Integer, List<String>> metaInfo = generateActivityMetaInfo(activityBean);
-                if (metaInfo != null) {
-                    addResourceActivity(activityBean,
-                                        metaInfo);
-                }
+            final Pair<Integer, List<String>> metaInfo = generateActivityMetaInfo(activityBean);
+            if (metaInfo != null) {
+                addResourceActivity(activityBean,
+                                    metaInfo);
             }
         }
 
@@ -123,15 +113,6 @@ public class ActivityBeansCache {
             }
         }
         return activeBeans;
-    }
-
-    private boolean isSplashScreen(final Set<Annotation> qualifiers) {
-        for (final var qualifier : qualifiers) {
-            if (qualifier instanceof IsSplashScreen) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void removeActivity(String id) {
@@ -200,25 +181,9 @@ public class ActivityBeansCache {
         this.resourceTypeManagerCache.sortResourceActivitiesByPriority();
     }
 
-    public void addNewSplashScreenActivity(final SyncBeanDef<Activity> activityBean) {
-        final String id = activityBean.getName();
-
-        validateUniqueness(id);
-
-        activitiesById.put(id,
-                           activityBean);
-        splashActivities.add((SplashScreenActivity) activityBean.getInstance());
-    }
 
     public boolean hasActivity(String id) {
         return activitiesById.containsKey(id);
-    }
-
-    /**
-     * Returns all active splash screen activities in this cache.
-     */
-    public List<SplashScreenActivity> getSplashScreens() {
-        return splashActivities;
     }
 
     /**

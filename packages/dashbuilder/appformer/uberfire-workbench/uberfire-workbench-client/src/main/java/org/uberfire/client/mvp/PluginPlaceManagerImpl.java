@@ -29,7 +29,6 @@ import org.jboss.errai.ioc.client.api.SharedSingleton;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.WorkbenchLayout;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -54,11 +53,6 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     @SuppressWarnings("unused")
     @Inject
     private WorkbenchLayout workbenchLayout;
-
-    // Avoid pruning by aggressive reachability analysis in Errai
-    @SuppressWarnings("unused")
-    @Inject
-    private WorkbenchMenuBar menubar;
 
     // Avoid pruning by aggressive reachability analysis in Errai
     @SuppressWarnings("unused")
@@ -264,12 +258,6 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     public void registerPerspectiveCloseChain(final String perspectiveIdentifier,
                                               final BiParameterizedCommand<Command, PlaceRequest> closeChain) {
         fail();
-    }
-
-    @Override
-    public Collection<SplashScreenActivity> getActiveSplashScreens() {
-        fail();
-        return null;
     }
 
     @Override

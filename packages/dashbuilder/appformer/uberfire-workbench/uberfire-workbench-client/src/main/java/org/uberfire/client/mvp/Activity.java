@@ -17,7 +17,6 @@ package org.uberfire.client.mvp;
 
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
-import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.PlaceRequest;
@@ -28,7 +27,7 @@ import org.uberfire.security.authz.RuntimeFeatureResource;
  * see the subinterfaces for specific activity types that do get implemented.
  * <p>
  * Also, implementations of this interface and its subinterfaces are typically not written by hand; instead, they are
- * generated from classes annotated with {@link WorkbenchScreen}, {@link WorkbenchEditor}, {@link WorkbenchPopup}, and
+ * generated from classes annotated with {@link WorkbenchScreen}, {@link WorkbenchPopup}, and
  * others by an UberFire annotation processor.
  * <p>
  * Developers of UberFire applications will not typically come into direct contact with things that implement Activity

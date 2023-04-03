@@ -46,12 +46,6 @@ public class PluginActivityManagerImpl implements ActivityManager {
     }
 
     @Override
-    public SplashScreenActivity getSplashScreenInterceptor(final PlaceRequest placeRequest) {
-        fail();
-        return null;
-    }
-
-    @Override
     public Set<Activity> getActivities(final PlaceRequest placeRequest) {
         fail();
         return null;

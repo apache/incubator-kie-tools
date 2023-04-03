@@ -27,7 +27,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
-import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -222,11 +221,6 @@ public class MockPlaceManager implements PlaceManager {
 
     @Override
     public void executeOnOpenCallbacks(final PlaceRequest place) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public Collection<SplashScreenActivity> getActiveSplashScreens() {
         throw new UnsupportedOperationException("Not implemented.");
     }
 

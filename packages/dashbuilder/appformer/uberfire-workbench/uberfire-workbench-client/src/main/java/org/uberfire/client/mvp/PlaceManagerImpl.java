@@ -45,7 +45,6 @@ import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.SharedSingleton;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.menu.SplashScreenMenuPresenter;
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
@@ -102,11 +101,6 @@ public class PlaceManagerImpl implements PlaceManager {
     private final Map<PlaceRequest, List<Command>> onOpenCallbacks = new HashMap<>();
     private final Map<PlaceRequest, List<Command>> onCloseCallbacks = new HashMap<>();
     private final Map<String, BiParameterizedCommand<Command, PlaceRequest>> perspectiveCloseChain = new HashMap<>();
-    /**
-     * Splash screens that have intercepted some other activity which is currently part of the workbench. Each of these
-     * splash screens may or may not be visible (they manage their own "show next time" preferences).
-     */
-    private final Map<String, SplashScreenActivity> availableSplashScreens = new HashMap<String, SplashScreenActivity>();
     private final Map<String, PopupActivity> activePopups = new HashMap<String, PopupActivity>();
     private final Map<PlaceRequest, Activity> onMayCloseList = new HashMap<PlaceRequest, Activity>();
     private EventBus tempBus = null;
@@ -716,71 +710,6 @@ public class PlaceManagerImpl implements PlaceManager {
                                   closeChain);
     }
 
-    /**
-     * Finds and opens the splash screen for the given place, if such a splash screen exists. The splash screen might
-     * not actually display; each splash screen keeps track of its own preference setting for whether or not the user
-     * wants to see it.
-     * <p/>
-     * Whether or not it chooses to display itself, the splash screen will be recorded in
-     * {@link #availableSplashScreens} for lookup (for example, see {@link SplashScreenMenuPresenter}) and later disposal.
-     * Internally, this method should be called every time any part or perspective is added to the workbench, and called
-     * again when that part or perspective is removed.
-     * @param place the place that has just been added to the workbench. Must not be null.
-     */
-    private void addSplashScreenFor(final PlaceRequest place) {
-        final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor(place);
-        if (splashScreen != null) {
-            availableSplashScreens.put(place.getIdentifier(),
-                                       splashScreen);
-            try {
-                splashScreen.onOpen();
-            } catch (Exception ex) {
-                availableSplashScreens.remove(place.getIdentifier());
-                lifecycleErrorHandler.handle(splashScreen,
-                                             LifecyclePhase.OPEN,
-                                             ex);
-                activityManager.destroyActivity(splashScreen);
-                return;
-            }
-        }
-        newSplashScreenActiveEvent.fire(new NewSplashScreenActiveEvent());
-    }
-
-    /**
-     * Closes the splash screen associated with the given place request, if any. Internally, this method should be
-     * invoked every time a part or perspective is removed from the workbench (cleaning up after the corresponding
-     * earlier call to {@link #addSplashScreenFor(PlaceRequest)}.
-     * @param place the place whose opening may have triggered a splash screen to launch. Must not be null.
-     */
-    private void closeSplashScreen(final PlaceRequest place) {
-        SplashScreenActivity splashScreenActivity = availableSplashScreens.remove(place.getIdentifier());
-        if (splashScreenActivity != null) {
-            try {
-                splashScreenActivity.closeIfOpen();
-            } catch (Exception ex) {
-                lifecycleErrorHandler.handle(splashScreenActivity,
-                                             LifecyclePhase.CLOSE,
-                                             ex);
-            }
-            activityManager.destroyActivity(splashScreenActivity);
-            newSplashScreenActiveEvent.fire(new NewSplashScreenActiveEvent());
-        }
-    }
-
-    /**
-     * Closes all splash screens that are currently known to be open.
-     */
-    private void closeAllSplashScreens() {
-        for (String placeId : new ArrayList<String>(availableSplashScreens.keySet())) {
-            closeSplashScreen(new DefaultPlaceRequest(placeId));
-        }
-    }
-
-    @Override
-    public Collection<SplashScreenActivity> getActiveSplashScreens() {
-        return unmodifiableCollection(availableSplashScreens.values());
-    }
-
     @Override
     public Collection<PathPlaceRequest> getActivitiesForResourceType(final ResourceTypeDefinition type) {
         final ArrayList<PathPlaceRequest> activities = new ArrayList<>();
@@ -885,7 +814,6 @@ public class PlaceManagerImpl implements PlaceManager {
                                           activity.contextId(),
                                           toInteger(panel.getWidthAsInt()),
                                           toInteger(panel.getHeightAsInt()));
-            addSplashScreenFor(place);
 
             try {
                 activity.onOpen();
@@ -1017,8 +945,6 @@ public class PlaceManagerImpl implements PlaceManager {
                                      final PerspectiveActivity newPerspectiveActivity,
                                      final ParameterizedCommand<PerspectiveDefinition> closeOldPerspectiveOpenPartsAndExecuteChainedCallback) {
         if (closeAllCurrentPanels()) {
-            closeAllSplashScreens();
-            addSplashScreenFor(place);
             perspectiveManager.switchToPerspective(place,
                                                    newPerspectiveActivity,
                                                    closeOldPerspectiveOpenPartsAndExecuteChainedCallback);
@@ -1098,7 +1024,6 @@ public class PlaceManagerImpl implements PlaceManager {
                                                                          force,
                                                                          true));
 
-            closeSplashScreen(place);
             activePopups.remove(place.getIdentifier());
 
             if (activity.isType(ActivityResourceType.SCREEN.name()) || activity.isType(ActivityResourceType.EDITOR.name())) {

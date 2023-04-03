@@ -43,7 +43,6 @@ public class ClientAPIModule {
     public static final String IS_TEMPLATE = "isTemplate";
     public static final String IS_ENABLED = "isEnabled";
     public static final String VALUE = "value";
-    public static final String workbenchSplashScreen = "org.uberfire.client.annotations.WorkbenchSplashScreen";
     public static final String workbenchPerspective = "org.uberfire.client.annotations.WorkbenchPerspective";
     public static final String workbenchPopup = "org.uberfire.client.annotations.WorkbenchPopup";
     public static final String workbenchScreen = "org.uberfire.client.annotations.WorkbenchScreen";
@@ -58,8 +57,6 @@ public class ClientAPIModule {
     public static final String workbenchMenu = "org.uberfire.client.annotations.WorkbenchMenu";
     public static final String workbenchToolBar = "org.uberfire.client.annotations.WorkbenchToolBar";
     public static final String perspective = "org.uberfire.client.annotations.Perspective";
-    public static final String splashFilter = "org.uberfire.client.annotations.SplashFilter";
-    public static final String splashBodyHeight = "org.uberfire.client.annotations.SplashBodyHeight";
     public static final String intercept = "org.uberfire.client.annotations.Intercept";
     public static final String workbenchPanel = "org.uberfire.client.annotations.WorkbenchPanel";
     public static final String jsType = "jsinterop.annotations.JsType";
@@ -69,14 +66,6 @@ public class ClientAPIModule {
 
     public static String getWorkbenchScreenClass() {
         return workbenchScreen;
-    }
-
-    public static String getSplashFilterClass() {
-        return splashFilter;
-    }
-
-    public static String getSplashBodyHeightClass() {
-        return splashBodyHeight;
     }
 
     public static String getInterceptClass() {
@@ -129,10 +118,6 @@ public class ClientAPIModule {
 
     public static String getWorkbenchPopupClass() {
         return workbenchPopup;
-    }
-
-    public static String getWorkbenchSplashScreenClass() {
-        return workbenchSplashScreen;
     }
 
     public static String getWorkbenchPerspectiveClass() {
@@ -256,19 +241,6 @@ public class ClientAPIModule {
         return getAnnotationStringParam(classElement,
                                         workbenchPopup,
                                         SIZE);
-    }
-
-    public static String getWbSplashScreenIdentifierValueOnClass(TypeElement classElement) {
-        return getAnnotationStringParam(classElement,
-                                        workbenchSplashScreen,
-                                        IDENTIFIER);
-    }
-
-    public static boolean getWbSplashScreenIsEnabledValueOnClass(TypeElement classElement) {
-        final Boolean bool = getAnnotationBooleanParam(classElement,
-                                                       workbenchSplashScreen,
-                                                       IS_ENABLED);
-        return bool == null || bool;
     }
 
     public static String getWbScreenIdentifierValueOnClass(TypeElement classElement) {
