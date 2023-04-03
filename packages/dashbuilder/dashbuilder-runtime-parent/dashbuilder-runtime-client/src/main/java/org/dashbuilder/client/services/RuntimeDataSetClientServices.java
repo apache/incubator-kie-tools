@@ -54,7 +54,6 @@ import org.dashbuilder.dataset.json.DataSetJSONMarshaller;
 import org.dashbuilder.dataset.json.DataSetLookupJSONMarshaller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.resteasy.util.HttpResponseCodes;
-import org.uberfire.backend.vfs.Path;
 
 import static elemental2.dom.DomGlobal.fetch;
 
@@ -199,16 +198,6 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
     @Override
     public void getPublicDataSetDefs(RemoteCallback<List<DataSetDef>> callback) {
         // ignored in runtime
-    }
-
-    @Override
-    public String getDownloadFileUrl(Path path) {
-        throw new IllegalArgumentException("Download URL not supported");
-    }
-
-    @Override
-    public String getUploadFileUrl() {
-        throw new IllegalArgumentException("Uploaded not supported");
     }
 
     private void backendLookup(DataSetDef def, DataSetLookup lookup, DataSetReadyCallback listener) {

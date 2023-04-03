@@ -25,7 +25,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.dashbuilder.common.client.backend.PathUrlFactory;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.DataSet;
@@ -46,7 +45,6 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.vfs.Path;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -57,7 +55,6 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public class DataSetClientServicesImpl implements DataSetClientServices {
 
     private ClientDataSetManager clientDataSetManager;
-    private PathUrlFactory pathUrlFactory;
     private AggregateFunctionManager aggregateFunctionManager;
     private IntervalBuilderLocator intervalBuilderLocator;
     private Event<DataSetPushingEvent> dataSetPushingEvent;
@@ -85,7 +82,6 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
 
     @Inject
     public DataSetClientServicesImpl(ClientDataSetManager clientDataSetManager,
-                                     PathUrlFactory pathUrlFactory,
                                      AggregateFunctionManager aggregateFunctionManager,
                                      IntervalBuilderLocator intervalBuilderLocator,
                                      Event<DataSetPushingEvent> dataSetPushingEvent,
@@ -95,7 +91,6 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
                                      Caller<DataSetDefServices> dataSetDefServices) {
 
         this.clientDataSetManager = clientDataSetManager;
-        this.pathUrlFactory = pathUrlFactory;
         this.aggregateFunctionManager = aggregateFunctionManager;
         this.intervalBuilderLocator = intervalBuilderLocator;
         this.dataSetPushingEvent = dataSetPushingEvent;
@@ -414,24 +409,6 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
     }
 
     // Catch backend events
-
-    /**
-     * <p>Returns the download URL for a given file provided by a servlet method.</p>
-     *
-     * @param path The path of the file.
-     */
-    public String getDownloadFileUrl(final Path path) {
-        return pathUrlFactory.getDownloadFileUrl(path);
-    }
-
-    /**
-     * <p>Returns the upload URL for a given file provided by a servlet method.</p>
-     *
-     * @param path The path of the file.
-     */
-    public String getUploadFileUrl() {
-        return pathUrlFactory.getUploadFileUrl();
-    }
 
     private class DataSetPushHandler implements DataSetReadyCallback {
 

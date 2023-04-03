@@ -16,7 +16,6 @@ package org.dashbuilder.dataset.client;
 
 import javax.enterprise.event.Event;
 
-import org.dashbuilder.common.client.backend.PathUrlFactory;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetFormatter;
 import org.dashbuilder.dataset.ExpenseReportsData;
@@ -45,9 +44,6 @@ public abstract class AbstractDataSetTest {
     protected DataSetLookupServices dataSetLookupServices;
 
     @Mock
-    protected PathUrlFactory pathUrlFactory;
-
-    @Mock
     protected Caller<DataSetDefServices> dataSetDefServicesCaller;
 
     protected Caller<DataSetLookupServices> dataSetLookupServicesCaller;
@@ -73,7 +69,6 @@ public abstract class AbstractDataSetTest {
         dataSetLookupServicesCaller = new CallerMock<>(dataSetLookupServices);
         clientServices = new DataSetClientServicesImpl(
                 clientDataSetManager,
-                pathUrlFactory,
                 clientDataSetCore.getAggregateFunctionManager(),
                 clientDataSetCore.getIntervalBuilderLocator(),
                 dataSetPushingEvent,
