@@ -20,7 +20,7 @@ on:
       runners:
         type: string
         required: false
-        default: '{"dmn_dev_deployment_base_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","git_cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false"}'
+        default: '{"dmn_dev_deployment_base_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","git_cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false"}'
     secrets:
       kie_tools_bot_token:
         required: false
@@ -69,8 +69,6 @@ jobs:
       npm_packages: ${{ steps.set_runners.outputs.npm_packages }}
       standalone_editors_cdn: ${{ steps.set_runners.outputs.standalone_editors_cdn }}
       extended_services: ${{ steps.set_runners.outputs.extended_services }}
-      dashbuilder: ${{ steps.set_runners.outputs.dashbuilder }}
-      dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}
       serverless_logic_web_tools: ${{ steps.set_runners.outputs.serverless_logic_web_tools }}
       serverless_logic_web_tools_swf_builder_image: ${{ steps.set_runners.outputs.serverless_logic_web_tools_swf_builder_image }}
       serverless_logic_web_tools_base_builder_image: ${{ steps.set_runners.outputs.serverless_logic_web_tools_base_builder_image }}
@@ -93,8 +91,6 @@ jobs:
           echo "npm_packages=${{ fromJSON(inputs.runners).npm_packages }}" >> $GITHUB_OUTPUT
           echo "standalone_editors_cdn=${{ fromJSON(inputs.runners).standalone_editors_cdn }}" >> $GITHUB_OUTPUT
           echo "extended_services=${{ fromJSON(inputs.runners).extended_services }}" >> $GITHUB_OUTPUT
-          echo "dashbuilder=${{ fromJSON(inputs.runners).dashbuilder }}" >> $GITHUB_OUTPUT
-          echo "dashbuilder_images=${{ fromJSON(inputs.runners).dashbuilder_images }}" >> $GITHUB_OUTPUT
           echo "serverless_logic_web_tools=${{ fromJSON(inputs.runners).serverless_logic_web_tools }}" >> $GITHUB_OUTPUT
           echo "serverless_logic_web_tools_swf_builder_image=${{ fromJSON(inputs.runners).serverless_logic_web_tools_swf_builder_image }}" >> $GITHUB_OUTPUT
           echo "serverless_logic_web_tools_base_builder_image=${{ fromJSON(inputs.runners).serverless_logic_web_tools_base_builder_image }}" >> $GITHUB_OUTPUT
@@ -115,8 +111,6 @@ jobs:
           echo "npm_packages: ${{ steps.set_runners.outputs.npm_packages }}"
           echo "standalone_editors_cdn: ${{ steps.set_runners.outputs.standalone_editors_cdn }}"
           echo "extended_services: ${{ steps.set_runners.outputs.extended_services }}"
-          echo "dashbuilder: ${{ steps.set_runners.outputs.dashbuilder }}"
-          echo "dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}"
           echo "serverless_logic_web_tools: ${{ steps.set_runners.outputs.serverless_logic_web_tools }}"
           echo "serverless_logic_web_tools_swf_builder_image: ${{ steps.set_runners.outputs.serverless_logic_web_tools_swf_builder_image }}"
           echo "serverless_logic_web_tools_base_builder_image: ${{ steps.set_runners.outputs.serverless_logic_web_tools_base_builder_image }}"
