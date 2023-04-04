@@ -29,6 +29,7 @@ import PmmlEditorTestHelper from "./helpers/PmmlEditorTestHelper";
  */
 describe("KIE Editors Integration Test Suite - Smoke tests", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
+  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
   const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_SCESIM: string = "demo.scesim";
@@ -51,6 +52,11 @@ describe("KIE Editors Integration Test Suite - Smoke tests", () => {
 
   afterEach(async function () {
     this.timeout(15000);
+    if (this.currentTest && this.currentTest?.state !== "passed") {
+      const screenshotName = this.currentTest?.fullTitle() + " (failed)";
+      const screenshotDir = path.join(DIST_IT_TESTS_FOLDER, "screenshots");
+      await testHelper.takeScreenshotAndSave(screenshotName, screenshotDir);
+    }
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
     await webview.switchBack();

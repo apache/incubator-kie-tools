@@ -32,6 +32,7 @@ import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
  */
 describe("KIE Editors Integration Test Suite - DMN Editor", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
+  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_EXPRESSION_DMN: string = "demo-expression.dmn";
   const REUSABLE_DMN: string = "reusable-model.dmn";
@@ -53,6 +54,11 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
 
   afterEach(async function () {
     this.timeout(15000);
+    if (this.currentTest && this.currentTest?.state !== "passed") {
+      const screenshotName = this.currentTest?.fullTitle() + " (failed)";
+      const screenshotDir = path.join(DIST_IT_TESTS_FOLDER, "screenshots");
+      await testHelper.takeScreenshotAndSave(screenshotName, screenshotDir);
+    }
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
     await webview.switchBack();

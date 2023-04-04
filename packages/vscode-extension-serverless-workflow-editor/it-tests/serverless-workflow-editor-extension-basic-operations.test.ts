@@ -24,6 +24,7 @@ import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
 // The following test is failing in github CI. See https://issues.redhat.com/browse/KOGITO-8952.
 describe.skip("Serverless workflow editor - Basic operations tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "basic-operations");
+  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
 
   let testHelper: VSCodeTestHelper;
 
@@ -41,6 +42,11 @@ describe.skip("Serverless workflow editor - Basic operations tests", () => {
 
   afterEach(async function () {
     this.timeout(15000);
+    if (this.currentTest && this.currentTest?.state !== "passed") {
+      const screenshotName = this.currentTest?.fullTitle() + " (failed)";
+      const screenshotDir = path.join(DIST_IT_TESTS_FOLDER, "screenshots");
+      await testHelper.takeScreenshotAndSave(screenshotName, screenshotDir);
+    }
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });

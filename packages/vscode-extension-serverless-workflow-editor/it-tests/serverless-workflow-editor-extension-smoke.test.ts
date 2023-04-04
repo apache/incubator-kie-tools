@@ -22,6 +22,7 @@ import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - smoke integration tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "greeting-flow");
+  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
 
   let testHelper: VSCodeTestHelper;
 
@@ -38,6 +39,11 @@ describe("Serverless workflow editor - smoke integration tests", () => {
 
   afterEach(async function () {
     this.timeout(15000);
+    if (this.currentTest && this.currentTest?.state !== "passed") {
+      const screenshotName = this.currentTest?.fullTitle() + " (failed)";
+      const screenshotDir = path.join(DIST_IT_TESTS_FOLDER, "screenshots");
+      await testHelper.takeScreenshotAndSave(screenshotName, screenshotDir);
+    }
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });

@@ -15,6 +15,9 @@
  */
 
 import { assert } from "chai";
+import * as path from "path";
+import * as fs from "fs-extra";
+import { sanitize } from "sanitize-filename-ts";
 import {
   ActivityBar,
   By,
@@ -232,6 +235,17 @@ export default class VSCodeTestHelper {
     }
 
     throw new Error(`'${command}' not found in prompt`);
+  };
+
+  /**
+   * Creates screenshot of current VSCode window and saves it to given path.
+   * @param name screenshot file name without extension
+   * @param dirPath path to a folder to store screenshots (will be created if not exists)
+   */
+  public takeScreenshotAndSave = async (name: string, dirPath: string) => {
+    const data = await this.driver.takeScreenshot();
+    fs.mkdirpSync(dirPath);
+    fs.writeFileSync(path.join(dirPath, `${sanitize(name)}.png`), data, "base64");
   };
 }
 
