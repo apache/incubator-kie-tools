@@ -31,7 +31,7 @@ public interface HasActions extends HasTranslation {
 
     default String getActionStringFromArray(ActionNode[] actions) {
         if (actions == null || actions.length == 0) {
-            return getTranslation(ACTIONS_ARE_NULL);
+            return getTranslation(ACTIONS_ARE_NULL) + "\r\n";
         }
 
         StringBuilder actionString = new StringBuilder();

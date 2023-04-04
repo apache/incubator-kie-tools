@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { basename, extname, parse } from "path";
+import { isOfKind, FileTypes } from "../constants/ExtensionHelper";
 
 export function parseWorkspaceFileRelativePath(relativePath: string) {
   const extension = extractExtension(relativePath);
   return {
-    relativePathWithoutExtension: relativePath.replace(`.${extension}`, ""),
+    relativePathWithoutExtension: relativePath.substring(0, relativePath.lastIndexOf("." + extension)) || relativePath,
     relativeDirPath: parse(relativePath).dir,
     extension: extension,
     nameWithoutExtension: basename(relativePath, `.${extension}`),
@@ -28,18 +28,44 @@ export function parseWorkspaceFileRelativePath(relativePath: string) {
 }
 
 export function extractExtension(relativePath: string) {
-  const fileName = basename(relativePath);
-  if (fileName.startsWith(".")) {
-    return fileName.slice(1);
+  const fileName = basename(relativePath).toLowerCase();
+  if (fileName.includes(".")) {
+    if (isOfKind("swJson", fileName)) {
+      return FileTypes.SW_JSON;
+    }
+    if (isOfKind("swYml", fileName)) {
+      return FileTypes.SW_YML;
+    }
+    if (isOfKind("swYaml", fileName)) {
+      return FileTypes.SW_YAML;
+    }
+    if (isOfKind("yardJson", fileName)) {
+      return FileTypes.YARD_JSON;
+    }
+    if (isOfKind("yardYml", fileName)) {
+      return FileTypes.YARD_YML;
+    }
+    if (isOfKind("yardYaml", fileName)) {
+      return FileTypes.YARD_YAML;
+    }
+    if (isOfKind("dashYml", fileName)) {
+      return FileTypes.DASH_YML;
+    }
+    if (isOfKind("dashYaml", fileName)) {
+      return FileTypes.DASH_YAML;
+    }
+    if (isOfKind("dmn", fileName)) {
+      return FileTypes.DMN;
+    }
+    if (isOfKind("bpmn", fileName)) {
+      return FileTypes.BPMN;
+    }
+    if (isOfKind("pmml", fileName)) {
+      return FileTypes.PMML;
+    } else {
+      return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+  } else {
+    return extname(relativePath);
   }
-
-  const matchDots = fileName.match(/\./g);
-  if (matchDots && matchDots.length > 1) {
-    return fileName
-      .split(/\.(.*)/s)
-      .slice(1)
-      .join("");
-  }
-
-  return extname(relativePath).replace(".", "");
 }

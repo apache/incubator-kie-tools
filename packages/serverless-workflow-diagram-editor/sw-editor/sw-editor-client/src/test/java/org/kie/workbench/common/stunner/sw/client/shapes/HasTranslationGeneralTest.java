@@ -42,11 +42,6 @@ public abstract class HasTranslationGeneralTest {
         when(translationService.getTranslation(anyString())).thenReturn(TEST_STRING);
     }
 
-    public void assertTranslation(String translationLabel, String expectedResult, String actualResult) {
-        assertEquals(expectedResult, actualResult);
-        verify(translationService).getTranslation(translationLabel);
-    }
-
     public void assertTranslations(String expectedResult, String actualResult, String... translationLabels) {
         assertEquals(expectedResult, actualResult);
         ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
@@ -56,7 +51,7 @@ public abstract class HasTranslationGeneralTest {
         List<String> values = argument.getAllValues();
 
         for (String label : translationLabels) {
-            assertTrue(values.contains(label));
+            assertTrue(label + " is not invoked.\nLabels invoked: " + values.toString(), values.contains(label));
         }
     }
 
