@@ -1,11 +1,11 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.plugin.exception;
+package org.uberfire.ext.layout.editor.api.css;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+/**
+ * An enumeration of the CSS colours available
+ */
+public enum CssColour {
 
-@Portable
-public class PluginAlreadyExists extends RuntimeException {
-
-    public PluginAlreadyExists() {
-    }
+    blue,
+    red;
 }

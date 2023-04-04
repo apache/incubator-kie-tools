@@ -92,10 +92,6 @@
     </dependency>
 
     <!-- Project Dependencies -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-runtime-plugins-api</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>

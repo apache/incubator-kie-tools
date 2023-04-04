@@ -22,14 +22,11 @@ import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
 import org.dashbuilder.navigation.layout.LayoutTemplateContext;
 import org.dashbuilder.navigation.layout.LayoutTemplateInfo;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public interface PerspectivePluginManager {
     
     void loadPlugins();
-
-    boolean isRuntimePerspective(Plugin plugin);
 
     boolean isRuntimePerspective(NavItem navItem);
 

@@ -31,7 +31,6 @@
   <name>Uberfire Runtime Plugins</name>
 
   <modules>
-    <module>uberfire-runtime-plugins-api</module>
     <module>uberfire-runtime-plugins-client</module>
   </modules>
 </project>

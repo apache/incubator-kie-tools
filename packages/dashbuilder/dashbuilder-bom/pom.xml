@@ -307,19 +307,6 @@
 
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-runtime-plugins-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-runtime-plugins-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
         <artifactId>uberfire-runtime-plugins-client</artifactId>
         <version>${project.version}</version>
       </dependency>

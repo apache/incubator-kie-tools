@@ -25,6 +25,5 @@
   <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorAPI"/>
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
-  <inherits name="org.uberfire.ext.plugin.RuntimePluginAPI"/>
 
 </module>

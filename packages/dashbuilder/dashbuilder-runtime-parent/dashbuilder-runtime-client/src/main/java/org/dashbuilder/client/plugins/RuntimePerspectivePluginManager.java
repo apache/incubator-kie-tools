@@ -34,7 +34,6 @@ import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
-import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.mvp.ParameterizedCommand;
 
 /**
@@ -53,11 +52,6 @@ public class RuntimePerspectivePluginManager implements PerspectivePluginManager
     @Override
     public void loadPlugins() {
         // not used in Runtime
-    }
-
-    @Override
-    public boolean isRuntimePerspective(Plugin plugin) {
-        return searchLayoutTemplate(plugin.getName());
     }
 
     @Override
