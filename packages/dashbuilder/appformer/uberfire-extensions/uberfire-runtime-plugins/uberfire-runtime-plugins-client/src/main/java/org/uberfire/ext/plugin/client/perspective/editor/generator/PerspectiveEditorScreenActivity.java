@@ -16,9 +16,7 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.generator;
 
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Panel;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
@@ -35,8 +33,6 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
     private LayoutTemplate layoutTemplate;
     private PlaceRequest place;
     private String identifier;
-
-    private Panel mainPanel = new FlowPanel();
 
     public PerspectiveEditorScreenActivity(LayoutTemplate layoutTemplate,
                                            final LayoutGenerator layoutGenerator) {
@@ -117,16 +113,15 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
 
     @Override
     public IsWidget getWidget() {
-        return mainPanel;
+        LayoutInstance layoutInstance = layoutGenerator.build(layoutTemplate);
+        layoutInstance.getElement().classList.add("uf-perspective-component", "uf-le-overflow");
+        return ElementWrapperWidget.getWidget(layoutInstance.getElement());
     }
 
 
     @Override
     public void onOpen() {
-        LayoutInstance layoutInstance = layoutGenerator.build(layoutTemplate);
-        mainPanel.clear();
-        mainPanel.getElement().addClassName("uf-perspective-component");
-        mainPanel.add(ElementWrapperWidget.getWidget(layoutInstance.getElement()));
+        // no op
     }
 
     @Override

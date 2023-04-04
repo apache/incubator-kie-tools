@@ -90,7 +90,7 @@ public class RuntimeClientLoader {
 
     String clientModelBaseUrl;
 
-    boolean hideNavBar;
+    boolean samplesDefaultHome;
 
     public RuntimeClientLoader() {
         // do nothing
@@ -125,14 +125,14 @@ public class RuntimeClientLoader {
 
     @PostConstruct
     void loadSetup() {
-        hideNavBar = false;
+        samplesDefaultHome = false;
         mode = RuntimeClientMode.EDITOR;
         clientModelBaseUrl = GWT.getHostPageBaseURL();
         setup = RuntimeClientSetup.Builder.get();
         if (setup != null) {
             var modeStr = setup.getMode();
             var path = setup.getPath();
-            hideNavBar = setup.getHideNavBar();
+            samplesDefaultHome = setup.getSamplesDefaultHome();
             if (modeStr != null) {
                 mode = RuntimeClientMode.getOrDefault(modeStr);
             } else if ((setup.getDashboards() != null && setup.getDashboards().length > 0) ||
@@ -218,8 +218,8 @@ public class RuntimeClientLoader {
         return mode == RuntimeClientMode.CLIENT;
     }
 
-    public boolean isHideNavBar() {
-        return hideNavBar;
+    public boolean isSamplesDefaultHome() {
+        return samplesDefaultHome && hasSamples();
     }
 
     public boolean hasSamples() {

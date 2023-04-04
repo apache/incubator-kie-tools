@@ -185,6 +185,11 @@ public class RouterScreen {
     }
 
     private void goToNoModelsScreen() {
-        placeManager.goTo(EmptyPerspective.ID);
+        if (clientLoader.isSamplesDefaultHome()) {
+            placeManager.goTo(SamplesPerspective.ID);
+        } else {
+            placeManager.goTo(EmptyPerspective.ID);
+        }
+
     }
 }
