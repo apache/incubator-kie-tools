@@ -5465,6 +5465,9 @@ importers:
       dexie:
         specifier: ^3.2.2
         version: 3.2.2
+      fuse.js:
+        specifier: ^6.6.2
+        version: 6.6.2
       history:
         specifier: ^4.9.0
         version: 4.10.1
@@ -21097,6 +21100,12 @@ packages:
     resolution:
       { integrity: sha512-dsKNQNdj6xA3T+QlADDA7mOSlX0qiMINjn0cgr+eGHGsbSHzTabcIogz2+p/iqP1Xs6EP/sS2SbqH+brGTbq0g== }
     dev: true
+
+  /fuse.js@6.6.2:
+    resolution:
+      { integrity: sha512-cJaJkxCCxC8qIIcPBF9yGxY0W/tVZS3uEISDxhYIdtk8OL93pe+6Zj7LjCqVV4dzbqcriOZ+kQ/NE4RXZHsIGA== }
+    engines: { node: ">=10" }
+    dev: false
 
   /gauge@2.7.4:
     resolution:

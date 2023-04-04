@@ -18,16 +18,18 @@ import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-gi
 import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
 import * as React from "react";
-import { useContext, useMemo, useCallback } from "react";
+import { useContext, useMemo, useCallback, useState } from "react";
 import { useSettingsDispatch } from "../../../settings/SettingsContext";
-import { fetchSampleDefinitions, fetchSampleFiles, Sample } from "../sampleApi";
+import { fetchSampleDefinitions, fetchSampleFiles, Sample, SampleCategory } from "../sampleApi";
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import Fuse from "fuse.js";
 
 const SAMPLE_DEFINITIONS_CACHE_FILE_PATH = "/definitions.json";
 const SAMPLES_FS_MOUNT_POINT = `lfs_v1__samples__${process.env.WEBPACK_REPLACE__version!}`;
+const SEARCH_KEYS = ["definition.category", "definition.title", "definition.description"];
 
 export interface SampleDispatchContextType {
-  getSamples(): Promise<Sample[]>;
+  getSamples(args: { categoryFilter?: SampleCategory; searchFilter?: string }): Promise<Sample[]>;
   getSampleFiles(sampleId: string): Promise<LocalFile[]>;
 }
 
@@ -40,20 +42,58 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
   const fs = useMemo(() => fsCache.getOrCreateFs(SAMPLES_FS_MOUNT_POINT), [fsCache]);
   const sampleStorageService = useMemo(() => new LfsStorageService(), []);
 
-  const getSamples = useCallback(async () => {
-    const cachedSamples = await sampleStorageService.getFile(fs, SAMPLE_DEFINITIONS_CACHE_FILE_PATH);
-    if (cachedSamples) {
-      const content = decoder.decode(await cachedSamples.getFileContents());
-      return JSON.parse(content) as Sample[];
-    }
-    const definitions = await fetchSampleDefinitions(settingsDispatch.github.octokit);
-    const cacheFile = new LfsStorageFile({
-      path: SAMPLE_DEFINITIONS_CACHE_FILE_PATH,
-      getFileContents: async () => encoder.encode(JSON.stringify(definitions)),
-    });
-    sampleStorageService.createFiles(fs, [cacheFile]);
-    return definitions;
-  }, [fs, sampleStorageService, settingsDispatch.github.octokit]);
+  const [allSampleDefinitions, setAllSampleDefinitions] = useState<Sample[]>();
+
+  const loadCache = useCallback(
+    async (args: { path: string; loadFn: () => Promise<any> }) => {
+      const storageFile = await sampleStorageService.getFile(fs, args.path);
+      if (storageFile) {
+        const cacheContent = decoder.decode(await storageFile.getFileContents());
+        return JSON.parse(cacheContent);
+      }
+      const content = await args.loadFn();
+      const cacheFile = new LfsStorageFile({
+        path: args.path,
+        getFileContents: async () => encoder.encode(JSON.stringify(content)),
+      });
+      await sampleStorageService.createFiles(fs, [cacheFile]);
+      return content;
+    },
+    [fs, sampleStorageService]
+  );
+
+  const getSamples = useCallback(
+    async (args: { categoryFilter?: SampleCategory; searchFilter?: string }) => {
+      let filteredSamples: Sample[];
+      if (!allSampleDefinitions) {
+        filteredSamples = (await loadCache({
+          path: SAMPLE_DEFINITIONS_CACHE_FILE_PATH,
+          loadFn: async () => fetchSampleDefinitions(settingsDispatch.github.octokit),
+        })) as Sample[];
+
+        setAllSampleDefinitions(filteredSamples);
+      } else {
+        filteredSamples = allSampleDefinitions;
+      }
+
+      if (args.categoryFilter) {
+        filteredSamples = filteredSamples.filter((s) => s.definition.category === args.categoryFilter);
+      }
+
+      if (args.searchFilter && args.searchFilter.trim().length > 0) {
+        const fuse = new Fuse(filteredSamples, {
+          keys: SEARCH_KEYS,
+          shouldSort: false,
+          threshold: 0.3,
+        });
+
+        filteredSamples = fuse.search(args.searchFilter).map((r) => r.item);
+      }
+
+      return filteredSamples;
+    },
+    [allSampleDefinitions, loadCache, settingsDispatch.github.octokit]
+  );
 
   const getSampleFiles = useCallback(
     async (sampleId: string) => fetchSampleFiles({ octokit: settingsDispatch.github.octokit, sampleId }),
