@@ -15,21 +15,21 @@
 package metadata
 
 const (
-	domain                      = "sw.kogito.kie.org"
-	Key                         = domain + "/key"
-	Name                        = domain + "/name"
-	Description                 = domain + "/description"
-	Annotations                 = domain + "/annotations"
-	DataInputSchema             = domain + "/dataInputSchema"
-	ExpressionLang              = domain + "/expressionLang"
-	Metadata                    = domain + "/metadata"
-	Version                     = domain + "/version"
-	Label                       = domain + "/label"
-	Profile                     = domain + "/profile"
-	SecondaryPlatformAnnotation = domain + "/secondary.platform"
-	OperatorIDAnnotation        = domain + "/operator.id"
+	Domain                      = "sw.kogito.kie.org"
+	Key                         = Domain + "/key"
+	Name                        = Domain + "/name"
+	Description                 = Domain + "/description"
+	Annotations                 = Domain + "/annotations"
+	DataInputSchema             = Domain + "/dataInputSchema"
+	ExpressionLang              = Domain + "/expressionLang"
+	Metadata                    = Domain + "/metadata"
+	Version                     = Domain + "/version"
+	Label                       = Domain + "/label"
+	Profile                     = Domain + "/profile"
+	SecondaryPlatformAnnotation = Domain + "/secondary.platform"
+	OperatorIDAnnotation        = Domain + "/operator.id"
 	// TODO: is this the right value?
-	ServiceType = domain + "/name"
+	ServiceType = Domain + "/name"
 )
 
 const (

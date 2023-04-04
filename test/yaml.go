@@ -26,10 +26,11 @@ import (
 )
 
 const (
-	KogitoServerlessWorkflowSampleYamlCR            = "sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml"
-	KogitoServerlessWorkflowSampleDevModeYamlCR     = "sw.kogito_v1alpha08_kogitoserverlessworkflow_devmode.yaml"
-	KogitoServerlessPlatformWithCacheYamlCR         = "sw.kogito_v1alpha08_kogitoserverlessplatform_withCacheAndCustomization.yaml"
-	KogitoServerlessPlatformWithCacheMinikubeYamlCR = "sw.kogito_v1alpha08_kogitoserverlessplatform_withCache_minikube.yaml"
+	KogitoServerlessWorkflowSampleYamlCR                            = "sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml"
+	KogitoServerlessWorkflowSampleDevModeYamlCR                     = "sw.kogito_v1alpha08_kogitoserverlessworkflow_devmode.yaml"
+	KogitoServerlessWorkflowSampleDevModeWithExternalResourceYamlCR = "sw.kogito_v1alpha08_kogitoserverlessworkflow_devmodeWithExternalResource.yaml"
+	KogitoServerlessPlatformWithCacheYamlCR                         = "sw.kogito_v1alpha08_kogitoserverlessplatform_withCacheAndCustomization.yaml"
+	KogitoServerlessPlatformWithCacheMinikubeYamlCR                 = "sw.kogito_v1alpha08_kogitoserverlessplatform_withCache_minikube.yaml"
 )
 
 func GetKogitoServerlessWorkflow(path string, namespace string) *operatorapi.KogitoServerlessWorkflow {

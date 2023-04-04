@@ -8,7 +8,9 @@
     - [Prerequisites](#prerequisites)
     - [Prepare for the build](#prepare-for-the-build)
     - [Install your workflow](#install-your-workflow)
-  - [Cleanup your cluster](#cleanup-your-cluster)
+    - [Cleanup your cluster](#cleanup-your-cluster)
+  - [Use Workflow Development Mode](#use-workflow-development-mode)
+    - [Development mode: External files](#development-mode-external-files) 
   - [Use local scripts](#use-local-scripts)
   - [Development and Contributions](#development-and-contributions)
 
@@ -152,6 +154,33 @@ kubectl delete namespace kogito-workflows
 
 ```sh
 make undeploy
+```
+
+## Use Workflow Development Mode
+In the development mode, a user can edit and reload the files using the quarkus dev mode. 
+To enable the dev mode add this annotation into the KogitoServerlessWorkflow CR:
+```
+sw.kogito.kie.org/profile: dev
+```
+
+### Development mode External files
+
+In development mode, different external files can be edited.  
+Each file type should be saved into a different configmap.  
+In order to be able to edit a file via a configmap, you must set up an annotation in your KogitoServerlessWorkflow CR which reference the specific configmap which is already existing into the namespace.  
+Then, each annotation entry will be turned into a file inside the path `src/main/resources/<File type specific folder>` and using the key as the filename.
+See the table below for the supported types and the corresponding annotations and folder paths.
+
+File type  | Annotation                          | Folder path
+-----------|-------------------------------------|---
+CamelRoute | sw.kogito.kie.org/resource-camel    | src/main/resources/routes
+AsyncApi   | sw.kogito.kie.org/resource-openapi  | src/main/resources/templates
+OpenApi    | sw.kogito.kie.org/resource-asyncapi | src/main/resources/specs
+Generic    | sw.kogito.kie.org/resource-generic  | src/main/resources/generic
+
+You could see an example of configmap and a workflow with one of this annotation in the file
+```
+https://github.com/kiegroup/kogito-serverless-operator/tree/main/config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow_devmodeWithConfigMapAndExternalResource.yaml:
 ```
 
 ## Use local scripts

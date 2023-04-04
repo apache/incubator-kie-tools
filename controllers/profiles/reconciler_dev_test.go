@@ -16,8 +16,12 @@ package profiles
 
 import (
 	"context"
-	"fmt"
 	"testing"
+
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/kiegroup/kogito-serverless-operator/utils"
 
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/core/v1"
@@ -94,14 +98,15 @@ func Test_newDevProfile(t *testing.T) {
 
 	defCM := test.MustGetConfigMap(t, client, workflow)
 	assert.NotEmpty(t, defCM.Data[workflow.Name+kogitoWorkflowJSONFileExt])
-	assert.Equal(t, fmt.Sprintf("%s/greeting%s", configMapWorkflowDefMountPath, kogitoWorkflowJSONFileExt), deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
-	assert.Equal(t, fmt.Sprintf("greeting%s", kogitoWorkflowJSONFileExt), deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].SubPath)
+	assert.Equal(t, configMapWorkflowDefMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
+	assert.Equal(t, "", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].SubPath) //https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically
+	assert.Equal(t, configMountPathMap[WORKFLOW], deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
 
 	propCM := &v1.ConfigMap{}
 	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: getWorkflowPropertiesConfigMapName(workflow)}, propCM)
 	assert.NotEmpty(t, propCM.Data[applicationPropertiesFileName])
-	assert.Equal(t, fmt.Sprintf("%s/%s", quarkusDevConfigMountPath, applicationPropertiesFileName), deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1].MountPath)
-	assert.Equal(t, applicationPropertiesFileName, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1].SubPath)
+	assert.Equal(t, quarkusDevConfigMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1].MountPath)
+	assert.Equal(t, "", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1].SubPath) //https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically
 	assert.Contains(t, propCM.Data[applicationPropertiesFileName], "quarkus.http.port")
 
 	service := test.MustGetService(t, client, workflow)
@@ -146,4 +151,125 @@ func Test_newDevProfile(t *testing.T) {
 
 	deployment = test.MustGetDeployment(t, client, workflow)
 	assert.Equal(t, defaultKogitoServerlessWorkflowDevImage, deployment.Spec.Template.Spec.Containers[0].Image)
+}
+
+func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
+	logger := ctrllog.FromContext(context.TODO())
+	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeWithExternalResourceYamlCR, t.Name())
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
+	devReconciler := newDevProfileReconciler(client, &logger)
+	configmapName := "mycamel-configmap"
+	camelXmlRouteFileName := "camelroute-xml"
+	xmlRoute := `<route routeConfigurationId="xmlError">
+	   		<from uri="timer:xml?period=5s"/>
+	   		<log message="I am XML"/>
+	   		<throwException exceptionType="java.lang.Exception" message="Some kind of XML error"/>
+	   		</route>`
+
+	camelYamlRouteFileName := "camelroute-yaml"
+	yamlRoute := `- from:
+	       uri: direct:numberToWords
+	       steps:
+	         - bean:
+	             beanType: java.math.BigInteger
+	             method: valueOf
+	         - setHeader:
+	               name: operationName
+	               constant: NumberToWords
+	         - toD:
+	             uri: cxf://{{com.dataaccess.webservicesserver.url}}?serviceClass=com.dataaccess.webservicesserver.NumberConversionSoapType&wsdlURL=/wsdl/numberconversion.wsdl`
+
+	cmData := make(map[string]string)
+	cmData[camelXmlRouteFileName] = xmlRoute
+	cmUser := createConfigMapBase("Test_newDevProfileWithExternalConfigMaps", "mycamel-configmap", cmData)
+	errCreate := client.Create(context.Background(), cmUser)
+	assert.Nil(t, errCreate)
+
+	result, err := devReconciler.Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	// check if the objects have been created
+	deployment := test.MustGetDeployment(t, client, workflow)
+	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
+	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Volumes))
+
+	wd := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0]
+	props := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1]
+	extCamel := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[2]
+	assert.Equal(t, wd.Name, configMapWorkflowDefVolumeName)
+	assert.Equal(t, wd.MountPath, configMountPathMap[WORKFLOW])
+	assert.Equal(t, props.Name, configMapWorkflowPropsVolumeName)
+	assert.Equal(t, props.MountPath, quarkusDevConfigMountPath)
+	assert.Equal(t, extCamel.Name, configmapName)
+	assert.Equal(t, extCamel.MountPath, configMountPathMap[CAMEL])
+
+	cmData[camelYamlRouteFileName] = yamlRoute
+	errUpdate := client.Update(context.Background(), cmUser)
+	assert.Nil(t, errUpdate)
+
+	// reconcile again
+	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
+	err = client.Update(context.TODO(), workflow)
+	assert.NoError(t, err)
+	result, err = devReconciler.Reconcile(context.TODO(), workflow)
+	deployment = test.MustGetDeployment(t, client, workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	//Now we expect 4 volumes mount wd, props  camelroute.xml and camelroute.yaml
+	deployment = test.MustGetDeployment(t, client, workflow)
+	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
+	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Volumes))
+
+	extCamelRouteOne := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[2]
+	assert.Equal(t, extCamelRouteOne.Name, configmapName)
+	assert.Equal(t, extCamelRouteOne.MountPath, configMountPathMap[CAMEL])
+
+	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
+	err = client.Update(context.TODO(), workflow)
+	assert.NoError(t, err)
+	result, err = devReconciler.Reconcile(context.TODO(), workflow)
+	deployment = test.MustGetDeployment(t, client, workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	deployment = test.MustGetDeployment(t, client, workflow)
+	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
+	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Volumes))
+
+	// remove the external configmaps without removing the labels
+	errDel := client.Delete(context.Background(), cmUser)
+	assert.Nil(t, errDel)
+
+	// reconcile
+	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
+	err = client.Update(context.TODO(), workflow)
+	assert.NoError(t, err)
+	result, err = devReconciler.Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	deployment = test.MustGetDeployment(t, client, workflow)
+	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Volumes))
+	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
+	wd = deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0]
+	assert.Equal(t, wd.Name, configMapWorkflowDefVolumeName)
+	assert.Equal(t, wd.MountPath, configMountPathMap[WORKFLOW])
+}
+
+func createConfigMapBase(namespace string, name string, cmData map[string]string) clientruntime.Object {
+	cm := &corev1.ConfigMap{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "ConfigMap",
+			APIVersion: "v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		Immutable: utils.Pbool(false),
+		Data:      cmData,
+	}
+	return cm
 }
