@@ -22,7 +22,6 @@ import javax.enterprise.inject.Alternative;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
@@ -46,17 +45,6 @@ public class MockPlaceManager implements PlaceManager {
     }
 
     @Override
-    public void goTo(Path path) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public void goTo(Path path,
-                     PlaceRequest place) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
     public void goTo(PartDefinition part,
                      PanelDefinition panel) {
         throw new UnsupportedOperationException("Not implemented.");
@@ -70,19 +58,6 @@ public class MockPlaceManager implements PlaceManager {
 
     @Override
     public void goTo(PlaceRequest place,
-                     PanelDefinition panel) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public void goTo(Path path,
-                     PanelDefinition panel) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public void goTo(Path path,
-                     PlaceRequest place,
                      PanelDefinition panel) {
         throw new UnsupportedOperationException("Not implemented.");
     }

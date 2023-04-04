@@ -35,7 +35,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.HTMLElement;
@@ -44,7 +43,6 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.events.DropPlaceEvent;
 import org.uberfire.client.workbench.events.PanelFocusEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
@@ -441,29 +439,6 @@ public class PanelManagerImpl implements PanelManager {
             }
         }
         return null;
-    }
-
-    @SuppressWarnings("unused")
-    private void onChangeTitleWidgetEvent(@Observes ChangeTitleWidgetEvent event) {
-        if (event.getPlaceRequest() == null) {
-            return;
-        }
-        final PlaceRequest place = event.getPlaceRequest();
-        final IsWidget titleDecoration = event.getTitleDecoration();
-        final String title = event.getTitle();
-        for (Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet()) {
-            final PanelDefinition panel = e.getKey();
-            final WorkbenchPanelPresenter presenter = e.getValue();
-            for (PartDefinition part : ensureIterable(panel.getParts())) {
-                if (place.equals(part.getPlace())) {
-                    mapPartDefinitionToPresenter.get(part).setTitle(title);
-                    presenter.changeTitle(part,
-                            title,
-                            titleDecoration);
-                    break;
-                }
-            }
-        }
     }
 
     /**

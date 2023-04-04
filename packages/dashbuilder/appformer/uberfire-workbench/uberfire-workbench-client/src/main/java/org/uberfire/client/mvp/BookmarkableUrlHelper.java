@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 
 /**
  * A bookmarkable URL has the following form:
@@ -47,8 +46,7 @@ public class BookmarkableUrlHelper {
     public final static int MAX_NAV_URL_SIZE = 1900;
 
     private static boolean isNotBlank(final String str) {
-        return (str != null
-                && str.trim().length() > 0);
+        return (str != null && str.trim().length() > 0);
     }
 
     private static boolean isNotBlank(final PlaceRequest place) {
@@ -72,9 +70,9 @@ public class BookmarkableUrlHelper {
         final String currentBookmarkableUrl = bookmarkableUrl;
 
         if (screenWasClosed(bookmarkableUrl,
-                            closedScreen)) {
+                closedScreen)) {
             bookmarkableUrl = bookmarkableUrl.replace(closedScreen,
-                                                      screenName);
+                    screenName);
         } else if (!isPerspectiveInUrl(bookmarkableUrl)) {
             // must add the screen in the group of the current perspective (which is not yet loaded)
             if (isNotBlank(bookmarkableUrl)) {
@@ -103,7 +101,7 @@ public class BookmarkableUrlHelper {
 
     private static boolean isBiggerThenMaxURLSize(String bookmarkableUrl) {
         return isNotBlank(bookmarkableUrl) &&
-                bookmarkableUrl.length() >= MAX_NAV_URL_SIZE;
+               bookmarkableUrl.length() >= MAX_NAV_URL_SIZE;
     }
 
     /**
@@ -118,7 +116,7 @@ public class BookmarkableUrlHelper {
     public static String registerClose(String bookmarkableUrl,
                                        final String screenName) {
         final boolean isPerspective = isPerspectiveScreen(bookmarkableUrl,
-                                                          screenName);
+                screenName);
         final String separator = isPerspective ? PERSPECTIVE_SEP : OTHER_SCREEN_SEP;
         final String closedScreen = CLOSED_PREFIX.concat(screenName);
         final String uniqueScreenAfterDelimiter =
@@ -129,22 +127,22 @@ public class BookmarkableUrlHelper {
                 screenName.concat(SEPARATOR); // screen,
 
         if (isScreenClosed(bookmarkableUrl,
-                           closedScreen)) {
+                closedScreen)) {
             return bookmarkableUrl;
         }
         if (isPerspective) {
             bookmarkableUrl = bookmarkableUrl.replace(screenName,
-                                                      closedScreen);
+                    closedScreen);
         } else {
             if (bookmarkableUrl.contains(firstScreenAfterDelimiter)) {
                 bookmarkableUrl = bookmarkableUrl.replace(firstScreenAfterDelimiter,
-                                                          separator);
+                        separator);
             } else if (bookmarkableUrl.contains(uniqueScreenAfterDelimiter)) {
                 bookmarkableUrl = bookmarkableUrl.replace(uniqueScreenAfterDelimiter,
-                                                          "");
+                        "");
             } else if (bookmarkableUrl.contains(commaSeparatedScreen)) {
                 bookmarkableUrl = bookmarkableUrl.replace(commaSeparatedScreen,
-                                                          "");
+                        "");
             }
         }
         return bookmarkableUrl;
@@ -161,13 +159,13 @@ public class BookmarkableUrlHelper {
 
         if (isPerspectiveInUrl(url)) {
             String perspectiveName = url.substring(0,
-                                                   url.indexOf(PERSPECTIVE_SEP));
+                    url.indexOf(PERSPECTIVE_SEP));
             PlaceRequest copy = place.clone();
             copy.setIdentifier(perspectiveName);
             if (!place.getParameters().isEmpty()) {
                 for (Map.Entry<String, String> elem : place.getParameters().entrySet()) {
                     copy.addParameter(elem.getKey(),
-                                      elem.getValue());
+                            elem.getValue());
                 }
             }
             return copy;
@@ -182,10 +180,8 @@ public class BookmarkableUrlHelper {
      */
     public static boolean isPerspectiveScreen(final String bookmarkableUrl,
                                               final String screen) {
-        return (isNotBlank(screen)
-                && isNotBlank(bookmarkableUrl)
-                && (!urlContainsExtraPerspectiveScreen(bookmarkableUrl)
-                || (bookmarkableUrl.indexOf(OTHER_SCREEN_SEP) > bookmarkableUrl.indexOf(screen))));
+        return (isNotBlank(screen) && isNotBlank(bookmarkableUrl) && (!urlContainsExtraPerspectiveScreen(
+                bookmarkableUrl) || (bookmarkableUrl.indexOf(OTHER_SCREEN_SEP) > bookmarkableUrl.indexOf(screen))));
     }
 
     /**
@@ -214,9 +210,9 @@ public class BookmarkableUrlHelper {
                                      final String screen) {
         int st = isPerspectiveInUrl(bookmarkableUrl) ? (bookmarkableUrl.indexOf(PERSPECTIVE_SEP) + 1) : 0;
         String screensList = bookmarkableUrl.replace(OTHER_SCREEN_SEP,
-                                                     SEPARATOR)
+                SEPARATOR)
                 .substring(st,
-                           bookmarkableUrl.length());
+                        bookmarkableUrl.length());
 
         String tokens[] = screensList.split(SEPARATOR);
         Optional<String> token = Arrays.asList(tokens).stream()
@@ -249,7 +245,7 @@ public class BookmarkableUrlHelper {
 
         // replace the '$' with a comma ','
         url = url.replace(OTHER_SCREEN_SEP,
-                          SEPARATOR);
+                SEPARATOR);
         String[] token = url.split(SEPARATOR);
         return new HashSet<>(Arrays.asList(token));
     }
@@ -307,18 +303,6 @@ public class BookmarkableUrlHelper {
      */
     public static String registerCloseEditor(final String currentBookmarkableURLStatus,
                                              final PlaceRequest place) {
-        if (place != null
-                && place instanceof PathPlaceRequest) {
-            final String path = place.getFullIdentifier();
-            final String pathWithSep = path.concat(SEPARATOR);
-
-            if (currentBookmarkableURLStatus.contains(pathWithSep)) {
-                return currentBookmarkableURLStatus.replace(pathWithSep,
-                                                            "");
-            }
-            return currentBookmarkableURLStatus.replace(path,
-                                                        "");
-        }
         return currentBookmarkableURLStatus;
     }
 }

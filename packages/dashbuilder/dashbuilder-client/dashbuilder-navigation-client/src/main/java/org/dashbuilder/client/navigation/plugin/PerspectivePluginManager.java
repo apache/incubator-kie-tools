@@ -15,8 +15,6 @@
  */
 package org.dashbuilder.client.navigation.plugin;
 
-import java.util.Collection;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
@@ -30,8 +28,6 @@ import org.uberfire.mvp.ParameterizedCommand;
 public interface PerspectivePluginManager {
     
     void loadPlugins();
-
-    void getPerspectivePlugins(ParameterizedCommand<Collection<Plugin>> callback);
 
     boolean isRuntimePerspective(Plugin plugin);
 

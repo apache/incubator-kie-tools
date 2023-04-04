@@ -17,29 +17,17 @@
 package org.uberfire.client.mvp;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.annotation.Annotation;
 import java.net.URLDecoder;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
 
-import javax.enterprise.context.Dependent;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.backend.vfs.impl.ObservablePathImpl;
-import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -53,13 +41,6 @@ public class PlaceRequestHistoryMapperImplTest {
     @BeforeClass
     public static void setupBeans() {
         ((SyncBeanManagerImpl) IOC.getBeanManager()).reset();
-
-        IOC.getBeanManager().registerBean(new MockIOCBeanDef<ObservablePath, ObservablePathImpl>(new ObservablePathImpl(),
-                                                                                                 ObservablePath.class,
-                                                                                                 Dependent.class,
-                                                                                                 new HashSet<Annotation>(Arrays.asList(QualifierUtil.DEFAULT_QUALIFIERS)),
-                                                                                                 null,
-                                                                                                 true));
     }
 
     @Before
@@ -94,32 +75,6 @@ public class PlaceRequestHistoryMapperImplTest {
                      parameters.get("z"));
         assertEquals("16590-4829",
                      parameters.get("clientId"));
-    }
-
-    @Test
-    public void createPathPlaceRequest() throws Exception {
-        final Path path = PathFactory.newPath("file",
-                                              "default://main@repo/path/to/file");
-        final PlaceRequest placeRequestOriginal = new PathPlaceRequest(path);
-
-        PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest(placeRequestOriginal.getFullIdentifier());
-        assertEquals(placeRequestOriginal.getFullIdentifier(),
-                     placeRequest.getFullIdentifier());
-
-        assertTrue(placeRequest.getParameters().isEmpty());
-    }
-
-    @Test
-    public void createPathPlaceRequestWithSpaces() throws Exception {
-        final Path path = PathFactory.newPath("Dummy rule.drl",
-                                              "default://main@uf-playground/mortgages/src/main/resources/org/mortgages/Dummy%20rule.drl");
-        final PlaceRequest placeRequestOriginal = new PathPlaceRequest(path);
-
-        PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest(placeRequestOriginal.getFullIdentifier());
-        assertEquals(placeRequestOriginal.getFullIdentifier(),
-                     placeRequest.getFullIdentifier());
-
-        assertTrue(placeRequest.getParameters().isEmpty());
     }
 
     @Test

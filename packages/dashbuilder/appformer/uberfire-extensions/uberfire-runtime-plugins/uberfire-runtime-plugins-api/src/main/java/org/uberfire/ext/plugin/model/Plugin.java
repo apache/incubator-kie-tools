@@ -17,27 +17,17 @@
 package org.uberfire.ext.plugin.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.backend.vfs.Path;
 
 @Portable
 public class Plugin extends Activity {
-
-    public static final String FILE_EXT = ".plugin";
-    private Path path;
 
     public Plugin() {
     }
 
     public Plugin(final String name,
-                  final PluginType type,
-                  final Path path) {
+                  final PluginType type) {
         super(name,
               type);
-        this.path = path;
-    }
-
-    public Path getPath() {
-        return path;
     }
 
     @Override
@@ -52,12 +42,6 @@ public class Plugin extends Activity {
             return false;
         }
 
-        Plugin plugin = (Plugin) o;
-
-        if (path != null ? !path.equals(plugin.path) : plugin.path != null) {
-            return false;
-        }
-
         return true;
     }
 
@@ -65,7 +49,7 @@ public class Plugin extends Activity {
     public int hashCode() {
         int result = super.hashCode();
         result = ~~result;
-        result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = 31 * result;
         result = ~~result;
         return result;
     }

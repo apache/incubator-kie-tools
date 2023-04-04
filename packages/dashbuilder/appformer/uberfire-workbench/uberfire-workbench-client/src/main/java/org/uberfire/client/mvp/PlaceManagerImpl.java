@@ -43,15 +43,12 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.SharedSingleton;
-import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
-import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
@@ -64,7 +61,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.ForcedPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.CustomPanelDefinition;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -108,8 +104,6 @@ public class PlaceManagerImpl implements PlaceManager {
     @Inject
     private Event<ClosePlaceEvent> workbenchPartCloseEvent;
     @Inject
-    private Event<NewSplashScreenActiveEvent> newSplashScreenActiveEvent;
-    @Inject
     private ActivityManager activityManager;
     @Inject
     private PlaceHistoryHandler placeHistoryHandler;
@@ -124,11 +118,6 @@ public class PlaceManagerImpl implements PlaceManager {
     private WorkbenchLayout workbenchLayout;
     @Inject
     private LayoutSelection layoutSelection;
-
-    public interface AppFormerActivityLoader {
-
-        boolean triggerLoadOfMatchingEditors(final Path path, final Runnable callback);
-    }
 
     @PostConstruct
     public void initPlaceHistoryHandler() {
@@ -163,35 +152,6 @@ public class PlaceManagerImpl implements PlaceManager {
                 (PanelDefinition) null);
     }
 
-    @Override
-    public void goTo(final Path path,
-                     final PanelDefinition panel) {
-        goTo(new PathPlaceRequest(path),
-                panel);
-    }
-
-    @Override
-    public void goTo(final Path path) {
-        goTo(new PathPlaceRequest(path),
-                (PanelDefinition) null);
-    }
-
-    @Override
-    public void goTo(final Path path,
-                     final PlaceRequest placeRequest,
-                     final PanelDefinition panel) {
-        goTo(getPlace(path,
-                placeRequest),
-                panel);
-    }
-
-    @Override
-    public void goTo(final Path path,
-                     final PlaceRequest placeRequest) {
-        goTo(getPlace(path,
-                placeRequest),
-                (PanelDefinition) null);
-    }
 
     @Override
     public void goTo(final PlaceRequest place,
@@ -465,23 +425,6 @@ public class PlaceManagerImpl implements PlaceManager {
                     place);
         }
 
-        if (place instanceof PathPlaceRequest) {
-            final ObservablePath path = ((PathPlaceRequest) place).getPath();
-
-            for (final Map.Entry<PlaceRequest, PartDefinition> entry : visibleWorkbenchParts.entrySet()) {
-                final PlaceRequest pr = entry.getKey();
-                if (pr instanceof PathPlaceRequest) {
-                    final Path visiblePath = ((PathPlaceRequest) pr).getPath();
-                    final String visiblePathURI = visiblePath.toURI();
-                    if ((visiblePathURI != null && visiblePathURI.compareTo(path.toURI()) == 0) || visiblePath
-                            .compareTo(path) == 0) {
-                        return new ResolvedRequest(getActivity(pr),
-                                pr);
-                    }
-                }
-            }
-        }
-
         return null;
     }
 
@@ -511,18 +454,6 @@ public class PlaceManagerImpl implements PlaceManager {
         } else {
             goTo(resolved.getPlaceRequest());
         }
-    }
-
-    private PlaceRequest getPlace(final Path path,
-                                  final PlaceRequest placeRequest) {
-        final PlaceRequest request = new PathPlaceRequest(path);
-
-        for (final String name : ensureIterable(placeRequest.getParameterNames())) {
-            request.addParameter(name,
-                    placeRequest.getParameters().get(name));
-        }
-
-        return request;
     }
 
     @Override
@@ -724,23 +655,6 @@ public class PlaceManagerImpl implements PlaceManager {
      */
     public Collection<PlaceRequest> getActivePlaceRequests() {
         return unmodifiableCollection(existingWorkbenchActivities.keySet());
-    }
-
-    /**
-     * Returns all the PathPlaceRequests that map to activies that are currently in the open state and accessible
-     * somewhere in the current perspective.
-     * @return an unmodifiable view of the current active place requests. This view may or may not update after
-     * further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
-     * set; instead, call this method again for current information.
-     */
-    public Collection<PathPlaceRequest> getActivePlaceRequestsWithPath() {
-        ArrayList<PathPlaceRequest> pprs = new ArrayList<PathPlaceRequest>();
-        for (final PlaceRequest placeRequest : existingWorkbenchActivities.keySet()) {
-            if (placeRequest instanceof PathPlaceRequest) {
-                pprs.add((PathPlaceRequest) placeRequest);
-            }
-        }
-        return pprs;
     }
 
     private void launchWorkbenchActivityAtPosition(final PlaceRequest place,
@@ -1063,10 +977,6 @@ public class PlaceManagerImpl implements PlaceManager {
             PanelDefinition customPanelDef = customPanels.remove(place);
             if (customPanelDef != null) {
                 panelManager.removeWorkbenchPanel(customPanelDef);
-            }
-
-            if (place instanceof PathPlaceRequest) {
-                ((PathPlaceRequest) place).getPath().dispose();
             }
 
             if (onAfterClose != null) {

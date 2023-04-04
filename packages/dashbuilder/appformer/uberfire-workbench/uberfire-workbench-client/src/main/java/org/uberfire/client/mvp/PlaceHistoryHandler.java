@@ -28,7 +28,6 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 import org.jboss.errai.bus.client.util.BusToolsCli;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.ActivityResourceType;
 
 @ApplicationScoped
@@ -70,7 +69,7 @@ public class PlaceHistoryHandler {
         final HandlerRegistration historyReg =
                 historian.addValueChangeHandler(event -> {
                     //Temporarily disabled until https://issues.jboss.org/browse/AF-523 is ready
-//                    handleHistoryToken(event.getValue());
+                    //                    handleHistoryToken(event.getValue());
                 });
 
         return () -> {
@@ -85,7 +84,7 @@ public class PlaceHistoryHandler {
 
             currentBookmarkableURLStatus =
                     currentBookmarkableURLStatus.substring(0,
-                                                           currentBookmarkableURLStatus.length() - 1);
+                            currentBookmarkableURLStatus.length() - 1);
         }
         if (BusToolsCli.isRemoteCommunicationEnabled()) {
             historian.newItem(currentBookmarkableURLStatus,
@@ -152,12 +151,13 @@ public class PlaceHistoryHandler {
                              PlaceRequest place) {
         if (place.isUpdateLocationBarAllowed()) {
             if (activity.isType(ActivityResourceType.PERSPECTIVE.name())) {
-                currentBookmarkableURLStatus = BookmarkableUrlHelper.registerOpenedPerspective(currentBookmarkableURLStatus,
-                                                                                               place);
+                currentBookmarkableURLStatus = BookmarkableUrlHelper.registerOpenedPerspective(
+                        currentBookmarkableURLStatus,
+                        place);
             } else if (activity.isType(ActivityResourceType.SCREEN.name())) {
                 currentBookmarkableURLStatus =
                         BookmarkableUrlHelper.registerOpenedScreen(currentBookmarkableURLStatus,
-                                                                   place);
+                                place);
             }
             updateHistoryBar();
         }
@@ -166,21 +166,14 @@ public class PlaceHistoryHandler {
     public void registerClose(Activity activity,
                               PlaceRequest place) {
         if (place.isUpdateLocationBarAllowed()) {
-            if (place instanceof PathPlaceRequest) {
-                // handle editors
-                currentBookmarkableURLStatus =
-                        BookmarkableUrlHelper.registerCloseEditor(currentBookmarkableURLStatus,
-                                                                  place);
-            } else {
-                final String id = place.getIdentifier();
-                if (activity.isType(ActivityResourceType.SCREEN.name())) {
-                    final String token = BookmarkableUrlHelper.getUrlToken(currentBookmarkableURLStatus,
-                                                                           id);
+            final String id = place.getIdentifier();
+            if (activity.isType(ActivityResourceType.SCREEN.name())) {
+                final String token = BookmarkableUrlHelper.getUrlToken(currentBookmarkableURLStatus,
+                        id);
 
-                    currentBookmarkableURLStatus =
-                            BookmarkableUrlHelper.registerClose(currentBookmarkableURLStatus,
-                                                                token);
-                }
+                currentBookmarkableURLStatus =
+                        BookmarkableUrlHelper.registerClose(currentBookmarkableURLStatus,
+                                token);
             }
             updateHistoryBar();
         }
@@ -227,8 +220,8 @@ public class PlaceHistoryHandler {
      * Default implementation of {@link Historian}, based on {@link History}.
      */
     public static class DefaultHistorian
-            implements
-            Historian {
+                                         implements
+                                         Historian {
 
         @Override
         public com.google.gwt.event.shared.HandlerRegistration addValueChangeHandler(final ValueChangeHandler<String> valueChangeHandler) {
@@ -244,7 +237,7 @@ public class PlaceHistoryHandler {
         public void newItem(String token,
                             boolean issueEvent) {
             History.newItem(token,
-                            issueEvent);
+                    issueEvent);
         }
     }
 }

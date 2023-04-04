@@ -18,10 +18,8 @@ package org.uberfire.client.mvp;
 
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.junit.Before;
@@ -30,18 +28,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,34 +57,15 @@ public class ActivityManagerLifecycleTest {
     PlaceRequest kansas;
     Activity kansasActivity = mock(Activity.class);
 
-    Path path = mock(Path.class);
-    PlaceRequest pathPlace;
-    Activity pathPlaceActivity = mock(Activity.class);
-
-    private SyncBeanDef<Activity> pathIocBeanSpy;
-
     @Before
     public void setup() {
         kansas = new DefaultPlaceRequest("kansas");
         when(kansasActivity.getPlace()).thenReturn(kansas);
 
         SyncBeanDef<Activity> kansasIocBean = makeDependentBean(Activity.class,
-                                                                kansasActivity);
+                kansasActivity);
         when(activityBeansCache.getActivity("kansas")).thenReturn(kansasIocBean);
 
-        pathPlace = new PathPlaceRequest(path) {
-            @Override
-            protected ObservablePath createObservablePath(Path path) {
-                return mock(ObservablePath.class);
-            }
-        };
-
-        when(pathPlaceActivity.getPlace()).thenReturn(pathPlace);
-        when(pathPlaceActivity.getIdentifier()).thenReturn(PATH_PLACE_ID);
-        SyncBeanDef<Activity> pathIocBean = makeDependentBean(Activity.class,
-                                                              pathPlaceActivity);
-        pathIocBeanSpy = spy(pathIocBean);
-        when(activityBeansCache.getActivity(pathPlace.getIdentifier())).thenReturn(pathIocBeanSpy);
     }
 
     @Test
@@ -99,53 +73,12 @@ public class ActivityManagerLifecycleTest {
         Set<Activity> activities = activityManager.getActivities(kansas);
 
         assertEquals(1,
-                     activities.size());
+                activities.size());
         assertEquals(kansasActivity,
-                     activities.iterator().next());
+                activities.iterator().next());
 
         verify(kansasActivity,
-               times(1)).onStartup(kansas);
-    }
-
-    @Test
-    public void shouldResolvePlaceIdentifierForPathPlaceRequestOnGetActivity() throws Exception {
-
-        assertEquals(PathPlaceRequest.NULL,
-                     pathPlace.getIdentifier());
-        Activity activity = activityManager.getActivity(pathPlace);
-        assertNotNull(activity);
-        assertEquals(PATH_PLACE_ID,
-                     pathPlace.getIdentifier());
-        assertEquals(pathPlaceActivity,
-                     activity);
-    }
-
-    @Test
-    public void shouldResolvePlaceIdentifierForPathPlaceRequestsOnGetActivities() throws Exception {
-
-        assertEquals(PathPlaceRequest.NULL,
-                     pathPlace.getIdentifier());
-
-        Set<Activity> activities = activityManager.getActivities(pathPlace);
-        assertEquals(1,
-                     activities.size());
-        assertEquals(PATH_PLACE_ID,
-                     activities.iterator().next().getPlace().getIdentifier());
-    }
-
-    @Test
-    public void activityBeanShouldBeCreatedOnlyOnceOnGetActivities() throws Exception {
-        activityManager.getActivities(pathPlace);
-        verify(pathIocBeanSpy,
-               times(1)).getInstance();
-    }
-
-    @Test
-    public void activityBeanShouldBeCreatedOnlyOnceOnGetActivity() throws Exception {
-        activityManager.getActivity(pathPlace);
-        activityManager.getActivity(pathPlace);
-        verify(pathIocBeanSpy,
-               times(1)).getInstance();
+                times(1)).onStartup(kansas);
     }
 
     @Test
@@ -153,12 +86,12 @@ public class ActivityManagerLifecycleTest {
         Set<Activity> activities = activityManager.getActivities(kansas);
 
         assertEquals(1,
-                     activities.size());
+                activities.size());
         assertEquals(kansasActivity,
-                     activities.iterator().next());
+                activities.iterator().next());
 
         verify(kansasActivity,
-               times(1)).onStartup(kansas);
+                times(1)).onStartup(kansas);
     }
 
     @Test
@@ -167,9 +100,9 @@ public class ActivityManagerLifecycleTest {
         activityManager.destroyActivity(kansasActivity);
 
         verify(kansasActivity,
-               times(1)).onShutdown();
+                times(1)).onShutdown();
         verify(iocManager,
-               times(1)).destroyBean(kansasActivity);
+                times(1)).destroyBean(kansasActivity);
     }
 
     @Test
@@ -185,41 +118,20 @@ public class ActivityManagerLifecycleTest {
         }
 
         verify(kansasActivity,
-               times(1)).onShutdown();
+                times(1)).onShutdown();
         verify(iocManager,
-               times(1)).destroyBean(kansasActivity);
+                times(1)).destroyBean(kansasActivity);
     }
 
-
-
-    @SuppressWarnings("unchecked")
     private <T> SyncBeanDef<T> makeDependentBean(final Class<T> type,
                                                  final T beanInstance) {
         final SyncBeanDef<T> beanDef = new MockIOCBeanDef<T, T>(beanInstance,
-                                                                type,
-                                                                Dependent.class,
-                                                                null,
-                                                                beanInstance.getClass().getSimpleName(),
-                                                                true);
-        when((IOCBeanDef<T>) iocManager.lookupBean(beanInstance.getClass())).thenReturn(beanDef);
+                type,
+                Dependent.class,
+                null,
+                beanInstance.getClass().getSimpleName(),
+                true);
         return beanDef;
     }
 
-    /**
-     * Makes a singleton bean with the given name.
-     */
-    @SuppressWarnings("unchecked")
-    private <T> SyncBeanDef<T> makeSingletonBean(final Class<T> type,
-                                                 final T beanInstance,
-                                                 final String name) {
-        SyncBeanDef<T> beanDef = new MockIOCBeanDef<T, T>(beanInstance,
-                                                          type,
-                                                          ApplicationScoped.class,
-                                                          null,
-                                                          name,
-                                                          true);
-
-        when((IOCBeanDef<T>) iocManager.lookupBean(beanInstance.getClass())).thenReturn(beanDef);
-        return beanDef;
-    }
 }

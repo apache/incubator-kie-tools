@@ -47,8 +47,6 @@ import static org.uberfire.ext.layout.editor.api.css.CssValueType.PERCENTAGE;
  * A CSS property definition including what value types are supported and what is the list of allowed values available
  * by default (if any).
  *
- * <p>For example, the "color" property {@link #supportedValueTypes} is {@link CssValueType#COLOR}
- * and its {@link #allowedValues} is the entire list of {@link CssColour} entries.</p>
  *
  * <p>On the other hand, the "width" property {@link #supportedValueTypes} are {@link CssValueType#LENGTH} and {@link CssValueType#PERCENTAGE}
  * and its {@link #allowedValues} are "auto" or "inherit". That means the following values are all considered valid:

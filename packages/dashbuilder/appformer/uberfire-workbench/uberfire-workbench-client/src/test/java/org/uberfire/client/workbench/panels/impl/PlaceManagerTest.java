@@ -16,22 +16,18 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.web.bindery.event.shared.EventBus;
 import org.assertj.core.api.Assertions;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
@@ -47,7 +43,6 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
@@ -61,13 +56,11 @@ import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
-import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
-import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.mvp.BiParameterizedCommand;
@@ -76,7 +69,6 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -140,8 +132,6 @@ public class PlaceManagerTest {
     @Mock
     Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
     @Mock
-    Event<NewSplashScreenActiveEvent> newSplashScreenActiveEvent;
-    @Mock
     ActivityManager activityManager;
     @Mock
     PlaceHistoryHandler placeHistoryHandler;
@@ -175,19 +165,6 @@ public class PlaceManagerTest {
                 .thenReturn(defaultPerspective);
 
         when(activityManager.getActivities(Mockito.<PlaceRequest> any())).thenReturn(singleton(notFoundActivity));
-
-        // for now (and this will have to change for UF-61), PathPlaceRequest performs an IOC lookup for ObservablePath in its constructor
-        // as part of UF-61, we'll need to refactor ObservablePath and PathFactory so they ask for any beans they need as constructor params.
-        final ObservablePath mockObservablePath = mock(ObservablePath.class);
-        when(mockObservablePath.wrap(any())).thenReturn(mockObservablePath);
-        IOC.getBeanManager().registerBean(new MockIOCBeanDef<ObservablePath, ObservablePath>(mockObservablePath,
-                ObservablePath.class,
-                Dependent.class,
-                new HashSet<Annotation>(
-                        Arrays.asList(
-                                QualifierUtil.DEFAULT_QUALIFIERS)),
-                "ObservablePath",
-                true));
 
         // every test starts in Kansas, with no side effect interactions recorded
         when(activityManager.getActivities(kansas)).thenReturn(singleton((Activity) kansasActivity));
@@ -246,7 +223,6 @@ public class PlaceManagerTest {
         reset(workbenchPartBeforeCloseEvent);
         reset(workbenchPartCloseEvent);
         reset(workbenchPartLostFocusEvent);
-        reset(newSplashScreenActiveEvent);
         reset(activityManager);
         reset(placeHistoryHandler);
         reset(selectWorkbenchPartEvent);
@@ -265,12 +241,7 @@ public class PlaceManagerTest {
                                             any(),
                                             any(),
                                             any()))
-                .thenAnswer(new Answer<PanelDefinition>() {
-                    @Override
-                    public PanelDefinition answer(InvocationOnMock invocation) throws Throwable {
-                        return (PanelDefinition) invocation.getArguments()[0];
-                    }
-                });
+                .thenAnswer(invocation -> (PanelDefinition) invocation.getArguments()[0]);
     }
 
     @Test
@@ -388,26 +359,6 @@ public class PlaceManagerTest {
                 kansasActivity);
     }
 
-    @Test
-    public void testGoToPlaceByPath() throws Exception {
-
-        PathPlaceRequest yellowBrickRoad = new FakePathPlaceRequest(mock(ObservablePath.class));
-        WorkbenchScreenActivity ozActivity = mock(WorkbenchScreenActivity.class);
-
-        when(ozActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-        when(activityManager.getActivities(yellowBrickRoad)).thenReturn(singleton((Activity) ozActivity));
-
-        placeManager.goTo(yellowBrickRoad,
-                (PanelDefinition) null);
-
-        verifyActivityLaunchSideEffects(yellowBrickRoad,
-                ozActivity,
-                null);
-
-        // special contract just for path-type place requests (subject to preference)
-        verify(yellowBrickRoad.getPath(),
-                never()).onDelete(any(Command.class));
-    }
 
     @Test
     public void testNormalCloseExistingScreenActivity() throws Exception {
@@ -1249,40 +1200,6 @@ public class PlaceManagerTest {
     }
 
     @Test
-    public void testGetActivitiesForResourceType_NoMatches() throws Exception {
-        final ObservablePath path = mock(ObservablePath.class);
-        final PathPlaceRequest yellowBrickRoad = new FakePathPlaceRequest(path);
-        final WorkbenchScreenActivity ozActivity = mock(WorkbenchScreenActivity.class);
-
-        when(activityManager.getActivities(yellowBrickRoad)).thenReturn(singleton((Activity) ozActivity));
-        when(ozActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-
-        placeManager.goTo(yellowBrickRoad);
-
-        verifyActivityLaunchSideEffects(yellowBrickRoad,
-                ozActivity,
-                null);
-
-    }
-
-    @Test
-    public void testGetActivitiesForResourceType_Matches() throws Exception {
-        final ObservablePath path = mock(ObservablePath.class);
-        final PathPlaceRequest yellowBrickRoad = new FakePathPlaceRequest(path);
-        final WorkbenchScreenActivity ozActivity = mock(WorkbenchScreenActivity.class);
-
-        when(activityManager.getActivities(yellowBrickRoad)).thenReturn(singleton((Activity) ozActivity));
-        when(ozActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-
-        placeManager.goTo(yellowBrickRoad);
-
-        verifyActivityLaunchSideEffects(yellowBrickRoad,
-                ozActivity,
-                null);
-
-    }
-
-    @Test
     public void testCloseAllPlacesOrNothingSucceeds() throws Exception {
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest("emerald_city");
         WorkbenchScreenActivity emeraldCityActivity = createWorkbenchScreenActivity(emeraldCityPlace);
@@ -1537,22 +1454,4 @@ public class PlaceManagerTest {
                 never()).onOpen();
     }
 
-    class FakePathPlaceRequest extends PathPlaceRequest {
-
-        final ObservablePath path;
-
-        FakePathPlaceRequest(ObservablePath path) {
-            this.path = path;
-        }
-
-        @Override
-        public ObservablePath getPath() {
-            return path;
-        }
-
-        @Override
-        public int hashCode() {
-            return 42;
-        }
-    }
 }

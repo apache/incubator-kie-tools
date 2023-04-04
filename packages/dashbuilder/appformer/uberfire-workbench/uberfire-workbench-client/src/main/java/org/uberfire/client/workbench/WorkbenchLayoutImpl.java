@@ -71,36 +71,29 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
      * cleared and repopulated with the new perspective's root view each time
      * {@link org.uberfire.client.workbench.PanelManager#setPerspective(PerspectiveDefinition)} gets called.
      */
-    private final SimpleLayoutPanel perspectiveRootContainer = new SimpleLayoutPanel();
+    SimpleLayoutPanel perspectiveRootContainer = new SimpleLayoutPanel();
     private final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles =
             new HashMap<Widget, OriginalStyleInfo>();
     private SyncBeanManager iocManager;
-    /**
-     * Top-level widget of the whole workbench layout. 
-     */
-    private SimpleLayoutPanel root;
 
     public WorkbenchLayoutImpl() {
 
     }
 
     @Inject
-    public WorkbenchLayoutImpl(SyncBeanManager iocManager,
-                               SimpleLayoutPanel root) {
-
+    public WorkbenchLayoutImpl(SyncBeanManager iocManager) {
         this.iocManager = iocManager;
-        this.root = root;
     }
 
     @PostConstruct
     private void init() {
         perspectiveRootContainer.ensureDebugId("perspectiveRootContainer");
-        root.addStyleName(UF_ROOT_CSS_CLASS);
+        perspectiveRootContainer.addStyleName(UF_ROOT_CSS_CLASS);
     }
 
     @Override
     public SimplePanel getRoot() {
-        return root;
+        return perspectiveRootContainer;
     }
 
     @Override
@@ -115,7 +108,6 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     @Override
     public void onBootstrap() {
         Layouts.setToFillParent(perspectiveRootContainer);
-        root.setWidget(perspectiveRootContainer);
     }
 
     @Override
@@ -127,7 +119,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     @Override
     public void resizeTo(int width,
                          int height) {
-        root.setPixelSize(width,
+        perspectiveRootContainer.setPixelSize(width,
                 height);
 
         // The dragBoundary can't be a LayoutPanel, so it doesn't support ProvidesResize/RequiresResize.
@@ -243,9 +235,9 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     }
 
     public void addWorkbenchProfileCssClass(@Observes WorkbenchProfileCssClass workbenchProfileCssClass) {
-        root.removeStyleName(root.getStyleName());
-        root.addStyleName(UF_ROOT_CSS_CLASS);
-        root.addStyleName(workbenchProfileCssClass.getClassName());
+        perspectiveRootContainer.removeStyleName(perspectiveRootContainer.getStyleName());
+        perspectiveRootContainer.addStyleName(UF_ROOT_CSS_CLASS);
+        perspectiveRootContainer.addStyleName(workbenchProfileCssClass.getClassName());
     }
 
     protected static abstract class AbstractResizeAnimation extends Animation {

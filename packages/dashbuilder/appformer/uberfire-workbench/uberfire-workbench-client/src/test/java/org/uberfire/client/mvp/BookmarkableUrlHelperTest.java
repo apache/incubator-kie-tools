@@ -15,29 +15,17 @@
  */
 package org.uberfire.client.mvp;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
-
-import javax.enterprise.context.Dependent;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import junit.framework.TestCase;
-import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.backend.vfs.impl.ObservablePathImpl;
-import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class BookmarkableUrlHelperTest extends TestCase {
@@ -45,14 +33,6 @@ public class BookmarkableUrlHelperTest extends TestCase {
     @BeforeClass
     public static void setupBeans() {
         ((SyncBeanManagerImpl) IOC.getBeanManager()).reset();
-
-        IOC.getBeanManager().registerBean(new MockIOCBeanDef<ObservablePath, ObservablePathImpl>(
-                new ObservablePathImpl(),
-                ObservablePath.class,
-                Dependent.class,
-                new HashSet<Annotation>(Arrays.asList(QualifierUtil.DEFAULT_QUALIFIERS)),
-                null,
-                true));
     }
 
     @Test
@@ -399,58 +379,6 @@ public class BookmarkableUrlHelperTest extends TestCase {
                 place);
 
         assertEquals(perspective.concat(BookmarkableUrlHelper.PERSPECTIVE_SEP).concat(screens),
-                url);
-    }
-
-    @Test
-    public void testRegisterCloseEditor() {
-        final Path path = PathFactory.newPath("file",
-                "default://main@repo/path/to/file");
-        final PlaceRequest ppr = new PathPlaceRequest(path);
-
-        ppr.setIdentifier("Perspective Editor");
-        final String perspectiveClosedUrl = "PlugInAuthoringPerspective|[WPlugins Explorer,]$";
-        final String perspectiveOpenUrl = perspectiveClosedUrl.concat(ppr.getFullIdentifier());
-
-        String url = BookmarkableUrlHelper
-                .registerCloseEditor(perspectiveOpenUrl,
-                        ppr);
-
-        assertEquals(perspectiveClosedUrl,
-                url);
-
-        // invoke with invalid field type
-        final PlaceRequest dpr = new DefaultPlaceRequest("default://main@repo/path/to/file");
-
-        url = BookmarkableUrlHelper
-                .registerCloseEditor(perspectiveOpenUrl,
-                        dpr);
-        assertEquals(perspectiveOpenUrl,
-                url);
-    }
-
-    @Test
-    public void testRegisterCloseEditorWithScreens() {
-        final Path path = PathFactory.newPath("file",
-                "default://main@repo/path/to/file");
-        final PlaceRequest ppr = new PathPlaceRequest(path);
-
-        ppr.setIdentifier("Perspective Editor");
-        final String perspectiveClosedUrl = "PlugInAuthoringPerspective|[WPlugins Explorer,]$";
-        final String perspectiveOpenUrl = perspectiveClosedUrl.concat(ppr.getFullIdentifier()).concat(",screen1");
-
-        String url = BookmarkableUrlHelper
-                .registerCloseEditor(perspectiveOpenUrl,
-                        ppr);
-        final String expectedUrl = "PlugInAuthoringPerspective|[WPlugins Explorer,]$screen1";
-        assertEquals(expectedUrl,
-                url);
-
-        // invoke with NULL
-        url = BookmarkableUrlHelper
-                .registerCloseEditor(expectedUrl,
-                        null);
-        assertEquals(expectedUrl,
                 url);
     }
 

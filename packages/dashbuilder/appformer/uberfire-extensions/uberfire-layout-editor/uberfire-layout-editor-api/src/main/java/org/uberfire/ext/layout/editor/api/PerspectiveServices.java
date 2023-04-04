@@ -19,7 +19,6 @@ package org.uberfire.ext.layout.editor.api;
 import java.util.Collection;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.plugin.model.Plugin;
 
@@ -32,11 +31,8 @@ public interface PerspectiveServices {
 
     LayoutTemplate getLayoutTemplate(String perspectiveName);
 
-    LayoutTemplate getLayoutTemplate(Path perspectivePath);
-
     LayoutTemplate getLayoutTemplate(Plugin perspectivePlugin);
 
     LayoutTemplate convertToLayoutTemplate(String layoutModel);
 
-    Path saveLayoutTemplate(LayoutTemplate layoutTemplate);
 }

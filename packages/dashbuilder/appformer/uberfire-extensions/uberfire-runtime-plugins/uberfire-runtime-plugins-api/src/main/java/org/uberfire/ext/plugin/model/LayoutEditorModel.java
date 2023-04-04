@@ -17,7 +17,6 @@
 package org.uberfire.ext.plugin.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.backend.vfs.Path;
 
 @Portable
 public class LayoutEditorModel extends Plugin {
@@ -25,16 +24,13 @@ public class LayoutEditorModel extends Plugin {
     private String layoutEditorModel;
     private boolean emptyLayout;
 
-    public LayoutEditorModel() {
-    }
+    public LayoutEditorModel() {}
 
     public LayoutEditorModel(final String name,
                              final PluginType type,
-                             final Path path,
                              final String layoutEditorModel) {
         super(name,
-              type,
-              path);
+              type);
         this.layoutEditorModel = layoutEditorModel;
     }
 
@@ -52,7 +48,8 @@ public class LayoutEditorModel extends Plugin {
 
         LayoutEditorModel that = (LayoutEditorModel) o;
 
-        if (layoutEditorModel != null ? !layoutEditorModel.equals(that.layoutEditorModel) : that.layoutEditorModel != null) {
+        if (layoutEditorModel != null ? !layoutEditorModel.equals(that.layoutEditorModel)
+                : that.layoutEditorModel != null) {
             return false;
         }
 

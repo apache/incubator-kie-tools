@@ -33,11 +33,8 @@ import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.ExternalPathPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
@@ -80,21 +77,8 @@ public class ActivityManagerImpl implements ActivityManager {
 
         final Collection<SyncBeanDef<Activity>> beans = resolveById(placeRequest.getIdentifier());
 
-        final var activities = startIfNecessary(createInstances(beans), placeRequest);
+        return startIfNecessary(createInstances(beans), placeRequest);
 
-        if (placeRequest instanceof PathPlaceRequest) {
-            resolvePathPlaceRequestIdentifier(placeRequest, activities);
-        }
-
-        return activities;
-    }
-
-    private void resolvePathPlaceRequestIdentifier(PlaceRequest placeRequest,
-                                                   Set<Activity> activities) {
-        if (activities != null && !activities.isEmpty()) {
-            final Activity activity = activities.iterator().next();
-            placeRequest.setIdentifier(activity.getIdentifier());
-        }
     }
 
     @Override
@@ -103,22 +87,9 @@ public class ActivityManagerImpl implements ActivityManager {
             return containsCache.get(placeRequest.getIdentifier());
         }
 
-        Path path = null;
-        if (placeRequest instanceof PathPlaceRequest) {
-            path = ((PathPlaceRequest) placeRequest).getPath();
-            if (containsCache.containsKey(path)) {
-                return containsCache.get(path);
-            }
-        }
-
         final Activity result = getActivity(placeRequest);
         containsCache.put(placeRequest.getIdentifier(),
                 result != null);
-        if (path != null) {
-            containsCache.put(path,
-                    result != null);
-        }
-
         return result != null;
     }
 
@@ -223,11 +194,7 @@ public class ActivityManagerImpl implements ActivityManager {
             if (!startedActivities.containsKey(activity)) {
                 startedActivities.put(activity,
                         place);
-                if (activity.isDynamic() && place instanceof PathPlaceRequest) {
-                    activity.onStartup(ExternalPathPlaceRequest.create((PathPlaceRequest) place));
-                } else {
-                    activity.onStartup(place);
-                }
+                activity.onStartup(place);
             }
             return activity;
         } catch (Exception ex) {

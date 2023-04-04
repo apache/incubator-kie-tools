@@ -25,8 +25,6 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.Shared;
 import org.jboss.errai.ioc.client.api.SharedSingleton;
-import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
@@ -51,15 +49,10 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     @Inject
     private WorkbenchLayout workbenchLayout;
 
-    // Avoid pruning by aggressive reachability analysis in Errai
-    @SuppressWarnings("unused")
-    @Inject
-    private ObservablePath path;
-
     private void fail() {
         throw new RuntimeException("Invalid use of standard PlaceManager in plugin. " +
-                                           "Use @Inject @" + Shared.class.getName() + " " +
-                                           PlaceManager.class.getName() + " instead!");
+                "Use @Inject @" + Shared.class.getName() + " " +
+                PlaceManager.class.getName() + " instead!");
     }
 
     @Override
@@ -78,31 +71,6 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     @Override
     public void goTo(PlaceRequest place) {
 
-        fail();
-    }
-
-    @Override
-    public void goTo(final Path path,
-                     final PanelDefinition panel) {
-
-        fail();
-    }
-
-    @Override
-    public void goTo(final Path path) {
-        fail();
-    }
-
-    @Override
-    public void goTo(final Path path,
-                     final PlaceRequest placeRequest,
-                     final PanelDefinition panel) {
-        fail();
-    }
-
-    @Override
-    public void goTo(final Path path,
-                     final PlaceRequest placeRequest) {
         fail();
     }
 

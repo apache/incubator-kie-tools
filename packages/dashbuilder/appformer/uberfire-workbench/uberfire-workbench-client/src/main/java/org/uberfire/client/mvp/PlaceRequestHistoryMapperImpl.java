@@ -21,45 +21,27 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.http.client.URL;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 
 public class PlaceRequestHistoryMapperImpl
-        implements
-        PlaceRequestHistoryMapper {
+                                           implements
+                                           PlaceRequestHistoryMapper {
 
     @Override
     public PlaceRequest getPlaceRequest(String fullIdentifier) {
         final String encodedIdentifier = fullIdentifier.contains("?") ? fullIdentifier.substring(0,
-                                                                                                 fullIdentifier.indexOf("?")) : fullIdentifier;
+                fullIdentifier.indexOf("?")) : fullIdentifier;
         final String identifier = urlDecode(encodedIdentifier);
-        final String query = fullIdentifier.contains("?") ? fullIdentifier.substring(fullIdentifier.indexOf("?") + 1) : "";
+        final String query = fullIdentifier.contains("?") ? fullIdentifier.substring(fullIdentifier.indexOf("?") + 1)
+                : "";
         final Map<String, String> parameters = getParameters(query);
 
-        final PlaceRequest placeRequest;
-        if (parameters.containsKey("path_uri")) {
-            if (parameters.containsKey("has_version_support")) {
-                placeRequest = new PathPlaceRequest(PathFactory.newPath(parameters.remove("file_name"),
-                                                                        parameters.remove("path_uri"),
-                                                                        new HashMap<String, Object>() {{
-                                                                            put(PathFactory.VERSION_PROPERTY,
-                                                                                Boolean.valueOf(parameters.remove("has_version_support")));
-                                                                        }}),
-                                                    identifier);
-            } else {
-                placeRequest = new PathPlaceRequest(PathFactory.newPath(parameters.remove("file_name"),
-                                                                        parameters.remove("path_uri")),
-                                                    identifier);
-            }
-        } else {
-            placeRequest = new DefaultPlaceRequest(identifier);
-        }
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(identifier);
 
         for (String parameterName : parameters.keySet()) {
             placeRequest.addParameter(parameterName,
-                                      parameters.get(parameterName));
+                    parameters.get(parameterName));
         }
 
         return placeRequest;
@@ -79,12 +61,12 @@ public class PlaceRequestHistoryMapperImpl
                     value = "";
                 } else {
                     name = part.substring(0,
-                                          index);
+                            index);
                     value = index < part.length() ? part.substring(index + 1) : "";
                     value = urlDecode(value);
                 }
                 parameters.put(urlDecode(name),
-                               value);
+                        value);
             }
         }
 

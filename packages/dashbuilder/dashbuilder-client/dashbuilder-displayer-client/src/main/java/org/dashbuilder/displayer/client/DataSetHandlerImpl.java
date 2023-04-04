@@ -41,7 +41,6 @@ import org.dashbuilder.dataset.sort.DataSetSort;
 import org.dashbuilder.dataset.sort.SortOrder;
 import org.dashbuilder.displayer.client.export.ExportCallback;
 import org.dashbuilder.displayer.client.export.ExportFormat;
-import org.uberfire.backend.vfs.Path;
 
 public class DataSetHandlerImpl implements DataSetHandler {
 
@@ -280,11 +279,6 @@ public class DataSetHandlerImpl implements DataSetHandler {
         try {
             // Create a backend export callback
             DataSetExportReadyCallback exportReadyCallback = new DataSetExportReadyCallback() {
-
-                @Override
-                public void exportReady(Path exportFilePath) {
-                    throw new RuntimeException("Backend export is not supported!");
-                }
 
                 @Override
                 public void onError(ClientRuntimeError error) {

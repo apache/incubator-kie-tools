@@ -58,19 +58,19 @@ public class WorkbenchLayoutImplTest {
 
     @Before
     public void setup() {
-        workbenchLayout = new WorkbenchLayoutImpl(iocManager, root) {
+        workbenchLayout = new WorkbenchLayoutImpl(iocManager) {
 
             @Override
             ElementWrapperWidget<?> createWidgetFrom(HTMLElement h) {
                 return mock(ElementWrapperWidget.class);
             }
         };
+        workbenchLayout.perspectiveRootContainer = root;
         widget = mock(Widget.class,
                 withSettings().extraInterfaces(RequiresResize.class));
         final Element element = mock(Element.class);
         when(element.getStyle()).thenReturn(mock(Style.class));
         when(widget.getElement()).thenReturn(element);
-
     }
 
     @Test

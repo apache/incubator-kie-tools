@@ -23,7 +23,6 @@ import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -51,12 +50,6 @@ public interface PlaceManager {
     @JsMethod(name = "goToPlace")
     void goTo(final PlaceRequest place);
 
-    @JsMethod(name = "goToPath")
-    void goTo(final Path path);
-
-    @JsMethod(name = "goToPathAndPlace")
-    void goTo(final Path path,
-              final PlaceRequest place);
 
     @JsMethod(name = "goToPartWithPanel")
     void goTo(final PartDefinition part,
@@ -68,15 +61,6 @@ public interface PlaceManager {
 
     @JsMethod(name = "goToPlaceWithPanel")
     void goTo(final PlaceRequest place,
-              final PanelDefinition panel);
-
-    @JsMethod(name = "goToPathWithPanel")
-    void goTo(final Path path,
-              final PanelDefinition panel);
-
-    @JsMethod(name = "goToPathAndPlaceWithPanel")
-    void goTo(final Path path,
-              final PlaceRequest place,
               final PanelDefinition panel);
 
     /**
