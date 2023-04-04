@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.dashbuilder.client.screens.SamplesScreen;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.LayoutPanelPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
@@ -35,7 +35,7 @@ public class SamplesPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        var perspective = new PerspectiveDefinitionImpl(StaticWorkbenchPanelPresenter.class
+        var perspective = new PerspectiveDefinitionImpl(LayoutPanelPresenter.class
                 .getName());
         final var place = new DefaultPlaceRequest(SamplesScreen.ID);
         var samplesScreen = new PartDefinitionImpl(place);
