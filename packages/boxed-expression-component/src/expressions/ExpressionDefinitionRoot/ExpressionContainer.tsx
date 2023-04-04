@@ -42,8 +42,6 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   const { beeGwtService } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const nestedExpressionContainer = useNestedExpressionContainer();
-
   const onLogicTypeSelected = useCallback(
     (logicType) => {
       setExpression((prev) => ({

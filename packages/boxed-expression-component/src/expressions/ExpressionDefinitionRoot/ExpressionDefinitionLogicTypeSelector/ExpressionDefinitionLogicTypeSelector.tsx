@@ -227,17 +227,21 @@ export function ExpressionDefinitionLogicTypeSelector({
   const [pasteExpressionError, setPasteExpressionError] = React.useState<string>("");
 
   const pasteExpression = useCallback(async () => {
-    const parseFunction = (key: string, value: string) => {
-      // We can't allow ids to be repeated, so we generate new ids for every expression that is part of the pasted expression.
-      if (key === "id") {
-        return generateUuid();
-      } else {
-        return value;
-      }
-    };
-
     try {
-      const expression = JSON.parse(await navigator.clipboard.readText(), parseFunction);
+      const expression = JSON.parse(await navigator.clipboard.readText(), (key: string, value: string) => {
+        // We can't allow ids to be repeated, so we generate new ids for every expression that is part of the pasted expression.
+        if (key === "id") {
+          return generateUuid();
+        } else {
+          return value;
+        }
+      });
+
+      if (!expression?.id) {
+        // FIXME: The ideal here would be validating the expression as a whole, but just looking at the ID already prevents errors when pasting plain strings and numbers.
+        throw new Error("Pasted expression doesn't have an ID. This means that it's not a valid JSON.");
+      }
+
       setExpression(expression);
       setDropdownOpen(false);
       setCurrentlyOpenContextMenu(undefined);
