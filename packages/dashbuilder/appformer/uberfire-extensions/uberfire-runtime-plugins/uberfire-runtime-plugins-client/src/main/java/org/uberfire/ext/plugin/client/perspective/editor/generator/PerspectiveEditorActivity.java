@@ -17,7 +17,7 @@
 package org.uberfire.ext.plugin.client.perspective.editor.generator;
 
 import org.uberfire.client.mvp.PerspectiveActivity;
-import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.LayoutPanelPresenter;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -92,7 +92,7 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
     }
 
     protected String getDefaultPanelType() {
-        return SimpleWorkbenchPanelPresenter.class.getName();
+        return LayoutPanelPresenter.class.getName();
     }
 
     @Override
