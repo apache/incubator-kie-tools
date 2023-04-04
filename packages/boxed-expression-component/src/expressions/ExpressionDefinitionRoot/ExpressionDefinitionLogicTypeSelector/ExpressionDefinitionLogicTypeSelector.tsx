@@ -167,13 +167,10 @@ export function ExpressionDefinitionLogicTypeSelector({
         return ``;
       case ExpressionDefinitionLogicType.Literal:
         return (
-          <span
-            style={{
-              fontSize: "0.8em",
-              fontWeight: "bold",
-            }}
-          >
-            FEEL
+          <span>
+            <b>
+              <i>FEEL</i>
+            </b>
           </span>
         );
       case ExpressionDefinitionLogicType.Context:
@@ -253,7 +250,7 @@ export function ExpressionDefinitionLogicTypeSelector({
 
   const menuIconContainerStyle = useMemo(() => {
     return {
-      width: "30px",
+      width: "40px",
       userSelect: "none" as const,
       position: "relative" as const,
     };
