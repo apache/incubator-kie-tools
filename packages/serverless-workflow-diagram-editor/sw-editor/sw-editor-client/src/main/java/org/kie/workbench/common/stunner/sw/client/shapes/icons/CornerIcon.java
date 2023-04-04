@@ -53,10 +53,9 @@ public class CornerIcon extends Group {
         add(clockIcon);
 
         mouseEnterHandler = border.addNodeMouseEnterHandler(event -> {
-            this.getParent().moveToTop();
-            this.moveToTop();
             createToolTip();
             clockIcon.setFillColor("#4F5255");
+            border.getLayer().batch();
         });
         mouseExitHandler = border.addNodeMouseExitHandler(event -> {
             tooltipElement.destroy();
@@ -77,7 +76,7 @@ public class CornerIcon extends Group {
         });
         final Layer topLayer = getLayer().getScene().getTopLayer();
         topLayer.add(tooltipElement.asPrimitive());
-        tooltipElement.offset(() -> CornerIcon.this.getComputedLocation());
+        tooltipElement.offset(CornerIcon.this::getComputedLocation);
         tooltipElement.forComputedBoundingBox(border::getBoundingBox);
         tooltipElement.show();
     }

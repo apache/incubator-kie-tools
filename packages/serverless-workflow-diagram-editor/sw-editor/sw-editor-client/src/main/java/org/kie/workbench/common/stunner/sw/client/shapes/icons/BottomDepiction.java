@@ -20,11 +20,14 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
 
 import static org.kie.workbench.common.stunner.sw.client.shapes.StateShapeView.STATE_SHAPE_HEIGHT;
 import static org.kie.workbench.common.stunner.sw.client.shapes.StateShapeView.STATE_SHAPE_WIDTH;
 
 public class BottomDepiction extends Group {
+
+    private final HandlerRegistration mouseClickHandler;
 
     public BottomDepiction(String icon) {
         setLocation(new Point2D(STATE_SHAPE_WIDTH / 2 - 8, STATE_SHAPE_HEIGHT - 20));
@@ -44,5 +47,15 @@ public class BottomDepiction extends Group {
                 .setFillColor("#4F5255")
                 .setListening(false);
         add(multiPath);
+
+        mouseClickHandler = border.addNodeMouseClickHandler(
+                event -> this.getParent().asGroup().getChildren().get(0).fireEvent(event)
+        );
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        mouseClickHandler.removeHandler();
     }
 }
