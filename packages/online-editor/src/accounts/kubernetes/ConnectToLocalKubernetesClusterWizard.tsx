@@ -107,12 +107,14 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
   const authSessionsDispatch = useAuthSessionsDispatch();
   const [operatingSystem, setOperatingSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [kubernetesFlavor, setKubernetesFlavor] = useState<KubernetesFlavor>(KubernetesFlavor.KIND);
+  const [previousConnection, setPreviousConnection] = useState<KubernetesConnection>();
 
   const onClearHost = useCallback(() => props.setConnection({ ...props.connection, host: "" }), [props]);
   const onClearNamespace = useCallback(() => props.setConnection({ ...props.connection, namespace: "" }), [props]);
   const onClearToken = useCallback(() => props.setConnection({ ...props.connection, token: "" }), [props]);
 
   useEffect(() => {
+    setPreviousConnection(props.connection);
     props.setConnection({ namespace: DEFAULT_LOCAL_CLUSTER_NAMESPACE, host: DEFAULT_LOCAL_CLUSTER_HOST, token: "" });
   }, []);
 
@@ -133,18 +135,11 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
   }, [props.connection]);
 
   const onCancel = useCallback(() => {
+    if (previousConnection) {
+      props.setConnection(previousConnection);
+    }
     props.setMode(KubernetesSettingsTabMode.SIMPLE);
-  }, [props]);
-
-  const resetConnection = useCallback(
-    (connection: KubernetesConnection) => {
-      setConnectionValidated(false);
-      setConnecting(false);
-      setConnectLoading(false);
-      props.setConnection(connection);
-    },
-    [props]
-  );
+  }, [props, previousConnection]);
 
   const onNamespaceInputChanged = useCallback(
     (newValue: string) => {
