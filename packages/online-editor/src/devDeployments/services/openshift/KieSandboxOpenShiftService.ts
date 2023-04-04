@@ -20,23 +20,128 @@ import {
   ListRoutes,
   RouteDescriptor,
   RouteGroupDescriptor,
-  ResourceDescriptor,
   ResourceLabelNames,
+  DeleteService,
+  CreateService,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import { OpenShiftService, KubernetesServiceArgs } from "@kie-tools-core/kubernetes-bridge/dist/service";
-import { KieSandboxBaseKubernetesService, RESOURCE_OWNER, ResourceArgs } from "../KieSandboxBaseKubernetesService";
+import { KieSandboxKubernetesService, RESOURCE_OWNER } from "../KieSandboxKubernetesService";
+import { DeployArgs, KieSandboxDeployedModel, KieSandboxDeploymentService, ResourceArgs } from "../types";
+import { getUploadStatus } from "../../DmnDevDeploymentQuarkusAppApi";
 
-export class KieSandboxOpenShiftService extends KieSandboxBaseKubernetesService {
-  service: OpenShiftService;
+export class KieSandboxOpenShiftService implements KieSandboxDeploymentService {
+  openshiftService: OpenShiftService;
+  kieSandboxKubernetesService: KieSandboxKubernetesService;
+
   constructor(readonly args: KubernetesServiceArgs) {
-    super(args);
-    this.service = new OpenShiftService(args);
+    this.kieSandboxKubernetesService = new KieSandboxKubernetesService(args);
+    this.openshiftService = new OpenShiftService(args);
   }
 
-  public async listRoutes(): Promise<RouteDescriptor[]> {
+  public async isConnectionEstablished(): Promise<boolean> {
+    return this.kieSandboxKubernetesService.isConnectionEstablished();
+  }
+
+  public async loadDeployedModels(): Promise<KieSandboxDeployedModel[]> {
+    const deployments = await this.kieSandboxKubernetesService.listDeployments();
+
+    if (!deployments.length) {
+      return [];
+    }
+
+    const routes = await this.listRoutes();
+
+    const uploadStatuses = await Promise.all(
+      routes
+        .map((route) => this.getRouteUrl(route))
+        .map(async (url) => ({ url: url, uploadStatus: await getUploadStatus({ baseUrl: url }) }))
+    );
+
+    return deployments
+      .filter(
+        (deployment) =>
+          deployment.status &&
+          deployment.metadata?.name &&
+          deployment.metadata.annotations &&
+          deployment.metadata.labels &&
+          deployment.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER &&
+          routes.some((route) => route.metadata?.name === deployment.metadata?.name)
+      )
+      .map((deployment) => {
+        const route = routes.find((route) => route.metadata?.name === deployment.metadata?.name)!;
+        const baseUrl = this.getRouteUrl(route);
+        const uploadStatus = uploadStatuses.find((status) => status.url === baseUrl)!.uploadStatus;
+        return {
+          resourceName: deployment.metadata!.name!,
+          uri: deployment.metadata!.annotations![ResourceLabelNames.URI],
+          routeUrl: baseUrl,
+          creationTimestamp: new Date(deployment.metadata?.creationTimestamp ?? Date.now()),
+          state: this.kieSandboxKubernetesService.extractDeploymentStateWithUploadStatus(deployment, uploadStatus),
+          workspaceName: deployment.metadata!.annotations![ResourceLabelNames.WORKSPACE_NAME],
+        };
+      });
+  }
+
+  public async deploy(args: DeployArgs): Promise<void> {
+    const resourceArgs: ResourceArgs = {
+      namespace: this.args.connection.namespace,
+      resourceName: this.kieSandboxKubernetesService.newResourceName(),
+      createdBy: RESOURCE_OWNER,
+    };
+
+    const rollbacks = [new DeleteRoute(resourceArgs), new DeleteService(resourceArgs)];
+    let rollbacksCount = rollbacks.length;
+
+    await this.openshiftService.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute({ target: new CreateService(resourceArgs) })
+    );
+
+    const getUpdatedRollbacks = () => rollbacks.slice(--rollbacksCount);
+
+    const route = await this.createRoute(resourceArgs, getUpdatedRollbacks);
+
+    const routeUrl = this.getRouteUrl(route);
+
+    const deployment = await this.kieSandboxKubernetesService.createDeployment({
+      deployArgs: args,
+      routeUrl,
+      resourceArgs,
+      rootPath: "",
+      getUpdatedRollbacks,
+    });
+
+    this.kieSandboxKubernetesService.uploadAssets({
+      resourceArgs,
+      deployment,
+      workspaceZipBlob: args.workspaceZipBlob,
+      baseUrl: routeUrl,
+    });
+  }
+
+  public async deleteDevDeployment(resourceName: string): Promise<void> {
+    this.kieSandboxKubernetesService.deleteDeployment(resourceName);
+    this.kieSandboxKubernetesService.deleteService(resourceName);
+    this.deleteRoute(resourceName);
+  }
+
+  getRouteUrl(resource: RouteDescriptor): string {
+    return this.openshiftService.composeDeploymentUrlFromRoute(resource);
+  }
+
+  async createRoute(resourceArgs: ResourceArgs, getUpdatedRollbacks: () => ResourceFetch[]): Promise<RouteDescriptor> {
+    const route = await this.openshiftService.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute<RouteDescriptor>({
+        target: new CreateRoute(resourceArgs),
+        rollbacks: getUpdatedRollbacks(),
+      })
+    );
+    return route;
+  }
+
+  async listRoutes(): Promise<RouteDescriptor[]> {
     const routes = (
-      await this.service.withFetch((fetcher: ResourceFetcher) =>
+      await this.openshiftService.withFetch((fetcher: ResourceFetcher) =>
         fetcher.execute<RouteGroupDescriptor>({
           target: new ListRoutes({
             namespace: this.args.connection.namespace,
@@ -50,29 +155,8 @@ export class KieSandboxOpenShiftService extends KieSandboxBaseKubernetesService 
     return routes;
   }
 
-  public getRouteUrl(resource: RouteDescriptor): string {
-    return this.service.composeDeploymentUrlFromRoute(resource);
-  }
-
-  public getRouteRollback(resourceArgs: ResourceArgs): ResourceFetch {
-    return new DeleteRoute(resourceArgs);
-  }
-
-  public async createRoute(
-    resourceArgs: ResourceArgs,
-    getUpdatedRollbacks: () => ResourceFetch[]
-  ): Promise<ResourceDescriptor> {
-    const route = await this.service.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute<RouteDescriptor>({
-        target: new CreateRoute(resourceArgs),
-        rollbacks: getUpdatedRollbacks(),
-      })
-    );
-    return route;
-  }
-
-  public async deleteRoute(resourceName: string): Promise<void> {
-    await this.service.withFetch((fetcher: ResourceFetcher) =>
+  async deleteRoute(resourceName: string): Promise<void> {
+    await this.openshiftService.withFetch((fetcher: ResourceFetcher) =>
       fetcher.execute({
         target: new DeleteRoute({
           resourceName,

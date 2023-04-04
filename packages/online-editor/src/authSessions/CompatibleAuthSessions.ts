@@ -202,7 +202,7 @@ export function kubernetesAuthSessionSelectFilter(): AuthSessionSelectFilter {
   });
 }
 
-export function deploymentTargetAuthSessionSelectFilter(): AuthSessionSelectFilter {
+export function cloudAuthSessionSelectFilter(): AuthSessionSelectFilter {
   return (items) => ({
     groups: [{ label: "Same", hidden: false }],
     items: items

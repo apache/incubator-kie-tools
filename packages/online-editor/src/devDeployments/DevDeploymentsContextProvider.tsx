@@ -23,7 +23,7 @@ import { ConfirmDeployModalState, DeleteDeployModalState, DevDeploymentsContext 
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { DevDeploymentsConfirmDeleteModal } from "./DevDeploymentsConfirmDeleteModal";
-import { KieSandboxKubernetesService } from "./services/kubernetes/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "./services/KieSandboxKubernetesService";
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
 
 interface Props {
@@ -66,7 +66,7 @@ export function DevDeploymentsContextProvider(props: Props) {
       const service = getService(args.authSession);
 
       try {
-        await service.deleteDeployment(args.resourceName);
+        await service.deleteDevDeployment(args.resourceName);
         return true;
       } catch (error) {
         console.error(error);
@@ -106,7 +106,6 @@ export function DevDeploymentsContextProvider(props: Props) {
       const service = getService(authSession);
 
       if (!(await service.isConnectionEstablished())) {
-        console.log("Not connected?");
         return false;
       }
 

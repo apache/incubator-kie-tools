@@ -29,7 +29,7 @@ import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/Acc
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
-import { deploymentTargetAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
+import { cloudAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 
 export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace | undefined) {
@@ -89,7 +89,7 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
                 }}
                 isPlain={false}
                 title={"Select Cloud provider for this Dev deployment..."}
-                filter={deploymentTargetAuthSessionSelectFilter()}
+                filter={cloudAuthSessionSelectFilter()}
                 showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
               />
             </div>

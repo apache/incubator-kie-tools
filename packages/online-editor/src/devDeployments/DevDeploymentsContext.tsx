@@ -17,9 +17,8 @@
 import * as React from "react";
 import { useContext } from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
-import { KieSandboxDeployedModel } from "./services/KieSandboxBaseKubernetesService";
-import { AuthSession, CloudAuthSession } from "../authSessions/AuthSessionApi";
+import { KieSandboxDeployedModel } from "./services/types";
+import { CloudAuthSession } from "../authSessions/AuthSessionApi";
 
 export interface DeploymentFile {
   path: string;

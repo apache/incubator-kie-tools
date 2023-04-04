@@ -62,6 +62,13 @@ export class WorkspacesSharedWorker {
       this.workspacesWorker!.port.onmessage = (m) => {
         this.workspacesWorkerBus.server.receive(m.data, {
           kieToolsWorkspacesWorker_ready() {
+            window.addEventListener(
+              "resume",
+              (event) => {
+                console.log("resume", event);
+              },
+              { capture: true }
+            );
             res();
           },
           async kieToolsWorkspacesWorker_ping() {

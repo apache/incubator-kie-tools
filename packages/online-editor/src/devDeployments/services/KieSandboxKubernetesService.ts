@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,40 +23,28 @@ import {
   ListDeployments,
   CreateService,
   DeleteService,
-  DeployedModel,
   DeploymentState,
-  ResourceDescriptor,
   ResourceLabelNames,
+  DeleteIngress,
+  IngressDescriptor,
+  CreateIngress,
+  ListIngresses,
+  IngressGroupDescriptor,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import { KubernetesService, KubernetesServiceArgs } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { UploadStatus, getUploadStatus, postUpload } from "../DmnDevDeploymentQuarkusAppApi";
+import { DeployArgs, KieSandboxDeployedModel, KieSandboxDeploymentService, ResourceArgs } from "./types";
 
 export const RESOURCE_PREFIX = "dmn-dev-deployment";
 export const RESOURCE_OWNER = "kie-sandbox";
 export const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
 
-export type KieSandboxDeployedModel = DeployedModel & {
-  uri: string;
-  workspaceName: string;
-};
-
-export interface DeployArgs {
-  targetFilePath: string;
-  workspaceName: string;
-  workspaceZipBlob: Blob;
-  onlineEditorUrl: (baseUrl: string) => string;
-}
-
-export type ResourceArgs = {
-  namespace: string;
-  resourceName: string;
-  createdBy: string;
-};
-
-export abstract class KieSandboxBaseKubernetesService {
+export class KieSandboxKubernetesService implements KieSandboxDeploymentService {
   service: KubernetesService;
-  constructor(readonly args: KubernetesServiceArgs) {}
+  constructor(readonly args: KubernetesServiceArgs) {
+    this.service = new KubernetesService(args);
+  }
 
   public async isConnectionEstablished(): Promise<boolean> {
     return this.service.isConnectionEstablished(this.args.connection);
@@ -78,10 +66,6 @@ export abstract class KieSandboxBaseKubernetesService {
     return deployments.items ?? [];
   }
 
-  public abstract listRoutes(): Promise<ResourceDescriptor[]>;
-
-  public abstract getRouteUrl(resource: ResourceDescriptor): string;
-
   public async loadDeployedModels(): Promise<KieSandboxDeployedModel[]> {
     const deployments = await this.listDeployments();
 
@@ -89,11 +73,11 @@ export abstract class KieSandboxBaseKubernetesService {
       return [];
     }
 
-    const routes = await this.listRoutes();
+    const ingresses = await this.listIngresses();
 
     const uploadStatuses = await Promise.all(
-      routes
-        .map((route) => this.getRouteUrl(route))
+      ingresses
+        .map((ingress) => this.getIngressUrl(ingress))
         .map(async (url) => ({ url: url, uploadStatus: await getUploadStatus({ baseUrl: url }) }))
     );
 
@@ -105,11 +89,11 @@ export abstract class KieSandboxBaseKubernetesService {
           deployment.metadata.annotations &&
           deployment.metadata.labels &&
           deployment.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER &&
-          routes.some((route) => route.metadata?.name === deployment.metadata?.name)
+          ingresses.some((ingress) => ingress.metadata?.name === deployment.metadata?.name)
       )
       .map((deployment) => {
-        const route = routes.find((route) => route.metadata?.name === deployment.metadata?.name)!;
-        const baseUrl = this.getRouteUrl(route);
+        const ingress = ingresses.find((ingress) => ingress.metadata?.name === deployment.metadata?.name)!;
+        const baseUrl = this.getIngressUrl(ingress);
         const uploadStatus = uploadStatuses.find((status) => status.url === baseUrl)!.uploadStatus;
         return {
           resourceName: deployment.metadata!.name!,
@@ -122,33 +106,27 @@ export abstract class KieSandboxBaseKubernetesService {
       });
   }
 
-  public abstract getRouteRollback(resourceArgs: ResourceArgs): ResourceFetch;
-
-  public abstract createRoute(
-    resourceArgs: ResourceArgs,
-    getUpdatedRollbacks: () => ResourceFetch[]
-  ): Promise<ResourceDescriptor>;
-
-  public async createDeployment(
-    args: DeployArgs,
-    routeUrl: string,
-    resourceArgs: ResourceArgs,
-    getUpdatedRollbacks: () => ResourceFetch[]
-  ): Promise<DeploymentDescriptor> {
+  public async createDeployment(args: {
+    deployArgs: DeployArgs;
+    routeUrl: string;
+    resourceArgs: ResourceArgs;
+    rootPath: string;
+    getUpdatedRollbacks: () => ResourceFetch[];
+  }): Promise<DeploymentDescriptor> {
     return await this.service.withFetch((fetcher: ResourceFetcher) =>
       fetcher.execute<DeploymentDescriptor>({
         target: new CreateDeployment({
-          ...resourceArgs,
-          uri: args.targetFilePath,
-          baseUrl: routeUrl,
-          workspaceName: args.workspaceName,
+          ...args.resourceArgs,
+          uri: args.deployArgs.targetFilePath,
+          baseUrl: args.routeUrl,
+          workspaceName: args.deployArgs.workspaceName,
           // TODO: return value to process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl
           containerImageUrl:
             "quay.io/thiagoelg/dmn-dev-deployment-base-image@sha256:6f7df7b8ec64afec3148f02c154b15b25fca177328b7e2a21708401b98a9d84f",
           envVars: [
             {
               name: "BASE_URL",
-              value: routeUrl,
+              value: args.routeUrl,
             },
             {
               name: "QUARKUS_PLATFORM_VERSION",
@@ -160,57 +138,41 @@ export abstract class KieSandboxBaseKubernetesService {
             },
             {
               name: "ROOT_PATH",
-              value: "/",
+              value: `/${args.rootPath}`,
             },
           ],
         }),
-        rollbacks: getUpdatedRollbacks(),
+        rollbacks: args.getUpdatedRollbacks(),
       })
     );
   }
 
-  public async deploy(args: DeployArgs): Promise<void> {
-    const resourceArgs: ResourceArgs = {
-      namespace: this.args.connection.namespace,
-      resourceName: this.newResourceName(),
-      createdBy: RESOURCE_OWNER,
-    };
-
-    const rollbacks = [this.getRouteRollback(resourceArgs), new DeleteService(resourceArgs)];
-    let rollbacksCount = rollbacks.length;
-
-    await this.service.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute({ target: new CreateService(resourceArgs) })
-    );
-
-    const getUpdatedRollbacks = () => rollbacks.slice(--rollbacksCount);
-
-    const route = await this.createRoute(resourceArgs, getUpdatedRollbacks);
-
-    const routeUrl = this.getRouteUrl(route);
-
-    const deployment = await this.createDeployment(args, routeUrl, resourceArgs, getUpdatedRollbacks);
-
-    new Promise<void>((resolve, reject) => {
-      let deploymentState = this.service.extractDeploymentState({ deployment });
+  public async uploadAssets(args: {
+    resourceArgs: ResourceArgs;
+    deployment: DeploymentDescriptor;
+    workspaceZipBlob: Blob;
+    baseUrl: string;
+  }) {
+    return new Promise<void>((resolve, reject) => {
+      let deploymentState = this.service.extractDeploymentState({ deployment: args.deployment });
       const interval = setInterval(async () => {
         if (deploymentState !== DeploymentState.UP) {
           const deployment = await this.service.withFetch((fetcher: ResourceFetcher) =>
             fetcher.execute<DeploymentDescriptor>({
-              target: new GetDeployment(resourceArgs),
+              target: new GetDeployment(args.resourceArgs),
             })
           );
 
           deploymentState = this.service.extractDeploymentState({ deployment });
         } else {
           try {
-            const uploadStatus = await getUploadStatus({ baseUrl: routeUrl });
+            const uploadStatus = await getUploadStatus({ baseUrl: args.baseUrl });
             if (uploadStatus === "NOT_READY") {
               return;
             }
             clearInterval(interval);
             if (uploadStatus === "WAITING") {
-              await postUpload({ baseUrl: routeUrl, workspaceZipBlob: args.workspaceZipBlob });
+              await postUpload({ baseUrl: args.baseUrl, workspaceZipBlob: args.workspaceZipBlob });
               resolve();
             }
           } catch (e) {
@@ -223,7 +185,36 @@ export abstract class KieSandboxBaseKubernetesService {
     });
   }
 
-  public abstract deleteRoute(resourceName: string): Promise<void>;
+  public async deploy(args: DeployArgs): Promise<void> {
+    const resourceArgs: ResourceArgs = {
+      namespace: this.args.connection.namespace,
+      resourceName: this.newResourceName(),
+      createdBy: RESOURCE_OWNER,
+    };
+
+    const rollbacks = [new DeleteIngress(resourceArgs), new DeleteService(resourceArgs)];
+    let rollbacksCount = rollbacks.length;
+
+    await this.service.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute({ target: new CreateService(resourceArgs) })
+    );
+
+    const getUpdatedRollbacks = () => rollbacks.slice(--rollbacksCount);
+
+    const ingress = await this.createIngress(resourceArgs, getUpdatedRollbacks);
+
+    const ingressUrl = this.getIngressUrl(ingress);
+
+    const deployment = await this.createDeployment({
+      deployArgs: args,
+      routeUrl: ingressUrl,
+      resourceArgs,
+      rootPath: resourceArgs.resourceName,
+      getUpdatedRollbacks,
+    });
+
+    this.uploadAssets({ resourceArgs, deployment, workspaceZipBlob: args.workspaceZipBlob, baseUrl: ingressUrl });
+  }
 
   public async deleteDeployment(resourceName: string) {
     await this.service.withFetch((fetcher: ResourceFetcher) =>
@@ -234,7 +225,8 @@ export abstract class KieSandboxBaseKubernetesService {
         }),
       })
     );
-
+  }
+  public async deleteService(resourceName: string) {
     await this.service.withFetch((fetcher: ResourceFetcher) =>
       fetcher.execute({
         target: new DeleteService({
@@ -243,8 +235,12 @@ export abstract class KieSandboxBaseKubernetesService {
         }),
       })
     );
+  }
 
-    await this.deleteRoute(resourceName);
+  public async deleteDevDeployment(resourceName: string): Promise<void> {
+    await this.deleteDeployment(resourceName);
+    await this.deleteService(resourceName);
+    await this.deleteIngress(resourceName);
   }
 
   public extractDeploymentStateWithUploadStatus(
@@ -266,5 +262,49 @@ export abstract class KieSandboxBaseKubernetesService {
     }
 
     return DeploymentState.UP;
+  }
+
+  getIngressUrl(resource: IngressDescriptor): string {
+    return this.service.composeDeploymentUrlFromIngress(resource);
+  }
+
+  async createIngress(
+    resourceArgs: ResourceArgs,
+    getUpdatedRollbacks: () => ResourceFetch[]
+  ): Promise<IngressDescriptor> {
+    const route = await this.service.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute<IngressDescriptor>({
+        target: new CreateIngress(resourceArgs),
+        rollbacks: getUpdatedRollbacks(),
+      })
+    );
+    return route;
+  }
+
+  async listIngresses(): Promise<IngressDescriptor[]> {
+    const ingresses = (
+      await this.service.withFetch((fetcher: ResourceFetcher) =>
+        fetcher.execute<IngressGroupDescriptor>({
+          target: new ListIngresses({
+            namespace: this.args.connection.namespace,
+          }),
+        })
+      )
+    ).items.filter(
+      (route) => route.metadata?.labels && route.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER
+    );
+
+    return ingresses;
+  }
+
+  async deleteIngress(resourceName: string) {
+    await this.service.withFetch((fetcher: ResourceFetcher) =>
+      fetcher.execute({
+        target: new DeleteIngress({
+          resourceName,
+          namespace: this.args.connection.namespace,
+        }),
+      })
+    );
   }
 }

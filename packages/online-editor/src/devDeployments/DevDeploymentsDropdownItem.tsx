@@ -29,7 +29,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useDevDeployments } from "./DevDeploymentsContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
-import { KieSandboxDeployedModel } from "./services/KieSandboxBaseKubernetesService";
+import { KieSandboxDeployedModel } from "./services/types";
 import { DeploymentState } from "@kie-tools-core/kubernetes-bridge/dist/resources/common";
 
 interface Props {
@@ -125,7 +125,6 @@ export function DevDeploymentsDropdownItem(props: Props) {
   }, [i18n, props.deployment.state, props.id]);
 
   const onItemClicked = useCallback(() => {
-    console.log({ url: `${props.deployment.routeUrl}/#/form/${props.deployment.uri}` });
     window.open(`${props.deployment.routeUrl}/#/form/${props.deployment.uri}`, "_blank");
   }, [props.deployment.routeUrl, props.deployment.uri]);
 

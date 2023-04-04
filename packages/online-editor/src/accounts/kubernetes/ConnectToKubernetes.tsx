@@ -31,7 +31,7 @@ import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServic
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
 import { KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
-import { KieSandboxKubernetesService } from "../../devDeployments/services/kubernetes/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "../../devDeployments/services/KieSandboxKubernetesService";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
 import {
   KubernetesConnection,

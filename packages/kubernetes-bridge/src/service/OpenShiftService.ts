@@ -22,21 +22,26 @@ import { DeploymentCondition, DeploymentDescriptor } from "../resources/kubernet
 import { BuildDescriptor, BuildPhase } from "../resources/openshift/Build";
 import { RouteDescriptor } from "../resources/openshift/Route";
 import { KubernetesConnection } from "./KubernetesConnection";
-import { DeploymentState } from "../resources/common";
+import { DeploymentState, Resource } from "../resources/common";
 
-export class OpenShiftService extends KubernetesService {
-  private readonly knativeSupportService: KnativeSupportService;
+export class OpenShiftService {
+  private knativeSupportService: KnativeSupportService;
+  private kubernetesService: KubernetesService;
 
   constructor(readonly args: KubernetesServiceArgs) {
-    super(args);
+    this.kubernetesService = new KubernetesService(args);
     this.knativeSupportService = new KnativeSupportService({
-      fetcher: this.fetcher,
+      fetcher: this.kubernetesService.fetcher,
       namespace: args.connection.namespace,
     });
   }
 
   public get knative(): KnativeSupportService {
     return this.knativeSupportService;
+  }
+
+  public get kubernetes(): KubernetesService {
+    return this.kubernetesService;
   }
 
   public composeDeploymentUrlFromRoute(route: RouteDescriptor): string {
@@ -87,6 +92,10 @@ export class OpenShiftService extends KubernetesService {
     return DeploymentState.UP;
   }
 
+  public async withFetch<T = Resource>(callback: (fetcher: ResourceFetcher) => Promise<T>): Promise<T> {
+    return this.kubernetes.withFetch<T>(callback);
+  }
+
   public async isConnectionEstablished(connection: KubernetesConnection): Promise<boolean> {
     try {
       const testConnectionFetcher = new ResourceFetcher({ connection, proxyUrl: this.args.proxyUrl });
@@ -96,5 +105,9 @@ export class OpenShiftService extends KubernetesService {
     } catch (error) {
       return false;
     }
+  }
+
+  public newResourceName(prefix: string): string {
+    return this.kubernetes.newResourceName(prefix);
   }
 }
