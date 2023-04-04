@@ -121,7 +121,8 @@ interface OnlineDictionary extends ReferenceDictionary {
       validationError: string;
       connectionError: string;
       configExpiredWarning: string;
-      useWizard: string;
+      useOpenShiftWizard: string;
+      useKubernetesWizard: string;
     };
     deployConfirmModal: {
       title: string;
@@ -137,7 +138,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       deleteError: string;
       deleteSuccess: string;
     };
-    configWizard: {
+    openShiftConfigWizard: {
       header: {
         provider: string;
       };
@@ -174,6 +175,54 @@ interface OnlineDictionary extends ReferenceDictionary {
             emptyField: string;
             tokenExpired: string;
             instanceExpired: string;
+          };
+        };
+      };
+    };
+    kubernetesConfigWizard: {
+      header: {
+        provider: string;
+      };
+      steps: {
+        first: {
+          name: string;
+          introduction: string;
+          installFlavor: (flavor: string) => string;
+          installKubectl: string;
+          runCommandsTerminal: string;
+          createCluster: string;
+          installIngress: string;
+          installKieSandboxYaml: string;
+        };
+        second: {
+          name: string;
+          introduction: string;
+          disclaimer: string;
+          hostInputReason: string;
+          namespaceInputReason: string;
+          namespacePlaceholder: string;
+          hostPlaceholder: string;
+        };
+        third: {
+          name: string;
+          introduction: string;
+          getToken: string;
+          tokenPlaceholder: string;
+          tokenInputReason: string;
+        };
+        final: {
+          name: string;
+          connectionError: string;
+          connectionSuccess: string;
+          introduction: string;
+          configNote: string;
+          connectionErrorLong: string;
+          checkInfo: string;
+          possibleErrorReasons: {
+            introduction: string;
+            emptyField: string;
+            clusterNotCreatedCorrectly: string;
+            tokenExpired: string;
           };
         };
       };

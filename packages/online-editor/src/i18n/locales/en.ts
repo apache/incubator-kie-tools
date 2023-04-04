@@ -121,7 +121,8 @@ export const en: OnlineI18n = {
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
       configExpiredWarning: "Token or account expired. Please update your configuration.",
-      useWizard: "Configure a new Developer Sandbox for Red Hat OpenShift through the guided wizard",
+      useOpenShiftWizard: "Configure a new Developer Sandbox for Red Hat OpenShift through the guided wizard",
+      useKubernetesWizard: "Configure a new local Kubernetes Cluster through the guided wizard",
     },
     deployConfirmModal: {
       title: "Deploy",
@@ -145,7 +146,7 @@ export const en: OnlineI18n = {
       } is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
       getStarted: "To get started, configure your instance information.",
     },
-    configWizard: {
+    openShiftConfigWizard: {
       header: {
         provider: "Provider",
       },
@@ -184,6 +185,59 @@ export const en: OnlineI18n = {
             instanceExpired:
               "Instances expire in 30 days. After this period, you will need to recreate it, thus receiving a new host.",
             tokenExpired: "Tokens expire on a daily basis.",
+          },
+        },
+      },
+    },
+    kubernetesConfigWizard: {
+      header: {
+        provider: "Provider",
+      },
+      steps: {
+        first: {
+          name: "Create your Kubernetes cluster",
+          introduction:
+            "In order to create your local Kubernetes cluster first select the flavor you would like and follow the steps:",
+          installFlavor: (flavor: string) => `Download and install ${flavor}.`,
+          installKubectl: "Install Kubectl if you don't have it already.",
+          runCommandsTerminal: "For this step, run the commands in a terminal.",
+          createCluster: "Create your cluster:",
+          installIngress: "Install the Ingress controller and wait for it to be ready:",
+          installKieSandboxYaml: "Install a proxy for the Kube APIServer and create the required Service Accounts:",
+        },
+        second: {
+          name: "Set connection info",
+          introduction:
+            "With your cluster up and running, it should be available in the host prefilled below, and should have a namespace created.",
+          disclaimer:
+            "Only change the values below if you have a custom Kubernetes installation, but beware that things might not go as expected.",
+          hostInputReason: "This information is necessary for establishing a connection with your instance.",
+          namespaceInputReason:
+            "This information is necessary for creating your Dev deployments in the right Namespace.",
+          namespacePlaceholder: "The Namespace where you want to create your Dev deployments.",
+          hostPlaceholder: "The Kubernetes API base URL",
+        },
+        third: {
+          name: "Authenticate",
+          introduction:
+            "The Kubernetes API requried an authentication token for all requests. In this step we will get the authentication token for the Service Account we created before",
+          getToken: "Run the command below in your terminal to get the authentication token then copy it:",
+          tokenPlaceholder: "Paste the token value here",
+          tokenInputReason: "The token is necessary to authenticate requests to the Kubernetes API",
+        },
+        final: {
+          name: "Connect",
+          connectionSuccess: "Connection successfully established.",
+          connectionError: "Connection refused.",
+          introduction: "Now you are able to create Dev deployments on this OpenShift instance.",
+          configNote: "The token you provide is locally stored in this browser and is never shared with anyone.",
+          connectionErrorLong: `A connection with your Kubernetes cluster could not be established.`,
+          checkInfo: "Please check the information provided and try again.",
+          possibleErrorReasons: {
+            introduction: "Here are some possible reasons:",
+            emptyField: "One or more required information are not filled.",
+            clusterNotCreatedCorrectly: "Your Kubernetes cluster might not have been created correctly.",
+            tokenExpired: "Tokens might be expired, try creating a new one.",
           },
         },
       },

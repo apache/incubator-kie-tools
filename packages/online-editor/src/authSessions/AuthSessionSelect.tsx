@@ -303,8 +303,7 @@ export function InvalidAuthSessionIcon() {
       content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}
     >
       <>
-        {/* Color copied from PF4 */}
-        <ExclamationCircleIcon color={"#c9190b"} />
+        <ExclamationCircleIcon style={{ color: "var(--pf-global--palette--red-100)" }} />
       </>
     </Tooltip>
   );

@@ -171,7 +171,7 @@ export function ConnecToOpenShiftSimple(props: {
         data-testid="use-wizard-button"
         isLoading={isConnecting}
       >
-        {i18n.devDeployments.configModal.useWizard}
+        {i18n.devDeployments.configModal.useOpenShiftWizard}
         &nbsp;
         <ArrowRightIcon className="pf-u-ml-sm" />
       </Button>

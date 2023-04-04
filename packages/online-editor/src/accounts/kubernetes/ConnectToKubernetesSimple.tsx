@@ -25,9 +25,6 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
-
-import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
 import { KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
@@ -37,6 +34,8 @@ import {
   KubernetesConnection,
   isKubernetesConnectionValid,
 } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
+import { KubernetesSettingsTabMode } from "./ConnectToKubernetesSection";
+import ArrowRightIcon from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -44,16 +43,16 @@ enum FormValiationOptions {
   CONNECTION_ERROR = "CONNECTION_ERROR",
 }
 
-export function ConnectToKubernetes(props: {
+export function ConnectToKubernetesSimple(props: {
   kubernetesService: KieSandboxKubernetesService;
   connection: KubernetesConnection;
   setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
   status: KubernetesInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<KubernetesInstanceStatus>>;
+  setMode: React.Dispatch<React.SetStateAction<KubernetesSettingsTabMode>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<KubernetesAuthSession>>;
 }) {
   const { i18n } = useOnlineI18n();
-  const extendedServices = useExtendedServices();
   const [isConnectionValidated, setConnectionValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
   const authSessionsDispatch = useAuthSessionsDispatch();
@@ -116,19 +115,6 @@ export function ConnectToKubernetes(props: {
 
   return (
     <>
-      {extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
-        <>
-          <FormAlert>
-            <Alert
-              variant="danger"
-              title={"Connect to KIE Sandbox Extended Services before configuring your OpenShift instance"}
-              aria-live="polite"
-              isInline
-            />
-          </FormAlert>
-          <br />
-        </>
-      )}
       {isConnectionValidated === FormValiationOptions.INVALID && (
         <>
           <FormAlert>
@@ -158,6 +144,24 @@ export function ConnectToKubernetes(props: {
           <br />
         </>
       )}
+
+      <Button
+        style={{ paddingLeft: 0 }}
+        id="dev-deployments-config-use-wizard-button"
+        key="use-wizard"
+        className="pf-u-p-0"
+        variant="link"
+        onClick={() => props.setMode(KubernetesSettingsTabMode.WIZARD)}
+        data-testid="use-wizard-button"
+        isLoading={isConnecting}
+      >
+        {i18n.devDeployments.configModal.useKubernetesWizard}
+        &nbsp;
+        <ArrowRightIcon className="pf-u-ml-sm" />
+      </Button>
+
+      <br />
+      <br />
 
       <Form>
         <FormGroup

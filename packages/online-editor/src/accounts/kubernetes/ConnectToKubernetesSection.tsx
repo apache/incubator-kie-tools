@@ -22,7 +22,7 @@ import {
   DependentFeature,
   useExtendedServices,
 } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { ConnectToKubernetes } from "./ConnectToKubernetes";
+import { ConnectToKubernetesSimple } from "./ConnectToKubernetesSimple";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -33,23 +33,27 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import PficonSatelliteIcon from "@patternfly/react-icons/dist/js/icons/pficon-satellite-icon";
 import { KieSandboxKubernetesService } from "../../devDeployments/services/KieSandboxKubernetesService";
+import { EMPTY_KUBERNETES_CONNECTION } from "@kie-tools-core/kubernetes-bridge/dist/service";
+import { ConnectToLocalKubernetesClusterWizard } from "./ConnectToLocalKubernetesClusterWizard";
+
+export enum KubernetesSettingsTabMode {
+  SIMPLE,
+  WIZARD,
+}
 
 export function ConnectToKubernetesSection() {
   const extendedServices = useExtendedServices();
   const accounts = useAccounts();
   const accountsDispatch = useAccountsDispatch();
 
+  const [mode, setMode] = useState(KubernetesSettingsTabMode.SIMPLE);
   const [newAuthSession, setNewAuthSession] = useState<KubernetesAuthSession>();
   const [status, setStatus] = useState(
     extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
       ? KubernetesInstanceStatus.DISCONNECTED
       : KubernetesInstanceStatus.UNAVAILABLE
   );
-  const [connection, setConnection] = useState({
-    namespace: "",
-    host: "",
-    token: "",
-  });
+  const [connection, setConnection] = useState(EMPTY_KUBERNETES_CONNECTION);
 
   const kubernetesService = useMemo(
     () =>
@@ -128,14 +132,28 @@ export function ConnectToKubernetesSection() {
       )}
       {status === KubernetesInstanceStatus.DISCONNECTED && (
         <>
-          <ConnectToKubernetes
-            connection={connection}
-            setConnection={setConnection}
-            status={status}
-            setStatus={setStatus}
-            setNewAuthSession={setNewAuthSession}
-            kubernetesService={kubernetesService}
-          />
+          {mode === KubernetesSettingsTabMode.SIMPLE && (
+            <ConnectToKubernetesSimple
+              setMode={setMode}
+              connection={connection}
+              setConnection={setConnection}
+              status={status}
+              setStatus={setStatus}
+              setNewAuthSession={setNewAuthSession}
+              kubernetesService={kubernetesService}
+            />
+          )}
+          {mode === KubernetesSettingsTabMode.WIZARD && (
+            <ConnectToLocalKubernetesClusterWizard
+              setMode={setMode}
+              connection={connection}
+              setConnection={setConnection}
+              status={status}
+              setStatus={setStatus}
+              setNewAuthSession={setNewAuthSession}
+              kubernetesService={kubernetesService}
+            />
+          )}
         </>
       )}
     </>
