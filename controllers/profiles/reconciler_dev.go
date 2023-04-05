@@ -17,9 +17,14 @@ package profiles
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"k8s.io/apimachinery/pkg/types"
+
+	"github.com/kiegroup/kogito-serverless-operator/version"
+
+	"github.com/kiegroup/kogito-serverless-operator/platform"
 
 	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
@@ -55,7 +60,7 @@ var prefixMountPathMap = map[string]string{
 
 const (
 	// TODO: read from the platform config. Default tag MUST align with the current operator's version. See: https://issues.redhat.com/browse/KOGITO-8675
-	defaultKogitoServerlessWorkflowDevImage = "quay.io/kiegroup/kogito-swf-builder-nightly:latest"
+	defaultKogitoServerlessWorkflowDevImage = "quay.io/kiegroup/kogito-swf-builder"
 	configMapWorkflowDefVolumeName          = "workflow-definition"
 	configMapWorkflowDefMountPath           = "/home/kogito/serverless-workflow-project/src/main/resources/workflows"
 	// quarkusDevConfigMountPath mount path for application properties file in the Workflow Quarkus Application
@@ -72,6 +77,8 @@ const (
 	extResGenericSuffix            = "resource-generic"
 	extResOpenAPISuffix            = "resource-openapi"
 	extResAsyncAPISuffix           = "resource-asyncapi"
+	nightlySuffix                  = "nightly"
+	snapshotSuffix                 = "snapshot"
 )
 
 type developmentProfile struct {
@@ -157,9 +164,23 @@ func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, wo
 		e.logger.Error(err, "External Resources ConfigMap not found")
 	}
 
+	devBaseContainerImage := defaultKogitoServerlessWorkflowDevImage + ":" + version.OperatorVersion
+	pl, errPl := platform.GetActivePlatform(ctx, e.client, workflow.Namespace)
+	// check if the Platform available
+	if errPl == nil && len(pl.Spec.DevBaseImage) > 0 {
+
+		devBaseContainerImage = pl.Spec.DevBaseImage
+
+	} else {
+		// is the operator version is a snapshot we add the nightly version
+		if isSnapshot(version.OperatorVersion) {
+			devBaseContainerImage = defaultKogitoServerlessWorkflowDevImage + "-" + nightlySuffix + ":latest"
+		}
+	}
+
 	deployment, _, err := e.ensurers.deployment.ensure(ctx, workflow,
 		defaultDeploymentMutateVisitor(workflow),
-		naiveApplyImageDeploymentMutateVisitor(defaultKogitoServerlessWorkflowDevImage),
+		naiveApplyImageDeploymentMutateVisitor(devBaseContainerImage),
 		mountDevConfigMapsMutateVisitor(flowDefCM.(*v1.ConfigMap), propsCM.(*v1.ConfigMap), externalCM))
 	if err != nil {
 		return ctrl.Result{RequeueAfter: requeueAfterFailure}, objs, err
@@ -193,6 +214,10 @@ func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, wo
 	}
 
 	return ctrl.Result{RequeueAfter: requeueAfterIsRunning}, objs, nil
+}
+
+func isSnapshot(operatorVersion string) bool {
+	return strings.HasSuffix(operatorVersion, snapshotSuffix)
 }
 
 type followDeployDevWorkflowReconciliationState struct {

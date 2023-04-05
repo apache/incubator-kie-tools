@@ -1,0 +1,11 @@
+apiVersion: sw.kogito.kie.org/v1alpha08
+kind: KogitoServerlessPlatform
+metadata:
+  name: kogito-workflow-platform
+spec:
+  cluster: kubernetes
+  platform:
+    baseImage: quay.io/customx/custom-swf-builder:24.8.17
+    registry:
+      address: quay.io/kiegroup
+      secret: regcred

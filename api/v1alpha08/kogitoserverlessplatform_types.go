@@ -86,6 +86,8 @@ type KogitoServerlessPlatformSpec struct {
 	BuildPlatform api.PlatformBuildSpec `json:"platform,omitempty"`
 	// Configuration list of configuration properties to be attached to all the Workflow built from this Platform
 	Configuration ConfigurationSpec `json:"configuration,omitempty"`
+	// DevBaseImage, optional, used for the dev profile only
+	DevBaseImage string `json:"devBaseImage,omitempty"`
 }
 
 // PlatformPhase is the phase of a Platform

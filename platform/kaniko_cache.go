@@ -17,7 +17,6 @@ package platform
 import (
 	"context"
 	"fmt"
-
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
@@ -78,6 +77,8 @@ func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platf
 							MountPath: builder.KanikoCacheDir,
 						},
 					},
+					/* TODO: enable this test once we apply security enforcement: https://issues.redhat.com/browse/KOGITO-8799
+					SecurityContext: kubeutil.SecurityDefaults(),*/
 				},
 			},
 			// Create the cache directory otherwise Kaniko warmer skips caching silently
@@ -94,6 +95,8 @@ func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platf
 							MountPath: builder.KanikoCacheDir,
 						},
 					},
+					/* TODO: enable this test once we apply security enforcement: https://issues.redhat.com/browse/KOGITO-8799
+					SecurityContext: kubeutil.SecurityDefaults(),*/
 				},
 			},
 			RestartPolicy: corev1.RestartPolicyOnFailure,

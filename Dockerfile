@@ -18,6 +18,7 @@ COPY install/ install/
 COPY platform/ platform/
 COPY resources/ resources/
 COPY utils/ utils/
+COPY version/ version/
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager main.go

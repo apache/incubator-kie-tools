@@ -23,6 +23,10 @@ import (
 
 	"github.com/kiegroup/kogito-serverless-operator/utils"
 
+	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+
+	"github.com/kiegroup/kogito-serverless-operator/version"
+
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -91,7 +95,7 @@ func Test_newDevProfile(t *testing.T) {
 
 	// check if the objects have been created
 	deployment := test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, defaultKogitoServerlessWorkflowDevImage, deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, defaultKogitoServerlessWorkflowDevImage+"-"+nightlySuffix+":latest", deployment.Spec.Template.Spec.Containers[0].Image)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].LivenessProbe)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].ReadinessProbe)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].StartupProbe)
@@ -150,7 +154,93 @@ func Test_newDevProfile(t *testing.T) {
 	assert.NotNil(t, result)
 
 	deployment = test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, defaultKogitoServerlessWorkflowDevImage, deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, defaultKogitoServerlessWorkflowDevImage+"-"+nightlySuffix+":latest", deployment.Spec.Template.Spec.Containers[0].Image)
+}
+
+func Test_devProfileImageDefaultsNoPlatform(t *testing.T) {
+	logger := ctrllog.FromContext(context.TODO())
+	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
+
+	devReconciler := newDevProfileReconciler(client, &logger)
+
+	result, err := devReconciler.Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	// check if the objects have been created
+	deployment := test.MustGetDeployment(t, client, workflow)
+	if isSnapshot(version.OperatorVersion) {
+		assert.Equal(t, defaultKogitoServerlessWorkflowDevImage+"-"+nightlySuffix+":latest", deployment.Spec.Template.Spec.Containers[0].Image)
+	} else {
+		assert.Equal(t, defaultKogitoServerlessWorkflowDevImage+":"+version.OperatorVersion, deployment.Spec.Template.Spec.Containers[0].Image)
+	}
+}
+
+func Test_devProfileWithImageSnapshotOverrideWithPlatform(t *testing.T) {
+	logger := ctrllog.FromContext(context.TODO())
+	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
+
+	platform := test.GetKogitoServerlessPlatform("../../config/samples/" + test.KogitoServerlessPlatformWithDevBaseImageYamlCR)
+	platform.Status.Phase = operatorapi.PlatformPhaseReady
+	platform.Namespace = workflow.Namespace
+
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
+	errCreatePlatform := client.Create(context.Background(), platform)
+	assert.Nil(t, errCreatePlatform)
+	devReconciler := newDevProfileReconciler(client, &logger)
+
+	result, err := devReconciler.Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	// check if the objects have been created
+	deployment := test.MustGetDeployment(t, client, workflow)
+	assert.Equal(t, "quay.io/customgroup/custom-swf-builder-nightly:42.43.7", deployment.Spec.Template.Spec.Containers[0].Image)
+}
+
+func Test_devProfileWithWPlatformWithoutDevBaseImageAndWithBaseImage(t *testing.T) {
+	logger := ctrllog.FromContext(context.TODO())
+	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
+
+	platform := test.GetKogitoServerlessPlatform("../../config/samples/" + test.KogitoServerlessPlatformWithBaseImageYamlCR)
+	platform.Status.Phase = operatorapi.PlatformPhaseReady
+	platform.Namespace = workflow.Namespace
+
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
+	errCreatePlatform := client.Create(context.Background(), platform)
+	assert.Nil(t, errCreatePlatform)
+	devReconciler := newDevProfileReconciler(client, &logger)
+
+	result, err := devReconciler.Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	// check if the objects have been created
+	deployment := test.MustGetDeployment(t, client, workflow)
+	assert.Equal(t, "quay.io/kiegroup/kogito-swf-builder-nightly:latest", deployment.Spec.Template.Spec.Containers[0].Image)
+}
+
+func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testing.T) {
+	logger := ctrllog.FromContext(context.TODO())
+	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
+
+	platform := test.GetKogitoServerlessPlatform("../../config/samples/" + test.KogitoServerlessPlatformYamlCR)
+	platform.Status.Phase = operatorapi.PlatformPhaseReady
+	platform.Namespace = workflow.Namespace
+
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
+	errCreatePlatform := client.Create(context.Background(), platform)
+	assert.Nil(t, errCreatePlatform)
+	devReconciler := newDevProfileReconciler(client, &logger)
+
+	result, err := devReconciler.Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	// check if the objects have been created
+	deployment := test.MustGetDeployment(t, client, workflow)
+	assert.Equal(t, defaultKogitoServerlessWorkflowDevImage+"-"+nightlySuffix+":latest", deployment.Spec.Template.Spec.Containers[0].Image)
 }
 
 func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {

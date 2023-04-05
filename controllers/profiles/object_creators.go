@@ -134,17 +134,7 @@ func defaultDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (c
 							PeriodSeconds:       healthStartedPeriodSeconds,
 						},
 						ImagePullPolicy: corev1.PullAlways,
-						SecurityContext: &corev1.SecurityContext{
-							AllowPrivilegeEscalation: utils.Pbool(false),
-							Privileged:               utils.Pbool(false),
-							RunAsNonRoot:             utils.Pbool(true),
-							SeccompProfile: &corev1.SeccompProfile{
-								Type: corev1.SeccompProfileTypeRuntimeDefault,
-							},
-							Capabilities: &corev1.Capabilities{
-								Drop: []corev1.Capability{corev1.Capability("ALL")},
-							},
-						},
+						SecurityContext: kubeutil.SecurityDefaults(),
 					}},
 				},
 			},

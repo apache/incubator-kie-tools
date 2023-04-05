@@ -203,6 +203,9 @@ spec:
                 - type
                 - value
                 type: object
+              devBaseImage:
+                description: DevBaseImage, optional, used for the dev profile only
+                type: string
               platform:
                 description: BuildPlatform specify how is the platform where we want
                   to build the Workflow
@@ -456,6 +459,9 @@ spec:
                 - type
                 - value
                 type: object
+              devBaseImage:
+                description: DevBaseImage, optional, used for the dev profile only
+                type: string
               info:
                 additionalProperties:
                   type: string

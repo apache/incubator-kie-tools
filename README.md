@@ -183,6 +183,28 @@ You could see an example of configmap and a workflow with one of this annotation
 https://github.com/kiegroup/kogito-serverless-operator/tree/main/config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow_devmodeWithConfigMapAndExternalResource.yaml:
 ```
 
+## Use Workflow Development Mode
+
+#### Override Builder image and version
+
+By default the builder image use a stable version aligned to the Kogito version.
+
+In the dev mode you can override the default builder image using the devBaseImage in the KogitoServerlessPlatform:
+
+```sh
+apiVersion: sw.kogito.kie.org/v1alpha08
+kind: KogitoServerlessPlatform
+metadata:
+  name: kogito-workflow-platform
+spec:
+  cluster: kubernetes
+  devBaseImage:  quay.io/<your_org>/<your-swf-builder>
+  platform:
+    registry:
+      address: quay.io/kiegroup
+      secret: regcred  
+```
+
 ## Use local scripts
 
 You can find some scripts in the [hack](./hack/local/) folder.
