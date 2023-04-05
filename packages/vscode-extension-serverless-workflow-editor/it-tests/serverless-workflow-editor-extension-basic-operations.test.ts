@@ -101,7 +101,6 @@ describe.skip("Serverless workflow editor - Basic operations tests", () => {
     expect(editorTextTrimmedLines).to.have.string(germanConditionString);
 
     expect((await swfEditor.getAllNodeIds()).length).equal(7);
-    await sleep(2000);
   });
 
   //The following test is skipped because of bug: https://issues.redhat.com/browse/KOGITO-8384

@@ -82,7 +82,6 @@ describe("Serverless workflow editor - syntax highlighting test", () => {
     expect(allTypesColors.length, "Colors of properties, string values and boolean values should differ").equal(
       uniqueColors.length
     );
-    await sleep(2000);
   });
 
   async function getWebElementByDisplayedText(displayedText: string): Promise<WebElement> {
