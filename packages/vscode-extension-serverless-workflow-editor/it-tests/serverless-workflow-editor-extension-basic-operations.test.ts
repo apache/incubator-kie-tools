@@ -19,7 +19,7 @@ import * as path from "path";
 import * as fs from "fs";
 import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
 
 // The following test is failing in github CI. See https://issues.redhat.com/browse/KOGITO-8952.
 describe.skip("Serverless workflow editor - Basic operations tests", () => {
@@ -101,6 +101,7 @@ describe.skip("Serverless workflow editor - Basic operations tests", () => {
     expect(editorTextTrimmedLines).to.have.string(germanConditionString);
 
     expect((await swfEditor.getAllNodeIds()).length).equal(7);
+    await sleep(2000);
   });
 
   //The following test is skipped because of bug: https://issues.redhat.com/browse/KOGITO-8384

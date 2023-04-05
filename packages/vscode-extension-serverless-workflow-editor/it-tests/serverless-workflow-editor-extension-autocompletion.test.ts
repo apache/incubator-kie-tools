@@ -109,6 +109,9 @@ describe("Serverless workflow editor - autocompletion tests", () => {
         "utf-8"
       );
       expect(editorContent).equal(expectedContent);
+
+      //todo delay
+      await sleep(2000);
     });
 
     it("Completes serverless workflow from an empty file", async function () {
@@ -128,6 +131,7 @@ describe("Serverless workflow editor - autocompletion tests", () => {
         "utf-8"
       );
       expect(editorContent).equal(expectedContent);
+      await sleep(2000);
     });
   });
 
@@ -197,6 +201,7 @@ actions:
         "utf-8"
       );
       expect(editorContent).equal(expectedContent);
+      await sleep(2000);
     });
 
     it("Completes serverless workflow from an empty file and create Serverless Workflow Example", async function () {
@@ -216,6 +221,7 @@ actions:
         "utf-8"
       );
       expect(editorContent).equal(expectedContent);
+      await sleep(2000);
     });
     it("Completes serverless workflow from an empty file and create Empty Serverless Workflow", async function () {
       this.timeout(50000);
@@ -234,6 +240,7 @@ actions:
         "utf-8"
       );
       expect(editorContent).equal(expectedContent);
+      await sleep(2000);
     });
   });
 
@@ -241,7 +248,7 @@ actions:
     const contentAssist = await textEditor.toggleContentAssist(true);
     try {
       const item = await contentAssist?.getItem(value);
-      await sleep(500);
+      await sleep(1000);
       expect(await item?.getLabel()).contain(value);
       await item?.click();
     } catch (e) {
