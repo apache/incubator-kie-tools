@@ -1,6 +1,6 @@
 {
   "name": "vscode-extension-serverless-workflow-editor",
-  "version": "0.26.0",
+  "version": "0.26.1",
   "description": "Edit Serverless Workflow definitions",
   "license": "Apache-2.0",
   "publisher": "redhat",

@@ -1,6 +1,6 @@
 {
   "name": "vscode-extension-dmn-editor",
-  "version": "0.26.0",
+  "version": "0.26.1",
   "description": "Edit DMN and Test Scenario files",
   "license": "Apache-2.0",
   "publisher": "redhat",
