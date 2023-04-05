@@ -19,7 +19,7 @@ require("./serverless-workflow-editor-extension-smoke.test");
 import * as path from "path";
 import { expect } from "chai";
 import { By, WebDriver, WebElement } from "vscode-extension-tester";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - syntax highlighting test", () => {
@@ -84,6 +84,7 @@ describe("Serverless workflow editor - syntax highlighting test", () => {
     expect(allTypesColors.length, "Colors of properties, string values and boolean values should differ").equal(
       uniqueColors.length
     );
+    await sleep(2000);
   });
 
   async function getWebElementByDisplayedText(displayedText: string): Promise<WebElement> {

@@ -18,7 +18,7 @@ import { expect } from "chai";
 import * as path from "path";
 import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
 
 describe("Serverless workflow editor - Diagram navigation tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "diagram-navigation");
@@ -76,6 +76,7 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
 
       expect(lineNumber).equal(33);
       expect(columnNumber).equal(7);
+      await sleep(2000);
     } catch (error) {
       console.error("Select states: " + error);
     }
