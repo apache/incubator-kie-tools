@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.user.client.ui.IsWidget;
+import jsinterop.base.Js;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
@@ -192,7 +193,7 @@ public class StunnerEditor {
         if (throwable instanceof DiagramParsingException) {
             final DiagramParsingException diagramParsingException = (DiagramParsingException) throwable;
             parsingExceptionProcessor.accept(diagramParsingException);
-            JavaScriptException javaScriptException = (JavaScriptException) diagramParsingException.getCause();
+            JavaScriptException javaScriptException = Js.uncheckedCast(diagramParsingException.getCause());
             if (javaScriptException != null) {
                 message = error.getMessage() + "\r\n";
                 message += javaScriptException.getLocalizedMessage();
