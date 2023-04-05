@@ -66,6 +66,7 @@ digraph G {
   "@kie-tools/i18n-common-dictionary" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-viewer-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-viewer-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/dev-deployments-upload-service" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-dev-deployment-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-dev-deployment-form-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-dev-deployment-quarkus-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -224,6 +225,7 @@ digraph G {
   "@kie-tools/dashbuilder-viewer-image" -> "@kie-tools/dashbuilder-viewer-deployment-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer-image" -> "@kie-tools/dashbuilder-viewer-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/dev-deployments-upload-service" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-deployment-base-image" -> "@kie-tools/dmn-dev-deployment-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-deployment-base-image" -> "@kie-tools/dmn-dev-deployment-quarkus-app" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-deployment-base-image" -> "@kie-tools/dmn-dev-deployment-base-image-env" [ style = "dashed", color = "black" ];

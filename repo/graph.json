@@ -82,6 +82,7 @@
       { "id": "@kie-tools/kie-sandbox-fs" },
       { "id": "@kie-tools/dashbuilder-viewer-image" },
       { "id": "@kie-tools/dashbuilder-viewer-image-env" },
+      { "id": "@kie-tools/dev-deployments-upload-service" },
       { "id": "@kie-tools/dmn-dev-deployment-base-image" },
       { "id": "@kie-tools/dmn-dev-deployment-form-webapp" },
       { "id": "@kie-tools/dmn-dev-deployment-quarkus-app" },
@@ -553,6 +554,7 @@
         "weight": 1
       },
       { "source": "@kie-tools/dashbuilder-viewer-image-env", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/dev-deployments-upload-service", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/dmn-dev-deployment-base-image",
         "target": "@kie-tools/dmn-dev-deployment-form-webapp",
@@ -876,6 +878,7 @@
     ["@kie-tools/dashbuilder-viewer-deployment-webapp", "packages/dashbuilder-viewer-deployment-webapp"],
     ["@kie-tools/dashbuilder-viewer-image", "packages/dashbuilder-viewer-image"],
     ["@kie-tools/dashbuilder-viewer-image-env", "packages/dashbuilder-viewer-image-env"],
+    ["@kie-tools/dev-deployments-upload-service", "packages/dev-deployments-upload-service"],
     ["@kie-tools/dmn-dev-deployment-base-image", "packages/dmn-dev-deployment-base-image"],
     ["@kie-tools/dmn-dev-deployment-base-image-env", "packages/dmn-dev-deployment-base-image-env"],
     ["@kie-tools/dmn-dev-deployment-form-webapp", "packages/dmn-dev-deployment-form-webapp"],

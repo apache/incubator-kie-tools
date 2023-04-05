@@ -2773,6 +2773,18 @@ importers:
         specifier: workspace:*
         version: link:../root-env
 
+  packages/dev-deployments-upload-service:
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   packages/dmn-dev-deployment-base-image:
     dependencies:
       "@kie-tools/dmn-dev-deployment-form-webapp":
