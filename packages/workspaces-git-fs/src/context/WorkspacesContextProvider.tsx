@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { useCallback, useMemo } from "react";
 import { ResourceContentOptions } from "@kie-tools-core/workspace/dist/api";
 import { WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
@@ -26,6 +26,7 @@ import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 type Props = {
   children: React.ReactNode;
   workspacesSharedWorkerScriptUrl: string;
+  workerNamePrefix: string;
 } & (
   | {
       shouldRequireCommitMessage: false;
@@ -37,14 +38,30 @@ type Props = {
 );
 
 export function WorkspacesContextProvider(props: Props) {
-  const workspacesSharedWorker = useMemo(
-    () =>
-      new WorkspacesSharedWorker({
-        workerName: "workspaces-shared-worker",
-        workerScriptUrl: props.workspacesSharedWorkerScriptUrl,
-      }),
-    [props.workspacesSharedWorkerScriptUrl]
+  const [workspacesSharedWorker, setWorkspacesSharedWorker] = useState<WorkspacesSharedWorker>(
+    new WorkspacesSharedWorker({
+      workerName: `${props.workerNamePrefix}-workspaces-shared-worker`,
+      workerScriptUrl: props.workspacesSharedWorkerScriptUrl,
+    })
   );
+
+  const updateWorkspaceSharedWorker = useCallback(() => {
+    setWorkspacesSharedWorker((currentWorkspacesSharedWorker) => {
+      currentWorkspacesSharedWorker.closeWorkerPort();
+      return new WorkspacesSharedWorker({
+        workerName: `${props.workerNamePrefix}-workspaces-shared-worker`,
+        workerScriptUrl: props.workspacesSharedWorkerScriptUrl,
+      });
+    });
+  }, [props.workerNamePrefix, props.workspacesSharedWorkerScriptUrl]);
+
+  useEffect(() => {
+    window.addEventListener("resume", updateWorkspaceSharedWorker, { capture: true });
+
+    return () => {
+      window.removeEventListener("resume", updateWorkspaceSharedWorker, { capture: true });
+    };
+  }, [updateWorkspaceSharedWorker]);
 
   const toWorkspaceFile = useCallback(
     (wwfd: WorkspaceWorkerFileDescriptor) =>
