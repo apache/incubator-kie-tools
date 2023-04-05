@@ -1,5 +1,5 @@
 schema_version: 1
-name: org.kie.kogito.dataindex.ephemeral
+name: org.kie.kogito.dataindex.community.ephemeral
 version: "2.0.0-snapshot"
 
 # see build-kogito-apps-components.sh script, responsible for build it.

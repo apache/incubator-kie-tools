@@ -1,5 +1,5 @@
 schema_version: 1
-name: org.kie.kogito.dataindex.ephemeral
+name: org.kie.kogito.dataindex.prod.ephemeral
 version: "1.28.0"
 
 artifacts:
