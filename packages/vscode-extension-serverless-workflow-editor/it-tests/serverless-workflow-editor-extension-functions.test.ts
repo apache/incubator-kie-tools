@@ -105,7 +105,6 @@ describe("Serverless workflow editor - functions tests", () => {
     const editorContent = await textEditor.getText();
     const expectedContent = fs.readFileSync(path.resolve(TEST_PROJECT_FOLDER, "function.sw.json.result"), "utf-8");
     expect(editorContent).equal(expectedContent);
-    await sleep(2000);
   });
 
   it("Checks functions are loaded from specs and routes directories into YAML serverless workflow file", async function () {
@@ -166,7 +165,6 @@ describe("Serverless workflow editor - functions tests", () => {
     const editorContent = await textEditor.getText();
     const expectedContent = fs.readFileSync(path.resolve(TEST_PROJECT_FOLDER, "function.sw.yaml.result"), "utf-8");
     expect(editorContent).equal(expectedContent);
-    await sleep(2000);
   });
 
   async function selectFromContentAssist(textEditor: TextEditor, value: string): Promise<void> {

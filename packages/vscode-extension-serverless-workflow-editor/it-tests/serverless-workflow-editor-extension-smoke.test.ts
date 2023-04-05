@@ -58,6 +58,5 @@ describe("Serverless workflow editor - smoke integration tests", () => {
     // expect 7 nodes /w end and start
     const nodeIds = await swfEditor.getAllNodeIds();
     assert.equal(nodeIds.length, 7);
-    await sleep(2000);
   });
 });

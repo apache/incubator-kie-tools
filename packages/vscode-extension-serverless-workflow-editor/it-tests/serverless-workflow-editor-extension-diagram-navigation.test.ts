@@ -76,7 +76,6 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
 
       expect(lineNumber).equal(33);
       expect(columnNumber).equal(7);
-      await sleep(2000);
     } catch (error) {
       console.error("Select states: " + error);
     }
