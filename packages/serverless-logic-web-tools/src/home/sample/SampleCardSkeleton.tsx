@@ -23,43 +23,42 @@ import "./SampleCardSkeleton.css";
 
 export function SampleCardSkeleton(props: { numberOfCards: number }) {
   return (
-    <>
-      <Gallery
-        hasGutter={true}
-        minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}
-        className="sample-card-skeleton--gallery"
-      >
-        {Array(props.numberOfCards)
-          .fill(undefined)
-          .map((item, index) => (
-            <Card isCompact={true} key={index} isFullHeight={true}>
-              <Grid className="sample-card-skeleton--grid">
-                <GridItem md={6} className="sample-card-skeleton--grid-item">
-                  <div className="sample-card-skeleton--label">
-                    <Skeleton width="90%" />
-                  </div>
-                  <Skeleton
-                    shape="square"
-                    width="90%"
-                    screenreaderText="Loading svg"
-                    className="sample-card-skeleton--svg"
-                  />
-                </GridItem>
-                <GridItem md={6} className="sample-card-skeleton--grid-content-item">
-                  <CardTitle data-ouia-component-type="sample-title">
-                    <Skeleton width="90%" />
-                  </CardTitle>
-                  <CardBody isFilled={true}>
-                    <Skeleton shape="square" width="90%" screenreaderText="Loading description" />
-                  </CardBody>
-                  <CardFooter className="sample-card-skeleton--card-footer-style">
-                    <Skeleton width="90%" />
-                  </CardFooter>
-                </GridItem>
-              </Grid>
-            </Card>
-          ))}
-      </Gallery>
-    </>
+    <Gallery
+      hasGutter={true}
+      minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}
+      className="sample-card-skeleton--gallery"
+    >
+      {Array(props.numberOfCards)
+        .fill(undefined)
+        .map((_item, index) => (
+          <Card isCompact={true} key={index} isFullHeight={true}>
+            <Grid className="sample-card-skeleton--grid">
+              <GridItem md={6} className="sample-card-skeleton--grid-item">
+                <div className="sample-card-skeleton--label">
+                  <Skeleton width="90%" />
+                </div>
+                <Skeleton
+                  shape="square"
+                  width="90%"
+                  height="80%"
+                  screenreaderText="Loading svg"
+                  className="sample-card-skeleton--svg"
+                />
+              </GridItem>
+              <GridItem md={6} className="sample-card-skeleton--grid-content-item">
+                <CardTitle data-ouia-component-type="sample-title">
+                  <Skeleton width="90%" />
+                </CardTitle>
+                <CardBody isFilled={true}>
+                  <Skeleton shape="square" width="90%" height="80%" screenreaderText="Loading description" />
+                </CardBody>
+                <CardFooter className="sample-card-skeleton--card-footer-style">
+                  <Skeleton width="90%" />
+                </CardFooter>
+              </GridItem>
+            </Grid>
+          </Card>
+        ))}
+    </Gallery>
   );
 }
