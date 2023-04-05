@@ -217,7 +217,9 @@ export default class VSCodeTestHelper {
       for (const notification of activeNotifications) {
         await notification.dismiss();
       }
-    } catch (e) {}
+    } catch (e) {
+      console.log("Error while closing all notifications: " + e);
+    }
   };
 
   /**
@@ -265,7 +267,7 @@ export default class VSCodeTestHelper {
       "Editor was still loading after ms. Please investigate."
     );
 
-    await sleep(2000);
+    await sleep(8000);
 
     await driver.switchTo().frame(null);
   };

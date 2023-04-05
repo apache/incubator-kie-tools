@@ -48,7 +48,7 @@ export default class SwfEditorTestHelper {
 
     const actions = driver.actions({ async: true });
     await actions.move({ x: nodeCoordinates[0], y: nodeCoordinates[1], origin: canvasWebElement }).click().perform();
-    await sleep(2000);
+    await sleep(8000);
     await this.switchBack();
   }
 
