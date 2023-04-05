@@ -35,14 +35,19 @@ export const labelColors: Record<string, LabelColorType> = {
   [FileTypes.DASH_YML]: dashboardLabel,
 };
 
-export function FileLabel(props: { style?: LabelProps["style"]; extension: string }) {
+export function FileLabel(props: { style?: LabelProps["style"]; extension: string; labelProps?: LabelProps }) {
   const parsedExtension = props.extension.toLowerCase();
   const labelColor = labelColors[parsedExtension as string];
 
   return (
     <>
       {props.extension && (
-        <Label style={props.style ?? {}} color={labelColor?.color ?? "grey"} data-ouia-component-id="file-type-label">
+        <Label
+          {...props.labelProps}
+          style={props.style ?? {}}
+          color={labelColor?.color ?? "grey"}
+          data-ouia-component-id="file-type-label"
+        >
           {labelColor?.label ?? props.extension.toUpperCase()}
         </Label>
       )}
