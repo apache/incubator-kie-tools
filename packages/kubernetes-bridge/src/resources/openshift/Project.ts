@@ -19,9 +19,7 @@ import { ResourceFetch } from "../../fetch/ResourceFetch";
 import { ResourceDescriptor } from "../common";
 import { OpenshiftApiVersions } from "./api";
 
-export interface ProjectDescriptor extends ResourceDescriptor {
-  // Empty on purpose
-}
+export type ProjectDescriptor = ResourceDescriptor;
 
 export class GetProject extends ResourceFetch {
   public method(): HttpMethod {

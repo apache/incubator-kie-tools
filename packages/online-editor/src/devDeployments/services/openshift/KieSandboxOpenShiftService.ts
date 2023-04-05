@@ -23,6 +23,7 @@ import {
   ResourceLabelNames,
   DeleteService,
   CreateService,
+  ResourceDataSource,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import { OpenShiftService, KubernetesServiceArgs } from "@kie-tools-core/kubernetes-bridge/dist/service";
@@ -94,7 +95,9 @@ export class KieSandboxOpenShiftService implements KieSandboxDeploymentService {
     let rollbacksCount = rollbacks.length;
 
     await this.openshiftService.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute({ target: new CreateService(resourceArgs) })
+      fetcher.execute({
+        target: new CreateService({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
+      })
     );
 
     const getUpdatedRollbacks = () => rollbacks.slice(--rollbacksCount);
@@ -132,7 +135,7 @@ export class KieSandboxOpenShiftService implements KieSandboxDeploymentService {
   async createRoute(resourceArgs: ResourceArgs, getUpdatedRollbacks: () => ResourceFetch[]): Promise<RouteDescriptor> {
     const route = await this.openshiftService.withFetch((fetcher: ResourceFetcher) =>
       fetcher.execute<RouteDescriptor>({
-        target: new CreateRoute(resourceArgs),
+        target: new CreateRoute({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
         rollbacks: getUpdatedRollbacks(),
       })
     );

@@ -30,6 +30,7 @@ import {
   CreateIngress,
   ListIngresses,
   IngressGroupDescriptor,
+  ResourceDataSource,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import { KubernetesService, KubernetesServiceArgs } from "@kie-tools-core/kubernetes-bridge/dist/service";
@@ -141,6 +142,7 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
               value: `/${args.rootPath}`,
             },
           ],
+          resourceDataSource: ResourceDataSource.TEMPLATE,
         }),
         rollbacks: args.getUpdatedRollbacks(),
       })
@@ -196,7 +198,9 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
     let rollbacksCount = rollbacks.length;
 
     await this.service.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute({ target: new CreateService(resourceArgs) })
+      fetcher.execute({
+        target: new CreateService({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
+      })
     );
 
     const getUpdatedRollbacks = () => rollbacks.slice(--rollbacksCount);
@@ -274,7 +278,7 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
   ): Promise<IngressDescriptor> {
     const route = await this.service.withFetch((fetcher: ResourceFetcher) =>
       fetcher.execute<IngressDescriptor>({
-        target: new CreateIngress(resourceArgs),
+        target: new CreateIngress({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
         rollbacks: getUpdatedRollbacks(),
       })
     );

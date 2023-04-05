@@ -17,15 +17,19 @@
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { Secret, ISecret } from "kubernetes-models/v1";
-import { CommonTemplateArgs, commonLabels } from "../common";
+import { ResourceDataSource, commonLabels } from "../common";
 
-export interface CreateSecretArgs {
+export type CreateSecretTemplateArgs = {
   data: Record<string, string>;
-}
+  resourceDataSource: ResourceDataSource.TEMPLATE;
+};
+
+export type CreateSecretArgs = CreateResourceFetchArgs &
+  (CreateSecretTemplateArgs | { descriptor: SecretDescriptor; resourceDataSource: ResourceDataSource.PROVIDED });
 
 export type SecretDescriptor = ISecret;
 
-export const SECRET_TEMPLATE = (args: CommonTemplateArgs & CreateSecretArgs): Secret => {
+export const SECRET_TEMPLATE = (args: CreateResourceFetchArgs & CreateSecretTemplateArgs): SecretDescriptor => {
   const encodedData = Object.entries(args.data).reduce(
     (acc, [key, value]) => ({
       ...acc,
@@ -41,11 +45,11 @@ export const SECRET_TEMPLATE = (args: CommonTemplateArgs & CreateSecretArgs): Se
       labels: commonLabels({ ...args }),
     },
     data: encodedData,
-  });
+  }).toJSON();
 };
 
 export class CreateSecret extends ResourceFetch {
-  constructor(protected args: CreateResourceFetchArgs & CreateSecretArgs & { descriptor?: SecretDescriptor }) {
+  constructor(protected args: CreateSecretArgs) {
     super(args);
   }
 
@@ -54,7 +58,11 @@ export class CreateSecret extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? SECRET_TEMPLATE({ ...this.args }).toJSON());
+    return JSON.stringify(
+      this.args.resourceDataSource === ResourceDataSource.PROVIDED
+        ? this.args.descriptor
+        : SECRET_TEMPLATE({ ...this.args })
+    );
   }
 
   public endpoint(): string {

@@ -15,7 +15,7 @@
  */
 
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
-import { CommonTemplateArgs, ResourceDescriptor, commonLabels } from "../common";
+import { ResourceDataSource, ResourceDescriptor, commonLabels } from "../common";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { KAFKA_SOURCE_FINALIZER, KnativeApiVersions } from "./api";
 
@@ -60,7 +60,7 @@ export interface KafkaSourceDescriptor extends ResourceDescriptor {
   spec: KafkaSourceSpec;
 }
 
-export interface CreateKafkaSourceArgs {
+export interface CreateKafkaSourceTemplateArgs {
   sinkService: string;
   bootstrapServers: string[];
   topics: string[];
@@ -70,9 +70,18 @@ export interface CreateKafkaSourceArgs {
     keySecret: string;
     keyMechanism: string;
   };
+  resourceDataSource: ResourceDataSource.TEMPLATE;
 }
 
-export const KAFKA_SOURCE_TEMPLATE = (args: CommonTemplateArgs & CreateKafkaSourceArgs): KafkaSourceDescriptor => ({
+export type CreateKafkaSourceArgs = CreateResourceFetchArgs &
+  (
+    | CreateKafkaSourceTemplateArgs
+    | { descriptor: KafkaSourceDescriptor; resourceDataSource: ResourceDataSource.PROVIDED }
+  );
+
+export const KAFKA_SOURCE_TEMPLATE = (
+  args: CreateResourceFetchArgs & CreateKafkaSourceTemplateArgs
+): KafkaSourceDescriptor => ({
   apiVersion: KnativeApiVersions.KAFKA_SOURCE,
   kind: "KafkaSource",
   metadata: {
@@ -122,9 +131,7 @@ export const KAFKA_SOURCE_TEMPLATE = (args: CommonTemplateArgs & CreateKafkaSour
 });
 
 export class CreateKafkaSource extends ResourceFetch {
-  constructor(
-    protected args: CreateResourceFetchArgs & CreateKafkaSourceArgs & { descriptor?: KafkaSourceDescriptor }
-  ) {
+  constructor(protected args: CreateKafkaSourceArgs) {
     super(args);
   }
 
@@ -133,7 +140,11 @@ export class CreateKafkaSource extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? KAFKA_SOURCE_TEMPLATE({ ...this.args }));
+    return JSON.stringify(
+      this.args.resourceDataSource === ResourceDataSource.PROVIDED
+        ? this.args.descriptor
+        : KAFKA_SOURCE_TEMPLATE({ ...this.args })
+    );
   }
 
   public endpoint(): string {

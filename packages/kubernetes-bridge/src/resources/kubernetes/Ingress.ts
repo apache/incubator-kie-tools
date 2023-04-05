@@ -17,13 +17,19 @@
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { Ingress, IIngress } from "kubernetes-models/networking.k8s.io/v1";
-import { CommonTemplateArgs, ResourceGroupDescriptor, commonLabels, runtimeLabels } from "../common";
+import { ResourceDataSource, ResourceGroupDescriptor, commonLabels, runtimeLabels } from "../common";
 
 export type IngressDescriptor = IIngress;
 
 export type IngressGroupDescriptor = ResourceGroupDescriptor<IngressDescriptor>;
 
-export const INGRESS_TEMPLATE = (args: CommonTemplateArgs): Ingress => {
+export type CreateIngressArgs = CreateResourceFetchArgs &
+  (
+    | { resourceDataSource: ResourceDataSource.TEMPLATE }
+    | { descriptor: IngressDescriptor; resourceDataSource: ResourceDataSource.PROVIDED }
+  );
+
+export const INGRESS_TEMPLATE = (args: CreateResourceFetchArgs): IngressDescriptor => {
   return new Ingress({
     metadata: {
       name: args.resourceName,
@@ -59,11 +65,11 @@ export const INGRESS_TEMPLATE = (args: CommonTemplateArgs): Ingress => {
         },
       ],
     },
-  });
+  }).toJSON();
 };
 
 export class CreateIngress extends ResourceFetch {
-  constructor(protected args: CreateResourceFetchArgs & { descriptor?: IngressDescriptor }) {
+  constructor(protected args: CreateIngressArgs) {
     super(args);
   }
 
@@ -72,7 +78,11 @@ export class CreateIngress extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? INGRESS_TEMPLATE({ ...this.args }).toJSON());
+    return JSON.stringify(
+      this.args.resourceDataSource === ResourceDataSource.PROVIDED
+        ? this.args.descriptor
+        : INGRESS_TEMPLATE({ ...this.args })
+    );
   }
 
   public endpoint(): string {

@@ -19,7 +19,7 @@ import { HttpMethod } from "../../fetch/FetchConstants";
 import { OpenshiftApiVersions } from "./api";
 import { IObjectReference } from "kubernetes-models/v1";
 import {
-  CommonTemplateArgs,
+  ResourceDataSource,
   ResourceDescriptor,
   ResourceGroupDescriptor,
   commonLabels,
@@ -46,7 +46,14 @@ export interface RouteDescriptor extends ResourceDescriptor {
 
 export type RouteGroupDescriptor = ResourceGroupDescriptor<RouteDescriptor>;
 
-export const ROUTE_TEMPLATE = (args: CommonTemplateArgs): RouteDescriptor => ({
+export type CreateRouteTemplateArgs = {
+  resourceDataSource: ResourceDataSource.TEMPLATE;
+};
+
+export type CreateRouteArgs = CreateResourceFetchArgs &
+  (CreateRouteTemplateArgs | { descriptor: RouteDescriptor; resourceDataSource: ResourceDataSource.PROVIDED });
+
+export const ROUTE_TEMPLATE = (args: CreateResourceFetchArgs & CreateRouteTemplateArgs): RouteDescriptor => ({
   apiVersion: OpenshiftApiVersions.ROUTE,
   kind: "Route",
   metadata: {
@@ -73,7 +80,7 @@ export const ROUTE_TEMPLATE = (args: CommonTemplateArgs): RouteDescriptor => ({
 });
 
 export class CreateRoute extends ResourceFetch {
-  constructor(protected args: CreateResourceFetchArgs & { descriptor?: RouteDescriptor }) {
+  constructor(protected args: CreateRouteArgs) {
     super(args);
   }
 
@@ -82,7 +89,11 @@ export class CreateRoute extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? ROUTE_TEMPLATE({ ...this.args }));
+    return JSON.stringify(
+      this.args.resourceDataSource === ResourceDataSource.PROVIDED
+        ? this.args.descriptor
+        : ROUTE_TEMPLATE({ ...this.args })
+    );
   }
 
   public endpoint(): string {

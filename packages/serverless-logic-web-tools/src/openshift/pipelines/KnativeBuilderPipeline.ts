@@ -31,6 +31,7 @@ import {
   KAFKA_SOURCE_CLIENT_MECHANISM_KEY,
   KAFKA_SOURCE_CLIENT_MECHANISM_PLAIN,
   KAFKA_SOURCE_CLIENT_SECRET_KEY,
+  ResourceDataSource,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { RESOURCE_OWNER } from "../OpenShiftConstants";
 import { KafkaSourceArgs } from "../deploy/types";
@@ -67,10 +68,15 @@ export class KnativeBuilderPipeline extends OpenShiftPipeline {
     let rollbacksCount = rollbacks.length;
 
     await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute({ target: new CreateImageStream(resourceArgs) })
+      fetcher.execute({
+        target: new CreateImageStream({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
+      })
     );
     await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute({ target: new CreateBuildConfig(resourceArgs), rollbacks: rollbacks.slice(--rollbacksCount) })
+      fetcher.execute({
+        target: new CreateBuildConfig({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
+        rollbacks: rollbacks.slice(--rollbacksCount),
+      })
     );
     await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
       fetcher.execute({
@@ -84,6 +90,7 @@ export class KnativeBuilderPipeline extends OpenShiftPipeline {
           ...resourceArgs,
           uri: this.args.targetUri,
           workspaceName: this.args.workspaceName,
+          resourceDataSource: ResourceDataSource.TEMPLATE,
         }),
         rollbacks: rollbacks.slice(rollbacksCount),
       })
@@ -97,7 +104,11 @@ export class KnativeBuilderPipeline extends OpenShiftPipeline {
       };
       await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
         fetcher.execute({
-          target: new CreateSecret({ ...resourceArgs, data: secretData }),
+          target: new CreateSecret({
+            ...resourceArgs,
+            data: secretData,
+            resourceDataSource: ResourceDataSource.TEMPLATE,
+          }),
           rollbacks: rollbacks.slice(--rollbacksCount),
         })
       );
@@ -116,6 +127,7 @@ export class KnativeBuilderPipeline extends OpenShiftPipeline {
               keySecret: KAFKA_SOURCE_CLIENT_SECRET_KEY,
               keyMechanism: KAFKA_SOURCE_CLIENT_MECHANISM_KEY,
             },
+            resourceDataSource: ResourceDataSource.TEMPLATE,
           }),
           rollbacks: rollbacks.slice(--rollbacksCount),
         })

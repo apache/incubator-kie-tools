@@ -21,9 +21,9 @@ import { IObjectReference, IResourceRequirements } from "kubernetes-models/v1";
 import {
   ResourceDescriptor,
   BUILD_IMAGE_TAG_VERSION,
-  CommonTemplateArgs,
   commonLabels,
   runtimeLabels,
+  ResourceDataSource,
 } from "../common";
 
 export interface DockerBuildStrategy {
@@ -52,7 +52,19 @@ export interface BuildConfigDescriptor extends ResourceDescriptor {
   spec: BuildConfigSpec;
 }
 
-export const BUILD_CONFIG_TEMPLATE = (args: CommonTemplateArgs): BuildConfigDescriptor => ({
+export type CreateBuildConfigTemplateArgs = {
+  resourceDataSource: ResourceDataSource.TEMPLATE;
+};
+
+export type CreateBuildConfigArgs = CreateResourceFetchArgs &
+  (
+    | CreateBuildConfigTemplateArgs
+    | { descriptor: BuildConfigDescriptor; resourceDataSource: ResourceDataSource.PROVIDED }
+  );
+
+export const BUILD_CONFIG_TEMPLATE = (
+  args: CreateResourceFetchArgs & CreateBuildConfigTemplateArgs
+): BuildConfigDescriptor => ({
   apiVersion: OpenshiftApiVersions.BUILD_CONFIG,
   kind: "BuildConfig",
   metadata: {
@@ -86,7 +98,7 @@ export const BUILD_CONFIG_TEMPLATE = (args: CommonTemplateArgs): BuildConfigDesc
 });
 
 export class CreateBuildConfig extends ResourceFetch {
-  constructor(protected args: CreateResourceFetchArgs & { descriptor?: BuildConfigDescriptor }) {
+  constructor(protected args: CreateBuildConfigArgs) {
     super(args);
   }
 
@@ -95,7 +107,11 @@ export class CreateBuildConfig extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? BUILD_CONFIG_TEMPLATE({ ...this.args }));
+    return JSON.stringify(
+      this.args.resourceDataSource === ResourceDataSource.PROVIDED
+        ? this.args.descriptor
+        : BUILD_CONFIG_TEMPLATE({ ...this.args })
+    );
   }
 
   public endpoint(): string {

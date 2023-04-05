@@ -24,7 +24,7 @@ import {
 import { OpenShiftLabelNames } from "../openshift/api";
 import {
   BUILD_IMAGE_TAG_VERSION,
-  CommonTemplateArgs,
+  ResourceDataSource,
   ResourceGroupDescriptor,
   ResourceLabelNames,
   commonLabels,
@@ -34,11 +34,6 @@ import {
   Service as KnativeService,
   IService as IKnativeService,
 } from "@kubernetes-models/knative/serving.knative.dev/v1/Service";
-
-export interface CreateKnativeServiceArgs {
-  uri: string;
-  workspaceName: string;
-}
 
 export type KnativeServiceDescriptor = IKnativeService;
 
@@ -54,7 +49,21 @@ export interface Trigger {
   pause: boolean;
 }
 
-export const KNATIVE_SERVICE_TEMPLATE = (args: CommonTemplateArgs & CreateKnativeServiceArgs): KnativeService => {
+export interface CreateKnativeServiceTemplateArgs {
+  uri: string;
+  workspaceName: string;
+  resourceDataSource: ResourceDataSource.TEMPLATE;
+}
+
+export type CreateKnativeServiceArgs = CreateResourceFetchArgs &
+  (
+    | CreateKnativeServiceTemplateArgs
+    | { descriptor: KnativeServiceDescriptor; resourceDataSource: ResourceDataSource.PROVIDED }
+  );
+
+export const KNATIVE_SERVICE_TEMPLATE = (
+  args: CreateResourceFetchArgs & CreateKnativeServiceTemplateArgs
+): KnativeServiceDescriptor => {
   const imageStreamTrigger: Trigger = {
     from: {
       name: `${args.resourceName}:${BUILD_IMAGE_TAG_VERSION}`,
@@ -93,13 +102,11 @@ export const KNATIVE_SERVICE_TEMPLATE = (args: CommonTemplateArgs & CreateKnativ
         },
       },
     },
-  });
+  }).toJSON();
 };
 
 export class CreateKnativeService extends ResourceFetch {
-  constructor(
-    protected args: CreateResourceFetchArgs & CreateKnativeServiceArgs & { descriptor?: KnativeServiceDescriptor }
-  ) {
+  constructor(protected args: CreateKnativeServiceArgs) {
     super(args);
   }
 
@@ -108,7 +115,11 @@ export class CreateKnativeService extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? KNATIVE_SERVICE_TEMPLATE({ ...this.args }).toJSON());
+    return JSON.stringify(
+      this.args.resourceDataSource === ResourceDataSource.PROVIDED
+        ? this.args.descriptor
+        : KNATIVE_SERVICE_TEMPLATE({ ...this.args })
+    );
   }
 
   public endpoint(): string {

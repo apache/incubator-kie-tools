@@ -53,12 +53,6 @@ export const ResourceLabelNames = {
   WORKSPACE_NAME: "kogito.kie.org/workspace-name",
 };
 
-export interface CommonTemplateArgs {
-  resourceName: string;
-  namespace: string;
-  createdBy: string;
-}
-
 export const commonLabels = (args: { resourceName: string; createdBy: string }) => ({
   [KubernetesLabelNames.APP]: args.resourceName,
   [KubernetesLabelNames.COMPONENT]: args.resourceName,
@@ -86,4 +80,9 @@ export interface DeployedModel {
   routeUrl: string;
   creationTimestamp: Date;
   state: DeploymentState;
+}
+
+export enum ResourceDataSource {
+  PROVIDED = "PROVIDED",
+  TEMPLATE = "TEMPLATE",
 }

@@ -23,21 +23,28 @@ import {
 } from "../../fetch/ResourceFetch";
 import { Deployment, IDeployment, IDeploymentCondition } from "kubernetes-models/apps/v1";
 import {
-  CommonTemplateArgs,
   EnvVar,
+  ResourceDataSource,
   ResourceGroupDescriptor,
   ResourceLabelNames,
   commonLabels,
   runtimeLabels,
 } from "../common";
 
-export interface CreateDeploymentArgs {
+export type CreateDeploymentTemplateArgs = {
   uri: string;
   baseUrl: string;
   workspaceName: string;
   containerImageUrl: string;
   envVars: EnvVar[];
-}
+  resourceDataSource: ResourceDataSource.TEMPLATE;
+};
+
+export type CreateDeploymentArgs = CreateResourceFetchArgs &
+  (
+    | CreateDeploymentTemplateArgs
+    | { descriptor: DeploymentDescriptor; resourceDataSource: ResourceDataSource.PROVIDED }
+  );
 
 export type DeploymentDescriptor = IDeployment;
 
@@ -45,7 +52,9 @@ export type DeploymentGroupDescriptor = ResourceGroupDescriptor<DeploymentDescri
 
 export type DeploymentCondition = IDeploymentCondition;
 
-export const DEPLOYMENT_TEMPLATE = (args: CommonTemplateArgs & CreateDeploymentArgs): Deployment => {
+export const DEPLOYMENT_TEMPLATE = (
+  args: CreateResourceFetchArgs & CreateDeploymentTemplateArgs
+): DeploymentDescriptor => {
   const annotations = {
     [ResourceLabelNames.URI]: args.uri,
     [ResourceLabelNames.WORKSPACE_NAME]: args.workspaceName,
@@ -92,11 +101,11 @@ export const DEPLOYMENT_TEMPLATE = (args: CommonTemplateArgs & CreateDeploymentA
         },
       },
     },
-  });
+  }).toJSON();
 };
 
 export class CreateDeployment extends ResourceFetch {
-  constructor(protected args: CreateResourceFetchArgs & CreateDeploymentArgs & { descriptor?: DeploymentDescriptor }) {
+  constructor(protected args: CreateDeploymentArgs) {
     super(args);
   }
 
@@ -105,7 +114,11 @@ export class CreateDeployment extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? DEPLOYMENT_TEMPLATE({ ...this.args }).toJSON());
+    return JSON.stringify(
+      this.args.resourceDataSource === ResourceDataSource.PROVIDED
+        ? this.args.descriptor
+        : DEPLOYMENT_TEMPLATE({ ...this.args })
+    );
   }
 
   public endpoint(): string {

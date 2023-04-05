@@ -17,11 +17,18 @@
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { Service, IService } from "kubernetes-models/v1";
-import { CommonTemplateArgs, commonLabels, runtimeLabels } from "../common";
+import { ResourceDataSource, commonLabels, runtimeLabels } from "../common";
 
 export type ServiceDescriptor = IService;
 
-export const SERVICE_TEMPLATE = (args: CommonTemplateArgs): Service => {
+export type CreateServiceTemplateArgs = {
+  resourceDataSource: ResourceDataSource.TEMPLATE;
+};
+
+export type CreateServiceArgs = CreateResourceFetchArgs &
+  (CreateServiceTemplateArgs | { descriptor: ServiceDescriptor; resourceDataSource: ResourceDataSource.PROVIDED });
+
+export const SERVICE_TEMPLATE = (args: CreateResourceFetchArgs & CreateServiceTemplateArgs): ServiceDescriptor => {
   return new Service({
     metadata: {
       name: args.resourceName,
@@ -45,11 +52,11 @@ export const SERVICE_TEMPLATE = (args: CommonTemplateArgs): Service => {
         deploymentconfig: args.resourceName,
       },
     },
-  });
+  }).toJSON();
 };
 
 export class CreateService extends ResourceFetch {
-  constructor(protected args: CreateResourceFetchArgs & { descriptor?: ServiceDescriptor }) {
+  constructor(protected args: CreateServiceArgs) {
     super(args);
   }
 
@@ -58,7 +65,11 @@ export class CreateService extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? SERVICE_TEMPLATE({ ...this.args }).toJSON());
+    return JSON.stringify(
+      this.args.resourceDataSource === ResourceDataSource.PROVIDED
+        ? this.args.descriptor
+        : SERVICE_TEMPLATE({ ...this.args })
+    );
   }
 
   public endpoint(): string {

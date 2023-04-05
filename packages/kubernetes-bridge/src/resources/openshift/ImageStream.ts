@@ -17,7 +17,7 @@
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { OpenshiftApiVersions } from "./api";
-import { CommonTemplateArgs, ResourceDescriptor, commonLabels, runtimeLabels } from "../common";
+import { ResourceDataSource, ResourceDescriptor, commonLabels, runtimeLabels } from "../common";
 
 export interface ImageStreamSpec {
   lookupPolicy: {
@@ -29,7 +29,19 @@ export interface ImageStreamDescriptor extends ResourceDescriptor {
   spec: ImageStreamSpec;
 }
 
-export const IMAGE_STREAM_TEMPLATE = (args: CommonTemplateArgs): ImageStreamDescriptor => ({
+export type CreateImageStreamTemplateArgs = {
+  resourceDataSource: ResourceDataSource.TEMPLATE;
+};
+
+export type CreateImageStreamArgs = CreateResourceFetchArgs &
+  (
+    | CreateImageStreamTemplateArgs
+    | { descriptor: ImageStreamDescriptor; resourceDataSource: ResourceDataSource.PROVIDED }
+  );
+
+export const IMAGE_STREAM_TEMPLATE = (
+  args: CreateResourceFetchArgs & CreateImageStreamTemplateArgs
+): ImageStreamDescriptor => ({
   apiVersion: OpenshiftApiVersions.IMAGE_STREAM,
   kind: "ImageStream",
   metadata: {
@@ -48,7 +60,7 @@ export const IMAGE_STREAM_TEMPLATE = (args: CommonTemplateArgs): ImageStreamDesc
 });
 
 export class CreateImageStream extends ResourceFetch {
-  constructor(protected args: CreateResourceFetchArgs & { descriptor?: ImageStreamDescriptor }) {
+  constructor(protected args: CreateImageStreamArgs) {
     super(args);
   }
 
@@ -57,7 +69,11 @@ export class CreateImageStream extends ResourceFetch {
   }
 
   public body(): string {
-    return JSON.stringify(this.args.descriptor ?? IMAGE_STREAM_TEMPLATE({ ...this.args }));
+    return JSON.stringify(
+      this.args.resourceDataSource === ResourceDataSource.PROVIDED
+        ? this.args.descriptor
+        : IMAGE_STREAM_TEMPLATE({ ...this.args })
+    );
   }
 
   public endpoint(): string {
