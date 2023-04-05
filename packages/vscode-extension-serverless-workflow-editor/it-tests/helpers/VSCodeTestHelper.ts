@@ -194,11 +194,16 @@ export default class VSCodeTestHelper {
     try {
       await this.workbench.getEditorView().closeAllEditors();
     } catch (error) {
-      // catch the error when there is nothing to close
-      // or the Save Dialog appears
-      const dialog = new ModalDialog();
-      if (dialog != null && (await dialog.isDisplayed())) {
-        await dialog.pushButton("Don't Save");
+      console.log("Error while closing all editors: " + error);
+      try {
+        // catch the error when there is nothing to close
+        // or the Save Dialog appears
+        const dialog = new ModalDialog();
+        if (dialog != null && (await dialog.isDisplayed())) {
+          await dialog.pushButton("Don't Save");
+        }
+      } catch (error) {
+        console.log("Error while pushButton called: " + error);
       }
     }
   };
