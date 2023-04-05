@@ -121,9 +121,7 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
           uri: args.deployArgs.targetFilePath,
           baseUrl: args.routeUrl,
           workspaceName: args.deployArgs.workspaceName,
-          // TODO: return value to process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl
-          containerImageUrl:
-            "quay.io/thiagoelg/dmn-dev-deployment-base-image@sha256:6f7df7b8ec64afec3148f02c154b15b25fca177328b7e2a21708401b98a9d84f",
+          containerImageUrl: process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl!,
           envVars: [
             {
               name: "BASE_URL",

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -25,8 +25,6 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Wizard, WizardContextConsumer, WizardFooter } from "@patternfly/react-core/dist/js/components/Wizard";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { KubernetesSettingsTabMode } from "./ConnectToKubernetesSection";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
@@ -212,7 +210,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
           <ListItem>
             <TextContent>
               <Text component={TextVariants.p}>
-                <a href={FLAVOR_INSTALL_DOCS[kubernetesFlavor]} target={"_blank"}>
+                <a href={FLAVOR_INSTALL_DOCS[kubernetesFlavor]} target={"_blank"} rel="noreferrer">
                   {i18n.devDeployments.kubernetesConfigWizard.steps.first.installFlavor(kubernetesFlavor)}
                   &nbsp;
                   <ExternalLinkAltIcon className="pf-u-mx-sm" />
@@ -223,7 +221,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
           <ListItem>
             <TextContent>
               <Text component={TextVariants.p}>
-                <a href={KUBECTL_INSTALL_DOCS[operatingSystem]} target={"_blank"}>
+                <a href={KUBECTL_INSTALL_DOCS[operatingSystem]} target={"_blank"} rel="noreferrer">
                   {i18n.devDeployments.kubernetesConfigWizard.steps.first.installKubectl}
                   &nbsp;
                   <ExternalLinkAltIcon className="pf-u-mx-sm" />

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -26,8 +27,6 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Wizard, WizardContextConsumer, WizardFooter } from "@patternfly/react-core/dist/js/components/Wizard";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
