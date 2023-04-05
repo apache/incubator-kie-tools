@@ -59,10 +59,10 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
     setExpression((prev) => ({
       id: prev.id,
       name: prev.name,
-      dataType: isNested ? prev.dataType : DmnBuiltInDataType.Undefined,
+      dataType: prev.dataType,
       logicType: ExpressionDefinitionLogicType.Undefined,
     }));
-  }, [isNested, setExpression]);
+  }, [setExpression]);
 
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 
