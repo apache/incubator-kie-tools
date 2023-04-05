@@ -33,6 +33,8 @@ public class CallbackState extends State {
 
     public ActionNode action;
 
+    EventDataFilter eventDataFilter;
+
     public CallbackState() {
         this.type = TYPE_CALLBACK;
     }
@@ -51,5 +53,13 @@ public class CallbackState extends State {
 
     public void setAction(ActionNode action) {
         this.action = action;
+    }
+
+    public EventDataFilter getEventDataFilter() {
+        return eventDataFilter;
+    }
+
+    public void setEventDataFilter(EventDataFilter eventDataFilter) {
+        this.eventDataFilter = eventDataFilter;
     }
 }
