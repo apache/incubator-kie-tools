@@ -1,3 +1,7 @@
+# 0.26.1 (alpha)
+
+- [KOGITO-8946](https://issues.redhat.com/browse/KOGITO-8946) - Stunner - Return MessageIn/Out for compatibility with Business Central
+
 # 0.26.0 (alpha)
 
 - [kie-issues#6](https://github.com/kiegroup/kie-issues/issues/6) - Bump `gwt` version to `2.10.0` version in `stunner-editors` module
