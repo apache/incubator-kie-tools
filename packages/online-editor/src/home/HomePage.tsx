@@ -89,6 +89,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { listDeletedFiles } from "../workspace/components/WorkspaceStatusIndicator";
+import { getEnvelopeEditors } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -96,6 +97,7 @@ export function HomePage() {
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
   const queryParams = useQueryParams();
+  const editors = getEnvelopeEditors();
 
   const closeExpandedWorkspace = useCallback(() => {
     history.replace({
@@ -144,24 +146,16 @@ export function HomePage() {
               <Gallery
                 hasGutter={true}
                 // var(--pf-c-page__main-section--PaddingTop) is the "Gutter" width.
-                minWidths={{ default: "calc(33% - var(--pf-c-page__main-section--PaddingTop))" }}
+                minWidths={{
+                  default: "calc(" + 100 / editors.length + "% - var(--pf-c-page__main-section--PaddingTop))",
+                }}
                 style={{ height: "calc(100% - 32px)", gridAutoFlow: "column" }}
               >
-                <NewModelCard
-                  title={"Workflow"}
-                  extension={"bpmn"}
-                  description={"BPMN files are used to generate business workflows."}
-                />
-                <NewModelCard
-                  title={"Decision"}
-                  extension={"dmn"}
-                  description={"DMN files are used to generate decision models"}
-                />
-                <NewModelCard
-                  title={"Scorecard"}
-                  extension={"pmml"}
-                  description={"PMML files are used to generate scorecards"}
-                />
+                {editors.map((config) => {
+                  return (
+                    <NewModelCard title={config.title} extension={config.extension} description={config.description} />
+                  );
+                })}
               </Gallery>
             </PageSection>
           </GridItem>
@@ -429,7 +423,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   );
 }
 
-export function NewModelCard(props: { title: string; extension: SupportedFileExtensions; description: string }) {
+export function NewModelCard(props: { title: string; extension: string; description: string }) {
   const routes = useRoutes();
 
   return (

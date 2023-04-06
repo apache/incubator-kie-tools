@@ -21,6 +21,9 @@ import { routes } from "../src/navigation/Routes";
 // @ts-ignore
 import { env } from "../env";
 import { AuthProviderGroup, AuthProviderType } from "../src/authProviders/AuthProvidersApi";
+import { EnvelopeContentType } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
+import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { GLOB_PATTERN } from "../src/envelopeLocator/EditorEnvelopeLocatorFactory";
 const buildEnv: any = env; // build-env is not typed
 
 export const defaultEnvJson: EnvJson = {
@@ -88,6 +91,35 @@ export const defaultEnvJson: EnvJson = {
       dmnDestinationFolder: "src/main/resources/dmn",
       bpmnDestinationFolder: "src/main/resources/bpmn",
       otherFilesDestinationFolder: "src/main/resources/others",
+    },
+  ],
+  KIE_SANDBOX_ENVELOPE_LOCATOR: [
+    {
+      type: FileTypes.BPMN,
+      filePathGlob: GLOB_PATTERN.bpmn,
+      resourcesPathPrefix: "gwt-editors/bpmn",
+      path: "bpmn-envelope.html",
+      title: "Workflow",
+      extension: "bpmn",
+      description: "BPMN files are used to generate business workflows.",
+    },
+    {
+      type: FileTypes.DMN,
+      filePathGlob: GLOB_PATTERN.dmn,
+      resourcesPathPrefix: "gwt-editors/dmn",
+      path: "dmn-envelope.html",
+      title: "Decision",
+      extension: "dmn",
+      description: "DMN files are used to generate decision models",
+    },
+    {
+      type: FileTypes.PMML,
+      filePathGlob: GLOB_PATTERN.pmml,
+      resourcesPathPrefix: "",
+      path: "pmml-envelope.html",
+      title: "Scorecard",
+      extension: "pmml",
+      description: "PMML files are used to generate scorecards",
     },
   ],
 };

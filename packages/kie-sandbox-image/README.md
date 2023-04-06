@@ -237,3 +237,46 @@ Here's an example of what it should look like:
     otherFilesDestinationFolder: "src/main/resources/others",
 }
 ```
+
+### Editors
+
+By default all editors will be enabled. To disable an editor simply delete/comment out the respective json.
+
+- **type**: The type of file that you want to edit.
+- **filePathGlob**: The glob pattern of the file you want to edit.
+- **resourcesPathPrefix**: The path to the editor you want to get to.
+- **path**: Populates the envelopeContent.
+- **title**: The title that will show up on the home page.
+- **extension**: The extension of the file type that you want to edit.
+- **description**: An optional parameter that will display a short description under the title on the home page.
+  Here's an example of what it should look like:
+
+```js
+    {
+      type: FileTypes.BPMN,
+      filePathGlob: GLOB_PATTERN.bpmn,
+      resourcesPathPrefix: "gwt-editors/bpmn",
+      path: "bpmn-envelope.html",
+      title: "Workflow",
+      extension: "bpmn",
+      description: "BPMN files are used to generate business workflows.",
+    },
+    {
+      type: FileTypes.DMN,
+      filePathGlob: GLOB_PATTERN.dmn,
+      resourcesPathPrefix: "gwt-editors/dmn",
+      path: "dmn-envelope.html",
+      title: "Decision",
+      extension: "dmn",
+      description: "DMN files are used to generate decision models",
+    },
+    {
+      type: FileTypes.PMML,
+      filePathGlob: GLOB_PATTERN.pmml,
+      resourcesPathPrefix: "",
+      path: "pmml-envelope.html",
+      title: "Scorecard",
+      extension: "pmml",
+      description: "PMML files are used to generate scorecards",
+    },
+```
