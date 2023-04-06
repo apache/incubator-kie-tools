@@ -67,23 +67,23 @@ export class KieSandboxOpenShiftService implements KieSandboxDeploymentService {
       .filter(
         (deployment) =>
           deployment.status &&
-          deployment.metadata?.name &&
+          deployment.metadata.name &&
           deployment.metadata.annotations &&
           deployment.metadata.labels &&
           deployment.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER &&
-          routes.some((route) => route.metadata?.name === deployment.metadata?.name)
+          routes.some((route) => route.metadata.name === deployment.metadata.name)
       )
       .map((deployment) => {
-        const route = routes.find((route) => route.metadata?.name === deployment.metadata?.name)!;
+        const route = routes.find((route) => route.metadata.name === deployment.metadata.name)!;
         const baseUrl = this.getRouteUrl(route);
         const uploadStatus = uploadStatuses.find((status) => status.url === baseUrl)!.uploadStatus;
         return {
-          resourceName: deployment.metadata!.name!,
-          uri: deployment.metadata!.annotations![ResourceLabelNames.URI],
+          resourceName: deployment.metadata.name!,
+          uri: deployment.metadata.annotations![ResourceLabelNames.URI],
           routeUrl: baseUrl,
-          creationTimestamp: new Date(deployment.metadata?.creationTimestamp ?? Date.now()),
+          creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
           state: this.kieSandboxKubernetesService.extractDeploymentStateWithUploadStatus(deployment, uploadStatus),
-          workspaceName: deployment.metadata!.annotations![ResourceLabelNames.WORKSPACE_NAME],
+          workspaceName: deployment.metadata.annotations![ResourceLabelNames.WORKSPACE_NAME],
         };
       });
   }
@@ -156,7 +156,7 @@ export class KieSandboxOpenShiftService implements KieSandboxDeploymentService {
         })
       )
     ).items.filter(
-      (route) => route.metadata?.labels && route.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER
+      (route) => route.metadata.labels && route.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER
     );
 
     return routes;

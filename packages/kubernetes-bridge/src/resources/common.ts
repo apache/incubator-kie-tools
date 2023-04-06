@@ -26,10 +26,16 @@ export type ResourceRequirements = {
   };
 };
 
+export type ResourceMetadata = IObjectMeta & { name: string; namespace: string };
+
 export interface ResourceDescriptor {
   apiVersion: string;
   kind: string;
-  metadata?: IObjectMeta;
+  metadata: ResourceMetadata;
+}
+
+export interface ResourceMetadataEnforcer {
+  metadata: ResourceMetadata;
 }
 
 export interface ResourceGroupDescriptor<T extends ResourceDescriptor> {

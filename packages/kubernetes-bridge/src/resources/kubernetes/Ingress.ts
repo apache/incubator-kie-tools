@@ -17,9 +17,15 @@
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { Ingress, IIngress } from "kubernetes-models/networking.k8s.io/v1";
-import { ResourceDataSource, ResourceGroupDescriptor, commonLabels, runtimeLabels } from "../common";
+import {
+  ResourceDataSource,
+  ResourceGroupDescriptor,
+  ResourceMetadataEnforcer,
+  commonLabels,
+  runtimeLabels,
+} from "../common";
 
-export type IngressDescriptor = IIngress;
+export type IngressDescriptor = IIngress & ResourceMetadataEnforcer;
 
 export type IngressGroupDescriptor = ResourceGroupDescriptor<IngressDescriptor>;
 

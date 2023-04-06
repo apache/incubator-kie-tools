@@ -17,9 +17,9 @@
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { Service, IService } from "kubernetes-models/v1";
-import { ResourceDataSource, commonLabels, runtimeLabels } from "../common";
+import { ResourceDataSource, ResourceMetadataEnforcer, commonLabels, runtimeLabels } from "../common";
 
-export type ServiceDescriptor = IService;
+export type ServiceDescriptor = IService & ResourceMetadataEnforcer;
 
 export type CreateServiceTemplateArgs = {
   resourceDataSource: ResourceDataSource.TEMPLATE;

@@ -27,6 +27,7 @@ import {
   ResourceDataSource,
   ResourceGroupDescriptor,
   ResourceLabelNames,
+  ResourceMetadataEnforcer,
   commonLabels,
   runtimeLabels,
 } from "../common";
@@ -46,7 +47,7 @@ export type CreateDeploymentArgs = CreateResourceFetchArgs &
     | { descriptor: DeploymentDescriptor; resourceDataSource: ResourceDataSource.PROVIDED }
   );
 
-export type DeploymentDescriptor = IDeployment;
+export type DeploymentDescriptor = IDeployment & ResourceMetadataEnforcer;
 
 export type DeploymentGroupDescriptor = ResourceGroupDescriptor<DeploymentDescriptor>;
 

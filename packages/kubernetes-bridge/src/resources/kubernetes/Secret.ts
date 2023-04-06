@@ -17,7 +17,7 @@
 import { CreateResourceFetchArgs, ResourceFetch, UniqueResourceFetchArgs } from "../../fetch/ResourceFetch";
 import { HttpMethod } from "../../fetch/FetchConstants";
 import { Secret, ISecret } from "kubernetes-models/v1";
-import { ResourceDataSource, commonLabels } from "../common";
+import { ResourceDataSource, ResourceMetadataEnforcer, commonLabels } from "../common";
 
 export type CreateSecretTemplateArgs = {
   data: Record<string, string>;
@@ -27,7 +27,7 @@ export type CreateSecretTemplateArgs = {
 export type CreateSecretArgs = CreateResourceFetchArgs &
   (CreateSecretTemplateArgs | { descriptor: SecretDescriptor; resourceDataSource: ResourceDataSource.PROVIDED });
 
-export type SecretDescriptor = ISecret;
+export type SecretDescriptor = ISecret & ResourceMetadataEnforcer;
 
 export const SECRET_TEMPLATE = (args: CreateResourceFetchArgs & CreateSecretTemplateArgs): SecretDescriptor => {
   const encodedData = Object.entries(args.data).reduce(

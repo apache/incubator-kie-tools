@@ -27,6 +27,7 @@ import {
   ResourceDataSource,
   ResourceGroupDescriptor,
   ResourceLabelNames,
+  ResourceMetadataEnforcer,
   commonLabels,
   runtimeLabels,
 } from "../common";
@@ -35,7 +36,7 @@ import {
   IService as IKnativeService,
 } from "@kubernetes-models/knative/serving.knative.dev/v1/Service";
 
-export type KnativeServiceDescriptor = IKnativeService;
+export type KnativeServiceDescriptor = IKnativeService & ResourceMetadataEnforcer;
 
 export type KnativeServiceGroupDescriptor = ResourceGroupDescriptor<KnativeServiceDescriptor>;
 
