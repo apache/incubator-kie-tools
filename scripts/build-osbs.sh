@@ -89,6 +89,8 @@ function check_for_required_envs()
 
 function get_kerb_ticket() {
     set +e
+    retries=10
+    delay=5
     if [ -n "$KERBEROS_PASSWORD" ]; then
         echo "$KERBEROS_PASSWORD" | kinit "$KERBEROS_PRINCIPAL"
         _klist
@@ -97,8 +99,13 @@ function get_kerb_ticket() {
             exit -1
         fi
     elif [ -n "$KERBEROS_KEYTAB" ]; then
-        kinit -k -t "$KERBEROS_KEYTAB" "$KERBEROS_PRINCIPAL"
-        _klist
+        for i in `seq 1 $retries`; do
+            kinit -k -t "$KERBEROS_KEYTAB" "$KERBEROS_PRINCIPAL"
+            [ $? -eq 0 ] && break
+            echo "Failed to acquire Kerberos ticket, retrying (try $i of $retries)..."
+            _klist
+            sleep $delay
+        done
         if [ "$?" -ne 0 ]; then
             echo "Failed to get kerberos token for $KERBEROS_PRINCIPAL with $KERBEROS_KEYTAB"
             exit -1
