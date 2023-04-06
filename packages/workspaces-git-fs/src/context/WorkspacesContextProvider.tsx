@@ -55,6 +55,10 @@ export function WorkspacesContextProvider(props: Props) {
     });
   }, [props.workerNamePrefix, props.workspacesSharedWorkerScriptUrl]);
 
+  // Listen to the `resume` event from the Page Lifecycle API (https://developer.chrome.com/blog/page-lifecycle-api/).
+  // This event indicates that the Chrome tab was in a frozen state and is now in one of the active/passive/hidden states.
+  // Updating the WorkspacesSharedWorker is necessary because its connection will be lost after some time while the tab is frozen.
+  // This happens because the Shared Worker ping function will timeout without an answer and close the connection.
   useEffect(() => {
     window.addEventListener("resume", updateWorkspaceSharedWorker, { capture: true });
 
