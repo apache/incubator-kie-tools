@@ -179,7 +179,7 @@ export function Showcase() {
           {loading && <SampleCardSkeleton numberOfCards={4} />}
           {!loading && samples.length === 0 && (
             <PageSection variant={"light"} isFilled={true} style={{ marginRight: "25px" }}>
-              <EmptyState>
+              <EmptyState style={{ height: "350px" }}>
                 <EmptyStateIcon icon={CubesIcon} />
                 <Title headingLevel="h4" size="lg">
                   {"None of the available samples matched this search"}

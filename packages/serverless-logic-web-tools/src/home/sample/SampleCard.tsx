@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useMemo } from "react";
+import { useMemo, useRef, useEffect } from "react";
 import { Card, CardTitle, CardFooter, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -26,6 +26,7 @@ import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Lab
 import { FolderIcon, FileIcon, MonitoringIcon } from "@patternfly/react-icons/dist/js/icons";
 import { Sample, SampleCategory } from "./sampleApi";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 
 const tagMap: Record<SampleCategory, { label: string; icon: React.ComponentClass; color: LabelProps["color"] }> = {
   ["serverless-workflow"]: {
@@ -45,41 +46,23 @@ const tagMap: Record<SampleCategory, { label: string; icon: React.ComponentClass
   },
 };
 
-export function RenderSvg(props: { svg: string }) {
-  const modifiedContent = useMemo(() => {
-    try {
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(props.svg, "image/svg+xml");
-      const svg = xml.getElementsByTagName("svg")[0];
-      if (svg) {
-        svg.setAttribute("width", "400px");
-        svg.setAttribute("height", "300px");
-      }
-      const serializer = new XMLSerializer();
-      return serializer.serializeToString(xml);
-    } catch (e) {
-      return "Cannot render SVG!";
-    }
-  }, [props.svg]);
-
-  return (
-    <div
-      style={{ height: "100%", maxWidth: "100%", maxHeight: "400px", paddingTop: "30px" }}
-      dangerouslySetInnerHTML={{ __html: modifiedContent }}
-    />
-  );
-}
-
 export function SampleCard(props: { sample: Sample }) {
   const routes = useRoutes();
-
+  const imgRef = useRef<HTMLImageElement>(null);
   const tag = useMemo(() => tagMap[props.sample.definition.category], [props.sample.definition.category]);
+
+  useEffect(() => {
+    const blob = new Blob([props.sample.svgContent], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+    imgRef.current!.addEventListener("load", () => URL.revokeObjectURL(url), { once: true });
+    imgRef.current!.src = url;
+  }, [props.sample.svgContent]);
 
   return (
     <Card isCompact={true} isFullHeight={true}>
       <Grid style={{ height: "100%" }}>
         <GridItem
-          md={6}
+          lg={6}
           style={{ overflow: "hidden", textAlign: "center", verticalAlign: "middle", position: "relative" }}
         >
           <div style={{ position: "absolute", bottom: "16px", right: 0, left: 0, margin: "auto" }}>
@@ -88,9 +71,15 @@ export function SampleCard(props: { sample: Sample }) {
               &nbsp;&nbsp;<b>{tag.label}</b>
             </Label>
           </div>
-          <RenderSvg svg={props.sample.svgContent} />
+          <Bullseye style={{ padding: "0px 8px 30px 8px" }}>
+            <img
+              style={{ height: "370px", maxWidth: "100%" }}
+              ref={imgRef}
+              alt={`SVG for sample ${props.sample.sampleId}`}
+            />
+          </Bullseye>
         </GridItem>
-        <GridItem md={6} style={{ display: "flex", flexDirection: "column" }}>
+        <GridItem lg={6} style={{ display: "flex", flexDirection: "column" }}>
           <CardTitle data-ouia-component-type="sample-title">{props.sample.definition.title}</CardTitle>
           <CardBody isFilled={true}>
             <Tooltip content={<div>{props.sample.definition.description}</div>}>
