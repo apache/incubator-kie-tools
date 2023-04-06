@@ -21,6 +21,7 @@ import {
   ResourceDescriptor,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { UploadStatus } from "../DmnDevDeploymentQuarkusAppApi";
+import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 export type KieSandboxDeployedModel = DeployedModel & {
   uri: string;
@@ -41,7 +42,7 @@ export type ResourceArgs = {
 };
 
 export type KieSandboxDeploymentService = {
-  isConnectionEstablished(): Promise<boolean>;
+  isConnectionEstablished(): Promise<KubernetesConnectionStatus>;
   loadDeployedModels(): Promise<KieSandboxDeployedModel[]>;
   deploy(args: DeployArgs): Promise<void>;
   deleteDevDeployment(resourceName: string): Promise<void>;

@@ -16,9 +16,13 @@
 
 import { ResourceFetcher } from "../fetch/ResourceFetcher";
 import { IngressDescriptor } from "../resources/kubernetes/Ingress";
-import { KubernetesConnection, isKubernetesConnectionValid } from "./KubernetesConnection";
-import { DeploymentCondition, DeploymentDescriptor, ListDeployments } from "../resources/kubernetes/Deployment";
-import { DeploymentState, Resource } from "../resources/common";
+import { KubernetesConnection, KubernetesConnectionStatus, isKubernetesConnectionValid } from "./KubernetesConnection";
+import { DeploymentCondition, DeploymentDescriptor } from "../resources/kubernetes/Deployment";
+import { DeploymentState, Resource, ResourceDataSource } from "../resources/common";
+import {
+  CreateSelfSubjectAccessReview,
+  SelfSubjectAccessReviewDescriptor,
+} from "../resources/kubernetes/SelfSubjectAccessReview";
 
 export interface KubernetesServiceArgs {
   connection: KubernetesConnection;
@@ -73,14 +77,36 @@ export class KubernetesService {
     return callback(this.fetcher);
   }
 
-  public async isConnectionEstablished(connection: KubernetesConnection): Promise<boolean> {
+  public async isConnectionEstablished(
+    connection: KubernetesConnection,
+    requiredResources: string[] = ["deployments", "services", "ingresses"]
+  ): Promise<KubernetesConnectionStatus> {
     try {
+      const selfSubjectAccessReviewResourceName = this.newResourceName("kie-tools");
       const testConnectionFetcher = new ResourceFetcher({ connection, proxyUrl: this.args.proxyUrl });
-      await testConnectionFetcher.execute({ target: new ListDeployments({ namespace: connection.namespace }) });
+      const permissionsMap = await Promise.all(
+        requiredResources.map(async (resource) =>
+          testConnectionFetcher
+            .execute<SelfSubjectAccessReviewDescriptor>({
+              target: new CreateSelfSubjectAccessReview({
+                namespace: connection.namespace,
+                resourceName: selfSubjectAccessReviewResourceName,
+                resourceDataSource: ResourceDataSource.TEMPLATE,
+                createdBy: "kie-tools",
+                resource,
+              }),
+            })
+            .then((result) => ({ resource, allowed: result.status?.allowed }))
+        )
+      );
 
-      return true;
+      if (permissionsMap.some((permission) => !permission.allowed)) {
+        return KubernetesConnectionStatus.MISSING_PERMISSIONS;
+      }
+
+      return KubernetesConnectionStatus.CONNECTED;
     } catch (error) {
-      return false;
+      return KubernetesConnectionStatus.ERROR;
     }
   }
 

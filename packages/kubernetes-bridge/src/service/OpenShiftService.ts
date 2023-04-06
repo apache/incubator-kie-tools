@@ -21,7 +21,7 @@ import { KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
 import { DeploymentCondition, DeploymentDescriptor } from "../resources/kubernetes/Deployment";
 import { BuildDescriptor, BuildPhase } from "../resources/openshift/Build";
 import { RouteDescriptor } from "../resources/openshift/Route";
-import { KubernetesConnection } from "./KubernetesConnection";
+import { KubernetesConnection, KubernetesConnectionStatus } from "./KubernetesConnection";
 import { DeploymentState, Resource } from "../resources/common";
 
 export class OpenShiftService {
@@ -96,14 +96,14 @@ export class OpenShiftService {
     return this.kubernetes.withFetch<T>(callback);
   }
 
-  public async isConnectionEstablished(connection: KubernetesConnection): Promise<boolean> {
+  public async isConnectionEstablished(connection: KubernetesConnection): Promise<KubernetesConnectionStatus> {
     try {
       const testConnectionFetcher = new ResourceFetcher({ connection, proxyUrl: this.args.proxyUrl });
       await testConnectionFetcher.execute({ target: new GetProject({ namespace: connection.namespace }) });
 
-      return true;
+      return KubernetesConnectionStatus.CONNECTED;
     } catch (error) {
-      return false;
+      return KubernetesConnectionStatus.ERROR;
     }
   }
 

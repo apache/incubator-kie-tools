@@ -33,7 +33,11 @@ import {
   ResourceDataSource,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
-import { KubernetesService, KubernetesServiceArgs } from "@kie-tools-core/kubernetes-bridge/dist/service";
+import {
+  KubernetesConnectionStatus,
+  KubernetesService,
+  KubernetesServiceArgs,
+} from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { UploadStatus, getUploadStatus, postUpload } from "../DmnDevDeploymentQuarkusAppApi";
 import { DeployArgs, KieSandboxDeployedModel, KieSandboxDeploymentService, ResourceArgs } from "./types";
 
@@ -47,7 +51,7 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
     this.service = new KubernetesService(args);
   }
 
-  public async isConnectionEstablished(): Promise<boolean> {
+  public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
     return this.service.isConnectionEstablished(this.args.connection);
   }
 

@@ -25,6 +25,7 @@ import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/di
 import { DevDeploymentsConfirmDeleteModal } from "./DevDeploymentsConfirmDeleteModal";
 import { KieSandboxKubernetesService } from "./services/KieSandboxKubernetesService";
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
+import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 interface Props {
   children: React.ReactNode;
@@ -105,7 +106,7 @@ export function DevDeploymentsContextProvider(props: Props) {
     async (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => {
       const service = getService(authSession);
 
-      if (!(await service.isConnectionEstablished())) {
+      if ((await service.isConnectionEstablished()) !== KubernetesConnectionStatus.CONNECTED) {
         return false;
       }
 

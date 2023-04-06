@@ -33,6 +33,7 @@ import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext"
 import { KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
 import {
   KubernetesConnection,
+  KubernetesConnectionStatus,
   isHostValid,
   isKubernetesConnectionValid,
   isNamespaceValid,
@@ -164,7 +165,9 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
     async ({ id }) => {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
-        setConnectionValidated(await props.kubernetesService.isConnectionEstablished());
+        setConnectionValidated(
+          (await props.kubernetesService.isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+        );
         setConnectLoading(false);
       }
     },

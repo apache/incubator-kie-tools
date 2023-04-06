@@ -26,7 +26,11 @@ import {
   ResourceDataSource,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
-import { OpenShiftService, KubernetesServiceArgs } from "@kie-tools-core/kubernetes-bridge/dist/service";
+import {
+  OpenShiftService,
+  KubernetesServiceArgs,
+  KubernetesConnectionStatus,
+} from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { KieSandboxKubernetesService, RESOURCE_OWNER } from "../KieSandboxKubernetesService";
 import { DeployArgs, KieSandboxDeployedModel, KieSandboxDeploymentService, ResourceArgs } from "../types";
 import { getUploadStatus } from "../../DmnDevDeploymentQuarkusAppApi";
@@ -40,8 +44,8 @@ export class KieSandboxOpenShiftService implements KieSandboxDeploymentService {
     this.openshiftService = new OpenShiftService(args);
   }
 
-  public async isConnectionEstablished(): Promise<boolean> {
-    return this.kieSandboxKubernetesService.isConnectionEstablished();
+  public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
+    return this.openshiftService.isConnectionEstablished(this.args.connection);
   }
 
   public async loadDeployedModels(): Promise<KieSandboxDeployedModel[]> {

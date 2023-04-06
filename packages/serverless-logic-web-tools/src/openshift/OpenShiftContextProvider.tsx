@@ -26,7 +26,10 @@ import { useRemoteServiceRegistry } from "./hooks/useRemoteServiceRegistry";
 import { OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KnativeDeploymentLoaderPipeline } from "./pipelines/KnativeDeploymentLoaderPipeline";
-import { isKubernetesConnectionValid } from "@kie-tools-core/kubernetes-bridge/dist/service";
+import {
+  KubernetesConnectionStatus,
+  isKubernetesConnectionValid,
+} from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 interface Props {
   children: React.ReactNode;
@@ -122,7 +125,8 @@ export function OpenShiftContextProvider(props: Props) {
     if (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED) {
       settingsDispatch.openshift.service
         .isConnectionEstablished(settings.openshift.config)
-        .then((isConfigOk: boolean) => {
+        .then((configStatus: KubernetesConnectionStatus) => {
+          const isConfigOk = configStatus === KubernetesConnectionStatus.CONNECTED;
           settingsDispatch.openshift.setStatus(
             isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
           );

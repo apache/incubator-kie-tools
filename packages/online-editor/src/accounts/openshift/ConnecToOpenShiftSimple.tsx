@@ -35,6 +35,7 @@ import { v4 as uuid } from "uuid";
 import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
 import {
   KubernetesConnection,
+  KubernetesConnectionStatus,
   isKubernetesConnectionValid,
 } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
 
@@ -73,7 +74,7 @@ export function ConnecToOpenShiftSimple(props: {
     const isConnectionEstablished = await props.openshiftService.isConnectionEstablished();
     setConnecting(false);
 
-    if (isConnectionEstablished) {
+    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
       const newAuthSession: OpenShiftAuthSession = {
         type: "openshift",
         id: uuid(),

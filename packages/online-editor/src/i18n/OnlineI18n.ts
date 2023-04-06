@@ -120,6 +120,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       tokenInfo: string;
       validationError: string;
       connectionError: string;
+      missingPermissions: string;
       configExpiredWarning: string;
       useOpenShiftWizard: string;
       useKubernetesWizard: string;

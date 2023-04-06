@@ -27,7 +27,11 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useCallback, useEffect, useState } from "react";
 import { useAppI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
-import { isKubernetesConnectionValid, KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
+import {
+  isKubernetesConnectionValid,
+  KubernetesConnection,
+  KubernetesConnectionStatus,
+} from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { EMPTY_CONFIG, saveConfigCookie } from "./OpenShiftSettingsConfig";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
@@ -83,7 +87,9 @@ export function OpenShiftSettingsTabSimpleConfig() {
     }
 
     setConnecting(true);
-    const isConfigOk = await settingsDispatch.openshift.service.isConnectionEstablished(config);
+    const isConfigOk =
+      (await settingsDispatch.openshift.service.isConnectionEstablished(config)) ===
+      KubernetesConnectionStatus.CONNECTED;
 
     if (isConfigOk) {
       saveConfigCookie(config);

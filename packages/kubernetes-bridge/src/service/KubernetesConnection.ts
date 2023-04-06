@@ -26,6 +26,12 @@ export const EMPTY_KUBERNETES_CONNECTION = {
   token: "",
 };
 
+export enum KubernetesConnectionStatus {
+  CONNECTED = "CONNECTED",
+  ERROR = "ERROR",
+  MISSING_PERMISSIONS = "MISSING_PERMISSIONS",
+}
+
 export const isKubernetesConnectionValid = (connection: KubernetesConnection) =>
   isNamespaceValid(connection.namespace) && isHostValid(connection.host) && isTokenValid(connection.token);
 

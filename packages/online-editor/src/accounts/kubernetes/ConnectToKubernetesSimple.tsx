@@ -31,6 +31,7 @@ import { KieSandboxKubernetesService } from "../../devDeployments/services/KieSa
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
 import {
   KubernetesConnection,
+  KubernetesConnectionStatus,
   isKubernetesConnectionValid,
 } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
 import { KubernetesSettingsTabMode } from "./ConnectToKubernetesSection";
@@ -40,6 +41,7 @@ enum FormValiationOptions {
   INITIAL = "INITIAL",
   INVALID = "INVALID",
   CONNECTION_ERROR = "CONNECTION_ERROR",
+  MISSING_PERMISSIONS = "MISSING_PERMISSIONS",
 }
 
 export function ConnectToKubernetesSimple(props: {
@@ -70,7 +72,7 @@ export function ConnectToKubernetesSimple(props: {
     const isConnectionEstablished = await props.kubernetesService.isConnectionEstablished();
     setConnecting(false);
 
-    if (isConnectionEstablished) {
+    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
       const newAuthSession: KubernetesAuthSession = {
         type: "kubernetes",
         id: uuid(),
@@ -81,6 +83,8 @@ export function ConnectToKubernetesSimple(props: {
       props.setStatus(KubernetesInstanceStatus.CONNECTED);
       authSessionsDispatch.add(newAuthSession);
       props.setNewAuthSession(newAuthSession);
+    } else if (isConnectionEstablished === KubernetesConnectionStatus.MISSING_PERMISSIONS) {
+      setConnectionValidated(FormValiationOptions.MISSING_PERMISSIONS);
     } else {
       setConnectionValidated(FormValiationOptions.CONNECTION_ERROR);
       return;
@@ -135,6 +139,21 @@ export function ConnectToKubernetesSimple(props: {
             <Alert
               variant="danger"
               title={i18n.devDeployments.configModal.connectionError}
+              aria-live="polite"
+              isInline
+              data-testid="alert-connection-error"
+            />
+          </FormAlert>
+          <br />
+        </>
+      )}
+      {isConnectionValidated === FormValiationOptions.MISSING_PERMISSIONS && (
+        <>
+          {" "}
+          <FormAlert>
+            <Alert
+              variant="danger"
+              title={i18n.devDeployments.configModal.missingPermissions}
               aria-live="polite"
               isInline
               data-testid="alert-connection-error"

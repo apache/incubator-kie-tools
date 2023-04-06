@@ -120,6 +120,8 @@ export const en: OnlineI18n = {
       tokenInfo: `The token associated with your instance.`,
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
+      missingPermissions:
+        "Missing the required permissions for Dev Deployments (deployments, services, ingresses). Check your user permissions and try again.",
       configExpiredWarning: "Token or account expired. Please update your configuration.",
       useOpenShiftWizard: "Configure a new Developer Sandbox for Red Hat OpenShift through the guided wizard",
       useKubernetesWizard: "Configure a new local Kubernetes Cluster through the guided wizard",

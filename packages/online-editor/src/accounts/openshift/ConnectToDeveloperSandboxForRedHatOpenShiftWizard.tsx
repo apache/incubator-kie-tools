@@ -41,6 +41,7 @@ import {
   isNamespaceValid,
   isTokenValid,
   DEVELOPER_SANDBOX_GET_STARTED_URL,
+  KubernetesConnectionStatus,
 } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 enum WizardStepIds {
@@ -123,7 +124,9 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     async ({ id }) => {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
-        setConnectionValidated(await props.openshiftService.isConnectionEstablished());
+        setConnectionValidated(
+          (await props.openshiftService.isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+        );
         setConnectLoading(false);
       }
     },
@@ -143,7 +146,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     const isConnectionEstablished = await props.openshiftService.isConnectionEstablished();
     setConnecting(false);
 
-    if (isConnectionEstablished) {
+    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
       const newAuthSession: OpenShiftAuthSession = {
         type: "openshift",
         id: uuid(),
