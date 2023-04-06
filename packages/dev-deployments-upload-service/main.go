@@ -183,7 +183,7 @@ func main() {
 					return
 				}
 
-				fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Wrote '%s'...\n", zipFile.Name)
+				fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Wrote '%s'...\n", extractedZippedFilePath)
 				defer f.Close()
 			}
 		}
@@ -212,7 +212,7 @@ func main() {
 	httpServerBgGroup.Go(func() error {
 		fmt.Fprintf(os.Stdout, LOG_PREFIX+"ℹ️  Starting HTTP server...\n")
 		fmt.Fprintf(os.Stdout, LOG_PREFIX+"ℹ️  Running at port %d.\n", port)
-		fmt.Fprintf(os.Stdout, LOG_PREFIX+"ℹ️  Uploaded zip will be unziped to '%s'.\n", unzipAtPath)
+		fmt.Fprintf(os.Stdout, LOG_PREFIX+"ℹ️  The uploaded zip will be extracted to '%s'.\n", unzipAtPath)
 		fmt.Fprintf(os.Stdout, LOG_PREFIX+"ℹ️  Waiting for upload to arrive...\n")
 		fmt.Fprintf(os.Stdout, LOG_PREFIX+"--------------------------------------------------------\n")
 		return httpServer.ListenAndServe()
