@@ -35,13 +35,9 @@ public class ClientDataSetMetadataJSONMarshaller extends DataSetMetadataJSONMars
 
     public static class ClientDataSetProviderRegistry implements DataSetProviderRegistry {
 
-        DataSetProviderType<?>[] PROVIDERS = {
-                                           DataSetProviderType.STATIC,
-                                           DataSetProviderType.BEAN,
-                                           DataSetProviderType.SQL,
-                                           DataSetProviderType.CSV,
-                                           DataSetProviderType.PROMETHEUS,
-                                           DataSetProviderType.KAFKA
+        static final DataSetProviderType<?>[] PROVIDERS = {
+                                                           DataSetProviderType.STATIC,
+                                                           DataSetProviderType.EXTERNAL
         };
 
         @Override
@@ -64,9 +60,9 @@ public class ClientDataSetMetadataJSONMarshaller extends DataSetMetadataJSONMars
         @Override
         public DataSetProviderType getProviderTypeByName(String name) {
             return Arrays.stream(PROVIDERS)
-                         .filter(p -> p.getName().equalsIgnoreCase(name))
-                         .findFirst()
-                         .orElseThrow(() -> new RuntimeException("Provider not found: " + name));
+                    .filter(p -> p.getName().equalsIgnoreCase(name))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Provider not found: " + name));
         }
     }
 

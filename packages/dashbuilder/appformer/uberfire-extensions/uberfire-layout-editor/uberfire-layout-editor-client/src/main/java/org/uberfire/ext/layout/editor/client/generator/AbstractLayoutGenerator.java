@@ -32,9 +32,14 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.infra.LayoutEditorCssHelper;
-import org.uberfire.ext.layout.editor.client.infra.RowSizeBuilder;
 
 public abstract class AbstractLayoutGenerator implements LayoutGenerator {
+
+    private static final String ROW_CLASS_PREFIX = "uf-perspective-row-";
+
+    private static final String UF_LE_OVERFLOW = "uf-le-overflow";
+
+    private static final String COLUMN_CLASS = "uf-perspective-col";
 
     public static final String CONTAINER_ID = "mainContainer";
 
@@ -68,21 +73,21 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
             applyCssToElement(layoutRow.getProperties(), row);
 
             if (layoutTemplate.isPageStyle()) {
-                row.classList.add(RowSizeBuilder.buildRowSize(layoutRow.getHeight()));
-                row.classList.add("uf-le-overflow");
+                row.classList.add(buildRowSize(layoutRow.getHeight()));
+                row.classList.add(UF_LE_OVERFLOW);
             }
             for (LayoutColumn layoutColumn : layoutRow.getLayoutColumns()) {
                 var column = driver.createColumn(layoutColumn);
                 applyCssToElement(layoutColumn.getProperties(), column);
 
                 if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
-                    column.classList.add("uf-perspective-col");
+                    column.classList.add(COLUMN_CLASS);
                 }
                 if (columnHasNestedRows(layoutColumn)) {
                     if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
-                        column.classList.add("uf-perspective-col");
+                        column.classList.add(COLUMN_CLASS);
                     } else if (!layoutColumn.getHeight().isEmpty()) {
-                        column.classList.add("uf-perspective-row-" + layoutColumn.getHeight());
+                        column.classList.add(ROW_CLASS_PREFIX + layoutColumn.getHeight());
                     }
                     generateRows(layoutTemplate,
                             layoutInstance,
@@ -91,7 +96,6 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
                             column);
                 } else {
                     generateComponents(layoutTemplate,
-                            layoutInstance,
                             driver,
                             layoutColumn,
                             column);
@@ -105,7 +109,6 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
     }
 
     protected void generateComponents(LayoutTemplate layoutTemplate,
-                                      final LayoutInstance layoutInstance,
                                       final LayoutGeneratorDriver driver,
                                       final LayoutColumn layoutColumn,
                                       final HTMLElement column) {
@@ -113,9 +116,9 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
             final IsWidget componentWidget = driver.createComponent(column, layoutComponent);
             if (componentWidget != null) {
                 if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
-                    componentWidget.asWidget().getElement().addClassName("uf-perspective-col");
+                    componentWidget.asWidget().getElement().addClassName(COLUMN_CLASS);
                 } else if (!layoutColumn.getHeight().isEmpty()) {
-                    column.classList.add("uf-perspective-row-" + layoutColumn.getHeight());
+                    column.classList.add(ROW_CLASS_PREFIX + layoutColumn.getHeight());
                 }
 
                 elemental2Util.appendWidgetToElement(column, componentWidget.asWidget());
@@ -155,5 +158,9 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
                         style.setProperty(prop, val);
                     });
         }
+    }
+
+    public static String buildRowSize(final String value) {
+        return ROW_CLASS_PREFIX + value;
     }
 }

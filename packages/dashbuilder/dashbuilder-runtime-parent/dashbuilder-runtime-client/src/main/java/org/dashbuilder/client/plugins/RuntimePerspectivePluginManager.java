@@ -50,11 +50,6 @@ public class RuntimePerspectivePluginManager implements PerspectivePluginManager
     List<LayoutTemplate> templates = new ArrayList<>();
 
     @Override
-    public void loadPlugins() {
-        // not used in Runtime
-    }
-
-    @Override
     public boolean isRuntimePerspective(NavItem navItem) {
         NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(navItem);
         String resourceId = navCtx.getResourceId();

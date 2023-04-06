@@ -26,5 +26,5 @@ public interface WebAppResource
     WebAppResource INSTANCE = GWT.create(WebAppResource.class);
 
     @Source("css/layout-editor.css")
-    LayoutEditorCss CSS();
+    LayoutEditorCss css();
 }

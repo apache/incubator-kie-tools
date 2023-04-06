@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.uberfire.ext.layout.editor.api.css;
 
 import java.util.ArrayList;
@@ -201,7 +200,7 @@ public enum CssProperty {
     private List<CssAllowedValue> allowedValues = new ArrayList<>();
     private List<CssValueType> supportedValueTypes = new ArrayList<>();
 
-    private static List<String> ALL_NAMES = Arrays.stream(CssProperty.values())
+    private static final List<String> ALL_NAMES = Arrays.stream(CssProperty.values())
                                                   .map(CssProperty::getName)
                                                   .collect(Collectors.toList());
 
@@ -210,20 +209,13 @@ public enum CssProperty {
     }
 
     CssProperty(CssValueType... supportedTypes) {
-        for (CssValueType supportedValueType : supportedTypes) {
-            supportedValueTypes.add(supportedValueType);
-        }
+        supportedValueTypes.addAll(supportedValueTypes);
     }
 
     CssProperty(CssAllowedValue... allowedValues) {
         for (CssAllowedValue value : allowedValues) {
             this.allowedValues.add(value);
         }
-    }
-
-    CssProperty(List<CssAllowedValue> allowedValues, CssValueType... supportedValueTypes) {
-        this(supportedValueTypes);
-        this.allowedValues = allowedValues;
     }
 
     public String getName() {

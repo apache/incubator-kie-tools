@@ -39,11 +39,15 @@ import org.uberfire.mvp.PlaceRequest;
  */
 public class BookmarkableUrlHelper {
 
-    public final static String PERSPECTIVE_SEP = "|";
-    public final static String SEPARATOR = ",";
-    public final static String OTHER_SCREEN_SEP = "$";
-    public final static String CLOSED_PREFIX = "~";
-    public final static int MAX_NAV_URL_SIZE = 1900;
+    public static final String PERSPECTIVE_SEP = "|";
+    public static final String SEPARATOR = ",";
+    public static final String OTHER_SCREEN_SEP = "$";
+    public static final String CLOSED_PREFIX = "~";
+    public static final int MAX_NAV_URL_SIZE = 1900;
+
+    private BookmarkableUrlHelper() {
+        // noop
+    }
 
     private static boolean isNotBlank(final String str) {
         return (str != null && str.trim().length() > 0);

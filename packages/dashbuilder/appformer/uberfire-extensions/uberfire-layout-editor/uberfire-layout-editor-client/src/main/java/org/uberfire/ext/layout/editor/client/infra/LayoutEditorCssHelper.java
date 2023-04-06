@@ -25,14 +25,12 @@ import javax.enterprise.context.ApplicationScoped;
 import org.uberfire.ext.layout.editor.api.css.CssAllowedValue;
 import org.uberfire.ext.layout.editor.api.css.CssProperty;
 import org.uberfire.ext.layout.editor.api.css.CssValue;
-import org.uberfire.ext.layout.editor.client.resources.i18n.CssAllowedValueConstants;
 
 @ApplicationScoped
 public class LayoutEditorCssHelper {
     
     public String formatCssAllowedValue(CssProperty property, CssAllowedValue value) {
-        String i18nKey = property.toString() + "__" + value.toString();
-        return CssAllowedValueConstants.INSTANCE.getString(i18nKey);
+        return property.toString() + "__" + value.toString();
     }
 
     public CssAllowedValue parseCssAllowedValue(String property, String value) {

@@ -26,8 +26,6 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 public interface PerspectivePluginManager {
     
-    void loadPlugins();
-
     boolean isRuntimePerspective(NavItem navItem);
 
     boolean isRuntimePerspective(String perspectiveId);

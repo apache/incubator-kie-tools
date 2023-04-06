@@ -17,8 +17,6 @@ package org.uberfire.client.mvp;
 
 import java.util.Set;
 
-import org.jboss.errai.ioc.client.api.ActivatedBy;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.PlaceRequest;
@@ -38,22 +36,6 @@ import org.uberfire.mvp.PlaceRequest;
  * @see Activity
  */
 public interface ActivityManager {
-
-    /**
-     * Obtains the set of activity instances which implement the given type, are {@link ActivatedBy active}, and that
-     * the current user {@link AuthorizationManager has permission to access}.
-     * @param abstractScreenActivityClass the type of activities to enumerate. Must not be null. Passing in {@code Activity.class} will yield
-     * all possible activity types.
-     * @return the set of available activities. Never null. Each object in the returned set must be freed by the caller
-     * via a call to {@link SyncBeanManager#destroyBean(Object)}.
-     * @deprecated this method returns Activity instances that have not had their onStartup() methods invoked, so they
-     * can not be displayed according to the normal Activity lifecycle. It is also up to the caller to free
-     * each of the returned Activity instances by calling {@link SyncBeanManager#destroyBean(Object)} on
-     * them. Consider using the Errai bean manager and UberFire AuthorizationManager directly instead of
-     * using this method. See UF-105 for details.
-     */
-    @Deprecated
-    <T extends Activity> Set<T> getActivities(final Class<T> abstractScreenActivityClass);
 
     /**
      * Calls to {@link #getActivities(PlaceRequest)} with security checks enabled.

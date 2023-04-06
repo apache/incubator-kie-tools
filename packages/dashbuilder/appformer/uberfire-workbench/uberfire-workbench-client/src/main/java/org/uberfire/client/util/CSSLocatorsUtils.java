@@ -35,7 +35,6 @@ public class CSSLocatorsUtils {
     }
 
     private static String format(String value) {
-        return value.replaceAll(" ",
-                                "-");
+        return value.replace(" ", "-");
     }
 }

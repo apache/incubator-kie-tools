@@ -57,9 +57,6 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
     }
 
     @Override
-    public abstract String getTitle();
-
-    @Override
     public WorkbenchPopupSize getSize() {
         return WorkbenchPopupSize.MEDIUM;
     }
@@ -68,9 +65,6 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
     public IsWidget getTitleDecoration() {
         return null;
     }
-
-    @Override
-    public abstract IsWidget getWidget();
 
     @Override
     public void onOpen() {

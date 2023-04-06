@@ -60,12 +60,6 @@ public class ActivityManagerImpl implements ActivityManager {
     private ActivityLifecycleErrorHandler lifecycleErrorHandler;
 
     @Override
-    public <T extends Activity> Set<T> getActivities(final Class<T> clazz) {
-        // not calling onStartup. See UF-105.
-        return createInstances(iocManager.lookupBeans(clazz));
-    }
-
-    @Override
     public Set<Activity> getActivities(final PlaceRequest placeRequest) {
         return getActivities(placeRequest,
                 true);

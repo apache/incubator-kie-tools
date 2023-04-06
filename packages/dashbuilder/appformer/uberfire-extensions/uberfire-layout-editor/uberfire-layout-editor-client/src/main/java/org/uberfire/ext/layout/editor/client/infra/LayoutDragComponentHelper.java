@@ -27,6 +27,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.Factory;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
@@ -82,13 +83,10 @@ public class LayoutDragComponentHelper {
     }
 
     public LayoutComponent getLayoutComponent(LayoutDragComponent dragComponent) {
-
-        LayoutComponent layoutComponent = new LayoutComponent(getRealBeanClass(dragComponent));
-
-        return layoutComponent;
+        return new LayoutComponent(getRealBeanClass(dragComponent));
     }
 
     protected void destroy(Object o) {
-        BeanHelper.destroy(o);
+        IOC.getBeanManager().destroyBean(o);
     }
 }

@@ -17,7 +17,6 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.workbench.model.ActivityResourceType;
-import org.uberfire.workbench.model.PerspectiveDefinition;
 
 /**
  * Implementation of behaviour common to all perspective activities. Concrete implementations are typically not written by
@@ -28,9 +27,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     public AbstractWorkbenchPerspectiveActivity(final PlaceManager placeManager) {
         super(placeManager);
     }
-
-    @Override
-    public abstract PerspectiveDefinition getDefaultPerspectiveLayout();
 
     @Override
     public boolean isDefault() {

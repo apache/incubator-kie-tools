@@ -32,9 +32,9 @@ import org.uberfire.workbench.model.PartDefinition;
 import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
 
 public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends AbstractMultiPartWorkbenchPanelPresenter<P>>
-        extends AbstractDockingWorkbenchPanelPresenter<P> {
+                                                              extends AbstractDockingWorkbenchPanelPresenter<P> {
 
-    private final Map<PartDefinition, ContextActivity> contextActivities = new HashMap<PartDefinition, ContextActivity>();
+    private final Map<PartDefinition, ContextActivity> contextActivities = new HashMap<>();
     protected ActivityManager activityManager;
     private ContextActivity perspectiveContext = null;
     private ContextActivity panelContext = null;
@@ -48,11 +48,13 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
     }
 
     private void buildPerspectiveContext() {
-        final ContextDefinition contextDefinition = perspectiveManager.getLivePerspectiveDefinition().getContextDefinition();
-        final ContextDisplayMode contextDisplayMode = perspectiveManager.getLivePerspectiveDefinition().getContextDisplayMode();
+        final ContextDefinition contextDefinition = perspectiveManager.getLivePerspectiveDefinition()
+                .getContextDefinition();
+        final ContextDisplayMode contextDisplayMode = perspectiveManager.getLivePerspectiveDefinition()
+                .getContextDisplayMode();
         if (contextDefinition != null && contextDisplayMode == SHOW) {
             final ContextActivity activity = activityManager.getActivity(ContextActivity.class,
-                                                                         contextDefinition.getPlace());
+                    contextDefinition.getPlace());
             if (activity != null) {
                 perspectiveContext = activity;
             }
@@ -63,13 +65,13 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
     public void setDefinition(final PanelDefinition definition) {
         super.setDefinition(definition);
 
-        final ContextDisplayMode perspectiveContextDisplayMode = perspectiveManager.getLivePerspectiveDefinition().getContextDisplayMode();
+        final ContextDisplayMode perspectiveContextDisplayMode = perspectiveManager.getLivePerspectiveDefinition()
+                .getContextDisplayMode();
 
-        if (definition.getContextDefinition() != null
-                && perspectiveContextDisplayMode == SHOW
-                && definition.getContextDisplayMode() == SHOW) {
+        if (definition.getContextDefinition() != null && perspectiveContextDisplayMode == SHOW && definition
+                .getContextDisplayMode() == SHOW) {
             final ContextActivity activity = activityManager.getActivity(ContextActivity.class,
-                                                                         definition.getContextDefinition().getPlace());
+                    definition.getContextDefinition().getPlace());
             if (activity != null) {
                 panelContext = activity;
             }
@@ -81,25 +83,25 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
     public void addPart(final WorkbenchPartPresenter part,
                         final String contextId) {
         super.addPart(part,
-                      contextId);
-        final ContextDisplayMode perspectiveContextDisplayMode = perspectiveManager.getLivePerspectiveDefinition().getContextDisplayMode();
-        if (perspectiveContextDisplayMode == SHOW
-                && getDefinition().getContextDisplayMode() == SHOW
-                && part.getDefinition().getContextDisplayMode() == SHOW) {
+                contextId);
+        final ContextDisplayMode perspectiveContextDisplayMode = perspectiveManager.getLivePerspectiveDefinition()
+                .getContextDisplayMode();
+        if (perspectiveContextDisplayMode == SHOW && getDefinition().getContextDisplayMode() == SHOW && part
+                .getDefinition().getContextDisplayMode() == SHOW) {
             ContextActivity contextActivity = null;
             if (contextId != null) {
                 contextActivity = activityManager.getActivity(ContextActivity.class,
-                                                              new DefaultPlaceRequest(contextId));
+                        new DefaultPlaceRequest(contextId));
             } else if (part.getDefinition().getContextDefinition() != null) {
                 contextActivity = activityManager.getActivity(ContextActivity.class,
-                                                              part.getDefinition().getContextDefinition().getPlace());
+                        part.getDefinition().getContextDefinition().getPlace());
             } else if (part.getContextId() != null) {
                 contextActivity = activityManager.getActivity(ContextActivity.class,
-                                                              new DefaultPlaceRequest(part.getContextId()));
+                        new DefaultPlaceRequest(part.getContextId()));
             }
             if (contextActivity != null) {
                 contextActivities.put(part.getDefinition(),
-                                      contextActivity);
+                        contextActivity);
             }
         }
     }

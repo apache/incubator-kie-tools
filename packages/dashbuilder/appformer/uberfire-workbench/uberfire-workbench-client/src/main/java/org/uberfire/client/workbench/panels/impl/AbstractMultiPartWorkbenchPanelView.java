@@ -80,10 +80,7 @@ public abstract class AbstractMultiPartWorkbenchPanelView<P extends AbstractMult
 
     @Override
     public boolean removePart(final PartDefinition part) {
-        if (widget.remove(part)) {
-            return true;
-        }
-        return false;
+        return widget.remove(part);
     }
 
     @Override

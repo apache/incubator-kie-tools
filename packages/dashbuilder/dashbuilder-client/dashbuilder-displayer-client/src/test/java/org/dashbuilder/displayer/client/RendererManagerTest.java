@@ -12,7 +12,6 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
-import org.dashbuilder.renderer.RendererSettings;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
@@ -58,10 +57,6 @@ public class RendererManagerTest {
     
     @Mock
     DisplayerSettings displayerSettings;
-    
-    
-    @Mock
-    RendererSettings rendererSettings;
     
     RendererManager rendererManager;
     
@@ -197,7 +192,6 @@ public class RendererManagerTest {
     
     @Test
     public void defaultRendererWithUserBadSettingTest() {
-        when(rendererSettings.getDefaultRenderer()).thenReturn("DO NO EXIST");
         rendererManager.init();
         defaultRendererTest();
     }

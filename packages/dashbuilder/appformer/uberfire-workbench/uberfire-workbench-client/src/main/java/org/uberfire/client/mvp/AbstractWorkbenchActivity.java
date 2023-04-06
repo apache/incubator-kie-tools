@@ -51,15 +51,9 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity impleme
     }
 
     @Override
-    public abstract String getTitle();
-
-    @Override
     public IsWidget getTitleDecoration() {
         return null;
     }
-
-    @Override
-    public abstract IsWidget getWidget();
 
     @Override
     public void onLostFocus() {

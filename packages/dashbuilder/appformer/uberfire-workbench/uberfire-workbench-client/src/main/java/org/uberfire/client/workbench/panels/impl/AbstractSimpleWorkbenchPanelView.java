@@ -149,7 +149,7 @@ public abstract class AbstractSimpleWorkbenchPanelView<P extends WorkbenchPanelP
 
         maximizeButton.disable();
         layoutSelection.get().unmaximize(getPartViewContainer(),
-                                         () -> maximizeButton.enable());
+                                         maximizeButton::enable);
         maximizeButton.setMaximized(false);
     }
 

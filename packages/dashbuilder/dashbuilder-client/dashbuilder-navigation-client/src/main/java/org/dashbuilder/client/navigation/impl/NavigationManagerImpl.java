@@ -30,7 +30,9 @@ public class NavigationManagerImpl implements NavigationManager {
     private NavTree navTree;
     private NavTree defaultNavTree;
 
-    public NavigationManagerImpl() {}
+    public NavigationManagerImpl() {
+        // no op
+    }
 
     @Override
     public NavTree getDefaultNavTree() {
