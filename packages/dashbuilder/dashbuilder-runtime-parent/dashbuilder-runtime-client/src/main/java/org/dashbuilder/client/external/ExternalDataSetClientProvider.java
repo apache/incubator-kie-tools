@@ -163,13 +163,26 @@ public class ExternalDataSetClientProvider {
                     return register(def, callback, responseText, mimeType);
                 } else {
                     var exception = buildExceptionForResponse(responseText, response);
-                   return notAbleToRetrieveDataSet(def, callback, exception);
+                    return notAbleToRetrieveDataSet(def, callback, exception);
                 }
 
             }, error -> notAbleToRetrieveDataSet(def, callback));
         }).catch_(e -> notAbleToRetrieveDataSet(def, callback,
-                new RuntimeException("Request not started, make sure that CORS is enabled. Message: " + e)
-        ));
+                new RuntimeException("Request not started, make sure that CORS is enabled.\nMessage: " + e)));
+    }
+
+    private Throwable buildExceptionForResponse(String responseText, Response response) {
+        var sb = new StringBuffer("The dataset URL is unreachable with status ");
+        sb.append(response.status);
+        sb.append(" - ");
+        sb.append(response.statusText);
+
+        if (responseText != null && !responseText.trim().isEmpty()) {
+            sb.append("\n");
+            sb.append("Response Text: ");
+            sb.append(responseText);
+        }
+        return new RuntimeException(sb.toString());
     }
 
     
@@ -219,10 +232,35 @@ public class ExternalDataSetClientProvider {
             }
         }
 
+        var existingDs = clientDataSetManager.getDataSet(def.getUUID());
+        if (def.isAccumulate() && existingDs != null) {
+            // no new data, so keep existing data set
+            if (dataSet.getRowCount() == 0) {
+                dataSet = existingDs;
+            } else {
+                accumulateDataSet(dataSet, existingDs);
+            }
+        }
+        dataSet.setDefinition(def);
         dataSet.setUUID(def.getUUID());
         clientDataSetManager.registerDataSet(dataSet);
         callback.callback(dataSet);
         return null;
+    }
+
+    void accumulateDataSet(DataSet dataSet, DataSet existingDs) {
+        if (dataSet.getRowCount() > 0 && !existingDs.getColumns().equals(dataSet.getColumns())) {
+            throw new RuntimeException("New data is not compatible with existing data.");
+        }
+        for (int i = dataSet.getRowCount(), j = 0; i < existingDs.getDefinition().getCacheMaxRows() && j < existingDs
+                .getRowCount(); i++, j++) {
+            final int row = j;
+            var values = existingDs.getColumns()
+                    .stream()
+                    .map(cl -> existingDs.getValueAt(row, cl.getId()))
+                    .toArray(Object[]::new);
+            dataSet.addValues(values);
+        }
     }
 
     private void doLookup(DataSetLookup lookup, DataSetReadyCallback listener) {
@@ -236,11 +274,14 @@ public class ExternalDataSetClientProvider {
 
     private void handleCache(String uuid) {
         var def = externalDataSets.get(uuid);
+        if (def == null || def.isAccumulate()) {
+            return;
+        }
         scheduledTimeouts.computeIfPresent(uuid, (k, v) -> {
             DomGlobal.clearTimeout(v);
             return null;
         });
-        if (def != null && def.isCacheEnabled()) {
+        if (def.isCacheEnabled()) {
             var refreshTimeAmount = def.getRefreshTimeAmount();
             if (refreshTimeAmount != null) {
                 var id = DomGlobal.setTimeout(params -> {

@@ -22,8 +22,9 @@ import { Route } from "react-router-dom";
 import { SampleCatalog } from "../sampleCatalog/SampleCatalog";
 import { useRoutes } from "../../navigation/Hooks";
 import { supportedFileExtensionArray } from "../../extension";
-import { NewWorkspaceWithEmptyFilePage } from "../../workspace/components/NewWorkspaceWithEmptyFilePage";
-import { NewWorkspaceFromUrlPage } from "../../workspace/components/NewWorkspaceFromUrlPage";
+import { NewWorkspaceFromSample } from "../workspace/components/NewWorkspaceFromSample";
+import { NewWorkspaceFromUrlPage } from "../workspace/components/NewWorkspaceFromUrlPage";
+import { NewWorkspaceWithEmptyFilePage } from "../workspace/components/NewWorkspaceWithEmptyFilePage";
 import { EditorPage } from "../../editor/EditorPage";
 import { NoMatchPage } from "../../navigation/NoMatchPage";
 
@@ -37,6 +38,9 @@ export function HomePageRoutes(props: { isNavOpen: boolean }) {
       </Route>
       <Route path={routes.importModel.path({})}>
         <NewWorkspaceFromUrlPage />
+      </Route>
+      <Route path={routes.sampleShowcase.path({})}>
+        <NewWorkspaceFromSample />
       </Route>
       <Route
         path={routes.workspaceWithFilePath.path({

@@ -16,5 +16,13 @@
 
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { DashbuilderLanguageServiceChannelApi } from "@kie-tools/dashbuilder-language-service/dist/api";
+import { Position } from "monaco-editor";
 
-export interface DashbuilderEditorChannelApi extends KogitoEditorChannelApi, DashbuilderLanguageServiceChannelApi {}
+export interface DashbuilderEditorChannelApi extends KogitoEditorChannelApi, DashbuilderLanguageServiceChannelApi {
+  /**
+   * Moves the cursor in the editor to a specified position
+   *
+   * @param position
+   */
+  kogitoDashbuilderTextEditor_moveCursorToPosition(position: Position): void;
+}

@@ -228,6 +228,9 @@ public class StunnerEditor {
     }
 
     public ClientSession getSession() {
+        if (diagramPresenter == null) {
+            return null;
+        }
         return (ClientSession) diagramPresenter.getInstance();
     }
 

@@ -148,8 +148,10 @@ export function DmnFormToolbar(props: Props) {
             <Brand
               src={routes.static.images.kieHorizontalLogoReverse.path({})}
               alt={"Logo"}
-              style={{ display: "inline", height: "38px" }}
-            />
+              heights={{ default: "38px" }}
+            >
+              <source srcSet={routes.static.images.kieHorizontalLogoReverse.path({})} />
+            </Brand>
           </FlexItem>
           <FlexItem style={{ display: "flex", alignItems: "center" }}>
             <TextContent>

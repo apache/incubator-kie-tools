@@ -22,9 +22,11 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import org.kie.workbench.common.stunner.bpmn.client.forms.changeHandlers.businessRuleTask.BusinessRuleTaskChangeHandler;
 import org.kie.workbench.common.stunner.bpmn.client.forms.filters.AssociationFilterProvider;
 import org.kie.workbench.common.stunner.bpmn.client.forms.filters.CatchingIntermediateEventFilterProvider;
 import org.kie.workbench.common.stunner.bpmn.client.forms.filters.StartEventFilterProvider;
+import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
@@ -44,6 +46,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.forms.client.formFilters.FormFiltersProviderFactory;
 import org.kie.workbench.common.stunner.forms.client.formFilters.StunnerFormElementFilterProvider;
+import org.kie.workbench.common.stunner.forms.client.widgets.container.displayer.domainChangeHandlers.DomainObjectFieldChangeHandlerRegistry;
 import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 
 @EntryPoint
@@ -54,10 +57,15 @@ public class StunnerBPMNEntryPoint {
 
     private ManagedInstance<StunnerFormElementFilterProvider> managedFilters;
 
+    private DomainObjectFieldChangeHandlerRegistry changeHandlerRegistry;
+
+    private DomainObjectFieldChangeHandlerRegistry domainObjectFieldChangeHandlerRegistry;
+
     @Inject
-    public StunnerBPMNEntryPoint(SessionManager sessionManager, ManagedInstance<StunnerFormElementFilterProvider> managedFilters) {
+    public StunnerBPMNEntryPoint(SessionManager sessionManager, ManagedInstance<StunnerFormElementFilterProvider> managedFilters, DomainObjectFieldChangeHandlerRegistry changeHandlerRegistry) {
         this.sessionManager = sessionManager;
         this.managedFilters = managedFilters;
+        this.changeHandlerRegistry = changeHandlerRegistry;
     }
 
     @PostConstruct
@@ -84,5 +92,7 @@ public class StunnerBPMNEntryPoint {
 
         //registering managed filters instances
         managedFilters.forEach(FormFiltersProviderFactory::registerProvider);
+
+        changeHandlerRegistry.register(BusinessRuleTask.class, BusinessRuleTaskChangeHandler.class);
     }
 }

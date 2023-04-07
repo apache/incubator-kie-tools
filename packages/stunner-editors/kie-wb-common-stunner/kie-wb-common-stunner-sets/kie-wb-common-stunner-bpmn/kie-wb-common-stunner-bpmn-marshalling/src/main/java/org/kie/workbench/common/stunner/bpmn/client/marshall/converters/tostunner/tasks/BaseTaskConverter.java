@@ -57,6 +57,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRu
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.EmptyTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.FileName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionInput;
@@ -213,6 +214,7 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
 
         RuleLanguage ruleLanguage = new RuleLanguage(p.getImplementation());
         RuleFlowGroup ruleFlowGroup = null;
+        FileName fileName = null;
         Namespace namespace = null;
         DecisionName decisionName = null;
         DmnModelName dmnModelName = null;
@@ -224,6 +226,7 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
             dmnModelName = new DmnModelName();
         } else if (ruleLanguage.getValue().equals(RuleLanguage.DMN)) {
             ruleFlowGroup = new RuleFlowGroup();
+            fileName = new FileName(p.getFileName());
             namespace = new Namespace(p.getNamespace());
             decisionName = new DecisionName(p.getDecisionName());
             dmnModelName = new DmnModelName(p.getDmnModelName());
@@ -232,6 +235,7 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
         definition.setExecutionSet(new BusinessRuleTaskExecutionSet(
                 new RuleLanguage(p.getImplementation()),
                 ruleFlowGroup,
+                fileName,
                 namespace,
                 decisionName,
                 dmnModelName,

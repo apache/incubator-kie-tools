@@ -22,6 +22,7 @@ import {
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
 import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
@@ -212,7 +213,34 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     textEditor.selections = [new vscode.Selection(targetPosition, targetPosition)];
   }
 
-  public kogitoSwfTextEditor__onSelectionChanged(args: { nodeName: string }): void {
+  public async kogitoSwfDiagramEditor__setContentSuccess(): Promise<void> {
+    const textEditor = vscode.window.visibleTextEditors.filter(
+      (textEditor: vscode.TextEditor) => textEditor.document.uri.path === this.editor.document.document.uri.path
+    )[0];
+
+    const offset = textEditor.document.offsetAt(textEditor.selection.active);
+
+    const swfOffsetsApi = initSwfOffsetsApi(textEditor.document);
+
+    const nodeName = swfOffsetsApi.getStateNameFromOffset(offset);
+
+    if (!nodeName) {
+      return;
+    }
+
+    const envelopeServer = this.editor.envelopeServer as unknown as EnvelopeServer<
+      ServerlessWorkflowDiagramEditorChannelApi,
+      ServerlessWorkflowDiagramEditorEnvelopeApi
+    >;
+
+    if (!envelopeServer) {
+      return;
+    }
+
+    envelopeServer.envelopeApi.notifications.kogitoSwfDiagramEditor__highlightNode.send({ nodeName });
+  }
+
+  public kogitoSwfTextEditor__onSelectionChanged(args: { nodeName: string | null }): void {
     this.diagramEditorEnvelopeApi?.notifications.kogitoSwfDiagramEditor__highlightNode.send(args);
   }
 

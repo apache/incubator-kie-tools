@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.forms.client.formFilters.FormFiltersProviderFactory;
 import org.kie.workbench.common.stunner.forms.client.formFilters.StunnerFormElementFilterProvider;
+import org.kie.workbench.common.stunner.forms.client.widgets.container.displayer.domainChangeHandlers.DomainObjectFieldChangeHandlerRegistry;
 import org.mockito.Mock;
 import org.uberfire.stubs.ManagedInstanceStub;
 
@@ -63,6 +64,9 @@ public class StunnerBPMNEntryPointTest {
     @Mock
     private StartEventFilterProvider startEventFilterProvider;
 
+    @Mock
+    private DomainObjectFieldChangeHandlerRegistry changeHandlerRegistry;
+
     private BaseStartEvent startEventDef;
 
     @Before
@@ -79,7 +83,7 @@ public class StunnerBPMNEntryPointTest {
         managedFilters = new ManagedInstanceStub<>(bpmnDiagramFilterProvider,
                                                    startEventFilterProvider,
                                                    catchingIntermediateEventFilterProvider);
-        tested = new StunnerBPMNEntryPoint(sessionManager, managedFilters);
+        tested = new StunnerBPMNEntryPoint(sessionManager, managedFilters, changeHandlerRegistry);
     }
 
     @Test

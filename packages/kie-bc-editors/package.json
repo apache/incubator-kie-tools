@@ -34,6 +34,7 @@
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/vscode-java-code-completion": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
+    "@kie-tools/dmn-language-service": "workspace:*",
     "@kie-tools/pmml-editor-marshaller": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "react": "^17.0.2",

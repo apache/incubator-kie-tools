@@ -351,5 +351,43 @@ public class AggregateFunctionsTest {
         values = List.of(1);
         result = function.aggregate(values);
         assertEquals(result, 1.0d);
+
+        values = List.of(1, 2, 3, 3, 4, 5);
+        result = function.aggregate(values);
+        assertEquals(3d, result);
+
+        values = List.of(1, 3, 3, 4);
+        result = function.aggregate(values);
+        assertEquals(3d, result);
     }
+
+    @Test
+    public void testJoinFunction() {
+        var function = new JoinFunction();
+        var values = List.of("a", "b", "c");
+        var result = function.aggregate(values);
+        assertEquals("a b c", result);
+
+        values = List.of();
+        result = function.aggregate(values);
+        assertEquals("", result);
+    }
+
+    @Test
+    public void testJoinCommaFunction() {
+        var function = new JoinCommaFunction();
+        var values = List.of("a", "b", "c");
+        var result = function.aggregate(values);
+        assertEquals("a, b, c", result);
+    }
+
+    @Test
+    public void testJoinHyphenFunction() {
+        var function = new JoinHyphenFunction();
+        var values = List.of("a", "b", "c");
+        var result = function.aggregate(values);
+        assertEquals("a - b - c", result);
+
+    }
+
 }
