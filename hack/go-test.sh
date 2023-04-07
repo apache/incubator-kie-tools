@@ -23,10 +23,13 @@ mkdir -p ${testdir}
 test -f  ${testdir}/setup-envtest.sh || curl -sSLo ${testdir}/setup-envtest.sh https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/v0.6.3/hack/setup-envtest.sh
 sed -i "s,#\!.*,#\!\/bin\/bash,g"  ${testdir}/setup-envtest.sh
 source  ${testdir}/setup-envtest.sh; fetch_envtest_tools  ${testdir}; setup_envtest_env  ${testdir}; \
+echo "Testing root"
 go test ./cmd/... -p=1 -count=1 -coverprofile cmd-cover.out; \
 go test ./controllers/... -p=1 -count=1 -coverprofile controllers-cover.out
 go test ./core/... -p=1 -count=1 -coverprofile core-cover.out
+echo "Testing apis"
 cd apis && go test ./... -p=1 -count=1 -coverprofile apis-cover.out
 cd - || exit
+echo "Testing client"
 cd client && go test ./... -p=1 -count=1 -coverprofile client-cover.out
 cd - || exit
