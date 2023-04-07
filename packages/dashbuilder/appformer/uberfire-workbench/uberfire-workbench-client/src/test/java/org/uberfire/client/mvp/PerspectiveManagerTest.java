@@ -36,8 +36,8 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.events.PerspectiveChange;
-import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.DockingWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.LayoutPanelPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -107,7 +107,7 @@ public class PerspectiveManagerTest {
     @SuppressWarnings("unchecked")
     @Before
     public void setup() {
-        ozDefinition = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        ozDefinition = new PerspectiveDefinitionImpl(DockingWorkbenchPanelPresenter.class.getName());
 
         oz = mock(PerspectiveActivity.class);
         pr = mock(PlaceRequest.class);
@@ -181,7 +181,7 @@ public class PerspectiveManagerTest {
 
     @Test
     public void shouldSaveNonTransientPerspectives() throws Exception {
-        PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class
+        PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl(DockingWorkbenchPanelPresenter.class
                 .getName());
 
         PerspectiveActivity kansas = mock(PerspectiveActivity.class);
@@ -201,7 +201,7 @@ public class PerspectiveManagerTest {
 
     @Test
     public void shouldNotSaveTransientPerspectives() throws Exception {
-        PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class
+        PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl(DockingWorkbenchPanelPresenter.class
                 .getName());
 
         PerspectiveActivity kansas = mock(PerspectiveActivity.class);
@@ -268,11 +268,11 @@ public class PerspectiveManagerTest {
 
     @Test
     public void shouldAddAllPanelsToPanelManager() throws Exception {
-        PanelDefinition westPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        PanelDefinition eastPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        PanelDefinition northPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        PanelDefinition southPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        PanelDefinition southWestPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        PanelDefinition westPanel = new PanelDefinitionImpl(DockingWorkbenchPanelPresenter.class.getName());
+        PanelDefinition eastPanel = new PanelDefinitionImpl(DockingWorkbenchPanelPresenter.class.getName());
+        PanelDefinition northPanel = new PanelDefinitionImpl(DockingWorkbenchPanelPresenter.class.getName());
+        PanelDefinition southPanel = new PanelDefinitionImpl(DockingWorkbenchPanelPresenter.class.getName());
+        PanelDefinition southWestPanel = new PanelDefinitionImpl(DockingWorkbenchPanelPresenter.class.getName());
 
         ozDefinition.getRoot().appendChild(CompassPosition.WEST,
                 westPanel);
@@ -309,13 +309,13 @@ public class PerspectiveManagerTest {
 
     @Test
     public void shouldDestroyAllOldPanelsWhenSwitchingRoot() throws Exception {
-        PerspectiveDefinition fooPerspectiveDef = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class
+        PerspectiveDefinition fooPerspectiveDef = new PerspectiveDefinitionImpl(DockingWorkbenchPanelPresenter.class
                 .getName());
         PanelDefinition rootPanel = fooPerspectiveDef.getRoot();
-        PanelDefinition fooPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
-        PanelDefinition fooChildPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
-        PanelDefinition barPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
-        PanelDefinition bazPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        PanelDefinition fooPanel = new PanelDefinitionImpl(LayoutPanelPresenter.class.getName());
+        PanelDefinition fooChildPanel = new PanelDefinitionImpl(LayoutPanelPresenter.class.getName());
+        PanelDefinition barPanel = new PanelDefinitionImpl(LayoutPanelPresenter.class.getName());
+        PanelDefinition bazPanel = new PanelDefinitionImpl(LayoutPanelPresenter.class.getName());
 
         rootPanel.appendChild(fooPanel);
         rootPanel.appendChild(barPanel);

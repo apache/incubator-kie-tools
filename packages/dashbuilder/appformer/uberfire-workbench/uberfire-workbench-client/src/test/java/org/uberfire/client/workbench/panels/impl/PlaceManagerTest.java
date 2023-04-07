@@ -16,7 +16,6 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,17 +23,13 @@ import java.util.function.Function;
 
 import javax.enterprise.event.Event;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.web.bindery.event.shared.EventBus;
 import org.assertj.core.api.Assertions;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.AdditionalAnswers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
@@ -49,8 +44,6 @@ import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
-import org.uberfire.client.mvp.PlaceHistoryHandler;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceManagerImpl;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.mvp.UIPart;
@@ -63,6 +56,7 @@ import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
+import org.uberfire.client.workbench.panels.DockingWorkbenchPanelPresenter;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -74,7 +68,6 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
-import org.uberfire.workbench.model.impl.CustomPanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
@@ -120,7 +113,7 @@ public class PlaceManagerTest {
      * This panel will always be returned from panelManager.getRoot().
      */
     private final PanelDefinition rootPanel = new PanelDefinitionImpl(
-            MultiListWorkbenchPanelPresenter.class.getName());
+            DockingWorkbenchPanelPresenter.class.getName());
     @Mock
     PerspectiveActivity defaultPerspective;
     @Mock
@@ -133,8 +126,6 @@ public class PlaceManagerTest {
     Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
     @Mock
     ActivityManager activityManager;
-    @Mock
-    PlaceHistoryHandler placeHistoryHandler;
     @Mock
     Event<SelectPlaceEvent> selectWorkbenchPartEvent;
     @Mock
@@ -154,8 +145,6 @@ public class PlaceManagerTest {
     @Before
     public void setup() {
         ((SyncBeanManagerImpl) IOC.getBeanManager()).reset();
-
-        when(placeHistoryHandler.getPerspectiveFromPlace(any())).then(AdditionalAnswers.returnsFirstArg());
 
         when(defaultPerspective.getIdentifier())
                 .thenReturn("DefaultPerspective");
@@ -182,9 +171,6 @@ public class PlaceManagerTest {
         when(kansasActivity.preferredWidth()).thenReturn(123);
         when(kansasActivity.preferredHeight()).thenReturn(456);
 
-        when(placeHistoryHandler.getPerspectiveFromPlace(any()))
-                .thenAnswer(i -> i.getArgument(0,
-                        PlaceRequest.class));
         // arrange for the mock PerspectiveManager to invoke the doWhenFinished callbacks
         doAnswer(new Answer<Void>() {
 
@@ -224,7 +210,6 @@ public class PlaceManagerTest {
         reset(workbenchPartCloseEvent);
         reset(workbenchPartLostFocusEvent);
         reset(activityManager);
-        reset(placeHistoryHandler);
         reset(selectWorkbenchPartEvent);
         reset(panelManager);
         reset(perspectiveManager);
@@ -242,15 +227,6 @@ public class PlaceManagerTest {
                                             any(),
                                             any()))
                 .thenAnswer(invocation -> (PanelDefinition) invocation.getArguments()[0]);
-    }
-
-    @Test
-    public void testPlaceManagerGetsInitializedToADefaultPlace() throws Exception {
-        placeManager.initPlaceHistoryHandler();
-
-        verify(placeHistoryHandler).initialize(any(PlaceManager.class),
-                any(EventBus.class),
-                any(PlaceRequest.class));
     }
 
     @Test
@@ -358,7 +334,6 @@ public class PlaceManagerTest {
         verifyNoActivityLaunchSideEffects(kansas,
                 kansasActivity);
     }
-
 
     @Test
     public void testNormalCloseExistingScreenActivity() throws Exception {
@@ -864,339 +839,6 @@ public class PlaceManagerTest {
                 never()).onClose();
         assertEquals(PlaceStatus.OPEN,
                 placeManager.getStatus(popupPlace));
-    }
-
-    @Test
-    public void testLaunchActivityInCustomPanel() throws Exception {
-        HasWidgets any = any(HasWidgets.class);
-        CustomPanelDefinitionImpl customPanelDef = new CustomPanelDefinitionImpl(
-                UnanchoredStaticWorkbenchPanelPresenter.class.getName(),
-                any);
-        when(panelManager.addCustomPanel(any,
-                eq(UnanchoredStaticWorkbenchPanelPresenter.class.getName())))
-                        .thenReturn(customPanelDef);
-
-        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest("emerald_city");
-        WorkbenchScreenActivity emeraldCityActivity = mock(WorkbenchScreenActivity.class);
-        when(emeraldCityActivity.preferredWidth()).thenReturn(555);
-        when(emeraldCityActivity.preferredHeight()).thenReturn(-1);
-        when(activityManager.getActivities(emeraldCityPlace))
-                .thenReturn(singleton((Activity) emeraldCityActivity));
-        when(emeraldCityActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-
-        HasWidgets customContainer = mock(HasWidgets.class);
-
-        placeManager.goTo(emeraldCityPlace,
-                customContainer);
-
-        verifyActivityLaunchSideEffects(emeraldCityPlace,
-                emeraldCityActivity,
-                customPanelDef);
-        verify(panelManager).addWorkbenchPart(eq(emeraldCityPlace),
-                eq(new PartDefinitionImpl(emeraldCityPlace)),
-                eq(customPanelDef),
-                any(UIPart.class),
-                isNull(String.class),
-                isNull(Integer.class),
-                isNull(Integer.class));
-        assertNull(customPanelDef.getParent());
-    }
-
-    @Test
-    public void testLaunchActivityInCustomHasWidgetsPanelShouldCloseExistingOnes() throws Exception {
-        PlaceManagerImpl placeManagerSpy = spy(this.placeManager);
-        HasWidgets panel = mock(HasWidgets.class);
-        CustomPanelDefinitionImpl customPanelDef = spy(new CustomPanelDefinitionImpl(
-                UnanchoredStaticWorkbenchPanelPresenter.class.getName(),
-                panel));
-        when(panelManager.addCustomPanel(eq(panel),
-                eq(UnanchoredStaticWorkbenchPanelPresenter.class.getName())))
-                        .thenReturn(customPanelDef);
-
-        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest("emerald_city");
-        WorkbenchScreenActivity emeraldCityActivity = mock(WorkbenchScreenActivity.class);
-        when(emeraldCityActivity.preferredWidth()).thenReturn(555);
-        when(emeraldCityActivity.preferredHeight()).thenReturn(-1);
-        when(activityManager.getActivities(emeraldCityPlace))
-                .thenReturn(singleton((Activity) emeraldCityActivity));
-        when(emeraldCityActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-        PlaceRequest emeraldCityPlace2 = new DefaultPlaceRequest("emerald_city2");
-        WorkbenchScreenActivity emeraldCityActivity2 = mock(WorkbenchScreenActivity.class);
-        when(emeraldCityActivity2.preferredWidth()).thenReturn(555);
-        when(emeraldCityActivity2.preferredHeight()).thenReturn(-1);
-        when(activityManager.getActivities(emeraldCityPlace2))
-                .thenReturn(singleton((Activity) emeraldCityActivity2));
-        when(emeraldCityActivity2.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-
-        placeManagerSpy.goTo(emeraldCityPlace,
-                panel);
-
-        verifyActivityLaunchSideEffects(emeraldCityPlace,
-                emeraldCityActivity,
-                customPanelDef);
-        verify(panelManager).addWorkbenchPart(eq(emeraldCityPlace),
-                eq(new PartDefinitionImpl(emeraldCityPlace)),
-                eq(customPanelDef),
-                any(UIPart.class),
-                isNull(String.class),
-                isNull(Integer.class),
-                isNull(Integer.class));
-        assertNull(customPanelDef.getParent());
-
-        Set<PartDefinition> parts = new HashSet<>();
-        PartDefinition part = mock(PartDefinition.class);
-        parts.add(part);
-        when(part.getPlace()).thenReturn(emeraldCityPlace);
-        when(customPanelDef.getParts()).thenReturn(parts);
-
-        placeManagerSpy.goTo(emeraldCityPlace2,
-                panel);
-
-        verifyActivityLaunchSideEffects(emeraldCityPlace2,
-                emeraldCityActivity2,
-                customPanelDef);
-
-        verify(panelManager).addWorkbenchPart(eq(emeraldCityPlace2),
-                eq(new PartDefinitionImpl(emeraldCityPlace2)),
-                eq(customPanelDef),
-                any(UIPart.class),
-                isNull(String.class),
-                isNull(Integer.class),
-                isNull(Integer.class));
-
-        verify(placeManagerSpy).closePlace(emeraldCityPlace);
-
-        assertNull(customPanelDef.getParent());
-    }
-
-    @Test
-    public void testLaunchActivityInCustomHTMLElementPanelShouldCloseExistingOnes() throws Exception {
-        PlaceManagerImpl placeManagerSpy = spy(this.placeManager);
-        HTMLElement panel = mock(HTMLElement.class);
-        CustomPanelDefinitionImpl customPanelDef = spy(new CustomPanelDefinitionImpl(
-                UnanchoredStaticWorkbenchPanelPresenter.class.getName(),
-                panel));
-        when(panelManager.addCustomPanel(eq(panel),
-                eq(UnanchoredStaticWorkbenchPanelPresenter.class.getName())))
-                        .thenReturn(customPanelDef);
-
-        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest("emerald_city");
-        WorkbenchScreenActivity emeraldCityActivity = mock(WorkbenchScreenActivity.class);
-        when(emeraldCityActivity.preferredWidth()).thenReturn(555);
-        when(emeraldCityActivity.preferredHeight()).thenReturn(-1);
-        when(activityManager.getActivities(emeraldCityPlace))
-                .thenReturn(singleton((Activity) emeraldCityActivity));
-        when(emeraldCityActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-
-        PlaceRequest emeraldCityPlace2 = new DefaultPlaceRequest("emerald_city2");
-        WorkbenchScreenActivity emeraldCityActivity2 = mock(WorkbenchScreenActivity.class);
-        when(emeraldCityActivity2.preferredWidth()).thenReturn(555);
-        when(emeraldCityActivity2.preferredHeight()).thenReturn(-1);
-        when(activityManager.getActivities(emeraldCityPlace2))
-                .thenReturn(singleton((Activity) emeraldCityActivity2));
-        when(emeraldCityActivity2.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-
-        placeManagerSpy.goTo(emeraldCityPlace,
-                panel);
-
-        verifyActivityLaunchSideEffects(emeraldCityPlace,
-                emeraldCityActivity,
-                customPanelDef);
-        verify(panelManager).addWorkbenchPart(eq(emeraldCityPlace),
-                eq(new PartDefinitionImpl(emeraldCityPlace)),
-                eq(customPanelDef),
-                any(UIPart.class),
-                isNull(String.class),
-                isNull(Integer.class),
-                isNull(Integer.class));
-        assertNull(customPanelDef.getParent());
-
-        Set<PartDefinition> parts = new HashSet<>();
-        PartDefinition part = mock(PartDefinition.class);
-        parts.add(part);
-        when(part.getPlace()).thenReturn(emeraldCityPlace);
-        when(customPanelDef.getParts()).thenReturn(parts);
-
-        placeManagerSpy.goTo(emeraldCityPlace2,
-                panel);
-
-        verifyActivityLaunchSideEffects(emeraldCityPlace2,
-                emeraldCityActivity2,
-                customPanelDef);
-
-        verify(panelManager).addWorkbenchPart(eq(emeraldCityPlace2),
-                eq(new PartDefinitionImpl(emeraldCityPlace2)),
-                eq(customPanelDef),
-                any(UIPart.class),
-                isNull(String.class),
-                isNull(Integer.class),
-                isNull(Integer.class));
-
-        verify(placeManagerSpy).closePlace(emeraldCityPlace);
-
-        assertNull(customPanelDef.getParent());
-    }
-
-    @Test
-    public void testLaunchExistingActivityInCustomPanel() throws Exception {
-        HasWidgets customContainer = mock(HasWidgets.class);
-
-        when(kansasActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-        placeManager.goTo(kansas,
-                customContainer);
-
-        verify(panelManager,
-                never())
-                        .addCustomPanel(customContainer,
-                                StaticWorkbenchPanelPresenter.class.getName());
-        verifyNoActivityLaunchSideEffects(kansas,
-                kansasActivity);
-        verify(selectWorkbenchPartEvent).fire(refEq(new SelectPlaceEvent(kansas)));
-    }
-
-    @Test
-    public void testClosingActivityInCustomPanel() throws Exception {
-        HasWidgets any = any(HasWidgets.class);
-        CustomPanelDefinitionImpl customPanelDef = new CustomPanelDefinitionImpl(
-                UnanchoredStaticWorkbenchPanelPresenter.class.getName(),
-                any);
-        when(panelManager.addCustomPanel(any,
-                eq(UnanchoredStaticWorkbenchPanelPresenter.class.getName())))
-                        .thenReturn(customPanelDef);
-
-        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest("emerald_city");
-        createWorkbenchScreenActivity(emeraldCityPlace);
-
-        HasWidgets customContainer = mock(HasWidgets.class);
-
-        placeManager.goTo(emeraldCityPlace,
-                customContainer);
-        placeManager.closePlace(emeraldCityPlace);
-
-        assertTrue(customPanelDef.getParts().isEmpty());
-        verify(panelManager).removeWorkbenchPanel(customPanelDef);
-    }
-
-    @Test
-    public void testClosingAllPlacesIncludesCustomPanels() throws Exception {
-        HasWidgets any = any(HasWidgets.class);
-        CustomPanelDefinitionImpl customPanelDef = new CustomPanelDefinitionImpl(
-                UnanchoredStaticWorkbenchPanelPresenter.class.getName(),
-                any);
-        when(panelManager.addCustomPanel(any,
-                eq(UnanchoredStaticWorkbenchPanelPresenter.class.getName())))
-                        .thenReturn(customPanelDef);
-
-        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest("emerald_city");
-        createWorkbenchScreenActivity(emeraldCityPlace);
-
-        HasWidgets customContainer = mock(HasWidgets.class);
-
-        placeManager.goTo(emeraldCityPlace,
-                customContainer);
-        placeManager.closeAllPlaces();
-
-        assertTrue(customPanelDef.getParts().isEmpty());
-        verify(panelManager).removeWorkbenchPanel(customPanelDef);
-    }
-
-    @Test
-    public void testLaunchActivityInCustomPanelInsideHTMLElement() throws Exception {
-        HTMLElement any = any(HTMLElement.class);
-        CustomPanelDefinitionImpl customPanelDef = new CustomPanelDefinitionImpl(
-                UnanchoredStaticWorkbenchPanelPresenter.class.getName(),
-                any);
-        when(panelManager.addCustomPanel(any,
-                eq(UnanchoredStaticWorkbenchPanelPresenter.class.getName())))
-                        .thenReturn(customPanelDef);
-
-        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest("emerald_city");
-        WorkbenchScreenActivity emeraldCityActivity = mock(WorkbenchScreenActivity.class);
-        when(emeraldCityActivity.preferredWidth()).thenReturn(555);
-        when(emeraldCityActivity.preferredHeight()).thenReturn(-1);
-        when(activityManager.getActivities(emeraldCityPlace))
-                .thenReturn(singleton((Activity) emeraldCityActivity));
-        when(emeraldCityActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-
-        HTMLElement customContainer = mock(HTMLElement.class);
-
-        placeManager.goTo(emeraldCityPlace,
-                customContainer);
-
-        verifyActivityLaunchSideEffects(emeraldCityPlace,
-                emeraldCityActivity,
-                customPanelDef);
-        verify(panelManager).addWorkbenchPart(eq(emeraldCityPlace),
-                eq(new PartDefinitionImpl(emeraldCityPlace)),
-                eq(customPanelDef),
-                any(UIPart.class),
-                isNull(String.class),
-                isNull(Integer.class),
-                isNull(Integer.class));
-        assertNull(customPanelDef.getParent());
-    }
-
-    @Test
-    public void testLaunchExistingActivityInCustomPanelInsideHTMLElement() throws Exception {
-        HTMLElement customContainer = mock(HTMLElement.class);
-
-        when(kansasActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
-        placeManager.goTo(kansas,
-                customContainer);
-
-        verify(panelManager,
-                never())
-                        .addCustomPanel(customContainer,
-                                StaticWorkbenchPanelPresenter.class.getName());
-        verifyNoActivityLaunchSideEffects(kansas,
-                kansasActivity);
-        verify(selectWorkbenchPartEvent).fire(refEq(new SelectPlaceEvent(kansas)));
-    }
-
-    @Test
-    public void testClosingActivityInCustomPanelInsideHTMLElement() throws Exception {
-        HTMLElement any = any(HTMLElement.class);
-        CustomPanelDefinitionImpl customPanelDef = new CustomPanelDefinitionImpl(
-                UnanchoredStaticWorkbenchPanelPresenter.class.getName(),
-                any);
-        when(panelManager.addCustomPanel(any,
-                eq(UnanchoredStaticWorkbenchPanelPresenter.class.getName())))
-                        .thenReturn(customPanelDef);
-
-        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest("emerald_city");
-        createWorkbenchScreenActivity(emeraldCityPlace);
-
-        HTMLElement customContainer = mock(HTMLElement.class);
-
-        placeManager.goTo(emeraldCityPlace,
-                customContainer);
-        placeManager.closePlace(emeraldCityPlace);
-
-        assertTrue(customPanelDef.getParts().isEmpty());
-        verify(panelManager).removeWorkbenchPanel(customPanelDef);
-    }
-
-    @Test
-    public void testClosingAllPlacesIncludesCustomPanelsInsideHTMLElements() throws Exception {
-        HTMLElement any = any(HTMLElement.class);
-        CustomPanelDefinitionImpl customPanelDef = new CustomPanelDefinitionImpl(
-                UnanchoredStaticWorkbenchPanelPresenter.class.getName(),
-                any);
-        when(panelManager.addCustomPanel(any,
-                eq(UnanchoredStaticWorkbenchPanelPresenter.class.getName())))
-                        .thenReturn(customPanelDef);
-
-        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest("emerald_city");
-        createWorkbenchScreenActivity(emeraldCityPlace);
-
-        HTMLElement customContainer = mock(HTMLElement.class);
-
-        placeManager.goTo(emeraldCityPlace,
-                customContainer);
-        placeManager.closeAllPlaces();
-
-        assertTrue(customPanelDef.getParts().isEmpty());
-        verify(panelManager).removeWorkbenchPanel(customPanelDef);
     }
 
     @Test

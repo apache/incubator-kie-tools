@@ -40,8 +40,7 @@ import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.LayoutPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
@@ -89,7 +88,7 @@ public class PanelManagerTest {
     @Mock
     StubPlaceHiddenEvent placeHidEvent;
     @Mock
-    SimpleWorkbenchPanelPresenter workbenchPanelPresenter;
+    LayoutPanelPresenter workbenchPanelPresenter;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     LayoutSelection layoutSelection;
     @Mock
@@ -117,14 +116,14 @@ public class PanelManagerTest {
     public void setup() {
         when(layoutSelection.get().getPerspectiveContainer()).thenReturn(mock(HasWidgets.class));
 
-        testPerspectiveDef = new PerspectiveDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        testPerspectiveDef = new PerspectiveDefinitionImpl(LayoutPanelPresenter.class.getName());
         testPerspectiveRootPanelPresenter = mock(WorkbenchPanelPresenter.class);
 
         when(beanFactory.newRootPanel(any(),
                                       eq(testPerspectiveDef.getRoot()))).thenReturn(testPerspectiveRootPanelPresenter);
         when(testPerspectiveRootPanelPresenter.getDefinition()).thenReturn(testPerspectiveDef.getRoot());
         when(testPerspectiveRootPanelPresenter.getPanelView()).thenReturn(mock(WorkbenchPanelView.class));
-        when(testPerspectiveRootPanelPresenter.getDefaultChildType()).thenReturn(SimpleWorkbenchPanelPresenter.class.getName());
+        when(testPerspectiveRootPanelPresenter.getDefaultChildType()).thenReturn(LayoutPanelPresenter.class.getName());
 
         partPresenter = mock(WorkbenchPartPresenter.class);
         when(beanFactory.newWorkbenchPart(any(),
@@ -199,7 +198,7 @@ public class PanelManagerTest {
         UIPart uiPart = new UIPart("uiPart",
                 null,
                 mock(IsWidget.class));
-        PanelDefinition randomUnattachedPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        PanelDefinition randomUnattachedPanel = new PanelDefinitionImpl(LayoutPanelPresenter.class.getName());
 
         try {
             panelManager.addWorkbenchPart(partPlace,
@@ -266,7 +265,7 @@ public class PanelManagerTest {
         panelManager.setRoot(testPerspectiveActivity,
                              testPerspectiveDef.getRoot());
 
-        PanelDefinition notActuallyAdded = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        PanelDefinition notActuallyAdded = new PanelDefinitionImpl(LayoutPanelPresenter.class.getName());
         PanelDefinition result = panelManager.addWorkbenchPanel(testPerspectiveDef.getRoot(),
                                                                 notActuallyAdded,
                                                                 CompassPosition.ROOT);
@@ -276,7 +275,7 @@ public class PanelManagerTest {
 
     @Test
     public void addedPanelsShouldBeRemembered() throws Exception {
-        PanelDefinition subPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        PanelDefinition subPanel = new PanelDefinitionImpl(LayoutPanelPresenter.class.getName());
         testPerspectiveDef.getRoot().appendChild(CompassPosition.WEST,
                 subPanel);
 
@@ -291,7 +290,7 @@ public class PanelManagerTest {
     public void addedCustomPanelsShouldBeRemembered() throws Exception {
         HasWidgets container = mock(HasWidgets.class);
         PanelDefinition customPanel = panelManager.addCustomPanel(container,
-                StaticWorkbenchPanelPresenter.class.getName());
+                LayoutPanelPresenter.class.getName());
 
         assertTrue(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
     }
@@ -300,14 +299,14 @@ public class PanelManagerTest {
     public void addedCustomPanelsInsideHTMLElementsShouldBeRemembered() throws Exception {
         HTMLElement container = mock(HTMLElement.class);
         PanelDefinition customPanel = panelManager.addCustomPanel(container,
-                StaticWorkbenchPanelPresenter.class.getName());
+                LayoutPanelPresenter.class.getName());
 
         assertTrue(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
     }
 
     @Test
     public void explicitlyRemovedPanelsShouldBeForgotten() throws Exception {
-        PanelDefinition subPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        PanelDefinition subPanel = new PanelDefinitionImpl(LayoutPanelPresenter.class.getName());
         testPerspectiveDef.getRoot().appendChild(CompassPosition.WEST,
                 subPanel);
 
@@ -323,7 +322,7 @@ public class PanelManagerTest {
     public void explicitlyRemovedCustomPanelsShouldBeForgotten() throws Exception {
         HasWidgets container = mock(HasWidgets.class);
         PanelDefinition customPanel = panelManager.addCustomPanel(container,
-                StaticWorkbenchPanelPresenter.class.getName());
+                LayoutPanelPresenter.class.getName());
         panelManager.removeWorkbenchPanel(customPanel);
 
         assertFalse(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
@@ -333,7 +332,7 @@ public class PanelManagerTest {
     public void explicitlyRemovedCustomPanelsInsideHTMLElementsShouldBeForgotten() throws Exception {
         HTMLElement container = mock(HTMLElement.class);
         PanelDefinition customPanel = panelManager.addCustomPanel(container,
-                StaticWorkbenchPanelPresenter.class.getName());
+                LayoutPanelPresenter.class.getName());
         panelManager.removeWorkbenchPanel(customPanel);
 
         assertFalse(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
@@ -343,7 +342,7 @@ public class PanelManagerTest {
     public void explicitlyRemovedCustomPanelsInsideElemental2HTMLElementsShouldBeForgotten() {
         elemental2.dom.HTMLElement container = mock(elemental2.dom.HTMLElement.class);
         PanelDefinition customPanel = panelManager.addCustomPanel(container,
-                StaticWorkbenchPanelPresenter.class.getName());
+                LayoutPanelPresenter.class.getName());
         panelManager.removeWorkbenchPanel(customPanel);
 
         assertFalse(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));

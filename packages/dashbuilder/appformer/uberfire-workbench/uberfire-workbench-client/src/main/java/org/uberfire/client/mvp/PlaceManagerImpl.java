@@ -52,7 +52,6 @@ import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
-import org.uberfire.client.workbench.panels.impl.UnanchoredStaticWorkbenchPanelPresenter;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
@@ -79,7 +78,7 @@ import static org.uberfire.plugin.PluginUtil.toInteger;
 public class PlaceManagerImpl implements PlaceManager {
 
     /**
-     * Activities that have been created by us but not destroyed (TODO: move this state tracking to ActivityManager!).
+     * Activities that have been created by us but not destroyed 
      */
     private final Map<PlaceRequest, Activity> existingWorkbenchActivities = new HashMap<PlaceRequest, Activity>();
 
@@ -106,8 +105,6 @@ public class PlaceManagerImpl implements PlaceManager {
     @Inject
     private ActivityManager activityManager;
     @Inject
-    private PlaceHistoryHandler placeHistoryHandler;
-    @Inject
     private Event<SelectPlaceEvent> selectWorkbenchPartEvent;
     @Inject
     private PanelManager panelManager;
@@ -120,30 +117,14 @@ public class PlaceManagerImpl implements PlaceManager {
     private LayoutSelection layoutSelection;
 
     @PostConstruct
-    public void initPlaceHistoryHandler() {
-        getPlaceHistoryHandler().initialize(this,
-                produceEventBus(),
-                DefaultPlaceRequest.NOWHERE);
+    public void init() {
         workbenchLayout = layoutSelection.get();
-    }
-
-    private PlaceHistoryHandler getPlaceHistoryHandler() {
-        return placeHistoryHandler;
-    }
-
-    @Override
-    public void goTo(final String identifier,
-                     final PanelDefinition panel) {
-        final DefaultPlaceRequest place = new DefaultPlaceRequest(identifier);
-        goTo(place,
-                panel);
     }
 
     @Override
     public void goTo(final String identifier) {
-        final DefaultPlaceRequest place = new DefaultPlaceRequest(identifier);
-        goTo(place,
-                (PanelDefinition) null);
+        final var place = new DefaultPlaceRequest(identifier);
+        goTo(place, (PanelDefinition) null);
     }
 
     @Override
@@ -152,51 +133,12 @@ public class PlaceManagerImpl implements PlaceManager {
                 (PanelDefinition) null);
     }
 
-
     @Override
     public void goTo(final PlaceRequest place,
                      final PanelDefinition panel) {
         goTo(place,
                 panel,
                 Commands.DO_NOTHING);
-    }
-
-    @Override
-    public void goTo(PlaceRequest place,
-                     HasWidgets addTo) {
-
-        closeOpenPlacesAt(panelsOfThisHasWidgets(addTo));
-        goToTargetPanel(place,
-                panelManager.addCustomPanel(addTo,
-                        UnanchoredStaticWorkbenchPanelPresenter.class.getName()));
-    }
-
-    @Override
-    public void goTo(final String id,
-                     final HTMLElement addTo) {
-        final DefaultPlaceRequest place = new DefaultPlaceRequest(id);
-        goTo(place, addTo);
-    }
-
-    @Override
-    public void goTo(PlaceRequest place,
-                     HTMLElement addTo) {
-
-        closeOpenPlacesAt(panelsOfThisHTMLElement(addTo));
-
-        goToTargetPanel(place,
-                panelManager.addCustomPanel(addTo,
-                        UnanchoredStaticWorkbenchPanelPresenter.class.getName()));
-    }
-
-    @Override
-    public void goTo(final PlaceRequest place,
-                     final elemental2.dom.HTMLElement addTo) {
-        closeOpenPlacesAt(panelsOfThisHTMLElement(addTo));
-
-        goToTargetPanel(place,
-                panelManager.addCustomPanel(addTo,
-                        UnanchoredStaticWorkbenchPanelPresenter.class.getName()));
     }
 
     private void closeOpenPlacesAt(Predicate<CustomPanelDefinition> filterPanels) {
@@ -282,7 +224,6 @@ public class PlaceManagerImpl implements PlaceManager {
                                            final Command doWhenFinished,
                                            final PerspectiveActivity activity) {
         final Command launchPerspectiveCommand = () -> {
-            placeHistoryHandler.flush();
             launchPerspectiveActivity(place,
                     activity,
                     doWhenFinished);
@@ -463,11 +404,6 @@ public class PlaceManagerImpl implements PlaceManager {
         }
         final Activity activity = existingWorkbenchActivities.get(place);
         return activity;
-    }
-
-    @Override
-    public PlaceStatus getStatus(String id) {
-        return getStatus(new DefaultPlaceRequest(id));
     }
 
     @Override
@@ -720,8 +656,6 @@ public class PlaceManagerImpl implements PlaceManager {
 
         try {
             activity.onOpen();
-            getPlaceHistoryHandler().registerOpen(activity,
-                    place);
         } catch (Exception ex) {
             lifecycleErrorHandler.handle(activity,
                     LifecyclePhase.OPEN,
@@ -754,8 +688,6 @@ public class PlaceManagerImpl implements PlaceManager {
 
         try {
             activity.onOpen();
-            getPlaceHistoryHandler().registerOpen(activity,
-                    place);
         } catch (Exception ex) {
             activePopups.remove(place.getIdentifier());
             lifecycleErrorHandler.handle(activity,
@@ -837,8 +769,6 @@ public class PlaceManagerImpl implements PlaceManager {
                                     openPartsRecursively(perspectiveDef.getRoot());
                                     doWhenFinished.execute();
                                     workbenchLayout.onResize();
-                                    placeHistoryHandler.registerOpen(activity,
-                                            place);
                                 }
                             });
                 }
@@ -963,8 +893,6 @@ public class PlaceManagerImpl implements PlaceManager {
                 activity.onClose();
             }
 
-            getPlaceHistoryHandler().registerClose(activity,
-                    place);
             workbenchPartCloseEvent.fire(new ClosePlaceEvent(place));
 
             panelManager.removePartForPlace(place);
@@ -1112,4 +1040,5 @@ public class PlaceManagerImpl implements PlaceManager {
             return "{activity=" + activity + ", placeRequest=" + placeRequest + "}";
         }
     }
+
 }

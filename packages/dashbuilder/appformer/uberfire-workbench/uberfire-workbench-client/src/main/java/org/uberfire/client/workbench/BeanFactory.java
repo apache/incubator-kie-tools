@@ -19,7 +19,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -33,8 +32,7 @@ public interface BeanFactory {
     /**
      * Creates a new part presenter/view pair with the given properties.
      * @param menus The menus to associate with the new part. Null means no menus.
-     * @param title The title to associate with the new part that the containing panel may display (for example, as the
-     * tab label in a {@link MultiTabWorkbenchPanelPresenter}.
+     * @param title The title to associate with the new part that the containing panel may display
      * @param titleDecoration The title decoration that a panel may choose to display beside the part's title. Null is permitted,
      * and means no title decoration.
      * <p>

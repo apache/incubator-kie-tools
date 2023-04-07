@@ -153,23 +153,6 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
     }
 
     @Test
-    public void testWorkbenchTemplateAnnotation() throws FileNotFoundException {
-        final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest12";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest12.expected";
-
-        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(getProcessorUnderTest(),
-                                                                               pathCompilationUnit);
-        printDiagnostics(diagnostics);
-        assertSuccessfulCompilation(diagnostics);
-        assertNotNull(result.getActualCode());
-        assertNotNull(result.getExpectedCode());
-        assertEquals(result.getExpectedCode(),
-                     result.getActualCode());
-    }
-
-    @Test
     public void testWorkbenchTemplateAnnotationWithOnlyWorkbenchParts() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest13";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest13.expected";
@@ -206,56 +189,6 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
                                  15,
                                  8,
                                  "Found more than one @WorkbenchPanel with isDefault=true.");
-    }
-
-    @Test
-    public void testWorkbenchTemplateAnnotationWithNoDefaultWorkbenchPanel() throws FileNotFoundException {
-        final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest16";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest16.expected";
-
-        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(getProcessorUnderTest(),
-                                                                               pathCompilationUnit);
-        assertSuccessfulCompilation(diagnostics);
-        assertNotNull(result.getActualCode());
-        assertNotNull(result.getExpectedCode());
-        assertEquals(result.getExpectedCode(),
-                     result.getActualCode());
-    }
-
-    @Test
-    public void testAlonePartAnnotationShouldGenerateDefaultPanel() throws FileNotFoundException {
-        final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest17";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest17.expected";
-
-        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(getProcessorUnderTest(),
-                                                                               pathCompilationUnit);
-        printDiagnostics(diagnostics);
-        assertSuccessfulCompilation(diagnostics);
-        assertNotNull(result.getActualCode());
-        assertNotNull(result.getExpectedCode());
-        assertEquals(result.getExpectedCode(),
-                     result.getActualCode());
-    }
-
-    @Test
-    public void testAlonePartsAnnotationShouldGenerateDefaultPanel() throws FileNotFoundException {
-        final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest18";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest18.expected";
-
-        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(getProcessorUnderTest(),
-                                                                               pathCompilationUnit);
-        printDiagnostics(diagnostics);
-        assertSuccessfulCompilation(diagnostics);
-        assertNotNull(result.getActualCode());
-        assertNotNull(result.getExpectedCode());
-        assertEquals(result.getExpectedCode(),
-                     result.getActualCode());
     }
 
     @Test

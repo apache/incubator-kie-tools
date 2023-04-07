@@ -19,7 +19,6 @@ package org.uberfire.client.workbench.part;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.workbench.model.PartDefinition;
 
 public interface WorkbenchPartPresenter {
@@ -33,15 +32,13 @@ public interface WorkbenchPartPresenter {
     void setWrappedWidget(IsWidget widget);
 
     /**
-     * Returns the text that a panel may choose to display beside this part's title. For example,
-     * {@link MultiTabWorkbenchPanelPresenter} uses this text for the tab's label.
+     * Returns the text that a panel may choose to display beside this part's title.
      * @return The title of this part; never null.
      */
     String getTitle();
 
     /**
-     * Sets the text that a panel may choose to display beside this part's title. For example,
-     * {@link MultiTabWorkbenchPanelPresenter} uses this text for the tab's label.
+     * Sets the text that a panel may choose to display beside this part's title.
      * @param title The title of this part. Null is not permitted.
      */
     void setTitle(String title);

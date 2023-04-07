@@ -74,14 +74,14 @@ import static org.uberfire.plugin.PluginUtil.ensureIterable;
 public class PanelManagerImpl implements PanelManager {
 
     protected final Map<PartDefinition, WorkbenchPartPresenter> mapPartDefinitionToPresenter =
-            new HashMap<PartDefinition, WorkbenchPartPresenter>();
+            new HashMap<>();
     protected final Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter =
-            new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
+            new HashMap<>();
     /**
      * Remembers which HasWidgets contains each existing custom panel. Items are removed from this map when the panels
      * are closed/removed.
      */
-    protected final Map<PanelDefinition, HasWidgets> customPanels = new HashMap<PanelDefinition, HasWidgets>();
+    protected final Map<PanelDefinition, HasWidgets> customPanels = new HashMap<>();
     /**
      * Remembers which HTMLElements contain each existing custom panel. Items are removed from this map when the panels
      * are closed/removed.
