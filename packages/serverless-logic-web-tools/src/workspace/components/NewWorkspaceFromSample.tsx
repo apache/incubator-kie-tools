@@ -24,7 +24,6 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { QueryParams } from "../../navigation/Routes";
 import { useQueryParam } from "../../queryParams/QueryParamsContext";
-import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
 import { KIE_SAMPLES_REPO } from "../../home/sample/sampleApi";
@@ -62,22 +61,20 @@ export function NewWorkspaceFromSample() {
 
   return (
     <>
-      <OnlineEditorPage>
-        {openingError && <EditorPageErrorPage path={`${KIE_SAMPLES_REPO.path}/${sampleId}`} errors={[openingError]} />}
-        {!openingError && (
-          <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
-            <Bullseye>
-              <TextContent>
-                <Bullseye>
-                  <Spinner />
-                </Bullseye>
-                <br />
-                <Text component={TextVariants.p}>{`Loading sample...`}</Text>
-              </TextContent>
-            </Bullseye>
-          </PageSection>
-        )}
-      </OnlineEditorPage>
+      {openingError && <EditorPageErrorPage path={`${KIE_SAMPLES_REPO.path}/${sampleId}`} errors={[openingError]} />}
+      {!openingError && (
+        <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
+          <Bullseye>
+            <TextContent>
+              <Bullseye>
+                <Spinner />
+              </Bullseye>
+              <br />
+              <Text component={TextVariants.p}>{`Loading sample...`}</Text>
+            </TextContent>
+          </Bullseye>
+        </PageSection>
+      )}
     </>
   );
 }

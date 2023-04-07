@@ -185,22 +185,6 @@ public class ExternalDataSetClientProvider {
         return new RuntimeException(sb.toString());
     }
 
-    
-
-    private Throwable buildExceptionForResponse(String responseText, Response response) {
-        var sb = new StringBuffer("The dataset URL is unreachable with status ");
-        sb.append(response.status);
-        sb.append(" - ");
-        sb.append(response.statusText);
-
-        if (responseText != null && !responseText.trim().isEmpty()) {
-            sb.append("\n");
-            sb.append("Response Text: ");
-            sb.append(responseText);
-        }
-        return new RuntimeException(sb.toString());
-   }
-
     private IThenable<Object> register(ExternalDataSetDef def,
                                        final DataSetReadyCallback callback,
                                        final String responseText,

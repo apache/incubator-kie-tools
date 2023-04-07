@@ -19,14 +19,14 @@ import { Switch } from "react-router";
 import { Overview } from "../overView/Overview";
 import { RecentModels } from "../recentModels/RecentModels";
 import { Route } from "react-router-dom";
-import { SampleCatalog } from "../sampleCatalog/SampleCatalog";
 import { useRoutes } from "../../navigation/Hooks";
 import { supportedFileExtensionArray } from "../../extension";
-import { NewWorkspaceFromSample } from "../workspace/components/NewWorkspaceFromSample";
-import { NewWorkspaceFromUrlPage } from "../workspace/components/NewWorkspaceFromUrlPage";
-import { NewWorkspaceWithEmptyFilePage } from "../workspace/components/NewWorkspaceWithEmptyFilePage";
+import { NewWorkspaceFromSample } from "../../workspace/components/NewWorkspaceFromSample";
+import { NewWorkspaceFromUrlPage } from "../../workspace/components/NewWorkspaceFromUrlPage";
+import { NewWorkspaceWithEmptyFilePage } from "../../workspace/components/NewWorkspaceWithEmptyFilePage";
 import { EditorPage } from "../../editor/EditorPage";
 import { NoMatchPage } from "../../navigation/NoMatchPage";
+import { Showcase } from "../../home/sample/Showcase";
 
 export function HomePageRoutes(props: { isNavOpen: boolean }) {
   const routes = useRoutes();
@@ -65,7 +65,7 @@ export function HomePageRoutes(props: { isNavOpen: boolean }) {
         <RecentModels />
       </Route>
       <Route path={routes.sampleCatalog.path({})}>
-        <SampleCatalog />
+        <Showcase />
       </Route>
       <Route component={NoMatchPage} />
     </Switch>
