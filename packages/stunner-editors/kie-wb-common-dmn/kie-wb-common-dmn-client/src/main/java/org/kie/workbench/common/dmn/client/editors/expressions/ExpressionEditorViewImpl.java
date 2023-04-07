@@ -20,14 +20,15 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLButtonElement;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -94,13 +95,17 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelContainer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.forms.client.event.FormFieldChanged;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation;
@@ -326,10 +331,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                         "<" + expressionTypeText + ">"));
     }
 
-    public void onPropertiesPanelFormFieldChanged(@Observes FormFieldChanged event) {
-        reloadEditor();
-    }
-
     void loadNewBoxedExpressionEditor() {
         ExpressionProps expression = ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef());
         String decisionNodeId = null;
@@ -391,10 +392,40 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     void fireDomainObjectSelectionEvent(final DomainObject domainObject) {
+        final Optional<CanvasHandler> canvasHandler = getCanvasHandler();
+        if (!canvasHandler.isPresent()) {
+            return;
+        }
 
-        final DomainObjectSelectionEvent event = new DomainObjectSelectionEvent(sessionManager.getCurrentSession().getCanvasHandler(),
-                                                                                domainObject);
-        this.domainObjectSelectionEvent.fire(event);
+        final Optional<Node> domainObjectNode = findDomainObjectNodeByDomainObject(domainObject);
+
+        if (domainObjectNode.isPresent()) {
+            refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(getCurrentSession(), domainObjectNode.get().getUUID()));
+        } else {
+            domainObjectSelectionEvent.fire(new DomainObjectSelectionEvent(canvasHandler.get(), domainObject));
+        }
+    }
+
+    private Optional<Node> findDomainObjectNodeByDomainObject(final DomainObject domainObject) {
+        return getCanvasHandler()
+                .map(canvasHandler -> {
+                    final Graph<?, Node> graph = canvasHandler.getDiagram().getGraph();
+                    return StreamSupport
+                            .stream(graph.nodes().spliterator(), false)
+                            .filter(node -> node.getContent() instanceof Definition)
+                            .filter(node -> Objects.equals(domainObject, ((Definition) node.getContent()).getDefinition()))
+                            .findFirst();
+                })
+                .orElse(Optional.empty());
+    }
+
+    private Optional<CanvasHandler> getCanvasHandler() {
+        final Optional<ClientSession> session = Optional.ofNullable(sessionManager.getCurrentSession());
+        return session.map(ClientSession::getCanvasHandler);
+    }
+
+    private ClientSession getCurrentSession() {
+        return sessionManager.getCurrentSession();
     }
 
     public void updateExpression(final ExpressionProps expressionProps) {
@@ -585,7 +616,13 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Override
     public void reloadEditor() {
-        loadNewBoxedExpressionEditor();
+        if (isReactBoxedExpressionVisible()) {
+            loadNewBoxedExpressionEditor();
+        }
+    }
+
+    private boolean isReactBoxedExpressionVisible() {
+        return DomGlobal.document.getElementsByClassName("kie-dmn-new-expression-editor").length > 0;
     }
 
     void syncExpressionWithOlderEditor() {
@@ -630,7 +667,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     void execute(final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder) {
-        sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+        sessionCommandManager.execute((AbstractCanvasHandler) getCurrentSession().getCanvasHandler(),
                                       commandBuilder.build());
     }
 

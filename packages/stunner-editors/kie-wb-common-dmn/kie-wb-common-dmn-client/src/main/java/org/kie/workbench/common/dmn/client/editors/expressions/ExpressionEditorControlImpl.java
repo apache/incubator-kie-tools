@@ -63,7 +63,6 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public void update(final DomainObject domainObject) {
             final CanvasHandler canvasHandler = session.getCanvasHandler();
             final Diagram diagram = canvasHandler.getDiagram();
@@ -80,6 +79,8 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
                     }
                 }
             }
+
+            view.reloadEditor();
         }
     }
 
