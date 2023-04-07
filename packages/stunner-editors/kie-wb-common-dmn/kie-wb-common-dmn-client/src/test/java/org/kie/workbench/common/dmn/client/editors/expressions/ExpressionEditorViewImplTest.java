@@ -727,10 +727,21 @@ public class ExpressionEditorViewImplTest {
     @Test
     public void testReloadEditor() {
         doNothing().when(view).loadNewBoxedExpressionEditor();
+        doReturn(true).when(view).isReactBoxedExpressionVisible();
 
         view.reloadEditor();
 
         verify(view).loadNewBoxedExpressionEditor();
+    }
+
+    @Test
+    public void testReloadEditorNotShowing() {
+        doNothing().when(view).loadNewBoxedExpressionEditor();
+        doReturn(false).when(view).isReactBoxedExpressionVisible();
+
+        view.reloadEditor();
+
+        verify(view, never()).loadNewBoxedExpressionEditor();
     }
 
     @Test

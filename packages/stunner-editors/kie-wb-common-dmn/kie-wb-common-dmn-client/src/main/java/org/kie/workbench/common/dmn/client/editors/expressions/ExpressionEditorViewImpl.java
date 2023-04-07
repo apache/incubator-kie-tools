@@ -621,7 +621,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         }
     }
 
-    private boolean isReactBoxedExpressionVisible() {
+    boolean isReactBoxedExpressionVisible() {
         return DomGlobal.document.getElementsByClassName("kie-dmn-new-expression-editor").length > 0;
     }
 
