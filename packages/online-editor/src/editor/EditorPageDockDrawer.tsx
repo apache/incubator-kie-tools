@@ -120,6 +120,10 @@ export const EditorPageDockDrawer = React.forwardRef<
           }
           return panelId;
         }
+        setDmnRunnerContextProviderState({
+          type: DmnRunnerProviderActionType.DEFAULT,
+          newState: { isExpanded: false },
+        });
         return PanelId.NONE;
       });
     },
@@ -127,12 +131,14 @@ export const EditorPageDockDrawer = React.forwardRef<
   );
 
   useLayoutEffect(() => {
-    if (mode === DmnRunnerMode.FORM && panel === PanelId.DMN_RUNNER_TABLE) {
+    if (props.workspaceFile.extension.toLowerCase() !== "dmn" && panel === PanelId.DMN_RUNNER_TABLE) {
       setPanel(PanelId.NONE);
-    } else if (props.workspaceFile.extension.toLowerCase() !== "dmn" && panel === PanelId.DMN_RUNNER_TABLE) {
+    } else if (mode === DmnRunnerMode.FORM && panel === PanelId.DMN_RUNNER_TABLE) {
       setPanel(PanelId.NONE);
+    } else if (isDmnTableMode && isExpanded) {
+      setPanel(PanelId.DMN_RUNNER_TABLE);
     }
-  }, [mode, panel, props.workspaceFile.extension]);
+  }, [isDmnTableMode, mode, panel, props.workspaceFile.extension, isExpanded]);
 
   useImperativeHandle(
     forwardRef,

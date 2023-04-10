@@ -366,8 +366,15 @@ export function EditorPage(props: Props) {
 
   useFileValidation(workspaces, workspaceFilePromise.data?.workspaceFile, editorPageDock, dmnLanguageService);
 
+  const onKeyDown = useCallback(
+    (ke: React.KeyboardEvent) => {
+      editor?.onKeyDown(ke);
+    },
+    [editor]
+  );
+
   return (
-    <OnlineEditorPage>
+    <OnlineEditorPage onKeyDown={onKeyDown}>
       <PromiseStateWrapper
         promise={workspaceFilePromise}
         pending={

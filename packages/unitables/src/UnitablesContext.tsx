@@ -15,14 +15,30 @@
  */
 
 import * as React from "react";
-import { useContext } from "react";
+import { useContext, useCallback } from "react";
+import { UnitablesRowApi } from "./UnitablesRow";
 
 export interface UnitablesContextType {
-  internalChange: React.MutableRefObject<boolean>;
+  isBeeTableChange: React.MutableRefObject<boolean>;
+  rowsRefs: Map<number, UnitablesRowApi>;
+  rowsInputs: Array<Record<string, any>>;
 }
 
 export const UnitablesContext = React.createContext<UnitablesContextType>({} as any);
 
 export function useUnitablesContext() {
   return useContext(UnitablesContext);
+}
+
+export function useUnitablesRow(rowIndex: number) {
+  const { rowsRefs, rowsInputs } = useUnitablesContext();
+
+  const submitRow = useCallback(
+    (rowIndex: number) => {
+      rowsRefs.get(rowIndex)?.submit();
+    },
+    [rowsRefs]
+  );
+
+  return { submitRow, rowInputs: rowsInputs[rowIndex] };
 }

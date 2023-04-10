@@ -28,7 +28,7 @@ import { UnitablesBeeTable } from "./bee";
 import { UnitablesI18n } from "./i18n";
 import { FORMS_ID, UnitablesJsonSchemaBridge } from "./uniforms";
 import "./Unitables.css";
-import { UnitablesRow } from "./UnitablesRow";
+import { UnitablesRow, UnitablesRowApi } from "./UnitablesRow";
 import setObjectValueByPath from "lodash/set";
 import getObjectValueByPath from "lodash/get";
 import { diff } from "deep-object-diff";
@@ -38,7 +38,7 @@ import { UnitablesInputsConfigs } from "./UnitablesTypes";
 
 export interface UnitablesProps {
   jsonSchema: object;
-  rows: object[];
+  rows: Array<Record<string, any>>;
   setRows: (previousStateFunction: (previous: Array<Record<string, any>>) => Array<Record<string, any>>) => void;
   error: boolean;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
@@ -113,7 +113,7 @@ export const Unitables = ({
   const timeout = useRef<number | undefined>(undefined);
 
   // CUSTOM HOOKs
-  const { internalChange } = useUnitablesContext();
+  const { isBeeTableChange, rowsRefs } = useUnitablesContext();
 
   const unitablesColumns = useMemo(() => jsonSchemaBridge.getUnitablesColumns(), [jsonSchemaBridge]);
   const inputUid = useMemo(() => nextId(), []);
@@ -147,20 +147,20 @@ export const Unitables = ({
     inputsCells.forEach((inputCell) => {
       searchRecursively(inputCell.childNodes[0]);
     });
-  }, [internalChange, jsonSchemaBridge, formsDivRendered, rows, containerRef, searchRecursively]);
+  }, [isBeeTableChange, jsonSchemaBridge, formsDivRendered, rows, containerRef, searchRecursively]);
   // Set in-cell input heights (end)
 
   const onSubmitRow = useCallback(
     (inputRow: Record<string, any>, rowIndex: number, error: Record<string, any>) => {
       // After this method is not called by a period, clear the cache and reset the internalChange;
-      if (internalChange.current) {
+      if (isBeeTableChange.current) {
         if (timeout.current) {
           clearTimeout(timeout.current);
         }
 
         timeout.current = window.setTimeout(() => {
           cachedKeysOfRows.current.clear();
-          internalChange.current = false;
+          isBeeTableChange.current = false;
         }, 0);
       }
 
@@ -170,7 +170,7 @@ export const Unitables = ({
         const newInputRows = cloneDeep(previousInputRows);
         const newInputRow = cloneDeep(inputRow);
 
-        if (internalChange.current) {
+        if (isBeeTableChange.current) {
           const changedValues: Record<string, any> = diff(inputRow, newInputRows[rowIndex]);
           recursiveCheckForChangedKey(
             rowIndex,
@@ -185,7 +185,16 @@ export const Unitables = ({
         return newInputRows;
       });
     },
-    [internalChange, setRows]
+    [isBeeTableChange, setRows]
+  );
+
+  const saveRowRef = useCallback(
+    (ref: UnitablesRowApi | null, rowIndex: number) => {
+      if (ref) {
+        rowsRefs.set(rowIndex, ref);
+      }
+    },
+    [rowsRefs]
   );
 
   const rowWrapper = useCallback(
@@ -199,6 +208,7 @@ export const Unitables = ({
     }>) => {
       return (
         <UnitablesRow
+          ref={(ref) => saveRowRef(ref, rowIndex)}
           key={rowIndex}
           formsId={FORMS_ID}
           rowIndex={rowIndex}
@@ -210,7 +220,7 @@ export const Unitables = ({
         </UnitablesRow>
       );
     },
-    [jsonSchemaBridge, onSubmitRow]
+    [jsonSchemaBridge, onSubmitRow, saveRowRef]
   );
 
   return (
@@ -239,6 +249,7 @@ export const Unitables = ({
               ))}
             </div>
             <UnitablesBeeTable
+              rowsRefs={rowsRefs}
               rowWrapper={rowWrapper}
               scrollableParentRef={scrollableParentRef}
               i18n={i18n}

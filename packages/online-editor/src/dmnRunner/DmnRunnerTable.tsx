@@ -18,7 +18,6 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
-import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -91,12 +90,6 @@ export function DmnRunnerTable() {
     },
     [setDmnRunnerMode, setDmnRunnerContextProviderState]
   );
-
-  // FIXME: Prevent shortcuts when editing on dmn runner table;
-  // useElementsThatStopKeyboardEventsPropagation(
-  //   window,
-  //   useMemo(() => [".kie-tools--dmn-runner-table--drawer"], [])
-  // );
 
   useEffect(() => {
     inputsScrollableElementRef.current.current =

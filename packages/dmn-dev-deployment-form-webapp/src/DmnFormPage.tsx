@@ -62,6 +62,7 @@ export function DmnFormPage(props: Props) {
       });
 
       setFormOutputs((previousOutputs: DecisionResult[]) => {
+        // extractDifferences was refactor to accept an array of inputs;
         const [differences] = extractDifferences([formOutputs], [previousOutputs]);
         if (differences?.length !== 0) {
           setFormOutputDiffs(differences);

@@ -16,10 +16,10 @@
 
 import { FormJsonSchemaBridge } from "@kie-tools/form";
 import { DmnFormI18n } from "../i18n";
+import { DmnInputFieldProperties, ExtendedServicesDmnJsonSchema, X_DMN_TYPE } from "@kie-tools/extended-services-api";
 
 export const DAYS_AND_TIME_DURATION_FORMAT = "days and time duration";
 export const YEARS_AND_MONTHS_DURATION_FORMAT = "years and months duration";
-export const FEEL_CONTEXT = "FEEL:context";
 
 export enum Duration {
   DaysAndTimeDuration,
@@ -27,13 +27,15 @@ export enum Duration {
 }
 
 export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
-  constructor(formSchema: object, validator: (model: object) => void, i18n: DmnFormI18n) {
+  schema: ExtendedServicesDmnJsonSchema;
+
+  constructor(formSchema: ExtendedServicesDmnJsonSchema, validator: (model: object) => void, i18n: DmnFormI18n) {
     super(formSchema, validator, i18n);
     this.i18n = i18n;
   }
 
   public getType(name: string) {
-    const { format: fieldFormat, type } = super.getField(name);
+    const { format: fieldFormat, type } = super.getField(name) as DmnInputFieldProperties;
     // TODO: Luiz - create custom components
     if (fieldFormat === DAYS_AND_TIME_DURATION_FORMAT) {
       return String;
@@ -41,14 +43,14 @@ export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
     if (fieldFormat === YEARS_AND_MONTHS_DURATION_FORMAT) {
       return String;
     }
-    if (type === FEEL_CONTEXT) {
-      return FEEL_CONTEXT;
+    if (type === X_DMN_TYPE.CONTEXT) {
+      return X_DMN_TYPE.CONTEXT;
     }
     return super.getType(name);
   }
 
-  public getField(name: string): Record<string, any> {
-    const field = super.getField(name);
+  public getField(name: string): DmnInputFieldProperties {
+    const field = super.getField(name) as DmnInputFieldProperties;
 
     if (field?.format === DAYS_AND_TIME_DURATION_FORMAT) {
       field.placeholder = (this.i18n as DmnFormI18n).dmnSchema.daysAndTimePlaceholder;
@@ -59,7 +61,7 @@ export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
     if (field?.format === "time") {
       field.placeholder = "hh:mm:ss";
     }
-    if (field?.["x-dmn-type"] === FEEL_CONTEXT) {
+    if (field?.["x-dmn-type"] === X_DMN_TYPE.CONTEXT) {
       field.placeholder = `{ "x": <value> }`;
     }
 

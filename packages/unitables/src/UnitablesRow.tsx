@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { PropsWithChildren, useCallback, useRef, useEffect } from "react";
+import { PropsWithChildren, useCallback, useRef, useEffect, useState, useImperativeHandle } from "react";
 import { AutoRow } from "./uniforms/AutoRow";
 import { createPortal } from "react-dom";
 import { context as UniformsContext } from "uniforms";
@@ -30,61 +30,66 @@ interface Props {
 }
 
 export interface UnitablesRowApi {
-  submit: (rowInput?: Record<string, any>) => void;
+  submit: () => void;
 }
 
-export function UnitablesRow({
-  children,
-  formsId,
-  rowIndex,
-  jsonSchemaBridge,
-  rowInput,
-  onSubmitRow,
-}: PropsWithChildren<Props>) {
-  const autoRowRef = useRef<HTMLFormElement>(null);
+export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<Props>>(
+  ({ children, formsId, rowIndex, jsonSchemaBridge, rowInput, onSubmitRow }, forwardRef) => {
+    const autoRowRef = useRef<HTMLFormElement>(null);
 
-  const onSubmit = useCallback(
-    (rowInput: Record<string, any>) => {
-      console.log("SUBMITTING ROW: " + rowIndex);
-      onSubmitRow(rowInput, rowIndex, {});
-    },
-    [onSubmitRow, rowIndex]
-  );
+    const onSubmit = useCallback(
+      (rowInput: Record<string, any>) => {
+        console.log("SUBMITTING ROW: " + rowIndex);
+        onSubmitRow(rowInput, rowIndex, {});
+      },
+      [onSubmitRow, rowIndex]
+    );
 
-  const onValidate = useCallback((inputs, error) => {
-    // returns the validation errors;
-    return null;
-  }, []);
+    // Without it the errors will be returned in "onChange" validation;
+    const onValidate = useCallback((inputs, error) => {
+      // returns the validation errors;
+      return null;
+    }, []);
 
-  // Submits the table in the first render triggering the onValidate function
-  useEffect(() => {
-    autoRowRef.current?.submit();
-  }, [autoRowRef]);
+    useImperativeHandle(
+      forwardRef,
+      () => {
+        return {
+          submit: () => autoRowRef.current?.submit(),
+        };
+      },
+      []
+    );
 
-  return (
-    <>
-      <AutoRow
-        ref={autoRowRef}
-        schema={jsonSchemaBridge}
-        model={rowInput}
-        onSubmit={onSubmit}
-        placeholder={true}
-        autosave={true}
-        validate={"onChange"}
-        onValidate={onValidate}
-      >
-        <UniformsContext.Consumer>
-          {(uniformsContext) => (
-            <>
-              {createPortal(
-                <form id={`${AUTO_ROW_ID}-${rowIndex}`} onSubmit={(data) => uniformsContext?.onSubmit(data)} />,
-                document.getElementById(formsId)!
-              )}
-              {children}
-            </>
-          )}
-        </UniformsContext.Consumer>
-      </AutoRow>
-    </>
-  );
-}
+    // Submits the table in the first render triggering the onValidate function
+    useEffect(() => {
+      autoRowRef.current?.submit();
+    }, [autoRowRef]);
+
+    return (
+      <>
+        <AutoRow
+          ref={autoRowRef}
+          schema={jsonSchemaBridge}
+          model={rowInput}
+          onSubmit={onSubmit}
+          placeholder={true}
+          validate={"onChange"}
+          onValidate={onValidate}
+        >
+          <UniformsContext.Consumer>
+            {(uniformsContext) => (
+              <>
+                {createPortal(
+                  <form id={`${AUTO_ROW_ID}-${rowIndex}`} onSubmit={(data) => uniformsContext?.onSubmit(data)} />,
+                  document.getElementById(formsId)!
+                )}
+                {children}
+              </>
+            )}
+          </UniformsContext.Consumer>
+        </AutoRow>
+      </>
+    );
+  }
+);

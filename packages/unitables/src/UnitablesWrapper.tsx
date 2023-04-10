@@ -20,7 +20,7 @@ import { UnitablesContextProvider } from "./UnitablesContextProvider";
 
 export function UnitablesWrapper(props: UnitablesProps) {
   return (
-    <UnitablesContextProvider>
+    <UnitablesContextProvider rowsInputs={props.rows}>
       <Unitables {...props} />
     </UnitablesContextProvider>
   );

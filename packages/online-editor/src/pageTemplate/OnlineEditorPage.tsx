@@ -31,12 +31,13 @@ import { MastheadContent } from "@patternfly/react-core/dist/js/components/Masth
 import { Toolbar, ToolbarContent } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { ToolbarGroup, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 
-export function OnlineEditorPage(props: { children?: React.ReactNode }) {
+export function OnlineEditorPage(props: { children?: React.ReactNode; onKeyDown?: (ke: React.KeyboardEvent) => void }) {
   const history = useHistory();
   const routes = useRoutes();
 
   return (
     <Page
+      onKeyDown={props.onKeyDown}
       header={
         <Masthead aria-label={"Page header"} display={{ default: "inline" }}>
           <MastheadMain style={{ justifyContent: "space-between" }}>

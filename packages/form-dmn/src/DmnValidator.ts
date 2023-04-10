@@ -19,6 +19,7 @@ import { Validator } from "@kie-tools/form";
 import { DmnFormI18n } from "./i18n";
 import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "./uniforms/DmnFormJsonSchemaBridge";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
+import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 
 export const DAYS_AND_TIME =
   /^(-|\+)?P(?:([-+]?[0-9]*)D)?(?:T(?:([-+]?[0-9]*)H)?(?:([-+]?[0-9]*)M)?(?:([-+]?[0-9]*)S)?)?$/;
@@ -75,7 +76,7 @@ export class DmnValidator extends Validator {
     };
   }
 
-  public getBridge(formSchema: object): DmnFormJsonSchemaBridge {
+  public getBridge(formSchema: ExtendedServicesDmnJsonSchema): DmnFormJsonSchemaBridge {
     const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
     const validator = this.createValidator(formDraft4);
     return new DmnFormJsonSchemaBridge(formDraft4, validator, this.i18n as DmnFormI18n);

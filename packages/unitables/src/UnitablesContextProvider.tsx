@@ -15,16 +15,20 @@
  */
 
 import * as React from "react";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { UnitablesContext } from "./UnitablesContext";
+import { UnitablesRowApi } from "./UnitablesRow";
 
-export function UnitablesContextProvider(props: React.PropsWithChildren<any>) {
-  const internalChange: React.MutableRefObject<boolean> = useRef<boolean>(false);
+export function UnitablesContextProvider(props: React.PropsWithChildren<{ rowsInputs: Array<Record<string, any>> }>) {
+  const isBeeTableChange: React.MutableRefObject<boolean> = useRef<boolean>(false);
+  const rowsRefs = useMemo(() => new Map<number, UnitablesRowApi>(), []);
 
   return (
     <UnitablesContext.Provider
       value={{
-        internalChange,
+        isBeeTableChange,
+        rowsRefs,
+        rowsInputs: props.rowsInputs,
       }}
     >
       {props.children}

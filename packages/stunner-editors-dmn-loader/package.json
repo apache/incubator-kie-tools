@@ -13,7 +13,6 @@
     "watch": "webpack --watch --env live --env dev"
   },
   "dependencies": {
-    "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
     "@kie-tools/import-java-classes-component": "workspace:*",

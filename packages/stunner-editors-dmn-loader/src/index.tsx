@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  BoxedExpressionEditor,
-  BoxedExpressionEditorProps,
-} from "@kie-tools/boxed-expression-component/dist/expressions";
+import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
 import {
   ImportJavaClasses,
   GWTLayerService,
@@ -25,14 +22,12 @@ import {
   JavaCodeCompletionService,
 } from "@kie-tools/import-java-classes-component";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
-import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
 import {
   BeeGwtService,
   DmnDataType,
   ExpressionDefinition,
-  ExpressionDefinitionLogicType,
   PmmlParam,
 } from "@kie-tools/boxed-expression-component/dist/api";
 
@@ -53,6 +48,8 @@ export interface BoxedExpressionEditorWrapperProps {
   isResetSupportedOnRootExpression?: boolean;
   /** PMML parameters */
   pmmlParams?: PmmlParam[];
+  /** BoxedExpressionWrapper root node */
+  boxedExpressionEditorRootNode: Element | null;
 }
 
 const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEditorWrapperProps> = ({
@@ -61,7 +58,8 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
   dataTypes,
   isResetSupportedOnRootExpression,
   pmmlParams,
-}: BoxedExpressionEditorProps) => {
+  boxedExpressionEditorRootNode,
+}) => {
   const [expressionWrapper, setExpressionWrapper] = useState<{
     source: "gwt" | "react";
     expression: ExpressionDefinition;
@@ -106,12 +104,24 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
     []
   );
 
-  // useElementsThatStopKeyboardEventsPropagation(
-  //   window,
-  //   useMemo(() => [".boxed-expression-provider"], [])
-  // );
-
   const emptyRef = React.useRef<HTMLElement>(null);
+
+  // Stop propagation to Editor and forward keydown events down the tree;
+  useEffect(() => {
+    const listener = (ev: KeyboardEvent) => {
+      ev.stopPropagation();
+    };
+
+    boxedExpressionEditorRootNode?.addEventListener("keydown", listener);
+    boxedExpressionEditorRootNode?.addEventListener("keyup", listener);
+    boxedExpressionEditorRootNode?.addEventListener("keypress", listener);
+
+    return () => {
+      boxedExpressionEditorRootNode?.removeEventListener("keydown", listener);
+      boxedExpressionEditorRootNode?.removeEventListener("keyup", listener);
+      boxedExpressionEditorRootNode?.removeEventListener("keypress", listener);
+    };
+  }, [boxedExpressionEditorRootNode]);
 
   return (
     <BoxedExpressionEditor
@@ -135,6 +145,7 @@ const renderBoxedExpressionEditor = (
   isResetSupportedOnRootExpression: boolean,
   pmmlParams: PmmlParam[]
 ) => {
+  const boxedExpressionEditorRootNode = document.querySelector(selector);
   ReactDOM.render(
     <BoxedExpressionEditorWrapper
       decisionNodeId={decisionNodeId}
@@ -142,8 +153,9 @@ const renderBoxedExpressionEditor = (
       dataTypes={dataTypes}
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
       pmmlParams={pmmlParams}
+      boxedExpressionEditorRootNode={boxedExpressionEditorRootNode}
     />,
-    document.querySelector(selector)
+    boxedExpressionEditorRootNode
   );
 };
 
