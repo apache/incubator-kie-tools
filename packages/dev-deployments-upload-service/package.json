@@ -26,7 +26,8 @@
     "build:win32": "make win32",
     "install": "go mod tidy",
     "pack-app": "run-script-os",
-    "start": "make start"
+    "start": "make start",
+    "test": "pnpm build:prod && docker run -it -p 8091:8091 $(docker build -q . -f ./Containerfile)"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
