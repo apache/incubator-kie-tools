@@ -38,7 +38,7 @@ export const SELF_SUBJECT_ACCESS_REVIEW_TEMPLATE = (
   return new SelfSubjectAccessReview({
     spec: {
       resourceAttributes: {
-        resource: "*",
+        resource: args.resource,
         verb: "*",
         namespace: args.namespace,
       },

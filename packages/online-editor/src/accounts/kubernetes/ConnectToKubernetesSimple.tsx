@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -42,6 +42,7 @@ enum FormValiationOptions {
   INVALID = "INVALID",
   CONNECTION_ERROR = "CONNECTION_ERROR",
   MISSING_PERMISSIONS = "MISSING_PERMISSIONS",
+  NAMESPACE_NOT_FOUND = "NAMESPACE_NOT_FOUND",
 }
 
 export function ConnectToKubernetesSimple(props: {
@@ -85,11 +86,17 @@ export function ConnectToKubernetesSimple(props: {
       props.setNewAuthSession(newAuthSession);
     } else if (isConnectionEstablished === KubernetesConnectionStatus.MISSING_PERMISSIONS) {
       setConnectionValidated(FormValiationOptions.MISSING_PERMISSIONS);
+    } else if (isConnectionEstablished === KubernetesConnectionStatus.NAMESPACE_NOT_FOUND) {
+      setConnectionValidated(FormValiationOptions.NAMESPACE_NOT_FOUND);
     } else {
       setConnectionValidated(FormValiationOptions.CONNECTION_ERROR);
       return;
     }
   }, [authSessionsDispatch, isConnecting, props]);
+
+  useEffect(() => {
+    setConnectionValidated(FormValiationOptions.INITIAL);
+  }, [props.connection]);
 
   const onClearHost = useCallback(() => props.setConnection({ ...props.connection, host: "" }), [props]);
   const onClearNamespace = useCallback(() => props.setConnection({ ...props.connection, namespace: "" }), [props]);
@@ -162,6 +169,21 @@ export function ConnectToKubernetesSimple(props: {
           <br />
         </>
       )}
+      {isConnectionValidated === FormValiationOptions.NAMESPACE_NOT_FOUND && (
+        <>
+          {" "}
+          <FormAlert>
+            <Alert
+              variant="danger"
+              title={i18n.devDeployments.configModal.namespaceNotFound(props.connection.namespace)}
+              aria-live="polite"
+              isInline
+              data-testid="alert-connection-error"
+            />
+          </FormAlert>
+          <br />
+        </>
+      )}
 
       <Button
         style={{ paddingLeft: 0 }}
@@ -183,9 +205,9 @@ export function ConnectToKubernetesSimple(props: {
 
       <Form>
         <FormGroup
-          label={i18n.terms.namespace}
+          label={i18n.devDeployments.kubernetesConfigWizard.fields.namespace}
           labelIcon={
-            <Popover bodyContent={i18n.devDeployments.configModal.namespaceInfo}>
+            <Popover bodyContent={i18n.devDeployments.kubernetesConfigWizard.fields.namespaceInfo}>
               <button
                 type="button"
                 aria-label="More info for namespace field"
@@ -224,9 +246,9 @@ export function ConnectToKubernetesSimple(props: {
           </InputGroup>
         </FormGroup>
         <FormGroup
-          label={i18n.terms.host}
+          label={i18n.devDeployments.kubernetesConfigWizard.fields.kubernetesApiServerUrl}
           labelIcon={
-            <Popover bodyContent={i18n.devDeployments.configModal.hostInfo}>
+            <Popover bodyContent={i18n.devDeployments.kubernetesConfigWizard.fields.kubernetesApiServerUrlInfo}>
               <button
                 type="button"
                 aria-label="More info for host field"
@@ -266,7 +288,7 @@ export function ConnectToKubernetesSimple(props: {
         <FormGroup
           label={i18n.terms.token}
           labelIcon={
-            <Popover bodyContent={i18n.devDeployments.configModal.tokenInfo}>
+            <Popover bodyContent={i18n.devDeployments.kubernetesConfigWizard.fields.tokenInfo}>
               <button
                 type="button"
                 aria-label="More info for token field"

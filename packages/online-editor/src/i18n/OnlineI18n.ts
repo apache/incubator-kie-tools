@@ -121,6 +121,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       validationError: string;
       connectionError: string;
       missingPermissions: string;
+      namespaceNotFound: (namespace: string) => string;
       configExpiredWarning: string;
       useOpenShiftWizard: string;
       useKubernetesWizard: string;
@@ -183,6 +184,13 @@ interface OnlineDictionary extends ReferenceDictionary {
     kubernetesConfigWizard: {
       header: {
         provider: string;
+      };
+      fields: {
+        namespace: string;
+        namespaceInfo: string;
+        kubernetesApiServerUrl: string;
+        kubernetesApiServerUrlInfo: string;
+        tokenInfo: string;
       };
       steps: {
         first: {

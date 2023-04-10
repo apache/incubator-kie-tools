@@ -122,9 +122,10 @@ export const en: OnlineI18n = {
       connectionError: "Connection refused. Please check the information provided.",
       missingPermissions:
         "Missing the required permissions for Dev Deployments (deployments, services, ingresses). Check your user permissions and try again.",
+      namespaceNotFound: (namespace: string) => `The namespace ${namespace} was not found in your cluster.`,
       configExpiredWarning: "Token or account expired. Please update your configuration.",
       useOpenShiftWizard: "Configure a new Developer Sandbox for Red Hat OpenShift through the guided wizard",
-      useKubernetesWizard: "Configure a new local Kubernetes Cluster through the guided wizard",
+      useKubernetesWizard: "Configure a new local Kubernetes cluster through the guided wizard",
     },
     deployConfirmModal: {
       title: "Deploy",
@@ -195,6 +196,13 @@ export const en: OnlineI18n = {
       header: {
         provider: "Provider",
       },
+      fields: {
+        namespace: "Namespace",
+        namespaceInfo: "The Namespace in the cluster where your Dev deployments will be created.",
+        kubernetesApiServerUrl: "Kubernetes API Server URL",
+        kubernetesApiServerUrlInfo: "The hostname associated with the Kubernetes API Server from your cluster.",
+        tokenInfo: "The token associated with your Service Account.",
+      },
       steps: {
         first: {
           name: "Create your Kubernetes cluster",
@@ -204,28 +212,29 @@ export const en: OnlineI18n = {
           installKubectl: "Install Kubectl if you don't have it already.",
           runCommandsTerminal: "For this step, run the commands in a terminal.",
           createCluster: "Create your cluster:",
-          installIngress: "Install the Ingress controller and wait for it to be ready:",
-          installKieSandboxYaml: "Install a proxy for the Kube APIServer and create the required Service Accounts:",
+          installIngress: "Install the Ingress Controller and wait for it to be ready:",
+          installKieSandboxYaml:
+            "Install a proxy for the Kubernetes API Server and create the required Service Accounts:",
         },
         second: {
           name: "Set connection info",
           introduction:
-            "With your cluster up and running, it should be available in the host prefilled below, and should have a namespace created.",
+            "With your cluster up and running, it should be available in the host prefilled below, and should have a Namespace created.",
           disclaimer:
             "Only change the values below if you have a custom Kubernetes installation, but beware that things might not go as expected.",
-          hostInputReason: "This information is necessary for establishing a connection with your instance.",
+          hostInputReason: "This information is necessary for establishing a connection with your Kubernetes cluster.",
           namespaceInputReason:
-            "This information is necessary for creating your Dev deployments in the right Namespace.",
+            "This information is necessary for creating your Dev deployments in the correct Namespace.",
           namespacePlaceholder: "The Namespace where you want to create your Dev deployments.",
-          hostPlaceholder: "The Kubernetes API base URL",
+          hostPlaceholder: "The Kubernetes API Server URL",
         },
         third: {
           name: "Authenticate",
           introduction:
-            "The Kubernetes API requried an authentication token for all requests. In this step we will get the authentication token for the Service Account we created before",
+            "The Kubernetes API requires an authentication token for all requests. In this step we will get the authentication token for the Service Account we created before.",
           getToken: "Run the command below in your terminal to get the authentication token then copy it:",
           tokenPlaceholder: "Paste the token value here",
-          tokenInputReason: "The token is necessary to authenticate requests to the Kubernetes API",
+          tokenInputReason: "The token is necessary to authenticate requests to the Kubernetes API Server",
         },
         final: {
           name: "Connect",

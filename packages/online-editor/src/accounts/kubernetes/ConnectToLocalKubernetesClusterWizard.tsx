@@ -72,22 +72,34 @@ const KUBECTL_INSTALL_DOCS = {
 };
 
 const COMMANDS = {
-  kindCreateCluster: (configUrl: string) => `kind create cluster --config ${configUrl}`,
+  kindCreateClusterUnix: (configUrl: string) => `kind create cluster --config=<(curl -k ${configUrl})`,
+  kindCreateClusterWindows: (configUrl: string) =>
+    `curl -k ${configUrl} -o kind-cluster-config.yaml; kind create cluster --config=kind-cluster-config.yaml; rm kind-cluster-config.yaml`,
   minikubeCreateCluster: () =>
     `minikube start --extra-config "apiserver.cors-allowed-origins=[https://*]"  --ports 80:80,443:443,8443:8443 --listen-address 0.0.0.0`,
   kindApplyIngress: () =>
     `kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml`,
   minikubeApllyIngress: () => `minikube addons enable ingress`,
+  sleep: () => `sleep 10`,
   waitForIngress: () =>
     `kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s`,
-  applyDeploymentResources: (resourcesUrl: string) => `kubectl apply -f ${resourcesUrl}`,
+  applyDeploymentResourcesUnix: (resourcesUrl: string) => `kubectl apply -f <(curl -k ${resourcesUrl})`,
+  applyDeploymentResourcesWindows: (resourcesUrl: string) =>
+    `curl -k ${resourcesUrl} -o kie-sandbox-resources.yaml; kubectl apply -f kie-sandbox-resources.yaml; rm kie-sandbox-resources.yaml`,
   getSecretUnix: () => `kubectl get secret kie-sandbox-secret -o jsonpath={.data.token} | base64 -d`,
   getSecretWindows: () =>
     `$KubeToken = kubectl get secret kie-sandbox-secret -o jsonpath="{.data.token}"; [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String(\${KubeToken}))`,
 };
 
-const DEFAULT_LOCAL_CLUSTER_NAMESPACE = "local-kie-sandboex-dev-deployments";
+const DEFAULT_LOCAL_CLUSTER_NAMESPACE = "local-kie-sandbox-dev-deployments";
 const DEFAULT_LOCAL_CLUSTER_HOST = "http://localhost/kube-apiserver";
+
+type ClusterConfigCommands = {
+  createCluster: (configUrl?: string) => string;
+  applyAndWaitIngress: () => string;
+  applyDeploymentResources: (resourcesUrl: string) => string;
+  getSecret: () => string;
+};
 
 export function ConnectToLocalKubernetesClusterWizard(props: {
   kubernetesService: KieSandboxKubernetesService;
@@ -111,6 +123,39 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
   const onClearHost = useCallback(() => props.setConnection({ ...props.connection, host: "" }), [props]);
   const onClearNamespace = useCallback(() => props.setConnection({ ...props.connection, namespace: "" }), [props]);
   const onClearToken = useCallback(() => props.setConnection({ ...props.connection, token: "" }), [props]);
+
+  const clusterConfigCommands: ClusterConfigCommands = useMemo(() => {
+    if (kubernetesFlavor === KubernetesFlavor.KIND) {
+      return {
+        createCluster:
+          operatingSystem === OperatingSystem.WINDOWS
+            ? COMMANDS.kindCreateClusterWindows
+            : COMMANDS.kindCreateClusterUnix,
+        applyAndWaitIngress: () =>
+          operatingSystem === OperatingSystem.WINDOWS
+            ? `${COMMANDS.kindApplyIngress()}; ${COMMANDS.sleep()}; ${COMMANDS.waitForIngress()}`
+            : `${COMMANDS.kindApplyIngress()} && ${COMMANDS.sleep()} && ${COMMANDS.waitForIngress()}`,
+        applyDeploymentResources:
+          operatingSystem === OperatingSystem.WINDOWS
+            ? COMMANDS.applyDeploymentResourcesWindows
+            : COMMANDS.applyDeploymentResourcesUnix,
+        getSecret: operatingSystem === OperatingSystem.WINDOWS ? COMMANDS.getSecretWindows : COMMANDS.getSecretUnix,
+      };
+    } else {
+      return {
+        createCluster: COMMANDS.minikubeCreateCluster,
+        applyAndWaitIngress: () =>
+          operatingSystem === OperatingSystem.WINDOWS
+            ? `${COMMANDS.minikubeApllyIngress()}; ${COMMANDS.sleep()}; ${COMMANDS.waitForIngress()}`
+            : `${COMMANDS.minikubeApllyIngress()} && ${COMMANDS.sleep()} && ${COMMANDS.waitForIngress()}`,
+        applyDeploymentResources:
+          operatingSystem === OperatingSystem.WINDOWS
+            ? COMMANDS.applyDeploymentResourcesWindows
+            : COMMANDS.applyDeploymentResourcesUnix,
+        getSecret: operatingSystem === OperatingSystem.WINDOWS ? COMMANDS.getSecretWindows : COMMANDS.getSecretUnix,
+      };
+    }
+  }, [kubernetesFlavor, operatingSystem]);
 
   useEffect(() => {
     setPreviousConnection(props.connection);
@@ -187,7 +232,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
     const isConnectionEstablished = await props.kubernetesService.isConnectionEstablished();
     setConnecting(false);
 
-    if (isConnectionEstablished) {
+    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
       const newAuthSession: KubernetesAuthSession = {
         type: "kubernetes",
         id: uuid(),
@@ -246,17 +291,13 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                   </Text>
                 </TextContent>
                 <CommandCopyBlock
-                  command={
-                    kubernetesFlavor === KubernetesFlavor.KIND
-                      ? COMMANDS.kindCreateCluster(
-                          routes.static.kubernetes.kindClusterConfig.url({
-                            base: process.env.WEBPACK_REPLACE__devDeployments_onlineEditorUrl,
-                            static: true,
-                            pathParams: {},
-                          })
-                        )
-                      : COMMANDS.minikubeCreateCluster()
-                  }
+                  command={clusterConfigCommands.createCluster(
+                    routes.static.kubernetes.kindClusterConfig.url({
+                      base: process.env.WEBPACK_REPLACE__devDeployments_onlineEditorUrl,
+                      static: true,
+                      pathParams: {},
+                    })
+                  )}
                 />
               </ListItem>
               <ListItem>
@@ -265,13 +306,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                     {i18n.devDeployments.kubernetesConfigWizard.steps.first.installIngress}
                   </Text>
                 </TextContent>
-                <CommandCopyBlock
-                  command={`${
-                    kubernetesFlavor === KubernetesFlavor.KIND
-                      ? COMMANDS.kindApplyIngress()
-                      : COMMANDS.minikubeApllyIngress()
-                  } && ${COMMANDS.waitForIngress()}`}
-                />
+                <CommandCopyBlock command={clusterConfigCommands.applyAndWaitIngress()} />
               </ListItem>
               <ListItem>
                 <TextContent>
@@ -280,7 +315,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                   </Text>
                 </TextContent>
                 <CommandCopyBlock
-                  command={COMMANDS.applyDeploymentResources(
+                  command={clusterConfigCommands.applyDeploymentResources(
                     routes.static.kubernetes.kieSandboxDevDeploymentsResources.url({
                       base: process.env.WEBPACK_REPLACE__devDeployments_onlineEditorUrl,
                       static: true,
@@ -295,6 +330,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
       </>
     ),
     [
+      clusterConfigCommands,
       i18n.devDeployments.kubernetesConfigWizard.steps.first,
       kubernetesFlavor,
       operatingSystem,
@@ -352,7 +388,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
             <Form className="pf-u-mt-md" onSubmit={(e) => e.preventDefault()}>
               <FormGroup
                 fieldId={"dev-deployments-config-namespace"}
-                label={i18n.terms.namespace}
+                label={i18n.devDeployments.kubernetesConfigWizard.fields.namespace}
                 validated={isNamespaceValidated ? "success" : "error"}
                 helperTextInvalid={i18n.devDeployments.common.requiredField}
                 isRequired={true}
@@ -381,7 +417,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
               </Text>
               <FormGroup
                 fieldId={"dev-deployments-config-host"}
-                label={i18n.terms.host}
+                label={i18n.devDeployments.kubernetesConfigWizard.fields.kubernetesApiServerUrl}
                 validated={isHostValidated ? "success" : "error"}
                 helperTextInvalid={i18n.devDeployments.common.requiredField}
                 isRequired={true}
@@ -425,11 +461,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
             <TextContent>
               <Text component={TextVariants.p}>{i18n.devDeployments.kubernetesConfigWizard.steps.third.getToken}</Text>
             </TextContent>
-            <CommandCopyBlock
-              command={
-                operatingSystem === OperatingSystem.WINDOWS ? COMMANDS.getSecretWindows() : COMMANDS.getSecretUnix()
-              }
-            />
+            <CommandCopyBlock command={clusterConfigCommands.getSecret()} />
             <br />
             <br />
             <Form className="pf-u-mt-md">
@@ -550,7 +582,6 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
     [
       i18n,
       kubernetesFlavor,
-      operatingSystem,
       firstStepContent,
       isNamespaceValidated,
       props.connection.namespace,
@@ -566,6 +597,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
       onClearToken,
       isConnectLoading,
       isConnectionValidated,
+      clusterConfigCommands,
     ]
   );
 

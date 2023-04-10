@@ -30,6 +30,7 @@ export enum KubernetesConnectionStatus {
   CONNECTED = "CONNECTED",
   ERROR = "ERROR",
   MISSING_PERMISSIONS = "MISSING_PERMISSIONS",
+  NAMESPACE_NOT_FOUND = "NAMESPACE_NOT_FOUND",
 }
 
 export const isKubernetesConnectionValid = (connection: KubernetesConnection) =>

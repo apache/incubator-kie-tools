@@ -23,6 +23,7 @@ import {
   CreateSelfSubjectAccessReview,
   SelfSubjectAccessReviewDescriptor,
 } from "../resources/kubernetes/SelfSubjectAccessReview";
+import { GetNamespace } from "../resources/kubernetes/Namespace";
 
 export interface KubernetesServiceArgs {
   connection: KubernetesConnection;
@@ -84,6 +85,13 @@ export class KubernetesService {
     try {
       const selfSubjectAccessReviewResourceName = this.newResourceName("kie-tools");
       const testConnectionFetcher = new ResourceFetcher({ connection, proxyUrl: this.args.proxyUrl });
+
+      try {
+        await testConnectionFetcher.execute({ target: new GetNamespace({ namespace: connection.namespace }) });
+      } catch (_) {
+        return KubernetesConnectionStatus.NAMESPACE_NOT_FOUND;
+      }
+
       const permissionsMap = await Promise.all(
         requiredResources.map(async (resource) =>
           testConnectionFetcher
