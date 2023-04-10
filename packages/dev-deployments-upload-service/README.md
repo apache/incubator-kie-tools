@@ -22,9 +22,11 @@ For a Dev deployment that runs a Quarkus application, the intended use is:
 ...
 
 EXPOSE [port number]
-ARG DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=[unzip dir path]
-ARG DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=[port number]
-ARG DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=[api key]
+
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=[unzip dir path]
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=[port number]
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=[api key]
+
 CMD ["/bin/bash", "-c", "dev-deployments-upload-service && cd [unzip dir path] && mvn quarkus:dev"]
 ```
 

@@ -22,6 +22,7 @@
     "build:darwin:arm": "make darwin-arm64",
     "build:dev": "pnpm build",
     "build:linux": "make linux",
+    "build:prod": "pnpm build:linux && pnpm build:darwin && pnpm build:win32",
     "build:win32": "make win32",
     "install": "go mod tidy",
     "pack-app": "run-script-os",

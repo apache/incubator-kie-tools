@@ -269,9 +269,9 @@ func readZipFile(zf *zip.File) ([]byte, error) {
 
 func printUsage() {
 	fmt.Fprintf(os.Stderr, LOG_PREFIX+"USAGE: `dev-deployments-upload-service`. Arguments are passed using env vars:\n")
-	fmt.Fprintf(os.Stderr, LOG_PREFIX+fmt.Sprintf("- %s\t: Required. Where the uploaded zip will be extracted to. If it doesn't exist, it will be created.\n", ENV_VARS.UNZIP_AT))
-	fmt.Fprintf(os.Stderr, LOG_PREFIX+fmt.Sprintf("- %s\t\t\t: Required. Port where the HTTP Server will run at. The /upload endpoint will be made available.\n", ENV_VARS.PORT))
-	fmt.Fprintf(os.Stderr, LOG_PREFIX+fmt.Sprintf("- %s\t\t: Required. Allowed API Key used as a queryParam at the /upload endpoint.\n", ENV_VARS.API_KEY))
+	fmt.Fprintf(os.Stderr, LOG_PREFIX+fmt.Sprintf("- %s:\t Required. Where the uploaded zip will be extracted to. If it doesn't exist, it will be created.\n", ENV_VARS.UNZIP_AT))
+	fmt.Fprintf(os.Stderr, LOG_PREFIX+fmt.Sprintf("- %s:\t\t\t Required. Port where the HTTP Server will run at. The /upload endpoint will be made available.\n", ENV_VARS.PORT))
+	fmt.Fprintf(os.Stderr, LOG_PREFIX+fmt.Sprintf("- %s:\t\t Required. Allowed API Key used as a queryParam at the /upload endpoint.\n", ENV_VARS.API_KEY))
 	fmt.Fprintf(os.Stderr, LOG_PREFIX+"\n")
 	fmt.Fprintf(os.Stderr, LOG_PREFIX+"Example:\n")
 	fmt.Fprintf(os.Stderr, LOG_PREFIX+"curl -X POST http://localhost:[port]/upload?apiKey=[apiKey]\n") // TODO: This is not right..
