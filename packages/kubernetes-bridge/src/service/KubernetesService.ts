@@ -88,8 +88,11 @@ export class KubernetesService {
 
       try {
         await testConnectionFetcher.execute({ target: new GetNamespace({ namespace: connection.namespace }) });
-      } catch (_) {
-        return KubernetesConnectionStatus.NAMESPACE_NOT_FOUND;
+      } catch (e) {
+        if (e.cause.status === 404) {
+          return KubernetesConnectionStatus.NAMESPACE_NOT_FOUND;
+        }
+        throw e;
       }
 
       const permissionsMap = await Promise.all(

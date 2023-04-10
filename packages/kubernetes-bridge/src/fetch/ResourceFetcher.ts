@@ -39,6 +39,8 @@ export class ResourceFetcher {
       headers[HeaderKeys.TARGET_URL] = targetUrl;
     }
 
+    let error;
+
     try {
       const response = await fetch(urlToFetch, {
         method: args.target.method(),
@@ -48,6 +50,11 @@ export class ResourceFetcher {
 
       if (response.ok) {
         return (await response.json()) as T;
+      } else {
+        error = {
+          status: response.status,
+          statusText: response.statusText,
+        };
       }
     } catch (e) {
       // No-op
@@ -59,6 +66,6 @@ export class ResourceFetcher {
       }
     }
 
-    throw new Error(`Error fetching ${args.target.name()}`);
+    throw new Error(`Error fetching ${args.target.name()}`, { cause: error });
   }
 }
