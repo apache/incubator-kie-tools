@@ -26,7 +26,8 @@ COPY --chown=kogito:root dist-dev/serverless-logic-web-tools-swf-deployment-quar
 
 WORKDIR /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
 
-RUN mvn clean package \
+RUN rm -rf src/test/ && \
+  mvn clean package \
   quarkus:go-offline \
   -B \
   -Dmaven.test.skip \
