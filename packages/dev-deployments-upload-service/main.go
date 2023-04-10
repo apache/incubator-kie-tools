@@ -18,6 +18,18 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+type Args struct {
+	UNZIP_AT string
+	PORT     string
+	API_KEY  string
+}
+
+var ENV_VARS = Args{
+	UNZIP_AT: "DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR",
+	PORT:     "DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT",
+	API_KEY:  "DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY",
+}
+
 var GLOBAL__UPLOAD_CAPTURED = false
 var MAX_UPLOADED_FILE_SIZE_IN_BYTES int64 = 200 << 20 // 200 MiB
 
@@ -25,22 +37,23 @@ var LOG_PREFIX = "[dev-deployments-upload-service] "
 
 func main() {
 
-	unzipAtArgString := ""
-	portArgString := ""
+	unzipAtArgString := os.Getenv(ENV_VARS.UNZIP_AT)
+	portArgString := os.Getenv(ENV_VARS.PORT)
+	apiKeyArgString := os.Getenv(ENV_VARS.API_KEY)
 
 	// Validate arguments
-	if len(os.Args) != 5 {
+	if len(os.Args) > 1 {
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: No positional arguments allowed.\n")
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"\n")
 		printUsage()
 		os.Exit(1)
-	} else if os.Args[1] == "--unzip-at" && os.Args[3] == "--port" {
-		unzipAtArgString = os.Args[2]
-		portArgString = os.Args[4]
-	} else if os.Args[3] == "--unzip-at" && os.Args[1] == "--port" {
-		unzipAtArgString = os.Args[4]
-		portArgString = os.Args[2]
+	} else if len(unzipAtArgString) <= 0 || len(portArgString) <= 0 || len(apiKeyArgString) <= 0 {
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Missing env var arguments.\n")
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"\n")
+		printUsage()
+		os.Exit(1)
 	} else {
-		printUsage()
-		os.Exit(1)
+		// All good.
 	}
 
 	// Validate --port
@@ -71,6 +84,14 @@ func main() {
 	}
 
 	http.HandleFunc("/upload", func(w http.ResponseWriter, req *http.Request) {
+		apiKey := req.URL.Query().Get("apiKey")
+		if apiKey != apiKeyArgString {
+			fmt.Fprintf(os.Stdout, LOG_PREFIX+"⚠️  Attempted to upload with the wrong API Key: '%s'.\n", apiKey)
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte("401: Unauthorized."))
+			return
+		}
+
 		if GLOBAL__UPLOAD_CAPTURED {
 			fmt.Fprintf(os.Stdout, LOG_PREFIX+"⚠️  Upload arrived, but another arrived earlier. Server should be in the process of gracefully shutting down.\n")
 			w.WriteHeader(http.StatusConflict)
@@ -87,7 +108,7 @@ func main() {
 		// FormFile returns the first file for the given key `myFile`
 		// it also returns the FileHeader so we can get the Filename,
 		// the Header and the size of the file
-		uploadedFile, handler, err := req.FormFile("myFile") // FIXME: Is there a way to not need this?
+		uploadedFile, handler, err := req.FormFile("myFile") // TODO: Is there a way to not need this?
 		if err != nil {
 			fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Reading uploaded file failed:\n")
 			fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
@@ -247,5 +268,11 @@ func readZipFile(zf *zip.File) ([]byte, error) {
 }
 
 func printUsage() {
-	fmt.Fprintf(os.Stderr, LOG_PREFIX+"USAGE: dev-deployments-upload-service --unzip-at [dir path] --port [port number]\n")
+	fmt.Fprintf(os.Stderr, LOG_PREFIX+"USAGE: `dev-deployments-upload-service`. Arguments are passed using env vars:\n")
+	fmt.Fprintf(os.Stderr, LOG_PREFIX+fmt.Sprintf("- %s\t: Required. Where the uploaded zip will be extracted to. If it doesn't exist, it will be created.\n", ENV_VARS.UNZIP_AT))
+	fmt.Fprintf(os.Stderr, LOG_PREFIX+fmt.Sprintf("- %s\t\t\t: Required. Port where the HTTP Server will run at. The /upload endpoint will be made available.\n", ENV_VARS.PORT))
+	fmt.Fprintf(os.Stderr, LOG_PREFIX+fmt.Sprintf("- %s\t\t: Required. Allowed API Key used as a queryParam at the /upload endpoint.\n", ENV_VARS.API_KEY))
+	fmt.Fprintf(os.Stderr, LOG_PREFIX+"\n")
+	fmt.Fprintf(os.Stderr, LOG_PREFIX+"Example:\n")
+	fmt.Fprintf(os.Stderr, LOG_PREFIX+"curl -X POST http://localhost:[port]/upload?apiKey=[apiKey]\n") // TODO: This is not right..
 }

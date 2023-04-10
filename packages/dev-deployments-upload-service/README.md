@@ -6,9 +6,12 @@ The "Dev deployments upload service" runs an HTTP server that accepts ZIP file u
 
 ### Usage:
 
-`dmn-dev-deployments-upload-service --unzip-at [unzip dir path] --port [port number]`.
-
-Both `--unzip-at` and `--port` arguments are required.
+```
+USAGE: `dev-deployments-upload-service`. Arguments are passed using env vars:
+- DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR	: Required. Where the uploaded zip will be extracted to. If it doesn't exist, it will be created.
+- DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT		: Required. Port where the HTTP Server will run at. The /upload endpoint will be made available.
+- DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY		: Required. Allowed API Key used as a queryParam at the /upload endpoint.
+```
 
 ### Example:
 
@@ -19,11 +22,45 @@ For a Dev deployment that runs a Quarkus application, the intended use is:
 ...
 
 EXPOSE [port number]
-CMD ["/bin/bash", "-c", "dmn-dev-deployments-upload-service --unzip-at [unzip dir path] --port [port number] && cd [unzip dir path] && mvn quarkus:dev"]
+ARG DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=[unzip dir path]
+ARG DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=[port number]
+ARG DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=[api key]
+CMD ["/bin/bash", "-c", "dev-deployments-upload-service && cd [unzip dir path] && mvn quarkus:dev"]
+```
+
+On KIE Sandbox Dev deployments Kubernetes/OpenShift YAMLs, you can use it like:
+
+```yaml
+# TODO
 ```
 
 ### Develop:
 
-- On macOS:
-  - `pnpm build:dev && ./dist/darwin/dev-deployments-upload-service --unzip-at 'some/dir/path' --port 8091`
-  - `open test.html`
+#### - On macOS:
+
+```bash
+# 1.
+rm -rf /tmp/upload-service-dev && \
+pnpm build:dev && \
+DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR='/tmp/upload-service-dev' \
+DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT='8091' \
+DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY='dev' \
+./dist/darwin/dev-deployments-upload-service
+```
+
+```bash
+# 2.
+open test.html
+```
+
+#### - On Windows
+
+```bash
+# TODO
+```
+
+#### - On Linux
+
+```bash
+# TODO
+```
