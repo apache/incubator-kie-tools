@@ -16,18 +16,21 @@
 
 package org.kie.kogito;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public interface FileStructureConstants {
-    String UPLOADED_ZIP_FILE = "file.zip";
+
+    String UPLOADED_ZIP_FILE_NAME = "file.zip";
     String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
 
-    String WORK_FOLDER = "/tmp/serverless-logic";
-    String BACKUP_FOLDER = Paths.get(WORK_FOLDER, "backup").toString();
-    String UNZIP_FOLDER = Paths.get(WORK_FOLDER, "unzip").toString();
-    String PROJECT_RESOURCES_FOLDER = "src/main/resources";
+    Path WORK_FOLDER_PATH = Paths.get("/tmp/serverless-logic");
+    Path BACKUP_FOLDER_PATH = WORK_FOLDER_PATH.resolve("backup");
+    Path UNZIP_FOLDER_PATH = WORK_FOLDER_PATH.resolve("unzip");
+    Path PROJECT_FOLDER_PATH = Paths.get(".").toAbsolutePath().normalize();
+    Path PROJECT_RESOURCES_FOLDER_PATH = PROJECT_FOLDER_PATH.resolve("src/main/resources");
 
-    String APPLICATION_PROPERTIES_FILE_PATH = Paths.get(PROJECT_RESOURCES_FOLDER, APPLICATION_PROPERTIES_FILE_NAME).toString();
-    String BACKUP_APPLICATION_PROPERTIES_FILE_PATH = Paths.get(BACKUP_FOLDER, APPLICATION_PROPERTIES_FILE_NAME).toString();
-    String UPLOADED_ZIP_FILE_PATH = Paths.get(UNZIP_FOLDER, UPLOADED_ZIP_FILE).toString();
+    Path UPLOADED_ZIP_FILE_PATH = UNZIP_FOLDER_PATH.resolve(UPLOADED_ZIP_FILE_NAME);
+    Path BACKUP_APPLICATION_PROPERTIES_FILE_PATH = BACKUP_FOLDER_PATH.resolve(APPLICATION_PROPERTIES_FILE_NAME);
+    Path APPLICATION_PROPERTIES_FILE_PATH = PROJECT_RESOURCES_FOLDER_PATH.resolve(APPLICATION_PROPERTIES_FILE_NAME);
 }

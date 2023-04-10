@@ -16,13 +16,13 @@
 
 package org.kie.kogito.validation;
 
-import org.jboss.logging.Logger;
-import org.kie.kogito.api.FileValidation;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
+
+import org.jboss.logging.Logger;
+import org.kie.kogito.api.FileValidation;
 
 public class PropertiesValidation implements FileValidation {
 

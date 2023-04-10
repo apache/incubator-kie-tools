@@ -16,27 +16,28 @@
 
 package org.kie.kogito.api;
 
-import org.kie.kogito.model.FileType;
-
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
+
+import org.kie.kogito.model.FileType;
 
 public interface FileService {
-    void createFolder(String folderPath);
 
-    void cleanUpFolder(String folderPath) throws IOException;
+    void createFolder(Path folderPath);
+
+    void cleanUpFolder(Path folderPath) throws IOException;
 
     FileType getFileType(Path filePath);
 
-    void deleteDirectory(File directory);
+    void deleteFolder(Path folderPath);
 
-    void mergePropertiesFiles(String pathA, String pathB, String mergedPath) throws IOException;
+    void mergePropertiesFiles(Path pathA, Path pathB, Path mergedPath) throws IOException;
 
-    List<String> validateFiles(List<String> filePaths);
+    List<Path> validateFiles(List<Path> filePaths);
 
-    void copyResources(List<String> filePaths) throws IOException;
+    void copyFiles(Map<Path, Path> sourceTargetMap) throws IOException;
 
-    boolean exists(String path);
+    boolean exists(Path path);
 }

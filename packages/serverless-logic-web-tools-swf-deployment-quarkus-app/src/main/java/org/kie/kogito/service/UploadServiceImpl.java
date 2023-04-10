@@ -16,6 +16,19 @@
 
 package org.kie.kogito.service;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.logging.Logger;
 import org.kie.kogito.FileStructureConstants;
 import org.kie.kogito.api.FileService;
@@ -23,14 +36,9 @@ import org.kie.kogito.api.UploadService;
 import org.kie.kogito.api.ZipService;
 import org.kie.kogito.model.FileType;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
-
 @ApplicationScoped
 public class UploadServiceImpl implements UploadService {
+
     private static final Logger LOGGER = Logger.getLogger(UploadService.class);
 
     @Inject
@@ -42,13 +50,12 @@ public class UploadServiceImpl implements UploadService {
     @Override
     public void upload(final InputStream inputStream) {
         LOGGER.info("Upload files ...");
-        final Path zipPath = Paths.get(FileStructureConstants.UPLOADED_ZIP_FILE_PATH);
         try {
-            Files.copy(inputStream, zipPath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(inputStream, FileStructureConstants.UPLOADED_ZIP_FILE_PATH, StandardCopyOption.REPLACE_EXISTING);
 
-            final List<String> unzippedFilePaths = zipService.unzip(zipPath.toString(),
-                    FileStructureConstants.UNZIP_FOLDER);
-            final List<String> validFilePaths = fileService.validateFiles(unzippedFilePaths);
+            final List<Path> unzippedFilePaths = zipService.unzip(FileStructureConstants.UPLOADED_ZIP_FILE_PATH,
+                                                                  FileStructureConstants.UNZIP_FOLDER_PATH);
+            final List<Path> validFilePaths = fileService.validateFiles(unzippedFilePaths);
 
             if (validFilePaths.isEmpty()) {
                 LOGGER.warn("No valid file has been found. Upload skipped.");
@@ -57,7 +64,6 @@ public class UploadServiceImpl implements UploadService {
 
             final boolean hasAnySwf = validFilePaths
                     .stream()
-                    .map(Paths::get)
                     .anyMatch(path -> fileService.getFileType(path) == FileType.SERVERLESS_WORKFLOW);
 
             if (!hasAnySwf) {
@@ -67,27 +73,40 @@ public class UploadServiceImpl implements UploadService {
 
             LOGGER.info("Uploading " + validFilePaths.size() + " validated file(s).");
 
-            fileService.cleanUpFolder(FileStructureConstants.PROJECT_RESOURCES_FOLDER);
+            fileService.cleanUpFolder(FileStructureConstants.PROJECT_RESOURCES_FOLDER_PATH);
+
+            final Map<Path, Path> sourceTargetMap = validFilePaths.stream()
+                    .filter(path -> !path.getFileName().toString().equals(FileStructureConstants.APPLICATION_PROPERTIES_FILE_NAME))
+                    .collect(Collectors.toMap(
+                            Function.identity(),
+                            path -> {
+                                final String relativePathStr =
+                                        path.toString().replace(FileStructureConstants.UNZIP_FOLDER_PATH.toString(), "");
+                                return Path.of(FileStructureConstants.PROJECT_RESOURCES_FOLDER_PATH.toString(), relativePathStr);
+                            }));
 
             final Optional<Path> applicationPropertiesPath = validFilePaths
                     .stream()
-                    .map(Paths::get)
                     .filter(path -> fileService.getFileType(path) == FileType.APPLICATION_PROPERTIES)
                     .findFirst();
 
             if (applicationPropertiesPath.isPresent()) {
-                fileService.mergePropertiesFiles(applicationPropertiesPath.get().toString(),
+                Path mergedPath = Files.createTempFile("merged", FileStructureConstants.APPLICATION_PROPERTIES_FILE_NAME);
+                fileService.mergePropertiesFiles(applicationPropertiesPath.get(),
                                                  FileStructureConstants.BACKUP_APPLICATION_PROPERTIES_FILE_PATH,
-                                                 applicationPropertiesPath.get().toString());
+                                                 mergedPath);
+                sourceTargetMap.put(mergedPath,
+                                    FileStructureConstants.APPLICATION_PROPERTIES_FILE_PATH);
                 LOGGER.info("Merging incoming application.properties with default file.");
             } else {
-                validFilePaths.add(FileStructureConstants.BACKUP_APPLICATION_PROPERTIES_FILE_PATH);
+                sourceTargetMap.put(FileStructureConstants.BACKUP_APPLICATION_PROPERTIES_FILE_PATH,
+                                    FileStructureConstants.APPLICATION_PROPERTIES_FILE_PATH);
                 LOGGER.info("Using default application.properties file since no one was sent.");
             }
 
-            fileService.copyResources(validFilePaths);
+            fileService.copyFiles(sourceTargetMap);
 
-            fileService.cleanUpFolder(FileStructureConstants.UNZIP_FOLDER);
+            fileService.cleanUpFolder(FileStructureConstants.UNZIP_FOLDER_PATH);
 
             LOGGER.info("Upload files ... done");
         } catch (Exception e) {

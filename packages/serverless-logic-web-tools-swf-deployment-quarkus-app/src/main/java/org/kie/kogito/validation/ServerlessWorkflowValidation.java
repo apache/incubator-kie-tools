@@ -16,25 +16,26 @@
 
 package org.kie.kogito.validation;
 
-import io.serverlessworkflow.api.Workflow;
-import org.jboss.logging.Logger;
-import org.kie.kogito.api.FileValidation;
-import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
-import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
-
-import javax.lang.model.SourceVersion;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 
+import javax.lang.model.SourceVersion;
+
+import io.serverlessworkflow.api.Workflow;
+import org.jboss.logging.Logger;
+import org.kie.kogito.api.FileValidation;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
+
 public class ServerlessWorkflowValidation implements FileValidation {
+
     private static final Logger LOGGER = Logger.getLogger(ServerlessWorkflowValidation.class);
 
     @Override
     public boolean isValid(final Path path) {
         try {
-            final WorkflowFormat format = resolveFormat(path);
+            final String format = resolveFormat(path);
             if (format == null) {
                 LOGGER.warn("Not a serverless workflow file: " + path);
                 return false;
@@ -55,13 +56,13 @@ public class ServerlessWorkflowValidation implements FileValidation {
         }
     }
 
-    private WorkflowFormat resolveFormat(final Path path) {
+    private String resolveFormat(final Path path) {
         final String fileName = path.getFileName().toString();
         if (fileName.endsWith(".sw.json")) {
-            return WorkflowFormat.JSON;
+            return "json";
         }
         if (fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
-            return WorkflowFormat.YAML;
+            return "yaml";
         }
         return null;
     }

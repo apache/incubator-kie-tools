@@ -16,7 +16,21 @@
 
 package org.kie.kogito.service;
 
-import io.quarkus.runtime.Startup;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.enterprise.context.ApplicationScoped;
+
 import org.apache.commons.io.FileUtils;
 import org.jboss.logging.Logger;
 import org.kie.kogito.FileStructureConstants;
@@ -26,82 +40,39 @@ import org.kie.kogito.model.FileType;
 import org.kie.kogito.validation.PropertiesValidation;
 import org.kie.kogito.validation.ServerlessWorkflowValidation;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-
-@Startup
 @ApplicationScoped
 public class FileServiceImpl implements FileService {
+
     private static final Logger LOGGER = Logger.getLogger(FileService.class);
 
     private final Map<FileType, FileValidation> VALIDATION_MAP =
             Map.ofEntries(Map.entry(FileType.SERVERLESS_WORKFLOW, new ServerlessWorkflowValidation()),
-                    Map.entry(FileType.APPLICATION_PROPERTIES, new PropertiesValidation()));
-
-    @PostConstruct
-    public void postConstruct() {
-        LOGGER.info("PostConstruct");
-
-        createFolder(FileStructureConstants.WORK_FOLDER);
-
-        final Path unzipFolder = Paths.get(FileStructureConstants.UNZIP_FOLDER);
-        deleteDirectory(unzipFolder.toFile());
-        createFolder(FileStructureConstants.UNZIP_FOLDER);
-
-        createBackupFiles();
-    }
-
-    private void createBackupFiles() {
-        try {
-            final File applicationPropertiesBackup = new File(FileStructureConstants.BACKUP_APPLICATION_PROPERTIES_FILE_PATH);
-            if (!applicationPropertiesBackup.exists()) {
-                final File applicationProperties = new File(FileStructureConstants.APPLICATION_PROPERTIES_FILE_PATH);
-                FileUtils.copyFile(applicationProperties, applicationPropertiesBackup);
-                LOGGER.info("Backup created for the default application.properties");
-            } else {
-                LOGGER.info("No need to create backup for the default application.properties");
-            }
-        } catch (IOException e) {
-            LOGGER.error("Error when creating backup file for application.properties");
-        }
-    }
+                          Map.entry(FileType.APPLICATION_PROPERTIES, new PropertiesValidation()));
 
     @Override
-    public void createFolder(final String folderPath) {
+    public void createFolder(final Path folderPath) {
         if (exists(folderPath)) {
             return;
         }
         LOGGER.info("Create folder: " + folderPath);
-        final File folder = new File(folderPath);
-        if (!folder.mkdirs()) {
+        if (!folderPath.toFile().mkdirs()) {
             LOGGER.error("The folder could not be created on path " + folderPath);
         }
     }
 
     @Override
-    public void cleanUpFolder(final String folderPath) throws IOException {
+    public void cleanUpFolder(final Path folderPath) throws IOException {
         if (!exists(folderPath)) {
             return;
         }
         LOGGER.info("Clean up folder: " + folderPath + "...");
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(folderPath))) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath)) {
             for (Path path : stream) {
                 final File file = path.toFile();
                 if (file.isDirectory()) {
-                    deleteDirectory(file);
-                } else {
-                    if (!file.delete()) {
-                        LOGGER.warn("File cannot be deleted: " + path);
-                    }
+                    deleteFolder(path);
+                } else if (!file.delete()) {
+                    LOGGER.warn("File cannot be deleted: " + path);
                 }
             }
         }
@@ -120,58 +91,58 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void deleteDirectory(final File file) {
-        if (!file.exists()) {
+    public void deleteFolder(final Path folderPath) {
+        final File folder = folderPath.toFile();
+        if (!folder.exists()) {
             return;
         }
-        final File[] childFiles = file.listFiles();
+        final File[] childFiles = folder.listFiles();
         if (childFiles != null) {
             for (File childFile : childFiles) {
-                deleteDirectory(childFile);
+                deleteFolder(childFile.toPath());
             }
         }
-        if (!file.delete()) {
-            LOGGER.warn("Could not delete file at " + file.toPath());
+        if (!folder.delete()) {
+            LOGGER.warn("Could not delete file at " + folder.toPath());
         }
     }
 
     @Override
-    public void mergePropertiesFiles(final String pathA, final String pathB, final String mergedPath) throws IOException {
+    public void mergePropertiesFiles(final Path pathA, final Path pathB, final Path mergedPath) throws IOException {
         Properties properties = new Properties();
 
-        try (var inputStream = new FileInputStream(pathA)) {
+        try (var inputStream = new FileInputStream(pathA.toFile())) {
             properties.load(inputStream);
         }
 
         // Overwrite duplicates
-        try (var inputStream = new FileInputStream(pathB)) {
+        try (var inputStream = new FileInputStream(pathB.toFile())) {
             properties.load(inputStream);
         }
 
-        try (var outputStream = new FileOutputStream(mergedPath)) {
+        try (var outputStream = new FileOutputStream(mergedPath.toFile())) {
             properties.store(outputStream, null);
         }
     }
 
     @Override
-    public List<String> validateFiles(final List<String> filePaths) {
+    public List<Path> validateFiles(final List<Path> filePaths) {
         LOGGER.info("Validate " + filePaths.size() + " incoming file(s) ...");
 
-        List<String> validFilePaths = new ArrayList<>();
-        for (String filePath : filePaths) {
-            final Path path = Paths.get(filePath);
+        List<Path> validFilePaths = new ArrayList<>();
+        for (Path filePath : filePaths) {
             try {
-                final FileType fileType = getFileType(path);
+                final FileType fileType = getFileType(filePath);
 
                 if (fileType == FileType.UNKNOWN) {
-                    LOGGER.warn("Skipping upload of unsupported file " + path.getFileName());
+                    LOGGER.warn("Skipping unsupported file " + filePath.getFileName());
                     continue;
                 }
 
-                if (VALIDATION_MAP.get(fileType).isValid(path)) {
+                if (VALIDATION_MAP.get(fileType).isValid(filePath)) {
                     validFilePaths.add(filePath);
                 } else {
-                    LOGGER.warn("Skipping upload of invalid file " + path.getFileName());
+                    LOGGER.warn("Skipping invalid file " + filePath.getFileName());
                 }
             } catch (Exception e) {
                 LOGGER.error("Error when validating file: " + e.getMessage());
@@ -182,16 +153,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void copyResources(final List<String> filePaths) throws IOException {
+    public void copyFiles(final Map<Path, Path> sourceTargetMap) throws IOException {
         LOGGER.info("Copying resources ...");
-        for (String filePath : filePaths) {
-            final Path path = Paths.get(filePath);
-
-            final File source = path.toFile();
-            final File target = Paths.get(FileStructureConstants.PROJECT_RESOURCES_FOLDER, source.getName()).toFile();
+        for (var entry : sourceTargetMap.entrySet()) {
+            final File source = entry.getKey().toFile();
+            final File target = entry.getValue().toFile();
 
             LOGGER.info("Copy file: " + source.getPath() + " -> " + target.getPath());
-
             if (!source.exists()) {
                 continue;
             }
@@ -206,7 +174,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public boolean exists(final String path) {
-        return new File(path).exists();
+    public boolean exists(final Path path) {
+        return path.toFile().exists();
     }
 }

@@ -17,9 +17,10 @@
 package org.kie.kogito.api;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 public interface ZipService {
 
-    List<String> unzip(String zipFile, String destination) throws IOException;
+    List<Path> unzip(Path zipFilePath, Path destinationFolderPath) throws IOException;
 }

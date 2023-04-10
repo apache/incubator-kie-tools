@@ -19,5 +19,6 @@ package org.kie.kogito.api;
 import java.nio.file.Path;
 
 public interface FileValidation {
+
     boolean isValid(Path path);
 }

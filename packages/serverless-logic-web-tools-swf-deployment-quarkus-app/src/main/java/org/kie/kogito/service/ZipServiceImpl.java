@@ -16,12 +16,11 @@
 
 package org.kie.kogito.service;
 
-import org.kie.kogito.api.ZipService;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -29,15 +28,17 @@ import java.util.zip.ZipInputStream;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.kie.kogito.api.ZipService;
+
 @ApplicationScoped
 public class ZipServiceImpl implements ZipService {
 
     @Override
-    public List<String> unzip(final String zipFile, final String destinationPath) throws IOException {
-        var filePaths = new ArrayList<String>();
-        var destinationFolder = new File(destinationPath);
+    public List<Path> unzip(final Path zipFilePath, final Path destinationFolderPath) throws IOException {
+        var filePaths = new ArrayList<Path>();
+        var destinationFolder = destinationFolderPath.toFile();
         var buffer = new byte[1024];
-        try (var zis = new ZipInputStream(new FileInputStream(zipFile))) {
+        try (var zis = new ZipInputStream(new FileInputStream(zipFilePath.toFile()))) {
             var zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
                 var newFile = newFile(destinationFolder, zipEntry);
@@ -46,7 +47,7 @@ public class ZipServiceImpl implements ZipService {
                         throw new IOException("Failed to create directory " + newFile);
                     }
                 } else {
-                    filePaths.add(newFile.getAbsolutePath());
+                    filePaths.add(newFile.toPath());
                     var parent = newFile.getParentFile();
                     if (!parent.isDirectory() && !parent.mkdirs()) {
                         throw new IOException("Failed to create directory " + parent);
