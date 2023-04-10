@@ -28,6 +28,8 @@ import { VirtualServiceRegistryContextProvider } from "./virtualServiceRegistry/
 import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
 import { SampleContextProvider } from "./home/sample/hooks/SampleContext";
 import { DevModeContextProvider } from "./openshift/devMode/DevModeContext";
+import { GlobalAlertsContextProvider } from "./alerts/GlobalAlertsContext";
+import { EditorContextProvider } from "./editor/hooks/EditorContext";
 
 export const App = () => (
   <HashRouter>
@@ -37,6 +39,7 @@ export const App = () => (
       [EnvContextProvider, {}],
       [KieSandboxExtendedServicesContextProvider, {}],
       [SettingsContextProvider, {}],
+      [GlobalAlertsContextProvider, []],
       [
         WorkspacesContextProvider,
         {
@@ -45,11 +48,12 @@ export const App = () => (
           workerNamePrefix: `serverless-logic-web-tools-${process.env.WEBPACK_REPLACE__version}`,
         },
       ],
-      [OpenShiftContextProvider, {}],
       [DevModeContextProvider, {}],
+      [OpenShiftContextProvider, {}],
       [VirtualServiceRegistryContextProvider, {}],
       [SampleContextProvider, {}],
       [NavigationContextProvider, {}],
+      [EditorContextProvider, {}],
       [RoutesSwitch, {}]
     )}
   </HashRouter>
