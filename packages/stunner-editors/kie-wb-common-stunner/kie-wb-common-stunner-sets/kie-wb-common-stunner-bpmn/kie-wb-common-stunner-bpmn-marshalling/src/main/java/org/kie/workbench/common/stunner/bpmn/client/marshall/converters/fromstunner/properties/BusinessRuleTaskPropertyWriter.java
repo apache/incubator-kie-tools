@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.custompr
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.Scripts;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.FileName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Namespace;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
@@ -35,6 +36,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLangua
 public class BusinessRuleTaskPropertyWriter extends ActivityPropertyWriter {
 
     private final BusinessRuleTask task;
+
+    private final CustomInput<String> fileName;
     private final CustomInput<String> namespace;
     private final CustomInput<String> dmnModelName;
     private final CustomInput<String> decisionName;
@@ -42,6 +45,9 @@ public class BusinessRuleTaskPropertyWriter extends ActivityPropertyWriter {
     public BusinessRuleTaskPropertyWriter(BusinessRuleTask task, VariableScope variableScope, Set<DataObject> dataObejcts) {
         super(task, variableScope, dataObejcts);
         this.task = task;
+
+        this.fileName =  CustomInput.fileName.of(task);
+        this.addItemDefinition(this.fileName.typeDef());
 
         this.namespace = CustomInput.namespace.of(task);
         this.addItemDefinition(this.namespace.typeDef());
@@ -59,6 +65,10 @@ public class BusinessRuleTaskPropertyWriter extends ActivityPropertyWriter {
 
     public void setRuleFlowGroup(RuleFlowGroup ruleFlowGroup) {
         CustomAttribute.ruleFlowGroup.of(baseElement).set(ruleFlowGroup.getName());
+    }
+
+    public void setFileName(FileName fileName) {
+        this.fileName.set(fileName.getValue());
     }
 
     public void setNamespace(Namespace namespace) {

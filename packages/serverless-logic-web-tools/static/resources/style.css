@@ -659,7 +659,6 @@ section.kie-tools--settings-tab {
 .pf-c-menu__item-description {
   word-break: normal !important;
 }
-
 .chr-c-app-title {
   color: #fff;
   padding: var(--pf-global--spacer--md) var(--pf-global--spacer--sm) var(--pf-global--spacer--md)

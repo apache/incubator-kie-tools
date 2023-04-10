@@ -36,6 +36,7 @@ public class JsCanvasHelper {
     private static final String APPLY_STATE = "return canvas.applyState('%1','%2');";
     private static final String CENTER_NODE = "return canvas.centerNode('%s');";
     private static final String IS_CONNECTION = "return canvas.isConnected('%1', '%2');";
+    private static final String DRAW = "return canvas.draw()";
     private static final String GET_CONNECTOR_POINTS = "return canvas.getWiresShape('%s').getMagnet(%1).getConnection(%2).getConnector().getConnectorPointsAsArray();";
 
     private JavascriptExecutor executor;
@@ -107,6 +108,10 @@ public class JsCanvasHelper {
         final Object connection = executor.executeScript(String.format(IS_CONNECTION.replace("%1", uuid1).replace("%2", uuid2)));
         assertThat(connection).isInstanceOf(Boolean.class);
         return (Boolean) connection;
+    }
+
+    public void draw() {
+        final Object connection = executor.executeScript(DRAW);
     }
 
     public List<Object> getConnectorPoints(String uuid, int magnet, int connection) {

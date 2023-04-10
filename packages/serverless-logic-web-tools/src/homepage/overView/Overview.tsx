@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { FileTypes } from "../../extension";
+import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";

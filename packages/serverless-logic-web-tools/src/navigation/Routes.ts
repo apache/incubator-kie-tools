@@ -24,6 +24,7 @@ export enum QueryParams {
   EXPAND = "expand",
   REMOVE_REMOTE = "removeRemote",
   RENAME_WORKSPACE = "renameWorkspace",
+  SAMPLE_ID = "sampleId",
 }
 
 export enum PathParams {
@@ -121,6 +122,8 @@ export const routes = {
   importModel: new Route<{
     queryParams: QueryParams.URL | QueryParams.BRANCH | QueryParams.REMOVE_REMOTE | QueryParams.RENAME_WORKSPACE;
   }>(() => `/import`),
+
+  sampleShowcase: new Route<{ queryParams: QueryParams.SAMPLE_ID }>(() => `/sample`),
 
   workspaceWithFilePath: new Route<{
     pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH | PathParams.EXTENSION;

@@ -112,6 +112,7 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
                         initParams);
         if (bootstrapParams.isResizable()) {
             Window.addResizeHandler(v -> chart.resize());
+            Scheduler.get().scheduleDeferred(chart::resize);
         }
 
     }

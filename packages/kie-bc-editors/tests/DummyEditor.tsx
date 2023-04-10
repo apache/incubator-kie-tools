@@ -18,8 +18,9 @@ import * as React from "react";
 import { Editor, EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { GwtEditor } from "@kie-tools/kie-bc-editors/dist/common/consumedInteropApi/GwtAppFormerConsumedInteropApi";
 
-export class DummyEditor implements Editor {
+export class DummyEditor implements Editor, GwtEditor {
   private ref: DummyEditorComponent;
   public readonly af_componentTitle = "Dummy Editor";
   public readonly af_componentId = "dummy-editor";
@@ -61,7 +62,7 @@ export class DummyEditor implements Editor {
     return Promise.resolve();
   }
 
-  public selectStateByName(_name: string): Promise<void> {
+  public selectStateByName(_name: string | null): Promise<void> {
     return Promise.resolve();
   }
 }

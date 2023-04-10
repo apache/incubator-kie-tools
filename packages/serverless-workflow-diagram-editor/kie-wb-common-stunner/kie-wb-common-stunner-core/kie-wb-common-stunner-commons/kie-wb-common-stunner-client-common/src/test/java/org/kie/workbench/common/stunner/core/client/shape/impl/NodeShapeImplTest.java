@@ -101,13 +101,13 @@ public class NodeShapeImplTest {
     @Test
     public void testApplyProperties() {
         when(shapeStateHandler.reset()).thenReturn(ShapeState.NONE);
+        verify(shapeStateHandler,
+               times(1)).shapeAttributesChanged();
         clearInvocations(shapeStateHandler);
         tested.applyProperties(element,
                                MutationContext.STATIC);
         verify(shapeStateHandler,
                times(1)).reset();
-        verify(shapeStateHandler,
-               times(1)).shapeAttributesChanged();
         verify(shapeStateHandler,
                times(1)).applyState(eq(ShapeState.NONE));
     }
