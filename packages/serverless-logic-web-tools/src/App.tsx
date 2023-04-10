@@ -39,7 +39,11 @@ export const App = () => (
       [SettingsContextProvider, {}],
       [
         WorkspacesContextProvider,
-        { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js", shouldRequireCommitMessage: false },
+        {
+          workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js",
+          shouldRequireCommitMessage: false,
+          workerNamePrefix: `serverless-logic-web-tools-${process.env.WEBPACK_REPLACE__version}`,
+        },
       ],
       [OpenShiftContextProvider, {}],
       [DevModeContextProvider, {}],
