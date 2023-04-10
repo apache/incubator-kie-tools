@@ -202,6 +202,9 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     public S getInstance() {
+        if (getDisplayer() == null) {
+            return null;
+        }
         return getDisplayer().getInstance();
     }
 

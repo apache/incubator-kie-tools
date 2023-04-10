@@ -48,6 +48,10 @@ public class BusinessRuleTaskPropertyReader extends TaskPropertyReader {
         return CustomAttribute.ruleFlowGroup.of(element).get();
     }
 
+    public String getFileName() {
+        return CustomInput.fileName.of(task).get();
+    }
+
     public String getNamespace() {
         return CustomInput.namespace.of(task).get();
     }
@@ -157,7 +161,8 @@ public class BusinessRuleTaskPropertyReader extends TaskPropertyReader {
             return false;
         }
 
-        return dataName.equals("namespace") ||
+        return  dataName.equals("fileName") ||
+                dataName.equals("namespace") ||
                 dataName.equals("model") ||
                 dataName.equals("decision");
     }

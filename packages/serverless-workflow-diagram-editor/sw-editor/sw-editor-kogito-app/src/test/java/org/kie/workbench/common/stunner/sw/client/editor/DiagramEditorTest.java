@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.sw.client.editor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.enterprise.event.Event;
 
@@ -34,6 +36,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.promise.Promise;
+import org.appformer.kogito.bridge.client.diagramApi.DiagramApi;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +60,8 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
 import org.kie.workbench.common.stunner.sw.client.services.IncrementalMarshaller;
+import org.kie.workbench.common.stunner.sw.marshall.Context;
+import org.kie.workbench.common.stunner.sw.marshall.Marshaller;
 import org.mockito.Mock;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -66,6 +71,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
@@ -148,6 +154,15 @@ public class DiagramEditorTest {
     @Mock
     private Event togglePreviewEvent;
 
+    @Mock
+    private DiagramApi diagramApi;
+
+    @Mock
+    private Marshaller marshaller;
+
+    @Mock
+    private Context context;
+
     private DiagramEditor tested;
     private Promises promises;
     private DiagramImpl diagram;
@@ -211,6 +226,7 @@ public class DiagramEditorTest {
         when(canvasHandler2.getDiagram()).thenReturn(diagram);
         doReturn(stunnerEditor2).when(stunnerEditor2).close();
         when(stunnerEditor2.getSession()).thenReturn(viewerSession);
+        when(selectionControl.clearSelection()).thenReturn(selectionControl);
         when(viewerSession.getSelectionControl()).thenReturn(selectionControl);
         when(selectionControl.getSelectedItems()).thenReturn(new ArrayList<>(Arrays.asList("uuid")));
         when(viewerSession.getCanvasHandler()).thenReturn(canvasHandler2);
@@ -221,7 +237,8 @@ public class DiagramEditorTest {
                                        diagramServices,
                                        incrementalMarshaller,
                                        canvasFileExport,
-                                       togglePreviewEvent));
+                                       togglePreviewEvent,
+                                       diagramApi));
         tested.jsRegExp = jsRegExp;
         tested.jsCanvas = jsCanvas;
     }
@@ -310,11 +327,14 @@ public class DiagramEditorTest {
         when(regExpResult.getAt(2)).thenReturn("injectExample");
         when(graph.getUUID()).thenReturn("SomeOtherStuff");
 
+        doReturn(promises.create((success, failure) -> success.onInvoke((Void) null))).when(tested).setNewContent(anyString(), anyString());
+
         tested.setContent("", rawJSON);
 
         verify(tested, times(1)).setNewContent("", rawJSON);
         verify(tested, never()).updateContent("", rawJSON);
         verify(tested, never()).close();
+        verify(diagramApi).setContentSuccess();
     }
 
     @Test
@@ -323,10 +343,13 @@ public class DiagramEditorTest {
         when(regExpResult.getAt(2)).thenReturn("injectExample");
         when(graph.getUUID()).thenReturn("injectExample");
 
-        final Promise<Void> promise = tested.setContent("", rawJSON);
+        doReturn(promises.create((success, failure) -> success.onInvoke((Void) null))).when(tested).updateContent(anyString(), anyString());
+
+        tested.setContent("", rawJSON);
 
         verify(tested, times(1)).updateContent("", rawJSON);
         verify(tested, never()).setNewContent("", rawJSON);
+        verify(diagramApi).setContentSuccess();
     }
 
     @Test
@@ -374,5 +397,21 @@ public class DiagramEditorTest {
         verify(selectionControl, times(1)).addSelection("uuid");
         // Center selected node
         verify(jsCanvas, times(1)).centerNode("uuid");
+    }
+
+
+    @Test
+    public void testSelectStateByName() {
+        Map<String, String> nameToUUIDBindings = new HashMap<>();
+        nameToUUIDBindings.put("name", "uuid");
+
+        doReturn(nameToUUIDBindings).when(context).getNameToUUIDBindings();
+        doReturn(context).when(marshaller).getContext();
+        doReturn(marshaller).when(diagramServices).getMarshaller();
+
+        tested.selectStateByName("name");
+
+        verify(selectionControl).addSelection("uuid");
+        verify(jsCanvas).center("uuid");
     }
 }

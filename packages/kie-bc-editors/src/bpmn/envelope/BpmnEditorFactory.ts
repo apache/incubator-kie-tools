@@ -18,6 +18,16 @@ import { GwtEditorWrapperFactory, XmlFormatter } from "../../common";
 import { BpmnEditorChannelApi, getBpmnLanguageData } from "../api";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { BpmnEditor, BpmnEditorImpl } from "./BpmnEditor";
+import { DmnLanguageServiceExposedInteropApi } from "./exposedInteropApi/DmnLanguageServiceExposedInteropApi";
+import { DmnLanguageService } from "@kie-tools/dmn-language-service";
+
+export interface CustomWindow extends Window {
+  envelope: {
+    dmnLanguageService: DmnLanguageServiceExposedInteropApi;
+  };
+}
+
+declare let window: CustomWindow;
 
 export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
@@ -26,6 +36,24 @@ export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorCh
     ctx: KogitoEditorEnvelopeContextType<BpmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<BpmnEditor> {
+    const dmnLs = new DmnLanguageService({
+      // currently does not need to implement it since we don't need a way to read other Dmn files.
+      getDmnImportedModel: () => Promise.resolve({ relativePath: "", content: "" }),
+    });
+
+    const exposedInteropApi: CustomWindow["envelope"] = {
+      dmnLanguageService: {
+        getDmnDocumentData: (dmnContent) => {
+          return dmnLs.getDmnDocumentData(dmnContent);
+        },
+      },
+    };
+
+    window.envelope = {
+      ...(window.envelope ?? {}),
+      ...exposedInteropApi,
+    };
+
     const languageData = getBpmnLanguageData(initArgs.resourcesPathPrefix);
     const factory = new GwtEditorWrapperFactory<BpmnEditor>(
       languageData,

@@ -32,8 +32,9 @@ import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
 import { SpinUpDevModePipeline } from "../pipelines/SpinUpDevModePipeline";
 import { fetchWithTimeout } from "../../fetch";
 import { zipFiles } from "../../zip";
-import { isApplicationProperties, isServerlessWorkflow } from "../../extension";
+import { isApplicationProperties } from "../../extension";
 import { RestartDevModePipeline } from "../pipelines/RestartDevModePipeline";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 export const resolveWebToolsId = () => {
   const webToolsId = localStorage.getItem(WEB_TOOLS_ID_KEY) ?? uuid();
@@ -135,7 +136,7 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
         };
       }
 
-      if (!isServerlessWorkflow(args.targetFile.relativePath)) {
+      if (!isOfKind("sw", args.targetFile.relativePath)) {
         console.error(`File is not Serverless Workflow: ${args.targetFile.relativePath}`);
         return {
           success: false,

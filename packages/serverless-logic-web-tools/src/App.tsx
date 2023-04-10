@@ -26,9 +26,8 @@ import { OpenShiftContextProvider } from "./openshift/OpenShiftContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { VirtualServiceRegistryContextProvider } from "./virtualServiceRegistry/VirtualServiceRegistryContextProvider";
 import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
+import { SampleContextProvider } from "./home/sample/hooks/SampleContext";
 import { DevModeContextProvider } from "./openshift/devMode/DevModeContext";
-import { GlobalAlertsContextProvider } from "./alerts/GlobalAlertsContext";
-import { EditorContextProvider } from "./editor/hooks/EditorContext";
 
 export const App = () => (
   <HashRouter>
@@ -38,16 +37,15 @@ export const App = () => (
       [EnvContextProvider, {}],
       [KieSandboxExtendedServicesContextProvider, {}],
       [SettingsContextProvider, {}],
-      [GlobalAlertsContextProvider, []],
       [
         WorkspacesContextProvider,
         { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js", shouldRequireCommitMessage: false },
       ],
-      [DevModeContextProvider, {}],
       [OpenShiftContextProvider, {}],
+      [DevModeContextProvider, {}],
       [VirtualServiceRegistryContextProvider, {}],
+      [SampleContextProvider, {}],
       [NavigationContextProvider, {}],
-      [EditorContextProvider, {}],
       [RoutesSwitch, {}]
     )}
   </HashRouter>

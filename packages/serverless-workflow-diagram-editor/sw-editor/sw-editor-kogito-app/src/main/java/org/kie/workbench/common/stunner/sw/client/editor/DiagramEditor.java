@@ -33,6 +33,7 @@ import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
+import org.appformer.kogito.bridge.client.diagramApi.DiagramApi;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
@@ -88,6 +89,7 @@ public class DiagramEditor {
     private final IncrementalMarshaller incrementalMarshaller;
     private final CanvasFileExport canvasFileExport;
     private final Event<TogglePreviewEvent> togglePreviewEvent;
+    private final DiagramApi diagramApi;
 
     JsCanvas jsCanvas;
 
@@ -97,7 +99,8 @@ public class DiagramEditor {
                          ClientDiagramService diagramService,
                          IncrementalMarshaller incrementalMarshaller,
                          CanvasFileExport canvasFileExport,
-                         final Event<TogglePreviewEvent> togglePreviewEvent) {
+                         final Event<TogglePreviewEvent> togglePreviewEvent,
+                         final DiagramApi diagramApi) {
         this.promises = promises;
         this.stunnerEditor = stunnerEditor;
         this.diagramService = diagramService;
@@ -105,6 +108,7 @@ public class DiagramEditor {
         this.canvasFileExport = canvasFileExport;
         this.jsCanvas = null;
         this.togglePreviewEvent = togglePreviewEvent;
+        this.diagramApi = diagramApi;
     }
 
     public IsWidget asWidget() {
@@ -131,10 +135,18 @@ public class DiagramEditor {
     public Promise<Void> setContent(final String path, final String value) {
         TogglePreviewEvent event = new TogglePreviewEvent(TogglePreviewEvent.EventType.HIDE);
         togglePreviewEvent.fire(event);
+
+        Promise<Void> setContentPromise;
         if (stunnerEditor.isClosed() || !isSameWorkflow(value)) {
-            return setNewContent(path, value);
+            setContentPromise = setNewContent(path, value);
+        } else {
+            setContentPromise = updateContent(path, value);
         }
-        return updateContent(path, value);
+
+        return setContentPromise.then(v -> promises.create((success, failure) -> {
+            diagramApi.setContentSuccess();
+            success.onInvoke((Void) null);
+        }));
     }
 
     public Promise<Boolean> hasErrors() {
@@ -221,10 +233,20 @@ public class DiagramEditor {
     }
 
     public Promise<Void> selectStateByName(final String name) {
-        String uuid = diagramService.getMarshaller().getContext().getNameToUUIDBindings().get(name);
+        if (stunnerEditor.getSession() == null) {
+            return null;
+        }
+
         AbstractSession session = (AbstractSession) stunnerEditor.getSession();
+        final SelectionControl selectionControl = session.getSelectionControl().clearSelection();
+
+        if (name == null) {
+            return null;
+        }
+
+        String uuid = diagramService.getMarshaller().getContext().getNameToUUIDBindings().get(name);
         // highlight the node
-        session.getSelectionControl().clearSelection().addSelection(uuid);
+        selectionControl.addSelection(uuid);
 
         // center the node in the diagram
         jsCanvas.center(uuid);

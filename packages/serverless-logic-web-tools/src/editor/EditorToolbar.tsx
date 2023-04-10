@@ -59,7 +59,7 @@ import { Location } from "history";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { isDashbuilder, isServerlessWorkflow } from "../extension";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { useAppI18n } from "../i18n";
 import {
   useNavigationBlockersBypass,
@@ -181,10 +181,10 @@ export function EditorToolbar(props: Props) {
 
   const canBeDeployed = useMemo(() => {
     if (env.FEATURE_FLAGS.MODE === AppDistributionMode.OPERATE_FIRST) {
-      return isServerlessWorkflow(props.workspaceFile.relativePath);
+      return isOfKind("sw", props.workspaceFile.relativePath);
     }
 
-    return isServerlessWorkflow(props.workspaceFile.relativePath) || isDashbuilder(props.workspaceFile.relativePath);
+    return isOfKind("sw", props.workspaceFile.relativePath) || isOfKind("dash", props.workspaceFile.relativePath);
   }, [env.FEATURE_FLAGS.MODE, props.workspaceFile.relativePath]);
 
   useCancelableEffect(
@@ -306,7 +306,7 @@ export function EditorToolbar(props: Props) {
   );
 
   const shouldIncludeDownloadSvgDropdownItem = useMemo(() => {
-    return isServerlessWorkflow(props.workspaceFile.relativePath);
+    return isOfKind("sw", props.workspaceFile.relativePath);
   }, [props.workspaceFile]);
 
   const onDownload = useCallback(() => {

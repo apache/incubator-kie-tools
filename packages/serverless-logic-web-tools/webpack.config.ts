@@ -105,6 +105,7 @@ export default async (env: any, argv: any) => {
             },
           ]),
           new EnvironmentPlugin({
+            WEBPACK_REPLACE__version: buildEnv.serverlessLogicWebTools.version,
             WEBPACK_REPLACE__buildInfo: buildInfo,
             WEBPACK_REPLACE__swfBuilderImageFullUrl: `${swfBuilderImageRegistry}/${swfBuilderImageAccount}/${swfBuilderImageName}:${swfBuilderImageTag}`,
             WEBPACK_REPLACE__baseBuilderImageFullUrl: `${baseBuilderImageRegistry}/${baseBuilderImageAccount}/${baseBuilderImageName}:${baseBuilderImageTag}`,
@@ -116,12 +117,12 @@ export default async (env: any, argv: any) => {
               kieSandboxExtendedServices_windowsDownloadUrl,
             WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
             WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicWebTools.gitCorsProxyUrl,
+            WEBPACK_REPLACE__samplesRepositoryRef: buildEnv.serverlessLogicWebTools.samplesRepositoryRef,
           }),
           new CopyPlugin({
             patterns: [
               { from: "./static/resources", to: "./resources" },
               { from: "./static/images", to: "./images" },
-              { from: "./static/samples", to: "./samples" },
               { from: "./static/favicon.svg", to: "./favicon.svg" },
               {
                 from: "./static/env.json",

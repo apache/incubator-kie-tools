@@ -42,6 +42,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFor
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.stunner.forms.client.formFilters.FormFiltersProviderFactory;
+import org.kie.workbench.common.stunner.forms.client.widgets.container.displayer.domainChangeHandlers.DomainObjectFieldChangeHandlerRegistry;
 import org.kie.workbench.common.stunner.forms.context.PathAwareFormContext;
 import org.uberfire.backend.vfs.Path;
 
@@ -54,14 +55,17 @@ public class FormDisplayer implements FormDisplayerView.Presenter,
     private final FormDisplayerView view;
     private final DynamicFormRenderer renderer;
     private final DynamicFormModelGenerator modelGenerator;
+    private final DomainObjectFieldChangeHandlerRegistry changeHandlerRegistry;
 
     @Inject
     public FormDisplayer(final FormDisplayerView view,
                          final DynamicFormRenderer renderer,
-                         final DynamicFormModelGenerator modelGenerator) {
+                         final DynamicFormModelGenerator modelGenerator,
+                         final DomainObjectFieldChangeHandlerRegistry changeHandlerRegistry) {
         this.view = view;
         this.renderer = renderer;
         this.modelGenerator = modelGenerator;
+        this.changeHandlerRegistry = changeHandlerRegistry;
     }
 
     @PostConstruct
@@ -116,6 +120,12 @@ public class FormDisplayer implements FormDisplayerView.Presenter,
         syncCollapses(previousExpandedCollapses);
 
         renderer.addFieldChangeHandler(changeHandler);
+
+        changeHandlerRegistry.lookupChangeHandler(domainObject)
+                .ifPresent(domainObjectChangeHandler ->{
+                    domainObjectChangeHandler.init(domainObject);
+                    renderer.addFieldChangeHandler(domainObjectChangeHandler);
+                });
     }
 
     private void syncCollapses(final List<String> expandedCollapses) {

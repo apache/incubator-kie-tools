@@ -23,7 +23,7 @@ import { parseApiContent } from "@kie-tools/serverless-workflow-service-catalog/
 import { ArtifactType, SearchedArtifact } from "@rhoas/registry-instance-sdk";
 import { OpenAPIV3 } from "openapi-types";
 import * as yaml from "yaml";
-import { isSpec } from "../../extension";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import {
   isServiceAccountConfigValid,
   ServiceAccountSettingsConfig,
@@ -164,11 +164,11 @@ export class SwfServiceCatalogStore {
     };
 
     const isForeignArtifact = (metadata: SearchedArtifact) => {
-      return !isSpec(metadata.id) && metadata.groupId !== this.currentFile?.workspaceId;
+      return !isOfKind("spec", metadata.id) && metadata.groupId !== this.currentFile?.workspaceId;
     };
 
     const isLocalSpec = (metadata: SearchedArtifact) => {
-      return isSpec(metadata.id) && metadata.groupId === this.currentFile?.workspaceId;
+      return isOfKind("spec", metadata.id) && metadata.groupId === this.currentFile?.workspaceId;
     };
 
     // The list should:

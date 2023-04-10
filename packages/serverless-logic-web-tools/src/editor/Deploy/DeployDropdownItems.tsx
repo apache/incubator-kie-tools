@@ -44,11 +44,11 @@ import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/Ac
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useDevMode, useDevModeDispatch } from "../../openshift/devMode/DevModeContext";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
-import { isServerlessWorkflow } from "../../extension";
 import { useEnv } from "../../env/EnvContext";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { useEditor } from "../hooks/EditorContext";
 import { AppDistributionMode } from "../../AppConstants";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 const FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME = 2000;
 
@@ -191,7 +191,7 @@ export function useDeployDropdownItems(props: Props) {
   );
 
   const isUploadToDevModeEnabled = useMemo(
-    () => devMode.isEnabled && isServerlessWorkflow(props.workspaceFile.name),
+    () => devMode.isEnabled && isOfKind("sw", props.workspaceFile.name),
     [devMode.isEnabled, props.workspaceFile.name]
   );
 

@@ -33,7 +33,8 @@ import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/co
 import { basename } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
 import { useRoutes } from "../navigation/Hooks";
-import { FileTypes, isEditable, SupportedFileExtensions } from "../extension";
+import { isEditable, SupportedFileExtensions } from "../extension";
+import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
@@ -245,53 +246,6 @@ export function NewFileDropdownMenu(props: {
             <b>
               <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.DASH_YAML} />
             </b>
-          </MenuItem>
-          <Divider />
-          <MenuItem
-            description={"Try sample models"}
-            itemId="samplesItemId"
-            direction={"down"}
-            drilldownMenu={
-              <DrilldownMenu id={"samplesMenu"}>
-                <MenuItem direction="up">Back</MenuItem>
-                <Divider />
-                <MenuItem
-                  onClick={() => addSample("greetings", FileTypes.SW_JSON)}
-                  description="Serverless Workflow files are used to define orchestration logic for services."
-                >
-                  <Flex>
-                    <FlexItem>Greetings</FlexItem>
-                    <FlexItem>
-                      <FileLabel extension={FileTypes.SW_JSON} />
-                    </FlexItem>
-                  </Flex>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => addSample("traffic-violation", FileTypes.YARD_YAML)}
-                  description="Serverless Decision files are used to define decision logic for services."
-                >
-                  <Flex>
-                    <FlexItem>Traffic Violation</FlexItem>
-                    <FlexItem>
-                      <FileLabel extension={FileTypes.YARD_YAML} />
-                    </FlexItem>
-                  </Flex>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => addSample("swf-report", FileTypes.DASH_YML)}
-                  description="Dashboard files are used to define data visualization from data extracted from applications."
-                >
-                  <Flex>
-                    <FlexItem>Serverless Workflow Report</FlexItem>
-                    <FlexItem>
-                      <FileLabel extension={FileTypes.DASH_YML} />
-                    </FlexItem>
-                  </Flex>
-                </MenuItem>
-              </DrilldownMenu>
-            }
-          >
-            Samples
           </MenuItem>
           <Divider />
           <MenuItem
