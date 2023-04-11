@@ -41,6 +41,7 @@ import { useApp } from "./AppContext";
 import { useDmnFormI18n } from "./i18n";
 import { routes } from "./Routes";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { MastheadBrand } from "@patternfly/react-core/dist/js/components/Masthead";
 
 interface Props {
   uri: string;
@@ -143,26 +144,30 @@ export function DmnFormToolbar(props: Props) {
   return (
     <PageHeader
       logo={
-        <Flex alignItems={{ default: "alignItemsCenter" }}>
-          <FlexItem style={{ display: "flex", alignItems: "center" }}>
-            <Brand
-              src={routes.static.images.kieHorizontalLogoReverse.path({})}
-              alt={"Logo"}
-              style={{ display: "inline", height: "38px" }}
-            />
-          </FlexItem>
-          <FlexItem style={{ display: "flex", alignItems: "center" }}>
-            <TextContent>
-              <Text component={TextVariants.h3} style={{ display: "inline" }}>
-                Sandbox
-              </Text>
-              &nbsp;&nbsp;
-              <Text component={TextVariants.small} style={{ display: "inline" }}>
-                <i>Dev deployments</i>
-              </Text>
-            </TextContent>
-          </FlexItem>
-        </Flex>
+        <MastheadBrand style={{ textDecoration: "none" }}>
+          <Flex alignItems={{ default: "alignItemsCenter" }}>
+            <FlexItem style={{ display: "flex", alignItems: "center" }}>
+              <Brand
+                src={routes.static.images.kieHorizontalLogoReverse.path({})}
+                alt={"Logo"}
+                heights={{ default: "38px" }}
+              >
+                <source srcSet={routes.static.images.kieHorizontalLogoReverse.path({})} />
+              </Brand>
+            </FlexItem>
+            <FlexItem style={{ display: "flex", alignItems: "center" }}>
+              <TextContent>
+                <Text component={TextVariants.h3} style={{ display: "inline" }}>
+                  Sandbox
+                </Text>
+                &nbsp;&nbsp;
+                <Text component={TextVariants.small} style={{ display: "inline" }}>
+                  <i>Dev deployments</i>
+                </Text>
+              </TextContent>
+            </FlexItem>
+          </Flex>
+        </MastheadBrand>
       }
       headerTools={
         <PageHeaderTools>

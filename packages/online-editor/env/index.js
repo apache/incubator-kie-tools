@@ -82,7 +82,7 @@ module.exports = composeEnv(
         description: "Image tag to be used by DMN Dev deployments when deploying DMN models.",
       },
       DMN_DEV_DEPLOYMENT__onlineEditorUrl: {
-        default: `https://0.0.0.0:${devPort}`,
+        default: `https://localhost:${devPort}`,
         description: "URL that DMN Dev deployments will use to open KIE Sandbox.",
       },
     }),

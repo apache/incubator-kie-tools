@@ -15,7 +15,7 @@
   "scripts": {
     "build:dev": "pnpm cleanup",
     "build:prod": "pnpm cleanup && run-script-os",
-    "build:prod:darwin": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy:assets\" \"pnpm image:docker:build\"",
+    "build:prod:darwin": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy:assets\" \"pnpm image:podman:build\"",
     "build:prod:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy:assets\" \"pnpm image:podman:build\"",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
