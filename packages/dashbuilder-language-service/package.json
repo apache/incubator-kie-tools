@@ -25,7 +25,7 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "@kie-tools/editor-language-service": "workspace:^0.0.0",
+    "@kie-tools/editor-language-service": "workspace:*",
     "@kie-tools/yaml-language-server": "workspace:*",
     "jsonc-parser": "^3.0.0",
     "vscode-languageserver": "^7.0.0",

@@ -19,7 +19,7 @@ import { FileLanguage } from "../api";
 import * as jsonc from "jsonc-parser";
 import { DashbuilderLanguageServiceCodeCompletion } from "./DashbuilderLanguageServiceCodeCompletion";
 import { DashbuilderLanguageServiceCodeLenses } from "./DashbuilderLanguageServiceCodeLenses";
-import { DashbuilderJsonPath, DashbuilderLsNode } from "./types";
+import { ELsJsonPath, ELsNode } from "@kie-tools/editor-language-service/dist/channel";
 import {
   Kind,
   load,
@@ -44,7 +44,7 @@ import { DASHBUILDER_SCHEMA } from "../assets/schemas";
 export class DashbuilderLanguageService {
   constructor() {}
 
-  parseContent(content: string): DashbuilderLsNode | undefined {
+  parseContent(content: string): ELsNode | undefined {
     if (!content.trim()) {
       return;
     }
@@ -186,8 +186,8 @@ export class DashbuilderLanguageService {
   }
 }
 
-const astConvert = (node: YAMLNode, parentNode?: DashbuilderLsNode): DashbuilderLsNode => {
-  const convertedNode: DashbuilderLsNode = {
+const astConvert = (node: YAMLNode, parentNode?: ELsNode): ELsNode => {
+  const convertedNode: ELsNode = {
     type: "object",
     offset: node.startPosition,
     length: node.endPosition - node.startPosition,
@@ -224,22 +224,18 @@ const astConvert = (node: YAMLNode, parentNode?: DashbuilderLsNode): Dashbuilder
   return convertedNode;
 };
 
-export function findNodeAtOffset(
-  root: DashbuilderLsNode,
-  offset: number,
-  includeRightBound?: boolean
-): DashbuilderLsNode | undefined {
-  return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as DashbuilderLsNode;
+export function findNodeAtOffset(root: ELsNode, offset: number, includeRightBound?: boolean): ELsNode | undefined {
+  return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as ELsNode;
 }
 
-export function getNodePath(node: DashbuilderLsNode): DashbuilderJsonPath {
+export function getNodePath(node: ELsNode): ELsJsonPath {
   return jsonc.getNodePath(node as jsonc.Node);
 }
 
 export const isNodeUncompleted = (args: {
   content: string;
   uri: string;
-  rootNode: DashbuilderLsNode;
+  rootNode: ELsNode;
   cursorOffset: number;
 }): boolean => {
   if (args.content.slice(args.cursorOffset - 1, args.cursorOffset) !== " ") {

@@ -17,12 +17,12 @@
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, Position } from "vscode-languageserver-types";
 import { DashbuilderLanguageServiceCommandArgs, DashbuilderLanguageServiceCommandTypes } from "../api";
-import { DashbuilderLsNode } from "./types";
+import { ELsNode } from "@kie-tools/editor-language-service/dist/channel";
 
 export type DashBuilderLanguageServiceCodeLensesFunctionsArgs = {
   document: TextDocument;
   content: string;
-  rootNode: DashbuilderLsNode;
+  rootNode: ELsNode;
 };
 
 /**

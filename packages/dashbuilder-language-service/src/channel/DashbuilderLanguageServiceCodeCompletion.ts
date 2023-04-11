@@ -15,19 +15,19 @@
  */
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
 import { dashbuilderCompletion } from "../assets/code-completions/";
-import { DashbuilderLsNode, TranslateArgs } from "./types";
+import { ELsNode, TranslateArgs } from "@kie-tools/editor-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { indentText } from "./indentText";
 import { positions_equals } from "./DashbuilderLanguageService";
 import { dump } from "yaml-language-server-parser";
 
 export type DashbuilderLanguageServiceCodeCompletionFunctionsArgs = {
-  currentNode: DashbuilderLsNode;
+  currentNode: ELsNode;
   currentNodeRange: Range;
   cursorOffset: number;
   document: TextDocument;
   overwriteRange: Range;
-  rootNode: DashbuilderLsNode;
+  rootNode: ELsNode;
 };
 
 const translateYamlDoc = (args: TranslateArgs) => {

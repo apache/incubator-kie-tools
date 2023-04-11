@@ -14,18 +14,7 @@
  * limitations under the License.
  */
 
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-
-export interface EditorLanguageServiceChannelApi {
-  kogitoEditorLanguageService__getCompletionItems(args: {
-    content: string;
-    uri: string;
-    cursorPosition: Position;
-    cursorWordRange: Range;
-  }): Promise<CompletionItem[]>;
-
-  kogitoEditorLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]>;
-}
+import { Position } from "vscode-languageserver-types";
 
 export type EditorLanguageServiceCommandTypes<T extends string = never> = T | "editor.ls.commands.OpenCompletionItems";
 
