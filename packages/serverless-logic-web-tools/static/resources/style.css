@@ -558,6 +558,10 @@ section.kie-tools--settings-tab {
   overflow: auto;
 }
 
+.kogito--editor__openshift-deployments-dropdown-item-action:not(disabled):hover {
+  color: var(--pf-global--palette--black-800) !important;
+}
+
 @media screen and (min-width: 576px) {
   .kogito--editor__openshift-deployments-dropdown .pf-c-dropdown__menu {
     min-width: 400px;

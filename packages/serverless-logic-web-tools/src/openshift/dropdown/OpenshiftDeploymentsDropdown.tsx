@@ -122,7 +122,13 @@ export function OpenshiftDeploymentsDropdown() {
           }),
       ];
     }
-  }, [openshift.deployments, isConnected, openOpenShiftSettings, settings.openshift.config.namespace]);
+  }, [
+    isConnected,
+    env.FEATURE_FLAGS.MODE,
+    openOpenShiftSettings,
+    settings.openshift.config.namespace,
+    openshift.deployments,
+  ]);
 
   return (
     <>

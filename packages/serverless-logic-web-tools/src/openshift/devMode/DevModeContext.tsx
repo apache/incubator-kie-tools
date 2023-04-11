@@ -43,7 +43,8 @@ export const resolveWebToolsId = () => {
 };
 
 export const resolveDevModeResourceName = (webToolsId: string) => {
-  return `devmode-${webToolsId}`;
+  const sanitizedVersion = process.env.WEBPACK_REPLACE__version!.replace(/\./g, "-");
+  return `devmode-${webToolsId}-${sanitizedVersion}`;
 };
 
 export interface DevModeContextType {

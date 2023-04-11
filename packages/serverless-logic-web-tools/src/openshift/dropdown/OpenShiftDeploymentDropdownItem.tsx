@@ -22,12 +22,15 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import * as React from "react";
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState } from "react";
 import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { basename } from "path";
 import { buildEndpoints } from "../devMode/DevModeConstants";
 import { useDevModeDispatch } from "../devMode/DevModeContext";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";
 
 interface Props {
   id: number;
@@ -36,6 +39,7 @@ interface Props {
 
 export function OpenShiftDeploymentDropdownItem(props: Props) {
   const devModeDispatch = useDevModeDispatch();
+  const [isRestoring, setRestoring] = useState(false);
 
   const deploymentName = useMemo(() => {
     if (props.deployment.devMode) {
@@ -55,21 +59,22 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
     return `${name.substring(0, maxSize - extension.length)}...${extension}`;
   }, [props.deployment.devMode, props.deployment.workspaceName]);
 
-  const openDeployment = useCallback(() => {
+  const onDeploymentClicked = useCallback(() => {
     const endpoints = buildEndpoints(props.deployment.routeUrl);
     window.open(props.deployment.devMode ? endpoints.devUi : endpoints.base, "_blank");
   }, [props.deployment.devMode, props.deployment.routeUrl]);
 
-  const onStateIconClicked = useCallback(
-    (e: React.MouseEvent) => {
-      if (!props.deployment.devMode) {
-        return;
-      }
-      devModeDispatch.restart();
-      e.stopPropagation();
-    },
-    [devModeDispatch, props.deployment.devMode]
-  );
+  const onRestoreClicked = useCallback(async () => {
+    if (isRestoring) {
+      return;
+    }
+
+    setRestoring(true);
+    await devModeDispatch.restart();
+    window.setTimeout(() => {
+      setRestoring(false);
+    }, 2000);
+  }, [devModeDispatch, isRestoring]);
 
   const stateIcon = useMemo(() => {
     if (props.deployment.state === OpenShiftDeploymentState.UP) {
@@ -78,7 +83,6 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
           <CheckCircleIcon
             id="openshift-deployment-item-up-icon"
             className="kogito--editor__openshift-dropdown-item-status success-icon"
-            onClick={onStateIconClicked}
           />
         </Tooltip>
       );
@@ -97,7 +101,6 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
           <SyncAltIcon
             id="openshift-deployment-item-in-progress-icon"
             className="kogito--editor__openshift-dropdown-item-status in-progress-icon rotating"
-            onClick={onStateIconClicked}
           />
         </Tooltip>
       );
@@ -115,7 +118,6 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
           <ExclamationCircleIcon
             id="openshift-deployment-item-error-icon"
             className="kogito--editor__openshift-dropdown-item-status error-icon"
-            onClick={onStateIconClicked}
           />
         </Tooltip>
       );
@@ -126,22 +128,37 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
         <ExclamationTriangleIcon
           id="openshift-deployment-item-down-icon"
           className="kogito--editor__openshift-dropdown-item-status warning-icon"
-          onClick={onStateIconClicked}
         />
       </Tooltip>
     );
-  }, [onStateIconClicked, props.deployment.state, props.id]);
+  }, [props.deployment.state, props.id]);
 
   return (
-    <DropdownItem
-      id="openshift-deployment-item-button"
-      key={`openshift-dropdown-item-${props.id}`}
-      isDisabled={props.deployment.state === OpenShiftDeploymentState.ERROR}
-      onClick={openDeployment}
-      description={`Created at ${props.deployment.creationTimestamp.toLocaleString()}`}
-      icon={stateIcon}
-    >
-      {deploymentName}
-    </DropdownItem>
+    <Flex>
+      <FlexItem grow={{ default: "grow" }} style={{ margin: "0" }}>
+        <DropdownItem
+          id="openshift-deployment-item-button"
+          key={`openshift-dropdown-item-${props.id}`}
+          isDisabled={props.deployment.state === OpenShiftDeploymentState.ERROR}
+          onClick={onDeploymentClicked}
+          description={`Created at ${props.deployment.creationTimestamp.toLocaleString()}`}
+          icon={stateIcon}
+        >
+          {deploymentName}
+        </DropdownItem>
+      </FlexItem>
+      <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
+        <Tooltip content={"Restore its original state"}>
+          <Button
+            className="kogito--editor__openshift-deployments-dropdown-item-action"
+            style={{ color: "var(--pf-global--palette--black-500)" }}
+            variant={ButtonVariant.plain}
+            onClick={onRestoreClicked}
+            icon={<HistoryIcon />}
+            isLoading={isRestoring}
+          />
+        </Tooltip>
+      </FlexItem>
+    </Flex>
   );
 }
