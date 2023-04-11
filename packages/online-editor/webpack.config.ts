@@ -120,6 +120,7 @@ export default async (env: any, argv: any) => {
               { from: "./static/resources", to: "./resources" },
               { from: "./static/images", to: "./images" },
               { from: "./static/samples", to: "./samples" },
+              { from: "./static/kubernetes", to: "./kubernetes" },
               { from: "./static/favicon.svg", to: "./favicon.svg" },
               {
                 from: "./static/env.json",
@@ -160,6 +161,12 @@ export default async (env: any, argv: any) => {
         module: {
           rules: [...patternflyBase.webpackModuleRules],
         },
+        ignoreWarnings: [
+          {
+            // The @kubernetes-models sub-packages source maps are not published, so we need to ignore their warnings for now.
+            module: /@kubernetes-models/,
+          },
+        ],
       }),
       devServer: {
         https: true,

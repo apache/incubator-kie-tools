@@ -267,7 +267,7 @@ export function AuthSessionSelect(props: {
                   ];
                 }
 
-                if (authSession.type === "openshift") {
+                if (authSession.type === "openshift" || authSession.type === "kubernetes") {
                   return [
                     <SelectOption key={authSession.id} value={authSession.id} description={<i>{authProvider?.name}</i>}>
                       <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
@@ -303,8 +303,7 @@ export function InvalidAuthSessionIcon() {
       content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}
     >
       <>
-        {/* Color copied from PF4 */}
-        <ExclamationCircleIcon color={"#c9190b"} />
+        <ExclamationCircleIcon style={{ color: "var(--pf-global--palette--red-100)" }} />
       </>
     </Tooltip>
   );
