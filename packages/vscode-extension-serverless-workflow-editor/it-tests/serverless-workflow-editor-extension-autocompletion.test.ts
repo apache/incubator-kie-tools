@@ -43,11 +43,7 @@ describe("Serverless workflow editor - autocompletion tests", () => {
 
   afterEach(async function () {
     this.timeout(15000);
-    if (this.currentTest && this.currentTest?.state !== "passed") {
-      const screenshotName = this.currentTest?.fullTitle() + " (failed)";
-      const screenshotDir = path.join(DIST_IT_TESTS_FOLDER, "screenshots");
-      await testHelper.takeScreenshotAndSave(screenshotName, screenshotDir);
-    }
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });

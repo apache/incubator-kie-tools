@@ -289,10 +289,26 @@ export default class VSCodeTestHelper {
    * @param name screenshot file name without extension
    * @param dirPath path to a folder to store screenshots (will be created if not exists)
    */
-  public takeScreenshotAndSave = async (name: string, dirPath: string) => {
+  public takeScreenshotAndSave = async (name: string, dirPath: string): Promise<void> => {
     const data = await this.driver.takeScreenshot();
     fs.mkdirpSync(dirPath);
     fs.writeFileSync(path.join(dirPath, `${sanitize(name)}.png`), data, "base64");
+  };
+
+  /**
+   * Takes a screenshot if the current test fails and saves it in the specified directory.
+   * @param {Mocha.Context} testMochaContext The current Mocha test context.
+   * @param {string} parentScreenshotFolder The parent directory where the screenshot will be saved.
+   */
+  public takeScreenshotOnTestFailure = async (
+    testMochaContext: Mocha.Context,
+    parentScreenshotFolder: string
+  ): Promise<void> => {
+    if (testMochaContext.currentTest && testMochaContext.currentTest.state !== "passed") {
+      const screenshotName = testMochaContext.currentTest?.fullTitle() + " (failed)";
+      const screenshotDir = path.join(parentScreenshotFolder, "screenshots");
+      await this.takeScreenshotAndSave(screenshotName, screenshotDir);
+    }
   };
 }
 
