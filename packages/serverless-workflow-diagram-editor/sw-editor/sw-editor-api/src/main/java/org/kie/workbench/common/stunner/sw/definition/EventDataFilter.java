@@ -21,9 +21,11 @@ import jsinterop.annotations.JsType;
 @JsType
 public class EventDataFilter {
 
-    private Boolean useData;
-    private String data;
-    private String toStateData;
+    public Boolean useData;
+
+    public String data;
+
+    public String toStateData;
 
     public final Boolean getUseData() {
         return useData;

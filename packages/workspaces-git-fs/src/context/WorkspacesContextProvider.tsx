@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { useCallback, useMemo } from "react";
 import { ResourceContentOptions } from "@kie-tools-core/workspace/dist/api";
 import { WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
@@ -26,6 +26,7 @@ import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 type Props = {
   children: React.ReactNode;
   workspacesSharedWorkerScriptUrl: string;
+  workerNamePrefix: string;
 } & (
   | {
       shouldRequireCommitMessage: false;
@@ -37,14 +38,34 @@ type Props = {
 );
 
 export function WorkspacesContextProvider(props: Props) {
-  const workspacesSharedWorker = useMemo(
-    () =>
-      new WorkspacesSharedWorker({
-        workerName: "workspaces-shared-worker",
-        workerScriptUrl: props.workspacesSharedWorkerScriptUrl,
-      }),
-    [props.workspacesSharedWorkerScriptUrl]
+  const [workspacesSharedWorker, setWorkspacesSharedWorker] = useState<WorkspacesSharedWorker>(
+    new WorkspacesSharedWorker({
+      workerName: `${props.workerNamePrefix}-workspaces-shared-worker`,
+      workerScriptUrl: props.workspacesSharedWorkerScriptUrl,
+    })
   );
+
+  const updateWorkspaceSharedWorker = useCallback(() => {
+    setWorkspacesSharedWorker((currentWorkspacesSharedWorker) => {
+      currentWorkspacesSharedWorker.closeWorkerPort();
+      return new WorkspacesSharedWorker({
+        workerName: `${props.workerNamePrefix}-workspaces-shared-worker`,
+        workerScriptUrl: props.workspacesSharedWorkerScriptUrl,
+      });
+    });
+  }, [props.workerNamePrefix, props.workspacesSharedWorkerScriptUrl]);
+
+  // Listen to the `resume` event from the Page Lifecycle API (https://developer.chrome.com/blog/page-lifecycle-api/).
+  // This event indicates that the Chrome tab was in a frozen state and is now in one of the active/passive/hidden states.
+  // Updating the WorkspacesSharedWorker is necessary because its connection will be lost after some time while the tab is frozen.
+  // This happens because the Shared Worker ping function will timeout without an answer and close the connection.
+  useEffect(() => {
+    window.addEventListener("resume", updateWorkspaceSharedWorker, { capture: true });
+
+    return () => {
+      window.removeEventListener("resume", updateWorkspaceSharedWorker, { capture: true });
+    };
+  }, [updateWorkspaceSharedWorker]);
 
   const toWorkspaceFile = useCallback(
     (wwfd: WorkspaceWorkerFileDescriptor) =>

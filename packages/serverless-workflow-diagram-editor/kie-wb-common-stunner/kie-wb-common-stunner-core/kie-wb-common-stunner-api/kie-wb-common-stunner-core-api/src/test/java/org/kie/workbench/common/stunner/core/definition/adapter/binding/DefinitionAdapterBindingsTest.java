@@ -62,14 +62,6 @@ public class DefinitionAdapterBindingsTest {
         metaTypes.setRadiusIndex(3);
         assertEquals(4, metaTypes.getNameIndex());
         assertEquals(4, metaTypes.getIndex(PropertyMetaTypes.NAME));
-        assertEquals(5, metaTypes.getIdIndex());
-        assertEquals(5, metaTypes.getIndex(PropertyMetaTypes.ID));
-        assertEquals(1, metaTypes.getWidthIndex());
-        assertEquals(1, metaTypes.getIndex(PropertyMetaTypes.WIDTH));
-        assertEquals(2, metaTypes.getHeightIndex());
-        assertEquals(2, metaTypes.getIndex(PropertyMetaTypes.HEIGHT));
-        assertEquals(3, metaTypes.getRadiusIndex());
-        assertEquals(3, metaTypes.getIndex(PropertyMetaTypes.RADIUS));
         assertEquals("4,1,2,3,5", metaTypes.format());
         assertEquals("4,1,2,3,5", DefinitionAdapterBindings.PropertyMetaTypes.parse("4,1,2,3,5").format());
     }

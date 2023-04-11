@@ -1,0 +1,14 @@
+{
+  "id": "JSON Functions",
+  "specVersion": "0.8",
+  "start": "JSON State",
+  "states": [
+    {
+      "name": "JSON State",
+      "type": "inject",
+      "data": {},
+      "end": true
+    }
+  ],
+  "functions": []
+}

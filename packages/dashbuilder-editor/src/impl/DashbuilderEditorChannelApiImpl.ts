@@ -32,6 +32,7 @@ import { DashbuilderEditorChannelApi } from "../editor";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { Position, Range, CompletionItem, CodeLens } from "vscode-languageserver-types";
 import { DashbuilderLanguageServiceChannelApi } from "@kie-tools/dashbuilder-language-service/dist/api";
+import { Position as MonacoPosition } from "monaco-editor";
 
 export class DashbuilderEditorChannelApiImpl implements DashbuilderEditorChannelApi {
   constructor(
@@ -105,5 +106,9 @@ export class DashbuilderEditorChannelApiImpl implements DashbuilderEditorChannel
   }
   kogitoDashbuilderLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
     return this.dashbuilderLanguageServiceChannelApiImpl.kogitoDashbuilderLanguageService__getCodeLenses(args) ?? [];
+  }
+
+  public kogitoDashbuilderTextEditor_moveCursorToPosition(_position: MonacoPosition): void {
+    // no-op
   }
 }

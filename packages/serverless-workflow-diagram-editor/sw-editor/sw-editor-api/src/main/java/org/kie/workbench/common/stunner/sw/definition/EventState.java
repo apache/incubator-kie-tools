@@ -17,37 +17,17 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
-/**
- * Defines events that trigger action execution.
- *
- * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Event-State"> Events state </a>
- */
-@Bindable
-@Definition
-@Morph(base = State.class)
 @JSONMapper
 @JsType
 public class EventState extends State {
 
     public static final String TYPE_EVENT = "event";
 
-    /**
-     * Determines if the state waits for any of
-     * the event defined in onEvents array.
-     */
-    @Property
-    private Boolean exclusive;
+    public Boolean exclusive;
 
-    /**
-     * Define the events to be consumed and optional actions to be performed.
-     */
-    private OnEvent[] onEvents;
+    public OnEvent[] onEvents;
 
     public EventState() {
         this.type = TYPE_EVENT;

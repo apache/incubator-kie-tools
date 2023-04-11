@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import java.util.Stack;
 
 import elemental2.core.Global;
+import elemental2.core.JsObject;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -30,7 +31,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 import org.uberfire.commons.Pair;
-
 
 public class MarshallerUtils {
 
@@ -46,6 +46,7 @@ public class MarshallerUtils {
         return null;
     }
 
+    @SuppressWarnings("all")
     public static <T> T getElementDefinition(Element node) {
         return null != node ? (T) ((Definition) node.getContent()).getDefinition() : null;
     }
@@ -56,12 +57,11 @@ public class MarshallerUtils {
 
     public static <T> T parse(FactoryManager factoryManager, Class<? extends T> type, T jso) {
         T instance = factoryManager.newDefinition(type.getName());
-        instance = nativeMerge(instance, jso);
-        return (T) instance;
+        return parse(instance, jso);
     }
 
     public static <T> T parse(T instance, T jso) {
-        return nativeMerge(instance, jso);
+        return (T) JsObject.assign(instance, jso);
     }
 
     private static <T> T stunnerMerge(DefinitionManager definitionManager, Object instance, Object jso) {
@@ -77,42 +77,16 @@ public class MarshallerUtils {
         return Js.uncheckedCast(instance);
     }
 
-    public static native <T> T nativeMerge(Object o1, Object o2) /*-{
-        if (typeof Object.assign != 'function') {
-            Object.assign = function (target) {
-                'use strict';
-                if (target == null) {
-                    throw new TypeError('Cannot convert undefined or null to object');
-                }
-
-                target = Object(target);
-                for (var index = 1; index < arguments.length; index++) {
-                    var source = arguments[index];
-                    if (source != null) {
-                        for (var key in source) {
-                            if (Object.prototype.hasOwnProperty.call(source, key)) {
-                                target[key] = source[key];
-                            }
-                        }
-                    }
-                }
-                return target;
-            };
-        }
-        // return Object.assign({}, o1, o2);
-        return Object.assign(o1, o2);
-    }-*/;
-
-
     /**
      * The original JSON could have the properties, that are not defined in Java based models.
      * But we still need to have them in the JSON after the serialization. So we preserve them
      * in the "__original__" field of the definition after deserialization.
-     *
+     * <p>
      * After we finished the serialization of the workflow, we merge the original JSON with the JSON, that
      * is generated from the definition. We can skip the check for the "function" property, because initially
      * it's a JSON object, that has no "function" properties. So it's safe to merge it with the resulted JSON.
-     * @param json - the original JSON
+     *
+     * @param json     - the original JSON
      * @param workflow - the definition of the workflow
      */
     static void onPostDeserialize(String json, Workflow workflow) {
@@ -135,14 +109,14 @@ public class MarshallerUtils {
             JsPropertyMap<Object> old = Js.asPropertyMap(current.getK1());
             JsPropertyMap<Object> _new = Js.asPropertyMap(current.getK2());
             old.forEach(key -> {
-                if(Js.typeof(old.get(key)).equals("object")) {
-                    if(_new.has(key)) {
+                if (Js.typeof(old.get(key)).equals("object")) {
+                    if (_new.has(key)) {
                         stack.push(new Pair<>(old.get(key), _new.get(key)));
                     } else {
                         _new.set(key, old.get(key));
                     }
                 } else {
-                    if(!_new.has(key)) {
+                    if (!_new.has(key)) {
                         _new.set(key, old.get(key));
                     }
                 }

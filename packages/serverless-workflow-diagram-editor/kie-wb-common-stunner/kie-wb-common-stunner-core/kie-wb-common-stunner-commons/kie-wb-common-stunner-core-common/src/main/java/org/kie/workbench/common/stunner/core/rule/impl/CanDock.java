@@ -16,20 +16,30 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl;
 
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import jsinterop.annotations.JsType;
 
-@Portable
+@JsType
 public final class CanDock extends AbstractRule {
 
     private final String role;
     private final Set<String> allowedRoles;
 
-    public CanDock(final @MapsTo("name") String name,
-                   final @MapsTo("role") String role,
-                   final @MapsTo("allowedRoles") Set<String> allowedRoles) {
+    public static CanDock build(String name,
+                                String role,
+                                String[] allowedRoles) {
+
+        return new CanDock(name,
+                           role,
+                           Arrays.stream(allowedRoles).collect(Collectors.toSet()));
+    }
+
+    public CanDock(String name,
+                   String role,
+                   Set<String> allowedRoles) {
         super(name);
         this.role = role;
         this.allowedRoles = allowedRoles;

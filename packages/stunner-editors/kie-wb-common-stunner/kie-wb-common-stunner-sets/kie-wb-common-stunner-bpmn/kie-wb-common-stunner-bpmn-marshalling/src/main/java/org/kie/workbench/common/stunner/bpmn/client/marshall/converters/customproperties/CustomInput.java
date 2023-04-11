@@ -42,6 +42,7 @@ public class CustomInput<T> {
     public static final CustomInputDefinition<String> groupId = new StringInput("GroupId", "");
     public static final CustomInputDefinition<Boolean> skippable = new BooleanInput("Skippable", false);
     public static final CustomInputDefinition<String> content = new StringInput("Content", "");
+    public static final CustomInputDefinition<String> fileName = new StringInput("fileName", "java.lang.String", "");
     public static final CustomInputDefinition<String> namespace = new StringInput("namespace", "java.lang.String", "");
     public static final CustomInputDefinition<String> dmnModelName = new StringInput("model", "java.lang.String", "");
     public static final CustomInputDefinition<String> decisionName = new StringInput("decision", "java.lang.String", "");

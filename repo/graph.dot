@@ -272,6 +272,7 @@ digraph G {
   "@kie-tools-core/keyboard-shortcuts" -> "@kie-tools-core/operating-system" [ style = "solid", color = "purple" ];
   "@kie-tools/kie-bc-editors" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/kie-bc-editors" -> "@kie-tools-core/vscode-java-code-completion" [ style = "solid", color = "blue" ];
+  "@kie-tools/kie-bc-editors" -> "@kie-tools/dmn-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/kie-bc-editors" -> "@kie-tools/pmml-editor-marshaller" [ style = "solid", color = "blue" ];
   "@kie-tools/kie-editors-standalone" -> "@kie-tools/kie-bc-editors" [ style = "dashed", color = "blue" ];
   "@kie-tools/kie-editors-standalone" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "blue" ];
@@ -291,7 +292,6 @@ digraph G {
   "@kie-tools-core/notifications" -> "@kie-tools-core/workspace" [ style = "solid", color = "purple" ];
   "@kie-tools/online-editor" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
-  "@kie-tools/online-editor" -> "@kie-tools/dmn-language-service" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/unitables-dmn" [ style = "solid", color = "black" ];

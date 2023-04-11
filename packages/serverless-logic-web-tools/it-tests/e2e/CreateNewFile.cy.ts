@@ -136,5 +136,8 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
         cy.ouia({ ouiaId: "hello-text" }).should("have.text", "Hello");
       });
     });
+
+    // check there are no problems in dashbuilder file
+    cy.get("#total-notifications").should("have.text", 0);
   });
 });

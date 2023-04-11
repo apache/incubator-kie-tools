@@ -144,30 +144,28 @@ export function DmnFormToolbar(props: Props) {
   return (
     <PageHeader
       logo={
-        <MastheadBrand style={{ textDecoration: "none" }}>
-          <Flex alignItems={{ default: "alignItemsCenter" }}>
-            <FlexItem style={{ display: "flex", alignItems: "center" }}>
-              <Brand
-                src={routes.static.images.kieHorizontalLogoReverse.path({})}
-                alt={"Logo"}
-                heights={{ default: "38px" }}
-              >
-                <source srcSet={routes.static.images.kieHorizontalLogoReverse.path({})} />
-              </Brand>
-            </FlexItem>
-            <FlexItem style={{ display: "flex", alignItems: "center" }}>
-              <TextContent>
-                <Text component={TextVariants.h3} style={{ display: "inline" }}>
-                  Sandbox
-                </Text>
-                &nbsp;&nbsp;
-                <Text component={TextVariants.small} style={{ display: "inline" }}>
-                  <i>Dev deployments</i>
-                </Text>
-              </TextContent>
-            </FlexItem>
-          </Flex>
-        </MastheadBrand>
+        <Flex alignItems={{ default: "alignItemsCenter" }}>
+          <FlexItem style={{ display: "flex", alignItems: "center" }}>
+            <Brand
+              src={routes.static.images.kieHorizontalLogoReverse.path({})}
+              alt={"Logo"}
+              heights={{ default: "38px" }}
+            >
+              <source srcSet={routes.static.images.kieHorizontalLogoReverse.path({})} />
+            </Brand>
+          </FlexItem>
+          <FlexItem style={{ display: "flex", alignItems: "center" }}>
+            <TextContent>
+              <Text component={TextVariants.h3} style={{ display: "inline" }}>
+                Sandbox
+              </Text>
+              &nbsp;&nbsp;
+              <Text component={TextVariants.small} style={{ display: "inline" }}>
+                <i>Dev deployments</i>
+              </Text>
+            </TextContent>
+          </FlexItem>
+        </Flex>
       }
       headerTools={
         <PageHeaderTools>

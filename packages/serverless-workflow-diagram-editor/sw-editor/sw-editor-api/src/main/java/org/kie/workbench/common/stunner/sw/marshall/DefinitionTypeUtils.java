@@ -1,6 +1,6 @@
 package org.kie.workbench.common.stunner.sw.marshall;
 
-import jsinterop.base.Js;
+import elemental2.core.Reflect;
 import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.StateEnd;
@@ -18,8 +18,9 @@ public class DefinitionTypeUtils {
             return (boolean) end;
         } else if (end != null) {
             StateEnd stateEnd = (StateEnd) end;
-            if(stateEnd.getTerminate() != null)
-            return stateEnd.getTerminate();
+            if (stateEnd.getTerminate() != null) {
+                return stateEnd.getTerminate();
+            }
         }
         return false;
     }
@@ -39,7 +40,7 @@ public class DefinitionTypeUtils {
         if (start instanceof String) {
             return (String) start;
         } else if (start != null) {
-            Object stateName =((StartDefinition)workflow.getStart()).getStateName();
+            Object stateName = ((StartDefinition) workflow.getStart()).getStateName();
             if (stateName != null) {
                 return (String) stateName;
             } else {
@@ -53,14 +54,14 @@ public class DefinitionTypeUtils {
 
     public static Object getObjectProperty(Object object, String propertyName) {
         if (object != null) {
-            return Js.asPropertyMap(object).get(propertyName);
+            return Reflect.get(object, propertyName);
         }
         return null;
     }
 
     public static void setObjectProperty(Object object, String propertyName, Object value) {
         if (object != null) {
-            Js.asPropertyMap(object).set(propertyName, value);
+            Reflect.set(object, propertyName, value);
         }
     }
 }

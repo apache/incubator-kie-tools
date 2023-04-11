@@ -17,11 +17,10 @@
 package org.kie.workbench.common.stunner.core.graph.impl;
 
 import java.util.Objects;
+import java.util.stream.StreamSupport;
 
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -29,7 +28,6 @@ import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStore;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
-@Portable
 @JsType
 public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
 
@@ -40,8 +38,8 @@ public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
         return new GraphImpl<>(uuid, new GraphNodeStoreImpl());
     }
 
-    public GraphImpl(final @MapsTo("uuid") String uuid,
-                     final @MapsTo("nodeStore") GraphNodeStore<Node> nodeStore) {
+    public GraphImpl(String uuid,
+                     GraphNodeStore<Node> nodeStore) {
         super(uuid);
         this.nodeStore = Objects.requireNonNull(nodeStore, "Parameter named 'nodeStore' should be not null!");
     }
@@ -64,6 +62,13 @@ public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
     @Override
     public Iterable<Node> nodes() {
         return nodeStore;
+    }
+
+    @SuppressWarnings("all")
+    public Node[] nodesArray() {
+        final Iterable<Node> nodes = nodes();
+        return StreamSupport.stream(nodes.spliterator(), true)
+                .toArray(Node[]::new);
     }
 
     @Override

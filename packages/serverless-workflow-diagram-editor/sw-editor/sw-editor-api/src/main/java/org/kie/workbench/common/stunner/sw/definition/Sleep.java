@@ -21,8 +21,9 @@ import jsinterop.annotations.JsType;
 @JsType
 public class Sleep {
 
-    private String after;
-    private String before;
+    public String after;
+
+    public String before;
 
     public final String getAfter() {
         return after;

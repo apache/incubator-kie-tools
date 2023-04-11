@@ -25,4 +25,9 @@ export interface DiagramExposedInteropApi {
    * @param nodeName the name of the node
    */
   onNodeSelected: (nodeName: string) => void;
+
+  /**
+   * Notify that the diagram finished setting its content
+   */
+  setContentSuccess: () => void;
 }

@@ -17,47 +17,21 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
-/**
- * Switch states can be viewed as workflow gateways.
- * They can direct transitions of a workflow based on certain conditions.
- * There are two exclusive types of conditions for switch states: DataBased & EventBased.
- *
- * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Switch-State"> Switch state </a>
- */
-@Bindable
-@Definition
-@Morph(base = State.class)
 @JSONMapper
 @JsType
 public class SwitchState extends State {
 
     public static final String TYPE_SWITCH = "switch";
 
-    /**
-     * Default transition of the workflow if there is no matching data conditions or event timeout is reached.
-     * Can be a transition or end definition
-     */
-    private DefaultConditionTransition defaultCondition;
+    public DefaultConditionTransition defaultCondition;
 
-    /**
-     * Events, which the switch state must wait for before transitioning to another workflow state.
-     */
-    private EventConditionTransition[] eventConditions;
+    public EventConditionTransition[] eventConditions;
 
-    /**
-     * Data-based condition statement, which causes a transition to another workflow state if evaluated to true.
-     */
-    private DataConditionTransition[] dataConditions;
+    public DataConditionTransition[] dataConditions;
 
-    /**
-     * If true, this state is used to compensate another state. Default is "false".
-     */
-    private Boolean usedForCompensation;
+    public Boolean usedForCompensation;
 
     public SwitchState() {
         this.type = TYPE_SWITCH;
