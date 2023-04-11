@@ -7783,9 +7783,15 @@ importers:
       "@types/chai":
         specifier: ^4.2.17
         version: 4.2.18
+      "@types/fs-extra":
+        specifier: ^11.0.1
+        version: 11.0.1
       "@types/mocha":
         specifier: ^8.2.2
         version: 8.2.2
+      "@types/node":
+        specifier: ^18.13.0
+        version: 18.13.0
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
@@ -7810,6 +7816,9 @@ importers:
       cpr:
         specifier: ^3.0.1
         version: 3.0.1
+      fs-extra:
+        specifier: ^11.1.1
+        version: 11.1.1
       mocha:
         specifier: ^9.2.0
         version: 9.2.0
@@ -7825,6 +7834,9 @@ importers:
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      sanitize-filename-ts:
+        specifier: ^1.0.2
+        version: 1.0.2
       selenium-webdriver:
         specifier: ^4.8.1
         version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
@@ -21071,16 +21083,6 @@ packages:
       universalify: 2.0.0
     dev: true
 
-  /fs-extra@11.1.0:
-    resolution:
-      { integrity: sha512-0rcTq621PD5jM/e0a3EJoGC/1TC5ZBCERW82LQuwfGnCa1V8w7dpYH1yNu+SLb6E5dkeCBzKEyLGlFrnr+dUyw== }
-    engines: { node: ">=14.14" }
-    dependencies:
-      graceful-fs: 4.2.10
-      jsonfile: 6.1.0
-      universalify: 2.0.0
-    dev: true
-
   /fs-extra@11.1.1:
     resolution:
       { integrity: sha512-MGIE4HOvQCeUCzmlHs0vXpih4ysz4wg9qiSAu6cd42lVwPbTM1TjV7RusoyQqMmk/95gdQZX72u+YW+c3eEpFQ== }
@@ -31031,7 +31033,7 @@ packages:
       "@vscode/vsce": 2.18.0
       commander: 10.0.0
       compare-versions: 5.0.1
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       glob: 8.1.0
       got: 11.8.6
       hpagent: 1.2.0
@@ -31061,7 +31063,7 @@ packages:
       "@vscode/vsce": 2.18.0
       commander: 10.0.0
       compare-versions: 5.0.1
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       glob: 8.1.0
       got: 11.8.6
       hpagent: 1.2.0
