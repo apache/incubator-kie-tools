@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import * as React from "react";
 import { useContext, useMemo } from "react";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
@@ -23,16 +24,21 @@ import { EnvelopeLocatorConfig } from "../EditorEnvelopeLocatorApi";
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "BPMN" | "BPMN2" | "dmn" | "DMN" | "pmml" | "PMML";
 
 export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
+
 export function EditorEnvelopeLocatorContextProvider(props: { children: React.ReactNode }) {
+  const editors = getEnvelopeEditors();
   const value = useMemo(
     () =>
       new EditorEnvelopeLocatorFactory().create({
         targetOrigin: window.location.origin,
+        editorsJson: editors,
       }),
     []
   );
+
   return <EditorEnvelopeLocatorContext.Provider value={value}>{props.children}</EditorEnvelopeLocatorContext.Provider>;
 }
+
 export function useEditorEnvelopeLocator() {
   return useContext(EditorEnvelopeLocatorContext);
 }

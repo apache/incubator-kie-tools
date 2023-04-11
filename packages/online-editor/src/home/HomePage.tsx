@@ -152,6 +152,9 @@ export function HomePage() {
                 style={{ height: "calc(100% - 32px)", gridAutoFlow: "column" }}
               >
                 {editors.map((config) => {
+                  console.log("HOMEPAGE 1 " + config.title);
+                  console.log("HOMEPAGE 2 " + config.extension);
+                  console.log("HOMEPAGE 3 " + config.description);
                   return (
                     <NewModelCard title={config.title} extension={config.extension} description={config.description} />
                   );

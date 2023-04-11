@@ -19,8 +19,9 @@ import {
   EnvelopeContentType,
   EnvelopeMapping,
 } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
-import { getEnvelopeEditors } from "./hooks/EditorEnvelopeLocatorContext";
+// import { getEnvelopeEditors } from "./hooks/EditorEnvelopeLocatorContext";
 import { FileTypes, isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { EnvelopeLocatorConfig } from "./EditorEnvelopeLocatorApi";
 
 export const GLOB_PATTERN = {
   all: "**/*",
@@ -38,7 +39,7 @@ export const supportedFileExtensionArray = [
   FileTypes.PMML,
 ];
 
-const editors = getEnvelopeEditors();
+// const editors = getEnvelopeEditors();
 
 export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];
 
@@ -51,10 +52,10 @@ export function isEditable(path: string): boolean {
 }
 
 export class EditorEnvelopeLocatorFactory {
-  public create(args: { targetOrigin: string }) {
+  public create(args: { targetOrigin: string; editorsJson: EnvelopeLocatorConfig[] }) {
     return new EditorEnvelopeLocator(
       args.targetOrigin,
-      editors.map((config) => {
+      args.editorsJson.map((config) => {
         return new EnvelopeMapping({
           type: config.type,
           filePathGlob: config.filePathGlob,
@@ -65,3 +66,23 @@ export class EditorEnvelopeLocatorFactory {
     );
   }
 }
+
+//   new EnvelopeMapping({
+//     type: FileTypes.BPMN,
+//     filePathGlob: GLOB_PATTERN.bpmn,
+//     resourcesPathPrefix: "gwt-editors/bpmn",
+//     envelopeContent: { type: EnvelopeContentType.PATH, path: "bpmn-envelope.html" },
+//   }),
+//   new EnvelopeMapping({
+//     type: FileTypes.DMN,
+//     filePathGlob: GLOB_PATTERN.dmn,
+//     resourcesPathPrefix: "gwt-editors/dmn",
+//     envelopeContent: { type: EnvelopeContentType.PATH, path: "dmn-envelope.html" },
+//   }),
+//   new EnvelopeMapping({
+//     type: FileTypes.PMML,
+//     filePathGlob: GLOB_PATTERN.pmml,
+//     resourcesPathPrefix: "",
+//     envelopeContent: { type: EnvelopeContentType.PATH, path: "pmml-envelope.html" },
+//   }),
+// ]);
