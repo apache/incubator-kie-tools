@@ -16,7 +16,6 @@
 
 package org.kie.kogito;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import javax.inject.Inject;
@@ -26,12 +25,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.kie.kogito.api.UploadService;
 
 @Path("/")
-public class SwfDeploymentResource {
+public class HotReloadResource {
+
+    private static final Logger LOGGER = Logger.getLogger(HotReloadResource.class);
 
     private static final String DATA_PART_KEY = "zipFile";
 
@@ -41,15 +43,20 @@ public class SwfDeploymentResource {
     @POST
     @Path("upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response handleUpload(@MultipartForm MultipartFormDataInput dataInput) throws IOException {
-        var inputStream = dataInput.getFormDataPart(DATA_PART_KEY, InputStream.class, null);
+    public Response handleUpload(@MultipartForm MultipartFormDataInput dataInput) {
+        try {
+            var inputStream = dataInput.getFormDataPart(DATA_PART_KEY, InputStream.class, null);
 
-        if (inputStream == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("No file part found").build();
+            if (inputStream == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity("No file part found").build();
+            }
+
+            uploadService.upload(inputStream);
+
+            return Response.ok().build();
+        } catch (Exception e) {
+            LOGGER.error("Something went wrong", e);
+            return Response.serverError().build();
         }
-
-        uploadService.upload(inputStream);
-
-        return Response.ok().build();
     }
 }
