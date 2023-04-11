@@ -27,14 +27,15 @@ import org.kie.workbench.common.stunner.sw.definition.custom.ContinueAsJsonbType
 @JsType
 public class StateEnd {
 
-    private Boolean terminate;
-    private Boolean compensate;
+    public Boolean terminate;
+
+    public Boolean compensate;
 
     @JsonbTypeSerializer(ContinueAsJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(ContinueAsJsonbTypeDeserializer.class)
-    private Object continueAs;
+    public Object continueAs;
 
-    private ProducedEvent[] produceEvents;
+    public ProducedEvent[] produceEvents;
 
     public final Boolean getTerminate() {
         return terminate;

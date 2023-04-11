@@ -23,9 +23,11 @@ import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper
 @JsType
 public class WorkflowExecTimeout {
 
-    private String duration;
-    private Boolean interrupt;
-    private String runBefore;
+    public String duration;
+
+    public Boolean interrupt;
+
+    public String runBefore;
 
     public final String getDuration() {
         return duration;

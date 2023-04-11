@@ -16,40 +16,9 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 
-@Bindable
-@Definition
-@CanContain(roles = {ActionNode.LABEL_ACTION})
 @JsType
 public class ActionsContainer {
 
-    public static final String LABEL_ACTIONS = "actions";
-
-    @Category
-    public static final transient String category = Categories.EVENTS;
-
-    @Labels
-    private final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
-                                                 LABEL_ACTIONS).collect(Collectors.toSet());
-
-    public ActionsContainer() {
-    }
-
-    public Set<String> getLabels() {
-        return labels;
-    }
-
-    public String getCategory() {
-        return category;
-    }
 }

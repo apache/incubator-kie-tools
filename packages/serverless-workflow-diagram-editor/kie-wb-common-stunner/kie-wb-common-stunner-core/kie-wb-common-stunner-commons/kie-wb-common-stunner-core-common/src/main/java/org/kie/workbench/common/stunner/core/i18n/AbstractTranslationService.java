@@ -23,7 +23,6 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public abstract class AbstractTranslationService implements StunnerTranslationService {
 
-    public static final String I18N_SEPARATOR = ".";
 
     public static final String TITLE_SUFFIX = "title";
     public static final String DESCRIPTION_SUFFIX = "description";

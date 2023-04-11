@@ -16,22 +16,36 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 
-@Portable
+@JsType
 public final class EdgeOccurrences extends AbstractOccurrences {
 
     private final String connectorRole;
     private final EdgeCardinalityContext.Direction direction;
 
-    public EdgeOccurrences(final @MapsTo("name") String name,
-                           final @MapsTo("connectorRole") String connectorRole,
-                           final @MapsTo("role") String role,
-                           final @MapsTo("direction") EdgeCardinalityContext.Direction direction,
-                           final @MapsTo("minOccurrences") int minOccurrences,
-                           final @MapsTo("maxOccurrences") int maxOccurrences) {
+    public static EdgeOccurrences build(String name,
+                                        String connectorRole,
+                                        String role,
+                                        EdgeCardinalityContext.Direction direction,
+                                        int minOccurrences,
+                                        int maxOccurrences) {
+
+        return new EdgeOccurrences(name,
+                                   connectorRole,
+                                   role,
+                                   direction,
+                                   minOccurrences,
+                                   maxOccurrences);
+    }
+
+    public EdgeOccurrences(String name,
+                           String connectorRole,
+                           String role,
+                           EdgeCardinalityContext.Direction direction,
+                           int minOccurrences,
+                           int maxOccurrences) {
         super(name,
               role,
               minOccurrences,

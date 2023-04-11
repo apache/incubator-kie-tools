@@ -16,20 +16,30 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl;
 
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import jsinterop.annotations.JsType;
 
-@Portable
+@JsType
 public final class CanContain extends AbstractRule {
 
     private final String role;
     private final Set<String> allowedRoles;
 
-    public CanContain(final @MapsTo("name") String name,
-                      final @MapsTo("role") String role,
-                      final @MapsTo("allowedRoles") Set<String> allowedRoles) {
+    public static CanContain build(String name,
+                                   String role,
+                                   String[] allowedRoles) {
+
+        return new CanContain(name,
+                              role,
+                              Arrays.stream(allowedRoles).collect(Collectors.toSet()));
+    }
+
+    public CanContain(String name,
+                      String role,
+                      Set<String> allowedRoles) {
         super(name);
         this.role = role;
         this.allowedRoles = allowedRoles;

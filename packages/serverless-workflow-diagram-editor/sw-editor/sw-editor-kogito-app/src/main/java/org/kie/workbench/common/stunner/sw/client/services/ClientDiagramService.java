@@ -32,8 +32,8 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
-import org.kie.workbench.common.stunner.sw.Definitions;
-import org.kie.workbench.common.stunner.sw.factory.DiagramFactory;
+import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
+import org.kie.workbench.common.stunner.sw.SWDefinitionSet;
 import org.kie.workbench.common.stunner.sw.marshall.Context;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Message;
@@ -113,7 +113,7 @@ public class ClientDiagramService {
     }
 
     private static String getDefinitionSetId() {
-        return BindableAdapterUtils.getDefinitionSetId(Definitions.class);
+        return BindableAdapterUtils.getDefinitionSetId(SWDefinitionSet.class);
     }
 
     @SuppressWarnings("all")

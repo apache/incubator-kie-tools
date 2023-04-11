@@ -16,19 +16,25 @@
 
 package org.kie.workbench.common.stunner.core.rule;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import jsinterop.annotations.JsType;
 
-@Portable
+@JsType
 public class RuleSetImpl implements RuleSet {
 
     private final String name;
     private final Collection<Rule> rules;
 
-    public RuleSetImpl(final @MapsTo("name") String name,
-                       final @MapsTo("rules") Collection<Rule> rules) {
+    public static RuleSetImpl build(String name,
+                                    Rule[] rules) {
+        return new RuleSetImpl(name, Arrays.stream(rules).collect(Collectors.toList()));
+    }
+
+    public RuleSetImpl(String name,
+                       Collection<Rule> rules) {
         this.name = name;
         this.rules = rules;
     }
