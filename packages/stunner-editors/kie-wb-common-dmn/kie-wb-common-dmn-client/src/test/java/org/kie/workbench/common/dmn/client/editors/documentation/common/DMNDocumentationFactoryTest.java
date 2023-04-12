@@ -138,7 +138,6 @@ public class DMNDocumentationFactoryTest {
         assertEquals(currentDate, documentation.getCurrentDate());
         assertEquals(currentYear, documentation.getCurrentYear());
         assertEquals(expectedDroolsLogo, documentation.getDroolsLogoURI());
-        assertEquals(expectedSupportedByRedHatLogo, documentation.getSupportedByRedHatLogoURI());
         assertEquals(i18n, documentation.getI18n());
         assertNotNull(documentation.getModuleName());
         assertNotNull(documentation.getDataTypes());

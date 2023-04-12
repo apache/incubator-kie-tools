@@ -89,7 +89,7 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
         PartDefinition part = view.getPresenter().getDefinition();
         if (!partManager.hasPart(part)) {
             partManager.registerPart(part,
-                                     view.getWrappedWidget().asWidget());
+                    view.getWrappedWidget().asWidget());
         }
     }
 
@@ -102,7 +102,7 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
 
     @Override
     public boolean selectPart(final PartDefinition part) {
-        layout.clear(); // TODO (hbraun): Is this necessary?
+        layout.clear();
         layout.add(partManager.selectPart(part));
         return true;
     }
@@ -119,6 +119,7 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
 
     @Override
     public void setFocus(boolean hasFocus) {
+        // noop
     }
 
     @Override
@@ -139,7 +140,7 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
             asWidget().getElement().removeAttribute("id");
         } else {
             asWidget().getElement().setAttribute("id",
-                                                 elementId);
+                    elementId);
         }
     }
 

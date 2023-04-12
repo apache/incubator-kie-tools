@@ -58,8 +58,6 @@ public class RuntimeClientLoader {
 
     public static final String IMPORT_ID_PARAM = "import";
 
-    RuntimeModelBackendAppLoader runtimeModelResourceClient;
-
     RuntimePerspectiveGenerator perspectiveEditorGenerator;
 
     RuntimePerspectivePluginManager runtimePerspectivePluginManager;
@@ -92,15 +90,14 @@ public class RuntimeClientLoader {
 
     String clientModelBaseUrl;
 
-    boolean hideNavBar;
+    boolean samplesDefaultHome;
 
     public RuntimeClientLoader() {
         // do nothing
     }
 
     @Inject
-    public RuntimeClientLoader(RuntimeModelBackendAppLoader runtimeModelResourceClient,
-                               RuntimePerspectiveGenerator perspectiveEditorGenerator,
+    public RuntimeClientLoader(RuntimePerspectiveGenerator perspectiveEditorGenerator,
                                RuntimePerspectivePluginManager runtimePerspectivePluginManager,
                                NavigationManager navigationManager,
                                BusyIndicatorView loading,
@@ -112,7 +109,6 @@ public class RuntimeClientLoader {
                                Event<DataSetDefRemovedEvent> dataSetDefRemovedEvent,
                                Event<UpdatedGlobalSettingsEvent> updatedGlobalSettingsEvent,
                                RouterScreen router) {
-        this.runtimeModelResourceClient = runtimeModelResourceClient;
         this.perspectiveEditorGenerator = perspectiveEditorGenerator;
         this.runtimePerspectivePluginManager = runtimePerspectivePluginManager;
         this.navigationManager = navigationManager;
@@ -129,14 +125,14 @@ public class RuntimeClientLoader {
 
     @PostConstruct
     void loadSetup() {
-        hideNavBar = false;
-        mode = RuntimeClientMode.APP;
+        samplesDefaultHome = false;
+        mode = RuntimeClientMode.EDITOR;
         clientModelBaseUrl = GWT.getHostPageBaseURL();
         setup = RuntimeClientSetup.Builder.get();
         if (setup != null) {
             var modeStr = setup.getMode();
             var path = setup.getPath();
-            hideNavBar = setup.getHideNavBar();
+            samplesDefaultHome = setup.getSamplesDefaultHome();
             if (modeStr != null) {
                 mode = RuntimeClientMode.getOrDefault(modeStr);
             } else if ((setup.getDashboards() != null && setup.getDashboards().length > 0) ||
@@ -165,27 +161,6 @@ public class RuntimeClientLoader {
         final var importID = getImportId();
         loading.showBusyIndicator(i18n.loadingDashboards());
         switch (mode) {
-            case APP:
-                runtimeModelResourceClient.getRuntimeModelInfo(importID, response -> {
-                    loading.hideBusyIndicator();
-                    if (response.getRuntimeModelOp().isPresent()) {
-                        this.registerModel(response.getRuntimeModelOp().get());
-                        responseConsumer.accept(response);
-                    } else if (importID != null && !importID.trim().isEmpty()) {
-                        this.loadModel(model -> {
-                            this.registerModel(model);
-                            var newResponse = new RuntimeServiceResponse(response.getMode(),
-                                    Optional.of(model),
-                                    response.getAvailableModels(),
-                                    response.isAllowUpload());
-                            responseConsumer.accept(newResponse);
-                        }, () -> responseConsumer.accept(response), (e, t) -> handleError(error, e, t));
-                    } else {
-                        responseConsumer.accept(response);
-                    }
-
-                }, (msg, t) -> handleError(error, msg, t));
-                break;
             case CLIENT:
                 if ((importID != null && !importID.trim().isEmpty())) {
                     loadClientModelInfo(resolveModel(importID), responseConsumer, error);
@@ -210,13 +185,6 @@ public class RuntimeClientLoader {
                           BiConsumer<Object, Throwable> error) {
         loading.showBusyIndicator(i18n.loadingDashboards());
         switch (mode) {
-            case APP:
-                runtimeModelResourceClient.getRuntimeModel(importId,
-                        modelOp -> handleBackendResponse(modelLoaded, emptyModel, modelOp),
-                        errorMessage -> handleError(error,
-                                errorMessage,
-                                new RuntimeException("Not able to retrieve Runtime Model")));
-                break;
             case CLIENT:
                 loadClientModel(clientModelBaseUrl + importId, modelLoaded, error);
                 break;
@@ -250,12 +218,8 @@ public class RuntimeClientLoader {
         return mode == RuntimeClientMode.CLIENT;
     }
 
-    public boolean hasBackend() {
-        return mode == RuntimeClientMode.APP;
-    }
-
-    public boolean isHideNavBar() {
-        return hideNavBar;
+    public boolean isSamplesDefaultHome() {
+        return samplesDefaultHome && hasSamples();
     }
 
     public boolean hasSamples() {
@@ -322,30 +286,8 @@ public class RuntimeClientLoader {
         loadClientModel(url, model -> responseConsumer.accept(buildClientResponse(model)), error);
     }
 
-    private boolean handleError(BiConsumer<Object, Throwable> error, Object message, Throwable throwable) {
-        loading.hideBusyIndicator();
-        mode = RuntimeClientMode.EDITOR;
-        setupEditorMode();
-        error.accept(message, throwable);
-        return false;
-    }
-
     private void setupEditorMode() {
         contentListener.start(content -> this.loadContentAndRoute(content));
-    }
-
-    private void handleBackendResponse(Consumer<RuntimeModel> modelLoaded,
-                                       Command emptyModel,
-                                       Optional<RuntimeModel> runtimeModelOp) {
-        loading.hideBusyIndicator();
-        mode = RuntimeClientMode.APP;
-        if (runtimeModelOp.isPresent()) {
-            var runtimeModel = runtimeModelOp.get();
-            registerModel(runtimeModel);
-            modelLoaded.accept(runtimeModel);
-        } else {
-            emptyModel.execute();
-        }
     }
 
     private void registerModel(RuntimeModel runtimeModel) {

@@ -18,14 +18,10 @@ package org.uberfire.client.workbench.widgets.listbar;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
-import org.uberfire.client.workbench.panels.impl.AbstractSimpleWorkbenchPanelView;
-import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelView;
 import org.uberfire.mvp.Command;
 
 /**
- * API contract for the header widget of panel views that extend {@link AbstractSimpleWorkbenchPanelView} and
- * {@link MultiListWorkbenchPanelView}. Each application needs exactly one implementation of this class at compile time
- * (usually this will come from the view module). The implementing type must be a Dependent-scoped CDI bean.
+ * API contract for the header widget of panel views
  */
 public interface ListBarWidget extends MultiPartWidget {
 

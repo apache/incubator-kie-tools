@@ -25,16 +25,6 @@ public interface DataSetProviderType<T extends DataSetDef> {
 
     StaticProviderType STATIC = new StaticProviderType();
 
-    BeanProviderType BEAN = new BeanProviderType();
-
-    SQLProviderType SQL = new SQLProviderType();
-
-    CSVProviderType CSV = new CSVProviderType();
-
-    PrometheusProviderType PROMETHEUS = new PrometheusProviderType();
-    
-    KafkaProviderType KAFKA = new KafkaProviderType();
-    
     ExternalProviderType EXTERNAL = new ExternalProviderType();
 
     /**

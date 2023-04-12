@@ -27,7 +27,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
-import org.dashbuilder.client.channel.RuntimeChannelClient;
 import org.dashbuilder.client.error.DefaultRuntimeErrorCallback;
 import org.dashbuilder.client.perspective.NotFoundPerspective;
 import org.dashbuilder.client.resources.i18n.AppConstants;
@@ -64,9 +63,6 @@ public class RuntimeEntryPoint {
     @Inject
     DefaultRuntimeErrorCallback defaultRuntimeErrorCallback;
     
-    @Inject
-    RuntimeChannelClient runtimeChannelClient;
-
     private String dashboard;
 
     @PostConstruct
@@ -78,7 +74,7 @@ public class RuntimeEntryPoint {
 
         if (!foundDashboard(dashboardParams)) {
             dashboardParams = params.get(PERSPECTIVE_PARAM);
-        }
+        }        
 
         if (isStandalone && foundDashboard(dashboardParams)) {
             dashboard = dashboardParams.get(0);
@@ -89,7 +85,6 @@ public class RuntimeEntryPoint {
             this.hideLoading();
         }
         
-        runtimeChannelClient.subscribe();
     }
 
     private void foundRuntimeModel(RuntimeModel runtimeModel) {

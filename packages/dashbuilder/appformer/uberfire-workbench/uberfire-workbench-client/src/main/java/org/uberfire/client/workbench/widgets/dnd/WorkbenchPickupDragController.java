@@ -24,13 +24,9 @@ import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.allen_sauer.gwt.dnd.client.util.DragClientBundle;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PartDefinition;
 
 import static org.uberfire.plugin.PluginUtil.toInteger;
 
@@ -54,40 +50,38 @@ public class WorkbenchPickupDragController extends PickupDragController {
 
     @Override
     public void dragStart() {
-        final WorkbenchPartPresenter.View sourceView = (WorkbenchPartPresenter.View) super.context.selectedWidgets.get(0);
-        final PartDefinition sourcePart = sourceView.getPresenter().getDefinition();
-        final PanelDefinition sourcePanel = sourceView.getPresenter().getDefinition().getParentPanel();
-        final PlaceRequest place = sourcePart.getPlace();
-        final String title = sourceView.getPresenter().getTitle();
-        final IsWidget titleDecoration = sourceView.getPresenter().getTitleDecoration();
-        final String contextId = sourceView.getPresenter().getContextId();
-        final IsWidget widget = sourceView.getPresenter().getPartView().getWrappedWidget();
-        final Integer height = toInteger(sourcePanel.getHeightAsInt());
-        final Integer width = toInteger(sourcePanel.getWidthAsInt());
-        final Integer minHeight = toInteger(sourcePanel.getMinHeightAsInt());
-        final Integer minWidth = toInteger(sourcePanel.getMinWidthAsInt());
-        sourceView.getPresenter().getMenus(menus -> {
-            final WorkbenchDragContext context = new WorkbenchDragContext(place,
-                                                                          sourcePart,
-                                                                          sourcePanel,
-                                                                          menus,
-                                                                          title,
-                                                                          titleDecoration,
-                                                                          widget,
-                                                                          contextId,
-                                                                          height,
-                                                                          width,
-                                                                          minHeight,
-                                                                          minWidth);
-            dndManager.setWorkbenchContext(context);
-            super.dragStart();
-            final Widget movablePanel = getMoveablePanel();
-            if (movablePanel != null) {
-                DOMUtil.fastSetElementPosition(movablePanel.getElement(),
-                                               super.context.mouseX,
-                                               super.context.mouseY);
-            }
-        });
+        final WorkbenchPartPresenter.View sourceView = (WorkbenchPartPresenter.View) super.context.selectedWidgets.get(
+                0);
+        final var sourcePart = sourceView.getPresenter().getDefinition();
+        final var sourcePanel = sourceView.getPresenter().getDefinition().getParentPanel();
+        final var place = sourcePart.getPlace();
+        final var title = sourceView.getPresenter().getTitle();
+        final var titleDecoration = sourceView.getPresenter().getTitleDecoration();
+        final var contextId = sourceView.getPresenter().getContextId();
+        final var widget = sourceView.getPresenter().getPartView().getWrappedWidget();
+        final var height = toInteger(sourcePanel.getHeightAsInt());
+        final var width = toInteger(sourcePanel.getWidthAsInt());
+        final var minHeight = toInteger(sourcePanel.getMinHeightAsInt());
+        final var minWidth = toInteger(sourcePanel.getMinWidthAsInt());
+        final var context = new WorkbenchDragContext(place,
+                sourcePart,
+                sourcePanel,
+                title,
+                titleDecoration,
+                widget,
+                contextId,
+                height,
+                width,
+                minHeight,
+                minWidth);
+        dndManager.setWorkbenchContext(context);
+        super.dragStart();
+        final Widget movablePanel = getMoveablePanel();
+        if (movablePanel != null) {
+            DOMUtil.fastSetElementPosition(movablePanel.getElement(),
+                    super.context.mouseX,
+                    super.context.mouseY);
+        }
     }
 
     @Override
@@ -96,8 +90,8 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final Widget movablePanel = getMoveablePanel();
         if (movablePanel != null) {
             DOMUtil.fastSetElementPosition(movablePanel.getElement(),
-                                           super.context.mouseX,
-                                           super.context.mouseY);
+                    super.context.mouseX,
+                    super.context.mouseY);
         }
     }
 
@@ -105,7 +99,7 @@ public class WorkbenchPickupDragController extends PickupDragController {
     protected Widget newDragProxy(DragContext context) {
         final AbsolutePanel container = new AbsolutePanel();
         container.getElement().getStyle().setProperty("overflow",
-                                                      "visible");
+                "visible");
         container.getElement().getStyle().setOpacity(0.5);
         container.getElement().getStyle().setZIndex(Integer.MAX_VALUE);
 
@@ -113,8 +107,8 @@ public class WorkbenchPickupDragController extends PickupDragController {
         int offsetX = 0 - ((int) (dragProxy.getWidth() * 0.5));
         int offsetY = 0 - ((int) (dragProxy.getHeight() * 2));
         container.add(dragProxy,
-                      offsetX,
-                      offsetY);
+                offsetX,
+                offsetY);
         return container;
     }
 

@@ -73,16 +73,6 @@ public class LayoutDragComponentHelperTest {
     public static class LayoutDragComponentMock implements LayoutDragComponent {
 
         @Override
-        public String getDragComponentTitle() {
-            return null;
-        }
-
-        @Override
-        public IsWidget getPreviewWidget(RenderingContext ctx) {
-            return null;
-        }
-
-        @Override
         public IsWidget getShowWidget(RenderingContext ctx) {
             return null;
         }

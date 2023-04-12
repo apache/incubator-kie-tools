@@ -51,7 +51,7 @@ public class ColumnSettings {
         if (DateIntervalType.QUARTER.equals(type)) {
             return "\"Q\" + value";
         }
-        return "value";
+        return EXPRESSION;
     }
 
     public static String getDatePattern(DateIntervalType type) {

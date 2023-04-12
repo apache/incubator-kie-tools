@@ -24,7 +24,6 @@ import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * Data set services for clients.
@@ -32,7 +31,6 @@ import org.uberfire.backend.vfs.Path;
  */
 @ApplicationScoped
 public interface DataSetClientServices {
-
 
     /**
      * Enable/disable the ability to push remote data sets from server.
@@ -103,18 +101,4 @@ public interface DataSetClientServices {
 
     void getPublicDataSetDefs(RemoteCallback<List<DataSetDef>> callback);
 
-    /**
-     * <p>Returns the download URL for a given file provided by a servlet method.</p>
-     *
-     * @param path The path of the file.
-     */
-    String getDownloadFileUrl(final Path path);
-
-    /**
-     * <p>Returns the upload URL for a given file provided by a servlet method.</p>
-     *
-     * @param path The path of the file.
-     */
-    String getUploadFileUrl();
-    
 }

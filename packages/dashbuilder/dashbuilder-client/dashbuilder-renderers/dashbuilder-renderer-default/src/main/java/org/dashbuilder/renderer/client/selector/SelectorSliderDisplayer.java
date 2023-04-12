@@ -80,7 +80,7 @@ public class SelectorSliderDisplayer extends AbstractGwtDisplayer<SelectorSlider
     public SelectorSliderDisplayer(View view, DateParameterEditor minDateEditor,
                                    DateParameterEditor maxDateEditor,
                                    NumberParameterEditor minNumberEditor,
-                                   NumberParameterEditor maxNumberEditor) {
+                                   NumberParameterEditor maxNumberEditor) {        
         this.view = view;
         this.view.init(this);
         this.minDateEditor = minDateEditor;

@@ -30,9 +30,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -64,12 +64,12 @@ public class DataSetClientServicesImplTest {
     public void testFetchMetadataWhenMetadataIsNotNull() throws Exception {
         final String uuid = "uuid";
         final DataSetClientServicesImpl services = makeDataSetClientServices(clientDataSetManager,
-                                                                         dataSetLookupServicesCallerMock);
+                dataSetLookupServicesCallerMock);
 
         when(clientDataSetManager.getDataSetMetadata(uuid)).thenReturn(dataSetMetadata);
 
         services.fetchMetadata(uuid,
-                               makeDataSetMetadataCallback());
+                makeDataSetMetadataCallback());
 
         assertTrue(isDataSetMetadataCallbackCalled());
         assertFalse(isDataSetMetadataNotFoundCallbackCalled());
@@ -81,12 +81,12 @@ public class DataSetClientServicesImplTest {
     public void testFetchMetadataWhenSetLookupServicesIsNull() throws Exception {
         final String uuid = "uuid";
         final DataSetClientServicesImpl services = makeDataSetClientServices(clientDataSetManager,
-                                                                         null);
+                null);
 
         when(clientDataSetManager.getDataSetMetadata(uuid)).thenReturn(null);
 
         services.fetchMetadata(uuid,
-                               makeDataSetMetadataCallback());
+                makeDataSetMetadataCallback());
 
         assertFalse(isDataSetMetadataCallbackCalled());
         assertTrue(isDataSetMetadataNotFoundCallbackCalled());
@@ -98,15 +98,15 @@ public class DataSetClientServicesImplTest {
     public void testFetchMetadataWhenRemoteMetadataMapContainsTheUUID() throws Exception {
         final String uuid = "uuid";
         final DataSetClientServicesImpl services = makeDataSetClientServices(clientDataSetManager,
-                                                                         dataSetLookupServicesCallerMock);
+                dataSetLookupServicesCallerMock);
 
         services.getRemoteMetadataMap().put(uuid,
-                                            null);
+                null);
 
         when(clientDataSetManager.getDataSetMetadata(uuid)).thenReturn(null);
 
         services.fetchMetadata(uuid,
-                               makeDataSetMetadataCallback());
+                makeDataSetMetadataCallback());
 
         assertTrue(isDataSetMetadataCallbackCalled());
         assertFalse(isDataSetMetadataNotFoundCallbackCalled());
@@ -118,13 +118,13 @@ public class DataSetClientServicesImplTest {
     public void testFetchMetadataWhenResultIsNull() throws Exception {
         final String uuid = "uuid";
         final DataSetClientServicesImpl services = makeDataSetClientServices(clientDataSetManager,
-                                                                         dataSetLookupServicesCallerMock);
+                dataSetLookupServicesCallerMock);
 
         when(clientDataSetManager.getDataSetMetadata(uuid)).thenReturn(null);
         when(dataSetLookupServices.lookupDataSetMetadata(eq(uuid))).thenReturn(null);
 
         services.fetchMetadata(uuid,
-                               makeDataSetMetadataCallback());
+                makeDataSetMetadataCallback());
 
         assertFalse(isDataSetMetadataCallbackCalled());
         assertTrue(isDataSetMetadataNotFoundCallbackCalled());
@@ -136,33 +136,33 @@ public class DataSetClientServicesImplTest {
     public void testFetchMetadataWhenResultIsNotNull() throws Exception {
         final String uuid = "uuid";
         final DataSetClientServicesImpl services = makeDataSetClientServices(clientDataSetManager,
-                                                                         dataSetLookupServicesCallerMock);
+                dataSetLookupServicesCallerMock);
 
         when(clientDataSetManager.getDataSetMetadata(uuid)).thenReturn(null);
         when(dataSetLookupServices.lookupDataSetMetadata(eq(uuid))).thenReturn(dataSetMetadata);
 
         services.fetchMetadata(uuid,
-                               makeDataSetMetadataCallback());
+                makeDataSetMetadataCallback());
 
         assertTrue(isDataSetMetadataCallbackCalled());
         assertFalse(isDataSetMetadataNotFoundCallbackCalled());
         assertFalse(isDataSetMetadataOnErrorCallbackCalled());
         assertEquals(services.getRemoteMetadataMap().get(uuid),
-                     dataSetMetadata);
+                dataSetMetadata);
     }
 
     @Test
     public void testFetchMetadataWhenDataSetLookupServicesReturnsAnError() throws Exception {
         final String uuid = "uuid";
         final DataSetClientServicesImpl services = makeDataSetClientServices(clientDataSetManager,
-                                                                         dataSetLookupServicesCallerMock);
+                dataSetLookupServicesCallerMock);
 
         when(clientDataSetManager.getDataSetMetadata(uuid)).thenReturn(null);
 
         doThrow(Exception.class).when(dataSetLookupServices).lookupDataSetMetadata(any());
 
         services.fetchMetadata(uuid,
-                               makeDataSetMetadataCallback());
+                makeDataSetMetadataCallback());
 
         assertFalse(isDataSetMetadataCallbackCalled());
         assertFalse(isDataSetMetadataNotFoundCallbackCalled());
@@ -172,6 +172,7 @@ public class DataSetClientServicesImplTest {
 
     private DataSetMetadataCallback makeDataSetMetadataCallback() {
         return new DataSetMetadataCallback() {
+
             @Override
             public void callback(final DataSetMetadata metadata) {
                 callbackCalled();
@@ -216,16 +217,14 @@ public class DataSetClientServicesImplTest {
     }
 
     private DataSetClientServicesImpl makeDataSetClientServices(final ClientDataSetManager clientDataSetManager,
-                                                            final CallerMock<DataSetLookupServices> dataSetLookupServicesCallerMock) {
+                                                                final CallerMock<DataSetLookupServices> dataSetLookupServicesCallerMock) {
         return new DataSetClientServicesImpl(clientDataSetManager,
-                                         null,
-                                         null,
-                                         null,
-                                         null,
-                                         null,
-                                         null,
-                                         dataSetLookupServicesCallerMock,
-                                         null,
-                                         null);
+                null,
+                null,
+                null,
+                null,
+                null,
+                dataSetLookupServicesCallerMock,
+                null);
     }
 }

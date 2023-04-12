@@ -16,7 +16,6 @@
 
 package org.uberfire.annotations.processors;
 
-import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -33,11 +32,6 @@ public class WorkbenchScreenTest30 {
     @WorkbenchPartTitle
     public String getTitle() {
         return "title";
-    }
-
-    @WorkbenchMenu
-    public String getMenus() {
-        return "";
     }
 
 }

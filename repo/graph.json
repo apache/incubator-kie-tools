@@ -73,7 +73,6 @@
       { "id": "@kie-tools/dashbuilder-editor" },
       { "id": "@kie-tools/dashbuilder-language-service" },
       { "id": "@kie-tools/yaml-language-server" },
-      { "id": "@kie-tools/dashbuilder-images" },
       { "id": "@kie-tools/dashbuilder-swf-monitoring-dashboard" },
       { "id": "@kie-tools/dashbuilder-viewer" },
       { "id": "@kie-tools/dashbuilder-viewer-deployment-webapp" },
@@ -512,7 +511,6 @@
       { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/tsconfig", "weight": 1 },
-      { "source": "@kie-tools/dashbuilder-images", "target": "@kie-tools/dashbuilder", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-swf-monitoring-dashboard",
         "target": "@kie-tools/dashbuilder-client",
@@ -899,7 +897,6 @@
     ["@kie-tools/dashbuilder-component-uniforms", "packages/dashbuilder-component-uniforms"],
     ["@kie-tools/dashbuilder-component-victory-charts", "packages/dashbuilder-component-victory-charts"],
     ["@kie-tools/dashbuilder-editor", "packages/dashbuilder-editor"],
-    ["@kie-tools/dashbuilder-images", "packages/dashbuilder-images"],
     ["@kie-tools/dashbuilder-language-service", "packages/dashbuilder-language-service"],
     ["@kie-tools/dashbuilder-swf-monitoring-dashboard", "packages/dashbuilder-swf-monitoring-dashboard"],
     ["@kie-tools/dashbuilder-viewer", "packages/dashbuilder-viewer"],
