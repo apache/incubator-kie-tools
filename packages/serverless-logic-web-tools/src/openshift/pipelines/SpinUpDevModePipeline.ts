@@ -89,7 +89,7 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
 
     const routeUrl = this.args.openShiftService.composeDeploymentUrlFromRoute(route);
 
-    if (latestDeploymentStatus !== DeploymentState.UP) {
+    if ([DeploymentState.DOWN, DeploymentState.ERROR].includes(latestDeploymentStatus)) {
       const currentReplicas = latestDeployment.spec.replicas || 0;
       const updatedDeployment: DeploymentDescriptor = {
         ...latestDeployment,

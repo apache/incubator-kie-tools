@@ -32,7 +32,7 @@ import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
 import { SpinUpDevModePipeline } from "../pipelines/SpinUpDevModePipeline";
 import { fetchWithTimeout } from "../../fetch";
 import { zipFiles } from "../../zip";
-import { isApplicationProperties } from "../../extension";
+import { isApplicationProperties, isSupportingFileForDevMode } from "../../extension";
 import { RestartDevModePipeline } from "../pipelines/RestartDevModePipeline";
 import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
@@ -53,7 +53,7 @@ export interface DevModeContextType {
 }
 
 export interface DevModeDispatchContextType {
-  upload(args: { targetFile: WorkspaceFile; allFiles: WorkspaceFile[] }): Promise<DevModeUploadResult>;
+  upload(args: { targetSwfFile: WorkspaceFile; allFiles: WorkspaceFile[] }): Promise<DevModeUploadResult>;
   checkHealthReady(): Promise<boolean>;
   restart(): Promise<void>;
 }
@@ -120,7 +120,7 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
   }, [endpoints]);
 
   const upload = useCallback(
-    async (args: { targetFile: WorkspaceFile; allFiles: WorkspaceFile[] }): Promise<DevModeUploadResult> => {
+    async (args: { targetSwfFile: WorkspaceFile; allFiles: WorkspaceFile[] }): Promise<DevModeUploadResult> => {
       if (!endpoints) {
         console.error("Route URL for Dev Mode deployment not available.");
         return {
@@ -137,8 +137,8 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
         };
       }
 
-      if (!isOfKind("sw", args.targetFile.relativePath)) {
-        console.error(`File is not Serverless Workflow: ${args.targetFile.relativePath}`);
+      if (!isOfKind("sw", args.targetSwfFile.relativePath)) {
+        console.error(`File is not Serverless Workflow: ${args.targetSwfFile.relativePath}`);
         return {
           success: false,
           reason: "ERROR",
@@ -146,11 +146,18 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
       }
 
       try {
-        const filesToUpload = [args.targetFile];
-        // TODO CAPONETTO: supporting the targetFile + the first `application.properties` for now.
+        const filesToUpload = [args.targetSwfFile];
+
         const applicationPropertiesFile = args.allFiles.find((f) => isApplicationProperties(f.relativePath));
         if (applicationPropertiesFile) {
           filesToUpload.push(applicationPropertiesFile);
+        }
+
+        const supportingFiles = args.allFiles.filter((f) =>
+          isSupportingFileForDevMode({ path: f.relativePath, targetFolder: args.targetSwfFile.relativeDirPath })
+        );
+        if (supportingFiles.length > 0) {
+          filesToUpload.push(...supportingFiles);
         }
 
         const zipBlob = await zipFiles(filesToUpload);

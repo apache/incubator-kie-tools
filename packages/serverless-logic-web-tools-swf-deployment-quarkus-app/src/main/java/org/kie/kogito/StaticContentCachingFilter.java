@@ -16,6 +16,8 @@
 
 package org.kie.kogito;
 
+import java.util.regex.Pattern;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
@@ -28,6 +30,7 @@ import io.vertx.ext.web.RoutingContext;
 public class StaticContentCachingFilter {
 
     private static final String MAX_AGE = "max-age=86400"; // 1 day in seconds
+    private static final String STATIC_FILE_EXTENSIONS_REGEX = ".*\\.(css|js|html)";
 
     void registerFilters(@Observes Filters filters) {
         filters.register(staticContentCachingHandler(), 10);
@@ -36,14 +39,10 @@ public class StaticContentCachingFilter {
     private Handler<RoutingContext> staticContentCachingHandler() {
         return event -> {
             String path = event.normalizedPath();
-            if (isStaticResource(path)) {
+            if (Pattern.matches(STATIC_FILE_EXTENSIONS_REGEX, path)) {
                 event.response().headers().set(HttpHeaders.CACHE_CONTROL, MAX_AGE);
             }
             event.next();
         };
-    }
-
-    private boolean isStaticResource(String path) {
-        return path.endsWith(".css") || path.endsWith(".js") || path.endsWith(".html");
     }
 }

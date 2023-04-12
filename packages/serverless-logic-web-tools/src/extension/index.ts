@@ -58,6 +58,15 @@ export function isApplicationProperties(path: string): boolean {
   return /.*\/?application\.properties$/i.test(path);
 }
 
+export function isSupportingFileForDevMode(args: { path: string; targetFolder: string }): boolean {
+  const isInFolderRegex = new RegExp(`^${args.targetFolder}(/.*)?$`, "i");
+  return (
+    !isOfKind("sw", args.path) &&
+    isInFolderRegex.test(args.path) &&
+    (isOfKind("json", args.path) || isOfKind("yaml", args.path))
+  );
+}
+
 export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];
 
 export function splitFiles(files: WorkspaceFile[]): {

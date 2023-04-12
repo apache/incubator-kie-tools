@@ -16,21 +16,27 @@
 
 package org.kie.kogito.service;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.api.FileService;
 import org.kie.kogito.model.FileType;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class FileServiceTest {
 
@@ -83,7 +89,10 @@ public class FileServiceTest {
                               Map.entry(tempFolder.resolve("model.sw.json"), FileType.SERVERLESS_WORKFLOW),
                               Map.entry(tempFolder.resolve("model.sw.yaml"), FileType.SERVERLESS_WORKFLOW),
                               Map.entry(tempFolder.resolve("model.sw.yml"), FileType.SERVERLESS_WORKFLOW),
-                              Map.entry(tempFolder.resolve("application.properties"), FileType.APPLICATION_PROPERTIES));
+                              Map.entry(tempFolder.resolve("application.properties"), FileType.APPLICATION_PROPERTIES),
+                              Map.entry(tempFolder.resolve("specs/api.yaml"), FileType.SPEC),
+                              Map.entry(tempFolder.resolve("api.json"), FileType.SPEC),
+                              Map.entry(tempFolder.resolve("api/spec.yml"), FileType.SPEC));
 
         for (var entry : pathFileTypeMap.entrySet()) {
             FileType actualType = fileService.getFileType(entry.getKey());
@@ -144,8 +153,8 @@ public class FileServiceTest {
         List<Path> unzippedFilePaths = new ZipServiceImpl().unzip(zipFilePath, destinationFolderPath);
 
         List<Path> validatedFilePaths = fileService.validateFiles(unzippedFilePaths);
-        assertEquals(3, unzippedFilePaths.size());
-        assertEquals(2, validatedFilePaths.size());
+        assertEquals(5, unzippedFilePaths.size());
+        assertEquals(3, validatedFilePaths.size());
     }
 
     @Test

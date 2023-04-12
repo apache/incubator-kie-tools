@@ -23,11 +23,11 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -37,6 +37,7 @@ import org.kie.kogito.FileStructureConstants;
 import org.kie.kogito.api.FileService;
 import org.kie.kogito.api.FileValidation;
 import org.kie.kogito.model.FileType;
+import org.kie.kogito.validation.OpenApiValidation;
 import org.kie.kogito.validation.PropertiesValidation;
 import org.kie.kogito.validation.ServerlessWorkflowValidation;
 
@@ -45,9 +46,13 @@ public class FileServiceImpl implements FileService {
 
     private static final Logger LOGGER = Logger.getLogger(FileService.class);
 
+    private static final String SW_REGEX = ".*\\.sw\\.(json|ya?ml)";
+    private static final String SPEC_REGEX = ".*\\.(json|ya?ml)";
+
     private final Map<FileType, FileValidation> VALIDATION_MAP =
             Map.ofEntries(Map.entry(FileType.SERVERLESS_WORKFLOW, new ServerlessWorkflowValidation()),
-                          Map.entry(FileType.APPLICATION_PROPERTIES, new PropertiesValidation()));
+                          Map.entry(FileType.APPLICATION_PROPERTIES, new PropertiesValidation()),
+                          Map.entry(FileType.SPEC, new OpenApiValidation()));
 
     @Override
     public void createFolder(final Path folderPath) {
@@ -82,10 +87,12 @@ public class FileServiceImpl implements FileService {
     @Override
     public FileType getFileType(final Path filePath) {
         final String fileName = filePath.getFileName().toString();
-        if (fileName.endsWith(".sw.json") || fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
+        if (Pattern.matches(SW_REGEX, fileName)) {
             return FileType.SERVERLESS_WORKFLOW;
         } else if (fileName.equals(FileStructureConstants.APPLICATION_PROPERTIES_FILE_NAME)) {
             return FileType.APPLICATION_PROPERTIES;
+        } else if (Pattern.matches(SPEC_REGEX, fileName)) {
+            return FileType.SPEC;
         }
         return FileType.UNKNOWN;
     }

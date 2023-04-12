@@ -211,7 +211,10 @@ export function useDeployDropdownItems(props: Props) {
   const onUploadDevMode = useCallback(async () => {
     if (isKieSandboxExtendedServicesRunning) {
       devModeUploadingAlert.show();
-      const result = await devModeDispatch.upload({ targetFile: props.workspaceFile, allFiles: props.workspace.files });
+      const result = await devModeDispatch.upload({
+        targetSwfFile: props.workspaceFile,
+        allFiles: props.workspace.files,
+      });
       devModeUploadingAlert.close();
 
       if (result.success) {
@@ -297,11 +300,25 @@ export function useDeployDropdownItems(props: Props) {
                 isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
                 ouiaId={"upload-to-openshift-dev-mode-dropdown-button"}
               >
-                <Flex flexWrap={{ default: "nowrap" }}>
-                  <FlexItem>
-                    Upload <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b> to Dev Mode
-                  </FlexItem>
-                </Flex>
+                {props.workspace.files.length > 1 && (
+                  <Flex flexWrap={{ default: "nowrap" }}>
+                    <FlexItem>
+                      Upload <b>{`"${props.workspace.descriptor.name}"`}</b> to Dev Mode
+                    </FlexItem>
+                  </Flex>
+                )}
+                {props.workspace.files.length === 1 && (
+                  <Flex flexWrap={{ default: "nowrap" }}>
+                    <FlexItem>
+                      Upload <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b> to Dev Mode
+                    </FlexItem>
+                    <FlexItem>
+                      <b>
+                        <FileLabel extension={props.workspace.files[0].extension} />
+                      </b>
+                    </FlexItem>
+                  </Flex>
+                )}
               </DropdownItem>
             )}
             {needsDependencyDeployment && (
