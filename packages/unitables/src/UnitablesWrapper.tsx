@@ -15,13 +15,47 @@
  */
 
 import * as React from "react";
+import { useEffect, useRef } from "react";
 import { Unitables, UnitablesProps } from "./Unitables";
 import { UnitablesContextProvider } from "./UnitablesContextProvider";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { ErrorBoundary } from "@kie-tools/form/dist/ErrorBoundary";
 
 export function UnitablesWrapper(props: UnitablesProps) {
+  const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
+
+  // Resets the ErrorBoundary everytime the FormSchema is updated
+  useEffect(() => {
+    inputErrorBoundaryRef.current?.reset();
+  }, [props.jsonSchemaBridge]);
+
   return (
     <UnitablesContextProvider rowsInputs={props.rows}>
-      <Unitables {...props} />
+      {props.error ? (
+        <InputError />
+      ) : (
+        <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
+          <Unitables {...props} />
+        </ErrorBoundary>
+      )}
     </UnitablesContextProvider>
+  );
+}
+
+function InputError() {
+  return (
+    <div style={{ width: "50vw" }}>
+      <EmptyState>
+        <EmptyStateIcon icon={ExclamationIcon} />
+        <TextContent>
+          <Text component={"h2"}>Error</Text>
+        </TextContent>
+        <EmptyStateBody>
+          <p>An error has happened while trying to show your inputs</p>
+        </EmptyStateBody>
+      </EmptyState>
+    </div>
   );
 }

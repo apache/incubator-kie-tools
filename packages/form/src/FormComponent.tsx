@@ -15,11 +15,9 @@
  */
 
 import * as React from "react";
-import { useMemo, useRef } from "react";
-import { ErrorBoundary } from "./ErrorBoundary";
+import { useMemo } from "react";
 import { FormBase } from "./FormBase";
 import { FormHook, useForm } from "./FormHook";
-import { AutoGenerationErrorFormStatus } from "./FormStatus";
 import { formI18n } from "./i18n";
 
 export interface FormProps<Input, Schema> {
@@ -44,10 +42,13 @@ export interface FormProps<Input, Schema> {
   formSchema?: Schema;
 }
 
-export type FormComponentProps<Input, Schema> = FormProps<Input, Schema> & FormHook<Input, Schema>;
+export type FormComponentProps<Input extends Record<string, any>, Schema extends Record<string, any>> = FormProps<
+  Input,
+  Schema
+> &
+  FormHook<Input, Schema>;
 
 export function FormComponent(props: React.PropsWithChildren<FormComponentProps<object, object>>) {
-  const formComponentErrorRef = useRef(null);
   const i18n = useMemo(
     () => props.i18n ?? formI18n.setLocale(props.locale ?? navigator.language).getCurrent(),
     [props.i18n, props.locale]
@@ -70,17 +71,7 @@ export function FormComponent(props: React.PropsWithChildren<FormComponentProps<
   });
 
   return (
-    <ErrorBoundary
-      ref={formComponentErrorRef}
-      setHasError={props.setFormError}
-      error={
-        <AutoGenerationErrorFormStatus
-          notificationsPanel={props.notificationsPanel}
-          i18n={props.i18n}
-          openValidationTab={() => props.openValidationTab?.()}
-        />
-      }
-    >
+    <>
       <FormBase
         {...props}
         i18n={i18n}
@@ -94,6 +85,6 @@ export function FormComponent(props: React.PropsWithChildren<FormComponentProps<
       >
         {props.children}
       </FormBase>
-    </ErrorBoundary>
+    </>
   );
 }

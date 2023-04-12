@@ -22,7 +22,6 @@ import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
-import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { useOnlineI18n } from "../i18n";
@@ -33,6 +32,7 @@ import "./DmnRunnerTable.css";
 import setObjectValueByPath from "lodash/set";
 import cloneDeep from "lodash/cloneDeep";
 import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
+import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
 
 export function DmnRunnerTable() {
   // STATEs
@@ -40,14 +40,14 @@ export function DmnRunnerTable() {
 
   // REFs
   const dmnRunnerTableErrorBoundaryRef = useRef<ErrorBoundary>(null);
-  const inputsContainerRef = useRef<HTMLDivElement>(null);
+  const [inputsContainerRef, setInputsContainerRef] = useState<HTMLDivElement | null>(null);
   const outputsContainerRef = useRef<HTMLDivElement>(null);
   const inputsScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
   const outputsScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
 
   // CUSTOM HOOKs
   const { i18n } = useOnlineI18n();
-  const { configs, error, inputs, jsonSchema, results } = useDmnRunnerState();
+  const { configs, inputs, extendedServicesError, jsonSchema, results } = useDmnRunnerState();
   const {
     setDmnRunnerContextProviderState,
     onRowAdded,
@@ -66,7 +66,6 @@ export function DmnRunnerTable() {
 
   // MEMOs
   const rowCount = useMemo(() => inputs?.length ?? 1, [inputs?.length]);
-  const hasInputs = useMemo(() => !!jsonSchema?.definitions?.InputSet?.properties, [jsonSchema]);
   const jsonSchemaBridge = useMemo(
     () => new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(jsonSchema ?? {}),
     [i18n, jsonSchema]
@@ -109,17 +108,21 @@ export function DmnRunnerTable() {
     [setDmnRunnerConfigInputs]
   );
 
+  useEffect(() => {
+    setDmnRunnerTableError(false);
+  }, [jsonSchema]);
+
   return (
-    <div style={{ height: "100%" }}>
-      <DmnRunnerLoading>
-        {jsonSchema &&
-          (dmnRunnerTableError ? (
-            dmnRunnerTableError
-          ) : (
+    <>
+      {extendedServicesError ? (
+        <DmnRunnerExtendedServicesError />
+      ) : (
+        <div style={{ height: "100%" }}>
+          <DmnRunnerLoading>
             <ErrorBoundary
               ref={dmnRunnerTableErrorBoundaryRef}
               setHasError={setDmnRunnerTableError}
-              error={<DmnRunnerTableError />}
+              error={DmnRunnerTableError}
             >
               <Drawer isInline={true} isExpanded={true} className={"kie-tools--dmn-runner-table--drawer"}>
                 {/* DMN Runner Outputs */}
@@ -145,23 +148,16 @@ export function DmnRunnerTable() {
                   }
                 >
                   {/* DMN Runner Inputs */}
-                  {hasInputs ? (
+                  <div ref={(ref) => setInputsContainerRef(ref)}>
                     <UnitablesWrapper
                       scrollableParentRef={inputsScrollableElementRef.current}
                       i18n={i18n.dmnRunner.table}
-                      jsonSchema={jsonSchema}
                       openRow={openRow}
                       rows={inputs}
                       setRows={setDmnRunnerInputs}
-                      error={error}
-                      setError={(error: boolean) =>
-                        setDmnRunnerContextProviderState({
-                          type: DmnRunnerProviderActionType.DEFAULT,
-                          newState: { error },
-                        })
-                      }
+                      error={dmnRunnerTableError}
+                      setError={setDmnRunnerTableError}
                       jsonSchemaBridge={jsonSchemaBridge}
-                      containerRef={inputsContainerRef}
                       onRowAdded={onRowAdded}
                       onRowDuplicated={onRowDuplicated}
                       onRowReset={onRowReset}
@@ -169,29 +165,14 @@ export function DmnRunnerTable() {
                       configs={configs}
                       setWidth={setWidth}
                     />
-                  ) : (
-                    <DmnRunnerTableEmpty />
-                  )}
+                  </div>
                 </DrawerContent>
               </Drawer>
             </ErrorBoundary>
-          ))}
-      </DmnRunnerLoading>
-    </div>
-  );
-}
-
-function DmnRunnerTableEmpty() {
-  return (
-    <EmptyState>
-      <EmptyStateIcon icon={CubeIcon} />
-      <TextContent>
-        <Text component={"h2"}>No inputs node yet...</Text>
-      </TextContent>
-      <EmptyStateBody>
-        <TextContent>Add an input node and see a custom table here.</TextContent>
-      </EmptyStateBody>
-    </EmptyState>
+          </DmnRunnerLoading>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -241,7 +222,7 @@ function useIntervalUntil(callback: () => Promise<{ shouldStop: boolean; cleanup
 }
 
 function useAnchoredUnitablesDrawerPanel(args: {
-  inputsContainerRef: React.RefObject<HTMLDivElement>;
+  inputsContainerRef: HTMLDivElement | null;
   outputsContainerRef: React.RefObject<HTMLDivElement>;
 }) {
   const [scrollbarWidth, setScrollbarWidth] = useState(0); // Default size on Chrome.
@@ -249,12 +230,12 @@ function useAnchoredUnitablesDrawerPanel(args: {
   const [drawerPanelDefaultSize, setDrawerPanelDefaultSize] = useState<string>();
 
   const refreshDrawerPanelDefaultSize = useCallback(() => {
-    if (!args.inputsContainerRef.current) {
+    if (!args.inputsContainerRef) {
       return { didRefresh: false };
     }
 
-    const children = Object.values(args.inputsContainerRef.current.childNodes);
-    const newWidth = children.reduce((acc, child: HTMLElement) => acc + child.offsetWidth, 1);
+    const children = Object.values(args.inputsContainerRef.childNodes?.[0]?.childNodes);
+    const newWidth = children?.reduce((acc, child: HTMLElement) => acc + child.offsetWidth, 1) ?? 0;
     const newDefaultSize = `calc(100vw - ${newWidth + scrollbarWidth}px)`;
 
     setDrawerPanelDefaultSize((prev) => {

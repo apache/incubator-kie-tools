@@ -32,7 +32,6 @@ export interface DmnRunnerResultsAction {
 }
 
 export interface DmnRunnerProviderState {
-  error: boolean;
   isExpanded: boolean;
   currentInputIndex: number;
 }

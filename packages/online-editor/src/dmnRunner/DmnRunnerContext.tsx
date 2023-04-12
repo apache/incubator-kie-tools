@@ -26,7 +26,7 @@ import { DmnRunnerProviderAction } from "./DmnRunnerTypes";
 export interface DmnRunnerContextType {
   configs: UnitablesInputsConfigs;
   currentInputIndex: number;
-  error: boolean;
+  extendedServicesError: boolean;
   dmnRunnerPersistenceJson: DmnRunnerPersistenceJson;
   inputs: Array<InputRow>;
   isExpanded: boolean;

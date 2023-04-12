@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-import { ErrorBoundary } from "@kie-tools/form/dist/ErrorBoundary";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import nextId from "react-id-generator";
 import { UnitablesBeeTable } from "./bee";
 import { UnitablesI18n } from "./i18n";
@@ -35,9 +31,11 @@ import { diff } from "deep-object-diff";
 import cloneDeep from "lodash/cloneDeep";
 import { useUnitablesContext } from "./UnitablesContext";
 import { UnitablesInputsConfigs } from "./UnitablesTypes";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 
 export interface UnitablesProps {
-  jsonSchema: object;
   rows: Array<Record<string, any>>;
   setRows: (previousStateFunction: (previous: Array<Record<string, any>>) => Array<Record<string, any>>) => void;
   error: boolean;
@@ -45,7 +43,6 @@ export interface UnitablesProps {
   openRow: (rowIndex: number) => void;
   i18n: UnitablesI18n;
   jsonSchemaBridge: UnitablesJsonSchemaBridge;
-  containerRef: React.RefObject<HTMLDivElement>;
   scrollableParentRef: React.RefObject<HTMLElement>;
   onRowAdded: (args: { beforeIndex: number }) => void;
   onRowDuplicated: (args: { rowIndex: number }) => void;
@@ -91,11 +88,9 @@ function recursiveCheckForChangedKey(
 export const Unitables = ({
   rows,
   setRows,
-  setError,
   openRow,
   i18n,
   jsonSchemaBridge,
-  containerRef,
   scrollableParentRef,
   onRowAdded,
   onRowDuplicated,
@@ -109,19 +104,14 @@ export const Unitables = ({
 
   // REFs
   const cachedKeysOfRows = useRef<Map<number, Set<string>>>(new Map()); // create cache to save changed keys;
-  const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const timeout = useRef<number | undefined>(undefined);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // CUSTOM HOOKs
   const { isBeeTableChange, rowsRefs } = useUnitablesContext();
 
   const unitablesColumns = useMemo(() => jsonSchemaBridge.getUnitablesColumns(), [jsonSchemaBridge]);
   const inputUid = useMemo(() => nextId(), []);
-
-  // Resets the ErrorBoundary everytime the FormSchema is updated
-  useEffect(() => {
-    inputErrorBoundaryRef.current?.reset();
-  }, [jsonSchemaBridge]);
 
   // Set in-cell input heights (begin)
   const searchRecursively = useCallback((child: any) => {
@@ -225,68 +215,51 @@ export const Unitables = ({
 
   return (
     <>
-      {unitablesColumns.length > 0 && rows.length > 0 && formsDivRendered && (
-        <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={setError} error={<InputError />}>
-          <div style={{ display: "flex" }} ref={containerRef}>
-            <div
-              className={"kie-tools--unitables-open-on-form-container"}
-              style={{ display: "flex", flexDirection: "column" }}
-            >
-              <OutsideRowMenu height={63} isFirstChild={true}>{`#`}</OutsideRowMenu>
-              <OutsideRowMenu height={65} borderBottomSizeBasis={1}>{`#`}</OutsideRowMenu>
-              {rows.map((_, rowIndex) => (
-                <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
-                  <OutsideRowMenu height={61} isLastChild={rowIndex === rows.length - 1}>
-                    <Button
-                      className={"kie-tools--masthead-hoverable"}
-                      variant={ButtonVariant.plain}
-                      onClick={() => openRow(rowIndex)}
-                    >
-                      <ListIcon />
-                    </Button>
-                  </OutsideRowMenu>
-                </Tooltip>
-              ))}
-            </div>
-            <UnitablesBeeTable
-              rowsRefs={rowsRefs}
-              rowWrapper={rowWrapper}
-              scrollableParentRef={scrollableParentRef}
-              i18n={i18n}
-              rows={rows}
-              columns={unitablesColumns}
-              id={inputUid}
-              onRowAdded={onRowAdded}
-              onRowDuplicated={onRowDuplicated}
-              onRowReset={onRowReset}
-              onRowDeleted={onRowDeleted}
-              configs={configs}
-              setWidth={setWidth}
-            />
+      {unitablesColumns.length > 0 && rows.length > 0 && formsDivRendered ? (
+        <div style={{ display: "flex" }} ref={containerRef}>
+          <div
+            className={"kie-tools--unitables-open-on-form-container"}
+            style={{ display: "flex", flexDirection: "column" }}
+          >
+            <OutsideRowMenu height={63} isFirstChild={true}>{`#`}</OutsideRowMenu>
+            <OutsideRowMenu height={65} borderBottomSizeBasis={1}>{`#`}</OutsideRowMenu>
+            {rows.map((_, rowIndex) => (
+              <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
+                <OutsideRowMenu height={61} isLastChild={rowIndex === rows.length - 1}>
+                  <Button
+                    className={"kie-tools--masthead-hoverable"}
+                    variant={ButtonVariant.plain}
+                    onClick={() => openRow(rowIndex)}
+                  >
+                    <ListIcon />
+                  </Button>
+                </OutsideRowMenu>
+              </Tooltip>
+            ))}
           </div>
-        </ErrorBoundary>
+          <UnitablesBeeTable
+            rowsRefs={rowsRefs}
+            rowWrapper={rowWrapper}
+            scrollableParentRef={scrollableParentRef}
+            i18n={i18n}
+            rows={rows}
+            columns={unitablesColumns}
+            id={inputUid}
+            onRowAdded={onRowAdded}
+            onRowDuplicated={onRowDuplicated}
+            onRowReset={onRowReset}
+            onRowDeleted={onRowDeleted}
+            configs={configs}
+            setWidth={setWidth}
+          />
+        </div>
+      ) : (
+        <EmptyUnitables />
       )}
-
       <div ref={() => setFormsDivRendered(true)} id={FORMS_ID} />
     </>
   );
 };
-
-function InputError() {
-  return (
-    <div>
-      <EmptyState>
-        <EmptyStateIcon icon={ExclamationIcon} />
-        <TextContent>
-          <Text component={"h2"}>Error</Text>
-        </TextContent>
-        <EmptyStateBody>
-          <p>An error has happened while trying to show your inputs</p>
-        </EmptyStateBody>
-      </EmptyState>
-    </div>
-  );
-}
 
 function OutsideRowMenu({
   children,
@@ -317,6 +290,22 @@ function OutsideRowMenu({
       }}
     >
       {children}
+    </div>
+  );
+}
+
+function EmptyUnitables() {
+  return (
+    <div style={{ width: "50vw" }}>
+      <EmptyState>
+        <EmptyStateIcon icon={CubeIcon} />
+        <TextContent>
+          <Text component={"h2"}>No inputs node yet...</Text>
+        </TextContent>
+        <EmptyStateBody>
+          <TextContent>Add an input node and see a custom table here.</TextContent>
+        </EmptyStateBody>
+      </EmptyState>
     </div>
   );
 }

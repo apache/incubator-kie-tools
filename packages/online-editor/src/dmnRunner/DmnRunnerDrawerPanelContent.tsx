@@ -37,10 +37,9 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
-import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextProvider";
+import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -64,7 +63,6 @@ interface DmnRunnerStylesConfig {
 
 export function DmnRunnerDrawerPanelContent(props: Props) {
   // STATEs
-  const [formRef, setFormRef] = useState<HTMLFormElement | null>();
   const [drawerError, setDrawerError] = useState<boolean>(false);
   const [dmnRunnerStylesConfig, setDmnRunnerStylesConfig] = useState<DmnRunnerStylesConfig>({
     contentWidth: "50%",
@@ -78,9 +76,9 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
 
   const { i18n, locale } = useOnlineI18n();
-  const { currentInputIndex, error, inputs, jsonSchema, results, resultsDifference } = useDmnRunnerState();
+  const { currentInputIndex, extendedServicesError, inputs, jsonSchema, results, resultsDifference } =
+    useDmnRunnerState();
   const { setDmnRunnerContextProviderState, onRowAdded, setDmnRunnerInputs, setDmnRunnerMode } = useDmnRunnerDispatch();
-  const previousError = usePrevious(error);
   const { notificationsPanel, onOpenPanel } = useEditorDockContext();
 
   const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
@@ -107,23 +105,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
       });
     }
   }, []);
-
-  // When the form breaks, if the user makes a new edit that fixes it, it will reset the form, and re-submit the inputs;
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        if (previousError) {
-          setTimeout(() => {
-            formRef?.submit();
-            Object.keys(formInputs ?? {}).forEach((propertyName) => {
-              formRef?.change(propertyName, formInputs?.[propertyName]);
-            });
-          }, 0);
-        }
-      },
-      [formRef, formInputs, previousError]
-    )
-  );
 
   const openValidationTab = useCallback(() => {
     onOpenPanel(PanelId.NOTIFICATIONS_PANEL);
@@ -168,7 +149,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   useEffect(() => {
     errorBoundaryRef.current?.reset();
-    setDrawerError(false);
   }, [jsonSchema]);
 
   // changing between rows re-calculate this function;
@@ -230,11 +210,11 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
       isResizable={true}
       minSize={"361px"}
     >
-      {drawerError ? (
-        drawerErrorMessage
+      {extendedServicesError ? (
+        <DmnRunnerExtendedServicesError />
       ) : (
-        <ErrorBoundary error={drawerErrorMessage} setHasError={setDrawerError} ref={errorBoundaryRef}>
-          <DmnRunnerLoading>
+        <DmnRunnerLoading>
+          <ErrorBoundary error={drawerErrorMessage} setHasError={setDrawerError} ref={errorBoundaryRef}>
             <div
               className={"kogito--editor__dmn-runner"}
               style={{ flexDirection: dmnRunnerStylesConfig.contentFlexDirection }}
@@ -334,16 +314,10 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                         key={formInputs?.id}
                         formInputs={formInputs}
                         setFormInputs={setFormInputs}
-                        formError={error}
-                        setFormError={(error: boolean) =>
-                          setDmnRunnerContextProviderState({
-                            type: DmnRunnerProviderActionType.DEFAULT,
-                            newState: { error },
-                          })
-                        }
+                        formError={drawerError}
+                        setFormError={setDrawerError}
                         formSchema={jsonSchema}
                         id={"form"}
-                        setFormRef={setFormRef}
                         showInlineError={true}
                         autoSave={true}
                         autoSaveDelay={400}
@@ -398,8 +372,8 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                 </Page>
               </div>
             </div>
-          </DmnRunnerLoading>
-        </ErrorBoundary>
+          </ErrorBoundary>
+        </DmnRunnerLoading>
       )}
     </DrawerPanelContent>
   );
