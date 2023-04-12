@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
+import { ELsNode, nodeUpUntilType } from "@kie-tools/editor-language-service/dist/channel";
 import {
   findNodeAtOffset,
-  nodeUpUntilType,
   SwfJsonLanguageService,
   SwfYamlLanguageService,
-  SwfLsNode,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { defaultConfig, defaultJqCompletionsConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
 import { treat } from "./testUtils";
@@ -30,7 +29,7 @@ describe("nodeUpUntilType", () => {
   });
 
   test("simple test", () => {
-    const rootNode: SwfLsNode = {
+    const rootNode: ELsNode = {
       children: [
         {
           children: [

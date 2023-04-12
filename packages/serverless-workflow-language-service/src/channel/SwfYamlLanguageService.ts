@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-import { TranslateArgs, ELsNode, ShouldCompleteArgs } from "@kie-tools/editor-language-service/dist/channel";
+import {
+  TranslateArgs,
+  ELsNode,
+  ShouldCompleteArgs,
+  getLineContentFromOffset,
+  getNodeFormat,
+  indentText,
+  matchNodeWithLocation,
+} from "@kie-tools/editor-language-service/dist/channel";
 import {
   getLanguageService,
   LanguageSettings,
@@ -47,10 +55,6 @@ import {
 } from "yaml-language-server-parser";
 import { FileLanguage } from "../api";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
-import { getLineContentFromOffset } from "./getLineContentFromOffset";
-import { getNodeFormat } from "./getNodeFormat";
-import { indentText } from "./indentText";
-import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { findNodeAtOffset, positions_equals, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
 

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import { findNodesAtLocation } from "@kie-tools/editor-language-service/dist/channel";
-import { ELsNode } from "@kie-tools/editor-language-service/dist/channel";
-import { ELsJsonPath } from "@kie-tools/editor-language-service/dist/channel";
+import { findNodesAtLocation } from "./findNodesAtLocation";
 import { nodeUpUntilType } from "./nodeUpUntilType";
+import { ELsJsonPath, ELsNode } from "./types";
 
 /**
  * Check if a Node is in Location.

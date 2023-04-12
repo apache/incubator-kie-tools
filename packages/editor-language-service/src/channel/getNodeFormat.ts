@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { ELsNode } from "@kie-tools/editor-language-service/dist/channel";
 import * as jsonc from "jsonc-parser";
 import { load } from "yaml-language-server-parser";
 import { FileLanguage } from "../api";
+import { ELsNode } from "./types";
 
 /**
  * Detect the format of a node's content.

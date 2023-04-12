@@ -15,9 +15,8 @@
  */
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
 import { dashbuilderCompletion } from "../assets/code-completions/";
-import { ELsNode, TranslateArgs } from "@kie-tools/editor-language-service/dist/channel";
+import { ELsNode, indentText, TranslateArgs } from "@kie-tools/editor-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { indentText } from "./indentText";
 import { positions_equals } from "./DashbuilderLanguageService";
 import { dump } from "yaml-language-server-parser";
 

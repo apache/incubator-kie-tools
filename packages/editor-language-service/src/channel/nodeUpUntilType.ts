@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ELsNodeType, ELsNode } from "@kie-tools/editor-language-service/dist/channel";
+import { ELsNodeType, ELsNode } from "./types";
 
 /**
  * From a node goes up to levels until a certain node type.

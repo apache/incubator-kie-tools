@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
+import { getNodeFormat } from "@kie-tools/editor-language-service/dist/channel";
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   findNodeAtOffset,
-  getNodeFormat,
   SwfJsonLanguageService,
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
