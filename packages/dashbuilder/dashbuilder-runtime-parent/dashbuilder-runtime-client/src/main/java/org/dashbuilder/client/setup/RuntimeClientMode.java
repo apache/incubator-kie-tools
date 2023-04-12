@@ -26,18 +26,14 @@ public enum RuntimeClientMode {
     /**
      * When Dashbuilder is used on client side with YML/JSON definitions
      */
-    CLIENT,
-    /**
-     * Legacy mode with a backend
-     */
-    APP;
+    CLIENT;
 
     public static RuntimeClientMode getOrDefault(String value) {
         if (value == null || value.trim().isEmpty()) {
-            return APP;
+            return EDITOR;
         }
         return Arrays.stream(RuntimeClientMode.values())
                 .filter(n -> n.name().equalsIgnoreCase(value))
-                .findFirst().orElse(APP);
+                .findFirst().orElse(EDITOR);
     }
 }

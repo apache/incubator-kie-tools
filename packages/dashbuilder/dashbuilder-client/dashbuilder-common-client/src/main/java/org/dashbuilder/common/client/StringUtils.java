@@ -21,6 +21,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public class StringUtils {
+    
+    private StringUtils() {
+        // no op
+    }
 
     /**
      * <p>Checks if a String is empty ("") or null.</p>

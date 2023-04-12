@@ -99,7 +99,7 @@ public class PerspectiveTest13Activity extends AbstractWorkbenchPerspectiveActiv
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl( TemplatedWorkbenchPanelPresenter.class.getName() );
         p.setName( realPresenter.getClass().getName() );
 
-        PanelDefinition panelDefinition = new PanelDefinitionImpl( "org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter" );
+        PanelDefinition panelDefinition = new PanelDefinitionImpl( "org.uberfire.client.workbench.panels.impl.LayoutPanelPresenter" );
         panelDefinition.addPart(
             new PartDefinitionImpl(new DefaultPlaceRequest( "HelloWorldScreen1" ) ) );
         panelDefinition.addPart(

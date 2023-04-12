@@ -45,7 +45,6 @@
   <modules>
     <module>dashbuilder-runtime-shared</module>
     <module>dashbuilder-runtime-client</module>
-    <module>dashbuilder-runtime-app</module>
   </modules>
 
 </project>

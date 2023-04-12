@@ -18,7 +18,6 @@ package org.dashbuilder.client.editor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.dashbuilder.client.editor.resources.i18n.Constants;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.GlobalDisplayerSettings;
 import org.dashbuilder.displayer.client.PerspectiveCoordinator;
@@ -31,20 +30,15 @@ public class BubbleChartDragComponent extends DisplayerDragComponent {
 
     @Inject
     public BubbleChartDragComponent(SyncBeanManager beanManager,
-            DisplayerViewer viewer,
-            PlaceManager placeManager,
-            PerspectiveCoordinator perspectiveCoordinator,
-            GlobalDisplayerSettings globalDisplayerSettings) {
+                                    DisplayerViewer viewer,
+                                    PlaceManager placeManager,
+                                    PerspectiveCoordinator perspectiveCoordinator,
+                                    GlobalDisplayerSettings globalDisplayerSettings) {
         super(beanManager, viewer, placeManager, perspectiveCoordinator, globalDisplayerSettings);
     }
 
     @Override
     public DisplayerType getDisplayerType() {
         return DisplayerType.BUBBLECHART;
-    }
-
-    @Override
-    public String getDragComponentTitle() {
-        return Constants.INSTANCE.drag_component_name_bubblechart();
     }
 }

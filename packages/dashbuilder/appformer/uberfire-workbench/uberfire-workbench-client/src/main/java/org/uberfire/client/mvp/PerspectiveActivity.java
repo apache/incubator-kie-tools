@@ -15,13 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.function.Consumer;
-
 import jsinterop.annotations.JsType;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.model.toolbar.ToolBar;
 
 @JsType
 public interface PerspectiveActivity extends ContextSensitiveActivity {
@@ -47,15 +43,6 @@ public interface PerspectiveActivity extends ContextSensitiveActivity {
      * @return true if this is the default perspective; false if it is not.
      */
     boolean isDefault();
-
-    /**
-     * Returns a new copy of the menus that should be used with this perspective. Each time this method is called, it
-     * must produce a new set of menus.
-     * @return the menus to use while this perspective is active.
-     */
-    void getMenus(final Consumer<Menus> menusConsumer);
-
-    ToolBar getToolBar();
 
     /**
      * Tells whether this perspective's state (layout and size of panels, parts contained in each panel) should be saved

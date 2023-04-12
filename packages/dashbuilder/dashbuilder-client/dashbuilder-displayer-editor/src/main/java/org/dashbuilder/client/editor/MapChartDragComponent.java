@@ -18,7 +18,6 @@ package org.dashbuilder.client.editor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.dashbuilder.client.editor.resources.i18n.Constants;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.GlobalDisplayerSettings;
 import org.dashbuilder.displayer.client.PerspectiveCoordinator;
@@ -31,25 +30,15 @@ public class MapChartDragComponent extends DisplayerDragComponent {
 
     @Inject
     public MapChartDragComponent(SyncBeanManager beanManager,
-            DisplayerViewer viewer,
-            PlaceManager placeManager,
-            PerspectiveCoordinator perspectiveCoordinator,
-            GlobalDisplayerSettings globalDisplayerSettings) {
+                                 DisplayerViewer viewer,
+                                 PlaceManager placeManager,
+                                 PerspectiveCoordinator perspectiveCoordinator,
+                                 GlobalDisplayerSettings globalDisplayerSettings) {
         super(beanManager, viewer, placeManager, perspectiveCoordinator, globalDisplayerSettings);
     }
 
     @Override
     public DisplayerType getDisplayerType() {
         return DisplayerType.MAP;
-    }
-
-    @Override
-    public String getDragComponentIconClass() {
-        return "fa fa-map";
-    }
-
-    @Override
-    public String getDragComponentTitle() {
-        return Constants.INSTANCE.drag_component_name_mapchart();
     }
 }

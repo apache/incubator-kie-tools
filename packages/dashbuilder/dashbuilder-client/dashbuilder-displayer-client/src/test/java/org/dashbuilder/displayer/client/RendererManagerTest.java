@@ -12,9 +12,6 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
-import org.dashbuilder.renderer.RendererSettings;
-import org.dashbuilder.renderer.service.RendererSettingsService;
-import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
@@ -22,7 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
-import org.uberfire.mocks.CallerMock;
 
 import static org.dashbuilder.displayer.DisplayerSubType.AREA;
 import static org.dashbuilder.displayer.DisplayerSubType.BAR;
@@ -62,14 +58,6 @@ public class RendererManagerTest {
     @Mock
     DisplayerSettings displayerSettings;
     
-    @Mock
-    RendererSettingsService rendererSettingsService;
-    
-    @Mock
-    RendererSettings rendererSettings;
-    
-    Caller<RendererSettingsService> rendererSettingsServiceCaller;
-    
     RendererManager rendererManager;
     
     int totalBeans;
@@ -77,9 +65,7 @@ public class RendererManagerTest {
     
     @Before
     public void setUp() {
-        rendererSettingsServiceCaller = new CallerMock<>(rendererSettingsService);
-        when(rendererSettingsService.getSettings()).thenReturn(rendererSettings);
-        rendererManager = new RendererManager(beanManager, rendererSettingsServiceCaller);
+        rendererManager = new RendererManager(beanManager);
         mockConstants();
         Map<DisplayerType, List<DisplayerSubType>> typesAndSubTypes1 = new HashMap<>();
         typesAndSubTypes1.put(BARCHART, Arrays.asList(BAR));
@@ -203,34 +189,11 @@ public class RendererManagerTest {
         assertNull(rendererManager.getDefaultRenderer(LINECHART));
     }
     
-    @Test
-    public void defaultRendererSetByUserTest() {
-        when(rendererSettings.getDefaultRenderer()).thenReturn(REND2_UUID);
-        rendererManager.init();
-        RendererLibrary barChartDefaultRenderer = rendererManager.getDefaultRenderer(BARCHART);
-        RendererLibrary areaChartDefaultRenderer = rendererManager.getDefaultRenderer(AREACHART);
-        RendererLibrary lineChartDefaultRenderer = rendererManager.getDefaultRenderer(LINECHART);
-        assertEquals(REND2_UUID, barChartDefaultRenderer.getUUID());
-        assertNotNull(barChartDefaultRenderer);
-        // now rend 2 becomes also default renderer for LINECHART, so it is not null
-        assertNotNull(lineChartDefaultRenderer);
-        // since rend 2 does not support areachart, so rend1 should still be the default renderer for it
-        assertNotNull(areaChartDefaultRenderer);
-        assertEquals(REND1_UUID, areaChartDefaultRenderer.getUUID());
-    }
     
     @Test
     public void defaultRendererWithUserBadSettingTest() {
-        when(rendererSettings.getDefaultRenderer()).thenReturn("DO NO EXIST");
         rendererManager.init();
         defaultRendererTest();
-    }
-    
-    @Test
-    public void offlineRendererTest() {
-        when(rendererSettings.isOffline()).thenReturn(true);
-        rendererManager.init();
-        assertEquals(1, rendererManager.getRenderers().size());
     }
     
     private SyncBeanDef<RendererLibrary> mockSyncBeanForRendererLib(String name,

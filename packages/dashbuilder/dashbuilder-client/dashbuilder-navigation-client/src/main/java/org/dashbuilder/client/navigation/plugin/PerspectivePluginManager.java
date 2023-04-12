@@ -15,8 +15,6 @@
  */
 package org.dashbuilder.client.navigation.plugin;
 
-import java.util.Collection;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
@@ -24,17 +22,10 @@ import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
 import org.dashbuilder.navigation.layout.LayoutTemplateContext;
 import org.dashbuilder.navigation.layout.LayoutTemplateInfo;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public interface PerspectivePluginManager {
     
-    void loadPlugins();
-
-    void getPerspectivePlugins(ParameterizedCommand<Collection<Plugin>> callback);
-
-    boolean isRuntimePerspective(Plugin plugin);
-
     boolean isRuntimePerspective(NavItem navItem);
 
     boolean isRuntimePerspective(String perspectiveId);

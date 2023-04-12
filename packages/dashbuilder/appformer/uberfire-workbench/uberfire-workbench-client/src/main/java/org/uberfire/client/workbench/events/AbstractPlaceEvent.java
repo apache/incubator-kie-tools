@@ -28,7 +28,7 @@ public abstract class AbstractPlaceEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 
-    public AbstractPlaceEvent(final PlaceRequest place) {
+    AbstractPlaceEvent(final PlaceRequest place) {
         checkNotNull("place",
                      place);
         this.place = place;

@@ -16,7 +16,6 @@ package org.dashbuilder.dataset.client;
 
 import javax.enterprise.event.Event;
 
-import org.dashbuilder.common.client.backend.PathUrlFactory;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetFormatter;
 import org.dashbuilder.dataset.ExpenseReportsData;
@@ -24,7 +23,6 @@ import org.dashbuilder.dataset.events.DataSetModifiedEvent;
 import org.dashbuilder.dataset.events.DataSetPushOkEvent;
 import org.dashbuilder.dataset.events.DataSetPushingEvent;
 import org.dashbuilder.dataset.service.DataSetDefServices;
-import org.dashbuilder.dataset.service.DataSetExportServices;
 import org.dashbuilder.dataset.service.DataSetLookupServices;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
@@ -46,15 +44,8 @@ public abstract class AbstractDataSetTest {
     protected DataSetLookupServices dataSetLookupServices;
 
     @Mock
-    protected DataSetExportServices dataSetExportServices;
-
-    @Mock
-    protected PathUrlFactory pathUrlFactory;
-
-    @Mock
     protected Caller<DataSetDefServices> dataSetDefServicesCaller;
 
-    protected Caller<DataSetExportServices> dataSetExportServicesCaller;
     protected Caller<DataSetLookupServices> dataSetLookupServicesCaller;
     protected ClientDataSetCore clientDataSetCore;
     protected DataSetClientServices clientServices;
@@ -75,19 +66,16 @@ public abstract class AbstractDataSetTest {
     }
 
     public void initDataSetClientServices() {
-        dataSetExportServicesCaller = new CallerMock<>(dataSetExportServices);
         dataSetLookupServicesCaller = new CallerMock<>(dataSetLookupServices);
         clientServices = new DataSetClientServicesImpl(
                 clientDataSetManager,
-                pathUrlFactory,
                 clientDataSetCore.getAggregateFunctionManager(),
                 clientDataSetCore.getIntervalBuilderLocator(),
                 dataSetPushingEvent,
                 dataSetPushOkEvent,
                 dataSetModifiedEvent,
                 dataSetLookupServicesCaller,
-                dataSetDefServicesCaller,
-                dataSetExportServicesCaller);
+                dataSetDefServicesCaller);
     }
 
     public void registerExpensesDataSet() throws Exception {

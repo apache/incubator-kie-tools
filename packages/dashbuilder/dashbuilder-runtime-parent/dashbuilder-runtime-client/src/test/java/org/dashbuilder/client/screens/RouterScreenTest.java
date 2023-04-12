@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.RuntimeClientLoader;
-import org.dashbuilder.client.navbar.AppNavBar;
 import org.dashbuilder.client.perspective.DashboardsListPerspective;
 import org.dashbuilder.client.perspective.EmptyPerspective;
 import org.dashbuilder.client.perspective.RuntimePerspective;
@@ -46,9 +45,6 @@ public class RouterScreenTest {
     
     @Mock
     PlaceManager placeManager;
-    
-    @Mock
-    AppNavBar appNavBar;
 
     @Mock
     RuntimeScreen runtimeScreen;
