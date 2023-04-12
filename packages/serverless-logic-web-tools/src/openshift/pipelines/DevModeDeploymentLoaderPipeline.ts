@@ -21,7 +21,6 @@ import {
   DeploymentState,
   ListDeployments,
   ListRoutes,
-  ResourceLabelNames,
   RouteGroupDescriptor,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { fetchWithTimeout } from "../../fetch";
@@ -102,11 +101,9 @@ export class DevModeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
 
       return healthCheckedExtendedDeployments.map((ed: ExtendedDeployment) => ({
         resourceName: ed.deployment.metadata.name,
-        uri: ed.deployment.metadata.annotations![ResourceLabelNames.URI],
         routeUrl: ed.endpoints.base,
         creationTimestamp: new Date(ed.deployment.metadata.creationTimestamp ?? Date.now()),
         state: ed.state,
-        workspaceName: "Dev Mode",
         devMode: true,
       }));
     } catch (e) {

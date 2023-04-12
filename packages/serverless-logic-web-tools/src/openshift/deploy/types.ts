@@ -38,11 +38,16 @@ export interface DeploymentStrategyArgs {
   getFiles: (args: { workspaceId: string; globPattern?: string }) => Promise<WorkspaceFile[]>;
 }
 
-export type WebToolsOpenShiftDeployedModel = DeployedModel & {
-  uri: string;
-  workspaceName: string;
-  devMode: boolean;
-};
+export type WebToolsOpenShiftDeployedModel = DeployedModel &
+  (
+    | {
+        workspaceName: string;
+        devMode: false;
+      }
+    | {
+        devMode: true;
+      }
+  );
 
 export type CompletedDeployOperation = string | undefined;
 

@@ -57,7 +57,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
     const extension = extractExtension(workspaceName);
     const name = extension ? basename(workspaceName, `.${extension}`) : workspaceName;
     return `${name.substring(0, maxSize - extension.length)}...${extension}`;
-  }, [props.deployment.devMode, props.deployment.workspaceName]);
+  }, [props.deployment]);
 
   const onDeploymentClicked = useCallback(() => {
     const endpoints = buildEndpoints(props.deployment.routeUrl);
