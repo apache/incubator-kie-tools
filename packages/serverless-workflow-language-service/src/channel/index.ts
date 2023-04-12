@@ -17,5 +17,4 @@
 export * from "./SwfJsonLanguageService";
 export * from "./SwfLanguageService";
 export * from "./SwfYamlLanguageService";
-export * from "./refValidation";
 export * from "./types";

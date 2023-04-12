@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { ELsJsonPath, findNodesAtLocation, ELsNode } from "@kie-tools/editor-language-service/dist/channel";
+import {
+  ELsJsonPath,
+  findNodesAtLocation,
+  ELsNode,
+  doRefValidation,
+} from "@kie-tools/editor-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
   SwfCatalogSourceType,
@@ -27,7 +32,6 @@ import { posix as posixPath } from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
-import { doRefValidation } from "./refValidation";
 import {
   SwfCompletionItemServiceCatalogService,
   SwfLanguageServiceCodeCompletion,
@@ -36,6 +40,7 @@ import {
   SwfLanguageServiceCodeLenses,
   SwfLanguageServiceCodeLensesFunctionsArgs,
 } from "./SwfLanguageServiceCodeLenses";
+import { swfRefValidationMap } from "./swfRefValidationMap";
 import { CodeCompletionStrategy, JqCompletions } from "./types";
 
 export type SwfLanguageServiceConfig = {
@@ -216,7 +221,11 @@ export class SwfLanguageService {
       docVersion,
       args.content
     );
-    const refValidationResults = doRefValidation({ textDocument, rootNode: args.rootNode });
+    const refValidationResults = doRefValidation({
+      textDocument,
+      rootNode: args.rootNode,
+      validationMap: swfRefValidationMap,
+    });
     const schemaValidationResults = (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
       ? await args.getSchemaDiagnostics(textDocument, this.args.lang.fileMatch)
       : [];
