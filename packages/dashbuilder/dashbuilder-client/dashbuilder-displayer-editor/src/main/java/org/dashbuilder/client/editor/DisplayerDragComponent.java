@@ -22,12 +22,14 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+// import com.google.gwt.user.client.ui.Label;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.GlobalDisplayerSettings;
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.PerspectiveCoordinator;
+import org.dashbuilder.displayer.client.widgets.DisplayerErrorWidget;
 import org.dashbuilder.displayer.client.widgets.DisplayerViewer;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -48,10 +50,10 @@ public class DisplayerDragComponent implements LayoutDragComponent {
 
     @Inject
     public DisplayerDragComponent(SyncBeanManager beanManager,
-                                  DisplayerViewer viewer,
-                                  PlaceManager placeManager,
-                                  PerspectiveCoordinator perspectiveCoordinator,
-                                  GlobalDisplayerSettings globalDisplayerSettings) {
+            DisplayerViewer viewer,
+            PlaceManager placeManager,
+            PerspectiveCoordinator perspectiveCoordinator,
+            GlobalDisplayerSettings globalDisplayerSettings) {
 
         this.beanManager = beanManager;
         this.viewer = viewer;
@@ -73,22 +75,47 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     public IsWidget getShowWidget(final RenderingContext ctx) {
         var settingsOp = getDisplayerSettings(ctx.getComponent().getProperties(), ctx.getComponent());
         return settingsOp.map(settings -> {
-            viewer.removeFromParent();
-            viewer.init(settings);
-            viewer.addAttachHandler(attachEvent -> {
-                if (attachEvent.isAttached()) {
-                    final int offsetWidth = ctx.getContainer().getOffsetWidth();
-                    int containerWidth = offsetWidth > 40 ? offsetWidth - 40 : 0;
-                    adjustSize(settings, containerWidth);
-                    Displayer displayer = viewer.draw();
-                    perspectiveCoordinator.addDisplayer(displayer);
-                }
-            });
-            int containerWidth = ctx.getContainer().getOffsetWidth() - 40;
-            adjustSize(settings, containerWidth);
-            Displayer displayer = viewer.draw();
-            perspectiveCoordinator.addDisplayer(displayer);
-            return viewer;
+            // var error = settings.getSettingsFlatMap().get("ERROR");
+            String error = settings.getError().toString();
+            if(error != null){
+                var e = new DisplayerErrorWidget();
+                e.show(error, null);
+                return e;
+                // return new Label(error);
+            }else{
+                viewer.removeFromParent();
+                viewer.init(settings);
+                viewer.addAttachHandler(attachEvent -> {
+                    if (attachEvent.isAttached()) {
+                        final int offsetWidth = ctx.getContainer().getOffsetWidth();
+                        int containerWidth = offsetWidth > 40 ? offsetWidth - 40 : 0;
+                        adjustSize(settings, containerWidth);
+                        Displayer displayer = viewer.draw();
+                        perspectiveCoordinator.addDisplayer(displayer);
+                    }
+                });
+                int containerWidth = ctx.getContainer().getOffsetWidth() - 40;
+                adjustSize(settings, containerWidth);
+                Displayer displayer = viewer.draw();
+                perspectiveCoordinator.addDisplayer(displayer);
+                return viewer;
+            }
+            // viewer.removeFromParent();
+            // viewer.init(settings);
+            // viewer.addAttachHandler(attachEvent -> {
+            //     if (attachEvent.isAttached()) {
+            //         final int offsetWidth = ctx.getContainer().getOffsetWidth();
+            //         int containerWidth = offsetWidth > 40 ? offsetWidth - 40 : 0;
+            //         adjustSize(settings, containerWidth);
+            //         Displayer displayer = viewer.draw();
+            //         perspectiveCoordinator.addDisplayer(displayer);
+            //     }
+            // });
+            // int containerWidth = ctx.getContainer().getOffsetWidth() - 40;
+            // adjustSize(settings, containerWidth);
+            // Displayer displayer = viewer.draw();
+            // perspectiveCoordinator.addDisplayer(displayer);
+            // return viewer;
         }).orElse(null);
     }
 
@@ -106,7 +133,7 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     }
 
     private Optional<DisplayerSettings> getDisplayerSettings(Map<String, String> properties,
-                                                             LayoutComponent component) {
+            LayoutComponent component) {
         var settings = component.getSettings();
         if (settings != null) {
             var displayerSettings = (DisplayerSettings) settings;
