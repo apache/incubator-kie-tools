@@ -16,7 +16,8 @@
 
 export * from "./findNodesAtLocation";
 export * from "./types";
-export * from "./EditorLanguageService";
+// export * from "./EditorLanguageService";
+export * from "./EditorLanguageServiceCodeCompletion";
 export * from "./getLineContentFromOffset";
 export * from "./getNodeFormat";
 export * from "./indentText";

@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-import { ELsNode, nodeUpUntilType } from "@kie-tools/editor-language-service/dist/channel";
+import {
+  createCompletionItem,
+  EditorLanguageServiceCodeCompletionFunctions,
+  EditorLanguageServiceCodeCompletionFunctionsArgs,
+  EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs,
+  ELsNode,
+  nodeUpUntilType,
+} from "@kie-tools/editor-language-service/dist/channel";
 import { jqBuiltInFunctions } from "@kie-tools/serverless-workflow-jq-expressions/dist/utils";
 import {
   SwfCatalogSourceType,
@@ -23,7 +30,6 @@ import {
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
-import { TextDocument } from "vscode-languageserver-textdocument";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
 import { SwfLanguageServiceCommandExecution } from "../api";
 import {
@@ -38,24 +44,16 @@ import {
 } from "../assets/code-completions";
 import * as swfModelQueries from "./modelQueries";
 import { findNodeAtLocation, getNodePath, SwfLanguageServiceConfig } from "./SwfLanguageService";
-import { CodeCompletionStrategy, JqCompletions } from "./types";
+import { JqCompletions } from "./types";
 
 type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
 export type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "functions"> & {
   functions: SwfCompletionItemServiceCatalogFunction[];
 };
 
-export type SwfLanguageServiceCodeCompletionFunctionsArgs = {
-  codeCompletionStrategy: CodeCompletionStrategy;
-  currentNode: ELsNode;
-  currentNodeRange: Range;
-  cursorOffset: number;
-  document: TextDocument;
+export type SwfLanguageServiceCodeCompletionFunctionsArgs = EditorLanguageServiceCodeCompletionFunctionsArgs & {
   langServiceConfig: SwfLanguageServiceConfig;
-  overwriteRange: Range;
-  rootNode: ELsNode;
   swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
-  cursorPosition: Position;
   jqCompletions: JqCompletions;
 };
 interface JqFunctionCompletion {
@@ -92,37 +90,6 @@ function toCompletionItemLabelPrefix(
     default:
       return "";
   }
-}
-
-function createCompletionItem(args: {
-  codeCompletionStrategy: CodeCompletionStrategy;
-  completion: object | string;
-  currentNodeRange: Range;
-  cursorOffset: number;
-  document: TextDocument;
-  detail: string;
-  extraOptions?: Partial<CompletionItem>;
-  kind: CompletionItemKind;
-  label: string;
-  overwriteRange: Range;
-  filterText?: string;
-}): CompletionItem {
-  return {
-    kind: args.kind,
-    label: args.label,
-    sortText: `100_${args.label}`, //place the completion on top in the menu
-    filterText: args.filterText ?? args.label,
-    detail: args.detail,
-    textEdit: {
-      newText: args.codeCompletionStrategy.translate({
-        ...args,
-        completionItemKind: args.kind,
-      }),
-      range: args.overwriteRange,
-    },
-    insertTextFormat: InsertTextFormat.Snippet,
-    ...args.extraOptions,
-  };
 }
 
 function getStateNameCompletion(
@@ -337,18 +304,15 @@ async function getJqFunctionCompletions(
 /**
  * SwfLanguageService CodeCompletion functions
  */
-export const SwfLanguageServiceCodeCompletion = {
-  getEmptyFileCodeCompletions(args: {
-    cursorPosition: Position;
-    codeCompletionStrategy: CodeCompletionStrategy;
-    cursorOffset: number;
-    document: TextDocument;
-  }): CompletionItem[] {
+export const SwfLanguageServiceCodeCompletion: EditorLanguageServiceCodeCompletionFunctions = {
+  getEmptyFileCodeCompletions(
+    args: EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs
+  ): Promise<CompletionItem[]> {
     const kind = CompletionItemKind.Text;
     const emptyWorkflowLabel = "Empty Serverless Workflow";
     const exampleWorkflowLabel = "Serverless Workflow Example";
 
-    return [
+    return Promise.resolve([
       {
         kind,
         label: exampleWorkflowLabel,
@@ -379,7 +343,7 @@ export const SwfLanguageServiceCodeCompletion = {
         },
         insertTextFormat: InsertTextFormat.Snippet,
       },
-    ];
+    ]);
   },
 
   getEventsCompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {

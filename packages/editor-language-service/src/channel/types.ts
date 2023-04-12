@@ -69,7 +69,7 @@ export interface TranslateArgs {
   overwriteRange?: Range;
 }
 
-export interface ELsCodeCompletionStrategy<CommandTypes> {
+export interface ELsCodeCompletionStrategy<CommandTypes = never> {
   translate(args: TranslateArgs): string;
   formatLabel(label: string, completionItemKind: CompletionItemKind): string;
   shouldComplete(args: ShouldCompleteArgs): boolean;

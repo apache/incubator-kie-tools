@@ -14,13 +14,28 @@
  * limitations under the License.
  */
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
+import {
+  CodeLens,
+  CompletionItem,
+  CompletionItemKind,
+  Diagnostic,
+  DiagnosticSeverity,
+  Position,
+  Range,
+} from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
 import * as jsonc from "jsonc-parser";
 import { DashbuilderLanguageServiceCodeCompletion } from "./DashbuilderLanguageServiceCodeCompletion";
 import { DashbuilderLanguageServiceCodeLenses } from "./DashbuilderLanguageServiceCodeLenses";
-import { ELsJsonPath, ELsNode } from "@kie-tools/editor-language-service/dist/channel";
 import {
+  ELsJsonPath,
+  ELsNode,
+  indentText,
+  ShouldCompleteArgs,
+  TranslateArgs,
+} from "@kie-tools/editor-language-service/dist/channel";
+import {
+  dump,
   Kind,
   load,
   YAMLAnchorReference,
@@ -40,9 +55,14 @@ import {
 } from "@kie-tools/yaml-language-server";
 import { Connection } from "vscode-languageserver/node";
 import { DASHBUILDER_SCHEMA } from "../assets/schemas";
+import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
 
 export class DashbuilderLanguageService {
-  constructor() {}
+  private readonly codeCompletionStrategy: DashbuilderCodeCompletionStrategy;
+
+  constructor() {
+    this.codeCompletionStrategy = new DashbuilderCodeCompletionStrategy();
+  }
 
   parseContent(content: string): ELsNode | undefined {
     if (!content.trim()) {
@@ -95,6 +115,7 @@ export class DashbuilderLanguageService {
             ...args,
             cursorOffset,
             document: doc,
+            codeCompletionStrategy: this.codeCompletionStrategy,
           });
     }
     return [];
@@ -253,3 +274,36 @@ export const isNodeUncompleted = (args: {
 
 export const positions_equals = (a: Position | null, b: Position | null): boolean =>
   a?.line === b?.line && a?.character == b?.character;
+
+export class DashbuilderCodeCompletionStrategy implements CodeCompletionStrategy {
+  public translate(args: TranslateArgs): string {
+    const completionDump = dump(args.completion, {}).slice(2, -1).trim();
+    if (["{}", "[]"].includes(completionDump) || args.completionItemKind === CompletionItemKind.Text) {
+      return completionDump;
+    }
+    const skipFirstLineIndent = args.completionItemKind !== CompletionItemKind.Module;
+    const completionItemNewLine = args.completionItemKind === CompletionItemKind.Module ? "\n" : "";
+    const completionText = completionItemNewLine + indentText(completionDump, 2, " ", skipFirstLineIndent);
+    return ([CompletionItemKind.Interface, CompletionItemKind.Reference] as CompletionItemKind[]).includes(
+      args.completionItemKind
+    ) && positions_equals(args.overwriteRange?.start ?? null, args.currentNodeRange?.start ?? null)
+      ? `- ${completionText}\n`
+      : completionText;
+  }
+
+  public formatLabel(_label: string, _completionItemKind: CompletionItemKind): string {
+    return "";
+  }
+
+  public getStartNodeValuePosition(_document: TextDocument, _node: ELsNode): Position | undefined {
+    return undefined;
+  }
+
+  public shouldComplete(_args: ShouldCompleteArgs): boolean {
+    return true;
+  }
+
+  public shouldCreateCodelens(_args: ShouldCreateCodelensArgs): boolean {
+    return true;
+  }
+}
