@@ -15,7 +15,16 @@
  */
 
 import * as React from "react";
-import { PropsWithChildren, useCallback, useEffect, useMemo, useState, useReducer } from "react";
+import {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+  useReducer,
+  useRef,
+} from "react";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
@@ -38,7 +47,6 @@ import cloneDeep from "lodash/cloneDeep";
 import { UnitablesInputsConfigs } from "@kie-tools/unitables/dist/UnitablesTypes";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useOnlineI18n } from "../i18n";
-import { EditorPageDockDrawerRef } from "../editor/EditorPageDockDrawer";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { diff } from "deep-object-diff";
 import getObjectValueByPath from "lodash/get";
@@ -54,12 +62,13 @@ import {
   DmnRunnerResultsAction,
   DmnRunnerResultsActionType,
 } from "./DmnRunnerTypes";
+import { DmnRunnerDockToggle } from "./DmnRunnerDockToggle";
+import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextProvider";
 
 interface Props {
   isEditorReady?: boolean;
   workspaceFile: WorkspaceFile;
   dmnLanguageService?: DmnLanguageService;
-  editorPageDock: EditorPageDockDrawerRef | undefined;
 }
 
 const initialDmnRunnerProviderStates: DmnRunnerProviderState = {
@@ -130,6 +139,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   } = useDmnRunnerPersistenceDispatch();
   useDmnRunnerPersistence(props.workspaceFile.workspaceId, props.workspaceFile.relativePath);
   const prevKieSandboxExtendedServicesStatus = usePrevious(extendedServices.status);
+  const { panel, setNotifications, addToggleItem, removeToggleItem, onOpenPanel, onTogglePanel } =
+    useEditorDockContext();
 
   const dmnRunnerInputs = useMemo(() => dmnRunnerPersistenceJson.inputs, [dmnRunnerPersistenceJson.inputs]);
   const dmnRunnerMode = useMemo(() => dmnRunnerPersistenceJson.configs.mode, [dmnRunnerPersistenceJson.configs.mode]);
@@ -231,12 +242,43 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     )
   );
 
+  // EditorDock drawer
+  useLayoutEffect(() => {
+    if (dmnRunnerMode === DmnRunnerMode.TABLE) {
+      addToggleItem(PanelId.DMN_RUNNER_TABLE, <DmnRunnerDockToggle key="dmn-runner-toggle-item" />);
+
+      return () => {
+        removeToggleItem(PanelId.DMN_RUNNER_TABLE);
+      };
+    }
+  }, [addToggleItem, removeToggleItem, dmnRunnerMode]);
+
+  useLayoutEffect(() => {
+    if (dmnRunnerMode === DmnRunnerMode.FORM && panel === PanelId.DMN_RUNNER_TABLE) {
+      onOpenPanel(PanelId.NONE);
+    }
+  }, [dmnRunnerMode, panel, onOpenPanel, onTogglePanel, isExpanded]);
+
+  // BEGIN -
+  // At the first render it should open the DMN Runner Table if runner is in Table mode and isExpanded = true
+  // This effect will run everytime the file name is changed;
+  const runEffect = useRef(true);
+  useLayoutEffect(() => {
+    runEffect.current = true;
+  }, [props.workspaceFile]);
+
+  useLayoutEffect(() => {
+    if (runEffect.current) {
+      if (panel !== PanelId.DMN_RUNNER_TABLE && dmnRunnerMode === DmnRunnerMode.TABLE && isExpanded) {
+        onTogglePanel(PanelId.DMN_RUNNER_TABLE);
+      }
+      runEffect.current = false;
+    }
+  }, [dmnRunnerMode, isExpanded, onTogglePanel, panel]);
+  // END
+
   // Set execution tab on Problems panel;
   useEffect(() => {
-    if (!props.editorPageDock) {
-      return;
-    }
-
     const decisionNameByDecisionId = results[currentInputIndex]?.reduce(
       (acc: Map<string, string>, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
       new Map<string, string>()
@@ -265,8 +307,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       }));
     });
 
-    props.editorPageDock?.setNotifications(i18n.terms.execution, "", notifications as any);
-  }, [props.editorPageDock, i18n.terms.execution, results, currentInputIndex]);
+    setNotifications(i18n.terms.execution, "", notifications as any);
+  }, [setNotifications, i18n.terms.execution, results, currentInputIndex]);
 
   const setDmnRunnerPersistenceJson = useCallback(
     (args: {

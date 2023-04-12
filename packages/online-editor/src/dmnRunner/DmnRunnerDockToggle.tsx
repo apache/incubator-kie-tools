@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-import { ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import * as React from "react";
-import { PanelId } from "../editor/EditorPageDockDrawer";
+import { ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { EditorPageDockToggleItem } from "../editor/EditorPageDockToggleItem";
+import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextProvider";
+import { useDmnRunnerDispatch } from "./DmnRunnerContext";
+import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 
-interface Props {
-  isSelected: boolean;
-  isDisabled: boolean;
-  disabledReason: string;
-  onChange: (id: PanelId) => void;
-}
+export function DmnRunnerDockToggle(props: {}) {
+  const { isDisabled, panel, onTogglePanel } = useEditorDockContext();
+  const { setDmnRunnerContextProviderState } = useDmnRunnerDispatch();
 
-export function DmnRunnerDockToggle(props: Props) {
   return (
-    <EditorPageDockToggleItem isDisabled={props.isDisabled} disabledReason={props.disabledReason}>
+    <EditorPageDockToggleItem>
       <ToggleGroupItem
         style={{
           borderLeft: "solid 1px",
@@ -37,12 +35,23 @@ export function DmnRunnerDockToggle(props: Props) {
           borderColor: "rgb(211, 211, 211)",
           padding: "1px",
         }}
-        isDisabled={props.isDisabled}
+        isDisabled={isDisabled}
         buttonId={PanelId.DMN_RUNNER_TABLE}
-        isSelected={props.isSelected}
+        isSelected={panel === PanelId.DMN_RUNNER_TABLE}
         onChange={() => {
-          if (!props.isDisabled) {
-            props.onChange(PanelId.DMN_RUNNER_TABLE);
+          if (!isDisabled) {
+            if (panel === PanelId.DMN_RUNNER_TABLE) {
+              setDmnRunnerContextProviderState({
+                type: DmnRunnerProviderActionType.DEFAULT,
+                newState: { isExpanded: false },
+              });
+            } else {
+              setDmnRunnerContextProviderState({
+                type: DmnRunnerProviderActionType.DEFAULT,
+                newState: { isExpanded: true },
+              });
+            }
+            onTogglePanel(PanelId.DMN_RUNNER_TABLE);
           }
         }}
         text={

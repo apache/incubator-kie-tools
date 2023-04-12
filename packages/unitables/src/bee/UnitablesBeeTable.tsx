@@ -41,7 +41,6 @@ import { useField } from "uniforms";
 import { AUTO_ROW_ID } from "../uniforms/UnitablesJsonSchemaBridge";
 import getObjectValueByPath from "lodash/get";
 import { useUnitablesContext, useUnitablesRow } from "../UnitablesContext";
-import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 import { UnitablesRowApi } from "../UnitablesRow";
 import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
 
@@ -116,7 +115,7 @@ export function UnitablesBeeTable({
               joinedName={insideProperty.joinedName}
               rowCount={rows.length}
               columnCount={columnsCount}
-              // setEditingRow={rowsRefs.get()}
+              rowsRefs={rowsRefs}
             />
           );
         }
@@ -127,12 +126,13 @@ export function UnitablesBeeTable({
             joinedName={column.joinedName}
             rowCount={rows.length}
             columnCount={columnsCount}
+            rowsRefs={rowsRefs}
           />
         );
       }
       return acc;
     }, {} as NonNullable<BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"]>);
-  }, [columns, rows.length, columnsCount]);
+  }, [columns, rows.length, columnsCount, rowsRefs]);
 
   const setColumnWidth = useCallback(
     (fieldName: string) => (newWidthAction: React.SetStateAction<number | undefined>) => {
@@ -153,7 +153,6 @@ export function UnitablesBeeTable({
           dataType: column.dataType,
           isRowIndexColumn: false,
           width: undefined,
-          minWidth: UNITABLES_COLUMN_MIN_WIDTH,
           columns: column.insideProperties.map((insideProperty) => {
             return {
               originalId: uuid + `field-${insideProperty.joinedName}`,
@@ -227,30 +226,31 @@ function UnitablesBeeTableCell({
   joinedName,
   rowCount,
   columnCount,
-}: BeeTableCellProps<ROWTYPE> & { joinedName: string; rowCount: number; columnCount: number }) {
+  rowsRefs,
+}: BeeTableCellProps<ROWTYPE> & {
+  joinedName: string;
+  rowCount: number;
+  columnCount: number;
+  rowsRefs: Map<number, UnitablesRowApi>;
+}) {
   const [{ field, onChange: onFieldChange, name: fieldName }] = useField(joinedName, {});
-
   const cellRef = useRef<HTMLDivElement | null>(null);
-
   const [autoFieldKey, forceUpdate] = useReducer((x) => x + 1, 0);
-
   const { containerCellCoordinates } = useBeeTableCoordinates();
   const { isBeeTableChange } = useUnitablesContext();
   const { submitRow, rowInputs } = useUnitablesRow(containerCellCoordinates?.rowIndex ?? 0);
   const fieldInput = useMemo(() => getObjectValueByPath(rowInputs, fieldName), [rowInputs, fieldName]);
   const [isSelectFieldOpen, setIsSelectFieldOpen] = useState(false);
-  const [previousFieldInput, setPreviousInput] = useState(fieldInput);
-  const xDmnFieldType = useMemo(() => field?.["x-dmn-type"] ?? X_DMN_TYPE.ANY, [field]);
+  const xDmnFieldType = useMemo(() => field?.["x-dmn-type"], [field]);
   const isEnumField = useMemo(() => !!field?.enum, [field]);
+  const previousFieldInput = useRef(fieldInput);
 
   // keep previous updated;
   useEffect(() => {
-    setPreviousInput(fieldInput);
+    previousFieldInput.current = fieldInput;
   }, [fieldInput]);
 
   // FIXME: Luiz - shouldn't have any reference to DMN!
-  // TODO: Luiz - Fix: x-dmn-type from field property: Any, Undefined, string, number, ...;
-  // this is useful in case we have a "time", "date", "date and time" fields;
   const setValue = useCallback(
     (newValue: string) => {
       isBeeTableChange.current = true;
@@ -275,8 +275,11 @@ function UnitablesBeeTableCell({
       } else {
         onFieldChange(newValue);
       }
+
+      // submit row;
+      rowsRefs.get(containerCellCoordinates?.rowIndex ?? 0)?.submit();
     },
-    [isBeeTableChange, field, onFieldChange]
+    [isBeeTableChange, field, onFieldChange, rowsRefs, containerCellCoordinates?.rowIndex]
   );
 
   const { isActive, isEditing } = useBeeTableSelectableCellRef(
@@ -319,11 +322,6 @@ function UnitablesBeeTableCell({
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      console.log("DIV KEYDOWN", e);
-      if (isEditing) {
-        e.stopPropagation();
-      }
-
       // TAB
       if (e.key.toLowerCase() === "tab") {
         submitRow?.(containerCellCoordinates?.rowIndex ?? 0);
@@ -342,7 +340,7 @@ function UnitablesBeeTableCell({
       // ESC
       if (e.key.toLowerCase() === "escape") {
         e.stopPropagation();
-        onFieldChange(previousFieldInput);
+        onFieldChange(previousFieldInput.current);
         cellRef.current?.focus();
         setEditingCell(false);
         if (isEnumField) {
@@ -374,7 +372,6 @@ function UnitablesBeeTableCell({
         }
 
         if (!isEditing) {
-          // TODO: Luiz - Add option to edit Select Field; Change to FormSelect component;
           const inputField = cellRef.current?.getElementsByTagName("input");
           if (inputField && inputField.length > 0) {
             inputField?.[0]?.focus();
@@ -392,7 +389,8 @@ function UnitablesBeeTableCell({
       if (isEditModeTriggeringKey(e)) {
         e.stopPropagation();
 
-        if (!isEditing) {
+        // If the target is an input node it is already editing the cell;
+        if (!isEditing && (e.target as HTMLInputElement).tagName.toLowerCase() !== "input") {
           // handle checkbox field;
           if (e.code.toLowerCase() === "space" && xDmnFieldType === X_DMN_TYPE.BOOLEAN) {
             cellRef.current?.getElementsByTagName("input")?.[0]?.click();
@@ -405,6 +403,10 @@ function UnitablesBeeTableCell({
 
         setEditingCell(true);
       }
+
+      if (isEditing) {
+        e.stopPropagation();
+      }
     },
     [
       xDmnFieldType,
@@ -413,7 +415,6 @@ function UnitablesBeeTableCell({
       isEnumField,
       navigateVertically,
       onFieldChange,
-      previousFieldInput,
       setEditingCell,
       submitRow,
     ]
@@ -439,17 +440,6 @@ function UnitablesBeeTableCell({
       submitRow(containerCellCoordinates?.rowIndex ?? 0);
     }
   }, [containerCellCoordinates?.rowIndex, fieldName, isActive, isEditing, isEnumField, isSelectFieldOpen, submitRow]);
-
-  useEffect(() => {
-    console.log(
-      "column=",
-      containerCellCoordinates?.columnIndex,
-      ", row=",
-      containerCellCoordinates?.rowIndex,
-      isActive,
-      isEditing
-    );
-  }, [containerCellCoordinates?.columnIndex, containerCellCoordinates?.rowIndex, isActive, isEditing]);
 
   return (
     <div style={{ outline: "none" }} tabIndex={-1} ref={cellRef} onKeyDown={onKeyDown}>

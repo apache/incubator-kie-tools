@@ -40,6 +40,7 @@ function NumField(props: NumFieldProps) {
   return wrapField(
     props,
     <TextInput
+      aria-label={"uniforms num field"}
       data-testid={"num-field"}
       name={props.name}
       isDisabled={props.disabled}

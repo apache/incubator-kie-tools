@@ -18,26 +18,9 @@ import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
-import { PanelId } from "../EditorPageDockDrawer";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { EditorPageDockToggleItem } from "../EditorPageDockToggleItem";
-
-interface PropsCommon {
-  isDisabled: boolean;
-  isSelected: boolean;
-  onChange: (id: PanelId) => void;
-}
-
-interface PropsEnabled extends PropsCommon {
-  isDisabled: false;
-}
-
-interface PropsDisabled extends PropsCommon {
-  isDisabled: true;
-  disabledReason: string;
-}
-
-type Props = PropsEnabled | PropsDisabled;
+import { PanelId, useEditorDockContext } from "../EditorPageDockContextProvider";
 
 interface NotificationsWithPath {
   path: string;
@@ -50,8 +33,10 @@ export interface NotificationsPanelDockToggleRef {
   deleteNotificationsFromTab: (tabName: string) => void;
 }
 
-export const NotificationsPanelDockToggle = React.forwardRef<NotificationsPanelDockToggleRef, Props>(
+export const NotificationsPanelDockToggle = React.forwardRef<NotificationsPanelDockToggleRef, {}>(
   (props, forwardRef) => {
+    const { isDisabled, panel, onTogglePanel } = useEditorDockContext();
+
     const [notificationsCount, setNotificationsCount] = useState<number>(0);
     const notifications = useMemo<Map<string, NotificationsWithPath>>(() => new Map(), []);
 
@@ -86,15 +71,12 @@ export const NotificationsPanelDockToggle = React.forwardRef<NotificationsPanelD
     );
 
     return (
-      <EditorPageDockToggleItem
-        isDisabled={props.isDisabled}
-        disabledReason={props.isDisabled ? props.disabledReason : ""}
-      >
+      <EditorPageDockToggleItem>
         <NotificationsToggleItem
           notificationsCount={notificationsCount}
-          isDisabled={props.isDisabled}
-          isSelected={props.isSelected}
-          onChange={props.onChange}
+          isDisabled={isDisabled}
+          isSelected={panel === PanelId.NOTIFICATIONS_PANEL}
+          onChange={onTogglePanel}
         />
       </EditorPageDockToggleItem>
     );

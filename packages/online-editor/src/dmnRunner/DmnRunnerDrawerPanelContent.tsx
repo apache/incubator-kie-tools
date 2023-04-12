@@ -29,7 +29,6 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { EditorPageDockDrawerRef, PanelId } from "../editor/EditorPageDockDrawer";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -41,6 +40,7 @@ import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
+import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextProvider";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -51,7 +51,6 @@ enum ButtonPosition {
 
 interface Props {
   workspaceFile: WorkspaceFile;
-  editorPageDock: EditorPageDockDrawerRef | undefined;
 }
 
 const DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION = 711;
@@ -82,6 +81,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const { currentInputIndex, error, inputs, jsonSchema, results, resultsDifference } = useDmnRunnerState();
   const { setDmnRunnerContextProviderState, onRowAdded, setDmnRunnerInputs, setDmnRunnerMode } = useDmnRunnerDispatch();
   const previousError = usePrevious(error);
+  const { notificationsPanel, onOpenPanel } = useEditorDockContext();
 
   const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
 
@@ -126,14 +126,14 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   );
 
   const openValidationTab = useCallback(() => {
-    props.editorPageDock?.open(PanelId.NOTIFICATIONS_PANEL);
-    props.editorPageDock?.getNotificationsPanel()?.setActiveTab(i18n.terms.validation);
-  }, [props.editorPageDock, i18n]);
+    onOpenPanel(PanelId.NOTIFICATIONS_PANEL);
+    notificationsPanel?.setActiveTab(i18n.terms.validation);
+  }, [i18n.terms.validation, notificationsPanel, onOpenPanel]);
 
   const openExecutionTab = useCallback(() => {
-    props.editorPageDock?.open(PanelId.NOTIFICATIONS_PANEL);
-    props.editorPageDock?.getNotificationsPanel()?.setActiveTab(i18n.terms.execution);
-  }, [props.editorPageDock, i18n]);
+    onOpenPanel(PanelId.NOTIFICATIONS_PANEL);
+    notificationsPanel?.setActiveTab(i18n.terms.execution);
+  }, [i18n.terms.execution, notificationsPanel, onOpenPanel]);
 
   const drawerErrorMessage = useMemo(
     () => (
@@ -218,8 +218,8 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const onChangeToTableView = useCallback(() => {
     setDmnRunnerMode(DmnRunnerMode.TABLE);
-    props.editorPageDock?.open(PanelId.DMN_RUNNER_TABLE);
-  }, [props.editorPageDock, setDmnRunnerMode]);
+    onOpenPanel(PanelId.DMN_RUNNER_TABLE);
+  }, [onOpenPanel, setDmnRunnerMode]);
 
   return (
     <DrawerPanelContent

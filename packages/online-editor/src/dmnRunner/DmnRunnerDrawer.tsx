@@ -19,14 +19,9 @@ import { DmnRunnerDrawerPanelContent } from "./DmnRunnerDrawerPanelContent";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { useDmnRunnerState } from "./DmnRunnerContext";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { EditorPageDockDrawerRef } from "../editor/EditorPageDockDrawer";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 
-export function DmnRunnerDrawer(props: {
-  workspaceFile: WorkspaceFile;
-  editorPageDock: EditorPageDockDrawerRef | undefined;
-  children: React.ReactNode;
-}) {
+export function DmnRunnerDrawer(props: { workspaceFile: WorkspaceFile; children: React.ReactNode }) {
   const dmnRunnerState = useDmnRunnerState();
   return (
     <Drawer isInline={true} isExpanded={dmnRunnerState.isExpanded && dmnRunnerState.mode === DmnRunnerMode.FORM}>
@@ -34,9 +29,7 @@ export function DmnRunnerDrawer(props: {
         className={
           !dmnRunnerState.isExpanded ? "kogito--editor__drawer-content-onClose" : "kogito--editor__drawer-content-open"
         }
-        panelContent={
-          <DmnRunnerDrawerPanelContent workspaceFile={props.workspaceFile} editorPageDock={props.editorPageDock} />
-        }
+        panelContent={<DmnRunnerDrawerPanelContent workspaceFile={props.workspaceFile} />}
       >
         <DrawerContentBody className={"kogito--editor__drawer-content-body"}>{props.children}</DrawerContentBody>
       </DrawerContent>

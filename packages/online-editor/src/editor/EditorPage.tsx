@@ -44,13 +44,13 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
+import { EditorPageDockDrawer } from "./EditorPageDockDrawer";
 import { DmnRunnerContextProvider } from "../dmnRunner/DmnRunnerContextProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
-import { useFileValidation } from "./Validation";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { EditorPageDockContextProvider } from "./EditorPageDockContextProvider";
 
 export interface Props {
   workspaceId: string;
@@ -68,7 +68,6 @@ export function EditorPage(props: Props) {
   const { previewSvgService } = usePreviewSvgs();
   const { locale, i18n } = useOnlineI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
-  const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const alertsDispatch = useGlobalAlertsDispatchContext();
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
   const [isFileBroken, setFileBroken] = useState(false);
@@ -285,31 +284,6 @@ export function EditorPage(props: Props) {
     setTextEditorModalOpen(false);
   }, [alertsDispatch]);
 
-  // validate
-  useEffect(() => {
-    if (
-      workspaceFilePromise.data?.workspaceFile.extension === "dmn" ||
-      workspaceFilePromise.data?.workspaceFile.extension === "bpmn" ||
-      workspaceFilePromise.data?.workspaceFile.extension === "bpmn2" ||
-      !workspaceFilePromise.data ||
-      !editor?.isReady
-    ) {
-      return;
-    }
-
-    //FIXME: Removing this timeout makes the notifications not work some times. Need to investigate.
-    setTimeout(() => {
-      editor?.validate().then((notifications) => {
-        editorPageDock?.setNotifications(
-          i18n.terms.validation,
-          "",
-          // Removing the notification path so that we don't group it by path, as we're only validating one file.
-          Array.isArray(notifications) ? notifications.map((n) => ({ ...n, path: "" })) : []
-        );
-      });
-    }, 200);
-  }, [workspaceFilePromise, editor, i18n, editorPageDock]);
-
   const handleOpenFile = useCallback(
     async (relativePath: string) => {
       if (!workspaceFilePromise.data) {
@@ -364,8 +338,6 @@ export function EditorPage(props: Props) {
     });
   }, [workspaces, workspaceFilePromise.data?.workspaceFile]);
 
-  useFileValidation(workspaces, workspaceFilePromise.data?.workspaceFile, editorPageDock, dmnLanguageService);
-
   const onKeyDown = useCallback(
     (ke: React.KeyboardEvent) => {
       editor?.onKeyDown(ke);
@@ -393,40 +365,47 @@ export function EditorPage(props: Props) {
         )}
         resolved={(file) => (
           <>
-            <DmnRunnerContextProvider
-              workspaceFile={file.workspaceFile}
-              isEditorReady={editor?.isReady}
-              dmnLanguageService={dmnLanguageService}
-              editorPageDock={editorPageDock}
-            >
-              <Page>
-                <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />
-                <Divider />
-                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor section">
-                  <DmnRunnerDrawer workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
-                    <EditorPageDockDrawer ref={editorPageDockRef} workspaceFile={file.workspaceFile}>
-                      {embeddedEditorFile && (
-                        <EmbeddedEditor
-                          /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
-                           * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
-                           */
-                          key={uniqueFileId}
-                          ref={editorRef}
-                          file={embeddedEditorFile}
-                          kogitoWorkspace_openFile={handleOpenFile}
-                          kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
-                          kogitoWorkspace_resourceListRequest={handleResourceListRequest}
-                          kogitoEditor_setContentError={handleSetContentError}
-                          editorEnvelopeLocator={editorEnvelopeLocator}
-                          channelType={ChannelType.ONLINE_MULTI_FILE}
-                          locale={locale}
-                        />
-                      )}
-                    </EditorPageDockDrawer>
-                  </DmnRunnerDrawer>
-                </PageSection>
-              </Page>
-            </DmnRunnerContextProvider>
+            <Page>
+              <EditorPageDockContextProvider
+                workspaceFile={file.workspaceFile}
+                workspaces={workspaces}
+                dmnLanguageService={dmnLanguageService}
+                isEditorReady={editor?.isReady ?? false}
+                editorValidate={editor?.validate}
+              >
+                <DmnRunnerContextProvider
+                  workspaceFile={file.workspaceFile}
+                  isEditorReady={editor?.isReady}
+                  dmnLanguageService={dmnLanguageService}
+                >
+                  <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} />
+                  <Divider />
+                  <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor section">
+                    <DmnRunnerDrawer workspaceFile={file.workspaceFile}>
+                      <EditorPageDockDrawer>
+                        {embeddedEditorFile && (
+                          <EmbeddedEditor
+                            /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+                             * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+                             */
+                            key={uniqueFileId}
+                            ref={editorRef}
+                            file={embeddedEditorFile}
+                            kogitoWorkspace_openFile={handleOpenFile}
+                            kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
+                            kogitoWorkspace_resourceListRequest={handleResourceListRequest}
+                            kogitoEditor_setContentError={handleSetContentError}
+                            editorEnvelopeLocator={editorEnvelopeLocator}
+                            channelType={ChannelType.ONLINE_MULTI_FILE}
+                            locale={locale}
+                          />
+                        )}
+                      </EditorPageDockDrawer>
+                    </DmnRunnerDrawer>
+                  </PageSection>
+                </DmnRunnerContextProvider>
+              </EditorPageDockContextProvider>
+            </Page>
             <TextEditorModal
               editor={editor}
               workspaceFile={file.workspaceFile}

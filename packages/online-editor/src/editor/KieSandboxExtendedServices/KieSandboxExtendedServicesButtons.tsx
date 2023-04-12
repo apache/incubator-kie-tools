@@ -34,7 +34,6 @@ import {
 } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { DmnRunnerMode } from "../../dmnRunner/DmnRunnerStatus";
-import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
@@ -45,9 +44,9 @@ import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import { DeleteDropdownWithConfirmation } from "../DeleteDropdownWithConfirmation";
 import { useDmnRunnerPersistenceDispatch } from "../../dmnRunnerPersistence/DmnRunnerPersistenceDispatchContext";
 import { DmnRunnerProviderActionType } from "../../dmnRunner/DmnRunnerTypes";
+import { PanelId, useEditorDockContext } from "../EditorPageDockContextProvider";
 
 interface Props {
-  editorPageDock: EditorPageDockDrawerRef | undefined;
   workspace: ActiveWorkspace | undefined;
   workspaceFile: WorkspaceFile;
 }
@@ -56,6 +55,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
   const devDeployments = useDevDeployments();
+  const { onTogglePanel, onOpenPanel } = useEditorDockContext();
   const { dmnRunnerPersistenceJson, isExpanded, mode } = useDmnRunnerState();
   const { setDmnRunnerMode, setDmnRunnerContextProviderState } = useDmnRunnerDispatch();
   const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
@@ -67,7 +67,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const toggleDmnRunnerDrawer = useCallback(() => {
     if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
       if (mode === DmnRunnerMode.TABLE) {
-        props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
+        onTogglePanel(PanelId.DMN_RUNNER_TABLE);
         return;
       }
       setDmnRunnerContextProviderState({ type: DmnRunnerProviderActionType.TOGGLE_EXPANDED });
@@ -75,7 +75,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     extendedServices.setModalOpen(true);
-  }, [mode, setDmnRunnerContextProviderState, extendedServices, props.editorPageDock]);
+  }, [setDmnRunnerContextProviderState, extendedServices, mode, onTogglePanel]);
 
   const toggleDevDeploymentsDropdown = useCallback(
     (isOpen: boolean) => {
@@ -184,7 +184,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
                   setDmnRunnerMode(DmnRunnerMode.TABLE);
-                  props.editorPageDock?.open(PanelId.DMN_RUNNER_TABLE);
+                  onOpenPanel(PanelId.DMN_RUNNER_TABLE);
                   setDmnRunnerContextProviderState({
                     type: DmnRunnerProviderActionType.DEFAULT,
                     newState: { isExpanded: true },

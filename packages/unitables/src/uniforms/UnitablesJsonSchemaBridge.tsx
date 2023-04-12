@@ -26,9 +26,9 @@ import { UnitablesColumnType } from "../UnitablesTypes";
 export const FORMS_ID = "unitables-forms";
 export const AUTO_ROW_ID = "unitables-row";
 
-const DEFAULT_DATE_TIME_CELL_WDITH = 340;
-const DEFAULT_DATE_CELL_WIDTH = 193;
-const DEFAULT_TIME_CELL_WIDTH = 152;
+const DEFAULT_DATE_TIME_CELL_WDITH = 188;
+const DEFAULT_DATE_CELL_WIDTH = 170;
+const DEFAULT_TIME_CELL_WIDTH = 150;
 
 export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   constructor(
