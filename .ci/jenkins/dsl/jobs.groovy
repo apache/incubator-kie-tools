@@ -69,17 +69,9 @@ void createSetupBranchJob() {
         REPO_NAME: 'kogito-images',
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
 
-        CONTAINER_ENGINE: 'docker',
-        CONTAINER_TLS_OPTIONS: '',
-        MAX_REGISTRY_RETRIES: 3,
-
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
-        QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
-
         AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-
-        MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
 
         IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}"
     ])
@@ -88,17 +80,6 @@ void createSetupBranchJob() {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-
-            stringParam('APPS_URI', '', 'Git uri to the kogito-apps repository to use for tests.')
-            stringParam('APPS_REF', '', 'Git reference (branch/tag) to the kogito-apps repository to use for building. Default to BUILD_BRANCH_NAME.')
-
-            // Deploy information
-            booleanParam('IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
-            stringParam('IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
-            stringParam('IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
-            stringParam('IMAGE_NAME_SUFFIX', '', 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
-            stringParam('IMAGE_TAG', '', 'Image tag to use to deploy images')
 
             // Release information
             stringParam('KOGITO_VERSION', '', 'Kogito version to set.')
