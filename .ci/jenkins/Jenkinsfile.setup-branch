@@ -82,37 +82,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Build Kogito Operator') {
-            steps {
-                sh "make container-build BUILDER=${env.CONTAINER_ENGINE}"
-            }
-            post {
-                unsuccessful {
-                    script {
-                        util.archiveConsoleLog()
-                    }
-                }
-            }
-        }
-
-        stage('Push to registry') {
-            steps {
-                script {
-                    helper.loginRegistry()
-
-                    container.tagImage(getBuiltImage(), helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
-                    container.pushImage(helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
-
-                    String reducedTag = helper.getReducedTag()
-                    if (reducedTag) {
-                        String finalFullImage = helper.getImageFullTag(env.OPERATOR_IMAGE_NAME, defaultImageParamsPrefix, reducedTag)
-                        container.tagImage(getBuiltImage(), finalFullImage)
-                        container.pushImage(finalFullImage)
-                    }
-                }
-            }
-        }
     }
     post {
         unsuccessful {
@@ -133,18 +102,6 @@ void sendNotification() {
     } else {
         echo 'No notification sent per configuration'
     }
-}
-
-String getOperatorVersion() {
-    return sh(script: 'source ./hack/env.sh > /dev/null && echo $(getOperatorVersion)', returnStdout: true).trim()
-}
-
-String getOperatorImageName() {
-    return sh(script: 'source ./hack/env.sh > /dev/null && echo $(getOperatorImageName)', returnStdout: true).trim()
-}
-
-String getBuiltImage() {
-    return "${getOperatorImageName()}:${getOperatorVersion()}"
 }
 
 boolean isMainBranch() {
