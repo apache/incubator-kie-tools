@@ -56,6 +56,10 @@ export class EditorEnvelopeLocatorFactory {
     return new EditorEnvelopeLocator(
       args.targetOrigin,
       args.editorsJson.map((config) => {
+        console.log("type: " + config.type);
+        console.log("filePathGlob: " + config.filePathGlob);
+        console.log("resourcesPathPrefix: " + config.resourcesPathPrefix);
+        console.log("path: " + config.path);
         return new EnvelopeMapping({
           type: config.type,
           filePathGlob: config.filePathGlob,

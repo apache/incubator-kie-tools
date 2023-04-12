@@ -30,10 +30,11 @@ async function gitCorsProxyUrl(): Promise<string> {
   const env = (await (await fetch(envFilePath)).json()) as EnvJson;
   return env.KIE_SANDBOX_GIT_CORS_PROXY_URL;
 }
-const editors = getEnvelopeEditors();
-const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "", editorsJson: editors });
 const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProxyUrl() });
 
+function getEditors() {
+  return new EditorEnvelopeLocatorFactory().create({ targetOrigin: "", editorsJson: getEnvelopeEditors() });
+}
 // shared worker connection
 
 declare let onconnect: any;
@@ -47,9 +48,9 @@ onconnect = async (e: MessageEvent) => {
       appName: "KIE Sandbox",
       services: workspaceServices,
       fileFilter: {
-        isModel: (path) => editorEnvelopeLocator.hasMappingFor(path),
-        isEditable: (path) => editorEnvelopeLocator.hasMappingFor(path),
-        isSupported: (path) => editorEnvelopeLocator.hasMappingFor(path),
+        isModel: (path) => getEditors().hasMappingFor(path),
+        isEditable: (path) => getEditors().hasMappingFor(path),
+        isSupported: (path) => getEditors().hasMappingFor(path),
       },
     }),
     port: e.ports[0],
