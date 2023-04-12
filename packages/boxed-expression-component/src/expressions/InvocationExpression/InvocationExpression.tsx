@@ -124,7 +124,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     () => [
       {
         label: invocationExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        accessor: "invocation-expression" as keyof ROWTYPE,
+        accessor: invocationExpression.id as keyof ROWTYPE,
         dataType: invocationExpression.dataType ?? INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
         isRowIndexColumn: false,
         width: undefined,

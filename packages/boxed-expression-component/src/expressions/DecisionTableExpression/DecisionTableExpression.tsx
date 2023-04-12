@@ -254,7 +254,7 @@ export function DecisionTableExpression(
 
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
-      id: "Outputs",
+      id: decisionTableExpression.id,
       accessor: "decision-table-expression" as any, // FIXME: Tiago -> ?
       label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
       dataType: decisionTableExpression.dataType ?? DmnBuiltInDataType.Undefined,

@@ -43,6 +43,7 @@ import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
@@ -800,7 +801,7 @@ public class ExpressionEditorViewImplTest {
         final String uuid = "someUuid";
         final DomainObject domainObject = mock(DomainObject.class);
 
-        doReturn(false).when(view).innerExpressionMatches(uuid);
+        doReturn(false).when(view).currentDomainObjectMatches(uuid);
         doReturn(false).when(view).businessKnowledgeModelMatches(uuid);
         doReturn(domainObject).when(view).findDomainObject(uuid);
 
@@ -815,7 +816,8 @@ public class ExpressionEditorViewImplTest {
         final String uuid = "someUuid";
         final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
 
-        doReturn(false).when(view).innerExpressionMatches(uuid);
+        doReturn(false).when(view).currentDomainObjectMatches(uuid);
+        doReturn(false).when(view).innerExpressionMatches(eq(uuid));
         doReturn(true).when(view).businessKnowledgeModelMatches(uuid);
         doReturn(bkm).when(view).getBusinessKnowledgeModel();
 
@@ -829,7 +831,7 @@ public class ExpressionEditorViewImplTest {
 
         final String uuid = "someUuid";
 
-        doReturn(true).when(view).innerExpressionMatches(uuid);
+        doReturn(true).when(view).currentDomainObjectMatches(uuid);
 
         final DomainObject foundDomainObject = view.findDomainObject(uuid);
 
@@ -854,6 +856,7 @@ public class ExpressionEditorViewImplTest {
 
         when(expression.findDomainObject(uuid)).thenReturn(Optional.empty());
         when(hasExpression.getExpression()).thenReturn(expression);
+        doReturn(false).when(view).innerExpressionMatches(uuid);
 
         final DomainObject domainObject = view.findDomainObjectInCurrentExpression(uuid);
 
@@ -876,5 +879,41 @@ public class ExpressionEditorViewImplTest {
         verify(expression).findDomainObject(uuid);
         assertFalse(result instanceof NOPDomainObject);
         assertEquals(domainObject, result);
+    }
+
+    @Test
+    public void testInnerExpressionMatches() {
+
+        final String uuid = "uuid";
+        final Id id = new Id(uuid);
+        final Expression expression = mock(Expression.class);
+
+        when(expression.getId()).thenReturn(id);
+        when(hasExpression.getExpression()).thenReturn(expression);
+
+        assertTrue(view.innerExpressionMatches(uuid));
+    }
+
+    @Test
+    public void testInnerExpressionMatches_WhenDoesNot() {
+
+        final String uuid = "uuid";
+        final Id id = new Id(uuid);
+        final Expression expression = mock(Expression.class);
+
+        when(expression.getId()).thenReturn(id);
+        when(hasExpression.getExpression()).thenReturn(expression);
+
+        assertFalse(view.innerExpressionMatches("anotherUuid"));
+    }
+
+    @Test
+    public void testInnerExpressionMatches_WhenExpressionIsNull() {
+
+        final String uuid = "uuid";
+
+        when(hasExpression.getExpression()).thenReturn(null);
+
+        assertFalse(view.innerExpressionMatches(uuid));
     }
 }

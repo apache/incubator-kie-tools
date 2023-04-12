@@ -16,7 +16,7 @@
 
 import * as _ from "lodash";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import * as ReactTable from "react-table";
 import { DmnBuiltInDataType, BeeTableHeaderVisibility, ExpressionDefinition } from "../../api";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
@@ -27,7 +27,6 @@ import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import { getCanvasFont, getTextWidth } from "../../resizing/WidthsToFitData";
 import { BeeTableThController } from "./BeeTableThController";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
-import { SelectionPart, useBeeTableSelectionDispatch } from "../../selection/BeeTableSelectionContext";
 
 export interface BeeTableColumnUpdate<R extends object> {
   dataType: DmnBuiltInDataType;

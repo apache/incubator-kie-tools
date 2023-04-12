@@ -359,7 +359,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     DomainObject findDomainObject(final String uuid) {
 
-        if (innerExpressionMatches(uuid)) {
+        if (currentDomainObjectMatches(uuid)) {
             return (DomainObject) getHasExpression();
         } else if (businessKnowledgeModelMatches(uuid)) {
             return getBusinessKnowledgeModel();
@@ -374,6 +374,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
             final Optional<DomainObject> domainObject = getHasExpression().getExpression().findDomainObject(uuid);
             if (domainObject.isPresent()) {
                 return domainObject.get();
+            } else if (innerExpressionMatches(uuid)) {
+                return (DomainObject) getHasExpression();
             }
         }
         return new NOPDomainObject();
@@ -383,9 +385,16 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         return ((BusinessKnowledgeModel) hasExpression.getExpression().asDMNModelInstrumentedBase().getParent());
     }
 
+    boolean currentDomainObjectMatches(final String uuid) {
+        return getHasExpression() instanceof DomainObject
+                && matches(((DomainObject) getHasExpression()), uuid);
+    }
+
     boolean innerExpressionMatches(final String uuid) {
-        return hasExpression instanceof DomainObject
-                && matches(((DomainObject) hasExpression), uuid);
+
+        return getHasExpression() instanceof DomainObject
+                && !Objects.isNull(getHasExpression().getExpression())
+                && Objects.equals(getHasExpression().getExpression().getId().getValue(), uuid);
     }
 
     boolean businessKnowledgeModelMatches(final String uuid) {

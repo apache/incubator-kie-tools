@@ -23,7 +23,10 @@ import { LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH } from "..
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
 import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
-import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import "./LiteralExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
@@ -32,6 +35,7 @@ type ROWTYPE = any;
 
 export function LiteralExpression(literalExpression: LiteralExpressionDefinition & { isNested: boolean }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { decisionNodeId } = useBoxedExpressionEditor();
 
   const getValue = useCallback(() => {
     return literalExpression.content ?? "";
@@ -125,7 +129,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        accessor: "literal-expression" as any, // FIXME: Tiago -> No bueno.
+        accessor: decisionNodeId as any, // FIXME: Tiago -> No bueno.
         label: literalExpression.name ?? DEFAULT_EXPRESSION_NAME,
         isRowIndexColumn: false,
         dataType: literalExpression.dataType,
@@ -137,16 +141,12 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   }, [literalExpression.dataType, literalExpression.name, literalExpression.width, minWidth, setWidth]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
-    return [{ "literal-expression": { content: literalExpression.content ?? "", id: literalExpression.id } }];
+    return [{ [decisionNodeId]: { content: literalExpression.content ?? "", id: literalExpression.id } }];
   }, [literalExpression]);
 
   const beeTableHeaderVisibility = useMemo(() => {
     return literalExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
   }, [literalExpression.isNested]);
-
-  const getColumnKey = useCallback((column: ReactTable.Column<ROWTYPE>) => {
-    return column.label;
-  }, []);
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
     return row.id;
@@ -163,7 +163,6 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         <BeeTable
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           forwardRef={beeTableRef}
-          getColumnKey={getColumnKey}
           getRowKey={getRowKey}
           columns={beeTableColumns}
           rows={beeTableRows}

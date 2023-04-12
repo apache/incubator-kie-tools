@@ -16,13 +16,14 @@
 
 import { ContextExpressionDefinitionEntry, DmnBuiltInDataType, ExpressionDefinition } from "../../api";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import * as _ from "lodash";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { DEFAULT_EXPRESSION_NAME, ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
 import "./ContextEntryInfoCell.css";
 import { useCellWidthToFitDataRef } from "../../resizing/BeeTableCellWidthToFitDataContext";
 import { getCanvasFont, getTextWidth } from "../../resizing/WidthsToFitData";
+import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export interface ContextEntryInfoCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".
@@ -86,12 +87,20 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
     )
   );
 
-  useBeeTableSelectableCellRef(
+  const { isActive } = useBeeTableSelectableCellRef(
     rowIndex,
     columnIndex,
     undefined,
     useCallback(() => `${entryInfo.name} (${entryInfo.dataType})`, [entryInfo.dataType, entryInfo.name])
   );
+
+  const { beeGwtService } = useBoxedExpressionEditor();
+
+  useEffect(() => {
+    if (isActive) {
+      beeGwtService?.selectObject(entryInfo.id);
+    }
+  }, [beeGwtService, entryInfo, isActive]);
 
   const renderEntryDefinition = useCallback(
     (args: { additionalCssClass?: string }) => (

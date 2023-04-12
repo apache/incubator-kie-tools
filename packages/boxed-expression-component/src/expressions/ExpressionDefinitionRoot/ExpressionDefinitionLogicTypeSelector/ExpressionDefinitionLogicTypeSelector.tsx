@@ -26,7 +26,6 @@ import { CutIcon } from "@patternfly/react-icons/dist/js/icons/cut-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
-import _ from "lodash";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ExpressionDefinition, ExpressionDefinitionLogicType, generateUuid } from "../../../api";

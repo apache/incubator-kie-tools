@@ -80,7 +80,7 @@ export function JavaFunctionExpression({
     return [
       {
         label: functionExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        accessor: "function-expression" as any, // FIXME: Tiago -> ?
+        accessor: functionExpression.id as any, // FIXME: Tiago -> ?
         dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,

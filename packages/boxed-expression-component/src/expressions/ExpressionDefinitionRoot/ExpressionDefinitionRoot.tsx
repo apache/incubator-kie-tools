@@ -40,7 +40,13 @@ export function ExpressionDefinitionRoot({
           <span className="expression-type">({expression.logicType})</span>
         </div>
 
-        <ExpressionContainer expression={expression} isResetSupported={isResetSupported} isNested={false} />
+        <ExpressionContainer
+          expression={expression}
+          isResetSupported={isResetSupported}
+          isNested={false}
+          rowIndex={0}
+          columnIndex={0}
+        />
       </div>
     </ResizingWidthsContextProvider>
   );

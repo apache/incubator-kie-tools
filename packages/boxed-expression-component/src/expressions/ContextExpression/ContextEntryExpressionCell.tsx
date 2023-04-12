@@ -21,23 +21,24 @@ import {
   ContextExpressionDefinitionEntry,
   ExpressionDefinitionLogicType,
 } from "../../api";
-import * as _ from "lodash";
 import {
   NestedExpressionDispatchContextProvider,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 
 export interface ContextEntryExpressionCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".
   data: readonly ContextExpressionDefinitionEntry[];
   rowIndex: number;
+  columnIndex: number;
 }
 
 export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({
   data: contextEntries,
   rowIndex,
+  columnIndex,
 }) => {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -60,6 +61,8 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
         expression={contextEntries[rowIndex]?.entryExpression}
         isResetSupported={true}
         isNested={true}
+        rowIndex={rowIndex}
+        columnIndex={columnIndex}
       />
     </NestedExpressionDispatchContextProvider>
   );

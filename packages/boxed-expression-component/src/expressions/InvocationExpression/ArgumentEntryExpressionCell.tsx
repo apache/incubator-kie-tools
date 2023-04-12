@@ -32,11 +32,13 @@ export interface ArgumentEntryExpressionCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".
   data: readonly ContextExpressionDefinitionEntry[];
   rowIndex: number;
+  columnIndex: number;
 }
 
 export const ArgumentEntryExpressionCell: React.FunctionComponent<ArgumentEntryExpressionCellProps> = ({
   data: argumentEntries,
   rowIndex,
+  columnIndex,
 }) => {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -59,6 +61,8 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<ArgumentEntryE
         expression={argumentEntries[rowIndex]?.entryExpression}
         isResetSupported={true}
         isNested={true}
+        rowIndex={rowIndex}
+        columnIndex={columnIndex}
       />
     </NestedExpressionDispatchContextProvider>
   );

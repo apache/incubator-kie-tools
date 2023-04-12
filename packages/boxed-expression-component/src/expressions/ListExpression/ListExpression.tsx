@@ -34,7 +34,10 @@ import { useNestedExpressionContainerWithNestedExpressions } from "../../resizin
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
 import { LIST_EXPRESSION_EXTRA_WIDTH, LIST_EXPRESSION_ITEM_MIN_WIDTH } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
-import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./ListExpression.css";
 import { ListItemCell } from "./ListItemCell";
@@ -45,6 +48,7 @@ export type ROWTYPE = ContextExpressionDefinitionEntry;
 export function ListExpression(listExpression: ListExpressionDefinition & { isNested: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { decisionNodeId } = useBoxedExpressionEditor();
 
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -93,7 +97,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        accessor: "list" as any,
+        accessor: decisionNodeId as any,
         label: listExpression.name ?? DEFAULT_EXPRESSION_NAME,
         dataType: listExpression.dataType,
         isRowIndexColumn: false,
@@ -110,7 +114,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
 
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     () => ({
-      list: ListItemCell,
+      [decisionNodeId]: ListItemCell,
     }),
     []
   );
