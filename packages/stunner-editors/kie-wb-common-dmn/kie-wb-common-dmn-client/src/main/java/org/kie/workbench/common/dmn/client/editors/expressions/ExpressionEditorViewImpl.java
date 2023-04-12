@@ -167,6 +167,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private Optional<HasName> hasName;
     private boolean isOnlyVisualChangeAllowed;
     private UpdateCanvasNodeNameCommand updateCanvasNodeNameCommand;
+    private String selectedUUID;
 
     public ExpressionEditorViewImpl() {
         //CDI proxy
@@ -305,6 +306,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.hasExpression = hasExpression;
         this.hasName = hasName;
         this.isOnlyVisualChangeAllowed = isOnlyVisualChangeAllowed;
+        this.selectedUUID = nodeUUID;
         expressionContainerGrid.setExpression(nodeUUID,
                                               hasExpression,
                                               hasName,
@@ -351,6 +353,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Override
     public void selectDomainObject(final String uuid) {
+        this.selectedUUID = uuid;
         fireDomainObjectSelectionEvent(findDomainObject(uuid));
     }
 
@@ -498,6 +501,11 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                 break;
             default:
                 throw new UnsupportedOperationException("Logic type: " + logicType + " is currently unsupported");
+        }
+
+        if (Objects.nonNull(selectedUUID)) {
+            refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(getCurrentSession(), null));
+            fireDomainObjectSelectionEvent(findDomainObject(selectedUUID));
         }
     }
 
