@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-import { ListDeployments } from "@kie-tools-core/openshift/dist/api/kubernetes/Deployment";
-import { ListRoutes } from "@kie-tools-core/openshift/dist/api/kubernetes/Route";
+import { ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import {
   DeploymentDescriptor,
   DeploymentGroupDescriptor,
+  DeploymentState,
+  ListDeployments,
+  ListRoutes,
+  ResourceLabelNames,
   RouteGroupDescriptor,
-} from "@kie-tools-core/openshift/dist/api/types";
-import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
-import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
-import { ResourceLabelNames } from "@kie-tools-core/openshift/dist/template/TemplateConstants";
+} from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { fetchWithTimeout } from "../../fetch";
-import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
-import { buildEndpoints, DevModeEndpoints } from "../devMode/DevModeConstants";
-import { resolveDevModeResourceName } from "../devMode/DevModeContext";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
+import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
+import { DevModeEndpoints, buildEndpoints } from "../devMode/DevModeConstants";
+import { resolveDevModeResourceName } from "../devMode/DevModeContext";
 
 interface ExtendedDeployment {
   endpoints: DevModeEndpoints;
   deployment: DeploymentDescriptor;
-  state: OpenShiftDeploymentState;
+  state: DeploymentState;
 }
 
 interface DevModeDeploymentLoaderPipelineArgs {
@@ -73,7 +73,7 @@ export class DevModeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
       ).items.filter((route) => deployments.some((d) => route.metadata.name === d.metadata.name));
 
       const extendedDeployments = devModeRoutes.map((route) => {
-        const routeUrl = this.args.openShiftService.kubernetes.composeRouteUrl(route);
+        const routeUrl = this.args.openShiftService.composeDeploymentUrlFromRoute(route);
         const deployment = deployments.filter((d) => d.metadata.name === route.metadata.name)[0];
         const state = this.args.openShiftService.kubernetes.extractDeploymentState({ deployment });
         return { endpoints: buildEndpoints(routeUrl), state, deployment };
@@ -81,20 +81,20 @@ export class DevModeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
 
       const healthCheckedExtendedDeployments = [];
       for (const ed of extendedDeployments) {
-        if (ed.state !== OpenShiftDeploymentState.UP) {
+        if (ed.state !== DeploymentState.UP) {
           healthCheckedExtendedDeployments.push(ed);
         } else {
           try {
             const readyResponse = await fetchWithTimeout(ed.endpoints.health.ready, { timeout: 1000 });
             healthCheckedExtendedDeployments.push({
               ...ed,
-              state: readyResponse.ok ? OpenShiftDeploymentState.UP : OpenShiftDeploymentState.IN_PROGRESS,
+              state: readyResponse.ok ? DeploymentState.UP : DeploymentState.IN_PROGRESS,
             });
           } catch (e) {
             console.debug(e);
             healthCheckedExtendedDeployments.push({
               ...ed,
-              state: OpenShiftDeploymentState.IN_PROGRESS,
+              state: DeploymentState.IN_PROGRESS,
             });
           }
         }

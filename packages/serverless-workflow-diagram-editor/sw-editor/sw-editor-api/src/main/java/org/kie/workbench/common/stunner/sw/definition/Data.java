@@ -22,7 +22,7 @@ import jsinterop.annotations.JsType;
 @JsType
 public class Data {
 
-    private String result;
+    public String result;
 
     public final String getResult() {
         return result;

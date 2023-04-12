@@ -21,11 +21,11 @@ import { DeploymentStrategy } from "../DeploymentStrategy";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
 import { DeploymentStrategyArgs } from "../types";
 import { KnativeBuilderPipeline } from "../../pipelines/KnativeBuilderPipeline";
-import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { zipFiles } from "../../../zip";
+import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 interface CreateKogitoProjectDeploymentArgs {
-  openShiftConnection: OpenShiftConnection;
+  openShiftConnection: KubernetesConnection;
 }
 
 export class KogitoProjectDeployment extends DeploymentStrategy {

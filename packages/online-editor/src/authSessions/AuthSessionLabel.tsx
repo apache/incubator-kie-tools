@@ -33,7 +33,7 @@ export function AuthSessionLabel(props: { authSession: AuthSession }) {
           <Text component={TextVariants.h3}>
             {props.authSession.type === "git"
               ? props.authSession.login
-              : props.authSession.type === "openshift"
+              : props.authSession.type === "openshift" || props.authSession.type === "kubernetes"
               ? props.authSession.namespace
               : props.authSession.login}
           </Text>

@@ -14,26 +14,29 @@
  * limitations under the License.
  */
 
-import { KubernetesApiVersions } from "@kie-tools-core/openshift/dist/api/ApiConstants";
+import { ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import {
   CreateDeployment,
-  ListDeployments,
-  UpdateDeployment,
-} from "@kie-tools-core/openshift/dist/api/kubernetes/Deployment";
-import { CreateRoute, DeleteRoute, GetRoute } from "@kie-tools-core/openshift/dist/api/kubernetes/Route";
-import { CreateService, DeleteService } from "@kie-tools-core/openshift/dist/api/kubernetes/Service";
-import {
+  CreateRoute,
+  CreateService,
+  DeleteRoute,
+  DeleteService,
   DeploymentDescriptor,
   DeploymentGroupDescriptor,
+  DeploymentState,
+  GetRoute,
+  ListDeployments,
+  ResourceDataSource,
   RouteDescriptor,
-} from "@kie-tools-core/openshift/dist/api/types";
-import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
-import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
-import { commonLabels, runtimeLabels } from "@kie-tools-core/openshift/dist/template/TemplateConstants";
+  UpdateDeployment,
+  commonLabels,
+  runtimeLabels,
+} from "@kie-tools-core/kubernetes-bridge/dist/resources";
+import { Deployment } from "kubernetes-models/apps/v1";
 import { DeployConstants } from "../DeployConstants";
-import { resolveDevModeResourceName } from "../devMode/DevModeContext";
 import { RESOURCE_OWNER } from "../OpenShiftConstants";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
+import { resolveDevModeResourceName } from "../devMode/DevModeContext";
 
 interface SpinUpDevModePipelineArgs {
   webToolsId: string;
@@ -71,7 +74,7 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
       deployment: latestDeployment,
     });
 
-    if (latestDeploymentStatus === OpenShiftDeploymentState.ERROR) {
+    if (latestDeploymentStatus === DeploymentState.ERROR || !latestDeployment.spec) {
       throw new Error("Invalid state for the dev mode deployment");
     }
 
@@ -84,10 +87,10 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
       })
     );
 
-    const routeUrl = this.args.openShiftService.kubernetes.composeRouteUrl(route);
+    const routeUrl = this.args.openShiftService.composeDeploymentUrlFromRoute(route);
 
-    if (latestDeploymentStatus !== OpenShiftDeploymentState.UP) {
-      const currentReplicas = latestDeployment.spec.replicas;
+    if (latestDeploymentStatus !== DeploymentState.UP) {
+      const currentReplicas = latestDeployment.spec.replicas || 0;
       const updatedDeployment: DeploymentDescriptor = {
         ...latestDeployment,
         spec: {
@@ -122,25 +125,25 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
 
     try {
       await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-        fetcher.execute({ target: new CreateService(resourceArgs) })
+        fetcher.execute({
+          target: new CreateService({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
+        })
       );
 
       const route = await this.args.openShiftService.withFetch<RouteDescriptor>((fetcher: ResourceFetcher) =>
         fetcher.execute({
-          target: new CreateRoute(resourceArgs),
+          target: new CreateRoute({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
           rollbacks: rollbacks.slice(--rollbacksCount),
         })
       );
 
-      const routeUrl = this.args.openShiftService.kubernetes.composeRouteUrl(route);
+      const routeUrl = this.args.openShiftService.composeDeploymentUrlFromRoute(route);
 
       const appLabels = {
         [this.args.webToolsId]: "true",
       };
 
-      const deploymentDescriptor: DeploymentDescriptor = {
-        apiVersion: KubernetesApiVersions.DEPLOYMENT,
-        kind: "Deployment",
+      const deploymentDescriptor = new Deployment({
         metadata: {
           name: resourceArgs.resourceName,
           namespace: resourceArgs.namespace,
@@ -184,20 +187,20 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
             },
           },
         },
-      };
+      }).toJSON() as DeploymentDescriptor;
 
       await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
         fetcher.execute({
           target: new CreateDeployment({
             ...resourceArgs,
-            kind: "provided",
             descriptor: deploymentDescriptor,
+            resourceDataSource: ResourceDataSource.PROVIDED,
           }),
           rollbacks: rollbacks.slice(--rollbacksCount),
         })
       );
 
-      return this.args.openShiftService.kubernetes.composeRouteUrl(route);
+      return this.args.openShiftService.composeDeploymentUrlFromRoute(route);
     } catch (e) {
       console.error(e);
     }

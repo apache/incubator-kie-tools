@@ -15,7 +15,6 @@
  */
 
 import * as React from "react";
-import { isOpenShiftConnectionValid } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
@@ -31,6 +30,10 @@ import { DevModeDeploymentLoaderPipeline } from "./pipelines/DevModeDeploymentLo
 import { useEnv } from "../env/EnvContext";
 import { resolveWebToolsId, useDevMode } from "./devMode/DevModeContext";
 import { AppDistributionMode } from "../AppConstants";
+import {
+  KubernetesConnectionStatus,
+  isKubernetesConnectionValid,
+} from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 interface Props {
   children: React.ReactNode;
@@ -132,7 +135,7 @@ export function OpenShiftContextProvider(props: Props) {
       return;
     }
 
-    if (!isOpenShiftConnectionValid(settings.openshift.config)) {
+    if (!isKubernetesConnectionValid(settings.openshift.config)) {
       setDeployments([]);
       return;
     }
@@ -140,7 +143,8 @@ export function OpenShiftContextProvider(props: Props) {
     if (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED) {
       settingsDispatch.openshift.service
         .isConnectionEstablished(settings.openshift.config)
-        .then((isConfigOk: boolean) => {
+        .then((configStatus: KubernetesConnectionStatus) => {
+          const isConfigOk = configStatus === KubernetesConnectionStatus.CONNECTED;
           settingsDispatch.openshift.setStatus(
             isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
           );

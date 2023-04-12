@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { makeCookieName, getCookie, setCookie } from "../../cookies";
+import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 export const OPENSHIFT_NAMESPACE_COOKIE_NAME = makeCookieName("openshift", "namespace");
 export const OPENSHIFT_HOST_COOKIE_NAME = makeCookieName("openshift", "host");
 export const OPENSHIFT_TOKEN_COOKIE_NAME = makeCookieName("openshift", "token");
 export const OPENSHIFT_DEV_MODE_ENABLED_NAME = makeCookieName("openshift", "dev-mode-enabled");
 
-export const EMPTY_CONFIG: OpenShiftConnection = {
+export const EMPTY_CONFIG: KubernetesConnection = {
   namespace: "",
   host: "",
   token: "",
 };
 
-export function readOpenShiftConfigCookie(): OpenShiftConnection {
+export function readOpenShiftConfigCookie(): KubernetesConnection {
   return {
     namespace: getCookie(OPENSHIFT_NAMESPACE_COOKIE_NAME) ?? "",
     host: getCookie(OPENSHIFT_HOST_COOKIE_NAME) ?? "",
@@ -52,7 +52,7 @@ export function saveTokenCookie(token: string): void {
   setCookie(OPENSHIFT_TOKEN_COOKIE_NAME, token);
 }
 
-export function saveConfigCookie(config: OpenShiftConnection): void {
+export function saveConfigCookie(config: KubernetesConnection): void {
   saveNamespaceCookie(config.namespace);
   saveHostCookie(config.host);
   saveTokenCookie(config.token);

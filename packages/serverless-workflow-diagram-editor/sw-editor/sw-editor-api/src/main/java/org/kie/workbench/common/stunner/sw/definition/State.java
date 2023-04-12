@@ -16,90 +16,40 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
-import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
 
-/**
- * This class defines workflow states define building blocks of the workflow execution instructions.
- * They define the control flow logic instructions on what the workflow is supposed to do.
- * <p>
- * Type of the state is specified by its category, which is set in constructor for all its descendants.
- */
-@Bindable
-@Definition
-@CanDock(roles = {Timeout.LABEL_TIMEOUT})
-@MorphBase(defaultType = InjectState.class)
 @JsType
 public class State {
 
-    public static final String LABEL_STATE = "state";
+    public String name;
 
-    @Category
-    public static final transient String category = Categories.STATES;
-
-    @Labels
-    public static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
-                                                       LABEL_STATE).collect(Collectors.toSet());
-
-    /**
-     * Unique state name, can't be null.
-     */
-    @Property(meta = PropertyMetaTypes.NAME)
-    private String name;
-
-    /**
-     * Type of the state, can't be null.
-     */
-    protected String type;
+    public String type;
 
     public Metadata metadata;
 
-    /**
-     * Next transition of the workflow.
-     */
     // TODO: Not all states supports this (eg: switch state)
     @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
-    private Object transition;
+    public Object transition;
 
-    /**
-     * Whether this State is a last state in the workflow.
-     */
     // TODO: Not all states supports this (eg: switch state)
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeDeserializer.class)
-    private Object end;
+    public Object end;
 
-    /**
-     * Definitions of states error handling.
-     */
-    private ErrorTransition[] onErrors;
+    public ErrorTransition[] onErrors;
 
-    /**
-     * Unique name of a workflow state which is responsible for compensation of this state.
-     */
-    private String compensatedBy;
+    public String compensatedBy;
 
-    private StateDataFilter stateDataFilter;
+    public StateDataFilter stateDataFilter;
 
-    private WorkflowTimeouts timeouts;
+    public WorkflowTimeouts timeouts;
 
     public State() {
         this.name = "State";
@@ -157,14 +107,6 @@ public class State {
     public State setCompensatedBy(String compensatedBy) {
         this.compensatedBy = compensatedBy;
         return this;
-    }
-
-    public Set<String> getLabels() {
-        return labels;
-    }
-
-    public String getCategory() {
-        return category;
     }
 
     public Metadata getMetadata() {

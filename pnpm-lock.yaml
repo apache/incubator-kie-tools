@@ -4517,6 +4517,61 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
+  packages/kubernetes-bridge:
+    dependencies:
+      "@kubernetes-models/apimachinery":
+        specifier: ^1.1.0
+        version: 1.1.0
+      "@kubernetes-models/base":
+        specifier: ^4.0.0
+        version: 4.0.0
+      "@kubernetes-models/knative":
+        specifier: ^2.1.0
+        version: 2.1.0
+      kubernetes-models:
+        specifier: ^4.1.0
+        version: 4.1.0
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.16.12
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.16.11(@babel/core@7.16.12)
+      "@babel/preset-react":
+        specifier: ^7.16.0
+        version: 7.16.0(@babel/core@7.16.12)
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@testing-library/jest-dom":
+        specifier: ^5.16.1
+        version: 5.16.1
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.4.2
+        version: 4.8.4
+
   packages/maven-config-setup-helper: {}
 
   packages/monaco-editor:
@@ -4661,15 +4716,15 @@ importers:
       "@kie-tools-core/keyboard-shortcuts":
         specifier: workspace:*
         version: link:../keyboard-shortcuts
+      "@kie-tools-core/kubernetes-bridge":
+        specifier: workspace:*
+        version: link:../kubernetes-bridge
       "@kie-tools-core/monaco-editor":
         specifier: workspace:*
         version: link:../monaco-editor
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
-      "@kie-tools-core/openshift":
-        specifier: workspace:*
-        version: link:../openshift
       "@kie-tools-core/operating-system":
         specifier: workspace:*
         version: link:../operating-system
@@ -5378,12 +5433,12 @@ importers:
       "@kie-tools-core/keyboard-shortcuts":
         specifier: workspace:*
         version: link:../keyboard-shortcuts
+      "@kie-tools-core/kubernetes-bridge":
+        specifier: workspace:*
+        version: link:../kubernetes-bridge
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
-      "@kie-tools-core/openshift":
-        specifier: workspace:*
-        version: link:../openshift
       "@kie-tools-core/operating-system":
         specifier: workspace:*
         version: link:../operating-system
@@ -5474,6 +5529,9 @@ importers:
       jszip:
         specifier: ^3.7.1
         version: 3.10.1
+      kubernetes-models:
+        specifier: ^4.1.0
+        version: 4.1.0
       moment:
         specifier: ^2.29.4
         version: 2.29.4
@@ -7886,8 +7944,8 @@ importers:
         specifier: ^4.4.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.5.1
-        version: 5.5.1(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.5.2
+        version: 5.5.2(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -8179,8 +8237,8 @@ importers:
         specifier: ^4.4.2
         version: 4.5.4
       vscode-extension-tester:
-        specifier: 5.5.1
-        version: 5.5.1(mocha@9.2.0)(typescript@4.5.4)
+        specifier: 5.5.2
+        version: 5.5.2(mocha@9.2.0)(typescript@4.5.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -8439,8 +8497,8 @@ importers:
         specifier: ^4.4.2
         version: 4.5.4
       vscode-extension-tester:
-        specifier: 5.5.1
-        version: 5.5.1(mocha@9.2.0)(typescript@4.5.4)
+        specifier: 5.5.2
+        version: 5.5.2(mocha@9.2.0)(typescript@4.5.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -8572,8 +8630,8 @@ importers:
         specifier: ^4.4.2
         version: 4.5.4
       vscode-extension-tester:
-        specifier: 5.5.1
-        version: 5.5.1(mocha@9.2.0)(typescript@4.5.4)
+        specifier: 5.5.2
+        version: 5.5.2(mocha@9.2.0)(typescript@4.5.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -11888,7 +11946,7 @@ packages:
     hasBin: true
     dependencies:
       exec-sh: 0.3.4
-      minimist: 1.2.6
+      minimist: 1.2.8
     dev: true
 
   /@cspotcode/source-map-support@0.8.1:
@@ -12341,9 +12399,9 @@ packages:
       { integrity: sha512-9uTh/8H5VmAx5KHE8QVg8OIf1eilwBzCoAfmhIcPAhHuJBnOmYDPReUCWx6D5/+vIqsBbwKx0PdX6txVMXzYwA== }
     dev: false
 
-  /@koa/cors@3.4.1:
+  /@koa/cors@3.4.3:
     resolution:
-      { integrity: sha512-/sG9NlpGZ/aBpnRamIlGs+wX+C/IJ5DodNK7iPQIVCG4eUQdGeshGhWQ6JCi7tpnD9sCtFXcS04iTimuaJfh4Q== }
+      { integrity: sha512-WPXQUaAeAMVaLTEFpoq3T2O1C+FstkjJnDQqy95Ck1UdILajsRhu6mhJ8H2f4NFPRBoCNN+qywTJfq/gGki5mw== }
     engines: { node: ">= 8.0.0" }
     dependencies:
       vary: 1.1.2
@@ -12358,10 +12416,51 @@ packages:
       http-errors: 1.8.1
       koa-compose: 4.1.0
       methods: 1.1.2
-      path-to-regexp: 6.2.0
+      path-to-regexp: 6.2.1
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@kubernetes-models/apimachinery@1.1.0:
+    resolution:
+      { integrity: sha512-DvCNeou3+M5ESJluVs8daVp7g03/hWnwXHou9Se8qNRZpqH6lQHvRjXy6HWSqBV9fKZOnWcOExmkUPQGbVIa6A== }
+    engines: { node: ">=14" }
+    dependencies:
+      "@kubernetes-models/base": 4.0.0
+      "@kubernetes-models/validate": 3.0.0
+      tslib: 2.5.0
+    dev: false
+
+  /@kubernetes-models/base@4.0.0:
+    resolution:
+      { integrity: sha512-wOQuIJk04urKwvOH2ybja8GeRNDljrq+f3yxWCdFPpsQ94UgxzWk0c3UeE5Tq+VX0hm1mNLaJZG6Upj+uIutjQ== }
+    engines: { node: ">=14" }
+    dependencies:
+      "@kubernetes-models/validate": 3.0.0
+      is-plain-object: 5.0.0
+      tslib: 2.5.0
+    dev: false
+
+  /@kubernetes-models/knative@2.1.0:
+    resolution:
+      { integrity: sha512-Fv6ripBTBEWAZoH9XTKkEN2EhV3vGGo8TTI4Yg5MavEv06ouzJ2ALLZKgGVJjmpuvVrf63+bjB13CdTJnXXqfw== }
+    engines: { node: ">=14" }
+    dependencies:
+      "@kubernetes-models/apimachinery": 1.1.0
+      "@kubernetes-models/base": 4.0.0
+      "@kubernetes-models/validate": 3.0.0
+      tslib: 2.5.0
+    dev: false
+
+  /@kubernetes-models/validate@3.0.0:
+    resolution:
+      { integrity: sha512-XQhuCn6KpZ2poeQWcN6C5bQYXXazEHcOLMEsQ35Cg5SN+nm9caDfI6MHCCCRSgoTW7jvP6UiWAG0kfEO86Z2xw== }
+    engines: { node: ">=14" }
+    dependencies:
+      ajv: 8.11.0
+      ajv-formats: 2.1.1
+      tslib: 2.5.0
+    dev: false
 
   /@ngtools/webpack@13.3.3(@angular/compiler-cli@13.1.1)(typescript@4.5.4)(webpack@5.70.0):
     resolution:
@@ -15139,20 +15238,20 @@ packages:
     engines: { node: ">=8.9.3" }
     hasBin: true
     dependencies:
-      "@koa/cors": 3.4.1
+      "@koa/cors": 3.4.3
       "@koa/router": 10.1.1
       decompress: 4.2.1
       decompress-targz: 4.1.1
       get-stream: 6.0.1
       http-proxy-agent: 5.0.0
       https-proxy-agent: 5.0.1
-      koa: 2.13.4
+      koa: 2.14.1
       koa-morgan: 1.0.1
       koa-mount: 4.0.0
       koa-static: 5.0.0
-      minimist: 1.2.6
-      playwright: 1.26.1
-      vscode-uri: 3.0.3
+      minimist: 1.2.8
+      playwright: 1.32.2
+      vscode-uri: 3.0.7
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -15730,7 +15829,6 @@ packages:
         optional: true
     dependencies:
       ajv: 8.11.0
-    dev: true
 
   /ajv-keywords@3.5.2(ajv@6.12.6):
     resolution:
@@ -23645,7 +23743,7 @@ packages:
       { integrity: sha512-aKS4WQjPenRxiQsC93MNfjx+nbF4PAdYzmd/1JIj8HYzqfbu86beTuNgXDzPknWk0n0uARlyewZo4s++ES36Ow== }
     hasBin: true
     dependencies:
-      minimist: 1.2.6
+      minimist: 1.2.8
     dev: true
 
   /json5@2.2.1:
@@ -24061,9 +24159,9 @@ packages:
       - supports-color
     dev: true
 
-  /koa@2.13.4:
+  /koa@2.14.1:
     resolution:
-      { integrity: sha512-43zkIKubNbnrULWlHdN5h1g3SEKXOEzoAlRsHOTFpnlDu8JlAOZSMJBLULusuXRequboiwJcj5vtYXKB3k7+2g== }
+      { integrity: sha512-USJFyZgi2l0wDgqkfD27gL4YGno7TfUkcmOe6UOLFOVuN+J7FwnNu4Dydl4CUQzraM1lBAiGed0M9OVJoT0Kqw== }
     engines: { node: ^4.8.4 || ^6.10.1 || ^7.10.1 || >= 8.1.4 }
     dependencies:
       accepts: 1.3.7
@@ -24092,6 +24190,17 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /kubernetes-models@4.1.0:
+    resolution:
+      { integrity: sha512-OlT0qgHj0W7hJQdc0HzbdYUpK3LcMaKg43yqeEsUsq1gCAldfzEaMyhifNylMud3dWglPQ+5Jt6sFyIr3XTdvg== }
+    engines: { node: ">=14" }
+    dependencies:
+      "@kubernetes-models/apimachinery": 1.1.0
+      "@kubernetes-models/base": 4.0.0
+      "@kubernetes-models/validate": 3.0.0
+      tslib: 2.5.0
+    dev: false
 
   /lazy-ass@1.6.0:
     resolution:
@@ -24816,11 +24925,15 @@ packages:
     resolution:
       { integrity: sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q== }
 
+  /minimist@1.2.8:
+    resolution:
+      { integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA== }
+
   /minimisted@2.0.1:
     resolution:
       { integrity: sha512-1oPjfuLQa2caorJUM8HV8lGgWCc0qqAO1MNv/k05G4qslmsndV/5WdNZrqCiyqiz3wohia2Ij2B7w2Dr7/IyrA== }
     dependencies:
-      minimist: 1.2.6
+      minimist: 1.2.8
 
   /minipass-collect@1.0.2:
     resolution:
@@ -25052,9 +25165,9 @@ packages:
     dependencies:
       monaco-editor: 0.33.0
 
-  /monaco-page-objects@3.5.0(selenium-webdriver@4.8.1)(typescript@4.5.4):
+  /monaco-page-objects@3.5.1(selenium-webdriver@4.8.1)(typescript@4.5.4):
     resolution:
-      { integrity: sha512-u0yF6lz1+ENpf8H2vSjO5yPq9N3MgO0n6cebYU0fRvbJpQVgj4qDyL4LR4CNR5P7+xgqbAqTBFqd0vLmjRIKWQ== }
+      { integrity: sha512-iuxvHxROB4HPqQ1hTIliHzU271GrnWWVQoWn78yjsYgMY2gktfJTFhumaXyQ+ASw/N0Zqp18FW4AFKe5Tq8+Ew== }
     peerDependencies:
       selenium-webdriver: ^4.6.1
       typescript: ">=4.6.2"
@@ -25068,9 +25181,9 @@ packages:
       typescript: 4.5.4
     dev: true
 
-  /monaco-page-objects@3.5.0(selenium-webdriver@4.8.1)(typescript@4.8.4):
+  /monaco-page-objects@3.5.1(selenium-webdriver@4.8.1)(typescript@4.8.4):
     resolution:
-      { integrity: sha512-u0yF6lz1+ENpf8H2vSjO5yPq9N3MgO0n6cebYU0fRvbJpQVgj4qDyL4LR4CNR5P7+xgqbAqTBFqd0vLmjRIKWQ== }
+      { integrity: sha512-iuxvHxROB4HPqQ1hTIliHzU271GrnWWVQoWn78yjsYgMY2gktfJTFhumaXyQ+ASw/N0Zqp18FW4AFKe5Tq8+Ew== }
     peerDependencies:
       selenium-webdriver: ^4.6.1
       typescript: ">=4.6.2"
@@ -26246,9 +26359,9 @@ packages:
     dependencies:
       isarray: 0.0.1
 
-  /path-to-regexp@6.2.0:
+  /path-to-regexp@6.2.1:
     resolution:
-      { integrity: sha512-f66KywYG6+43afgE/8j/GoiNyygk/bnoCbps++3ErRKsIYkGGupyv07R2Ok5m9i67Iqc+T2g1eAUGUPzWhYTyg== }
+      { integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw== }
     dev: true
 
   /path-type@4.0.0:
@@ -26431,21 +26544,21 @@ packages:
       ramda: /@pnpm/ramda@0.28.1
     dev: true
 
-  /playwright-core@1.26.1:
+  /playwright-core@1.32.2:
     resolution:
-      { integrity: sha512-hzFchhhxnEiPc4qVPs9q2ZR+5eKNifY2hQDHtg1HnTTUuphYCBP8ZRb2si+B1TR7BHirgXaPi48LIye5SgrLAA== }
+      { integrity: sha512-zD7aonO+07kOTthsrCR3YCVnDcqSHIJpdFUtZEMOb6//1Rc7/6mZDRdw+nlzcQiQltOOsiqI3rrSyn/SlyjnJQ== }
     engines: { node: ">=14" }
     hasBin: true
     dev: true
 
-  /playwright@1.26.1:
+  /playwright@1.32.2:
     resolution:
-      { integrity: sha512-WQmEdCgYYe8jOEkhkW9QLcK0PB+w1RZztBLYIT10MEEsENYg251cU0IzebDINreQsUt+HCwwRhtdz4weH9ICcQ== }
+      { integrity: sha512-jHVnXJke0PXpuPszKtk9y1zZSlzO5+2a+aockT/AND0oeXx46FiJEFrafthurglLygVZA+1gEbtUM1C7qtTV+Q== }
     engines: { node: ">=14" }
     hasBin: true
     requiresBuild: true
     dependencies:
-      playwright-core: 1.26.1
+      playwright-core: 1.32.2
     dev: true
 
   /plist@3.0.5:
@@ -26935,7 +27048,7 @@ packages:
       detect-libc: 1.0.3
       expand-template: 2.0.3
       github-from-package: 0.0.0
-      minimist: 1.2.6
+      minimist: 1.2.8
       mkdirp-classic: 0.5.3
       napi-build-utils: 1.0.2
       node-abi: 2.30.1
@@ -27351,7 +27464,7 @@ packages:
     dependencies:
       deep-extend: 0.6.0
       ini: 1.3.8
-      minimist: 1.2.6
+      minimist: 1.2.8
       strip-json-comments: 2.0.1
     dev: true
 
@@ -28330,7 +28443,7 @@ packages:
       execa: 1.0.0
       fb-watchman: 2.0.1
       micromatch: 3.1.10
-      minimist: 1.2.6
+      minimist: 1.2.8
       walker: 1.0.7
     transitivePeerDependencies:
       - supports-color
@@ -28451,6 +28564,7 @@ packages:
       - bufferutil
       - utf-8-validate
     dev: true
+    patched: true
 
   /selfsigned@2.0.0:
     resolution:
@@ -30999,20 +31113,20 @@ packages:
     engines: { node: ">=0.10.0" }
     dev: true
 
-  /vscode-extension-tester-locators@3.4.1(monaco-page-objects@3.5.0)(selenium-webdriver@4.8.1):
+  /vscode-extension-tester-locators@3.4.1(monaco-page-objects@3.5.1)(selenium-webdriver@4.8.1):
     resolution:
       { integrity: sha512-RgkEsj4VKCe3Ft+agMtgMIEq93m+W8Bwlb3jrTKE8+mr/HSrzJL+p09jIz0HVdC9SCbChWaxMDyRli696Ex/5A== }
     peerDependencies:
       monaco-page-objects: ^3.5.0
       selenium-webdriver: ^4.6.1
     dependencies:
-      monaco-page-objects: 3.5.0(selenium-webdriver@4.8.1)(typescript@4.8.4)
+      monaco-page-objects: 3.5.1(selenium-webdriver@4.8.1)(typescript@4.8.4)
       selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
     dev: true
 
-  /vscode-extension-tester@5.5.1(mocha@9.2.0)(typescript@4.5.4):
+  /vscode-extension-tester@5.5.2(mocha@9.2.0)(typescript@4.5.4):
     resolution:
-      { integrity: sha512-kzoJNxoDxLgplXe+24Nr+4YV+73JgqO7II4KR0kuGlyqx2VwE4GqXulTAVG5C2ZQz3B79TFm3T8HD+DnA4ZfFw== }
+      { integrity: sha512-+vRgJ7vdH5vsoF1kD4T7c0urxp5KETXuSeNvJcvsT+hBlWABdBjPHvyydtK7SQmcPKB4DtmsZVH2s2UX1+4GiA== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
@@ -31028,21 +31142,21 @@ packages:
       hpagent: 1.2.0
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 3.5.0(selenium-webdriver@4.8.1)(typescript@4.5.4)
+      monaco-page-objects: 3.5.1(selenium-webdriver@4.8.1)(typescript@4.5.4)
       sanitize-filename: 1.6.3
       selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       targz: 1.0.1
       typescript: 4.5.4
       unzip-stream: 0.3.1
-      vscode-extension-tester-locators: 3.4.1(monaco-page-objects@3.5.0)(selenium-webdriver@4.8.1)
+      vscode-extension-tester-locators: 3.4.1(monaco-page-objects@3.5.1)(selenium-webdriver@4.8.1)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
     dev: true
 
-  /vscode-extension-tester@5.5.1(mocha@9.2.0)(typescript@4.8.4):
+  /vscode-extension-tester@5.5.2(mocha@9.2.0)(typescript@4.8.4):
     resolution:
-      { integrity: sha512-kzoJNxoDxLgplXe+24Nr+4YV+73JgqO7II4KR0kuGlyqx2VwE4GqXulTAVG5C2ZQz3B79TFm3T8HD+DnA4ZfFw== }
+      { integrity: sha512-+vRgJ7vdH5vsoF1kD4T7c0urxp5KETXuSeNvJcvsT+hBlWABdBjPHvyydtK7SQmcPKB4DtmsZVH2s2UX1+4GiA== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
@@ -31058,13 +31172,13 @@ packages:
       hpagent: 1.2.0
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 3.5.0(selenium-webdriver@4.8.1)(typescript@4.8.4)
+      monaco-page-objects: 3.5.1(selenium-webdriver@4.8.1)(typescript@4.8.4)
       sanitize-filename: 1.6.3
       selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       targz: 1.0.1
       typescript: 4.8.4
       unzip-stream: 0.3.1
-      vscode-extension-tester-locators: 3.4.1(monaco-page-objects@3.5.0)(selenium-webdriver@4.8.1)
+      vscode-extension-tester-locators: 3.4.1(monaco-page-objects@3.5.1)(selenium-webdriver@4.8.1)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -31079,7 +31193,7 @@ packages:
       vscode-languageserver-textdocument: 1.0.7
       vscode-languageserver-types: 3.17.2
       vscode-nls: 5.2.0
-      vscode-uri: 3.0.6
+      vscode-uri: 3.0.7
     dev: true
 
   /vscode-json-languageservice@4.2.1:
@@ -31132,14 +31246,14 @@ packages:
     resolution:
       { integrity: sha512-RAaHx7B14ZU04EU31pT+rKz2/zSl7xMsfIZuo8pd+KZO6PXtQmpevpq3vxvWNcrGbdmhM/rr5Uw5Mz+NBfhVng== }
 
-  /vscode-uri@3.0.3:
-    resolution:
-      { integrity: sha512-EcswR2S8bpR7fD0YPeS7r2xXExrScVMxg4MedACaWHEtx9ftCF/qHG1xGkolzTPcEmjTavCQgbVzHUIdTMzFGA== }
-    dev: true
-
   /vscode-uri@3.0.6:
     resolution:
       { integrity: sha512-fmL7V1eiDBFRRnu+gfRWTzyPpNIHJTc4mWnFkwBUmO9U3KPgJAmTx7oxi2bl/Rh6HLdU7+4C9wlj0k2E4AdKFQ== }
+
+  /vscode-uri@3.0.7:
+    resolution:
+      { integrity: sha512-eOpPHogvorZRobNqJGhapa0JdwaxpjVvyBp0QIUMRMSf8ZAlqOdEquKuRmw9Qwu0qXtJIWqFtMkmvJjUZmMjVA== }
+    dev: true
 
   /w3c-hr-time@1.0.2:
     resolution:

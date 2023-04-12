@@ -20,8 +20,10 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
+@JsType
 public abstract class AbstractElement<C>
         implements Element<C> {
 

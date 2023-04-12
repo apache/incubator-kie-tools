@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
@@ -21,9 +22,7 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
-import * as React from "react";
 import { useMemo, useCallback, useState } from "react";
-import { OpenShiftDeploymentState } from "@kie-tools-core/openshift/dist/service/types";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { basename } from "path";
 import { buildEndpoints } from "../devMode/DevModeConstants";
@@ -31,6 +30,7 @@ import { useDevModeDispatch } from "../devMode/DevModeContext";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";
+import { DeploymentState } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 
 interface Props {
   id: number;
@@ -77,7 +77,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
   }, [devModeDispatch, isRestoring]);
 
   const stateIcon = useMemo(() => {
-    if (props.deployment.state === OpenShiftDeploymentState.UP) {
+    if (props.deployment.state === DeploymentState.UP) {
       return (
         <Tooltip key={`deployment-up-${props.id}`} position="left" content={"This deployment is up and running."}>
           <CheckCircleIcon
@@ -89,8 +89,8 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
     }
 
     if (
-      props.deployment.state === OpenShiftDeploymentState.IN_PROGRESS ||
-      props.deployment.state === OpenShiftDeploymentState.PREPARING
+      props.deployment.state === DeploymentState.IN_PROGRESS ||
+      props.deployment.state === DeploymentState.PREPARING
     ) {
       return (
         <Tooltip
@@ -106,7 +106,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
       );
     }
 
-    if (props.deployment.state === OpenShiftDeploymentState.ERROR) {
+    if (props.deployment.state === DeploymentState.ERROR) {
       return (
         <Tooltip
           key={`deployment-error-${props.id}`}
@@ -139,7 +139,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
         <DropdownItem
           id="openshift-deployment-item-button"
           key={`openshift-dropdown-item-${props.id}`}
-          isDisabled={props.deployment.state === OpenShiftDeploymentState.ERROR}
+          isDisabled={props.deployment.state === DeploymentState.ERROR}
           onClick={onDeploymentClicked}
           description={`Created at ${props.deployment.creationTimestamp.toLocaleString()}`}
           icon={stateIcon}

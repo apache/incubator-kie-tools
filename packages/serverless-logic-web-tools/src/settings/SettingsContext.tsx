@@ -22,12 +22,9 @@ import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
 import { readDevModeEnabledConfigCookie, readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
-import {
-  OpenShiftConnection,
-  isOpenShiftConnectionValid,
-} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import { isKubernetesConnectionValid } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
-import { OpenShiftService } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
+import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftService";
 import { useHistory } from "react-router";
 import { QueryParams } from "../navigation/Routes";
 import { GITHUB_AUTH_TOKEN_COOKIE_NAME } from "./github/GitHubSettingsTab";
@@ -43,6 +40,7 @@ import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
 import { FeaturePreviewSettingsConfig, readFeaturePreviewConfigCookie } from "./featurePreview/FeaturePreviewConfig";
 import { useEnv } from "../env/EnvContext";
 import { AppDistributionMode } from "../AppConstants";
+import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -78,7 +76,7 @@ export interface SettingsContextType {
   activeTab: SettingsTabs;
   openshift: {
     status: OpenShiftInstanceStatus;
-    config: OpenShiftConnection;
+    config: KubernetesConnection;
     isDevModeEnabled: boolean;
   };
   kieSandboxExtendedServices: {
@@ -110,7 +108,7 @@ export interface SettingsDispatchContextType {
   openshift: {
     service: OpenShiftService;
     setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
-    setConfig: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
+    setConfig: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
     setDevModeEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   };
   kieSandboxExtendedServices: {
@@ -225,7 +223,7 @@ export function SettingsContextProvider(props: any) {
 
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const [openshiftConfig, setOpenShiftConfig] = useState(
-    isOpenShiftConnectionValid(env.OPENSHIFT_CONNECTION) ? env.OPENSHIFT_CONNECTION : readOpenShiftConfigCookie()
+    isKubernetesConnectionValid(env.OPENSHIFT_CONNECTION) ? env.OPENSHIFT_CONNECTION : readOpenShiftConfigCookie()
   );
   const [kafkaConfig, setKafkaConfig] = useState<KafkaSettingsConfig>(readKafkaConfigCookie());
   const [serviceAccountConfig, setServiceAccountConfig] = useState<ServiceAccountSettingsConfig>(

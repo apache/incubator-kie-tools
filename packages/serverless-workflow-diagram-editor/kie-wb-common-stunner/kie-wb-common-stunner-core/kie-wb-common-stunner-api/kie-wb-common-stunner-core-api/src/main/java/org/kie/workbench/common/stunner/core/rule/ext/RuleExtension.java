@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.rule.ext;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.rule.Rule;
 
 /**
@@ -33,10 +31,10 @@ import org.kie.workbench.common.stunner.core.rule.Rule;
  * - Optionally provide an array of Strings or an array of types
  * that can be further used by the concrete handler type
  * for the runtime evaluation.
+ *
  * @See {@link RuleExtensionHandler}
  * @See {@link org.kie.workbench.common.stunner.core.rule.annotation.RuleExtension}
  */
-@Portable
 public class RuleExtension implements Rule {
 
     private final String name;
@@ -45,9 +43,8 @@ public class RuleExtension implements Rule {
     private transient String[] arguments;
     private transient Class<?>[] typeArguments;
 
-    public RuleExtension(
-            final @MapsTo("name") String name,
-            final @MapsTo("id") String id) {
+    public RuleExtension(String name,
+                         String id) {
         this.name = name;
         this.id = id;
     }

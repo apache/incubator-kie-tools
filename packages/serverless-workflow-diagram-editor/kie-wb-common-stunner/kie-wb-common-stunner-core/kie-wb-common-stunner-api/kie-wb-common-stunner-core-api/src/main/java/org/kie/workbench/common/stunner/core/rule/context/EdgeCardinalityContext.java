@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.rule.context;
 
+import jsinterop.annotations.JsType;
+
 /**
  * This rule evaluation context provides the runtime information
  * that allows the evaluation for cardinality operations about
  * edges or connectors.
  */
+@JsType
 public interface EdgeCardinalityContext
         extends CardinalityContext {
 

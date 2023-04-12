@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-import { ListDeployments, UpdateDeployment } from "@kie-tools-core/openshift/dist/api/kubernetes/Deployment";
-import { DeploymentDescriptor, DeploymentGroupDescriptor } from "@kie-tools-core/openshift/dist/api/types";
-import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
-import { resolveDevModeResourceName } from "../devMode/DevModeContext";
+import { ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
+import {
+  DeploymentDescriptor,
+  DeploymentGroupDescriptor,
+  ListDeployments,
+  UpdateDeployment,
+} from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
+import { resolveDevModeResourceName } from "../devMode/DevModeContext";
 
 interface RestartDevModePipelineArgs {
   webToolsId: string;
@@ -32,7 +36,7 @@ export class RestartDevModePipeline extends OpenShiftPipeline {
   public async execute(): Promise<void> {
     const latestDeployment = await this.getLatestDevModeDeployment();
 
-    if (!latestDeployment) {
+    if (!latestDeployment?.spec) {
       throw new Error("Dev Mode deployment cannot be found");
     }
 
@@ -56,7 +60,7 @@ export class RestartDevModePipeline extends OpenShiftPipeline {
 
     const updatedDeployment = await this.getLatestDevModeDeployment();
 
-    if (!updatedDeployment) {
+    if (!updatedDeployment?.spec) {
       throw new Error("Dev Mode deployment cannot be found");
     }
 

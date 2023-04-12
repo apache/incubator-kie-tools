@@ -29,11 +29,15 @@ public class WorkflowTimeouts {
 
     @JsonbTypeSerializer(WorkflowExecTimeoutJsonSerializer.class)
     @JsonbTypeDeserializer(WorkflowExecTimeoutJsonDeserializer.class)
-    private Object workflowExecTimeout;
-    private String stateExecTimeout;
-    private String actionExecTimeout;
-    private String branchExecTimeout;
-    private String eventTimeout;
+    public Object workflowExecTimeout;
+
+    public String stateExecTimeout;
+
+    public String actionExecTimeout;
+
+    public String branchExecTimeout;
+
+    public String eventTimeout;
 
     public final Object getWorkflowExecTimeout() {
         return workflowExecTimeout;

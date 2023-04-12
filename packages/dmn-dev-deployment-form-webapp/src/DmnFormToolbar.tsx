@@ -41,6 +41,7 @@ import { useApp } from "./AppContext";
 import { useDmnFormI18n } from "./i18n";
 import { routes } from "./Routes";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { MastheadBrand } from "@patternfly/react-core/dist/js/components/Masthead";
 
 interface Props {
   uri: string;

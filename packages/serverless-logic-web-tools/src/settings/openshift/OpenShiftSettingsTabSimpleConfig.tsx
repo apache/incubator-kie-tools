@@ -27,11 +27,12 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useCallback, useEffect, useState } from "react";
 import { useAppI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
-import {
-  isOpenShiftConnectionValid,
-  OpenShiftConnection,
-} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { EMPTY_CONFIG, saveConfigCookie, saveDevModeEnabledConfigCookie } from "./OpenShiftSettingsConfig";
+import {
+  isKubernetesConnectionValid,
+  KubernetesConnection,
+  KubernetesConnectionStatus,
+} from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
@@ -65,7 +66,7 @@ export function OpenShiftSettingsTabSimpleConfig() {
   }, [settings.openshift.config, settings.openshift.status]);
 
   const resetConfig = useCallback(
-    (config: OpenShiftConnection) => {
+    (config: KubernetesConnection) => {
       setConfigValidated(
         settings.openshift.status === OpenShiftInstanceStatus.EXPIRED && config !== EMPTY_CONFIG
           ? FormValiationOptions.CONFIG_EXPIRED
@@ -82,13 +83,15 @@ export function OpenShiftSettingsTabSimpleConfig() {
       return;
     }
 
-    if (!isOpenShiftConnectionValid(config)) {
+    if (!isKubernetesConnectionValid(config)) {
       setConfigValidated(FormValiationOptions.INVALID);
       return;
     }
 
     setConnecting(true);
-    const isConfigOk = await settingsDispatch.openshift.service.isConnectionEstablished(config);
+    const isConfigOk =
+      (await settingsDispatch.openshift.service.isConnectionEstablished(config)) ===
+      KubernetesConnectionStatus.CONNECTED;
 
     if (isConfigOk) {
       saveConfigCookie(config);

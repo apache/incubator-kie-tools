@@ -71,9 +71,9 @@ export const defaultEnvJson: EnvJson = {
       group: AuthProviderGroup.CLOUD,
     },
     {
-      enabled: false,
+      enabled: true,
       id: "kubernetes",
-      type: AuthProviderType.openshift,
+      type: AuthProviderType.kubernetes,
       name: "Kubernetes",
       domain: undefined,
       iconPath: routes.static.images.kubernetesLogo.path({}),

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -26,24 +27,22 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Wizard, WizardContextConsumer, WizardFooter } from "@patternfly/react-core/dist/js/components/Wizard";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
-import {
-  isOpenShiftConnectionValid,
-  isHostValid,
-  isNamespaceValid,
-  isTokenValid,
-  OpenShiftConnection,
-} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
-import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "@kie-tools-core/openshift/dist/service/OpenShiftConstants";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
-import { KieSandboxOpenShiftService } from "../../openshift/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { v4 as uuid } from "uuid";
-import { useAccountsDispatch } from "../AccountsContext";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
+import {
+  KubernetesConnection,
+  isHostValid,
+  isKubernetesConnectionValid,
+  isNamespaceValid,
+  isTokenValid,
+  DEVELOPER_SANDBOX_GET_STARTED_URL,
+  KubernetesConnectionStatus,
+} from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 enum WizardStepIds {
   NAMESPACE = "NAMESPACE",
@@ -54,8 +53,8 @@ enum WizardStepIds {
 export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   openshiftService: KieSandboxOpenShiftService;
   setMode: React.Dispatch<React.SetStateAction<OpenShiftSettingsTabMode>>;
-  connection: OpenShiftConnection;
-  setConnection: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
+  connection: KubernetesConnection;
+  setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
   status: OpenShiftInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<OpenShiftAuthSession>>;
@@ -83,7 +82,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   }, [props.connection.token]);
 
   useEffect(() => {
-    setConnectionValidated(isOpenShiftConnectionValid(props.connection));
+    setConnectionValidated(isKubernetesConnectionValid(props.connection));
   }, [props.connection]);
 
   const onCancel = useCallback(() => {
@@ -91,7 +90,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   }, [props]);
 
   const resetConnection = useCallback(
-    (connection: OpenShiftConnection) => {
+    (connection: KubernetesConnection) => {
       setConnectionValidated(false);
       setConnecting(false);
       setConnectLoading(false);
@@ -125,7 +124,9 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     async ({ id }) => {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
-        setConnectionValidated(await props.openshiftService.isConnectionEstablished());
+        setConnectionValidated(
+          (await props.openshiftService.isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+        );
         setConnectLoading(false);
       }
     },
@@ -137,7 +138,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
       return;
     }
 
-    if (!isOpenShiftConnectionValid(props.connection)) {
+    if (!isKubernetesConnectionValid(props.connection)) {
       return;
     }
 
@@ -145,7 +146,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     const isConnectionEstablished = await props.openshiftService.isConnectionEstablished();
     setConnecting(false);
 
-    if (isConnectionEstablished) {
+    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
       const newAuthSession: OpenShiftAuthSession = {
         type: "openshift",
         id: uuid(),
@@ -167,17 +168,17 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     () => [
       {
         id: WizardStepIds.NAMESPACE,
-        name: i18n.devDeployments.configWizard.steps.first.name,
+        name: i18n.devDeployments.openShiftConfigWizard.steps.first.name,
         component: (
           <div>
-            <Text component={TextVariants.p}>{i18n.devDeployments.configWizard.steps.first.introduction}</Text>
+            <Text component={TextVariants.p}>{i18n.devDeployments.openShiftConfigWizard.steps.first.introduction}</Text>
             <br />
             <List component={ListComponent.ol} type={OrderType.number} className="pf-u-mt-md">
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <a href={DEVELOPER_SANDBOX_GET_STARTED_URL} target={"_blank"}>
-                      {i18n.devDeployments.configWizard.steps.first.goToGetStartedPage}
+                      {i18n.devDeployments.openShiftConfigWizard.steps.first.goToGetStartedPage}
                       &nbsp;
                       <ExternalLinkAltIcon className="pf-u-mx-sm" />
                     </a>
@@ -186,12 +187,16 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
               </ListItem>
               <ListItem>
                 <TextContent>
-                  <Text component={TextVariants.p}>{i18n.devDeployments.configWizard.steps.first.followSteps}</Text>
+                  <Text component={TextVariants.p}>
+                    {i18n.devDeployments.openShiftConfigWizard.steps.first.followSteps}
+                  </Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
-                  <Text component={TextVariants.p}>{i18n.devDeployments.configWizard.steps.first.informNamespace}</Text>
+                  <Text component={TextVariants.p}>
+                    {i18n.devDeployments.openShiftConfigWizard.steps.first.informNamespace}
+                  </Text>
                 </TextContent>
               </ListItem>
             </List>
@@ -214,7 +219,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                     name="namespace-field"
                     aria-label="namespace field"
                     value={props.connection.namespace}
-                    placeholder={i18n.devDeployments.configWizard.steps.first.namespacePlaceholder}
+                    placeholder={i18n.devDeployments.openShiftConfigWizard.steps.first.namespacePlaceholder}
                     onChange={onNamespaceInputChanged}
                   />
                   <InputGroupText>
@@ -228,37 +233,39 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
             <br />
             <br />
             <Text className="pf-u-my-md" component={TextVariants.p}>
-              {i18n.devDeployments.configWizard.steps.first.inputReason}
+              {i18n.devDeployments.openShiftConfigWizard.steps.first.inputReason}
             </Text>
           </div>
         ),
       },
       {
         id: WizardStepIds.CREDENTIALS,
-        name: i18n.devDeployments.configWizard.steps.second.name,
+        name: i18n.devDeployments.openShiftConfigWizard.steps.second.name,
         component: (
           <div>
-            <Text component={TextVariants.p}>{i18n.devDeployments.configWizard.steps.second.introduction}</Text>
+            <Text component={TextVariants.p}>
+              {i18n.devDeployments.openShiftConfigWizard.steps.second.introduction}
+            </Text>
             <br />
             <List className="pf-u-my-md" component={ListComponent.ol} type={OrderType.number}>
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nHtml>{i18n.devDeployments.configWizard.steps.second.accessLoginCommand}</I18nHtml>
+                    <I18nHtml>{i18n.devDeployments.openShiftConfigWizard.steps.second.accessLoginCommand}</I18nHtml>
                   </Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nHtml>{i18n.devDeployments.configWizard.steps.second.accessDisplayToken}</I18nHtml>
+                    <I18nHtml>{i18n.devDeployments.openShiftConfigWizard.steps.second.accessDisplayToken}</I18nHtml>
                   </Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nHtml>{i18n.devDeployments.configWizard.steps.second.copyInformation}</I18nHtml>
+                    <I18nHtml>{i18n.devDeployments.openShiftConfigWizard.steps.second.copyInformation}</I18nHtml>
                   </Text>
                 </TextContent>
               </ListItem>
@@ -283,7 +290,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                     name="host-field"
                     aria-label="Host field"
                     value={props.connection.host}
-                    placeholder={i18n.devDeployments.configWizard.steps.second.hostPlaceholder}
+                    placeholder={i18n.devDeployments.openShiftConfigWizard.steps.second.hostPlaceholder}
                     onChange={onHostInputChanged}
                     tabIndex={1}
                   />
@@ -310,7 +317,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                     name="token-field"
                     aria-label="Token field"
                     value={props.connection.token}
-                    placeholder={i18n.devDeployments.configWizard.steps.second.tokenPlaceholder}
+                    placeholder={i18n.devDeployments.openShiftConfigWizard.steps.second.tokenPlaceholder}
                     onChange={onTokenInputChanged}
                     tabIndex={2}
                   />
@@ -325,14 +332,14 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
             <br />
             <br />
             <Text className="pf-u-my-md" component={TextVariants.p}>
-              {i18n.devDeployments.configWizard.steps.second.inputReason}
+              {i18n.devDeployments.openShiftConfigWizard.steps.second.inputReason}
             </Text>
           </div>
         ),
       },
       {
         id: WizardStepIds.CONNECT,
-        name: i18n.devDeployments.configWizard.steps.final.name,
+        name: i18n.devDeployments.openShiftConfigWizard.steps.final.name,
         component: (
           <>
             {isConnectLoading && (
@@ -345,15 +352,15 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                 <Alert
                   variant={"default"}
                   isInline={true}
-                  title={i18n.devDeployments.configWizard.steps.final.connectionSuccess}
+                  title={i18n.devDeployments.openShiftConfigWizard.steps.final.connectionSuccess}
                 />
                 <br />
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
-                  {i18n.devDeployments.configWizard.steps.final.introduction}
+                  {i18n.devDeployments.openShiftConfigWizard.steps.final.introduction}
                 </Text>
                 <br />
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
-                  {i18n.devDeployments.configWizard.steps.final.configNote}
+                  {i18n.devDeployments.openShiftConfigWizard.steps.final.configNote}
                 </Text>
               </div>
             )}
@@ -362,36 +369,36 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                 <Alert
                   variant={"danger"}
                   isInline={true}
-                  title={i18n.devDeployments.configWizard.steps.final.connectionError}
+                  title={i18n.devDeployments.openShiftConfigWizard.steps.final.connectionError}
                 />
                 <br />
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
-                  {i18n.devDeployments.configWizard.steps.final.connectionErrorLong}
+                  {i18n.devDeployments.openShiftConfigWizard.steps.final.connectionErrorLong}
                 </Text>
                 <br />
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
-                  {i18n.devDeployments.configWizard.steps.final.possibleErrorReasons.introduction}
+                  {i18n.devDeployments.openShiftConfigWizard.steps.final.possibleErrorReasons.introduction}
                 </Text>
                 <br />
                 <List className="pf-u-my-md">
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        {i18n.devDeployments.configWizard.steps.final.possibleErrorReasons.emptyField}
+                        {i18n.devDeployments.openShiftConfigWizard.steps.final.possibleErrorReasons.emptyField}
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        {i18n.devDeployments.configWizard.steps.final.possibleErrorReasons.instanceExpired}
+                        {i18n.devDeployments.openShiftConfigWizard.steps.final.possibleErrorReasons.instanceExpired}
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        {i18n.devDeployments.configWizard.steps.final.possibleErrorReasons.tokenExpired}
+                        {i18n.devDeployments.openShiftConfigWizard.steps.final.possibleErrorReasons.tokenExpired}
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -399,7 +406,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                 <br />
                 <br />
                 <Text className="pf-u-mt-md" component={TextVariants.p}>
-                  {i18n.devDeployments.configWizard.steps.final.checkInfo}
+                  {i18n.devDeployments.openShiftConfigWizard.steps.final.checkInfo}
                 </Text>
               </div>
             )}
@@ -431,7 +438,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
       <WizardFooter>
         <WizardContextConsumer>
           {({ activeStep, goToStepByName, goToStepById, onNext, onBack }) => {
-            if (activeStep.name !== i18n.devDeployments.configWizard.steps.final.name) {
+            if (activeStep.name !== i18n.devDeployments.openShiftConfigWizard.steps.final.name) {
               return (
                 <>
                   <Button variant="primary" onClick={onNext}>
@@ -440,7 +447,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                   <Button
                     variant="secondary"
                     onClick={onBack}
-                    isDisabled={activeStep.name === i18n.devDeployments.configWizard.steps.first.name}
+                    isDisabled={activeStep.name === i18n.devDeployments.openShiftConfigWizard.steps.first.name}
                   >
                     {i18n.terms.back}
                   </Button>

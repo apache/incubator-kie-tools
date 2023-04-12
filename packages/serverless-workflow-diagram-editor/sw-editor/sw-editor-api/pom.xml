@@ -70,12 +70,6 @@
       <artifactId>kie-wb-common-stunner-core-common</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>kie-wb-common-stunner-processors</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- GWT. -->
 
     <dependency>

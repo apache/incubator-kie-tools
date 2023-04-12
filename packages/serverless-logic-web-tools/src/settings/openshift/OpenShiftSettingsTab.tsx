@@ -26,7 +26,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { OpenShiftSettingsTabSimpleConfig } from "./OpenShiftSettingsTabSimpleConfig";
 import { obfuscate } from "../github/GitHubSettingsTab";
 import { saveConfigCookie } from "./OpenShiftSettingsConfig";
-import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
+import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 export function OpenShiftSettingsTab() {
   const settings = useSettings();
@@ -34,7 +34,7 @@ export function OpenShiftSettingsTab() {
 
   const onDisconnect = useCallback(() => {
     settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);
-    const newConfig: OpenShiftConnection = {
+    const newConfig: KubernetesConnection = {
       namespace: settings.openshift.config.namespace,
       host: settings.openshift.config.host,
       token: "",

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { OpenShiftService } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
-import { OpenShiftDeployedModel } from "@kie-tools-core/openshift/dist/service/types";
+import { DeployedModel } from "@kie-tools-core/kubernetes-bridge/dist/resources";
+import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftService";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
@@ -38,7 +38,7 @@ export interface DeploymentStrategyArgs {
   getFiles: (args: { workspaceId: string; globPattern?: string }) => Promise<WorkspaceFile[]>;
 }
 
-export type WebToolsOpenShiftDeployedModel = OpenShiftDeployedModel & {
+export type WebToolsOpenShiftDeployedModel = DeployedModel & {
   uri: string;
   workspaceName: string;
   devMode: boolean;

@@ -26,9 +26,11 @@ import org.kie.workbench.common.stunner.sw.definition.custom.ArgumentsValueHolde
 @JsType
 public class FunctionRef {
 
-    private String refName;
-    private String selectionSet;
-    private FunctionRefType invoke;
+    public String refName;
+
+    public String selectionSet;
+
+    public FunctionRefType invoke;
 
     @JsonbTypeSerializer(ArgumentsValueHolderJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(ArgumentsValueHolderJsonbTypeSerializer.class)

@@ -23,8 +23,9 @@ import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper
 @JsType
 public class StateTransition {
 
-    private String nextState;
-    private Boolean compensate;
+    public String nextState;
+
+    public Boolean compensate;
 
     public final String getNextState() {
         return nextState;

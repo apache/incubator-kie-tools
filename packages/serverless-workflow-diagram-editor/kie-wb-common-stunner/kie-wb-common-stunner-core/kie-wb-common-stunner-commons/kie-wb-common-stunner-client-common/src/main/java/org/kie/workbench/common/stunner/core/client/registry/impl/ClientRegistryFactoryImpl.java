@@ -33,4 +33,8 @@ public class ClientRegistryFactoryImpl extends AbstractRegistryFactory implement
     public ClientRegistryFactoryImpl(final AdapterManager adapterManager) {
         super(adapterManager);
     }
+
+    public void setAdapterManager(final AdapterManager adapterManager) {
+        this.adapterManager = adapterManager;
+    }
 }

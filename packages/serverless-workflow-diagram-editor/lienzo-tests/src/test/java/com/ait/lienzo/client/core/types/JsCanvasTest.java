@@ -17,7 +17,8 @@ package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.types.JsWiresShape;
-import com.ait.lienzo.client.widget.panel.LienzoPanel;
+import com.ait.lienzo.client.widget.panel.Bounds;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import org.junit.Before;
@@ -51,7 +52,7 @@ public class JsCanvasTest {
     Layer layer;
 
     @Mock
-    LienzoPanel panel;
+    ScrollablePanel panel;
 
     @Before
     public void setup() {
@@ -284,15 +285,16 @@ public class JsCanvasTest {
     @Test
     public void testCenter() {
         doCallRealMethod().when(jsCanvas).center(anyString());
+        when(panel.getVisibleBounds()).thenReturn(Bounds.build(10, 10, 10, 10));
         jsCanvas.center("someId");
-        verify(jsCanvas, times(1)).centerNode("someId");
+        verify(jsCanvas, times(1)).center("someId");
     }
 
     @Test
     public void testCenterNull() {
         doCallRealMethod().when(jsCanvas).center(anyString());
         jsCanvas.center(null);
-        verify(jsCanvas, never()).centerNode(anyString());
+        verify(jsCanvas, never()).center(anyString());
     }
 
     @Test
