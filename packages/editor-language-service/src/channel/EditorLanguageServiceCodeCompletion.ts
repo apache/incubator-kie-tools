@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,10 +71,8 @@ export function createCompletionItem(args: {
  * CodeCompletion functions type
  */
 export type EditorLanguageServiceCodeCompletionFunctions = {
-  [name: string]: (
-    args: EditorLanguageServiceCodeCompletionFunctionsArgs | EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs
-  ) => Promise<CompletionItem[]>;
-} & {
+  [name: string]: (args: EditorLanguageServiceCodeCompletionFunctionsArgs) => Promise<CompletionItem[]>;
+
   getEmptyFileCodeCompletions: (
     args: EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs
   ) => Promise<CompletionItem[]>;

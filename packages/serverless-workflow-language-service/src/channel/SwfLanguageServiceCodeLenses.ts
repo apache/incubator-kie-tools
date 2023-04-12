@@ -15,126 +15,26 @@
  */
 
 import {
-  findNodesAtLocation,
-  ELsJsonPath,
-  ELsNodeType,
-  ELsNode,
+  createCodeLenses,
+  createNewFileCodeLens,
+  createOpenCompletionItemsCodeLenses,
+  EditorLanguageServiceCodeLenses,
+  EditorLanguageServiceCodeLensesFunctionsArgs,
 } from "@kie-tools/editor-language-service/dist/channel";
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, Position } from "vscode-languageserver-types";
-import {
-  SwfLanguageServiceCommandArgs,
-  SwfLanguageServiceCommandExecution,
-  SwfLanguageServiceCommandTypes,
-} from "../api";
+import { CodeLens } from "vscode-languageserver-types";
+import { SwfLanguageServiceCommandArgs, SwfLanguageServiceCommandTypes } from "../api";
 import { SwfLanguageServiceConfig } from "./SwfLanguageService";
-import { CodeCompletionStrategy } from "./types";
 
-export type SwfLanguageServiceCodeLensesFunctionsArgs = {
-  config: SwfLanguageServiceConfig;
-  document: TextDocument;
-  content: string;
-  rootNode: ELsNode;
-  codeCompletionStrategy: CodeCompletionStrategy;
-};
-
-const createCodeLenses = (args: {
-  document: TextDocument;
-  rootNode: ELsNode;
-  jsonPath: ELsJsonPath;
-  commandDelegates: (args: {
-    position: Position;
-    node: ELsNode;
-  }) => ({ title: string } & SwfLanguageServiceCommandExecution<any>)[];
-  positionLensAt: "begin" | "end";
-}): CodeLens[] => {
-  const nodes = findNodesAtLocation({ root: args.rootNode, path: args.jsonPath });
-  const codeLenses = nodes.flatMap((node) => {
-    // Only position at the end if the type is object or array and has at least one child.
-    const position =
-      args.positionLensAt === "end" &&
-      (node.type === "object" || node.type === "array") &&
-      (node.children?.length ?? 0) > 0
-        ? args.document.positionAt(node.offset + node.length)
-        : args.document.positionAt(node.offset);
-
-    return args.commandDelegates({ position, node }).map((command) => ({
-      command: {
-        command: command.name,
-        title: command.title,
-        arguments: command.args,
-      },
-      range: {
-        start: position,
-        end: position,
-      },
-    }));
-  });
-
-  return codeLenses;
-};
-
-/**
- * Create code lenses for the 'OpenCompletionItems' command
- *
- * @param args -
- * @returns the CodeLenses created
- */
-const createOpenCompletionItemsCodeLenses = (
-  args: {
-    jsonPath: string[];
-    title: string;
-    nodeType: ELsNodeType;
-    commandName?: SwfLanguageServiceCommandTypes;
-  } & SwfLanguageServiceCodeLensesFunctionsArgs
-): CodeLens[] =>
-  createCodeLenses({
-    ...args,
-    positionLensAt: "begin",
-    commandDelegates: ({ node }) => {
-      const commandName: SwfLanguageServiceCommandTypes = args.commandName || "editor.ls.commands.OpenCompletionItems";
-
-      if (
-        node.type !== args.nodeType ||
-        !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content })
-      ) {
-        return [];
-      }
-
-      const newCursorPosition = args.codeCompletionStrategy.getStartNodeValuePosition(args.document, node);
-
-      return [
-        {
-          name: commandName,
-          title: args.title,
-          args: [{ newCursorPosition } as SwfLanguageServiceCommandArgs[typeof commandName]],
-        },
-      ];
-    },
-  });
+export type SwfLanguageServiceCodeLensesFunctionsArgs =
+  EditorLanguageServiceCodeLensesFunctionsArgs<SwfLanguageServiceCommandTypes> & {
+    config: SwfLanguageServiceConfig;
+  };
 
 /**
  * Functions to create CodeLenses
  */
-export const SwfLanguageServiceCodeLenses = {
-  createNewSWF: (): CodeLens[] => {
-    const position = Position.create(0, 0);
-    const command: SwfLanguageServiceCommandTypes = "editor.ls.commands.OpenCompletionItems";
-
-    return [
-      {
-        command: {
-          command,
-          title: "Create a Serverless Workflow",
-          arguments: [{ newCursorPosition: position } as SwfLanguageServiceCommandArgs[typeof command]],
-        },
-        range: {
-          start: position,
-          end: position,
-        },
-      },
-    ];
-  },
+export const SwfLanguageServiceCodeLenses: EditorLanguageServiceCodeLenses = {
+  createNewFile: (): CodeLens[] => createNewFileCodeLens("Create a Serverless Workflow"),
 
   addFunction: (args: SwfLanguageServiceCodeLensesFunctionsArgs): CodeLens[] =>
     createOpenCompletionItemsCodeLenses({

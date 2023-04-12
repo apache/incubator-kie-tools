@@ -124,7 +124,7 @@ export class DashbuilderLanguageService {
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
     const rootNode = this.parseContent(args.content);
     if (!args.content.trim().length) {
-      return DashbuilderLanguageServiceCodeLenses.createNewDashboard();
+      return DashbuilderLanguageServiceCodeLenses.createNewFile();
     }
 
     if (!rootNode) {

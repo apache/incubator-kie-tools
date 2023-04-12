@@ -247,7 +247,7 @@ export class SwfLanguageService {
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CodeLens[]> {
     if (!args.content.trim().length) {
-      return SwfLanguageServiceCodeLenses.createNewSWF();
+      return SwfLanguageServiceCodeLenses.createNewFile();
     }
 
     if (!args.rootNode) {
