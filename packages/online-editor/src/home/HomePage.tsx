@@ -151,9 +151,14 @@ export function HomePage() {
                 }}
                 style={{ height: "calc(100% - 32px)", gridAutoFlow: "column" }}
               >
-                {editorConfig.map((config) => {
+                {editorConfig.map((config, index) => {
                   return (
-                    <NewModelCard title={config.title} extension={config.extension} description={config.description} />
+                    <NewModelCard
+                      key={index}
+                      title={config.title}
+                      extension={config.extension}
+                      description={config.description}
+                    />
                   );
                 })}
               </Gallery>
