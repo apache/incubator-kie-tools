@@ -16,7 +16,7 @@
 
 export * from "./findNodesAtLocation";
 export * from "./types";
-// export * from "./EditorLanguageService";
+export * from "./EditorLanguageService";
 export * from "./EditorLanguageServiceCodeCompletion";
 export * from "./EditorLanguageServiceCodeLenses";
 export * from "./getLineContentFromOffset";

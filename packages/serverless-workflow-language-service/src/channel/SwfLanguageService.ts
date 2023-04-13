@@ -19,6 +19,8 @@ import {
   findNodesAtLocation,
   ELsNode,
   doRefValidation,
+  ELsCompletionsMap,
+  EditorLanguageService,
 } from "@kie-tools/editor-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
@@ -35,6 +37,7 @@ import { FileLanguage } from "../api";
 import {
   SwfCompletionItemServiceCatalogService,
   SwfLanguageServiceCodeCompletion,
+  SwfLanguageServiceCodeCompletionFunctionsArgs,
 } from "./SwfLanguageServiceCodeCompletion";
 import {
   SwfLanguageServiceCodeLenses,
@@ -100,7 +103,11 @@ export function isVirtualRegistry(serviceCatalogFunction: SwfServiceCatalogFunct
 }
 
 export class SwfLanguageService {
-  constructor(private readonly args: SwfLanguageServiceArgs) {}
+  private readonly els: EditorLanguageService;
+
+  constructor(private readonly args: SwfLanguageServiceArgs) {
+    this.els = new EditorLanguageService(this.args);
+  }
 
   public async getCompletionItems(args: {
     content: string;
@@ -118,18 +125,6 @@ export class SwfLanguageService {
         : SwfLanguageServiceCodeCompletion.getEmptyFileCodeCompletions({ ...args, cursorOffset, document: doc });
     }
 
-    const currentNode = findNodeAtOffset(args.rootNode, cursorOffset, true);
-    if (!currentNode) {
-      return [];
-    }
-
-    const currentNodeRange: Range = {
-      start: doc.positionAt(currentNode.offset),
-      end: doc.positionAt(currentNode.offset + currentNode.length),
-    };
-    const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
-      ? currentNodeRange
-      : args.cursorWordRange;
     const swfCompletionItemServiceCatalogServices = await Promise.all(
       [
         ...(await this.args.serviceCatalog.global.getServices()),
@@ -144,34 +139,16 @@ export class SwfLanguageService {
         ),
       }))
     );
-    const matchedCompletions = Array.from(completions.entries()).filter(([path, _]) =>
-      args.codeCompletionStrategy.shouldComplete({
-        content: args.content,
-        cursorOffset: cursorOffset,
-        cursorPosition: args.cursorPosition,
-        node: currentNode,
-        path,
-        root: args.rootNode,
-      })
-    );
-    const result = await Promise.all(
-      matchedCompletions.map(([_, completionItemsDelegate]) => {
-        return completionItemsDelegate({
-          codeCompletionStrategy: args.codeCompletionStrategy,
-          currentNode,
-          currentNodeRange,
-          cursorOffset,
-          cursorPosition: args.cursorPosition,
-          document: doc,
-          langServiceConfig: this.args.config,
-          overwriteRange,
-          rootNode: args.rootNode!,
-          swfCompletionItemServiceCatalogServices,
-          jqCompletions: this.args.jqCompletions,
-        });
-      })
-    );
-    return Promise.resolve(result.flat());
+
+    return this.els.getCompletionItems({
+      ...args,
+      completions,
+      extraCompletionFunctionsArgs: {
+        langServiceConfig: this.args.config,
+        swfCompletionItemServiceCatalogServices,
+        jqCompletions: this.args.jqCompletions,
+      },
+    });
   }
 
   private getFunctionDiagnostics(services: SwfServiceCatalogService[]): Diagnostic[] {
@@ -323,7 +300,7 @@ export class SwfLanguageService {
   }
 }
 
-const completions = new Map<
+const completions: ELsCompletionsMap<SwfLanguageServiceCodeCompletionFunctionsArgs> = new Map<
   ELsJsonPath,
   (args: {
     codeCompletionStrategy: CodeCompletionStrategy;

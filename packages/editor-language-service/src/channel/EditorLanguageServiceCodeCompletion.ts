@@ -15,7 +15,7 @@
  */
 
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { ELsCodeCompletionStrategy, ELsNode } from "./types";
+import { ELsCodeCompletionStrategy, ELsJsonPath, ELsNode } from "./types";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
 
 export type EditorLanguageServiceCodeCompletionFunctionsArgs = {
@@ -23,10 +23,10 @@ export type EditorLanguageServiceCodeCompletionFunctionsArgs = {
   currentNode: ELsNode;
   currentNodeRange: Range;
   cursorOffset: number;
+  cursorPosition: Position;
   document: TextDocument;
   overwriteRange: Range;
   rootNode: ELsNode;
-  cursorPosition: Position;
 };
 
 export type EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs = {
@@ -35,6 +35,11 @@ export type EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs = {
   cursorOffset: number;
   document: TextDocument;
 };
+
+export type ELsCompletionsMap<ARGS extends EditorLanguageServiceCodeCompletionFunctionsArgs> = Map<
+  ELsJsonPath,
+  (args: ARGS) => Promise<CompletionItem[]>
+>;
 
 export function createCompletionItem(args: {
   codeCompletionStrategy: ELsCodeCompletionStrategy;
