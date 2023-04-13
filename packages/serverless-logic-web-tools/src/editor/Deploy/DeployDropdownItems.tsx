@@ -74,9 +74,7 @@ export function useDeployDropdownItems(props: Props) {
 
   useEffect(() => {
     props.workspaceFile.getFileContentsAsString().then((content) => {
-      setCanContentBeDeployed(
-        content.trim().length > 0 && !notifications.some((d) => ["ERROR", "WARNING"].includes(d.severity))
-      );
+      setCanContentBeDeployed(content.trim().length > 0 && !notifications.some((d) => d.severity === "ERROR"));
     });
   }, [notifications, props.workspaceFile]);
 
@@ -342,7 +340,7 @@ export function useDeployDropdownItems(props: Props) {
                 <Divider />
                 <Tooltip
                   content={
-                    "Models with errors/warnings or empty ones cannot be deployed. Check the Problems tab for more information."
+                    "Models with errors or empty ones cannot be deployed. Check the Problems tab for more information."
                   }
                   position="bottom"
                 >
