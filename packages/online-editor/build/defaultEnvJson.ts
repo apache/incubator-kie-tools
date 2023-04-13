@@ -21,7 +21,6 @@ import { routes } from "../src/navigation/Routes";
 // @ts-ignore
 import { env } from "../env";
 import { AuthProviderGroup, AuthProviderType } from "../src/authProviders/AuthProvidersApi";
-import { EnvelopeContentType } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
 import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { GLOB_PATTERN } from "../src/envelopeLocator/EditorEnvelopeLocatorFactory";
 const buildEnv: any = env; // build-env is not typed

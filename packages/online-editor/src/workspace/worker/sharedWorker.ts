@@ -20,7 +20,7 @@ import { WorkspacesWorkerApiImpl } from "@kie-tools-core/workspaces-git-fs/dist/
 import { ENV_FILE_PATH } from "../../env/EnvConstants";
 import { EnvJson } from "../../env/EnvJson";
 import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
-import { getEnvelopeEditors } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { getEditorConfig } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
@@ -32,8 +32,8 @@ async function gitCorsProxyUrl(): Promise<string> {
 }
 const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProxyUrl() });
 
-function getEditors() {
-  return new EditorEnvelopeLocatorFactory().create({ targetOrigin: "", editorEnvelopeConfig: getEnvelopeEditors() });
+function getEditorsList() {
+  return new EditorEnvelopeLocatorFactory().create({ targetOrigin: "", editorEnvelopeConfig: getEditorConfig() });
 }
 // shared worker connection
 
@@ -47,9 +47,9 @@ onconnect = async (e: MessageEvent) => {
       appName: "KIE Sandbox",
       services: workspaceServices,
       fileFilter: {
-        isModel: (path) => getEditors().hasMappingFor(path),
-        isEditable: (path) => getEditors().hasMappingFor(path),
-        isSupported: (path) => getEditors().hasMappingFor(path),
+        isModel: (path) => getEditorsList().hasMappingFor(path),
+        isEditable: (path) => getEditorsList().hasMappingFor(path),
+        isSupported: (path) => getEditorsList().hasMappingFor(path),
       },
     }),
     port: e.ports[0],
