@@ -170,14 +170,24 @@ export function UnitablesBeeTable({
         };
       } else {
         return {
-          originalId: uuid + `field-${column.name}`,
-          label: column.name,
-          accessor: getColumnAccessor(column),
-          dataType: column.dataType,
+          originalId: uuid + `field-${column.name}-parent`,
+          label: "",
+          accessor: getColumnAccessor(column) + "-parent",
+          dataType: undefined as any,
           isRowIndexColumn: false,
-          width: (getObjectValueByPath(configs, column.name) as UnitablesCellConfigs)?.width ?? column.width,
-          setWidth: setColumnWidth(column.name),
-          minWidth: column.width,
+          width: undefined,
+          columns: [
+            {
+              originalId: uuid + `field-${column.name}`,
+              label: column.name,
+              accessor: getColumnAccessor(column),
+              dataType: column.dataType,
+              isRowIndexColumn: false,
+              width: (getObjectValueByPath(configs, column.name) as UnitablesCellConfigs)?.width ?? column.width,
+              setWidth: setColumnWidth(column.name),
+              minWidth: column.width,
+            },
+          ],
         };
       }
     });
