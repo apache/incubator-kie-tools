@@ -19,7 +19,7 @@ import { useContext, useMemo } from "react";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { EditorEnvelopeLocatorFactory } from "../EditorEnvelopeLocatorFactory";
 import { useEnv } from "../../env/hooks/EnvContext";
-import { EnvelopeLocatorConfig } from "../EditorEnvelopeLocatorApi";
+import { EditorEnvelopeConfig } from "../EditorEnvelopeLocatorApi";
 
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "BPMN" | "BPMN2" | "dmn" | "DMN" | "pmml" | "PMML";
 
@@ -31,7 +31,7 @@ export function EditorEnvelopeLocatorContextProvider(props: { children: React.Re
     () =>
       new EditorEnvelopeLocatorFactory().create({
         targetOrigin: window.location.origin,
-        editorsJson: editors,
+        editorEnvelopeConfig: editors,
       }),
     []
   );
@@ -45,5 +45,8 @@ export function useEditorEnvelopeLocator() {
 
 export function getEnvelopeEditors() {
   const { env } = useEnv();
-  return useMemo<EnvelopeLocatorConfig[]>(() => env.KIE_SANDBOX_ENVELOPE_LOCATOR, [env.KIE_SANDBOX_ENVELOPE_LOCATOR]);
+  return useMemo<EditorEnvelopeConfig[]>(
+    () => env.KIE_SANDBOX_EDITOR_ENVELOPE_CONFIG,
+    [env.KIE_SANDBOX_EDITOR_ENVELOPE_CONFIG]
+  );
 }

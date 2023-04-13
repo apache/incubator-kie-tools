@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export type EnvelopeLocatorConfig = {
+export type EditorEnvelopeConfig = {
   type: string;
   filePathGlob: string;
   resourcesPathPrefix: string;

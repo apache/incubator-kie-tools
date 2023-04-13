@@ -33,7 +33,7 @@ async function gitCorsProxyUrl(): Promise<string> {
 const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProxyUrl() });
 
 function getEditors() {
-  return new EditorEnvelopeLocatorFactory().create({ targetOrigin: "", editorsJson: getEnvelopeEditors() });
+  return new EditorEnvelopeLocatorFactory().create({ targetOrigin: "", editorEnvelopeConfig: getEnvelopeEditors() });
 }
 // shared worker connection
 
@@ -41,7 +41,6 @@ declare let onconnect: any;
 // eslint-disable-next-line prefer-const
 onconnect = async (e: MessageEvent) => {
   console.log("Connected to Workspaces Shared Worker");
-
   setupWorkerConnection({
     fsFlushManager: workspaceServices.fsFlushManager,
     apiImpl: new WorkspacesWorkerApiImpl({

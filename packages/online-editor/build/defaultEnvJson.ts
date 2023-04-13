@@ -93,7 +93,7 @@ export const defaultEnvJson: EnvJson = {
       otherFilesDestinationFolder: "src/main/resources/others",
     },
   ],
-  KIE_SANDBOX_ENVELOPE_LOCATOR: [
+  KIE_SANDBOX_EDITOR_ENVELOPE_CONFIG: [
     {
       type: FileTypes.BPMN,
       filePathGlob: GLOB_PATTERN.bpmn,
