@@ -74,6 +74,10 @@ export default class VSCodeTestHelper {
     this.driver = this.browser.driver;
   }
 
+  public takeScreenshot = async (): Promise<string> => {
+    return await this.driver.takeScreenshot();
+  };
+
   /**
    * Opens folder using commmand suplied by vscode-extension-tester
    * and open the dedicated SideBarView with the folder.
