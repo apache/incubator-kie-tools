@@ -20,7 +20,7 @@ import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/Loc
 import * as React from "react";
 import { useContext, useMemo, useCallback, useState } from "react";
 import { useSettingsDispatch } from "../../../settings/SettingsContext";
-import { fetchSampleDefinitions, fetchSampleFiles, Sample, SampleCategory } from "../sampleApi";
+import { fetchSampleDefinitions, fetchSampleFiles, Sample, SampleCategory } from "../SampleApi";
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import Fuse from "fuse.js";
 

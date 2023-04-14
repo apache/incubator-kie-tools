@@ -27,7 +27,7 @@ import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings } from "../../settings/SettingsContext";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
-import { useDeployDropdownItems } from "../Deploy/DeployDropdownItems";
+import { useDeployDropdownItems } from "../hooks/useDeployDropdownItems";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 interface Props {
