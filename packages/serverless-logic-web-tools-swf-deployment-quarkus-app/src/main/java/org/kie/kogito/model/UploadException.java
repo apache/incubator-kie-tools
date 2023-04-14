@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.api;
+package org.kie.kogito.model;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+public class UploadException extends Exception {
 
-import org.kie.kogito.model.UploadException;
-
-public interface UploadService {
-
-    List<String> upload(InputStream inputStream) throws IOException, UploadException;
+    public UploadException(String errorMessage) {
+        super(errorMessage);
+    }
 }

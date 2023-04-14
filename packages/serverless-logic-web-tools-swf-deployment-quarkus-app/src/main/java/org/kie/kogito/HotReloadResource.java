@@ -17,8 +17,13 @@
 package org.kie.kogito;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -29,6 +34,7 @@ import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.kie.kogito.api.UploadService;
+import org.kie.kogito.model.UploadException;
 
 @Path("/")
 public class HotReloadResource {
@@ -36,6 +42,9 @@ public class HotReloadResource {
     private static final Logger LOGGER = Logger.getLogger(HotReloadResource.class);
 
     private static final String DATA_PART_KEY = "zipFile";
+
+    private static final String ERROR_KEY = "error";
+    private static final String PATHS_KEY = "paths";
 
     @Inject
     UploadService uploadService;
@@ -51,12 +60,28 @@ public class HotReloadResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity("No file part found").build();
             }
 
-            uploadService.upload(inputStream);
+            final List<String> validPaths = uploadService.upload(inputStream);
 
-            return Response.ok().build();
+            final Map<String, List<String>> pathMap = new HashMap<>();
+            pathMap.put(PATHS_KEY, validPaths);
+
+            return Response.ok(pathMap, MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (UploadException e) {
+            LOGGER.warn(e.getMessage());
+
+            final JsonObject json = Json.createObjectBuilder()
+                    .add(ERROR_KEY, e.getMessage())
+                    .build();
+
+            return Response.status(Response.Status.BAD_REQUEST).entity(json.toString()).build();
         } catch (Exception e) {
             LOGGER.error("Something went wrong", e);
-            return Response.serverError().build();
+
+            final JsonObject json = Json.createObjectBuilder()
+                    .add(ERROR_KEY, e.getMessage())
+                    .build();
+
+            return Response.serverError().entity(json.toString()).build();
         }
     }
 }

@@ -24,13 +24,14 @@ export type DevModeUploadResult =
     }
   | {
       success: false;
-      reason: "NOT_READY" | "ERROR";
+      message: string;
     };
 
 export interface DevModeEndpoints {
   base: string;
   upload: string;
-  devUi: string;
+  quarkusDevUi: string;
+  swfDevUi: string;
   swaggerUi: string;
   health: {
     live: string;
@@ -42,7 +43,8 @@ export interface DevModeEndpoints {
 export const buildEndpoints = (routeUrl: string): DevModeEndpoints => ({
   base: routeUrl,
   upload: `${routeUrl}/upload`,
-  devUi: `${routeUrl}/q/dev`,
+  quarkusDevUi: `${routeUrl}/q/dev`,
+  swfDevUi: `${routeUrl}/q/dev/org.kie.kogito.kogito-quarkus-serverless-workflow-devui/workflowInstances`,
   swaggerUi: `${routeUrl}/q/swagger-ui`,
   health: {
     live: `${routeUrl}/q/health/live`,

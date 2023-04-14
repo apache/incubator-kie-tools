@@ -39,7 +39,7 @@ public class ZipServiceTest {
         List<Path> unzippedFiles = zipService.unzip(ZIP_FILE_PATH, destinationFolderPath);
 
         assertNotNull(unzippedFiles);
-        assertEquals(3, unzippedFiles.size());
+        assertEquals(5, unzippedFiles.size());
     }
 
     @Test

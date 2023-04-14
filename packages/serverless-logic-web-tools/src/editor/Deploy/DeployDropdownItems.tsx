@@ -106,7 +106,7 @@ export function useDeployDropdownItems(props: Props) {
           variant="success"
           title={
             <>
-              Your Dev Mode has been updated with the following files:
+              Your Dev Mode has been updated with the following valid files:
               <br />
               <br />
               <List>
@@ -121,7 +121,9 @@ export function useDeployDropdownItems(props: Props) {
           data-testid="alert-dev-mode-ready"
           actionClose={<AlertActionCloseButton onClose={close} />}
           actionLinks={
-            <AlertActionLink onClick={() => window.open(routeUrl, "_blank")}>{"Go to Dev UI"}</AlertActionLink>
+            <AlertActionLink onClick={() => window.open(routeUrl, "_blank")}>
+              {"Go to Serverless Workflow Dev UI"}
+            </AlertActionLink>
           }
         />
       );
@@ -148,30 +150,21 @@ export function useDeployDropdownItems(props: Props) {
     }, [])
   );
 
-  const uploadToDevModeErrorAlert = useGlobalAlert(
-    useCallback(({ close }) => {
-      return (
-        <Alert
-          className="pf-u-mb-md"
-          variant="danger"
-          title={"Something went wrong while uploading to the Dev Mode deployment. Please try again in a few moments."}
-          aria-live="polite"
-          data-testid="alert-upload-error"
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      );
-    }, [])
-  );
-
-  const uploadToDevModeNotReadyAlert = useGlobalAlert(
-    useCallback(({ close }) => {
+  const uploadToDevModeErrorAlert = useGlobalAlert<{ message: string }>(
+    useCallback(({ close }, { message }) => {
       return (
         <Alert
           className="pf-u-mb-md"
           variant="warning"
-          title={"Looks like the Dev Mode deployment is not ready yet. Please try again in a few moments."}
+          title={
+            <>
+              {"Something went wrong while uploading to the Dev Mode."}
+              <br />
+              {`Reason: ${message}`}
+            </>
+          }
           aria-live="polite"
-          data-testid="alert-dev-mode-not-ready"
+          data-testid="alert-upload-error"
           actionClose={<AlertActionCloseButton onClose={close} />}
         />
       );
@@ -224,15 +217,11 @@ export function useDeployDropdownItems(props: Props) {
             return;
           }
           uploadToDevModeSuccessAlert.close();
-          devModeReadyAlert.show({ routeUrl: devMode.endpoints!.devUi, filePaths: result.uploadedPaths });
+          devModeReadyAlert.show({ routeUrl: devMode.endpoints!.swfDevUi, filePaths: result.uploadedPaths });
           window.clearInterval(fetchDevModeDeploymentTask);
         }, FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME);
       } else {
-        if (result.reason === "NOT_READY") {
-          uploadToDevModeNotReadyAlert.show();
-        } else {
-          uploadToDevModeErrorAlert.show();
-        }
+        uploadToDevModeErrorAlert.show({ message: result.message });
       }
     } else {
       kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
@@ -247,7 +236,6 @@ export function useDeployDropdownItems(props: Props) {
     uploadToDevModeSuccessAlert,
     devModeReadyAlert,
     devMode.endpoints,
-    uploadToDevModeNotReadyAlert,
     uploadToDevModeErrorAlert,
     kieSandboxExtendedServices,
   ]);
@@ -257,37 +245,6 @@ export function useDeployDropdownItems(props: Props) {
       <React.Fragment key={"deploy-dropdown-items"}>
         {props.workspace && (
           <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
-            {env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY && (
-              <DropdownItem
-                icon={<OpenshiftIcon />}
-                id="deploy-your-model-button"
-                key={`dropdown-deploy`}
-                component={"button"}
-                onClick={onDeploy}
-                isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
-                ouiaId={"deploy-to-openshift-dropdown-button"}
-              >
-                {props.workspace.files.length > 1 && (
-                  <Flex flexWrap={{ default: "nowrap" }}>
-                    <FlexItem>
-                      Deploy models in <b>{`"${props.workspace.descriptor.name}"`}</b>
-                    </FlexItem>
-                  </Flex>
-                )}
-                {props.workspace.files.length === 1 && (
-                  <Flex flexWrap={{ default: "nowrap" }}>
-                    <FlexItem>
-                      Deploy <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b>
-                    </FlexItem>
-                    <FlexItem>
-                      <b>
-                        <FileLabel extension={props.workspace.files[0].extension} />
-                      </b>
-                    </FlexItem>
-                  </Flex>
-                )}
-              </DropdownItem>
-            )}
             {isUploadToDevModeEnabled && (
               <DropdownItem
                 icon={<UploadIcon />}
@@ -309,6 +266,37 @@ export function useDeployDropdownItems(props: Props) {
                   <Flex flexWrap={{ default: "nowrap" }}>
                     <FlexItem>
                       Upload <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b> to Dev Mode
+                    </FlexItem>
+                    <FlexItem>
+                      <b>
+                        <FileLabel extension={props.workspace.files[0].extension} />
+                      </b>
+                    </FlexItem>
+                  </Flex>
+                )}
+              </DropdownItem>
+            )}
+            {env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY && (
+              <DropdownItem
+                icon={<OpenshiftIcon />}
+                id="deploy-your-model-button"
+                key={`dropdown-deploy`}
+                component={"button"}
+                onClick={onDeploy}
+                isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
+                ouiaId={"deploy-to-openshift-dropdown-button"}
+              >
+                {props.workspace.files.length > 1 && (
+                  <Flex flexWrap={{ default: "nowrap" }}>
+                    <FlexItem>
+                      Deploy models in <b>{`"${props.workspace.descriptor.name}"`}</b>
+                    </FlexItem>
+                  </Flex>
+                )}
+                {props.workspace.files.length === 1 && (
+                  <Flex flexWrap={{ default: "nowrap" }}>
+                    <FlexItem>
+                      Deploy <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b>
                     </FlexItem>
                     <FlexItem>
                       <b>

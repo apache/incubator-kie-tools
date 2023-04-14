@@ -16,6 +16,7 @@
 
 package org.kie.kogito.service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,6 +36,7 @@ import org.kie.kogito.api.FileService;
 import org.kie.kogito.api.UploadService;
 import org.kie.kogito.api.ZipService;
 import org.kie.kogito.model.FileType;
+import org.kie.kogito.model.UploadException;
 
 @ApplicationScoped
 public class UploadServiceImpl implements UploadService {
@@ -48,69 +50,71 @@ public class UploadServiceImpl implements UploadService {
     FileService fileService;
 
     @Override
-    public void upload(final InputStream inputStream) {
+    public List<String> upload(final InputStream inputStream) throws IOException, UploadException {
         LOGGER.info("Upload files ...");
-        try {
-            Files.copy(inputStream, FileStructureConstants.UPLOADED_ZIP_FILE_PATH, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(inputStream, FileStructureConstants.UPLOADED_ZIP_FILE_PATH, StandardCopyOption.REPLACE_EXISTING);
 
-            final List<Path> unzippedFilePaths = zipService.unzip(FileStructureConstants.UPLOADED_ZIP_FILE_PATH,
-                                                                  FileStructureConstants.UNZIP_FOLDER_PATH);
-            final List<Path> validFilePaths = fileService.validateFiles(unzippedFilePaths);
+        final List<Path> unzippedFilePaths = zipService.unzip(FileStructureConstants.UPLOADED_ZIP_FILE_PATH,
+                                                              FileStructureConstants.UNZIP_FOLDER_PATH);
+        final List<Path> validFilePaths = fileService.validateFiles(unzippedFilePaths);
 
-            if (validFilePaths.isEmpty()) {
-                LOGGER.warn("No valid file has been found. Upload skipped.");
-                return;
-            }
-
-            final boolean hasAnySwf = validFilePaths
-                    .stream()
-                    .anyMatch(path -> fileService.getFileType(path) == FileType.SERVERLESS_WORKFLOW);
-
-            if (!hasAnySwf) {
-                LOGGER.warn("No valid serverless workflow file has been found. Upload skipped.");
-                return;
-            }
-
-            LOGGER.info("Uploading " + validFilePaths.size() + " validated file(s).");
-
-            fileService.cleanUpFolder(FileStructureConstants.PROJECT_RESOURCES_FOLDER_PATH);
-
-            final Map<Path, Path> sourceTargetMap = validFilePaths.stream()
-                    .filter(path -> !path.getFileName().toString().equals(FileStructureConstants.APPLICATION_PROPERTIES_FILE_NAME))
-                    .collect(Collectors.toMap(
-                            Function.identity(),
-                            path -> {
-                                final String relativePathStr =
-                                        path.toString().replace(FileStructureConstants.UNZIP_FOLDER_PATH.toString(), "");
-                                return Path.of(FileStructureConstants.PROJECT_RESOURCES_FOLDER_PATH.toString(), relativePathStr);
-                            }));
-
-            final Optional<Path> applicationPropertiesPath = validFilePaths
-                    .stream()
-                    .filter(path -> fileService.getFileType(path) == FileType.APPLICATION_PROPERTIES)
-                    .findFirst();
-
-            if (applicationPropertiesPath.isPresent()) {
-                Path mergedPath = Files.createTempFile("merged", FileStructureConstants.APPLICATION_PROPERTIES_FILE_NAME);
-                fileService.mergePropertiesFiles(applicationPropertiesPath.get(),
-                                                 FileStructureConstants.BACKUP_APPLICATION_PROPERTIES_FILE_PATH,
-                                                 mergedPath);
-                sourceTargetMap.put(mergedPath,
-                                    FileStructureConstants.APPLICATION_PROPERTIES_FILE_PATH);
-                LOGGER.info("Merging incoming application.properties with default file.");
-            } else {
-                sourceTargetMap.put(FileStructureConstants.BACKUP_APPLICATION_PROPERTIES_FILE_PATH,
-                                    FileStructureConstants.APPLICATION_PROPERTIES_FILE_PATH);
-                LOGGER.info("Using default application.properties file since no one was sent.");
-            }
-
-            fileService.copyFiles(sourceTargetMap);
-
-            fileService.cleanUpFolder(FileStructureConstants.UNZIP_FOLDER_PATH);
-
-            LOGGER.info("Upload files ... done");
-        } catch (Exception e) {
-            LOGGER.error("Error when processing the uploaded file", e);
+        if (validFilePaths.isEmpty()) {
+            throw new UploadException("No valid file has been found. Upload skipped.");
         }
+
+        final boolean hasAnySwf = validFilePaths
+                .stream()
+                .anyMatch(path -> fileService.getFileType(path) == FileType.SERVERLESS_WORKFLOW);
+
+        if (!hasAnySwf) {
+            throw new UploadException("No valid serverless workflow file has been found. Upload skipped.");
+        }
+
+        LOGGER.info("Uploading " + validFilePaths.size() + " validated file(s).");
+
+        fileService.cleanUpFolder(FileStructureConstants.PROJECT_RESOURCES_FOLDER_PATH);
+
+        final Map<Path, Path> sourceTargetMap = validFilePaths.stream()
+                .filter(path -> !path.getFileName().toString().equals(FileStructureConstants.APPLICATION_PROPERTIES_FILE_NAME))
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        path -> {
+                            final String relativePathStr =
+                                    path.toString().replace(FileStructureConstants.UNZIP_FOLDER_PATH.toString(), "");
+                            return Path.of(FileStructureConstants.PROJECT_RESOURCES_FOLDER_PATH.toString(), relativePathStr);
+                        }));
+
+        final Optional<Path> applicationPropertiesPath = validFilePaths
+                .stream()
+                .filter(path -> fileService.getFileType(path) == FileType.APPLICATION_PROPERTIES)
+                .findFirst();
+
+        if (applicationPropertiesPath.isPresent()) {
+            Path mergedPath = Files.createTempFile("merged", FileStructureConstants.APPLICATION_PROPERTIES_FILE_NAME);
+            fileService.mergePropertiesFiles(applicationPropertiesPath.get(),
+                                             FileStructureConstants.BACKUP_APPLICATION_PROPERTIES_FILE_PATH,
+                                             mergedPath);
+            sourceTargetMap.put(mergedPath,
+                                FileStructureConstants.APPLICATION_PROPERTIES_FILE_PATH);
+            LOGGER.info("Merging incoming application.properties with default file.");
+        } else {
+            sourceTargetMap.put(FileStructureConstants.BACKUP_APPLICATION_PROPERTIES_FILE_PATH,
+                                FileStructureConstants.APPLICATION_PROPERTIES_FILE_PATH);
+            LOGGER.info("Using default application.properties file since no one was sent.");
+        }
+
+        fileService.copyFiles(sourceTargetMap);
+
+        fileService.cleanUpFolder(FileStructureConstants.UNZIP_FOLDER_PATH);
+
+        LOGGER.info("Upload files ... done");
+
+        return validFilePaths
+                .stream()
+                .map(path -> path
+                        .toAbsolutePath()
+                        .toString()
+                        .replace(FileStructureConstants.UNZIP_FOLDER_PATH + "/", ""))
+                .collect(Collectors.toList());
     }
 }
