@@ -24,7 +24,7 @@ import { join } from "path";
 
 // The following test is failing in github CI. See https://issues.redhat.com/browse/KOGITO-8952.
 describe("Serverless workflow editor - Basic operations tests", () => {
-  const SCREENSHOTS_DIR: string = path.resolve("dist-it-tests", "screenshots");
+  const SCREENSHOTS_DIR: string = path.resolve("screenshots");
   const pngPath = (fileName: string)=>join(SCREENSHOTS_DIR, fileName + ".png");
 
 
