@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { DashbuilderLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
+import {
+  DashbuilderLanguageService,
+  DashbuilderYamlLanguageService,
+} from "@kie-tools/dashbuilder-language-service/dist/channel";
 import { CompletionItem, DocumentUri, Position } from "vscode-languageserver-types";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
@@ -29,7 +32,7 @@ export function treat(content: ContentWithCursor, trimContent = true) {
 }
 
 export async function codeCompletionTester(
-  ls: DashbuilderLanguageService,
+  ls: DashbuilderYamlLanguageService,
   documentUri: DocumentUri,
   contentToParse: ContentWithCursor,
   trimContent = true

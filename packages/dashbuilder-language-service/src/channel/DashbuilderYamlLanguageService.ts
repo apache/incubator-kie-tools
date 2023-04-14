@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,20 +25,14 @@ import {
 } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
 import * as jsonc from "jsonc-parser";
-import {
-  DashbuilderLanguageServiceCodeCompletion,
-  DashbuilderLanguageServiceCodeCompletionFunctionsArgs,
-} from "./DashbuilderLanguageServiceCodeCompletion";
+import { DashbuilderLanguageServiceCodeCompletion } from "./DashbuilderLanguageServiceCodeCompletion";
 import { DashbuilderLanguageServiceCodeLenses } from "./DashbuilderLanguageServiceCodeLenses";
 import {
-  EditorLanguageService,
-  EditorLanguageServiceArgs,
   ELsJsonPath,
   ELsNode,
   indentText,
   ShouldCompleteArgs,
   TranslateArgs,
-  ELsCompletionsMap,
 } from "@kie-tools/editor-language-service/dist/channel";
 import {
   dump,
@@ -62,17 +56,26 @@ import {
 import { Connection } from "vscode-languageserver/node";
 import { DASHBUILDER_SCHEMA } from "../assets/schemas";
 import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
-import { isNodeUncompleted } from "./DashbuilderYamlLanguageService";
+import {
+  DashbuilderLanguageService,
+  DashbuilderLanguageServiceArgs,
+  findNodeAtOffset,
+  positions_equals,
+} from "./DashbuilderLanguageService";
 
-export type DashbuilderLanguageServiceArgs = EditorLanguageServiceArgs;
+export class DashbuilderYamlLanguageService {
+  private readonly ls: DashbuilderLanguageService;
+  private readonly codeCompletionStrategy: DashbuilderYamlCodeCompletionStrategy;
 
-export class DashbuilderLanguageService {
-  private readonly els: EditorLanguageService;
-  private readonly codeCompletionStrategy: DashbuilderCodeCompletionStrategy;
-
-  constructor(private readonly args: DashbuilderLanguageServiceArgs) {
-    this.codeCompletionStrategy = new DashbuilderCodeCompletionStrategy();
-    this.els = new EditorLanguageService(this.args);
+  constructor() {
+    this.ls = new DashbuilderLanguageService({
+      fs: {},
+      lang: {
+        fileLanguage: FileLanguage.YAML,
+        fileMatch: ["*.dash.yaml", "*.dash.yml"],
+      },
+    });
+    this.codeCompletionStrategy = new DashbuilderYamlCodeCompletionStrategy();
   }
 
   parseContent(content: string): ELsNode | undefined {
@@ -95,24 +98,31 @@ export class DashbuilderLanguageService {
     uri: string;
     cursorPosition: Position;
     cursorWordRange: Range;
-    rootNode: ELsNode | undefined;
-    codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CompletionItem[]> {
-    const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
+    const rootNode = this.parseContent(args.content);
+    const doc = TextDocument.create(args.uri, FileLanguage.YAML, 0, args.content);
     const cursorOffset = doc.offsetAt(args.cursorPosition);
-    if (!args.rootNode) {
-      return args.content.trim().length
-        ? []
-        : DashbuilderLanguageServiceCodeCompletion.getEmptyFileCodeCompletions({
-            ...args,
-            cursorOffset,
-            document: doc,
-          });
+
+    if (shouldNotComplete(args.content.slice(0, cursorOffset))) {
+      return [];
     }
 
-    return this.els.getCompletionItems({
+    const isCurrentNodeUncompleted = rootNode
+      ? isNodeUncompleted({
+          ...args,
+          rootNode,
+          cursorOffset,
+        })
+      : false;
+
+    if (isCurrentNodeUncompleted) {
+      args.cursorPosition = Position.create(args.cursorPosition.line, args.cursorPosition.character - 1);
+    }
+
+    return await this.ls.getCompletionItems({
       ...args,
-      completions,
+      rootNode,
+      codeCompletionStrategy: this.codeCompletionStrategy,
     });
   }
 
@@ -198,8 +208,45 @@ export class DashbuilderLanguageService {
   }
 
   public dispose() {
-    // empty for now
+    return this.ls.dispose();
   }
+}
+
+/**
+ * Check if a node at a position is uncompleted.
+ * eg. "refName: 🎯"
+ *
+ * @param args -
+ * @returns true if the node is uncompleted, false otherwise.
+ */
+export const isNodeUncompleted = (args: {
+  content: string;
+  uri: string;
+  rootNode: ELsNode;
+  cursorOffset: number;
+}): boolean => {
+  if (args.content.slice(args.cursorOffset - 1, args.cursorOffset) !== " ") {
+    return false;
+  }
+
+  const nodeAtPrevOffset = findNodeAtOffset(args.rootNode, args.cursorOffset - 1, true);
+
+  if (!nodeAtPrevOffset) {
+    return false;
+  }
+
+  return nodeAtPrevOffset.offset + nodeAtPrevOffset.length === args.cursorOffset - 1;
+};
+
+/**
+ * Check if a string should not be completed.
+ * Gets the last line of the content, check if we are after the first ":" without a space OR after a "-" without a space.
+ * Eg. https://regex101.com/r/AaUWZg/1
+ * @param content the content of the file until the point where the completion should be triggered.
+ * @returns
+ */
+function shouldNotComplete(content: string): boolean {
+  return /(^|\n)\s*(([^:]+:)|(-))$/.test(content);
 }
 
 const astConvert = (node: YAMLNode, parentNode?: ELsNode): ELsNode => {
@@ -240,29 +287,7 @@ const astConvert = (node: YAMLNode, parentNode?: ELsNode): ELsNode => {
   return convertedNode;
 };
 
-export function findNodeAtOffset(root: ELsNode, offset: number, includeRightBound?: boolean): ELsNode | undefined {
-  return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as ELsNode;
-}
-
-export function getNodePath(node: ELsNode): ELsJsonPath {
-  return jsonc.getNodePath(node as jsonc.Node);
-}
-
-const completions: ELsCompletionsMap<DashbuilderLanguageServiceCodeCompletionFunctionsArgs> = new Map<
-  ELsJsonPath,
-  (args: {
-    codeCompletionStrategy: CodeCompletionStrategy;
-    currentNode: ELsNode;
-    currentNodeRange: Range;
-    cursorOffset: number;
-    cursorPosition: Position;
-    document: TextDocument;
-    overwriteRange: Range;
-    rootNode: ELsNode;
-  }) => Promise<CompletionItem[]>
->([]);
-
-export class DashbuilderCodeCompletionStrategy implements CodeCompletionStrategy {
+export class DashbuilderYamlCodeCompletionStrategy implements CodeCompletionStrategy {
   public translate(args: TranslateArgs): string {
     const completionDump = dump(args.completion, {}).slice(2, -1).trim();
     if (["{}", "[]"].includes(completionDump) || args.completionItemKind === CompletionItemKind.Text) {
@@ -294,14 +319,3 @@ export class DashbuilderCodeCompletionStrategy implements CodeCompletionStrategy
     return true;
   }
 }
-
-/**
- * Test if position `a` equals position `b`.
- * This function is compatible with https://microsoft.github.io/monaco-editor/api/classes/monaco.Position.html#equals-1
- *
- * @param a -
- * @param b -
- * @returns true if the positions are equal, false otherwise
- */
-export const positions_equals = (a: Position | null, b: Position | null): boolean =>
-  a?.line === b?.line && a?.character == b?.character;

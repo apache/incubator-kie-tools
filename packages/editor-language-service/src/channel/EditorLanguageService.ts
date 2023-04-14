@@ -45,7 +45,7 @@ export class EditorLanguageService {
     rootNode: ELsNode | undefined;
     codeCompletionStrategy: ELsCodeCompletionStrategy;
     completions: ELsCompletionsMap<EditorLanguageServiceCodeCompletionFunctionsArgs>;
-    extraCompletionFunctionsArgs: {};
+    extraCompletionFunctionsArgs?: {};
   }): Promise<CompletionItem[]> {
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
     const cursorOffset = doc.offsetAt(args.cursorPosition);
@@ -87,7 +87,7 @@ export class EditorLanguageService {
           document: doc,
           overwriteRange,
           rootNode: args.rootNode!,
-          ...args.extraCompletionFunctionsArgs,
+          ...(args.extraCompletionFunctionsArgs || {}),
         });
       })
     );

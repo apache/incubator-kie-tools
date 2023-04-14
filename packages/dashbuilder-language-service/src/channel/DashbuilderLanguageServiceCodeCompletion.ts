@@ -16,6 +16,7 @@
 import {
   EditorLanguageServiceCodeCompletionFunctions,
   EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs,
+  EditorLanguageServiceCodeCompletionFunctionsArgs,
   ELsNode,
   indentText,
   TranslateArgs,
@@ -24,7 +25,9 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Range } from "vscode-languageserver-types";
 import { dump } from "yaml-language-server-parser";
 import { dashbuilderCompletion } from "../assets/code-completions/";
-import { positions_equals } from "./DashbuilderLanguageService";
+
+export type DashbuilderLanguageServiceCodeCompletionFunctionsArgs =
+  EditorLanguageServiceCodeCompletionFunctionsArgs & {};
 
 /**
  * DashbuilderLanguageService CodeCompletion functions

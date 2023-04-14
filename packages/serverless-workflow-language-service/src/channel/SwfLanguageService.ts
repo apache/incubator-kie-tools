@@ -21,6 +21,7 @@ import {
   doRefValidation,
   ELsCompletionsMap,
   EditorLanguageService,
+  EditorLanguageServiceArgs,
 } from "@kie-tools/editor-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
@@ -61,12 +62,7 @@ export type SwfLanguageServiceConfig = {
   shouldIncludeJsonSchemaDiagnostics: () => Promise<boolean>;
 };
 
-export type SwfLanguageServiceArgs = {
-  fs: {};
-  lang: {
-    fileLanguage: FileLanguage;
-    fileMatch: string[];
-  };
+export type SwfLanguageServiceArgs = EditorLanguageServiceArgs & {
   serviceCatalog: {
     global: {
       getServices: () => Promise<SwfServiceCatalogService[]>;
