@@ -58,6 +58,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.sw.SWDomainInitializer;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
 import org.kie.workbench.common.stunner.sw.client.services.IncrementalMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Context;
@@ -155,6 +156,9 @@ public class DiagramEditorTest {
     private Event togglePreviewEvent;
 
     @Mock
+    private SWDomainInitializer domainInitializer;
+
+    @Mock
     private DiagramApi diagramApi;
 
     @Mock
@@ -219,9 +223,9 @@ public class DiagramEditorTest {
         metadata = spy(new MetadataImpl.MetadataImplBuilder("testSet")
                                .setTitle("testDiagram")
                                .build());
-        diagram = spy(new DiagramImpl("testDiagram",
-                                      graph,
-                                      metadata));
+        DiagramImpl d = new DiagramImpl("testDiagram", metadata);
+        d.setGraph(graph);
+        diagram = spy(d);
         when(session.getCanvasHandler()).thenReturn(canvasHandler2);
         when(canvasHandler2.getDiagram()).thenReturn(diagram);
         doReturn(stunnerEditor2).when(stunnerEditor2).close();
@@ -240,7 +244,8 @@ public class DiagramEditorTest {
                                        togglePreviewEvent,
                                        diagramApi));
         tested.jsRegExp = jsRegExp;
-        tested.jsCanvas = jsCanvas;
+        tested.domainInitializer = domainInitializer;
+        when(tested.getJsCanvas()).thenReturn(jsCanvas);
     }
 
     @Test
@@ -300,6 +305,12 @@ public class DiagramEditorTest {
         when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(true);
         tested.onStartup(new DefaultPlaceRequest());
         verify(stunnerEditor2, times(1)).setReadOnly(eq(true));
+    }
+
+    @Test
+    public void testDomainInitializer() {
+        tested.onStartup(new DefaultPlaceRequest());
+        verify(domainInitializer, times(1)).initialize();
     }
 
     @Test
@@ -396,9 +407,8 @@ public class DiagramEditorTest {
         // Keep selection
         verify(selectionControl, times(1)).addSelection("uuid");
         // Center selected node
-        verify(jsCanvas, times(1)).centerNode("uuid");
+        verify(jsCanvas, times(1)).center("uuid");
     }
-
 
     @Test
     public void testSelectStateByName() {

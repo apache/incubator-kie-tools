@@ -16,87 +16,42 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.SubFlowRefJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.SubFlowRefJsonSerializer;
 
-/**
- * Actions specify invocations of services or other workflows during workflow execution.
- * Note that functionRef, eventRef, and subFlowRef are mutually exclusive, meaning that only one of them can be specified
- * in a single action definition.
- *
- * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Action-Definition"> Action definition </a>
- */
-@Bindable
-@Definition
-@MorphBase(defaultType = CallFunctionAction.class)
 @JsType
 public class ActionNode {
 
-    public static final String LABEL_ACTION = "action";
+    public String id;
 
-    @Category
-    public static final transient String category = Categories.ACTIONS;
-
-    @Labels
-    private static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
-                                                        LABEL_ACTION).collect(Collectors.toSet());
-
-    @Property
-    private String id;
-
-    /**
-     * Unique action name.
-     */
-    @Property(meta = PropertyMetaTypes.NAME)
-    private String name;
-
-    /**
-     * References to a reusable function definition.
-     */
+    public String name;
 
     @JsonbTypeSerializer(FunctionRefJsonSerializer.class)
     @JsonbTypeDeserializer(FunctionRefJsonDeserializer.class)
-    private Object functionRef;
+    public Object functionRef;
 
-    /**
-     * Reference to a trigger and result reusable event definition.
-     */
-    private ActionEventRef eventRef;
+    public ActionEventRef eventRef;
 
-    /**
-     * Reference to a workflow to be invoked.
-     */
     @JsonbTypeSerializer(SubFlowRefJsonSerializer.class)
     @JsonbTypeDeserializer(SubFlowRefJsonDeserializer.class)
-    private Object subFlowRef;
+    public Object subFlowRef;
 
-    private String retryRef;
+    public String retryRef;
 
-    private Sleep sleep;
+    public Sleep sleep;
 
-    private String[] retryableErrors;
+    public String[] retryableErrors;
 
-    private String[] nonRetryableErrors;
+    public String[] nonRetryableErrors;
 
-    private ActionDataFilters actionDataFilter;
+    public ActionDataFilters actionDataFilter;
 
-    private String condition;
+    public String condition;
 
     public ActionNode() {
     }
@@ -144,14 +99,6 @@ public class ActionNode {
     public ActionNode setSubFlowRef(Object subFlowRef) {
         this.subFlowRef = subFlowRef;
         return this;
-    }
-
-    public Set<String> getLabels() {
-        return labels;
-    }
-
-    public String getCategory() {
-        return category;
     }
 
     public String getRetryRef() {

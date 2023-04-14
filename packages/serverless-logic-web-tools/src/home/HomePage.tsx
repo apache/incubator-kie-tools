@@ -86,7 +86,7 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import { Showcase } from "./Showcase";
+import { Showcase } from "./sample/Showcase";
 import { splitFiles, SupportedFileExtensions } from "../extension";
 import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { APP_NAME } from "../AppConstants";

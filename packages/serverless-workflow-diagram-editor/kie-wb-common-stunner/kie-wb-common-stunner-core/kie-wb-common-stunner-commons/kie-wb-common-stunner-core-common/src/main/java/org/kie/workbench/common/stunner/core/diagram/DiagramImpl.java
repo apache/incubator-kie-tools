@@ -16,25 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.diagram;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@Portable
+@JsType
 public final class DiagramImpl extends AbstractDiagram<Graph, Metadata> {
 
-    public DiagramImpl(final @MapsTo("name") String name,
-                       final @MapsTo("metadata") Metadata metadata) {
-        super(name,
-              metadata);
-    }
-
     public DiagramImpl(final String name,
-                       final Graph graph,
                        final Metadata metadata) {
         super(name,
-              graph,
               metadata);
     }
 

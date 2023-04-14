@@ -36,6 +36,7 @@ const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProx
 // shared worker connection
 
 declare let onconnect: any;
+
 // eslint-disable-next-line prefer-const
 onconnect = async (e: MessageEvent) => {
   console.log("Connected to Workspaces Shared Worker");

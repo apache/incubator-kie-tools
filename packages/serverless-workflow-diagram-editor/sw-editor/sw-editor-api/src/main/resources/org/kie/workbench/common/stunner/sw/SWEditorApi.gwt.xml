@@ -28,8 +28,10 @@
   <source path="autolayout"/>
   <source path="definition"/>
   <source path="factory"/>
+  <source path="jsadapter"/>
   <source path="marshall"/>
   <source path="" includes="SWEditor.java"/>
-  <source path="" includes="Definitions.java"/>
+  <source path="" includes="SWDefinitionSet.java"/>
+  <source path="" includes="SWDomainInitializer.java"/>
 
 </module>

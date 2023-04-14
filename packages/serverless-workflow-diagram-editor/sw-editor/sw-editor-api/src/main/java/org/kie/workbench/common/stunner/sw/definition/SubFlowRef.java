@@ -27,15 +27,17 @@ import org.kie.workbench.common.stunner.sw.definition.custom.SubflowExecutionTyp
 @JsType
 public class SubFlowRef {
 
-    private String workflowId;
-    private String version;
-    private FunctionRefType invoke;
+    public String workflowId;
+
+    public String version;
+
+    public FunctionRefType invoke;
 
 
     //TODO custom ser/deser because of continue is reserved java lit
     @JsonbTypeSerializer(SubflowExecutionTypeJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(SubflowExecutionTypeJsonbTypeDeserializer.class)
-    private SubflowExecutionType onParentComplete;
+    public SubflowExecutionType onParentComplete;
 
     public final String getWorkflowId() {
         return workflowId;

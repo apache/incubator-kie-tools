@@ -41,11 +41,12 @@ export class Route<
 
   public url(args: {
     base?: string;
+    static?: boolean;
     pathParams: { [k in T["pathParams"]]: string };
     queryParams?: Partial<{ [k in T["queryParams"]]: string }>;
   }) {
     const SEP = args.base?.endsWith("/") ? "" : "/";
-    const HASH = IS_HASH_ROUTER ? "#" : "";
+    const HASH = !args.static && IS_HASH_ROUTER ? "#" : "";
     const path = this.pathDelegate(args.pathParams);
     const queryParams = args.queryParams ?? {};
 
@@ -152,6 +153,10 @@ export const routes = {
       gitlabLogo: new Route<{}>(() => `images/gitlab-logo.svg`),
       bitbucketLogo: new Route<{}>(() => `images/bitbucket-logo.svg`),
       openshiftLogo: new Route<{}>(() => `images/openshift-logo.svg`),
+    },
+    kubernetes: {
+      kindClusterConfig: new Route<{}>(() => `kubernetes/kind-cluster-config.yaml`),
+      kieSandboxDevDeploymentsResources: new Route<{}>(() => `kubernetes/kie-sandbox-dev-deployments-resources.yaml`),
     },
   },
 };

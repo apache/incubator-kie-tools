@@ -56,9 +56,7 @@ public class NodeFactoryImpl extends AbstractElementFactory<Object, Definition<O
     public Node<Definition<Object>, Edge> build(final String uuid,
                                                 final Object definition) {
         final NodeImpl node = new NodeImpl<>(uuid);
-        final Bounds bounds = definitionUtils.buildBounds(definition,
-                                                          0d,
-                                                          0d);
+        final Bounds bounds = definitionUtils.buildBounds(0d, 0d);
         View<Object> content = new ViewImpl<>(definition,
                                               bounds);
         node.setContent(content);

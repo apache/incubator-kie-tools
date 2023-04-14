@@ -29,7 +29,7 @@ import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/Acc
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
-import { openshiftAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
+import { cloudAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 
 export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace | undefined) {
@@ -39,20 +39,23 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
   const { authSessions } = useAuthSessions();
 
   const suggestedAuthSessionForDeployment = useMemo(() => {
-    return [...authSessions.values()].find((authSession) => authSession.type === "openshift");
+    return [...authSessions.values()].find(
+      (authSession) => authSession.type === "openshift" || authSession.type === "kubernetes"
+    );
   }, [authSessions]);
 
   const [authSessionId, setAuthSessionId] = useState<string | undefined>();
 
   useEffect(() => {
-    if (suggestedAuthSessionForDeployment) {
-      setAuthSessionId(suggestedAuthSessionForDeployment.id);
-    }
-
-    if (authSessionId && !authSessions.has(authSessionId)) {
-      setAuthSessionId(undefined);
-    }
-  }, [authSessionId, authSessions, suggestedAuthSessionForDeployment]);
+    setAuthSessionId((currentAuthSessionId) => {
+      if (suggestedAuthSessionForDeployment) {
+        return suggestedAuthSessionForDeployment.id;
+      } else if (currentAuthSessionId && !authSessions.has(currentAuthSessionId)) {
+        return undefined;
+      }
+      return currentAuthSessionId;
+    });
+  }, [authSessions, suggestedAuthSessionForDeployment]);
 
   const isExtendedServicesRunning = useMemo(
     () => extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
@@ -86,7 +89,7 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
                 }}
                 isPlain={false}
                 title={"Select Cloud provider for this Dev deployment..."}
-                filter={openshiftAuthSessionSelectFilter()}
+                filter={cloudAuthSessionSelectFilter()}
                 showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
               />
             </div>

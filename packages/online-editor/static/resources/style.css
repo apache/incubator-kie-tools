@@ -702,3 +702,14 @@ section.kie-tools--settings-tab {
   margin-top: -4px;
   margin-bottom: -4px;
 }
+
+/* Copy command block */
+.kie-sandbox--copy-command-block {
+  font-family: var(--pf-global--FontFamily--monospace);
+  font-size: small;
+}
+
+.kie-sandbox--copy-command-block input {
+  font-family: var(--pf-global--FontFamily--monospace);
+  font-size: revert;
+}

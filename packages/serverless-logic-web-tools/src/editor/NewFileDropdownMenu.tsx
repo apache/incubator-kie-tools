@@ -251,53 +251,6 @@ export function NewFileDropdownMenu(props: {
           </MenuItem>
           <Divider />
           <MenuItem
-            description={"Try sample models"}
-            itemId="samplesItemId"
-            direction={"down"}
-            drilldownMenu={
-              <DrilldownMenu id={"samplesMenu"}>
-                <MenuItem direction="up">Back</MenuItem>
-                <Divider />
-                <MenuItem
-                  onClick={() => addSample("greetings", FileTypes.SW_JSON)}
-                  description="Serverless Workflow files are used to define orchestration logic for services."
-                >
-                  <Flex>
-                    <FlexItem>Greetings</FlexItem>
-                    <FlexItem>
-                      <FileLabel extension={FileTypes.SW_JSON} />
-                    </FlexItem>
-                  </Flex>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => addSample("traffic-violation", FileTypes.YARD_YAML)}
-                  description="Serverless Decision files are used to define decision logic for services."
-                >
-                  <Flex>
-                    <FlexItem>Traffic Violation</FlexItem>
-                    <FlexItem>
-                      <FileLabel extension={FileTypes.YARD_YAML} />
-                    </FlexItem>
-                  </Flex>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => addSample("swf-report", FileTypes.DASH_YML)}
-                  description="Dashboard files are used to define data visualization from data extracted from applications."
-                >
-                  <Flex>
-                    <FlexItem>Serverless Workflow Report</FlexItem>
-                    <FlexItem>
-                      <FileLabel extension={FileTypes.DASH_YML} />
-                    </FlexItem>
-                  </Flex>
-                </MenuItem>
-              </DrilldownMenu>
-            }
-          >
-            Samples
-          </MenuItem>
-          <Divider />
-          <MenuItem
             itemId={"importFromUrlItemId"}
             direction={"down"}
             drilldownMenu={

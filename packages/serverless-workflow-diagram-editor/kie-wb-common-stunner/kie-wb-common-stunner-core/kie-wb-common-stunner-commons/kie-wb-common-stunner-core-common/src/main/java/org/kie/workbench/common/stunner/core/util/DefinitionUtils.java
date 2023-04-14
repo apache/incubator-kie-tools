@@ -94,39 +94,8 @@ public class DefinitionUtils {
                 .getTitle(definitionsRegistry.getDefinitionById(definitionId));
     }
 
-    @SuppressWarnings("unchecked")
-    public Bounds buildBounds(final Object definition,
-                              final double x,
-                              final double y) {
-        final DefinitionAdapter<Object> adapter = definitionManager.adapters().registry().getDefinitionAdapter(definition.getClass());
-        final String radiusField = adapter.getMetaPropertyField(definition, PropertyMetaTypes.RADIUS);
-        Double width = null;
-        Double height = null;
-        if (null != radiusField) {
-            Optional<?> hasRadius = adapter.getProperty(definition, radiusField);
-            if (hasRadius.isPresent()) {
-                final Double rv = (Double) definitionManager.adapters().forProperty().getValue(hasRadius.get());
-                if (null != rv) {
-                    width = rv * 2;
-                    height = width;
-                }
-            }
-        } else {
-            final String wField = adapter.getMetaPropertyField(definition, PropertyMetaTypes.WIDTH);
-            final String hField = adapter.getMetaPropertyField(definition, PropertyMetaTypes.HEIGHT);
-            if (null != wField && null != hField) {
-                Optional<?> hasWitdth = adapter.getProperty(definition, wField);
-                Optional<?> hasHeight = adapter.getProperty(definition, hField);
-                if (hasWitdth.isPresent() && hasHeight.isPresent()) {
-                    width = (Double) definitionManager.adapters().forProperty().getValue(hasWitdth.get());
-                    height = (Double) definitionManager.adapters().forProperty().getValue(hasHeight.get());
-                }
-            }
-        }
-
-        final double _width = null != width ? width : 0d;
-        final double _height = null != height ? height : 0d;
-        return Bounds.create(x, y, x + _width, y + _height);
+    public Bounds buildBounds(final double x, final double y) {
+        return Bounds.create(x, y, x, y);
     }
 
     public <T> MorphDefinition getMorphDefinition(final T definition) {
