@@ -42,8 +42,8 @@ export function App() {
   return (
     <HashRouter>
       {nest(
-        [OnlineI18nContextProvider, {}],
         [EnvContextProvider, {}],
+        [OnlineI18nContextProvider, {}],
         [EditorEnvelopeLocatorContextProvider, {}],
         [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],

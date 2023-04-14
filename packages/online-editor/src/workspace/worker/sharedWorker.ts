@@ -19,8 +19,11 @@ import { setupWorkerConnection } from "@kie-tools-core/workspaces-git-fs/dist/wo
 import { WorkspacesWorkerApiImpl } from "@kie-tools-core/workspaces-git-fs/dist/worker/WorkspacesWorkerApiImpl";
 import { ENV_FILE_PATH } from "../../env/EnvConstants";
 import { EnvJson } from "../../env/EnvJson";
-import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
+import { EditorEnvelopeLocatorFactory, GLOB_PATTERN } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 import { getEditorConfig } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { EditorEnvelopeConfig } from "../../envelopeLocator/EditorEnvelopeLocatorApi";
+import { useMemo } from "react";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
@@ -30,10 +33,17 @@ async function gitCorsProxyUrl(): Promise<string> {
   const env = (await (await fetch(envFilePath)).json()) as EnvJson;
   return env.KIE_SANDBOX_GIT_CORS_PROXY_URL;
 }
+
+async function getEditors(): Promise<EditorEnvelopeConfig[]> {
+  const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
+  const env = (await (await fetch(envFilePath)).json()) as EnvJson;
+  return env.KIE_SANDBOX_EDITOR_ENVELOPE_CONFIG;
+}
+
 const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProxyUrl() });
 
 function getEditorsList() {
-  return new EditorEnvelopeLocatorFactory().create({ targetOrigin: "", editorEnvelopeConfig: getEditorConfig() });
+  return new EditorEnvelopeLocatorFactory().createPromised({ targetOrigin: "", editorEnvelopeConfig: getEditors() });
 }
 // shared worker connection
 
@@ -47,9 +57,9 @@ onconnect = async (e: MessageEvent) => {
       appName: "KIE Sandbox",
       services: workspaceServices,
       fileFilter: {
-        isModel: (path) => getEditorsList().hasMappingFor(path),
-        isEditable: (path) => getEditorsList().hasMappingFor(path),
-        isSupported: (path) => getEditorsList().hasMappingFor(path),
+        isModel: async (path: string) => (await getEditorsList()).hasMappingFor(path),
+        isEditable: async (path: string) => (await getEditorsList()).hasMappingFor(path),
+        isSupported: async (path: string) => (await getEditorsList()).hasMappingFor(path),
       },
     }),
     port: e.ports[0],
