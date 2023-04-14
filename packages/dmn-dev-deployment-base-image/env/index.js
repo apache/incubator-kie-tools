@@ -21,7 +21,7 @@ module.exports = composeEnv(
   {
     vars: varsWithName({
       DMN_DEV_DEPLOYMENT__baseImageBuildTags: {
-        default: "latest",
+        default: "daily-dev",
         description: "",
       },
     }),

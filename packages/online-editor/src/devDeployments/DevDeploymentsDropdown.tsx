@@ -31,10 +31,9 @@ import CaretDownIcon from "@patternfly/react-icons/dist/js/icons/caret-down-icon
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
-import { KieSandboxOpenShiftDeployedModel } from "../openshift/KieSandboxOpenShiftService";
 import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
-import { openshiftAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
+import { cloudAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -43,6 +42,7 @@ import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useOnlineI18n } from "../i18n";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { KieSandboxDeployedModel } from "./services/types";
 
 const REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS = 30;
 
@@ -59,28 +59,31 @@ export function DevDeploymentsDropdown() {
   );
 
   const suggestedAuthSessionForDeployment = useMemo(() => {
-    return [...authSessions.values()].find((authSession) => authSession.type === "openshift");
+    return [...authSessions.values()].find(
+      (authSession) => authSession.type === "openshift" || authSession.type === "kubernetes"
+    );
   }, [authSessions]);
 
   useEffect(() => {
-    if (suggestedAuthSessionForDeployment) {
-      setAuthSessionId(suggestedAuthSessionForDeployment.id);
-    }
+    setAuthSessionId((currentAuthSessionId) => {
+      if (suggestedAuthSessionForDeployment) {
+        return suggestedAuthSessionForDeployment.id;
+      } else if (currentAuthSessionId && !authSessions.has(currentAuthSessionId)) {
+        return undefined;
+      }
+      return currentAuthSessionId;
+    });
+  }, [authSessions, suggestedAuthSessionForDeployment]);
 
-    if (authSessionId && !authSessions.has(authSessionId)) {
-      setAuthSessionId(undefined);
-    }
-  }, [authSessionId, authSessions, suggestedAuthSessionForDeployment]);
-
-  const [deployments, refresh] = useLivePromiseState<KieSandboxOpenShiftDeployedModel[]>(
+  const [deployments, refresh] = useLivePromiseState<KieSandboxDeployedModel[]>(
     useMemo(() => {
-      if (!authSession || authSession.type !== "openshift") {
+      if (!authSession || (authSession.type !== "openshift" && authSession.type !== "kubernetes")) {
         return { error: "Can't load Dev deployments with this AuthSession." };
       }
 
       return () => {
         setRefreshCountdownInSeconds(REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS);
-        return devDeployments.loadDeployments({ connection: authSession });
+        return devDeployments.loadDeployments({ authSession });
       };
     }, [authSession, devDeployments])
   );
@@ -277,7 +280,7 @@ export function DevDeploymentsDropdown() {
                     }}
                     isPlain={false}
                     title={"Select Cloud provider..."}
-                    filter={openshiftAuthSessionSelectFilter()}
+                    filter={cloudAuthSessionSelectFilter()}
                     showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
                   />
                   {authSessionId && (

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -29,8 +28,6 @@ import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
 import org.dashbuilder.navigation.layout.LayoutRecursionIssueI18n;
-import org.uberfire.ext.plugin.event.PluginSaved;
-import org.uberfire.ext.plugin.model.Plugin;
 
 @Dependent
 public class NavCarouselWidget extends BaseNavWidget implements HasDefaultNavItem {
@@ -48,7 +45,8 @@ public class NavCarouselWidget extends BaseNavWidget implements HasDefaultNavIte
     String defaultNavItemId = null;
 
     @Inject
-    public NavCarouselWidget(View view, NavigationManager navigationManager, PerspectivePluginManager perspectivePluginManager) {
+    public NavCarouselWidget(View view, NavigationManager navigationManager,
+                             PerspectivePluginManager perspectivePluginManager) {
         super(view, navigationManager);
         this.view = view;
         this.perspectivePluginManager = perspectivePluginManager;
@@ -102,7 +100,8 @@ public class NavCarouselWidget extends BaseNavWidget implements HasDefaultNavIte
         String perspectiveId = perspectivePluginManager.getRuntimePerspectiveId(navItem);
         if (perspectiveId != null) {
             perspectiveIds.add(perspectiveId);
-            perspectivePluginManager.buildPerspectiveWidget(perspectiveId, view::addContentSlide, this::onInfiniteRecursion);
+            perspectivePluginManager.buildPerspectiveWidget(perspectiveId, view::addContentSlide,
+                    this::onInfiniteRecursion);
         }
     }
 
@@ -111,13 +110,4 @@ public class NavCarouselWidget extends BaseNavWidget implements HasDefaultNavIte
         view.infiniteRecursionError(cause);
     }
 
-    // Catch changes on runtime perspectives so as to display the most up to date changes
-
-    private void onPerspectiveChanged(@Observes PluginSaved event) {
-        Plugin plugin = event.getPlugin();
-        String pluginName = plugin.getName();
-        if (perspectiveIds.contains(pluginName)) {
-            super.refresh();
-        }
-    }
 }

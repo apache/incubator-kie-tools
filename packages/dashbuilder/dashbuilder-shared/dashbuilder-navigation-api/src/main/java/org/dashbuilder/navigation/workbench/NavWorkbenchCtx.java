@@ -38,7 +38,7 @@ public class NavWorkbenchCtx extends NavItemContextImpl {
     public static final String NAV_GROUP_ID = "navGroupId";
 
     public static NavWorkbenchCtx get(NavItem navItem) {
-        return navItem != null ? new NavWorkbenchCtx(navItem.getContext()): new NavWorkbenchCtx();
+        return navItem != null ? new NavWorkbenchCtx(navItem.getContext()) : new NavWorkbenchCtx();
     }
 
     public static NavWorkbenchCtx get(String navItemCtx) {
@@ -87,7 +87,7 @@ public class NavWorkbenchCtx extends NavItemContextImpl {
     }
 
     public NavWorkbenchCtx setResourceType(ActivityResourceType resourceType) {
-        super.setProperty(RESOURCE_TYPE, resourceType.getName().toUpperCase());
+        super.setProperty(RESOURCE_TYPE, resourceType.name().toUpperCase());
         return this;
     }
 

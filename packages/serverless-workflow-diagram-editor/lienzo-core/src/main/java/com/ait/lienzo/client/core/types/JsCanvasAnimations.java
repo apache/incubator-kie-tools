@@ -66,6 +66,10 @@ public class JsCanvasAnimations {
         animate(shape, AnimationProperty.Properties.RADIUS(size), duration);
     }
 
+    public void rotationDegrees(Shape<?> shape, double degrees, long duration) {
+        animate(shape, AnimationProperty.Properties.ROTATION_DEGREES(degrees), duration);
+    }
+
     private static void animate(IPrimitive<?> shape, AnimationProperty property, long duration) {
         shape.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(property), duration);
     }

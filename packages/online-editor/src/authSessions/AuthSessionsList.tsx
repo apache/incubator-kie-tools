@@ -40,7 +40,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
+import { AuthSession, AuthSessionStatus } from "./AuthSessionApi";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 
@@ -103,8 +103,7 @@ function AuthSessionCard(props: { authSession: AuthSession; usages: WorkspaceDes
           {authSessionStatus.get(props.authSession.id) === AuthSessionStatus.INVALID && (
             <Tooltip content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}>
               <>
-                {/* Color copied from PF4 */}
-                <ExclamationCircleIcon color={"#c9190b"} />
+                <ExclamationCircleIcon style={{ color: "var(--pf-global--palette--red-100)" }} />
               </>
             </Tooltip>
           )}
@@ -112,12 +111,22 @@ function AuthSessionCard(props: { authSession: AuthSession; usages: WorkspaceDes
             Remove
           </Button>
         </CardActions>
-        <CardHeaderMain style={{ display: "flex", opacity: (props.usages?.length ?? 0) <= 0 ? 0.5 : 1 }}>
+        <CardHeaderMain
+          style={{
+            display: "flex",
+            opacity: (props.authSession.type !== "git" ? 1 : props.usages?.length ?? 0) <= 0 ? 0.5 : 1,
+          }}
+        >
           <AuthSessionLabel authSession={props.authSession} />
-          &nbsp; &nbsp; &nbsp;
-          <Label>
-            &nbsp;{props.usages ? (props.usages.length === 1 ? "1 usage" : `${props.usages.length} usages`) : "-"}&nbsp;
-          </Label>
+          {props.authSession.type === "git" && (
+            <>
+              &nbsp; &nbsp; &nbsp;
+              <Label>
+                &nbsp;{props.usages ? (props.usages.length === 1 ? "1 usage" : `${props.usages.length} usages`) : "-"}
+                &nbsp;
+              </Label>
+            </>
+          )}
         </CardHeaderMain>
       </CardHeader>
       <CardExpandableContent>
@@ -137,7 +146,7 @@ function AuthSessionCard(props: { authSession: AuthSession; usages: WorkspaceDes
 export function AuthSessionDescriptionList(props: { authSession: AuthSession; usages?: WorkspaceDescriptor[] }) {
   return (
     <>
-      {props.authSession.type === "openshift" && (
+      {(props.authSession.type === "openshift" || props.authSession.type === "kubernetes") && (
         <>
           <DescriptionList isHorizontal={true} isCompact={true} isFluid={true}>
             <DescriptionListGroup>

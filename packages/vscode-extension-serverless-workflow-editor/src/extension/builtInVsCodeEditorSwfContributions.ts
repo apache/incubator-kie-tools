@@ -272,10 +272,6 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 
     const nodeName = swfOffsetsApi.getStateNameFromOffset(offset);
 
-    if (!nodeName) {
-      return;
-    }
-
     const envelopeServer = args.kieEditorsStore.get(uri)?.envelopeServer as unknown as EnvelopeServer<
       ServerlessWorkflowDiagramEditorChannelApi,
       ServerlessWorkflowDiagramEditorEnvelopeApi

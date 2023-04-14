@@ -23,7 +23,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.callbacks.Callback;
 
 /**
  * The generic "Wizard" container, providing a left-hand side list of Page
@@ -62,22 +61,11 @@ public abstract class AbstractWizard implements
         final List<WizardPage> wps = getPages();
         for (WizardPage wp : wps) {
             final int index = wps.indexOf(wp);
-            wp.isComplete(new Callback<Boolean>() {
-                @Override
-                public void callback(final Boolean result) {
-                    view.setPageCompletionState(index,
-                                                Boolean.TRUE.equals(result));
-                }
-            });
+            wp.isComplete(result -> view.setPageCompletionState(index, Boolean.TRUE.equals(result)));
         }
 
         //Update the status of this Wizard
-        isComplete(new Callback<Boolean>() {
-            @Override
-            public void callback(final Boolean result) {
-                view.setCompletionStatus(Boolean.TRUE.equals(result));
-            }
-        });
+        isComplete(result -> view.setCompletionStatus(Boolean.TRUE.equals(result)));
     }
 
     public void onPageSelected(final @Observes WizardPageSelectedEvent event) {

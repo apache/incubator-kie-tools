@@ -17,14 +17,12 @@
 package org.uberfire.client.workbench.panels.impl;
 
 import java.util.IdentityHashMap;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.DockLayoutPanel.Direction;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RequiresResize;
@@ -67,7 +65,7 @@ import static org.uberfire.plugin.PluginUtil.toInteger;
 public abstract class AbstractDockingWorkbenchPanelView<P extends WorkbenchPanelPresenter>
         extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
 
-    private final IdentityHashMap<WorkbenchPanelView<?>, WorkbenchSplitLayoutPanel> viewSplitters = new IdentityHashMap<WorkbenchPanelView<?>, WorkbenchSplitLayoutPanel>();
+    private final IdentityHashMap<WorkbenchPanelView<?>, WorkbenchSplitLayoutPanel> viewSplitters = new IdentityHashMap<>();
 
     @Inject
     protected WorkbenchDragAndDropManager dndManager;
@@ -167,12 +165,7 @@ public abstract class AbstractDockingWorkbenchPanelView<P extends WorkbenchPanel
     }
 
     private static void scheduleResize(final RequiresResize widget) {
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-            @Override
-            public void execute() {
-                widget.onResize();
-            }
-        });
+        Scheduler.get().scheduleDeferred(widget::onResize);
     }
 
     @PostConstruct
@@ -285,7 +278,6 @@ public abstract class AbstractDockingWorkbenchPanelView<P extends WorkbenchPanel
     public boolean removePanel(WorkbenchPanelView<?> childView) {
         CompassPosition removalPosition = positionOf(childView);
         if (removalPosition == null) {
-            System.out.println("  remove failed - no such child view");
             return false;
         }
 
@@ -297,9 +289,6 @@ public abstract class AbstractDockingWorkbenchPanelView<P extends WorkbenchPanel
 
         Widget orphan = null;
         for (Widget w : splitter) {
-            if (orphan != null) {
-                System.out.println("  splitter@" + System.identityHashCode(splitter) + " LOSING ORPHAN: " + splitter.getWidgetDirection(w) + " - " + w);
-            }
             orphan = w;
         }
 
@@ -308,11 +297,11 @@ public abstract class AbstractDockingWorkbenchPanelView<P extends WorkbenchPanel
                 topLevelWidget.setWidget(orphan);
             }
         } else {
-            for (Map.Entry<WorkbenchPanelView<?>, WorkbenchSplitLayoutPanel> ent : viewSplitters.entrySet()) {
-                WorkbenchSplitLayoutPanel sp = ent.getValue();
+            for (var ent : viewSplitters.entrySet()) {
+                var sp = ent.getValue();
                 if (sp.getWidgetIndex(splitter) >= 0) {
-                    Direction d = sp.getWidgetDirection(splitter);
-                    Double size = sp.getWidgetSize(splitter);
+                    var d = sp.getWidgetDirection(splitter);
+                    var size = sp.getWidgetSize(splitter);
                     sp.remove(splitter);
                     if (orphan != null) {
                         sp.insert(orphan,

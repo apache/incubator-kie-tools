@@ -23,9 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -40,7 +38,6 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.slf4j.Logger;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -51,9 +48,6 @@ import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.rpc.impl.SessionInfoImpl;
 
 /**
  * Responsible for bootstrapping the client-side Workbench user interface by coordinating calls to the PanelManager and
@@ -130,7 +124,6 @@ public class Workbench {
     private ClientMessageBus bus;
     @Inject
     private Logger logger;
-    private SessionInfo sessionInfo = null;
     @Inject
     private ManagedInstance<WorkbenchCustomStandalonePerspectiveDefinition> workbenchCustomStandalonePerspectiveDefinition;
 
@@ -207,7 +200,6 @@ public class Workbench {
 
     private void bootstrap() {
         logger.info("Starting workbench...");
-        ((SessionInfoImpl) currentSession()).setId(bus.getSessionId());
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         if (!isStandaloneMode) {
@@ -286,14 +278,6 @@ public class Workbench {
         placeManager.goTo(new DefaultPlaceRequest(standalonePerspective));
     }
 
-    void openEditor(final Path path) {
-        placeManager.goTo(new PathPlaceRequest(path));
-    }
-
-    void openEditor(final Path path,
-                    final String editor) {
-        placeManager.goTo(new PathPlaceRequest(path, editor));
-    }
 
     /**
      * Get the home perspective defined at the workbench authorization policy.
@@ -319,15 +303,6 @@ public class Workbench {
             }
         }
         return defaultPerspective;
-    }
-
-    @Produces
-    @ApplicationScoped
-    private SessionInfo currentSession() {
-        if (sessionInfo == null) {
-            sessionInfo = new SessionInfoImpl();
-        }
-        return sessionInfo;
     }
 
     void addLayoutToRootPanel(final WorkbenchLayout layout) {

@@ -16,19 +16,13 @@
 
 package org.uberfire.client.mvp;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.commons.data.Pair;
-import org.uberfire.workbench.category.Undefined;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,12 +31,6 @@ import static org.mockito.Mockito.when;
 public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
 
 
-    @IsSplashScreen
-    @ApplicationScoped
-    private static class SplashScreenForTesting {
-
-    }
-
     private String idMock;
     private SyncBeanDef mockDef;
     private Activity activity;
@@ -50,36 +38,12 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
     private Pair<Integer, List<String>> metaInfo;
 
     public ActivityBeansCacheUnitTestWrapper() {
-        this.resourceTypeManagerCache = new ResourceTypeManagerCache(new CategoriesManagerCache(new Undefined()));
         mockDef = mock(SyncBeanDef.class);
         idMock = "mockDef1";
         when(mockDef.getName()).thenReturn(idMock);
         availableActivities.add(mockDef);
     }
 
-    public void mockSplashScreenBehaviour() {
-        Set<Annotation> annotations = new HashSet<Annotation>(Arrays.asList(SplashScreenForTesting.class.getAnnotations()));
-        when(mockDef.getQualifiers()).thenReturn(annotations);
-
-        activity = mock(AbstractSplashScreenActivity.class);
-        when(mockDef.getInstance()).thenReturn(activity);
-    }
-
-    public void createActivitiesAndMetaInfo(int priority1,
-                                            int priority2) {
-        resourceTypeManagerCache.addResourceActivity(new ActivityAndMetaInfo(null,
-                                                                             null,
-                                                                             priority1,
-                                                                             new ArrayList()));
-        resourceTypeManagerCache.addResourceActivity(new ActivityAndMetaInfo(null,
-                                                                             null,
-                                                                             priority2,
-                                                                             new ArrayList()));
-    }
-
-    public ResourceTypeManagerCache getResourceTypeManagerCache() {
-        return this.resourceTypeManagerCache;
-    }
 
     @Override
     Collection<SyncBeanDef<Activity>> getAvailableActivities() {
@@ -102,11 +66,6 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
         SyncBeanDef duplicateMockDef = mock(SyncBeanDef.class);
         when(duplicateMockDef.getName()).thenReturn(idMock);
         availableActivities.add(duplicateMockDef);
-    }
-
-    @Override
-    Pair<Integer, List<String>> generateActivityMetaInfo(SyncBeanDef<Activity> activityBean) {
-        return metaInfo;
     }
 
     public void mockActivityBehaviour() {

@@ -24,11 +24,12 @@ import { createContext, PropsWithChildren, useCallback, useContext, useEffect, u
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { fetchAuthenticatedBitbucketUser, fetchAuthenticatedGitHubUser } from "../accounts/git/ConnectToGitSection";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
-import { OpenShiftService } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxOpenShiftService } from "../openshift/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
 import { switchExpression } from "../switchExpression/switchExpression";
+import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
+import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";
 
 export type AuthSessionsContextType = {
   authSessions: Map<string, AuthSession>;
@@ -153,10 +154,24 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
             } else if (authSession.type === "openshift") {
               try {
                 if (
-                  await new KieSandboxOpenShiftService({
+                  (await new KieSandboxOpenShiftService({
                     connection: authSession,
                     proxyUrl: extendedServices.config.url.corsProxy,
-                  }).isConnectionEstablished()
+                  }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+                ) {
+                  return [authSession.id, AuthSessionStatus.VALID];
+                } else {
+                  return [authSession.id, AuthSessionStatus.INVALID];
+                }
+              } catch (e) {
+                return [authSession.id, AuthSessionStatus.INVALID];
+              }
+            } else if (authSession.type === "kubernetes") {
+              try {
+                if (
+                  (await new KieSandboxKubernetesService({
+                    connection: authSession,
+                  }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
                 ) {
                   return [authSession.id, AuthSessionStatus.VALID];
                 } else {
@@ -179,7 +194,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
       }
       run();
     },
-    [authProviders, authSessions]
+    [authProviders, authSessions, extendedServices.config.url.corsProxy]
   );
 
   useCancelableEffect(recalculateAuthSessionStatus);

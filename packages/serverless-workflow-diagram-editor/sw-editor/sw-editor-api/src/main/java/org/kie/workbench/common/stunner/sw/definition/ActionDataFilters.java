@@ -22,10 +22,10 @@ import jsinterop.annotations.JsType;
 @JsType
 public class ActionDataFilters {
 
-    private String fromStateData;
-    private String results;
-    private String toStateData;
-    private Boolean useResults;
+    public String fromStateData;
+    public String results;
+    public String toStateData;
+    public Boolean useResults;
 
     public final String getFromStateData() {
         return fromStateData;

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import { EditorContent, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 
 export interface ServerlessWorkflowDiagramEditorChannelApi extends KogitoEditorChannelApi {
   kogitoSwfDiagramEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void;
+  kogitoSwfDiagramEditor__setContentSuccess(): void;
 }

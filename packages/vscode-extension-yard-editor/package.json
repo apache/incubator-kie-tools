@@ -23,7 +23,9 @@
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/vscode_extension_yard_editor_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
     "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c max -u -e ./test-resources -o ./it-tests/settings.json out/*.test.js\"",
-    "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resources && rimraf ./out && rimraf ./it-tests-tmp && rimraf test-resou && rimraf *.vsix",
+    "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resources && rimraf ./out && rimraf ./it-tests-tmp && rimraf *.vsix",
+    "test:it:clean:offline": "rimraf ./dist-it-tests && rimraf ./out && rimraf ./it-tests-tmp && rimraf *.vsix",
+    "test:it:offline": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean:offline\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --offline --yarn -c max -u -e ./test-resources -o it-tests/settings.json out/*.test.js\"",
     "watch": "webpack --env dev"
   },
   "dependencies": {
@@ -67,7 +69,7 @@
     "rimraf": "^3.0.2",
     "selenium-webdriver": "^4.8.1",
     "typescript": "^4.4.2",
-    "vscode-extension-tester": "5.5.1",
+    "vscode-extension-tester": "5.5.2",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.7.3",

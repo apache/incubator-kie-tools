@@ -1,0 +1,64 @@
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.kie.workbench.common.stunner.sw.client.shapes.icons;
+
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
+import com.ait.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.tools.client.event.HandlerRegistration;
+
+import static org.kie.workbench.common.stunner.sw.client.shapes.StateShapeView.STATE_SHAPE_HEIGHT;
+import static org.kie.workbench.common.stunner.sw.client.shapes.StateShapeView.STATE_SHAPE_WIDTH;
+
+public class BottomText extends Group {
+
+    private final HandlerRegistration mouseClickHandler;
+
+    public BottomText(String text) {
+        setLocation(new Point2D(STATE_SHAPE_WIDTH / 2, STATE_SHAPE_HEIGHT - 4));
+        Rectangle border = new Rectangle(60, 10)
+                .setFillColor("white")
+                .setFillAlpha(0.001)
+                .setStrokeAlpha(0.001)
+                .setStrokeColor("white")
+                .setCornerRadius(9)
+                .setEventPropagationMode(EventPropagationMode.NO_ANCESTORS)
+                .setListening(true);
+        add(border);
+        setListening(true);
+
+        Text textElement = new Text(text)
+                .setFontSize(11)
+                .setStrokeWidth(0)
+                .setFillColor("#4F5255")
+                .setTextAlign(TextAlign.CENTER)
+                .setListening(false);
+        add(textElement);
+
+        mouseClickHandler = border.addNodeMouseClickHandler(
+                event -> this.getParent().asGroup().getChildren().get(0).fireEvent(event)
+        );
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        mouseClickHandler.removeHandler();
+    }
+}

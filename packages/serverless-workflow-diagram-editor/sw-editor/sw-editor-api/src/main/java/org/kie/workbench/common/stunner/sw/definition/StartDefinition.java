@@ -27,11 +27,11 @@ import org.kie.workbench.common.stunner.sw.definition.custom.ScheduleJsonbTypeSe
 @JsType
 public class StartDefinition {
 
-    private String stateName;
+    public String stateName;
 
     @JsonbTypeSerializer(ScheduleJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(ScheduleJsonbTypeDeserializer.class)
-    private Object schedule;
+    public Object schedule;
 
     public final String getStateName() {
         return stateName;

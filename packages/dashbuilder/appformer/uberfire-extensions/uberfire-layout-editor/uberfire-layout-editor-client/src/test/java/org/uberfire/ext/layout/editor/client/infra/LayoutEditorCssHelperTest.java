@@ -49,15 +49,15 @@ public class LayoutEditorCssHelperTest {
         properties.put("prop1", "v1");
         List<CssValue> cssValueList = cssHelper.readCssValues(properties);
 
-        assertEquals(cssValueList.size(), 1);
-        assertEquals(cssValueList.get(0).getProperty(), "margin-top");
-        assertEquals(cssValueList.get(0).getValue(), "100px");
+        assertEquals(1, cssValueList.size());
+        assertEquals("margin-top", cssValueList.get(0).getProperty());
+        assertEquals("100px", cssValueList.get(0).getValue());
     }
 
     @Test
     public void testParseAllowedValue() {
         when(cssHelper.formatCssAllowedValue(CssProperty.FONT_SIZE, CssFontSize.XX_LARGE)).thenReturn("Extra Large");
         CssAllowedValue cssAllowedValue = cssHelper.parseCssAllowedValue(CssProperty.FONT_SIZE, "Extra Large");
-        assertEquals(cssAllowedValue.getName(), "xx-large");
+        assertEquals("xx-large", cssAllowedValue.getName());
     }
 }

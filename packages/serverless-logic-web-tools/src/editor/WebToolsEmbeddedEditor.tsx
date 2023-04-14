@@ -23,7 +23,7 @@ import { SwfChannelComponent } from "./channel/SwfChannelComponent";
 import { DashChannelComponent } from "./channel/DashChannelComponent";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { When } from "react-if";
-import { isDashbuilder, isServerlessWorkflow } from "../extension";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import {
   SwfJsonLanguageService,
@@ -143,7 +143,7 @@ const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
       />
       {editor && (
         <>
-          <When condition={isServerlessWorkflow(workspaceFile.name)}>
+          <When condition={isOfKind("sw", workspaceFile.name)}>
             <SwfChannelComponent
               ref={swfChannelComponentRef}
               channelApiImpl={channelApiImpl}
@@ -151,7 +151,7 @@ const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
               workspaceFile={workspaceFile}
             />
           </When>
-          <When condition={isDashbuilder(workspaceFile.name)}>
+          <When condition={isOfKind("dash", workspaceFile.name)}>
             <DashChannelComponent
               ref={dashChannelComponentRef}
               channelApiImpl={channelApiImpl}

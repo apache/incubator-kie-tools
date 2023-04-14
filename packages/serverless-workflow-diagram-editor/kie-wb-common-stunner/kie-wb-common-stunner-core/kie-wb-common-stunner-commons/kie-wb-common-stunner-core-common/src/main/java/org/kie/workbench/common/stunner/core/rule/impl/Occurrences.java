@@ -16,17 +16,26 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import jsinterop.annotations.JsType;
 
-@Portable
+@JsType
 public class Occurrences extends AbstractOccurrences {
 
-    public Occurrences(
-            final @MapsTo("name") String name,
-            final @MapsTo("role") String role,
-            final @MapsTo("minOccurrences") int minOccurrences,
-            final @MapsTo("maxOccurrences") int maxOccurrences) {
+    public static Occurrences build(String name,
+                                    String role,
+                                    int minOccurrences,
+                                    int maxOccurrences) {
+
+        return new Occurrences(name,
+                               role,
+                               minOccurrences,
+                               maxOccurrences);
+    }
+
+    public Occurrences(String name,
+                       String role,
+                       int minOccurrences,
+                       int maxOccurrences) {
         super(name,
               role,
               minOccurrences,
