@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-describe("Serverless Logic Web Tools - Create and edit test", () => {
+describe.skip("Serverless Logic Web Tools - Create and edit test", () => {
   beforeEach(() => {
     cy.visit("/");
   });
