@@ -17,7 +17,7 @@
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import _ from "lodash";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableCellProps,
@@ -247,12 +247,20 @@ function PmmlFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
     return props.data[props.rowIndex].label;
   }, [props.data, props.rowIndex]);
 
-  useBeeTableSelectableCellRef(
+  const { isActive } = useBeeTableSelectableCellRef(
     props.rowIndex,
     props.columnIndex,
     undefined,
     useCallback(() => label, [label])
   );
+
+  const { beeGwtService } = useBoxedExpressionEditor();
+
+  useEffect(() => {
+    if (isActive) {
+      beeGwtService?.selectObject("");
+    }
+  }, [beeGwtService, isActive]);
 
   return (
     <div className={"pmml-function-expression-label"}>

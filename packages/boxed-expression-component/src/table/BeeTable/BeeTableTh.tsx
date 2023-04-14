@@ -21,9 +21,10 @@ import * as ReactTable from "react-table";
 import {
   BeeTableCellCoordinates,
   BeeTableCoordinatesContextProvider,
-  useBeeTableSelectionDispatch,
+  useBeeTableSelectableCellRef,
 } from "../../selection/BeeTableSelectionContext";
 import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
+import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export interface BeeTableThProps<R extends object> {
   groupType: string | undefined;
@@ -83,6 +84,16 @@ export function BeeTableTh<R extends object>({
     },
     [columnIndex, groupType, hoverInfo, onColumnAdded]
   );
+
+  const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
+
+  const { beeGwtService } = useBoxedExpressionEditor();
+
+  useEffect(() => {
+    if (isActive) {
+      beeGwtService?.selectObject("");
+    }
+  }, [beeGwtService, isActive]);
 
   const _thRef = useRef<HTMLTableCellElement>(null);
   const thRef = forwardRef ?? _thRef;

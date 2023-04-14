@@ -1071,5 +1071,6 @@ export function useBeeTableSelectableCell(
     cssClasses,
     onMouseDown,
     onDoubleClick,
+    isActive,
   };
 }

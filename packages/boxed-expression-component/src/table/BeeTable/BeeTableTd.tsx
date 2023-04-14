@@ -26,7 +26,9 @@ import {
   BeeTableCellCoordinates,
   BeeTableCoordinatesContextProvider,
   useBeeTableSelectableCell,
+  useBeeTableSelectableCellRef,
 } from "../../selection/BeeTableSelectionContext";
+import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export interface BeeTableTdProps<R extends object> {
   // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
@@ -94,6 +96,16 @@ export function BeeTableTd<R extends object>({
     }
     return undefined;
   }, [column.isRowIndexColumn, rowIndexLabel]);
+
+  const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
+
+  const { beeGwtService } = useBoxedExpressionEditor();
+
+  useEffect(() => {
+    if (isActive && column.isRowIndexColumn) {
+      beeGwtService?.selectObject("");
+    }
+  }, [beeGwtService, isActive, column]);
 
   useEffect(() => {
     function onEnter(e: MouseEvent) {

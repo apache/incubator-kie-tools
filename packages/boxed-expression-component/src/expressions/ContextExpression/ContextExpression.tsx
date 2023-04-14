@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableHeaderVisibility,
@@ -40,7 +40,10 @@ import {
 } from "../../resizing/WidthConstants";
 import { useBeeTableSelectableCellRef, useBeeTableCoordinates } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
-import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
@@ -208,8 +211,8 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
       <ContextResultExpressionCell
         key={"context-result-expression"}
         contextExpression={contextExpression}
-        rowIndex={0}
-        columnIndex={0}
+        rowIndex={contextExpression.contextEntries.length}
+        columnIndex={2}
       />,
     ];
   }, [contextExpression]);
@@ -334,12 +337,20 @@ export function ContextResultInfoCell() {
     return value;
   }, [value]);
 
-  useBeeTableSelectableCellRef(
+  const { isActive } = useBeeTableSelectableCellRef(
     containerCellCoordinates?.rowIndex ?? 0,
     containerCellCoordinates?.columnIndex ?? 0,
     undefined,
     getValue
   );
+
+  const { beeGwtService } = useBoxedExpressionEditor();
+
+  useEffect(() => {
+    if (isActive) {
+      beeGwtService?.selectObject("");
+    }
+  }, [beeGwtService, isActive]);
 
   return <div className="context-result">{value}</div>;
 }

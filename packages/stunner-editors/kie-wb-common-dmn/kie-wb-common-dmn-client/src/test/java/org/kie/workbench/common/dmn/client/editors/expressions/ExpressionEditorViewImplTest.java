@@ -41,6 +41,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -915,5 +916,93 @@ public class ExpressionEditorViewImplTest {
         when(hasExpression.getExpression()).thenReturn(null);
 
         assertFalse(view.innerExpressionMatches(uuid));
+    }
+
+    @Test
+    public void testBusinessKnowledgeModelMatches_WhenIsNotABkm() {
+
+        final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+        when(hasExpression.getExpression()).thenReturn(functionDefinition);
+        doReturn(null).when(view).getBusinessKnowledgeModel();
+
+        assertFalse(view.businessKnowledgeModelMatches("someUuid"));
+    }
+
+    @Test
+    public void testBusinessKnowledgeModelMatches_WhenExpressionIsNotAFunctionDefinition() {
+
+        doReturn(null).when(view).getBusinessKnowledgeModel();
+
+        assertFalse(view.businessKnowledgeModelMatches("someUuid"));
+    }
+
+    @Test
+    public void testBusinessKnowledgeModelMatches_WhenDoesNotMatch() {
+
+        final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+        final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
+        final String someUuid = "uuid";
+        final Id id = new Id(someUuid);
+        when(bkm.getEncapsulatedLogic()).thenReturn(functionDefinition);
+        when(functionDefinition.getId()).thenReturn(id);
+        when(hasExpression.getExpression()).thenReturn(functionDefinition);
+
+        doReturn(bkm).when(view).getBusinessKnowledgeModel();
+
+        assertFalse(view.businessKnowledgeModelMatches("anotherUuid"));
+    }
+
+    @Test
+    public void testBusinessKnowledgeModelMatches_WhenMatches() {
+
+        final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+        final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
+        final String someUuid = "uuid";
+        final Id id = new Id(someUuid);
+        when(bkm.getEncapsulatedLogic()).thenReturn(functionDefinition);
+        when(functionDefinition.getId()).thenReturn(id);
+        when(hasExpression.getExpression()).thenReturn(functionDefinition);
+
+        doReturn(bkm).when(view).getBusinessKnowledgeModel();
+
+        assertTrue(view.businessKnowledgeModelMatches(someUuid));
+    }
+
+    @Test
+    public void testBusinessKnowledgeModelMatches_WhenEncapsulatedLogicMatches() {
+
+        final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+        final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
+        final String someUuid = "uuid";
+        final Id id = new Id(someUuid);
+        final String encapsulatedLogicUuid = "otherUuid";
+
+        when(bkm.getEncapsulatedLogic()).thenReturn(functionDefinition);
+        when(functionDefinition.getId()).thenReturn(id);
+        when(hasExpression.getExpression()).thenReturn(functionDefinition);
+
+        doReturn(true).when(view).encapsulatedLogicMatches(encapsulatedLogicUuid);
+        doReturn(bkm).when(view).getBusinessKnowledgeModel();
+
+        assertTrue(view.businessKnowledgeModelMatches(encapsulatedLogicUuid));
+    }
+
+    @Test
+    public void testBusinessKnowledgeModelMatches_WhenNothingMatches() {
+
+        final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+        final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
+        final String someUuid = "uuid";
+        final Id id = new Id(someUuid);
+        final String encapsulatedLogicUuid = "otherUuid";
+
+        when(bkm.getEncapsulatedLogic()).thenReturn(functionDefinition);
+        when(functionDefinition.getId()).thenReturn(id);
+        when(hasExpression.getExpression()).thenReturn(functionDefinition);
+
+        doReturn(false).when(view).encapsulatedLogicMatches(encapsulatedLogicUuid);
+        doReturn(bkm).when(view).getBusinessKnowledgeModel();
+
+        assertFalse(view.businessKnowledgeModelMatches(encapsulatedLogicUuid));
     }
 }

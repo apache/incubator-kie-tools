@@ -400,8 +400,15 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     boolean businessKnowledgeModelMatches(final String uuid) {
 
-        return hasExpression.getExpression() instanceof FunctionDefinition
-                && matches(getBusinessKnowledgeModel(), uuid);
+        return getHasExpression().getExpression() instanceof FunctionDefinition
+                && (matches(getBusinessKnowledgeModel(), uuid) || encapsulatedLogicMatches(uuid));
+    }
+
+    boolean encapsulatedLogicMatches(final String uuid) {
+
+        final BusinessKnowledgeModel bkm = getBusinessKnowledgeModel();
+        return !Objects.isNull(bkm)
+                && Objects.equals(bkm.getEncapsulatedLogic().getId().getValue(), uuid);
     }
 
     void fireDomainObjectSelectionEvent(final DomainObject domainObject) {

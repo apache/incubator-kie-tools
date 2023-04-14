@@ -42,7 +42,10 @@ import {
 } from "../../resizing/WidthConstants";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
-import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { useFunctionExpressionControllerCell, useFunctionExpressionParametersColumnHeader } from "./FunctionExpression";
 import "./JavaFunctionExpression.css";
@@ -285,12 +288,20 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
     return props.data[props.rowIndex].label;
   }, [props.data, props.rowIndex]);
 
-  useBeeTableSelectableCellRef(
+  const { isActive } = useBeeTableSelectableCellRef(
     props.rowIndex,
     props.columnIndex,
     undefined,
     useCallback(() => label, [label])
   );
+
+  const { beeGwtService } = useBoxedExpressionEditor();
+
+  useEffect(() => {
+    if (isActive) {
+      beeGwtService?.selectObject("");
+    }
+  }, [beeGwtService, isActive]);
 
   const getParameterLabelHelp = useCallback((): React.ReactNode => {
     if (props.rowIndex === 1) {
