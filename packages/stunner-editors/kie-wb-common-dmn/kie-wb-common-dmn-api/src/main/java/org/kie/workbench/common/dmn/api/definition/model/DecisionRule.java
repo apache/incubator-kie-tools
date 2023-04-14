@@ -81,7 +81,6 @@ public class DecisionRule extends DMNElement implements HasTypeRefs,
         return exactelyClonedDecisionRule;
     }
 
-
     public List<RuleAnnotationClauseText> getAnnotationEntry() {
         if (annotationEntry == null) {
             annotationEntry = new ArrayList<>();
