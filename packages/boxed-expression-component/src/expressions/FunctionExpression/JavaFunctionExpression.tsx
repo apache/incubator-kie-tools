@@ -83,7 +83,7 @@ export function JavaFunctionExpression({
     return [
       {
         label: functionExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        accessor: functionExpression.id as any, // FIXME: Tiago -> ?
+        accessor: functionExpression.id as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
         dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,

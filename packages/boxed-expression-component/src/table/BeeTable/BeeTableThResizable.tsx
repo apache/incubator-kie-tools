@@ -83,7 +83,7 @@ export function BeeTableThResizable<R extends object>({
     }
 
     cssClasses.push(column.groupType ?? "");
-    // cssClasses.push(column.cssClasses ?? ""); // FIXME: Tiago -> Breaking Decision tables because of positioning of rowSpan=2 column headers
+    // cssClasses.push(column.cssClasses ?? ""); // FIXME: Breaking Decision tables because of positioning of rowSpan=2 column headers (See https://github.com/kiegroup/kie-issues/issues/162)
     return cssClasses.join(" ");
   }, [column, columnKey]);
 
@@ -257,7 +257,7 @@ export function BeeTableThResizable<R extends object>({
             setResizing={setResizing}
           />
         )}
-      {/* //FIXME: Tiago -> Don't know if that's a good idea yet. */}
+      {/* //FIXME: Don't know if that's a good idea yet. Please address it as part of https://github.com/kiegroup/kie-issues/issues/181 */}
       {/* {calcWidth && (hoverInfo.isHovered || (calcResizingWidth?.isPivoting && isCalcWidthResizing)) && (
         <Resizer
           minWidth={(column.columns ?? []).reduce((acc, { minWidth }) => acc + (minWidth ?? 0), 0)}

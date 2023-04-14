@@ -129,7 +129,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        accessor: decisionNodeId as any, // FIXME: Tiago -> No bueno.
+        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
         label: literalExpression.name ?? DEFAULT_EXPRESSION_NAME,
         isRowIndexColumn: false,
         dataType: literalExpression.dataType,
@@ -138,11 +138,11 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         setWidth,
       },
     ];
-  }, [literalExpression.dataType, literalExpression.name, literalExpression.width, minWidth, setWidth]);
+  }, [decisionNodeId, literalExpression.dataType, literalExpression.name, literalExpression.width, minWidth, setWidth]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
     return [{ [decisionNodeId]: { content: literalExpression.content ?? "", id: literalExpression.id } }];
-  }, [literalExpression]);
+  }, [decisionNodeId, literalExpression.content, literalExpression.id]);
 
   const beeTableHeaderVisibility = useMemo(() => {
     return literalExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;

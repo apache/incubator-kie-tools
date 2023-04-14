@@ -190,7 +190,7 @@ export function BeeTableTd<R extends object>({
         ref={tdRef}
         tabIndex={-1}
         className={`${cssClass} ${cssClasses}`}
-        data-ouia-component-id={`expression-column-${columnIndex}`} // FIXME: Tiago -> Bad name
+        data-ouia-component-id={`expression-column-${columnIndex}`}
         style={{
           outline: "none",
           minHeight: `60px`,

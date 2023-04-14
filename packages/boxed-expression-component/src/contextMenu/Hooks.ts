@@ -29,7 +29,7 @@ export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<H
 
   const [scroll, setScroll] = useState({ x: 0, y: 0 });
 
-  // FIXME: Tiago -> Need to calculate the context menu length for it to not be hidden by the borders of the screen.
+  // FIXME: Need to calculate the context menu length for it to not be hidden by the borders of the screen (https://github.com/kiegroup/kie-issues/issues/168).
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const [isOpen, setOpen] = useState(false);

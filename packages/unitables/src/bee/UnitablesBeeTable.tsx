@@ -260,7 +260,7 @@ function UnitablesBeeTableCell({
     previousFieldInput.current = fieldInput;
   }, [fieldInput]);
 
-  // FIXME: Luiz - shouldn't have any reference to DMN!
+  // FIXME: Decouple from DMN --> https://github.com/kiegroup/kie-issues/issues/166
   const setValue = useCallback(
     (newValue: string) => {
       isBeeTableChange.current = true;
@@ -279,7 +279,7 @@ function UnitablesBeeTableCell({
       } else if (field.type === "boolean") {
         onFieldChange(newValueWithoutSymbols === "true");
       } else if (field.type === "array") {
-        // FIXME: Luiz - array fields are still not supported by DMN Runner Table;
+        // FIXME: Support lists --> https://github.com/kiegroup/kie-issues/issues/167
       } else if (field.type === "object" && typeof newValue !== "object") {
         // objects are flattened in a single row - this case shouldn't happen;
       } else {

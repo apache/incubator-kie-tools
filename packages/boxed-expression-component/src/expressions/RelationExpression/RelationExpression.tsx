@@ -324,7 +324,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
-        // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Tiago -> What to do?
+        // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/kiegroup/kie-issues/issues/181
       />
     </div>
   );

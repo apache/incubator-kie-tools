@@ -89,7 +89,6 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
     ];
   }, [buildSelectGroup, dataTypes]);
 
-  // FIXME: Tiago -> This is not good.
   // We should not filter based a JSX Element value, but rather based on the data alone.
   const onFilter = useCallback(
     (_, textInput: string) => {

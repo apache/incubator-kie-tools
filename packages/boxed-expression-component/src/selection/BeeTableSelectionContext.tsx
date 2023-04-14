@@ -137,7 +137,7 @@ const NEUTRAL_CELL_STATUS = {
   isSelected: false,
 };
 
-const CELL_EMPTY_VALUE = ""; // FIXME: Tiago -> This value needs to be parameterized, perhaps. Not all values are strings.
+const CELL_EMPTY_VALUE = ""; // This value needs to be parameterized, perhaps. Not all values are strings. See https://github.com/kiegroup/kie-issues/issues/170.
 
 export function BeeTableCoordinatesContextProvider({
   children,
@@ -591,7 +591,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
             clipboardMatrix[r - startRow] ??= [];
             clipboardMatrix[r - startRow][c - startColumn] = [...(refs.current?.get(r)?.get(c) ?? [])]
               ?.flatMap((ref) => (ref.getValue ? [ref.getValue()] : []))
-              .join(""); // FIXME: Tiago -> What to do? Only one ref should be yielding the content
+              .join(""); // FIXME: What to do? Only one ref should be yielding the content. See https://github.com/kiegroup/kie-issues/issues/170
           }
         }
 
@@ -617,7 +617,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
                 ref.setValue?.(CELL_EMPTY_VALUE);
                 return ref.getValue ? [ref.getValue()] : [];
               })
-              .join(""); // FIXME: Tiago -> What to do? Only one ref should be yielding the content
+              .join(""); // What to do? Only one ref should be yielding the content. See https://github.com/kiegroup/kie-issues/issues/170
           }
         }
 
@@ -633,7 +633,6 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         });
       },
       erase: () => {
-        // FIXME: Tiago -> This is not good. We shouldn't be setting a state just to read it.
         if (!selectionRef.current?.selectionStart || !selectionRef.current?.selectionEnd) {
           return;
         }
@@ -762,7 +761,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         refs.current?.set(rowIndex, refs.current?.get(rowIndex) ?? new Map());
         const prev = refs.current?.get(rowIndex)?.get(columnIndex) ?? new Set();
         refs.current?.get(rowIndex)?.set(columnIndex, new Set([...prev, ref]));
-        // FIXME: Tiago
+        // FIXME: Please address this as part of https://github.com/kiegroup/kie-issues/issues/210
         //
         // Having this commented introduces a bug where if you open a header cell popover, make a change,
         // and click on another cell on the table, the popover will close but you won't be able to start

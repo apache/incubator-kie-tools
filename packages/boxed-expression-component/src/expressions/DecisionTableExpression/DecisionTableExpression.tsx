@@ -57,7 +57,7 @@ import { assertUnreachable } from "../ExpressionDefinitionRoot/ExpressionDefinit
 import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
 import "./DecisionTableExpression.css";
 
-type ROWTYPE = any; // FIXME: Tiago
+type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
 enum DecisionTableColumnType {
   InputClause = "input",
@@ -255,7 +255,7 @@ export function DecisionTableExpression(
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
       id: decisionTableExpression.id,
-      accessor: "decision-table-expression" as any, // FIXME: Tiago -> ?
+      accessor: "decision-table-expression" as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
       label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
       dataType: decisionTableExpression.dataType ?? DmnBuiltInDataType.Undefined,
       cssClasses: "decision-table--output",
@@ -281,6 +281,7 @@ export function DecisionTableExpression(
   }, [
     decisionTableExpression.annotations,
     decisionTableExpression.dataType,
+    decisionTableExpression.id,
     decisionTableExpression.input,
     decisionTableExpression.name,
     decisionTableExpression.output,
@@ -701,7 +702,7 @@ export function DecisionTableExpression(
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
-        // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Tiago -> What to do?
+        // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/kiegroup/kie-issues/issues/181
       />
     </div>
   );

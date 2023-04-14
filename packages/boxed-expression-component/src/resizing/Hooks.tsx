@@ -226,7 +226,7 @@ export function useApportionedColumnWidthsIfNestedTable(
   extraWidth: number,
   columns: Array<{ minWidth: number; width: number | undefined; isFrozen?: boolean }>,
   columnResizingWidths: Map<number, ResizingWidth>,
-  rows: any[] //FIXME: Tiago -> This is a hack to recalculate the positions when the row number changes.
+  rows: any[] // This is a hack to recalculate the positions when the row number changes.
 ) {
   const nestedExpressionContainer = useNestedExpressionContainer();
 

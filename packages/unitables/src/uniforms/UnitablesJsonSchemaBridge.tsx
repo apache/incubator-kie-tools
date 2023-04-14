@@ -62,7 +62,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   }
 
   public getFieldDataType(field: Record<string, any>) {
-    const xDmnType: string | undefined = field["x-dmn-type"]; // FIXME: Luiz - shouldn't have any reference to DMN!
+    const xDmnType: string | undefined = field["x-dmn-type"]; // FIXME: Please address this as part of https://github.com/kiegroup/kie-issues/issues/166
 
     let type: string | undefined;
     if (!xDmnType) {

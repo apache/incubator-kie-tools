@@ -82,7 +82,7 @@ export function BoxedExpressionEditorContextProvider({
     <BoxedExpressionEditorContext.Provider
       value={{
         //plumbing
-        beeGwtService, // FIXME: Tiago -> Move to a separate context
+        beeGwtService, // Move to a separate context?
         editorRef,
         scrollableParentRef,
 
@@ -91,7 +91,7 @@ export function BoxedExpressionEditorContextProvider({
         dataTypes,
         pmmlParams,
 
-        //state // FIXME: Tiago -> Move to a separate context
+        //state // FIXME: Move to a separate context (https://github.com/kiegroup/kie-issues/issues/168)
         currentlyOpenContextMenu,
         setCurrentlyOpenContextMenu,
       }}

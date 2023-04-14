@@ -188,11 +188,9 @@ export interface InvocationExpressionDefinition<T extends ExpressionDefinition =
   /** Function to be invoked */
   invokedFunction: InvocationFunction;
   /** Collection of arguments used to invoke the function */
-  // FIXME: Tiago -> Rename to argumentEntries
-  bindingEntries: ContextExpressionDefinitionEntry<T>[];
+  bindingEntries: ContextExpressionDefinitionEntry<T>[]; // Please rename to `argumentEntries` as part of https://github.com/kiegroup/kie-issues/issues/169. Make sure to update other places that untypedly reference it too!
   /** Entry info width */
-  // FIXME: Tiago -> Rename to parametersInfoColumnWidth?
-  entryInfoWidth?: number;
+  entryInfoWidth?: number; // Please rename to `parametersInfoColumnWidth` as part of https://github.com/kiegroup/kie-issues/issues/169. Make sure to update other places that untypedly reference it too!
 }
 
 export interface InvocationFunction {
@@ -283,7 +281,7 @@ export interface PmmlParam {
   }[];
 }
 
-// FIXME: Tiago -> Move
+// Please find a better place for this function as part of https://github.com/kiegroup/kie-issues/issues/34
 export const getNextAvailablePrefixedName = (
   names: string[],
   namePrefix: string,
