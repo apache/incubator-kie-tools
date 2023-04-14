@@ -313,6 +313,7 @@ public class ExpressionEditorViewImplTest {
         doReturn(hasExpression).when(view).getHasExpression();
         doReturn(editorSelectedEvent).when(view).getEditorSelectedEvent();
         doReturn(NODE_UUID).when(view).getNodeUUID();
+        doReturn(false).when(view).isReactBoxedExpressionVisible();
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
@@ -738,7 +739,6 @@ public class ExpressionEditorViewImplTest {
     @Test
     public void testReloadEditorNotShowing() {
         doNothing().when(view).loadNewBoxedExpressionEditor();
-        doReturn(false).when(view).isReactBoxedExpressionVisible();
 
         view.reloadEditor();
 
