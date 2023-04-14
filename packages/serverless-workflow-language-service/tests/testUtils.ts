@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ELsJsonPath } from "@kie-tools/editor-language-service/dist/channel";
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   findNodeAtLocation,
   JsonCodeCompletionStrategy,
   SwfJsonLanguageService,
-  SwfJsonPath,
   SwfYamlLanguageService,
   YamlCodeCompletionStrategy,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
@@ -85,7 +85,7 @@ export async function codeCompletionTester(
  */
 export function getStartNodeValuePositionTester(args: {
   content: string;
-  path: SwfJsonPath;
+  path: ELsJsonPath;
   codeCompletionStrategy: JsonCodeCompletionStrategy | YamlCodeCompletionStrategy;
   documentUri: string;
   ls: SwfJsonLanguageService | SwfYamlLanguageService;

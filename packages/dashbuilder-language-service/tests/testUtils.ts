@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  DashbuilderLanguageService,
-  DashbuilderYamlLanguageService,
-} from "@kie-tools/dashbuilder-language-service/dist/channel";
+import { DashbuilderYamlLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 import { CompletionItem, DocumentUri, Position } from "vscode-languageserver-types";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
