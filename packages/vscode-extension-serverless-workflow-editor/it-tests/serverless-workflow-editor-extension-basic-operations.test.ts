@@ -20,19 +20,17 @@ import * as fs from "fs";
 import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
-import { resolve } from "path";
 import { join } from "path";
 
 // The following test is failing in github CI. See https://issues.redhat.com/browse/KOGITO-8952.
 describe("Serverless workflow editor - Basic operations tests", () => {
-  const SCREENSHOTS_DIR: string = resolve("dist-it-tests", "screenshots");
+  const SCREENSHOTS_DIR: string = path.resolve("dist-it-tests", "screenshots");
   const pngPath = (fileName: string)=>join(SCREENSHOTS_DIR, fileName + ".png");
 
 
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "basic-operations");
-  const directory = "screenshots";
-  if (!fs.existsSync(directory)) {
-    fs.mkdirSync(directory);
+  if (!fs.existsSync(SCREENSHOTS_DIR)) {
+    fs.mkdirSync(SCREENSHOTS_DIR);
   }
   let testHelper: VSCodeTestHelper;
 
@@ -140,25 +138,25 @@ describe("Serverless workflow editor - Basic operations tests", () => {
 
     expect(await textEditor.getText()).equal(expectedContent);
     expect((await swfEditor.getAllNodeIds()).length).equal(3);
-    fs.writeFileSync(`${directory}/renameFileWithEdOpen_3.png`, await testHelper.takeScreenshot(), "base64");
+    fs.writeFileSync(pngPath("renameFileWithEdOpen_3"), await testHelper.takeScreenshot(), "base64");
 
     await testHelper.renameFile(WORKFLOW_NAME, RENAMED_WORKFLOW_NAME);
-    fs.writeFileSync(`${directory}/renameFileWithEdOpen_4.png`, await testHelper.takeScreenshot(), "base64");
+    fs.writeFileSync(pngPath("renameFileWithEdOpen_4"), await testHelper.takeScreenshot(), "base64");
 
     expect(await textEditor.getText()).equal(expectedContent);
     expect((await swfEditor.getAllNodeIds()).length).equal(3);
-    fs.writeFileSync(`${directory}/renameFileWithEdOpen_5.png`, await testHelper.takeScreenshot(), "base64");
+    fs.writeFileSync(pngPath("renameFileWithEdOpen_5"), await testHelper.takeScreenshot(), "base64");
 
     await testHelper.closeAllEditors();
-    fs.writeFileSync(`${directory}/renameFileWithEdOpen_6.png`, await testHelper.takeScreenshot(), "base64");
+    fs.writeFileSync(pngPath("renameFileWithEdOpen_6"), await testHelper.takeScreenshot(), "base64");
 
     editorWebViews = await testHelper.openFileFromSidebar(RENAMED_WORKFLOW_NAME);
     swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
     swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
-    fs.writeFileSync(`${directory}/renameFileWithEdOpen_7.png`, await testHelper.takeScreenshot(), "base64");
+    fs.writeFileSync(pngPath("renameFileWithEdOpen_7"), await testHelper.takeScreenshot(), "base64");
 
     textEditor = await swfTextEditor.getSwfTextEditor();
-    fs.writeFileSync(`${directory}/renameFileWithEdOpen_8.png`, await testHelper.takeScreenshot(), "base64");
+    fs.writeFileSync(pngPath("renameFileWithEdOpen_8"), await testHelper.takeScreenshot(), "base64");
 
     expect(await textEditor.getText()).equal(expectedContent);
     expect((await swfEditor.getAllNodeIds()).length).equal(3);
