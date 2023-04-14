@@ -313,6 +313,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                               isOnlyVisualChangeAllowed);
         setExpressionNameText(hasName);
         setExpressionTypeText(Optional.ofNullable(hasExpression.getExpression()));
+        reloadEditor();
     }
 
     public ExpressionContainerGrid getExpressionContainerGrid() {
