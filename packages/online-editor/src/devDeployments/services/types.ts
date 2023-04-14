@@ -33,6 +33,7 @@ export interface DeployArgs {
   workspaceName: string;
   workspaceZipBlob: Blob;
   onlineEditorUrl: (baseUrl: string) => string;
+  useTestImages?: boolean;
 }
 
 export type ResourceArgs = {

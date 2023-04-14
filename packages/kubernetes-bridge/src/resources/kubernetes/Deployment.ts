@@ -31,6 +31,7 @@ import {
   commonLabels,
   runtimeLabels,
 } from "../common";
+import { IContainer } from "kubernetes-models/v1";
 
 export type CreateDeploymentTemplateArgs = {
   uri: string;
@@ -39,6 +40,7 @@ export type CreateDeploymentTemplateArgs = {
   containerImageUrl: string;
   envVars: EnvVar[];
   resourceDataSource: ResourceDataSource.TEMPLATE;
+  imagePullPolicy?: IContainer["imagePullPolicy"];
 };
 
 export type CreateDeploymentArgs = CreateResourceFetchArgs &
@@ -97,6 +99,7 @@ export const DEPLOYMENT_TEMPLATE = (
                 },
               ],
               env: args.envVars,
+              imagePullPolicy: args.imagePullPolicy ?? "Always",
             },
           ],
         },

@@ -130,6 +130,7 @@ export function DevDeploymentsContextProvider(props: Props) {
               pathParams: {},
               queryParams: { url: `${baseUrl}/${workspaceFile.relativePath}` },
             }),
+          useTestImages: process.env.WEBPACK_REPLACE__devDeployments_useTestImages === "true",
         });
         return true;
       } catch (error) {

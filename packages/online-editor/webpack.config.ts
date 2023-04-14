@@ -50,7 +50,9 @@ export default async (env: any, argv: any) => {
     dmnDevDeployment_baseImageAccount,
     dmnDevDeployment_baseImageName,
     dmnDevDeployment_baseImageTag,
+    dmnDevDeployment_testDevImageName,
     devDeployments_onlineEditorUrl,
+    devDeployments_useTestImages,
   ] = getDevDeploymentsArgs();
   const gtmResource = getGtmResource();
 
@@ -111,7 +113,9 @@ export default async (env: any, argv: any) => {
               kieSandboxExtendedServices_windowsDownloadUrl,
             WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
             WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl: `${dmnDevDeployment_baseImageRegistry}/${dmnDevDeployment_baseImageAccount}/${dmnDevDeployment_baseImageName}:${dmnDevDeployment_baseImageTag}`,
+            WEBPACK_REPLACE__dmnDevDeployment_testDevImageName: dmnDevDeployment_testDevImageName,
             WEBPACK_REPLACE__devDeployments_onlineEditorUrl: devDeployments_onlineEditorUrl,
+            WEBPACK_REPLACE__devDeployments_useTestImages: devDeployments_useTestImages,
             WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
             WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
           }),
@@ -236,14 +240,26 @@ function getDevDeploymentsArgs() {
   const baseImageRegistry = buildEnv.dmnDevDeploymentBaseImageEnv.registry;
   const baseImageAccount = buildEnv.dmnDevDeploymentBaseImageEnv.account;
   const baseImageName = buildEnv.dmnDevDeploymentBaseImageEnv.name;
+  const testDevImageName = buildEnv.dmnDevDeploymentBaseImageEnv.testDevImageName;
   const baseImageTag = buildEnv.devDeployments.dmn.baseImage.tag;
   const onlineEditorUrl = buildEnv.devDeployments.onlineEditorUrl;
+  const useTestImages = buildEnv.devDeployments.useTestImages;
 
   console.info("DMN Dev deployment :: Base Image Registry: " + baseImageRegistry);
   console.info("DMN Dev deployment :: Base Image Account: " + baseImageAccount);
   console.info("DMN Dev deployment :: Base Image Name: " + baseImageName);
   console.info("DMN Dev deployment :: Base Image Tag: " + baseImageTag);
+  console.info("DMN Dev deployment :: Test image Url: " + testDevImageName);
   console.info("Dev deployments :: Online Editor Url: " + onlineEditorUrl);
+  console.info("Dev deployments :: Using test images: " + useTestImages);
 
-  return [baseImageRegistry, baseImageAccount, baseImageName, baseImageTag, onlineEditorUrl];
+  return [
+    baseImageRegistry,
+    baseImageAccount,
+    baseImageName,
+    baseImageTag,
+    testDevImageName,
+    onlineEditorUrl,
+    useTestImages,
+  ];
 }
