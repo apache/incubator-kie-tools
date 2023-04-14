@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "build:dev": "",
+    "build:dev": "run-script-os",
     "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs -Pno-showcase",
     "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs `-Pno-showcase\"",
     "build:prod": "run-script-os",

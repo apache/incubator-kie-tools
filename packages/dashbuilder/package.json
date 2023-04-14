@@ -16,7 +16,7 @@
     "**/dist/*"
   ],
   "scripts": {
-    "build:dev": "",
+    "build:dev": "run-script-os && pnpm copy:components && pnpm build:dev:runtime",
     "build:dev:linux:darwin": "mvn clean install -DskipTests -Dgwt.compiler.skip=true",
     "build:dev:runtime": "run-script-os",
     "build:dev:runtime:linux:darwin": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && mvn clean install -Psources -DskipTests",
