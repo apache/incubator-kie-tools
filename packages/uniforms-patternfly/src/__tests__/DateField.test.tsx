@@ -145,6 +145,17 @@ test("<DateField> - renders a input which correctly reacts on change (valid)", (
   expect(onChange).toHaveBeenLastCalledWith("x", new Date(`${date}T${time}:00.000Z`));
 });
 
+test("<DateField> - renders a input which correctly reacts on change (year bigger than 9999)", () => {
+  const onChange = jest.fn();
+
+  render(usingUniformsContext(<DateField name="x" />, { x: { type: Date } }, { onChange }));
+
+  const input = screen.getByTestId("date-field") as HTMLInputElement;
+  fireEvent.change(input, { target: { value: "121212-12-12T12:12" } });
+
+  expect(onChange).toHaveBeenLastCalledWith("x", new Date("9999-12-12T12:12:00.000Z"));
+});
+
 test("<DateField> - test max property - valid", () => {
   const dateValue = new Date("1998-12-31");
   const maxValue = new Date("1999-01-01T00:00:00Z");

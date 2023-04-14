@@ -48,13 +48,11 @@ const dateParse = (value: string, onChange: DateFieldProps["onChange"]) => {
   if (isNaN(valueAsNumber)) {
     // Checking if year is too big
     const splitedValue = value.split("-");
-    if (splitedValue.length > 0) {
-      const year = parseInt(splitedValue[0]);
-      if (year > 10000) {
-        splitedValue[0] = `${Math.floor(year / 10)}`;
-        onChange(new DateConstructor(`${splitedValue.join("-")}Z`));
-        return;
-      }
+    if (splitedValue.length > 1) {
+      // A year can't be bigger than 9999;
+      splitedValue[0] = parseInt(splitedValue[0]) > 9999 ? "9999" : splitedValue[0];
+      onChange(new DateConstructor(`${splitedValue.join("-")}Z`));
+      return;
     }
     onChange(undefined);
   } else {
