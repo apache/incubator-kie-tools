@@ -625,7 +625,7 @@
           <runTarget>test.html</runTarget>
           <hostedWebapp>src/main/webapp</hostedWebapp>
           <gwtSdkFirstInClasspath>false</gwtSdkFirstInClasspath>
-          <logLevel>TRACE</logLevel>
+          <logLevel>WARN</logLevel>
           <generateJsInteropExports>true</generateJsInteropExports>
 
           <compileSourcesArtifacts>

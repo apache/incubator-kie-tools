@@ -24,8 +24,8 @@ import java.util.Set;
 
 public final class PriorityDisposableRegistry {
 
-    private static Set<PriorityDisposable> disposables = new HashSet<PriorityDisposable>();
-    private static Map<String, Object> registry = new HashMap<String, Object>();
+    private static Set<PriorityDisposable> disposables = new HashSet<>();
+    private static Map<String, Object> registry = new HashMap<>();
 
     private PriorityDisposableRegistry() {
     }

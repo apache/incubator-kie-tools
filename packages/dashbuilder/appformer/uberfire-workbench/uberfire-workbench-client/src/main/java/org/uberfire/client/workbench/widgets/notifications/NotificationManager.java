@@ -31,7 +31,6 @@ import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.client.workbench.WorkbenchLayoutInfo;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.mvp.PlaceRequest;
@@ -48,18 +47,15 @@ public class NotificationManager {
     private final PlaceRequest rootPlaceRequest = new DefaultPlaceRequest("org.uberfire.client.workbench.widgets.notifications.root");
     private SyncBeanManager iocManager;
     private PlaceManager placeManager;
-    private WorkbenchLayoutInfo workbenchLayoutInfo;
 
     public NotificationManager() {
     }
 
     @Inject
     public NotificationManager(final SyncBeanManager iocManager,
-                               final PlaceManager placeManager,
-                               final WorkbenchLayoutInfo workbenchLayoutInfo) {
+                               final PlaceManager placeManager) {
         this.iocManager = iocManager;
         this.placeManager = placeManager;
-        this.workbenchLayoutInfo = workbenchLayoutInfo;
     }
 
     /**
@@ -92,9 +88,7 @@ public class NotificationManager {
 
                 if (event.getInitialTopOffset() != null) {
                     notificationsContainerView.setInitialSpacing(event.getInitialTopOffset());
-                } else {
-                    notificationsContainerView.setInitialSpacing(workbenchLayoutInfo.getHeaderHeight());
-                }
+                } 
 
                 notificationsContainerViewMap.put(placeRequest,
                                                   notificationsContainerView);

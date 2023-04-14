@@ -45,7 +45,6 @@ public interface WorkbenchLayout {
     /**
      * Will be invoked by the {@link org.uberfire.client.workbench.Workbench}
      * when the discovery of header and footer elements is completed.
-     * @see {@link #setHeaderContents(java.util.List)}
      * @see {@link #setFooterContents(java.util.List)}
      */
     public void onBootstrap();
@@ -115,7 +114,6 @@ public interface WorkbenchLayout {
 
     /**
      * Will insert the implementations of Header and Footer in the Workbench
-     * @see {@link #setHeaderContents(java.util.List)}
      * @see {@link #setFooterContents(java.util.List)}
      */
     void setMarginWidgets(boolean isStandaloneMode,

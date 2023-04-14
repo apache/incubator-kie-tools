@@ -32,7 +32,7 @@ public abstract class AbstractActivity implements Activity {
 
     protected boolean open = false;
 
-    public AbstractActivity(final PlaceManager placeManager) {
+    AbstractActivity(final PlaceManager placeManager) {
         this.placeManager = placeManager;
     }
 
@@ -43,7 +43,7 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public void onStartup(PlaceRequest place) {
         this.place = checkNotNull("place",
-                                  place);
+                place);
     }
 
     /**

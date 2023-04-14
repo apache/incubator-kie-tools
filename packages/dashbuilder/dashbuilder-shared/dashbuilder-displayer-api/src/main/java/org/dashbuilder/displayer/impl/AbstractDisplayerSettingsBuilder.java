@@ -29,7 +29,8 @@ import org.dashbuilder.displayer.DisplayerSubType;
 /**
  * Base class for DisplayerSettingsBuilder implementations.
  */
-public abstract class AbstractDisplayerSettingsBuilder<T> extends AbstractDataSetLookupBuilder<T> implements DisplayerSettingsBuilder<T> {
+public abstract class AbstractDisplayerSettingsBuilder<T> extends AbstractDataSetLookupBuilder<T> implements
+                                                      DisplayerSettingsBuilder<T> {
 
     protected DisplayerSettings displayerSettings = createDisplayerSettings();
 
@@ -145,7 +146,7 @@ public abstract class AbstractDisplayerSettingsBuilder<T> extends AbstractDataSe
 
     public T format(String name, String pattern) {
         DataSetOp op = getCurrentOp();
-        if (op == null || !(op instanceof DataSetGroup)) {
+        if (!(op instanceof DataSetGroup)) {
             throw new RuntimeException("column(...) must be called first.");
         }
         DataSetGroup gOp = (DataSetGroup) getCurrentOp();
@@ -164,8 +165,8 @@ public abstract class AbstractDisplayerSettingsBuilder<T> extends AbstractDataSe
     }
 
     public T expression(String expression) {
-        DataSetOp op = getCurrentOp();
-        if (op == null || !(op instanceof DataSetGroup)) {
+        var op = getCurrentOp();
+        if (!(op instanceof DataSetGroup)) {
             throw new RuntimeException("column(...) must be called first.");
         }
         DataSetGroup gOp = (DataSetGroup) getCurrentOp();

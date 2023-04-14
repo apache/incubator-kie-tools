@@ -28,8 +28,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.uberfire.client.callbacks.Callback;
-import org.uberfire.mvp.Command;
 
 /**
  * A widget containing the page title of a Wizard page, along with an indicator
@@ -42,19 +40,7 @@ public class WizardPageTitle extends Composite {
     private static WizardPageTitleViewBinder uiBinder = GWT.create(WizardPageTitleViewBinder.class);
     @UiField
     protected AnchorListItem container;
-    private final Command isCompleteCommand = new Command() {
-        @Override
-        public void execute() {
-            setComplete(true);
-        }
-    };
 
-    private final Command isIncompleteCommand = new Command() {
-        @Override
-        public void execute() {
-            setComplete(false);
-        }
-    };
     @Inject
     private Event<WizardPageSelectedEvent> selectPageEvent;
 
@@ -64,20 +50,15 @@ public class WizardPageTitle extends Composite {
 
     public void setContent(final WizardPage page) {
         container.setText(page.getTitle());
-        page.isComplete(new Callback<Boolean>() {
-            @Override
-            public void callback(final Boolean result) {
-                setComplete(Boolean.TRUE.equals(result));
-            }
-        });
+        page.isComplete(result -> setComplete(Boolean.TRUE.equals(result)));
 
         container.addDomHandler(new ClickHandler() {
 
-                                    public void onClick(final ClickEvent event) {
-                                        selectPageEvent.fire(new WizardPageSelectedEvent(page));
-                                    }
-                                },
-                                ClickEvent.getType());
+            public void onClick(final ClickEvent event) {
+                selectPageEvent.fire(new WizardPageSelectedEvent(page));
+            }
+        },
+                ClickEvent.getType());
     }
 
     /**
@@ -100,8 +81,8 @@ public class WizardPageTitle extends Composite {
     }
 
     interface WizardPageTitleViewBinder
-            extends
-            UiBinder<Widget, WizardPageTitle> {
+                                        extends
+                                        UiBinder<Widget, WizardPageTitle> {
 
     }
 }

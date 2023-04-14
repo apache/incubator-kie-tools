@@ -5,7 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.LayoutPanelPresenter;
 
 @ApplicationScoped
 @WorkbenchPerspective(
@@ -13,7 +13,7 @@ import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter
         isDefault = true)
 public class PerspectiveTest13 {
 
-    @WorkbenchPanel( panelType = MultiTabWorkbenchPanelPresenter.class,
+    @WorkbenchPanel( panelType = LayoutPanelPresenter.class,
                      isDefault =  true,
                      parts = { "HelloWorldScreen1", "HelloWorldScreen2" } )
     Object teste = new Object();

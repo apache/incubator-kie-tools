@@ -21,7 +21,6 @@ import java.util.Set;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.SplashScreenFilter;
 
 public interface WorkbenchServicesProxy {
 
@@ -38,11 +37,6 @@ public interface WorkbenchServicesProxy {
                                 final Command callback);
 
     void removePerspectiveStates(final Command doWhenFinished);
-
-    void save(final SplashScreenFilter splashFilter);
-
-    void loadSplashScreenFilter(final String name,
-                                final ParameterizedCommand<SplashScreenFilter> parameterizedCommand);
 
     void isWorkbenchOnCluster(final ParameterizedCommand<Boolean> parameterizedCommand);
 }

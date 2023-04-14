@@ -15,8 +15,9 @@
  */
 package org.uberfire.ext.widgets.core.client.wizards;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.callbacks.Callback;
 
 /**
  * A page for a Wizard
@@ -37,7 +38,7 @@ public interface WizardPage
      * page might consider the User ID and Password as necessary.
      * @param callback True if the page is complete
      */
-    void isComplete(Callback<Boolean> callback);
+    void isComplete(Consumer<Boolean> callback);
 
     /**
      * Initialise the page with things that don't change between page visits

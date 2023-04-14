@@ -24,16 +24,12 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
-import org.uberfire.client.mvp.TemplatedActivity;
-import org.uberfire.client.mvp.jsbridge.JsWorkbenchLazyPerspective;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.panels.impl.TemplatedWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * BeanFactory using Errai IOCBeanManager to instantiate (CDI) beans
@@ -46,15 +42,13 @@ public class DefaultBeanFactory
     protected SyncBeanManager iocManager;
 
     @Override
-    public WorkbenchPartPresenter newWorkbenchPart(final Menus menus,
-                                                   final String title,
+    public WorkbenchPartPresenter newWorkbenchPart(final String title,
                                                    final IsWidget titleDecoration,
                                                    final PartDefinition definition,
                                                    final Class<? extends WorkbenchPartPresenter> partType) {
         final WorkbenchPartPresenter part = iocManager.lookupBean(partType).getInstance();
 
         part.setTitle(title);
-        part.setMenus(menus);
         part.setTitleDecoration(titleDecoration);
         part.setDefinition(definition);
 
@@ -64,19 +58,7 @@ public class DefaultBeanFactory
     @Override
     public WorkbenchPanelPresenter newRootPanel(PerspectiveActivity activity,
                                                 PanelDefinition root) {
-        WorkbenchPanelPresenter panel = newWorkbenchPanel(root);
-        if (panel instanceof TemplatedWorkbenchPanelPresenter) {
-
-            final TemplatedActivity templatedActivity;
-            if (activity instanceof JsWorkbenchLazyPerspective) {
-                templatedActivity = (TemplatedActivity) ((JsWorkbenchLazyPerspective) activity).get();
-            } else {
-                templatedActivity = (TemplatedActivity) activity;
-            }
-
-            ((TemplatedWorkbenchPanelPresenter) panel).setActivity(templatedActivity);
-        }
-        return panel;
+        return newWorkbenchPanel(root);
     }
 
     @Override
@@ -101,6 +83,6 @@ public class DefaultBeanFactory
 
     @Override
     public void destroy(final Object o) {
-        iocManager.destroyBean(o);
+        iocManager.destroyBean(o);        
     }
 }
