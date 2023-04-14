@@ -35,6 +35,8 @@ import { isApplicationProperties, isSupportingFileForDevMode } from "../../exten
 import { RestartDevModePipeline } from "../pipelines/RestartDevModePipeline";
 import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
+import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 
 export interface UploadApiResponseError {
   error: string;
@@ -83,6 +85,42 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
   const [isEnabled, setEnabled] = useState(false);
   const [endpoints, setEndpoints] = useState<DevModeEndpoints | undefined>();
 
+  const devModeCreatedSuccessAlert = useGlobalAlert(
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="info"
+          title={"Your Dev Mode deployment has been created and will be available shortly"}
+          aria-live="polite"
+          data-testid="alert-dev-mode-created"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
+  const spinUpDevModeErrorAlert = useGlobalAlert<{ message: string }>(
+    useCallback(({ close }, { message }) => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="warning"
+          title={
+            <>
+              Something went wrong while spinning up to the Dev Mode.
+              <br />
+              {`Reason: ${message}`}
+            </>
+          }
+          aria-live="polite"
+          data-testid="alert-upload-error"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -93,28 +131,31 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
           return;
         }
 
-        try {
-          const spinUpDevModePipeline = new SpinUpDevModePipeline({
-            webToolsId: resolveWebToolsId(),
-            namespace: settings.openshift.config.namespace,
-            openShiftService: settingsDispatch.openshift.service,
-          });
+        const spinUpDevModePipeline = new SpinUpDevModePipeline({
+          webToolsId: resolveWebToolsId(),
+          namespace: settings.openshift.config.namespace,
+          openShiftService: settingsDispatch.openshift.service,
+        });
 
-          spinUpDevModePipeline
-            .execute()
-            .then((routeUrl) => {
-              if (canceled.get()) {
-                return;
+        spinUpDevModePipeline
+          .execute()
+          .then((response) => {
+            if (canceled.get()) {
+              return;
+            }
+            if (response.isCompleted) {
+              setEnabled(true);
+              setEndpoints(buildEndpoints(response.routeUrl));
+              if (response.isNew) {
+                devModeCreatedSuccessAlert.show();
               }
-              if (routeUrl) {
-                setEnabled(true);
-                setEndpoints(buildEndpoints(routeUrl));
-              }
-            })
-            .catch((e) => console.error(e));
-        } catch (e) {
-          console.error(e);
-        }
+            } else {
+              spinUpDevModeErrorAlert.show({ message: response.reason });
+            }
+          })
+          .catch((e) => {
+            spinUpDevModeErrorAlert.show({ message: e });
+          });
       },
       [
         settings.openshift.config.namespace,

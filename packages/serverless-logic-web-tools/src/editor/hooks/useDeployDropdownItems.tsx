@@ -87,7 +87,7 @@ export function useDeployDropdownItems(props: Props) {
           title={
             <>
               <Spinner size={"sm"} />
-              &nbsp;&nbsp; {`Uploading files to Dev Mode...`}
+              &nbsp;&nbsp; Uploading files to Dev Mode...
             </>
           }
           aria-live="polite"
@@ -139,7 +139,7 @@ export function useDeployDropdownItems(props: Props) {
           title={
             <>
               <Spinner size={"sm"} />
-              &nbsp;&nbsp; {`Updating the Dev Mode deployment...`}
+              &nbsp;&nbsp; Updating the Dev Mode deployment...
             </>
           }
           aria-live="polite"
@@ -158,7 +158,7 @@ export function useDeployDropdownItems(props: Props) {
           variant="warning"
           title={
             <>
-              {"Something went wrong while uploading to the Dev Mode."}
+              Something went wrong while uploading to the Dev Mode.
               <br />
               {`Reason: ${message}`}
             </>

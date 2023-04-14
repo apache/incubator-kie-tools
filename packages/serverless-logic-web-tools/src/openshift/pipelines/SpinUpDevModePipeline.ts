@@ -42,12 +42,23 @@ interface SpinUpDevModePipelineArgs {
   webToolsId: string;
 }
 
-export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined> {
+type SpinUpDevModePipelineResponse =
+  | {
+      isCompleted: true;
+      isNew: boolean;
+      routeUrl: string;
+    }
+  | {
+      isCompleted: false;
+      reason: string;
+    };
+
+export class SpinUpDevModePipeline extends OpenShiftPipeline<SpinUpDevModePipelineResponse> {
   constructor(protected readonly args: OpenShiftPipelineArgs & SpinUpDevModePipelineArgs) {
     super(args);
   }
 
-  public async execute(): Promise<string | undefined> {
+  public async execute(): Promise<SpinUpDevModePipelineResponse> {
     const deployments = (
       await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
         fetcher.execute<DeploymentGroupDescriptor>({
@@ -75,7 +86,10 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
     });
 
     if (latestDeploymentStatus === DeploymentState.ERROR || !latestDeployment.spec) {
-      throw new Error("Invalid state for the dev mode deployment");
+      return {
+        isCompleted: false,
+        reason: "Invalid state for the dev mode deployment",
+      };
     }
 
     const route = await this.args.openShiftService.withFetch<RouteDescriptor>((fetcher: ResourceFetcher) =>
@@ -110,10 +124,14 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
       );
     }
 
-    return routeUrl;
+    return {
+      isCompleted: true,
+      isNew: false,
+      routeUrl,
+    };
   }
 
-  private async createDevModeDeployment(): Promise<string | undefined> {
+  private async createDevModeDeployment(): Promise<SpinUpDevModePipelineResponse> {
     const resourceArgs = {
       namespace: this.args.namespace,
       resourceName: resolveDevModeResourceName(this.args.webToolsId),
@@ -200,9 +218,16 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<string | undefined>
         })
       );
 
-      return this.args.openShiftService.composeDeploymentUrlFromRoute(route);
+      return {
+        isCompleted: true,
+        isNew: true,
+        routeUrl: this.args.openShiftService.composeDeploymentUrlFromRoute(route),
+      };
     } catch (e) {
-      console.error(e);
+      return {
+        isCompleted: false,
+        reason: e,
+      };
     }
   }
 }
