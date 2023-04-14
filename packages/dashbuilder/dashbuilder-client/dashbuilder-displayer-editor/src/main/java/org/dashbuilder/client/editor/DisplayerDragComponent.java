@@ -49,6 +49,9 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     GlobalDisplayerSettings globalDisplayerSettings;
 
     @Inject
+    DisplayerErrorWidget displayError;
+
+    @Inject
     public DisplayerDragComponent(SyncBeanManager beanManager,
             DisplayerViewer viewer,
             PlaceManager placeManager,
@@ -75,13 +78,10 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     public IsWidget getShowWidget(final RenderingContext ctx) {
         var settingsOp = getDisplayerSettings(ctx.getComponent().getProperties(), ctx.getComponent());
         return settingsOp.map(settings -> {
-            // var error = settings.getSettingsFlatMap().get("ERROR");
             String error = settings.getError().toString();
             if(error != null){
-                var e = new DisplayerErrorWidget();
-                e.show(error, null);
-                return e;
-                // return new Label(error);
+                displayError.show(error, null);
+                return displayError;
             }else{
                 viewer.removeFromParent();
                 viewer.init(settings);
@@ -100,22 +100,6 @@ public class DisplayerDragComponent implements LayoutDragComponent {
                 perspectiveCoordinator.addDisplayer(displayer);
                 return viewer;
             }
-            // viewer.removeFromParent();
-            // viewer.init(settings);
-            // viewer.addAttachHandler(attachEvent -> {
-            //     if (attachEvent.isAttached()) {
-            //         final int offsetWidth = ctx.getContainer().getOffsetWidth();
-            //         int containerWidth = offsetWidth > 40 ? offsetWidth - 40 : 0;
-            //         adjustSize(settings, containerWidth);
-            //         Displayer displayer = viewer.draw();
-            //         perspectiveCoordinator.addDisplayer(displayer);
-            //     }
-            // });
-            // int containerWidth = ctx.getContainer().getOffsetWidth() - 40;
-            // adjustSize(settings, containerWidth);
-            // Displayer displayer = viewer.draw();
-            // perspectiveCoordinator.addDisplayer(displayer);
-            // return viewer;
         }).orElse(null);
     }
 
