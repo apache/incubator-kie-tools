@@ -102,7 +102,9 @@ describe("Serverless workflow editor - Basic operations tests", () => {
     fs.writeFileSync(pngPath("openAndSave_6"), await testHelper.takeScreenshot(), "base64");
 
     editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME);
+    fs.writeFileSync(pngPath("openAndSave_6.1"), await testHelper.takeScreenshot(), "base64");
     swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
+    fs.writeFileSync(pngPath("openAndSave_6.2"), await testHelper.takeScreenshot(), "base64");
     swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
     fs.writeFileSync(pngPath("openAndSave_7"), await testHelper.takeScreenshot(), "base64");
 
@@ -153,7 +155,9 @@ describe("Serverless workflow editor - Basic operations tests", () => {
     fs.writeFileSync(pngPath("renameFileWithEdOpen_6"), await testHelper.takeScreenshot(), "base64");
 
     editorWebViews = await testHelper.openFileFromSidebar(RENAMED_WORKFLOW_NAME);
+    fs.writeFileSync(pngPath("renameFileWithEdOpen_6.1"), await testHelper.takeScreenshot(), "base64");
     swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
+    fs.writeFileSync(pngPath("renameFileWithEdOpen_6.2"), await testHelper.takeScreenshot(), "base64");
     swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
     fs.writeFileSync(pngPath("renameFileWithEdOpen_7"), await testHelper.takeScreenshot(), "base64");
 
