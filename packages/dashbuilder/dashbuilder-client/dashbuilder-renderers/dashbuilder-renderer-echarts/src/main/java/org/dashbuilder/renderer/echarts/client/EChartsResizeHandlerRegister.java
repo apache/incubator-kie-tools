@@ -21,25 +21,30 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
+import org.dashbuilder.renderer.echarts.client.js.ECharts.Chart;
 
 @ApplicationScoped
 public class EChartsResizeHandlerRegister {
 
-    List<HandlerRegistration> handlers;
+    List<Chart> charts;
 
     @PostConstruct
     public void setup() {
-        handlers = new ArrayList<>();
+        charts = new ArrayList<>();
+        Window.addResizeHandler(v -> charts.forEach(Chart::resize));
     }
 
-    public void addHandler(HandlerRegistration handler) {
-        handlers.add(handler);
+    public void add(Chart chart) {
+        charts.add(chart);
     }
 
     public void clear() {
-        handlers.forEach(HandlerRegistration::removeHandler);
-        handlers.clear();
+        charts.clear();
+    }
+
+    public void remove(Chart chart) {
+        charts.remove(chart);
     }
 
 }

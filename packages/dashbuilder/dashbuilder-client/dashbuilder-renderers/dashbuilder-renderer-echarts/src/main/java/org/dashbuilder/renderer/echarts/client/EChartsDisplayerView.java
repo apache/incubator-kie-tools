@@ -21,7 +21,6 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 import elemental2.dom.DomGlobal;
@@ -113,15 +112,20 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
                         bootstrapParams.getMode().name().toLowerCase(),
                         initParams);
         if (bootstrapParams.isResizable()) {
-            var resizeHandlerRegistration = Window.addResizeHandler(v -> chart.resize());
-            eChartsResizeHandlerRegister.addHandler(resizeHandlerRegistration);
+            eChartsResizeHandlerRegister.add(chart);
         }
-
     }
 
     private void disposeChart() {
         if (chart != null) {
             chart.dispose();
+        }
+    }
+
+    @Override
+    public void close() {
+        if (chart != null) {
+            eChartsResizeHandlerRegister.remove(chart);
         }
     }
 }
