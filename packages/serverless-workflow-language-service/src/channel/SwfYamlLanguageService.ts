@@ -130,7 +130,7 @@ export class SwfYamlLanguageService {
     });
   }
 
-  public async getDiagnostics(args: { content: string; uriPath: string }) {
+  public async getDiagnostics(args: { content: string; uriPath: string }): Promise<Diagnostic[]> {
     if (!args.content.trim()) {
       return [];
     }

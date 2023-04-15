@@ -15,35 +15,31 @@
  */
 
 import {
-  ELsJsonPath,
-  findNodesAtLocation,
-  ELsNode,
   doRefValidation,
-  ELsCompletionsMap,
   EditorLanguageService,
   EditorLanguageServiceArgs,
+  ELsCompletionsMap,
+  ELsJsonPath,
+  ELsNode,
+  findNodesAtLocation,
 } from "@kie-tools/editor-language-service/dist/channel";
 import {
-  SwfServiceCatalogFunction,
   SwfCatalogSourceType,
-  SwfServiceCatalogService,
+  SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSource,
+  SwfServiceCatalogService,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
-import { FileLanguage } from "../api";
 import {
   SwfCompletionItemServiceCatalogService,
   SwfLanguageServiceCodeCompletion,
   SwfLanguageServiceCodeCompletionFunctionsArgs,
 } from "./SwfLanguageServiceCodeCompletion";
-import {
-  SwfLanguageServiceCodeLenses,
-  SwfLanguageServiceCodeLensesFunctionsArgs,
-} from "./SwfLanguageServiceCodeLenses";
+import { SwfLanguageServiceCodeLenses } from "./SwfLanguageServiceCodeLenses";
 import { swfRefValidationMap } from "./swfRefValidationMap";
 import { CodeCompletionStrategy, JqCompletions } from "./types";
 
@@ -147,6 +143,24 @@ export class SwfLanguageService {
     });
   }
 
+  public async getCodeLenses(args: {
+    content: string;
+    uri: string;
+    rootNode: ELsNode | undefined;
+    codeCompletionStrategy: CodeCompletionStrategy;
+  }): Promise<CodeLens[]> {
+    const displayRhhccIntegration = await this.args.config.shouldDisplayServiceRegistriesIntegration();
+
+    return this.els.getCodeLenses({
+      ...args,
+      codeLenses: SwfLanguageServiceCodeLenses,
+      extraCodeLensesFunctionsArgs: {
+        config: this.args.config,
+        displayRhhccIntegration,
+      },
+    });
+  }
+
   private getFunctionDiagnostics(services: SwfServiceCatalogService[]): Diagnostic[] {
     return services.flatMap((value) => this.generateDiagnostic(value.functions));
   }
@@ -213,45 +227,8 @@ export class SwfLanguageService {
     ];
   }
 
-  public async getCodeLenses(args: {
-    content: string;
-    uri: string;
-    rootNode: ELsNode | undefined;
-    codeCompletionStrategy: CodeCompletionStrategy;
-  }): Promise<CodeLens[]> {
-    if (!args.content.trim().length) {
-      return SwfLanguageServiceCodeLenses.createNewFile();
-    }
-
-    if (!args.rootNode) {
-      return [];
-    }
-
-    const document = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
-
-    const displayRhhccIntegration = await this.args.config.shouldDisplayServiceRegistriesIntegration();
-    const codeLensesFunctionsArgs: SwfLanguageServiceCodeLensesFunctionsArgs = {
-      config: this.args.config,
-      document,
-      content: args.content,
-      rootNode: args.rootNode,
-      codeCompletionStrategy: args.codeCompletionStrategy,
-    };
-
-    return [
-      ...(displayRhhccIntegration ? SwfLanguageServiceCodeLenses.setupServiceRegistries(codeLensesFunctionsArgs) : []),
-      ...(displayRhhccIntegration ? SwfLanguageServiceCodeLenses.logInServiceRegistries(codeLensesFunctionsArgs) : []),
-      ...(displayRhhccIntegration
-        ? SwfLanguageServiceCodeLenses.refreshServiceRegistries(codeLensesFunctionsArgs)
-        : []),
-      ...SwfLanguageServiceCodeLenses.addFunction(codeLensesFunctionsArgs),
-      ...SwfLanguageServiceCodeLenses.addEvent(codeLensesFunctionsArgs),
-      ...SwfLanguageServiceCodeLenses.addState(codeLensesFunctionsArgs),
-    ];
-  }
-
   public dispose() {
-    // empty for now
+    this.els.dispose();
   }
 
   private async getSwfCompletionItemServiceCatalogFunctionOperation(

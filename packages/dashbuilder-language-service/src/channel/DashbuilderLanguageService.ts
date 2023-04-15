@@ -13,6 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  EditorLanguageService,
+  EditorLanguageServiceArgs,
+  ELsCompletionsMap,
+  ELsJsonPath,
+  ELsNode,
+  indentText,
+  ShouldCompleteArgs,
+  TranslateArgs,
+} from "@kie-tools/editor-language-service/dist/channel";
+import {
+  getLanguageService,
+  LanguageSettings,
+  SchemaRequestService,
+  SettingsState,
+  Telemetry,
+  WorkspaceContextService,
+} from "@kie-tools/yaml-language-server";
+import * as jsonc from "jsonc-parser";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import {
   CodeLens,
@@ -23,23 +42,7 @@ import {
   Position,
   Range,
 } from "vscode-languageserver-types";
-import { FileLanguage } from "../api";
-import * as jsonc from "jsonc-parser";
-import {
-  DashbuilderLanguageServiceCodeCompletion,
-  DashbuilderLanguageServiceCodeCompletionFunctionsArgs,
-} from "./DashbuilderLanguageServiceCodeCompletion";
-import { DashbuilderLanguageServiceCodeLenses } from "./DashbuilderLanguageServiceCodeLenses";
-import {
-  EditorLanguageService,
-  EditorLanguageServiceArgs,
-  ELsJsonPath,
-  ELsNode,
-  indentText,
-  ShouldCompleteArgs,
-  TranslateArgs,
-  ELsCompletionsMap,
-} from "@kie-tools/editor-language-service/dist/channel";
+import { Connection } from "vscode-languageserver/node";
 import {
   dump,
   Kind,
@@ -51,27 +54,21 @@ import {
   YAMLScalar,
   YAMLSequence,
 } from "yaml-language-server-parser";
-import {
-  getLanguageService,
-  LanguageSettings,
-  SchemaRequestService,
-  SettingsState,
-  Telemetry,
-  WorkspaceContextService,
-} from "@kie-tools/yaml-language-server";
-import { Connection } from "vscode-languageserver/node";
+import { FileLanguage } from "../api";
 import { DASHBUILDER_SCHEMA } from "../assets/schemas";
+import {
+  DashbuilderLanguageServiceCodeCompletion,
+  DashbuilderLanguageServiceCodeCompletionFunctionsArgs,
+} from "./DashbuilderLanguageServiceCodeCompletion";
+import { DashbuilderLanguageServiceCodeLenses } from "./DashbuilderLanguageServiceCodeLenses";
 import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
-import { isNodeUncompleted } from "./DashbuilderYamlLanguageService";
 
 export type DashbuilderLanguageServiceArgs = EditorLanguageServiceArgs;
 
 export class DashbuilderLanguageService {
   private readonly els: EditorLanguageService;
-  private readonly codeCompletionStrategy: DashbuilderCodeCompletionStrategy;
 
   constructor(private readonly args: DashbuilderLanguageServiceArgs) {
-    this.codeCompletionStrategy = new DashbuilderCodeCompletionStrategy();
     this.els = new EditorLanguageService(this.args);
   }
 
@@ -116,16 +113,16 @@ export class DashbuilderLanguageService {
     });
   }
 
-  public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
-    const rootNode = this.parseContent(args.content);
-    if (!args.content.trim().length) {
-      return DashbuilderLanguageServiceCodeLenses.createNewFile();
-    }
-
-    if (!rootNode) {
-      return [];
-    }
-    return [];
+  public async getCodeLenses(args: {
+    content: string;
+    uri: string;
+    rootNode: ELsNode | undefined;
+    codeCompletionStrategy: CodeCompletionStrategy;
+  }): Promise<CodeLens[]> {
+    return this.els.getCodeLenses({
+      ...args,
+      codeLenses: DashbuilderLanguageServiceCodeLenses,
+    });
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }): Promise<Diagnostic[]> {

@@ -13,6 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  ELsNode,
+  indentText,
+  ShouldCompleteArgs,
+  TranslateArgs,
+} from "@kie-tools/editor-language-service/dist/channel";
+import {
+  getLanguageService,
+  LanguageSettings,
+  SchemaRequestService,
+  SettingsState,
+  Telemetry,
+  WorkspaceContextService,
+} from "@kie-tools/yaml-language-server";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import {
   CodeLens,
@@ -23,17 +37,7 @@ import {
   Position,
   Range,
 } from "vscode-languageserver-types";
-import { FileLanguage } from "../api";
-import * as jsonc from "jsonc-parser";
-import { DashbuilderLanguageServiceCodeCompletion } from "./DashbuilderLanguageServiceCodeCompletion";
-import { DashbuilderLanguageServiceCodeLenses } from "./DashbuilderLanguageServiceCodeLenses";
-import {
-  ELsJsonPath,
-  ELsNode,
-  indentText,
-  ShouldCompleteArgs,
-  TranslateArgs,
-} from "@kie-tools/editor-language-service/dist/channel";
+import { Connection } from "vscode-languageserver/node";
 import {
   dump,
   Kind,
@@ -45,23 +49,10 @@ import {
   YAMLScalar,
   YAMLSequence,
 } from "yaml-language-server-parser";
-import {
-  getLanguageService,
-  LanguageSettings,
-  SchemaRequestService,
-  SettingsState,
-  Telemetry,
-  WorkspaceContextService,
-} from "@kie-tools/yaml-language-server";
-import { Connection } from "vscode-languageserver/node";
+import { FileLanguage } from "../api";
 import { DASHBUILDER_SCHEMA } from "../assets/schemas";
+import { DashbuilderLanguageService, findNodeAtOffset, positions_equals } from "./DashbuilderLanguageService";
 import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
-import {
-  DashbuilderLanguageService,
-  DashbuilderLanguageServiceArgs,
-  findNodeAtOffset,
-  positions_equals,
-} from "./DashbuilderLanguageService";
 
 export class DashbuilderYamlLanguageService {
   private readonly ls: DashbuilderLanguageService;
@@ -127,15 +118,11 @@ export class DashbuilderYamlLanguageService {
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
-    const rootNode = this.parseContent(args.content);
-    if (!args.content.trim().length) {
-      return DashbuilderLanguageServiceCodeLenses.createNewFile();
-    }
-
-    if (!rootNode) {
-      return [];
-    }
-    return [];
+    return this.ls.getCodeLenses({
+      ...args,
+      rootNode: this.parseContent(args.content),
+      codeCompletionStrategy: this.codeCompletionStrategy,
+    });
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }): Promise<Diagnostic[]> {

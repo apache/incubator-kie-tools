@@ -573,7 +573,7 @@ describe("SWF LS JSON", () => {
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
+      expect(codeLenses[1]).toStrictEqual({
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           command: "swf.ls.commands.LogInServiceRegistries",
@@ -581,7 +581,7 @@ describe("SWF LS JSON", () => {
           arguments: [{ position: { character: 15, line: 1 } }],
         },
       });
-      expect(codeLenses[1]).toStrictEqual({
+      expect(codeLenses[0]).toStrictEqual({
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           title: "+ Add function...",
@@ -610,7 +610,7 @@ describe("SWF LS JSON", () => {
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
+      expect(codeLenses[1]).toStrictEqual({
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           command: "swf.ls.commands.OpenServiceRegistriesConfig",
@@ -618,7 +618,7 @@ describe("SWF LS JSON", () => {
           arguments: [{ position: { character: 15, line: 1 } }],
         },
       });
-      expect(codeLenses[1]).toStrictEqual({
+      expect(codeLenses[0]).toStrictEqual({
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           title: "+ Add function...",
@@ -647,7 +647,7 @@ describe("SWF LS JSON", () => {
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
+      expect(codeLenses[1]).toStrictEqual({
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           command: "swf.ls.commands.RefreshServiceRegistries",
@@ -655,7 +655,7 @@ describe("SWF LS JSON", () => {
           arguments: [{ position: { character: 15, line: 1 } }],
         },
       });
-      expect(codeLenses[1]).toStrictEqual({
+      expect(codeLenses[0]).toStrictEqual({
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           title: "+ Add function...",

@@ -15,14 +15,17 @@
  */
 
 import * as jsonc from "jsonc-parser";
-import { posix as posixPath } from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
 import {
   EditorLanguageServiceCodeCompletionFunctionsArgs,
   ELsCompletionsMap,
 } from "./EditorLanguageServiceCodeCompletion";
+import {
+  EditorLanguageServiceCodeLenses,
+  EditorLanguageServiceCodeLensesFunctionsArgs,
+} from "./EditorLanguageServiceCodeLenses";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import { ELsCodeCompletionStrategy, ELsJsonPath, ELsNode } from "./types";
 
@@ -47,6 +50,7 @@ export class EditorLanguageService {
     completions: ELsCompletionsMap<EditorLanguageServiceCodeCompletionFunctionsArgs>;
     extraCompletionFunctionsArgs?: {};
   }): Promise<CompletionItem[]> {
+    /* TODO: EditorLanguageService: try to move the createNewFile execution here */
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
     const cursorOffset = doc.offsetAt(args.cursorPosition);
     if (!args.rootNode) {
@@ -155,48 +159,47 @@ export class EditorLanguageService {
   //     ...this.getFunctionDiagnostics([...globalServices, ...relativeServices]),
   //   ];
   // }
-  //
-  // public async getCodeLenses(args: {
-  //   content: string;
-  //   uri: string;
-  //   rootNode: ELsNode | undefined;
-  //   codeCompletionStrategy: ELsCodeCompletionStrategy;
-  // }): Promise<CodeLens[]> {
-  //   if (!args.content.trim().length) {
-  //     return SwfLanguageServiceCodeLenses.createNewSWF();
-  //   }
-  //
-  //   if (!args.rootNode) {
-  //     return [];
-  //   }
-  //
-  //   const document = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
-  //
-  //   const displayRhhccIntegration = await this.args.config.shouldDisplayServiceRegistriesIntegration();
-  //   const codeLensesFunctionsArgs: SwfLanguageServiceCodeLensesFunctionsArgs = {
-  //     config: this.args.config,
-  //     document,
-  //     content: args.content,
-  //     rootNode: args.rootNode,
-  //     codeCompletionStrategy: args.codeCompletionStrategy,
-  //   };
-  //
-  //   return [
-  //     ...(displayRhhccIntegration ? SwfLanguageServiceCodeLenses.setupServiceRegistries(codeLensesFunctionsArgs) : []),
-  //     ...(displayRhhccIntegration ? SwfLanguageServiceCodeLenses.logInServiceRegistries(codeLensesFunctionsArgs) : []),
-  //     ...(displayRhhccIntegration
-  //       ? SwfLanguageServiceCodeLenses.refreshServiceRegistries(codeLensesFunctionsArgs)
-  //       : []),
-  //     ...SwfLanguageServiceCodeLenses.addFunction(codeLensesFunctionsArgs),
-  //     ...SwfLanguageServiceCodeLenses.addEvent(codeLensesFunctionsArgs),
-  //     ...SwfLanguageServiceCodeLenses.addState(codeLensesFunctionsArgs),
-  //   ];
-  // }
-  //
-  // public dispose() {
-  //   // empty for now
-  // }
-  //
+
+  public async getCodeLenses(args: {
+    content: string;
+    uri: string;
+    rootNode: ELsNode | undefined;
+    codeCompletionStrategy: ELsCodeCompletionStrategy;
+    codeLenses: EditorLanguageServiceCodeLenses;
+    extraCodeLensesFunctionsArgs?: {};
+  }): Promise<CodeLens[]> {
+    if (!args.content.trim().length) {
+      return args.codeLenses.createNewFile();
+    }
+
+    if (!args.rootNode) {
+      return [];
+    }
+
+    const document = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
+
+    const codeLensesFunctionsArgs: EditorLanguageServiceCodeLensesFunctionsArgs = {
+      document,
+      content: args.content,
+      rootNode: args.rootNode,
+      codeCompletionStrategy: args.codeCompletionStrategy,
+      ...args.extraCodeLensesFunctionsArgs,
+    };
+
+    const result: CodeLens[] = [];
+    Object.keys(args.codeLenses).forEach((key) => {
+      if (key !== "createNewFile") {
+        result.push(...args.codeLenses[key](codeLensesFunctionsArgs));
+      }
+    });
+
+    return result;
+  }
+
+  public dispose() {
+    // empty for now
+  }
+
   // private async getSwfCompletionItemServiceCatalogFunctionOperation(
   //   containingService: SwfServiceCatalogService,
   //   func: SwfServiceCatalogFunction,

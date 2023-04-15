@@ -652,7 +652,7 @@ functions:
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
+      expect(codeLenses[1]).toStrictEqual({
         range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           command: "swf.ls.commands.LogInServiceRegistries",
@@ -660,7 +660,7 @@ functions:
           arguments: [{ position: { character: 0, line: 2 } }],
         },
       });
-      expect(codeLenses[1]).toStrictEqual({
+      expect(codeLenses[0]).toStrictEqual({
         range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
@@ -689,7 +689,7 @@ functions:
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
+      expect(codeLenses[1]).toStrictEqual({
         range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           command: "swf.ls.commands.OpenServiceRegistriesConfig",
@@ -697,7 +697,7 @@ functions:
           arguments: [{ position: { character: 0, line: 2 } }],
         },
       });
-      expect(codeLenses[1]).toStrictEqual({
+      expect(codeLenses[0]).toStrictEqual({
         range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
@@ -726,7 +726,7 @@ functions:
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
+      expect(codeLenses[1]).toStrictEqual({
         range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           command: "swf.ls.commands.RefreshServiceRegistries",
@@ -734,7 +734,7 @@ functions:
           arguments: [{ position: { character: 0, line: 2 } }],
         },
       });
-      expect(codeLenses[1]).toStrictEqual({
+      expect(codeLenses[0]).toStrictEqual({
         range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",

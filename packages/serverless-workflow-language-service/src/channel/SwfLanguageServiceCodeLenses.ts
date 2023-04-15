@@ -28,6 +28,7 @@ import { SwfLanguageServiceConfig } from "./SwfLanguageService";
 export type SwfLanguageServiceCodeLensesFunctionsArgs =
   EditorLanguageServiceCodeLensesFunctionsArgs<SwfLanguageServiceCommandTypes> & {
     config: SwfLanguageServiceConfig;
+    displayRhhccIntegration?: boolean;
   };
 
 /**
@@ -61,85 +62,91 @@ export const SwfLanguageServiceCodeLenses: EditorLanguageServiceCodeLenses = {
     }),
 
   setupServiceRegistries: (args: SwfLanguageServiceCodeLensesFunctionsArgs): CodeLens[] =>
-    createCodeLenses({
-      document: args.document,
-      rootNode: args.rootNode,
-      jsonPath: ["functions"],
-      positionLensAt: "begin",
-      commandDelegates: ({ position, node }) => {
-        const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenServiceRegistriesConfig";
+    !args.displayRhhccIntegration
+      ? []
+      : createCodeLenses({
+          document: args.document,
+          rootNode: args.rootNode,
+          jsonPath: ["functions"],
+          positionLensAt: "begin",
+          commandDelegates: ({ position, node }) => {
+            const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.OpenServiceRegistriesConfig";
 
-        if (
-          node.type !== "array" ||
-          !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content }) ||
-          !args.config.shouldConfigureServiceRegistries()
-        ) {
-          return [];
-        }
+            if (
+              node.type !== "array" ||
+              !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content }) ||
+              !args.config.shouldConfigureServiceRegistries()
+            ) {
+              return [];
+            }
 
-        return [
-          {
-            name: commandName,
-            title: "↪ Setup Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs[typeof commandName]],
+            return [
+              {
+                name: commandName,
+                title: "↪ Setup Service Registries...",
+                args: [{ position } as SwfLanguageServiceCommandArgs[typeof commandName]],
+              },
+            ];
           },
-        ];
-      },
-    }),
+        }),
 
   logInServiceRegistries: (args: SwfLanguageServiceCodeLensesFunctionsArgs): CodeLens[] =>
-    createCodeLenses({
-      document: args.document,
-      rootNode: args.rootNode,
-      jsonPath: ["functions"],
-      positionLensAt: "begin",
-      commandDelegates: ({ position, node }) => {
-        const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.LogInServiceRegistries";
+    !args.displayRhhccIntegration
+      ? []
+      : createCodeLenses({
+          document: args.document,
+          rootNode: args.rootNode,
+          jsonPath: ["functions"],
+          positionLensAt: "begin",
+          commandDelegates: ({ position, node }) => {
+            const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.LogInServiceRegistries";
 
-        if (
-          node.type !== "array" ||
-          !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content }) ||
-          args.config.shouldConfigureServiceRegistries() ||
-          !args.config.shouldServiceRegistriesLogIn()
-        ) {
-          return [];
-        }
+            if (
+              node.type !== "array" ||
+              !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content }) ||
+              args.config.shouldConfigureServiceRegistries() ||
+              !args.config.shouldServiceRegistriesLogIn()
+            ) {
+              return [];
+            }
 
-        return [
-          {
-            name: commandName,
-            title: "↪ Log in Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs[typeof commandName]],
+            return [
+              {
+                name: commandName,
+                title: "↪ Log in Service Registries...",
+                args: [{ position } as SwfLanguageServiceCommandArgs[typeof commandName]],
+              },
+            ];
           },
-        ];
-      },
-    }),
+        }),
 
   refreshServiceRegistries: (args: SwfLanguageServiceCodeLensesFunctionsArgs): CodeLens[] =>
-    createCodeLenses({
-      document: args.document,
-      rootNode: args.rootNode,
-      jsonPath: ["functions"],
-      positionLensAt: "begin",
-      commandDelegates: ({ position, node }) => {
-        const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.RefreshServiceRegistries";
+    !args.displayRhhccIntegration
+      ? []
+      : createCodeLenses({
+          document: args.document,
+          rootNode: args.rootNode,
+          jsonPath: ["functions"],
+          positionLensAt: "begin",
+          commandDelegates: ({ position, node }) => {
+            const commandName: SwfLanguageServiceCommandTypes = "swf.ls.commands.RefreshServiceRegistries";
 
-        if (
-          node.type !== "array" ||
-          !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content }) ||
-          args.config.shouldConfigureServiceRegistries() ||
-          !args.config.canRefreshServices()
-        ) {
-          return [];
-        }
+            if (
+              node.type !== "array" ||
+              !args.codeCompletionStrategy.shouldCreateCodelens({ node, commandName, content: args.content }) ||
+              args.config.shouldConfigureServiceRegistries() ||
+              !args.config.canRefreshServices()
+            ) {
+              return [];
+            }
 
-        return [
-          {
-            name: commandName,
-            title: "↺ Refresh Service Registries...",
-            args: [{ position } as SwfLanguageServiceCommandArgs[typeof commandName]],
+            return [
+              {
+                name: commandName,
+                title: "↺ Refresh Service Registries...",
+                args: [{ position } as SwfLanguageServiceCommandArgs[typeof commandName]],
+              },
+            ];
           },
-        ];
-      },
-    }),
+        }),
 };
