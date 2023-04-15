@@ -37,8 +37,8 @@ export type EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs = {
 };
 
 export type ELsCompletionsMap<ARGS extends EditorLanguageServiceCodeCompletionFunctionsArgs> = Map<
-  ELsJsonPath,
-  (args: ARGS) => Promise<CompletionItem[]>
+  ELsJsonPath | null,
+  (args: ARGS | EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs) => Promise<CompletionItem[]>
 >;
 
 export function createCompletionItem(args: {

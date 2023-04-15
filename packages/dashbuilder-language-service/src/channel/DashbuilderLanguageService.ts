@@ -95,18 +95,6 @@ export class DashbuilderLanguageService {
     rootNode: ELsNode | undefined;
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CompletionItem[]> {
-    const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
-    const cursorOffset = doc.offsetAt(args.cursorPosition);
-    if (!args.rootNode) {
-      return args.content.trim().length
-        ? []
-        : DashbuilderLanguageServiceCodeCompletion.getEmptyFileCodeCompletions({
-            ...args,
-            cursorOffset,
-            document: doc,
-          });
-    }
-
     return this.els.getCompletionItems({
       ...args,
       completions,
@@ -245,19 +233,9 @@ export function getNodePath(node: ELsNode): ELsJsonPath {
   return jsonc.getNodePath(node as jsonc.Node);
 }
 
-const completions: ELsCompletionsMap<DashbuilderLanguageServiceCodeCompletionFunctionsArgs> = new Map<
-  ELsJsonPath,
-  (args: {
-    codeCompletionStrategy: CodeCompletionStrategy;
-    currentNode: ELsNode;
-    currentNodeRange: Range;
-    cursorOffset: number;
-    cursorPosition: Position;
-    document: TextDocument;
-    overwriteRange: Range;
-    rootNode: ELsNode;
-  }) => Promise<CompletionItem[]>
->([]);
+const completions: ELsCompletionsMap<DashbuilderLanguageServiceCodeCompletionFunctionsArgs> = new Map([
+  [null, DashbuilderLanguageServiceCodeCompletion.getEmptyFileCodeCompletions],
+]);
 
 export class DashbuilderCodeCompletionStrategy implements CodeCompletionStrategy {
   public translate(args: TranslateArgs): string {

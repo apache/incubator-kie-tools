@@ -35,13 +35,12 @@ import { posix as posixPath } from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
 import {
-  SwfCompletionItemServiceCatalogService,
   SwfLanguageServiceCodeCompletion,
   SwfLanguageServiceCodeCompletionFunctionsArgs,
 } from "./SwfLanguageServiceCodeCompletion";
 import { SwfLanguageServiceCodeLenses } from "./SwfLanguageServiceCodeLenses";
 import { swfRefValidationMap } from "./swfRefValidationMap";
-import { CodeCompletionStrategy, JqCompletions } from "./types";
+import { CodeCompletionStrategy } from "./types";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -110,12 +109,6 @@ export class SwfLanguageService {
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CompletionItem[]> {
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
-    const cursorOffset = doc.offsetAt(args.cursorPosition);
-    if (!args.rootNode) {
-      return args.content.trim().length
-        ? []
-        : SwfLanguageServiceCodeCompletion.getEmptyFileCodeCompletions({ ...args, cursorOffset, document: doc });
-    }
 
     const swfCompletionItemServiceCatalogServices = await Promise.all(
       [
@@ -273,22 +266,8 @@ export class SwfLanguageService {
   }
 }
 
-const completions: ELsCompletionsMap<SwfLanguageServiceCodeCompletionFunctionsArgs> = new Map<
-  ELsJsonPath,
-  (args: {
-    codeCompletionStrategy: CodeCompletionStrategy;
-    currentNode: ELsNode;
-    currentNodeRange: Range;
-    cursorOffset: number;
-    cursorPosition: Position;
-    document: TextDocument;
-    langServiceConfig: SwfLanguageServiceConfig;
-    overwriteRange: Range;
-    rootNode: ELsNode;
-    swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
-    jqCompletions: JqCompletions;
-  }) => Promise<CompletionItem[]>
->([
+const completions: ELsCompletionsMap<SwfLanguageServiceCodeCompletionFunctionsArgs> = new Map([
+  [null, SwfLanguageServiceCodeCompletion.getEmptyFileCodeCompletions],
   [["start"], SwfLanguageServiceCodeCompletion.getStartCompletions],
   [["functions", "*"], SwfLanguageServiceCodeCompletion.getFunctionCompletions],
   [["functions", "*", "operation"], SwfLanguageServiceCodeCompletion.getFunctionOperationCompletions],

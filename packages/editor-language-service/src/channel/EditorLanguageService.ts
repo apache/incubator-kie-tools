@@ -50,11 +50,14 @@ export class EditorLanguageService {
     completions: ELsCompletionsMap<EditorLanguageServiceCodeCompletionFunctionsArgs>;
     extraCompletionFunctionsArgs?: {};
   }): Promise<CompletionItem[]> {
-    /* TODO: EditorLanguageService: try to move the createNewFile execution here */
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
     const cursorOffset = doc.offsetAt(args.cursorPosition);
+
     if (!args.rootNode) {
-      return [];
+      const getEmptyFileCodeCompletions = args.completions.get(null);
+      return args.content.trim().length || !getEmptyFileCodeCompletions
+        ? []
+        : getEmptyFileCodeCompletions({ ...args, cursorOffset, document: doc });
     }
 
     const currentNode = findNodeAtOffset(args.rootNode, cursorOffset, true);
@@ -70,15 +73,17 @@ export class EditorLanguageService {
       ? currentNodeRange
       : args.cursorWordRange;
 
-    const matchedCompletions = Array.from(args.completions.entries()).filter(([path, _]) =>
-      args.codeCompletionStrategy.shouldComplete({
-        content: args.content,
-        cursorOffset: cursorOffset,
-        cursorPosition: args.cursorPosition,
-        node: currentNode,
-        path,
-        root: args.rootNode,
-      })
+    const matchedCompletions = Array.from(args.completions.entries()).filter(
+      ([path, _]) =>
+        path &&
+        args.codeCompletionStrategy.shouldComplete({
+          content: args.content,
+          cursorOffset: cursorOffset,
+          cursorPosition: args.cursorPosition,
+          node: currentNode,
+          path,
+          root: args.rootNode,
+        })
     );
     const result = await Promise.all(
       matchedCompletions.map(([_, completionItemsDelegate]) => {
