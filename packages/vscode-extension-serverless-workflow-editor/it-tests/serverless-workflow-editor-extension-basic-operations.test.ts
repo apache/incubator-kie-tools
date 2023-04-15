@@ -24,14 +24,16 @@ import { join } from "path";
 
 // The following test is failing in github CI. See https://issues.redhat.com/browse/KOGITO-8952.
 describe("Serverless workflow editor - Basic operations tests", () => {
-  const SCREENSHOTS_DIR: string = path.resolve("screenshots");
+  const SCREENSHOTS_DIR: string = path.resolve("dist-it-tests", "screenshots");
+
   const pngPath = (fileName: string)=>join(SCREENSHOTS_DIR, fileName + ".png");
 
 
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "basic-operations");
   if (!fs.existsSync(SCREENSHOTS_DIR)) {
-    fs.mkdirSync(SCREENSHOTS_DIR);
+    fs.mkdirSync(SCREENSHOTS_DIR, { recursive: true });
   }
+  
   let testHelper: VSCodeTestHelper;
 
   before(async function () {
