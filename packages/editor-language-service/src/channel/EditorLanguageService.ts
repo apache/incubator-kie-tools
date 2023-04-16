@@ -16,7 +16,7 @@
 
 import * as jsonc from "jsonc-parser";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, Diagnostic, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
 import {
   EditorLanguageServiceCodeCompletionFunctionsArgs,
@@ -27,6 +27,7 @@ import {
   EditorLanguageServiceCodeLensesFunctionsArgs,
 } from "./EditorLanguageServiceCodeLenses";
 import { findNodesAtLocation } from "./findNodesAtLocation";
+import { doRefValidation, RefValidationMap } from "./refValidation";
 import { ELsCodeCompletionStrategy, ELsJsonPath, ELsNode } from "./types";
 
 export type EditorLanguageServiceArgs = {
@@ -103,67 +104,28 @@ export class EditorLanguageService {
     return Promise.resolve(result.flat());
   }
 
-  // private getFunctionDiagnostics(services: SwfServiceCatalogService[]): Diagnostic[] {
-  //   return services.flatMap((value) => this.generateDiagnostic(value.functions));
-  // }
-  //
-  // private generateDiagnostic(serviceCatalogFunctions: SwfServiceCatalogFunction[]): Diagnostic[] {
-  //   const functionsWithoutName = serviceCatalogFunctions.filter((fs) => !fs.name;
-  //
-  //   return functionsWithoutName.length >= 1
-  //     ? [
-  //         Diagnostic.create(
-  //           Range.create(Position.create(0, 0), Position.create(0, 0)),
-  //           this.getWarningMessage(serviceCatalogFunctions[0].source),
-  //           DiagnosticSeverity.Warning
-  //         ),
-  //       ]
-  //     : [];
-  // }
-  //
-  // private getWarningMessage(swfServiceCatalogFunctionSource: SwfServiceCatalogFunctionSource): string {
-  //   if (swfServiceCatalogFunctionSource.type == "SERVICE_REGISTRY") {
-  //     return `The ${swfServiceCatalogFunctionSource.serviceId} service in the  ${swfServiceCatalogFunctionSource.registry} registry is missing the "operationId" property in at least one operation`;
-  //   }
-  //   if (swfServiceCatalogFunctionSource.type === "LOCAL_FS") {
-  //     return `The ${swfServiceCatalogFunctionSource.serviceFileAbsolutePath} service is missing the "operationId" property in at least one operation`;
-  //   }
-  //   return "";
-  // }
-  //
-  // public async getDiagnostics(args: {
-  //   content: string;
-  //   uriPath: string;
-  //   rootNode: ELsNode | undefined;
-  //   getSchemaDiagnostics: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
-  // }): Promise<Diagnostic[]> {
-  //   if (!args.rootNode) {
-  //     return [];
-  //   }
-  //
-  //   // this ensure the document is validated again
-  //   const docVersion = Math.floor(Math.random() * 1000);
-  //
-  //   const textDocument = TextDocument.create(
-  //     args.uriPath,
-  //     `serverless-workflow-${this.args.lang.fileLanguage}`,
-  //     docVersion,
-  //     args.content
-  //   );
-  //   const refValidationResults = doRefValidation({ textDocument, rootNode: args.rootNode, validationMap: swfRefValidationMap });
-  //   const schemaValidationResults = (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
-  //     ? await args.getSchemaDiagnostics(textDocument, this.args.lang.fileMatch)
-  //     : [];
-  //
-  //   const doc = TextDocument.create(args.uriPath, this.args.lang.fileLanguage, 0, args.content);
-  //   const globalServices = await this.args.serviceCatalog.global.getServices();
-  //   const relativeServices = await this.args.serviceCatalog.relative.getServices(doc);
-  //   return [
-  //     ...schemaValidationResults,
-  //     ...refValidationResults,
-  //     ...this.getFunctionDiagnostics([...globalServices, ...relativeServices]),
-  //   ];
-  // }
+  public async getDiagnostics(args: {
+    content: string;
+    uriPath: string;
+    rootNode: ELsNode | undefined;
+    getSchemaDiagnostics?: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
+    validationMap?: RefValidationMap;
+  }): Promise<Diagnostic[]> {
+    if (!args.rootNode) {
+      return [];
+    }
+
+    // this ensure the document is validated again
+    const docVersion = Math.floor(Math.random() * 1000);
+
+    const textDocument = TextDocument.create(args.uriPath, this.args.lang.fileLanguage, docVersion, args.content);
+    const refValidationResults = args.validationMap
+      ? doRefValidation({ textDocument, rootNode: args.rootNode, validationMap: args.validationMap })
+      : [];
+    const schemaValidationResults = (await args.getSchemaDiagnostics?.(textDocument, this.args.lang.fileMatch)) ?? [];
+
+    return [...schemaValidationResults, ...refValidationResults];
+  }
 
   public async getCodeLenses(args: {
     content: string;
@@ -204,91 +166,7 @@ export class EditorLanguageService {
   public dispose() {
     // empty for now
   }
-
-  // private async getSwfCompletionItemServiceCatalogFunctionOperation(
-  //   containingService: SwfServiceCatalogService,
-  //   func: SwfServiceCatalogFunction,
-  //   document: TextDocument
-  // ): Promise<string> {
-  //   const { specsDirRelativePosixPath } = await this.args.config.getSpecsDirPosixPaths(document);
-  //   const { routesDirRelativePosixPath } = await this.args.config.getRoutesDirPosixPaths(document);
-  //
-  //   let dirRelativePosixPath;
-  //
-  //   if (containingService.type === SwfServiceCatalogServiceType.camelroute) {
-  //     dirRelativePosixPath = routesDirRelativePosixPath;
-  //   } else {
-  //     dirRelativePosixPath = specsDirRelativePosixPath;
-  //   }
-  //
-  //   if (func.source.type === SwfCatalogSourceType.LOCAL_FS) {
-  //     const serviceFileName = posixPath.basename(func.source.serviceFileAbsolutePath);
-  //     const serviceFileRelativePosixPath = posixPath.join(dirRelativePosixPath, serviceFileName);
-  //     return `${serviceFileRelativePosixPath}#${func.name}`;
-  //   } else if (
-  //     (await this.args.config.shouldReferenceServiceRegistryFunctionsWithUrls()) &&
-  //     containingService.source.type === SwfCatalogSourceType.SERVICE_REGISTRY &&
-  //     func.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
-  //   ) {
-  //     return `${containingService.source.url}#${func.name}`;
-  //   } else if (
-  //     containingService.source.type === SwfCatalogSourceType.SERVICE_REGISTRY &&
-  //     func.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
-  //   ) {
-  //     const serviceFileName = await this.args.serviceCatalog.getServiceFileNameFromSwfServiceCatalogServiceId(
-  //       containingService.source.registry,
-  //       containingService.source.id
-  //     );
-  //     const serviceFileRelativePosixPath = posixPath.join(dirRelativePosixPath, serviceFileName);
-  //     return `${serviceFileRelativePosixPath}#${func.name}`;
-  //   } else {
-  //     throw new Error("Unknown Service Catalog function source type");
-  //   }
-  // }
 }
-
-// const completions = new Map<
-//   ELsJsonPath,
-//   (args: {
-//     codeCompletionStrategy: ELsCodeCompletionStrategy;
-//     currentNode: ELsNode;
-//     currentNodeRange: Range;
-//     cursorOffset: number;
-//     cursorPosition: Position;
-//     document: TextDocument;
-//     langServiceConfig: SwfLanguageServiceConfig;
-//     overwriteRange: Range;
-//     rootNode: ELsNode;
-//     swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
-//     jqCompletions: JqCompletions;
-//   }) => Promise<CompletionItem[]>
-// >([
-//   [["start"], SwfLanguageServiceCodeCompletion.getStartCompletions],
-//   [["functions", "*"], SwfLanguageServiceCodeCompletion.getFunctionCompletions],
-//   [["functions", "*", "operation"], SwfLanguageServiceCodeCompletion.getFunctionOperationCompletions],
-//   [["events", "*"], SwfLanguageServiceCodeCompletion.getEventsCompletions],
-//   [["states", "*"], SwfLanguageServiceCodeCompletion.getStatesCompletions],
-//   [["states", "*", "actions", "*", "functionRef"], SwfLanguageServiceCodeCompletion.getFunctionRefCompletions],
-//   [
-//     ["states", "*", "actions", "*", "functionRef", "refName"],
-//     SwfLanguageServiceCodeCompletion.getFunctionRefRefnameCompletions,
-//   ],
-//   [
-//     ["states", "*", "actions", "*", "functionRef", "arguments"],
-//     SwfLanguageServiceCodeCompletion.getFunctionRefArgumentsCompletions,
-//   ],
-//   [["states", "*", "actions", "*", "functionRef", "arguments", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
-//   [["states", "*", "actions", "*", "actionDataFilter", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
-//   [["states", "*", "stateDataFilter", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
-//   [["states", "*", "onEvents", "*", "eventDataFilter", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
-//   [["states", "*", "eventDataFilter", "*"], SwfLanguageServiceCodeCompletion.getJqcompletions],
-//   [["states", "*", "dataConditions", "*", "condition"], SwfLanguageServiceCodeCompletion.getJqcompletions],
-//   [["states", "*", "onEvents", "*", "eventRefs", "*"], SwfLanguageServiceCodeCompletion.getEventRefsCompletions],
-//   [["states", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
-//   [["states", "*", "dataConditions", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
-//   [["states", "*", "defaultCondition", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
-//   [["states", "*", "eventConditions", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
-// ]);
 
 export function findNodeAtLocation(root: ELsNode, path: ELsJsonPath): ELsNode | undefined {
   return findNodesAtLocation({ root, path })[0];

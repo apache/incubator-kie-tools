@@ -188,36 +188,13 @@ export class SwfLanguageService {
     rootNode: ELsNode | undefined;
     getSchemaDiagnostics: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
   }): Promise<Diagnostic[]> {
-    if (!args.rootNode) {
-      return [];
-    }
-
-    // this ensure the document is validated again
-    const docVersion = Math.floor(Math.random() * 1000);
-
-    const textDocument = TextDocument.create(
-      args.uriPath,
-      `serverless-workflow-${this.args.lang.fileLanguage}`,
-      docVersion,
-      args.content
-    );
-    const refValidationResults = doRefValidation({
-      textDocument,
-      rootNode: args.rootNode,
+    return await this.els.getDiagnostics({
+      ...args,
       validationMap: swfRefValidationMap,
+      getSchemaDiagnostics: (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
+        ? args.getSchemaDiagnostics
+        : undefined,
     });
-    const schemaValidationResults = (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
-      ? await args.getSchemaDiagnostics(textDocument, this.args.lang.fileMatch)
-      : [];
-
-    const doc = TextDocument.create(args.uriPath, this.args.lang.fileLanguage, 0, args.content);
-    const globalServices = await this.args.serviceCatalog.global.getServices();
-    const relativeServices = await this.args.serviceCatalog.relative.getServices(doc);
-    return [
-      ...schemaValidationResults,
-      ...refValidationResults,
-      ...this.getFunctionDiagnostics([...globalServices, ...relativeServices]),
-    ];
   }
 
   public dispose() {

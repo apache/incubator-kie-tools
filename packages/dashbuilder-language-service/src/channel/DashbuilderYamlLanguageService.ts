@@ -145,21 +145,11 @@ export class DashbuilderYamlLanguageService {
       ];
     }
 
-    if (!rootNode) {
-      return [];
-    }
-
-    // this ensure the document is validated again
-    const docVersion = Math.floor(Math.random() * 1000);
-
-    const textDocument = TextDocument.create(
-      args.uriPath,
-      `dashbuilder-${FileLanguage.YAML}`,
-      docVersion,
-      args.content
-    );
-
-    return await this.getSchemaDiagnostics(textDocument, ["*.dash.yaml", "*.dash.yml", "*.dash.json"]);
+    return this.ls.getDiagnostics({
+      ...args,
+      rootNode,
+      getSchemaDiagnostics: this.getSchemaDiagnostics,
+    });
   }
 
   private async getSchemaDiagnostics(textDocument: TextDocument, fileMatch: string[]): Promise<Diagnostic[]> {

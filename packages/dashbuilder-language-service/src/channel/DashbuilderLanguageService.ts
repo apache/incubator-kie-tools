@@ -23,26 +23,9 @@ import {
   ShouldCompleteArgs,
   TranslateArgs,
 } from "@kie-tools/editor-language-service/dist/channel";
-import {
-  getLanguageService,
-  LanguageSettings,
-  SchemaRequestService,
-  SettingsState,
-  Telemetry,
-  WorkspaceContextService,
-} from "@kie-tools/yaml-language-server";
 import * as jsonc from "jsonc-parser";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import {
-  CodeLens,
-  CompletionItem,
-  CompletionItemKind,
-  Diagnostic,
-  DiagnosticSeverity,
-  Position,
-  Range,
-} from "vscode-languageserver-types";
-import { Connection } from "vscode-languageserver/node";
+import { CodeLens, CompletionItem, CompletionItemKind, Diagnostic, Position, Range } from "vscode-languageserver-types";
 import {
   dump,
   Kind,
@@ -54,8 +37,6 @@ import {
   YAMLScalar,
   YAMLSequence,
 } from "yaml-language-server-parser";
-import { FileLanguage } from "../api";
-import { DASHBUILDER_SCHEMA } from "../assets/schemas";
 import {
   DashbuilderLanguageServiceCodeCompletion,
   DashbuilderLanguageServiceCodeCompletionFunctionsArgs,
@@ -113,73 +94,16 @@ export class DashbuilderLanguageService {
     });
   }
 
-  public async getDiagnostics(args: { content: string; uriPath: string }): Promise<Diagnostic[]> {
-    if (!args.content.trim()) {
-      return [];
-    }
-    const rootNode = this.parseContent(args.content);
-    const loadErrors = !rootNode ? load(args.content).errors : [];
-    //check the syntax
-    if (loadErrors.length > 0) {
-      const error = loadErrors[0];
-      const position = Position.create(error.mark.line, error.mark.column);
-      // show only the first error because syntax errors are repeated for each line, after the error.
-      return [
-        {
-          message: error.message,
-          range: Range.create(position, position),
-          severity: DiagnosticSeverity.Error,
-        },
-      ];
-    }
-
-    if (!rootNode) {
-      return [];
-    }
-
-    // this ensure the document is validated again
-    const docVersion = Math.floor(Math.random() * 1000);
-
-    const textDocument = TextDocument.create(
-      args.uriPath,
-      `dashbuilder-${FileLanguage.YAML}`,
-      docVersion,
-      args.content
-    );
-
-    return await this.getSchemaDiagnostics(textDocument, ["*.dash.yaml", "*.dash.yml", "*.dash.json"]);
-  }
-
-  private async getSchemaDiagnostics(textDocument: TextDocument, fileMatch: string[]): Promise<Diagnostic[]> {
-    const schemaRequestService: SchemaRequestService = async (uri: string) => {
-      if (uri === DASHBUILDER_SCHEMA.$id) {
-        return Promise.resolve(JSON.stringify(DASHBUILDER_SCHEMA));
-      } else {
-        throw new Error(`Unable to load schema from '${uri}'`);
-      }
-    };
-    const workspaceContext: WorkspaceContextService = {
-      resolveRelativePath: (_relativePath: string, _resource: string) => {
-        return "";
-      },
-    };
-
-    const connection = {} as Connection;
-    connection.onRequest = () => null;
-    const telemetry = new Telemetry(connection);
-
-    const yamlSettings = { yamlFormatterSettings: { enable: false } } as SettingsState;
-    const yamlLanguageSettings: LanguageSettings = {
-      validate: true,
-      completion: true,
-      format: false,
-      hover: false,
-      isKubernetes: false,
-      schemas: [{ fileMatch, uri: DASHBUILDER_SCHEMA.$id }],
-    };
-    const yamlLs = getLanguageService(schemaRequestService, workspaceContext, connection, telemetry, yamlSettings);
-    yamlLs.configure(yamlLanguageSettings);
-    return yamlLs.doValidation(textDocument, false);
+  public async getDiagnostics(args: {
+    content: string;
+    uriPath: string;
+    rootNode: ELsNode | undefined;
+    getSchemaDiagnostics: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
+  }): Promise<Diagnostic[]> {
+    return await this.els.getDiagnostics({
+      ...args,
+      getSchemaDiagnostics: args.getSchemaDiagnostics,
+    });
   }
 
   public dispose() {

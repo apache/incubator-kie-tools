@@ -23400,7 +23400,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "serverless-workflow-json",
+    "source": "json",
   },
 ]
 `;
@@ -23444,7 +23444,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "serverless-workflow-json",
+    "source": "json",
   },
   Object {
     "code": 517,
@@ -23460,7 +23460,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "serverless-workflow-json",
+    "source": "json",
   },
 ]
 `;
