@@ -23,10 +23,6 @@ import * as fs from "fs";
 
 describe("Serverless workflow editor - Diagram navigation tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "diagram-navigation");
-  const directory = "screenshots";
-  if (!fs.existsSync(directory)) {
-    fs.mkdirSync(directory);
-  }
 
   let testHelper: VSCodeTestHelper;
 
@@ -58,32 +54,24 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
       const swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
       const swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
 
-      fs.writeFileSync(`${directory}/1.png`, await testHelper.takeScreenshot(), "base64");
       const nodeIds = await swfEditor.getAllNodeIds();
       expect(nodeIds.length).equal(6);
 
       // Select CheckApplication node
       await swfEditor.selectNode(nodeIds[1]);
-      fs.writeFileSync(`${directory}/2.png`, await testHelper.takeScreenshot(), "base64");
 
       const textEditor = await swfTextEditor.getSwfTextEditor();
-      fs.writeFileSync(`${directory}/3.png`, await testHelper.takeScreenshot(), "base64");
       let lineNumber = (await textEditor.getCoordinates())[0];
-      fs.writeFileSync(`${directory}/4.png`, await testHelper.takeScreenshot(), "base64");
       let columnNumber = (await textEditor.getCoordinates())[1];
-      fs.writeFileSync(`${directory}/5.png`, await testHelper.takeScreenshot(), "base64");
 
       expect(lineNumber).equal(16);
       expect(columnNumber).equal(7);
-      fs.writeFileSync(`${directory}/6.png`, await testHelper.takeScreenshot(), "base64");
 
       // Select StartApplication node
       await swfEditor.selectNode(nodeIds[2]);
-      fs.writeFileSync(`${directory}/7.png`, await testHelper.takeScreenshot(), "base64");
 
       lineNumber = (await textEditor.getCoordinates())[0];
       columnNumber = (await textEditor.getCoordinates())[1];
-      fs.writeFileSync(`${directory}/8.png`, await testHelper.takeScreenshot(), "base64");
 
       expect(lineNumber).equal(33);
       expect(columnNumber).equal(7);
