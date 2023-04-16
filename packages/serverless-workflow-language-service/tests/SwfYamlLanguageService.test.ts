@@ -18,7 +18,7 @@ import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/di
 import {
   isNodeUncompleted,
   SwfYamlLanguageService,
-  YamlCodeCompletionStrategy,
+  SwfYamlCodeCompletionStrategy,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, Position } from "vscode-languageserver-types";
@@ -39,9 +39,9 @@ import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTeste
 
 const documentUri = "test.sw.yaml";
 
-describe("YamlCodeCompletionStrategy", () => {
+describe("SwfYamlCodeCompletionStrategy", () => {
   describe("getStartNodeValuePosition", () => {
-    const codeCompletionStrategy = new YamlCodeCompletionStrategy();
+    const codeCompletionStrategy = new SwfYamlCodeCompletionStrategy();
     const ls = new SwfYamlLanguageService({
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,

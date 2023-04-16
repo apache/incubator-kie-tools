@@ -62,7 +62,7 @@ import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
-  private readonly codeCompletionStrategy: YamlCodeCompletionStrategy;
+  private readonly codeCompletionStrategy: SwfYamlCodeCompletionStrategy;
 
   constructor(args: Omit<SwfLanguageServiceArgs, "lang">) {
     this.ls = new SwfLanguageService({
@@ -73,7 +73,7 @@ export class SwfYamlLanguageService {
       },
     });
 
-    this.codeCompletionStrategy = new YamlCodeCompletionStrategy();
+    this.codeCompletionStrategy = new SwfYamlCodeCompletionStrategy();
   }
 
   parseContent(content: string): ELsNode | undefined {
@@ -273,7 +273,7 @@ const astConvert = (node: YAMLNode, parentNode?: ELsNode): ELsNode => {
   return convertedNode;
 };
 
-export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
+export class SwfYamlCodeCompletionStrategy implements CodeCompletionStrategy {
   public translate(args: TranslateArgs): string {
     const completionDump = dump(args.completion, {}).slice(0, -1);
 
