@@ -15,6 +15,9 @@
  */
 
 import { assert, expect } from "chai";
+import * as fs from "fs";
+import * as path from "path";
+import { join } from "path";
 import { Key } from "selenium-webdriver";
 import {
   ActivityBar,
@@ -74,8 +77,14 @@ export default class VSCodeTestHelper {
     this.driver = this.browser.driver;
   }
 
-  public takeScreenshot = async (): Promise<string> => {
-    return await this.driver.takeScreenshot();
+  public saveScreenshot = async (fileName: string): Promise<void> => {
+    const SCREENSHOTS_DIR: string = path.resolve("dist-it-tests", "screenshots");
+
+    if (!fs.existsSync(SCREENSHOTS_DIR)) {
+      fs.mkdirSync(SCREENSHOTS_DIR, { recursive: true });
+    }
+    
+    fs.writeFileSync(join(SCREENSHOTS_DIR, fileName + ".png"), await this.driver.takeScreenshot(), "base64");
   };
 
   /**
@@ -118,28 +127,39 @@ export default class VSCodeTestHelper {
   public openFileFromSidebar = async (fileName: string, fileParentPath?: string): Promise<WebView[]> => {
     if (fileParentPath == undefined || fileParentPath == "") {
       await this.workspaceSectionView.openItem(fileName);
+      await this.saveScreenshot(`openFileFromSidebar_${fileName}_01`)
     } else {
       const pathPieces = fileParentPath.split("/");
       await this.workspaceSectionView.openItem(...pathPieces);
+      await this.saveScreenshot(`openFileFromSidebar_${fileName}_02`)
       const fileItem = await this.workspaceSectionView.findItem(fileName);
+      await this.saveScreenshot(`openFileFromSidebar_${fileName}_03`)
       if (fileItem != undefined) {
         await fileItem.click();
       }
     }
+    await this.saveScreenshot(`openFileFromSidebar_${fileName}_04`)
     await sleep(5000);
+    await this.saveScreenshot(`openFileFromSidebar_${fileName}_05`)
 
     const editorGroups = await this.workbench.getEditorView().getEditorGroups();
+    await this.saveScreenshot(`openFileFromSidebar_${fileName}_06`)
     // should be always two groups, one text editor and one swf editor
     assert.equal(editorGroups.length, 2);
+    await this.saveScreenshot(`openFileFromSidebar_${fileName}_07`)
 
     const webviewLeft = new WebView(editorGroups[0], By.linkText(fileName));
+    await this.saveScreenshot(`openFileFromSidebar_${fileName}_08`)
     const webviewRight = new WebView(editorGroups[1], By.linkText(fileName));
+    await this.saveScreenshot(`openFileFromSidebar_${fileName}_09`)
 
     // right webview has the custom kogito editor, wait for it to load
     await this.waitUntilKogitoEditorIsLoaded(webviewRight);
+    await this.saveScreenshot(`openFileFromSidebar_${fileName}_10`)
 
     const webviews = [] as WebView[];
     webviews.push(webviewLeft, webviewRight);
+    await this.saveScreenshot(`openFileFromSidebar_${fileName}_11`)
 
     return Promise.resolve(webviews);
   };
