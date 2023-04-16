@@ -22,6 +22,8 @@ import {
   getNodeFormat,
   indentText,
   matchNodeWithLocation,
+  findNodeAtOffset,
+  positions_equals,
 } from "@kie-tools/editor-language-service/dist/channel";
 import {
   getLanguageService,
@@ -55,7 +57,7 @@ import {
 } from "yaml-language-server-parser";
 import { FileLanguage } from "../api";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
-import { findNodeAtOffset, positions_equals, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
+import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
 
 export class SwfYamlLanguageService {

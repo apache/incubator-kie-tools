@@ -16,7 +16,12 @@
 
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import * as jsonc from "jsonc-parser";
-import { ELsJsonPath, ELsNodeType, OmitRecursively } from "@kie-tools/editor-language-service/dist/channel";
+import {
+  ELsJsonPath,
+  ELsNodeType,
+  OmitRecursively,
+  findNodeAtLocation,
+} from "@kie-tools/editor-language-service/dist/channel";
 
 /**
  * Get a node in the format of the SWF Specification
@@ -30,7 +35,7 @@ function getNodes<T>(args: {
   path: ELsJsonPath;
   rootNode: jsonc.Node;
 }): OmitRecursively<T, "normalize"> {
-  const node = jsonc.findNodeAtLocation(args.rootNode, args.path);
+  const node = findNodeAtLocation(args.rootNode, args.path);
   if (node?.type !== args.nodeType) {
     return [] as unknown as OmitRecursively<T, "normalize">;
   }
@@ -39,7 +44,7 @@ function getNodes<T>(args: {
     const nodeProps: { [key: string]: string } = {};
 
     args.fields.forEach((field) => {
-      nodeProps[field] = jsonc.findNodeAtLocation(childNode, [field])?.value;
+      nodeProps[field] = findNodeAtLocation(childNode, [field])?.value;
     });
 
     return [{ ...nodeProps }];

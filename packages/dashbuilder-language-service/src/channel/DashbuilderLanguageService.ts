@@ -17,32 +17,16 @@ import {
   EditorLanguageService,
   EditorLanguageServiceArgs,
   ELsCompletionsMap,
-  ELsJsonPath,
   ELsNode,
-  indentText,
-  ShouldCompleteArgs,
-  TranslateArgs,
 } from "@kie-tools/editor-language-service/dist/channel";
-import * as jsonc from "jsonc-parser";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, CompletionItem, CompletionItemKind, Diagnostic, Position, Range } from "vscode-languageserver-types";
-import {
-  dump,
-  Kind,
-  load,
-  YAMLAnchorReference,
-  YamlMap,
-  YAMLMapping,
-  YAMLNode,
-  YAMLScalar,
-  YAMLSequence,
-} from "yaml-language-server-parser";
+import { CodeLens, CompletionItem, Diagnostic, Position, Range } from "vscode-languageserver-types";
 import {
   DashbuilderLanguageServiceCodeCompletion,
   DashbuilderLanguageServiceCodeCompletionFunctionsArgs,
 } from "./DashbuilderLanguageServiceCodeCompletion";
 import { DashbuilderLanguageServiceCodeLenses } from "./DashbuilderLanguageServiceCodeLenses";
-import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
+import { CodeCompletionStrategy } from "./types";
 
 export type DashbuilderLanguageServiceArgs = EditorLanguageServiceArgs;
 
@@ -51,21 +35,6 @@ export class DashbuilderLanguageService {
 
   constructor(private readonly args: DashbuilderLanguageServiceArgs) {
     this.els = new EditorLanguageService(this.args);
-  }
-
-  parseContent(content: string): ELsNode | undefined {
-    if (!content.trim()) {
-      return;
-    }
-
-    const ast = load(content);
-
-    // check if the yaml is not valid
-    if (ast && ast.errors && ast.errors.length) {
-      return;
-    }
-
-    return astConvert(ast);
   }
 
   public async getCompletionItems(args: {
@@ -111,96 +80,6 @@ export class DashbuilderLanguageService {
   }
 }
 
-const astConvert = (node: YAMLNode, parentNode?: ELsNode): ELsNode => {
-  const convertedNode: ELsNode = {
-    type: "object",
-    offset: node.startPosition,
-    length: node.endPosition - node.startPosition,
-    parent: parentNode,
-  };
-
-  if (node.kind === Kind.SCALAR) {
-    convertedNode.value = (node as YAMLScalar).value;
-    convertedNode.type = "string";
-  } else if (node.kind === Kind.MAP) {
-    const yamlMap = node as YamlMap;
-    convertedNode.value = yamlMap.value;
-    convertedNode.children = yamlMap.mappings.map((mapping) => astConvert(mapping, convertedNode));
-    convertedNode.type = "object";
-  } else if (node.kind === Kind.MAPPING) {
-    const yamlMapping = node as YAMLMapping;
-    convertedNode.value = yamlMapping.value;
-    convertedNode.children = [
-      astConvert(yamlMapping.key, convertedNode),
-      ...(convertedNode.value ? [astConvert(yamlMapping.value, convertedNode)] : []),
-    ];
-    convertedNode.type = "property";
-    convertedNode.colonOffset = yamlMapping.key.endPosition;
-  } else if (node.kind === Kind.SEQ) {
-    convertedNode.children = (node as YAMLSequence).items
-      .filter((item) => item)
-      .map((item) => astConvert(item, convertedNode));
-    convertedNode.type = "array";
-  } else if (node.kind === Kind.ANCHOR_REF || node.kind === Kind.INCLUDE_REF) {
-    convertedNode.value = (node as YAMLAnchorReference).value;
-    convertedNode.type = "object";
-  }
-
-  return convertedNode;
-};
-
-export function findNodeAtOffset(root: ELsNode, offset: number, includeRightBound?: boolean): ELsNode | undefined {
-  return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as ELsNode;
-}
-
-export function getNodePath(node: ELsNode): ELsJsonPath {
-  return jsonc.getNodePath(node as jsonc.Node);
-}
-
 const completions: ELsCompletionsMap<DashbuilderLanguageServiceCodeCompletionFunctionsArgs> = new Map([
   [null, DashbuilderLanguageServiceCodeCompletion.getEmptyFileCodeCompletions],
 ]);
-
-export class DashbuilderCodeCompletionStrategy implements CodeCompletionStrategy {
-  public translate(args: TranslateArgs): string {
-    const completionDump = dump(args.completion, {}).slice(2, -1).trim();
-    if (["{}", "[]"].includes(completionDump) || args.completionItemKind === CompletionItemKind.Text) {
-      return completionDump;
-    }
-    const skipFirstLineIndent = args.completionItemKind !== CompletionItemKind.Module;
-    const completionItemNewLine = args.completionItemKind === CompletionItemKind.Module ? "\n" : "";
-    const completionText = completionItemNewLine + indentText(completionDump, 2, " ", skipFirstLineIndent);
-    return ([CompletionItemKind.Interface, CompletionItemKind.Reference] as CompletionItemKind[]).includes(
-      args.completionItemKind
-    ) && positions_equals(args.overwriteRange?.start ?? null, args.currentNodeRange?.start ?? null)
-      ? `- ${completionText}\n`
-      : completionText;
-  }
-
-  public formatLabel(_label: string, _completionItemKind: CompletionItemKind): string {
-    return "";
-  }
-
-  public getStartNodeValuePosition(_document: TextDocument, _node: ELsNode): Position | undefined {
-    return undefined;
-  }
-
-  public shouldComplete(_args: ShouldCompleteArgs): boolean {
-    return true;
-  }
-
-  public shouldCreateCodelens(_args: ShouldCreateCodelensArgs): boolean {
-    return true;
-  }
-}
-
-/**
- * Test if position `a` equals position `b`.
- * This function is compatible with https://microsoft.github.io/monaco-editor/api/classes/monaco.Position.html#equals-1
- *
- * @param a -
- * @param b -
- * @returns true if the positions are equal, false otherwise
- */
-export const positions_equals = (a: Position | null, b: Position | null): boolean =>
-  a?.line === b?.line && a?.character == b?.character;

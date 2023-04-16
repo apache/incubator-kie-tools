@@ -15,13 +15,10 @@
  */
 
 import {
-  doRefValidation,
   EditorLanguageService,
   EditorLanguageServiceArgs,
   ELsCompletionsMap,
-  ELsJsonPath,
   ELsNode,
-  findNodesAtLocation,
 } from "@kie-tools/editor-language-service/dist/channel";
 import {
   SwfCatalogSourceType,
@@ -30,7 +27,6 @@ import {
   SwfServiceCatalogService,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
@@ -271,26 +267,3 @@ const completions: ELsCompletionsMap<SwfLanguageServiceCodeCompletionFunctionsAr
   [["states", "*", "defaultCondition", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
   [["states", "*", "eventConditions", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
 ]);
-
-export function findNodeAtLocation(root: ELsNode, path: ELsJsonPath): ELsNode | undefined {
-  return findNodesAtLocation({ root, path })[0];
-}
-
-export function findNodeAtOffset(root: ELsNode, offset: number, includeRightBound?: boolean): ELsNode | undefined {
-  return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as ELsNode;
-}
-
-export function getNodePath(node: ELsNode): ELsJsonPath {
-  return jsonc.getNodePath(node as jsonc.Node);
-}
-
-/**
- * Test if position `a` equals position `b`.
- * This function is compatible with https://microsoft.github.io/monaco-editor/api/classes/monaco.Position.html#equals-1
- *
- * @param a -
- * @param b -
- * @returns true if the positions are equal, false otherwise
- */
-export const positions_equals = (a: Position | null, b: Position | null): boolean =>
-  a?.line === b?.line && a?.character == b?.character;

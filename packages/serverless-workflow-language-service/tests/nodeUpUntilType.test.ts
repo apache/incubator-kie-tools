@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { ELsNode, nodeUpUntilType } from "@kie-tools/editor-language-service/dist/channel";
+import { ELsNode, nodeUpUntilType, findNodeAtOffset } from "@kie-tools/editor-language-service/dist/channel";
 import {
-  findNodeAtOffset,
   SwfJsonLanguageService,
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";

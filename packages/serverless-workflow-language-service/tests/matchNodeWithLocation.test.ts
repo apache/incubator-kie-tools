@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { matchNodeWithLocation } from "@kie-tools/editor-language-service/dist/channel";
+import { matchNodeWithLocation, findNodeAtOffset } from "@kie-tools/editor-language-service/dist/channel";
 import {
-  findNodeAtOffset,
   SwfJsonLanguageService,
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";

@@ -18,6 +18,8 @@ import {
   indentText,
   ShouldCompleteArgs,
   TranslateArgs,
+  positions_equals,
+  findNodeAtOffset,
 } from "@kie-tools/editor-language-service/dist/channel";
 import {
   getLanguageService,
@@ -51,7 +53,7 @@ import {
 } from "yaml-language-server-parser";
 import { FileLanguage } from "../api";
 import { DASHBUILDER_SCHEMA } from "../assets/schemas";
-import { DashbuilderLanguageService, findNodeAtOffset, positions_equals } from "./DashbuilderLanguageService";
+import { DashbuilderLanguageService } from "./DashbuilderLanguageService";
 import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
 
 export class DashbuilderYamlLanguageService {
