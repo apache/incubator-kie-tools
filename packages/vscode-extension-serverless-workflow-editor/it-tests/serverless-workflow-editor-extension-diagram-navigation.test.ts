@@ -53,29 +53,42 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
       const editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME);
       const swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
       const swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
+      await testHelper.saveScreenshot("diagramNavigation_1");
 
       const nodeIds = await swfEditor.getAllNodeIds();
+      await testHelper.saveScreenshot("diagramNavigation_2");
       expect(nodeIds.length).equal(6);
+      await testHelper.saveScreenshot("diagramNavigation_3");
 
       // Select CheckApplication node
       await swfEditor.selectNode(nodeIds[1]);
+      await testHelper.saveScreenshot("diagramNavigation_4");
 
       const textEditor = await swfTextEditor.getSwfTextEditor();
+      await testHelper.saveScreenshot("diagramNavigation_5");
       let lineNumber = (await textEditor.getCoordinates())[0];
+      await testHelper.saveScreenshot("diagramNavigation_6");
       let columnNumber = (await textEditor.getCoordinates())[1];
+      await testHelper.saveScreenshot("diagramNavigation_7");
 
       expect(lineNumber).equal(16);
       expect(columnNumber).equal(7);
+      await testHelper.saveScreenshot("diagramNavigation_8");
 
       // Select StartApplication node
       await swfEditor.selectNode(nodeIds[2]);
+      await testHelper.saveScreenshot("diagramNavigation_9");
 
       lineNumber = (await textEditor.getCoordinates())[0];
+      await testHelper.saveScreenshot("diagramNavigation_10");
       columnNumber = (await textEditor.getCoordinates())[1];
+      await testHelper.saveScreenshot("diagramNavigation_11");
 
       expect(lineNumber).equal(33);
       expect(columnNumber).equal(7);
+      await testHelper.saveScreenshot("diagramNavigation_12");
     } catch (error) {
+      await testHelper.saveScreenshot("diagramNavigation_error_1");
       console.error("Select states: " + error);
     }
   });
