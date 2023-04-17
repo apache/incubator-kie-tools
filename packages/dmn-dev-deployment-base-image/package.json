@@ -23,6 +23,10 @@
     "copy:dmn-dev-deployment-form-webapp": "cp -R ../dmn-dev-deployment-form-webapp/dist ./dist-dev/dmn-dev-deployment-form-webapp",
     "copy:dmn-dev-deployment-quarkus-app": "cp -R ../dmn-dev-deployment-quarkus-app ./dist-dev/dmn-dev-deployment-quarkus-app",
     "create-test-image": "node scripts/createTestImage.js",
+    "create-test-image:build-only": "pnpm copy:assets && pnpm create-test-image build-only -t $(build-env dmnDevDeploymentBaseImageEnv.testDevImageName) --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/",
+    "create-test-image:kind": "pnpm copy:assets && pnpm create-test-image kind -t $(build-env dmnDevDeploymentBaseImageEnv.testDevImageName) --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/ --k kie-sandbox-dev-cluster",
+    "create-test-image:minikube": "pnpm copy:assets && pnpm create-test-image minikube -t $(build-env dmnDevDeploymentBaseImageEnv.testDevImageName) --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/",
+    "create-test-image:openshift": "pnpm copy:assets && pnpm create-test-image openshift -t $(build-env dmnDevDeploymentBaseImageEnv.testDevImageName) --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/",
     "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build $(echo $(build-env dmnDevDeploymentBaseImageEnv.tags) | xargs printf -- \"-t $(build-env dmnDevDeploymentBaseImageEnv.registry)/$(build-env dmnDevDeploymentBaseImageEnv.account)/$(build-env dmnDevDeploymentBaseImageEnv.name):%s\n\" | xargs echo) --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/ . -f Containerfile\" --else \"echo Docker not found, skipping image build.\"",
     "image:podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dmnDevDeploymentBaseImageEnv.tags) | xargs printf -- \"-t $(build-env dmnDevDeploymentBaseImageEnv.registry)/$(build-env dmnDevDeploymentBaseImageEnv.account)/$(build-env dmnDevDeploymentBaseImageEnv.name):%s\n\" | xargs echo) --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/ -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
   },
@@ -34,6 +38,7 @@
     "@kie-tools/dmn-dev-deployment-base-image-env": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "rimraf": "^3.0.2",
-    "run-script-os": "^1.1.6"
+    "run-script-os": "^1.1.6",
+    "yargs": "^17.0.1"
   }
 }

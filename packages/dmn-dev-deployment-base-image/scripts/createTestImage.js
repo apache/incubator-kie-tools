@@ -1,127 +1,146 @@
 const execSync = require("child_process").execSync;
+const yargs = require("yargs");
+const { hideBin } = require("yargs/helpers");
 
-const parameters = [
-  { name: "Target", values: ["--target", "-t"] },
-  { name: "Kind cluster name", values: ["--kind-cluster-name", "-kcn"] },
-  { name: "Architecture", values: ["--arch", "-a"] },
-];
-const targetOptions = ["build-only", "kind", "minikube", "openshift"];
-
-let target;
-let kindClusterName;
-let arch;
-
-if (process.argv.indexOf("--help") > 0 || process.argv.indexOf("-h") > 0) {
-  console.info(
-    "This script helps you building new images to validate changes made to the dmn-dev-deployment-base-image and its dependencies."
-  );
-  console.info("* Docker is required for building *");
-  console.info("Parameters:");
-  console.info("  --target, -t:");
-  console.info("      description: Where to create and load the built image.");
-  console.info("      options:");
-  console.info("        build-only: Builds the image locally and store it in your local Docker image registry.");
-  console.info(
-    "        kind: Builds the image locally and push it to your Kind cluster (the --kind-cluster-name parameter is required in this case)."
-  );
-  console.info("        minikube: Builds the image locally and push it to your Minikube cluster.");
-  console.info(
-    "        openshift: Builds the image directly on your OpenShift cluster and store it in an ImageStream (the 'oc' CLI tool needs to be installed and logged in to your cluster)."
-  );
-  console.info("  --arch, -a:");
-  console.info(
-    "      description: [Optional] The target build architecture. If not provided will default to the native architecture. (This parameter is ignored if targeting OpenShift as it will always build amd64)"
-  );
-  console.info("      options:");
-  console.info("        arm64: ARM image, good for ARM Macs.");
-  console.info("        amd64: x86_64 image, good for everything else.");
-  console.info("  --kind-cluster-name, -knc:");
-  console.info("      description: [Required if target = kind] Your Kind cluster name. Required to load images to it.");
-  console.info("  --help, -h:");
-  console.info("      description: Displays this help text.");
-  console.info("");
-  console.info("Examples of usage:");
-  console.info("  - Building and loading image to a Kind cluster:");
-  console.info("      pnpm create-test-image --target kind -kind-cluster-name kie-sandbox-dev-cluster");
-  console.info("        or");
-  console.info("      pnpm create-test-image -t kind -kcn kie-sandbox-dev-cluster");
-  console.info("  - Building and loading and arm64 image to a Minikube cluster:");
-  console.info("      pnpm create-test-image --target minikube --arch arm64");
-  console.info("        or");
-  console.info("      pnpm create-test-image -t minikube -a arm64");
-  console.info("  - Creating an OpenShift build:");
-  console.info("      pnpm create-test-image --target openshift");
-  console.info("        or");
-  console.info("      pnpm create-test-image -t openshift");
-  console.info("  - Build only:");
-  console.info("      pnpm create-test-image --target build-only");
-  console.info("        or");
-  console.info("      pnpm create-test-image -t build-only");
-  console.info("  - Build only x86_64 image:");
-  console.info("      pnpm create-test-image --target build-only --arch amd64");
-  console.info("        or");
-  console.info("      pnpm create-test-image -t build-only -a amd64");
+if (process.platform === "win32") {
+  console.error("This script can only run on Unix based operating systems for now.");
   return;
 }
 
-function parseInputParameters(parameter) {
-  let singleIndexParamter = false;
-  let inputParameterName;
-  let argIndex = parameter.values.reduce((acc, parameterName) => {
-    const index = process.argv.indexOf(parameterName);
-    const indexWithEqual = process.argv.indexOf(process.argv.find((arg) => arg.includes(parameterName + "=")));
-    if (index >= 0) {
-      singleIndexParamter = false;
-      acc = index;
-      inputParameterName = parameterName;
-    } else if (indexWithEqual >= 0) {
-      singleIndexParamter = true;
-      acc = indexWithEqual;
-      inputParameterName = parameterName;
-    }
-    return acc;
-  }, -1);
-
-  if (argIndex === -1) {
-    throw new Error();
-  }
-
-  if (singleIndexParamter) {
-    return process.argv[argIndex].replace(inputParameterName + "=", "").toLowerCase();
-  }
-  return process.argv[argIndex + 1].toLowerCase();
-}
-
-try {
-  target = parseInputParameters(parameters[0]);
-
-  if (!targetOptions.includes(target)) {
-    console.error("Invalid target supplied. Please choose an option between: build-only | kind | minkube | openshift.");
-    return;
-  }
-} catch (e) {
-  console.error("Target not supplied. Please chose an option between: build-only, kind, minkube or openshift.");
-  return;
-}
-
-if (target === "kind") {
-  try {
-    kindClusterName = parseInputParameters(parameters[1]);
-  } catch (e) {
-    console.error("Kind target selected, but no kind-cluster-name parameter was provided.");
-    return;
-  }
-}
-
-try {
-  arch = parseInputParameters(parameters[2]);
-  if (arch && !["arm64", "amd64"].includes(arch)) {
-    console.error("Invalid architecture provided. Please choose and option between: arm64 | amd64");
-    return;
-  }
-} catch (e) {
-  // No op
-}
+yargs(hideBin(process.argv))
+  .version(false)
+  .scriptName("")
+  .usage("Usage: pnpm create-test-image <command> [options]")
+  .example("pnpm create-test-image minikube", "Build and load an image to a Minikube cluster")
+  .example(
+    "pnpm create-test-image kind -k kie-sandbox-dev-cluster",
+    "Build and load an image to a Kind cluster name kie-sandbox-dev-cluster"
+  )
+  .example("pnpm create-test-image openshift", "Build an image in a OpenShift cluster")
+  .example(
+    "pnpm create-test-image build-only -t quay.io/my-user/my-image-name:latest -f my/context/path/Containerfile -c my/context/path",
+    "Create an image from the Containerfile and context path"
+  )
+  .wrap(Math.min(150, yargs.terminalWidth()))
+  .options({
+    t: {
+      alias: "tag",
+      demandOption: true,
+      describe: "Name and optionally a tag in the name:tag format",
+      type: "string",
+      nargs: 1,
+    },
+    f: {
+      alias: "file",
+      demandOption: false,
+      default: "Containerfile",
+      describe: "Dockerfile/Containerfile path",
+      type: "string",
+      normalize: true,
+      nargs: 1,
+    },
+    c: {
+      alias: "context",
+      demandOption: false,
+      default: ".",
+      describe: "The path to be packaged with your built image",
+      type: "string",
+      normalize: true,
+      nargs: 1,
+    },
+    a: {
+      alias: "arch",
+      demandOption: false,
+      describe:
+        "The target build architecture. If not provided will default to the native architecture (This parameter is ignored if targeting OpenShift as it will always build amd64)",
+      type: "string",
+      nargs: 1,
+      choices: ["amd64", "arm64"],
+    },
+    "kind-cluster-name": {
+      demandOption: false,
+      describe: "Your Kind cluster name",
+      type: "string",
+      nargs: 1,
+      default: "kind",
+    },
+    "build-arg": {
+      demandOption: false,
+      describe: "Build arg to be passed to the Docker builder in the format <arg>=<value> (Can be used multiple times)",
+      type: "array",
+    },
+  })
+  .command({
+    alias: "build-only",
+    command: "build-only [options]",
+    describe: "Builds the image locally and store it in your local Docker image registry",
+    handler: (argv) => {
+      console.info(`
+Building local image.
+  - tag: ${argv.tag}
+  - file: ${argv.file}
+  - context: ${argv.context}
+  - buildArg: ${argv.buildArg.join(" ")}
+  - arch: ${argv.arch ?? "native"}
+      `);
+      buildImage(argv.tag, argv.file, argv.context, argv.buildArg, argv.arch);
+    },
+  })
+  .command({
+    alias: "kind",
+    command: "kind [options]",
+    describe: "Builds the image locally and push it to your Kind cluster",
+    handler: (argv) => {
+      console.info(`
+Building local image and loading it to Kind cluster.
+  - tag: ${argv.tag}
+  - file: ${argv.file}
+  - context: ${argv.context}
+  - buildArg: ${argv.buildArg.join(" ")}
+  - arch: ${argv.arch ?? "native"}
+  - kindClusterName: ${argv.kindClusterName}
+      `);
+      buildImage(argv.tag, argv.file, argv.context, argv.buildArg, argv.arch);
+      execSync(`kind load docker-image ${argv.tag} --name ${argv.kindClusterName}`, { stdio: "inherit" });
+    },
+  })
+  .command({
+    alias: "minikube",
+    command: "minikube [options]",
+    describe: "Builds the image locally and push it to your Minikube cluster",
+    handler: (argv) => {
+      console.info(`
+Building local image and loading it to Minikube cluster.
+  - tag: ${argv.tag}
+  - file: ${argv.file}
+  - context: ${argv.context}
+  - buildArg: ${argv.buildArg.join(" ")}
+  - arch: ${argv.arch ?? "native"}
+      `);
+      buildImage(argv.tag, argv.file, argv.context, argv.buildArg, argv.arch);
+      execSync(`minikube image load ${argv.tag}`, { stdio: "inherit" });
+    },
+  })
+  .command({
+    alias: "openshift",
+    command: "openshift [options]",
+    describe:
+      "Builds the image directly on your OpenShift cluster and store it in an ImageStream (the 'oc' CLI tool needs to be installed and logged in to your cluster)",
+    handler: (argv) => {
+      console.info(`
+Building image into OpenShift cluster.
+  - tag: ${argv.tag}
+  - file: ${argv.file}
+  - context: ${argv.context}
+  - buildArg: ${argv.buildArg.join(" ")}
+  - arch: amd64
+      `);
+      createOpenshiftBuild(argv.tag, argv.file, argv.context, argv.buildArg);
+    },
+  })
+  .demandCommand()
+  .help("h")
+  .alias("h", "help").argv;
 
 function createAndUseDockerBuilder() {
   try {
@@ -137,41 +156,43 @@ function createAndUseDockerBuilder() {
   }
 }
 
-const tag = execSync("build-env dmnDevDeploymentBaseImageEnv.testDevImageName | tr -d '\n'").toString();
+// --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/
 
-function buildArchImage() {
+function buildArchImage(tag, file, context, buildArg, arch) {
   let platform = {
     arm64: "linux/arm64",
     amd64: "linux/amd64",
   }[arch];
   createAndUseDockerBuilder();
+  console.log(buildArg);
   execSync(
-    `docker buildx build --platform ${platform} --load -t ${tag} --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/ . -f Containerfile`,
+    `docker buildx build --platform ${platform} --load -t ${tag} ${buildArg.map(
+      (arg) => `--build-arg ${arg} `
+    )} ${context} -f ${file}`,
     { stdio: "inherit" }
   );
 }
 
-function buildNativeImage() {
-  execSync(
-    `docker build -t ${tag} --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/ . -f Containerfile`,
-    { stdio: "inherit" }
-  );
+function buildNativeImage(tag, file, context, buildArg) {
+  execSync(`docker build -t ${tag} ${buildArg.map((arg) => `--build-arg ${arg}`).join(" ")} ${context} -f ${file}`, {
+    stdio: "inherit",
+  });
 }
 
-function buildImage() {
+function buildImage(tag, file, context, buildArg, arch) {
   if (arch) {
-    buildArchImage();
+    buildArchImage(tag, file, context, buildArg, arch);
   } else {
-    buildNativeImage();
+    buildNativeImage(tag, file, context, buildArg);
   }
 }
 
-function createOpenShiftImageStream() {
+function createOpenShiftImageStream(repo) {
   const contents = `<<EOF
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
-  name: dmn-dev-deployment-base-image
+  name: ${repo}
 spec:
   lookupPolicy:
     local: true
@@ -181,16 +202,12 @@ EOF
   execSync(`oc apply -f - ${contents}`, { stdio: "inherit" });
 }
 
-function createOpenShfitBuildConfig() {
-  const quarkusPlatformVersion = execSync("build-env quarkusPlatform.version");
-  const kogitoRuntimeVersion = execSync("build-env kogitoRuntime.version");
-  const rootPath = "/";
-
+function createOpenShfitBuildConfig(tag, repo, file, buildArg) {
   const contents = `<<EOF
 apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
-  name: dmn-dev-deployment-base-image
+  name: ${repo}
 spec:
   output:
     to:
@@ -198,14 +215,15 @@ spec:
       name: ${tag}
   strategy:
     dockerStrategy:
-      dockerfilePath: Containerfile
-      buildArgs:
-        - name: QUARKUS_PLATFORM_VERSION
-          value: ${quarkusPlatformVersion}
-        - name: KOGITO_RUNTIME_VERSION
-          value: ${kogitoRuntimeVersion}
-        - name: ROOT_PATH
-          value: ${rootPath}
+      dockerfilePath: ${file}
+      buildArgs: ${buildArg
+        .map((arg) => {
+          const [key, value] = arg.split("=");
+          return `
+       - name: ${key}
+         value: ${value}`;
+        })
+        .join("")}
   source:
     type: Binary
     binary: {}
@@ -218,36 +236,28 @@ EOF
   execSync(`oc apply -f - ${contents}`, { stdio: "inherit" });
 }
 
-function createOpenshiftBuild() {
+function createOpenshiftBuild(tag, file, context, buildArg) {
+  const { repo } = getImageDetailsFromFullUrl(tag);
+
   try {
-    createOpenShiftImageStream();
-    createOpenShfitBuildConfig();
+    createOpenShiftImageStream(repo);
+    createOpenShfitBuildConfig(tag, repo, file, buildArg);
   } catch (e) {
     console.error("-> Failed to create required resources. Are you logged in the 'oc' CLI?");
     return;
   }
-  execSync("oc start-build --from-dir=. dmn-dev-deployment-base-image --follow", { stdio: "inherit" });
+  execSync(`oc start-build --from-dir=${context} ${repo} --follow`, { stdio: "inherit" });
 }
 
-execSync("pnpm cleanup && pnpm copy:assets");
-
-switch (target) {
-  case "build-only":
-    buildImage();
-    break;
-  case "kind":
-    buildImage();
-    console.info("-> Pushing image to Kind cluster internal registry...");
-    execSync(`kind load docker-image ${tag} --name ${kindClusterName}`, { stdio: "inherit" });
-    break;
-  case "minikube":
-    buildImage();
-    console.info("-> Pushing image to Minikube cluster internal registry...");
-    execSync(`minikube image load ${tag}`, { stdio: "inherit" });
-    break;
-  case "openshift":
-    createOpenshiftBuild();
-    break;
+function getImageDetailsFromFullUrl(fullUrl) {
+  // As per usual, this regex is some magic stuff to get name, domain, namespace, repo, reference and tag from a an image URL.
+  // You can try to check how it works here: https://regex101.com/r/x7inGN/1
+  const regex = new RegExp(
+    "^(?<name>(?<=^)(?:(?<domain>(?:(?:localhost|[\\w-]+(?:\\.[\\w-]+)+)(?::\\d+)?)|[\\w]+:\\d+)\\/)?\\/?(?<namespace>(?:(?:[a-z0-9]+(?:(?:[._]|__|[-]*)[a-z0-9]+)*)\\/)*)(?<repo>[a-z0-9-]+))[:@]?(?<reference>(?<=:)(?<tag>[\\w][\\w.-]{0,127})|(?<=@)(?<digest>[A-Za-z][A-Za-z0-9]*(?:[-_+.][A-Za-z][A-Za-z0-9]*)*[:][0-9A-Fa-f]{32,}))?",
+    "gm"
+  );
+  const matches = regex.exec(fullUrl);
+  return matches.groups;
 }
 
 console.info("-> Done!");
