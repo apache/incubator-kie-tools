@@ -224,6 +224,7 @@ export default class VSCodeTestHelper {
 
   /**
    * Takes a screenshot if the current test fails and saves it in the specified directory.
+   *
    * @param {Mocha.Context} testMochaContext The current Mocha test context.
    * @param {string} parentScreenshotFolder The parent directory where the screenshot will be saved.
    */
