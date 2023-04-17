@@ -72,7 +72,7 @@ export function ExpressionDefinitionLogicTypeSelector({
     () =>
       isNested
         ? new Set([ExpressionDefinitionLogicType.Undefined])
-        : new Set([ExpressionDefinitionLogicType.Undefined]),
+        : new Set([ExpressionDefinitionLogicType.Undefined, ExpressionDefinitionLogicType.Function]),
     [isNested]
   );
 
