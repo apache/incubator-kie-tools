@@ -25,11 +25,11 @@ import { RoutesSwitch } from "./navigation/RoutesSwitch";
 import { OpenShiftContextProvider } from "./openshift/OpenShiftContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { VirtualServiceRegistryContextProvider } from "./virtualServiceRegistry/VirtualServiceRegistryContextProvider";
-import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
 import { SampleContextProvider } from "./home/sample/hooks/SampleContext";
 import { DevModeContextProvider } from "./openshift/devMode/DevModeContext";
 import { GlobalAlertsContextProvider } from "./alerts/GlobalAlertsContext";
 import { EditorContextProvider } from "./editor/hooks/EditorContext";
+import { WebToolsWorkspaceContextProvider } from "./workspace/hooks/WebToolsWorkspaceContextProvider";
 
 export const App = () => (
   <HashRouter>
@@ -40,14 +40,7 @@ export const App = () => (
       [KieSandboxExtendedServicesContextProvider, {}],
       [SettingsContextProvider, {}],
       [GlobalAlertsContextProvider, []],
-      [
-        WorkspacesContextProvider,
-        {
-          workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js",
-          shouldRequireCommitMessage: false,
-          workerNamePrefix: `serverless-logic-web-tools-${process.env.WEBPACK_REPLACE__version}`,
-        },
-      ],
+      [WebToolsWorkspaceContextProvider, []],
       [OpenShiftContextProvider, {}],
       [DevModeContextProvider, {}],
       [VirtualServiceRegistryContextProvider, {}],
