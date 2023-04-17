@@ -16,7 +16,7 @@ env:
   # Kubernetes version should aligned with OCP LTS, aka OCP 4.10 (k8s 1.23) for now
   # https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.23.md
   # WARNING: kindest/node is not always existing with given version ...
-  KUBERNETES_VERSION: v1.23.13
+  KUBERNETES_VERSION: v1.26.3
   DEBUG: true
 
 jobs:

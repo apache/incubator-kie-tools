@@ -1,5 +1,5 @@
-minikubeVersion = env.MINIKUBE_VERSION ?: '1.28.0'
-minikubeKubernetesVersion = env.KUBERNETES_VERSION ?: '1.23.14'
+minikubeVersion = env.MINIKUBE_VERSION ?: '1.30.1'
+minikubeKubernetesVersion = env.KUBERNETES_VERSION ?: '1.26.3'
 minikubeContainerEngine = env.CONTAINER_ENGINE ?: 'podman'
 
 minikubeCpus = 'max'
@@ -48,12 +48,16 @@ void waitForMinikubeStarted() {
     println 'Wait for Minikube components to be in Running state'
     def minikubeStatus = sh(returnStatus: true, script: '''
         set -x
+        source ./hack/kube-utils.sh
         MINIKUBE_COMPONENTS=(etcd kube-apiserver kube-controller-manager kube-scheduler)
         for component in "${MINIKUBE_COMPONENTS[@]}"
         do
             echo "Check component '${component}' is in 'Running' state"
-            COMPONENT_NAME=${component} timeout 60s bash -c 'kubectl get pods -l tier=control-plane -l component=${COMPONENT_NAME} -n kube-system && while [[ "$(kubectl get pods -l tier=control-plane -l component=${COMPONENT_NAME} -n kube-system -o jsonpath={.items[0].status.phase})" != "Running" ]] ; do sleep 2 &&  kubectl get pods -l tier=control-plane -l component=${COMPONENT_NAME} -n kube-system -o jsonpath={.items[0].status.phase}; done'
+            waitKubeSystemForPodReady "-l tier=control-plane -l component=${component}"
         done
+
+        echo "Check kube-dns is in 'Running' state"
+        waitKubeSystemForPodReady "-l k8s-app=kube-dns"
     ''')
     if (minikubeStatus != 0) {
         error 'Error starting Minikube ...'
@@ -65,7 +69,8 @@ void waitForMinikubeRegistry() {
     def minikubeStatus = sh(returnStatus: true, script: '''
         set -x
         kubectl get pods -A
-        timeout 60s bash -c 'kubectl get pods -l kubernetes.io/minikube-addons=registry -l actual-registry=true -n kube-system && while [[ "$(kubectl get pods -l kubernetes.io/minikube-addons=registry -l actual-registry=true -n kube-system -o jsonpath={.items[0].status.phase})" != "Running" ]] ; do sleep 2 && kubectl get pods -l kubernetes.io/minikube-addons=registry -l actual-registry=true -n kube-system -o jsonpath={.items[0].status.phase}; done'
+        source ./hack/kube-utils.sh
+        waitKubeSystemForPodReady "-l kubernetes.io/minikube-addons=registry -l actual-registry=true"
     ''')
     if (minikubeStatus != 0) {
         error 'Error waiting for Minikube registry ...'
