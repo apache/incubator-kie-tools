@@ -49,9 +49,6 @@ public class DisplayerDragComponentTest {
     @Mock
     GlobalDisplayerSettings globalDisplayerSettings;
 
-    @InjectMocks
-    LineChartDragComponent lineChartDragComponent;
-
     @Test
     public void testAdjustSize(){
         final DisplayerSettings settings = mock(DisplayerSettings.class);

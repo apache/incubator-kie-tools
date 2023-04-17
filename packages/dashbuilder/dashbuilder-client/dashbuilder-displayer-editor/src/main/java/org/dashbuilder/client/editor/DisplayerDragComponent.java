@@ -15,7 +15,6 @@
  */
 package org.dashbuilder.client.editor;
 
-import java.util.Map;
 import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
@@ -71,8 +70,9 @@ public class DisplayerDragComponent implements LayoutDragComponent {
 
     @Override
     public IsWidget getShowWidget(final RenderingContext ctx) {
-        var settingsOp = getDisplayerSettings(ctx.getComponent().getProperties(), ctx.getComponent());
+        var settingsOp = getDisplayerSettings(ctx.getComponent());
         return settingsOp.map(settings -> {
+            perspectiveCoordinator.closeDisplayer(settings.getUUID());
             viewer.removeFromParent();
             viewer.init(settings);
             viewer.addAttachHandler(attachEvent -> {
@@ -105,8 +105,7 @@ public class DisplayerDragComponent implements LayoutDragComponent {
         }
     }
 
-    private Optional<DisplayerSettings> getDisplayerSettings(Map<String, String> properties,
-                                                             LayoutComponent component) {
+    private Optional<DisplayerSettings> getDisplayerSettings(LayoutComponent component) {
         var settings = component.getSettings();
         if (settings != null) {
             var displayerSettings = (DisplayerSettings) settings;
