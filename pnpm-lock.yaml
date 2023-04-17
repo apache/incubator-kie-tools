@@ -3102,12 +3102,21 @@ importers:
 
   packages/editor-language-service:
     dependencies:
+      "@kie-tools/yaml-language-server":
+        specifier: workspace:*
+        version: link:../yaml-language-server
       jsonata:
         specifier: ^1.8.3
         version: 1.8.3
       jsonc-parser:
         specifier: ^3.0.0
         version: 3.2.0
+      vscode-json-languageservice:
+        specifier: ^4.2.1
+        version: 4.2.1
+      vscode-languageserver:
+        specifier: ^7.0.0
+        version: 7.0.0
       vscode-languageserver-textdocument:
         specifier: ^1.0.4
         version: 1.0.7
@@ -31217,7 +31226,7 @@ packages:
       vscode-languageserver-textdocument: 1.0.7
       vscode-languageserver-types: 3.17.2
       vscode-nls: 5.2.0
-      vscode-uri: 3.0.6
+      vscode-uri: 3.0.7
 
   /vscode-jsonrpc@6.0.0:
     resolution:
@@ -31266,7 +31275,6 @@ packages:
   /vscode-uri@3.0.7:
     resolution:
       { integrity: sha512-eOpPHogvorZRobNqJGhapa0JdwaxpjVvyBp0QIUMRMSf8ZAlqOdEquKuRmw9Qwu0qXtJIWqFtMkmvJjUZmMjVA== }
-    dev: true
 
   /w3c-hr-time@1.0.2:
     resolution:

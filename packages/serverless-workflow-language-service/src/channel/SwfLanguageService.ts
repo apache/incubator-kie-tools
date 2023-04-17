@@ -19,6 +19,7 @@ import {
   EditorLanguageServiceArgs,
   ELsCompletionsMap,
   ELsNode,
+  IEditorLanguageService,
 } from "@kie-tools/editor-language-service/dist/channel";
 import {
   SwfCatalogSourceType,
@@ -89,7 +90,7 @@ export function isVirtualRegistry(serviceCatalogFunction: SwfServiceCatalogFunct
   );
 }
 
-export class SwfLanguageService {
+export class SwfLanguageService implements IEditorLanguageService {
   private readonly els: EditorLanguageService;
 
   constructor(private readonly args: SwfLanguageServiceArgs) {
@@ -182,7 +183,7 @@ export class SwfLanguageService {
     content: string;
     uriPath: string;
     rootNode: ELsNode | undefined;
-    getSchemaDiagnostics: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
+    getSchemaDiagnostics: (args: { textDocument: TextDocument; fileMatch: string[] }) => Promise<Diagnostic[]>;
   }): Promise<Diagnostic[]> {
     return await this.els.getDiagnostics({
       ...args,

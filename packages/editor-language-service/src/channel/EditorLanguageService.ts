@@ -28,7 +28,7 @@ import {
 } from "./EditorLanguageServiceCodeLenses";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import { doRefValidation, RefValidationMap } from "./refValidation";
-import { ELsCodeCompletionStrategy, ELsJsonPath, ELsNode } from "./types";
+import { ELsCodeCompletionStrategy, ELsJsonPath, ELsNode, IEditorLanguageService } from "./types";
 
 export type EditorLanguageServiceArgs = {
   fs: {};
@@ -38,7 +38,7 @@ export type EditorLanguageServiceArgs = {
   };
 };
 
-export class EditorLanguageService {
+export class EditorLanguageService implements IEditorLanguageService {
   constructor(private readonly args: EditorLanguageServiceArgs) {}
 
   public async getCompletionItems(args: {
@@ -108,7 +108,7 @@ export class EditorLanguageService {
     content: string;
     uriPath: string;
     rootNode: ELsNode | undefined;
-    getSchemaDiagnostics?: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
+    getSchemaDiagnostics?: (args: { textDocument: TextDocument; fileMatch: string[] }) => Promise<Diagnostic[]>;
     validationMap?: RefValidationMap;
   }): Promise<Diagnostic[]> {
     if (!args.rootNode) {
@@ -122,7 +122,8 @@ export class EditorLanguageService {
     const refValidationResults = args.validationMap
       ? doRefValidation({ textDocument, rootNode: args.rootNode, validationMap: args.validationMap })
       : [];
-    const schemaValidationResults = (await args.getSchemaDiagnostics?.(textDocument, this.args.lang.fileMatch)) ?? [];
+    const schemaValidationResults =
+      (await args.getSchemaDiagnostics?.({ textDocument, fileMatch: this.args.lang.fileMatch })) ?? [];
 
     return [...schemaValidationResults, ...refValidationResults];
   }

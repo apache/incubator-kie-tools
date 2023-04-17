@@ -510,10 +510,7 @@
         "target": "@kie-tools/editor-language-service",
         "weight": 1
       },
-      { "source": "@kie-tools/dashbuilder-language-service", "target": "@kie-tools/yaml-language-server", "weight": 1 },
-      { "source": "@kie-tools/editor-language-service", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "@kie-tools/editor-language-service", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/editor-language-service", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/editor-language-service", "target": "@kie-tools/yaml-language-server", "weight": 1 },
       { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/tsconfig", "weight": 1 },
@@ -732,11 +729,6 @@
       {
         "source": "@kie-tools/serverless-workflow-language-service",
         "target": "@kie-tools/serverless-workflow-jq-expressions",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-language-service",
-        "target": "@kie-tools/yaml-language-server",
         "weight": 1
       },
       {

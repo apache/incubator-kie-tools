@@ -98,7 +98,7 @@ export class SwfJsonLanguageService {
     });
   }
 
-  private async getSchemaDiagnostics(textDocument: TextDocument, fileMatch: string[]): Promise<Diagnostic[]> {
+  private async getSchemaDiagnostics(args: { textDocument: TextDocument; fileMatch: string[] }): Promise<Diagnostic[]> {
     const jsonLs = getLanguageService({
       schemaRequestService: async (uri) => {
         if (uri === SW_SPEC_WORKFLOW_SCHEMA.$id) {
@@ -111,11 +111,11 @@ export class SwfJsonLanguageService {
 
     jsonLs.configure({
       allowComments: false,
-      schemas: [{ fileMatch: fileMatch, uri: SW_SPEC_WORKFLOW_SCHEMA.$id }],
+      schemas: [{ fileMatch: args.fileMatch, uri: SW_SPEC_WORKFLOW_SCHEMA.$id }],
     });
 
-    const jsonDocument = jsonLs.parseJSONDocument(textDocument);
-    return jsonLs.doValidation(textDocument, jsonDocument);
+    const jsonDocument = jsonLs.parseJSONDocument(args.textDocument);
+    return jsonLs.doValidation(args.textDocument, jsonDocument);
   }
 
   public dispose() {

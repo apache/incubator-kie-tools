@@ -18,6 +18,7 @@ import {
   EditorLanguageServiceArgs,
   ELsCompletionsMap,
   ELsNode,
+  IEditorLanguageService,
 } from "@kie-tools/editor-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, Position, Range } from "vscode-languageserver-types";
@@ -30,7 +31,7 @@ import { CodeCompletionStrategy } from "./types";
 
 export type DashbuilderLanguageServiceArgs = EditorLanguageServiceArgs;
 
-export class DashbuilderLanguageService {
+export class DashbuilderLanguageService implements IEditorLanguageService {
   private readonly els: EditorLanguageService;
 
   constructor(private readonly args: DashbuilderLanguageServiceArgs) {
@@ -67,7 +68,7 @@ export class DashbuilderLanguageService {
     content: string;
     uriPath: string;
     rootNode: ELsNode | undefined;
-    getSchemaDiagnostics: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
+    getSchemaDiagnostics: (args: { textDocument: TextDocument; fileMatch: string[] }) => Promise<Diagnostic[]>;
   }): Promise<Diagnostic[]> {
     return await this.els.getDiagnostics({
       ...args,
@@ -76,7 +77,7 @@ export class DashbuilderLanguageService {
   }
 
   public dispose() {
-    // empty for now
+    this.els.dispose();
   }
 }
 

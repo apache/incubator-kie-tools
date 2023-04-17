@@ -15,7 +15,8 @@
  */
 
 import { Position, TextDocument } from "vscode-languageserver-textdocument";
-import { CompletionItemKind, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, CompletionItemKind, Diagnostic, Range } from "vscode-languageserver-types";
+import { JSONSchema } from "vscode-json-languageservice";
 
 // types ElsJsonPath, ELsNode, ELsNodeType need to be compatible with jsonc types
 export declare type ELsJsonPath = (string | number)[];
@@ -54,7 +55,7 @@ export interface ShouldCompleteArgs {
   root: ELsNode | undefined;
 }
 
-export interface ELsShouldCreateCodelensArgs<CommandTypes> {
+export interface ELsShouldCreateCodelensArgs<CommandTypes = never> {
   content: string;
   node: ELsNode;
   commandName: CommandTypes;
@@ -75,4 +76,35 @@ export interface ELsCodeCompletionStrategy<CommandTypes = never> {
   shouldComplete(args: ShouldCompleteArgs): boolean;
   getStartNodeValuePosition(document: TextDocument, node: ELsNode): Position | undefined;
   shouldCreateCodelens(args: ELsShouldCreateCodelensArgs<CommandTypes>): boolean;
+}
+
+export interface IEditorLanguageService {
+  getCompletionItems(args: {
+    content: string;
+    uri: string;
+    cursorPosition: Position;
+    cursorWordRange: Range;
+    rootNode: ELsNode | undefined;
+    codeCompletionStrategy: ELsCodeCompletionStrategy;
+  }): Promise<CompletionItem[]>;
+
+  getCodeLenses(args: {
+    content: string;
+    uri: string;
+    rootNode: ELsNode | undefined;
+    codeCompletionStrategy: ELsCodeCompletionStrategy;
+  }): Promise<CodeLens[]>;
+
+  getDiagnostics(args: {
+    content: string;
+    uriPath: string;
+    rootNode: ELsNode | undefined;
+    getSchemaDiagnostics: (args: {
+      textDocument: TextDocument;
+      fileMatch: string[];
+      jsonSchema: JSONSchema;
+    }) => Promise<Diagnostic[]>;
+  }): Promise<Diagnostic[]>;
+
+  dispose(): void;
 }
