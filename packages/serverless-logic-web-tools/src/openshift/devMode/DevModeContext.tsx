@@ -37,6 +37,8 @@ import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/Exten
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
+import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
+import { DevModeDeploymentLoaderPipeline } from "../pipelines/DevModeDeploymentLoaderPipeline";
 
 export interface UploadApiResponseError {
   error: string;
@@ -53,8 +55,8 @@ export const resolveWebToolsId = () => {
 };
 
 export const resolveDevModeResourceName = (webToolsId: string) => {
-  const sanitizedVersion = process.env.WEBPACK_REPLACE__version!.replace(/\./g, "-");
-  return `devmode-${webToolsId}-${sanitizedVersion}`;
+  const sanitizedVersion = process.env.WEBPACK_REPLACE__version!.replace(/\./g, "");
+  return `dev-${webToolsId}-${sanitizedVersion}`;
 };
 
 export interface DevModeContextType {
@@ -66,6 +68,7 @@ export interface DevModeDispatchContextType {
   upload(args: { targetSwfFile: WorkspaceFile; allFiles: WorkspaceFile[] }): Promise<DevModeUploadResult>;
   checkHealthReady(): Promise<boolean>;
   restart(): Promise<void>;
+  loadDeployments(): Promise<WebToolsOpenShiftDeployedModel[]>;
 }
 
 export const DevModeContext = React.createContext<DevModeContextType>({} as any);
@@ -84,6 +87,17 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
   const settingsDispatch = useSettingsDispatch();
   const [isEnabled, setEnabled] = useState(false);
   const [endpoints, setEndpoints] = useState<DevModeEndpoints | undefined>();
+
+  const devModeDeploymentLoaderPipeline = useMemo(() => {
+    if (!isEnabled) {
+      return;
+    }
+    return new DevModeDeploymentLoaderPipeline({
+      webToolsId: resolveWebToolsId(),
+      namespace: settings.openshift.config.namespace,
+      openShiftService: settingsDispatch.openshift.service,
+    });
+  }, [isEnabled, settings.openshift.config.namespace, settingsDispatch.openshift.service]);
 
   const devModeCreatedSuccessAlert = useGlobalAlert(
     useCallback(({ close }) => {
@@ -262,8 +276,16 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
     restartDevModePipeline.execute().catch((e) => console.error(e));
   }, [settings.openshift.config.namespace, settingsDispatch.openshift.service]);
 
+  const loadDeployments = useCallback(
+    async () => devModeDeploymentLoaderPipeline?.execute() ?? [],
+    [devModeDeploymentLoaderPipeline]
+  );
+
   const value = useMemo(() => ({ isEnabled, endpoints }), [isEnabled, endpoints]);
-  const dispatch = useMemo(() => ({ upload, checkHealthReady, restart }), [upload, checkHealthReady, restart]);
+  const dispatch = useMemo(
+    () => ({ upload, checkHealthReady, restart, loadDeployments }),
+    [upload, checkHealthReady, restart, loadDeployments]
+  );
 
   return (
     <DevModeContext.Provider value={value}>

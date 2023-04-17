@@ -122,7 +122,7 @@ export function useDeployDropdownItems(props: Props) {
           actionClose={<AlertActionCloseButton onClose={close} />}
           actionLinks={
             <AlertActionLink onClick={() => window.open(routeUrl, "_blank")}>
-              {"Go to Serverless Workflow Dev UI"}
+              {"Go to Serverless Workflow Dev UI ↗"}
             </AlertActionLink>
           }
         />

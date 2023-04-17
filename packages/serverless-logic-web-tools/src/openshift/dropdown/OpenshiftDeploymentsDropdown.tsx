@@ -22,7 +22,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
 import { TopologyIcon } from "@patternfly/react-icons/dist/js/icons/topology-icon";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useEffect, useState } from "react";
 import { ResponsiveDropdown } from "../../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
@@ -33,12 +33,25 @@ import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { useEnv } from "../../env/EnvContext";
 import { AppDistributionMode } from "../../AppConstants";
+import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { useDevModeDispatch } from "../devMode/DevModeContext";
+import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
+import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+
+const REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS = 20;
 
 export function OpenshiftDeploymentsDropdown() {
   const { env } = useEnv();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const openshift = useOpenShift();
+  const devModeDispatch = useDevModeDispatch();
+  const [refreshCountdownInSeconds, setRefreshCountdownInSeconds] = useState(
+    REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS
+  );
 
   const isConnected = useMemo(
     () => settings.openshift.status === OpenShiftInstanceStatus.CONNECTED,
@@ -49,9 +62,40 @@ export function OpenshiftDeploymentsDropdown() {
     settingsDispatch.open(SettingsTabs.OPENSHIFT);
   }, [settingsDispatch]);
 
-  const items = useMemo(() => {
-    const common =
-      isConnected && env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY
+  const [deployments, refresh] = useLivePromiseState<WebToolsOpenShiftDeployedModel[]>(
+    useMemo(() => {
+      return async () => {
+        setRefreshCountdownInSeconds(REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS);
+        const res = await Promise.all([openshift.loadDeployments(), devModeDispatch.loadDeployments()]);
+        return res.flat();
+      };
+    }, [devModeDispatch, openshift])
+  );
+
+  useEffect(() => {
+    if (deployments.status === PromiseStateStatus.PENDING) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setRefreshCountdownInSeconds((prev) => prev - 1);
+    }, 1000);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, [deployments.status]);
+
+  useEffect(() => {
+    if (refreshCountdownInSeconds > 0) {
+      return;
+    }
+    refresh(new Holder(false));
+  }, [refresh, refreshCountdownInSeconds]);
+
+  const connectionItem = useMemo(
+    () =>
+      env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY
         ? [
             <DropdownItem
               key={"dropdown-openshift-setup-as"}
@@ -64,26 +108,50 @@ export function OpenshiftDeploymentsDropdown() {
             </DropdownItem>,
             <DropdownSeparator key={"dropdown-openshift-separator-deployments-2"} />,
           ]
-        : [];
+        : [],
+    [env.FEATURE_FLAGS.MODE, openOpenShiftSettings, settings.openshift.config.namespace]
+  );
 
-    if (openshift.deployments.length === 0) {
+  const deploymentItems = useMemo(() => {
+    if (deployments.status === PromiseStateStatus.PENDING) {
       return [
-        ...common,
+        Array.from({ length: 3 }, (_, idx) => (
+          <DropdownItem key={`deployment-skeleton-${idx}`} onClick={(e) => e.stopPropagation()}>
+            <Skeleton width={"80%"} style={{ marginBottom: "4px" }} />
+            <Skeleton width={"50%"} />
+          </DropdownItem>
+        )),
+      ];
+    } else if (deployments.status === PromiseStateStatus.REJECTED) {
+      return [
         <DropdownItem key="disabled link" isDisabled>
           <Bullseye>
             <EmptyState>
               <EmptyStateIcon icon={TopologyIcon} />
               <Title headingLevel="h4" size="md">
-                {`No deployments yet.`}
+                {"Error fetching deployments"}
+              </Title>
+            </EmptyState>
+          </Bullseye>
+        </DropdownItem>,
+      ];
+    } else if (deployments.status === PromiseStateStatus.RESOLVED && deployments.data.length === 0) {
+      return [
+        <DropdownItem key="disabled link" isDisabled>
+          <Bullseye>
+            <EmptyState>
+              <EmptyStateIcon icon={TopologyIcon} />
+              <Title headingLevel="h4" size="md">
+                {"No deployments found"}
               </Title>
             </EmptyState>
           </Bullseye>
         </DropdownItem>,
       ];
     } else {
-      const items = [...common];
+      const dropdownItems = [];
 
-      const sortedDeployments = openshift.deployments.sort(
+      const sortedDeployments = deployments.data.sort(
         (a, b) => b.creationTimestamp.getTime() - a.creationTimestamp.getTime()
       );
 
@@ -94,41 +162,35 @@ export function OpenshiftDeploymentsDropdown() {
       );
 
       if (devModeDeployments.length > 0) {
-        items.push(
+        dropdownItems.push(
           <OpenShiftDeploymentDropdownItem
             key={devModeDeployments[0].creationTimestamp.getTime()}
             id={0}
             deployment={devModeDeployments[0]}
+            refreshDeployments={refresh}
           />
         );
 
         if (userDeployments.length > 0) {
-          items.push(<DropdownSeparator key={"dropdown-openshift-separator-deployments-2"} />);
+          dropdownItems.push(<DropdownSeparator key={"dropdown-openshift-separator-deployments-2"} />);
         }
       }
 
       return [
-        ...items,
-        userDeployments
-          .sort((a, b) => b.creationTimestamp.getTime() - a.creationTimestamp.getTime())
-          .map((deployment, i) => {
-            return (
-              <OpenShiftDeploymentDropdownItem
-                key={deployment.creationTimestamp.getTime()}
-                id={i + 1}
-                deployment={deployment}
-              />
-            );
-          }),
+        ...dropdownItems,
+        userDeployments.map((deployment, i) => {
+          return (
+            <OpenShiftDeploymentDropdownItem
+              key={deployment.creationTimestamp.getTime()}
+              id={i + 1}
+              deployment={deployment}
+              refreshDeployments={refresh}
+            />
+          );
+        }),
       ];
     }
-  }, [
-    isConnected,
-    env.FEATURE_FLAGS.MODE,
-    openOpenShiftSettings,
-    settings.openshift.config.namespace,
-    openshift.deployments,
-  ]);
+  }, [deployments.data, deployments.status, refresh]);
 
   return (
     <>
@@ -155,7 +217,31 @@ export function OpenshiftDeploymentsDropdown() {
           isPlain={true}
           className="kogito--editor__openshift-deployments-dropdown"
           title="OpenShift deployments"
-          dropdownItems={items}
+          dropdownItems={[
+            ...connectionItem,
+            <>
+              <Flex
+                style={{ padding: "8px 16px", minWidth: "400px" }}
+                justifyContent={{ default: "justifyContentSpaceBetween" }}
+              >
+                <small style={{ color: "darkgray" }}>
+                  {deployments.status !== PromiseStateStatus.PENDING && (
+                    <i>{`Refreshing in ${refreshCountdownInSeconds} seconds...`}</i>
+                  )}
+                </small>
+                <Button
+                  variant={ButtonVariant.link}
+                  onClick={() => refresh(new Holder(false))}
+                  style={{ padding: 0 }}
+                  isDisabled={deployments.status === PromiseStateStatus.PENDING}
+                >
+                  <small>{deployments.status === PromiseStateStatus.PENDING ? "Refreshing..." : "Refresh"}</small>
+                </Button>
+              </Flex>
+              <Divider />
+            </>,
+            ...deploymentItems,
+          ]}
         />
       </Tooltip>
     </>

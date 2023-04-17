@@ -37,6 +37,7 @@ import { DeployConstants } from "../DeployConstants";
 import { RESOURCE_OWNER } from "../OpenShiftConstants";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
 import { resolveDevModeResourceName } from "../devMode/DevModeContext";
+import { SwfDevMode } from "../deploy/BaseContainerImages";
 
 interface SpinUpDevModePipelineArgs {
   webToolsId: string;
@@ -189,7 +190,7 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<SpinUpDevModePipeli
               containers: [
                 {
                   name: resourceArgs.resourceName,
-                  image: process.env.WEBPACK_REPLACE__devModeImageFullUrl!,
+                  image: SwfDevMode.CONTAINER_IMAGE,
                   ports: [
                     {
                       containerPort: 8080,

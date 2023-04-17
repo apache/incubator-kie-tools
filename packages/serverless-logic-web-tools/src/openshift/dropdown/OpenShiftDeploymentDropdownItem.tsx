@@ -31,13 +31,16 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";
 import { DeploymentState } from "@kie-tools-core/kubernetes-bridge/dist/resources";
+import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 
 interface Props {
   id: number;
   deployment: WebToolsOpenShiftDeployedModel;
+  refreshDeployments: (canceled: Holder<boolean>) => void;
 }
 
 export function OpenShiftDeploymentDropdownItem(props: Props) {
+  const { refreshDeployments } = { ...props };
   const devModeDispatch = useDevModeDispatch();
   const [isRestoring, setRestoring] = useState(false);
 
@@ -71,10 +74,12 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
 
     setRestoring(true);
     await devModeDispatch.restart();
+
     window.setTimeout(() => {
       setRestoring(false);
+      refreshDeployments(new Holder(false));
     }, 2000);
-  }, [devModeDispatch, isRestoring]);
+  }, [devModeDispatch, isRestoring, refreshDeployments]);
 
   const stateIcon = useMemo(() => {
     if (props.deployment.state === DeploymentState.UP) {
@@ -147,18 +152,20 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
           {deploymentName}
         </DropdownItem>
       </FlexItem>
-      <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
-        <Tooltip content={"Restore its original state"}>
-          <Button
-            className="kogito--editor__openshift-deployments-dropdown-item-action"
-            style={{ color: "var(--pf-global--palette--black-500)" }}
-            variant={ButtonVariant.plain}
-            onClick={onRestoreClicked}
-            icon={<HistoryIcon />}
-            isLoading={isRestoring}
-          />
-        </Tooltip>
-      </FlexItem>
+      {props.deployment.devMode && (
+        <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
+          <Tooltip content={"Restore its original state"}>
+            <Button
+              className="kogito--editor__openshift-deployments-dropdown-item-action"
+              style={{ color: "var(--pf-global--palette--black-500)" }}
+              variant={ButtonVariant.plain}
+              onClick={onRestoreClicked}
+              icon={<HistoryIcon />}
+              isLoading={isRestoring}
+            />
+          </Tooltip>
+        </FlexItem>
+      )}
     </Flex>
   );
 }

@@ -15,44 +15,35 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import { InitDeployArgs, InitSwfDeployArgs, WebToolsOpenShiftDeployedModel } from "./deploy/types";
+import { InitDeployArgs, InitSwfDeployArgs } from "./deploy/types";
 import { useDeploymentStrategy } from "./hooks/useDeploymentStrategy";
 import { useOpenApi } from "./hooks/useOpenApi";
 import { useRemoteServiceRegistry } from "./hooks/useRemoteServiceRegistry";
 import { OpenShiftContext } from "./OpenShiftContext";
-import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KnativeDeploymentLoaderPipeline } from "./pipelines/KnativeDeploymentLoaderPipeline";
-import { DevModeDeploymentLoaderPipeline } from "./pipelines/DevModeDeploymentLoaderPipeline";
 import { useEnv } from "../env/EnvContext";
-import { resolveWebToolsId, useDevMode } from "./devMode/DevModeContext";
 import { AppDistributionMode } from "../AppConstants";
+import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import {
   KubernetesConnectionStatus,
   isKubernetesConnectionValid,
 } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
-interface Props {
-  children: React.ReactNode;
-}
-
-const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
 const FETCH_OPEN_API_POLLING_TIME = 5000;
 
-export function OpenShiftContextProvider(props: Props) {
+export function OpenShiftContextProvider(props: React.PropsWithChildren<{}>) {
   const { env } = useEnv();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
-  const devMode = useDevMode();
   const { createDeploymentStrategy } = useDeploymentStrategy();
   const { fetchOpenApiContent } = useOpenApi();
   const { uploadArtifact } = useRemoteServiceRegistry();
 
-  const [deployments, setDeployments] = useState([] as WebToolsOpenShiftDeployedModel[]);
   const [isDeployDropdownOpen, setDeployDropdownOpen] = useState(false);
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
@@ -67,20 +58,8 @@ export function OpenShiftContextProvider(props: Props) {
     });
   }, [env.FEATURE_FLAGS.MODE, settings.openshift.config.namespace, settingsDispatch.openshift.service]);
 
-  const devModeDeploymentLoaderPipeline = useMemo(() => {
-    if (!devMode.isEnabled) {
-      return;
-    }
-    return new DevModeDeploymentLoaderPipeline({
-      webToolsId: resolveWebToolsId(),
-      namespace: settings.openshift.config.namespace,
-      openShiftService: settingsDispatch.openshift.service,
-    });
-  }, [devMode.isEnabled, settings.openshift.config.namespace, settingsDispatch.openshift.service]);
-
   const onDisconnect = useCallback(() => {
     settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);
-    setDeployments([]);
 
     setDeployDropdownOpen(false);
     setDeploymentsDropdownOpen(false);
@@ -129,6 +108,11 @@ export function OpenShiftContextProvider(props: Props) {
     [deploy, fetchOpenApiContent, uploadArtifact]
   );
 
+  const loadDeployments = useCallback(
+    async () => deploymentLoaderPipeline?.execute() ?? [],
+    [deploymentLoaderPipeline]
+  );
+
   useEffect(() => {
     if (kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
       onDisconnect();
@@ -136,7 +120,6 @@ export function OpenShiftContextProvider(props: Props) {
     }
 
     if (!isKubernetesConnectionValid(settings.openshift.config)) {
-      setDeployments([]);
       return;
     }
 
@@ -148,45 +131,11 @@ export function OpenShiftContextProvider(props: Props) {
           settingsDispatch.openshift.setStatus(
             isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
           );
-
-          if (isConfigOk) {
-            return Promise.all([
-              deploymentLoaderPipeline?.execute() ?? Promise.resolve([]),
-              devModeDeploymentLoaderPipeline?.execute() ?? Promise.resolve([]),
-            ]).then((res) => res.flat());
-          }
-          return [];
         })
-        .then((ds) => setDeployments(ds.flat()))
         .catch((error) => console.error(error));
-      return;
-    }
-
-    if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
-      let loadDeploymentsTask: number | undefined;
-
-      (function callImmediatelyAndPoll() {
-        try {
-          Promise.all([
-            deploymentLoaderPipeline?.execute() ?? Promise.resolve([]),
-            devModeDeploymentLoaderPipeline?.execute() ?? Promise.resolve([]),
-          ])
-            .then((res) => res.flat())
-            .then((ds) => setDeployments(ds));
-
-          loadDeploymentsTask = window.setTimeout(callImmediatelyAndPoll, LOAD_DEPLOYMENTS_POLLING_TIME);
-        } catch (error) {
-          onDisconnect();
-          window.clearTimeout(loadDeploymentsTask);
-          console.error(error);
-        }
-      })();
-
-      return () => window.clearTimeout(loadDeploymentsTask);
     }
   }, [
     deploymentLoaderPipeline,
-    devModeDeploymentLoaderPipeline,
     isDeploymentsDropdownOpen,
     kieSandboxExtendedServices.status,
     onDisconnect,
@@ -197,7 +146,6 @@ export function OpenShiftContextProvider(props: Props) {
 
   const value = useMemo(
     () => ({
-      deployments,
       isDeployDropdownOpen,
       setDeployDropdownOpen,
       isDeploymentsDropdownOpen,
@@ -206,8 +154,9 @@ export function OpenShiftContextProvider(props: Props) {
       setConfirmDeployModalOpen,
       deploy,
       deploySwf,
+      loadDeployments,
     }),
-    [deployments, isDeployDropdownOpen, isDeploymentsDropdownOpen, isConfirmDeployModalOpen, deploy, deploySwf]
+    [isDeployDropdownOpen, isDeploymentsDropdownOpen, isConfirmDeployModalOpen, deploy, deploySwf, loadDeployments]
   );
 
   return <OpenShiftContext.Provider value={value}>{props.children}</OpenShiftContext.Provider>;
