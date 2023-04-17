@@ -216,7 +216,13 @@ export default class VSCodeTestHelper {
     await consoleHelper.sendKeys(Key.ENTER);
   }
 
-  public takeScreenshotAndSave = async (name: string, dirPath: string): Promise<void> => {
+  /**
+   * Creates screenshot of current VSCode window and saves it to given path.
+   *
+   * @param name screenshot file name without extension
+   * @param dirPath path to a folder to store screenshots (will be created if doesn't exist)
+   */
+  private takeScreenshotAndSave = async (name: string, dirPath: string): Promise<void> => {
     const data = await this.driver.takeScreenshot();
     fs.mkdirpSync(dirPath);
     fs.writeFileSync(path.join(dirPath, `${sanitize(name)}.png`), data, "base64");
