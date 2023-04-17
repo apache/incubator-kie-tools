@@ -42,6 +42,7 @@ import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutio
 
 describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
+  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
   const MULTIPLE_INSTANCE_BPMN: string = "MultipleInstanceSubprocess.bpmn";
   const USER_TASK_BPMN: string = "UserTask.bpmn";
   const WID_BPMN: string = "process-wid.bpmn";
@@ -64,6 +65,7 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
 
   afterEach(async function () {
     this.timeout(30000);
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
     await webview.switchBack();

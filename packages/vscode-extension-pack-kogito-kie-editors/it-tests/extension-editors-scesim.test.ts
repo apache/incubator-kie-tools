@@ -31,6 +31,7 @@ import { assert } from "chai";
  */
 describe("KIE Editors Integration Test Suite - SCESIM Editor", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
+  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_DMN_SCESIM: string = "demo-dmn.scesim";
 
@@ -51,6 +52,7 @@ describe("KIE Editors Integration Test Suite - SCESIM Editor", () => {
 
   afterEach(async function () {
     this.timeout(15000);
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
     await webview.switchBack();

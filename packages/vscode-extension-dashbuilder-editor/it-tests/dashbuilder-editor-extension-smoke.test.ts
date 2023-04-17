@@ -23,6 +23,7 @@ import DashbuilderEditorTestHelper from "./helpers/dashbuilder/DashbuilderEditor
 // TODO Fix tests and re-enable them
 describe.skip("Dashbuilder editor - smoke integration tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "smoke-test");
+  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
 
   let testHelper: VSCodeTestHelper;
   let browser: VSBrowser;
@@ -41,6 +42,7 @@ describe.skip("Dashbuilder editor - smoke integration tests", () => {
 
   afterEach(async function () {
     this.timeout(15000);
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });

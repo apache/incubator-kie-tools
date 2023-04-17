@@ -7841,9 +7841,15 @@ importers:
       "@types/chai":
         specifier: ^4.2.17
         version: 4.2.18
+      "@types/fs-extra":
+        specifier: ^11.0.1
+        version: 11.0.1
       "@types/mocha":
         specifier: ^8.2.2
         version: 8.2.2
+      "@types/node":
+        specifier: ^18.13.0
+        version: 18.13.0
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
@@ -7868,6 +7874,9 @@ importers:
       cpr:
         specifier: ^3.0.1
         version: 3.0.1
+      fs-extra:
+        specifier: ^11.1.1
+        version: 11.1.1
       mocha:
         specifier: ^9.2.0
         version: 9.2.0
@@ -7883,6 +7892,9 @@ importers:
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      sanitize-filename-ts:
+        specifier: ^1.0.2
+        version: 1.0.2
       selenium-webdriver:
         specifier: ^4.8.1
         version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
@@ -8116,6 +8128,9 @@ importers:
       "@types/chai":
         specifier: ^4.2.17
         version: 4.2.18
+      "@types/fs-extra":
+        specifier: ^11.0.1
+        version: 11.0.1
       "@types/jest":
         specifier: ^26.0.23
         version: 26.0.23
@@ -8128,6 +8143,9 @@ importers:
       "@types/mocha":
         specifier: ^8.2.2
         version: 8.2.2
+      "@types/node":
+        specifier: ^18.13.0
+        version: 18.13.0
       "@types/vscode":
         specifier: ^1.66.0
         version: 1.66.0
@@ -8152,6 +8170,9 @@ importers:
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.70.0)
+      fs-extra:
+        specifier: ^11.1.1
+        version: 11.1.1
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -8176,6 +8197,9 @@ importers:
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      sanitize-filename-ts:
+        specifier: ^1.0.2
+        version: 1.0.2
       ts-jest:
         specifier: ^26.5.6
         version: 26.5.6(jest@26.6.3)(typescript@4.5.4)
@@ -8391,9 +8415,15 @@ importers:
       "@types/chai":
         specifier: ^4.2.17
         version: 4.2.18
+      "@types/fs-extra":
+        specifier: ^11.0.1
+        version: 11.0.1
       "@types/mocha":
         specifier: ^8.2.2
         version: 8.2.2
+      "@types/node":
+        specifier: ^18.13.0
+        version: 18.13.0
       "@types/selenium-webdriver":
         specifier: ^4.1.12
         version: 4.1.12
@@ -8418,6 +8448,9 @@ importers:
       cpr:
         specifier: ^3.0.1
         version: 3.0.1
+      fs-extra:
+        specifier: ^11.1.1
+        version: 11.1.1
       mocha:
         specifier: ^9.2.0
         version: 9.2.0
@@ -8436,6 +8469,9 @@ importers:
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      sanitize-filename-ts:
+        specifier: ^1.0.2
+        version: 1.0.2
       selenium-webdriver:
         specifier: ^4.8.1
         version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
@@ -8527,9 +8563,15 @@ importers:
       "@types/chai":
         specifier: ^4.2.17
         version: 4.2.18
+      "@types/fs-extra":
+        specifier: ^11.0.1
+        version: 11.0.1
       "@types/mocha":
         specifier: ^8.2.2
         version: 8.2.2
+      "@types/node":
+        specifier: ^18.13.0
+        version: 18.13.0
       "@types/selenium-webdriver":
         specifier: ^4.1.12
         version: 4.1.12
@@ -8551,6 +8593,9 @@ importers:
       cpr:
         specifier: ^3.0.1
         version: 3.0.1
+      fs-extra:
+        specifier: ^11.1.1
+        version: 11.1.1
       mocha:
         specifier: ^9.2.0
         version: 9.2.0
@@ -8569,6 +8614,9 @@ importers:
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      sanitize-filename-ts:
+        specifier: ^1.0.2
+        version: 1.0.2
       selenium-webdriver:
         specifier: ^4.8.1
         version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
@@ -14514,6 +14562,14 @@ packages:
       { integrity: sha512-AR2KUJIMdSfl/SaAHpRotBAlaJpmhgHwehEeSJQOG0hS3IrjDU16xUEEUTdqcvdLa1q16ZK5MMrtOagfLvm0gw== }
     dev: true
 
+  /@types/fs-extra@11.0.1:
+    resolution:
+      { integrity: sha512-MxObHvNl4A69ofaTRU8DFqvgzzv8s9yRtaPPm5gud9HDNvpB3GPQFvNuTWAI59B9huVGV5jXYJwbCsmBsOGYWA== }
+    dependencies:
+      "@types/jsonfile": 6.1.1
+      "@types/node": 18.13.0
+    dev: true
+
   /@types/geojson@7946.0.8:
     resolution:
       { integrity: sha512-1rkryxURpr6aWP7R786/UQOkJ3PcpQiWkAXBmdWc7ryFWqN6a4xfK7BtjXvFBKO9LjQ+MWQSWxYeZX1OApnArA== }
@@ -14643,6 +14699,13 @@ packages:
   /@types/json-to-ast@2.1.2:
     resolution:
       { integrity: sha512-GEjR5l9wZGS74KhL1a1tZuyRJqdLB7LGgOXzWspJx9xxC/iyCFTwwKv71Lz8fzZyGuVW8FjASQGoYFi6XZJWLQ== }
+    dev: true
+
+  /@types/jsonfile@6.1.1:
+    resolution:
+      { integrity: sha512-GSgiRCVeapDN+3pqA35IkQwasaCh/0YFH5dEF6S88iDvEn901DjOeH3/QPY+XYP1DFzDZPvIvfeEgk+7br5png== }
+    dependencies:
+      "@types/node": 18.13.0
     dev: true
 
   /@types/keyv@3.1.1:
@@ -21118,9 +21181,9 @@ packages:
       universalify: 2.0.0
     dev: true
 
-  /fs-extra@11.1.0:
+  /fs-extra@11.1.1:
     resolution:
-      { integrity: sha512-0rcTq621PD5jM/e0a3EJoGC/1TC5ZBCERW82LQuwfGnCa1V8w7dpYH1yNu+SLb6E5dkeCBzKEyLGlFrnr+dUyw== }
+      { integrity: sha512-MGIE4HOvQCeUCzmlHs0vXpih4ysz4wg9qiSAu6cd42lVwPbTM1TjV7RusoyQqMmk/95gdQZX72u+YW+c3eEpFQ== }
     engines: { node: ">=14.14" }
     dependencies:
       graceful-fs: 4.2.10
@@ -25121,7 +25184,7 @@ packages:
       clipboardy: 2.3.0
       clone-deep: 4.0.1
       compare-versions: 5.0.1
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       ts-essentials: 9.3.1(typescript@4.5.4)
       typescript: 4.5.4
@@ -25137,7 +25200,7 @@ packages:
       clipboardy: 2.3.0
       clone-deep: 4.0.1
       compare-versions: 5.0.1
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       ts-essentials: 9.3.1(typescript@4.8.4)
       typescript: 4.8.4
@@ -28395,6 +28458,13 @@ packages:
       - supports-color
     dev: true
 
+  /sanitize-filename-ts@1.0.2:
+    resolution:
+      { integrity: sha512-bON2VOJoappmaBHlnxvBNk5R7HkUAsirf5m1M5Kz15uZykDGbHfGPCQNcEQKR8HrQhgh9CmQ6Xe9y71yM9ywkw== }
+    dependencies:
+      truncate-utf8-bytes: 1.0.2
+    dev: true
+
   /sanitize-filename@1.6.3:
     resolution:
       { integrity: sha512-y/52Mcy7aw3gRm7IrcGDFx/bCk4AhRh2eI9luHOQM86nZsqwiRkkq2GekHXBBD+SmPidc8i2PqtYZl+pWJ8Oeg== }
@@ -31082,7 +31152,7 @@ packages:
       "@vscode/vsce": 2.18.0
       commander: 10.0.0
       compare-versions: 5.0.1
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       glob: 8.1.0
       got: 11.8.6
       hpagent: 1.2.0
@@ -31112,7 +31182,7 @@ packages:
       "@vscode/vsce": 2.18.0
       commander: 10.0.0
       compare-versions: 5.0.1
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       glob: 8.1.0
       got: 11.8.6
       hpagent: 1.2.0
