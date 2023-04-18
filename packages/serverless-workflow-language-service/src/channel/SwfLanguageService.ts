@@ -29,6 +29,7 @@ import {
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { posix as posixPath } from "path";
+import { JSONSchema } from "vscode-json-languageservice";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
 import {
@@ -192,6 +193,14 @@ export class SwfLanguageService implements IEditorLanguageService {
         ? args.getSchemaDiagnostics
         : undefined,
     });
+  }
+
+  public async getSchemaDiagnostics(args: {
+    textDocument: TextDocument;
+    fileMatch: string[];
+    jsonSchema: JSONSchema;
+  }): Promise<Diagnostic[]> {
+    return this.els.getSchemaDiagnostics(args);
   }
 
   public dispose() {

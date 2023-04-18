@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/* TODO: index: rename package to json-yaml-language-service */
 /**
  * File language for an opened file in the text editor.
  */

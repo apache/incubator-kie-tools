@@ -106,5 +106,11 @@ export interface IEditorLanguageService {
     }) => Promise<Diagnostic[]>;
   }): Promise<Diagnostic[]>;
 
+  getSchemaDiagnostics(args: {
+    textDocument: TextDocument;
+    fileMatch: string[];
+    jsonSchema: JSONSchema;
+  }): Promise<Diagnostic[]>;
+
   dispose(): void;
 }

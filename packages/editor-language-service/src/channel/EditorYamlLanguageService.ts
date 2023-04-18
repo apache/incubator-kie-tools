@@ -60,7 +60,7 @@ import {
   TranslateArgs,
 } from "./types";
 
-export class EditorYamlLanguageService {
+export class EditorYamlLanguageService implements IEditorLanguageService {
   protected readonly ls: IEditorLanguageService;
   protected readonly codeCompletionStrategy: ELsCodeCompletionStrategy;
 
@@ -197,6 +197,10 @@ export class EditorYamlLanguageService {
     yamlLs.configure(yamlLanguageSettings);
     return yamlLs.doValidation(args.textDocument, false);
   }
+
+  public dispose() {
+    return this.ls.dispose();
+  }
 }
 
 /**
@@ -307,7 +311,7 @@ export class EditorYamlCodeCompletionStrategy implements ELsCodeCompletionStrate
     const charAtPosition = document.getText(Range.create(position, nextPosition));
     const isStartingCharJsonFormat = /"|'|\[|{/.test(charAtPosition);
 
-    // if node is in JSON format return a position the same way SwfJsonLanguageService does.
+    // if node is in JSON format return a position the same way EditorfJsonLanguageService does.
     return isStartingCharJsonFormat ? nextPosition : position;
   }
 

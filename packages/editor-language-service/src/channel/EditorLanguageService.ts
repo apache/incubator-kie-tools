@@ -15,6 +15,7 @@
  */
 
 import * as jsonc from "jsonc-parser";
+import { JSONSchema } from "vscode-json-languageservice";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
@@ -162,6 +163,14 @@ export class EditorLanguageService implements IEditorLanguageService {
     });
 
     return result;
+  }
+
+  getSchemaDiagnostics(args: {
+    textDocument: TextDocument;
+    fileMatch: string[];
+    jsonSchema: JSONSchema;
+  }): Promise<Diagnostic[]> {
+    return Promise.resolve([]);
   }
 
   public dispose() {

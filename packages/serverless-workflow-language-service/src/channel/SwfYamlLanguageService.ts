@@ -21,6 +21,7 @@ import {
   ELsShouldCreateCodelensArgs,
   ShouldCompleteArgs,
   TranslateArgs,
+  IEditorLanguageService,
 } from "@kie-tools/editor-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, Diagnostic, Position, Range } from "vscode-languageserver-types";
@@ -29,7 +30,7 @@ import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
 
-export class SwfYamlLanguageService {
+export class SwfYamlLanguageService implements IEditorLanguageService {
   private readonly ls: SwfLanguageService;
   private readonly yamlELs: EditorYamlLanguageService;
   private readonly codeCompletionStrategy: SwfYamlCodeCompletionStrategy;
@@ -75,7 +76,7 @@ export class SwfYamlLanguageService {
     });
   }
 
-  private async getSchemaDiagnostics(args: { textDocument: TextDocument; fileMatch: string[] }): Promise<Diagnostic[]> {
+  public async getSchemaDiagnostics(args: { textDocument: TextDocument; fileMatch: string[] }): Promise<Diagnostic[]> {
     return await this.yamlELs.getSchemaDiagnostics({
       ...args,
       jsonSchema: SW_SPEC_WORKFLOW_SCHEMA,
@@ -83,7 +84,7 @@ export class SwfYamlLanguageService {
   }
 
   public dispose() {
-    return this.ls.dispose();
+    return this.yamlELs.dispose();
   }
 }
 

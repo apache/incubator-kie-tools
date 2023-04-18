@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-import * as jsonc from "jsonc-parser";
+import { hasNodeComma, isOffsetAtLastChild } from "@kie-tools/editor-language-service/dist/channel";
 import {
-  hasNodeComma,
-  isOffsetAtLastChild,
   JsonCodeCompletionStrategy,
   SwfJsonLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { CodeLens, Position } from "vscode-languageserver-types";
+import {
+  getJqBuiltInFunctionTests,
+  getJqReusableFunctionTests,
+  getJqVariableTests,
+  getJsonLsForJqExpressionTests,
+} from "./SwfJqExpressionTestUtils";
 import {
   defaultConfig,
   defaultJqCompletionsConfig,
@@ -29,12 +33,6 @@ import {
   testRelativeService1,
 } from "./SwfLanguageServiceConfigs";
 import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, treat, trim } from "./testUtils";
-import {
-  getJqBuiltInFunctionTests,
-  getJqReusableFunctionTests,
-  getJqVariableTests,
-  getJsonLsForJqExpressionTests,
-} from "./SwfJqExpressionTestUtils";
 
 const documentUri = "test.sw.json";
 

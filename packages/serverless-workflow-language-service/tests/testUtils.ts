@@ -18,8 +18,9 @@ import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/di
 import {
   JsonCodeCompletionStrategy,
   SwfJsonLanguageService,
+  SwfYamlCodeCompletionStrategy,
   SwfYamlLanguageService,
-  YamlCodeCompletionStrategy,
+  CodeCompletionStrategy,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CompletionItem, DocumentUri, Position } from "vscode-languageserver-types";
@@ -85,7 +86,7 @@ export async function codeCompletionTester(
 export function getStartNodeValuePositionTester(args: {
   content: string;
   path: ELsJsonPath;
-  codeCompletionStrategy: JsonCodeCompletionStrategy | YamlCodeCompletionStrategy;
+  codeCompletionStrategy: CodeCompletionStrategy;
   documentUri: string;
   ls: SwfJsonLanguageService | SwfYamlLanguageService;
 }): Position | undefined {
