@@ -62,6 +62,8 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
 
         void configureChart(ChartBootstrapParams bootstrapParams);
 
+        void close();
+
     }
 
     @Inject
@@ -303,6 +305,13 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
             singleColumnsNames.add(columnName);
         }
         return singleColumnsNames.stream().toArray(String[]::new);
+    }
+
+    @Override
+    public void close() {
+        super.close();
+
+        view.close();
     }
 
     abstract DataSetLookupConstraints getDataSetLookupConstraints();

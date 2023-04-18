@@ -17,7 +17,7 @@ package org.dashbuilder.client.external;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 enum SupportedMimeType {
 
@@ -31,9 +31,9 @@ enum SupportedMimeType {
 
     String extension;
 
-    Function<String, String> tranformer;
+    UnaryOperator<String> tranformer;
 
-    private SupportedMimeType(String type, String extension, Function<String, String> tranformer) {
+    private SupportedMimeType(String type, String extension, UnaryOperator<String> tranformer) {
         this.mimeType = type;
         this.extension = extension;
         this.tranformer = tranformer;

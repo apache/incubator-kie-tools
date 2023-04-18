@@ -51,9 +51,6 @@ public class ExternalDataSetClientProvider {
     ClientDataSetManager clientDataSetManager;
 
     @Inject
-    CSVParser csvParser;
-
-    @Inject
     ExternalDataCallbackCoordinator dataSetCallbackCoordinator;
 
     ExternalDataSetJSONParser externalParser;
@@ -62,7 +59,7 @@ public class ExternalDataSetClientProvider {
 
     private Map<String, Double> scheduledTimeouts;
 
-    SupportedMimeType DEFAULT_TYPE = SupportedMimeType.JSON;
+    private static final SupportedMimeType DEFAULT_TYPE = SupportedMimeType.JSON;
 
     @PostConstruct
     public void setup() {
@@ -172,7 +169,7 @@ public class ExternalDataSetClientProvider {
     }
 
     private Throwable buildExceptionForResponse(String responseText, Response response) {
-        var sb = new StringBuffer("The dataset URL is unreachable with status ");
+        var sb = new StringBuilder("The dataset URL is unreachable with status ");
         sb.append(response.status);
         sb.append(" - ");
         sb.append(response.statusText);

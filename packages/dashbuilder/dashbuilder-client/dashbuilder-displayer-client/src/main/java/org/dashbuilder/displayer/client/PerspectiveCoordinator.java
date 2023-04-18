@@ -75,4 +75,16 @@ public class PerspectiveCoordinator {
         displayerCoordinator.clear();
     }
 
+    public void closeDisplayer(String uuid) {
+        if (uuid != null) {
+            displayerCoordinator.getDisplayerList()
+                    .stream()
+                    .filter(d -> uuid.equals(d.getDisplayerSettings().getUUID()))
+                    .findFirst()
+                    .ifPresent(d -> {
+                        d.close();
+                        displayerCoordinator.removeDisplayer(d);
+                    });
+        }
+    }
 }
