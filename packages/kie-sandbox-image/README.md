@@ -244,11 +244,12 @@ By default all three standard editors will be enabled (BPMN, DMN, PMML). To disa
 
 - **type**: The type of file that you want to edit.
 - **filePathGlob**: The glob pattern of the file you want to edit.
-- **resourcesPathPrefix**: The path to the editor you want to get to.
-- **path**: The path of the editor.
+- **resourcesPathPrefix**: The path to the gwt-editor.
+- **path**: The path of the editor envelope.html.
 - **title**: The title of the editor that will be displayed on the home page.
 - **description**: Displays a short description of the editor under the title on the home page.
-  Here's an example of what it should look like:
+
+Here's an example of what it should look like:
 
 ```js
     {

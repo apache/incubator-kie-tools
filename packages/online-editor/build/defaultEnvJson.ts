@@ -109,13 +109,13 @@ export const defaultEnvJson: EnvJson = {
       title: "Decision",
       description: "DMN files are used to generate decision models",
     },
-    // {
-    //   type: FileTypes.PMML,
-    //   filePathGlob: GLOB_PATTERN.pmml,
-    //   resourcesPathPrefix: "",
-    //   path: "pmml-envelope.html",
-    //   title: "Scorecard",
-    //   description: "PMML files are used to generate scorecards",
-    // },
+    {
+      type: FileTypes.PMML,
+      filePathGlob: GLOB_PATTERN.pmml,
+      resourcesPathPrefix: "",
+      path: "pmml-envelope.html",
+      title: "Scorecard",
+      description: "PMML files are used to generate scorecards",
+    },
   ],
 };
