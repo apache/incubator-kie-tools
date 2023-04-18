@@ -2,7 +2,7 @@
 
 After making changes to either `dmn-dev-deployment-form-webapp` or `dmn-dev-deployment-quarkys-app` you may need to rebuild the `dmn-dev-deployment-base-image` to be used while developing. To aid in this scenario, a tool was created to build and load the new image to possible places where it can be deployed (Kubernetes clusters, such as Kind and Minkube, as well as OpenShift sandboxes).
 
-To use this tool, simply run `pnpm create-test-image:<target>`, with target being one of `openshift`, `minikube`, `kind` or `build-only`.
+**To use this tool, simply run `pnpm create-test-image:<target>`, with target being one of `openshift`, `minikube`, `kind` or `build-only`.**
 
 Or, run the script with your own parameters described below:
 
