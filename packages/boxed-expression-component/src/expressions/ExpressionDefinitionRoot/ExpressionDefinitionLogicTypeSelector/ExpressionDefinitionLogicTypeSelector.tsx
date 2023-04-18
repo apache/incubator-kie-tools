@@ -290,17 +290,21 @@ export function ExpressionDefinitionLogicTypeSelector({
   const contextMenuItems = useMemo(() => {
     return (
       <MenuList>
-        <MenuItem
-          onClick={resetLogicType}
-          icon={
-            <div style={menuIconContainerStyle}>
-              <CompressIcon />
-            </div>
-          }
-        >
-          {i18n.terms.reset}
-        </MenuItem>
-        <Divider style={{ padding: "16px", margin: 0 }} />
+        {isResetSupported && (
+          <>
+            <MenuItem
+              onClick={resetLogicType}
+              icon={
+                <div style={menuIconContainerStyle}>
+                  <CompressIcon />
+                </div>
+              }
+            >
+              {i18n.terms.reset}
+            </MenuItem>
+            <Divider style={{ padding: "16px", margin: 0 }} />
+          </>
+        )}
         <MenuItem
           onClick={copyExpression}
           icon={
@@ -311,16 +315,18 @@ export function ExpressionDefinitionLogicTypeSelector({
         >
           {i18n.terms.copy}
         </MenuItem>
-        <MenuItem
-          onClick={cutExpression}
-          icon={
-            <div style={menuIconContainerStyle}>
-              <CutIcon />
-            </div>
-          }
-        >
-          {i18n.terms.cut}
-        </MenuItem>
+        {isResetSupported && (
+          <MenuItem
+            onClick={cutExpression}
+            icon={
+              <div style={menuIconContainerStyle}>
+                <CutIcon />
+              </div>
+            }
+          >
+            {i18n.terms.cut}
+          </MenuItem>
+        )}
         <MenuItem
           className={pasteExpressionError ? "paste-from-clipboard-error" : ""}
           description={pasteExpressionError ? "Paste operation was not successful" : ""}
