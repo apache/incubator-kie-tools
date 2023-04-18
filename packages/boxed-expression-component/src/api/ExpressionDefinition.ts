@@ -145,8 +145,19 @@ export interface DecisionTableExpressionDefinitionClause {
   name: string;
   /** Clause data type */
   dataType: DmnBuiltInDataType;
+  /** Clause Unary Tests */
+  clauseUnaryTests?: DecisionTableExpressionDefinitionClauseUnaryTests;
   /** Clause width */
   width: number | undefined;
+}
+
+export interface DecisionTableExpressionDefinitionClauseUnaryTests {
+  /** ClauseUnaryTests identifier */
+  id: string;
+  /** ClauseUnaryTests name */
+  text: string;
+  /** ClauseUnaryTests constraint type */
+  constraintType: string;
 }
 
 export interface DecisionTableExpressionDefinitionAnnotation {
