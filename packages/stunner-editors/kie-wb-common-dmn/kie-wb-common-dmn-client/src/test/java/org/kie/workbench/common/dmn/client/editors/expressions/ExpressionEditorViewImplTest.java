@@ -922,7 +922,12 @@ public class ExpressionEditorViewImplTest {
     public void testBusinessKnowledgeModelMatches_WhenIsNotABkm() {
 
         final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+        final BusinessKnowledgeModel anotherBkm = mock(BusinessKnowledgeModel.class);
+
         when(hasExpression.getExpression()).thenReturn(functionDefinition);
+        when(functionDefinition.asDMNModelInstrumentedBase()).thenReturn(functionDefinition);
+        when(functionDefinition.getParent()).thenReturn(anotherBkm);
+
         doReturn(null).when(view).getBusinessKnowledgeModel();
 
         assertFalse(view.businessKnowledgeModelMatches("someUuid"));
@@ -943,9 +948,12 @@ public class ExpressionEditorViewImplTest {
         final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
         final String someUuid = "uuid";
         final Id id = new Id(someUuid);
+
         when(bkm.getEncapsulatedLogic()).thenReturn(functionDefinition);
         when(functionDefinition.getId()).thenReturn(id);
         when(hasExpression.getExpression()).thenReturn(functionDefinition);
+        when(functionDefinition.asDMNModelInstrumentedBase()).thenReturn(functionDefinition);
+        when(functionDefinition.getParent()).thenReturn(bkm);
 
         doReturn(bkm).when(view).getBusinessKnowledgeModel();
 
@@ -959,9 +967,12 @@ public class ExpressionEditorViewImplTest {
         final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
         final String someUuid = "uuid";
         final Id id = new Id(someUuid);
+
         when(bkm.getEncapsulatedLogic()).thenReturn(functionDefinition);
         when(functionDefinition.getId()).thenReturn(id);
         when(hasExpression.getExpression()).thenReturn(functionDefinition);
+        when(functionDefinition.asDMNModelInstrumentedBase()).thenReturn(functionDefinition);
+        when(functionDefinition.getParent()).thenReturn(bkm);
 
         doReturn(bkm).when(view).getBusinessKnowledgeModel();
 
@@ -980,6 +991,8 @@ public class ExpressionEditorViewImplTest {
         when(bkm.getEncapsulatedLogic()).thenReturn(functionDefinition);
         when(functionDefinition.getId()).thenReturn(id);
         when(hasExpression.getExpression()).thenReturn(functionDefinition);
+        when(functionDefinition.asDMNModelInstrumentedBase()).thenReturn(functionDefinition);
+        when(functionDefinition.getParent()).thenReturn(bkm);
 
         doReturn(true).when(view).encapsulatedLogicMatches(encapsulatedLogicUuid);
         doReturn(bkm).when(view).getBusinessKnowledgeModel();
@@ -999,6 +1012,8 @@ public class ExpressionEditorViewImplTest {
         when(bkm.getEncapsulatedLogic()).thenReturn(functionDefinition);
         when(functionDefinition.getId()).thenReturn(id);
         when(hasExpression.getExpression()).thenReturn(functionDefinition);
+        when(functionDefinition.asDMNModelInstrumentedBase()).thenReturn(functionDefinition);
+        when(functionDefinition.getParent()).thenReturn(bkm);
 
         doReturn(false).when(view).encapsulatedLogicMatches(encapsulatedLogicUuid);
         doReturn(bkm).when(view).getBusinessKnowledgeModel();

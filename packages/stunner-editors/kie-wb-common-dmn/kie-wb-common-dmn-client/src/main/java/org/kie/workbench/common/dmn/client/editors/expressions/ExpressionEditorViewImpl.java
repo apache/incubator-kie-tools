@@ -401,6 +401,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     boolean businessKnowledgeModelMatches(final String uuid) {
 
         return getHasExpression().getExpression() instanceof FunctionDefinition
+                && getHasExpression().getExpression().asDMNModelInstrumentedBase().getParent() instanceof BusinessKnowledgeModel
                 && (matches(getBusinessKnowledgeModel(), uuid) || encapsulatedLogicMatches(uuid));
     }
 
