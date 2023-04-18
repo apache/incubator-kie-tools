@@ -19,11 +19,8 @@ import { setupWorkerConnection } from "@kie-tools-core/workspaces-git-fs/dist/wo
 import { WorkspacesWorkerApiImpl } from "@kie-tools-core/workspaces-git-fs/dist/worker/WorkspacesWorkerApiImpl";
 import { ENV_FILE_PATH } from "../../env/EnvConstants";
 import { EnvJson } from "../../env/EnvJson";
-import { EditorEnvelopeLocatorFactory, GLOB_PATTERN } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
-import { getEditorConfig } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 import { EditorEnvelopeConfig } from "../../envelopeLocator/EditorEnvelopeLocatorApi";
-import { useMemo } from "react";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
@@ -34,18 +31,17 @@ async function gitCorsProxyUrl(): Promise<string> {
   return env.KIE_SANDBOX_GIT_CORS_PROXY_URL;
 }
 
-async function getEditors(): Promise<EditorEnvelopeConfig[]> {
+async function editorEnvelopeConfig(): Promise<EditorEnvelopeConfig[]> {
   const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
   const env = (await (await fetch(envFilePath)).json()) as EnvJson;
   return env.KIE_SANDBOX_EDITOR_ENVELOPE_CONFIG;
 }
 
 const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProxyUrl() });
-
-function getEditorsList() {
-  return new EditorEnvelopeLocatorFactory().createPromised({ targetOrigin: "", editorEnvelopeConfig: getEditors() });
-}
-// shared worker connection
+const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().createAsync({
+  targetOrigin: "",
+  editorEnvelopeConfig: editorEnvelopeConfig(),
+});
 
 declare let onconnect: any;
 // eslint-disable-next-line prefer-const
@@ -57,9 +53,9 @@ onconnect = async (e: MessageEvent) => {
       appName: "KIE Sandbox",
       services: workspaceServices,
       fileFilter: {
-        isModel: async (path: string) => (await getEditorsList()).hasMappingFor(path),
-        isEditable: async (path: string) => (await getEditorsList()).hasMappingFor(path),
-        isSupported: async (path: string) => (await getEditorsList()).hasMappingFor(path),
+        isModel: async (path) => (await editorEnvelopeLocator).hasMappingFor(path),
+        isEditable: async (path) => (await editorEnvelopeLocator).hasMappingFor(path),
+        isSupported: async (path) => (await editorEnvelopeLocator).hasMappingFor(path),
       },
     }),
     port: e.ports[0],

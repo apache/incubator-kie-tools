@@ -99,7 +99,6 @@ export const defaultEnvJson: EnvJson = {
       resourcesPathPrefix: "gwt-editors/bpmn",
       path: "bpmn-envelope.html",
       title: "Workflow",
-      extension: "bpmn",
       description: "BPMN files are used to generate business workflows.",
     },
     {
@@ -108,17 +107,15 @@ export const defaultEnvJson: EnvJson = {
       resourcesPathPrefix: "gwt-editors/dmn",
       path: "dmn-envelope.html",
       title: "Decision",
-      extension: "dmn",
       description: "DMN files are used to generate decision models",
     },
-    {
-      type: FileTypes.PMML,
-      filePathGlob: GLOB_PATTERN.pmml,
-      resourcesPathPrefix: "",
-      path: "pmml-envelope.html",
-      title: "Scorecard",
-      extension: "pmml",
-      description: "PMML files are used to generate scorecards",
-    },
+    // {
+    //   type: FileTypes.PMML,
+    //   filePathGlob: GLOB_PATTERN.pmml,
+    //   resourcesPathPrefix: "",
+    //   path: "pmml-envelope.html",
+    //   title: "Scorecard",
+    //   description: "PMML files are used to generate scorecards",
+    // },
   ],
 };

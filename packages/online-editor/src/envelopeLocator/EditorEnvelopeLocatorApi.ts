@@ -20,6 +20,5 @@ export type EditorEnvelopeConfig = {
   resourcesPathPrefix: string;
   path: string;
   title: string;
-  extension: string;
   description: string;
 };

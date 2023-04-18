@@ -156,7 +156,7 @@ export function HomePage() {
                     <NewModelCard
                       key={index}
                       title={config.title}
-                      extension={config.extension}
+                      extension={config.type}
                       description={config.description}
                     />
                   );

@@ -21,7 +21,6 @@ import {
 } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
 import { FileTypes, isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { EditorEnvelopeConfig } from "./EditorEnvelopeLocatorApi";
-import { getEditorConfig } from "./hooks/EditorEnvelopeLocatorContext";
 
 export const GLOB_PATTERN = {
   all: "**/*",
@@ -63,7 +62,7 @@ export class EditorEnvelopeLocatorFactory {
       })
     );
   }
-  public async createPromised(args: { targetOrigin: string; editorEnvelopeConfig: Promise<EditorEnvelopeConfig[]> }) {
+  public async createAsync(args: { targetOrigin: string; editorEnvelopeConfig: Promise<EditorEnvelopeConfig[]> }) {
     return new EditorEnvelopeLocator(
       args.targetOrigin,
       (await args.editorEnvelopeConfig).map((config) => {
