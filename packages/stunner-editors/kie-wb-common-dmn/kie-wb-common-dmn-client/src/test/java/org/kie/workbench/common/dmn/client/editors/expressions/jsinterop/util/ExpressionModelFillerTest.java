@@ -41,6 +41,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Annotation;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Cell;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Clause;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ClauseUnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Column;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextEntryProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
@@ -295,7 +296,11 @@ public class ExpressionModelFillerTest {
         final String inputColumn2 = "Input column 2";
         final String inputDataType2 = "tCustom";
         final double inputWidth2 = 234d;
-        final Clause[] input = new Clause[]{new Clause(inputId, inputColumn, inputDataType, inputWidth), new Clause(inputId2, inputColumn2, inputDataType2, inputWidth2)};
+        final String inputClauseUnaryTestsId = "icud id";
+        final String inputClauseUnaryTestsText = "text";
+        final String inputClauseUnaryTestsConstraintType = "enumeration";
+        final ClauseUnaryTests inputClauseUnaryTest = new ClauseUnaryTests(inputClauseUnaryTestsId, inputClauseUnaryTestsText, inputClauseUnaryTestsConstraintType);
+        final Clause[] input = new Clause[]{new Clause(inputId, inputColumn, inputDataType, inputWidth, inputClauseUnaryTest), new Clause(inputId2, inputColumn2, inputDataType2, inputWidth2, null)};
         final String outputId = "Output id";
         final String outputColumn = "Output column";
         final String outputDataType = BuiltInType.STRING.asQName().getLocalPart();
@@ -304,7 +309,11 @@ public class ExpressionModelFillerTest {
         final String outputColumn2 = "Output column 2";
         final String outputDataType2 = "tTest";
         final double outputWidth2 = 432d;
-        final Clause[] output = new Clause[]{new Clause(outputId, outputColumn, outputDataType, outputWidth), new Clause(outputId2, outputColumn2, outputDataType2, outputWidth2)};
+        final String outputClauseUnaryTestsId = "ocud id";
+        final String outputClauseUnaryTestsText = "";
+        final String outputClauseUnaryTestsConstraintType = "none";
+        final ClauseUnaryTests outputClauseUnaryTest = new ClauseUnaryTests(outputClauseUnaryTestsId, outputClauseUnaryTestsText, outputClauseUnaryTestsConstraintType);
+        final Clause[] output = new Clause[]{new Clause(outputId, outputColumn, outputDataType, outputWidth, outputClauseUnaryTest), new Clause(outputId2, outputColumn2, outputDataType2, outputWidth2, null)};
         final String inputValue = "input value";
         final String outputValue = "output value";
         final String annotationValue = "annotation value";
@@ -327,6 +336,9 @@ public class ExpressionModelFillerTest {
                     assertThat(inputRef).extracting(InputClause::getInputExpression).isNotNull();
                     assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getText().getValue()).isEqualTo(inputColumn);
                     assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getTypeRef().getLocalPart()).isEqualTo(inputDataType);
+                    assertThat(inputRef).extracting(InputClause::getInputValues).extracting(inputClauseUnaryTests -> inputClauseUnaryTests.getId().getValue()).isEqualTo(inputClauseUnaryTestsId);
+                    assertThat(inputRef).extracting(InputClause::getInputValues).extracting(inputClauseUnaryTests -> inputClauseUnaryTests.getText().getValue()).isEqualTo(inputClauseUnaryTestsText);
+                    assertThat(inputRef).extracting(InputClause::getInputValues).extracting(inputClauseUnaryTests -> inputClauseUnaryTests.getConstraintType().value()).isEqualTo(inputClauseUnaryTestsConstraintType);
                 });
         assertThat(decisionTableExpression.getInput().get(1))
                 .satisfies(inputRef -> {
@@ -341,6 +353,9 @@ public class ExpressionModelFillerTest {
                 .satisfies(outputRef -> {
                     assertThat(outputRef).extracting(OutputClause::getName).isEqualTo(outputColumn);
                     assertThat(outputRef).extracting(outputClause -> outputClause.getTypeRef().getLocalPart()).isEqualTo(outputDataType);
+                    assertThat(outputRef).extracting(OutputClause::getOutputValues).extracting(outputClauseUnaryTests -> outputClauseUnaryTests.getId().getValue()).isEqualTo(outputClauseUnaryTestsId);
+                    assertThat(outputRef).extracting(OutputClause::getOutputValues).extracting(outputClauseUnaryTests -> outputClauseUnaryTests.getText().getValue()).isEqualTo(outputClauseUnaryTestsText);
+                    assertThat(outputRef).extracting(OutputClause::getOutputValues).extracting(outputClauseUnaryTests -> outputClauseUnaryTests.getConstraintType().value()).isEqualTo(outputClauseUnaryTestsConstraintType);
                 });
         assertThat(decisionTableExpression.getOutput().get(1))
                 .satisfies(outputRef -> {

@@ -27,6 +27,7 @@ import java.util.stream.IntStream;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.Binding;
 import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.api.definition.model.Context;
 import org.kie.workbench.common.dmn.api.definition.model.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
@@ -36,12 +37,14 @@ import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
+import org.kie.workbench.common.dmn.api.definition.model.InputClauseUnaryTests;
 import org.kie.workbench.common.dmn.api.definition.model.Invocation;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocument;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocumentModel;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClauseUnaryTests;
 import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
@@ -56,6 +59,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Annotation;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Cell;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Clause;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ClauseUnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Column;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextEntryProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
@@ -389,6 +393,9 @@ public class ExpressionModelFiller {
                     QName qName = qNameNormalizer.apply(makeQName(input.dataType));
                     inputClause.getInputExpression().setTypeRef(qName);
                     inputClause.getInputExpression().setTypeRefHolder(makeQNameHolder(qName));
+                    if (input.clauseUnaryTests != null) {
+                        inputClause.setInputValues(convertInputClauseUnaryTest(input.clauseUnaryTests));
+                    }
 
                     return inputClause;
                 })
@@ -405,9 +412,25 @@ public class ExpressionModelFiller {
                     outputClause.setName(output.name);
                     QName qName = qNameNormalizer.apply(makeQName(output.dataType));
                     outputClause.setTypeRef(qName);
+                    if (output.clauseUnaryTests != null) {
+                        outputClause.setOutputValues(convertOutputClauseUnaryTest(output.clauseUnaryTests));
+                    }
+
                     return outputClause;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private static InputClauseUnaryTests convertInputClauseUnaryTest(ClauseUnaryTests clauseUnaryTests) {
+        return new InputClauseUnaryTests(new Id(clauseUnaryTests.id),
+                                         new Text(clauseUnaryTests.text),
+                                         ConstraintType.fromString(clauseUnaryTests.constraintType));
+    }
+
+    private static OutputClauseUnaryTests convertOutputClauseUnaryTest(ClauseUnaryTests clauseUnaryTests) {
+        return new OutputClauseUnaryTests(new Id(clauseUnaryTests.id),
+                                          new Text(clauseUnaryTests.text),
+                                          ConstraintType.fromString(clauseUnaryTests.constraintType));
     }
 
     private static Collection<RuleAnnotationClause> annotationsConvertForDecisionTableExpression(final DecisionTableProps decisionTableProps) {

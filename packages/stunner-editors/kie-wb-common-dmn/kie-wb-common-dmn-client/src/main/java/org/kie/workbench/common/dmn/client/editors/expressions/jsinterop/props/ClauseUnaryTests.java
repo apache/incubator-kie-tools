@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,19 @@ package org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props;
 
 import jsinterop.annotations.JsType;
 
+/**
+ * It covers InputClauseUnaryTests and OutputClauseUnaryTests
+ */
 @JsType
-public class Clause {
+public class ClauseUnaryTests {
 
     public final String id;
-    public final String name;
-    public final String dataType;
-    public final Double width;
-    public final ClauseUnaryTests clauseUnaryTests;
+    public final String text;
+    public final String constraintType;
 
-    public Clause(final String id, final String name, final String dataType, final Double width, final ClauseUnaryTests unaryTests) {
+    public ClauseUnaryTests(String id, String text, String constraintType) {
         this.id = id;
-        this.name = name;
-        this.dataType = dataType;
-        this.width = width;
-        this.clauseUnaryTests = unaryTests;
+        this.text = text;
+        this.constraintType = constraintType;
     }
 }

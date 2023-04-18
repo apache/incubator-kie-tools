@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
 import org.kie.workbench.common.dmn.api.definition.model.Invocation;
 import org.kie.workbench.common.dmn.api.definition.model.IsLiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.IsUnaryTests;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocument;
@@ -40,6 +41,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Annotation;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Cell;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Clause;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ClauseUnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Column;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextEntryProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
@@ -270,7 +272,7 @@ public class ExpressionPropsFiller {
                     final String name = inputClause.getInputExpression().getText().getValue();
                     final String dataType = inputClause.getInputExpression().getTypeRefHolder().getValue().getLocalPart();
                     final Double width = decisionTableExpression.getComponentWidths().get(index + 1);
-                    return new Clause(id, name, dataType, width);
+                    return new Clause(id, name, dataType, width, convertToClauseUnaryTests(inputClause.getInputValues()));
                 })
                 .toArray(Clause[]::new);
     }
@@ -285,11 +287,21 @@ public class ExpressionPropsFiller {
                     final Double width = decisionTableExpression.getComponentWidths().get(decisionTableExpression.getInput().size() + index + 1);
                     // When output clause is empty, then we should use expression name and dataType for it
                     if (name == null) {
-                        return new Clause(id, expressionName, expressionDataType, width);
+                        return new Clause(id, expressionName, expressionDataType, width, convertToClauseUnaryTests(outputClause.getOutputValues()));
                     }
-                    return new Clause(id, name, dataType, width);
+                    return new Clause(id, name, dataType, width, convertToClauseUnaryTests(outputClause.getOutputValues()));
                 })
                 .toArray(Clause[]::new);
+    }
+
+    public static ClauseUnaryTests convertToClauseUnaryTests(IsUnaryTests isUnaryTests) {
+        if (isUnaryTests != null) {
+            return new ClauseUnaryTests(isUnaryTests.getId().getValue(),
+                                        isUnaryTests.getText().getValue(),
+                                        isUnaryTests.getConstraintType().value());
+        } else {
+            return null;
+        }
     }
 
     private static Annotation[] annotationsConvertForDecisionTableProps(final DecisionTable decisionTableExpression) {
