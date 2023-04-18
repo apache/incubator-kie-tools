@@ -90,7 +90,7 @@ export function BeeTableTh<R extends object>({
   const { beeGwtService } = useBoxedExpressionEditor();
 
   useEffect(() => {
-    if (isActive) {
+    if (isActive && column.isRowIndexColumn) {
       beeGwtService?.selectObject("");
     }
   }, [beeGwtService, isActive]);
