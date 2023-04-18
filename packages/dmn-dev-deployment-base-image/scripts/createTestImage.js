@@ -2,21 +2,19 @@ const execSync = require("child_process").execSync;
 const yargs = require("yargs");
 const { hideBin } = require("yargs/helpers");
 
-if (process.platform === "win32") {
-  console.error("This script can only run on Unix based operating systems for now.");
-  return;
-}
-
 yargs(hideBin(process.argv))
   .version(false)
   .scriptName("")
   .usage("Usage: pnpm create-test-image <command> [options]")
-  .example("pnpm create-test-image minikube", "Build and load an image to a Minikube cluster")
   .example(
-    "pnpm create-test-image kind -k kie-sandbox-dev-cluster",
+    "pnpm create-test-image minikube -t my-repo/my-image:my-tag",
+    "Build and load an image to a Minikube cluster"
+  )
+  .example(
+    "pnpm create-test-image kind --kind-cluster-name kie-sandbox-dev-cluster -t my-repo/my-image:my-tag",
     "Build and load an image to a Kind cluster name kie-sandbox-dev-cluster"
   )
-  .example("pnpm create-test-image openshift", "Build an image in a OpenShift cluster")
+  .example("pnpm create-test-image openshift -t my-repo/my-image:my-tag", "Build an image in a OpenShift cluster")
   .example(
     "pnpm create-test-image build-only -t quay.io/my-user/my-image-name:latest -f my/context/path/Containerfile -c my/context/path",
     "Create an image from the Containerfile and context path"
@@ -59,14 +57,15 @@ yargs(hideBin(process.argv))
     },
     "kind-cluster-name": {
       demandOption: false,
-      describe: "Your Kind cluster name",
+      describe: "Your Kind cluster name. Used only when loading image into Kind cluster",
       type: "string",
       nargs: 1,
       default: "kind",
     },
     "build-arg": {
       demandOption: false,
-      describe: "Build arg to be passed to the Docker builder in the format <arg>=<value> (Can be used multiple times)",
+      describe:
+        "Build arg to be passed to the Docker builder in the format '<arg>=<value>' (Can be used multiple times)",
       type: "array",
     },
   })
@@ -155,8 +154,6 @@ function createAndUseDockerBuilder() {
     });
   }
 }
-
-// --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/
 
 function buildArchImage(tag, file, context, buildArg, arch) {
   let platform = {
