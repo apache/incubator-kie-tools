@@ -31,7 +31,7 @@ export function EditorEnvelopeLocatorContextProvider(props: { children: React.Re
     () =>
       new EditorEnvelopeLocatorFactory().create({
         targetOrigin: window.location.origin,
-        editorEnvelopeConfig: editors,
+        editorEnvelopeConfigs: editors,
       }),
     []
   );

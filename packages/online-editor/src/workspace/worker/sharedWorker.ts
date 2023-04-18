@@ -31,21 +31,23 @@ async function gitCorsProxyUrl(): Promise<string> {
   return env.KIE_SANDBOX_GIT_CORS_PROXY_URL;
 }
 
-async function editorEnvelopeConfig(): Promise<EditorEnvelopeConfig[]> {
+async function fetchEditorEnvelopeConfig(): Promise<EditorEnvelopeConfig[]> {
   const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
   const env = (await (await fetch(envFilePath)).json()) as EnvJson;
   return env.KIE_SANDBOX_EDITOR_ENVELOPE_CONFIG;
 }
 
 const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProxyUrl() });
-const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().createAsync({
-  targetOrigin: "",
-  editorEnvelopeConfig: editorEnvelopeConfig(),
-});
 
 declare let onconnect: any;
-// eslint-disable-next-line prefer-const
 onconnect = async (e: MessageEvent) => {
+  const editorEnvelopeConfigs = await fetchEditorEnvelopeConfig();
+  const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({
+    targetOrigin: "",
+    editorEnvelopeConfigs,
+  });
+
+  // eslint-disable-next-line prefer-const
   console.log("Connected to Workspaces Shared Worker");
   setupWorkerConnection({
     fsFlushManager: workspaceServices.fsFlushManager,
@@ -53,9 +55,9 @@ onconnect = async (e: MessageEvent) => {
       appName: "KIE Sandbox",
       services: workspaceServices,
       fileFilter: {
-        isModel: async (path) => (await editorEnvelopeLocator).hasMappingFor(path),
-        isEditable: async (path) => (await editorEnvelopeLocator).hasMappingFor(path),
-        isSupported: async (path) => (await editorEnvelopeLocator).hasMappingFor(path),
+        isModel: (path) => editorEnvelopeLocator.hasMappingFor(path),
+        isEditable: (path) => editorEnvelopeLocator.hasMappingFor(path),
+        isSupported: (path) => editorEnvelopeLocator.hasMappingFor(path),
       },
     }),
     port: e.ports[0],

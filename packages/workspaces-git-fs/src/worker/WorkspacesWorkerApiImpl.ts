@@ -47,11 +47,11 @@ import { FetchResult } from "isomorphic-git";
 
 export interface FileFilter {
   // Files with the highest priority
-  isModel: (path: string) => Promise<boolean>;
+  isModel: (path: string) => boolean;
   // Any supported file that is editable
-  isEditable: (path: string) => Promise<boolean>;
+  isEditable: (path: string) => boolean;
   // Any supported file including editable and readonly ones
-  isSupported: (path: string) => Promise<boolean>;
+  isSupported: (path: string) => boolean;
 }
 
 export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
