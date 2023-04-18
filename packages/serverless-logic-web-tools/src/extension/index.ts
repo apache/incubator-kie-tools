@@ -59,7 +59,8 @@ export function isApplicationProperties(path: string): boolean {
 }
 
 export function isSupportingFileForDevMode(args: { path: string; targetFolder: string }): boolean {
-  const isInFolderRegex = new RegExp(`^${args.targetFolder}(/.*)?$`, "i");
+  const regexStr = args.targetFolder.trim().length > 0 ? `^${args.targetFolder}(/.*)?$` : "^.*$";
+  const isInFolderRegex = new RegExp(regexStr, "i");
   return (
     !isOfKind("sw", args.path) &&
     isInFolderRegex.test(args.path) &&

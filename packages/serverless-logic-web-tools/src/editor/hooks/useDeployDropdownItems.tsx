@@ -171,6 +171,27 @@ export function useDeployDropdownItems(props: Props) {
     }, [])
   );
 
+  const uploadToDevModeTimeoutErrorAlert = useGlobalAlert(
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="warning"
+          title={
+            <>
+              Something went wrong while uploading to the Dev Mode.
+              <br />
+              Please check your Dev Mode deployment logs for more details.
+            </>
+          }
+          aria-live="polite"
+          data-testid="alert-upload-error"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
   const isKieSandboxExtendedServicesRunning = useMemo(
     () => kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
     [kieSandboxExtendedServices.status]
@@ -211,8 +232,16 @@ export function useDeployDropdownItems(props: Props) {
       if (result.success) {
         uploadToDevModeSuccessAlert.show();
 
+        let attemptsLeft = 15;
         const fetchDevModeDeploymentTask = window.setInterval(async () => {
           const isReady = await devModeDispatch.checkHealthReady();
+          attemptsLeft--;
+          if (attemptsLeft === 0) {
+            uploadToDevModeSuccessAlert.close();
+            uploadToDevModeTimeoutErrorAlert.show();
+            window.clearInterval(fetchDevModeDeploymentTask);
+            return;
+          }
           if (!isReady) {
             return;
           }
@@ -238,6 +267,7 @@ export function useDeployDropdownItems(props: Props) {
     devMode.endpoints,
     uploadToDevModeErrorAlert,
     kieSandboxExtendedServices,
+    uploadToDevModeTimeoutErrorAlert,
   ]);
 
   return useMemo(() => {

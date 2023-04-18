@@ -116,7 +116,7 @@ export function OpenshiftDeploymentsDropdown() {
     if (deployments.status === PromiseStateStatus.PENDING) {
       return [
         Array.from({ length: 3 }, (_, idx) => (
-          <DropdownItem key={`deployment-skeleton-${idx}`} onClick={(e) => e.stopPropagation()}>
+          <DropdownItem key={`deployment-skeleton-${idx}`} isDisabled={true}>
             <Skeleton width={"80%"} style={{ marginBottom: "4px" }} />
             <Skeleton width={"50%"} />
           </DropdownItem>
@@ -151,15 +151,13 @@ export function OpenshiftDeploymentsDropdown() {
     } else {
       const dropdownItems = [];
 
-      const sortedDeployments = deployments.data.sort(
-        (a, b) => b.creationTimestamp.getTime() - a.creationTimestamp.getTime()
-      );
-
-      const [devModeDeployments, userDeployments] = sortedDeployments.reduce(
-        ([devModeDeployments, userDeployments], d: WebToolsOpenShiftDeployedModel) =>
-          d.devMode ? [[...devModeDeployments, d], userDeployments] : [devModeDeployments, [...userDeployments, d]],
-        [[] as WebToolsOpenShiftDeployedModel[], [] as WebToolsOpenShiftDeployedModel[]]
-      );
+      const [devModeDeployments, userDeployments] = deployments.data
+        .sort((a, b) => b.creationTimestamp.getTime() - a.creationTimestamp.getTime())
+        .reduce(
+          ([devModeDeployments, userDeployments], d: WebToolsOpenShiftDeployedModel) =>
+            d.devMode ? [[...devModeDeployments, d], userDeployments] : [devModeDeployments, [...userDeployments, d]],
+          [[] as WebToolsOpenShiftDeployedModel[], [] as WebToolsOpenShiftDeployedModel[]]
+        );
 
       if (devModeDeployments.length > 0) {
         dropdownItems.push(

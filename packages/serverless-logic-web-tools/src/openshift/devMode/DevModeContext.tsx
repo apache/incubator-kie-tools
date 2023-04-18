@@ -239,28 +239,37 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
 
         return (await fetch(endpoints.upload, { method: "POST", body: formData })
           .then(async (response) => {
-            if ([400, 500].includes(response.status)) {
-              const json = (await response.json()) as UploadApiResponseError;
+            if (response.ok) {
+              const json = (await response.json()) as UploadApiResponseSuccess;
               return {
-                success: false,
-                message: json.error,
+                success: true,
+                uploadedPaths: json.paths,
               };
             }
 
-            const json = (await response.json()) as UploadApiResponseSuccess;
+            if ([400, 500].includes(response.status)) {
+              const json = (await response.json()) as UploadApiResponseError;
+              if (json.error) {
+                return {
+                  success: false,
+                  message: json.error,
+                };
+              }
+            }
+
             return {
-              success: true,
-              uploadedPaths: json.paths,
+              success: false,
+              message: "Unexpected error, please check your OpenShift instance.",
             };
           })
           .catch((error) => ({
             success: false,
             message: error,
           }))) as DevModeUploadResult;
-      } catch (e) {
+      } catch (error) {
         return {
           success: false,
-          message: e,
+          message: error,
         };
       }
     },

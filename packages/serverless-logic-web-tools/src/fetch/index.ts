@@ -17,11 +17,11 @@
 export async function fetchWithTimeout(input: string, init: RequestInit & { timeout: number }) {
   const { timeout = 8000 } = init;
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
+  const id = window.setTimeout(() => controller.abort(), timeout);
   const response = await fetch(input, {
     ...init,
     signal: controller.signal,
   });
-  clearTimeout(id);
+  window.clearTimeout(id);
   return response;
 }

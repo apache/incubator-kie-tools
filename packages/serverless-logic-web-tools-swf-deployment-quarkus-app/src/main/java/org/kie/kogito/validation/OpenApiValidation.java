@@ -42,6 +42,7 @@ public class OpenApiValidation implements FileValidation {
                 LOGGER.error("Error when validating Open API file");
                 return false;
             }
+            LOGGER.info("OpenAPI file validated: " + result.getOpenAPI().getInfo().getTitle());
             return true;
         } catch (Exception e) {
             LOGGER.error("Error when validating Open API file: " + e.getMessage());
