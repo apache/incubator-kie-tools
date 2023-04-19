@@ -42,7 +42,7 @@ export function NewWorkspaceFromSample() {
   useEffect(() => {
     sampleDispatch
       .getSampleFiles(sampleId)
-      .then((sampleFiles) => workspaces.createWorkspaceFromLocal({ localFiles: sampleFiles }))
+      .then((sampleFiles) => workspaces.createWorkspaceFromLocal({ preferredName: sampleId, localFiles: sampleFiles }))
       .then(({ workspace, suggestedFirstFile }) => {
         if (!suggestedFirstFile) {
           return;
