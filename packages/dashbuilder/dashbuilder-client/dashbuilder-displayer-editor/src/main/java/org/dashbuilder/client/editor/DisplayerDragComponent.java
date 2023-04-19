@@ -15,7 +15,6 @@
  */
 package org.dashbuilder.client.editor;
 
-
 import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
@@ -115,8 +114,7 @@ public class DisplayerDragComponent implements LayoutDragComponent {
         }
     }
 
-    private Optional<DisplayerSettings> getDisplayerSettings(
-            LayoutComponent component) {
+    private Optional<DisplayerSettings> getDisplayerSettings(LayoutComponent component) {
         var settings = component.getSettings();
         if (settings != null) {
             var displayerSettings = (DisplayerSettings) settings;
@@ -126,5 +124,4 @@ public class DisplayerDragComponent implements LayoutDragComponent {
 
         return Optional.empty();
     }
-
 }

@@ -130,25 +130,7 @@ public class RuntimeClientLoader {
         clientModelBaseUrl = GWT.getHostPageBaseURL();
         setup = RuntimeClientSetup.Builder.get();
         if (setup != null) {
-            var modeStr = setup.getMode();
-            var path = setup.getPath();
-            samplesDefaultHome = setup.getSamplesDefaultHome();
-            if (modeStr != null) {
-                mode = RuntimeClientMode.getOrDefault(modeStr);
-            } else if ((setup.getDashboards() != null && setup.getDashboards().length > 0) ||
-                       setup.getSamplesUrl() != null && !setup.getSamplesUrl().trim().isEmpty()) {
-                mode = RuntimeClientMode.CLIENT;
-            }
-
-            if (path != null && !path.trim().isEmpty()) {
-                if (path.startsWith("/")) {
-                    path = path.substring(1);
-                }
-                if (!path.endsWith("/")) {
-                    path += "/";
-                }
-                clientModelBaseUrl = clientModelBaseUrl + path;
-            }
+            readSetup();
         }
 
         if (isEditor()) {
@@ -156,25 +138,45 @@ public class RuntimeClientLoader {
         }
     }
 
+    private void readSetup() {
+        var modeStr = setup.getMode();
+        var path = setup.getPath();
+        samplesDefaultHome = setup.getSamplesDefaultHome();
+        if (modeStr != null) {
+            mode = RuntimeClientMode.getOrDefault(modeStr);
+        } else if ((setup.getDashboards() != null && setup.getDashboards().length > 0) ||
+                   setup.getSamplesUrl() != null && !setup.getSamplesUrl().trim().isEmpty()) {
+            mode = RuntimeClientMode.CLIENT;
+        }
+
+        if (path != null && !path.trim().isEmpty()) {
+            if (path.startsWith("/")) {
+                path = path.substring(1);
+            }
+            if (!path.endsWith("/")) {
+                path += "/";
+            }
+            clientModelBaseUrl = clientModelBaseUrl + path;
+        }
+
+    }
+
     public void load(Consumer<RuntimeServiceResponse> responseConsumer,
                      BiConsumer<Object, Throwable> error) {
         final var importID = getImportId();
         loading.showBusyIndicator(i18n.loadingDashboards());
-        switch (mode) {
-            case CLIENT:
-                if ((importID != null && !importID.trim().isEmpty())) {
-                    loadClientModelInfo(resolveModel(importID), responseConsumer, error);
-                } else if (setup.getDashboards() != null && setup.getDashboards().length == 1) {
-                    loadClientModelInfo(resolveModel(setup.getDashboards()[0]), responseConsumer, error);
-                } else {
-                    loading.hideBusyIndicator();
-                    responseConsumer.accept(buildClientResponse(clientModel));
-                }
-                break;
-            case EDITOR:
+        if (mode == RuntimeClientMode.CLIENT) {
+            if ((importID != null && !importID.trim().isEmpty())) {
+                loadClientModelInfo(resolveModel(importID), responseConsumer, error);
+            } else if (setup.getDashboards() != null && setup.getDashboards().length == 1) {
+                loadClientModelInfo(resolveModel(setup.getDashboards()[0]), responseConsumer, error);
+            } else {
                 loading.hideBusyIndicator();
-                responseConsumer.accept(buildEditorResponse());
-                break;
+                responseConsumer.accept(buildClientResponse(clientModel));
+            }
+        } else if (mode == RuntimeClientMode.EDITOR) {
+            loading.hideBusyIndicator();
+            responseConsumer.accept(buildEditorResponse());
         }
 
     }
@@ -184,18 +186,15 @@ public class RuntimeClientLoader {
                           Command emptyModel,
                           BiConsumer<Object, Throwable> error) {
         loading.showBusyIndicator(i18n.loadingDashboards());
-        switch (mode) {
-            case CLIENT:
-                loadClientModel(clientModelBaseUrl + importId, modelLoaded, error);
-                break;
-            case EDITOR:
-                loading.hideBusyIndicator();
-                if (clientModel != null) {
-                    modelLoaded.accept(clientModel);
-                } else {
-                    emptyModel.execute();
-                }
-                break;
+        if (mode == RuntimeClientMode.CLIENT) {
+            loadClientModel(clientModelBaseUrl + importId, modelLoaded, error);
+        } else if (mode == RuntimeClientMode.EDITOR) {
+            loading.hideBusyIndicator();
+            if (clientModel != null) {
+                modelLoaded.accept(clientModel);
+            } else {
+                emptyModel.execute();
+            }
         }
     }
 
@@ -287,7 +286,7 @@ public class RuntimeClientLoader {
     }
 
     private void setupEditorMode() {
-        contentListener.start(content -> this.loadContentAndRoute(content));
+        contentListener.start(this::loadContentAndRoute);
     }
 
     private void registerModel(RuntimeModel runtimeModel) {
@@ -307,15 +306,13 @@ public class RuntimeClientLoader {
     }
 
     private RuntimeServiceResponse buildClientResponse(RuntimeModel clientModel) {
-        var mode = DashbuilderRuntimeMode.SINGLE_IMPORT;
+        var clientMode = DashbuilderRuntimeMode.SINGLE_IMPORT;
         var list = new ArrayList<String>();
         if (setup.getDashboards() != null && setup.getDashboards().length > 1) {
-            mode = DashbuilderRuntimeMode.MULTIPLE_IMPORT;
-            for (var db : setup.getDashboards()) {
-                list.add(db);
-            }
+            clientMode = DashbuilderRuntimeMode.MULTIPLE_IMPORT;
+            Collections.addAll(list, setup.getDashboards());
         }
-        return new RuntimeServiceResponse(mode,
+        return new RuntimeServiceResponse(clientMode,
                 Optional.ofNullable(clientModel),
                 list,
                 false);
@@ -325,9 +322,9 @@ public class RuntimeClientLoader {
         if (clientModel != null) {
             clientModel.getLayoutTemplates()
                     .stream()
-                    .filter(lt -> !runtimeModel.getLayoutTemplates()
+                    .filter(lt -> runtimeModel.getLayoutTemplates()
                             .stream()
-                            .anyMatch(lt2 -> lt2.getName().equals(lt.getName())))
+                            .noneMatch(lt2 -> lt2.getName().equals(lt.getName())))
                     .forEach(lt -> perspectiveEditorGenerator.unregisterPerspective(lt));
         }
     }
@@ -336,13 +333,12 @@ public class RuntimeClientLoader {
         if (this.clientModel != null) {
             this.clientModel.getClientDataSets()
                     .stream()
-                    .filter(ds -> !runtimeModel.getClientDataSets().stream().anyMatch(dsOld -> dsOld.equals(ds)))
+                    .filter(ds -> runtimeModel.getClientDataSets().stream().noneMatch(dsOld -> dsOld.equals(ds)))
                     .forEach(ds -> dataSetDefRemovedEvent.fire(new DataSetDefRemovedEvent(ds)));
         }
     }
 
     private String resolveModel(String importID) {
-        // TODO: improve URL check
         if (importID.startsWith("http://") || importID.startsWith("https://")) {
             if (setup.getAllowExternal()) {
                 return importID;

@@ -55,19 +55,19 @@ public class DataSetDefJSONMarshaller {
     public static final String REFRESH_ALWAYS = "refreshAlways";
 
     public static final List<String> ROOT_KEYS = Arrays.asList(
-                                                               UUID,
-                                                               NAME,
-                                                               PROVIDER,
-                                                               ISPUBLIC,
-                                                               PUSH_ENABLED,
-                                                               PUSH_MAXSIZE,
-                                                               COLUMNS,
-                                                               FILTERS,
-                                                               ALL_COLUMNS,
-                                                               CACHE_ENABLED,
-                                                               CACHE_MAXROWS,
-                                                               REFRESH_TIME,
-                                                               REFRESH_ALWAYS);
+            UUID,
+            NAME,
+            PROVIDER,
+            ISPUBLIC,
+            PUSH_ENABLED,
+            PUSH_MAXSIZE,
+            COLUMNS,
+            FILTERS,
+            ALL_COLUMNS,
+            CACHE_ENABLED,
+            CACHE_MAXROWS,
+            REFRESH_TIME,
+            REFRESH_ALWAYS);
 
     protected DataSetProviderRegistry dataSetProviderRegistry;
     protected DataSetLookupJSONMarshaller dataSetLookupJSONMarshaller;
@@ -76,11 +76,12 @@ public class DataSetDefJSONMarshaller {
         this(dataSetProviderRegistry, DataSetLookupJSONMarshaller.get());
     }
 
-    public DataSetDefJSONMarshaller(DataSetProviderRegistry dataSetProviderRegistry, DataSetLookupJSONMarshaller dataSetLookupJSONMarshaller) {
+    public DataSetDefJSONMarshaller(DataSetProviderRegistry dataSetProviderRegistry,
+                                    DataSetLookupJSONMarshaller dataSetLookupJSONMarshaller) {
         this.dataSetProviderRegistry = dataSetProviderRegistry;
         this.dataSetLookupJSONMarshaller = dataSetLookupJSONMarshaller;
     }
-    
+
     public DataSetDef fromJson(String jsonString) throws Exception {
         JsonObject json = Json.parse(jsonString);
         return fromJsonObj(json);
@@ -175,17 +176,23 @@ public class DataSetDefJSONMarshaller {
                 if (isBlank(columnId)) {
                     throw new IllegalArgumentException("Column id. attribute is mandatory.");
                 }
-                if (isBlank(columnType)) {
-                    throw new IllegalArgumentException("Missing column 'type' attribute: " + columnId);
-                }
-
-                ColumnType type = ColumnType.TEXT;
-                if (columnType.equalsIgnoreCase("label")) {
-                    type = ColumnType.LABEL;
-                } else if (columnType.equalsIgnoreCase("date")) {
-                    type = ColumnType.DATE;
-                } else if (columnType.equalsIgnoreCase("number")) {
-                    type = ColumnType.NUMBER;
+                ColumnType type = ColumnType.LABEL;
+                if (!isBlank(columnType)) {
+                    var normalizedType = columnType.toLowerCase();
+                    switch (normalizedType) {
+                        case "text":
+                            type = ColumnType.TEXT;
+                            break;
+                        case "date":
+                            type = ColumnType.DATE;
+                            break;
+                        case "number":
+                            type = ColumnType.NUMBER;
+                            break;
+                        case "label":
+                        default:
+                            type = ColumnType.LABEL;
+                    }
                 }
 
                 def.addColumn(columnId, type);
@@ -314,7 +321,7 @@ public class DataSetDefJSONMarshaller {
         }
         return true;
     }
-    
+
     private static <T> void transferValue(String key, Function<String, T> extractor, Consumer<T> setter) {
         T value = extractor.apply(key);
         if (value != null && !isBlank(value.toString())) {

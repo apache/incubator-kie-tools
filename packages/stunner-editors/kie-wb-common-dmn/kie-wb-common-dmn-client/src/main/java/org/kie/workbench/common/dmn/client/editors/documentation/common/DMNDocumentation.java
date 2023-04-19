@@ -33,8 +33,6 @@ public class DMNDocumentation implements DiagramDocumentation {
 
     private String droolsLogoURI;
 
-    private String supportedByRedHatLogoURI;
-
     private String namespace;
 
     private String diagramName;
@@ -78,7 +76,6 @@ public class DMNDocumentation implements DiagramDocumentation {
         final DMNDocumentation dmn = new DMNDocumentation();
 
         dmn.droolsLogoURI = getURI(INSTANCE.droolsLogo());
-        dmn.supportedByRedHatLogoURI = getURI(INSTANCE.supportedByRedHatLogo());
         dmn.namespace = namespace;
         dmn.diagramName = diagramName;
         dmn.diagramDescription = diagramDescription;
@@ -158,11 +155,6 @@ public class DMNDocumentation implements DiagramDocumentation {
     @JsOverlay
     public final String getDroolsLogoURI() {
         return droolsLogoURI;
-    }
-
-    @JsOverlay
-    public final String getSupportedByRedHatLogoURI() {
-        return supportedByRedHatLogoURI;
     }
 
     @JsOverlay
