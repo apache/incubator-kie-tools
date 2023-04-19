@@ -19,6 +19,7 @@ import {
   EditorLanguageServiceArgs,
   ELsCompletionsMap,
   ELsNode,
+  findNodesAtLocation,
   IEditorLanguageService,
 } from "@kie-tools/editor-language-service/dist/channel";
 import {
@@ -246,6 +247,24 @@ export class SwfLanguageService implements IEditorLanguageService {
     } else {
       throw new Error("Unknown Service Catalog function source type");
     }
+  }
+
+  /**
+   * Get the Offset of a State Name.
+   *
+   * @returns the offset found, -1 otherwise
+   */
+  public static getStateNameOffset(args: { rootNode: ELsNode | undefined; stateName: string }): number | undefined {
+    const stateNode = findNodesAtLocation({
+      root: args.rootNode,
+      path: ["states", "*", "name"],
+    }).filter((node) => node.value === args.stateName)[0];
+
+    if (!stateNode || !stateNode.parent) {
+      return undefined;
+    }
+
+    return stateNode.parent.offset;
   }
 }
 

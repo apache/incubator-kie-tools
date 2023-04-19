@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ELsJsonPath, findNodeAtLocation } from "@kie-tools/editor-language-service/dist/channel";
+import {
+  ELsJsonPath,
+  findNodeAtLocation,
+  parseJsonContent,
+  parseYamlContent,
+} from "@kie-tools/editor-language-service/dist/channel";
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   JsonCodeCompletionStrategy,
@@ -90,7 +95,8 @@ export function getStartNodeValuePositionTester(args: {
   documentUri: string;
   ls: SwfJsonLanguageService | SwfYamlLanguageService;
 }): Position | undefined {
-  const rootNode = args.ls.parseContent(args.content);
+  const rootNode =
+    args.ls instanceof SwfJsonLanguageService ? parseJsonContent(args.content) : parseYamlContent(args.content);
   const doc = TextDocument.create(args.documentUri, FileLanguage.YAML, 0, args.content);
   const node = findNodeAtLocation(rootNode!, args.path);
   return args.codeCompletionStrategy.getStartNodeValuePosition(doc, node!);

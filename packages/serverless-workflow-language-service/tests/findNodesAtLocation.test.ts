@@ -45,7 +45,7 @@ describe("findNodesAtLocation", () => {
     }
   ]
 }`.trim();
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["functions", "*"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -68,7 +68,7 @@ describe("findNodesAtLocation", () => {
     }
   ]
 }`.trim();
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["states", "*", "name"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -96,7 +96,7 @@ describe("findNodesAtLocation", () => {
     }
   ]
 }`.trim();
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["states", 1, "name"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -124,7 +124,7 @@ describe("findNodesAtLocation", () => {
     }
   ]
 }`.trim();
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["states", "*", "name"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -178,7 +178,7 @@ describe("findNodesAtLocation", () => {
     }
   ]
 }`.trim();
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const nodesAtLocation = findNodesAtLocation({
         root,
         path: ["states", "*", "actions", "*", "functionRef", "refName"],
@@ -227,7 +227,7 @@ describe("findNodesAtLocation", () => {
     }
   ]
 }`.trim();
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const nodesAtLocation = findNodesAtLocation({
         root,
         path: ["states", "*", "actions", "*", "functionRef"],
@@ -261,7 +261,7 @@ describe("findNodesAtLocation", () => {
         "operation": "openapi.yml#getGreeting"
   }]
 }`.trim();
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["functions"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -292,7 +292,7 @@ describe("findNodesAtLocation", () => {
         "operation": "openapi.yml#getGreeting"
   }]
 }`.trim();
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["functions", "*"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -325,7 +325,7 @@ states:
 - name: testState1
   type: operation
 `.trim();
-      const root = ls.parseContent(content);
+      const root = SwfYamlLanguageService.parseContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["functions", "*"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -357,7 +357,7 @@ states:
       arguments:
         firstArg: test
 `;
-      const root = ls.parseContent(content);
+      const root = SwfYamlLanguageService.parseContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["states", "*", "actions", "*", "functionRef"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -383,7 +383,7 @@ states:
       - name: function2
         operation: openapi.yml#getGreeting
       `.trim();
-      const root = ls.parseContent(content);
+      const root = SwfYamlLanguageService.parseContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["functions"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -410,7 +410,7 @@ states:
       - name: function2
         operation: openapi.yml#getGreeting
       `.trim();
-      const root = ls.parseContent(content);
+      const root = SwfYamlLanguageService.parseContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["functions", "*"] });
 
       expect(nodesAtLocation).not.toBeUndefined();

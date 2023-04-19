@@ -597,7 +597,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: ls.parseContent(content)!,
+        rootNode: SwfYamlLanguageService.parseContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -622,7 +622,7 @@ onEvents:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: ls.parseContent(content)!,
+        rootNode: SwfYamlLanguageService.parseContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -650,7 +650,7 @@ onEvents:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: ls.parseContent(content)!,
+        rootNode: SwfYamlLanguageService.parseContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -678,7 +678,7 @@ onEvents:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: ls.parseContent(content)!,
+        rootNode: SwfYamlLanguageService.parseContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -722,7 +722,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: ls.parseContent(content)!,
+        rootNode: SwfYamlLanguageService.parseContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -763,7 +763,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: ls.parseContent(content)!,
+        rootNode: SwfYamlLanguageService.parseContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -793,7 +793,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: ls.parseContent(content)!,
+        rootNode: SwfYamlLanguageService.parseContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -819,7 +819,7 @@ onEvents:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: ls.parseContent(content)!,
+        rootNode: SwfYamlLanguageService.parseContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -849,7 +849,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: ls.parseContent(content)!,
+        rootNode: SwfYamlLanguageService.parseContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -889,7 +889,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: ls.parseContent(content)!,
+        rootNode: SwfYamlLanguageService.parseContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -930,7 +930,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: ls.parseContent(content)!,
+        rootNode: SwfYamlLanguageService.parseContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([

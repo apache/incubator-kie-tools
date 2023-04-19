@@ -18,6 +18,10 @@ import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { FileLanguage, SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfJsonOffsets, SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import {
+  SwfJsonLanguageService,
+  SwfYamlLanguageService,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { editor, KeyCode, KeyMod, Position } from "monaco-editor";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
@@ -161,7 +165,11 @@ export class SwfTextEditorController implements SwfTextEditorApi {
 
     this.swfOffsetsApi.parseContent(this.getContent());
 
-    const targetOffset = this.swfOffsetsApi.getStateNameOffset(nodeName);
+    const getStateNameOffsetArgs = { content: this.getContent(), stateName: nodeName };
+    const targetOffset =
+      this.language === FileLanguage.JSON
+        ? SwfJsonLanguageService.getStateNameOffset(getStateNameOffsetArgs)
+        : SwfYamlLanguageService.getStateNameOffset(getStateNameOffsetArgs);
 
     if (!targetOffset) {
       return;

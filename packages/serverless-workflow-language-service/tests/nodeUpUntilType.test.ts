@@ -76,7 +76,7 @@ describe("nodeUpUntilType", () => {
             "refName":"🎯",
           }
         }`);
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset);
 
       const receivedNode = nodeUpUntilType(node!, "object");
@@ -100,7 +100,7 @@ name: testStateAction2
 functionRef:
   refName: 🎯a
 `);
-      const root = ls.parseContent(content);
+      const root = SwfYamlLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset);
 
       const receivedNode = nodeUpUntilType(node!, "object");

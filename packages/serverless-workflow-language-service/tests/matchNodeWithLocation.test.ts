@@ -32,7 +32,7 @@ describe("matchNodeWithLocation", () => {
         jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`🎯{}`);
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
@@ -51,7 +51,7 @@ describe("matchNodeWithLocation", () => {
 {
   "functions": [🎯]
 }`);
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
@@ -108,7 +108,7 @@ describe("matchNodeWithLocation", () => {
     }
   ]
 }`);
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef"])).toBeTruthy();
@@ -165,7 +165,7 @@ describe("matchNodeWithLocation", () => {
     }
   ]
 }`);
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(
@@ -227,7 +227,7 @@ describe("matchNodeWithLocation", () => {
     }
   ]
 }`);
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(
@@ -249,7 +249,7 @@ describe("matchNodeWithLocation", () => {
         "operation": "openapi.yml#getGreeting"
   }]
 }`);
-      const root = ls.parseContent(content);
+      const root = SwfJsonLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       test("should not match functions with states", () => {
@@ -280,7 +280,7 @@ describe("matchNodeWithLocation", () => {
         jqCompletions: defaultJqCompletionsConfig,
       });
       const { content, cursorOffset } = treat(`---🎯 `);
-      const root = ls.parseContent(content);
+      const root = SwfYamlLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
@@ -299,7 +299,7 @@ describe("matchNodeWithLocation", () => {
 
 ---
 functions: [🎯]`);
-      const root = ls.parseContent(content);
+      const root = SwfYamlLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
@@ -329,7 +329,7 @@ states:
     functionRef:
       refName: "🎯"
 `);
-      const root = ls.parseContent(content);
+      const root = SwfYamlLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset);
 
       expect(
@@ -371,7 +371,7 @@ states:
         a🎯
   end: true
 `);
-      const root = ls.parseContent(content);
+      const root = SwfYamlLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(
@@ -390,7 +390,7 @@ states:
 functions:
 - name: testRelativeFunction1
   operation:🎯`);
-      const root = ls.parseContent(content);
+      const root = SwfYamlLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
       const node2 = findNodeAtOffset(root!, cursorOffset, false);
 
@@ -411,7 +411,7 @@ functions:
 - name: testRelativeFunction1
   operation:🎯
   type: rest`);
-      const root = ls.parseContent(content);
+      const root = SwfYamlLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
@@ -429,7 +429,7 @@ functions:
       const { content, cursorOffset } = treat(`---
 functions:
 - 🎯`);
-      const root = ls.parseContent(content);
+      const root = SwfYamlLanguageService.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       test("should not match functions with states", () => {

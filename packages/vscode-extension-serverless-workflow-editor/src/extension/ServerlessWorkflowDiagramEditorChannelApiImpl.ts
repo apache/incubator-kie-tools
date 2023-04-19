@@ -43,7 +43,11 @@ import {
   ServerlessWorkflowDiagramEditorChannelApi,
   ServerlessWorkflowDiagramEditorEnvelopeApi,
 } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
-import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { FileLanguage, SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import {
+  SwfJsonLanguageService,
+  SwfYamlLanguageService,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
@@ -189,10 +193,12 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     }
 
     const resourceUri = textEditor.document.uri;
-
-    const swfOffsetsApi = initSwfOffsetsApi(textEditor.document);
-
-    const targetOffset = swfOffsetsApi.getStateNameOffset(args.nodeName);
+    const content = textEditor.document.getText();
+    const getStateNameOffsetArgs = { content, stateName: args.nodeName };
+    const targetOffset =
+      textEditor.document.languageId === FileLanguage.JSON
+        ? SwfJsonLanguageService.getStateNameOffset(getStateNameOffsetArgs)
+        : SwfYamlLanguageService.getStateNameOffset(getStateNameOffsetArgs);
     if (!targetOffset) {
       return;
     }

@@ -19,7 +19,9 @@ import {
   EditorJsonLanguageService,
   ELsNode,
   ELsShouldCreateCodelensArgs,
+  findNodesAtLocation,
   IEditorLanguageService,
+  parseJsonContent,
   ShouldCompleteArgs,
   TranslateArgs,
 } from "@kie-tools/editor-language-service/dist/channel";
@@ -51,8 +53,8 @@ export class SwfJsonLanguageService implements IEditorLanguageService {
     });
   }
 
-  parseContent(content: string): ELsNode | undefined {
-    return this.jsonELs.parseContent(content);
+  public static parseContent(content: string) {
+    return parseJsonContent(content);
   }
 
   public async getCompletionItems(args: {
@@ -85,6 +87,15 @@ export class SwfJsonLanguageService implements IEditorLanguageService {
 
   public dispose() {
     return this.jsonELs.dispose();
+  }
+
+  public static getStateNameOffset(args: { content: string; stateName: string }): number | undefined {
+    if (!args.stateName) {
+      return;
+    }
+    const rootNode = parseJsonContent(args.content);
+
+    return SwfLanguageService.getStateNameOffset({ ...args, rootNode });
   }
 }
 

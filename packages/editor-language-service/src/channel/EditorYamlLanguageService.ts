@@ -69,28 +69,13 @@ export class EditorYamlLanguageService implements IEditorLanguageService {
     this.codeCompletionStrategy = args.codeCompletionStrategy;
   }
 
-  public parseContent(content: string): ELsNode | undefined {
-    if (!content.trim()) {
-      return;
-    }
-
-    const ast = load(content);
-
-    // check if the yaml is not valid
-    if (ast && ast.errors && ast.errors.length) {
-      return;
-    }
-
-    return astConvert(ast);
-  }
-
   public async getCompletionItems(args: {
     content: string;
     uri: string;
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    const rootNode = this.parseContent(args.content);
+    const rootNode = parseYamlContent(args.content);
     const doc = TextDocument.create(args.uri, FileLanguage.YAML, 0, args.content);
     const cursorOffset = doc.offsetAt(args.cursorPosition);
 
@@ -120,7 +105,7 @@ export class EditorYamlLanguageService implements IEditorLanguageService {
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
     return this.ls.getCodeLenses({
       ...args,
-      rootNode: this.parseContent(args.content),
+      rootNode: parseYamlContent(args.content),
       codeCompletionStrategy: this.codeCompletionStrategy,
     });
   }
@@ -138,7 +123,7 @@ export class EditorYamlLanguageService implements IEditorLanguageService {
       return [];
     }
 
-    const rootNode = this.parseContent(args.content);
+    const rootNode = parseYamlContent(args.content);
     const loadErrors = !rootNode ? load(args.content).errors : [];
 
     //check the syntax
@@ -346,4 +331,19 @@ export class EditorYamlCodeCompletionStrategy implements ELsCodeCompletionStrate
       getNodeFormat(args.content, args.node) !== FileLanguage.JSON
     );
   }
+}
+
+export function parseYamlContent(content: string): ELsNode | undefined {
+  if (!content.trim()) {
+    return;
+  }
+
+  const ast = load(content);
+
+  // check if the yaml is not valid
+  if (ast && ast.errors && ast.errors.length) {
+    return;
+  }
+
+  return astConvert(ast);
 }

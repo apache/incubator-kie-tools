@@ -20,6 +20,7 @@ import {
   ELsNode,
   IEditorLanguageService,
 } from "@kie-tools/editor-language-service/dist/channel";
+import { JSONSchema } from "vscode-json-languageservice";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, Position, Range } from "vscode-languageserver-types";
 import {
@@ -74,6 +75,14 @@ export class DashbuilderLanguageService implements IEditorLanguageService {
       ...args,
       getSchemaDiagnostics: args.getSchemaDiagnostics,
     });
+  }
+
+  public async getSchemaDiagnostics(args: {
+    textDocument: TextDocument;
+    fileMatch: string[];
+    jsonSchema: JSONSchema;
+  }): Promise<Diagnostic[]> {
+    return this.els.getSchemaDiagnostics(args);
   }
 
   public dispose() {

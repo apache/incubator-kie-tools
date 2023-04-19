@@ -18,7 +18,9 @@ import {
   EditorYamlLanguageService,
   ELsNode,
   ELsShouldCreateCodelensArgs,
+  IEditorLanguageService,
   indentText,
+  parseYamlContent,
   positions_equals,
   ShouldCompleteArgs,
   TranslateArgs,
@@ -31,7 +33,7 @@ import { DASHBUILDER_SCHEMA } from "../assets/schemas";
 import { DashbuilderLanguageService } from "./DashbuilderLanguageService";
 import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
 
-export class DashbuilderYamlLanguageService {
+export class DashbuilderYamlLanguageService implements IEditorLanguageService {
   private readonly ls: DashbuilderLanguageService;
   private readonly yamlELs: EditorYamlLanguageService;
   private readonly codeCompletionStrategy: DashbuilderYamlCodeCompletionStrategy;
@@ -51,8 +53,8 @@ export class DashbuilderYamlLanguageService {
     });
   }
 
-  parseContent(content: string): ELsNode | undefined {
-    return this.yamlELs.parseContent(content);
+  public static parseContent(content: string): ELsNode | undefined {
+    return parseYamlContent(content);
   }
 
   public async getCompletionItems(args: {
@@ -76,7 +78,7 @@ export class DashbuilderYamlLanguageService {
     });
   }
 
-  private async getSchemaDiagnostics(args: { textDocument: TextDocument; fileMatch: string[] }): Promise<Diagnostic[]> {
+  public async getSchemaDiagnostics(args: { textDocument: TextDocument; fileMatch: string[] }): Promise<Diagnostic[]> {
     return await this.yamlELs.getSchemaDiagnostics({
       ...args,
       jsonSchema: DASHBUILDER_SCHEMA,

@@ -37,10 +37,6 @@ export class EditorJsonLanguageService implements IEditorLanguageService {
     this.codeCompletionStrategy = args.codeCompletionStrategy;
   }
 
-  parseContent(content: string): ELsNode | undefined {
-    return jsonc.parseTree(content);
-  }
-
   public async getCompletionItems(args: {
     content: string;
     uri: string;
@@ -49,7 +45,7 @@ export class EditorJsonLanguageService implements IEditorLanguageService {
   }): Promise<CompletionItem[]> {
     return this.ls.getCompletionItems({
       ...args,
-      rootNode: this.parseContent(args.content),
+      rootNode: parseJsonContent(args.content),
       codeCompletionStrategy: this.codeCompletionStrategy,
     });
   }
@@ -57,7 +53,7 @@ export class EditorJsonLanguageService implements IEditorLanguageService {
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
     return this.ls.getCodeLenses({
       ...args,
-      rootNode: this.parseContent(args.content),
+      rootNode: parseJsonContent(args.content),
       codeCompletionStrategy: this.codeCompletionStrategy,
     });
   }
@@ -73,7 +69,7 @@ export class EditorJsonLanguageService implements IEditorLanguageService {
   }): Promise<Diagnostic[]> {
     return this.ls.getDiagnostics({
       ...args,
-      rootNode: this.parseContent(args.content),
+      rootNode: parseJsonContent(args.content),
       getSchemaDiagnostics: args.getSchemaDiagnostics,
     });
   }
@@ -141,6 +137,10 @@ export class EditorJsonCodeCompletionStrategy implements ELsCodeCompletionStrate
   public shouldCreateCodelens(_args: ELsShouldCreateCodelensArgs): boolean {
     return true;
   }
+}
+
+export function parseJsonContent(content: string): ELsNode | undefined {
+  return jsonc.parseTree(content);
 }
 
 /**
