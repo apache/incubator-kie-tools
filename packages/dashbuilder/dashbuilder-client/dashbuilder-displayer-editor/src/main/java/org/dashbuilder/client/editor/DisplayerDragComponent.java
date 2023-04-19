@@ -15,14 +15,13 @@
  */
 package org.dashbuilder.client.editor;
 
-import java.util.Map;
+
 import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-// import com.google.gwt.user.client.ui.Label;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
@@ -76,13 +75,13 @@ public class DisplayerDragComponent implements LayoutDragComponent {
 
     @Override
     public IsWidget getShowWidget(final RenderingContext ctx) {
-        var settingsOp = getDisplayerSettings(ctx.getComponent().getProperties(), ctx.getComponent());
+        var settingsOp = getDisplayerSettings(ctx.getComponent());
         return settingsOp.map(settings -> {
-            String error = settings.getError().toString();
-            if(error != null){
-                displayError.show(error, null);
+            Optional <String> error = settings.getError();
+            if (error.isPresent()) {
+                displayError.show(error.get(), null);
                 return displayError;
-            }else{
+            } else {
                 viewer.removeFromParent();
                 viewer.init(settings);
                 viewer.addAttachHandler(attachEvent -> {
@@ -116,7 +115,7 @@ public class DisplayerDragComponent implements LayoutDragComponent {
         }
     }
 
-    private Optional<DisplayerSettings> getDisplayerSettings(Map<String, String> properties,
+    private Optional<DisplayerSettings> getDisplayerSettings(
             LayoutComponent component) {
         var settings = component.getSettings();
         if (settings != null) {
