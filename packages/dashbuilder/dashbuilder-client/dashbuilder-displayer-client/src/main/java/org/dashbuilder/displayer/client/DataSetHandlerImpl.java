@@ -41,7 +41,6 @@ import org.dashbuilder.dataset.sort.DataSetSort;
 import org.dashbuilder.dataset.sort.SortOrder;
 import org.dashbuilder.displayer.client.export.ExportCallback;
 import org.dashbuilder.displayer.client.export.ExportFormat;
-import org.uberfire.backend.vfs.Path;
 
 public class DataSetHandlerImpl implements DataSetHandler {
 
@@ -218,10 +217,12 @@ public class DataSetHandlerImpl implements DataSetHandler {
     @Override
     public void lookupDataSet(final DataSetReadyCallback callback) throws Exception {
         clientServices.lookupDataSet(lookupCurrent, new DataSetReadyCallback() {
+
             public void callback(DataSet dataSet) {
                 lastLookedUpDataSet = dataSet;
                 callback.callback(dataSet);
             }
+
             public void notFound() {
                 callback.notFound();
             }
@@ -259,7 +260,10 @@ public class DataSetHandlerImpl implements DataSetHandler {
     }
 
     @Override
-    public void exportCurrentDataSetLookup(ExportFormat format, int maxRows, ExportCallback callback, Map<String,String> columnNameMap) {
+    public void exportCurrentDataSetLookup(ExportFormat format,
+                                           int maxRows,
+                                           ExportCallback callback,
+                                           Map<String, String> columnNameMap) {
 
         // Export an empty data set does not make sense
         if (lastLookedUpDataSet == null || lastLookedUpDataSet.getRowCount() == 0) {
@@ -276,11 +280,6 @@ public class DataSetHandlerImpl implements DataSetHandler {
             // Create a backend export callback
             DataSetExportReadyCallback exportReadyCallback = new DataSetExportReadyCallback() {
 
-                @Override
-                public void exportReady(Path exportFilePath) {
-                    final String u = clientServices.getDownloadFileUrl(exportFilePath);
-                    callback.exportFileUrl(u);
-                }
                 @Override
                 public void onError(ClientRuntimeError error) {
                     callback.error(error);
@@ -308,22 +307,22 @@ public class DataSetHandlerImpl implements DataSetHandler {
             } else {
                 clientServices.exportDataSetCSV(exportLookup, exportReadyCallback);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             callback.error(new ClientRuntimeError(e));
         }
     }
 
     // Internal filter/drillDown implementation logic
 
-    protected Map<String,List<GroupOpFilter>> _groupOpsAdded = new HashMap<>();
-    protected Map<String,List<GroupOpFilter>> _groupOpsSelected = new HashMap<>();
+    protected Map<String, List<GroupOpFilter>> _groupOpsAdded = new HashMap<>();
+    protected Map<String, List<GroupOpFilter>> _groupOpsSelected = new HashMap<>();
 
     protected void _filter(int index, DataSetGroup op, boolean drillDown) {
 
         ColumnGroup cgroup = op.getColumnGroup();
         String columnId = cgroup.getColumnId();
-        if (!_groupOpsAdded.containsKey(columnId)) _groupOpsAdded.put(columnId, new ArrayList<>());
+        if (!_groupOpsAdded.containsKey(columnId))
+            _groupOpsAdded.put(columnId, new ArrayList<>());
         List<GroupOpFilter> filterOps = _groupOpsAdded.get(columnId);
 
         // When adding an external filter, look first if it exists an existing filter already.
@@ -419,6 +418,7 @@ public class DataSetHandlerImpl implements DataSetHandler {
     }
 
     protected static class GroupOpFilter {
+
         DataSetGroup groupOp;
         boolean drillDown = false;
         List<GroupFunction> groupFunctions;
@@ -434,7 +434,8 @@ public class DataSetHandlerImpl implements DataSetHandler {
         public String toString() {
             StringBuilder out = new StringBuilder();
             out.append("drillDown(").append(drillDown).append(") ");
-            if (groupOp != null) out.append("groupOp(").append(groupOp).append(")");
+            if (groupOp != null)
+                out.append("groupOp(").append(groupOp).append(")");
             return out.toString();
         }
     }

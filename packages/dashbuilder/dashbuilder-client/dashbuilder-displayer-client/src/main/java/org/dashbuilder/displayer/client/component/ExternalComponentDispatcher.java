@@ -16,9 +16,7 @@
 
 package org.dashbuilder.displayer.client.component;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -27,17 +25,13 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import elemental2.core.JsMap;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.MessageEvent;
 import jsinterop.base.Js;
-import org.dashbuilder.displayer.client.component.function.ComponentFunctionLocator;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
-import org.dashbuilder.displayer.external.ExternalComponentFunction;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
 import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
 import org.dashbuilder.displayer.external.ExternalComponentMessageType;
-import org.dashbuilder.displayer.external.FunctionCallRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,9 +48,6 @@ public class ExternalComponentDispatcher {
 
     @Inject
     ExternalComponentMessageHelper messageHelper;
-
-    @Inject
-    ComponentFunctionLocator functionLocator;
 
     Set<ExternalComponentListener> listeners;
 
@@ -85,10 +76,6 @@ public class ExternalComponentDispatcher {
                 handleFilter(message);
                 break;
 
-            case FUNCTION_CALL:
-                handleFunction(message);
-                break;
-
             case READY:
                 handleReady(message);
                 break;
@@ -114,46 +101,6 @@ public class ExternalComponentDispatcher {
     private void handleConfiguration(ExternalComponentMessage message) {
         findDestination(message, destination -> destination.onConfigurationIssue(messageHelper.getConfigurationIssue(message)
                                                                                               .orElse(i18n.componentConfigDefaultMessage())));
-    }
-
-    private void handleFunction(ExternalComponentMessage message) {
-        findDestination(message, destination -> {
-            Optional<FunctionCallRequest> functionCallOp = messageHelper.functionCallRequest(message);
-            if (functionCallOp.isPresent()) {
-                callFunction(destination, functionCallOp.get());
-            } else {
-                destination.sendMessage(messageHelper.newFunctionRequestNotFound());
-            }
-        });
-    }
-
-    private void callFunction(ExternalComponentListener destination, FunctionCallRequest functionCallRequest) {
-        Optional<ExternalComponentFunction> target = functionLocator.findFunctionByName(functionCallRequest.getFunctionName());
-        if (target.isPresent()) {
-            execFunction(target.get(), functionCallRequest, destination::sendMessage);
-        } else {
-            destination.sendMessage(messageHelper.newFunctionNotFound(functionCallRequest));
-        }
-    }
-
-    private void execFunction(ExternalComponentFunction target, FunctionCallRequest functionCallRequest, Consumer<ExternalComponentMessage> consumeResult) {
-        try {
-            Map<String, Object> params = extractParams(functionCallRequest);
-            target.exec(params,
-                        result -> consumeResult.accept(messageHelper.newFunctionSuccess(functionCallRequest, result)),
-                        error -> consumeResult.accept(messageHelper.newFunctionError(functionCallRequest, error)));
-        } catch (Exception e) {
-            consumeResult.accept(messageHelper.newFunctionError(functionCallRequest, e.getMessage()));
-        }
-    }
-
-    private Map<String, Object> extractParams(FunctionCallRequest functionCallRequest) {
-        Map<String, Object> params = new HashMap<>();
-        JsMap<String, Object> requestParams = functionCallRequest.getParameters();
-        if (requestParams != null) {
-            requestParams.forEach((v, k, m) -> params.put(k, v));
-        }
-        return params;
     }
 
     private void handleReady(ExternalComponentMessage message) {

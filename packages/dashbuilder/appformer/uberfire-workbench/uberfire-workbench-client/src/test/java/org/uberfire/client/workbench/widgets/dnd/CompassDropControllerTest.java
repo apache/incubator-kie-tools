@@ -50,14 +50,14 @@ public class CompassDropControllerTest {
     public void setup() {
         compassDropController = new CompassDropControllerUnitTestWrapper();
         compassDropController.setupMocks(dndManager,
-                                         panelManager);
+                panelManager);
     }
 
     @Test
     public void setupTest() {
         compassDropController.setup(view);
         assertEquals(view,
-                     compassDropController.dropTarget);
+                compassDropController.dropTarget);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class CompassDropControllerTest {
         compassDropController.onDrop(dragContext);
 
         verify(compassDropController.compass,
-               never()).onDrop(dragContext);
+                never()).onDrop(dragContext);
     }
 
     @Test
@@ -99,12 +99,12 @@ public class CompassDropControllerTest {
         compassDropController.onDrop(dragContext);
 
         verify(panelManager,
-               never()).addWorkbenchPanel(any(),
-                                          any(),
-                                          any(),
-                                          any(),
-                                          any(),
-                                          any());
+                never()).addWorkbenchPanel(any(),
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any());
     }
 
     @Test
@@ -118,19 +118,18 @@ public class CompassDropControllerTest {
         compassDropController.onDrop(dragContext);
 
         verify(panelManager).addWorkbenchPanel(any(),
-                                               any(),
-                                               any(),
-                                               any(),
-                                               any(),
-                                               any());
+                any(),
+                any(),
+                any(),
+                any(),
+                any());
 
         verify(panelManager).addWorkbenchPart(any(),
-                                              any(),
-                                              any(),
-                                              any(),
-                                              any(),
-                                              any(),
-                                              isNull(),
-                                              isNull());
+                any(),
+                any(),
+                any(),
+                any(),
+                isNull(),
+                isNull());
     }
 }

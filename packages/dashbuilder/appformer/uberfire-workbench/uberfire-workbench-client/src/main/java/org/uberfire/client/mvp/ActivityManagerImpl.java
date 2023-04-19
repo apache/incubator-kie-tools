@@ -33,11 +33,8 @@ import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.ExternalPathPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
@@ -63,29 +60,6 @@ public class ActivityManagerImpl implements ActivityManager {
     private ActivityLifecycleErrorHandler lifecycleErrorHandler;
 
     @Override
-    public <T extends Activity> Set<T> getActivities(final Class<T> clazz) {
-        // not calling onStartup. See UF-105.
-        return createInstances(iocManager.lookupBeans(clazz));
-    }
-
-    @Override
-    public SplashScreenActivity getSplashScreenInterceptor(final PlaceRequest placeRequest) {
-
-        SplashScreenActivity resultBean = null;
-        for (SplashScreenActivity splashScreen : activityBeansCache.getSplashScreens()) {
-            if (splashScreen.intercept(placeRequest)) {
-                if (splashScreen.isEnabled()) {
-                    resultBean = splashScreen;
-                    break;
-                }
-            }
-        }
-
-        return startIfNecessary(resultBean,
-                placeRequest);
-    }
-
-    @Override
     public Set<Activity> getActivities(final PlaceRequest placeRequest) {
         return getActivities(placeRequest,
                 true);
@@ -95,28 +69,10 @@ public class ActivityManagerImpl implements ActivityManager {
     public Set<Activity> getActivities(final PlaceRequest placeRequest,
                                        boolean secure) {
 
-        final Collection<SyncBeanDef<Activity>> beans;
-        if (placeRequest instanceof PathPlaceRequest) {
-            beans = resolveByPath((PathPlaceRequest) placeRequest);
-        } else {
-            beans = resolveById(placeRequest.getIdentifier());
-        }
+        final Collection<SyncBeanDef<Activity>> beans = resolveById(placeRequest.getIdentifier());
 
-        final var activities = startIfNecessary(createInstances(beans), placeRequest);
+        return startIfNecessary(createInstances(beans), placeRequest);
 
-        if (placeRequest instanceof PathPlaceRequest) {
-            resolvePathPlaceRequestIdentifier(placeRequest,  activities);
-        }
-
-        return activities;
-    }
-
-    private void resolvePathPlaceRequestIdentifier(PlaceRequest placeRequest,
-                                                   Set<Activity> activities) {
-        if (activities != null && !activities.isEmpty()) {
-            final Activity activity = activities.iterator().next();
-            placeRequest.setIdentifier(activity.getIdentifier());
-        }
     }
 
     @Override
@@ -125,22 +81,9 @@ public class ActivityManagerImpl implements ActivityManager {
             return containsCache.get(placeRequest.getIdentifier());
         }
 
-        Path path = null;
-        if (placeRequest instanceof PathPlaceRequest) {
-            path = ((PathPlaceRequest) placeRequest).getPath();
-            if (containsCache.containsKey(path)) {
-                return containsCache.get(path);
-            }
-        }
-
         final Activity result = getActivity(placeRequest);
         containsCache.put(placeRequest.getIdentifier(),
                 result != null);
-        if (path != null) {
-            containsCache.put(path,
-                    result != null);
-        }
-
         return result != null;
     }
 
@@ -214,12 +157,6 @@ public class ActivityManagerImpl implements ActivityManager {
      */
     private Class<?> getBeanScope(Activity startedActivity) {
 
-        // splash screens are tracked separately from other activities
-        if (startedActivity instanceof SplashScreenActivity) {
-            // FIXME this is an assumption based on convention. should modify bean cache to keep bean defs for splash screens too.
-            return ApplicationScoped.class;
-        }
-
         final IOCBeanDef<?> beanDef = activityBeansCache.getActivity(startedActivity.getPlace().getIdentifier());
         if (beanDef == null) {
             return Dependent.class;
@@ -235,8 +172,8 @@ public class ActivityManagerImpl implements ActivityManager {
                 continue;
             }
             final T instance = activityBean.getInstance();
-                activities.add(instance);
-            
+            activities.add(instance);
+
         }
 
         return activities;
@@ -251,11 +188,7 @@ public class ActivityManagerImpl implements ActivityManager {
             if (!startedActivities.containsKey(activity)) {
                 startedActivities.put(activity,
                         place);
-                if (activity.isDynamic() && place instanceof PathPlaceRequest) {
-                    activity.onStartup(ExternalPathPlaceRequest.create((PathPlaceRequest) place));
-                } else {
-                    activity.onStartup(place);
-                }
+                activity.onStartup(place);
             }
             return activity;
         } catch (Exception ex) {
@@ -277,9 +210,9 @@ public class ActivityManagerImpl implements ActivityManager {
     private Set<Activity> startIfNecessary(Collection<Activity> activities,
                                            PlaceRequest place) {
         return activities.stream()
-                         .map(a -> startIfNecessary(a, place))
-                         .filter(Objects::nonNull)
-                         .collect(Collectors.toSet());
+                .map(a -> startIfNecessary(a, place))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -297,19 +230,6 @@ public class ActivityManagerImpl implements ActivityManager {
             return emptyList();
         }
         return singletonList(beanDefActivity);
-    }
-
-    private Set<SyncBeanDef<Activity>> resolveByPath(final PathPlaceRequest place) {
-        if (place == null) {
-            return emptySet();
-        }
-        final SyncBeanDef<Activity> result = activityBeansCache.getActivity(place.getIdentifier());
-
-        if (result != null) {
-            return singleton(result);
-        }
-
-        return asSet(activityBeansCache.getActivity(place.getPath()));
     }
 
     private Set<SyncBeanDef<Activity>> asSet(final SyncBeanDef<Activity> activity) {

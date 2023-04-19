@@ -19,7 +19,6 @@
 
 <module>
   <inherits name="org.jboss.errai.bus.ErraiBus"/>
-  <inherits name="org.uberfire.ext.plugin.RuntimePluginAPI"/>
 
   <source path='api'/>
 

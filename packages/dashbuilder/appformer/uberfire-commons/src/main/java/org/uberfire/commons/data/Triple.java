@@ -39,9 +39,9 @@ public class Triple<K1, K2, K3> {
      * @param k2
      */
     public Triple(
-            final K1 k1,
-            final K2 k2,
-            final K3 k3) {
+                  final K1 k1,
+                  final K2 k2,
+                  final K3 k3) {
         this.k1 = k1;
         this.k2 = k2;
         this.k3 = k3;
@@ -58,9 +58,7 @@ public class Triple<K1, K2, K3> {
     public static <K1, K2, K3> Triple<K1, K2, K3> newTriple(final K1 k1,
                                                             final K2 k2,
                                                             final K3 k3) {
-        return new Triple<K1, K2, K3>(k1,
-                                      k2,
-                                      k3);
+        return new Triple<>(k1, k2, k3);
     }
 
     /**
@@ -84,6 +82,7 @@ public class Triple<K1, K2, K3> {
         return this.k3;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -93,7 +92,7 @@ public class Triple<K1, K2, K3> {
             return false;
         }
 
-        Triple triple = (Triple) o;
+        Triple<K1, K2, K3> triple = (Triple<K1, K2, K3>) o;
 
         if (k1 != null ? !k1.equals(triple.k1) : triple.k1 != null) {
             return false;

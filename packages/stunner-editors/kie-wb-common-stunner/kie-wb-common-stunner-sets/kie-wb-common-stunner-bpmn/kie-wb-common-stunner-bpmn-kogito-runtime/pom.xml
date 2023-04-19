@@ -556,7 +556,7 @@
           <module>org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor</module>
           <localWorkers>8</localWorkers>
           <noServer>false</noServer>
-          <logLevel>TRACE</logLevel>
+          <logLevel>WARN</logLevel>
           <disableCastChecking>true</disableCastChecking>
           <optimizationLevel>9</optimizationLevel>
           <draftCompile>false</draftCompile>

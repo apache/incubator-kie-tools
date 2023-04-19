@@ -16,18 +16,11 @@
 package org.dashbuilder.dataset.client;
 
 import org.dashbuilder.common.client.error.ClientRuntimeError;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * Interface for capturing the results of a data set export request
  */
 public interface DataSetExportReadyCallback {
-
-    /**
-     * The path returned after a successful export
-     * @param exportFilePath The path of the exported file in the server
-     */
-    void exportReady(Path exportFilePath);
 
     /**
      * An error occurred during the export process
