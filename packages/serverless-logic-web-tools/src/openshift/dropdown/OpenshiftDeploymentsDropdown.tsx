@@ -64,12 +64,15 @@ export function OpenshiftDeploymentsDropdown() {
 
   const [deployments, refresh] = useLivePromiseState<WebToolsOpenShiftDeployedModel[]>(
     useMemo(() => {
+      if (settings.openshift.status !== OpenShiftInstanceStatus.CONNECTED) {
+        return { error: "Can't load deployments." };
+      }
       return async () => {
         setRefreshCountdownInSeconds(REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS);
         const res = await Promise.all([openshift.loadDeployments(), devModeDispatch.loadDeployments()]);
         return res.flat();
       };
-    }, [devModeDispatch, openshift])
+    }, [devModeDispatch, openshift, settings.openshift.status])
   );
 
   useEffect(() => {
