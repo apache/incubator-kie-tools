@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/util/retry"
 
 	"github.com/kiegroup/kogito-serverless-operator/version"
 
@@ -314,13 +315,14 @@ func (r *recoverFromFailureDevReconciliationState) Do(ctx context.Context, workf
 	if err := kubeutil.MarkDeploymentToRollout(deployment); err != nil {
 		return ctrl.Result{}, nil, err
 	}
-	if err := r.client.Update(ctx, deployment); err != nil {
-		// TODO we should implement a channel to wait for this rollout before returning the handler to the reconciliation manager. And future reconciliations should not call this method again. See https://issues.redhat.com/browse/KOGITO-8748
-		if errors.IsConflict(err) {
-			r.logger.Info("Deployment just got updated, waiting to rollout again")
-			return ctrl.Result{RequeueAfter: recoverDeploymentErrorInterval}, nil, nil
-		}
-		return ctrl.Result{}, nil, err
+	retryErr := retry.RetryOnConflict(retry.DefaultRetry, func() error {
+		updateErr := r.client.Update(ctx, deployment)
+		return updateErr
+	})
+
+	if retryErr != nil {
+		r.logger.Info("Error during Deployment rollout")
+		return ctrl.Result{RequeueAfter: recoverDeploymentErrorInterval}, nil, nil
 	}
 
 	workflow.Status.RecoverFailureAttempts += 1
