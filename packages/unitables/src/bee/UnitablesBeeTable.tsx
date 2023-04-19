@@ -42,6 +42,7 @@ import { AUTO_ROW_ID } from "../uniforms/UnitablesJsonSchemaBridge";
 import getObjectValueByPath from "lodash/get";
 import { useUnitablesContext, useUnitablesRow } from "../UnitablesContext";
 import { UnitablesRowApi } from "../UnitablesRow";
+import moment from "moment";
 import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
 
 export const UNITABLES_COLUMN_MIN_WIDTH = 150;
@@ -115,7 +116,6 @@ export function UnitablesBeeTable({
               joinedName={insideProperty.joinedName}
               rowCount={rows.length}
               columnCount={columnsCount}
-              rowsRefs={rowsRefs}
             />
           );
         }
@@ -126,7 +126,6 @@ export function UnitablesBeeTable({
             joinedName={column.joinedName}
             rowCount={rows.length}
             columnCount={columnsCount}
-            rowsRefs={rowsRefs}
           />
         );
       }
@@ -236,12 +235,10 @@ function UnitablesBeeTableCell({
   joinedName,
   rowCount,
   columnCount,
-  rowsRefs,
 }: BeeTableCellProps<ROWTYPE> & {
   joinedName: string;
   rowCount: number;
   columnCount: number;
-  rowsRefs: Map<number, UnitablesRowApi>;
 }) {
   const [{ field, onChange: onFieldChange, name: fieldName }] = useField(joinedName, {});
   const cellRef = useRef<HTMLDivElement | null>(null);
@@ -262,17 +259,42 @@ function UnitablesBeeTableCell({
 
   // FIXME: Decouple from DMN --> https://github.com/kiegroup/kie-issues/issues/166
   const setValue = useCallback(
-    (newValue: string) => {
+    (newValue?: string) => {
       isBeeTableChange.current = true;
-      const newValueWithoutSymbols = newValue.replace(/\r/g, "");
+      const newValueWithoutSymbols = newValue?.replace(/\r/g, "") ?? "";
 
       if (field.enum) {
-        onFieldChange(field.placeholder);
+        if (field.enum.findIndex((value: unknown) => value === newValueWithoutSymbols) >= 0) {
+          onFieldChange(newValueWithoutSymbols);
+        } else {
+          onFieldChange(field.placeholder);
+        }
         // Changing the values using onChange will not re-render <select> nodes;
         // This ensure a re-render of the SelectField;
         forceUpdate();
       } else if (field.type === "string") {
-        onFieldChange(newValueWithoutSymbols);
+        if (field.format === "time") {
+          if (moment(newValueWithoutSymbols, [moment.HTML5_FMT.TIME, moment.HTML5_FMT.TIME_SECONDS], true).isValid()) {
+            onFieldChange(newValueWithoutSymbols);
+          } else {
+            onFieldChange("");
+          }
+        } else if (field.format === "date") {
+          if (moment(newValueWithoutSymbols, [moment.HTML5_FMT.DATE]).isValid()) {
+            onFieldChange(newValueWithoutSymbols);
+          } else {
+            onFieldChange("");
+          }
+        } else if (field.format === "date-time") {
+          const valueAsNumber = Date.parse(newValueWithoutSymbols);
+          if (!isNaN(valueAsNumber)) {
+            onFieldChange(newValueWithoutSymbols);
+          } else {
+            onFieldChange("");
+          }
+        } else {
+          onFieldChange(newValueWithoutSymbols);
+        }
       } else if (field.type === "number") {
         const numberValue = parseFloat(newValueWithoutSymbols);
         onFieldChange(isNaN(numberValue) ? undefined : numberValue);
@@ -285,11 +307,9 @@ function UnitablesBeeTableCell({
       } else {
         onFieldChange(newValue);
       }
-
-      // submit row;
-      rowsRefs.get(containerCellCoordinates?.rowIndex ?? 0)?.submit();
+      submitRow();
     },
-    [isBeeTableChange, field, onFieldChange, rowsRefs, containerCellCoordinates?.rowIndex]
+    [isBeeTableChange, field.enum, field.type, field.placeholder, field.format, submitRow, onFieldChange]
   );
 
   const { isActive, isEditing } = useBeeTableSelectableCellRef(
@@ -334,7 +354,7 @@ function UnitablesBeeTableCell({
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       // TAB
       if (e.key.toLowerCase() === "tab") {
-        submitRow?.(containerCellCoordinates?.rowIndex ?? 0);
+        submitRow();
         setEditingCell(false);
         if (isEnumField) {
           setIsSelectFieldOpen((prev) => {
@@ -371,7 +391,7 @@ function UnitablesBeeTableCell({
           cellRef.current?.getElementsByTagName("button")?.[0]?.click();
           setIsSelectFieldOpen((prev) => {
             if (prev === true) {
-              submitRow?.(containerCellCoordinates?.rowIndex ?? 0);
+              submitRow();
               setEditingCell(false);
             } else {
               setEditingCell(true);
@@ -389,7 +409,7 @@ function UnitablesBeeTableCell({
             return;
           }
         }
-        submitRow?.(containerCellCoordinates?.rowIndex ?? 0);
+        submitRow();
         setEditingCell(false);
         navigateVertically({ isShiftPressed: e.shiftKey });
         return;
@@ -404,7 +424,7 @@ function UnitablesBeeTableCell({
           // handle checkbox field;
           if (e.code.toLowerCase() === "space" && xDmnFieldType === X_DMN_TYPE.BOOLEAN) {
             cellRef.current?.getElementsByTagName("input")?.[0]?.click();
-            submitRow?.(containerCellCoordinates?.rowIndex ?? 0);
+            submitRow();
             return;
           } else {
             cellRef.current?.getElementsByTagName("input")?.[0]?.select();
@@ -418,16 +438,7 @@ function UnitablesBeeTableCell({
         e.stopPropagation();
       }
     },
-    [
-      xDmnFieldType,
-      containerCellCoordinates?.rowIndex,
-      isEditing,
-      isEnumField,
-      navigateVertically,
-      onFieldChange,
-      setEditingCell,
-      submitRow,
-    ]
+    [xDmnFieldType, isEditing, isEnumField, navigateVertically, onFieldChange, setEditingCell, submitRow]
   );
 
   // if it's active should focus on cell;
@@ -435,9 +446,13 @@ function UnitablesBeeTableCell({
     if (isActive) {
       if (isEnumField) {
         if (isSelectFieldOpen) {
+          // if a SelectField is open, it takes a time to render the select options;
+          // After the select options are rendered we focus in the selected option;
           setTimeout(() => {
             const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
-            selectOptions?.[0]?.focus();
+            Array.from(selectOptions ?? [])
+              ?.filter((selectOption) => selectOption.innerText === cellRef.current?.innerText)?.[0]
+              ?.focus();
           }, 0);
         } else {
           cellRef.current?.focus();
@@ -446,13 +461,45 @@ function UnitablesBeeTableCell({
       if (!isEditing) {
         cellRef.current?.focus();
       }
-    } else if (!isActive && !isEditing) {
-      submitRow(containerCellCoordinates?.rowIndex ?? 0);
     }
-  }, [containerCellCoordinates?.rowIndex, fieldName, isActive, isEditing, isEnumField, isSelectFieldOpen, submitRow]);
+  }, [fieldName, isActive, isEditing, isEnumField, isSelectFieldOpen]);
+
+  const onBlur = useCallback(
+    (e: React.FocusEvent<HTMLDivElement>) => {
+      if (e.target.tagName.toLowerCase() === "input") {
+        submitRow();
+      }
+      if (
+        e.target.tagName.toLowerCase() === "button" ||
+        (e.relatedTarget as HTMLElement)?.tagName.toLowerCase() === "button"
+      ) {
+        // if the select field is open and it blurs to another cell, close it;
+        const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
+        if ((selectOptions?.length ?? 0) > 0 && (e.relatedTarget as HTMLElement).tagName.toLowerCase() === "td") {
+          e.target.click();
+          setIsSelectFieldOpen(false);
+        }
+        submitRow();
+      }
+    },
+    [fieldName, submitRow]
+  );
+
+  const onClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
+      setIsSelectFieldOpen((prev) => !prev);
+    }
+  }, []);
 
   return (
-    <div style={{ outline: "none" }} tabIndex={-1} ref={cellRef} onKeyDown={onKeyDown}>
+    <div
+      style={{ outline: "none" }}
+      tabIndex={-1}
+      ref={cellRef}
+      onKeyDown={onKeyDown}
+      onBlur={onBlur}
+      onClick={onClick}
+    >
       <AutoField
         key={joinedName + autoFieldKey}
         name={joinedName}

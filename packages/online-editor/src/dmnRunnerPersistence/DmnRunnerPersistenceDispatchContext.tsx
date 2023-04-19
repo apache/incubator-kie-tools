@@ -25,12 +25,9 @@ import {
 
 interface DmnRunnerPersistenceDispatchContextType {
   dmnRunnerPersistenceService: DmnRunnerPersistenceService;
-  deletePersistenceJson: (
-    previousDmnRunnerPersisnteceJson: DmnRunnerPersistenceJson,
-    workspaceFile: WorkspaceFile
-  ) => void;
-  getPersistenceJsonForDownload: (workspaceFile: WorkspaceFile) => Promise<Blob | undefined>;
-  uploadPersistenceJson: (workspaceFile: WorkspaceFile, file: File) => void;
+  onDownloadDmnRunnerPersistenceJson: (workspaceFile: WorkspaceFile) => Promise<Blob | undefined>;
+  onUploadDmnRunnerPersistenceJson: (workspaceFile: WorkspaceFile, file: File) => void;
+  onDeleteDmnRunnerPersistenceJson: (workspaceFile: WorkspaceFile) => void;
   dmnRunnerPersistenceJson: DmnRunnerPersistenceJson;
   dmnRunnerPersistenceJsonDispatcher: React.Dispatch<DmnRunnerPersistenceReducerAction>;
   updatePersistenceJsonDebouce: (args: DmnRunnerUpdatePersistenceJsonDeboucerArgs) => void;

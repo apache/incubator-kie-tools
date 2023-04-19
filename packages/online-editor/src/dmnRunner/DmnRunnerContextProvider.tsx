@@ -37,6 +37,7 @@ import {
   ExtendedServicesDmnJsonSchema,
   DmnEvaluationMessages,
   ExtendedServicesModelPayload,
+  DmnInputFieldProperties,
 } from "@kie-tools/extended-services-api";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
@@ -67,6 +68,8 @@ import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextPr
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
+
+const JSON_SCHEMA_PROPERTIES_PATH = "definitions.InputSet.properties";
 
 interface Props {
   isEditorReady?: boolean;
@@ -122,7 +125,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     initialDmnRunnerProviderStates
   );
 
-  // States that are in controll of the DmnRunnerProvider;
+  // States that are in control of the DmnRunnerProvider;
   const [canBeVisualized, setCanBeVisualized] = useState<boolean>(false);
   const [extendedServicesError, setExtendedServicesError] = useState<boolean>(false);
   const [jsonSchema, setJsonSchema] = useState<ExtendedServicesDmnJsonSchema | undefined>(undefined);
@@ -152,9 +155,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [dmnRunnerPersistenceJson?.configs?.inputs]
   );
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
-  const previousJsonSchema = usePrevious(jsonSchema);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (props.isEditorReady) {
       setCanBeVisualized(true);
     } else {
@@ -162,9 +164,28 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
   }, [props.isEditorReady]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setExtendedServicesError(false);
   }, [jsonSchema]);
+
+  // Reset JSON Schema and PersistenceJson;
+  useLayoutEffect(() => {
+    setJsonSchema(undefined);
+  }, [props.workspaceFile.relativePath]);
+
+  // Control the isExpaded state based on the extended services status;
+  useLayoutEffect(() => {
+    if (props.workspaceFile.extension !== "dmn") {
+      return;
+    }
+
+    if (
+      extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
+      extendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING
+    ) {
+      setDmnRunnerContextProviderState({ type: DmnRunnerProviderActionType.DEFAULT, newState: { isExpanded: false } });
+    }
+  }, [prevKieSandboxExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
   const extendedServicesModelPayload = useCallback(
     async (formInputs?: InputRow) => {
@@ -193,20 +214,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [props.workspaceFile, workspaces, props.dmnLanguageService]
   );
 
-  useEffect(() => {
-    if (props.workspaceFile.extension !== "dmn") {
-      return;
-    }
-
-    if (
-      extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
-      extendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING
-    ) {
-      setDmnRunnerContextProviderState({ type: DmnRunnerProviderActionType.DEFAULT, newState: { isExpanded: false } });
-    }
-  }, [prevKieSandboxExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
-
-  // RESULTS
+  // Responsible for get decision results;
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -271,6 +279,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     if (panel !== PanelId.DMN_RUNNER_TABLE) {
       runEffect.current = true;
     }
+
     // it should exec only when the relativePath changes;
   }, [props.workspaceFile.relativePath]);
 
@@ -321,9 +330,11 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     (args: {
       newInputsRow?: ((previousInputs: Array<InputRow>) => Array<InputRow>) | Array<InputRow>;
       newMode?: DmnRunnerMode;
-      newConfigInputs?: (
-        previousConfigInputs: UnitablesInputsConfigs
-      ) => UnitablesInputsConfigs | UnitablesInputsConfigs;
+      newConfigInputs?:
+        | ((previousConfigInputs: UnitablesInputsConfigs) => UnitablesInputsConfigs)
+        | UnitablesInputsConfigs;
+      shouldUpdateFs?: boolean;
+      cancellationToken?: Holder<boolean>;
     }) => {
       dmnRunnerPersistenceJsonDispatcher({
         updatePersistenceJsonDebouce,
@@ -351,7 +362,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           }
           return newDmnRunnerPersistenceJson;
         },
-        shouldUpdateFS: true,
+        shouldUpdateFs: args.shouldUpdateFs !== undefined ? args.shouldUpdateFs : true,
+        cancellationToken: args.cancellationToken ?? new Holder(false),
       });
     },
     [
@@ -385,160 +397,139 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [setDmnRunnerPersistenceJson]
   );
 
-  const getDefaultValuesForInputs = useCallback((inputs: InputRow) => {
-    return Object.entries(inputs).reduce(
-      (acc, [key, value]) => {
-        if (key === "id") {
-          return acc;
-        }
-        if (typeof value === "string") {
-          acc[key] = "";
-        } else if (typeof value === "number") {
-          acc[key] = null;
-        } else if (typeof value === "boolean") {
-          acc[key] = false;
-        } else if (Array.isArray(value)) {
-          acc[key] = [];
-        } else if (typeof value === "object") {
-          acc[key] = {};
-        }
-        return acc;
-      },
-      { id: generateUuid() } as Record<string, any>
-    );
-  }, []);
-
-  const getRefField = useCallback((jsonSchema: ExtendedServicesDmnJsonSchema, field: Record<string, any>): Record<
-    string,
-    any
-  > => {
-    const refPath = field.$ref.split("/").splice(1).join(".");
-    const refField: Record<string, any> = getObjectValueByPath(jsonSchema, refPath);
-    if (refField.$ref) {
+  // Recusively get the input node that uses the $ref property
+  const getRefField = useCallback((jsonSchema: ExtendedServicesDmnJsonSchema, field: DmnInputFieldProperties):
+    | DmnInputFieldProperties
+    | undefined => {
+    const refPath = field?.$ref?.split("/").splice(1).join(".");
+    const refField: DmnInputFieldProperties | undefined = getObjectValueByPath(jsonSchema, refPath ?? "");
+    if (refField?.$ref) {
       return getRefField(jsonSchema, refField);
     }
     return refField;
   }, []);
 
-  const getDefaultValue = useCallback(
-    (jsonSchema: ExtendedServicesDmnJsonSchema, field: Record<string, any>) => {
-      const fieldToCheck = field.$ref ? getRefField(jsonSchema, field) : field;
-      if (fieldToCheck.type === "object") {
-        return {};
-      }
-      if (fieldToCheck.type === "array") {
-        return [];
-      }
-      if (fieldToCheck.type === "boolean") {
-        return false;
-      }
-    },
-    [getRefField]
-  );
-
   const getDefaultValues = useCallback(
     (jsonSchema: ExtendedServicesDmnJsonSchema) => {
-      return Object.entries(getObjectValueByPath(jsonSchema, "definitions.InputSet.properties") ?? {})?.reduce(
+      return Object.entries(getObjectValueByPath(jsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {})?.reduce(
         (acc, [key, field]: [string, Record<string, string>]) => {
-          const defaultValue = getDefaultValue(jsonSchema, field);
-          if (defaultValue) {
-            acc[key] = defaultValue;
+          const fieldToCheck = field.$ref ? getRefField(jsonSchema, field) : field;
+          if (fieldToCheck?.type === "object") {
+            acc[key] = {};
+          }
+          if (fieldToCheck?.type === "array") {
+            acc[key] = [];
+          }
+          if (fieldToCheck?.type === "boolean") {
+            acc[key] = false;
           }
           return acc;
         },
         {} as Record<string, any>
       );
     },
-    [getDefaultValue]
+    [getRefField]
   );
 
-  // The refreshCallback is called in every CompanionFS event;
-  const { promise: companionFsRefreshCallbackResult } = useCompanionFsFileSyncedWithWorkspaceFile(
+  const getDefaultValueForField = useCallback((dmnField: DmnInputFieldProperties) => {
+    if (dmnField.type === "string") {
+      return "";
+    }
+    if (dmnField.type === "number") {
+      return undefined;
+    }
+    if (dmnField.type === "array") {
+      return [];
+    }
+    if (dmnField.type === "object") {
+      return {};
+    }
+    return undefined;
+  }, []);
+
+  // The refreshCallback is called after a CompanionFS event;
+  // When another TAB updates the FS, this callback will sync up;
+  useCompanionFsFileSyncedWithWorkspaceFile(
     dmnRunnerPersistenceService.companionFsService,
     props.workspaceFile.workspaceId,
     props.workspaceFile.relativePath,
     useCallback(
-      async (cancellationToken: Holder<boolean>, workspaceFileEvent: CompanionFsServiceBroadcastEvents) => {
-        if (workspaceFileEvent.type === "CFSF_ADD") {
-          return {
-            propertiesDifference: undefined,
-            jsonSchema,
-            dmnRunnerPersistenceJson: dmnRunnerPersistenceService.parseDmnRunnerPersistenceJson(
-              workspaceFileEvent.content
-            ),
-          };
+      async (cancellationToken: Holder<boolean>, workspaceFileEvent: CompanionFsServiceBroadcastEvents | undefined) => {
+        if (!jsonSchema || !workspaceFileEvent) {
+          return;
         }
 
-        const propertiesDifference = diff(
-          getObjectValueByPath(previousJsonSchema, "definitions.InputSet.properties") ?? {},
-          getObjectValueByPath(jsonSchema, "definitions.InputSet.properties") ?? {}
-        );
-        return { propertiesDifference, jsonSchema, dmnRunnerPersistenceJson: undefined };
+        // CFSF_ADD is triggered on file creation, file rename, persistence deletion or upload.
+        if (workspaceFileEvent.type === "CFSF_ADD") {
+          const dmnRunnerPersistenceJson = dmnRunnerPersistenceService.parseDmnRunnerPersistenceJson(
+            workspaceFileEvent.content
+          );
+
+          // Remove incompatible values and add default values;
+          const jsonSchemaProperties = getObjectValueByPath(jsonSchema, JSON_SCHEMA_PROPERTIES_PATH);
+          if (jsonSchemaProperties) {
+            Object.entries(jsonSchemaProperties).forEach(
+              ([propertyName, dmnField]: [string, DmnInputFieldProperties]) => {
+                dmnRunnerPersistenceJson.inputs.forEach((input) => {
+                  // if the input has the property name, its value should match the property attribute type/format;
+                  const fieldType = dmnField.type ? dmnField.type : getRefField(jsonSchema, dmnField)?.type;
+
+                  if (input[propertyName] && typeof input[propertyName] !== (fieldType ?? "string")) {
+                    input[propertyName] = getDefaultValueForField(dmnField);
+                  }
+                });
+              }
+            );
+          }
+
+          setDmnRunnerPersistenceJson({
+            newInputsRow: cloneDeep(dmnRunnerPersistenceJson.inputs).map((dmnRunnerInput) => ({
+              ...getDefaultValues(jsonSchema),
+              ...dmnRunnerInput,
+            })),
+            shouldUpdateFs: false,
+            cancellationToken,
+          });
+          return;
+        }
+
+        // CFSF_UPDATE will be called on every runner update;
+        // CFSF_DELETE will be called when FS is deleted;
+        if (workspaceFileEvent.type === "CFSF_UPDATE" || workspaceFileEvent.type === "CFSF_DELETE") {
+          const dmnRunnerPersistenceJson = dmnRunnerPersistenceService.parseDmnRunnerPersistenceJson(
+            workspaceFileEvent.content
+          );
+
+          if (!dmnRunnerPersistenceJson) {
+            return;
+          }
+
+          setDmnRunnerPersistenceJson({
+            newConfigInputs: dmnRunnerPersistenceJson.configs.inputs,
+            newInputsRow: dmnRunnerPersistenceJson.inputs,
+            shouldUpdateFs: false,
+            cancellationToken,
+          });
+          return;
+        }
+
+        if (workspaceFileEvent.type === "CFSF_MOVE" || workspaceFileEvent.type === "CFSF_RENAME") {
+          // ignore;
+        }
+        return;
       },
-      [jsonSchema, previousJsonSchema, dmnRunnerPersistenceService]
+      [
+        dmnRunnerPersistenceService,
+        getDefaultValueForField,
+        getDefaultValues,
+        getRefField,
+        jsonSchema,
+        setDmnRunnerPersistenceJson,
+      ]
     )
   );
 
-  useEffect(() => {
-    if (!companionFsRefreshCallbackResult.data) {
-      return;
-    }
-
-    const { jsonSchema, propertiesDifference, dmnRunnerPersistenceJson } = companionFsRefreshCallbackResult.data;
-
-    if (!propertiesDifference && jsonSchema && dmnRunnerPersistenceJson) {
-      setDmnRunnerInputs((previousDmnRunnerInputs) => {
-        // if the file is new, the [0] should be populated with default values;
-        const newDmnRunnerInputs = cloneDeep(dmnRunnerPersistenceJson.inputs);
-        newDmnRunnerInputs[0] = { ...getDefaultValues(jsonSchema), ...newDmnRunnerInputs[0] };
-        return newDmnRunnerInputs;
-      });
-    }
-
-    if (!propertiesDifference || !jsonSchema) {
-      return;
-    }
-
-    if (Object.keys(propertiesDifference).length === 0) {
-      return;
-    }
-
-    setDmnRunnerPersistenceJson({
-      newConfigInputs: (previousConfigInputs) => {
-        const newConfigs = cloneDeep(previousConfigInputs);
-        return Object.entries(propertiesDifference).reduce(
-          (configs, [property, value]) => {
-            if (value?.format) {
-              delete configs[property];
-            }
-            return configs;
-          },
-          { ...newConfigs }
-        );
-      },
-      newInputsRow: (previousInputs) => {
-        const newInputs = cloneDeep(previousInputs);
-        return newInputs.map((inputs) => {
-          return Object.entries(propertiesDifference).reduce(
-            (inputs, [property, value]) => {
-              if (Object.keys(inputs).length === 0) {
-                return inputs;
-              }
-              if (!value || value.type || value.$ref) {
-                delete inputs[property];
-              }
-              if (value?.format) {
-                inputs[property] = undefined;
-              }
-              return inputs;
-            },
-            { ...getDefaultValues(jsonSchema), ...inputs }
-          );
-        });
-      },
-    });
-  }, [companionFsRefreshCallbackResult.data, getDefaultValues, setDmnRunnerInputs, setDmnRunnerPersistenceJson]);
-
+  // Responsible to set the JSON schema based on the DMN model;
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -562,7 +553,56 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               if (canceled.get()) {
                 return;
               }
-              setJsonSchema(jsonSchema);
+
+              setJsonSchema((previousJsonSchema) => {
+                // On the first render the previous will be undefined;
+                if (!previousJsonSchema) {
+                  return jsonSchema;
+                }
+
+                const propertiesDifference = diff(
+                  getObjectValueByPath(previousJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {},
+                  getObjectValueByPath(jsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {}
+                );
+
+                // Add default values and delete changed data types;
+                setDmnRunnerPersistenceJson({
+                  newConfigInputs: (previousConfigInputs) => {
+                    const newConfigs = cloneDeep(previousConfigInputs);
+                    return Object.entries(propertiesDifference).reduce(
+                      (configs, [property, value]) => {
+                        if (value?.format) {
+                          delete configs[property];
+                        }
+                        return configs;
+                      },
+                      { ...newConfigs }
+                    );
+                  },
+                  newInputsRow: (previousInputs) => {
+                    const newInputs = cloneDeep(previousInputs);
+                    return newInputs.map((inputs) => {
+                      return Object.entries(propertiesDifference).reduce(
+                        (inputs, [property, value]) => {
+                          if (Object.keys(inputs).length === 0) {
+                            return inputs;
+                          }
+                          if (!value || value.type || value.$ref) {
+                            delete inputs[property];
+                          }
+                          if (value?.format) {
+                            inputs[property] = undefined;
+                          }
+                          return inputs;
+                        },
+                        { ...getDefaultValues(jsonSchema), ...inputs }
+                      );
+                    });
+                  },
+                  cancellationToken: canceled,
+                });
+                return jsonSchema;
+              });
             });
           })
           .catch((err) => {
@@ -570,9 +610,39 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             setExtendedServicesError(true);
           });
       },
-      [extendedServices.client, extendedServices.status, extendedServicesModelPayload, props.workspaceFile.extension]
+      [
+        extendedServices.client,
+        extendedServices.status,
+        extendedServicesModelPayload,
+        getDefaultValues,
+        props.workspaceFile.extension,
+        setDmnRunnerPersistenceJson,
+      ]
     )
   );
+
+  const getDefaultValuesForInputs = useCallback((inputs: InputRow) => {
+    return Object.entries(inputs).reduce(
+      (acc, [key, value]) => {
+        if (key === "id") {
+          return acc;
+        }
+        if (typeof value === "string") {
+          acc[key] = "";
+        } else if (typeof value === "number") {
+          acc[key] = null;
+        } else if (typeof value === "boolean") {
+          acc[key] = false;
+        } else if (Array.isArray(value)) {
+          acc[key] = [];
+        } else if (typeof value === "object") {
+          acc[key] = {};
+        }
+        return acc;
+      },
+      { id: generateUuid() } as Record<string, any>
+    );
+  }, []);
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {

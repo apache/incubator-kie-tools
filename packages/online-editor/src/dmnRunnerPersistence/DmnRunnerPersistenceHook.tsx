@@ -19,7 +19,6 @@ import { useCallback } from "react";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useDmnRunnerPersistenceDispatch } from "./DmnRunnerPersistenceDispatchContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
-import { CompanionFsServiceBroadcastEvents } from "../companionFs/CompanionFsService";
 import { getNewDefaultDmnRunnerPersistenceJson } from "./DmnRunnerPersistenceService";
 import { DmnRunnerPersistenceReducerActionType, DmnRunnerPersistenceJson } from "./DmnRunnerPersistenceTypes";
 
@@ -27,64 +26,6 @@ import { DmnRunnerPersistenceReducerActionType, DmnRunnerPersistenceJson } from 
 export function useDmnRunnerPersistence(workspaceId?: string, workspaceFileRelativePath?: string) {
   const { dmnRunnerPersistenceService, dmnRunnerPersistenceJsonDispatcher, updatePersistenceJsonDebouce } =
     useDmnRunnerPersistenceDispatch();
-
-  // When another TAB updates the FS, it should sync up
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        if (!workspaceFileRelativePath || !workspaceId) {
-          return;
-        }
-
-        const dmnRunnerPersistenceJsonFileUniqueId =
-          dmnRunnerPersistenceService.companionFsService.getUniqueFileIdentifier({
-            workspaceId: workspaceId,
-            workspaceFileRelativePath: workspaceFileRelativePath,
-          });
-
-        console.debug(`Subscribing to ${dmnRunnerPersistenceJsonFileUniqueId}`);
-        const broadcastChannel = new BroadcastChannel(dmnRunnerPersistenceJsonFileUniqueId);
-        broadcastChannel.onmessage = ({ data: companionEvent }: MessageEvent<CompanionFsServiceBroadcastEvents>) => {
-          if (canceled.get()) {
-            return;
-          }
-
-          console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(companionEvent)}`);
-          if (companionEvent.type === "CFSF_MOVE" || companionEvent.type == "CFSF_RENAME") {
-            // Ignore, as content remains the same.
-          } else if (
-            companionEvent.type === "CFSF_UPDATE" ||
-            companionEvent.type === "CFSF_ADD" ||
-            companionEvent.type === "CFSF_DELETE"
-          ) {
-            const dmnRunnerPersistenceJson: DmnRunnerPersistenceJson =
-              dmnRunnerPersistenceService.parseDmnRunnerPersistenceJson(companionEvent.content);
-
-            dmnRunnerPersistenceJsonDispatcher({
-              updatePersistenceJsonDebouce,
-              workspaceId: workspaceId,
-              workspaceFileRelativePath: workspaceFileRelativePath,
-              type: DmnRunnerPersistenceReducerActionType.DEFAULT,
-              newPersistenceJson: dmnRunnerPersistenceJson,
-              shouldUpdateFS: false,
-            });
-          }
-        };
-
-        return () => {
-          console.debug(`Unsubscribing to ${dmnRunnerPersistenceJsonFileUniqueId}`);
-          broadcastChannel.close();
-        };
-      },
-      [
-        updatePersistenceJsonDebouce,
-        dmnRunnerPersistenceService,
-        workspaceId,
-        workspaceFileRelativePath,
-        dmnRunnerPersistenceJsonDispatcher,
-      ]
-    )
-  );
 
   // On first render load the persistence json;
   useCancelableEffect(
@@ -123,7 +64,8 @@ export function useDmnRunnerPersistence(workspaceId?: string, workspaceFileRelat
                 workspaceFileRelativePath: workspaceFileRelativePath,
                 type: DmnRunnerPersistenceReducerActionType.DEFAULT,
                 newPersistenceJson: dmnRunnerPersistenceJson,
-                shouldUpdateFS: false,
+                shouldUpdateFs: false,
+                cancellationToken: canceled,
               });
             });
           });

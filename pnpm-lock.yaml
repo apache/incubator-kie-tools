@@ -7377,6 +7377,9 @@ importers:
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
+      "@kie-tools-core/react-hooks":
+        specifier: workspace:*
+        version: link:../react-hooks
       "@kie-tools/boxed-expression-component":
         specifier: workspace:*
         version: link:../boxed-expression-component
@@ -7416,6 +7419,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      moment:
+        specifier: ^2.29.4
+        version: 2.29.4
       react:
         specifier: ^17.0.2
         version: 17.0.2

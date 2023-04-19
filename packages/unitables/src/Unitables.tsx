@@ -34,10 +34,15 @@ import { UnitablesInputsConfigs } from "./UnitablesTypes";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
+import { usePreviousRef } from "@kie-tools-core/react-hooks/dist/usePreviousRef";
 
 export interface UnitablesProps {
   rows: Array<Record<string, any>>;
-  setRows: (previousStateFunction: (previous: Array<Record<string, any>>) => Array<Record<string, any>>) => void;
+  setRows: (
+    previousStateFunction:
+      | ((previous: Array<Record<string, any>>) => Array<Record<string, any>>)
+      | Array<Record<string, any>>
+  ) => void;
   error: boolean;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   openRow: (rowIndex: number) => void;
@@ -50,39 +55,6 @@ export interface UnitablesProps {
   onRowDeleted: (args: { rowIndex: number }) => void;
   configs: UnitablesInputsConfigs;
   setWidth: (newWidth: number, fieldName: string) => void;
-}
-
-function isObject(item: any): item is Record<string, any> {
-  return item && typeof item === "object" && !Array.isArray(item);
-}
-
-// should set the deep key that is going to be changed;
-function recursiveCheckForChangedKey(
-  rowIndex: number,
-  previousInputRows: Record<string, any>,
-  newInputRow: Record<string, any>,
-  cachedKeysOfRows: Map<number, Set<string>>,
-  changedProperties: Record<string, any>,
-  parentKey?: string
-) {
-  for (const [key, value] of Object.entries(changedProperties)) {
-    const fullKey: string = parentKey ? `${parentKey}.${key}` : key;
-    if (isObject(value)) {
-      recursiveCheckForChangedKey(rowIndex, previousInputRows, newInputRow, cachedKeysOfRows, value, fullKey);
-    } else {
-      const keySet = cachedKeysOfRows.get(rowIndex);
-      if (keySet) {
-        if (keySet.has(fullKey)) {
-          // key shouldnt be updated;
-          setObjectValueByPath(newInputRow, fullKey, getObjectValueByPath(previousInputRows, fullKey));
-        } else {
-          keySet.add(fullKey);
-        }
-      } else {
-        cachedKeysOfRows.set(rowIndex, new Set([fullKey]));
-      }
-    }
-  }
 }
 
 export const Unitables = ({
@@ -103,9 +75,11 @@ export const Unitables = ({
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
 
   // REFs
-  const cachedKeysOfRows = useRef<Map<number, Set<string>>>(new Map()); // create cache to save changed keys;
+  const cachedColumnsRows = useRef<Map<number, Set<string>>>(new Map()); // create cache to save changed keys;
   const timeout = useRef<number | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
+  const previousRows = usePreviousRef(rows);
+  const cachedRows = usePreviousRef(cloneDeep(rows));
 
   // CUSTOM HOOKs
   const { isBeeTableChange, rowsRefs } = useUnitablesContext();
@@ -142,40 +116,63 @@ export const Unitables = ({
 
   const onSubmitRow = useCallback(
     (inputRow: Record<string, any>, rowIndex: number, error: Record<string, any>) => {
-      // After this method is not called by a period, clear the cache and reset the internalChange;
+      // Performing a form submit doesn't trigger a React batch update, causing performances issues;
+      // This "if" handles this case, where it performs a fake batch update;
       if (isBeeTableChange.current) {
         if (timeout.current) {
           clearTimeout(timeout.current);
         }
 
+        // After this method is not called by a period, perform an setRow with the cachedRows (aka. batch update);
         timeout.current = window.setTimeout(() => {
-          cachedKeysOfRows.current.clear();
+          if (cachedRows.current) {
+            setRows(cloneDeep(cachedRows.current));
+          }
+
+          // clear the cache and reset the isBeeTableChange
+          cachedColumnsRows.current.clear();
           isBeeTableChange.current = false;
         }, 0);
-      }
 
-      // Before a cell is updated, the cell key is saved in a cache, and the new value is set;
-      // if the same cell is edited before the cache reset, the used value will be the previous one;
-      setRows((previousInputRows) => {
-        const newInputRows = cloneDeep(previousInputRows);
-        const newInputRow = cloneDeep(inputRow);
-
-        if (isBeeTableChange.current) {
-          const changedValues: Record<string, any> = diff(inputRow, newInputRows[rowIndex]);
-          recursiveCheckForChangedKey(
-            rowIndex,
-            newInputRows[rowIndex],
-            newInputRow,
-            cachedKeysOfRows.current,
-            changedValues
-          );
+        // Using the previous rows values check for what values were changed;
+        const changedValues: Record<string, any> = diff(inputRow, previousRows.current[rowIndex]);
+        if (!changedValues) {
+          return;
         }
 
-        newInputRows[rowIndex] = newInputRow;
-        return newInputRows;
-      });
+        // Get the columns that were changed;
+        const changedColumns = Object.entries(changedValues).flatMap(([columnName, columnValue]) => {
+          if (columnValue !== null && typeof columnValue === "object") {
+            return Object.keys(columnValue).map(
+              (columnInsidePropertyName) => `${columnName}.${columnInsidePropertyName}`
+            );
+          }
+          return columnName;
+        });
+
+        // Get the cached columns in the current row;
+        let cachedColumns = cachedColumnsRows.current.get(rowIndex);
+        if (!cachedColumns) {
+          cachedColumns = new Set<string>();
+          cachedColumnsRows.current.set(rowIndex, cachedColumns);
+        }
+
+        // Go through the changed columns and perform an update in the cachedRows with the new value (inpurRow)
+        changedColumns.forEach((changedKey) => {
+          if (!cachedColumns!.has(changedKey)) {
+            setObjectValueByPath(cachedRows.current[rowIndex], changedKey, getObjectValueByPath(inputRow, changedKey));
+            cachedColumns!.add(changedKey);
+          }
+        });
+      } else {
+        setRows((previousInputRows) => {
+          const newInputRows = cloneDeep(previousInputRows);
+          newInputRows[rowIndex] = inputRow;
+          return newInputRows;
+        });
+      }
     },
-    [isBeeTableChange, setRows]
+    [cachedRows, isBeeTableChange, previousRows, setRows]
   );
 
   const saveRowRef = useCallback(

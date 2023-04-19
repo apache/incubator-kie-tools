@@ -33,12 +33,9 @@ export function useUnitablesContext() {
 export function useUnitablesRow(rowIndex: number) {
   const { rowsRefs, rowsInputs } = useUnitablesContext();
 
-  const submitRow = useCallback(
-    (rowIndex: number) => {
-      rowsRefs.get(rowIndex)?.submit();
-    },
-    [rowsRefs]
-  );
+  const submitRow = useCallback(async () => {
+    rowsRefs.get(rowIndex)?.submit();
+  }, [rowsRefs, rowIndex]);
 
   return { submitRow, rowInputs: rowsInputs[rowIndex] };
 }

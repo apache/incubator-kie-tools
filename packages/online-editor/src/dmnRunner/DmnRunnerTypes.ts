@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { DecisionResult } from "@kie-tools/extended-services-api";
+import { DecisionResult, ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
+import { DmnRunnerPersistenceJson } from "../dmnRunnerPersistence/DmnRunnerPersistenceTypes";
 
 export interface DmnRunnerResults {
   results: Array<DecisionResult[] | undefined>;
@@ -60,3 +61,8 @@ export type DmnRunnerProviderAction =
   | DmnRunnerProviderActionDefault
   | DmnRunnerProviderActionAddRow
   | DmnRunnerProviderActionToggleExpanded;
+
+export interface DmnRunnerCompanionRefreshCallback {
+  jsonSchema?: ExtendedServicesDmnJsonSchema;
+  dmnRunnerPersistenceJson?: DmnRunnerPersistenceJson;
+}

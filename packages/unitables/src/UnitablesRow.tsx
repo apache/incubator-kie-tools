@@ -74,7 +74,7 @@ export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<
           model={rowInput}
           onSubmit={onSubmit}
           placeholder={true}
-          validate={"onChange"}
+          validate={"onSubmit"}
           onValidate={onValidate}
         >
           <UniformsContext.Consumer>

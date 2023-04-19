@@ -56,10 +56,10 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const extendedServices = useExtendedServices();
   const devDeployments = useDevDeployments();
   const { onTogglePanel, onOpenPanel } = useEditorDockContext();
-  const { dmnRunnerPersistenceJson, isExpanded, mode } = useDmnRunnerState();
+  const { isExpanded, mode } = useDmnRunnerState();
   const { setDmnRunnerMode, setDmnRunnerContextProviderState } = useDmnRunnerDispatch();
   const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
-  const { getPersistenceJsonForDownload, uploadPersistenceJson, deletePersistenceJson } =
+  const { onDeleteDmnRunnerPersistenceJson, onDownloadDmnRunnerPersistenceJson, onUploadDmnRunnerPersistenceJson } =
     useDmnRunnerPersistenceDispatch();
   const downloadDmnRunnerInputsRef = useRef<HTMLAnchorElement>(null);
   const uploadDmnRunnerInputsRef = useRef<HTMLInputElement>(null);
@@ -97,23 +97,23 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
 
   const handleDmnRunnerInputsDownload = useCallback(async () => {
     if (downloadDmnRunnerInputsRef.current) {
-      const fileBlob = await getPersistenceJsonForDownload(props.workspaceFile);
+      const fileBlob = await onDownloadDmnRunnerPersistenceJson(props.workspaceFile);
       if (fileBlob) {
         downloadDmnRunnerInputsRef.current.download = props.workspaceFile.name.split(".")[0] + ".json";
         downloadDmnRunnerInputsRef.current.href = URL.createObjectURL(fileBlob);
         downloadDmnRunnerInputsRef.current?.click();
       }
     }
-  }, [props.workspaceFile, getPersistenceJsonForDownload]);
+  }, [props.workspaceFile, onDownloadDmnRunnerPersistenceJson]);
 
   const handleDmnRunnerInputsUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) {
-        uploadPersistenceJson(props.workspaceFile, file);
+        onUploadDmnRunnerPersistenceJson(props.workspaceFile, file);
       }
     },
-    [uploadPersistenceJson, props.workspaceFile]
+    [onUploadDmnRunnerPersistenceJson, props.workspaceFile]
   );
 
   return (
@@ -221,7 +221,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
                       type: DmnRunnerProviderActionType.DEFAULT,
                       newState: { currentInputIndex: 0 },
                     });
-                    deletePersistenceJson(dmnRunnerPersistenceJson, props.workspaceFile);
+                    onDeleteDmnRunnerPersistenceJson(props.workspaceFile);
                   }}
                   item={`Delete DMN Runner inputs`}
                   label={" Delete inputs"}

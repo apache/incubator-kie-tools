@@ -22,7 +22,7 @@ import { FormComponent, FormProps } from "@kie-tools/form";
 import { DmnAutoFieldProvider } from "./uniforms/DmnAutoFieldProvider";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 
-export type InputRow = Record<string, string>;
+export type InputRow = Record<string, any>;
 
 export function DmnForm(props: FormProps<InputRow, ExtendedServicesDmnJsonSchema>) {
   const i18n = useMemo(() => {

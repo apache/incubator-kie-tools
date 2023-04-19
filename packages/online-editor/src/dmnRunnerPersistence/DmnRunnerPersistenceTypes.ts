@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { InputRow } from "@kie-tools/form-dmn";
 import { UnitablesInputsConfigs } from "@kie-tools/unitables";
 
@@ -36,6 +37,7 @@ export type DmnRunnerUpdatePersistenceJsonDeboucerArgs = {
   workspaceId: string;
   workspaceFileRelativePath: string;
   content: string;
+  cancellationToken: Holder<boolean>;
 };
 
 export enum DmnRunnerPersistenceReducerActionType {
@@ -57,5 +59,6 @@ export type DmnRunnerPersistenceReducerAction = {
   updatePersistenceJsonDebouce: (args: DmnRunnerUpdatePersistenceJsonDeboucerArgs) => void;
   workspaceFileRelativePath: string;
   workspaceId: string;
-  shouldUpdateFS: boolean;
+  shouldUpdateFs: boolean;
+  cancellationToken: Holder<boolean>;
 } & (DmnRunnerPersistenceReducerActionDefault | DmnRunnerPersistenceReducerActionPrevious);

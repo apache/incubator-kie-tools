@@ -32,70 +32,52 @@ import {
 // This variable ensures that a new update from the FS will NOT override the new value.
 let LOCK = false;
 
-function checkIfHasChangesAndUpdateFs(
-  persistenceJson: DmnRunnerPersistenceJson,
-  newPersistenceJson: DmnRunnerPersistenceJson,
-  updatePersistenceJsonDebouce: (args: DmnRunnerUpdatePersistenceJsonDeboucerArgs) => void,
-  workspaceId: string,
-  workspaceFileRelativePath: string,
-  shouldUpdateFs: boolean
-): DmnRunnerPersistenceJson {
-  // Check for changes before update;
-  if (isEqual(persistenceJson, newPersistenceJson)) {
-    LOCK = false;
-    return persistenceJson;
-  }
-
-  // Updates from local FS and the current value is different from the change, hence, a change occured while the FS was updated;
-  if (!shouldUpdateFs) {
-    if (LOCK) {
-      // the last change was made by this tab; invalidate fsUpdate;
-      LOCK = false;
-      return persistenceJson;
-    } else {
-      // state wasn't changed by this tab; overwrite
-      LOCK = false;
-      return newPersistenceJson;
-    }
-  }
-
-  // update FS;
-  updatePersistenceJsonDebouce({
-    workspaceId: workspaceId,
-    workspaceFileRelativePath: workspaceFileRelativePath,
-    content: JSON.stringify(newPersistenceJson),
-  });
-
-  LOCK = true;
-  return newPersistenceJson;
-}
-
 // Update the state and update the FS;
 function dmnRunnerPersistenceJsonReducer(
   persistenceJson: DmnRunnerPersistenceJson,
   action: DmnRunnerPersistenceReducerAction
 ) {
+  if (action.cancellationToken?.get()) {
+    return persistenceJson;
+  }
+
+  let newPersistenceJson;
   if (action.type === DmnRunnerPersistenceReducerActionType.PREVIOUS) {
-    return checkIfHasChangesAndUpdateFs(
-      persistenceJson,
-      action.newPersistenceJson(persistenceJson),
-      action.updatePersistenceJsonDebouce,
-      action.workspaceId,
-      action.workspaceFileRelativePath,
-      action.shouldUpdateFS
-    );
+    newPersistenceJson = action.newPersistenceJson(persistenceJson);
   } else if (action.type === DmnRunnerPersistenceReducerActionType.DEFAULT) {
-    return checkIfHasChangesAndUpdateFs(
-      persistenceJson,
-      action.newPersistenceJson,
-      action.updatePersistenceJsonDebouce,
-      action.workspaceId,
-      action.workspaceFileRelativePath,
-      action.shouldUpdateFS
-    );
+    newPersistenceJson = action.newPersistenceJson;
   } else {
     throw new Error("Invalid action for DmnRunnerPersistence reducer");
   }
+
+  // Check for changes before start;
+  if (isEqual(persistenceJson, newPersistenceJson)) {
+    LOCK = false;
+    return persistenceJson;
+  }
+
+  // Updates from local FS and the current value is different from the change, hence, a change occured while the FS is being updated;
+  if (!action.shouldUpdateFs) {
+    if (LOCK) {
+      // the last change was made by this tab; invalidate fsUpdate;
+      LOCK = false;
+      return persistenceJson;
+    } else {
+      // the last change wasn't made by this tab; overwrite
+      LOCK = false;
+      return newPersistenceJson;
+    }
+  }
+
+  // The new value should update the FS;
+  LOCK = true;
+  action.updatePersistenceJsonDebouce({
+    workspaceId: action.workspaceId,
+    workspaceFileRelativePath: action.workspaceFileRelativePath,
+    content: JSON.stringify(newPersistenceJson),
+    cancellationToken: action.cancellationToken,
+  });
+  return newPersistenceJson;
 }
 
 const initialDmnRunnerPersistenceJson = getNewDefaultDmnRunnerPersistenceJson();
@@ -119,6 +101,9 @@ export function DmnRunnerPersistenceDispatchContextProvider(props: React.PropsWi
       }
 
       timeout.current = window.setTimeout(() => {
+        if (args.cancellationToken.get()) {
+          return;
+        }
         dmnRunnerPersistenceService.companionFsService.update(
           {
             workspaceId: args.workspaceId,
@@ -131,26 +116,21 @@ export function DmnRunnerPersistenceDispatchContextProvider(props: React.PropsWi
     [dmnRunnerPersistenceService]
   );
 
-  const deletePersistenceJson = useCallback(
-    (previousDmnRunnerPersisnteceJson: DmnRunnerPersistenceJson, workspaceFile: WorkspaceFile) => {
-      // overwrite the current persistenceJson with a new one;
+  const onDeleteDmnRunnerPersistenceJson = useCallback(
+    async (workspaceFile: WorkspaceFile) => {
       const newPersistenceJson = getNewDefaultDmnRunnerPersistenceJson();
-      // keep current mode;
-      newPersistenceJson.configs.mode = previousDmnRunnerPersisnteceJson.configs.mode;
 
-      dmnRunnerPersistenceJsonDispatcher({
-        updatePersistenceJsonDebouce,
-        workspaceId: workspaceFile.workspaceId,
-        workspaceFileRelativePath: workspaceFile.relativePath,
-        type: DmnRunnerPersistenceReducerActionType.DEFAULT,
-        newPersistenceJson,
-        shouldUpdateFS: true,
-      });
+      newPersistenceJson.configs.mode = dmnRunnerPersistenceJson.configs.mode;
+
+      await dmnRunnerPersistenceService.companionFsService.createOrOverwrite(
+        { workspaceId: workspaceFile.workspaceId, workspaceFileRelativePath: workspaceFile.relativePath },
+        JSON.stringify(newPersistenceJson)
+      );
     },
-    [updatePersistenceJsonDebouce]
+    [dmnRunnerPersistenceJson.configs.mode, dmnRunnerPersistenceService.companionFsService]
   );
 
-  const getPersistenceJsonForDownload = useCallback(
+  const onDownloadDmnRunnerPersistenceJson = useCallback(
     async (workspaceFile: WorkspaceFile) => {
       const persistenceJson = await dmnRunnerPersistenceService.companionFsService.get({
         workspaceId: workspaceFile.workspaceId,
@@ -160,16 +140,17 @@ export function DmnRunnerPersistenceDispatchContextProvider(props: React.PropsWi
         ?.getFileContents()
         .then((content) => new Blob([content], { type: "application/json" }));
     },
-    [dmnRunnerPersistenceService]
+    [dmnRunnerPersistenceService.companionFsService]
   );
 
-  const uploadPersistenceJson = useCallback(
+  const onUploadDmnRunnerPersistenceJson = useCallback(
     async (workspaceFile: WorkspaceFile, file: File) => {
       const content = await new Promise<string>((res) => {
         const reader = new FileReader();
         reader.onload = (event: ProgressEvent<FileReader>) => res(decoder.decode(event.target?.result as ArrayBuffer));
         reader.readAsArrayBuffer(file);
       });
+
       await dmnRunnerPersistenceService.companionFsService.createOrOverwrite(
         { workspaceId: workspaceFile.workspaceId, workspaceFileRelativePath: workspaceFile.relativePath },
         content
@@ -182,12 +163,12 @@ export function DmnRunnerPersistenceDispatchContextProvider(props: React.PropsWi
     <DmnRunnerPersistenceDispatchContext.Provider
       value={{
         dmnRunnerPersistenceService,
-        deletePersistenceJson,
-        getPersistenceJsonForDownload,
-        uploadPersistenceJson,
         updatePersistenceJsonDebouce,
         dmnRunnerPersistenceJson,
         dmnRunnerPersistenceJsonDispatcher,
+        onDeleteDmnRunnerPersistenceJson,
+        onDownloadDmnRunnerPersistenceJson,
+        onUploadDmnRunnerPersistenceJson,
       }}
     >
       {props.children}
