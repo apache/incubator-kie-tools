@@ -1,12 +1,12 @@
 # Testing changes to the dmn-dev-deployment-base-image
 
-After making changes to either `dmn-dev-deployment-form-webapp` or `dmn-dev-deployment-quarkys-app` you may need to rebuild the `dmn-dev-deployment-base-image` to be used while developing. To aid in this scenario, a tool was created to build and load the new image to possible places where it can be deployed (Kubernetes clusters, such as Kind and Minkube, as well as OpenShift sandboxes).
+After making changes to either `dmn-dev-deployment-form-webapp` or `dmn-dev-deployment-quarkus-app` you may need to rebuild the `dmn-dev-deployment-base-image` to be used while developing. To aid in this scenario, a tool was created to build and load the new image to possible places where it can be deployed (Kubernetes clusters, such as Kind and Minkube, as well as OpenShift sandboxes).
 
-## Testing your image with the KIE Sandbox
+## Testing your image with KIE Sandbox
 
 **To use this tool, simply run `pnpm create-test-image:<target>`, with target being one of `openshift`, `minikube`, `kind` or `build-only`.**
 
-After building and loading the image you'll need to run KIE Sandbox with special environment variables so that it uses the local testing image instead of pulling the `latest` or `daily-dev` tags from `quay.io`.
+After building and loading the image you'll need to start KIE Sandbox with special environment variables so that it uses the local testing image instead of pulling the `latest` or `daily-dev` tags from `quay.io`.
 
 Go to the `online-editor` package and run the following command:
 
