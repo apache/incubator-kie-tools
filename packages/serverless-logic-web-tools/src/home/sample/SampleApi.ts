@@ -117,10 +117,8 @@ async function fetchFolderContent(args: {
 
     const promises: Promise<ContentData[] | undefined>[] = [];
 
-    const files = [] as ContentData[];
     for (const content of contents) {
       if (content.type === "file") {
-        files.push(content);
         promises.push(Promise.resolve([content]));
       } else if (content.type === "dir") {
         promises.push(
