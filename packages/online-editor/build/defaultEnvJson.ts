@@ -92,30 +92,42 @@ export const defaultEnvJson: EnvJson = {
       otherFilesDestinationFolder: "src/main/resources/others",
     },
   ],
-  KIE_SANDBOX_EDITOR_ENVELOPE_CONFIG: [
+  KIE_SANDBOX_EDITORS: [
     {
-      type: FileTypes.BPMN,
+      extension: FileTypes.BPMN,
       filePathGlob: GLOB_PATTERN.bpmn,
-      resourcesPathPrefix: "gwt-editors/bpmn",
-      path: "bpmn-envelope.html",
-      title: "Workflow",
-      description: "BPMN files are used to generate business workflows.",
+      editor: {
+        resourcesPathPrefix: "gwt-editors/bpmn",
+        path: "bpmn-envelope.html",
+      },
+      card: {
+        title: "Workflow",
+        description: "BPMN files are used to generate business workflows.",
+      },
     },
     {
-      type: FileTypes.DMN,
+      extension: FileTypes.DMN,
       filePathGlob: GLOB_PATTERN.dmn,
-      resourcesPathPrefix: "gwt-editors/dmn",
-      path: "dmn-envelope.html",
-      title: "Decision",
-      description: "DMN files are used to generate decision models",
+      editor: {
+        resourcesPathPrefix: "gwt-editors/dmn",
+        path: "dmn-envelope.html",
+      },
+      card: {
+        title: "Decision",
+        description: "DMN files are used to generate decision models",
+      },
     },
     {
-      type: FileTypes.PMML,
+      extension: FileTypes.PMML,
       filePathGlob: GLOB_PATTERN.pmml,
-      resourcesPathPrefix: "",
-      path: "pmml-envelope.html",
-      title: "Scorecard",
-      description: "PMML files are used to generate scorecards",
+      editor: {
+        resourcesPathPrefix: "",
+        path: "pmml-envelope.html",
+      },
+      card: {
+        title: "Scorecard",
+        description: "PMML files are used to generate scorecards",
+      },
     },
   ],
 };

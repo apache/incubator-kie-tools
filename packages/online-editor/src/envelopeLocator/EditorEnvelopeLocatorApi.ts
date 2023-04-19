@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-export type EditorEnvelopeConfig = {
-  type: string;
+export type EditorConfig = {
+  extension: string;
   filePathGlob: string;
-  resourcesPathPrefix: string;
-  path: string;
-  title: string;
-  description: string;
+  editor: {
+    resourcesPathPrefix: string;
+    path: string;
+  };
+  card: {
+    title: string;
+    description: string;
+  };
 };

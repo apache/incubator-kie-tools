@@ -89,7 +89,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { listDeletedFiles } from "../workspace/components/WorkspaceStatusIndicator";
-import { getEditorConfig } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { useEditorConfig } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -97,7 +97,7 @@ export function HomePage() {
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
   const queryParams = useQueryParams();
-  const editorConfig = getEditorConfig();
+  const editorConfig = useEditorConfig();
 
   const closeExpandedWorkspace = useCallback(() => {
     history.replace({
@@ -155,9 +155,9 @@ export function HomePage() {
                   return (
                     <NewModelCard
                       key={index}
-                      title={config.title}
-                      extension={config.type}
-                      description={config.description}
+                      title={config.card.title}
+                      extension={config.extension}
+                      description={config.card.description}
                     />
                   );
                 })}

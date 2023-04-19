@@ -20,7 +20,7 @@ import {
   EnvelopeMapping,
 } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
 import { FileTypes, isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
-import { EditorEnvelopeConfig } from "./EditorEnvelopeLocatorApi";
+import { EditorConfig } from "./EditorEnvelopeLocatorApi";
 
 export const GLOB_PATTERN = {
   all: "**/*",
@@ -49,15 +49,15 @@ export function isEditable(path: string): boolean {
 }
 
 export class EditorEnvelopeLocatorFactory {
-  public create(args: { targetOrigin: string; editorEnvelopeConfigs: EditorEnvelopeConfig[] }) {
+  public create(args: { targetOrigin: string; editorConfig: EditorConfig[] }) {
     return new EditorEnvelopeLocator(
       args.targetOrigin,
-      args.editorEnvelopeConfigs.map((config) => {
+      args.editorConfig.map((config) => {
         return new EnvelopeMapping({
-          type: config.type,
+          type: config.extension,
           filePathGlob: config.filePathGlob,
-          resourcesPathPrefix: config.resourcesPathPrefix,
-          envelopeContent: { type: EnvelopeContentType.PATH, path: config.path },
+          resourcesPathPrefix: config.editor.resourcesPathPrefix,
+          envelopeContent: { type: EnvelopeContentType.PATH, path: config.editor.path },
         });
       })
     );
