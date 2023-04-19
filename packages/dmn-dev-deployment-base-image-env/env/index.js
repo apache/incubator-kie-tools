@@ -34,10 +34,6 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "daily-dev",
       description: "The image tag.",
     },
-    DMN_DEV_DEPLOYMENT__testDevImageName: {
-      default: "dmn-dev-deployment-base-image:test",
-      description: "The full image name used for development purposes.",
-    },
   }),
   get env() {
     return {
@@ -46,7 +42,6 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         account: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__baseImageAccount),
         name: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__baseImageName),
         tags: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__baseImageBuildTags),
-        testDevImageName: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__testDevImageName),
       },
     };
   },

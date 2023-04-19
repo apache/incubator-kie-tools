@@ -138,6 +138,7 @@ try {
             `ERROR! --kind-cluster-name: Kind cluster named ${argv.kindClusterName} not found. Are you sure it's correct?`
           );
         }
+
         buildImage(argv.tag, argv.file, argv.context, argv.buildArg, argv.arch);
         execSync(`kind load docker-image ${argv.tag} --name ${argv.kindClusterName}`, { stdio: "inherit" });
       },
@@ -187,11 +188,11 @@ try {
     .alias("h", "help").argv;
 } catch (e) {
   prettyPrintError(e);
-  process.exit(1);
+  yargs.exit(1);
 }
 
 function prettyPrintError(error) {
-  console.error("\x1b[31m%s\x1b[0m", error.message ?? error);
+  console.error("\x1b[31m%s\x1b[0m", error);
 }
 
 function createAndUseDockerBuilder() {
@@ -252,7 +253,7 @@ EOF
   execSync(`oc apply -f - ${contents}`, { stdio: "inherit" });
 }
 
-function createOpenShfitBuildConfig(tag, repo, file, buildArg) {
+function createOpenShfitBuildConfig(repo, repoWithReference, file, buildArg) {
   const contents = `<<EOF
 apiVersion: build.openshift.io/v1
 kind: BuildConfig
@@ -262,7 +263,7 @@ spec:
   output:
     to:
       kind: ImageStreamTag
-      name: ${tag}
+      name: ${repoWithReference}
   strategy:
     dockerStrategy:
       dockerfilePath: ${file}
@@ -291,27 +292,25 @@ EOF
 }
 
 function createOpenshiftBuild(tag, file, context, buildArg) {
-  const { repo } = getImageDetailsFromFullUrl(tag);
+  const { repo, repoWithReference } = getImageDetailsFromFullUrl(tag);
 
   try {
     createOpenShiftImageStream(repo);
-    createOpenShfitBuildConfig(tag, repo, file, buildArg);
+    createOpenShfitBuildConfig(repo, repoWithReference, file, buildArg);
   } catch (e) {
-    console.error("-> Failed to create required resources. Are you logged in the 'oc' CLI?");
-    return;
+    throw new Error("-> Failed to create required resources. Are you logged in the 'oc' CLI?");
   }
   execSync(`oc start-build --from-dir=${context} ${repo} --follow`, { stdio: "inherit" });
 }
 
 function getImageDetailsFromFullUrl(fullUrl) {
-  // As per usual, this regex is some magic stuff to get name, domain, namespace, repo, reference and tag from a an image URL.
-  // You can try to check how it works here: https://regex101.com/r/x7inGN/1
-  const regex = new RegExp(
-    "^(?<name>(?<=^)(?:(?<domain>(?:(?:localhost|[\\w-]+(?:\\.[\\w-]+)+)(?::\\d+)?)|[\\w]+:\\d+)\\/)?\\/?(?<namespace>(?:(?:[a-z0-9]+(?:(?:[._]|__|[-]*)[a-z0-9]+)*)\\/)*)(?<repo>[a-z0-9-]+))[:@]?(?<reference>(?<=:)(?<tag>[\\w][\\w.-]{0,127})|(?<=@)(?<digest>[A-Za-z][A-Za-z0-9]*(?:[-_+.][A-Za-z][A-Za-z0-9]*)*[:][0-9A-Fa-f]{32,}))?",
-    "gm"
-  );
-  const matches = regex.exec(fullUrl);
-  return matches.groups;
+  const [domain, ...path] = fullUrl.split("/");
+  const repoWithReference = path.pop();
+  const reference = repoWithReference.includes("@")
+    ? repoWithReference.pop().split("@").pop()
+    : repoWithReference.split(":").pop();
+  const repo = repoWithReference.replace(reference, "").slice(0, -1);
+  return { domain, repo, reference, repoWithReference };
 }
 
 console.info("-> Done!");

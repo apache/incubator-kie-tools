@@ -2,9 +2,25 @@
 
 After making changes to either `dmn-dev-deployment-form-webapp` or `dmn-dev-deployment-quarkys-app` you may need to rebuild the `dmn-dev-deployment-base-image` to be used while developing. To aid in this scenario, a tool was created to build and load the new image to possible places where it can be deployed (Kubernetes clusters, such as Kind and Minkube, as well as OpenShift sandboxes).
 
+## Testing your image with the KIE Sandbox
+
 **To use this tool, simply run `pnpm create-test-image:<target>`, with target being one of `openshift`, `minikube`, `kind` or `build-only`.**
 
-Or, run the script with your own parameters described below:
+After building and loading the image you'll need to run KIE Sandbox with special environment variables so that it uses the local testing image instead of pulling the `latest` or `daily-dev` tags from `quay.io`.
+
+Go to the `online-editor` package and run the following command:
+
+### If testing with OpenShift:
+
+- `DMN_DEV_DEPLOYMENT__baseImageRegistry="" DMN_DEV_DEPLOYMENT__baseImageAccount="" DMN_DEV_DEPLOYMENT__imagePullPolicy="IfNotPresent" pnpm start`
+
+### If testing with Kind or Minikube:
+
+- `DMN_DEV_DEPLOYMENT__imagePullPolicy="IfNotPresent" pnpm start`
+
+After that you can start deploying to your local Kubernetes clusters or your OpenShift Dev Sandbox.
+
+---
 
 ## Usage
 
@@ -59,13 +75,3 @@ Or, run the script with your own parameters described below:
 ### Create an image from the Containerfile and context path:
 
 - `pnpm create-test-image build-only -t quay.io/my-user/my-image-name:latest -f my/context/path/Containerfile -c my/context/path`
-
-## Testing your image with the KIE Sandbox
-
-After building and loading the image you'll need to run KIE Sandbox with a special environment variable so that it uses the local testing image instead of pulling the `latest` or `daily-dev` tags from `quay.io`.
-
-Go to the `online-editor` package and run the following command:
-
-- `DMN_DEV_DEPLOYMENT__useTestImages=true pnpm start`
-
-After that you can start deploying to your local Kubernetes clusters or your OpenShift Dev Sandbox.

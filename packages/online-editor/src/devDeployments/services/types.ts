@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  DeployedModel,
-  DeploymentDescriptor,
-  DeploymentState,
-  ResourceDescriptor,
-} from "@kie-tools-core/kubernetes-bridge/dist/resources";
-import { UploadStatus } from "../DmnDevDeploymentQuarkusAppApi";
+import { DeployedModel } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 export type KieSandboxDeployedModel = DeployedModel & {
@@ -33,7 +27,6 @@ export interface DeployArgs {
   workspaceName: string;
   workspaceZipBlob: Blob;
   onlineEditorUrl: (baseUrl: string) => string;
-  useTestImages?: boolean;
 }
 
 export type ResourceArgs = {
