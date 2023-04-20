@@ -232,6 +232,8 @@ func (p *Proxy) corsProxyHandler() func(rw http.ResponseWriter, req *http.Reques
 		req.URL = emptyUrl
 		req.Host = req.URL.Host
 
+		req.Header.Del("Origin")
+
 		proxy := httputil.NewSingleHostReverseProxy(targetUrl)
 
 		// tolerate p-signed certificates

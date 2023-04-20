@@ -19,8 +19,8 @@ import {
   EnvelopeContentType,
   EnvelopeMapping,
 } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
-
 import { FileTypes, isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { EditorConfig } from "./EditorEnvelopeLocatorApi";
 
 export const GLOB_PATTERN = {
   all: "**/*",
@@ -49,26 +49,17 @@ export function isEditable(path: string): boolean {
 }
 
 export class EditorEnvelopeLocatorFactory {
-  public create(args: { targetOrigin: string }) {
-    return new EditorEnvelopeLocator(args.targetOrigin, [
-      new EnvelopeMapping({
-        type: FileTypes.BPMN,
-        filePathGlob: GLOB_PATTERN.bpmn,
-        resourcesPathPrefix: "gwt-editors/bpmn",
-        envelopeContent: { type: EnvelopeContentType.PATH, path: "bpmn-envelope.html" },
-      }),
-      new EnvelopeMapping({
-        type: FileTypes.DMN,
-        filePathGlob: GLOB_PATTERN.dmn,
-        resourcesPathPrefix: "gwt-editors/dmn",
-        envelopeContent: { type: EnvelopeContentType.PATH, path: "dmn-envelope.html" },
-      }),
-      new EnvelopeMapping({
-        type: FileTypes.PMML,
-        filePathGlob: GLOB_PATTERN.pmml,
-        resourcesPathPrefix: "",
-        envelopeContent: { type: EnvelopeContentType.PATH, path: "pmml-envelope.html" },
-      }),
-    ]);
+  public create(args: { targetOrigin: string; editorsConfig: EditorConfig[] }) {
+    return new EditorEnvelopeLocator(
+      args.targetOrigin,
+      args.editorsConfig.map((config) => {
+        return new EnvelopeMapping({
+          type: config.extension,
+          filePathGlob: config.filePathGlob,
+          resourcesPathPrefix: config.editor.resourcesPathPrefix,
+          envelopeContent: { type: EnvelopeContentType.PATH, path: config.editor.path },
+        });
+      })
+    );
   }
 }

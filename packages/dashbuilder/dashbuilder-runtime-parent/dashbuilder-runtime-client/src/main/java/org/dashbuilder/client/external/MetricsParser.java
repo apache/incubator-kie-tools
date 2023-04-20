@@ -17,7 +17,7 @@ package org.dashbuilder.client.external;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.dashbuilder.json.Json;
 import org.dashbuilder.json.JsonArray;
@@ -26,7 +26,7 @@ import org.dashbuilder.json.JsonArray;
  * Convert micrometer metrics format to JSON array
  *
  */
-public class MetricsParser implements Function<String, String> {
+public class MetricsParser implements UnaryOperator<String> {
 
     private static final char METRIC_DELIMITER = ' ';
     private static final char LABEL_OPEN = '{';
@@ -37,9 +37,9 @@ public class MetricsParser implements Function<String, String> {
         var array = Json.createArray();
         var chars = line.toCharArray();
 
-        var metricBuffer = new StringBuffer();
-        var labelsBuffer = new StringBuffer();
-        var valueBuffer = new StringBuffer();
+        var metricBuffer = new StringBuilder();
+        var labelsBuffer = new StringBuilder();
+        var valueBuffer = new StringBuilder();
         var currentBuffer = metricBuffer;
 
         for (int i = 0; i < chars.length; i++) {

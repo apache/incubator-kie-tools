@@ -36,7 +36,7 @@ public class RuntimeModelContentListener {
 
     @Inject
     RouterScreen routerScreen;
-
+    
     public void start(Consumer<String> contentConsumer) {
         setupBridge(contentConsumer);
         if (!hasEnvelope()) {

@@ -124,10 +124,7 @@ public class DisplayerCoordinator {
 
     public void redrawAll(Command onSuccess, Command onFailure) {
         coordinatorListener.init(onSuccess, onFailure, displayerList.size(), false);
-        for (RendererLibrary renderer : rendererMap.keySet()) {
-            List<Displayer> rendererGroup = rendererMap.get(renderer);
-            renderer.redraw(rendererGroup);
-        }
+        rendererMap.forEach(RendererLibrary::redraw);
     }
 
     public void closeAll() {
