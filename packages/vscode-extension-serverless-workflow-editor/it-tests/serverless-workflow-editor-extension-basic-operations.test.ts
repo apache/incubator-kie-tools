@@ -47,6 +47,7 @@ describe.skip("Serverless workflow editor - Basic operations tests", () => {
     await testHelper.closeAllNotifications();
   });
 
+  //handrey
   // Tests temporarily skipped due to CI only failures
   it.skip("Opens, edits and saves the *.sw.json file", async function () {
     this.timeout(30000);

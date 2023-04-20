@@ -45,6 +45,7 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
     await testHelper.closeAllNotifications();
   });
 
+  //handrey
   // Tests temporarily skipped due to CI only failures
   it.skip("Select states", async function () {
     this.timeout(30000);
