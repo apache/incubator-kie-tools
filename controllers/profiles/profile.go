@@ -16,6 +16,7 @@ package profiles
 
 import (
 	"github.com/go-logr/logr"
+	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
@@ -30,7 +31,7 @@ const (
 	defaultProfile         = Production
 )
 
-type reconcilerBuilder func(client client.Client, logger *logr.Logger) ProfileReconciler
+type reconcilerBuilder func(client client.Client, config *rest.Config, logger *logr.Logger) ProfileReconciler
 
 var profileBuilders = map[Profile]reconcilerBuilder{
 	Production:  newProdProfileReconciler,

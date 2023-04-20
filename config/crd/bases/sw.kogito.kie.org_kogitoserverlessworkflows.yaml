@@ -25,8 +25,8 @@ spec:
     - jsonPath: .metadata.annotations.sw\.kogito\.kie\.org\/version
       name: Version
       type: string
-    - jsonPath: .status.address.url
-      name: Address
+    - jsonPath: .status.endpoint
+      name: URL
       type: string
     - jsonPath: .status.conditions[?(@.type=='Running')].status
       name: Ready
@@ -1701,6 +1701,8 @@ spec:
                   - type
                   type: object
                 type: array
+              endpoint:
+                type: string
               observedGeneration:
                 description: The generation observed by the deployment controller.
                 format: int64

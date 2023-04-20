@@ -26,7 +26,6 @@ import (
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	k8s "k8s.io/client-go/kubernetes"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kiegroup/container-builder/api"
@@ -176,18 +175,6 @@ func setStatusAdditionalInfo(platform *v08.KogitoServerlessPlatform) {
 	log.Debugf("Kogito Serverless [%s]: setting status info", platform.Namespace)
 	platform.Status.Info["goVersion"] = runtime.Version()
 	platform.Status.Info["goOS"] = runtime.GOOS
-}
-
-// IsOpenShift returns true if we are connected to a OpenShift cluster.
-func IsOpenShift(client k8s.Interface) (bool, error) {
-	_, err := client.Discovery().ServerResourcesForGroupVersion("image.openshift.io/v1")
-	if err != nil && k8serrors.IsNotFound(err) {
-		return false, nil
-	} else if err != nil {
-		return false, err
-	}
-
-	return true, nil
 }
 
 func createBuilderRegistryRoleBinding(ctx context.Context, client client.Client, p *v08.KogitoServerlessPlatform) error {

@@ -18,6 +18,8 @@ import (
 	"context"
 	"fmt"
 
+	"k8s.io/client-go/rest"
+
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -45,6 +47,7 @@ import (
 type KogitoServerlessWorkflowReconciler struct {
 	Client   client.Client
 	Scheme   *runtime.Scheme
+	Config   *rest.Config
 	Recorder record.EventRecorder
 }
 
@@ -89,7 +92,7 @@ func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req 
 		return reconcile.Result{}, nil
 	}
 
-	return profiles.NewReconciler(r.Client, &logger, workflow).Reconcile(ctx, workflow)
+	return profiles.NewReconciler(r.Client, r.Config, &logger, workflow).Reconcile(ctx, workflow)
 }
 
 func buildEnqueueRequestsFromMapFunc(c client.Client, build *operatorapi.KogitoServerlessBuild) []reconcile.Request {

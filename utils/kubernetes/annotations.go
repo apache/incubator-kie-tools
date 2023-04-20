@@ -14,8 +14,9 @@
 package kubernetes
 
 import (
-	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 	"strings"
+
+	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 )
 
 func GetAnnotationResource(value string) string {

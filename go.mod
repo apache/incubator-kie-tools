@@ -10,9 +10,9 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/stretchr/testify v1.8.0
-	k8s.io/api v0.25.3
-	k8s.io/apimachinery v0.25.3
-	k8s.io/client-go v0.25.3
+	k8s.io/api v0.25.4
+	k8s.io/apimachinery v0.25.4
+	k8s.io/client-go v0.25.4
 	sigs.k8s.io/controller-runtime v0.13.1
 )
 
@@ -23,8 +23,9 @@ require (
 )
 
 require (
-	github.com/RHsyseng/operator-utils v1.4.11
+	github.com/RHsyseng/operator-utils v1.4.12
 	github.com/kiegroup/container-builder v0.0.0-20230131205716-bc25e59e2f13
+	github.com/magiconair/properties v1.8.7
 	github.com/onsi/ginkgo/v2 v2.3.0
 	github.com/openshift/api v0.0.0-20211209135129-c58d9f695577
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.55.1
@@ -46,6 +47,7 @@ require (
 	github.com/evanphx/json-patch v5.6.0+incompatible // indirect
 	github.com/evanphx/json-patch/v5 v5.6.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
+	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-logr/zapr v1.2.3 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
@@ -66,7 +68,6 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
-	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/moby/spdystream v0.2.0 // indirect

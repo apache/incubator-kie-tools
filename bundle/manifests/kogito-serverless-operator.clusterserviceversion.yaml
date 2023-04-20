@@ -283,6 +283,20 @@ spec:
           - list
           - watch
         - apiGroups:
+          - route.openshift.io
+          resources:
+          - route
+          - routes
+          verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
           - authentication.k8s.io
           resources:
           - tokenreviews

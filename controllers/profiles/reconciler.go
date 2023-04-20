@@ -18,6 +18,8 @@ import (
 	"context"
 	"fmt"
 
+	"k8s.io/client-go/rest"
+
 	"github.com/go-logr/logr"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -43,11 +45,11 @@ import (
 //
 // 5. objectCreator: are functions to create a specific Kubernetes object based on a given workflow instance. This function should return the desired default state.
 //
-// 6. mutateVisitor: is a function that states can pass to objectEnsurer that will be applied to a given live object during the reconciliation cycle.
+// 6. mutateVisitor: is a function that states can pass to defaultObjectEnsurer that will be applied to a given live object during the reconciliation cycle.
 // For example, if you wish to guarantee that an image in a specific container in the Deployment that you control and own won't change, make sure that your
 // mutate function guarantees that.
 //
-// 7. objectEnsurer: is a struct for a given objectCreator to control the reconciliation and merge conditions to an object.
+// 7. defaultObjectEnsurer: is a struct for a given objectCreator to control the reconciliation and merge conditions to an object.
 // A ReconciliationState may or may not have one or more ensurers. Depends on their role. There are states that just read objects, so no need to keep their desired state.
 //
 // See the already implemented reconciliation profiles to have a better understanding.
@@ -76,6 +78,12 @@ func (s stateSupport) performStatusUpdate(ctx context.Context, workflow *operato
 	return true, err
 }
 
+// PostReconcile function to perform all the other operations required after the reconcile - placeholder for null pattern usages
+func (s stateSupport) PostReconcile(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) error {
+	//By default we don't want to perform anything after the reconcile and so we will simply return no error
+	return nil
+}
+
 // baseReconciler is the base structure used by every reconciliation profile.
 // Use newBaseProfileReconciler to build a new reference.
 type baseReconciler struct {
@@ -100,6 +108,7 @@ func (b baseReconciler) Reconcile(ctx context.Context, workflow *operatorapi.Kog
 	}
 	b.objects = objects
 	b.logger.Info("Returning from reconciliation", "Result", result)
+
 	return result, err
 }
 
@@ -110,6 +119,8 @@ type ReconciliationState interface {
 	// Do perform the reconciliation task. It returns the controller result, the objects updated, and an error if any.
 	// Objects can be nil if the reconciliation state doesn't perform any updates in any Kubernetes object.
 	Do(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, []client.Object, error)
+	// PostReconcile performs the actions to perform after the reconciliation that are not mandatory
+	PostReconcile(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) error
 }
 
 // newReconciliationStateMachine builder for the reconciliationStateMachine
@@ -133,13 +144,17 @@ func (r *reconciliationStateMachine) do(ctx context.Context, workflow *operatora
 	for _, h := range r.states {
 		if h.CanReconcile(workflow) {
 			r.logger.Info("Found a condition to reconcile.", "Conditions", workflow.Status.Conditions)
-			return h.Do(ctx, workflow)
+			result, objs, err := h.Do(ctx, workflow)
+			if err = h.PostReconcile(ctx, workflow); err != nil {
+				r.logger.Error(err, "Error in Post Reconcile actions.", "Workflow", workflow.Name, "Conditions", workflow.Status.Conditions)
+			}
+			return result, objs, err
 		}
 	}
 	return ctrl.Result{}, nil, fmt.Errorf("the workflow %s in the namespace %s is in an unknown state condition. Can't reconcilie. Status is: %v", workflow.Name, workflow.Namespace, workflow.Status)
 }
 
 // NewReconciler creates a new ProfileReconciler based on the given workflow and context.
-func NewReconciler(client client.Client, logger *logr.Logger, workflow *operatorapi.KogitoServerlessWorkflow) ProfileReconciler {
-	return profileBuilder(workflow)(client, logger)
+func NewReconciler(client client.Client, config *rest.Config, logger *logr.Logger, workflow *operatorapi.KogitoServerlessWorkflow) ProfileReconciler {
+	return profileBuilder(workflow)(client, config, logger)
 }

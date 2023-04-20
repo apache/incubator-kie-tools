@@ -17,6 +17,8 @@ package platform
 import (
 	"context"
 
+	"github.com/RHsyseng/operator-utils/pkg/utils/openshift"
+
 	"github.com/pkg/errors"
 
 	"github.com/kiegroup/container-builder/api"
@@ -33,7 +35,7 @@ func ConfigureDefaults(ctx context.Context, c client.Client, p *v08.KogitoServer
 	// update missing fields in the resource
 	if p.Status.Cluster == "" {
 		// determine the kind of cluster the platform is installed into
-		isOpenShift, err := IsOpenShift(c)
+		isOpenShift, err := openshift.IsOpenShift(c.GetConfig())
 		switch {
 		case err != nil:
 			return err

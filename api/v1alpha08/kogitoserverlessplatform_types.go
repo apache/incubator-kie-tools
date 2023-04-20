@@ -47,13 +47,14 @@ const (
 )
 
 // PlatformCluster is the kind of orchestration cluster the platform is installed into
+// +kubebuilder:validation:Enum=kubernetes;openshift
 type PlatformCluster string
 
 const (
 	// PlatformClusterOpenShift is used when targeting an OpenShift cluster
-	PlatformClusterOpenShift PlatformCluster = "OpenShift"
+	PlatformClusterOpenShift PlatformCluster = "openshift"
 	// PlatformClusterKubernetes is used when targeting a Kubernetes cluster
-	PlatformClusterKubernetes PlatformCluster = "Kubernetes"
+	PlatformClusterKubernetes PlatformCluster = "kubernetes"
 )
 
 // PlatformBuildStrategy specifies how the Build should be executed.

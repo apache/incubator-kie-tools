@@ -469,6 +469,9 @@ spec:
               cluster:
                 description: Cluster what kind of cluster you're running (ie, plain
                   Kubernetes or OpenShift)
+                enum:
+                - kubernetes
+                - openshift
                 type: string
               configuration:
                 description: Configuration list of configuration properties to be
@@ -691,6 +694,9 @@ spec:
               cluster:
                 description: Cluster what kind of cluster you're running (ie, plain
                   Kubernetes or OpenShift)
+                enum:
+                - kubernetes
+                - openshift
                 type: string
               conditions:
                 description: Conditions which are the conditions met (particularly
@@ -878,8 +884,8 @@ spec:
     - jsonPath: .metadata.annotations.sw\.kogito\.kie\.org\/version
       name: Version
       type: string
-    - jsonPath: .status.address.url
-      name: Address
+    - jsonPath: .status.endpoint
+      name: URL
       type: string
     - jsonPath: .status.conditions[?(@.type=='Running')].status
       name: Ready
@@ -2554,6 +2560,8 @@ spec:
                   - type
                   type: object
                 type: array
+              endpoint:
+                type: string
               observedGeneration:
                 description: The generation observed by the deployment controller.
                 format: int64
@@ -2801,6 +2809,26 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  name: kogito-serverless-operator-openshift-manager-role
+rules:
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - route
+  - routes
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
   name: kogito-serverless-operator-proxy-role
 rules:
 - apiGroups:
@@ -2864,6 +2892,19 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: kogito-serverless-operator-manager-role
+subjects:
+- kind: ServiceAccount
+  name: kogito-serverless-operator-controller-manager
+  namespace: kogito-serverless-operator-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kogito-serverless-operator-openshift-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kogito-serverless-operator-openshift-manager-role
 subjects:
 - kind: ServiceAccount
   name: kogito-serverless-operator-controller-manager

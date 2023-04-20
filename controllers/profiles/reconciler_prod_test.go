@@ -18,6 +18,8 @@ import (
 	"context"
 	"testing"
 
+	"k8s.io/client-go/rest"
+
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/apps/v1"
 	clientruntime "sigs.k8s.io/controller-runtime/pkg/client"
@@ -39,7 +41,8 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	platform := test.GetKogitoServerlessPlatformInReadyPhase("../../config/samples/"+test.KogitoServerlessPlatformWithCacheYamlCR, t.Name())
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).Build()
 
-	result, err := NewReconciler(client, &logger, workflow).Reconcile(context.TODO(), workflow)
+	config := &rest.Config{}
+	result, err := NewReconciler(client, config, &logger, workflow).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 
 	assert.NotNil(t, result.RequeueAfter)
@@ -47,7 +50,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	assert.False(t, workflow.Status.IsReady())
 
 	// still building
-	result, err = NewReconciler(client, &logger, workflow).Reconcile(context.TODO(), workflow)
+	result, err = NewReconciler(client, config, &logger, workflow).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.Equal(t, requeueWhileWaitForBuild, result.RequeueAfter)
 	assert.True(t, workflow.Status.IsBuildRunning())
@@ -60,7 +63,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	assert.NoError(t, client.Status().Update(context.TODO(), build))
 
 	// last reconciliation cycle waiting for build
-	result, err = NewReconciler(client, &logger, workflow).Reconcile(context.TODO(), workflow)
+	result, err = NewReconciler(client, config, &logger, workflow).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.Equal(t, requeueWhileWaitForBuild, result.RequeueAfter)
 	assert.False(t, workflow.Status.IsBuildRunning())
@@ -68,14 +71,14 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	assert.Equal(t, api.WaitingForBuildReason, workflow.Status.GetTopLevelCondition().Reason)
 
 	// now we create the objects
-	result, err = NewReconciler(client, &logger, workflow).Reconcile(context.TODO(), workflow)
+	result, err = NewReconciler(client, config, &logger, workflow).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.False(t, workflow.Status.IsBuildRunning())
 	assert.False(t, workflow.Status.IsReady())
 	assert.Equal(t, api.WaitingForDeploymentReason, workflow.Status.GetTopLevelCondition().Reason)
 
 	// now with the objects created, it should be running
-	result, err = NewReconciler(client, &logger, workflow).Reconcile(context.TODO(), workflow)
+	result, err = NewReconciler(client, config, &logger, workflow).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.False(t, workflow.Status.IsBuildRunning())
 	assert.True(t, workflow.Status.IsReady())

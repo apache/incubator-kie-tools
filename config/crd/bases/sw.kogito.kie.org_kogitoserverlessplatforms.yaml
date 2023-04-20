@@ -152,6 +152,9 @@ spec:
               cluster:
                 description: Cluster what kind of cluster you're running (ie, plain
                   Kubernetes or OpenShift)
+                enum:
+                - kubernetes
+                - openshift
                 type: string
               configuration:
                 description: Configuration list of configuration properties to be
@@ -374,6 +377,9 @@ spec:
               cluster:
                 description: Cluster what kind of cluster you're running (ie, plain
                   Kubernetes or OpenShift)
+                enum:
+                - kubernetes
+                - openshift
                 type: string
               conditions:
                 description: Conditions which are the conditions met (particularly

@@ -17,6 +17,7 @@ package v1alpha08
 import (
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"knative.dev/pkg/apis"
 	duckv1 "knative.dev/pkg/apis/duck/v1"
 
 	"github.com/kiegroup/kogito-serverless-operator/api"
@@ -38,8 +39,6 @@ type KogitoServerlessWorkflowSpec struct {
 	States      []State      `json:"states"`
 }
 
-var _ api.ConditionsReader = &KogitoServerlessWorkflowStatus{}
-
 // KogitoServerlessWorkflowStatus defines the observed state of KogitoServerlessWorkflow
 type KogitoServerlessWorkflowStatus struct {
 	api.Status `json:",inline"`
@@ -47,7 +46,8 @@ type KogitoServerlessWorkflowStatus struct {
 	Address duckv1.Addressable           `json:"address,omitempty"`
 	Applied KogitoServerlessWorkflowSpec `json:"applied,omitempty"`
 	// keeps track of how many failure recovers a given workflow had so far
-	RecoverFailureAttempts int `json:"recoverFailureAttempts,omitempty"`
+	RecoverFailureAttempts int       `json:"recoverFailureAttempts,omitempty"`
+	Endpoint               *apis.URL `json:"endpoint,omitempty"`
 }
 
 func (s *KogitoServerlessWorkflowStatus) GetTopLevelConditionType() api.ConditionType {
@@ -94,7 +94,7 @@ func (s *KogitoServerlessWorkflowStatus) IsBuildRunning() bool {
 // +k8s:openapi-gen=true
 // +kubebuilder:printcolumn:name="Profile",type=string,JSONPath=`.metadata.annotations.sw\.kogito\.kie\.org\/profile`
 // +kubebuilder:printcolumn:name="Version",type=string,JSONPath=`.metadata.annotations.sw\.kogito\.kie\.org\/version`
-// +kubebuilder:printcolumn:name="Address",type=string,JSONPath=`.status.address.url`
+// +kubebuilder:printcolumn:name="URL",type=string,JSONPath=`.status.endpoint`
 // +kubebuilder:printcolumn:name="Ready",type=string,JSONPath=`.status.conditions[?(@.type=='Running')].status`
 // +kubebuilder:printcolumn:name="Reason",type=string,JSONPath=`.status.conditions[?(@.type=='Running')].reason`
 type KogitoServerlessWorkflow struct {

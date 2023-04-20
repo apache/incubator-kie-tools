@@ -26,10 +26,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
-
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/utils"
+	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
+	"github.com/kiegroup/kogito-serverless-operator/utils/openshift"
 )
 
 const (
@@ -195,7 +195,18 @@ func defaultServiceCreator(workflow *operatorapi.KogitoServerlessWorkflow) (clie
 			}},
 		},
 	}
+
 	return service, nil
+}
+
+// defaultNetworkCreator is an objectCreator for a basic Route for a workflow using dev profile
+// running on OpenShift.
+// It enables the exposition of the dev service using an OpenShift Route.
+// See: https://github.com/openshift/api/blob/d170fcdc0fa638b664e4f35f2daf753cb4afe36b/route/v1/route.crd.yaml
+func defaultNetworkCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+	lbl := labels(workflow)
+	route, err := openshift.RouteForWorkflow(workflow, lbl)
+	return route, err
 }
 
 func defaultServiceMutateVisitor(workflow *operatorapi.KogitoServerlessWorkflow) mutateVisitor {

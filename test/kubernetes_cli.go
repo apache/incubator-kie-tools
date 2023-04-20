@@ -18,6 +18,9 @@ import (
 	"context"
 	"testing"
 
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -33,6 +36,14 @@ import (
 // NewKogitoClientBuilder creates a new fake.ClientBuilder with the right scheme references
 func NewKogitoClientBuilder() *fake.ClientBuilder {
 	s := scheme.Scheme
+	utilruntime.Must(v1alpha08.AddToScheme(s))
+	return fake.NewClientBuilder().WithScheme(s)
+}
+
+// NewKogitoClientBuilderWithAdditionalScheme creates a new fake.ClientBuilder with the right scheme references
+func NewKogitoClientBuilderWithAdditionalScheme(gv schema.GroupVersion, types ...runtime.Object) *fake.ClientBuilder {
+	s := scheme.Scheme
+	s.AddKnownTypes(gv, types...)
 	utilruntime.Must(v1alpha08.AddToScheme(s))
 	return fake.NewClientBuilder().WithScheme(s)
 }

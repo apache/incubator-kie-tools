@@ -24,34 +24,49 @@ import (
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
-// newObjectEnsurer see objectEnsurer
-func newObjectEnsurer(client client.Client, logger *logr.Logger, creator objectCreator) *objectEnsurer {
-	return &objectEnsurer{
+type ObjectEnsurer interface {
+	ensure(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow, visitors ...mutateVisitor) (client.Object, controllerutil.OperationResult, error)
+}
+
+// newDefaultObjectEnsurer see defaultObjectEnsurer
+func newDefaultObjectEnsurer(client client.Client, logger *logr.Logger, creator objectCreator) ObjectEnsurer {
+	return &defaultObjectEnsurer{
 		client:  client,
 		logger:  logger,
 		creator: creator,
 	}
 }
 
-// objectEnsurer provides the engine for a ReconciliationState that needs to create or update a given Kubernetes object during the reconciliation cycle.
-type objectEnsurer struct {
+// defaultObjectEnsurer provides the engine for a ReconciliationState that needs to create or update a given Kubernetes object during the reconciliation cycle.
+type defaultObjectEnsurer struct {
 	client  client.Client
 	logger  *logr.Logger
 	creator objectCreator
 }
 
+// newDummyObjectEnsurer see dummyObjectEnsurer
+func newDummyObjectEnsurer() ObjectEnsurer {
+	return &dummyObjectEnsurer{}
+}
+
+// dummyObjectEnsurer is a useful Object ensurer to apply the null pattern. Use it when you need a creator that does nothing
+type dummyObjectEnsurer struct {
+}
+
 // mutateVisitor is a visitor function that mutates the given object before performing any updates in the cluster.
 // It gets called after the objectEnforcer reference.
 //
-// The objectEnsurer will call the returned function after creating the given object structure, so callers is ensured to have the default reference of the given object.
+// The defaultObjectEnsurer will call the returned mutateVisitor function after creating the given object structure,
+// so callers is ensured to have the default reference of the given object.
 //
 // Usually you can safely do `object.(*<kubernetesType>).Spec...` since you control the objectCreator.
 //
 // Example: `object.(*appsv1.Deployment).Spec.Template.Name="myApp"` to change the pod's name.
 type mutateVisitor func(object client.Object) controllerutil.MutateFn
 
-func (d *objectEnsurer) ensure(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow, visitors ...mutateVisitor) (client.Object, controllerutil.OperationResult, error) {
+func (d *defaultObjectEnsurer) ensure(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow, visitors ...mutateVisitor) (client.Object, controllerutil.OperationResult, error) {
 	result := controllerutil.OperationResultNone
+
 	object, err := d.creator(workflow)
 	if err != nil {
 		return nil, result, err
@@ -72,4 +87,9 @@ func (d *objectEnsurer) ensure(ctx context.Context, workflow *operatorapi.Kogito
 	}
 	d.logger.Info("Object operation finalized", "result", result, "kind", object.GetObjectKind().GroupVersionKind().String(), "name", object.GetName(), "namespace", object.GetNamespace())
 	return object, result, nil
+}
+
+func (d *dummyObjectEnsurer) ensure(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow, visitors ...mutateVisitor) (client.Object, controllerutil.OperationResult, error) {
+	result := controllerutil.OperationResultNone
+	return nil, result, nil
 }
