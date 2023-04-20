@@ -49,10 +49,10 @@ export function isEditable(path: string): boolean {
 }
 
 export class EditorEnvelopeLocatorFactory {
-  public create(args: { targetOrigin: string; editorConfig: EditorConfig[] }) {
+  public create(args: { targetOrigin: string; editorsConfig: EditorConfig[] }) {
     return new EditorEnvelopeLocator(
       args.targetOrigin,
-      args.editorConfig.map((config) => {
+      args.editorsConfig.map((config) => {
         return new EnvelopeMapping({
           type: config.extension,
           filePathGlob: config.filePathGlob,

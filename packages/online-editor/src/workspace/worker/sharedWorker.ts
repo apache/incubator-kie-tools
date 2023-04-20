@@ -31,7 +31,7 @@ async function gitCorsProxyUrl(): Promise<string> {
   return env.KIE_SANDBOX_GIT_CORS_PROXY_URL;
 }
 
-async function fetchEditorConfig(): Promise<EditorConfig[]> {
+async function fetchEditorsConfig(): Promise<EditorConfig[]> {
   const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
   const env = (await (await fetch(envFilePath)).json()) as EnvJson;
   return env.KIE_SANDBOX_EDITORS;
@@ -42,10 +42,10 @@ const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProx
 declare let onconnect: any;
 // eslint-disable-next-line prefer-const
 onconnect = async (e: MessageEvent) => {
-  const editorConfig = await fetchEditorConfig();
+  const editorsConfig = await fetchEditorsConfig();
   const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({
     targetOrigin: "",
-    editorConfig: editorConfig,
+    editorsConfig,
   });
 
   console.log("Connected to Workspaces Shared Worker");

@@ -26,14 +26,14 @@ export type SupportedFileExtensions = "bpmn" | "bpmn2" | "BPMN" | "BPMN2" | "dmn
 export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
 
 export function EditorEnvelopeLocatorContextProvider(props: { children: React.ReactNode }) {
-  const editorConfig = useEditorConfig();
+  const editorsConfig = useEditorsConfig();
   const value = useMemo(
     () =>
       new EditorEnvelopeLocatorFactory().create({
         targetOrigin: window.location.origin,
-        editorConfig: editorConfig,
+        editorsConfig,
       }),
-    []
+    [editorsConfig]
   );
 
   return <EditorEnvelopeLocatorContext.Provider value={value}>{props.children}</EditorEnvelopeLocatorContext.Provider>;
@@ -43,7 +43,7 @@ export function useEditorEnvelopeLocator() {
   return useContext(EditorEnvelopeLocatorContext);
 }
 
-export function useEditorConfig() {
+export function useEditorsConfig() {
   const { env } = useEnv();
   return useMemo<EditorConfig[]>(() => env.KIE_SANDBOX_EDITORS, [env.KIE_SANDBOX_EDITORS]);
 }

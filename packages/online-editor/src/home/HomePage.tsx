@@ -89,7 +89,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { listDeletedFiles } from "../workspace/components/WorkspaceStatusIndicator";
-import { useEditorConfig } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { useEditorsConfig } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -97,7 +97,7 @@ export function HomePage() {
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
   const queryParams = useQueryParams();
-  const editorConfig = useEditorConfig();
+  const editorsConfig = useEditorsConfig();
 
   const closeExpandedWorkspace = useCallback(() => {
     history.replace({
@@ -147,11 +147,11 @@ export function HomePage() {
                 hasGutter={true}
                 // var(--pf-c-page__main-section--PaddingTop) is the "Gutter" width.
                 minWidths={{
-                  default: "calc(" + 100 / editorConfig.length + "% - var(--pf-c-page__main-section--PaddingTop))",
+                  default: "calc(" + 100 / editorsConfig.length + "% - var(--pf-c-page__main-section--PaddingTop))",
                 }}
                 style={{ height: "calc(100% - 32px)", gridAutoFlow: "column" }}
               >
-                {editorConfig.map((config, index) => {
+                {editorsConfig.map((config, index) => {
                   return (
                     <NewModelCard
                       key={index}

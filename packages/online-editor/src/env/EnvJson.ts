@@ -16,7 +16,7 @@
 
 import { AuthProvider } from "../authProviders/AuthProvidersApi";
 import { AcceleratorConfig } from "../accelerators/AcceleratorsApi";
-import { EditorConfig as EditorConfig } from "../envelopeLocator/EditorEnvelopeLocatorApi";
+import { EditorConfig } from "../envelopeLocator/EditorEnvelopeLocatorApi";
 
 export interface EnvJson {
   KIE_SANDBOX_EXTENDED_SERVICES_URL: string;
