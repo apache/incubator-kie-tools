@@ -16,6 +16,11 @@
 
 export const APP_NAME = "Serverless Logic Web Tools";
 
+export const APP_GIT_USER = {
+  name: APP_NAME,
+  email: "",
+};
+
 export enum AppDistributionMode {
   COMMUNITY = "COMMUNITY",
   OPERATE_FIRST = "OPERATE_FIRST",
