@@ -276,6 +276,11 @@ public class JsCanvas implements JsCanvasNodeLister {
         return dimensionsArray;
     }
 
+    public NFastArrayList<String> getShapeIds() {
+        return getNodeIds();
+    }
+
+    @Deprecated // Use getShapeIds() instaed.
     @Override
     public NFastArrayList<String> getNodeIds() {
         WiresShape[] shapes = WiresManager.get(getLayer()).getShapes();

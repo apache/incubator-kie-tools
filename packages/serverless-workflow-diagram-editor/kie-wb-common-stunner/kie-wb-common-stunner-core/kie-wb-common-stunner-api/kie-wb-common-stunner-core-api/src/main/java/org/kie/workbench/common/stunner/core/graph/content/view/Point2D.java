@@ -18,13 +18,12 @@ package org.kie.workbench.common.stunner.core.graph.content.view;
 
 import java.util.Objects;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import jsinterop.annotations.JsType;
 
 /**
  * The values for the X/Y coordinates on the cartesian coordinates system.
  */
-@Portable
+@JsType
 public final class Point2D {
 
     private double x;
@@ -41,8 +40,8 @@ public final class Point2D {
                            point.getY());
     }
 
-    public Point2D(final @MapsTo("x") double x,
-                   final @MapsTo("y") double y) {
+    public Point2D(double x,
+                   double y) {
         this.x = x;
         this.y = y;
     }
