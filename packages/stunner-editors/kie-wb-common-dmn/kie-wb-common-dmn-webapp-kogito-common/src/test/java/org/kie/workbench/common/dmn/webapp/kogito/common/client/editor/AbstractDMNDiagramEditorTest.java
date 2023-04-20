@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
@@ -166,6 +167,9 @@ public class AbstractDMNDiagramEditorTest {
     @Mock
     private DecisionNavigatorPresenter decisionNavigatorPresenter;
 
+    @Mock
+    private PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
+
     private AbstractDMNDiagramEditor editor;
 
     @Before
@@ -195,7 +199,8 @@ public class AbstractDMNDiagramEditorTest {
                                                       guidedTourBridgeInitializer,
                                                       drdNameChanger,
                                                       confirmationDialog,
-                                                      decisionNavigatorPresenter));
+                                                      decisionNavigatorPresenter,
+                                                      pmmlDocumentMetadataProvider));
 
         when(containerView.getMultiPage()).thenReturn(multiPageEditor);
     }
@@ -474,7 +479,8 @@ public class AbstractDMNDiagramEditorTest {
                                                final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                                                final DRDNameChanger drdNameChanger,
                                                final ConfirmationDialog confirmationDialog,
-                                               final DecisionNavigatorPresenter decisionNavigatorPresenter) {
+                                               final DecisionNavigatorPresenter decisionNavigatorPresenter,
+                                               final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider) {
             super(view,
                   containerView,
                   stunnerEditor,
@@ -500,7 +506,8 @@ public class AbstractDMNDiagramEditorTest {
                   guidedTourBridgeInitializer,
                   drdNameChanger,
                   confirmationDialog,
-                  decisionNavigatorPresenter);
+                  decisionNavigatorPresenter,
+                  pmmlDocumentMetadataProvider);
         }
     }
 
