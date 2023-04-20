@@ -18,6 +18,8 @@ import * as React from "react";
 import { useContext, useMemo } from "react";
 // import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { EditorEnvelopeLocatorFactory } from "../EditorEnvelopeLocatorFactory";
+import { useEnv } from "../../env/hooks/EnvContext";
+import { EditorConfig } from "../EditorEnvelopeLocatorApi";
 
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "BPMN" | "BPMN2" | "dmn" | "DMN" | "pmml" | "PMML";
 
@@ -25,12 +27,14 @@ export type SupportedFileExtensions = "bpmn" | "bpmn2" | "BPMN" | "BPMN2" | "dmn
 export const EditorEnvelopeLocatorContext = React.createContext<any>({} as any);
 
 export function EditorEnvelopeLocatorContextProvider(props: { children: React.ReactNode }) {
+  const editorsConfig = useEditorsConfig();
   const value = useMemo(
     () =>
       new EditorEnvelopeLocatorFactory().create({
         targetOrigin: window.location.origin,
+        editorsConfig,
       }),
-    []
+    [editorsConfig]
   );
 
   return <EditorEnvelopeLocatorContext.Provider value={value}>{props.children}</EditorEnvelopeLocatorContext.Provider>;
@@ -38,4 +42,9 @@ export function EditorEnvelopeLocatorContextProvider(props: { children: React.Re
 
 export function useEditorEnvelopeLocator() {
   return useContext(EditorEnvelopeLocatorContext);
+}
+
+export function useEditorsConfig() {
+  const { env } = useEnv();
+  return useMemo<EditorConfig[]>(() => env.KIE_SANDBOX_EDITORS, [env.KIE_SANDBOX_EDITORS]);
 }
