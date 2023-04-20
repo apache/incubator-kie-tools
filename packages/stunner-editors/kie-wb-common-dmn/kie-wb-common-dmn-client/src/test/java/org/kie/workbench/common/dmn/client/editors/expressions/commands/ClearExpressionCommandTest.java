@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
@@ -47,9 +46,6 @@ public class ClearExpressionCommandTest {
 
     @Mock
     private Event<ExpressionEditorChanged> editorSelectedEvent;
-
-    @Mock
-    private ExpressionEditorView view;
 
     @Mock
     private ItemDefinitionUtils itemDefinitionUtils;

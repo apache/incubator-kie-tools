@@ -48,6 +48,11 @@ public class FillRelationExpressionCommand extends FillExpressionCommand<Relatio
     }
 
     @Override
+    public boolean isCurrentExpressionOfTheSameType() {
+        return getHasExpression().getExpression() instanceof Relation;
+    }
+
+    @Override
     protected Expression getNewExpression() {
         return new Relation();
     }

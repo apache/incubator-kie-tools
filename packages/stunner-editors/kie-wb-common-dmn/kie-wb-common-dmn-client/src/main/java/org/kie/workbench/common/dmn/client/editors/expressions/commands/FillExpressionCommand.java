@@ -89,8 +89,10 @@ public abstract class FillExpressionCommand<E extends ExpressionProps> {
         fill();
     }
 
+    public abstract boolean isCurrentExpressionOfTheSameType();
+
     void createExpression() {
-        if (getHasExpression().getExpression() == null) {
+        if (getHasExpression().getExpression() == null || !isCurrentExpressionOfTheSameType()) {
             getHasExpression().setExpression(getNewExpression());
         }
     }

@@ -48,6 +48,11 @@ public class FillFunctionExpressionCommand extends FillExpressionCommand<Functio
     }
 
     @Override
+    public boolean isCurrentExpressionOfTheSameType() {
+        return getHasExpression().getExpression() instanceof FunctionDefinition;
+    }
+
+    @Override
     protected Expression getNewExpression() {
         return new FunctionDefinition();
     }

@@ -48,6 +48,11 @@ public class FillInvocationExpressionCommand extends FillExpressionCommand<Invoc
     }
 
     @Override
+    public boolean isCurrentExpressionOfTheSameType() {
+        return getHasExpression().getExpression() instanceof Invocation;
+    }
+
+    @Override
     protected Expression getNewExpression() {
         return new Invocation();
     }

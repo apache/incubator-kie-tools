@@ -56,6 +56,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillFunc
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillInvocationExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillListExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillLiteralExpressionCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.UpdateCanvasNodeNameCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DataTypeProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DecisionTableProps;
@@ -92,6 +93,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
@@ -123,6 +125,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -1019,5 +1022,61 @@ public class ExpressionEditorViewImplTest {
         doReturn(bkm).when(view).getBusinessKnowledgeModel();
 
         assertFalse(view.businessKnowledgeModelMatches(encapsulatedLogicUuid));
+    }
+
+    @Test
+    public void test_executeUndoableExpressionCommand_WhenExpressionIsNotOfTheSameType() {
+
+        final FillExpressionCommand fillExpressionCommand = mock(FillExpressionCommand.class);
+        final ExpressionContainerGrid expressionContainerGrid = mock(ExpressionContainerGrid.class);
+        final UpdateCanvasNodeNameCommand updateCanvasNodeNameCommand = mock(UpdateCanvasNodeNameCommand.class);
+
+        doReturn(expressionContainerGrid).when(view).getExpressionContainerGrid();
+        doNothing().when(view).createUndoCommand();
+        doReturn(updateCanvasNodeNameCommand).when(view).getUpdateCanvasNodeNameCommand();
+        doReturn(Optional.of(hasName)).when(view).getHasName();
+        when(fillExpressionCommand.isCurrentExpressionOfTheSameType()).thenReturn(false);
+
+        final InOrder inOrder = inOrder(view,
+                                        hasExpression,
+                                        expressionContainerGrid,
+                                        fillExpressionCommand,
+                                        updateCanvasNodeNameCommand);
+
+        view.executeUndoableExpressionCommand(fillExpressionCommand);
+
+        inOrder.verify(view).createUndoCommand();
+        inOrder.verify(hasExpression).setExpression(null);
+        inOrder.verify(expressionContainerGrid).clearExpression(NODE_UUID);
+        inOrder.verify(fillExpressionCommand).execute();
+        inOrder.verify(updateCanvasNodeNameCommand).execute(NODE_UUID, hasName);
+    }
+
+    @Test
+    public void test_executeUndoableExpressionCommand_WhenExpressionIsOfTheSameType() {
+
+        final FillExpressionCommand fillExpressionCommand = mock(FillExpressionCommand.class);
+        final ExpressionContainerGrid expressionContainerGrid = mock(ExpressionContainerGrid.class);
+        final UpdateCanvasNodeNameCommand updateCanvasNodeNameCommand = mock(UpdateCanvasNodeNameCommand.class);
+
+        doReturn(expressionContainerGrid).when(view).getExpressionContainerGrid();
+        doNothing().when(view).createUndoCommand();
+        doReturn(updateCanvasNodeNameCommand).when(view).getUpdateCanvasNodeNameCommand();
+        doReturn(Optional.of(hasName)).when(view).getHasName();
+        when(fillExpressionCommand.isCurrentExpressionOfTheSameType()).thenReturn(true);
+
+        final InOrder inOrder = inOrder(view,
+                                        hasExpression,
+                                        expressionContainerGrid,
+                                        fillExpressionCommand,
+                                        updateCanvasNodeNameCommand);
+
+        view.executeUndoableExpressionCommand(fillExpressionCommand);
+
+        inOrder.verify(view).createUndoCommand();
+        verify(hasExpression, never()).setExpression(null);
+        verify(expressionContainerGrid, never()).clearExpression(NODE_UUID);
+        inOrder.verify(fillExpressionCommand).execute();
+        inOrder.verify(updateCanvasNodeNameCommand).execute(NODE_UUID, hasName);
     }
 }

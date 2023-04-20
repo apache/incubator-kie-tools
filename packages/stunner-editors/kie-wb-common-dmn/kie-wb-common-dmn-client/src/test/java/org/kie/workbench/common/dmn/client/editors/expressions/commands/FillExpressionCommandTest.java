@@ -209,6 +209,11 @@ public class FillExpressionCommandTest {
         }
 
         @Override
+        public boolean isCurrentExpressionOfTheSameType() {
+            return false;
+        }
+
+        @Override
         protected Expression getNewExpression() {
             return newExpression;
         }

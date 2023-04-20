@@ -558,9 +558,15 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
      * @param expressionCommand
      */
     void executeUndoableExpressionCommand(final FillExpressionCommand expressionCommand) {
+
         createUndoCommand();
+        if (!expressionCommand.isCurrentExpressionOfTheSameType()) {
+            getHasExpression().setExpression(null);
+            getExpressionContainerGrid().clearExpression(getNodeUUID());
+        }
+
         expressionCommand.execute();
-        updateCanvasNodeNameCommand.execute(getNodeUUID(), getHasName().orElse(null));
+        getUpdateCanvasNodeNameCommand().execute(getNodeUUID(), getHasName().orElse(null));
     }
 
     Stream<DataTypeProps> retrieveDefaultDataTypeProps() {
@@ -668,6 +674,10 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         return hasExpression;
     }
 
+    public UpdateCanvasNodeNameCommand getUpdateCanvasNodeNameCommand() {
+        return updateCanvasNodeNameCommand;
+    }
+
     Event<ExpressionEditorChanged> getEditorSelectedEvent() {
         return editorSelectedEvent;
     }
@@ -686,7 +696,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                                       this,
                                                                                       getNodeUUID(),
                                                                                       getHasName(),
-                                                                                      updateCanvasNodeNameCommand);
+                                                                                      getUpdateCanvasNodeNameCommand());
         addExpressionCommand(expressionCommand, commandBuilder);
 
         execute(commandBuilder);

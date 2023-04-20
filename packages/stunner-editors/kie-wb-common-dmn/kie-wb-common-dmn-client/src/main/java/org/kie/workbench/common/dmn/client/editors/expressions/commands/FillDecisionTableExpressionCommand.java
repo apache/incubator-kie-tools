@@ -48,6 +48,11 @@ public class FillDecisionTableExpressionCommand extends FillExpressionCommand<De
     }
 
     @Override
+    public boolean isCurrentExpressionOfTheSameType() {
+        return getHasExpression().getExpression() instanceof DecisionTable;
+    }
+
+    @Override
     protected Expression getNewExpression() {
         return new DecisionTable();
     }

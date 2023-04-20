@@ -25,16 +25,17 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.Context;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,9 +53,6 @@ public class FillContextExpressionCommandTest {
 
     @Mock
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
-
-    @Mock
-    private ExpressionEditorView view;
 
     @Mock
     private Context existingExpression;
@@ -86,5 +84,16 @@ public class FillContextExpressionCommandTest {
     public void testGetNewExpression() {
         final Expression newExpression = command.getNewExpression();
         assertTrue(newExpression instanceof Context);
+    }
+
+    @Test
+    public void testIsCurrentExpressionOfTheSameType_WhenItIs() {
+        assertTrue(command.isCurrentExpressionOfTheSameType());
+    }
+
+    @Test
+    public void testIsCurrentExpressionOfTheSameType_WhenItIsNot() {
+        when(hasExpression.getExpression()).thenReturn(mock(Expression.class));
+        assertFalse(command.isCurrentExpressionOfTheSameType());
     }
 }

@@ -48,6 +48,11 @@ public class FillContextExpressionCommand extends FillExpressionCommand<ContextP
     }
 
     @Override
+    public boolean isCurrentExpressionOfTheSameType() {
+        return getHasExpression().getExpression() instanceof Context;
+    }
+
+    @Override
     protected Expression getNewExpression() {
         return new Context();
     }

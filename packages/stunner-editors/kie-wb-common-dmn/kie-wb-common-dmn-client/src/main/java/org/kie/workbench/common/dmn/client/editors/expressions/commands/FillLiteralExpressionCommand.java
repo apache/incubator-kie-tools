@@ -52,6 +52,11 @@ public class FillLiteralExpressionCommand extends FillExpressionCommand<LiteralP
         fill(literalExpression, getExpressionProps());
     }
 
+    @Override
+    public boolean isCurrentExpressionOfTheSameType() {
+        return getHasExpression().getExpression() instanceof LiteralExpression;
+    }
+
     void fill(final LiteralExpression expression, final LiteralProps props) {
         fillLiteralExpression(expression, props);
     }

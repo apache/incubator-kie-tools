@@ -48,6 +48,11 @@ public class FillListExpressionCommand extends FillExpressionCommand<ListProps> 
     }
 
     @Override
+    public boolean isCurrentExpressionOfTheSameType() {
+        return getHasExpression().getExpression() instanceof List;
+    }
+
+    @Override
     protected Expression getNewExpression() {
         return new List();
     }

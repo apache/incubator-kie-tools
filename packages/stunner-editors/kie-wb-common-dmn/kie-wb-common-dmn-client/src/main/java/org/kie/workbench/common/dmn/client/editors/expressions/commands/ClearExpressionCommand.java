@@ -44,6 +44,11 @@ public class ClearExpressionCommand extends FillExpressionCommand<ExpressionProp
     }
 
     @Override
+    public boolean isCurrentExpressionOfTheSameType() {
+        return true;
+    }
+
+    @Override
     protected void fill() {
         getHasExpression().setExpression(null);
     }
