@@ -304,13 +304,14 @@ function createOpenshiftBuild(tag, file, context, buildArg) {
 }
 
 function getImageDetailsFromFullUrl(fullUrl) {
-  const [domain, ...path] = fullUrl.split("/");
-  const repoWithReference = path.pop();
+  // This regex matches only the image name and tag (https://regex101.com/r/Cets3B/1)
+  const [repoWithReference] = /[^/\n]+(?=[^/\n]*$)/.exec(fullUrl);
   const reference = repoWithReference.includes("@")
-    ? repoWithReference.pop().split("@").pop()
+    ? repoWithReference.split("@").pop()
     : repoWithReference.split(":").pop();
   const repo = repoWithReference.replace(reference, "").slice(0, -1);
-  return { domain, repo, reference, repoWithReference };
+
+  return { repo, reference, repoWithReference };
 }
 
 console.info("-> Done!");
