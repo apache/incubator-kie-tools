@@ -49,7 +49,8 @@ describe.skip("Serverless workflow editor - Basic operations tests", () => {
 
   //handrey
   // Tests temporarily skipped due to CI only failures
-  it.skip("Opens, edits and saves the *.sw.json file", async function () {
+  //it.skip("Opens, edits and saves the *.sw.json file", async function () {
+  it("Opens, edits and saves the *.sw.json file", async function () {
     this.timeout(30000);
 
     const WORKFLOW_NAME = "greet.sw.json";
