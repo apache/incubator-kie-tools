@@ -3,7 +3,6 @@ import * as ReactTable from "react-table";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { ResizerStopBehavior, ResizingWidth, useResizerRef, useResizingWidthsDispatch } from "./ResizingWidthsContext";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "./WidthConstants";
-import { getFlatListOfSubColumns } from "./FillingColumnResizingWidth";
 
 // TYPES
 

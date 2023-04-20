@@ -21,11 +21,9 @@ import {
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
-  BeeTableProps,
   DecisionTableExpressionDefinition,
   DecisionTableExpressionDefinitionBuiltInAggregation,
   DecisionTableExpressionDefinitionHitPolicy,
-  DecisionTableExpressionDefinitionRuleEntry,
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
@@ -47,7 +45,6 @@ import {
   BeeTable,
   BeeTableCellUpdate,
   BeeTableColumnUpdate,
-  BeeTableEditableCellContent,
   BeeTableRef,
   getColumnsAtLastLevel,
 } from "../../table/BeeTable";
@@ -206,8 +203,16 @@ export function DecisionTableExpression(
       })
     );
 
-    const outputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.output ?? []).map(
-      (outputClause, outputIndex) => ({
+    const outputSection = {
+      groupType: DecisionTableColumnType.OutputClause,
+      id: decisionTableExpression.id,
+      accessor: "decision-table-expression" as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+      label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
+      dataType: decisionTableExpression.dataType ?? DmnBuiltInDataType.Undefined,
+      cssClasses: "decision-table--output",
+      isRowIndexColumn: false,
+      width: undefined,
+      columns: (decisionTableExpression.output ?? []).map((outputClause, outputIndex) => ({
         accessor: outputClause.id ?? generateUuid(),
         id: outputClause.id,
         label: outputClause.name,
@@ -218,8 +223,8 @@ export function DecisionTableExpression(
         groupType: DecisionTableColumnType.OutputClause,
         cssClasses: "decision-table--output",
         isRowIndexColumn: false,
-      })
-    );
+      })),
+    };
 
     const annotationColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.annotations ?? []).map(
       (annotation, annotationIndex) => {
@@ -240,44 +245,7 @@ export function DecisionTableExpression(
       }
     );
 
-    const inputSection = {
-      groupType: DecisionTableColumnType.InputClause,
-      id: "Inputs",
-      accessor: "Inputs" as any,
-      label: "Inputs",
-      dataType: undefined as any,
-      cssClasses: "decision-table--input",
-      isRowIndexColumn: false,
-      columns: inputColumns,
-      width: undefined,
-    };
-
-    const outputSection = {
-      groupType: DecisionTableColumnType.OutputClause,
-      id: decisionTableExpression.id,
-      accessor: "decision-table-expression" as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-      label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
-      dataType: decisionTableExpression.dataType ?? DmnBuiltInDataType.Undefined,
-      cssClasses: "decision-table--output",
-      isRowIndexColumn: false,
-      columns: outputColumns,
-      width: undefined,
-    };
-
-    const annotationSection = {
-      groupType: DecisionTableColumnType.Annotation,
-      id: "Annotations",
-      accessor: "Annotations" as any,
-      label: "Annotations",
-      cssClasses: "decision-table--annotation",
-      columns: annotationColumns,
-      isInlineEditable: false,
-      isRowIndexColumn: false,
-      dataType: undefined as any,
-      width: undefined,
-    };
-
-    return [inputSection, outputSection, annotationSection];
+    return [...inputColumns, outputSection, ...annotationColumns];
   }, [
     decisionTableExpression.annotations,
     decisionTableExpression.dataType,

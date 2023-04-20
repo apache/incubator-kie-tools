@@ -117,19 +117,13 @@
   box-shadow: 0px 0px 20px -5px darkgrey;
 }
 
-.expression-container .table-component table thead tr th:first-child {
-  border-right: 1px solid var(--pf-global--palette--black-400);
-}
 .expression-container .table-component table thead tr th {
   border-top: 1px solid var(--pf-global--palette--black-400);
   border-left: 1px solid var(--pf-global--palette--black-400);
-}
-.expression-container .table-component table thead tr th:last-child {
   border-right: 1px solid var(--pf-global--palette--black-400);
-}
-.expression-container .table-component table thead tr:last-child th {
   border-bottom: 1px solid var(--pf-global--palette--black-400);
 }
+
 .expression-container .table-component table tbody tr td:first-child {
   border-top: 1px solid var(--pf-global--palette--black-400);
   border-left: 1px solid var(--pf-global--palette--black-400);

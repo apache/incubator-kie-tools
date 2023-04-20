@@ -53,7 +53,7 @@ export function BeeTableDefaultCell<R extends object>({
 
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject(typeof cellProps.value === "string" ? "" : cellProps.value.id);
+      beeGwtService?.selectObject(typeof cellProps.value === "string" ? "" : cellProps.value?.id);
     }
   }, [isActive, beeGwtService, cellProps]);
 
@@ -63,7 +63,7 @@ export function BeeTableDefaultCell<R extends object>({
       isActive={isActive}
       setEditing={setEditing}
       onChange={onCellChanged}
-      value={typeof cellProps.value === "string" ? cellProps.value : cellProps.value.content}
+      value={typeof cellProps.value === "string" ? cellProps.value : cellProps.value?.content}
       isReadOnly={isReadOnly}
       onFeelEnterKeyDown={navigateVertically}
       onFeelTabKeyDown={navigateHorizontally}
