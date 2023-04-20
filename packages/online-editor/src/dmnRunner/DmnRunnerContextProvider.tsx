@@ -68,6 +68,8 @@ import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextPr
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
+import setObjectValueByPath from "lodash/set";
+import unsetObjectValueByPath from "lodash/unset";
 
 const JSON_SCHEMA_PROPERTIES_PATH = "definitions.InputSet.properties";
 
@@ -529,6 +531,100 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     )
   );
 
+  // a JSON Schema has references in the $ref property, this couple of methods intends to
+  // dereference the JSON Schema, creating a structured schema;
+  const deepDereferenceProperties = useCallback(
+    (
+      jsonSchema: ExtendedServicesDmnJsonSchema,
+      myInputSet: Map<string, DmnInputFieldProperties>,
+      fieldProperties: DmnInputFieldProperties,
+      parentKey?: string
+    ): DmnInputFieldProperties | undefined => {
+      const refPath = fieldProperties.$ref?.split("/").splice(1).join(".");
+      const refField: DmnInputFieldProperties | undefined = getObjectValueByPath(jsonSchema, refPath ?? "");
+      if (refField?.properties) {
+        Object.entries(refField?.properties).forEach(([key, fieldProperties]) => {
+          const fullKey = parentKey ? `${parentKey}.properties.${key}` : key;
+          if (fieldProperties.$ref) {
+            const deepDereferencedProperty = deepDereferenceProperties(
+              jsonSchema,
+              myInputSet,
+              fieldProperties,
+              fullKey
+            );
+            if (deepDereferencedProperty) {
+              myInputSet.set(fullKey, deepDereferencedProperty);
+            } else {
+              myInputSet.set(fullKey, fieldProperties);
+            }
+          }
+        }, myInputSet);
+      }
+      return refField;
+    },
+    []
+  );
+
+  const dereferenceProperties = useCallback(
+    (jsonSchema: ExtendedServicesDmnJsonSchema, properties: Record<string, DmnInputFieldProperties>) => {
+      const pathAndFields = Object.entries(properties).reduce((myInputSet, [key, fieldProperties]) => {
+        const deepDereferencedProperty = deepDereferenceProperties(jsonSchema, myInputSet, fieldProperties, key);
+        if (deepDereferencedProperty) {
+          myInputSet.set(key, deepDereferencedProperty);
+        } else {
+          myInputSet.set(key, fieldProperties);
+        }
+        return myInputSet;
+      }, new Map<string, DmnInputFieldProperties>());
+      return Array.from(pathAndFields.entries())
+        .reverse()
+        .reduce((acc, [path, field]) => {
+          setObjectValueByPath(acc, path, field);
+          return acc;
+        }, {} as Record<string, DmnInputFieldProperties>);
+    },
+    [deepDereferenceProperties]
+  );
+
+  const dereferenceJsonSchema = useCallback(
+    (jsonSchema: ExtendedServicesDmnJsonSchema): ExtendedServicesDmnJsonSchema => {
+      const inputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.InputSet?.properties ?? {});
+      const outputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.OutputSet?.properties ?? {});
+      return {
+        $ref: "#/definitions/InputSet",
+        definitions: {
+          InputSet: { properties: inputSet, type: "object" },
+          OutputSet: { properties: outputSet, type: "object" },
+        },
+      };
+    },
+    [dereferenceProperties]
+  );
+
+  const deepFindDifference = useCallback((inputs: InputRow, propertiesDifference: any, parentKey?: string): any => {
+    Object.entries(propertiesDifference).forEach(([key, value]: [string, any]) => {
+      if (key === "properties") {
+        return deepFindDifference(inputs, value, parentKey);
+      }
+
+      const fullKey = parentKey ? `${parentKey}.${key}` : key;
+      if (!value?.type && !value?.format && value !== null && typeof value === "object") {
+        // not leaf;
+        return deepFindDifference(inputs, value, fullKey);
+      }
+
+      if (!value || value?.type) {
+        unsetObjectValueByPath(inputs, fullKey);
+        return;
+      }
+
+      if (value?.format) {
+        setObjectValueByPath(inputs, fullKey, undefined);
+        return;
+      }
+    });
+  }, []);
+
   // Responsible to set the JSON schema based on the DMN model;
   useCancelableEffect(
     useCallback(
@@ -560,6 +656,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                   return jsonSchema;
                 }
 
+                const dereferedJsonSchema = dereferenceJsonSchema(cloneDeep(jsonSchema));
                 const propertiesDifference = diff(
                   getObjectValueByPath(previousJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {},
                   getObjectValueByPath(jsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {}
