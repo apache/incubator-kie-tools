@@ -20,6 +20,7 @@ import { WorkspacesWorkerApiImpl } from "@kie-tools-core/workspaces-git-fs/dist/
 import { ENV_FILE_PATH } from "../../env/EnvConstants";
 import { EnvJson } from "../../env/EnvJson";
 import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
+import { EditorConfig } from "../../envelopeLocator/EditorEnvelopeLocatorApi";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
@@ -30,17 +31,25 @@ async function gitCorsProxyUrl(): Promise<string> {
   return env.KIE_SANDBOX_GIT_CORS_PROXY_URL;
 }
 
-const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
-const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProxyUrl() });
+async function fetchEditorsConfig(): Promise<EditorConfig[]> {
+  const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
+  const env = (await (await fetch(envFilePath)).json()) as EnvJson;
+  return env.KIE_SANDBOX_EDITORS;
+}
 
-// shared worker connection
+const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProxyUrl() });
 
 declare let onconnect: any;
 
 // eslint-disable-next-line prefer-const
 onconnect = async (e: MessageEvent) => {
-  console.log("Connected to Workspaces Shared Worker");
+  const editorsConfig = await fetchEditorsConfig();
+  const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({
+    targetOrigin: "",
+    editorsConfig,
+  });
 
+  console.log("Connected to Workspaces Shared Worker");
   setupWorkerConnection({
     fsFlushManager: workspaceServices.fsFlushManager,
     apiImpl: new WorkspacesWorkerApiImpl({
