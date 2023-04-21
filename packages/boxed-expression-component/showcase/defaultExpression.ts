@@ -193,12 +193,14 @@ export function getDefaultExpressionDefinitionByLogicType(
       input: [
         {
           id: generateUuid(),
+          idLiteralExpression: generateUuid(),
           name: "input-1",
           dataType: DmnBuiltInDataType.Undefined,
           width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
         },
         {
           id: generateUuid(),
+          idLiteralExpression: generateUuid(),
           name: "input-2",
           dataType: DmnBuiltInDataType.Undefined,
           width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
