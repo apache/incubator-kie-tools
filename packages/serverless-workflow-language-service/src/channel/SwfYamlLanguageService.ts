@@ -19,10 +19,10 @@ import {
   EditorYamlLanguageService,
   ELsNode,
   ELsShouldCreateCodelensArgs,
-  ShouldCompleteArgs,
-  TranslateArgs,
   IEditorLanguageService,
   parseYamlContent,
+  ShouldCompleteArgs,
+  TranslateArgs,
 } from "@kie-tools/editor-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, Diagnostic, Position, Range } from "vscode-languageserver-types";
@@ -86,15 +86,6 @@ export class SwfYamlLanguageService implements IEditorLanguageService {
 
   public dispose() {
     return this.yamlELs.dispose();
-  }
-
-  public static getStateNameOffset(args: { content: string; stateName: string }): number | undefined {
-    if (!args.stateName) {
-      return;
-    }
-    const rootNode = parseYamlContent(args.content);
-
-    return SwfLanguageService.getStateNameOffset({ ...args, rootNode });
   }
 }
 

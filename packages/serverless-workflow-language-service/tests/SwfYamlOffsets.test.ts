@@ -13,90 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { SwfYamlLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import { parseYamlContent } from "@kie-tools/editor-language-service/dist/channel";
+import {
+  getAllStateOffsets,
+  getYamlStateNameOffset,
+  getYamlStateNameFromOffset,
+} from "@kie-tools/serverless-workflow-language-service/dist/editor";
 import * as fs from "fs";
 import * as path from "path";
 import { getLineFromOffset } from "./testUtils";
 
 describe("SwfYamlOffsets tests", () => {
-  const swfYamlOffsets = new SwfYamlOffsets();
   const inputFilesBasePath = path.join("tests", "inputFiles", "yaml") + "/";
   const allInputFiles = [["helloState.sw.yaml"], ["greeting.sw.yaml"], ["greeting-long.sw.yaml"]];
   const allInputFilesFullText = new Map(
     allInputFiles.map((item) => [item[0], fs.readFileSync(inputFilesBasePath + item[0], "utf8").toString()])
   );
 
-  describe("parseContent", () => {
-    let getAllOffsetsSpy: any;
-
-    beforeEach(() => {
-      getAllOffsetsSpy = jest.spyOn(swfYamlOffsets, "getAllOffsets");
-    });
-
-    it("should not call getAllOffsets() with wrong inputs", () => {
-      // @ts-ignore
-      swfYamlOffsets.parseContent(null);
-      expect(getAllOffsetsSpy).not.toHaveBeenCalled();
-
-      // @ts-ignore
-      swfYamlOffsets.parseContent();
-      expect(getAllOffsetsSpy).not.toHaveBeenCalled();
-
-      swfYamlOffsets.parseContent("");
-      expect(getAllOffsetsSpy).not.toHaveBeenCalled();
-    });
-
-    it("should call getAllOffsets() with good content", () => {
-      swfYamlOffsets.parseContent(allInputFilesFullText.get("helloState.sw.yaml")!);
-      expect(getAllOffsetsSpy).toHaveBeenCalled();
-    });
-
-    it("should not call getAllOffsets() with unchanged content", () => {
-      swfYamlOffsets.parseContent(allInputFilesFullText.get("helloState.sw.yaml")!);
-      expect(getAllOffsetsSpy).not.toHaveBeenCalled();
-    });
-
-    afterEach(() => {
-      getAllOffsetsSpy.mockRestore();
-    });
-  });
-
-  describe("getFullAST", () => {
-    it("Should return null with wrong inputs", () => {
-      expect(swfYamlOffsets.parseContent("").getFullAST()).toStrictEqual(null);
-      // @ts-ignore
-      expect(swfYamlOffsets.parseContent(null).getFullAST()).toStrictEqual(null);
-      // @ts-ignore
-      expect(swfYamlOffsets.parseContent().getFullAST()).toStrictEqual(null);
-      expect(swfYamlOffsets.parseContent('{"notValid":').getFullAST()).toStrictEqual(null);
-    });
-
-    it.each(allInputFiles)("Should return a valid object parsing the input file %s", (fileName) => {
-      swfYamlOffsets.parseContent(allInputFilesFullText.get(fileName)!);
-
-      expect(swfYamlOffsets.getFullAST()).toHaveProperty("mappings");
-    });
-  });
-
-  describe("getAllOffsets", () => {
-    it("Should return an empty offsets object with wrong inputs", () => {
-      const emptyOffsets = { states: {} };
-      // @ts-ignore
-      expect(swfYamlOffsets.parseContent(null).getAllOffsets()).toStrictEqual(emptyOffsets);
-      // @ts-ignore
-      expect(swfYamlOffsets.parseContent().getAllOffsets()).toStrictEqual(emptyOffsets);
-      expect(swfYamlOffsets.parseContent("").getAllOffsets()).toStrictEqual(emptyOffsets);
-      expect(swfYamlOffsets.parseContent('{"notValid":').getAllOffsets()).toStrictEqual(emptyOffsets);
-    });
-
+  describe("getAllStateOffsets", () => {
     it("Should return a valid object parsing the input file 'helloState.sw.yaml'", () => {
       const fileName = "helloState.sw.yaml";
-      const fullText = allInputFilesFullText.get(fileName)!;
-      const offsets = swfYamlOffsets.parseContent(fullText).getAllOffsets();
+      const content = allInputFilesFullText.get(fileName)!;
+      const rootNode = parseYamlContent(content);
+      const offsets = getAllStateOffsets({ rootNode });
 
-      expect(getLineFromOffset(fullText, offsets.states["Hello State"].stateNameOffset)).toContain("name: Hello State");
-      expect(getLineFromOffset(fullText, offsets.states["Hello State Two"].offset.start)).toContain(
+      expect(getLineFromOffset(content, offsets.states["Hello State"].stateNameOffset)).toContain("name: Hello State");
+      expect(getLineFromOffset(content, offsets.states["Hello State Two"].offset.start)).toContain(
         "name: Hello State Two"
       );
       expect(offsets.states["Hello State Two"].offset.end).toBe(290);
@@ -104,40 +46,37 @@ describe("SwfYamlOffsets tests", () => {
 
     it("Should return a valid object parsing the input file 'greeting.sw.yaml'", () => {
       const fileName = "greeting.sw.yaml";
-      const fullText = allInputFilesFullText.get(fileName)!;
-      const offsets = swfYamlOffsets.parseContent(fullText).getAllOffsets();
+      const content = allInputFilesFullText.get(fileName)!;
+      const rootNode = parseYamlContent(content);
+      const offsets = getAllStateOffsets({ rootNode });
 
-      expect(getLineFromOffset(fullText, offsets.states["GreetInEnglish"].stateNameOffset)).toContain(
+      expect(getLineFromOffset(content, offsets.states["GreetInEnglish"].stateNameOffset)).toContain(
         "name: GreetInEnglish"
       );
-      expect(getLineFromOffset(fullText, offsets.states["GetGreeting"].offset.start)).toContain("name: GetGreeting");
+      expect(getLineFromOffset(content, offsets.states["GetGreeting"].offset.start)).toContain("name: GetGreeting");
       expect(offsets.states["GetGreeting"].offset.end).toBe(1228);
     });
 
     it("Should return a valid object parsing the input file 'greeting-long.sw.yaml'", () => {
       const fileName = "greeting-long.sw.yaml";
-      const fullText = allInputFilesFullText.get(fileName)!;
-      const offsets = swfYamlOffsets.parseContent(fullText).getAllOffsets();
+      const content = allInputFilesFullText.get(fileName)!;
+      const rootNode = parseYamlContent(content);
+      const offsets = getAllStateOffsets({ rootNode });
 
-      expect(getLineFromOffset(fullText, offsets.states["GreetInEnglish"].stateNameOffset)).toContain(
+      expect(getLineFromOffset(content, offsets.states["GreetInEnglish"].stateNameOffset)).toContain(
         "name: GreetInEnglish"
       );
-      expect(getLineFromOffset(fullText, offsets.states["GreetInPortuguese 2"].offset.start)).toContain(
+      expect(getLineFromOffset(content, offsets.states["GreetInPortuguese 2"].offset.start)).toContain(
         "name: GreetInPortuguese 2"
       );
       expect(offsets.states["GreetInEnglish 4"].offset.end).toBe(1672);
     });
   });
 
-  describe("getStateNameOffset", () => {
-    const fullText = allInputFilesFullText.get("helloState.sw.yaml")!;
-    const helloStateYamlOffsets = swfYamlOffsets.parseContent(fullText);
-
+  describe("getYamlStateNameOffset", () => {
     it("Should return undefined if the state is not found", () => {
-      const content = allInputFilesFullText.get("helloState.sw.json")!;
-      expect(SwfYamlLanguageService.getStateNameOffset({ content: fullText, stateName: "Not a state" })).toBe(
-        undefined
-      );
+      const content = allInputFilesFullText.get("helloState.sw.yaml")!;
+      expect(getYamlStateNameOffset({ content: content, stateName: "Not a state" })).toBe(undefined);
     });
 
     it.each([
@@ -146,36 +85,23 @@ describe("SwfYamlOffsets tests", () => {
       ["greeting.sw.yaml", "GreetInEnglish"],
       ["greeting.sw.yaml", "GetGreeting"],
     ])(
-      'On file %s, getStateNameOffset() with state name "%s" should return a correct offset',
+      'On file %s, getYamlStateNameOffset() with state name "%s" should return a correct offset',
       (fileName, stateName) => {
         const content = allInputFilesFullText.get(fileName)!;
 
-        expect(getLineFromOffset(content, SwfYamlLanguageService.getStateNameOffset({ content, stateName }))).toContain(
-          stateName
-        );
+        expect(getLineFromOffset(content, getYamlStateNameOffset({ content, stateName }))).toContain(stateName);
       }
     );
   });
 
-  /* TODO: SwfYamlOffsets.test: unskip me */
-  describe.skip("getStateNameFromOffset", () => {
-    const fullText = allInputFilesFullText.get("helloState.sw.yaml")!;
-    const helloStateYamlOffsets = swfYamlOffsets.parseContent(fullText);
-
-    it("Should return null with wrong inputs", () => {
-      expect(swfYamlOffsets.parseContent("").getStateNameFromOffset(-1)).toBeNull();
-      // @ts-ignore
-      expect(helloStateYamlOffsets.getStateNameFromOffset()).toBeNull();
-      // @ts-ignore
-      expect(helloStateYamlOffsets.getStateNameFromOffset(0)).toBeNull();
-    });
-
+  describe("getYamlStateNameFromOffset", () => {
     it("Should return null if the state is not found", () => {
-      expect(helloStateYamlOffsets.getStateNameFromOffset(999999)).toBeNull();
+      const content = allInputFilesFullText.get("helloState.sw.yaml")!;
+      expect(getYamlStateNameFromOffset({ content, offset: 999999 })).toBeUndefined();
       expect(() => {
-        helloStateYamlOffsets.getStateNameFromOffset(100);
+        getYamlStateNameFromOffset({ content, offset: 100 });
       }).not.toThrowError();
-      expect(helloStateYamlOffsets.getStateNameFromOffset(100)).toBeNull();
+      expect(getYamlStateNameFromOffset({ content, offset: 100 })).toBeUndefined();
     });
 
     it.each([
@@ -185,9 +111,9 @@ describe("SwfYamlOffsets tests", () => {
       ["greeting.sw.yaml", "GetGreeting"],
     ])('On file %s, with the offset of "%s" should return the correct state name', async (fileName, stateName) => {
       const content = allInputFilesFullText.get(fileName)!;
-      const offset = await SwfYamlLanguageService.getStateNameOffset({ content, stateName });
+      const offset = getYamlStateNameOffset({ content, stateName });
 
-      expect(swfYamlOffsets.getStateNameFromOffset(offset! + 50)).toBe(stateName);
+      expect(getYamlStateNameFromOffset({ content, offset: offset! + 50 })).toBe(stateName);
     });
   });
 });

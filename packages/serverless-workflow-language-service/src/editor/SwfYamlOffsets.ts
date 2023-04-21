@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,47 +14,17 @@
  * limitations under the License.
  */
 
-import { load } from "yaml-language-server-parser";
-import { SwfOffsetsApi } from "../api/SwfOffsetsApi";
+import { parseYamlContent } from "@kie-tools/editor-language-service/dist/channel";
+import { getStateNameFromOffset, getStateNameOffset } from "./SwfOffsets";
 
-const astTransformQuery = `mappings[key.value="states"].value.items{
-    "states":{
-        mappings[key.value="name"].value.value:{
-            "stateNameOffset":startPosition,
-            "offset": {
-                "start":startPosition,
-                "end":endPosition
-            }
-        }
-    }
+export function getYamlStateNameOffset(args: { content: string; stateName: string }): number | undefined {
+  const rootNode = parseYamlContent(args.content);
+
+  return getStateNameOffset({ ...args, rootNode });
 }
-`;
 
-export class SwfYamlOffsets extends SwfOffsetsApi {
-  constructor(documentUri?: string) {
-    super(astTransformQuery, documentUri);
-  }
+export function getYamlStateNameFromOffset(args: { content: string; offset: number }): string | undefined {
+  const rootNode = parseYamlContent(args.content);
 
-  getFullAST(): any {
-    const errorLogMsg = (message: string) => `Received an exeption parsing the content: ${message}`;
-
-    if (!this.fullText) {
-      return null;
-    }
-
-    try {
-      const ast = load(this.fullText);
-
-      // check if the yaml is not valid
-      if (ast.errors && ast.errors.length) {
-        console.error(errorLogMsg(ast.errors[0].message));
-        return null;
-      }
-
-      return ast;
-    } catch (e) {
-      console.error(errorLogMsg(e.message));
-      return null;
-    }
-  }
+  return getStateNameFromOffset({ ...args, rootNode });
 }

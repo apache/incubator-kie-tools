@@ -43,4 +43,3 @@ export const getFileLanguageOrThrow = (fileName: string): FileLanguage => {
 
 export { FileLanguage };
 export * from "./SwfLanguageServiceChannelApi";
-export * from "./SwfOffsetsApi";

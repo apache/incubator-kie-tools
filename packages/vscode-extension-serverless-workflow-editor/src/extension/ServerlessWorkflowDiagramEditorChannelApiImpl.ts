@@ -49,13 +49,18 @@ import {
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
+  getJsonStateNameFromOffset,
+  getJsonStateNameOffset,
+  getYamlStateNameFromOffset,
+  getYamlStateNameOffset,
+} from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
   SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as vscode from "vscode";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import { initSwfOffsetsApi } from "./languageService/initSwfOffsetsApi";
 
 export class ServerlessWorkflowDiagramEditorChannelApiImpl implements ServerlessWorkflowDiagramEditorChannelApi {
   private readonly defaultApiImpl: KogitoEditorChannelApi;
@@ -197,8 +202,8 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     const getStateNameOffsetArgs = { content, stateName: args.nodeName };
     const targetOffset =
       textEditor.document.languageId === FileLanguage.JSON
-        ? SwfJsonLanguageService.getStateNameOffset(getStateNameOffsetArgs)
-        : SwfYamlLanguageService.getStateNameOffset(getStateNameOffsetArgs);
+        ? getJsonStateNameOffset(getStateNameOffsetArgs)
+        : getYamlStateNameOffset(getStateNameOffsetArgs);
     if (!targetOffset) {
       return;
     }
@@ -225,10 +230,11 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     )[0];
 
     const offset = textEditor.document.offsetAt(textEditor.selection.active);
-
-    const swfOffsetsApi = initSwfOffsetsApi(textEditor.document);
-
-    const nodeName = swfOffsetsApi.getStateNameFromOffset(offset);
+    const getStateNameFromOffsetArgs = { content: textEditor.document.getText(), offset };
+    const nodeName =
+      textEditor.document.languageId === FileLanguage.JSON
+        ? getJsonStateNameFromOffset(getStateNameFromOffsetArgs)
+        : getYamlStateNameFromOffset(getStateNameFromOffsetArgs);
 
     if (!nodeName) {
       return;

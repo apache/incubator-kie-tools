@@ -19,7 +19,6 @@ import {
   EditorJsonLanguageService,
   ELsNode,
   ELsShouldCreateCodelensArgs,
-  findNodesAtLocation,
   IEditorLanguageService,
   parseJsonContent,
   ShouldCompleteArgs,
@@ -87,15 +86,6 @@ export class SwfJsonLanguageService implements IEditorLanguageService {
 
   public dispose() {
     return this.jsonELs.dispose();
-  }
-
-  public static getStateNameOffset(args: { content: string; stateName: string }): number | undefined {
-    if (!args.stateName) {
-      return;
-    }
-    const rootNode = parseJsonContent(args.content);
-
-    return SwfLanguageService.getStateNameOffset({ ...args, rootNode });
   }
 }
 
