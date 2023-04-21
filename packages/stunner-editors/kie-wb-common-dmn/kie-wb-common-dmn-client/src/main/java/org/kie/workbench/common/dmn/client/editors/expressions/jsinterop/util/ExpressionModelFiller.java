@@ -77,9 +77,9 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PmmlFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableRowNumberColumn;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocument.VARIABLE_DOCUMENT;
 import static org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocumentModel.VARIABLE_MODEL;
@@ -106,6 +106,7 @@ public class ExpressionModelFiller {
                                              final ContextProps contextProps,
                                              final UnaryOperator<QName> qNameNormalizer) {
         contextExpression.setId(new Id(contextProps.id));
+        contextExpression.getComponentWidths().set(0, RowNumberColumn.DEFAULT_WIDTH);
         contextExpression.getComponentWidths().set(1, contextProps.entryInfoWidth);
         contextExpression.getComponentWidths().set(2, contextProps.entryExpressionWidth);
         contextExpression.getContextEntry().clear();
@@ -120,6 +121,7 @@ public class ExpressionModelFiller {
         relationExpression.getColumn().clear();
         relationExpression.getColumn().addAll(columnsConvertForRelationExpression(relationProps, qNameNormalizer));
         final int columnsLength = relationProps.columns == null ? 0 : relationProps.columns.length;
+        relationExpression.getComponentWidths().set(0, RowNumberColumn.DEFAULT_WIDTH);
         IntStream.range(0, columnsLength)
                 .forEach(index -> relationExpression.getComponentWidths().set(index + 1, Objects.requireNonNull(relationProps.columns)[index].width));
         relationExpression.getRow().clear();
@@ -139,6 +141,7 @@ public class ExpressionModelFiller {
                                                 final UnaryOperator<QName> qNameNormalizer) {
         final LiteralExpression invokedFunction = new LiteralExpression();
         invocationExpression.setId(new Id(invocationProps.id));
+        invocationExpression.getComponentWidths().set(0, RowNumberColumn.DEFAULT_WIDTH);
         invocationExpression.getComponentWidths().set(1, invocationProps.entryInfoWidth);
         invocationExpression.getComponentWidths().set(2, invocationProps.entryExpressionWidth);
         invokedFunction.setId(new Id(invocationProps.invokedFunction.id));
@@ -451,7 +454,7 @@ public class ExpressionModelFiller {
         final Clause[] inputProps = Optional.ofNullable(decisionTableProps.input).orElse(new InputClauseProps[0]);
         final Clause[] outputProps = Optional.ofNullable(decisionTableProps.output).orElse(new Clause[0]);
         final Annotation[] annotationProps = Optional.ofNullable(decisionTableProps.annotations).orElse(new Annotation[0]);
-        decisionTableExpression.getComponentWidths().set(0, DecisionTableRowNumberColumn.DEFAULT_WIDTH);
+        decisionTableExpression.getComponentWidths().set(0, RowNumberColumn.DEFAULT_WIDTH);
         IntStream.range(0, inputProps.length)
                 .forEach(index -> decisionTableExpression.getComponentWidths().set(index + 1, inputProps[index].width));
         IntStream.range(0, outputProps.length)
