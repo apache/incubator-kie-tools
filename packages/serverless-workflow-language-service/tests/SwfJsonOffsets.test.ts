@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { parseJsonContent } from "@kie-tools/editor-language-service/dist/channel";
+import { parseJsonContent } from "@kie-tools/json-yaml-language-service/dist/channel";
 import {
   getAllStateOffsets,
   getJsonStateNameOffset,

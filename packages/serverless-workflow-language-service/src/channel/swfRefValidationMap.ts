@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { RefValidationMap } from "@kie-tools/editor-language-service/dist/channel";
+import { RefValidationMap } from "@kie-tools/json-yaml-language-service/dist/channel";
 
 export const swfRefValidationMap: RefValidationMap = new Map([
   [

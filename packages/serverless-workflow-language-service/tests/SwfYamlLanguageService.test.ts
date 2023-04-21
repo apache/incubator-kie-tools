@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { isNodeUncompleted } from "@kie-tools/editor-language-service/dist/channel";
+import { isNodeUncompleted } from "@kie-tools/json-yaml-language-service/dist/channel";
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   SwfYamlLanguageService,

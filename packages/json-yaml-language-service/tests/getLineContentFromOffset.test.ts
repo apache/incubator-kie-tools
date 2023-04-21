@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getLineContentFromOffset } from "@kie-tools/editor-language-service/dist/channel";
+import { getLineContentFromOffset } from "@kie-tools/json-yaml-language-service/dist/channel";
 
 describe("getLineContentFromOffset", () => {
   const lipsum = `Lorem ipsum dolor sit amet,

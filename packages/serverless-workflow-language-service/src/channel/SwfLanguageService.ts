@@ -20,7 +20,7 @@ import {
   ELsCompletionsMap,
   ELsNode,
   IEditorLanguageService,
-} from "@kie-tools/editor-language-service/dist/channel";
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import {
   SwfCatalogSourceType,
   SwfServiceCatalogFunction,

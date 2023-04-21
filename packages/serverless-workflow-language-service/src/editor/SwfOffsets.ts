@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ELsNode, findNodesAtLocation } from "@kie-tools/editor-language-service/dist/channel";
+import { ELsNode, findNodesAtLocation } from "@kie-tools/json-yaml-language-service/dist/channel";
 import { FullTextOffsets } from "./index";
 
 /**

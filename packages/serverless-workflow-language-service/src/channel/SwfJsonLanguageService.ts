@@ -23,7 +23,7 @@ import {
   parseJsonContent,
   ShouldCompleteArgs,
   TranslateArgs,
-} from "@kie-tools/editor-language-service/dist/channel";
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, Diagnostic, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";

@@ -21,7 +21,7 @@ import {
   ELsNodeType,
   OmitRecursively,
   findNodeAtLocation,
-} from "@kie-tools/editor-language-service/dist/channel";
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 
 /**
  * Get a node in the format of the SWF Specification

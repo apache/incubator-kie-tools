@@ -72,7 +72,7 @@
       { "id": "@kie-tools/dashbuilder-component-dev" },
       { "id": "@kie-tools/dashbuilder-editor" },
       { "id": "@kie-tools/dashbuilder-language-service" },
-      { "id": "@kie-tools/editor-language-service" },
+      { "id": "@kie-tools/json-yaml-language-service" },
       { "id": "@kie-tools/yaml-language-server" },
       { "id": "@kie-tools/dashbuilder-swf-monitoring-dashboard" },
       { "id": "@kie-tools/dashbuilder-viewer" },
@@ -507,10 +507,10 @@
       { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools/dashbuilder-language-service", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-language-service",
-        "target": "@kie-tools/editor-language-service",
+        "target": "@kie-tools/json-yaml-language-service",
         "weight": 1
       },
-      { "source": "@kie-tools/editor-language-service", "target": "@kie-tools/yaml-language-server", "weight": 1 },
+      { "source": "@kie-tools/json-yaml-language-service", "target": "@kie-tools/yaml-language-server", "weight": 1 },
       { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/yaml-language-server", "target": "@kie-tools/tsconfig", "weight": 1 },
@@ -723,7 +723,7 @@
       { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-language-service",
-        "target": "@kie-tools/editor-language-service",
+        "target": "@kie-tools/json-yaml-language-service",
         "weight": 1
       },
       {
@@ -881,7 +881,6 @@
     ["@kie-tools/dmn-dev-deployment-quarkus-app", "packages/dmn-dev-deployment-quarkus-app"],
     ["@kie-tools/dmn-language-service", "packages/dmn-language-service"],
     ["@kie-tools-core/editor", "packages/editor"],
-    ["@kie-tools/editor-language-service", "packages/editor-language-service"],
     ["@kie-tools-core/envelope", "packages/envelope"],
     ["@kie-tools-core/envelope-bus", "packages/envelope-bus"],
     ["@kie-tools/eslint", "packages/eslint"],
@@ -896,6 +895,7 @@
     ["@kie-tools/i18n-common-dictionary", "packages/i18n-common-dictionary"],
     ["@kie-tools/image-env-to-json", "packages/image-env-to-json"],
     ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
+    ["@kie-tools/json-yaml-language-service", "packages/json-yaml-language-service"],
     ["@kie-tools-core/keyboard-shortcuts", "packages/keyboard-shortcuts"],
     ["@kie-tools/kie-bc-editors", "packages/kie-bc-editors"],
     ["@kie-tools/kie-editors-standalone", "packages/kie-editors-standalone"],

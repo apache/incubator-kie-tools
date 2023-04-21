@@ -1,4 +1,4 @@
-## Editor Language Service
+## JSON and YAML Language Service
 
 JSON and YAML language service to be reused in VSCode and Monaco editor.
 

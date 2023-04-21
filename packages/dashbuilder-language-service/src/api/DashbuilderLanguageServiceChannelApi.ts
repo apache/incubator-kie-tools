@@ -20,7 +20,7 @@ import {
   EditorLanguageServiceCommandHandlers,
   EditorLanguageServiceCommandIds,
   EditorLanguageServiceCommandTypes,
-} from "@kie-tools/editor-language-service/dist/api";
+} from "@kie-tools/json-yaml-language-service/dist/api";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
 export interface DashbuilderLanguageServiceChannelApi {

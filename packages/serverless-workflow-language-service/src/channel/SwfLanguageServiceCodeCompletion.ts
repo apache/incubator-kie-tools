@@ -23,7 +23,7 @@ import {
   nodeUpUntilType,
   findNodeAtLocation,
   getNodePath,
-} from "@kie-tools/editor-language-service/dist/channel";
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import { jqBuiltInFunctions } from "@kie-tools/serverless-workflow-jq-expressions/dist/utils";
 import {
   SwfCatalogSourceType,

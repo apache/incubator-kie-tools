@@ -20,7 +20,7 @@ import {
   ELsNode,
   indentText,
   TranslateArgs,
-} from "@kie-tools/editor-language-service/dist/channel";
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Range } from "vscode-languageserver-types";
 import { dump } from "yaml-language-server-parser";

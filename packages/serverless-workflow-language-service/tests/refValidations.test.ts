@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { doRefValidation } from "@kie-tools/editor-language-service/dist/channel";
+import { doRefValidation } from "@kie-tools/json-yaml-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { trim } from "./testUtils";
 import * as jsonc from "jsonc-parser";

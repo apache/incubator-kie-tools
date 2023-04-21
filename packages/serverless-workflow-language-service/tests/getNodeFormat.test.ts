@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getNodeFormat, findNodeAtOffset } from "@kie-tools/editor-language-service/dist/channel";
+import { getNodeFormat, findNodeAtOffset } from "@kie-tools/json-yaml-language-service/dist/channel";
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   SwfJsonLanguageService,

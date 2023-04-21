@@ -20,7 +20,7 @@ import {
   createOpenCompletionItemsCodeLenses,
   EditorLanguageServiceCodeLenses,
   EditorLanguageServiceCodeLensesFunctionsArgs,
-} from "@kie-tools/editor-language-service/dist/channel";
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import { CodeLens } from "vscode-languageserver-types";
 import { SwfLanguageServiceCommandArgs, SwfLanguageServiceCommandTypes } from "../api";
 import { SwfLanguageServiceConfig } from "./SwfLanguageService";

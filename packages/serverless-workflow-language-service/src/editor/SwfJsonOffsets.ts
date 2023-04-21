@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { parseJsonContent } from "@kie-tools/editor-language-service/dist/channel";
+import { parseJsonContent } from "@kie-tools/json-yaml-language-service/dist/channel";
 import { getStateNameFromOffset, getStateNameOffset } from "./SwfOffsets";
 
 export function getJsonStateNameOffset(args: { content: string; stateName: string }): number | undefined {

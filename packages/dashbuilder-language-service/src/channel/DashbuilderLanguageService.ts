@@ -19,7 +19,7 @@ import {
   ELsCompletionsMap,
   ELsNode,
   IEditorLanguageService,
-} from "@kie-tools/editor-language-service/dist/channel";
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import { JSONSchema } from "vscode-json-languageservice";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, Position, Range } from "vscode-languageserver-types";

@@ -18,7 +18,7 @@ import {
   findNodeAtLocation,
   parseJsonContent,
   parseYamlContent,
-} from "@kie-tools/editor-language-service/dist/channel";
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   JsonCodeCompletionStrategy,

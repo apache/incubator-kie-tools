@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { FileLanguage, getFileLanguage as getFileLanguageEditorLS } from "@kie-tools/editor-language-service/dist/api";
+import {
+  FileLanguage,
+  getFileLanguage as getFileLanguageEditorLS,
+} from "@kie-tools/json-yaml-language-service/dist/api";
 
 /**
  * Get the file language from a filename or path

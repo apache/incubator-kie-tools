@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { hasNodeComma, isOffsetAtLastChild } from "@kie-tools/editor-language-service/dist/channel";
+import { hasNodeComma, isOffsetAtLastChild } from "@kie-tools/json-yaml-language-service/dist/channel";
 import {
   JsonCodeCompletionStrategy,
   SwfJsonLanguageService,

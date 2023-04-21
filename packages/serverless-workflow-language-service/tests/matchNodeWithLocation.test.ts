@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { matchNodeWithLocation, findNodeAtOffset } from "@kie-tools/editor-language-service/dist/channel";
+import { matchNodeWithLocation, findNodeAtOffset } from "@kie-tools/json-yaml-language-service/dist/channel";
 import {
   SwfJsonLanguageService,
   SwfYamlLanguageService,
