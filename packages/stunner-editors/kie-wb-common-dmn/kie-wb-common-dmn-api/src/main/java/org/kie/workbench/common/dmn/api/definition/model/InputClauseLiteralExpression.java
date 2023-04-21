@@ -162,6 +162,10 @@ public class InputClauseLiteralExpression extends DMNModelInstrumentedBase imple
         return id;
     }
 
+    public void setId(Id id) {
+        this.id = id;
+    }
+
     @Override
     public Description getDescription() {
         return description;

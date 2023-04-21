@@ -482,6 +482,7 @@ export function DecisionTableExpression(
             const newInputs = [...(prev.input ?? [])];
             newInputs.splice(sectionIndex, 0, {
               id: generateUuid(),
+              idLiteralExpression: generateUuid(),
               name: getNextAvailablePrefixedName(prev.input?.map((c) => c.name) ?? [], "input"),
               dataType: DmnBuiltInDataType.Undefined,
               width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,

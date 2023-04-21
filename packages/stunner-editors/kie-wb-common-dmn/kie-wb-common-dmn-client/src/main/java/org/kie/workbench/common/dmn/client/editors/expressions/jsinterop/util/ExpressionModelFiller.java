@@ -69,6 +69,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.E
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FeelFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FunctionProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InputClauseProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.JavaFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ListProps;
@@ -385,10 +386,11 @@ public class ExpressionModelFiller {
     private static Collection<InputClause> inputConvertForDecisionTableExpression(final DecisionTableProps decisionTableProps,
                                                                                   final UnaryOperator<QName> qNameNormalizer) {
         return Arrays
-                .stream(Optional.ofNullable(decisionTableProps.input).orElse(new Clause[0]))
+                .stream(Optional.ofNullable(decisionTableProps.input).orElse(new InputClauseProps[0]))
                 .map(input -> {
                     final InputClause inputClause = new InputClause();
                     inputClause.setId(new Id(input.id));
+                    inputClause.getInputExpression().setId(new Id(input.idLiteralExpression));
                     inputClause.getInputExpression().setText(new Text(input.name));
                     QName qName = qNameNormalizer.apply(makeQName(input.dataType));
                     inputClause.getInputExpression().setTypeRef(qName);
@@ -445,7 +447,7 @@ public class ExpressionModelFiller {
     }
 
     private static void updateComponentWidthsForDecisionTableExpression(final DecisionTable decisionTableExpression, final DecisionTableProps decisionTableProps) {
-        final Clause[] inputProps = Optional.ofNullable(decisionTableProps.input).orElse(new Clause[0]);
+        final Clause[] inputProps = Optional.ofNullable(decisionTableProps.input).orElse(new InputClauseProps[0]);
         final Clause[] outputProps = Optional.ofNullable(decisionTableProps.output).orElse(new Clause[0]);
         final Annotation[] annotationProps = Optional.ofNullable(decisionTableProps.annotations).orElse(new Annotation[0]);
         IntStream.range(0, inputProps.length)

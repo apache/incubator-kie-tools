@@ -51,6 +51,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.E
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FeelFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FunctionProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InputClauseProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.JavaFunctionProps;
@@ -264,17 +265,18 @@ public class ExpressionPropsFiller {
                 .toArray(DecisionTableRule[]::new);
     }
 
-    private static Clause[] inputConvertForDecisionTableProps(final DecisionTable decisionTableExpression) {
+    private static InputClauseProps[] inputConvertForDecisionTableProps(final DecisionTable decisionTableExpression) {
         return IntStream.range(0, decisionTableExpression.getInput().size())
                 .mapToObj(index -> {
                     final InputClause inputClause = decisionTableExpression.getInput().get(index);
                     final String id = inputClause.getId().getValue();
+                    final String idLiteralExpression = inputClause.getInputExpression().getId().getValue();
                     final String name = inputClause.getInputExpression().getText().getValue();
                     final String dataType = inputClause.getInputExpression().getTypeRefHolder().getValue().getLocalPart();
                     final Double width = decisionTableExpression.getComponentWidths().get(index + 1);
-                    return new Clause(id, name, dataType, width, convertToClauseUnaryTests(inputClause.getInputValues()));
+                    return new InputClauseProps(id, name, dataType, width, convertToClauseUnaryTests(inputClause.getInputValues()), idLiteralExpression);
                 })
-                .toArray(Clause[]::new);
+                .toArray(InputClauseProps[]::new);
     }
 
     private static Clause[] outputConvertForDecisionTableProps(final DecisionTable decisionTableExpression, final String expressionName, final String expressionDataType) {

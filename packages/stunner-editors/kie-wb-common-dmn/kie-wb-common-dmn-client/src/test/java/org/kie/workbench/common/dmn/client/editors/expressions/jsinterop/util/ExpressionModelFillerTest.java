@@ -50,6 +50,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.D
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.EntryInfo;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FeelFunctionProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InputClauseProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.JavaFunctionProps;
@@ -289,10 +290,12 @@ public class ExpressionModelFillerTest {
         final double annotationWidth = 456d;
         final Annotation[] annotations = new Annotation[]{new Annotation(annotationName, annotationWidth)};
         final String inputId = "Input id";
+        final String inputLiteralExpressionId = "Input le id";
         final String inputColumn = "Input column";
         final String inputDataType = BuiltInType.DATE_TIME.asQName().getLocalPart();
         final double inputWidth = 123d;
         final String inputId2 = "Input id2";
+        final String inputLiteralExpressionId2 = "Input le id2";
         final String inputColumn2 = "Input column 2";
         final String inputDataType2 = "tCustom";
         final double inputWidth2 = 234d;
@@ -300,7 +303,7 @@ public class ExpressionModelFillerTest {
         final String inputClauseUnaryTestsText = "text";
         final String inputClauseUnaryTestsConstraintType = "enumeration";
         final ClauseUnaryTests inputClauseUnaryTest = new ClauseUnaryTests(inputClauseUnaryTestsId, inputClauseUnaryTestsText, inputClauseUnaryTestsConstraintType);
-        final Clause[] input = new Clause[]{new Clause(inputId, inputColumn, inputDataType, inputWidth, inputClauseUnaryTest), new Clause(inputId2, inputColumn2, inputDataType2, inputWidth2, null)};
+        final InputClauseProps[] input = new InputClauseProps[]{new InputClauseProps(inputId, inputColumn, inputDataType, inputWidth, inputClauseUnaryTest, inputLiteralExpressionId), new InputClauseProps(inputId2, inputColumn2, inputDataType2, inputWidth2, null, inputLiteralExpressionId2)};
         final String outputId = "Output id";
         final String outputColumn = "Output column";
         final String outputDataType = BuiltInType.STRING.asQName().getLocalPart();
@@ -336,6 +339,8 @@ public class ExpressionModelFillerTest {
                     assertThat(inputRef).extracting(InputClause::getInputExpression).isNotNull();
                     assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getText().getValue()).isEqualTo(inputColumn);
                     assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getTypeRef().getLocalPart()).isEqualTo(inputDataType);
+                    assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getId().getValue()).isEqualTo(inputLiteralExpressionId);
+
                     assertThat(inputRef).extracting(InputClause::getInputValues).extracting(inputClauseUnaryTests -> inputClauseUnaryTests.getId().getValue()).isEqualTo(inputClauseUnaryTestsId);
                     assertThat(inputRef).extracting(InputClause::getInputValues).extracting(inputClauseUnaryTests -> inputClauseUnaryTests.getText().getValue()).isEqualTo(inputClauseUnaryTestsText);
                     assertThat(inputRef).extracting(InputClause::getInputValues).extracting(inputClauseUnaryTests -> inputClauseUnaryTests.getConstraintType().value()).isEqualTo(inputClauseUnaryTestsConstraintType);
@@ -345,6 +350,8 @@ public class ExpressionModelFillerTest {
                     assertThat(inputRef).extracting(InputClause::getInputExpression).isNotNull();
                     assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getText().getValue()).isEqualTo(inputColumn2);
                     assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getTypeRef().getLocalPart()).isEqualTo(inputDataType2);
+                    assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getId().getValue()).isEqualTo(inputLiteralExpressionId2);
+
                 });
         assertThat(decisionTableExpression.getOutput())
                 .isNotNull()

@@ -113,7 +113,7 @@ export interface DecisionTableExpressionDefinition extends ExpressionDefinitionB
   /** Annotation columns names */
   annotations?: DecisionTableExpressionDefinitionAnnotation[];
   /** Input columns definition */
-  input?: DecisionTableExpressionDefinitionClause[];
+  input?: DecisionTableExpressionDefinitionInputClause[];
   /** Output columns definition */
   output?: DecisionTableExpressionDefinitionClause[];
   /** Rules represent rows values */
@@ -149,6 +149,11 @@ export interface DecisionTableExpressionDefinitionClause {
   clauseUnaryTests?: DecisionTableExpressionDefinitionClauseUnaryTests;
   /** Clause width */
   width: number | undefined;
+}
+
+export interface DecisionTableExpressionDefinitionInputClause extends DecisionTableExpressionDefinitionClause {
+  /** Clause Literal Expression identifier */
+  idLiteralExpression: string;
 }
 
 export interface DecisionTableExpressionDefinitionClauseUnaryTests {
