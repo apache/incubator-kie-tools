@@ -46,40 +46,33 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
   });
 
   //handrey
-  // Tests temporarily skipped due to CI only failures
-  it.skip("Select states", async function () {
-    this.timeout(30000);
+  it("Select states", async function () {
+    this.timeout(50000);
 
-    const WORKFLOW_NAME = "applicant-request-decision.sw.json";
+    const editorWebviews = await testHelper.openFileFromSidebar("applicant-request-decision.sw.json");
+    const swfEditor = new SwfEditorTestHelper(editorWebviews[1]);
+    const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
+    const textEditor = await swfTextEditor.getSwfTextEditor();
 
-    try {
-      const editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME);
-      const swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
-      const swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
+    const nodeIds = await swfEditor.getAllNodeIds();
+    expect(nodeIds.length).equal(6);
 
-      const nodeIds = await swfEditor.getAllNodeIds();
-      expect(nodeIds.length).equal(6);
+    // Select CheckApplication node
+    await swfEditor.selectNode(nodeIds[1]);
 
-      // Select CheckApplication node
-      await swfEditor.selectNode(nodeIds[1]);
+    let lineNumber = (await textEditor.getCoordinates())[0];
+    let columnNumber = (await textEditor.getCoordinates())[1];
 
-      const textEditor = await swfTextEditor.getSwfTextEditor();
-      let lineNumber = (await textEditor.getCoordinates())[0];
-      let columnNumber = (await textEditor.getCoordinates())[1];
+    expect(lineNumber).equal(16);
+    expect(columnNumber).equal(7);
 
-      expect(lineNumber).equal(16);
-      expect(columnNumber).equal(7);
+    // Select StartApplication node
+    await swfEditor.selectNode(nodeIds[2]);
 
-      // Select StartApplication node
-      await swfEditor.selectNode(nodeIds[2]);
+    lineNumber = (await textEditor.getCoordinates())[0];
+    columnNumber = (await textEditor.getCoordinates())[1];
 
-      lineNumber = (await textEditor.getCoordinates())[0];
-      columnNumber = (await textEditor.getCoordinates())[1];
-
-      expect(lineNumber).equal(33);
-      expect(columnNumber).equal(7);
-    } catch (error) {
-      console.error("Select states: " + error);
-    }
+    expect(lineNumber).equal(33);
+    expect(columnNumber).equal(7);
   });
 });
