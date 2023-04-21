@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { getNodeFormat, findNodeAtOffset } from "@kie-tools/json-yaml-language-service/dist/channel";
+import {
+  getNodeFormat,
+  findNodeAtOffset,
+  parseYamlContent,
+  parseJsonContent,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   SwfJsonLanguageService,
@@ -29,10 +34,7 @@ describe("getNodeFormat", () => {
     fileLanguage: FileLanguage;
   }): FileLanguage | undefined => {
     const { content, cursorOffset } = treat(args.content);
-    const root =
-      args.fileLanguage === FileLanguage.JSON
-        ? SwfJsonLanguageService.parseContent(content)
-        : SwfYamlLanguageService.parseContent(content);
+    const root = args.fileLanguage === FileLanguage.JSON ? parseJsonContent(content) : parseYamlContent(content);
     const node = findNodeAtOffset(root!, cursorOffset);
 
     return node ? getNodeFormat(content, node) : undefined;

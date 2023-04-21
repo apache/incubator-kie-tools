@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { isNodeUncompleted } from "@kie-tools/json-yaml-language-service/dist/channel";
+import { isNodeUncompleted, parseYamlContent } from "@kie-tools/json-yaml-language-service/dist/channel";
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   SwfYamlLanguageService,
@@ -245,7 +245,7 @@ describe("SWF LS YAML", () => {
 functions: []
 `);
 
-      const rootNode = SwfYamlLanguageService.parseContent(content);
+      const rootNode = parseYamlContent(content);
 
       expect(rootNode).not.toBeUndefined();
       expect(rootNode!.type).toBe("object");
@@ -285,7 +285,7 @@ functions:
       refName: 'myFunc'
 `);
 
-      const rootNode = SwfYamlLanguageService.parseContent(content);
+      const rootNode = parseYamlContent(content);
 
       expect(rootNode).not.toBeUndefined();
       expect(rootNode!.type).toBe("object");
@@ -326,7 +326,7 @@ states:
       refName: myFunc
 `);
 
-      const rootNode = SwfYamlLanguageService.parseContent(content);
+      const rootNode = parseYamlContent(content);
 
       expect(rootNode).not.toBeUndefined();
       expect(
@@ -348,7 +348,7 @@ functions:
 - name: testRelativeFunction1
   operation: `);
 
-      const rootNode = SwfYamlLanguageService.parseContent(content);
+      const rootNode = parseYamlContent(content);
 
       expect(rootNode).not.toBeUndefined();
       expect(rootNode?.children?.[0].children?.[1].children?.[0].children?.[1].children?.[0].value).toBe("operation");
@@ -369,7 +369,7 @@ functions:
     const parseContentTester = (contentToParse: ContentWithCursor) => {
       const { content, cursorPosition } = treat(contentToParse);
 
-      const rootNode = SwfYamlLanguageService.parseContent(content);
+      const rootNode = parseYamlContent(content);
       const doc = TextDocument.create(documentUri, FileLanguage.YAML, 0, content);
       const cursorOffset = doc.offsetAt(cursorPosition);
 

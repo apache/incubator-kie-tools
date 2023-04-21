@@ -20,7 +20,6 @@ import {
   ELsNode,
   ELsShouldCreateCodelensArgs,
   IEditorLanguageService,
-  parseYamlContent,
   ShouldCompleteArgs,
   TranslateArgs,
 } from "@kie-tools/json-yaml-language-service/dist/channel";
@@ -50,10 +49,6 @@ export class SwfYamlLanguageService implements IEditorLanguageService {
       ls: this.ls,
       codeCompletionStrategy: this.codeCompletionStrategy,
     });
-  }
-
-  public static parseContent(content: string) {
-    return parseYamlContent(content);
   }
 
   public async getCompletionItems(args: {

@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { ELsNode, nodeUpUntilType, findNodeAtOffset } from "@kie-tools/json-yaml-language-service/dist/channel";
+import {
+  ELsNode,
+  nodeUpUntilType,
+  findNodeAtOffset,
+  parseJsonContent,
+  parseYamlContent,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import {
   SwfJsonLanguageService,
   SwfYamlLanguageService,
@@ -76,7 +82,7 @@ describe("nodeUpUntilType", () => {
             "refName":"🎯",
           }
         }`);
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const node = findNodeAtOffset(root!, cursorOffset);
 
       const receivedNode = nodeUpUntilType(node!, "object");
@@ -100,7 +106,7 @@ name: testStateAction2
 functionRef:
   refName: 🎯a
 `);
-      const root = SwfYamlLanguageService.parseContent(content);
+      const root = parseYamlContent(content);
       const node = findNodeAtOffset(root!, cursorOffset);
 
       const receivedNode = nodeUpUntilType(node!, "object");

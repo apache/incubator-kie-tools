@@ -53,10 +53,6 @@ export class DashbuilderYamlLanguageService implements IEditorLanguageService {
     });
   }
 
-  public static parseContent(content: string): ELsNode | undefined {
-    return parseYamlContent(content);
-  }
-
   public async getCompletionItems(args: {
     content: string;
     uri: string;
@@ -86,7 +82,7 @@ export class DashbuilderYamlLanguageService implements IEditorLanguageService {
   }
 
   public dispose() {
-    return this.ls.dispose();
+    return this.yamlELs.dispose();
   }
 }
 

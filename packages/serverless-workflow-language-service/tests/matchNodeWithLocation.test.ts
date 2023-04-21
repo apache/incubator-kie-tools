@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-import { matchNodeWithLocation, findNodeAtOffset } from "@kie-tools/json-yaml-language-service/dist/channel";
 import {
-  SwfJsonLanguageService,
-  SwfYamlLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { defaultConfig, defaultJqCompletionsConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
+  matchNodeWithLocation,
+  findNodeAtOffset,
+  parseYamlContent,
+  parseJsonContent,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import { treat } from "./testUtils";
 
 describe("matchNodeWithLocation", () => {
   describe("JSON", () => {
     test("matching root node with empty content", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`🎯{}`);
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
@@ -41,17 +35,11 @@ describe("matchNodeWithLocation", () => {
     });
 
     test("matching empty functions array", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`
 {
   "functions": [🎯]
 }`);
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
@@ -60,12 +48,6 @@ describe("matchNodeWithLocation", () => {
     });
 
     test("matching functionRef", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`
 {
   "functions": [
@@ -108,19 +90,13 @@ describe("matchNodeWithLocation", () => {
     }
   ]
 }`);
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef"])).toBeTruthy();
     });
 
     test("matching refName", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`
 {
   "functions": [
@@ -165,7 +141,7 @@ describe("matchNodeWithLocation", () => {
     }
   ]
 }`);
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(
@@ -174,12 +150,6 @@ describe("matchNodeWithLocation", () => {
     });
 
     test("matching arguments", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`
 {
   "functions": [
@@ -227,7 +197,7 @@ describe("matchNodeWithLocation", () => {
     }
   ]
 }`);
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(
@@ -236,12 +206,6 @@ describe("matchNodeWithLocation", () => {
     });
 
     describe("matching functions array", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`
 {
   "functions": [🎯 {
@@ -249,7 +213,7 @@ describe("matchNodeWithLocation", () => {
         "operation": "openapi.yml#getGreeting"
   }]
 }`);
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       test("should not match functions with states", () => {
@@ -273,14 +237,8 @@ describe("matchNodeWithLocation", () => {
 
   describe("YAML", () => {
     test("matching root node with empty content", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`---🎯 `);
-      const root = SwfYamlLanguageService.parseContent(content);
+      const root = parseYamlContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
@@ -289,17 +247,11 @@ describe("matchNodeWithLocation", () => {
     });
 
     test("matching empty function array", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`
 
 ---
 functions: [🎯]`);
-      const root = SwfYamlLanguageService.parseContent(content);
+      const root = parseYamlContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
@@ -308,12 +260,6 @@ functions: [🎯]`);
     });
 
     test("matching refName", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`
 ---
 functions:
@@ -329,7 +275,7 @@ states:
     functionRef:
       refName: "🎯"
 `);
-      const root = SwfYamlLanguageService.parseContent(content);
+      const root = parseYamlContent(content);
       const node = findNodeAtOffset(root!, cursorOffset);
 
       expect(
@@ -338,12 +284,6 @@ states:
     });
 
     test("matching arguments", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`---
 functions:
 - name: myFunc
@@ -371,7 +311,7 @@ states:
         a🎯
   end: true
 `);
-      const root = SwfYamlLanguageService.parseContent(content);
+      const root = parseYamlContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(
@@ -380,19 +320,12 @@ states:
     });
 
     test("matching empty operation property without same level content after", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`---
 functions:
 - name: testRelativeFunction1
   operation:🎯`);
-      const root = SwfYamlLanguageService.parseContent(content);
+      const root = parseYamlContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
-      const node2 = findNodeAtOffset(root!, cursorOffset, false);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
 
@@ -400,18 +333,12 @@ functions:
     });
 
     test("matching empty operation property with same level content after", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`---
 functions:
 - name: testRelativeFunction1
   operation:🎯
   type: rest`);
-      const root = SwfYamlLanguageService.parseContent(content);
+      const root = parseYamlContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
@@ -420,16 +347,10 @@ functions:
     });
 
     describe("matching functions array", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`---
 functions:
 - 🎯`);
-      const root = SwfYamlLanguageService.parseContent(content);
+      const root = parseYamlContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
       test("should not match functions with states", () => {

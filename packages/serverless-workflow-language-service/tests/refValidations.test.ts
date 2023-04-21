@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { doRefValidation } from "@kie-tools/json-yaml-language-service/dist/channel";
+import { doRefValidation, parseYamlContent } from "@kie-tools/json-yaml-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { trim } from "./testUtils";
 import * as jsonc from "jsonc-parser";
@@ -597,7 +597,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: SwfYamlLanguageService.parseContent(content)!,
+        rootNode: parseYamlContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -622,7 +622,7 @@ onEvents:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: SwfYamlLanguageService.parseContent(content)!,
+        rootNode: parseYamlContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -650,7 +650,7 @@ onEvents:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: SwfYamlLanguageService.parseContent(content)!,
+        rootNode: parseYamlContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -678,7 +678,7 @@ onEvents:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: SwfYamlLanguageService.parseContent(content)!,
+        rootNode: parseYamlContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -722,7 +722,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: SwfYamlLanguageService.parseContent(content)!,
+        rootNode: parseYamlContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -763,7 +763,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: SwfYamlLanguageService.parseContent(content)!,
+        rootNode: parseYamlContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -793,7 +793,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: SwfYamlLanguageService.parseContent(content)!,
+        rootNode: parseYamlContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -819,7 +819,7 @@ onEvents:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: SwfYamlLanguageService.parseContent(content)!,
+        rootNode: parseYamlContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -849,7 +849,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: SwfYamlLanguageService.parseContent(content)!,
+        rootNode: parseYamlContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -889,7 +889,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: SwfYamlLanguageService.parseContent(content)!,
+        rootNode: parseYamlContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -930,7 +930,7 @@ states:
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: SwfYamlLanguageService.parseContent(content)!,
+        rootNode: parseYamlContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([

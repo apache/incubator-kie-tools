@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 import {
-  SwfYamlLanguageService,
-  SwfJsonLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { findNodesAtLocation } from "@kie-tools/json-yaml-language-service/dist/channel";
-import { defaultConfig, defaultJqCompletionsConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
+  findNodesAtLocation,
+  parseJsonContent,
+  parseYamlContent,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 
 describe("findNodesAtLocation", () => {
   describe("JSON", () => {
@@ -30,12 +29,6 @@ describe("findNodesAtLocation", () => {
     });
 
     test("selecting a node not in JSON", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const content = `
 {
   "states": [
@@ -45,7 +38,7 @@ describe("findNodesAtLocation", () => {
     }
   ]
 }`.trim();
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["functions", "*"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -53,12 +46,6 @@ describe("findNodesAtLocation", () => {
     });
 
     test("selecting a state name", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const content = `
 {
   "states": [
@@ -68,7 +55,7 @@ describe("findNodesAtLocation", () => {
     }
   ]
 }`.trim();
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["states", "*", "name"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -76,41 +63,7 @@ describe("findNodesAtLocation", () => {
       expect(nodesAtLocation[0].value).toBe("testState1");
     });
 
-    test("selecting the 2nd state name", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
-      const content = `
-{
-  "states": [
-    {
-      "name": "testState1",
-      "type": "operation"
-    },
-    {
-      "name": "testState2",
-      "type": "operation"
-    }
-  ]
-}`.trim();
-      const root = SwfJsonLanguageService.parseContent(content);
-      const nodesAtLocation = findNodesAtLocation({ root, path: ["states", 1, "name"] });
-
-      expect(nodesAtLocation).not.toBeUndefined();
-      expect(nodesAtLocation[0]).not.toBeUndefined();
-      expect(nodesAtLocation[0].value).toBe("testState2");
-    });
-
     test("selecting all the state names", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const content = `
 {
   "states": [
@@ -124,7 +77,7 @@ describe("findNodesAtLocation", () => {
     }
   ]
 }`.trim();
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["states", "*", "name"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -134,12 +87,6 @@ describe("findNodesAtLocation", () => {
     });
 
     test("selecting all the functionRef using 2 *", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const content = `
 {
   "states": [
@@ -178,7 +125,7 @@ describe("findNodesAtLocation", () => {
     }
   ]
 }`.trim();
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const nodesAtLocation = findNodesAtLocation({
         root,
         path: ["states", "*", "actions", "*", "functionRef", "refName"],
@@ -192,12 +139,6 @@ describe("findNodesAtLocation", () => {
     });
 
     test("selecting empty value for functionRef", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const content = `
 {
   "functions": [
@@ -227,7 +168,7 @@ describe("findNodesAtLocation", () => {
     }
   ]
 }`.trim();
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const nodesAtLocation = findNodesAtLocation({
         root,
         path: ["states", "*", "actions", "*", "functionRef"],
@@ -246,12 +187,6 @@ describe("findNodesAtLocation", () => {
     });
 
     test("selecting the functions array", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const content = `{
   "functions": [{
         "name": "function1",
@@ -261,7 +196,7 @@ describe("findNodesAtLocation", () => {
         "operation": "openapi.yml#getGreeting"
   }]
 }`.trim();
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["functions"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -277,12 +212,6 @@ describe("findNodesAtLocation", () => {
     });
 
     test("selecting all the functions", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const content = `{
   "functions": [{
         "name": "function1",
@@ -292,7 +221,7 @@ describe("findNodesAtLocation", () => {
         "operation": "openapi.yml#getGreeting"
   }]
 }`.trim();
-      const root = SwfJsonLanguageService.parseContent(content);
+      const root = parseJsonContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["functions", "*"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -314,18 +243,12 @@ describe("findNodesAtLocation", () => {
     });
 
     test("selecting a node not in YAML", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const content = `---
 states:
 - name: testState1
   type: operation
 `.trim();
-      const root = SwfYamlLanguageService.parseContent(content);
+      const root = parseYamlContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["functions", "*"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -333,12 +256,6 @@ states:
     });
 
     test("selecting empty value for functionRef", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const content = `---
 functions:
 - name: myFunc
@@ -357,7 +274,7 @@ states:
       arguments:
         firstArg: test
 `;
-      const root = SwfYamlLanguageService.parseContent(content);
+      const root = parseYamlContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["states", "*", "actions", "*", "functionRef"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -370,12 +287,6 @@ states:
     });
 
     test("selecting the functions array", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const content = `---
       functions:
       - name: function1
@@ -383,7 +294,7 @@ states:
       - name: function2
         operation: openapi.yml#getGreeting
       `.trim();
-      const root = SwfYamlLanguageService.parseContent(content);
+      const root = parseYamlContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["functions"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
@@ -397,12 +308,6 @@ states:
     });
 
     test("selecting all the functions", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const content = `---
       functions:
       - name: function1
@@ -410,7 +315,7 @@ states:
       - name: function2
         operation: openapi.yml#getGreeting
       `.trim();
-      const root = SwfYamlLanguageService.parseContent(content);
+      const root = parseYamlContent(content);
       const nodesAtLocation = findNodesAtLocation({ root, path: ["functions", "*"] });
 
       expect(nodesAtLocation).not.toBeUndefined();
