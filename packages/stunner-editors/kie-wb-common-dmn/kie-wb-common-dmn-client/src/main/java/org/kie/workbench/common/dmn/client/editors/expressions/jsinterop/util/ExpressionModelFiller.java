@@ -77,6 +77,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PmmlFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableRowNumberColumn;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
@@ -450,6 +451,7 @@ public class ExpressionModelFiller {
         final Clause[] inputProps = Optional.ofNullable(decisionTableProps.input).orElse(new InputClauseProps[0]);
         final Clause[] outputProps = Optional.ofNullable(decisionTableProps.output).orElse(new Clause[0]);
         final Annotation[] annotationProps = Optional.ofNullable(decisionTableProps.annotations).orElse(new Annotation[0]);
+        decisionTableExpression.getComponentWidths().set(0, DecisionTableRowNumberColumn.DEFAULT_WIDTH);
         IntStream.range(0, inputProps.length)
                 .forEach(index -> decisionTableExpression.getComponentWidths().set(index + 1, inputProps[index].width));
         IntStream.range(0, outputProps.length)
