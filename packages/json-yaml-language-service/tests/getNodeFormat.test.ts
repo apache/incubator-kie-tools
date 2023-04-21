@@ -15,17 +15,12 @@
  */
 
 import {
-  getNodeFormat,
   findNodeAtOffset,
-  parseYamlContent,
+  getNodeFormat,
   parseJsonContent,
+  parseYamlContent,
 } from "@kie-tools/json-yaml-language-service/dist/channel";
-import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import {
-  SwfJsonLanguageService,
-  SwfYamlLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { defaultConfig, defaultJqCompletionsConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
+import { FileLanguage } from "@kie-tools/json-yaml-language-service/dist/api";
 import { ContentWithCursor, treat } from "./testUtils";
 
 describe("getNodeFormat", () => {

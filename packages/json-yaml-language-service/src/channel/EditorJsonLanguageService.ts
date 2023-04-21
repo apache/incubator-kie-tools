@@ -18,7 +18,6 @@ import * as jsonc from "jsonc-parser";
 import { getLanguageService, JSONSchema } from "vscode-json-languageservice";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, Diagnostic, Position, Range } from "vscode-languageserver-types";
-import { FileLanguage } from "../api";
 import {
   ELsCodeCompletionStrategy,
   ELsNode,

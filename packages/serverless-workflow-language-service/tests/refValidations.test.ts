@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import { doRefValidation, parseYamlContent } from "@kie-tools/json-yaml-language-service/dist/channel";
+import {
+  doRefValidation,
+  parseJsonContent,
+  parseYamlContent,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { trim } from "./testUtils";
-import * as jsonc from "jsonc-parser";
-import { SwfLanguageServiceConfig, SwfYamlLanguageService } from "../src/channel";
-import { defaultJqCompletionsConfig } from "./SwfLanguageServiceConfigs";
 import { swfRefValidationMap } from "../dist/channel/swfRefValidationMap";
+import { trim } from "./testUtils";
 
 function textDoc(content: string) {
   return TextDocument.create("", "serverless-workflow-json", 0, content);
@@ -56,7 +57,7 @@ describe("test JSON refValidation method against source and target paths", () =>
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: jsonc.parseTree(content)!,
+        rootNode: parseJsonContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -85,7 +86,7 @@ describe("test JSON refValidation method against source and target paths", () =>
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: jsonc.parseTree(content)!,
+        rootNode: parseJsonContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -120,7 +121,7 @@ describe("test JSON refValidation method against source and target paths", () =>
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: jsonc.parseTree(content)!,
+        rootNode: parseJsonContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -155,7 +156,7 @@ describe("test JSON refValidation method against source and target paths", () =>
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: jsonc.parseTree(content)!,
+        rootNode: parseJsonContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -212,7 +213,7 @@ describe("test JSON refValidation method against source and target paths", () =>
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: jsonc.parseTree(content)!,
+        rootNode: parseJsonContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -264,7 +265,7 @@ describe("test JSON refValidation method against source and target paths", () =>
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: jsonc.parseTree(content)!,
+        rootNode: parseJsonContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -305,7 +306,7 @@ describe("test JSON refValidation method against source and target paths", () =>
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: jsonc.parseTree(content)!,
+        rootNode: parseJsonContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -344,7 +345,7 @@ describe("test JSON refValidation method against source and target paths", () =>
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: jsonc.parseTree(content)!,
+        rootNode: parseJsonContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -402,7 +403,7 @@ describe("test JSON refValidation method against source and target paths", () =>
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: jsonc.parseTree(content)!,
+        rootNode: parseJsonContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -450,7 +451,7 @@ describe("test JSON refValidation method against source and target paths", () =>
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: jsonc.parseTree(content)!,
+        rootNode: parseJsonContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -490,7 +491,7 @@ describe("test JSON refValidation method against source and target paths", () =>
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: jsonc.parseTree(content)!,
+        rootNode: parseJsonContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -542,7 +543,7 @@ describe("test JSON refValidation method against source and target paths", () =>
     expect(
       doRefValidation({
         textDocument: textDoc(content),
-        rootNode: jsonc.parseTree(content)!,
+        rootNode: parseJsonContent(content)!,
         validationMap: swfRefValidationMap,
       })
     ).toEqual([
@@ -555,30 +556,6 @@ describe("test JSON refValidation method against source and target paths", () =>
 });
 
 describe("test YAML refValidation method against source and target paths", () => {
-  const defaultConfig: SwfLanguageServiceConfig = {
-    shouldConfigureServiceRegistries: () => false,
-    shouldServiceRegistriesLogIn: () => false,
-    canRefreshServices: () => false,
-    getSpecsDirPosixPaths: async () => ({ specsDirRelativePosixPath: "specs", specsDirAbsolutePosixPath: "" }),
-    getRoutesDirPosixPaths: async () => ({ routesDirRelativePosixPath: "routes", routesDirAbsolutePosixPath: "" }),
-    shouldDisplayServiceRegistriesIntegration: async () => true,
-    shouldReferenceServiceRegistryFunctionsWithUrls: async () => false,
-    shouldIncludeJsonSchemaDiagnostics: async () => true,
-  };
-
-  const defaultServiceCatalogConfig = {
-    relative: { getServices: async () => [] },
-    global: { getServices: async () => [] },
-    getServiceFileNameFromSwfServiceCatalogServiceId: async (registryName: string, serviceId: string) =>
-      `${serviceId}.yaml`,
-  };
-
-  const ls = new SwfYamlLanguageService({
-    fs: {},
-    serviceCatalog: defaultServiceCatalogConfig,
-    config: defaultConfig,
-    jqCompletions: defaultJqCompletionsConfig,
-  });
   test("check functionRef against functions array", () => {
     const { content } = trim(`
 ---

@@ -14,30 +14,32 @@
  * limitations under the License.
  */
 
-/**
- * File language for an opened file in the text editor.
- */
-export enum FileLanguage {
-  JSON = "json",
-  YAML = "yaml",
-}
+import { RefValidationMap } from "@kie-tools/json-yaml-language-service/dist/channel";
 
-/**
- * Get the file language from a filename or path
- *
- * @param fileName the filename or path
- * @returns the file language, null if not found
- */
-export const getFileLanguage = (fileName: string): FileLanguage | null => {
-  if (/\.json$/i.test(fileName)) {
-    return FileLanguage.JSON;
-  }
-
-  if (/\.(yml|yaml)$/i.test(fileName)) {
-    return FileLanguage.YAML;
-  }
-
-  return null;
-};
-
-export * from "./EditorLanguageServiceChannelApi";
+export const testRefValidationMap: RefValidationMap = new Map([
+  [
+    {
+      name: "events",
+      path: ["events", "*", "name"],
+    },
+    [
+      {
+        path: ["onEvents", "*", "eventRefs"],
+        type: "string",
+        isArray: true,
+      },
+    ],
+  ],
+  [
+    {
+      name: "functions",
+      path: ["functions", "*", "name"],
+    },
+    [
+      {
+        path: ["states", "*", "actions", "*", "functionRef", "refName"],
+        type: "string",
+      },
+    ],
+  ],
+]);

@@ -21,11 +21,9 @@ import {
 } from "@kie-tools/json-yaml-language-service/dist/channel";
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
-  JsonCodeCompletionStrategy,
-  SwfJsonLanguageService,
-  SwfYamlCodeCompletionStrategy,
-  SwfYamlLanguageService,
   CodeCompletionStrategy,
+  SwfJsonLanguageService,
+  SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CompletionItem, DocumentUri, Position } from "vscode-languageserver-types";

@@ -16,16 +16,11 @@
 
 import {
   ELsNode,
-  nodeUpUntilType,
   findNodeAtOffset,
+  nodeUpUntilType,
   parseJsonContent,
   parseYamlContent,
 } from "@kie-tools/json-yaml-language-service/dist/channel";
-import {
-  SwfJsonLanguageService,
-  SwfYamlLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { defaultConfig, defaultJqCompletionsConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
 import { treat } from "./testUtils";
 
 describe("nodeUpUntilType", () => {
@@ -70,12 +65,6 @@ describe("nodeUpUntilType", () => {
 
   describe("JSON", () => {
     test("up to functionRef value", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`{
           "name": "testStateAction2",
           "functionRef": {
@@ -95,12 +84,6 @@ describe("nodeUpUntilType", () => {
 
   describe("YAML", () => {
     test("up to functionRef value", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`---
 name: testStateAction2
 functionRef:
