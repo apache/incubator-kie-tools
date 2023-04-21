@@ -15,19 +15,13 @@
  */
 
 const REGEX = {
-  supportedSingleExtension: /(\.bpmn|bpmn2|\.dmn|\.pmml)$/i,
-  supportedDoubleExtension: /(\.sw\.json|yml|yaml|\.yard\.json|yml|yaml|\.dash\.yml|yaml)$/i,
+  supportedSingleExtensions: /(\.bpmn|bpmn2|\.dmn|\.pmml)$/i,
+  supportedDoubleExtensions: /(\.sw\.json|yml|yaml|\.yard\.json|yml|yaml|\.dash\.yml|yaml)$/i,
   sw: /^.*\.sw\.(json|yml|yaml)$/i,
   swJson: /^.*\.sw\.json$/i,
-  swYml: /^.*\.sw\.yml$/i,
   swYaml: /^.*\.sw\.yaml$/i,
   yard: /^.*\.yard\.(json|yml|yaml)$/i,
-  yardJson: /^.*\.yard\.json$/i,
-  yardYml: /^.*\.yard\.yml$/i,
-  yardYaml: /^.*\.yard\.yaml$/i,
   dash: /^.*\.dash\.(yml|yaml)$/i,
-  dashYml: /^.*\.dash\.yml$/i,
-  dashYaml: /^.*\.dash\.yaml$/i,
   dmn: /^.*\.dmn$/i,
   bpmn: /^.*\.(bpmn|bpmn2)$/i,
   scesim: /^.*\.scesim$/i,

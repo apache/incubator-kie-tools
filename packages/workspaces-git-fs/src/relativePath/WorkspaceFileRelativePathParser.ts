@@ -33,11 +33,11 @@ export function extractExtension(relativePath: string) {
   const fileWithoutUltimateExtension = fileName.substring(0, fileName.lastIndexOf(ultimateExtension));
   const penultimateExtension = fileWithoutUltimateExtension.substring(fileWithoutUltimateExtension.lastIndexOf("."));
   if (fileName.includes(".")) {
-    if (isOfKind("supportedSingleExtension", fileName)) {
+    if (isOfKind("supportedSingleExtensions", fileName)) {
       //technically not needed as the else statement does the same thing. Only here for clarity
       return ultimateExtension.replace(".", "");
     }
-    if (isOfKind("supportedDoubleExtension", fileName)) {
+    if (isOfKind("supportedDoubleExtensions", fileName)) {
       return penultimateExtension.replace(".", "") + ultimateExtension;
     } else {
       return ultimateExtension.replace(".", "");
