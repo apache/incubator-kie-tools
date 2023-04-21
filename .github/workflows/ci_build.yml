@@ -94,6 +94,7 @@ jobs:
           KIE_TOOLS_BUILD__ignoreIntegrationTestFailures: ${{ !github.event.pull_request }}
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
+          NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           pnpm -r --workspace-concurrency=1 build:prod
 
@@ -127,6 +128,7 @@ jobs:
           KIE_TOOLS_BUILD__buildExamples: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
+          NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           pnpm -F "...[${{ steps.checkout_pr.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
 
