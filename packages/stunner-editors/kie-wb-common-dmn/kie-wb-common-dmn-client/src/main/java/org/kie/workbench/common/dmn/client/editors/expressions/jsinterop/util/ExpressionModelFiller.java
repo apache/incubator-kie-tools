@@ -156,6 +156,7 @@ public class ExpressionModelFiller {
                                               final UnaryOperator<QName> qNameNormalizer) {
         final FunctionDefinition.Kind functionKind = FunctionDefinition.Kind.fromValue(functionProps.functionKind);
         functionExpression.setId(new Id(functionProps.id));
+        functionExpression.getComponentWidths().set(0, RowNumberColumn.DEFAULT_WIDTH);
         functionExpression.getComponentWidths().set(1, functionProps.classAndMethodNamesWidth);
         functionExpression.getFormalParameter().clear();
         functionExpression.getFormalParameter().addAll(formalParametersConvertForFunctionExpression(functionProps, qNameNormalizer));
