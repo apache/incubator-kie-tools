@@ -13,7 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TextDocument } from "vscode-languageserver-textdocument";
+import { DocumentUri, Position, TextDocument } from "vscode-languageserver-textdocument";
+import { CompletionItem } from "vscode-languageserver-types";
+import { FileLanguage } from "../dist/api";
+import {
+  EditorJsonLanguageService,
+  EditorYamlLanguageService,
+  ELsCodeCompletionStrategy,
+  ELsJsonPath,
+  findNodeAtLocation,
+  parseJsonContent,
+  parseYamlContent,
+} from "../dist/channel";
+import { TestJsonLanguageService } from "./testLanguageService";
 
 /**
  * Gets the corresponding line from an offset.
@@ -40,4 +52,49 @@ export function treat(content: ContentWithCursor, trimContent = true) {
 
 export function trim(content: string) {
   return { content: content.trim() };
+}
+
+/**
+ * Gets the CompletionItem and the cursorPosition for a content with cursor
+ *
+ * @param ls -
+ * @param documentUri -
+ * @param contentToParse -
+ * @returns
+ */
+export async function codeCompletionTester(
+  ls: TestJsonLanguageService | EditorYamlLanguageService,
+  documentUri: DocumentUri,
+  contentToParse: ContentWithCursor,
+  trimContent = true
+): Promise<{ completionItems: CompletionItem[]; cursorPosition: Position }> {
+  const { content, cursorPosition } = treat(contentToParse, trimContent);
+  return {
+    completionItems: await ls.getCompletionItems({
+      uri: documentUri,
+      content,
+      cursorPosition,
+      cursorWordRange: { start: cursorPosition, end: cursorPosition },
+    }),
+    cursorPosition,
+  };
+}
+
+/**
+ * Get the returned position from getStartNodeValuePosition().
+ *
+ * @param args -
+ */
+export function getStartNodeValuePositionTester(args: {
+  content: string;
+  path: ELsJsonPath;
+  codeCompletionStrategy: ELsCodeCompletionStrategy;
+  documentUri: string;
+  ls: TestJsonLanguageService | EditorYamlLanguageService;
+}): Position | undefined {
+  const rootNode =
+    args.ls instanceof EditorJsonLanguageService ? parseJsonContent(args.content) : parseYamlContent(args.content);
+  const doc = TextDocument.create(args.documentUri, FileLanguage.YAML, 0, args.content);
+  const node = findNodeAtLocation(rootNode!, args.path);
+  return args.codeCompletionStrategy.getStartNodeValuePosition(doc, node!);
 }

@@ -20,7 +20,7 @@ import {
   parseYamlContent,
 } from "@kie-tools/json-yaml-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { testRefValidationMap } from "./testRefValidationMap";
+import { testRefValidationMap } from "./testLanguageService/testRefValidationMap";
 import { trim } from "./testUtils";
 
 function textDoc(content: string) {

@@ -14,32 +14,7 @@
  * limitations under the License.
  */
 
-import { RefValidationMap } from "@kie-tools/json-yaml-language-service/dist/channel";
-
-export const testRefValidationMap: RefValidationMap = new Map([
-  [
-    {
-      name: "events",
-      path: ["events", "*", "name"],
-    },
-    [
-      {
-        path: ["onEvents", "*", "eventRefs"],
-        type: "string",
-        isArray: true,
-      },
-    ],
-  ],
-  [
-    {
-      name: "functions",
-      path: ["functions", "*", "name"],
-    },
-    [
-      {
-        path: ["states", "*", "actions", "*", "functionRef", "refName"],
-        type: "string",
-      },
-    ],
-  ],
-]);
+export * from "./TestJsonLanguageService";
+export * from "./TestLanguageService";
+export * from "./TestLanguageServiceCodeLenses";
+export * from "./workflow";
