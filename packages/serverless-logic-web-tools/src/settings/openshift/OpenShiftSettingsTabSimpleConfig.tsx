@@ -38,6 +38,7 @@ import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { SettingsTabs } from "../SettingsModalBody";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { DEV_MODE_FEATURE_NAME } from "../../openshift/swfDevMode/DevModeConstants";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -327,11 +328,11 @@ export function OpenShiftSettingsTabSimpleConfig() {
           </InputGroup>
         </FormGroup>
         <FormGroup
-          label={"Dev Mode"}
+          label={DEV_MODE_FEATURE_NAME}
           labelIcon={
             <Popover
               bodyContent={
-                "Automatically spins up a deployment running Quarkus in dev mode, making it easy and quick to try model changes"
+                "Automatically spins up a deployment running Quarkus in dev mode, making it quick to try model changes"
               }
             >
               <button

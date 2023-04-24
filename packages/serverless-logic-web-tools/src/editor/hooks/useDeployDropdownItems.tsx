@@ -42,7 +42,7 @@ import { useVirtualServiceRegistryDependencies } from "../../virtualServiceRegis
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { useDevMode, useDevModeDispatch } from "../../openshift/devMode/DevModeContext";
+import { useDevMode, useDevModeDispatch } from "../../openshift/swfDevMode/DevModeContext";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useEnv } from "../../env/EnvContext";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
@@ -150,17 +150,29 @@ export function useDeployDropdownItems(props: Props) {
     }, [])
   );
 
-  const uploadToDevModeErrorAlert = useGlobalAlert<{ message: string }>(
-    useCallback(({ close }, { message }) => {
+  const uploadToDevModeErrorAlert = useGlobalAlert<{ message?: string; sentPaths?: string[] }>(
+    useCallback(({ close }, { message, sentPaths }) => {
       return (
         <Alert
           className="pf-u-mb-md"
           variant="warning"
           title={
             <>
-              Something went wrong while uploading to the Dev Mode.
-              <br />
-              {`Reason: ${message}`}
+              {message ?? "Something went wrong while uploading to the Dev Mode."}
+              {sentPaths && sentPaths?.length > 0 && (
+                <>
+                  <br />
+                  <br />
+                  Review the following files and try again:
+                  <br />
+                  <br />
+                  <List>
+                    {sentPaths.map((p) => (
+                      <ListItem key={`sent-file-path-${p}`}>{p}</ListItem>
+                    ))}
+                  </List>
+                </>
+              )}
             </>
           }
           aria-live="polite"
@@ -228,7 +240,7 @@ export function useDeployDropdownItems(props: Props) {
         allFiles: props.workspace.files,
       });
       devModeUploadingAlert.close();
-
+      console.log(result);
       if (result.success) {
         uploadToDevModeSuccessAlert.show();
 
@@ -250,7 +262,7 @@ export function useDeployDropdownItems(props: Props) {
           window.clearInterval(fetchDevModeDeploymentTask);
         }, FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME);
       } else {
-        uploadToDevModeErrorAlert.show({ message: result.message });
+        uploadToDevModeErrorAlert.show({ message: result.message, sentPaths: result.sentPaths });
       }
     } else {
       kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);

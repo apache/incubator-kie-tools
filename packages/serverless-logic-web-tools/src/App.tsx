@@ -26,7 +26,7 @@ import { OpenShiftContextProvider } from "./openshift/OpenShiftContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { VirtualServiceRegistryContextProvider } from "./virtualServiceRegistry/VirtualServiceRegistryContextProvider";
 import { SampleContextProvider } from "./home/sample/hooks/SampleContext";
-import { DevModeContextProvider } from "./openshift/devMode/DevModeContext";
+import { DevModeContextProvider } from "./openshift/swfDevMode/DevModeContext";
 import { GlobalAlertsContextProvider } from "./alerts/GlobalAlertsContext";
 import { EditorContextProvider } from "./editor/hooks/EditorContext";
 import { WebToolsWorkspaceContextProvider } from "./workspace/hooks/WebToolsWorkspaceContextProvider";

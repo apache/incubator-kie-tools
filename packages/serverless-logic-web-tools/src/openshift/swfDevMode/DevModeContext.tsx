@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { v4 as uuid } from "uuid";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import * as React from "react";
 import { useContext, useState, useCallback, useMemo } from "react";
@@ -22,7 +21,9 @@ import {
   buildEndpoints,
   DevModeEndpoints,
   DevModeUploadResult,
-  WEB_TOOLS_ID_KEY,
+  resolveWebToolsId,
+  UploadApiResponseError,
+  UploadApiResponseSuccess,
   ZIP_FILE_NAME,
   ZIP_FILE_PART_KEY,
 } from "./DevModeConstants";
@@ -39,25 +40,6 @@ import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/co
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { DevModeDeploymentLoaderPipeline } from "../pipelines/DevModeDeploymentLoaderPipeline";
-
-export interface UploadApiResponseError {
-  error: string;
-}
-
-export interface UploadApiResponseSuccess {
-  paths: string[];
-}
-
-export const resolveWebToolsId = () => {
-  const webToolsId = localStorage.getItem(WEB_TOOLS_ID_KEY) ?? uuid();
-  localStorage.setItem(WEB_TOOLS_ID_KEY, webToolsId);
-  return webToolsId;
-};
-
-export const resolveDevModeResourceName = (webToolsId: string) => {
-  const sanitizedVersion = process.env.WEBPACK_REPLACE__version!.replace(/\./g, "");
-  return `dev-${webToolsId}-${sanitizedVersion}`;
-};
 
 export interface DevModeContextType {
   isEnabled: boolean;
@@ -247,12 +229,13 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
               };
             }
 
-            if ([400, 500].includes(response.status)) {
+            if (response.status >= 400 && response.status <= 599) {
               const json = (await response.json()) as UploadApiResponseError;
               if (json.error) {
                 return {
                   success: false,
                   message: json.error,
+                  sentPaths: filesToUpload.map((f) => f.relativePath),
                 };
               }
             }

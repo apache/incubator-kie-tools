@@ -14,8 +14,31 @@
  * limitations under the License.
  */
 
+import { v4 as uuid } from "uuid";
+
 export const ZIP_FILE_PART_KEY = "zipFile";
 export const ZIP_FILE_NAME = "file.zip";
+
+export const DEV_MODE_FEATURE_NAME = "Dev Mode for Serverless Workflow";
+
+export interface UploadApiResponseError {
+  error: string;
+}
+
+export interface UploadApiResponseSuccess {
+  paths: string[];
+}
+
+export const resolveWebToolsId = () => {
+  const webToolsId = localStorage.getItem(SWF_DEV_MODE_ID_KEY) ?? uuid();
+  localStorage.setItem(SWF_DEV_MODE_ID_KEY, webToolsId);
+  return webToolsId;
+};
+
+export const resolveDevModeResourceName = (webToolsId: string) => {
+  const sanitizedVersion = process.env.WEBPACK_REPLACE__version!.replace(/\./g, "");
+  return `dev-${webToolsId}-${sanitizedVersion}`;
+};
 
 export type DevModeUploadResult =
   | {
@@ -25,6 +48,7 @@ export type DevModeUploadResult =
   | {
       success: false;
       message: string;
+      sentPaths?: string[];
     };
 
 export interface DevModeEndpoints {
@@ -53,4 +77,4 @@ export const buildEndpoints = (routeUrl: string): DevModeEndpoints => ({
   },
 });
 
-export const WEB_TOOLS_ID_KEY = "SERVERLESS_LOGIC_WEB_TOOLS_ID";
+export const SWF_DEV_MODE_ID_KEY = "SWF_DEV_MODE_ID";

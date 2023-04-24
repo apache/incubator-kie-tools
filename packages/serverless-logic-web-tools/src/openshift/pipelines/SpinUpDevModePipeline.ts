@@ -36,8 +36,8 @@ import { Deployment } from "kubernetes-models/apps/v1";
 import { DeployConstants } from "../DeployConstants";
 import { RESOURCE_OWNER } from "../OpenShiftConstants";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
-import { resolveDevModeResourceName } from "../devMode/DevModeContext";
 import { SwfDevMode } from "../deploy/BaseContainerImages";
+import { resolveDevModeResourceName } from "../swfDevMode/DevModeConstants";
 
 interface SpinUpDevModePipelineArgs {
   webToolsId: string;

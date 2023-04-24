@@ -34,7 +34,7 @@ import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { useEnv } from "../../env/EnvContext";
 import { AppDistributionMode } from "../../AppConstants";
 import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { useDevModeDispatch } from "../devMode/DevModeContext";
+import { useDevModeDispatch } from "../swfDevMode/DevModeContext";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";

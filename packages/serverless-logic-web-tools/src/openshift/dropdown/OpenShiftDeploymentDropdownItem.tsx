@@ -25,8 +25,8 @@ import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativ
 import { useMemo, useCallback, useState } from "react";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { basename } from "path";
-import { buildEndpoints } from "../devMode/DevModeConstants";
-import { useDevModeDispatch } from "../devMode/DevModeContext";
+import { DEV_MODE_FEATURE_NAME, buildEndpoints } from "../swfDevMode/DevModeConstants";
+import { useDevModeDispatch } from "../swfDevMode/DevModeContext";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";
@@ -46,7 +46,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
 
   const deploymentName = useMemo(() => {
     if (props.deployment.devMode) {
-      return "Dev Mode";
+      return DEV_MODE_FEATURE_NAME;
     }
 
     const maxSize = 35;

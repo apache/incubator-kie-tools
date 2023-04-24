@@ -26,8 +26,7 @@ import {
 import { fetchWithTimeout } from "../../fetch";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
-import { DevModeEndpoints, buildEndpoints } from "../devMode/DevModeConstants";
-import { resolveDevModeResourceName } from "../devMode/DevModeContext";
+import { DevModeEndpoints, buildEndpoints, resolveDevModeResourceName } from "../swfDevMode/DevModeConstants";
 
 interface ExtendedDeployment {
   endpoints: DevModeEndpoints;

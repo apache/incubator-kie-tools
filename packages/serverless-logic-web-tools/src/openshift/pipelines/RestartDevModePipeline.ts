@@ -22,7 +22,7 @@ import {
   UpdateDeployment,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
-import { resolveDevModeResourceName } from "../devMode/DevModeContext";
+import { resolveDevModeResourceName } from "../swfDevMode/DevModeConstants";
 
 interface RestartDevModePipelineArgs {
   webToolsId: string;
