@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.Yaml;
 import org.uberfire.commons.Pair;
 
 public class MarshallerUtils {
@@ -130,5 +131,12 @@ public class MarshallerUtils {
                 }
             });
         }
+    }
+
+    public static String onPreDeserialize(String raw, DocType docType) {
+        if(docType == DocType.JSON) {
+            return raw;
+        }
+        return Yaml.beautify(raw);
     }
 }
