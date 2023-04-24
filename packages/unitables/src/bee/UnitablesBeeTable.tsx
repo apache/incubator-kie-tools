@@ -131,7 +131,7 @@ export function UnitablesBeeTable({
       }
       return acc;
     }, {} as NonNullable<BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"]>);
-  }, [columns, rows.length, columnsCount, rowsRefs]);
+  }, [columns, rows.length, columnsCount]);
 
   const setColumnWidth = useCallback(
     (fieldName: string) => (newWidthAction: React.SetStateAction<number | undefined>) => {

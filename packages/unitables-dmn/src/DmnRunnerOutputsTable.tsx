@@ -22,7 +22,7 @@ import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import nextId from "react-id-generator";
-import { useDmnRunnerOutputs as useDmnRunnerOutputs } from "./DmnRunnerOutputs";
+import { OutputFields, useDmnRunnerOutputs as useDmnRunnerOutputs } from "./DmnRunnerOutputs";
 import { DmnUnitablesI18n } from "./i18n";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import * as ReactTable from "react-table";
@@ -53,7 +53,7 @@ export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrolla
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const [outputError, setOutputError] = useState<boolean>(false);
 
-  const { outputs } = useDmnRunnerOutputs(jsonSchemaBridge, results);
+  const { outputs, outputTypeMap } = useDmnRunnerOutputs(jsonSchemaBridge, results);
 
   useEffect(() => {
     outputErrorBoundaryRef.current?.reset();
@@ -77,6 +77,7 @@ export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrolla
             scrollableParentRef={scrollableParentRef}
             i18n={i18n}
             outputs={outputs}
+            outputTypeMap={outputTypeMap}
             rows={rows}
             id={outputUid}
           />
@@ -127,10 +128,11 @@ interface OutputsTableProps {
   i18n: BoxedExpressionEditorI18n;
   rows: { outputEntries: DmnEvaluationResult[] }[];
   outputs?: UnitablesColumnType[];
+  outputTypeMap: Map<string, OutputFields> | undefined;
   scrollableParentRef: React.RefObject<HTMLElement>;
 }
 
-function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: OutputsTableProps) {
+function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollableParentRef }: OutputsTableProps) {
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
       {
@@ -143,6 +145,45 @@ function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: Outpu
 
   const uuid = useMemo(() => {
     return generateUuid();
+  }, []);
+
+  const deepFlattenObjectColumn = useCallback(
+    (myObject: Record<string, any>, parentKey?: string): ReactTable.Column<ROWTYPE>[] => {
+      return Object.entries(myObject).flatMap(([myObjectKey, value]) => {
+        if (value !== null && typeof value === "object") {
+          const myKey = parentKey ? `${parentKey}-${myObjectKey}` : myObjectKey;
+          return deepFlattenObjectColumn(value, myKey);
+        }
+
+        const label = parentKey ? `${parentKey}-${myObjectKey}` : myObjectKey;
+        const myObjectProperties = outputTypeMap?.get(myObjectKey);
+        const dataType = myObjectProperties ? myObjectProperties.dataType : DmnBuiltInDataType.Undefined;
+
+        return {
+          originalId: label + generateUuid(),
+          label,
+          accessor: (`output-object-${label}` + generateUuid()) as any,
+          dataType,
+          isRowIndexColumn: false,
+          groupType: "dmn-runner-output",
+          width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+          minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+        };
+      });
+    },
+    [outputTypeMap]
+  );
+
+  const deepFlattenObjectRow = useCallback((myObject: Record<string, any>, parentKey?: string): Record<
+    string,
+    any
+  >[] => {
+    return Object.entries(myObject).flatMap(([myObjectKey, value]) => {
+      if (value !== null && typeof value === "object") {
+        return deepFlattenObjectRow(value, myObjectKey);
+      }
+      return value;
+    });
   }, []);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
@@ -158,18 +199,18 @@ function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: Outpu
       ) {
         return [
           {
-            originalId: uuid + `-parent-${output?.name}`,
+            originalId: `-parent-${output?.name}-` + generateUuid(),
             label: "",
-            accessor: `output-parent-${output?.name}` as any,
+            accessor: (`output-parent-${output?.name}-` + generateUuid()) as any,
             dataType: undefined as any,
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
             minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
             columns: [
               {
-                originalId: uuid + `${output?.name}`,
+                originalId: `${output?.name}-` + generateUuid(),
                 label: output?.name ?? "",
-                accessor: `output-${output?.name}` as any,
+                accessor: (`output-${output?.name}-` + generateUuid()) as any,
                 dataType: output?.dataType ?? DmnBuiltInDataType.Undefined,
                 isRowIndexColumn: false,
                 groupType: "dmn-runner-output",
@@ -184,16 +225,16 @@ function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: Outpu
       if (Array.isArray(outputEntry)) {
         return [
           {
-            originalId: uuid + `${output?.name}}`,
+            originalId: `${output?.name}}-` + generateUuid(),
             label: `${output?.name}`,
-            accessor: `output-array-parent-${output?.name}` as any,
+            accessor: (`output-array-parent-${output?.name}-` + generateUuid()) as any,
             dataType: output?.dataType ?? DmnBuiltInDataType.Undefined,
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
             columns: outputEntry.map((entry, entryIndex) => ({
-              originalId: uuid + `${entryIndex}`,
+              originalId: `${entryIndex}-` + generateUuid(),
               label: `[${entryIndex}]`,
-              accessor: `output-array-${entryIndex}` as any,
+              accessor: (`output-array-${entryIndex}-` + generateUuid()) as any,
               dataType: undefined as any,
               groupType: "dmn-runner-output",
               isRowIndexColumn: false,
@@ -207,34 +248,20 @@ function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: Outpu
       if (typeof outputEntry === "object") {
         return [
           {
-            originalId: uuid + `${output?.name}`,
+            originalId: `${output?.name}-` + generateUuid(),
             label: output?.name ?? "",
-            accessor: `output-object-parent-${output?.name}` as any,
+            accessor: (`output-object-parent-${output?.name}-` + generateUuid()) as any,
             dataType: output?.dataType ?? DmnBuiltInDataType.Undefined,
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
             minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-            columns: Object.keys(outputEntry).map((entryKey) => {
-              const filteredOutputs = output?.insideProperties?.find((property) =>
-                Object.values(property).find((value) => value === entryKey)
-              );
-              return {
-                originalId: uuid + `${entryKey}`,
-                label: entryKey,
-                accessor: `output-object-${entryKey}` as any,
-                dataType: filteredOutputs?.dataType ?? DmnBuiltInDataType.Undefined,
-                isRowIndexColumn: false,
-                groupType: "dmn-runner-output",
-                width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-                minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-              };
-            }),
+            columns: deepFlattenObjectColumn(outputEntry),
           },
         ];
       }
       return [] as ReactTable.Column<ROWTYPE>[];
     });
-  }, [outputs, rows, uuid]);
+  }, [deepFlattenObjectColumn, outputs, rows]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
     return rows.map((row, rowIndex) => {
@@ -249,7 +276,9 @@ function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: Outpu
           } else if (typeof entry === "object") {
             return [
               ...acc,
-              ...Object.values(entry).map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:")),
+              ...deepFlattenObjectRow(entry).map((element) =>
+                JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:")
+              ),
             ];
           } else {
             return [...acc, JSON.stringify(entry)];
@@ -264,7 +293,7 @@ function OutputsBeeTable({ id, i18n, outputs, rows, scrollableParentRef }: Outpu
         return tableRow;
       }, {});
     });
-  }, [rows, beeTableColumns, uuid]);
+  }, [rows, beeTableColumns, deepFlattenObjectRow, uuid]);
 
   const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
     return column.originalId ?? column.id;
