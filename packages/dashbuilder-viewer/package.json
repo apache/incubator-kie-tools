@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
-    "@kie-tools-core/guided-tour": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",

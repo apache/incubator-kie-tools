@@ -74,7 +74,6 @@ digraph G {
   "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "dmn-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools-core/guided-tour" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/keyboard-shortcuts" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/envelope-bus" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/extended-services" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -240,8 +239,8 @@ digraph G {
   "dmn-vscode-extension" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/backend" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/envelope" [ style = "solid", color = "purple" ];
-  "@kie-tools-core/editor" -> "@kie-tools-core/guided-tour" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/keyboard-shortcuts" [ style = "solid", color = "purple" ];
+  "@kie-tools-core/editor" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "purple" ];
   "@kie-tools-core/envelope" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "purple" ];
   "@kie-tools-core/envelope-bus" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/envelope-bus" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
@@ -261,9 +260,6 @@ digraph G {
   "@kie-tools/form-generation-tool" -> "@kie-tools/uniforms-bootstrap4-codegen" [ style = "solid", color = "blue" ];
   "@kie-tools/form-generation-tool" -> "@kie-tools/uniforms-patternfly-codegen" [ style = "solid", color = "blue" ];
   "@kie-tools/git-cors-proxy-image" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
-  "@kie-tools-core/guided-tour" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "purple" ];
-  "@kie-tools-core/guided-tour" -> "@kie-tools-core/i18n" [ style = "solid", color = "purple" ];
-  "@kie-tools-core/guided-tour" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "purple" ];
   "@kie-tools-core/i18n" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/i18n" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/i18n" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];

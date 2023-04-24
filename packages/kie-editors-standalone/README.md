@@ -63,7 +63,6 @@ The returned object will contain the methods needed to manipulate the Editor:
 - `undo(): void`: Undo the last change in the Editor. This will also fire the subscribed callbacks of content changes.
 - `redo(): void`: Redo the last undone change in the Editor. This will also fire the subscribed callbacks of content changes.
 - `close(): void`: Closes the Editor.
-- `getElementPosition(selector: string): Promise<Rect>`: Provides an alternative for extending the standard query selector when the element lives inside a canvas or even a video component. The `selector` parameter must follow the format of "\<PROVIDER\>:::\<SELECT\>“, e.g. “Canvas:::MySquare” or “Video:::PresenterHand”. Returns a `Rect` representing the element position.
 - `envelopeApi: MessageBusClientApi<KogitoEditorEnvelopeApi>`: Advanced Editor API. See more details in [MessageBusClientApi](https://github.com/kiegroup/kie-tools/blob/main/packages/envelope-bus/src/api/index.ts#L43-L56) and [KogitoEditorEnvelopeApi](https://github.com/kiegroup/kie-tools/blob/main/packages/editor/src/api/KogitoEditorEnvelopeApi.ts#L34-L41).
 - `canvas`: Canvas API that exposes methods to manipulate the canvas.
   - `getNodeIds(): Promise<string[]>`: Returns a Promise containing the ID attributes of all nodes displayed in editors canvas.

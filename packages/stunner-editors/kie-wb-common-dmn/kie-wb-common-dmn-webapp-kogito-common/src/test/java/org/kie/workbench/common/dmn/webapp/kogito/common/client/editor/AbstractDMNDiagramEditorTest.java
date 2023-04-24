@@ -39,7 +39,6 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNLayoutHelper;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -156,9 +155,6 @@ public class AbstractDMNDiagramEditorTest {
     private KogitoChannelHelper kogitoChannelHelper;
 
     @Mock
-    private GuidedTourBridgeInitializer guidedTourBridgeInitializer;
-
-    @Mock
     private DRDNameChanger drdNameChanger;
 
     @Mock
@@ -196,7 +192,6 @@ public class AbstractDMNDiagramEditorTest {
                                                       promises,
                                                       includedModelsPage,
                                                       kogitoChannelHelper,
-                                                      guidedTourBridgeInitializer,
                                                       drdNameChanger,
                                                       confirmationDialog,
                                                       decisionNavigatorPresenter,
@@ -213,7 +208,6 @@ public class AbstractDMNDiagramEditorTest {
         editor.onStartup(mock(PlaceRequest.class));
 
         verify(stunnerEditor, times(1)).setReadOnly(isReadOnly);
-        verify(guidedTourBridgeInitializer, times(1)).init();
         verify(decisionNavigatorDock, times(1)).init();
         verify(diagramPropertiesDock, times(1)).init();
         verify(diagramPreviewAndExplorerDock, times(1)).init();
@@ -476,7 +470,6 @@ public class AbstractDMNDiagramEditorTest {
                                                final Promises promises,
                                                final IncludedModelsPage includedModelsPage,
                                                final KogitoChannelHelper kogitoChannelHelper,
-                                               final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                                                final DRDNameChanger drdNameChanger,
                                                final ConfirmationDialog confirmationDialog,
                                                final DecisionNavigatorPresenter decisionNavigatorPresenter,
@@ -503,7 +496,6 @@ public class AbstractDMNDiagramEditorTest {
                   promises,
                   includedModelsPage,
                   kogitoChannelHelper,
-                  guidedTourBridgeInitializer,
                   drdNameChanger,
                   confirmationDialog,
                   decisionNavigatorPresenter,

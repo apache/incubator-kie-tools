@@ -37,8 +37,6 @@ describe("useDirtyState", () => {
       setContent: jest.fn(),
       validate: jest.fn(),
       setTheme: jest.fn(),
-      getElementPosition: jest.fn(),
-      onKeyDown: jest.fn(),
     };
   });
 

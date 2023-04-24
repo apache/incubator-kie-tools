@@ -354,32 +354,6 @@ interface OnlineDictionary extends ReferenceDictionary {
     trySample: string;
     chooseLocalFile: string;
   };
-  guidedTour: {
-    init: {
-      title: string;
-      learnMore: string;
-      dmnRunnerIntro: string;
-      takeTour: string;
-      skipTour: string;
-      skipTourAndUseDmnRunner: string;
-    };
-    end: {
-      title: string;
-      motivational: string;
-      nextSteps: {
-        title: string;
-        firstStep: string;
-        secondStep: string;
-        thirdStep: string;
-        startDmnRunner: string;
-      };
-      findUsefulInfo: string;
-      learnDMN: string;
-      courseOr: string;
-      kogitoDoc: string;
-      finish: string;
-    };
-  };
   alerts: {
     gistError: string;
     goToHomePage: string;

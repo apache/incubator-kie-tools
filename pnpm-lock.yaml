@@ -59,9 +59,6 @@ importers:
       "@kie-tools-core/editor":
         specifier: workspace:*
         version: link:../../packages/editor
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../../packages/guided-tour
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../../packages/notifications
@@ -2339,9 +2336,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
@@ -2576,9 +2570,6 @@ importers:
       "@kie-tools-core/editor":
         specifier: workspace:*
         version: link:../editor
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
@@ -3127,9 +3118,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n
@@ -4339,9 +4327,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n
@@ -4614,9 +4599,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n
@@ -5059,9 +5041,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n
@@ -5453,9 +5432,6 @@ importers:
       "@kie-tools-core/editor":
         specifier: workspace:*
         version: link:../editor
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/monaco-editor":
         specifier: workspace:*
         version: link:../monaco-editor
@@ -6289,9 +6265,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/keyboard-shortcuts":
         specifier: workspace:*
         version: link:../keyboard-shortcuts
@@ -6479,9 +6452,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n
@@ -6695,9 +6665,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/keyboard-shortcuts":
         specifier: workspace:*
         version: link:../keyboard-shortcuts
@@ -6892,9 +6859,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n
@@ -7063,9 +7027,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
@@ -7484,9 +7445,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
@@ -8170,9 +8128,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n
@@ -8319,9 +8274,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n
@@ -8830,9 +8782,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n
@@ -8999,9 +8948,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n
@@ -9444,9 +9390,6 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
-      "@kie-tools-core/guided-tour":
-        specifier: workspace:*
-        version: link:../guided-tour
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n

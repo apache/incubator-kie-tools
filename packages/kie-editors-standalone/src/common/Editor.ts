@@ -56,7 +56,6 @@ export const createEditor = (
       window.removeEventListener("message", listener);
       iframe.remove();
     },
-    getElementPosition: (selector) => envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(selector),
     getContent: () => envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
     getPreview: () => envelopeApi.requests.kogitoEditor_previewRequest(),
     setContent: (path, content) =>
