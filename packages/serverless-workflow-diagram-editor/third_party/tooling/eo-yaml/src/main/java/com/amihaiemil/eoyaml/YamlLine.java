@@ -60,8 +60,11 @@ interface YamlLine extends Comparable<YamlLine> {
         int i = 0;
         while(i < trimmed.length()) {
             if(i > 0 && trimmed.charAt(i) == '#') {
-                trimmed = trimmed.substring(0, i);
-                break;
+                 // Comments must be separated from other tokens by white space characters.
+                 if(trimmed.charAt(i - 1) == ' ') {
+                     trimmed = trimmed.substring(0, i);
+                     break;
+                 }
             } else if(trimmed.charAt(i) == '"') {
                 i++;
                 while(i < trimmed.length() && trimmed.charAt(i) != '"') {
@@ -154,6 +157,9 @@ interface YamlLine extends Comparable<YamlLine> {
             final CharSequence prevLineLastChar =
                 this.trimmed().substring(this.trimmed().length() - 1);
             result = specialCharacters.contains(prevLineLastChar);
+            if(result && prevLineLastChar.charAt(0)  == '?' && this.trimmed().length() > 1) {
+                return false;
+            }
         }
         return result;
     }
