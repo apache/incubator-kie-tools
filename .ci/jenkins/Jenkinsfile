@@ -11,7 +11,8 @@ pipeline {
         label 'kogito-image-slave && !built-in'
     }
     tools {
-        jdk 'kie-jdk11'
+        maven env.BUILD_MAVEN_TOOL
+        jdk env.BUILD_JDK_TOOL
     }
     options {
         timeout(time: 120, unit: 'MINUTES')

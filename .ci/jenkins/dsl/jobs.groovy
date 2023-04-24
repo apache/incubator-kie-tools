@@ -45,6 +45,7 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], 
 
 void setupPrJob(boolean isProdCI = false) {
     def jobParams = JobParamsUtils.getDefaultJobParams(this)
+    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.pr.putAll([
         run_only_for_branches: [ "${GIT_BRANCH}" ],
         disable_status_message_error: true,
@@ -65,6 +66,7 @@ void setupPrJob(boolean isProdCI = false) {
 
 void createSetupBranchJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images', JobType.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Kogito Images Init Branch')
+    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         REPO_NAME: 'kogito-images',
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
@@ -92,6 +94,7 @@ void createSetupBranchJob() {
 
 void setupDeployJob(JobType jobType, String envName = '') {
     def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-images-deploy', jobType, envName, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Images Deploy')
+    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     if (jobType == JobType.PULL_REQUEST) {
         jobParams.git.branch = '${BUILD_BRANCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'

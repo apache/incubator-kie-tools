@@ -15,7 +15,8 @@ pipeline {
 
     // Needed for local build
     tools {
-        jdk 'kie-jdk11'
+        maven env.BUILD_MAVEN_TOOL
+        jdk env.BUILD_JDK_TOOL
     }
 
     options {
