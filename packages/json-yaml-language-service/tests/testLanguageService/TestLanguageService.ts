@@ -133,10 +133,26 @@ const completions: ELsCompletionsMap<EditorLanguageServiceCodeCompletionFunction
       return Promise.resolve([
         createCompletionItem({
           ...args,
-          completion: "Code completed!",
+          completion: "Start Code completed!",
           kind,
-          label: "New completion",
-          detail: "Add a new completion",
+          label: "New start completion",
+          detail: "Add a new start completion",
+        }),
+      ]);
+    },
+  ],
+  [
+    ["functions"],
+    async (args: EditorLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
+      const kind = CompletionItemKind.Interface;
+
+      return Promise.resolve([
+        createCompletionItem({
+          ...args,
+          completion: "Function Code completed!",
+          kind,
+          label: "New function completion",
+          detail: "Add a new function",
         }),
       ]);
     },

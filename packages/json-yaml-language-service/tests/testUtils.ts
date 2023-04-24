@@ -18,14 +18,13 @@ import { CompletionItem } from "vscode-languageserver-types";
 import { FileLanguage } from "../dist/api";
 import {
   EditorJsonLanguageService,
-  EditorYamlLanguageService,
   ELsCodeCompletionStrategy,
   ELsJsonPath,
   findNodeAtLocation,
   parseJsonContent,
   parseYamlContent,
 } from "../dist/channel";
-import { TestJsonLanguageService } from "./testLanguageService";
+import { TestJsonLanguageService, TestYamlLanguageService } from "./testLanguageService";
 
 /**
  * Gets the corresponding line from an offset.
@@ -63,7 +62,7 @@ export function trim(content: string) {
  * @returns
  */
 export async function codeCompletionTester(
-  ls: TestJsonLanguageService | EditorYamlLanguageService,
+  ls: TestJsonLanguageService | TestYamlLanguageService,
   documentUri: DocumentUri,
   contentToParse: ContentWithCursor,
   trimContent = true
@@ -90,7 +89,7 @@ export function getStartNodeValuePositionTester(args: {
   path: ELsJsonPath;
   codeCompletionStrategy: ELsCodeCompletionStrategy;
   documentUri: string;
-  ls: TestJsonLanguageService | EditorYamlLanguageService;
+  ls: TestJsonLanguageService | TestYamlLanguageService;
 }): Position | undefined {
   const rootNode =
     args.ls instanceof EditorJsonLanguageService ? parseJsonContent(args.content) : parseYamlContent(args.content);

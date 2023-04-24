@@ -15,6 +15,7 @@
  */
 
 export * from "./TestJsonLanguageService";
+export * from "./TestYamlLanguageService";
 export * from "./TestLanguageService";
 export * from "./TestLanguageServiceCodeLenses";
 export * from "./workflow";
