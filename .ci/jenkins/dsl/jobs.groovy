@@ -44,7 +44,7 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], 
 /////////////////////////////////////////////////////////////////
 
 void setupPrJob(boolean isProdCI = false) {
-    def jobParams = JobParamsUtils.getDefaultJobParams(this)
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images', JobType.PULL_REQUEST, "${jenkins_path}/Jenkinsfile", "Kogito Images${isProdCI ? ' Prod' : ''} PR check")
     JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.pr.putAll([
         run_only_for_branches: [ "${GIT_BRANCH}" ],
