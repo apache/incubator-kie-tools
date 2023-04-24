@@ -122,7 +122,7 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
           variant="warning"
           title={
             <>
-              Something went wrong while spinning up to the Dev Mode.
+              Something went wrong while spinning up the Dev Mode.
               <br />
               {`Reason: ${message}`}
             </>

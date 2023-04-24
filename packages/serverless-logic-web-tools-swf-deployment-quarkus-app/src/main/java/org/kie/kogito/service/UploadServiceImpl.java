@@ -56,10 +56,15 @@ public class UploadServiceImpl implements UploadService {
 
         final List<Path> unzippedFilePaths = zipService.unzip(FileStructureConstants.UPLOADED_ZIP_FILE_PATH,
                                                               FileStructureConstants.UNZIP_FOLDER_PATH);
+
+        if (unzippedFilePaths.isEmpty()) {
+            throw new UploadException("No file has been found in the provided zip file. Upload skipped.");
+        }
+
         final List<Path> validFilePaths = fileService.validateFiles(unzippedFilePaths);
 
         if (validFilePaths.isEmpty()) {
-            throw new UploadException("No valid file has been found. Upload skipped.");
+            throw new UploadException("One or more supported files are not valid. Upload skipped.");
         }
 
         final boolean hasAnySwf = validFilePaths

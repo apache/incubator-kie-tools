@@ -153,8 +153,19 @@ public class FileServiceTest {
         List<Path> unzippedFilePaths = new ZipServiceImpl().unzip(zipFilePath, destinationFolderPath);
 
         List<Path> validatedFilePaths = fileService.validateFiles(unzippedFilePaths);
-        assertEquals(5, unzippedFilePaths.size());
+        assertEquals(4, unzippedFilePaths.size());
         assertEquals(3, validatedFilePaths.size());
+    }
+
+    @Test
+    void testValidateFilesWithInvalid() throws IOException {
+        Path zipFilePath = Path.of("src/test/resources/test-with-invalid.zip");
+        Path destinationFolderPath = Files.createTempDirectory("unzip");
+        List<Path> unzippedFilePaths = new ZipServiceImpl().unzip(zipFilePath, destinationFolderPath);
+
+        List<Path> validatedFilePaths = fileService.validateFiles(unzippedFilePaths);
+        assertEquals(5, unzippedFilePaths.size());
+        assertEquals(0, validatedFilePaths.size());
     }
 
     @Test

@@ -19,6 +19,7 @@ package org.kie.kogito.validation;
 import java.nio.file.Path;
 
 import io.swagger.parser.OpenAPIParser;
+import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
 import org.jboss.logging.Logger;
 import org.kie.kogito.api.FileValidation;
@@ -39,14 +40,43 @@ public class OpenApiValidation implements FileValidation {
                 return false;
             }
             if (result.getOpenAPI() == null) {
-                LOGGER.error("Error when validating Open API file");
+                LOGGER.error("OpenAPI cannot be found");
                 return false;
             }
+
+            for (PathItem pathItem : result.getOpenAPI().getPaths().values()) {
+                if (!isOperationIdProvided(pathItem)) {
+                    LOGGER.error("One or more paths does provide operationId");
+                    return false;
+                }
+            }
+
             LOGGER.info("OpenAPI file validated: " + result.getOpenAPI().getInfo().getTitle());
             return true;
         } catch (Exception e) {
             LOGGER.error("Error when validating Open API file: " + e.getMessage());
             return false;
         }
+    }
+
+    private boolean isOperationIdProvided(final PathItem pathItem) {
+        boolean result = true;
+        if (pathItem.getGet() != null && pathItem.getGet().getOperationId() == null) {
+            LOGGER.error("operationId not present for GET method");
+            result = false;
+        }
+        if (pathItem.getPost() != null && pathItem.getPost().getOperationId() == null) {
+            LOGGER.error("operationId not present for POST method");
+            result = false;
+        }
+        if (pathItem.getPut() != null && pathItem.getPut().getOperationId() == null) {
+            LOGGER.error("operationId not present for PUT method");
+            result = false;
+        }
+        if (pathItem.getDelete() != null && pathItem.getDelete().getOperationId() == null) {
+            LOGGER.error("operationId not present for DELETE method");
+            result = false;
+        }
+        return result;
     }
 }

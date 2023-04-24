@@ -24,10 +24,12 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -136,15 +138,22 @@ public class FileServiceImpl implements FileService {
     public List<Path> validateFiles(final List<Path> filePaths) {
         LOGGER.info("Validate " + filePaths.size() + " incoming file(s) ...");
 
+        final List<Path> supportedFiles = filePaths
+                .stream()
+                .filter(path -> getFileType(path) != FileType.UNKNOWN)
+                .collect(Collectors.toList());
+
+        if (supportedFiles.isEmpty()) {
+            LOGGER.warn("No supported files have been found to validate");
+            return Collections.emptyList();
+        }
+
+        LOGGER.info(supportedFiles.size() + " supported file(s) have been found to be validated");
         List<Path> validFilePaths = new ArrayList<>();
-        for (Path filePath : filePaths) {
+        for (Path filePath : supportedFiles) {
+            LOGGER.info("Validating file '" + filePath + "'...");
             try {
                 final FileType fileType = getFileType(filePath);
-
-                if (fileType == FileType.UNKNOWN) {
-                    LOGGER.warn("Skipping unsupported file " + filePath.getFileName());
-                    continue;
-                }
 
                 if (VALIDATION_MAP.get(fileType).isValid(filePath)) {
                     validFilePaths.add(filePath);
@@ -156,6 +165,12 @@ public class FileServiceImpl implements FileService {
             }
         }
         LOGGER.info("Validate " + filePaths.size() + " incoming file(s) ... done");
+
+        if (supportedFiles.size() != validFilePaths.size()) {
+            LOGGER.warn("One or more supported file failed validation.");
+            return Collections.emptyList();
+        }
+
         return validFilePaths;
     }
 
