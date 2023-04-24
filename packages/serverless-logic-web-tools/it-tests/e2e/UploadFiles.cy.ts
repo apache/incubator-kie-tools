@@ -100,7 +100,7 @@ describe("Serverless Logic Web Tools - Upload files test", () => {
       });
 
       // check YAML diagram state
-      cy.iframe("#kogito-iframe[src='./serverless-workflow-mermaid-viewer-envelope.html']").within(() => {
+      cy.iframe("#kogito-iframe[src='./serverless-workflow-text-editor-envelope.html']").within(() => {
         cy.get(".nodeLabel").should(($nodes) => {
           expect($nodes.length).eq(2);
           expect($nodes.eq(0)).text("helloYamlState");

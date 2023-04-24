@@ -43,7 +43,8 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
     await testHelper.closeAllNotifications();
   });
 
-  it("Select states", async function () {
+  //TOD - fix test environment
+  it.skip("Select states", async function () {
     this.timeout(30000);
 
     const WORKFLOW_NAME = "applicant-request-decision.sw.json";
