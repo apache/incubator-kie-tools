@@ -105,7 +105,7 @@
 }
 
 .kogito--alert-list {
-  max-width: 900px;
+  max-width: 700px;
   min-width: 200px;
   z-index: 999999;
   position: absolute;

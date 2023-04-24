@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.kogito.model.FileType;
+import org.kie.kogito.model.FileValidationResult;
 
 public interface FileService {
 
@@ -35,7 +36,7 @@ public interface FileService {
 
     void mergePropertiesFiles(Path pathA, Path pathB, Path mergedPath) throws IOException;
 
-    List<Path> validateFiles(List<Path> filePaths);
+    List<FileValidationResult> validateFiles(List<Path> filePaths);
 
     void copyFiles(Map<Path, Path> sourceTargetMap) throws IOException;
 

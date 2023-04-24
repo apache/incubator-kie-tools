@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.api;
+package org.kie.kogito.model;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
-import org.kie.kogito.model.UploadException;
-import org.kie.kogito.model.ValidationException;
+public class ValidationException extends Exception {
 
-public interface UploadService {
+    private final List<String> errorMessages;
 
-    List<String> upload(InputStream inputStream) throws IOException, UploadException, ValidationException;
+    public ValidationException(final List<String> errorMessages) {
+        super(String.join("; ", errorMessages));
+        this.errorMessages = errorMessages;
+    }
+
+    public List<String> getErrorMessages() {
+        return errorMessages;
+    }
 }

@@ -21,25 +21,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import org.jboss.logging.Logger;
 import org.kie.kogito.api.FileValidation;
+import org.kie.kogito.model.FileValidationResult;
 
 public class PropertiesValidation implements FileValidation {
 
-    private static final Logger LOGGER = Logger.getLogger(PropertiesValidation.class);
-
     @Override
-    public boolean isValid(final Path path) {
+    public FileValidationResult isValid(final Path path) {
         try {
             final Properties properties = new Properties();
             try (var inputStream = Files.newInputStream(path)) {
                 properties.load(inputStream);
             }
-            LOGGER.info("Properties file validated with " + properties.size() + " elements");
-            return true;
+            return FileValidationResult.createValidResult(path);
         } catch (IOException e) {
-            LOGGER.error("Error when validating properties file: " + e.getMessage());
-            return false;
+            return FileValidationResult.createInvalidResult(path, e.getMessage());
         }
     }
 }

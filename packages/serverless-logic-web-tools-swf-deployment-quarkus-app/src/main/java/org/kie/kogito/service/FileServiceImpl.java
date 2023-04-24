@@ -39,6 +39,7 @@ import org.kie.kogito.FileStructureConstants;
 import org.kie.kogito.api.FileService;
 import org.kie.kogito.api.FileValidation;
 import org.kie.kogito.model.FileType;
+import org.kie.kogito.model.FileValidationResult;
 import org.kie.kogito.validation.OpenApiValidation;
 import org.kie.kogito.validation.PropertiesValidation;
 import org.kie.kogito.validation.ServerlessWorkflowValidation;
@@ -135,7 +136,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<Path> validateFiles(final List<Path> filePaths) {
+    public List<FileValidationResult> validateFiles(final List<Path> filePaths) {
         LOGGER.info("Validate " + filePaths.size() + " incoming file(s) ...");
 
         final List<Path> supportedFiles = filePaths
@@ -149,29 +150,15 @@ public class FileServiceImpl implements FileService {
         }
 
         LOGGER.info(supportedFiles.size() + " supported file(s) have been found to be validated");
-        List<Path> validFilePaths = new ArrayList<>();
+        List<FileValidationResult> results = new ArrayList<>();
         for (Path filePath : supportedFiles) {
             LOGGER.info("Validating file '" + filePath + "'...");
-            try {
-                final FileType fileType = getFileType(filePath);
-
-                if (VALIDATION_MAP.get(fileType).isValid(filePath)) {
-                    validFilePaths.add(filePath);
-                } else {
-                    LOGGER.warn("Skipping invalid file " + filePath.getFileName());
-                }
-            } catch (Exception e) {
-                LOGGER.error("Error when validating file: " + e.getMessage());
-            }
+            final FileType fileType = getFileType(filePath);
+            results.add(VALIDATION_MAP.get(fileType).isValid(filePath));
         }
         LOGGER.info("Validate " + filePaths.size() + " incoming file(s) ... done");
 
-        if (supportedFiles.size() != validFilePaths.size()) {
-            LOGGER.warn("One or more supported file failed validation.");
-            return Collections.emptyList();
-        }
-
-        return validFilePaths;
+        return results;
     }
 
     @Override

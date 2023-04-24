@@ -22,7 +22,7 @@ export const ZIP_FILE_NAME = "file.zip";
 export const DEV_MODE_FEATURE_NAME = "Dev Mode for Serverless Workflow";
 
 export interface UploadApiResponseError {
-  error: string;
+  errors: string[];
 }
 
 export interface UploadApiResponseSuccess {
@@ -47,8 +47,7 @@ export type DevModeUploadResult =
     }
   | {
       success: false;
-      message: string;
-      sentPaths?: string[];
+      messages: string[];
     };
 
 export interface DevModeEndpoints {

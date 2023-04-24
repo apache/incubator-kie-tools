@@ -102,21 +102,10 @@ export function useDeployDropdownItems(props: Props) {
     useCallback(({ close }, { routeUrl, filePaths }) => {
       return (
         <Alert
+          isExpandable
           className="pf-u-mb-md"
           variant="success"
-          title={
-            <>
-              Your Dev Mode has been updated with the following valid files:
-              <br />
-              <br />
-              <List>
-                {filePaths.map((p) => (
-                  <ListItem key={`uploaded-file-path-${p}`}>{p}</ListItem>
-                ))}
-              </List>
-              <br />
-            </>
-          }
+          title={"Your Dev Mode has been successfully updated"}
           aria-live="polite"
           data-testid="alert-dev-mode-ready"
           actionClose={<AlertActionCloseButton onClose={close} />}
@@ -125,7 +114,18 @@ export function useDeployDropdownItems(props: Props) {
               {"Go to Serverless Workflow Dev UI ↗"}
             </AlertActionLink>
           }
-        />
+        >
+          <>
+            <Text component="p" style={{ marginBottom: "4px" }}>
+              Files that have been uploaded:
+            </Text>
+            <List>
+              {filePaths.map((p) => (
+                <ListItem key={`uploaded-file-path-${p}`}>{p}</ListItem>
+              ))}
+            </List>
+          </>
+        </Alert>
       );
     }, [])
   );
@@ -150,35 +150,28 @@ export function useDeployDropdownItems(props: Props) {
     }, [])
   );
 
-  const uploadToDevModeErrorAlert = useGlobalAlert<{ message?: string; sentPaths?: string[] }>(
-    useCallback(({ close }, { message, sentPaths }) => {
+  const uploadToDevModeErrorAlert = useGlobalAlert<{ messages: string[] }>(
+    useCallback(({ close }, { messages }) => {
       return (
         <Alert
+          isExpandable
           className="pf-u-mb-md"
           variant="warning"
-          title={
-            <>
-              {message ?? "Something went wrong while uploading to the Dev Mode."}
-              {sentPaths && sentPaths?.length > 0 && (
-                <>
-                  <br />
-                  <br />
-                  Review the following files and try again:
-                  <br />
-                  <br />
-                  <List>
-                    {sentPaths.map((p) => (
-                      <ListItem key={`sent-file-path-${p}`}>{p}</ListItem>
-                    ))}
-                  </List>
-                </>
-              )}
-            </>
-          }
+          title={"Something went wrong while uploading to the Dev Mode."}
           aria-live="polite"
           data-testid="alert-upload-error"
           actionClose={<AlertActionCloseButton onClose={close} />}
-        />
+        >
+          {messages.length > 1 ? (
+            <List>
+              {messages.map((p) => (
+                <ListItem key={`error-message-upload-${p}`}>{p}</ListItem>
+              ))}
+            </List>
+          ) : (
+            <Text component="p">{messages[0]}</Text>
+          )}
+        </Alert>
       );
     }, [])
   );
@@ -240,7 +233,7 @@ export function useDeployDropdownItems(props: Props) {
         allFiles: props.workspace.files,
       });
       devModeUploadingAlert.close();
-      console.log(result);
+
       if (result.success) {
         uploadToDevModeSuccessAlert.show();
 
@@ -262,7 +255,7 @@ export function useDeployDropdownItems(props: Props) {
           window.clearInterval(fetchDevModeDeploymentTask);
         }, FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME);
       } else {
-        uploadToDevModeErrorAlert.show({ message: result.message, sentPaths: result.sentPaths });
+        uploadToDevModeErrorAlert.show({ messages: result.messages });
       }
     } else {
       kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);

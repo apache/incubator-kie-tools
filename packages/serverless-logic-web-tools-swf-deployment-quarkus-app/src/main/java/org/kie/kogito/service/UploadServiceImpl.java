@@ -36,7 +36,9 @@ import org.kie.kogito.api.FileService;
 import org.kie.kogito.api.UploadService;
 import org.kie.kogito.api.ZipService;
 import org.kie.kogito.model.FileType;
+import org.kie.kogito.model.FileValidationResult;
 import org.kie.kogito.model.UploadException;
+import org.kie.kogito.model.ValidationException;
 
 @ApplicationScoped
 public class UploadServiceImpl implements UploadService {
@@ -50,7 +52,7 @@ public class UploadServiceImpl implements UploadService {
     FileService fileService;
 
     @Override
-    public List<String> upload(final InputStream inputStream) throws IOException, UploadException {
+    public List<String> upload(final InputStream inputStream) throws IOException, UploadException, ValidationException {
         LOGGER.info("Upload files ...");
         Files.copy(inputStream, FileStructureConstants.UPLOADED_ZIP_FILE_PATH, StandardCopyOption.REPLACE_EXISTING);
 
@@ -58,28 +60,35 @@ public class UploadServiceImpl implements UploadService {
                                                               FileStructureConstants.UNZIP_FOLDER_PATH);
 
         if (unzippedFilePaths.isEmpty()) {
-            throw new UploadException("No file has been found in the provided zip file. Upload skipped.");
+            throw new UploadException("No file has been found in the provided zip file.");
         }
 
-        final List<Path> validFilePaths = fileService.validateFiles(unzippedFilePaths);
+        final List<FileValidationResult> fileValidationResults = fileService.validateFiles(unzippedFilePaths);
 
-        if (validFilePaths.isEmpty()) {
-            throw new UploadException("One or more supported files are not valid. Upload skipped.");
-        }
-
-        final boolean hasAnySwf = validFilePaths
+        final List<String> errors = fileValidationResults
                 .stream()
-                .anyMatch(path -> fileService.getFileType(path) == FileType.SERVERLESS_WORKFLOW);
+                .filter(r -> !r.isValid())
+                .map(r -> r.getErrorMessage() + " (" + r.getFilePath().getFileName() + ")")
+                .collect(Collectors.toList());
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
+        }
+
+        final boolean hasAnySwf = fileValidationResults
+                .stream()
+                .anyMatch(r -> fileService.getFileType(r.getFilePath()) == FileType.SERVERLESS_WORKFLOW);
 
         if (!hasAnySwf) {
-            throw new UploadException("No valid serverless workflow file has been found. Upload skipped.");
+            throw new UploadException("No valid Serverless Workflow file has been found.");
         }
 
-        LOGGER.info("Uploading " + validFilePaths.size() + " validated file(s).");
+        LOGGER.info("Uploading " + fileValidationResults.size() + " validated file(s).");
 
         fileService.cleanUpFolder(FileStructureConstants.PROJECT_RESOURCES_FOLDER_PATH);
 
-        final Map<Path, Path> sourceTargetMap = validFilePaths.stream()
+        final Map<Path, Path> sourceTargetMap = fileValidationResults.stream()
+                .map(FileValidationResult::getFilePath)
                 .filter(path -> !path.getFileName().toString().equals(FileStructureConstants.APPLICATION_PROPERTIES_FILE_NAME))
                 .collect(Collectors.toMap(
                         Function.identity(),
@@ -89,8 +98,9 @@ public class UploadServiceImpl implements UploadService {
                             return Path.of(FileStructureConstants.PROJECT_RESOURCES_FOLDER_PATH.toString(), relativePathStr);
                         }));
 
-        final Optional<Path> applicationPropertiesPath = validFilePaths
+        final Optional<Path> applicationPropertiesPath = fileValidationResults
                 .stream()
+                .map(FileValidationResult::getFilePath)
                 .filter(path -> fileService.getFileType(path) == FileType.APPLICATION_PROPERTIES)
                 .findFirst();
 
@@ -114,9 +124,9 @@ public class UploadServiceImpl implements UploadService {
 
         LOGGER.info("Upload files ... done");
 
-        return validFilePaths
+        return fileValidationResults
                 .stream()
-                .map(path -> path
+                .map(r -> r.getFilePath()
                         .toAbsolutePath()
                         .toString()
                         .replace(FileStructureConstants.UNZIP_FOLDER_PATH + "/", ""))

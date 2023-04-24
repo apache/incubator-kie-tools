@@ -17,6 +17,7 @@
 package org.kie.kogito;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.kie.kogito.api.UploadService;
 import org.kie.kogito.model.UploadException;
+import org.kie.kogito.model.ValidationException;
 
 @Path("/")
 public class HotReloadResource {
@@ -43,7 +45,7 @@ public class HotReloadResource {
 
     private static final String DATA_PART_KEY = "zipFile";
 
-    private static final String ERROR_KEY = "error";
+    private static final String ERRORS_KEY = "errors";
     private static final String PATHS_KEY = "paths";
 
     @Inject
@@ -66,22 +68,36 @@ public class HotReloadResource {
             pathMap.put(PATHS_KEY, validPaths);
 
             return Response.ok(pathMap, MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (ValidationException e) {
+            LOGGER.warn(e.getMessage());
+
+            final Map<String, List<String>> errorsMap = new HashMap<>();
+            errorsMap.put(ERRORS_KEY, e.getErrorMessages());
+
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(errorsMap)
+                    .type(MediaType.APPLICATION_JSON_TYPE)
+                    .build();
         } catch (UploadException e) {
             LOGGER.warn(e.getMessage());
 
-            final JsonObject json = Json.createObjectBuilder()
-                    .add(ERROR_KEY, e.getMessage())
-                    .build();
+            final Map<String, List<String>> errorsMap = new HashMap<>();
+            errorsMap.put(ERRORS_KEY, Collections.singletonList(e.getMessage()));
 
-            return Response.status(Response.Status.BAD_REQUEST).entity(json.toString()).build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(errorsMap)
+                    .type(MediaType.APPLICATION_JSON_TYPE)
+                    .build();
         } catch (Exception e) {
             LOGGER.error("Something went wrong", e);
 
-            final JsonObject json = Json.createObjectBuilder()
-                    .add(ERROR_KEY, e.getMessage())
-                    .build();
+            final Map<String, List<String>> errorsMap = new HashMap<>();
+            errorsMap.put(ERRORS_KEY, Collections.singletonList(e.getMessage()));
 
-            return Response.serverError().entity(json.toString()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(errorsMap)
+                    .type(MediaType.APPLICATION_JSON_TYPE)
+                    .build();
         }
     }
 }

@@ -24,35 +24,29 @@ import java.nio.file.Path;
 import javax.lang.model.SourceVersion;
 
 import io.serverlessworkflow.api.Workflow;
-import org.jboss.logging.Logger;
 import org.kie.kogito.api.FileValidation;
+import org.kie.kogito.model.FileValidationResult;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 public class ServerlessWorkflowValidation implements FileValidation {
 
-    private static final Logger LOGGER = Logger.getLogger(ServerlessWorkflowValidation.class);
-
     @Override
-    public boolean isValid(final Path path) {
+    public FileValidationResult isValid(final Path path) {
         try {
             final String format = resolveFormat(path);
             if (format == null) {
-                LOGGER.warn("Not a serverless workflow file: " + path);
-                return false;
+                return FileValidationResult.createInvalidResult(path, "Not a valid Serverless Workflow file format");
             }
             final Workflow workflow = ServerlessWorkflowUtils.getWorkflow(
                     new InputStreamReader(new FileInputStream(path.toAbsolutePath().toString())),
                     format);
             if (SourceVersion.isName(workflow.getId())) {
-                LOGGER.info("Serverless workflow file validated: " + workflow.getId());
-                return true;
+                return FileValidationResult.createValidResult(path);
             } else {
-                LOGGER.error("Error when validating serverless workflow file. " + workflow.getId() + " is not a valid id.");
-                return false;
+                return FileValidationResult.createInvalidResult(path, workflow.getId() + " is not a valid ID for a Serverless Workflow");
             }
         } catch (IOException e) {
-            LOGGER.error("Error when validating serverless workflow file: " + e.getMessage());
-            return false;
+            return FileValidationResult.createInvalidResult(path, e.getMessage());
         }
     }
 

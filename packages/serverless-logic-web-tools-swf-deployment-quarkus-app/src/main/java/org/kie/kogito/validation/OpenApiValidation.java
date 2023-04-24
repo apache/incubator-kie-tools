@@ -21,62 +21,49 @@ import java.nio.file.Path;
 import io.swagger.parser.OpenAPIParser;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
-import org.jboss.logging.Logger;
 import org.kie.kogito.api.FileValidation;
+import org.kie.kogito.model.FileValidationResult;
 
 public class OpenApiValidation implements FileValidation {
-
-    private static final Logger LOGGER = Logger.getLogger(OpenApiValidation.class);
 
     private final OpenAPIParser parser = new OpenAPIParser();
 
     @Override
-    public boolean isValid(final Path path) {
+    public FileValidationResult isValid(final Path path) {
         try {
             final SwaggerParseResult result = parser.readLocation(path.toAbsolutePath().toString(), null, null);
             if (result.getMessages() != null && result.getMessages().size() > 0) {
-                LOGGER.error("The following errors were found when validating the Open API file:");
-                result.getMessages().forEach(LOGGER::error);
-                return false;
+                return FileValidationResult.createInvalidResult(path, "Errors have been found when parsing the OpenAPI");
             }
             if (result.getOpenAPI() == null) {
-                LOGGER.error("OpenAPI cannot be found");
-                return false;
+                return FileValidationResult.createInvalidResult(path, "OpenAPI could not be found");
             }
 
             for (PathItem pathItem : result.getOpenAPI().getPaths().values()) {
                 if (!isOperationIdProvided(pathItem)) {
-                    LOGGER.error("One or more paths does provide operationId");
-                    return false;
+                    return FileValidationResult.createInvalidResult(path, "One or more paths does provide operationId");
                 }
             }
 
-            LOGGER.info("OpenAPI file validated: " + result.getOpenAPI().getInfo().getTitle());
-            return true;
+            return FileValidationResult.createValidResult(path);
         } catch (Exception e) {
-            LOGGER.error("Error when validating Open API file: " + e.getMessage());
-            return false;
+            return FileValidationResult.createInvalidResult(path, e.getMessage());
         }
     }
 
     private boolean isOperationIdProvided(final PathItem pathItem) {
-        boolean result = true;
         if (pathItem.getGet() != null && pathItem.getGet().getOperationId() == null) {
-            LOGGER.error("operationId not present for GET method");
-            result = false;
+            return false;
         }
         if (pathItem.getPost() != null && pathItem.getPost().getOperationId() == null) {
-            LOGGER.error("operationId not present for POST method");
-            result = false;
+            return false;
         }
         if (pathItem.getPut() != null && pathItem.getPut().getOperationId() == null) {
-            LOGGER.error("operationId not present for PUT method");
-            result = false;
+            return false;
         }
         if (pathItem.getDelete() != null && pathItem.getDelete().getOperationId() == null) {
-            LOGGER.error("operationId not present for DELETE method");
-            result = false;
+            return false;
         }
-        return result;
+        return true;
     }
 }

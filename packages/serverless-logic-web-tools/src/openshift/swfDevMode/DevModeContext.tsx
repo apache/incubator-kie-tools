@@ -181,21 +181,21 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
       if (!endpoints) {
         return {
           success: false,
-          message: "Route URL for Dev Mode deployment not available.",
+          messages: ["Route URL for Dev Mode deployment not available"],
         };
       }
 
       if (!(await checkHealthReady())) {
         return {
           success: false,
-          message: "Dev Mode deployment not ready yet.",
+          messages: ["Dev Mode deployment not ready yet"],
         };
       }
 
       if (!isOfKind("sw", args.targetSwfFile.relativePath)) {
         return {
           success: false,
-          message: `File is not Serverless Workflow: ${args.targetSwfFile.relativePath}`,
+          messages: [`File is not Serverless Workflow: ${args.targetSwfFile.relativePath}`],
         };
       }
 
@@ -231,28 +231,27 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
 
             if (response.status >= 400 && response.status <= 599) {
               const json = (await response.json()) as UploadApiResponseError;
-              if (json.error) {
+              if (json.errors) {
                 return {
                   success: false,
-                  message: json.error,
-                  sentPaths: filesToUpload.map((f) => f.relativePath),
+                  messages: json.errors,
                 };
               }
             }
 
             return {
               success: false,
-              message: "Unexpected error, please check your OpenShift instance.",
+              messages: ["Unexpected error, please check your OpenShift instance"],
             };
           })
           .catch((error) => ({
             success: false,
-            message: error,
+            messages: [error],
           }))) as DevModeUploadResult;
       } catch (error) {
         return {
           success: false,
-          message: error,
+          messages: [error],
         };
       }
     },

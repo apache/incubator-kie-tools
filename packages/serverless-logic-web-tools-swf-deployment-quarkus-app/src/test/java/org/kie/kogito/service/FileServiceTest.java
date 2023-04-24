@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterEach;
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.api.FileService;
 import org.kie.kogito.model.FileType;
+import org.kie.kogito.model.FileValidationResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -152,9 +154,10 @@ public class FileServiceTest {
         Path destinationFolderPath = Files.createTempDirectory("unzip");
         List<Path> unzippedFilePaths = new ZipServiceImpl().unzip(zipFilePath, destinationFolderPath);
 
-        List<Path> validatedFilePaths = fileService.validateFiles(unzippedFilePaths);
+        List<FileValidationResult> results = fileService.validateFiles(unzippedFilePaths);
         assertEquals(4, unzippedFilePaths.size());
-        assertEquals(3, validatedFilePaths.size());
+        assertEquals(3, results.size());
+        assertEquals(3, (int) results.stream().filter(FileValidationResult::isValid).count());
     }
 
     @Test
@@ -163,9 +166,10 @@ public class FileServiceTest {
         Path destinationFolderPath = Files.createTempDirectory("unzip");
         List<Path> unzippedFilePaths = new ZipServiceImpl().unzip(zipFilePath, destinationFolderPath);
 
-        List<Path> validatedFilePaths = fileService.validateFiles(unzippedFilePaths);
+        List<FileValidationResult> results = fileService.validateFiles(unzippedFilePaths);
         assertEquals(5, unzippedFilePaths.size());
-        assertEquals(0, validatedFilePaths.size());
+        assertEquals(4, results.size());
+        assertEquals(3, (int) results.stream().filter(FileValidationResult::isValid).count());
     }
 
     @Test
