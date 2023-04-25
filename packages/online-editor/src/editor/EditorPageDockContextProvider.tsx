@@ -31,6 +31,7 @@ import { useFileValidation } from "./Validation";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { DmnRunnerTable } from "../dmnRunner/DmnRunnerTable";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
+import { DmnRunnerErrorBoundary } from "../dmnRunner/DmnRunnerErrorBoundary";
 
 interface EditorPageDockContextType {
   panel: PanelId;
@@ -171,7 +172,11 @@ export function EditorPageDockContextProvider({
       case PanelId.NOTIFICATIONS_PANEL:
         return <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />;
       case PanelId.DMN_RUNNER_TABLE:
-        return <DmnRunnerTable />;
+        return (
+          <DmnRunnerErrorBoundary>
+            <DmnRunnerTable />
+          </DmnRunnerErrorBoundary>
+        );
       default:
         return undefined;
     }

@@ -148,7 +148,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   } = useDmnRunnerPersistenceDispatch();
   useDmnRunnerPersistence(props.workspaceFile.workspaceId, props.workspaceFile.relativePath);
   const prevKieSandboxExtendedServicesStatus = usePrevious(extendedServices.status);
-  const { panel, setNotifications, addToggleItem, removeToggleItem, onOpenPanel, onTogglePanel, errorBoundaryRef } =
+  const { panel, setNotifications, addToggleItem, removeToggleItem, onOpenPanel, onTogglePanel } =
     useEditorDockContext();
 
   const dmnRunnerInputs = useMemo(() => dmnRunnerPersistenceJson.inputs, [dmnRunnerPersistenceJson.inputs]);
@@ -167,11 +167,9 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
   }, [props.isEditorReady]);
 
-  // TODO: Luiz - create a wrapper in the DMNTable; it shouldnt reset all the EditorDock;
   useLayoutEffect(() => {
     setExtendedServicesError(false);
-    errorBoundaryRef.current?.reset();
-  }, [jsonSchema, errorBoundaryRef]);
+  }, [jsonSchema]);
 
   // Reset JSON Schema and PersistenceJson;
   useLayoutEffect(() => {
