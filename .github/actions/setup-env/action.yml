@@ -23,7 +23,7 @@ runs:
         version: 7.26.3
 
     - name: "Setup Node"
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: 18.14.0
 
