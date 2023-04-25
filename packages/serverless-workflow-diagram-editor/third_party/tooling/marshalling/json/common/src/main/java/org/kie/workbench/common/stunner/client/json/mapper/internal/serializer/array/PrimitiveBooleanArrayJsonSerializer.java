@@ -28,7 +28,7 @@ public class PrimitiveBooleanArrayJsonSerializer extends BasicArrayJsonSerialize
   public void serialize(
       boolean[] obj, String property, JsonGenerator generator, SerializationContext ctx) {
     if (obj != null) {
-      jakarta.json.stream.JsonGenerator builder = generator.writeStartArray(property);
+      JsonGenerator builder = generator.writeStartArray(property);
       for (int i = 0; i < obj.length; i++) {
         serializer.serialize(obj[i], builder, ctx);
       }
@@ -38,6 +38,6 @@ public class PrimitiveBooleanArrayJsonSerializer extends BasicArrayJsonSerialize
 
   @Override
   public void serialize(boolean[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException("52");
+    throw new UnsupportedOperationException();
   }
 }

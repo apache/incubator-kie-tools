@@ -19,7 +19,7 @@ require("./serverless-workflow-editor-extension-smoke.test");
 import * as path from "path";
 import { expect } from "chai";
 import { By, WebDriver, WebElement } from "vscode-extension-tester";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - syntax highlighting test", () => {

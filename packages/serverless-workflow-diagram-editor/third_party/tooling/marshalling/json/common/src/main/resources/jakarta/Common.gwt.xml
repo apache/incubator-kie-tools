@@ -4,7 +4,7 @@
 <module>
     <inherits name="elemental2.core.Core"/>
     <inherits name='elemental2.dom.Dom' />
-    <inherits name="jakarta.Api"/>
+    <inherits name="jakarta.JSONBImpl"/>
     <inherits name="org.kie.workbench.common.stunner.client.json.Internal"/>
     <source path="json" />
 </module>

@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.Yaml;
 import org.uberfire.commons.Pair;
 
 public class MarshallerUtils {
@@ -89,13 +90,21 @@ public class MarshallerUtils {
      * @param json     - the original JSON
      * @param workflow - the definition of the workflow
      */
-    static void onPostDeserialize(String json, Workflow workflow) {
-        Object parsed = Global.JSON.parse(json);
-        Js.asPropertyMap(workflow).set("__original__", parsed);
+    static void onPostDeserialize(String json, Workflow workflow, DocType docType) {
+        if(docType == DocType.JSON) {
+            Object parsed = Global.JSON.parse(json);
+            Js.asPropertyMap(workflow).set("__original__", parsed);
+        } else {
+            Js.asPropertyMap(workflow).set("__original__", "empty");
+
+        }
     }
 
-    static String onPostSerialize(String json, Workflow workflow) {
-        Object parsed = Global.JSON.parse(json);
+    static String onPostSerialize(String model, Workflow workflow, DocType docType) {
+        if(docType == DocType.YAML) {
+            return model;
+        }
+        Object parsed = Global.JSON.parse(model);
         merge(Js.asPropertyMap(workflow).get("__original__"), parsed);
         return Global.JSON.stringify(parsed);
     }
@@ -122,5 +131,12 @@ public class MarshallerUtils {
                 }
             });
         }
+    }
+
+    public static String onPreDeserialize(String raw, DocType docType) {
+        if(docType == DocType.JSON) {
+            return raw;
+        }
+        return Yaml.beautify(raw);
     }
 }

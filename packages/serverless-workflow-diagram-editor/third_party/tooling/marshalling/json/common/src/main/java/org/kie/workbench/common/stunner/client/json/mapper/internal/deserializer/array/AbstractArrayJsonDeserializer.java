@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer
 public abstract class AbstractArrayJsonDeserializer<T> extends JsonbDeserializer<T> {
 
   protected <T> List<T> deserializeIntoList(
-      JsonValue json, JsonbDeserializer<T> internalDeser, DeserializationContext ctx) {
+          JsonValue json, JsonbDeserializer<T> internalDeser, DeserializationContext ctx) {
     if (json == null) {
       return null;
     }
@@ -46,6 +46,6 @@ public abstract class AbstractArrayJsonDeserializer<T> extends JsonbDeserializer
 
   @Override
   public T deserialize(JsonValue value, DeserializationContext ctx) {
-    throw new UnsupportedOperationException("41");
+    throw new UnsupportedOperationException();
   }
 }

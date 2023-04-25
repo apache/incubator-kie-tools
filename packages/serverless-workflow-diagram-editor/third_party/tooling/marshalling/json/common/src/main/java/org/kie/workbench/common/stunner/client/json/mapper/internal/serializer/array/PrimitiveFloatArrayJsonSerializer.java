@@ -18,18 +18,19 @@ package org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.
 
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
-import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer;
+
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer.FloatJsonSerializer;
 
 public class PrimitiveFloatArrayJsonSerializer extends BasicArrayJsonSerializer<float[]> {
 
-  private final BaseNumberJsonSerializer.FloatJsonSerializer serializer =
-      new BaseNumberJsonSerializer.FloatJsonSerializer();
+  private final FloatJsonSerializer serializer =
+      new FloatJsonSerializer();
 
   @Override
   public void serialize(
       float[] obj, String property, JsonGenerator generator, SerializationContext ctx) {
     if (obj != null) {
-      jakarta.json.stream.JsonGenerator builder = generator.writeStartArray(property);
+      JsonGenerator builder = generator.writeStartArray(property);
       for (int i = 0; i < obj.length; i++) {
         serializer.serialize(obj[i], builder, ctx);
       }
@@ -39,6 +40,6 @@ public class PrimitiveFloatArrayJsonSerializer extends BasicArrayJsonSerializer<
 
   @Override
   public void serialize(float[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException("56");
+    throw new UnsupportedOperationException();
   }
 }

@@ -20,11 +20,18 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.NumCompletedJsonTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.NumCompletedJsonTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.NumCompletedYamlTypeSerializer;
 
 @JSONMapper
+@YAMLMapper
 @JsType
+@YamlPropertyOrder({"name", "type", "transition", "stateDataFilter", "compensatedBy", "branches", "timeouts", "eventTimeout", "onErrors", "end",  "metadata"})
 public class ParallelState extends State {
 
     public static final String TYPE_PARALLEL = "parallel";
@@ -37,7 +44,9 @@ public class ParallelState extends State {
 
     @JsonbTypeSerializer(NumCompletedJsonTypeSerializer.class)
     @JsonbTypeDeserializer(NumCompletedJsonTypeDeserializer.class)
-    public Object numCompleted;
+    @YamlTypeSerializer(NumCompletedYamlTypeSerializer.class)
+    @YamlTypeDeserializer(NumCompletedYamlTypeSerializer.class)
+    private Object numCompleted;
 
     public ParallelStateBranch[] branches;
 

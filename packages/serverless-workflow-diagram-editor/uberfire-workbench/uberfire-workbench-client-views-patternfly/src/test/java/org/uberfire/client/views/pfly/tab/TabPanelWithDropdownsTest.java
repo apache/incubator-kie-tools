@@ -37,6 +37,8 @@ import org.mockito.Mock;
 
 import static com.google.gwt.i18n.client.HasDirection.Direction.LTR;
 import static com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant.endOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
@@ -125,8 +127,8 @@ public class TabPanelWithDropdownsTest {
         final TabPane tabContentPane = mock(TabPane.class);
         final NavTabs tabBar = mock(NavTabs.class);
         final TabContent tabContent = mock(TabContent.class);
-        final Set<TabPanelEntry> allContentTabs = spy(new HashSet<>());
-        final Set<Widget> activatableWidgets = spy(new HashSet<>());
+        final Set<TabPanelEntry> allContentTabs = new HashSet<>();
+        final Set<Widget> activatableWidgets = new HashSet<>();
 
         doReturn(tabWidget).when(tab).getTabWidget();
         doReturn(tabContentPane).when(tab).getContentPane();
@@ -135,12 +137,16 @@ public class TabPanelWithDropdownsTest {
         doReturn(allContentTabs).when(tabPanel).getAllContentTabs();
         doReturn(activatableWidgets).when(tabPanel).getActivatableWidgets();
 
+        assertEquals(0, allContentTabs.size());
+        assertEquals(0, activatableWidgets.size());
+
         tabPanel.insertTabAndContent(tab, index);
 
         verify(tabBar).insert(tab.getTabWidget(), index);
-        verify(allContentTabs).add(tab);
+        assertEquals(1, allContentTabs.size());
+        assertTrue(allContentTabs.contains(tab));
+        assertTrue(activatableWidgets.contains(tabWidget));
         verify(tabContent).add(tabContentPane);
-        verify(activatableWidgets).add(tabWidget);
     }
 
     @Test

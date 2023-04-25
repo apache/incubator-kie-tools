@@ -35,9 +35,8 @@ import javax.lang.model.util.ElementFilter;
 
 import com.google.auto.common.MoreTypes;
 import jakarta.json.bind.annotation.JsonbTransient;
-import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeInfo;
-import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.context.GenerationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.exception.GenerationException;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.generator.MapperGenerator;
@@ -65,11 +64,11 @@ public class BeanProcessor {
     this.mapperGenerator = new MapperGenerator(context, logger);
 
     this.objectType =
-            context
-                    .getProcessingEnv()
-                    .getElementUtils()
-                    .getTypeElement(Object.class.getCanonicalName())
-                    .asType();
+        context
+            .getProcessingEnv()
+            .getElementUtils()
+            .getTypeElement(Object.class.getCanonicalName())
+            .asType();
   }
 
   public void process() {
@@ -77,21 +76,25 @@ public class BeanProcessor {
     beans.forEach(context::addBeanDefinition);
 
     context.getBeans().stream()
-            .filter(bean -> !bean.getElement().getModifiers().contains(Modifier.ABSTRACT))
-            .forEach(mapperGenerator::generate);
+        .filter(bean -> !bean.getElement().getModifiers().contains(Modifier.ABSTRACT))
+        .forEach(mapperGenerator::generate);
   }
 
   private void processBean(TypeElement bean) {
     if (!beans.contains(bean)) {
       beans.add(checkBean(bean));
-      context.getTypeUtils().getAllFieldsIn(bean).forEach(this::processField);
+      if (!context.getTypeUtils().isJsonbTypeSerializer(bean)) {
+        context.getTypeUtils().getAllFieldsIn(bean).forEach(this::processField);
+      }
     }
   }
 
   private void processField(VariableElement field) {
     if (checkField(field)) {
-      TypeMirror typeMirror = field.asType();
-      checkTypeAndAdd(typeMirror);
+      if (!context.getTypeUtils().isJsonbTypeSerializer(field)) {
+        TypeMirror typeMirror = field.asType();
+        checkTypeAndAdd(typeMirror);
+      }
     }
   }
 
@@ -103,7 +106,8 @@ public class BeanProcessor {
     if (type.getKind().equals(TypeKind.ARRAY)) {
       ArrayType arrayType = (ArrayType) type;
       if (!context.getTypeUtils().isSimpleType(arrayType.getComponentType())) {
-        if (!MoreTypes.asElement(arrayType.getComponentType()).getKind().equals(ElementKind.ENUM)) {
+        if (!MoreTypes.asElement(arrayType.getComponentType()).getKind().equals(ElementKind.ENUM)
+            && !context.getTypeUtils().isJsonbTypeSerializer(arrayType.getComponentType())) {
           processBean(MoreTypes.asTypeElement(arrayType.getComponentType()));
         }
       }
@@ -114,91 +118,122 @@ public class BeanProcessor {
       collection.getTypeArguments().forEach(this::checkTypeAndAdd);
     } else if (context.getTypeUtils().isAssignableFrom(type, Collection.class)) {
       DeclaredType collection = (DeclaredType) type;
-      collection.getTypeArguments().forEach(this::checkTypeAndAdd);
+      collection.getTypeArguments().stream()
+          .filter(e -> !context.getTypeUtils().isJsonbTypeSerializer(e))
+          .forEach(this::checkTypeAndAdd);
     } else if (context.getTypeUtils().isAssignableFrom(type, Iterable.class)) {
       DeclaredType collection = (DeclaredType) type;
-      collection.getTypeArguments().forEach(this::checkTypeAndAdd);
+      collection.getTypeArguments().stream()
+          .filter(e -> !context.getTypeUtils().isJsonbTypeSerializer(e))
+          .forEach(this::checkTypeAndAdd);
     } else if (!beans.contains(context.getProcessingEnv().getTypeUtils().erasure(type))) {
       processBean(MoreTypes.asTypeElement(context.getProcessingEnv().getTypeUtils().erasure(type)));
     } else if (type.getKind().equals(TypeKind.ARRAY)) {
       ArrayType arrayType = (ArrayType) type;
-      processBean(MoreTypes.asTypeElement(arrayType.getComponentType()));
+      TypeElement typeElement = MoreTypes.asTypeElement(arrayType.getComponentType());
+      if (!context.getTypeUtils().isJsonbTypeSerializer(typeElement)) {
+        processBean(typeElement);
+      }
     } else if (MoreTypes.isType(type)
-            && !MoreTypes.asElement(type).getKind().equals(ElementKind.ENUM)) {
+        && !MoreTypes.asElement(type).getKind().equals(ElementKind.ENUM)
+        && !context.getTypeUtils().isJsonbTypeSerializer(type)) {
       processBean(MoreTypes.asTypeElement(type));
     }
   }
 
   private boolean checkField(VariableElement field) {
     if (field.getModifiers().contains(Modifier.STATIC)
-            || field.getModifiers().contains(Modifier.TRANSIENT)
-            || field.getAnnotation(JsonbTransient.class) != null
-            || field.getModifiers().contains(Modifier.FINAL)) {
+        || field.getModifiers().contains(Modifier.TRANSIENT)
+        || field.getAnnotation(JsonbTransient.class) != null
+        || field.getModifiers().contains(Modifier.FINAL)) {
       return false;
     }
 
     if (context.getProcessingEnv().getTypeUtils().isSameType(field.asType(), objectType)) {
-      if (field.getAnnotation(JsonbTypeSerializer.class) == null
-              || field.getAnnotation(JsonbTypeDeserializer.class) == null) {
+      if (!context.getTypeUtils().isJsonbTypeSerializer(field)) {
         throw new GenerationException(
-                String.format(
-                        "Field %s.%s is of type Object and must be annotated with @JsonbTypeSerializer and @JsonbTypeDeserializer",
-                        field.getEnclosingElement().getSimpleName(), field.getSimpleName().toString()));
+            String.format(
+                "Field %s.%s is of type Object and must be annotated with @JsonbTypeSerializer and @JsonbTypeDeserializer",
+                field.getEnclosingElement().getSimpleName(), field.getSimpleName().toString()));
       }
     }
 
     if (!field.getModifiers().contains(Modifier.PRIVATE)
-            || typeUtils.hasGetter(field) && typeUtils.hasSetter(field)) {
+        || typeUtils.hasGetter(field) && typeUtils.hasSetter(field)) {
       return true;
     }
 
     if (!typeUtils.hasGetter(field)) {
       throw new GenerationException(
-              String.format(
-                      "Unable to find suitable getter for [%s] in [%s].",
-                      field.getSimpleName(), field.getEnclosingElement()));
+          String.format(
+              "Unable to find suitable getter for [%s] in [%s].",
+              field.getSimpleName(), field.getEnclosingElement()));
     }
 
     if (!typeUtils.hasSetter(field)) {
       throw new GenerationException(
-              String.format(
-                      "Unable to find suitable setter for [%s] in [%s]",
-                      field.getSimpleName(), field.getEnclosingElement()));
+          String.format(
+              "Unable to find suitable setter for [%s] in [%s]",
+              field.getSimpleName(), field.getEnclosingElement()));
     }
 
     throw new GenerationException(
-            String.format(
-                    "Unable to process [%s] in [%s]", field.getSimpleName(), field.getEnclosingElement()));
+        String.format(
+            "Unable to process [%s] in [%s]", field.getSimpleName(), field.getEnclosingElement()));
   }
 
   private TypeElement checkBean(TypeElement type) {
-    if (!type.getKind().isClass() && type.getAnnotation(JsonbTypeInfo.class) == null) {
-      throw new GenerationException("A @JSONMapper bean [" + type + "] must be class");
+    if (!type.getKind().isClass()
+        && type.getAnnotation(JsonbTypeInfo.class) == null
+        && !context.getTypeUtils().isJsonbTypeSerializer(type)) {
+      throw new GenerationException(
+          "A @JSONMapper bean ["
+              + type
+              + "] must be class or has @JsonbTypeSerializer and @JsonbTypeDeserializer");
     }
 
     if (type.getModifiers().contains(Modifier.ABSTRACT)
-            && type.getAnnotation(JsonbTypeInfo.class) == null) {
-      throw new GenerationException("A @JSONMapper bean [" + type + "] must be non abstract");
+        && type.getAnnotation(JsonbTypeInfo.class) == null
+        && !context.getTypeUtils().isJsonbTypeSerializer(type)) {
+      throw new GenerationException(
+          "A @JSONMapper bean ["
+              + type
+              + "] must be non abstract or has @JsonbTypeSerializer and @JsonbTypeDeserializer");
     }
 
     if (type.getModifiers().contains(Modifier.PRIVATE)) {
       throw new GenerationException("A @JSONMapper bean [" + type + "] must be public");
     }
 
-    if (type.getModifiers().contains(Modifier.STATIC)) {
+    if (type.getModifiers().contains(Modifier.STATIC)
+        && type.getEnclosingElement().getKind().equals(ElementKind.PACKAGE)) {
       throw new GenerationException("A @JSONMapper bean [" + type + "] must not be static");
+    }
+
+    if (!type.getModifiers().contains(Modifier.STATIC)
+            && !type.getEnclosingElement().getKind().equals(ElementKind.PACKAGE)) {
+      throw new GenerationException(
+              "If @JSONMapper bean [" + type + "] is a inner class, it must be static");
+    }
+
+    if (context.getTypeUtils().isJsonbTypeSerializer(type)
+        && type.getAnnotation(JSONMapper.class) != null) {
+      throw new GenerationException(
+          "A @JSONMapper bean ["
+              + type
+              + "] must not be annotated with JsonbTypeSerializer or JsonbTypeDeserializer");
     }
 
     List<ExecutableElement> constructors = ElementFilter.constructorsIn(type.getEnclosedElements());
     if (!constructors.isEmpty()) {
       long nonArgConstructorCount =
-              constructors.stream()
-                      .filter(constr -> !constr.getModifiers().contains(Modifier.PRIVATE))
-                      .filter(constr -> constr.getParameters().isEmpty())
-                      .count();
+          constructors.stream()
+              .filter(constr -> !constr.getModifiers().contains(Modifier.PRIVATE))
+              .filter(constr -> constr.getParameters().isEmpty())
+              .count();
       if (nonArgConstructorCount != 1) {
         throw new GenerationException(
-                "A @JSONMapper bean [" + type + "] must have a non-private non-arg constructor");
+            "A @JSONMapper bean [" + type + "] must have a non-private non-arg constructor");
       }
     }
     return type;

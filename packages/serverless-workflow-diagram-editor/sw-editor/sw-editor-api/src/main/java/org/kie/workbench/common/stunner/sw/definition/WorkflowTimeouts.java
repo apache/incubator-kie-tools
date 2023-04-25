@@ -20,24 +20,26 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowExecTimeoutJsonDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowExecTimeoutJsonSerializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.WorkflowExecTimeoutJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.WorkflowExecTimeoutYamlSerializer;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class WorkflowTimeouts {
 
     @JsonbTypeSerializer(WorkflowExecTimeoutJsonSerializer.class)
-    @JsonbTypeDeserializer(WorkflowExecTimeoutJsonDeserializer.class)
-    public Object workflowExecTimeout;
-
-    public String stateExecTimeout;
-
-    public String actionExecTimeout;
-
-    public String branchExecTimeout;
-
-    public String eventTimeout;
+    @JsonbTypeDeserializer(WorkflowExecTimeoutJsonSerializer.class)
+    @YamlTypeSerializer(WorkflowExecTimeoutYamlSerializer.class)
+    @YamlTypeDeserializer(WorkflowExecTimeoutYamlSerializer.class)
+    private Object workflowExecTimeout;
+    private String stateExecTimeout;
+    private String actionExecTimeout;
+    private String branchExecTimeout;
+    private String eventTimeout;
 
     public final Object getWorkflowExecTimeout() {
         return workflowExecTimeout;
