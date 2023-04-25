@@ -31,6 +31,7 @@ import {
   ListIngresses,
   IngressGroupDescriptor,
   ResourceDataSource,
+  CreateDeploymentTemplateArgs,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import {
@@ -145,6 +146,8 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
             },
           ],
           resourceDataSource: ResourceDataSource.TEMPLATE,
+          imagePullPolicy: process.env
+            .WEBPACK_REPLACE__dmnDevDeployment_imagePullPolicy! as CreateDeploymentTemplateArgs["imagePullPolicy"],
         }),
         rollbacks: args.getUpdatedRollbacks(),
       })
