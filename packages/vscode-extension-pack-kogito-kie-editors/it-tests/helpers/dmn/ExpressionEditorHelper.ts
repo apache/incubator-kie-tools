@@ -42,9 +42,12 @@ export default class ExpressionEditorHelper {
     await assertWebElementIsDisplayedEnabled(title);
 
     const type = await boxedExpressionEditor.findElement(
-      By.xpath(`//div[@data-ouia-component-type='expression-column-header-cell-info']/p[contains(@class, 'data-type')]`)
+      By.xpath(
+        `//div[@data-ouia-component-type='expression-column-header-cell-info']/p[text()='${expectedTitle}']/following-sibling::p`
+      )
     );
     await assertWebElementIsDisplayedEnabled(type);
+
     assert.equal(await type.getText(), `(${expectedType})`);
 
     return this;
