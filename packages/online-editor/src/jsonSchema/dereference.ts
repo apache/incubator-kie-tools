@@ -51,7 +51,12 @@ export function dereferenceProperties<
       const referenceField = getObjectValueByPath(jsonSchema, refPathToObjectPath(jsonSchemaField.$ref));
       setObjectValueByPath(dereferencedJsonSchema, getPropertiesFullKey(fieldKey, parentKey), referenceField);
       if (referenceField.properties) {
-        dereferenceProperties(jsonSchema, referenceField.properties, fieldKey, dereferencedJsonSchema);
+        dereferenceProperties(
+          jsonSchema,
+          referenceField.properties,
+          getPropertiesFullKey(fieldKey, parentKey),
+          dereferencedJsonSchema
+        );
       }
     } else {
       setObjectValueByPath(dereferencedJsonSchema, getPropertiesFullKey(fieldKey, parentKey), jsonSchemaField);
