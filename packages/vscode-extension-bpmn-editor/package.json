@@ -1,6 +1,6 @@
 {
   "name": "vscode-extension-bpmn-editor",
-  "version": "0.26.1",
+  "version": "0.26.2",
   "description": "Edit BPMN files",
   "license": "Apache-2.0",
   "publisher": "redhat",
