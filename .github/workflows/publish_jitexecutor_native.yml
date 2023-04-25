@@ -30,7 +30,7 @@ jobs:
           ref: ${{ github.event.inputs.kogito_runtime_version }}
 
       - name: "Set up Maven"
-        uses: stCarolas/setup-maven@417e1a9899611c0350621d1fb0c2770f35105c69
+        uses: stCarolas/setup-maven@07fbbe97d97ef44336b7382563d66743297e442f
         with:
           maven-version: 3.8.6
 
@@ -70,7 +70,7 @@ jobs:
 
       - name: "Configure Pagefile"
         if: runner.os == 'Windows'
-        uses: al-cheb/configure-pagefile-action@7e234852c937eea04d6ee627c599fb24a5bfffee
+        uses: al-cheb/configure-pagefile-action@86589fd789a4de3e62ba628dda2cb10027b66d67
         with:
           minimum-size: 16GB
           maximum-size: 16GB
