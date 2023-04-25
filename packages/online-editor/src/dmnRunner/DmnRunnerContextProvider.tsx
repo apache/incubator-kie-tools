@@ -50,7 +50,6 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { useOnlineI18n } from "../i18n";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { diff } from "deep-object-diff";
-import getObjectValueByPath from "lodash/get";
 import { useCompanionFsFileSyncedWithWorkspaceFile } from "../companionFs/CompanionFsHooks";
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { DmnRunnerPersistenceReducerActionType } from "../dmnRunnerPersistence/DmnRunnerPersistenceTypes";
@@ -68,8 +67,10 @@ import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextPr
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
+import getObjectValueByPath from "lodash/get";
 import setObjectValueByPath from "lodash/set";
 import unsetObjectValueByPath from "lodash/unset";
+import { dereferenceProperties } from "../jsonSchema/dereference";
 
 const JSON_SCHEMA_PROPERTIES_PATH = "definitions.InputSet.properties";
 
@@ -399,55 +400,37 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [setDmnRunnerPersistenceJson]
   );
 
-  // Recusively get the input node that uses the $ref property
-  const getRefField = useCallback((jsonSchema: ExtendedServicesDmnJsonSchema, field: DmnInputFieldProperties):
-    | DmnInputFieldProperties
-    | undefined => {
-    const refPath = field?.$ref?.split("/").splice(1).join(".");
-    const refField: DmnInputFieldProperties | undefined = getObjectValueByPath(jsonSchema, refPath ?? "");
-    if (refField?.$ref) {
-      return getRefField(jsonSchema, refField);
+  const getDefaultValueOfField = useCallback((dmnField: DmnInputFieldProperties) => {
+    if (dmnField?.type === "string") {
+      return "";
     }
-    return refField;
+    if (dmnField?.type === "number") {
+      return undefined;
+    }
+    if (dmnField?.type === "boolean") {
+      return false;
+    }
+    if (dmnField?.type === "array") {
+      return [];
+    }
+    if (dmnField?.type === "object") {
+      return {};
+    }
+    return undefined;
   }, []);
 
   const getDefaultValues = useCallback(
     (jsonSchema: ExtendedServicesDmnJsonSchema) => {
       return Object.entries(getObjectValueByPath(jsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {})?.reduce(
         (acc, [key, field]: [string, Record<string, string>]) => {
-          const fieldToCheck = field.$ref ? getRefField(jsonSchema, field) : field;
-          if (fieldToCheck?.type === "object") {
-            acc[key] = {};
-          }
-          if (fieldToCheck?.type === "array") {
-            acc[key] = [];
-          }
-          if (fieldToCheck?.type === "boolean") {
-            acc[key] = false;
-          }
+          acc[key] = getDefaultValueOfField(field);
           return acc;
         },
         {} as Record<string, any>
       );
     },
-    [getRefField]
+    [getDefaultValueOfField]
   );
-
-  const getDefaultValueForField = useCallback((dmnField: DmnInputFieldProperties) => {
-    if (dmnField.type === "string") {
-      return "";
-    }
-    if (dmnField.type === "number") {
-      return undefined;
-    }
-    if (dmnField.type === "array") {
-      return [];
-    }
-    if (dmnField.type === "object") {
-      return {};
-    }
-    return undefined;
-  }, []);
 
   // The refreshCallback is called after a CompanionFS event;
   // When another TAB updates the FS, this callback will sync up;
@@ -474,10 +457,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               ([propertyName, dmnField]: [string, DmnInputFieldProperties]) => {
                 dmnRunnerPersistenceJson.inputs.forEach((input) => {
                   // if the input has the property name, its value should match the property attribute type/format;
-                  const fieldType = dmnField.type ? dmnField.type : getRefField(jsonSchema, dmnField)?.type;
-
-                  if (input[propertyName] && typeof input[propertyName] !== (fieldType ?? "string")) {
-                    input[propertyName] = getDefaultValueForField(dmnField);
+                  if (input[propertyName] && typeof input[propertyName] !== (dmnField.type ?? "string")) {
+                    input[propertyName] = getDefaultValueOfField(dmnField);
                   }
                 });
               }
@@ -520,76 +501,14 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         }
         return;
       },
-      [
-        dmnRunnerPersistenceService,
-        getDefaultValueForField,
-        getDefaultValues,
-        getRefField,
-        jsonSchema,
-        setDmnRunnerPersistenceJson,
-      ]
+      [dmnRunnerPersistenceService, getDefaultValueOfField, getDefaultValues, jsonSchema, setDmnRunnerPersistenceJson]
     )
   );
 
-  // a JSON Schema has references in the $ref property, this couple of methods intends to
-  // dereference the JSON Schema, creating a structured schema;
-  const deepDereferenceProperties = useCallback(
-    (
-      jsonSchema: ExtendedServicesDmnJsonSchema,
-      myInputSet: Map<string, DmnInputFieldProperties>,
-      fieldProperties: DmnInputFieldProperties,
-      parentKey?: string
-    ): DmnInputFieldProperties | undefined => {
-      const refPath = fieldProperties.$ref?.split("/").splice(1).join(".");
-      const refField: DmnInputFieldProperties | undefined = getObjectValueByPath(jsonSchema, refPath ?? "");
-      if (refField?.properties) {
-        Object.entries(refField?.properties).forEach(([key, fieldProperties]) => {
-          const fullKey = parentKey ? `${parentKey}.properties.${key}` : key;
-          if (fieldProperties.$ref) {
-            const deepDereferencedProperty = deepDereferenceProperties(
-              jsonSchema,
-              myInputSet,
-              fieldProperties,
-              fullKey
-            );
-            if (deepDereferencedProperty) {
-              myInputSet.set(fullKey, deepDereferencedProperty);
-            } else {
-              myInputSet.set(fullKey, fieldProperties);
-            }
-          }
-        }, myInputSet);
-      }
-      return refField;
-    },
-    []
-  );
-
-  const dereferenceProperties = useCallback(
-    (jsonSchema: ExtendedServicesDmnJsonSchema, properties: Record<string, DmnInputFieldProperties>) => {
-      const pathAndFields = Object.entries(properties).reduce((myInputSet, [key, fieldProperties]) => {
-        const deepDereferencedProperty = deepDereferenceProperties(jsonSchema, myInputSet, fieldProperties, key);
-        if (deepDereferencedProperty) {
-          myInputSet.set(key, deepDereferencedProperty);
-        } else {
-          myInputSet.set(key, fieldProperties);
-        }
-        return myInputSet;
-      }, new Map<string, DmnInputFieldProperties>());
-      return Array.from(pathAndFields.entries())
-        .reverse()
-        .reduce((acc, [path, field]) => {
-          setObjectValueByPath(acc, path, field);
-          return acc;
-        }, {} as Record<string, DmnInputFieldProperties>);
-    },
-    [deepDereferenceProperties]
-  );
-
-  const dereferenceJsonSchema = useCallback(
+  const dereferenceExtendedServicesJsonSchema = useCallback(
     (jsonSchema: ExtendedServicesDmnJsonSchema): ExtendedServicesDmnJsonSchema => {
-      const inputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.InputSet?.properties ?? {});
-      const outputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.OutputSet?.properties ?? {});
+      const inputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.InputSet?.properties);
+      const outputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.OutputSet?.properties);
       return {
         $ref: "#/definitions/InputSet",
         definitions: {
@@ -598,7 +517,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         },
       };
     },
-    [dereferenceProperties]
+    []
   );
 
   const deepFindDifference = useCallback((inputs: InputRow, propertiesDifference: any, parentKey?: string): any => {
@@ -651,15 +570,15 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               }
 
               setJsonSchema((previousJsonSchema) => {
+                const dereferedJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
                 // On the first render the previous will be undefined;
                 if (!previousJsonSchema) {
-                  return jsonSchema;
+                  return dereferedJsonSchema;
                 }
 
-                const dereferedJsonSchema = dereferenceJsonSchema(cloneDeep(jsonSchema));
                 const propertiesDifference = diff(
                   getObjectValueByPath(previousJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {},
-                  getObjectValueByPath(jsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {}
+                  getObjectValueByPath(dereferedJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {}
                 );
 
                 // Add default values and delete changed data types;
@@ -698,7 +617,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                   },
                   cancellationToken: canceled,
                 });
-                return jsonSchema;
+                return dereferedJsonSchema;
               });
             });
           })
@@ -708,6 +627,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           });
       },
       [
+        dereferenceExtendedServicesJsonSchema,
         extendedServices.client,
         extendedServices.status,
         extendedServicesModelPayload,
