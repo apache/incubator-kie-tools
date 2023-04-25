@@ -78,7 +78,7 @@ jobs:
 
       - name: "Setup MSCV"
         if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@376515093de803c897e7e6d576553c3104267e17
+        uses: ilammy/msvc-dev-cmd@a742a854f54111d83b78e97091b5d85ccdaa3e89
 
       - name: "Setup MSBUILD"
         if: runner.os == 'Windows'
