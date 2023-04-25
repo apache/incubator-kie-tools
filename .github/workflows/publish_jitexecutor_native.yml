@@ -86,7 +86,7 @@ jobs:
 
       - name: "Setup GraalVM"
         if: runner.os == 'Windows'
-        uses: ayltai/setup-graalvm@3789c9412212eb6d435725e49d28e179a46b1aaa
+        uses: ayltai/setup-graalvm@86a8e4b2b8ba8ac3e689673d56184de958ce5add
         with:
           java-version: 11
           graalvm-version: 22.3.0
