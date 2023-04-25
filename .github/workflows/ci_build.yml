@@ -70,7 +70,7 @@ jobs:
 
       - name: "Start telemetry service (`main` only)"
         if: steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
-        uses: runforesight/workflow-telemetry-action@6705383eabd01833acfe8412ec697384830e1455
+        uses: runforesight/workflow-telemetry-action@v1.8.7
 
       - name: "Setup environment"
         if: steps.setup_build_mode.outputs.mode != 'none'

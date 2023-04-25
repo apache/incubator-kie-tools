@@ -39,7 +39,7 @@ runs:
         go-version: "1.19"
 
     - name: "Set up Maven"
-      uses: stCarolas/setup-maven@07fbbe97d97ef44336b7382563d66743297e442f
+      uses: stCarolas/setup-maven@v4.5
       with:
         maven-version: 3.8.6
 
@@ -88,7 +88,7 @@ runs:
 
     - name: "Configure Pagefile (Windows only)"
       if: runner.os == 'Windows'
-      uses: al-cheb/configure-pagefile-action@86589fd789a4de3e62ba628dda2cb10027b66d67
+      uses: al-cheb/configure-pagefile-action@v1.3
       with:
         minimum-size: 16GB
         maximum-size: 16GB
