@@ -49,7 +49,7 @@ function NumField(props: NumFieldProps) {
       onChange={onChange}
       placeholder={props.placeholder}
       ref={props.inputRef}
-      step={props.decimal ? 0.01 : 1}
+      step={props.step ?? (props.decimal ? 0.01 : 1)}
       type="number"
       value={props.value ?? ""}
       validated={props.error ? "error" : "default"}
