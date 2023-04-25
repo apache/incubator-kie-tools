@@ -78,7 +78,7 @@ jobs:
 
       - name: "Setup MSCV"
         if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@376515093de803c897e7e6d576553c3104267e17
+        uses: ilammy/msvc-dev-cmd@a742a854f54111d83b78e97091b5d85ccdaa3e89
 
       - name: "Setup MSBUILD"
         if: runner.os == 'Windows'
@@ -86,7 +86,7 @@ jobs:
 
       - name: "Setup GraalVM"
         if: runner.os == 'Windows'
-        uses: ayltai/setup-graalvm@3789c9412212eb6d435725e49d28e179a46b1aaa
+        uses: ayltai/setup-graalvm@86a8e4b2b8ba8ac3e689673d56184de958ce5add
         with:
           java-version: 11
           graalvm-version: 22.3.0
@@ -99,7 +99,7 @@ jobs:
           mvn clean package -B -ntp -DskipTests -f ./jitexecutor && mvn clean package -B -ntp -DskipTests -Pnative -am -f ./jitexecutor
 
       - name: "Upload JIT Executor binary"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jitexecutor_${{ runner.os }}
           path: ./jitexecutor/jitexecutor-runner/target/jitexecutor-runner-${{ github.event.inputs.kogito_runtime_version }}-run*
