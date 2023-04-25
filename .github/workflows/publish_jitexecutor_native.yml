@@ -86,11 +86,11 @@ jobs:
 
       - name: "Setup GraalVM"
         if: runner.os == 'Windows'
-        uses: graalvm/setup-graalvm@babc303d7e5b8f3062a94b90b49c3444cf291633 #v1
+        uses: ayltai/setup-graalvm@3789c9412212eb6d435725e49d28e179a46b1aaa
         with:
-          version: "22.3.0"
-          java-version: "11"
-          components: "native-image"
+          java-version: 11
+          graalvm-version: 22.3.0
+          native-image: true
 
       - name: "Build Windows"
         if: runner.os == 'Windows'
