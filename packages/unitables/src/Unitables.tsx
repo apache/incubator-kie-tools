@@ -235,7 +235,6 @@ export const Unitables = ({
             ))}
           </div>
           <UnitablesBeeTable
-            rowsRefs={rowsRefs}
             rowWrapper={rowWrapper}
             scrollableParentRef={scrollableParentRef}
             i18n={i18n}
