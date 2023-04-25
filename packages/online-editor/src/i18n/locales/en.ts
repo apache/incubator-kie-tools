@@ -435,16 +435,14 @@ export const en: OnlineI18n = {
     },
   },
   dmnRunner: {
-    drawer: {
-      error: {
-        title: `${en_common.terms.oops}!`,
-        explanation: `The ${en_common.names.dmnRunner} drawer couldn't be rendered due to an error.`,
-        message: [
-          `This ${en_common.names.dmn} has a construct that is not supported. Please refer to `,
-          wrapped("jira"),
-          " and report an issue. Don't forget to upload the current file, and the used inputs",
-        ],
-      },
+    error: {
+      title: `${en_common.terms.oops}!`,
+      explanation: `The ${en_common.names.dmnRunner} couldn't be rendered due to an error.`,
+      message: [
+        `This ${en_common.names.dmn} has a construct that is not supported. Please refer to `,
+        wrapped("jira"),
+        " and report an issue. Don't forget to upload the current file, and the used inputs",
+      ],
     },
     table: { ...en_unitables },
     modal: {

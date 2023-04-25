@@ -42,10 +42,10 @@ export function DmnRunnerErrorBoundary({ children }: React.PropsWithChildren<{}>
         <EmptyState>
           <EmptyStateIcon icon={ExclamationTriangleIcon} />
           <TextContent>
-            <Text component={"h2"}>{i18n.dmnRunner.drawer.error.title}</Text>
+            <Text component={"h2"}>{i18n.dmnRunner.error.title}</Text>
           </TextContent>
           <EmptyStateBody>
-            <TextContent>{i18n.dmnRunner.drawer.error.explanation}</TextContent>
+            <TextContent>{i18n.dmnRunner.error.explanation}</TextContent>
             <br />
             <TextContent>
               <I18nWrapped
@@ -57,7 +57,7 @@ export function DmnRunnerErrorBoundary({ children }: React.PropsWithChildren<{}>
                   ),
                 }}
               >
-                {i18n.dmnRunner.drawer.error.message}
+                {i18n.dmnRunner.error.message}
               </I18nWrapped>
             </TextContent>
           </EmptyStateBody>

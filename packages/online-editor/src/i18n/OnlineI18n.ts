@@ -390,12 +390,10 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
   };
   dmnRunner: {
-    drawer: {
-      error: {
-        title: string;
-        explanation: string;
-        message: Array<string | Wrapped<"jira">>;
-      };
+    error: {
+      title: string;
+      explanation: string;
+      message: Array<string | Wrapped<"jira">>;
     };
     table: DmnUnitablesI18n;
     modal: {
