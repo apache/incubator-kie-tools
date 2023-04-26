@@ -20,7 +20,6 @@ import {
   ELsShouldCreateCodelensArgs,
   IEditorLanguageService,
   indentText,
-  parseYamlContent,
   positions_equals,
   ShouldCompleteArgs,
   TranslateArgs,

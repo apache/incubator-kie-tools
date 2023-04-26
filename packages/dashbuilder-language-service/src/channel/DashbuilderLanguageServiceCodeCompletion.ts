@@ -15,15 +15,10 @@
  */
 import {
   EditorLanguageServiceCodeCompletionFunctions,
-  EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs,
   EditorLanguageServiceCodeCompletionFunctionsArgs,
-  ELsNode,
-  indentText,
-  TranslateArgs,
+  EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs,
 } from "@kie-tools/json-yaml-language-service/dist/channel";
-import { TextDocument } from "vscode-languageserver-textdocument";
 import { CompletionItem, CompletionItemKind, InsertTextFormat, Range } from "vscode-languageserver-types";
-import { dump } from "yaml-language-server-parser";
 import { dashbuilderCompletion } from "../assets/code-completions/";
 
 export type DashbuilderLanguageServiceCodeCompletionFunctionsArgs =
