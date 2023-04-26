@@ -663,7 +663,7 @@ jobs:
         id: bootstrap
         uses: ./.github/actions/bootstrap
         with:
-          pnpm_filter_string: -F vscode-extension-pack-kogito-kie-editors...
+          pnpm_filter_string: -F kie-editors-dev-vscode-extension...
 
       - name: "Build"
         run: |
@@ -676,7 +676,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ inputs.tag }}.vsix
+          asset_path: ./packages/kie-editors-dev-vscode-extension/dist/vscode_extension_kogito_kie_editors_${{ inputs.tag }}.vsix
           asset_name: vscode_extension_dev_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
@@ -702,11 +702,10 @@ jobs:
         uses: ./.github/actions/bootstrap
         with:
           pnpm_filter_string: >-
-            -F vscode-extension-bpmn-editor...
-            -F vscode-extension-dmn-editor...
-            -F vscode-extension-pmml-editor...
+            -F bpmn-vscode-extension...
+            -F dmn-vscode-extension...
+            -F pmml-vscode-extension...
             -F vscode-extension-kogito-bundle...
-            -F vscode-extension-red-hat-business-automation-bundle...
             -F vscode-extension-serverless-workflow-editor...
             -F vscode-extension-kie-ba-bundle...
             -F vscode-extension-dashbuilder-editor...
@@ -722,7 +721,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-bpmn-editor/dist/vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
+          asset_path: ./packages/bpmn-vscode-extension/dist/vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
           asset_name: vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
@@ -733,7 +732,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-dmn-editor/dist/vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
+          asset_path: ./packages/dmn-vscode-extension/dist/vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
           asset_name: vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
@@ -744,7 +743,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-pmml-editor/dist/vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
+          asset_path: ./packages/pmml-vscode-extension/dist/vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
           asset_name: vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
@@ -768,17 +767,6 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${{ inputs.tag }}.vsix
           asset_name: vscode_extension_kie_ba_bundle_${{ inputs.tag }}.vsix
-          asset_content_type: application/zip
-
-      - name: "Upload VS Code Extension - Red Hat Business Automation Bundle (prod)"
-        if: ${{ !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-red-hat-business-automation-bundle/dist/vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
-          asset_name: vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "Upload VS Code Extension - Serverless Workflow Editor (prod)"

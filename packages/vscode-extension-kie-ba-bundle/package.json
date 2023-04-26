@@ -44,8 +44,8 @@
   ],
   "activationEvents": [],
   "extensionDependencies": [
-    "redhat.vscode-extension-bpmn-editor",
-    "redhat.vscode-extension-dmn-editor"
+    "kie-group.bpmn-vscode-extension",
+    "kie-group.dmn-vscode-extension"
   ],
   "icon": "icon.png",
   "capabilities": {

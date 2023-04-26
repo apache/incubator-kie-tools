@@ -393,7 +393,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/kie-editors-dev-vscode-extension/dist/vscode_extension_kogito_kie_editors_${{ inputs.tag }}.vsix
           asset_name: STAGING__vscode_extension_dev_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
@@ -404,7 +404,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-bpmn-editor/dist/vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/bpmn-vscode-extension/dist/vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
           asset_name: STAGING__vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
@@ -415,7 +415,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-dmn-editor/dist/vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/dmn-vscode-extension/dist/vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
           asset_name: STAGING__vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
@@ -426,7 +426,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-pmml-editor/dist/vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/pmml-vscode-extension/dist/vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
           asset_name: STAGING__vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
@@ -472,17 +472,6 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${{ inputs.tag }}.vsix
           asset_name: STAGING__vscode_extension_kie_ba_bundle_${{ inputs.tag }}.vsix
-          asset_content_type: application/zip
-
-      - name: "STAGING: Upload VS Code Extension - Red Hat Business Automation Bundle (prod) (Ubuntu only)"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-red-hat-business-automation-bundle/dist/vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "STAGING: Upload Chrome Extension for KIE Editors (Ubuntu only)"

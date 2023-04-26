@@ -930,6 +930,73 @@ importers:
         specifier: ^5.8.0
         version: 5.8.0
 
+  packages/bpmn-vscode-extension:
+    dependencies:
+      "@kie-tools-core/backend":
+        specifier: workspace:*
+        version: link:../backend
+      "@kie-tools-core/editor":
+        specifier: workspace:*
+        version: link:../editor
+      "@kie-tools-core/i18n":
+        specifier: workspace:*
+        version: link:../i18n
+      "@kie-tools-core/patternfly-base":
+        specifier: workspace:*
+        version: link:../patternfly-base
+      "@kie-tools-core/vscode-extension":
+        specifier: workspace:*
+        version: link:../vscode-extension
+      "@kie-tools/kie-bc-editors":
+        specifier: workspace:*
+        version: link:../kie-bc-editors
+      "@kie-tools/vscode-java-code-completion-extension-plugin":
+        specifier: workspace:*
+        version: link:../vscode-java-code-completion-extension-plugin
+    devDependencies:
+      "@kie-tools-core/webpack-base":
+        specifier: workspace:*
+        version: link:../webpack-base
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/stunner-editors":
+        specifier: workspace:*
+        version: link:../stunner-editors
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/vscode":
+        specifier: ^1.66.0
+        version: 1.66.0
+      "@vscode/test-web":
+        specifier: ^0.0.30
+        version: 0.0.30
+      "@vscode/vsce":
+        specifier: ^2.18.0
+        version: 2.18.0
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.70.0)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      webpack:
+        specifier: ^5.36.2
+        version: 5.70.0(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
+      webpack-dev-server:
+        specifier: ^4.7.3
+        version: 4.7.3(webpack-cli@4.10.0)(webpack@5.70.0)
+      webpack-merge:
+        specifier: ^5.8.0
+        version: 5.8.0
+
   packages/chrome-extension:
     dependencies:
       "@kie-tools-core/editor":
@@ -2982,6 +3049,73 @@ importers:
         specifier: ^4.4.2
         version: 4.8.4
 
+  packages/dmn-vscode-extension:
+    dependencies:
+      "@kie-tools-core/backend":
+        specifier: workspace:*
+        version: link:../backend
+      "@kie-tools-core/editor":
+        specifier: workspace:*
+        version: link:../editor
+      "@kie-tools-core/i18n":
+        specifier: workspace:*
+        version: link:../i18n
+      "@kie-tools-core/patternfly-base":
+        specifier: workspace:*
+        version: link:../patternfly-base
+      "@kie-tools-core/vscode-extension":
+        specifier: workspace:*
+        version: link:../vscode-extension
+      "@kie-tools/kie-bc-editors":
+        specifier: workspace:*
+        version: link:../kie-bc-editors
+      "@kie-tools/vscode-java-code-completion-extension-plugin":
+        specifier: workspace:*
+        version: link:../vscode-java-code-completion-extension-plugin
+    devDependencies:
+      "@kie-tools-core/webpack-base":
+        specifier: workspace:*
+        version: link:../webpack-base
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/stunner-editors":
+        specifier: workspace:*
+        version: link:../stunner-editors
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/vscode":
+        specifier: ^1.66.0
+        version: 1.66.0
+      "@vscode/test-web":
+        specifier: ^0.0.30
+        version: 0.0.30
+      "@vscode/vsce":
+        specifier: ^2.18.0
+        version: 2.18.0
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.70.0)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      webpack:
+        specifier: ^5.36.2
+        version: 5.70.0(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
+      webpack-dev-server:
+        specifier: ^4.7.3
+        version: 4.7.3(webpack-cli@4.10.0)(webpack@5.70.0)
+      webpack-merge:
+        specifier: ^5.8.0
+        version: 5.8.0
+
   packages/editor:
     dependencies:
       "@kie-tools-core/backend":
@@ -4294,6 +4428,172 @@ importers:
         specifier: ^4.4.2
         version: 4.5.4
 
+  packages/kie-editors-dev-vscode-extension:
+    dependencies:
+      "@kie-tools-core/backend":
+        specifier: workspace:*
+        version: link:../backend
+      "@kie-tools-core/editor":
+        specifier: workspace:*
+        version: link:../editor
+      "@kie-tools-core/envelope":
+        specifier: workspace:*
+        version: link:../envelope
+      "@kie-tools-core/i18n":
+        specifier: workspace:*
+        version: link:../i18n
+      "@kie-tools-core/monaco-editor":
+        specifier: workspace:*
+        version: link:../monaco-editor
+      "@kie-tools-core/notifications":
+        specifier: workspace:*
+        version: link:../notifications
+      "@kie-tools-core/patternfly-base":
+        specifier: workspace:*
+        version: link:../patternfly-base
+      "@kie-tools-core/vscode-extension":
+        specifier: workspace:*
+        version: link:../vscode-extension
+      "@kie-tools-core/workspace":
+        specifier: workspace:*
+        version: link:../workspace
+      "@kie-tools/kie-bc-editors":
+        specifier: workspace:*
+        version: link:../kie-bc-editors
+      "@kie-tools/pmml-editor":
+        specifier: workspace:*
+        version: link:../pmml-editor
+      "@kie-tools/vscode-java-code-completion-extension-plugin":
+        specifier: workspace:*
+        version: link:../vscode-java-code-completion-extension-plugin
+      minimatch:
+        specifier: ^3.0.4
+        version: 3.0.5
+      monaco-editor:
+        specifier: ^0.33.0
+        version: 0.33.0
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.16.12
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.16.11(@babel/core@7.16.12)
+      "@babel/preset-react":
+        specifier: ^7.16.0
+        version: 7.16.0(@babel/core@7.16.12)
+      "@kie-tools-core/webpack-base":
+        specifier: workspace:*
+        version: link:../webpack-base
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/stunner-editors":
+        specifier: workspace:*
+        version: link:../stunner-editors
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/chai":
+        specifier: ^4.2.17
+        version: 4.2.18
+      "@types/fs-extra":
+        specifier: ^11.0.1
+        version: 11.0.1
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      "@types/jest-when":
+        specifier: ^2.7.4
+        version: 2.7.4
+      "@types/minimatch":
+        specifier: ^3.0.4
+        version: 3.0.4
+      "@types/mocha":
+        specifier: ^8.2.2
+        version: 8.2.2
+      "@types/node":
+        specifier: ^18.13.0
+        version: 18.13.0
+      "@types/vscode":
+        specifier: ^1.66.0
+        version: 1.66.0
+      "@vscode/test-electron":
+        specifier: ^2.3.0
+        version: 2.3.0
+      "@vscode/test-web":
+        specifier: ^0.0.30
+        version: 0.0.30
+      "@vscode/vsce":
+        specifier: ^2.18.0
+        version: 2.18.0
+      chai:
+        specifier: ^4.3.4
+        version: 4.3.4
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.70.0)
+      cpr:
+        specifier: ^3.0.1
+        version: 3.0.1
+      file-loader:
+        specifier: ^6.2.0
+        version: 6.2.0(webpack@5.70.0)
+      fs-extra:
+        specifier: ^11.1.1
+        version: 11.1.1
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      jest-when:
+        specifier: ^3.5.0
+        version: 3.5.0(jest@26.6.3)
+      mocha:
+        specifier: ^9.2.0
+        version: 9.2.0
+      mocha-jenkins-reporter:
+        specifier: ^0.4.5
+        version: 0.4.5(mocha@9.2.0)
+      mocha-junit-reporter:
+        specifier: ^2.0.2
+        version: 2.0.2(mocha@9.2.0)
+      mocha-multi-reporters:
+        specifier: ^1.5.1
+        version: 1.5.1(mocha@9.2.0)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      sanitize-filename-ts:
+        specifier: ^1.0.2
+        version: 1.0.2
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.4.2
+        version: 4.8.4
+      vscode-extension-tester:
+        specifier: 5.5.2
+        version: 5.5.2(mocha@9.2.0)(typescript@4.8.4)
+      webpack:
+        specifier: ^5.36.2
+        version: 5.70.0(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
+      webpack-dev-server:
+        specifier: ^4.7.3
+        version: 4.7.3(webpack-cli@4.10.0)(webpack@5.70.0)
+      webpack-merge:
+        specifier: ^5.8.0
+        version: 5.8.0
+
   packages/kie-editors-standalone:
     devDependencies:
       "@babel/core":
@@ -5416,6 +5716,73 @@ importers:
       typescript:
         specifier: ^4.4.2
         version: 4.5.4
+
+  packages/pmml-vscode-extension:
+    dependencies:
+      "@kie-tools-core/backend":
+        specifier: workspace:*
+        version: link:../backend
+      "@kie-tools-core/editor":
+        specifier: workspace:*
+        version: link:../editor
+      "@kie-tools-core/i18n":
+        specifier: workspace:*
+        version: link:../i18n
+      "@kie-tools-core/monaco-editor":
+        specifier: workspace:*
+        version: link:../monaco-editor
+      "@kie-tools-core/patternfly-base":
+        specifier: workspace:*
+        version: link:../patternfly-base
+      "@kie-tools-core/vscode-extension":
+        specifier: workspace:*
+        version: link:../vscode-extension
+      "@kie-tools-core/workspace":
+        specifier: workspace:*
+        version: link:../workspace
+      "@kie-tools/pmml-editor":
+        specifier: workspace:*
+        version: link:../pmml-editor
+    devDependencies:
+      "@kie-tools-core/webpack-base":
+        specifier: workspace:*
+        version: link:../webpack-base
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/vscode":
+        specifier: ^1.66.0
+        version: 1.66.0
+      "@vscode/test-web":
+        specifier: ^0.0.30
+        version: 0.0.30
+      "@vscode/vsce":
+        specifier: ^2.18.0
+        version: 2.18.0
+      file-loader:
+        specifier: ^6.2.0
+        version: 6.2.0(webpack@5.70.0)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      webpack:
+        specifier: ^5.36.2
+        version: 5.70.0(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
+      webpack-dev-server:
+        specifier: ^4.7.3
+        version: 4.7.3(webpack-cli@4.10.0)(webpack@5.70.0)
+      webpack-merge:
+        specifier: ^5.8.0
+        version: 5.8.0
 
   packages/react-hooks:
     dependencies:
@@ -7705,85 +8072,6 @@ importers:
         specifier: ^4.4.2
         version: 4.5.4
 
-  packages/vscode-extension-backend:
-    dependencies:
-      "@kie-tools-core/backend":
-        specifier: workspace:*
-        version: link:../backend
-      "@kie-tools-core/vscode-extension":
-        specifier: workspace:*
-        version: link:../vscode-extension
-      "@kie-tools/backend-extended-services":
-        specifier: workspace:*
-        version: link:../backend-extended-services
-    devDependencies:
-      "@babel/core":
-        specifier: ^7.16.0
-        version: 7.16.12
-      "@babel/preset-env":
-        specifier: ^7.16.0
-        version: 7.16.11(@babel/core@7.16.12)
-      "@babel/preset-react":
-        specifier: ^7.16.0
-        version: 7.16.0(@babel/core@7.16.12)
-      "@kie-tools-core/webpack-base":
-        specifier: workspace:*
-        version: link:../webpack-base
-      "@kie-tools/eslint":
-        specifier: workspace:*
-        version: link:../eslint
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      "@kie-tools/tsconfig":
-        specifier: workspace:*
-        version: link:../tsconfig
-      "@types/jest":
-        specifier: ^26.0.23
-        version: 26.0.23
-      "@types/jest-when":
-        specifier: ^2.7.4
-        version: 2.7.4
-      "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
-      "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.70.0)
-      jest:
-        specifier: ^26.6.3
-        version: 26.6.3
-      jest-junit:
-        specifier: ^14.0.0
-        version: 14.0.0
-      jest-when:
-        specifier: ^3.5.0
-        version: 3.5.0(jest@26.6.3)
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-      ts-jest:
-        specifier: ^26.5.6
-        version: 26.5.6(jest@26.6.3)
-      webpack:
-        specifier: ^5.36.2
-        version: 5.70.0(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
-      webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(webpack-cli@4.10.0)(webpack@5.70.0)
-      webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
-
   packages/vscode-extension-bpmn-editor:
     dependencies:
       "@kie-tools-core/backend":
@@ -8346,42 +8634,6 @@ importers:
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.70.0)
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      webpack:
-        specifier: ^5.36.2
-        version: 5.70.0(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
-      webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(webpack-cli@4.10.0)(webpack@5.70.0)
-      webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
-
-  packages/vscode-extension-red-hat-business-automation-bundle:
-    devDependencies:
-      "@kie-tools-core/webpack-base":
-        specifier: workspace:*
-        version: link:../webpack-base
-      "@kie-tools/eslint":
-        specifier: workspace:*
-        version: link:../eslint
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      "@kie-tools/tsconfig":
-        specifier: workspace:*
-        version: link:../tsconfig
-      "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
-      "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -9147,6 +9399,151 @@ importers:
       typescript:
         specifier: ^4.4.2
         version: 4.5.4
+      webpack:
+        specifier: ^5.36.2
+        version: 5.70.0(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
+      webpack-dev-server:
+        specifier: ^4.7.3
+        version: 4.7.3(webpack-cli@4.10.0)(webpack@5.70.0)
+      webpack-merge:
+        specifier: ^5.8.0
+        version: 5.8.0
+
+  packages/yard-vscode-extension:
+    dependencies:
+      "@kie-tools-core/backend":
+        specifier: workspace:*
+        version: link:../backend
+      "@kie-tools-core/editor":
+        specifier: workspace:*
+        version: link:../editor
+      "@kie-tools-core/envelope-bus":
+        specifier: workspace:*
+        version: link:../envelope-bus
+      "@kie-tools-core/guided-tour":
+        specifier: workspace:*
+        version: link:../guided-tour
+      "@kie-tools-core/i18n":
+        specifier: workspace:*
+        version: link:../i18n
+      "@kie-tools-core/notifications":
+        specifier: workspace:*
+        version: link:../notifications
+      "@kie-tools-core/patternfly-base":
+        specifier: workspace:*
+        version: link:../patternfly-base
+      "@kie-tools-core/vscode-extension":
+        specifier: workspace:*
+        version: link:../vscode-extension
+      "@kie-tools-core/vscode-java-code-completion":
+        specifier: workspace:*
+        version: link:../vscode-java-code-completion
+      "@kie-tools-core/workspace":
+        specifier: workspace:*
+        version: link:../workspace
+      "@kie-tools/yard-editor":
+        specifier: workspace:*
+        version: link:../yard-editor
+      monaco-editor:
+        specifier: ^0.33.0
+        version: 0.33.0
+      monaco-yaml:
+        specifier: ^4.0.0
+        version: 4.0.0(monaco-editor@0.33.0)
+      openapi-types:
+        specifier: ^7.0.1
+        version: 7.2.3
+      vscode-languageserver-textdocument:
+        specifier: ^1.0.4
+        version: 1.0.7
+      vscode-languageserver-types:
+        specifier: ^3.16.0
+        version: 3.17.2
+      yaml:
+        specifier: ^2.0.1
+        version: 2.0.1
+    devDependencies:
+      "@kie-tools-core/webpack-base":
+        specifier: workspace:*
+        version: link:../webpack-base
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/chai":
+        specifier: ^4.2.17
+        version: 4.2.18
+      "@types/fs-extra":
+        specifier: ^11.0.1
+        version: 11.0.1
+      "@types/mocha":
+        specifier: ^8.2.2
+        version: 8.2.2
+      "@types/node":
+        specifier: ^18.13.0
+        version: 18.13.0
+      "@types/selenium-webdriver":
+        specifier: ^4.1.12
+        version: 4.1.12
+      "@types/vscode":
+        specifier: ^1.66.0
+        version: 1.66.0
+      "@vscode/test-electron":
+        specifier: ^2.3.0
+        version: 2.3.0
+      "@vscode/test-web":
+        specifier: ^0.0.30
+        version: 0.0.30
+      "@vscode/vsce":
+        specifier: ^2.18.0
+        version: 2.18.0
+      chai:
+        specifier: ^4.3.4
+        version: 4.3.4
+      cpr:
+        specifier: ^3.0.1
+        version: 3.0.1
+      fs-extra:
+        specifier: ^11.1.1
+        version: 11.1.1
+      mocha:
+        specifier: ^9.2.0
+        version: 9.2.0
+      mocha-jenkins-reporter:
+        specifier: ^0.4.5
+        version: 0.4.5(mocha@9.2.0)
+      mocha-junit-reporter:
+        specifier: ^2.0.2
+        version: 2.0.2(mocha@9.2.0)
+      mocha-multi-reporters:
+        specifier: ^1.5.1
+        version: 1.5.1(mocha@9.2.0)
+      monaco-editor-webpack-plugin:
+        specifier: ^7.0.1
+        version: 7.0.1(monaco-editor@0.33.0)(monaco-yaml@4.0.0)(webpack@5.70.0)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      sanitize-filename-ts:
+        specifier: ^1.0.2
+        version: 1.0.2
+      selenium-webdriver:
+        specifier: ^4.8.1
+        version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+      typescript:
+        specifier: ^4.4.2
+        version: 4.8.4
+      vscode-extension-tester:
+        specifier: 5.5.2
+        version: 5.5.2(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)

@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-import { assert, expect } from "chai";
+import { assert } from "chai";
 import * as path from "path";
 import * as fs from "fs-extra";
 import { sanitize } from "sanitize-filename-ts";
-import { Key } from "selenium-webdriver";
 import {
   ActivityBar,
   By,
   InputBox,
   ModalDialog,
   SideBarView,
+  TextEditor,
   until,
   ViewControl,
-  ViewItem,
   ViewSection,
   VSBrowser,
   WebDriver,
@@ -96,9 +95,9 @@ export default class VSCodeTestHelper {
   };
 
   /**
-   * Opens serverless workflow file from a sidebarview. Expects that the sideBarView will be defined and open.
-   * To define sideBarView a folder needs to be openned using openFolder function.
-   * Once the file is openned using a click, function assert existence of two
+   * Opens serverless logic file from a sidebarview. Expects that the sideBarView will be defined and open.
+   * To define sideBarView a folder needs to be opened using openFolder function.
+   * Once the file is opened using a click, function assert existence of two
    * editor groups and assigns each group to Webview. Both webviews are confirmed loaded and returned
    * in an array on predefined indexes - see returns definition.
    *
@@ -111,10 +110,10 @@ export default class VSCodeTestHelper {
    * @param fileParentPath optional, use when file is not in root of resources. This is the path of file's parent directory, relative to resources
    *                       if not used the file will be looked in root of resources.
    * @returns promise that resolves to an array of WebViews of the openned serverless worklow file.
-   *          The lenght of the array is always 2 and there is guaranteed TextEditor as webview on O index.
+   *          The length of the array is always 2 and there is guaranteed TextEditor as webview on O index.
    *          Custom kogito swf editor as webview is always on index 1
    */
-  public openFileFromSidebar = async (fileName: string, fileParentPath?: string): Promise<WebView[]> => {
+  public openFileFromSidebar = async (fileName: string, fileParentPath?: string): Promise<[TextEditor, WebView]> => {
     if (fileParentPath == undefined || fileParentPath == "") {
       await this.workspaceSectionView.openItem(fileName);
     } else {
@@ -125,85 +124,34 @@ export default class VSCodeTestHelper {
         await fileItem.click();
       }
     }
-    await sleep(5000);
 
+    await sleep(3000);
     const editorGroups = await this.workbench.getEditorView().getEditorGroups();
     // should be always two groups, one text editor and one swf editor
     assert.equal(editorGroups.length, 2);
 
-    const webviewLeft = new WebView(editorGroups[0], By.linkText(fileName));
-    const webviewRight = new WebView(editorGroups[1], By.linkText(fileName));
+    const textEditor = new TextEditor(editorGroups[0]);
+    const webView = new WebView(editorGroups[1], By.linkText(fileName));
 
     // right webview has the custom kogito editor, wait for it to load
-    await this.waitUntilKogitoEditorIsLoaded(webviewRight);
+    await this.waitUntilKogitoEditorIsLoaded(webView);
 
-    const webviews = [] as WebView[];
-    webviews.push(webviewLeft, webviewRight);
-
-    return Promise.resolve(webviews);
-  };
-
-  /**
-   * Renames file in SideBarView.
-   *
-   * Expects SideBarView is defined and open.
-   * To define SideBarView a folder needs to be opened using openFolder function.
-   *
-   * You can specify the relative path to root directory in fileName. For example: "/a/b/filename.sw.json".
-   * You can also specify the relative path in newFileName. The path of the new file will be relative to directory where the original file resides.
-   *
-   * Always use "/" separator in paths.
-   *
-   * @param fileName name of the file with or without path to rename
-   * @param newFileName new name of the file with or without path
-   */
-  public renameFile = async (fileName: string, newFileName: string) => {
-    let fileNameToRename: string | undefined = fileName;
-
-    if (fileName.includes("/")) {
-      const pathPieces = fileName.split("/");
-      fileNameToRename = pathPieces.pop();
-      await this.workspaceSectionView.openItem(...pathPieces);
-    }
-
-    let fileItem: ViewItem | undefined;
-
-    if (fileNameToRename != undefined) {
-      fileItem = await this.workspaceSectionView.findItem(fileNameToRename);
-    }
-
-    const menu = await fileItem?.openContextMenu();
-    await menu?.select("Rename...");
-
-    const inputElement = await this.workspaceSectionView.findElement(By.xpath('.//input[@type="text"]'));
-    await inputElement.sendKeys(Key.chord(Key.CONTROL, "a"));
-    await inputElement.sendKeys(newFileName);
-    await inputElement.sendKeys(Key.ENTER);
-
-    // Check the presence of renamed item
-    const renamedFileName = newFileName.includes("/") ? newFileName.split("/").pop() : newFileName;
-    expect(renamedFileName).to.exist;
-    expect(await this.workspaceSectionView.findItem(renamedFileName as string)).to.exist;
+    return Promise.resolve([textEditor, webView]);
   };
 
   /**
    * Closes all editor views that are open.
-   * Resolves even if there are no open editor views.
+   * Resoxlves even if there are no open editor views.
    */
   public closeAllEditors = async (): Promise<void> => {
     try {
       await this.workbench.getEditorView().closeAllEditors();
     } catch (error) {
-      console.log("Error while closing all editors: " + error);
-      try {
-        // catch the error when there is nothing to close
-        // or the Save Dialog appears
-        const dialog = new ModalDialog();
-        if (dialog != null && (await dialog.isDisplayed())) {
-          await dialog.pushButton("Don't Save");
-        }
-      } catch (error) {
-        console.log("Error while pushButton called: " + error);
+      // catch the error when there is nothing to close
+      // or the Save Dialog appears
+      const dialog = new ModalDialog();
+      if (dialog != null && (await dialog.isDisplayed())) {
+        await dialog.pushButton("Don't Save");
       }
     }
   };
@@ -212,13 +160,9 @@ export default class VSCodeTestHelper {
    * Closes all notifications that can be found using {@see Workbench}.
    */
   public closeAllNotifications = async (): Promise<void> => {
-    try {
-      const activeNotifications = await this.workbench.getNotifications();
-      for (const notification of activeNotifications) {
-        await notification.dismiss();
-      }
-    } catch (e) {
-      console.log("Error while closing all notifications: " + e);
+    const activeNotifications = await this.workbench.getNotifications();
+    for (const notification of activeNotifications) {
+      await notification.dismiss();
     }
   };
 
@@ -267,7 +211,7 @@ export default class VSCodeTestHelper {
       "Editor was still loading after ms. Please investigate."
     );
 
-    await sleep(8000);
+    await sleep(2000);
 
     await driver.switchTo().frame(null);
   };

@@ -1,0 +1,257 @@
+{
+  "private": true,
+  "name": "kie-editors-dev-vscode-extension",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "publisher": "kie-group",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "browser": "./dist/extension/extension.js",
+  "main": "dist/extension/extension.js",
+  "scripts": {
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "rimraf dist && pnpm lint && webpack && pnpm test && pnpm package:prod && pnpm test:it",
+    "compile": "pnpm build:dev",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "package:prod": "vsce package --no-dependencies -o ./dist/vscode_extension_kogito_kie_editors_$npm_package_version.vsix",
+    "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c max -u -e ./test-resources -o it-tests/settings.json out/*.test.js\"",
+    "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resources && rimraf ./out && rimraf ./it-tests-tmp && rimraf *.vsix",
+    "test:it:clean:offline": "rimraf ./dist-it-tests && rimraf ./out && rimraf ./it-tests-tmp && rimraf *.vsix",
+    "test:it:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn -t insider -u -e ./test-resources -o it-tests/settings.json out/*.test.js",
+    "test:it:offline": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean:offline\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --offline --yarn -c max -u -e ./test-resources -o it-tests/settings.json out/*.test.js\"",
+    "watch": "pnpm build:dev"
+  },
+  "dependencies": {
+    "@kie-tools-core/backend": "workspace:*",
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/envelope": "workspace:*",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/monaco-editor": "workspace:*",
+    "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/vscode-extension": "workspace:*",
+    "@kie-tools-core/workspace": "workspace:*",
+    "@kie-tools/kie-bc-editors": "workspace:*",
+    "@kie-tools/pmml-editor": "workspace:*",
+    "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
+    "minimatch": "^3.0.4",
+    "monaco-editor": "^0.33.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/stunner-editors": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/chai": "^4.2.17",
+    "@types/fs-extra": "^11.0.1",
+    "@types/jest": "^26.0.23",
+    "@types/jest-when": "^2.7.4",
+    "@types/minimatch": "^3.0.4",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^18.13.0",
+    "@types/vscode": "^1.66.0",
+    "@vscode/test-electron": "^2.3.0",
+    "@vscode/test-web": "^0.0.30",
+    "@vscode/vsce": "^2.18.0",
+    "chai": "^4.3.4",
+    "copy-webpack-plugin": "^11.0.0",
+    "cpr": "^3.0.1",
+    "file-loader": "^6.2.0",
+    "fs-extra": "^11.1.1",
+    "jest": "^26.6.3",
+    "jest-junit": "^14.0.0",
+    "jest-when": "^3.5.0",
+    "mocha": "^9.2.0",
+    "mocha-jenkins-reporter": "^0.4.5",
+    "mocha-junit-reporter": "^2.0.2",
+    "mocha-multi-reporters": "^1.5.1",
+    "rimraf": "^3.0.2",
+    "sanitize-filename-ts": "^1.0.2",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.4.2",
+    "vscode-extension-tester": "5.5.2",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.8.0"
+  },
+  "engines": {
+    "vscode": "^1.66.0"
+  },
+  "displayName": "BPMN, DMN, Test Scenario and (PMML) Scorecard Editors",
+  "categories": [
+    "Other"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.kogito.getPreviewSvg",
+        "icon": {
+          "dark": "./static/svg-icon-dark.png",
+          "light": "./static/svg-icon-light.png"
+        },
+        "title": "Save Preview SVG"
+      },
+      {
+        "command": "extension.kogito.runTest",
+        "title": "Run"
+      },
+      {
+        "command": "extension.kogito.silentlyGenerateSvg",
+        "title": "Generate SVG without any notification"
+      }
+    ],
+    "configuration": {
+      "properties": {
+        "kogito.bpmn.runOnSave": {
+          "default": "extension.kogito.silentlyGenerateSvg",
+          "markdownDescription": "Execute a command on each save operation of the BPMN file.",
+          "type": "string"
+        },
+        "kogito.bpmn.svgFilePath": {
+          "default": "${fileDirname}",
+          "markdownDescription": "Where to save generated SVG files (defaults to same path as .bpmn file: `${fileDirname}`).",
+          "type": "string"
+        },
+        "kogito.bpmn.svgFilenameTemplate": {
+          "default": "${fileBasenameNoExtension}-svg.svg",
+          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`).",
+          "type": "string"
+        },
+        "kogito.dmn.runOnSave": {
+          "default": "extension.kogito.silentlyGenerateSvg",
+          "markdownDescription": "Execute a command on each save operation of the DMN file",
+          "type": "string"
+        },
+        "kogito.dmn.svgFilePath": {
+          "default": "${fileDirname}",
+          "markdownDescription": "Where to save generated SVG files (defaults to same path as .dmn file: `${fileDirname}`).",
+          "type": "string"
+        },
+        "kogito.dmn.svgFilenameTemplate": {
+          "default": "${fileBasenameNoExtension}-svg.svg",
+          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`).",
+          "type": "string"
+        }
+      },
+      "title": "KIE Tools Dev Test Configuration"
+    },
+    "customEditors": [
+      {
+        "displayName": "KIE Kogito Editors",
+        "selector": [
+          {
+            "filenamePattern": "*.{dmn,bpmn,bpmn2,scesim,pmml}"
+          }
+        ],
+        "viewType": "kieKogitoWebviewEditors"
+      }
+    ],
+    "javaExtensions": [
+      "./dist/server/vscode-java-code-completion-extension-plugin-core.jar"
+    ],
+    "languages": [
+      {
+        "aliases": [
+          "bpmn",
+          "bpmn2",
+          "BPMN",
+          "BPMN2",
+          "Business Process Model and Notation"
+        ],
+        "extensions": [
+          ".bpmn",
+          ".bpmn2",
+          ".BPMN",
+          ".BPMN2"
+        ],
+        "id": "bpmn"
+      },
+      {
+        "aliases": [
+          "dmn",
+          "DMN",
+          "Decision Model and Notation"
+        ],
+        "extensions": [
+          ".dmn",
+          ".DMN"
+        ],
+        "id": "dmn"
+      },
+      {
+        "aliases": [
+          "scesim",
+          "SCESIM",
+          "Test Scenario"
+        ],
+        "extensions": [
+          ".scesim",
+          ".SCESIM"
+        ],
+        "id": "scesim"
+      },
+      {
+        "aliases": [
+          "pmml",
+          "PMML",
+          "Predictive Model Markup Language"
+        ],
+        "extensions": [
+          ".pmml",
+          ".PMML"
+        ],
+        "id": "pmml"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "extension.kogito.getPreviewSvg",
+          "when": "resourceLangId =~ /bpmn|bpmn2|dmn/"
+        },
+        {
+          "command": "extension.kogito.runTest",
+          "when": "resourceLangId =~ /scesim/"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "extension.kogito.getPreviewSvg",
+          "group": "navigation",
+          "when": "resourceLangId =~ /bpmn|bpmn2|dmn/"
+        },
+        {
+          "command": "extension.kogito.runTest",
+          "group": "navigation",
+          "when": "resourceLangId =~ /scesim/"
+        }
+      ]
+    }
+  },
+  "activationEvents": [
+    "onCustomEditor:kieKogitoWebviewEditors",
+    "onWebviewPanel:myPage"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
+  "vsce": {
+    "dependencies": false
+  }
+}

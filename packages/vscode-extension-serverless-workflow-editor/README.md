@@ -80,4 +80,4 @@ Some Open Source projects were vital for the development of this extension, and 
 - [Mermaid](https://mermaid-js.github.io/): for workflow rendering and visualization;
 - [Apicurio](https://www.apicur.io/): for our service catalog integration;
 
-You can also checkout the [CNCF Serverless Workflow VSCode extension](https://marketplace.visualstudio.com/items?itemName=serverlessworkflow.serverless-workflow-vscode-extension) at VSCode Marketplace.
+You can also checkout the [CNCF Serverless Workflow VS Code extension](https://marketplace.visualstudio.com/items?itemName=serverlessworkflow.vscode-extension-serverless-workflow-editor) at VS Code Marketplace.

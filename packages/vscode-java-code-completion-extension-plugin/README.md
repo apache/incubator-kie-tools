@@ -1,4 +1,4 @@
-# VSCode Java Code Completion Extension Plugin
+# VS Code Java Code Completion Extension Plugin
 
 ## Installation
 
