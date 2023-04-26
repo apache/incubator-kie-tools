@@ -71,6 +71,7 @@ import getObjectValueByPath from "lodash/get";
 import setObjectValueByPath from "lodash/set";
 import unsetObjectValueByPath from "lodash/unset";
 import { dereferenceProperties } from "../jsonSchema/dereference";
+import { property } from "lodash";
 
 const JSON_SCHEMA_PROPERTIES_PATH = "definitions.InputSet.properties";
 
@@ -532,10 +533,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
         const fullKey = parentKey ? `${parentKey}.${propertyKey}` : propertyKey;
         if (
-          !propertyValue?.type &&
-          !propertyValue?.format &&
           propertyValue !== null &&
-          typeof propertyValue === "object"
+          typeof propertyValue === "object" &&
+          Object.prototype.hasOwnProperty.call(propertyValue, "type") &&
+          propertyValue.type !== undefined &&
+          Object.prototype.hasOwnProperty.call(propertyValue, "format") &&
+          propertyValue.format !== undefined
         ) {
           // not leaf;
           return handleJsonSchemaDifferences(inputs, propertyValue, fullKey);
