@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.sw.client.editor.EditorWindow;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 import org.kie.workbench.common.stunner.sw.marshall.Context;
+import org.kie.workbench.common.stunner.sw.marshall.DocType;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller;
 import org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils;
 
@@ -58,7 +59,7 @@ public class IncrementalMarshaller {
 
         // TODO: Not  behaving incremental yet. Just changing the whole content.
         if (true) {
-            Promise<String> contentPromise = marshaller.marshallGraph(canvasHandler.getDiagram().getGraph());
+            Promise<String> contentPromise = marshaller.marshallGraph(canvasHandler.getDiagram().getGraph(), DocType.JSON);
             contentPromise.then(new IThenable.ThenOnFulfilledCallbackFn<String, Object>() {
                 @Override
                 public IThenable<Object> onInvoke(String content) {

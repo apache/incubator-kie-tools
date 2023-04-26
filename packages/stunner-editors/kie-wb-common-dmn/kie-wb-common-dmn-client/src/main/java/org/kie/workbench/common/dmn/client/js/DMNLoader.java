@@ -30,11 +30,11 @@ public class DMNLoader {
      * @param selector DOM selector, where the component will be placed
      * @param decisionNodeId identifier of the decision node, where the expression will be hold
      * @param expressionProps expression to render
-     * @param clearSupportedOnRootExpression tells if the root expression should have the clear button or not (e.g. functions wrapped in BKM nodes should not)
+     * @param isClearSupportedOnRootExpression tells if the root expression should have the clear button or not (e.g. functions wrapped in BKM nodes should not)
      * @param pmmlParams PMML parameters
      */
     @JsMethod(namespace = "__KIE__DMN_LOADER__")
-    public static native void renderBoxedExpressionEditor(final String selector, final String decisionNodeId, final ExpressionProps expressionProps, final DataTypeProps[] dataTypes, final Boolean clearSupportedOnRootExpression, final PMMLParam[] pmmlParams);
+    public static native void renderBoxedExpressionEditor(final String selector, final String decisionNodeId, final ExpressionProps expressionProps, final DataTypeProps[] dataTypes, final Boolean isClearSupportedOnRootExpression, final PMMLParam[] pmmlParams);
 
     /**
      * Method used to render the import-java-classes component (TS/React world) in the DMN Editor (Java/GWT world)

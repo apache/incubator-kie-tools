@@ -18,9 +18,13 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
 
 @JSONMapper
+@YAMLMapper
 @JsType
+@YamlPropertyOrder({"name", "type", "compensatedBy", "stateDataFilter", "timeouts", "end","exclusive", "onEvents", "onErrors", "eventTimeout", "transition", "metadata"})
 public class EventState extends State {
 
     public static final String TYPE_EVENT = "event";

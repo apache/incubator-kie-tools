@@ -106,6 +106,23 @@ public class FunctionDefinitionTest {
     }
 
     @Test
+    public void testExactCopy() {
+        final FunctionDefinition source = new FunctionDefinition();
+        source.setId(new Id(FUNCTION_ID));
+        source.setDescription(new Description(DESCRIPTION));
+        source.setTypeRef(BuiltInType.BOOLEAN.asQName());
+        source.setKind(Kind.PMML);
+
+        final FunctionDefinition target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(FUNCTION_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertEquals(Kind.PMML, target.getKind());
+    }
+
+    @Test
     public void testKindFromValueWithFEEL() {
         assertEquals(Kind.FEEL, Kind.fromValue("FEEL"));
     }

@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv(
   [require("@kie-tools/root-env/env"), require("@kie-tools/dmn-dev-deployment-base-image-env/env")],
   {
-    vars: varsWithName({
-      DMN_DEV_DEPLOYMENT__baseImageBuildTags: {
-        default: "daily-dev",
-        description: "",
-      },
-    }),
+    vars: varsWithName({}),
     get env() {
-      return {
-        dmnDevDeploymentBaseImage: {
-          buildTags: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__baseImageBuildTags),
-        },
-      };
+      return {};
     },
   }
 );

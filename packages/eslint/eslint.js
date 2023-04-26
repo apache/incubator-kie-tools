@@ -16,15 +16,26 @@
 
 const execSync = require("child_process").execSync;
 const path = require("path");
+const fs = require("fs");
 
 const lintPath = path.resolve(process.argv[2]);
 const configPath = require.resolve("./.eslintrc.js");
+const potentialIgnorePath = path.resolve(".", ".eslintignore");
 
 console.info("[kie-tools--eslint] Lint path: " + lintPath);
 console.info("[kie-tools--eslint] Config path: " + configPath);
 
+let ignorePathArgument = "";
+if (fs.existsSync(potentialIgnorePath)) {
+  console.info("[kie-tools--eslint] Ignore path: " + potentialIgnorePath);
+  ignorePathArgument = `--ignore-path ${potentialIgnorePath}`;
+}
+
 try {
-  execSync(`pnpm eslint ${lintPath} --ext .ts,.tsx --config ${configPath}`, { stdio: "inherit", cwd: __dirname });
+  execSync(`pnpm eslint ${lintPath} --ext .ts,.tsx --config ${configPath} ${ignorePathArgument}`, {
+    stdio: "inherit",
+    cwd: __dirname,
+  });
 } catch (e) {
   console.info("[kie-tools--eslint] Error.");
   process.exit(1);

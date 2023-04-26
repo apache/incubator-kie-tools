@@ -24,7 +24,6 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DecisionTableProps;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
@@ -37,10 +36,9 @@ public class FillDecisionTableExpressionCommand extends FillExpressionCommand<De
                                               final DecisionTableProps expressionProps,
                                               final Event<ExpressionEditorChanged> editorSelectedEvent,
                                               final String nodeUUID,
-                                              final ExpressionEditorView view,
                                               final ItemDefinitionUtils itemDefinitionUtils,
                                               final Optional<HasName> hasName) {
-        super(hasExpression, expressionProps, editorSelectedEvent, nodeUUID, view, itemDefinitionUtils, hasName);
+        super(hasExpression, expressionProps, editorSelectedEvent, nodeUUID, itemDefinitionUtils, hasName);
     }
 
     @Override
@@ -50,11 +48,16 @@ public class FillDecisionTableExpressionCommand extends FillExpressionCommand<De
     }
 
     @Override
+    public boolean isCurrentExpressionOfTheSameType() {
+        return getHasExpression().getExpression() instanceof DecisionTable;
+    }
+
+    @Override
     protected Expression getNewExpression() {
         return new DecisionTable();
     }
 
     void fill(final DecisionTable expression, final DecisionTableProps props) {
-        fillDecisionTableExpression(expression, props);
+        fillDecisionTableExpression(expression, props, qName -> getItemDefinitionUtils().normaliseTypeRef(qName));
     }
 }

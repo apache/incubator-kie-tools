@@ -27,6 +27,7 @@
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools/extended-services-api": "workspace:*",
     "@kie-tools/form": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@kie-tools/uniforms-patternfly": "workspace:*",

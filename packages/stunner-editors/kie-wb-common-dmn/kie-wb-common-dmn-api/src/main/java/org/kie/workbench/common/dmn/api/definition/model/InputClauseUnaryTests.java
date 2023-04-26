@@ -96,6 +96,14 @@ public class InputClauseUnaryTests extends DMNModelInstrumentedBase implements I
         );
     }
 
+    public InputClauseUnaryTests exactCopy() {
+        return new InputClauseUnaryTests(
+                Optional.ofNullable(id).map(Id::copy).orElse(null),
+                Optional.ofNullable(text).map(Text::copy).orElse(null),
+                ConstraintType.fromString(constraintTypeProperty.getValue())
+        );
+    }
+
     // -----------------------
     // DMN properties
     // -----------------------

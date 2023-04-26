@@ -20,15 +20,19 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     DMN_DEV_DEPLOYMENT__baseImageRegistry: {
       default: "quay.io",
-      description: "",
+      description: "The image registry.",
     },
     DMN_DEV_DEPLOYMENT__baseImageAccount: {
       default: "kie-tools",
-      description: "",
+      description: "The image registry account.",
     },
     DMN_DEV_DEPLOYMENT__baseImageName: {
       default: "dmn-dev-deployment-base-image",
-      description: "",
+      description: "The image name.",
+    },
+    DMN_DEV_DEPLOYMENT__baseImageBuildTags: {
+      default: "daily-dev",
+      description: "The image tag.",
     },
   }),
   get env() {
@@ -37,6 +41,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         registry: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__baseImageRegistry),
         account: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__baseImageAccount),
         name: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__baseImageName),
+        tags: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__baseImageBuildTags),
       },
     };
   },

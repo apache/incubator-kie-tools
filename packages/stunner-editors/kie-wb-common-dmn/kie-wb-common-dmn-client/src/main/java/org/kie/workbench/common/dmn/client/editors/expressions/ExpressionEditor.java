@@ -18,17 +18,13 @@ package org.kie.workbench.common.dmn.client.editors.expressions;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.appformer.client.context.Channel;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagramElement;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
@@ -59,7 +55,19 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     private DMNGraphUtils dmnGraphUtils;
 
-    private final KogitoChannelHelper kogitoChannelHelper;
+    public ExpressionEditor(final ExpressionEditorView view,
+                            final DecisionNavigatorPresenter decisionNavigator,
+                            final DMNGraphUtils dmnGraphUtils,
+                            final DMNDiagramsSession dmnDiagramsSession,
+                            final DRDNameChanger drdNameChanger) {
+        this.view = view;
+        this.decisionNavigator = decisionNavigator;
+        this.dmnGraphUtils = dmnGraphUtils;
+        this.dmnDiagramsSession = dmnDiagramsSession;
+        this.drdNameChanger = drdNameChanger;
+
+        this.view.init(this);
+    }
 
     // When the current selection is the DRG, we return its name, otherwise the name of the selected DRD
     private final Supplier<String> returnToLinkTextSupplier = new Supplier<String>() {
@@ -88,32 +96,6 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
             return Objects.nonNull(name) ? name.getValue() : "";
         }
     };
-
-    @SuppressWarnings("unchecked")
-    public ExpressionEditor(final ExpressionEditorView view,
-                            final DecisionNavigatorPresenter decisionNavigator,
-                            final DMNGraphUtils dmnGraphUtils,
-                            final DMNDiagramsSession dmnDiagramsSession,
-                            final DRDNameChanger drdNameChanger,
-                            final KogitoChannelHelper kogitoChannelHelper) {
-        this.view = view;
-        this.decisionNavigator = decisionNavigator;
-        this.dmnGraphUtils = dmnGraphUtils;
-        this.dmnDiagramsSession = dmnDiagramsSession;
-        this.drdNameChanger = drdNameChanger;
-        this.kogitoChannelHelper = kogitoChannelHelper;
-
-        this.view.init(this);
-        enableNewBoxedExpressionBetaPreview();
-    }
-
-    protected void enableNewBoxedExpressionBetaPreview() {
-        /** New Boxed Expression Editor disabled in EMBEDDED and CHROME EXTENSION Channels */
-        if (kogitoChannelHelper.isCurrentChannelEnabled(
-                Stream.of(Channel.EMBEDDED, Channel.GITHUB).collect(Collectors.toList()))) {
-            view.disableBetaBoxedExpressionToggle();
-        }
-    }
 
     @Override
     public HTMLElement getElement() {
@@ -181,7 +163,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
                 hasExpression.ifPresent(e -> {
                     if (Objects.equals(e.asDMNModelInstrumentedBase(), definition.getDefinition())) {
                         view.setExpressionNameText(Optional.ofNullable((HasName) definition.getDefinition()));
-                        view.refresh();
+                        view.reloadEditor();
                     }
                 });
             }

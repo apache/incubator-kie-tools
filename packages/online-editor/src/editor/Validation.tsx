@@ -1,10 +1,25 @@
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { useEffect } from "react";
-import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { useOnlineI18n } from "../i18n";
-import { KieSandboxExtendedServicesModelPayload } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesClient";
+import { ExtendedServicesModelPayload } from "@kie-tools/extended-services-api";
 import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { DmnLanguageService, DmnLanguageServiceImportedModel } from "@kie-tools/dmn-language-service";
@@ -13,7 +28,7 @@ import { WorkspacesContextType } from "@kie-tools-core/workspaces-git-fs/dist/co
 export function useFileValidation(
   workspaces: WorkspacesContextType,
   workspaceFile: WorkspaceFile | undefined,
-  editorPageDock: EditorPageDockDrawerRef | undefined,
+  setNotifications: (tabName: string, path: string, notifications: Notification[]) => void,
   dmnLanguageService?: DmnLanguageService
 ) {
   const { i18n } = useOnlineI18n();
@@ -32,14 +47,14 @@ export function useFileValidation(
     }
 
     if (extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
-      editorPageDock?.setNotifications(i18n.terms.validation, "", []);
+      setNotifications(i18n.terms.validation, "", []);
       return;
     }
 
     workspaceFile
       .getFileContents()
       .then((fileContents) => {
-        const payload: KieSandboxExtendedServicesModelPayload = {
+        const payload: ExtendedServicesModelPayload = {
           mainURI: workspaceFile.relativePath,
           resources: [
             {
@@ -56,11 +71,11 @@ export function useFileValidation(
             severity: "ERROR",
             message: validationResult,
           }));
-          editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
+          setNotifications(i18n.terms.validation, "", notifications);
         });
       })
       .catch((err) => console.error(err));
-  }, [workspaceFile, editorPageDock, extendedServices.status, extendedServices.client, i18n.terms.validation]);
+  }, [workspaceFile, setNotifications, extendedServices.status, extendedServices.client, i18n.terms.validation]);
 
   // DMN validation
   useEffect(() => {
@@ -72,7 +87,7 @@ export function useFileValidation(
     }
 
     if (extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
-      editorPageDock?.setNotifications(i18n.terms.validation, "", []);
+      setNotifications(i18n.terms.validation, "", []);
       return;
     }
 
@@ -90,7 +105,7 @@ export function useFileValidation(
               { content: decodedFileContent, relativePath: workspaceFile.relativePath },
               ...importedModelsResources,
             ];
-            const payload: KieSandboxExtendedServicesModelPayload = {
+            const payload: ExtendedServicesModelPayload = {
               mainURI: workspaceFile.relativePath,
               resources: resources.map((resource) => ({
                 URI: resource.relativePath,
@@ -116,7 +131,7 @@ export function useFileValidation(
                   message: `${validationResult.messageType}: ${validationResult.message}`,
                 };
               });
-              editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
+              setNotifications(i18n.terms.validation, "", notifications);
             });
           });
       })
@@ -124,7 +139,7 @@ export function useFileValidation(
   }, [
     workspaces,
     workspaceFile,
-    editorPageDock,
+    setNotifications,
     dmnLanguageService,
     extendedServices.status,
     extendedServices.client,

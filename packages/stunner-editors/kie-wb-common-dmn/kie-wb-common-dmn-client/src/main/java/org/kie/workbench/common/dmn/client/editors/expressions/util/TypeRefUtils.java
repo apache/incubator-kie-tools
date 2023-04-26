@@ -16,11 +16,16 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.util;
 
+import java.util.function.UnaryOperator;
+
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 
 public class TypeRefUtils {
 
@@ -34,5 +39,22 @@ public class TypeRefUtils {
         }
 
         return hasTypeRef;
+    }
+
+    public static <E extends Expression> QName getQNameOfExpression(final HasExpression hasExpression,
+                                                                    final E expression,
+                                                                    final String dataType,
+                                                                    final UnaryOperator<QName> qNameNormalizer) {
+        if (dataType != null && !dataType.isEmpty()) {
+            return qNameNormalizer.apply(makeQName(dataType));
+        } else {
+            return getTypeRefOfExpression(expression, hasExpression).getTypeRef();
+        }
+    }
+
+    private static QName makeQName(String dataType) {
+        return BuiltInTypeUtils.isBuiltInType(dataType) ?
+                BuiltInTypeUtils.findBuiltInTypeByName(dataType).orElse(BuiltInType.UNDEFINED).asQName() :
+                new QName(QName.NULL_NS_URI, dataType);
     }
 }

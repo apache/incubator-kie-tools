@@ -115,7 +115,7 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelRef, Props>
 
   useEffect(() => {
     setActiveTab(props.tabNames[0]);
-  }, []);
+  }, [props.tabNames]);
 
   // const totalNotificationsSpanRef = useRef<HTMLSpanElement>(null);
   const [expandAll, setExpandAll] = useState<boolean>();

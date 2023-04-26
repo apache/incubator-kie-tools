@@ -37,8 +37,6 @@ public class ContextEntry extends DMNModelInstrumentedBase implements HasExpress
                                                                       HasVariable<InformationItem>,
                                                                       HasDomainObject {
 
-    public static final String DEFAULT_EXPRESSION_VALUE = "null // auto-filled by the editor to avoid missing empty expression.";
-
     private InformationItem variable;
     private Expression expression;
 
@@ -47,6 +45,13 @@ public class ContextEntry extends DMNModelInstrumentedBase implements HasExpress
         clonedContextEntry.variable = Optional.ofNullable(variable).map(InformationItem::copy).orElse(null);
         clonedContextEntry.expression = Optional.ofNullable(expression).map(Expression::copy).orElse(null);
         return clonedContextEntry;
+    }
+
+    public ContextEntry exactCopy() {
+        final ContextEntry exactelyClonedContextEntry = new ContextEntry();
+        exactelyClonedContextEntry.variable = Optional.ofNullable(variable).map(InformationItem::exactCopy).orElse(null);
+        exactelyClonedContextEntry.expression = Optional.ofNullable(expression).map(Expression::exactCopy).orElse(null);
+        return exactelyClonedContextEntry;
     }
 
     @Override

@@ -42,6 +42,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITContext;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDRGElement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDecisionTable;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITExpression;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITFunctionDefinition;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITInvocation;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITList;
@@ -150,6 +151,16 @@ public class WrapperUtils {
                                                     final String localPart) {
         final JSITContext toReturn = Js.uncheckedCast(JsUtils.getWrappedElement(toWrap));
         final JSIName jsiName = JSITContext.getJSIName();
+        updateJSIName(jsiName, prefix, localPart);
+        JsUtils.setNameOnWrapped(toReturn, jsiName);
+        return toReturn;
+    }
+
+    public static JSITExpression getWrappedJSITExpression(final JSITExpression toWrap,
+                                                          final String prefix,
+                                                          final String localPart) {
+        final JSITExpression toReturn = Js.uncheckedCast(JsUtils.getWrappedElement(toWrap));
+        final JSIName jsiName = JSITExpression.getJSIName();
         updateJSIName(jsiName, prefix, localPart);
         JsUtils.setNameOnWrapped(toReturn, jsiName);
         return toReturn;

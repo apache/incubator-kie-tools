@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  EditorEnvelopeLocator,
-  EnvelopeContentType,
-  EnvelopeMapping,
-} from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { GLOB_PATTERN } from "../extension";
 
 export class EditorEnvelopeLocatorFactory {

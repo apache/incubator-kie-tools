@@ -22,7 +22,7 @@ import jakarta.json.stream.JsonGenerator;
 public abstract class JsonSerializer<T> implements jakarta.json.bind.serializer.JsonbSerializer<T> {
 
   public abstract void serialize(
-          T obj, String property, JsonGenerator generator, SerializationContext ctx);
+      T obj, String property, JsonGenerator generator, SerializationContext ctx);
 
   public abstract void serialize(T obj, JsonGenerator generator, SerializationContext ctx);
 }

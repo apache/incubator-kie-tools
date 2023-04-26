@@ -19,12 +19,16 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.SubFlowRefJsonDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.SubFlowRefJsonSerializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.FunctionRefJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.SubFlowRefJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.FunctionRefYamlSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.SubFlowRefYamlSerializer;
 
 @JsType
+@YamlPropertyOrder({"name", "id", "functionRef", "eventRef", "subFlowRef", "retryRef", "sleep", "retryableErrors", "nonRetryableErrors", "actionDataFilter", "condition"})
 public class ActionNode {
 
     public String id;
@@ -32,14 +36,18 @@ public class ActionNode {
     public String name;
 
     @JsonbTypeSerializer(FunctionRefJsonSerializer.class)
-    @JsonbTypeDeserializer(FunctionRefJsonDeserializer.class)
-    public Object functionRef;
+    @JsonbTypeDeserializer(FunctionRefJsonSerializer.class)
+    @YamlTypeSerializer(FunctionRefYamlSerializer.class)
+    @YamlTypeDeserializer(FunctionRefYamlSerializer.class)
+    private Object functionRef;
 
     public ActionEventRef eventRef;
 
     @JsonbTypeSerializer(SubFlowRefJsonSerializer.class)
-    @JsonbTypeDeserializer(SubFlowRefJsonDeserializer.class)
-    public Object subFlowRef;
+    @JsonbTypeDeserializer(SubFlowRefJsonSerializer.class)
+    @YamlTypeSerializer(SubFlowRefYamlSerializer.class)
+    @YamlTypeDeserializer(SubFlowRefYamlSerializer.class)
+    private Object subFlowRef;
 
     public String retryRef;
 

@@ -58,6 +58,9 @@ public class FieldDefinitionFactory {
       result = new JsonbTypeSerFieldDefinition(type, context);
     } else if (context.getTypeUtils().isIterable(property)) {
       result = new CollectionsFieldDefinition(property, context);
+    } else if (MoreTypes.asTypeElement(type).getAnnotation(JsonbTypeSerializer.class) != null
+        && MoreTypes.asTypeElement(type).getAnnotation(JsonbTypeDeserializer.class) != null) {
+      return new JsonbTypeSerFieldDefinition(type, context);
     } else {
       result = new DefaultBeanFieldDefinition(property, context);
     }
@@ -71,28 +74,49 @@ public class FieldDefinitionFactory {
   }
 
   public FieldDefinition getFieldDefinition(PropertyDefinition propertyDefinition) {
-    if (!(context.getTypeUtils().isIterable(propertyDefinition.getType())
-            || propertyDefinition.getType().getKind().equals(TypeKind.ARRAY))) {
+    TypeMirror jsonbTypeSerializerType = propertyDefinition.getType();
+
+    if (!(context.getTypeUtils().isIterable(jsonbTypeSerializerType)
+        || jsonbTypeSerializerType.getKind().equals(TypeKind.ARRAY))) {
       JsonbTypeSerializer jsonbTypeSerializer =
-              propertyDefinition.getVariableElement().getAnnotation(JsonbTypeSerializer.class);
+          propertyDefinition.getVariableElement().getAnnotation(JsonbTypeSerializer.class);
       JsonbTypeDeserializer jsonbTypeDeserializer =
-              propertyDefinition.getVariableElement().getAnnotation(JsonbTypeDeserializer.class);
+          propertyDefinition.getVariableElement().getAnnotation(JsonbTypeDeserializer.class);
+
+      if (jsonbTypeSerializer == null && jsonbTypeDeserializer == null) {
+        TypeMirror typeMirror = propertyDefinition.getVariableElement().asType();
+        if (!typeMirror.getKind().isPrimitive()) {
+          if (typeMirror.getKind().equals(TypeKind.ARRAY)) {
+            typeMirror = MoreTypes.asArray(typeMirror).getComponentType();
+          }
+          if (MoreTypes.asTypeElement(typeMirror).getAnnotation(JsonbTypeSerializer.class) != null
+              && MoreTypes.asTypeElement(typeMirror).getAnnotation(JsonbTypeDeserializer.class)
+                  != null) {
+            jsonbTypeSerializer =
+                MoreTypes.asTypeElement(typeMirror).getAnnotation(JsonbTypeSerializer.class);
+            jsonbTypeDeserializer =
+                MoreTypes.asTypeElement(typeMirror).getAnnotation(JsonbTypeDeserializer.class);
+            jsonbTypeSerializerType = typeMirror;
+          }
+        }
+      }
+
       if (jsonbTypeSerializer != null || jsonbTypeDeserializer != null) {
         if (jsonbTypeSerializer == null || jsonbTypeDeserializer == null) {
           throw new GenerationException(
-                  "@JsonbTypeSerializer and @JsonbTypeDeserializer MUST be used together");
+              "@JsonbTypeSerializer and @JsonbTypeDeserializer MUST be used together");
         }
-        return new JsonbTypeSerFieldDefinition(propertyDefinition.getType(), context);
+        return new JsonbTypeSerFieldDefinition(jsonbTypeSerializerType, context);
       }
     }
     TypeMirror type = propertyDefinition.getVariableElement().asType();
     if (!(type.getKind().isPrimitive() || type.getKind().equals(TypeKind.ARRAY))) {
       JsonbTypeInfo jsonbTypeInfo =
-              MoreTypes.asTypeElement(propertyDefinition.getVariableElement().asType())
-                      .getAnnotation(JsonbTypeInfo.class);
+          MoreTypes.asTypeElement(propertyDefinition.getVariableElement().asType())
+              .getAnnotation(JsonbTypeInfo.class);
       if (jsonbTypeInfo != null) {
         return new JsonbTypeInfoDefinition(
-                jsonbTypeInfo, propertyDefinition.getVariableElement().asType(), context);
+            jsonbTypeInfo, propertyDefinition.getVariableElement().asType(), context);
       }
     }
 
