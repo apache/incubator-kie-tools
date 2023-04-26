@@ -28,8 +28,6 @@ import com.google.gwt.view.client.AbstractDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
-import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
-import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
 import org.uberfire.ext.widgets.table.client.UberfireSimplePager;
 import org.uberfire.ext.widgets.table.client.resources.UFTableResources;
 
@@ -71,30 +69,20 @@ public class PagedTable<T>
              null);
     }
 
-    public PagedTable(final int pageSize,
-                      final ProvidesKey<T> providesKey) {
-        this(pageSize,
-             providesKey,
-             null);
-    }
 
     public PagedTable(final int pageSize,
-                      final ProvidesKey<T> providesKey,
-                      final GridGlobalPreferences gridGlobalPreferences) {
+                      final ProvidesKey<T> providesKeys) {
         this(pageSize,
-             providesKey,
-             gridGlobalPreferences,
+                providesKeys,
              false);
     }
 
     public PagedTable(final int pageSize,
                       final ProvidesKey<T> providesKey,
-                      final GridGlobalPreferences gridGlobalPreferences,
                       final boolean showPageSizesSelector) {
 
         this(pageSize,
              providesKey,
-             gridGlobalPreferences,
              showPageSizesSelector,
              false,
              false);
@@ -102,12 +90,10 @@ public class PagedTable<T>
 
     public PagedTable(final int pageSize,
                       final ProvidesKey<T> providesKey,
-                      final GridGlobalPreferences gridGlobalPreferences,
                       final boolean showPageSizesSelector,
                       final boolean showFFButton,
                       final boolean showLButton) {
-        super(providesKey,
-              gridGlobalPreferences);
+        super(providesKey);
         this.showPageSizesSelector = showPageSizesSelector;
         this.pageSize = pageSize;
         this.dataGrid.setPageStart(0);
@@ -201,21 +187,10 @@ public class PagedTable<T>
     }
 
     private void storePageSizeInGridPreferences(int pageSize) {
-        GridPreferencesStore gridPreferencesStore = super.getGridPreferencesStore();
-        if (gridPreferencesStore != null) {
-            gridPreferencesStore.setPageSizePreferences(pageSize);
-            if (isPersistingPreferencesOnChange()) {
-                super.saveGridPreferences();
-            }
-        }
         this.pageSize = pageSize;
     }
 
     private int getPageSizeStored() {
-        GridPreferencesStore gridPreferencesStore = super.getGridPreferencesStore();
-        if (gridPreferencesStore != null) {
-            return gridPreferencesStore.getPageSizePreferences();
-        }
         return pageSize;
     }
 
@@ -223,16 +198,6 @@ public class PagedTable<T>
                                            boolean dropupAuto) {
         this.pageSizesSelector.setForceDropup(forceDropup);
         this.pageSizesSelector.setDropupAuto(dropupAuto);
-    }
-
-    private void resetPageSize() {
-        GridPreferencesStore gridPreferencesStore = super.getGridPreferencesStore();
-
-        if (gridPreferencesStore != null) {
-            gridPreferencesStore.resetPageSizePreferences();
-            storePageSizeInGridPreferences(gridPreferencesStore.getGlobalPreferences().getPageSize());
-            loadPageSizePreferences();
-        }
     }
 
     public HasWidgets getTopToolbar() {

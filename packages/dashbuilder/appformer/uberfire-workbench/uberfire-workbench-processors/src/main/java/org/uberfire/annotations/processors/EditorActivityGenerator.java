@@ -161,10 +161,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
                                                                              processingEnvironment);
         final String onSaveMethodName = GeneratorUtils.getOnSaveMethodName(classElement,
                                                                            processingEnvironment);
-        final String getMenuBarMethodName = GeneratorUtils.getMenuBarMethodName(classElement,
-                                                                                processingEnvironment);
-        final String getToolBarMethodName = GeneratorUtils.getToolBarMethodName(classElement,
-                                                                                processingEnvironment);
+
         final List<String> qualifiers = GeneratorUtils.getAllQualifiersDeclarationFromType(classElement);
 
         if (GeneratorUtils.debugLoggingEnabled()) {
@@ -220,10 +217,6 @@ public class EditorActivityGenerator extends AbstractGenerator {
                                   "isDirtyMethodName: " + isDirtyMethodName);
             messager.printMessage(Kind.NOTE,
                                   "onSaveMethodName: " + onSaveMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "getMenuBarMethodName: " + getMenuBarMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "getToolBarMethodName: " + getToolBarMethodName);
             messager.printMessage(Kind.NOTE,
                                   "Qualifiers: " + String.join(", ",
                                                                qualifiers));
@@ -306,10 +299,6 @@ public class EditorActivityGenerator extends AbstractGenerator {
                  isDirtyMethodName);
         root.put("onSaveMethodName",
                  onSaveMethodName);
-        root.put("getMenuBarMethodName",
-                 getMenuBarMethodName);
-        root.put("getToolBarMethodName",
-                 getToolBarMethodName);
         root.put("isDynamic",
                  isDynamic);
         root.put("qualifiers",

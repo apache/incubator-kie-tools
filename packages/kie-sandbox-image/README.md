@@ -54,14 +54,15 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
    [comment]: <> (//TODO: Use EnvJson.schema.json to generate this documentation somehow.. See https://github.com/kiegroup/kie-issues/issues/16)
 
-   |                            Name                             |                                                         Description                                                         |                               Default                               |
-   | :---------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
-   |             `KIE_SANDBOX_EXTENDED_SERVICES_URL`             |                                  The URL that points to the KIE Sandbox Extended Services.                                  | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |              `KIE_SANDBOX_GIT_CORS_PROXY_URL`               |                        The URL that points to the Git CORS proxy for interacting with Git providers.                        | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |        `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGES`         |                          Require users to type a custom commit message when creating a new commit.                          | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   | `KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL` |                                          Service URL to validate commit messages.                                           | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |                `KIE_SANDBOX_AUTH_PROVIDERS`                 |    Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more.     | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |                 `KIE_SANDBOX_ACCELERATORS`                  | Accelerators configuration. Used to add a template to a set of Decisions and Workflows, making it buildable and deployable. | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                            Name                             |                                                          Description                                                          |                               Default                               |
+   | :---------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
+   |             `KIE_SANDBOX_EXTENDED_SERVICES_URL`             |                                   The URL that points to the KIE Sandbox Extended Services.                                   | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |              `KIE_SANDBOX_GIT_CORS_PROXY_URL`               |                         The URL that points to the Git CORS proxy for interacting with Git providers.                         | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |         `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE`         |                           Require users to type a custom commit message when creating a new commit.                           | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   | `KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL` |                                           Service URL to validate commit messages.                                            | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                `KIE_SANDBOX_AUTH_PROVIDERS`                 |     Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more.      | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                 `KIE_SANDBOX_ACCELERATORS`                  |  Accelerators configuration. Used to add a template to a set of Decisions and Workflows, making it buildable and deployable.  | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                    `KIE_SANDBOX_EDITORS`                    | Editors configuration. Allows the enabling/disabling of specific editors and removes the disabled editors from the home page. | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
 
    ### Examples
 
@@ -122,6 +123,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    ENV KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL=<my_value>
    ENV KIE_SANDBOX_AUTH_PROVIDERS=<my_value>
    ENV KIE_SANDBOX_ACCELERATORS=<my_value>
+   ENV KIE_SANDBOX_EDITORS=<my_value>
    ```
 
 3. Create the application from the image in OpenShift and set the deployment environment variable right from the OpenShift UI.
@@ -236,4 +238,59 @@ Here's an example of what it should look like:
     bpmnDestinationFolder: "src/main/resources/bpmn",
     otherFilesDestinationFolder: "src/main/resources/others",
 }
+```
+
+### Editors
+
+By default all three standard editors will be enabled (BPMN, DMN, PMML). To disable an editor simply delete/comment out the respective json.
+
+- **extension**: The extension of the file that you want to edit.
+- **filePathGlob**: The glob pattern of the file you want to edit.
+- **editor.resourcesPathPrefix**: The path to the gwt-editor.
+- **editor.path**: The path of the editor envelope.html.
+- **card.title**: The title of the editor that will be displayed on the home page.
+- **card.description**: Displays a short description of the editor under the title on the home page.
+
+Here's an example of what it should look like:
+
+```js
+    {
+      extension: "bpmn",
+      filePathGlob: "**/*.bpmn?(2)",
+      editor: {
+        resourcesPathPrefix: "gwt-editors/bpmn",
+        path: "bpmn-envelope.html",
+      },
+      card: {
+        title: "Workflow",
+        description: "BPMN files are used to generate business workflows.",
+      },
+    },
+    {
+      extension: "dmn",
+      filePathGlob: "**/*.dmn",
+      editor: {
+        resourcesPathPrefix: "gwt-editors/dmn",
+        path: "dmn-envelope.html",
+      },
+      card: {
+        title: "Decision",
+        description: "DMN files are used to generate decision models",
+      },
+    },
+    {
+      extension: "pmml",
+      filePathGlob: "**/*.pmml",
+      editor: {
+        resourcesPathPrefix: "",
+        path: "pmml-envelope.html",
+      },
+      card: {
+        title: "Scorecard",
+        description: "PMML files are used to generate scorecards",
+      },
+    }
+
+
+
 ```

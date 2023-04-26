@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM --platform=linux/amd64 registry.access.redhat.com/ubi8/ubi-minimal:8.5
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.1
 
 COPY entrypoint.sh dist-dev/image-env-to-json-standalone dist-dev/EnvJson.schema.json /tmp/
 

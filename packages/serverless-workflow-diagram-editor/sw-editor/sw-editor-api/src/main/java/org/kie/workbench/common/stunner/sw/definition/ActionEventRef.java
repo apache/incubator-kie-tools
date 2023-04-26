@@ -21,11 +21,11 @@ import jsinterop.annotations.JsType;
 @JsType
 public class ActionEventRef {
 
-    private String produceEventRef;
-    private String consumeEventRef;
-    private String consumeEventTimeout;
-    private String data;
-    private FunctionRefType invoke;
+    public String produceEventRef;
+    public String consumeEventRef;
+    public String consumeEventTimeout;
+    public String data;
+    public FunctionRefType invoke;
 
     public final String getProduceEventRef() {
         return produceEventRef;

@@ -20,21 +20,29 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.SubflowExecutionTypeJsonbTypeDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.SubflowExecutionTypeJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.SubflowExecutionTypeJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.SubflowExecutionTypeYamlTypeSerializer;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class SubFlowRef {
 
-    private String workflowId;
-    private String version;
-    private FunctionRefType invoke;
+    public String workflowId;
+
+    public String version;
+
+    public FunctionRefType invoke;
 
 
     //TODO custom ser/deser because of continue is reserved java lit
     @JsonbTypeSerializer(SubflowExecutionTypeJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(SubflowExecutionTypeJsonbTypeDeserializer.class)
+    @JsonbTypeDeserializer(SubflowExecutionTypeJsonbTypeSerializer.class)
+    @YamlTypeSerializer(SubflowExecutionTypeYamlTypeSerializer.class)
+    @YamlTypeDeserializer(SubflowExecutionTypeYamlTypeSerializer.class)
     private SubflowExecutionType onParentComplete;
 
     public final String getWorkflowId() {

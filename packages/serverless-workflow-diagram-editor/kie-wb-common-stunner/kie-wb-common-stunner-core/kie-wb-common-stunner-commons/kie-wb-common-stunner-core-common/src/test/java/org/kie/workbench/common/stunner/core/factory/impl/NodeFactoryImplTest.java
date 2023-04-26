@@ -61,9 +61,7 @@ public class NodeFactoryImplTest {
         this.testingkHelper = new TestingGraphMockHandler();
         when(testingkHelper.getDefinitionAdapter().getLabels(eq(definition))).thenReturn(LABELS);
         when(definitionUtils.getDefinitionManager()).thenReturn(testingkHelper.getDefinitionManager());
-        when(definitionUtils.buildBounds(eq(definition),
-                                         anyDouble(),
-                                         anyDouble())).thenReturn(BOUNDS);
+        when(definitionUtils.buildBounds(anyDouble(), anyDouble())).thenReturn(BOUNDS);
         this.tested = new NodeFactoryImpl(definitionUtils);
     }
 

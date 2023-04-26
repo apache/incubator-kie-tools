@@ -22,22 +22,9 @@ import { BuiltInType } from "./BuiltInType";
 /**
  * Class for accessing new DMN Expression editor
  *
- * Helper methods will not work until `activateBetaVersion` is called.
  */
 export default class ExpressionEditorHelper {
   constructor(private readonly root: WebElement) {}
-
-  /**
-   * Activates the beta version of the editor
-   * By default the stable is activated
-   */
-  public async activateBetaVersion(): Promise<ExpressionEditorHelper> {
-    const button = await this.root.findElement(
-      By.xpath("//div[@data-field='beta-boxed-expression-toggle']/span/a[@data-field='try-it']")
-    );
-    await button.click();
-    return this;
-  }
 
   public async assertExpressionDetails(
     expectedTitle: string,
@@ -55,9 +42,12 @@ export default class ExpressionEditorHelper {
     await assertWebElementIsDisplayedEnabled(title);
 
     const type = await boxedExpressionEditor.findElement(
-      By.xpath(`//div[@data-ouia-component-type='expression-column-header-cell-info']/p[contains(@class, 'data-type')]`)
+      By.xpath(
+        `//div[@data-ouia-component-type='expression-column-header-cell-info']/p[text()='${expectedTitle}']/following-sibling::p`
+      )
     );
     await assertWebElementIsDisplayedEnabled(type);
+
     assert.equal(await type.getText(), `(${expectedType})`);
 
     return this;

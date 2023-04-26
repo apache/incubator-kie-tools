@@ -18,6 +18,7 @@ package org.dashbuilder.renderer.client.table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -44,7 +45,6 @@ import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.export.ExportCallback;
 import org.dashbuilder.displayer.client.export.ExportFormat;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -325,7 +325,7 @@ public class TableDisplayer extends AbstractGwtDisplayer<TableDisplayer.View> {
         super.filterReset();
     }
 
-    public void lookupCurrentPage(final Callback<Integer> callback) {
+    public void lookupCurrentPage(final Consumer<Integer> callback) {
         try {
             beforeDataSetLookup();
             dataSetHandler.lookupDataSet(new DataSetReadyCallback() {
@@ -333,7 +333,7 @@ public class TableDisplayer extends AbstractGwtDisplayer<TableDisplayer.View> {
                     try {
                         dataSet = ds;
                         afterDataSetLookup(dataSet);
-                        callback.callback(dataSet.getRowCount());
+                        callback.accept(dataSet.getRowCount());
                     }
                     catch (Exception e) {
                         showError(new ClientRuntimeError(e));

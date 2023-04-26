@@ -36,7 +36,6 @@ import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommand
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGridRowNumberColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
@@ -64,6 +63,9 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
 public class ListGrid extends BaseExpressionGrid<List, ListGridData, ListUIModelMapper> implements HasListSelectorControl {
+
+    /** MUST BE SYNCHRONIZED WITH WidthConstants.ts */
+    static final double LIST_DEFAULT_WIDTH = 190d;
 
     private final ValueAndDataTypePopoverView.Presenter headerEditor;
 
@@ -144,7 +146,7 @@ public class ListGrid extends BaseExpressionGrid<List, ListGridData, ListUIModel
                                                                                                                 ContextGridRowNumberColumn.DEFAULT_WIDTH));
         final GridColumn listColumn = new ListExpressionEditorColumn(gridLayer,
                                                                      getAndSetInitialWidth(ListUIModelMapperHelper.EXPRESSION_COLUMN_INDEX,
-                                                                                           ExpressionEditorColumn.DEFAULT_WIDTH),
+                                                                                                                   LIST_DEFAULT_WIDTH),
                                                                      this);
         model.appendColumn(rowNumberColumn);
         model.appendColumn(listColumn);

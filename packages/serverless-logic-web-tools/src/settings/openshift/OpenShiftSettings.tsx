@@ -34,6 +34,7 @@ import { obfuscate } from "../github/GitHubSettings";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsPageProps } from "../types";
 import { saveConfigCookie } from "./OpenShiftSettingsConfig";
+import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { OpenShiftSettingsSimpleConfig } from "./OpenShiftSettingsSimpleConfig";
 
 export function OpenShiftSettings(props: SettingsPageProps) {
@@ -48,7 +49,7 @@ export function OpenShiftSettings(props: SettingsPageProps) {
 
   const onDisconnect = useCallback(() => {
     settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);
-    const newConfig: OpenShiftConnection = {
+    const newConfig: KubernetesConnection = {
       namespace: settings.openshift.config.namespace,
       host: settings.openshift.config.host,
       token: "",

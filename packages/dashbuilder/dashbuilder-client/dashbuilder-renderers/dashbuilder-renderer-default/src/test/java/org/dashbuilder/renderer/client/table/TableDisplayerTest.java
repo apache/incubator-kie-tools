@@ -17,7 +17,6 @@ package org.dashbuilder.renderer.client.table;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.common.client.widgets.FilterLabel;
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
-import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.def.DataSetDef;
@@ -48,11 +47,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -371,7 +370,7 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
     public void testIsTotalRowsExactSQL() {
         final DataSet dataSet = mock(DataSet.class);
         final DataSetDef dataSetDef = new DataSetDef();
-        dataSetDef.setProvider(DataSetProviderType.SQL);
+        dataSetDef.setProvider(() -> "SQL");
         when(dataSet.getDefinition()).thenReturn(dataSetDef);
 
         TableDisplayer table = createTableDisplayer(DisplayerSettingsFactory.newTableSettings().tablePageSize(10).buildSettings());
@@ -422,7 +421,7 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
     public void testIsPagerEnabledSQL() {
         final DataSet dataSet = mock(DataSet.class);
         final DataSetDef dataSetDef = new DataSetDef();
-        dataSetDef.setProvider(DataSetProviderType.SQL);
+        dataSetDef.setProvider(() -> "SQL");
         when(dataSet.getDefinition()).thenReturn(dataSetDef);
         when(dataSet.getRowCountNonTrimmed()).thenReturn(5,
                                                          10,
@@ -442,7 +441,7 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
     public void testIsRemoteProvider() {
         final DataSet dataSet = mock(DataSet.class);
         final DataSetDef dataSetDefSQL = new DataSetDef();
-        dataSetDefSQL.setProvider(DataSetProviderType.SQL);
+        dataSetDefSQL.setProvider(() -> "SQL");
         final DataSetDef dataSetDefRemote = new DataSetDef();
         dataSetDefRemote.setProvider(() -> "REMOTE");
         when(dataSet.getDefinition()).thenReturn(new DataSetDef(),

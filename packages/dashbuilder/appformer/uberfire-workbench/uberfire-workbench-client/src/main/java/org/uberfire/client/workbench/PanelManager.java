@@ -29,7 +29,6 @@ import org.uberfire.workbench.model.CustomPanelDefinition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * Internal framework component that handles the creation, destruction, layout, and composition (parent-child nesting)
@@ -68,7 +67,6 @@ public interface PanelManager {
     void addWorkbenchPart(final PlaceRequest place,
                           final PartDefinition part,
                           final PanelDefinition panel,
-                          final Menus menus,
                           final UIPart uiPart,
                           final String contextId,
                           final Integer minInitialWidth,
@@ -78,7 +76,6 @@ public interface PanelManager {
      * Adds an empty child panel of the target panel's default child type at the given position within the target panel.
      * The new child panel will have the given dimensions and minimum sizes set on it.
      * <p>
-     * TODO: the usefulness of this method to callers is questionable (versus creating a new child panel definition and
      * calling {@link #addWorkbenchPanel(PanelDefinition, PanelDefinition, Position)}). candidate for deletion.
      */
     PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,

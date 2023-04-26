@@ -15,7 +15,6 @@
  */
 
 import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
-import { OpenShiftService } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
 import { Octokit } from "@octokit/rest";
 import * as React from "react";
 import { useContext, useEffect, useMemo, useState } from "react";
@@ -24,6 +23,7 @@ import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
+import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftService";
 import { FeaturePreviewSettingsConfig, readFeaturePreviewConfigCookie } from "./featurePreview/FeaturePreviewConfig";
 import { GITHUB_AUTH_TOKEN_COOKIE_NAME } from "./github/GitHubSettings";
 import { KafkaSettingsConfig, readKafkaConfigCookie } from "./kafka/KafkaSettingsConfig";
@@ -33,6 +33,7 @@ import {
   readServiceRegistryConfigCookie,
   ServiceRegistrySettingsConfig,
 } from "./serviceRegistry/ServiceRegistryConfig";
+import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -66,7 +67,7 @@ export class ExtendedServicesConfig {
 export interface SettingsContextType {
   openshift: {
     status: OpenShiftInstanceStatus;
-    config: OpenShiftConnection;
+    config: KubernetesConnection;
   };
   kieSandboxExtendedServices: {
     config: ExtendedServicesConfig;
@@ -95,7 +96,7 @@ export interface SettingsDispatchContextType {
   openshift: {
     service: OpenShiftService;
     setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
-    setConfig: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
+    setConfig: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
   };
   kieSandboxExtendedServices: {
     setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;

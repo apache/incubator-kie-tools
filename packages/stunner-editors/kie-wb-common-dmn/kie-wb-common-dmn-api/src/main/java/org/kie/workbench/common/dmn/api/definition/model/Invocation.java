@@ -74,6 +74,18 @@ public class Invocation extends Expression implements HasExpression {
     }
 
     @Override
+    public Invocation exactCopy() {
+        final Invocation exactelyClonedInvocation = new Invocation();
+        exactelyClonedInvocation.id = Optional.ofNullable(id).map(Id::copy).orElse(null);
+        exactelyClonedInvocation.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        exactelyClonedInvocation.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
+        exactelyClonedInvocation.componentWidths = new ArrayList<>(componentWidths);
+        exactelyClonedInvocation.expression = Optional.ofNullable(expression).map(Expression::exactCopy).orElse(null);
+        exactelyClonedInvocation.binding = binding.stream().map(Binding::exactCopy).collect(Collectors.toList());
+        return exactelyClonedInvocation;
+    }
+
+    @Override
     public Optional<DomainObject> findDomainObject(final String uuid) {
 
         Optional<DomainObject> domainObject = Optional.empty();

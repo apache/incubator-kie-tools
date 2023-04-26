@@ -114,6 +114,11 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
     }
 
     @Override
+    public void enrichRootExpression(String nodeUUID, HasExpression rootExpression, DecisionTable enrichedExpression, String dataType) {
+        enricher.enrichRootExpression(nodeUUID, rootExpression, enrichedExpression, dataType);
+    }
+
+    @Override
     @SuppressWarnings("unused")
     public Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> getEditor(final GridCellTuple parent,
                                                                                                                          final Optional<String> nodeUUID,

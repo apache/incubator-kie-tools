@@ -14,19 +14,28 @@
  * limitations under the License.
  */
 
+import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { DmnValidator } from "../src/DmnValidator";
 import { dmnFormI18n } from "../src/i18n";
 import { DmnFormJsonSchemaBridge } from "../src/uniforms";
 
-const schema = {
-  type: "object",
-  properties: {
-    name: { type: "string" },
-    lastName: { type: "string" },
-    daysAndTimeDuration: { format: "days and time duration", type: "string" },
-    yearsAndMonthsDuration: { format: "years and months duration", type: "string" },
+const schema: ExtendedServicesDmnJsonSchema = {
+  definitions: {
+    InputSet: {
+      type: "object",
+      properties: {
+        name: { type: "string" },
+        lastName: { type: "string" },
+        daysAndTimeDuration: { format: "days and time duration", type: "string" },
+        yearsAndMonthsDuration: { format: "years and months duration", type: "string" },
+      },
+      required: ["name", "lastName"],
+    },
+    OutputSet: {
+      type: "object",
+      properties: {},
+    },
   },
-  required: ["name", "lastName"],
 };
 
 const i18n = dmnFormI18n.getCurrent();
@@ -47,7 +56,7 @@ describe("DmnValidator Tests", () => {
       };
 
       const validator = new DmnValidator(i18n);
-      const validate = validator.createValidator(schema);
+      const validate = validator.createValidator(schema.definitions?.InputSet);
       const errors = validate(model);
       expect(errors).toBeNull();
     });
@@ -60,7 +69,7 @@ describe("DmnValidator Tests", () => {
       };
 
       const validator = new DmnValidator(i18n);
-      const validate = validator.createValidator(schema);
+      const validate = validator.createValidator(schema.definitions?.InputSet);
       const errors = validate(model);
       expect(errors?.details[0].keyword).toEqual("format");
       expect(errors?.details[0].message).toEqual("should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)");
@@ -74,7 +83,7 @@ describe("DmnValidator Tests", () => {
       };
 
       const validator = new DmnValidator(i18n);
-      const validate = validator.createValidator(schema);
+      const validate = validator.createValidator(schema.definitions?.InputSet);
       const errors = validate(model);
       expect(errors?.details[0].keyword).toEqual("format");
       expect(errors?.details[0].message).toEqual("should match format P1Y(ears)2M(onths)");

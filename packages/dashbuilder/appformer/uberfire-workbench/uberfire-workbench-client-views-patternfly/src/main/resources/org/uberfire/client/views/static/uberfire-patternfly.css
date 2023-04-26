@@ -334,11 +334,6 @@
   text-align: right;
 }
 
-.uf-workbench-layout > div:first-child > div:first-child,
-.uf-workbench-layout > div:first-child > div:nth-child(2) {
-  overflow: hidden !important;
-}
-
 .uf-perspective-context-menu-empty {
   padding-top: 43px;
 }

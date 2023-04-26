@@ -113,6 +113,16 @@ public class OutputClauseLiteralExpression extends DMNModelInstrumentedBase impl
         );
     }
 
+    public OutputClauseLiteralExpression exactCopy() {
+        return new OutputClauseLiteralExpression(
+                Optional.ofNullable(id).map(Id::copy).orElse(null),
+                Optional.ofNullable(description).map(Description::copy).orElse(null),
+                Optional.ofNullable(typeRef).map(QName::copy).orElse(null),
+                Optional.ofNullable(text).map(Text::copy).orElse(null),
+                Optional.ofNullable(importedValues).map(ImportedValues::copy).orElse(null)
+        );
+    }
+
     @Override
     public List<HasTypeRef> getHasTypeRefs() {
         return new ArrayList<>(singletonList(this));

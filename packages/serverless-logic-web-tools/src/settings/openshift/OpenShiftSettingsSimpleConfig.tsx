@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  isOpenShiftConnectionValid,
-  OpenShiftConnection,
-} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
@@ -32,13 +28,18 @@ import * as React from "react";
 import { useCallback, useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useAppI18n } from "../../i18n";
+import {
+  isKubernetesConnectionValid,
+  KubernetesConnection,
+  KubernetesConnectionStatus,
+} from "@kie-tools-core/kubernetes-bridge/dist/service";
+import { EMPTY_CONFIG, saveConfigCookie } from "./OpenShiftSettingsConfig";
+import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { routes } from "../../navigation/Routes";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { QuickStartIds } from "../../quickstarts-data";
-import { useSettings, useSettingsDispatch } from "../SettingsContext";
-import { EMPTY_CONFIG, saveConfigCookie } from "./OpenShiftSettingsConfig";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -67,7 +68,7 @@ export function OpenShiftSettingsSimpleConfig() {
   }, [settings.openshift.config, settings.openshift.status]);
 
   const resetConfig = useCallback(
-    (config: OpenShiftConnection) => {
+    (config: KubernetesConnection) => {
       setConfigValidated(
         settings.openshift.status === OpenShiftInstanceStatus.EXPIRED && config !== EMPTY_CONFIG
           ? FormValiationOptions.CONFIG_EXPIRED
@@ -84,14 +85,21 @@ export function OpenShiftSettingsSimpleConfig() {
       return;
     }
 
-    if (!isOpenShiftConnectionValid(config)) {
+    if (!isKubernetesConnectionValid(config)) {
       setConfigValidated(FormValiationOptions.INVALID);
       return;
     }
 
     setConnecting(true);
-    const isConfigOk = await settingsDispatch.openshift.service.isConnectionEstablished(config);
+    const isConfigOk =
+      (await settingsDispatch.openshift.service.isConnectionEstablished(config)) ===
+      KubernetesConnectionStatus.CONNECTED;
 
+    if (isConfigOk) {
+      saveConfigCookie(config);
+      settingsDispatch.openshift.setConfig(config);
+      settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.CONNECTED);
+    }
     setConnecting(false);
 
     if (!isConfigOk) {
@@ -99,10 +107,7 @@ export function OpenShiftSettingsSimpleConfig() {
       return;
     }
 
-    saveConfigCookie(config);
-    settingsDispatch.openshift.setConfig(config);
     resetConfig(config);
-    settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.CONNECTED);
   }, [config, isConnecting, resetConfig, settingsDispatch.openshift]);
 
   const onClearHost = useCallback(() => setConfig({ ...config, host: "" }), [config]);

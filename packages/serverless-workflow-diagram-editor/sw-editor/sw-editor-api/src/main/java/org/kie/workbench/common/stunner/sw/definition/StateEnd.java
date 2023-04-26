@@ -20,21 +20,28 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.ContinueAsJsonbTypeDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.ContinueAsJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.ContinueAsJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.ContinueAsYamlTypeSerializer;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class StateEnd {
 
-    private Boolean terminate;
-    private Boolean compensate;
+    public Boolean terminate;
+
+    public Boolean compensate;
 
     @JsonbTypeSerializer(ContinueAsJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ContinueAsJsonbTypeDeserializer.class)
+    @JsonbTypeDeserializer(ContinueAsJsonbTypeSerializer.class)
+    @YamlTypeSerializer(ContinueAsYamlTypeSerializer.class)
+    @YamlTypeDeserializer(ContinueAsYamlTypeSerializer.class)
     private Object continueAs;
 
-    private ProducedEvent[] produceEvents;
+    public ProducedEvent[] produceEvents;
 
     public final Boolean getTerminate() {
         return terminate;

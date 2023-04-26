@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.AbstractBindableShapeSet;
-import org.kie.workbench.common.stunner.sw.Definitions;
+import org.kie.workbench.common.stunner.sw.SWDefinitionSet;
 
 @ApplicationScoped
 public class ShapeSet extends AbstractBindableShapeSet<ShapeFactory> {
@@ -48,7 +48,7 @@ public class ShapeSet extends AbstractBindableShapeSet<ShapeFactory> {
 
     @Override
     protected Class<?> getDefinitionSetClass() {
-        return Definitions.class;
+        return SWDefinitionSet.class;
     }
 
     @Override

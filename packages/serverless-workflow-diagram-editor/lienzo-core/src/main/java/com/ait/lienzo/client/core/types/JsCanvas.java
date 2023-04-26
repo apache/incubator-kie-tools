@@ -16,9 +16,7 @@
 package com.ait.lienzo.client.core.types;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.NativeContext2D;
@@ -80,18 +78,50 @@ public class JsCanvas implements JsCanvasNodeLister {
     }
 
     public HTMLCanvasElement getCanvas() {
-        HTMLCanvasElement canvasElement = getLayer().getCanvasElement();
-        return canvasElement;
+        return getLayer().getCanvasElement();
     }
 
     public Viewport getViewport() {
         return getLayer().getViewport();
     }
 
-    public NativeContext2D getNativeContent() {
+    public void translate(double x, double y) {
+        getViewport().setTransform(new Transform()
+                                           .scaleWithXY(getScaleX(), getScaleY())
+                                           .translate(x, y));
+    }
+
+    public double getTranslateX() {
+        return getViewport().getTransform().getTranslateX();
+    }
+
+    public double getTranslateY() {
+        return getViewport().getTransform().getTranslateY();
+    }
+
+    public void scale(int factor) {
+        getViewport().setTransform(new Transform()
+                                           .translate(getTranslateX(), getTranslateY())
+                                           .scale(factor));
+    }
+
+    public void scaleWithXY(double x, double y) {
+        getViewport().setTransform(new Transform()
+                                           .translate(getTranslateX(), getTranslateY())
+                                           .scaleWithXY(x, y));
+    }
+
+    public double getScaleX() {
+        return getViewport().getTransform().getScaleX();
+    }
+
+    public double getScaleY() {
+        return getViewport().getTransform().getScaleY();
+    }
+
+    public NativeContext2D getNativeContext() {
         Context2D context = getLayer().getContext();
-        NativeContext2D nativeContext = context.getNativeContext();
-        return nativeContext;
+        return context.getNativeContext();
     }
 
     public JsCanvasEvents events() {
@@ -108,21 +138,12 @@ public class JsCanvas implements JsCanvasNodeLister {
         return animations;
     }
 
-    public JsCanvasLogger log() {
-        if (null == logger) {
-            logger = new JsCanvasLogger(this);
-        }
-        return logger;
-    }
-
     public int getPanelOffsetLeft() {
-        int result = panel.getElement().offsetLeft;
-        return result;
+        return panel.getElement().offsetLeft;
     }
 
     public int getPanelOffsetTop() {
-        int result = panel.getElement().offsetTop;
-        return result;
+        return panel.getElement().offsetTop;
     }
 
     public void add(IPrimitive<?> shape) {
@@ -137,17 +158,15 @@ public class JsCanvas implements JsCanvasNodeLister {
         return getShapeInContainer(id, getLayer());
     }
 
-    public WiresManager getWiresManager() {
-        return WiresManager.get(getLayer());
-    }
-
     public JsWiresShape getWiresShape(String id) {
-        WiresShape[] shapes = getWiresManager().getShapes();
-        for (WiresShape shape : shapes) {
-            if (id.equals(shape.getID())) {
-                final JsWiresShape jsWiresShape = new JsWiresShape(shape);
-                jsWiresShape.linkLister(this);
-                return jsWiresShape;
+        if (id != null && !"".equals(id)) {
+            WiresShape[] shapes = WiresManager.get(getLayer()).getShapes();
+            for (WiresShape shape : shapes) {
+                if (id.equals(shape.getID())) {
+                    final JsWiresShape jsWiresShape = new JsWiresShape(shape);
+                    jsWiresShape.linkLister(this);
+                    return jsWiresShape;
+                }
             }
         }
         return null;
@@ -257,8 +276,9 @@ public class JsCanvas implements JsCanvasNodeLister {
         return dimensionsArray;
     }
 
+    @Override
     public NFastArrayList<String> getNodeIds() {
-        WiresShape[] shapes = getWiresManager().getShapes();
+        WiresShape[] shapes = WiresManager.get(getLayer()).getShapes();
         NFastArrayList<String> ids = new NFastArrayList<>();
         for (int i = 0; i < shapes.length; i++) {
             WiresShape shape = shapes[i];
@@ -270,12 +290,6 @@ public class JsCanvas implements JsCanvasNodeLister {
     public void applyState(String UUID, String state) {
         if (UUID != null && state != null) {
             stateApplier.applyState(UUID, state);
-        }
-    }
-
-    public void center(String UUID) {
-        if (UUID != null) {
-            centerNode(UUID);
         }
     }
 
@@ -308,47 +322,43 @@ public class JsCanvas implements JsCanvasNodeLister {
         return false;
     }
 
-    public void centerNode(String uuid) {
-        if (!isShapeVisible(uuid)) {
-            final double[] center = calculateCenter(uuid);
-            layer.getViewport().getTransform().translate(center[0], center[1]);
-            ((ScrollablePanel) panel).refresh();
-        }
-    }
-
     @SuppressWarnings("all")
-    public double[] calculateCenter(String UUID) {
-        NFastArrayList<Double> absoluteLocation = getAbsoluteLocation(UUID);
-        final Bounds visibleBounds = ((ScrollablePanel) panel).getVisibleBounds();
-        final double visibleAreaX = visibleBounds.getX();
-        final double visibleAreaY = visibleBounds.getY();
-        final double areaMaxX = visibleAreaX + visibleBounds.getWidth();
-        final double areaMaxY = visibleAreaY + visibleBounds.getHeight();
+    public void center(String uuid) {
+        if (null != uuid && !isShapeVisible(uuid)) {
+            NFastArrayList<Double> absoluteLocation = getAbsoluteLocation(uuid);
+            final Bounds visibleBounds = ((ScrollablePanel) panel).getVisibleBounds();
+            final double visibleAreaX = visibleBounds.getX();
+            final double visibleAreaY = visibleBounds.getY();
+            final double areaMaxX = visibleAreaX + visibleBounds.getWidth();
+            final double areaMaxY = visibleAreaY + visibleBounds.getHeight();
 
-        if (absoluteLocation != null) {
-            NFastArrayList<Double> dimensions = getDimensions(UUID);
-            double nodeWidth = 0;
-            double nodeHeight = 0;
+            if (absoluteLocation != null) {
+                NFastArrayList<Double> dimensions = getDimensions(uuid);
+                double nodeWidth = 0;
+                double nodeHeight = 0;
 
-            if (dimensions != null) {
-                nodeWidth = dimensions.get(0);
-                nodeHeight = dimensions.get(1);
+                if (dimensions != null) {
+                    nodeWidth = dimensions.get(0);
+                    nodeHeight = dimensions.get(1);
+                }
+
+                double adjustX = visibleAreaX / 2;
+                double adjustY = visibleAreaY / 2;
+
+                // Calculate absolute center
+                double translatedX = (-absoluteLocation.get(0) + (areaMaxX / 2) - (nodeWidth / 2)) + adjustX;
+                double translatedY = (-absoluteLocation.get(1) + (areaMaxY / 2) - (nodeHeight / 2)) + adjustY;
+
+                // Do not exceed min bounds
+                translatedX = Math.min(translatedX, visibleAreaX);
+                translatedY = Math.min(translatedY, visibleAreaY);
+
+                final double[] center = new double[]{translatedX, translatedY};
+
+                layer.getViewport().getTransform().translate(center[0], center[1]);
+                ((ScrollablePanel) panel).refresh();
             }
-
-            double adjustX = visibleAreaX / 2;
-            double adjustY = visibleAreaY / 2;
-
-            // Calculate absolute center
-            double translatedX = (-absoluteLocation.get(0) + (areaMaxX / 2) - (nodeWidth / 2)) + adjustX;
-            double translatedY = (-absoluteLocation.get(1) + (areaMaxY / 2) - (nodeHeight / 2)) + adjustY;
-
-            // Do not exceed min bounds
-            translatedX = Math.min(translatedX, visibleAreaX);
-            translatedY = Math.min(translatedY, visibleAreaY);
-
-            return new double[]{translatedX, translatedY};
         }
-        return null;
     }
 
     public boolean isShapeVisible(String uuid) {
@@ -364,21 +374,8 @@ public class JsCanvas implements JsCanvasNodeLister {
         final double areaMaxX = visibleAreaX + visibleBounds.getWidth();
         final double areaMaxY = visibleAreaY + visibleBounds.getHeight();
 
-        if ((shapeX >= visibleAreaX && shapeMaxX <= areaMaxX) &&
-                (shapeY >= visibleAreaY && shapeMaxY <= areaMaxY)) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public Set<String> getNodeIdSet() {
-        WiresShape[] shapes = getWiresManager().getShapes();
-        Set<String> ids = new HashSet<>();
-        for (int i = 0; i < shapes.length; i++) {
-            ids.add(shapes[i].getID());
-        }
-        return ids;
+        return (shapeX >= visibleAreaX && shapeMaxX <= areaMaxX) &&
+                (shapeY >= visibleAreaY && shapeMaxY <= areaMaxY);
     }
 
     public void close() {

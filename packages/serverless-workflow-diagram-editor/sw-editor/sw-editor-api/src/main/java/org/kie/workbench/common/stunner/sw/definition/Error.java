@@ -18,14 +18,18 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class Error {
 
-    private String name;
-    private String code;
-    private String description;
+    public String name;
+
+    public String code;
+
+    public String description;
 
     public final String getName() {
         return name;

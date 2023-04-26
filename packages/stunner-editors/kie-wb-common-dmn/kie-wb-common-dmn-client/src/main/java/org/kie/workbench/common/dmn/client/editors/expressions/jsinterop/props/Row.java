@@ -22,9 +22,9 @@ import jsinterop.annotations.JsType;
 public class Row {
 
     public final String id;
-    public final String[] cells;
+    public final Cell[] cells;
 
-    public Row(final String id, final String[] cells) {
+    public Row(final String id, final Cell[] cells) {
         this.id = id;
         this.cells = cells;
     }

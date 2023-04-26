@@ -17,7 +17,6 @@ package org.dashbuilder.client.navigation.widget;
 
 import java.util.List;
 
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -30,8 +29,6 @@ import org.dashbuilder.navigation.layout.LayoutRecursionIssueI18n;
 import org.dashbuilder.navigation.layout.LayoutTemplateContext;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.ext.plugin.event.PluginSaved;
-import org.uberfire.ext.plugin.model.Plugin;
 
 /**
  * Base class for nav widgets that uses a target div to show a nav item's content once clicked.
@@ -164,8 +161,7 @@ public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTar
                     pluginManager.buildPerspectiveWidget(resourceId, layoutCtx,
                             w -> view.showContent(targetDivId, w),
                             this::onInfiniteRecursion);
-                }
-                else if (!onlyRuntimePerspectives) {
+                } else if (!onlyRuntimePerspectives) {
                     placeManager.goTo(resourceId);
                 }
             } else {
@@ -179,14 +175,4 @@ public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTar
         view.infiniteRecursionError(targetDivId, cause);
     }
 
-    // Catch changes on runtime perspectives so as to display the most up to date changes
-
-    private void onPluginSaved(@Observes PluginSaved event) {
-        Plugin plugin = event.getPlugin();
-        String pluginName = plugin.getName();
-        String selectedPerspectiveId = pluginManager.getRuntimePerspectiveId(itemSelected);
-        if (selectedPerspectiveId != null && selectedPerspectiveId.equals(pluginName)) {
-            gotoNavItem(true);
-        }
-    }
 }

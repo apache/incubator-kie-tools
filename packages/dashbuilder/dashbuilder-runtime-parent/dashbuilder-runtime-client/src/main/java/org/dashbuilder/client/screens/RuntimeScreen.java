@@ -23,8 +23,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.dashbuilder.client.navbar.AppNavBar;
-import org.dashbuilder.client.navbar.NavBarHelper;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.shared.model.RuntimeModel;
@@ -59,14 +57,9 @@ public class RuntimeScreen {
     @Inject
     View view;
 
-    @Inject
-    NavBarHelper menusHelper;
 
     @Inject
     PlaceManager placeManager;
-
-    @Inject
-    AppNavBar appNavBar;
 
     private RuntimeModel currentRuntimeModel;
 

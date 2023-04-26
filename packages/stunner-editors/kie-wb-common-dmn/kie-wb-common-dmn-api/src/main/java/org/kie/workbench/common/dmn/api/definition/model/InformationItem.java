@@ -109,6 +109,12 @@ public class InformationItem extends NamedElement implements DMNPropertySet,
         return clonedInformationItem;
     }
 
+    public InformationItem exactCopy() {
+        final InformationItem exactelyClonedInformationItem = this.copy();
+        exactelyClonedInformationItem.id = Optional.ofNullable(id).map(Id::copy).orElse(null);
+        return exactelyClonedInformationItem;
+    }
+
     @Override
     public QName getTypeRef() {
         return typeRefHolder.getValue();

@@ -50,10 +50,6 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 </#if>
-<#if getToolBarMethodName??>
-import org.uberfire.workbench.model.toolbar.ToolBar;
-
-</#if>
 import com.google.gwt.user.client.ui.IsWidget;
 
 <#if beanActivatorClass??>
@@ -226,20 +222,6 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     public Position getDefaultPosition() {
         return realPresenter.${getDefaultPositionMethodName}();
     }
-    </#if>
-    <#if getMenuBarMethodName??>
-    @Override
-    public void getMenus(final Consumer<Menus> menusConsumer) {
-        realPresenter.${getMenuBarMethodName}(menusConsumer);
-    }
-
-    </#if>
-    <#if getToolBarMethodName??>
-    @Override
-    public ToolBar getToolBar() {
-        return realPresenter.${getToolBarMethodName}();
-    }
-
     </#if>
     <#if getContextIdMethodName??>
 

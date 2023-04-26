@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
 
 public abstract class AbstractRegistryFactory implements RegistryFactory {
 
-    private AdapterManager adapterManager;
+    protected AdapterManager adapterManager;
 
     protected AbstractRegistryFactory() {
     }

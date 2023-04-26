@@ -32,9 +32,10 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
-import org.kie.workbench.common.stunner.sw.Definitions;
-import org.kie.workbench.common.stunner.sw.factory.DiagramFactory;
+import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
+import org.kie.workbench.common.stunner.sw.SWDefinitionSet;
 import org.kie.workbench.common.stunner.sw.marshall.Context;
+import org.kie.workbench.common.stunner.sw.marshall.DocType;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Message;
 import org.kie.workbench.common.stunner.sw.marshall.ParseResult;
@@ -70,30 +71,27 @@ public class ClientDiagramService {
         this.marshaller = marshaller;
     }
 
-    public void transform(final String xml,
-                          final ServiceCallback<ParseResult> callback) {
-        doTransform("default", xml, callback);
-    }
-
     public void transform(final String fileName,
                           final String xml,
+                          final DocType docType,
                           final ServiceCallback<ParseResult> callback) {
-        doTransform(fileName, xml, callback);
+        doTransform(fileName, xml, docType, callback);
     }
 
     private void doTransform(final String fileName,
                              final String xml,
+                             final DocType docType,
                              final ServiceCallback<ParseResult> callback) {
         if (Objects.isNull(xml) || xml.isEmpty()) {
             Diagram newDiagram = createNewDiagram(fileName);
             callback.onSuccess(new ParseResult(newDiagram, new Message[0]));
         } else {
-            parse(fileName, xml, callback);
+            parse(fileName, xml, docType, callback);
         }
     }
 
-    public Promise<String> transform(final Diagram diagram) {
-        return marshaller.marshallGraph(diagram.getGraph());
+    public Promise<String> transform(final Diagram diagram, DocType docType) {
+        return marshaller.marshallGraph(diagram.getGraph(), docType);
     }
 
     public Marshaller getMarshaller() {
@@ -113,15 +111,16 @@ public class ClientDiagramService {
     }
 
     private static String getDefinitionSetId() {
-        return BindableAdapterUtils.getDefinitionSetId(Definitions.class);
+        return BindableAdapterUtils.getDefinitionSetId(SWDefinitionSet.class);
     }
 
     @SuppressWarnings("all")
     private void parse(final String fileName,
                        final String raw,
+                       final DocType docType,
                        ServiceCallback<ParseResult> serviceCallback) {
         final Metadata metadata = createMetadata();
-        final Promise<ParseResult> promise = unmarshall(metadata, raw);
+        final Promise<ParseResult> promise = unmarshall(metadata, raw, docType);
         promise.then(new IThenable.ThenOnFulfilledCallbackFn<ParseResult, Object>() {
             @Override
             public IThenable<Object> onInvoke(ParseResult parseResult) {
@@ -151,8 +150,9 @@ public class ClientDiagramService {
     }
 
     private Promise<ParseResult> unmarshall(final Metadata metadata,
-                                            final String raw) {
-        return marshaller.unmarshallGraph(raw);
+                                            final String raw,
+                                            final DocType docType) {
+        return marshaller.unmarshallGraph(raw, docType);
     }
 
     private Metadata createMetadata() {

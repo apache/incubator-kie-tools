@@ -26,13 +26,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -48,9 +48,6 @@ public class ClearExpressionCommandTest {
     private Event<ExpressionEditorChanged> editorSelectedEvent;
 
     @Mock
-    private ExpressionEditorView view;
-
-    @Mock
     private ItemDefinitionUtils itemDefinitionUtils;
 
     private ClearExpressionCommand expressionCommand;
@@ -63,22 +60,19 @@ public class ClearExpressionCommandTest {
                                                             expressionProps,
                                                             editorSelectedEvent,
                                                             nodeUUID,
-                                                            view,
                                                             itemDefinitionUtils,
                                                             Optional.empty());
     }
 
     @Test
     public void testGetNewExpression() {
-
         assertTrue(Objects.isNull(expressionCommand.getNewExpression()));
     }
 
     @Test
     public void testFill() {
-
         expressionCommand.fill();
 
-        verify(view).clear();
+        verify(hasExpression, times(1)).setExpression(null);
     }
 }

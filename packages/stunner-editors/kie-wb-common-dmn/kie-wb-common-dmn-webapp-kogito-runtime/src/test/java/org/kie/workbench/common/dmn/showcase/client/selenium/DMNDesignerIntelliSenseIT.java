@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.dmn.showcase.client.selenium;
 
-import org.junit.Test;
+import org.junit.Ignore;
 import org.kie.workbench.common.dmn.showcase.client.common.DMNDesignerBaseIT;
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.DecisionNavigatorXPathLocator;
 import org.openqa.selenium.Keys;
@@ -28,7 +28,7 @@ import org.xmlunit.assertj.XmlAssert;
  */
 public class DMNDesignerIntelliSenseIT extends DMNDesignerBaseIT {
 
-    @Test
+    @Ignore("No more compatible with React Based Boxed Expression")
     public void testNumberSuggestions() throws Exception {
         final String expected = loadResource("decision-expression-literal.xml");
         setContent(expected);

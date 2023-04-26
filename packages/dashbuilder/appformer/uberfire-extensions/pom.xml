@@ -34,10 +34,8 @@
 
   <modules>
     <module>uberfire-widgets</module>
-    <module>uberfire-commons-editor</module>
     <module>uberfire-runtime-plugins</module>
     <module>uberfire-layout-editor</module>
-    <module>uberfire-simple-docks</module>
   </modules>
 
 </project>

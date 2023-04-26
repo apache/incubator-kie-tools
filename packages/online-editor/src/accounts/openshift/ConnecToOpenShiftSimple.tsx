@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import React, { useCallback, useState } from "react";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -23,21 +24,20 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import * as React from "react";
-import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
-import {
-  isOpenShiftConnectionValid,
-  OpenShiftConnection,
-} from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { KieSandboxOpenShiftService } from "../../openshift/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
 import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
+import {
+  KubernetesConnection,
+  KubernetesConnectionStatus,
+  isKubernetesConnectionValid,
+} from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -48,8 +48,8 @@ enum FormValiationOptions {
 export function ConnecToOpenShiftSimple(props: {
   openshiftService: KieSandboxOpenShiftService;
   setMode: React.Dispatch<React.SetStateAction<OpenShiftSettingsTabMode>>;
-  connection: OpenShiftConnection;
-  setConnection: React.Dispatch<React.SetStateAction<OpenShiftConnection>>;
+  connection: KubernetesConnection;
+  setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
   status: OpenShiftInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<OpenShiftAuthSession>>;
@@ -65,7 +65,7 @@ export function ConnecToOpenShiftSimple(props: {
       return;
     }
 
-    if (!isOpenShiftConnectionValid(props.connection)) {
+    if (!isKubernetesConnectionValid(props.connection)) {
       setConnectionValidated(FormValiationOptions.INVALID);
       return;
     }
@@ -74,7 +74,7 @@ export function ConnecToOpenShiftSimple(props: {
     const isConnectionEstablished = await props.openshiftService.isConnectionEstablished();
     setConnecting(false);
 
-    if (isConnectionEstablished) {
+    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
       const newAuthSession: OpenShiftAuthSession = {
         type: "openshift",
         id: uuid(),
@@ -172,7 +172,7 @@ export function ConnecToOpenShiftSimple(props: {
         data-testid="use-wizard-button"
         isLoading={isConnecting}
       >
-        {i18n.devDeployments.configModal.useWizard}
+        {i18n.devDeployments.configModal.useOpenShiftWizard}
         &nbsp;
         <ArrowRightIcon className="pf-u-ml-sm" />
       </Button>
