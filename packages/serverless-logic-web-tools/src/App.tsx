@@ -30,6 +30,7 @@ import { DevModeContextProvider } from "./openshift/swfDevMode/DevModeContext";
 import { GlobalAlertsContextProvider } from "./alerts/GlobalAlertsContext";
 import { EditorContextProvider } from "./editor/hooks/EditorContext";
 import { WebToolsWorkspaceContextProvider } from "./workspace/hooks/WebToolsWorkspaceContextProvider";
+import { UpgradeContextProvider } from "./upgrade/UpgradeContext";
 
 export const App = () => (
   <HashRouter>
@@ -41,6 +42,7 @@ export const App = () => (
       [SettingsContextProvider, {}],
       [GlobalAlertsContextProvider, []],
       [WebToolsWorkspaceContextProvider, []],
+      [UpgradeContextProvider, []],
       [OpenShiftContextProvider, {}],
       [DevModeContextProvider, {}],
       [VirtualServiceRegistryContextProvider, {}],

@@ -137,7 +137,7 @@ export function Showcase() {
           </TextContent>
           <br />
           <Flex flexWrap={{ default: "wrap" }}>
-            <FlexItem style={{ marginRight: 0 }}>
+            <FlexItem style={{ marginRight: "1px" }}>
               <SearchInput
                 value={""}
                 type={"search"}
