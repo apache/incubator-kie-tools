@@ -23,11 +23,7 @@ import { useSettingsDispatch } from "../../../settings/SettingsContext";
 import { fetchSampleDefinitions, fetchSampleFiles, Sample, SampleCategory } from "../SampleApi";
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import Fuse from "fuse.js";
-
-export const SAMPLES_FS_MOUNT_POINT_PREFIX = "lfs_v1__samples__";
-export const SAMPLES_FS_MOUNT_POINT = `${SAMPLES_FS_MOUNT_POINT_PREFIX}${process.env.WEBPACK_REPLACE__version!}`;
-const SAMPLE_DEFINITIONS_CACHE_FILE_PATH = "/definitions.json";
-const SEARCH_KEYS = ["definition.category", "definition.title", "definition.description"];
+import { SAMPLES_FS_MOUNT_POINT, SAMPLE_DEFINITIONS_CACHE_FILE_PATH, SAMPLE_SEARCH_KEYS } from "../SampleConstants";
 
 export interface SampleDispatchContextType {
   getSamples(args: { categoryFilter?: SampleCategory; searchFilter?: string }): Promise<Sample[]>;
@@ -83,7 +79,7 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
 
       if (args.searchFilter && args.searchFilter.trim().length > 0) {
         const fuse = new Fuse(filteredSamples, {
-          keys: SEARCH_KEYS,
+          keys: SAMPLE_SEARCH_KEYS,
           shouldSort: false,
           threshold: 0.3,
         });
