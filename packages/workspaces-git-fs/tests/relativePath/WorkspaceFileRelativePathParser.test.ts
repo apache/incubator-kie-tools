@@ -18,6 +18,8 @@ import { extractExtension } from "../../src/relativePath/WorkspaceFileRelativePa
 
 describe("WorkspaceFileRelativePathParser :: extractExtension", () => {
   it.each([
+    ["foo.yaml", "yaml"],
+    ["foo.yml", "yml"],
     ["foo.json", "json"],
     [".gitignore", "gitignore"],
     ["noExtension", ""],

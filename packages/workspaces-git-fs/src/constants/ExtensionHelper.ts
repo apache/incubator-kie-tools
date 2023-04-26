@@ -16,7 +16,7 @@
 
 const REGEX = {
   supportedSingleExtensions: /(\.bpmn|bpmn2|\.dmn|\.pmml)$/i,
-  supportedDoubleExtensions: /(\.sw\.json|yml|yaml|\.yard\.json|yml|yaml|\.dash\.yml|yaml)$/i,
+  supportedDoubleExtensions: /(\.sw\.(json|yml|yaml)|\.yard\.(json|yml|yaml)|\.dash\.(yml|yaml))$/i,
   sw: /^.*\.sw\.(json|yml|yaml)$/i,
   swJson: /^.*\.sw\.json$/i,
   swYaml: /^.*\.sw\.yaml$/i,
