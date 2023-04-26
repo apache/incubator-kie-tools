@@ -89,10 +89,6 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     });
   }
 
-  private get swfLanguageServiceClass() {
-    return this.language === FileLanguage.YAML ? SwfJsonLanguageService : SwfYamlLanguageService;
-  }
-
   public redo(): void {
     this.editor?.focus();
     this.editor?.trigger("editor", "redo", null);
