@@ -51,6 +51,10 @@ import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { EditorPageDockContextProvider } from "./EditorPageDockContextProvider";
+import { ErrorBoundary } from "../reactExt/ErrorBoundary";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 
 export interface Props {
   workspaceId: string;
@@ -59,6 +63,8 @@ export interface Props {
 
 let saveVersion = 1;
 let refreshVersion = 0;
+
+const KIE_ISSUES_LINK = "https://github.com/kiegroup/kie-issues/issues";
 
 export function EditorPage(props: Props) {
   const routes = useRoutes();
@@ -71,7 +77,7 @@ export function EditorPage(props: Props) {
   const alertsDispatch = useGlobalAlertsDispatchContext();
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
   const [isFileBroken, setFileBroken] = useState(false);
-
+  const [_, setEditorPageError] = useState(false);
   const lastContent = useRef<string>();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
 
@@ -345,6 +351,37 @@ export function EditorPage(props: Props) {
     [editor]
   );
 
+  const errorMessage = useMemo(
+    () => (
+      <div>
+        <EmptyState>
+          <EmptyStateIcon icon={ExclamationTriangleIcon} />
+          <TextContent>
+            <Text component={"h2"}>{i18n.editorPage.error.title}</Text>
+          </TextContent>
+          <EmptyStateBody>
+            <TextContent>{i18n.editorPage.error.explanation}</TextContent>
+            <br />
+            <TextContent>
+              <I18nWrapped
+                components={{
+                  issues: (
+                    <a href={KIE_ISSUES_LINK} target={"_blank"}>
+                      {KIE_ISSUES_LINK}
+                    </a>
+                  ),
+                }}
+              >
+                {i18n.editorPage.error.message}
+              </I18nWrapped>
+            </TextContent>
+          </EmptyStateBody>
+        </EmptyState>
+      </div>
+    ),
+    [i18n]
+  );
+
   return (
     <OnlineEditorPage onKeyDown={onKeyDown}>
       <PromiseStateWrapper
@@ -364,7 +401,7 @@ export function EditorPage(props: Props) {
           <EditorPageErrorPage title={"Can't open file"} errors={errors} path={props.fileRelativePath} />
         )}
         resolved={(file) => (
-          <>
+          <ErrorBoundary error={errorMessage} setHasError={setEditorPageError}>
             <Page>
               <EditorPageDockContextProvider
                 workspaceFile={file.workspaceFile}
@@ -413,7 +450,7 @@ export function EditorPage(props: Props) {
               isOpen={isTextEditorModalOpen}
             />
             <DevDeploymentsConfirmDeployModal workspaceFile={file.workspaceFile} />
-          </>
+          </ErrorBoundary>
         )}
       />
     </OnlineEditorPage>
