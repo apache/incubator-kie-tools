@@ -583,15 +583,15 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               }
 
               setJsonSchema((previousJsonSchema) => {
-                const dereferedJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
+                const derefererJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
                 // On the first render the previous will be undefined;
                 if (!previousJsonSchema) {
-                  return dereferedJsonSchema;
+                  return derefererJsonSchema;
                 }
 
                 const propertiesDifference = diff(
                   getObjectValueByPath(previousJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {},
-                  getObjectValueByPath(dereferedJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {}
+                  getObjectValueByPath(derefererJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {}
                 );
 
                 // Add default values and delete changed data types;
@@ -604,7 +604,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                     ),
                   cancellationToken: canceled,
                 });
-                return dereferedJsonSchema;
+                return derefererJsonSchema;
               });
             });
           })
