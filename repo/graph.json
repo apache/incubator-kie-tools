@@ -91,7 +91,6 @@
       { "id": "@kie-tools/extended-services-api" },
       { "id": "@kie-tools/form" },
       { "id": "dmn-vscode-extension" },
-      { "id": "@kie-tools-core/operating-system" },
       { "id": "@kie-tools/extended-services" },
       { "id": "@kie-tools/form-generation-tool" },
       { "id": "@kie-tools/uniforms-bootstrap4-codegen" },
@@ -120,6 +119,7 @@
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
+      { "id": "serverless-workflow-vscode-extension" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -603,9 +603,6 @@
         "weight": 1
       },
       { "source": "dmn-vscode-extension", "target": "@kie-tools/stunner-editors", "weight": 1 },
-      { "source": "@kie-tools-core/operating-system", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "@kie-tools-core/operating-system", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools-core/operating-system", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/extended-services", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/form-generation-tool", "target": "@kie-tools/uniforms-bootstrap4-codegen", "weight": 1 },
       { "source": "@kie-tools/form-generation-tool", "target": "@kie-tools/uniforms-patternfly-codegen", "weight": 1 },
@@ -768,6 +765,27 @@
         "target": "@kie-tools-core/envelope-bus",
         "weight": 1
       },
+      { "source": "serverless-workflow-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
+      {
+        "source": "serverless-workflow-vscode-extension",
+        "target": "@kie-tools/serverless-workflow-diagram-editor-envelope",
+        "weight": 1
+      },
+      {
+        "source": "serverless-workflow-vscode-extension",
+        "target": "@kie-tools/serverless-workflow-language-service",
+        "weight": 1
+      },
+      {
+        "source": "serverless-workflow-vscode-extension",
+        "target": "@kie-tools/serverless-workflow-mermaid-viewer",
+        "weight": 1
+      },
+      {
+        "source": "serverless-workflow-vscode-extension",
+        "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
+        "weight": 1
+      },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       {
         "source": "vscode-extension-dashbuilder-editor",
@@ -924,6 +942,7 @@
     ["@kie-tools/serverless-workflow-service-catalog", "packages/serverless-workflow-service-catalog"],
     ["@kie-tools/serverless-workflow-standalone-editor", "packages/serverless-workflow-standalone-editor"],
     ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],
+    ["serverless-workflow-vscode-extension", "packages/serverless-workflow-vscode-extension"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
     ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],
     ["@kie-tools/text-editor", "packages/text-editor"],
