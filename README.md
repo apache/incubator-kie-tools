@@ -213,6 +213,10 @@ You can find some scripts in the [hack](./hack/local/) folder.
 - `greeting_example_remove.sh` will remove the created workflow resource from `greeting_example_deploy.sh` script.  
   If you give the `-A` or `--all` option, it will also remove the operator from the cluster.
 
+## Tekton Pipeline to build and deploy the Operator
+
+Setup a [pipeline](docs/PIPELINE.md) on a Openshift cluster.
+
 ## Development and Contributions 
 
-Contributing is easy, just take a look at our [contributors](./CONTRIBUTING.md)'guide.
+Contributing is easy, just take a look at our [contributors](docs/CONTRIBUTING.md)'guide.

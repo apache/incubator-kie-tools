@@ -127,7 +127,7 @@ make undeploy
 
 ### Running the operator on the cluster
 
-See the section on [README](./README.md#getting-started)
+See the section on [README](../README.md#getting-started)
 
 ### Configuration
 
@@ -139,7 +139,7 @@ A configmap called `kogito-serverless-operator-builder-config` will be created u
 
 ## Customize Builder Image
 
-At the startup a [Dockerfile](./config/manager/kogito_builder_dockerfile.yaml) is placed in a configmap. This Dockerfile uses a base image called [kogito-swf-builder](https://github.com/kiegroup/kogito-images/tree/master/modules/kogito-swf-builder) with:
+At the startup a [Dockerfile](../config/manager/kogito_builder_dockerfile.yaml) is placed in a configmap. This Dockerfile uses a base image called [kogito-swf-builder](https://github.com/kiegroup/kogito-images/tree/master/modules/kogito-swf-builder) with:
 
 - openjdk 11+
 - maven 3.8.6+
