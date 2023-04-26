@@ -19,7 +19,7 @@ package metadata
 const (
 	QUARKUS_MAVEN_PLUGIN                             = "quarkus-maven-plugin"
 	QUARKUS_KUBERNETES_EXTENSION                     = "quarkus-kubernetes"
-	QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION      = "quarkus-resteasy-reactive-jackson"
+	QUARKUS_RESTEASY_JACKSON_EXTENSION               = "quarkus-resteasy-jackson"
 	QUARKUS_CONTAINER_IMAGE_JIB                      = "quarkus-container-image-jib"
 	QUARKUS_CONTAINER_IMAGE_DOCKER                   = "quarkus-container-image-docker"
 	KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION     = "kogito-quarkus-serverless-workflow"
