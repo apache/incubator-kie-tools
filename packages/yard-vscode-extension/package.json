@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Edit yard definitions",
   "license": "Apache-2.0",
-  "publisher": "redhat",
+  "publisher": "kie-group",
   "keywords": [],
   "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
