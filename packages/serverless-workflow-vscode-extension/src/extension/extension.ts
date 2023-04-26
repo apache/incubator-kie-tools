@@ -87,7 +87,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const kieEditorsStore = await KieToolsVsCodeExtensions.startExtension({
     editorDocumentType: "text",
-    extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
+    extensionName: "kie-group.serverless-workflow-vscode-extension",
     context: context,
     viewType: WEBVIEW_EDITOR_VIEW_TYPE,
     generateSvgCommandId: COMMAND_IDS.getPreviewSvg,
