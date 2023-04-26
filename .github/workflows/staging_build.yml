@@ -397,17 +397,6 @@ jobs:
           asset_name: STAGING__vscode_extension_dev_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
-      - name: "STAGING: Upload VS Code Extension Backend (dev) (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-backend/dist/vscode-extension-backend_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_backend_dev_${{ inputs.tag }}.vsix
-          asset_content_type: application/zip
-
       - name: "STAGING: Upload VS Code Extension - BPMN Editor (prod) (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2

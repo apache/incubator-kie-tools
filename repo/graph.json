@@ -42,8 +42,6 @@
       { "id": "@kie-tools-core/notifications" },
       { "id": "@kie-tools-core/i18n" },
       { "id": "@kie-tools-core/workspace" },
-      { "id": "@kie-tools/backend-extended-services" },
-      { "id": "@kie-tools/maven-config-setup-helper" },
       { "id": "@kie-tools/boxed-expression-component" },
       { "id": "@kie-tools-core/operating-system" },
       { "id": "@kie-tools/feel-input-component" },
@@ -53,6 +51,7 @@
       { "id": "@kie-tools/dmn-language-service" },
       { "id": "@kie-tools/pmml-editor-marshaller" },
       { "id": "@kie-tools/stunner-editors-dmn-loader" },
+      { "id": "@kie-tools/maven-config-setup-helper" },
       { "id": "chrome-extension-serverless-workflow-editor" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-assets" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
@@ -115,7 +114,6 @@
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
-      { "id": "vscode-extension-backend" },
       { "id": "vscode-extension-bpmn-editor" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
       { "id": "vscode-extension-dashbuilder-editor" },
@@ -124,7 +122,6 @@
       { "id": "vscode-extension-kogito-bundle" },
       { "id": "vscode-extension-pack-kogito-kie-editors" },
       { "id": "vscode-extension-pmml-editor" },
-      { "id": "vscode-extension-red-hat-business-automation-bundle" },
       { "id": "vscode-extension-serverless-workflow-editor" },
       { "id": "vscode-extension-yard-editor" },
       { "id": "@kie-tools/yard-editor" }
@@ -281,12 +278,6 @@
       { "source": "@kie-tools-core/i18n", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/i18n", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools-core/workspace", "target": "@kie-tools-core/operating-system", "weight": 1 },
-      {
-        "source": "@kie-tools/backend-extended-services",
-        "target": "@kie-tools/maven-config-setup-helper",
-        "weight": 1
-      },
-      { "source": "@kie-tools/backend-extended-services", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/boxed-expression-component", "target": "@kie-tools-core/operating-system", "weight": 1 },
       { "source": "@kie-tools/boxed-expression-component", "target": "@kie-tools/feel-input-component", "weight": 1 },
       { "source": "@kie-tools-core/operating-system", "target": "@kie-tools/eslint", "weight": 1 },
@@ -736,9 +727,6 @@
         "target": "@kie-tools-core/envelope-bus",
         "weight": 1
       },
-      { "source": "vscode-extension-backend", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
-      { "source": "vscode-extension-backend", "target": "@kie-tools/backend-extended-services", "weight": 1 },
-      { "source": "vscode-extension-backend", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "vscode-extension-bpmn-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "vscode-extension-bpmn-editor", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       {
@@ -794,13 +782,6 @@
       { "source": "vscode-extension-pmml-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "vscode-extension-pmml-editor", "target": "@kie-tools/pmml-editor", "weight": 1 },
       {
-        "source": "vscode-extension-red-hat-business-automation-bundle",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      { "source": "vscode-extension-red-hat-business-automation-bundle", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "vscode-extension-red-hat-business-automation-bundle", "target": "@kie-tools/tsconfig", "weight": 1 },
-      {
         "source": "vscode-extension-serverless-workflow-editor",
         "target": "@kie-tools-core/vscode-extension",
         "weight": 1
@@ -845,7 +826,6 @@
     ["@kie-tools-examples/uniforms-patternfly", "examples/uniforms-patternfly"],
     ["@kie-tools-examples/webapp", "examples/webapp"],
     ["@kie-tools-core/backend", "packages/backend"],
-    ["@kie-tools/backend-extended-services", "packages/backend-extended-services"],
     ["@kie-tools/boxed-expression-component", "packages/boxed-expression-component"],
     ["@kie-tools-core/chrome-extension", "packages/chrome-extension"],
     ["chrome-extension-pack-kogito-kie-editors", "packages/chrome-extension-pack-kogito-kie-editors"],
@@ -950,7 +930,6 @@
     ["@kie-tools/unitables", "packages/unitables"],
     ["@kie-tools/unitables-dmn", "packages/unitables-dmn"],
     ["@kie-tools-core/vscode-extension", "packages/vscode-extension"],
-    ["vscode-extension-backend", "packages/vscode-extension-backend"],
     ["vscode-extension-bpmn-editor", "packages/vscode-extension-bpmn-editor"],
     ["vscode-extension-dashbuilder-editor", "packages/vscode-extension-dashbuilder-editor"],
     ["vscode-extension-dmn-editor", "packages/vscode-extension-dmn-editor"],
@@ -958,10 +937,6 @@
     ["vscode-extension-kogito-bundle", "packages/vscode-extension-kogito-bundle"],
     ["vscode-extension-pack-kogito-kie-editors", "packages/vscode-extension-pack-kogito-kie-editors"],
     ["vscode-extension-pmml-editor", "packages/vscode-extension-pmml-editor"],
-    [
-      "vscode-extension-red-hat-business-automation-bundle",
-      "packages/vscode-extension-red-hat-business-automation-bundle"
-    ],
     ["vscode-extension-serverless-workflow-editor", "packages/vscode-extension-serverless-workflow-editor"],
     ["vscode-extension-yard-editor", "packages/vscode-extension-yard-editor"],
     ["@kie-tools-core/vscode-java-code-completion", "packages/vscode-java-code-completion"],

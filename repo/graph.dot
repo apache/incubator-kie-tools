@@ -31,8 +31,6 @@ digraph G {
   "@kie-tools/serverless-workflow-standalone-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/backend" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/notifications" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools/backend-extended-services" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/maven-config-setup-helper" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/boxed-expression-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/operating-system" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/feel-input-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -43,6 +41,7 @@ digraph G {
   "@kie-tools/serverless-workflow-combined-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-component-assembler" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/maven-config-setup-helper" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-client" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-component-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/eslint" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -116,7 +115,6 @@ digraph G {
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-scripts/build-env" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-bpmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/vscode-java-code-completion-extension-plugin" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -125,7 +123,6 @@ digraph G {
   "vscode-extension-kogito-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-pack-kogito-kie-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "vscode-extension-red-hat-business-automation-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -159,8 +156,6 @@ digraph G {
   "@kie-tools-examples/webapp" -> "@kie-tools/kie-editors-standalone" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools/serverless-workflow-standalone-editor" [ style = "solid", color = "orange" ];
   "@kie-tools-core/backend" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];
-  "@kie-tools/backend-extended-services" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "blue" ];
-  "@kie-tools/backend-extended-services" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/feel-input-component" [ style = "solid", color = "blue" ];
   "@kie-tools-core/chrome-extension" -> "@kie-tools-core/editor" [ style = "solid", color = "purple" ];
@@ -374,9 +369,6 @@ digraph G {
   "@kie-tools/unitables-dmn" -> "@kie-tools/unitables" [ style = "solid", color = "blue" ];
   "@kie-tools-core/vscode-extension" -> "@kie-tools-core/editor" [ style = "solid", color = "purple" ];
   "@kie-tools-core/vscode-extension" -> "@kie-tools-core/vscode-java-code-completion" [ style = "solid", color = "purple" ];
-  "vscode-extension-backend" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "black" ];
-  "vscode-extension-backend" -> "@kie-tools/backend-extended-services" [ style = "solid", color = "black" ];
-  "vscode-extension-backend" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
   "vscode-extension-bpmn-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-bpmn-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "vscode-extension-bpmn-editor" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "solid", color = "blue" ];
@@ -401,9 +393,6 @@ digraph G {
   "vscode-extension-pack-kogito-kie-editors" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "vscode-extension-pmml-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-pmml-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "blue" ];
-  "vscode-extension-red-hat-business-automation-bundle" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
-  "vscode-extension-red-hat-business-automation-bundle" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
-  "vscode-extension-red-hat-business-automation-bundle" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-diagram-editor-envelope" [ style = "solid", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
