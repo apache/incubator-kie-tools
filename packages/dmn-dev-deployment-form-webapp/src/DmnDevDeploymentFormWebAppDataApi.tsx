@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { DmnSchema } from "@kie-tools/form-dmn";
+import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { routes } from "./Routes";
 
 export interface FormData {
   uri: string;
   modelName: string;
-  schema: DmnSchema;
+  schema: ExtendedServicesDmnJsonSchema;
 }
 
 export interface AppData {

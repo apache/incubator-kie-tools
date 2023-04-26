@@ -16,14 +16,15 @@
 
 import * as React from "react";
 import { useContext, useMemo } from "react";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+// import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { EditorEnvelopeLocatorFactory } from "../EditorEnvelopeLocatorFactory";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { EditorConfig } from "../EditorEnvelopeLocatorApi";
 
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "BPMN" | "BPMN2" | "dmn" | "DMN" | "pmml" | "PMML";
 
-export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
+// FIXME: Chaging `any` to `EditorEnvelopeLocator` breaks --env live. Please adress this as part of https://github.com/kiegroup/kie-issues/issues/109
+export const EditorEnvelopeLocatorContext = React.createContext<any>({} as any);
 
 export function EditorEnvelopeLocatorContextProvider(props: { children: React.ReactNode }) {
   const editorsConfig = useEditorsConfig();

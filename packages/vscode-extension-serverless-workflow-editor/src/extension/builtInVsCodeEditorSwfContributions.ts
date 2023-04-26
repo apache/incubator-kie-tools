@@ -250,7 +250,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
         const selection = await vscode.window.showInformationMessage(
           `Kogito Serverless Workflow Visualization Preview will be ${
             isStunnerEnabled ? "enabled" : "disabled"
-          } for JSON files after VS Code is restarted.`,
+          } for JSON and YAML files after VS Code is restarted.`,
           restartNowLabel
         );
         if (selection !== restartNowLabel) {

@@ -53,6 +53,7 @@ import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdow
 import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.ITEM_DEFINITION_COUNT_METADATA;
 import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.PATH_METADATA;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -65,6 +66,9 @@ public class AddIncludedModelCommandTest {
 
     @Mock
     private Event<RefreshDecisionComponents> refreshDecisionComponentsEvent;
+
+    @Mock
+    private Event<RefreshDecisionComponents> refreshPMMLComponentsEvent;
 
     @Mock
     private KieAssetsDropdownItem value;
@@ -91,6 +95,7 @@ public class AddIncludedModelCommandTest {
         command = spy(new AddIncludedModelCommand(value,
                                                   presenter,
                                                   refreshDecisionComponentsEvent,
+                                                  refreshPMMLComponentsEvent,
                                                   refreshDataTypesListEvent,
                                                   recordEngine,
                                                   client,
@@ -103,7 +108,7 @@ public class AddIncludedModelCommandTest {
         final BaseIncludedModelActiveRecord created = mock(BaseIncludedModelActiveRecord.class);
         doReturn(created).when(command).createIncludedModel(value);
         doNothing().when(command).refreshPresenter();
-        doNothing().when(command).refreshDecisionComponents();
+        doNothing().when(command).refreshDecisionComponents(isA(DMNImportTypes.class));
         doNothing().when(command).refreshDataTypesList(created);
 
         final CommandResult<CanvasViolation> result = command.execute(mock(AbstractCanvasHandler.class));
@@ -112,7 +117,7 @@ public class AddIncludedModelCommandTest {
 
         verify(command).createIncludedModel(value);
         verify(command).refreshPresenter();
-        verify(command).refreshDecisionComponents();
+        verify(command).refreshDecisionComponents(isA(DMNImportTypes.class));
         verify(command).refreshDataTypesList(created);
     }
 
@@ -122,13 +127,13 @@ public class AddIncludedModelCommandTest {
         final BaseIncludedModelActiveRecord created = mock(BaseIncludedModelActiveRecord.class);
         doReturn(created).when(command).getCreated();
         doNothing().when(command).refreshPresenter();
-        doNothing().when(command).refreshDecisionComponents();
+        doNothing().when(command).refreshDecisionComponents(isA(DMNImportTypes.class));
 
         final CommandResult<CanvasViolation> result = command.undo(mock(AbstractCanvasHandler.class));
 
         verify(created).destroy();
         verify(command).refreshPresenter();
-        verify(command).refreshDecisionComponents();
+        verify(command).refreshDecisionComponents(isA(DMNImportTypes.class));
         assertEquals(CanvasCommandResultBuilder.SUCCESS, result);
     }
 
@@ -194,10 +199,16 @@ public class AddIncludedModelCommandTest {
 
     @Test
     public void testRefreshDecisionComponents() {
-
-        command.refreshDecisionComponents();
+        command.refreshDecisionComponents(DMNImportTypes.DMN);
 
         verify(refreshDecisionComponentsEvent).fire(any(RefreshDecisionComponents.class));
+    }
+
+    @Test
+    public void testRefreshPMMLComponents() {
+        command.refreshDecisionComponents(DMNImportTypes.PMML);
+
+        verify(refreshPMMLComponentsEvent).fire(any(RefreshDecisionComponents.class));
     }
 
     @Test

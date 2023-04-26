@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.client.shapes.icons.CornerIcon;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
+import org.kie.workbench.common.stunner.sw.definition.WorkflowTimeouts;
 
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.CLOCK;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.FILTER;
@@ -45,11 +46,11 @@ public class SwitchStateShape extends StateShape implements HasDataFilter {
     public void applyProperties(Node<View<State>, Edge> element, MutationContext mutationContext) {
         super.applyProperties(element, mutationContext);
         SwitchState state = (SwitchState) element.getContent().getDefinition();
-        if (state.getTimeouts() != null) {
+        if (state.getTimeouts() != null && state.getTimeouts() instanceof WorkflowTimeouts) {
             getView().addChild(new CornerIcon(CLOCK,
                                               RIGHT_TOP_CORNER,
-                                              getTranslation(TIMEOUT_EVENT) + ": " + state.getTimeouts().getEventTimeout() + "\r\n"
-                                                      + getTranslation(TIMEOUT_STATE) + ": " + state.getTimeouts().getStateExecTimeout()));
+                                              getTranslation(TIMEOUT_EVENT) + ": " + ((WorkflowTimeouts)state.getTimeouts()).getEventTimeout() + "\r\n"
+                                                      + getTranslation(TIMEOUT_STATE) + ": " + ((WorkflowTimeouts)state.getTimeouts()).getStateExecTimeout()));
         }
 
         if (state.getStateDataFilter() != null) {

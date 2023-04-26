@@ -134,8 +134,8 @@ public class ExpressionPropsFillerTest {
                 .isNotNull()
                 .hasSize(1);
         assertThat(((RelationProps) expressionProps).rows[0].cells).hasSize(2);
-        assertThat(((RelationProps) expressionProps).rows[0].cells[0]).isEqualTo(firstCellValue);
-        assertThat(((RelationProps) expressionProps).rows[0].cells[1]).isEqualTo(secondCellValue);
+        assertThat(((RelationProps) expressionProps).rows[0].cells[0].content).isEqualTo(firstCellValue);
+        assertThat(((RelationProps) expressionProps).rows[0].cells[1].content).isEqualTo(secondCellValue);
     }
 
     @Test
@@ -149,7 +149,6 @@ public class ExpressionPropsFillerTest {
         assertThat(expressionProps)
                 .isNotNull()
                 .isExactlyInstanceOf(ListProps.class);
-        assertThat(((ListProps) expressionProps).width).isEqualTo(listExpression.getComponentWidths().get(1));
         assertThat(((ListProps) expressionProps).items)
                 .isNotNull()
                 .hasSize(2);
@@ -167,7 +166,9 @@ public class ExpressionPropsFillerTest {
         final Invocation invocationExpression = new Invocation();
         final LiteralExpression invokedFunctionExpression = new LiteralExpression();
         final String invokedFunctionText = "Invoked function text";
+        final String invokedFunctionID = "ID-F";
         invokedFunctionExpression.setText(new Text(invokedFunctionText));
+        invokedFunctionExpression.setId(new Id(invokedFunctionID));
         invocationExpression.setExpression(invokedFunctionExpression);
         final Binding binding = new Binding();
         binding.setVariable(buildVariable());
@@ -179,7 +180,8 @@ public class ExpressionPropsFillerTest {
         assertThat(expressionProps)
                 .isNotNull()
                 .isExactlyInstanceOf(InvocationProps.class);
-        assertThat(((InvocationProps) expressionProps).invokedFunction).isEqualTo(invokedFunctionText);
+        assertThat(((InvocationProps) expressionProps).invokedFunction.name).isEqualTo(invokedFunctionText);
+        assertThat(((InvocationProps) expressionProps).invokedFunction.id).isEqualTo(invokedFunctionID);
         assertThat(((InvocationProps) expressionProps).bindingEntries)
                 .isNotNull()
                 .hasSize(1);
@@ -215,7 +217,7 @@ public class ExpressionPropsFillerTest {
         assertFormalParameters((PmmlFunctionProps) expressionProps);
         assertThat(((PmmlFunctionProps) expressionProps).document).isEqualTo(documentName);
         assertThat(((PmmlFunctionProps) expressionProps).model).isEqualTo(modelName);
-        assertThat(((PmmlFunctionProps) expressionProps).parametersWidth).isEqualTo(pmmlFunctionExpression.getComponentWidths().get(1));
+        assertThat(((PmmlFunctionProps) expressionProps).classAndMethodNamesWidth).isEqualTo(pmmlFunctionExpression.getComponentWidths().get(1));
     }
 
     @Test
@@ -240,7 +242,7 @@ public class ExpressionPropsFillerTest {
         assertFormalParameters((JavaFunctionProps) expressionProps);
         assertThat(((JavaFunctionProps) expressionProps).className).isEqualTo(className);
         assertThat(((JavaFunctionProps) expressionProps).methodName).isEqualTo(methodName);
-        assertThat(((JavaFunctionProps) expressionProps).parametersWidth).isEqualTo(javaFunctionExpression.getComponentWidths().get(1));
+        assertThat(((JavaFunctionProps) expressionProps).classAndMethodNamesWidth).isEqualTo(javaFunctionExpression.getComponentWidths().get(1));
     }
 
     @Test
@@ -258,7 +260,7 @@ public class ExpressionPropsFillerTest {
         assertThat(((FeelFunctionProps) expressionProps).functionKind).isEqualTo(FunctionDefinition.Kind.FEEL.name());
         assertFormalParameters((FeelFunctionProps) expressionProps);
         assertThat(((FeelFunctionProps) expressionProps).expression).isExactlyInstanceOf(RelationProps.class);
-        assertThat(((FeelFunctionProps) expressionProps).parametersWidth).isEqualTo(feelFunctionExpression.getComponentWidths().get(1));
+        assertThat(((FeelFunctionProps) expressionProps).classAndMethodNamesWidth).isEqualTo(feelFunctionExpression.getComponentWidths().get(1));
     }
 
     @Test

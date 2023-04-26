@@ -95,6 +95,18 @@ public class ContextTest {
     }
 
     @Test
+    public void testExactCopy() {
+        final Context source = new Context(new Id(CONTEXT_ID), new Description(DESCRIPTION), BuiltInType.BOOLEAN.asQName());
+
+        final Context target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(CONTEXT_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+    }
+
+    @Test
     public void testFindDomainObject() {
 
         final ContextEntry entry1 = mock(ContextEntry.class);

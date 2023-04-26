@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model.common;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,7 @@ public class HasTypeRefHelper {
         return hasTypeRefListExpressions
                 .stream()
                 .map(HasExpression::getExpression)
+                .filter(Objects::nonNull)
                 .flatMap(typeRefs -> typeRefs.getHasTypeRefs().stream())
                 .collect(Collectors.toList());
     }

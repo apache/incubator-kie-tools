@@ -61,6 +61,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.SWDomainInitializer;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
 import org.kie.workbench.common.stunner.sw.client.services.IncrementalMarshaller;
+import org.kie.workbench.common.stunner.sw.marshall.DocType;
 import org.kie.workbench.common.stunner.sw.marshall.Message;
 import org.kie.workbench.common.stunner.sw.marshall.ParseResult;
 import org.uberfire.backend.vfs.Path;
@@ -76,9 +77,12 @@ public class DiagramEditor {
     public static final String EDITOR_ID = "SWDiagramEditor";
     public static final String BACKGROUND_COLOR = "#f2f2f2";
 
-    static String ID_SEARCH_PATTERN = "(?:\\\"|\\')(?<id>[^\"]*)(?:\\\"|\\')(?=:)(?:\\:\\s*)(?:\\\"|\\')" +
+    static String ID_SEARCH_PATTERN_JSON = "(?:\\\"|\\')(?<id>[^\"]*)(?:\\\"|\\')(?=:)(?:\\:\\s*)(?:\\\"|\\')" +
             "?(?<value>true|false|[0-9a-zA-Z\\+\\-\\,\\.\\$]*)";
-    static JsRegExp jsRegExp = new JsRegExp(ID_SEARCH_PATTERN, "i"); //case insensitive
+
+    static String ID_SEARCH_PATTERN_YAML = "^[^\\s\\t](?:\\\"|'|)(?<id>[^\\\"']*)(?:\\\"|'|)(?=:)(?::\\s*)(?:\\\"|'|)?(?<value>true|false|[0-9a-zA-Z+,-.$]+)";
+    static JsRegExp jsRegExpJson = new JsRegExp(ID_SEARCH_PATTERN_JSON, "i"); //case insensitive
+    static JsRegExp jsRegExpYaml = new JsRegExp(ID_SEARCH_PATTERN_YAML, "i"); //case insensitive
 
     private final Promises promises;
     private final StunnerEditor stunnerEditor;
@@ -87,6 +91,7 @@ public class DiagramEditor {
     private final CanvasFileExport canvasFileExport;
     private final Event<TogglePreviewEvent> togglePreviewEvent;
     private final DiagramApi diagramApi;
+    private DocType currentDocType = DocType.JSON;
 
     @Inject
     public DiagramEditor(Promises promises,
@@ -133,18 +138,36 @@ public class DiagramEditor {
     }
 
     public Promise<String> getContent() {
-        return diagramService.transform(stunnerEditor.getDiagram());
+        return diagramService.transform(stunnerEditor.getDiagram(), currentDocType);
+    }
+
+    public Promise<String> getContentYAML() {
+        return diagramService.transform(stunnerEditor.getDiagram(), DocType.YAML);
+    }
+
+    public Promise<String> getContentJSON() {
+        return diagramService.transform(stunnerEditor.getDiagram(), DocType.JSON);
     }
 
     public Promise<Void> setContent(final String path, final String value) {
+        if(value == null || value.trim().isEmpty()) {
+            return setContent(path, "{}", DocType.JSON);
+        }
+        if(value.trim().charAt(0) == '{') {
+            return setContent(path, value, DocType.JSON);
+        }
+        return setContent(path, value, DocType.YAML);
+    }
+
+    private Promise<Void> setContent(final String path, final String value, final DocType docType) {
+        this.currentDocType = docType;
         TogglePreviewEvent event = new TogglePreviewEvent(TogglePreviewEvent.EventType.HIDE);
         togglePreviewEvent.fire(event);
-
         Promise<Void> setContentPromise;
-        if (stunnerEditor.isClosed() || !isSameWorkflow(value)) {
-            setContentPromise = setNewContent(path, value);
+        if (stunnerEditor.isClosed() || !isSameWorkflow(value, docType)) {
+            setContentPromise = setNewContent(path, value, docType);
         } else {
-            setContentPromise = updateContent(path, value);
+            setContentPromise = updateContent(path, value, docType);
         }
 
         return setContentPromise.then(v -> promises.create((success, failure) -> {
@@ -157,11 +180,12 @@ public class DiagramEditor {
         return promises.resolve(stunnerEditor.hasErrors());
     }
 
-    public Promise<Void> setNewContent(final String path, final String value) {
+    public Promise<Void> setNewContent(final String path, final String value, final DocType docType) {
         return promises.create((success, failure) -> {
             stunnerEditor.clearAlerts();
             diagramService.transform(path,
                                      value,
+                                     docType,
                                      new ServiceCallback<ParseResult>() {
                                          @Override
                                          public void onSuccess(final ParseResult parseResult) {
@@ -209,11 +233,12 @@ public class DiagramEditor {
     @SuppressWarnings("all")
     Diagram renderDiagram;
 
-    public Promise<Void> updateContent(final String path, final String value) {
+    public Promise<Void> updateContent(final String path, final String value, final DocType docType) {
         return promises.create((success, failure) -> {
             stunnerEditor.clearAlerts();
             diagramService.transform(path,
                                      value,
+                                     docType,
                                      new ServiceCallback<ParseResult>() {
 
                                          @Override
@@ -323,12 +348,11 @@ public class DiagramEditor {
     }
 
     @SuppressWarnings("all")
-    private boolean isSameWorkflow(final String value) {
+    private boolean isSameWorkflow(final String value, DocType docType) {
         Boolean found = false;
 
         try {
-            RegExpResult execs = jsRegExp.exec(value);
-
+            RegExpResult execs = docType.equals(DocType.JSON) ? jsRegExpJson.exec(value) : jsRegExpYaml.exec(value);
             if (execs != null || execs.length > 0) {
 
                 Diagram oldDiagram = stunnerEditor.getCanvasHandler().getDiagram();

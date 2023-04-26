@@ -117,17 +117,14 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
 
     await decisionNavigator.selectNodeExpression("context demo", "Context");
     const contextEditor = await dmnEditorTester.getExpressionEditor();
-    await contextEditor.activateBetaVersion();
     await contextEditor.assertExpressionDetails("context demo", "string");
 
     await decisionNavigator.selectNodeExpression("function demo", "Function");
     const functionEditor = await dmnEditorTester.getExpressionEditor();
-    await functionEditor.activateBetaVersion();
     await functionEditor.assertExpressionDetails("function demo", "string");
 
-    await decisionNavigator.selectNodeExpression("decision table demo", "Decision Table");
+    await decisionNavigator.selectNodeExpression("decision table demo", "Decision table");
     const decisionTableEditor = await dmnEditorTester.getExpressionEditor();
-    await decisionTableEditor.activateBetaVersion();
     await decisionTableEditor.assertExpressionDetails("decision table demo", "string");
 
     await webview.switchBack();

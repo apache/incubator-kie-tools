@@ -142,72 +142,72 @@ public class TypeRegistry {
 
   private void initBasicMappers() {
     MAPPER
-            .forType(boolean.class)
-            // .serializer(BooleanJsonSerializer.class)
-            .deserializer(BooleanJsonDeserializer.class)
-            .register(buildIn);
+        .forType(boolean.class)
+        // .serializer(BooleanJsonSerializer.class)
+        .deserializer(BooleanJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(char.class)
-            // .serializer(CharacterJsonSerializer.class)
-            .deserializer(CharacterJsonDeserializer.class)
-            .register(buildIn);
+        .forType(char.class)
+        // .serializer(CharacterJsonSerializer.class)
+        .deserializer(CharacterJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(byte.class)
-            // .serializer(ByteJsonSerializer.class)
-            .deserializer(ByteJsonDeserializer.class)
-            .register(buildIn);
+        .forType(byte.class)
+        // .serializer(ByteJsonSerializer.class)
+        .deserializer(ByteJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(double.class)
-            // .serializer(DoubleJsonSerializer.class)
-            .deserializer(DoubleJsonDeserializer.class)
-            .register(buildIn);
+        .forType(double.class)
+        // .serializer(DoubleJsonSerializer.class)
+        .deserializer(DoubleJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(float.class)
-            // .serializer(FloatJsonSerializer.class)
-            .deserializer(FloatJsonDeserializer.class)
-            .register(buildIn);
+        .forType(float.class)
+        // .serializer(FloatJsonSerializer.class)
+        .deserializer(FloatJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(int.class)
-            // .serializer(IntegerJsonSerializer.class)
-            .deserializer(IntegerJsonDeserializer.class)
-            .register(buildIn);
+        .forType(int.class)
+        // .serializer(IntegerJsonSerializer.class)
+        .deserializer(IntegerJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(long.class)
-            // .serializer(LongJsonSerializer.class)
-            .deserializer(LongJsonDeserializer.class)
-            .register(buildIn);
+        .forType(long.class)
+        // .serializer(LongJsonSerializer.class)
+        .deserializer(LongJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(short.class)
-            // .serializer(ShortJsonSerializer.class)
-            .deserializer(ShortJsonDeserializer.class)
-            .register(buildIn);
+        .forType(short.class)
+        // .serializer(ShortJsonSerializer.class)
+        .deserializer(ShortJsonDeserializer.class)
+        .register(buildIn);
   }
 
   private void initCommonMappers() {
     // Common mappers
     MAPPER
-            .forType(String.class)
-            .serializer(StringJsonSerializer.class)
-            .deserializer(StringJsonDeserializer.class)
-            .register(buildIn);
+        .forType(String.class)
+        .serializer(StringJsonSerializer.class)
+        .deserializer(StringJsonDeserializer.class)
+        .register(buildIn);
     MAPPER
-            .forType(Boolean.class)
-            .serializer(BooleanJsonSerializer.class)
-            .deserializer(BooleanJsonDeserializer.class)
-            .register(buildIn);
+        .forType(Boolean.class)
+        .serializer(BooleanJsonSerializer.class)
+        .deserializer(BooleanJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(Character.class)
-            .serializer(CharacterJsonSerializer.class)
-            .deserializer(CharacterJsonDeserializer.class)
-            .register(buildIn);
+        .forType(Character.class)
+        .serializer(CharacterJsonSerializer.class)
+        .deserializer(CharacterJsonDeserializer.class)
+        .register(buildIn);
 
     /*    MAPPER
             .forType(UUID.class)
@@ -216,164 +216,164 @@ public class TypeRegistry {
             .register(buildIn);
     */
     MAPPER
-            .forType(Enum.class)
-            .serializer(EnumJsonSerializer.class)
-            .deserializer(EnumJsonDeserializer.class)
-            .register(buildIn);
+        .forType(Enum.class)
+        .serializer(EnumJsonSerializer.class)
+        .deserializer(EnumJsonDeserializer.class)
+        .register(buildIn);
   }
 
   private void initNumberMappers() {
     MAPPER
-            .forType(BigDecimal.class)
-            .serializer(BigDecimalJsonSerializer.class)
-            .deserializer(BigDecimalJsonDeserializer.class)
-            .register(buildIn);
+        .forType(BigDecimal.class)
+        .serializer(BigDecimalJsonSerializer.class)
+        .deserializer(BigDecimalJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(BigInteger.class)
-            .serializer(BigIntegerJsonSerializer.class)
-            .deserializer(BigIntegerJsonDeserializer.class)
-            .register(buildIn);
+        .forType(BigInteger.class)
+        .serializer(BigIntegerJsonSerializer.class)
+        .deserializer(BigIntegerJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(Byte.class)
-            .serializer(ByteJsonSerializer.class)
-            .deserializer(ByteJsonDeserializer.class)
-            .register(buildIn);
+        .forType(Byte.class)
+        .serializer(ByteJsonSerializer.class)
+        .deserializer(ByteJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(Double.class)
-            .serializer(DoubleJsonSerializer.class)
-            .deserializer(DoubleJsonDeserializer.class)
-            .register(buildIn);
+        .forType(Double.class)
+        .serializer(DoubleJsonSerializer.class)
+        .deserializer(DoubleJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(Float.class)
-            .serializer(FloatJsonSerializer.class)
-            .deserializer(FloatJsonDeserializer.class)
-            .register(buildIn);
+        .forType(Float.class)
+        .serializer(FloatJsonSerializer.class)
+        .deserializer(FloatJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(Integer.class)
-            .serializer(IntegerJsonSerializer.class)
-            .deserializer(IntegerJsonDeserializer.class)
-            .register(buildIn);
+        .forType(Integer.class)
+        .serializer(IntegerJsonSerializer.class)
+        .deserializer(IntegerJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(Long.class)
-            .serializer(LongJsonSerializer.class)
-            .deserializer(LongJsonDeserializer.class)
-            .register(buildIn);
+        .forType(Long.class)
+        .serializer(LongJsonSerializer.class)
+        .deserializer(LongJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(Short.class)
-            .serializer(ShortJsonSerializer.class)
-            .deserializer(ShortJsonDeserializer.class)
-            .register(buildIn);
+        .forType(Short.class)
+        .serializer(ShortJsonSerializer.class)
+        .deserializer(ShortJsonDeserializer.class)
+        .register(buildIn);
   }
 
   private void initPrimitiveArraysMappers() {
     MAPPER
-            .forType(boolean[].class)
-            .serializer(PrimitiveBooleanArrayJsonSerializer.class)
-            .deserializer(PrimitiveBooleanArrayJsonDeserializer.class)
-            .register(buildIn);
+        .forType(boolean[].class)
+        .serializer(PrimitiveBooleanArrayJsonSerializer.class)
+        .deserializer(PrimitiveBooleanArrayJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(byte[].class)
-            .serializer(PrimitiveByteArrayJsonSerializer.class)
-            .deserializer(PrimitiveByteArrayJsonDeserializer.class)
-            .register(buildIn);
+        .forType(byte[].class)
+        .serializer(PrimitiveByteArrayJsonSerializer.class)
+        .deserializer(PrimitiveByteArrayJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(char[].class)
-            .serializer(PrimitiveCharacterArrayJsonSerializer.class)
-            .deserializer(PrimitiveCharacterArrayJsonDeserializer.class)
-            .register(buildIn);
+        .forType(char[].class)
+        .serializer(PrimitiveCharacterArrayJsonSerializer.class)
+        .deserializer(PrimitiveCharacterArrayJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(double[].class)
-            .serializer(PrimitiveDoubleArrayJsonSerializer.class)
-            .deserializer(PrimitiveDoubleArrayJsonDeserializer.class)
-            .register(buildIn);
+        .forType(double[].class)
+        .serializer(PrimitiveDoubleArrayJsonSerializer.class)
+        .deserializer(PrimitiveDoubleArrayJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(float[].class)
-            .serializer(PrimitiveFloatArrayJsonSerializer.class)
-            .deserializer(PrimitiveFloatArrayJsonDeserializer.class)
-            .register(buildIn);
+        .forType(float[].class)
+        .serializer(PrimitiveFloatArrayJsonSerializer.class)
+        .deserializer(PrimitiveFloatArrayJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(int[].class)
-            .serializer(PrimitiveIntegerArrayJsonSerializer.class)
-            .deserializer(PrimitiveIntegerArrayJsonDeserializer.class)
-            .register(buildIn);
+        .forType(int[].class)
+        .serializer(PrimitiveIntegerArrayJsonSerializer.class)
+        .deserializer(PrimitiveIntegerArrayJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(long[].class)
-            .serializer(PrimitiveLongArrayLongSerializer.class)
-            .deserializer(PrimitiveLongArrayJsonDeserializer.class)
-            .register(buildIn);
+        .forType(long[].class)
+        .serializer(PrimitiveLongArrayLongSerializer.class)
+        .deserializer(PrimitiveLongArrayJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(short[].class)
-            .serializer(PrimitiveShortArrayJsonSerializer.class)
-            .deserializer(PrimitiveShortArrayJsonDeserializer.class)
-            .register(buildIn);
+        .forType(short[].class)
+        .serializer(PrimitiveShortArrayJsonSerializer.class)
+        .deserializer(PrimitiveShortArrayJsonDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(String[].class)
-            .serializer(PrimitiveShortArrayJsonSerializer.class)
-            .deserializer(StringArrayJsonDeserializer.class)
-            .register(buildIn);
+        .forType(String[].class)
+        .serializer(PrimitiveShortArrayJsonSerializer.class)
+        .deserializer(StringArrayJsonDeserializer.class)
+        .register(buildIn);
   }
 
   private void initCollections() {
     MAPPER
-            .forType(List.class)
-            .serializer(CollectionJsonSerializer.class)
-            .deserializer(ListDeserializer.class)
-            .register(buildIn);
+        .forType(List.class)
+        .serializer(CollectionJsonSerializer.class)
+        .deserializer(ListDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(ArrayList.class)
-            .serializer(CollectionJsonSerializer.class)
-            .deserializer(ArrayListDeserializer.class)
-            .register(buildIn);
+        .forType(ArrayList.class)
+        .serializer(CollectionJsonSerializer.class)
+        .deserializer(ArrayListDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(LinkedList.class)
-            .serializer(CollectionJsonSerializer.class)
-            .deserializer(LinkedListDeserializer.class)
-            .register(buildIn);
+        .forType(LinkedList.class)
+        .serializer(CollectionJsonSerializer.class)
+        .deserializer(LinkedListDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(Set.class)
-            .serializer(CollectionJsonSerializer.class)
-            .deserializer(HashSetDeserializer.class)
-            .register(buildIn);
+        .forType(Set.class)
+        .serializer(CollectionJsonSerializer.class)
+        .deserializer(HashSetDeserializer.class)
+        .register(buildIn);
     MAPPER
-            .forType(SortedSet.class)
-            .serializer(CollectionJsonSerializer.class)
-            .deserializer(SortedSetDeserializer.class)
-            .register(buildIn);
+        .forType(SortedSet.class)
+        .serializer(CollectionJsonSerializer.class)
+        .deserializer(SortedSetDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(HashSet.class)
-            .serializer(CollectionJsonSerializer.class)
-            .deserializer(HashSetDeserializer.class)
-            .register(buildIn);
+        .forType(HashSet.class)
+        .serializer(CollectionJsonSerializer.class)
+        .deserializer(HashSetDeserializer.class)
+        .register(buildIn);
 
     MAPPER
-            .forType(LinkedHashSet.class)
-            .serializer(CollectionJsonSerializer.class)
-            .deserializer(LinkedHashSetDeserializer.class)
-            .register(buildIn);
+        .forType(LinkedHashSet.class)
+        .serializer(CollectionJsonSerializer.class)
+        .deserializer(LinkedHashSetDeserializer.class)
+        .register(buildIn);
     MAPPER
-            .forType(TreeSet.class)
-            .serializer(CollectionJsonSerializer.class)
-            .deserializer(SortedSetDeserializer.class)
-            .register(buildIn);
+        .forType(TreeSet.class)
+        .serializer(CollectionJsonSerializer.class)
+        .deserializer(SortedSetDeserializer.class)
+        .register(buildIn);
   }
 
   class ClassMapperFactory {
@@ -417,8 +417,8 @@ public class TypeRegistry {
     @Override
     public String toString() {
       return "ClassMapper{" + "clazz='" + clazz + '\'' + ", serializer=" + serializer != null
-              ? serializer.toString()
-              : "" + ", deserializer=" + deserializer != null ? deserializer.toString() : "" + '}';
+          ? serializer.toString()
+          : "" + ", deserializer=" + deserializer != null ? deserializer.toString() : "" + '}';
     }
   }
 }

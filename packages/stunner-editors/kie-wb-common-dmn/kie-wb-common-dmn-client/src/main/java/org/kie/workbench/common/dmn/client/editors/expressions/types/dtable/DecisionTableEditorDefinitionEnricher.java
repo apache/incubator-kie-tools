@@ -122,51 +122,68 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
     public void enrich(final Optional<String> nodeUUID,
                        final HasExpression hasExpression,
                        final Optional<DecisionTable> expression) {
-        expression.ifPresent(dtable -> {
-            dtable.setHitPolicy(HitPolicy.UNIQUE);
-            dtable.setPreferredOrientation(DecisionTableOrientation.RULE_AS_ROW);
-
-            final InputClause inputClause = new InputClause();
-            final InputClauseLiteralExpression literalExpression = new InputClauseLiteralExpression();
-            literalExpression.getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
-            inputClause.setInputExpression(literalExpression);
-            dtable.getInput().add(inputClause);
-
-            final RuleAnnotationClause ruleAnnotationClause = new RuleAnnotationClause();
-            ruleAnnotationClause.getName().setValue(DecisionTableDefaultValueUtilities.getNewRuleAnnotationClauseName(dtable));
-            dtable.getAnnotations().add(ruleAnnotationClause);
-
-            final DecisionRule decisionRule = new DecisionRule();
-            final UnaryTests decisionRuleUnaryTest = new UnaryTests();
-            decisionRuleUnaryTest.getText().setValue(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
-            decisionRule.getInputEntry().add(decisionRuleUnaryTest);
-
-            buildOutputClausesByDataType(hasExpression, dtable, decisionRule);
-
-            final RuleAnnotationClauseText ruleAnnotationEntry = new RuleAnnotationClauseText();
-            ruleAnnotationEntry.getText().setValue(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
-            decisionRule.getAnnotationEntry().add(ruleAnnotationEntry);
-
-            dtable.getRule().add(decisionRule);
-
-            //Setup parent relationships
-            inputClause.setParent(dtable);
-            decisionRule.setParent(dtable);
-            literalExpression.setParent(inputClause);
-            decisionRuleUnaryTest.setParent(decisionRule);
-            ruleAnnotationEntry.setParent(dtable);
-
-            if (nodeUUID.isPresent()) {
-                enrichInputClauses(nodeUUID.get(), dtable);
-            } else {
-                enrichOutputClauses(dtable);
-            }
-        });
+        expression.ifPresent(dtable -> commonEnrich(nodeUUID.orElse(null), hasExpression, dtable, null));
     }
 
-    void buildOutputClausesByDataType(final HasExpression hasExpression, final DecisionTable dTable, final DecisionRule decisionRule) {
-        final HasTypeRef hasTypeRef = getHasTypeRef(hasExpression, dTable);
-        final QName typeRef = !Objects.isNull(hasTypeRef) ? hasTypeRef.getTypeRef() : BuiltInType.UNDEFINED.asQName();
+    @Override
+    public void enrichRootExpression(final String nodeUUID,
+                                     final HasExpression rootExpression,
+                                     final DecisionTable enrichedExpression,
+                                     final String dataType) {
+        if (enrichedExpression != null) {
+            commonEnrich(nodeUUID, rootExpression, enrichedExpression, dataType);
+        }
+    }
+
+    public void commonEnrich(final String nodeUUID,
+                             final HasExpression hasExpression,
+                             final DecisionTable decisionTable,
+                             final String outputDataType) {
+        decisionTable.setHitPolicy(HitPolicy.UNIQUE);
+        decisionTable.setPreferredOrientation(DecisionTableOrientation.RULE_AS_ROW);
+
+        final InputClause inputClause = new InputClause();
+        final InputClauseLiteralExpression literalExpression = new InputClauseLiteralExpression();
+        literalExpression.getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(decisionTable));
+        inputClause.setInputExpression(literalExpression);
+        decisionTable.getInput().add(inputClause);
+
+        final RuleAnnotationClause ruleAnnotationClause = new RuleAnnotationClause();
+        ruleAnnotationClause.getName().setValue(DecisionTableDefaultValueUtilities.getNewRuleAnnotationClauseName(decisionTable));
+        decisionTable.getAnnotations().add(ruleAnnotationClause);
+
+        final DecisionRule decisionRule = new DecisionRule();
+        final UnaryTests decisionRuleUnaryTest = new UnaryTests();
+        decisionRuleUnaryTest.getText().setValue(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
+        decisionRule.getInputEntry().add(decisionRuleUnaryTest);
+
+        buildOutputClausesByDataType(hasExpression, decisionTable, decisionRule, outputDataType);
+
+        final RuleAnnotationClauseText ruleAnnotationEntry = new RuleAnnotationClauseText();
+        ruleAnnotationEntry.getText().setValue(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
+        decisionRule.getAnnotationEntry().add(ruleAnnotationEntry);
+
+        decisionTable.getRule().add(decisionRule);
+
+        //Setup parent relationships
+        inputClause.setParent(decisionTable);
+        decisionRule.setParent(decisionTable);
+        literalExpression.setParent(inputClause);
+        decisionRuleUnaryTest.setParent(decisionRule);
+        ruleAnnotationEntry.setParent(decisionTable);
+
+        if (nodeUUID != null && !nodeUUID.isEmpty()) {
+            enrichInputClauses(nodeUUID, decisionTable);
+        } else {
+            enrichOutputClauses(decisionTable);
+        }
+    }
+
+    void buildOutputClausesByDataType(final HasExpression hasExpression,
+                                      final DecisionTable dTable,
+                                      final DecisionRule decisionRule,
+                                      final String outputDataType) {
+        final QName typeRef = getRefQName(hasExpression, dTable, outputDataType);
         final String name = DecisionTableDefaultValueUtilities.getNewOutputClauseName(dTable);
 
         final List<ClauseRequirement> outputClausesRequirement = generateOutputClauseRequirements(dmnGraphUtils.getModelDefinitions(), typeRef, name);
@@ -192,14 +209,20 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
         }
     }
 
-    private HasTypeRef getHasTypeRef(final HasExpression hasExpression, final DecisionTable dTable) {
+    private QName getRefQName(final HasExpression hasExpression,
+                              final DecisionTable dTable,
+                              final String outputDataType) {
+        QName qName = null;
         if (hasExpression instanceof FunctionDefinition) {
             final DMNModelInstrumentedBase parent = hasExpression.asDMNModelInstrumentedBase().getParent();
             if (parent instanceof HasVariable) {
-                return ((HasVariable) parent).getVariable();
+                qName = ((HasVariable) parent).getVariable().getTypeRef();
             }
+        } else {
+            qName = TypeRefUtils.getQNameOfExpression(hasExpression, dTable, outputDataType, typeRef -> itemDefinitionUtils.normaliseTypeRef(typeRef));
         }
-        return TypeRefUtils.getTypeRefOfExpression(dTable, hasExpression);
+
+        return !Objects.isNull(qName) ? qName : BuiltInType.UNDEFINED.asQName();
     }
 
     private List<ClauseRequirement> generateOutputClauseRequirements(final Definitions definitions, final QName typeRef, final String name) {

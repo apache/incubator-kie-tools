@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  EditorEnvelopeLocator,
-  EnvelopeContentType,
-  EnvelopeMapping,
-} from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { FileTypes, isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { EditorConfig } from "./EditorEnvelopeLocatorApi";
 

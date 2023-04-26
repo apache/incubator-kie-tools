@@ -88,6 +88,13 @@ test("<NumField> - renders an input with correct step (integer)", () => {
   expect(screen.getByTestId("num-field").getAttribute("step")).toBe("1");
 });
 
+test("<NumField> - renders an input with correct step (set)", () => {
+  render(usingUniformsContext(<NumField name="x" step={3} />, { x: { type: Number } }));
+
+  expect(screen.getByTestId("num-field")).toBeInTheDocument();
+  expect(screen.getByTestId("num-field").getAttribute("step")).toBe("3");
+});
+
 test("<NumField> - renders an input with correct type", () => {
   render(usingUniformsContext(<NumField name="x" />, { x: { type: Number } }));
 

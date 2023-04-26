@@ -6,6 +6,7 @@ constants: {}
 id: testid
 description: ""
 expressionLang: jq
+start: testState
 keepActive: false
 key: testkey
 metadata: {}

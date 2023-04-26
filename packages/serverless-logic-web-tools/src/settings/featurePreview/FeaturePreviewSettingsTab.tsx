@@ -59,7 +59,7 @@ export function FeaturePreviewSettingsTab() {
             <Checkbox
               id="feature-preview-enable-stunner"
               label="Kogito Serverless Workflow Visualization"
-              description={"Enable/disable Kogito Serverless Workflow Visualization for JSON files."}
+              description={"Enable/disable Kogito Serverless Workflow Visualization for JSON and YAML files."}
               isChecked={stunnerEnabled}
               onChange={onStunnerEnabledChanged}
             />

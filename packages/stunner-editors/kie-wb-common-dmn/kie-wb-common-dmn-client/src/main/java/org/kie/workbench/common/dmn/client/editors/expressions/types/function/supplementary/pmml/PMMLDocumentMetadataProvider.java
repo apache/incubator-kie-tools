@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLModelMetadata;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
+import org.kie.workbench.common.dmn.client.events.IncludedPMMLModelUpdate;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -96,7 +97,7 @@ public class PMMLDocumentMetadataProvider {
     }
 
     @SuppressWarnings("unused")
-    public void onRefreshDecisionComponents(final @Observes RefreshDecisionComponents events) {
+    public void onRefreshDecisionComponents(final @Observes @IncludedPMMLModelUpdate RefreshDecisionComponents events) {
         loadPMMLIncludedDocuments();
     }
 
