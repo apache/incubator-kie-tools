@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPres
 import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
 import org.kie.workbench.common.dmn.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
@@ -105,7 +106,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final LazyCanvasFocusUtils lazyCanvasFocusUtils,
                             final EditorSessionCommands commands,
                             final ConfirmationDialog confirmationDialog,
-                            final DecisionNavigatorPresenter decisionNavigatorPresenter) {
+                            final DecisionNavigatorPresenter decisionNavigatorPresenter,
+                            final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider) {
         super(view,
               containerView,
               stunnerEditor,
@@ -131,7 +133,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               guidedTourBridgeInitializer,
               drdNameChanger,
               confirmationDialog,
-              decisionNavigatorPresenter);
+              decisionNavigatorPresenter,
+              pmmlDocumentMetadataProvider);
         this.readOnlyProvider = readOnlyProvider;
         this.lazyCanvasFocusUtils = lazyCanvasFocusUtils;
         this.commands = commands;

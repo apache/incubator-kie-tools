@@ -51,6 +51,7 @@ exports[`DmnForm tests should remove require parameter 1`] = `
           >
             <input
               aria-invalid="false"
+              aria-label="uniforms text field"
               class="pf-c-form-control"
               data-ouia-component-id="OUIA-Generated-TextInputBase-22"
               data-ouia-component-type="PF4/TextInput"
@@ -105,6 +106,7 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-1"
             data-ouia-component-type="PF4/TextInput"
@@ -143,6 +145,7 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-2"
             data-ouia-component-type="PF4/TextInput"
@@ -181,6 +184,7 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-3"
             data-ouia-component-type="PF4/TextInput"
@@ -219,6 +223,7 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-4"
             data-ouia-component-type="PF4/TextInput"
@@ -272,6 +277,7 @@ exports[`DmnForm tests should submit the formInputs 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-5"
             data-ouia-component-type="PF4/TextInput"
@@ -310,6 +316,7 @@ exports[`DmnForm tests should submit the formInputs 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-6"
             data-ouia-component-type="PF4/TextInput"
@@ -348,6 +355,7 @@ exports[`DmnForm tests should submit the formInputs 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-7"
             data-ouia-component-type="PF4/TextInput"
@@ -386,6 +394,7 @@ exports[`DmnForm tests should submit the formInputs 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-8"
             data-ouia-component-type="PF4/TextInput"
@@ -439,6 +448,7 @@ exports[`DmnForm tests should validate the formInputs - invalid 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-17"
             data-ouia-component-type="PF4/TextInput"
@@ -477,6 +487,7 @@ exports[`DmnForm tests should validate the formInputs - invalid 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-18"
             data-ouia-component-type="PF4/TextInput"
@@ -515,6 +526,7 @@ exports[`DmnForm tests should validate the formInputs - invalid 1`] = `
         >
           <input
             aria-invalid="true"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-19"
             data-ouia-component-type="PF4/TextInput"
@@ -559,6 +571,7 @@ exports[`DmnForm tests should validate the formInputs - invalid 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-20"
             data-ouia-component-type="PF4/TextInput"
@@ -612,6 +625,7 @@ exports[`DmnForm tests should validate the formInputs - success 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-13"
             data-ouia-component-type="PF4/TextInput"
@@ -650,6 +664,7 @@ exports[`DmnForm tests should validate the formInputs - success 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-14"
             data-ouia-component-type="PF4/TextInput"
@@ -688,6 +703,7 @@ exports[`DmnForm tests should validate the formInputs - success 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-15"
             data-ouia-component-type="PF4/TextInput"
@@ -726,6 +742,7 @@ exports[`DmnForm tests should validate the formInputs - success 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-16"
             data-ouia-component-type="PF4/TextInput"
@@ -779,6 +796,7 @@ exports[`DmnForm tests shouldn't submit the formInputs 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-9"
             data-ouia-component-type="PF4/TextInput"
@@ -817,6 +835,7 @@ exports[`DmnForm tests shouldn't submit the formInputs 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-10"
             data-ouia-component-type="PF4/TextInput"
@@ -855,6 +874,7 @@ exports[`DmnForm tests shouldn't submit the formInputs 1`] = `
         >
           <input
             aria-invalid="true"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-11"
             data-ouia-component-type="PF4/TextInput"
@@ -899,6 +919,7 @@ exports[`DmnForm tests shouldn't submit the formInputs 1`] = `
         >
           <input
             aria-invalid="false"
+            aria-label="uniforms text field"
             class="pf-c-form-control"
             data-ouia-component-id="OUIA-Generated-TextInputBase-12"
             data-ouia-component-type="PF4/TextInput"

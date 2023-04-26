@@ -33,13 +33,14 @@ export type NumFieldProps = {
 function NumField(props: NumFieldProps) {
   const onChange = (value: string, event: React.FormEvent<HTMLInputElement>) => {
     const parse = props.decimal ? parseFloat : parseInt;
-    const v = parse((event.target as any)?.value);
+    const v = parse((event.target as any)?.value ?? "");
     props.onChange(isNaN(v) ? undefined : v);
   };
 
   return wrapField(
     props,
     <TextInput
+      aria-label={"uniforms num field"}
       data-testid={"num-field"}
       name={props.name}
       isDisabled={props.disabled}
@@ -51,7 +52,7 @@ function NumField(props: NumFieldProps) {
       ref={props.inputRef}
       step={props.step ?? (props.decimal ? 0.01 : 1)}
       type="number"
-      value={props.value ?? ""}
+      value={`${props.value ?? ""}`}
       validated={props.error ? "error" : "default"}
     />
   );

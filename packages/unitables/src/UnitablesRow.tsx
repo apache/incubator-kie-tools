@@ -15,68 +15,81 @@
  */
 
 import * as React from "react";
-import { PropsWithChildren, useCallback, useImperativeHandle, useRef, useState } from "react";
+import { PropsWithChildren, useCallback, useRef, useEffect, useState, useImperativeHandle } from "react";
 import { AutoRow } from "./uniforms/AutoRow";
 import { createPortal } from "react-dom";
 import { context as UniformsContext } from "uniforms";
-import { UnitablesJsonSchemaBridge } from "./uniforms";
+import { AUTO_ROW_ID, UnitablesJsonSchemaBridge } from "./uniforms";
 
 interface Props {
-  formId: string;
+  formsId: string;
   rowIndex: number;
   jsonSchemaBridge: UnitablesJsonSchemaBridge;
-  model: object;
-  onModelUpdate: (model: object) => void;
+  rowInput: Record<string, any>;
+  onSubmitRow: (rowInput: Record<string, any>, index: number, error: Record<string, any>) => void;
 }
 
 export interface UnitablesRowApi {
   submit: () => void;
-  reset: (defaultValues?: object) => void;
 }
 
-export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<Props>>((props, forwardRef) => {
-  const [model, setModel] = useState<object>(props.model);
-  const autoRowRef = useRef<HTMLFormElement>(null);
+export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<Props>>(
+  ({ children, formsId, rowIndex, jsonSchemaBridge, rowInput, onSubmitRow }, forwardRef) => {
+    const autoRowRef = useRef<HTMLFormElement>(null);
 
-  const onSubmit = useCallback((model: object) => {
-    setModel(model);
-    props.onModelUpdate(model);
-  }, []);
+    const onSubmit = useCallback(
+      (rowInput: Record<string, any>) => {
+        console.log("SUBMITTING ROW: " + rowIndex);
+        onSubmitRow(rowInput, rowIndex, {});
+      },
+      [onSubmitRow, rowIndex]
+    );
 
-  const onValidate = useCallback((model: object, error: object) => {
-    setModel(model);
-    props.onModelUpdate(model);
-  }, []);
+    // Without it the errors will be returned in "onChange" validation;
+    const onValidate = useCallback((inputs, error) => {
+      // returns the validation errors;
+      return null;
+    }, []);
 
-  useImperativeHandle(forwardRef, () => ({
-    submit: () => autoRowRef.current?.submit(),
-    reset: (defaultValues?: object) => setModel({ ...defaultValues }),
-  }));
+    useImperativeHandle(
+      forwardRef,
+      () => {
+        return {
+          submit: () => autoRowRef.current?.submit(),
+        };
+      },
+      []
+    );
 
-  return (
-    <>
-      <AutoRow
-        ref={autoRowRef}
-        schema={props.jsonSchemaBridge}
-        autosave={true}
-        autosaveDelay={200}
-        model={model}
-        onSubmit={(model: object) => onSubmit(model)}
-        onValidate={(model: object, error: object) => onValidate(model, error)}
-        placeholder={true}
-      >
-        <UniformsContext.Consumer>
-          {(ctx: any) => (
-            <>
-              {createPortal(
-                <form id={`unitables-row-${props.rowIndex}`} onSubmit={(data) => ctx?.onSubmit(data)} />,
-                document.getElementById(props.formId)!
-              )}
-              {props.children}
-            </>
-          )}
-        </UniformsContext.Consumer>
-      </AutoRow>
-    </>
-  );
-});
+    // Submits the table in the first render triggering the onValidate function
+    useEffect(() => {
+      autoRowRef.current?.submit();
+    }, [autoRowRef]);
+
+    return (
+      <>
+        <AutoRow
+          ref={autoRowRef}
+          schema={jsonSchemaBridge}
+          model={rowInput}
+          onSubmit={onSubmit}
+          placeholder={true}
+          validate={"onSubmit"}
+          onValidate={onValidate}
+        >
+          <UniformsContext.Consumer>
+            {(uniformsContext) => (
+              <>
+                {createPortal(
+                  <form id={`${AUTO_ROW_ID}-${rowIndex}`} onSubmit={(data) => uniformsContext?.onSubmit(data)} />,
+                  document.getElementById(formsId)!
+                )}
+                {children}
+              </>
+            )}
+          </UniformsContext.Consumer>
+        </AutoRow>
+      </>
+    );
+  }
+);

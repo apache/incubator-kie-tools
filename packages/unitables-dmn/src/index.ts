@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./DmnTableResults";
+export * from "./DmnRunnerOutputsTable";
 export * from "./DmnUnitablesValidator";
 export * from "./uniforms/DmnUnitablesJsonSchemaBridge";

@@ -65,97 +65,6 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   const formValidator = useMemo(() => (validator ? validator : new Validator(i18n)), [validator, i18n]);
   const [ref, setRef] = useState<HTMLFormElement | null>(null);
 
-  const removeDeletedPropertiesAndAddDefaultValues = useCallback(
-    (formInputs: object, bridge: FormJsonSchemaBridge, previousBridge?: FormJsonSchemaBridge) => {
-      const propertiesDifference = diff(
-        getObjectByPath(previousBridge?.schema ?? {}, propertiesEntryPath) ?? {},
-        getObjectByPath(bridge.schema ?? {}, propertiesEntryPath) ?? {}
-      );
-
-      const defaultFormValues = Object.keys(bridge?.schema?.properties ?? {}).reduce((acc, property) => {
-        const field = bridge.getField(property);
-        if (field.default) {
-          acc[`${property}`] = field.default;
-        }
-        return acc;
-      }, {} as Record<string, any>);
-
-      // Remove property that has been deleted;
-      return Object.entries(propertiesDifference).reduce(
-        (form, [property, value]) => {
-          if (!value || value.type || value.$ref) {
-            delete (form as any)[property];
-          }
-          if (value?.format) {
-            (form as any)[property] = undefined;
-          }
-          return form;
-        },
-        { ...defaultFormValues, ...formInputs }
-      );
-    },
-    [propertiesEntryPath]
-  );
-
-  // When the schema is updated it's necessary to update the bridge and the formInputs (remove deleted properties and
-  // add default values to it)
-  useEffect(() => {
-    try {
-      const form = cloneDeep(formSchema ?? {}) as Record<string, Record<string, object>>;
-      if (removeRequired) {
-        const entry = getObjectByPath(form, entryPath);
-        delete entry.required;
-        delete form.required;
-      }
-      const bridge = formValidator.getBridge(form);
-      setJsonSchemaBridge((previousBridge) => {
-        setFormInputs((currentFormInputs) => {
-          const newFormInputs = removeDeletedPropertiesAndAddDefaultValues(currentFormInputs, bridge, previousBridge);
-          if (Object.keys(diff(currentFormInputs ?? {}, newFormInputs ?? {})).length > 0) {
-            return newFormInputs as Input;
-          }
-          return currentFormInputs;
-        });
-        return bridge;
-      });
-
-      setFormStatus(FormStatus.WITHOUT_ERROR);
-    } catch (err) {
-      setFormStatus(FormStatus.VALIDATOR_ERROR);
-    }
-  }, [setFormInputs, formSchema, formValidator, entryPath, removeDeletedPropertiesAndAddDefaultValues, removeRequired]);
-
-  // Manage form status
-  useEffect(() => {
-    if (formError) {
-      setFormStatus(FormStatus.AUTO_GENERATION_ERROR);
-    } else if (
-      !formSchema ||
-      Object.keys(getObjectByPath((formSchema as any) ?? {}, propertiesEntryPath) ?? {}).length === 0
-    ) {
-      setFormStatus(FormStatus.EMPTY);
-    } else if (jsonSchemaBridge) {
-      setFormStatus(FormStatus.WITHOUT_ERROR);
-      errorBoundaryRef.current?.reset();
-    }
-  }, [formError, formSchema, jsonSchemaBridge, propertiesEntryPath]);
-
-  // Resets the ErrorBoundary everytime the FormSchema is updated
-  useEffect(() => {
-    errorBoundaryRef.current?.reset();
-  }, [formSchema]);
-
-  // When the formInput changes, reset the formError
-  useEffect(() => {
-    setFormError(false);
-  }, [formInputs]);
-
-  // Submits the form in the first render triggering the onValidate function
-  useEffect(() => {
-    ref?.submit();
-    setFormRef?.(ref);
-  }, [setFormRef, ref]);
-
   const onFormSubmit = useCallback(
     (formInputs) => {
       onSubmit?.(formInputs);
@@ -167,11 +76,11 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   const onFormValidate = useCallback(
     (formInputs, error: any) => {
       onValidate?.(formInputs, error);
-      setFormInputs((previousModel) => {
-        if (Object.keys(diff(formInputs, previousModel ?? {})).length > 0) {
+      setFormInputs((previousInputs) => {
+        if (Object.keys(diff(formInputs, previousInputs ?? {})).length > 0) {
           return formInputs;
         }
-        return previousModel ?? {};
+        return previousInputs ?? {};
       });
       if (!error) {
         return;
@@ -215,6 +124,55 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
     },
     [onValidate, setFormInputs]
   );
+
+  // When the schema is updated it's necessary to update the bridge and the formInputs (remove deleted properties and
+  // add default values to it)
+  useEffect(() => {
+    try {
+      const form = cloneDeep(formSchema ?? {}) as Record<string, Record<string, object>>;
+      if (removeRequired) {
+        const entry = getObjectByPath(form, entryPath);
+        delete entry.required;
+        delete form.required;
+      }
+      setJsonSchemaBridge(formValidator.getBridge(form));
+
+      setFormStatus(FormStatus.WITHOUT_ERROR);
+    } catch (err) {
+      setFormStatus(FormStatus.VALIDATOR_ERROR);
+    }
+  }, [setFormInputs, formSchema, formValidator, entryPath, removeRequired]);
+
+  // Manage form status
+  useEffect(() => {
+    if (formError) {
+      setFormStatus(FormStatus.AUTO_GENERATION_ERROR);
+    } else if (
+      !formSchema ||
+      Object.keys(getObjectByPath((formSchema as any) ?? {}, propertiesEntryPath) ?? {}).length === 0
+    ) {
+      setFormStatus(FormStatus.EMPTY);
+    } else if (jsonSchemaBridge) {
+      setFormStatus(FormStatus.WITHOUT_ERROR);
+      errorBoundaryRef.current?.reset();
+    }
+  }, [formError, formSchema, jsonSchemaBridge, propertiesEntryPath]);
+
+  // Resets the ErrorBoundary everytime the FormSchema is updated
+  useEffect(() => {
+    errorBoundaryRef.current?.reset();
+  }, [formSchema]);
+
+  // When the formInput changes, reset the formError
+  useEffect(() => {
+    setFormError(false);
+  }, [formInputs]);
+
+  // Submits the form in the first render triggering the onValidate function
+  useEffect(() => {
+    ref?.submit();
+    setFormRef?.(ref);
+  }, [setFormRef, ref]);
 
   return {
     onSubmit: onFormSubmit,

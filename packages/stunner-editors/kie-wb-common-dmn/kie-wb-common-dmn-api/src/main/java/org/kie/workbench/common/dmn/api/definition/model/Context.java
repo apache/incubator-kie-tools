@@ -65,6 +65,19 @@ public class Context extends Expression {
     }
 
     @Override
+    public Context exactCopy() {
+        final Context exactelyClonedContext = new Context();
+        exactelyClonedContext.id = Optional.ofNullable(id).map(Id::copy).orElse(null);
+        exactelyClonedContext.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        exactelyClonedContext.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
+        exactelyClonedContext.componentWidths = new ArrayList<>(componentWidths);
+        exactelyClonedContext.contextEntry = Optional.ofNullable(contextEntry)
+                .map(contextEntryList -> contextEntryList.stream().map(ContextEntry::exactCopy).collect(Collectors.toList()))
+                .orElse(null);
+        return exactelyClonedContext;
+    }
+
+    @Override
     public Optional<DomainObject> findDomainObject(final String uuid) {
         return DomainObjectSearcherHelper.find(getContextEntry(), uuid);
     }

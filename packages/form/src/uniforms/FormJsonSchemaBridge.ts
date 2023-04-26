@@ -39,21 +39,9 @@ export class FormJsonSchemaBridge extends JSONSchemaBridge {
     if (!field.type) {
       field.type = "string";
     }
-
-    if (field.type === "object") {
-      field.default = {};
-    }
-    if (field.type === "array") {
-      field.default = [];
-    }
-    if (field.type === "boolean") {
-      field.default = false;
-    }
-
     if (field.enum) {
       field.placeholder = this.i18n.schema.selectPlaceholder;
     }
-
     return field;
   }
 }

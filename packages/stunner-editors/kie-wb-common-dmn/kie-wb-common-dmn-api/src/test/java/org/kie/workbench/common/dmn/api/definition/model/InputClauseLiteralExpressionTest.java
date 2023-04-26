@@ -75,6 +75,25 @@ public class InputClauseLiteralExpressionTest {
     }
 
     @Test
+    public void testExactCopy() {
+        final InputClauseLiteralExpression source = new InputClauseLiteralExpression(
+                new Id(CLAUSE_ID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                new Text(TEXT),
+                new ImportedValues()
+        );
+
+        final InputClauseLiteralExpression target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(CLAUSE_ID, target.getId().getValue());
+        assertEquals(TEXT, target.getText().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+    }
+
+    @Test
     public void testFindDomainObject_WhenInputClauseLiteralExpressionMatches() {
 
         final String uuid = "uuid";

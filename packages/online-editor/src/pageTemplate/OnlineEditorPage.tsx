@@ -31,38 +31,41 @@ import { MastheadContent } from "@patternfly/react-core/dist/js/components/Masth
 import { Toolbar, ToolbarContent } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { ToolbarGroup, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 
-export function OnlineEditorPage(props: { children?: React.ReactNode }) {
+export function OnlineEditorPage(props: { children?: React.ReactNode; onKeyDown?: (ke: React.KeyboardEvent) => void }) {
   const history = useHistory();
   const routes = useRoutes();
 
   return (
     <Page
+      onKeyDown={props.onKeyDown}
       header={
         <Masthead aria-label={"Page header"} display={{ default: "inline" }}>
           <MastheadMain style={{ justifyContent: "space-between" }}>
             <PageHeaderToolsItem className={"kie-sandbox--logo"}>
-              <MastheadBrand
-                onClick={() => history.push({ pathname: routes.home.path({}) })}
-                style={{ textDecoration: "none" }}
-              >
-                <Flex alignItems={{ default: "alignItemsCenter" }}>
-                  <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                    <Brand
-                      src={routes.static.images.kieHorizontalLogoReverse.path({})}
-                      alt={"Logo"}
-                      heights={{ default: "38px" }}
-                    >
-                      <source srcSet={routes.static.images.kieHorizontalLogoReverse.path({})} />
-                    </Brand>
-                  </FlexItem>
-                  <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                    <TextContent>
-                      <Text component={TextVariants.h3}>Sandbox</Text>
-                    </TextContent>
-                  </FlexItem>
-                </Flex>
-              </MastheadBrand>
-              <AboutButton />
+              <Flex justifyContent={{ default: "justifyContentFlexEnd" }} flexWrap={{ default: "nowrap" }}>
+                <MastheadBrand
+                  onClick={() => history.push({ pathname: routes.home.path({}) })}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Flex alignItems={{ default: "alignItemsCenter" }}>
+                    <FlexItem style={{ display: "flex", alignItems: "center" }}>
+                      <Brand
+                        src={routes.static.images.kieHorizontalLogoReverse.path({})}
+                        alt={"Logo"}
+                        heights={{ default: "38px" }}
+                      >
+                        <source srcSet={routes.static.images.kieHorizontalLogoReverse.path({})} />
+                      </Brand>
+                    </FlexItem>
+                    <FlexItem style={{ display: "flex", alignItems: "center" }}>
+                      <TextContent>
+                        <Text component={TextVariants.h3}>Sandbox</Text>
+                      </TextContent>
+                    </FlexItem>
+                  </Flex>
+                </MastheadBrand>
+                <AboutButton />
+              </Flex>
             </PageHeaderToolsItem>
           </MastheadMain>
           <MastheadContent>

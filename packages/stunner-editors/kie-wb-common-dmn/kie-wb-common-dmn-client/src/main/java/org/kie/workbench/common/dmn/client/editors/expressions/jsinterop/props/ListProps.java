@@ -22,12 +22,11 @@ import static org.kie.workbench.common.dmn.client.editors.expressions.types.Expr
 
 @JsType
 public class ListProps extends ExpressionProps {
-    public final ExpressionProps[] items;
-    public final Double width;
 
-    public ListProps(final String id, final String name, final String dataType, final ExpressionProps[] items, final Double width) {
+    public final ExpressionProps[] items;
+
+    public ListProps(final String id, final String name, final String dataType, final ExpressionProps[] items) {
         super(id, name, dataType, LIST.getText());
         this.items = items;
-        this.width = width;
     }
 }

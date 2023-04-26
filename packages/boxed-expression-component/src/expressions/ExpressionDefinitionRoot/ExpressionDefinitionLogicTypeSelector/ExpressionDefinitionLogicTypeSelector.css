@@ -1,0 +1,74 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.expression-container .logic-type-selector {
+  display: flex;
+  align-items: center;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  min-height: 62px; /* That's the default Literal expression height. 20px * 3 lines + 2px for border-top and border-bottom */
+  overflow: visible;
+  transition: background-color 0.1s ease;
+}
+
+.expression-container .logic-type-selector.logic-type-not-present:hover {
+  background-color: #eff5f8;
+}
+
+.expression-container .logic-type-selector.logic-type-not-present {
+  cursor: pointer;
+  justify-content: center;
+  min-width: 210px;
+}
+
+.expression-container .logic-type-selector.logic-type-selected {
+  cursor: default;
+  text-align: left;
+  padding: 0; /* That's NESTED_EXPRESSION_RESET_MARGIN. Changing this will alter all Widths.ts calculations */
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header {
+  color: black;
+  padding: 0 0 2px 8px;
+  border-bottom: 1px solid var(--pf-global--palette--black-500);
+  border-top: 1px solid var(--pf-global--palette--black-400);
+  border-left: 1px solid var(--pf-global--palette--black-400);
+  border-right: 1px solid var(--pf-global--palette--black-400);
+  position: relative;
+  font-size: 10px;
+  width: 100%;
+  height: 20px;
+}
+
+.expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header .pf-c-dropdown__menu {
+  padding: 0;
+}
+
+.expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header .pf-c-dropdown__toggle-icon {
+  margin-left: 4px;
+}
+
+.logic-type-popover .pf-c-menu {
+  width: 300px;
+}
+
+.paste-from-clipboard-error .pf-c-menu__item-description {
+  color: var(--pf-global--danger-color--100);
+}

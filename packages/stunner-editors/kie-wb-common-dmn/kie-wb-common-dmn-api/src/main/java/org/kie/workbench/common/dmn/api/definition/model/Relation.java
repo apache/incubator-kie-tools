@@ -71,6 +71,18 @@ public class Relation extends Expression {
     }
 
     @Override
+    public Relation exactCopy() {
+        final Relation exactelyClonedRelation = new Relation();
+        exactelyClonedRelation.id = Optional.ofNullable(id).map(Id::copy).orElse(null);
+        exactelyClonedRelation.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        exactelyClonedRelation.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
+        exactelyClonedRelation.componentWidths = new ArrayList<>(componentWidths);
+        exactelyClonedRelation.column = column.stream().map(InformationItem::exactCopy).collect(Collectors.toList());
+        exactelyClonedRelation.row = row.stream().map(List::exactCopy).collect(Collectors.toList());
+        return exactelyClonedRelation;
+    }
+
+    @Override
     public Optional<DomainObject> findDomainObject(final String uuid) {
         final Optional<DomainObject> domainObject = getDomainObject(getColumn(), uuid);
         if (domainObject.isPresent()) {

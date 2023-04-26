@@ -767,7 +767,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, dmnGraphUtils, itemDefinitionUtils);
         final Optional<DecisionTable> oModel = definition.getModelClass();
         final DecisionTable model = oModel.get();
-        enricher.buildOutputClausesByDataType(hasExpression, model, new DecisionRule());
+        enricher.buildOutputClausesByDataType(hasExpression, model, new DecisionRule(), null);
 
         final List<OutputClause> outputClauses = model.getOutput();
         assertThat(outputClauses.size()).isEqualTo(2);
@@ -801,7 +801,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, dmnGraphUtils, itemDefinitionUtils);
         final Optional<DecisionTable> oModel = definition.getModelClass();
         final DecisionTable model = oModel.get();
-        enricher.buildOutputClausesByDataType(hasExpression, model, new DecisionRule());
+        enricher.buildOutputClausesByDataType(hasExpression, model, new DecisionRule(), null);
 
         final List<OutputClause> outputClauses = model.getOutput();
         assertThat(outputClauses.size()).isEqualTo(2);
@@ -869,7 +869,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, dmnGraphUtils, itemDefinitionUtils);
         final Optional<DecisionTable> oModel = definition.getModelClass();
         final DecisionTable model = oModel.get();
-        enricher.buildOutputClausesByDataType(hasExpression, model, new DecisionRule());
+        enricher.buildOutputClausesByDataType(hasExpression, model, new DecisionRule(), null);
 
         final List<OutputClause> outputClauses = model.getOutput();
         assertThat(outputClauses.size()).isEqualTo(1);
