@@ -1,5 +1,5 @@
-> This extension is now being published and updated by [KIE](https://marketplace.visualstudio.com/publishers/kie-group).
-> Please consider migrating to [Kogito Serverless Workflow Editor](https://marketplace.visualstudio.com/items?itemName=kie-group.serverless-workflow-vscode-extension) to keep up with the latest features.
+> This extension is deprecated and a new one is being published and updated by [KIE](https://marketplace.visualstudio.com/publishers/kie-group).
+> Please consider migrating to the new [Kogito Serverless Workflow Editor](https://marketplace.visualstudio.com/items?itemName=kie-group.serverless-workflow-vscode-extension) to keep up with the latest features.
 
 ## Kogito Serverless Workflow Editor
 

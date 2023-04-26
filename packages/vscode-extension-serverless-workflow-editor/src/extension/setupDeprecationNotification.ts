@@ -30,7 +30,7 @@ export function setupDeprecationNotification(args: {
   args.context.subscriptions.push(
     vscode.commands.registerCommand(COMMAND_IDS.showDeprecationNotification, async () => {
       const deprecatedNotificationSelection = await vscode.window.showInformationMessage(
-        "The Kogito Serverless Workflow Editor extension is now being published and updated by KIE. Please consider migrating to it to keep up with the latest features.",
+        "The Kogito Serverless Workflow Editor extension is deprecated and a new one is being published and updated by KIE. Please consider migrating to the new Kogito Serverless Workflow Editor to keep up with the latest features.",
         NOTIFICATION_OPTIONS.checkNewExtension,
         NOTIFICATION_OPTIONS.dontShowAgain
       );
