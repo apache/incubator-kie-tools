@@ -28,7 +28,7 @@ export enum FileLanguage {
  * @param fileName the filename or path
  * @returns the file language, null if not found
  */
-export const getFileLanguage = (fileName: string): FileLanguage | null => {
+export const getFileLanguageEditorLS = (fileName: string): FileLanguage | null => {
   if (/\.json$/i.test(fileName)) {
     return FileLanguage.JSON;
   }

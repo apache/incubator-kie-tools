@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { FileLanguage, getFileLanguage } from "@kie-tools/json-yaml-language-service/dist/api";
+import { FileLanguage, getFileLanguageEditorLS } from "@kie-tools/json-yaml-language-service/dist/api";
 
-describe("getFileLanguage", () => {
+describe("getFileLanguageEditorLS", () => {
   it("Checking file language with not valid inputs", () => {
-    expect(getFileLanguage("")).toBe(null);
-    expect(getFileLanguage(" ")).toBe(null);
+    expect(getFileLanguageEditorLS("")).toBe(null);
+    expect(getFileLanguageEditorLS(" ")).toBe(null);
   });
 
   it.each([
@@ -47,6 +47,6 @@ describe("getFileLanguage", () => {
     ["/HOME/USER/DESKTOP/VALID.SW.YAML", FileLanguage.YAML],
     ["C:\\USERS\\MYNAME\\DESKTOP\\VALID.SW.YAML", FileLanguage.YAML],
   ])("Checking file language of: %s", (fileName, expectFileLanguage) => {
-    expect(getFileLanguage(fileName)).toBe(expectFileLanguage);
+    expect(getFileLanguageEditorLS(fileName)).toBe(expectFileLanguage);
   });
 });
