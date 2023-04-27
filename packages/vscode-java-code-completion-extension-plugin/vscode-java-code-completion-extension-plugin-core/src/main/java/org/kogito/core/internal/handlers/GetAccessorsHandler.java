@@ -28,6 +28,7 @@ import org.kogito.core.internal.api.GetPublicResult;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
 
+import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_DECLARATION_SIGNATURE;
 import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_SIGNATURE;
 
 public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
@@ -77,27 +78,25 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
     protected GetPublicResult getAccessor(CompletionItem item, String fqcn) {
         GetPublicResult result = new GetPublicResult();
         result.setFqcn(fqcn);
-        if (item.getDetail().contains(":")) {
-            JavaLanguageServerPlugin.logInfo("Accessor: " + item.getDetail());
-            /* The item.getDetail() format is: `Class.method() : Type` */
-            String[] label = item.getDetail().split(":");
-            String classAndMethodName = label[0].trim();
-            result.setAccessor(classAndMethodName.split("\\.")[1]);
-            String type = label[1].trim();
-            Map<String,String> data = (Map<String, String>) item.getData();
-            if (data != null && data.containsKey(DATA_FIELD_SIGNATURE)) {
-                String fqcnType = data.get(DATA_FIELD_SIGNATURE);
-                /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */
-                if (fqcnType != null && fqcnType.contains(")L")) {
-                    type = fqcnType.split("\\)L")[1];
-                    type = type.replaceAll(";$", "");
-                }
+        result.setAccessor(item.getLabelDetails().getDetail() != null ?
+                item.getLabel() + item.getLabelDetails().getDetail() :
+                item.getLabel());
+        String type = item.getLabelDetails().getDescription();
+        Map<String,String> data = (Map<String, String>) item.getData();
+        if (data != null && (data.containsKey(DATA_FIELD_SIGNATURE) ||
+                             data.containsKey(DATA_FIELD_DECLARATION_SIGNATURE))) {
+            String fqcnType = data.containsKey(DATA_FIELD_SIGNATURE) ?
+                    data.get(DATA_FIELD_SIGNATURE) :
+                    data.get(DATA_FIELD_DECLARATION_SIGNATURE);
+            /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */
+            /* The DATA_FIELD_DECLARATION_SIGNATURE format is: `Ljava.lang.String;` */
+            if (fqcnType != null && fqcnType.contains(")L")) {
+                type = fqcnType.split("\\)L")[1];
+                type = type.replaceAll(";$", "");
             }
-            result.setType(type);
-        } else {
-            result.setAccessor("");
-            result.setType("");
         }
+        result.setType(type);
+
         return result;
     }
 }
