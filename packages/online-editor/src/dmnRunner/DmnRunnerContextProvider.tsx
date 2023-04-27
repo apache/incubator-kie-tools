@@ -71,7 +71,6 @@ import getObjectValueByPath from "lodash/get";
 import setObjectValueByPath from "lodash/set";
 import unsetObjectValueByPath from "lodash/unset";
 import { dereferenceProperties } from "../jsonSchema/dereference";
-import { property } from "lodash";
 
 const JSON_SCHEMA_PROPERTIES_PATH = "definitions.InputSet.properties";
 
@@ -222,6 +221,13 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
+        if (
+          props.workspaceFile.extension !== "dmn" ||
+          extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
+        ) {
+          return;
+        }
+
         Promise.all(dmnRunnerInputs.map((inputs) => extendedServicesModelPayload(inputs)))
           .then((payloads) =>
             Promise.all(
@@ -254,7 +260,13 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT });
           });
       },
-      [extendedServicesModelPayload, dmnRunnerInputs, extendedServices.client]
+      [
+        props.workspaceFile.extension,
+        extendedServices.status,
+        extendedServices.client,
+        dmnRunnerInputs,
+        extendedServicesModelPayload,
+      ]
     )
   );
 
@@ -299,6 +311,13 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
   // Set execution tab on Problems panel;
   useEffect(() => {
+    if (
+      props.workspaceFile.extension !== "dmn" ||
+      extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
+    ) {
+      return;
+    }
+
     const decisionNameByDecisionId = results[currentInputIndex]?.reduce(
       (acc: Map<string, string>, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
       new Map<string, string>()
@@ -328,7 +347,14 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     });
 
     setNotifications(i18n.terms.execution, "", notifications as any);
-  }, [setNotifications, i18n.terms.execution, results, currentInputIndex]);
+  }, [
+    setNotifications,
+    i18n.terms.execution,
+    results,
+    currentInputIndex,
+    props.workspaceFile.extension,
+    extendedServices.status,
+  ]);
 
   const setDmnRunnerPersistenceJson = useCallback(
     (args: {
