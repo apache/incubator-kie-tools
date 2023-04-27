@@ -393,19 +393,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/kie-editors-dev-vscode-extension/dist/kie_editors_dev_vscode_extension_${{ inputs.tag }}.vsix
           asset_name: STAGING__vscode_extension_dev_${{ inputs.tag }}.vsix
-          asset_content_type: application/zip
-
-      - name: "STAGING: Upload VS Code Extension Backend (dev) (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-backend/dist/vscode-extension-backend_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_backend_dev_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "STAGING: Upload VS Code Extension - BPMN Editor (prod) (Ubuntu only)"
@@ -415,8 +404,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-bpmn-editor/dist/vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/bpmn-vscode-extension/dist/bpmn_vscode_extension_${{ inputs.tag }}.vsix
+          asset_name: STAGING__bpmn_vscode_extension_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "STAGING: Upload VS Code Extension - DMN Editor (prod) (Ubuntu only)"
@@ -426,8 +415,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-dmn-editor/dist/vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/dmn-vscode-extension/dist/dmn_vscode_extension_${{ inputs.tag }}.vsix
+          asset_name: STAGING__dmn_vscode_extension_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "STAGING: Upload VS Code Extension - PMML Editor (prod) (Ubuntu only)"
@@ -437,11 +426,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-pmml-editor/dist/vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/pmml-vscode-extension/dist/pmml_vscode_extension_${{ inputs.tag }}.vsix
+          asset_name: STAGING__pmml_vscode_extension_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
-      - name: "STAGING: Upload VS Code Extension - Serverless Workflow Editor (prod) (Ubuntu only)"
+      - name: "STAGING: Upload VS Code Extension - Serverless Workflow Editor - Red Hat (prod) (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -450,6 +439,17 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-serverless-workflow-editor/dist/vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
           asset_name: STAGING__vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
+          asset_content_type: application/zip
+
+      - name: "STAGING: Upload VS Code Extension - Serverless Workflow Editor - KIE (prod) (Ubuntu only)"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kie-tools/packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${{ inputs.tag }}.vsix
+          asset_name: STAGING__serverless_workflow_vscode_extension_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "STAGING: Upload VS Code Extension - Dashbuilder Editor (prod) (Ubuntu only)"
@@ -483,17 +483,6 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${{ inputs.tag }}.vsix
           asset_name: STAGING__vscode_extension_kie_ba_bundle_${{ inputs.tag }}.vsix
-          asset_content_type: application/zip
-
-      - name: "STAGING: Upload VS Code Extension - Red Hat Business Automation Bundle (prod) (Ubuntu only)"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-red-hat-business-automation-bundle/dist/vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "STAGING: Upload Chrome Extension for KIE Editors (Ubuntu only)"

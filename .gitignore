@@ -63,9 +63,9 @@ package-lock.json
 **/jitexecutor
 
 # Language Server Extension
-packages/vscode-extension-dmn-editor/server
-packages/vscode-extension-bpmn-editor/server
-packages/vscode-extension-pack-kogito-kie-editors/server
+packages/dmn-vscode-extension/server
+packages/bpmn-vscode-extension/server
+packages/kie-editors-dev-vscode-extension/server
 packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/lib
 
 # imported from kogito-editors-java
