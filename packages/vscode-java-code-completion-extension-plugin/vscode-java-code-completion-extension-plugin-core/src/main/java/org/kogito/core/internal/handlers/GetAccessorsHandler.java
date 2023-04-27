@@ -81,18 +81,24 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         result.setAccessor(item.getLabelDetails().getDetail() != null ?
                 item.getLabel() + item.getLabelDetails().getDetail() :
                 item.getLabel());
+        /* Retrieving the class type SIMPLE NAME */
         String type = item.getLabelDetails().getDescription();
+        /* Retrieving the class type FQCN */
         Map<String,String> data = (Map<String, String>) item.getData();
-        if (data != null && (data.containsKey(DATA_FIELD_SIGNATURE) ||
-                             data.containsKey(DATA_FIELD_DECLARATION_SIGNATURE))) {
-            String fqcnType = data.containsKey(DATA_FIELD_SIGNATURE) ?
-                    data.get(DATA_FIELD_SIGNATURE) :
-                    data.get(DATA_FIELD_DECLARATION_SIGNATURE);
+        /* Accessor (getter) case */
+        if (data != null && data.containsKey(DATA_FIELD_SIGNATURE)) {
+            String fqcnType = data.get(DATA_FIELD_SIGNATURE);
             /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */
-            /* The DATA_FIELD_DECLARATION_SIGNATURE format is: `Ljava.lang.String;` */
             if (fqcnType != null && fqcnType.contains(")L")) {
                 type = fqcnType.split("\\)L")[1];
                 type = type.replaceAll(";$", "");
+            }
+        /* Public Field case */
+        } else if (data != null && data.containsKey(DATA_FIELD_DECLARATION_SIGNATURE)) {
+            String fqcnType = data.get(DATA_FIELD_DECLARATION_SIGNATURE);
+            /* The DATA_FIELD_DECLARATION_SIGNATURE format is: `Ljava.lang.String;` */
+            if (fqcnType != null && fqcnType.startsWith("L") && fqcnType.endsWith(";")) {
+                type = fqcnType.substring(1, type.length() - 1);
             }
         }
         result.setType(type);
