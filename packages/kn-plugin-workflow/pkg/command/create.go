@@ -151,7 +151,7 @@ func runCreateCmdConfig(cmd *cobra.Command) (cfg CreateCmdConfig, err error) {
 			metadata.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION,
 			metadata.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION,
 			metadata.QUARKUS_KUBERNETES_EXTENSION,
-			metadata.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION,
+			metadata.QUARKUS_RESTEASY_JACKSON_EXTENSION,
 			viper.GetString("extension"),
 		),
 
