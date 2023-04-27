@@ -28,7 +28,6 @@ import org.kogito.core.internal.api.GetPublicResult;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
 
-import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_DECLARATION_SIGNATURE;
 import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_SIGNATURE;
 
 public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
@@ -70,7 +69,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
     private List<GetPublicResult> transformCompletionItemsToResult(String fqcn, List<CompletionItem> items) {
         return items.stream()
-                .filter(item -> item.getLabelDetails() != null)
+                .filter(item -> item.getDetail() != null && item.getDetail().contains(":"))
                 .map(item -> getAccessor(item, fqcn))
                 .collect(Collectors.toList());
     }
@@ -88,24 +87,12 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             JavaLanguageServerPlugin.logInfo("ENTRY: " + entry.getKey() + " " + entry.getValue());
         }
-        /* Accessor (getter) case */
         if (data != null && data.containsKey(DATA_FIELD_SIGNATURE)) {
             String fqcnType = data.get(DATA_FIELD_SIGNATURE);
-            JavaLanguageServerPlugin.logInfo("DATA_FIELD_SIGNATURE: " + data.get(DATA_FIELD_SIGNATURE));
-            JavaLanguageServerPlugin.logInfo("fqcnType: " + fqcnType);
             /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */
             if (fqcnType != null && fqcnType.contains(")L")) {
                 type = fqcnType.split("\\)L")[1];
                 type = type.replaceAll(";$", "");
-            }
-        /* Public Field case */
-        } else if (data != null && data.containsKey(DATA_FIELD_DECLARATION_SIGNATURE)) {
-            String fqcnType = data.get(DATA_FIELD_DECLARATION_SIGNATURE);
-            JavaLanguageServerPlugin.logInfo("DATA_FIELD_DECLARATION_SIGNATURE: " + data.get(DATA_FIELD_DECLARATION_SIGNATURE));
-            JavaLanguageServerPlugin.logInfo("fqcnType: " + fqcnType);
-            /* The DATA_FIELD_DECLARATION_SIGNATURE format is: `Ljava.lang.String;` */
-            if (fqcnType != null && fqcnType.startsWith("L") && fqcnType.endsWith(";")) {
-                type = fqcnType.substring(1, fqcnType.length() - 1);
             }
         }
         result.setType(type);
