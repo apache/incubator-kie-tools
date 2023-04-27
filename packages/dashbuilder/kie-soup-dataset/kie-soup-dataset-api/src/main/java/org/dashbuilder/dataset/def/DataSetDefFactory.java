@@ -15,12 +15,7 @@
  */
 package org.dashbuilder.dataset.def;
 
-import org.dashbuilder.dataset.impl.BeanDataSetDefBuilderImpl;
-import org.dashbuilder.dataset.impl.CSVDataSetDefBuilderImpl;
 import org.dashbuilder.dataset.impl.ExternalDataSetDefBuilderImpl;
-import org.dashbuilder.dataset.impl.KafkaDataSetDefBuilderImpl;
-import org.dashbuilder.dataset.impl.PrometheusDataSetDefBuilderImpl;
-import org.dashbuilder.dataset.impl.SQLDataSetDefBuilderImpl;
 import org.dashbuilder.dataset.impl.StaticDataSetDefBuilderImpl;
 
 /**
@@ -28,31 +23,14 @@ import org.dashbuilder.dataset.impl.StaticDataSetDefBuilderImpl;
  */
 public final class DataSetDefFactory {
 
+    private DataSetDefFactory() {
+        // noop
+    }
+
     public static DataSetDefBuilder<StaticDataSetDefBuilderImpl> newStaticDataSetDef() {
         return new StaticDataSetDefBuilderImpl();
     }
 
-    public static CSVDataSetDefBuilderImpl newCSVDataSetDef() {
-        return new CSVDataSetDefBuilderImpl();
-    }
-
-    public static SQLDataSetDefBuilderImpl newSQLDataSetDef() {
-        return new SQLDataSetDefBuilderImpl();
-    }
-
-    public static BeanDataSetDefBuilderImpl newBeanDataSetDef() {
-        return new BeanDataSetDefBuilderImpl();
-    }
-
-    public static PrometheusDataSetDefBuilderImpl newPrometheusDataSetDef() {
-        return new PrometheusDataSetDefBuilderImpl();
-    }
-
-    public static KafkaDataSetDefBuilderImpl newKafkaDataSetDef() {
-        return new KafkaDataSetDefBuilderImpl();
-    }
-    
-    
     public static ExternalDataSetDefBuilderImpl newExternalDataSetDef() {
         return new ExternalDataSetDefBuilderImpl();
     }

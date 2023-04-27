@@ -50,13 +50,6 @@ jobs:
       DMN_DEV_DEPLOYMENT__baseImageTag: "${{ inputs.tag }}-prerelease"
       DMN_DEV_DEPLOYMENT__baseImageBuildTags: "${{ inputs.tag }}-prerelease"
 
-      DASHBUILDER__baseImageRegistry: "quay.io"
-      DASHBUILDER__baseImageAccount: "kie-tools"
-      DASHBUILDER_AUTHORING__baseImageName: "dashbuilder-authoring"
-      DASHBUILDER_RUNTIME__baseImageName: "dashbuilder-runtime"
-      DASHBUILDER__baseImageTag: "${{ inputs.tag }}-prerelease"
-      DASHBUILDER__baseImageBuildTags: "${{ inputs.tag }}-prerelease"
-
       KIE_SANDBOX__imageRegistry: "quay.io"
       KIE_SANDBOX__imageAccount: "kie-tools"
       KIE_SANDBOX__imageName: "kie-sandbox-image"
@@ -557,37 +550,6 @@ jobs:
           asset_path: "${{ github.workspace }}/kie-tools/packages/extended-services/dist/win32/kie_sandbox_extended_services.exe"
           asset_name: "STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
           asset_content_type: application/octet-stream
-
-      - name: "STAGING: Upload DashBuilder Assets (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/dashbuilder/dist/dashbuilder_dist.zip
-          asset_name: STAGING__dashbuilder_dist_${{ inputs.tag }}.zip
-          asset_content_type: application/zip
-
-      - name: "STAGING Push dashbuilder-authoring image to quay.io (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: "${{ env.DASHBUILDER_AUTHORING__baseImageName }}"
-          tags: "${{ env.DASHBUILDER__baseImageBuildTags }}"
-          registry: "${{ env.DASHBUILDER__baseImageRegistry }}/${{ env.DASHBUILDER__baseImageAccount }}"
-          username: "${{ env.DASHBUILDER__baseImageAccount }}"
-          password: "${{ secrets.quay_registry_password }}"
-
-      - name: "STAGING Push dashbuilder-runtime image to quay.io (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: "${{ env.DASHBUILDER_RUNTIME__baseImageName }}"
-          tags: "${{ env.DASHBUILDER__baseImageBuildTags }}"
-          registry: "${{ env.DASHBUILDER__baseImageRegistry }}/${{ env.DASHBUILDER__baseImageAccount }}"
-          username: "${{ env.DASHBUILDER__baseImageAccount }}"
-          password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Upload Knative CLI Workflow Plugin for Linux (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}

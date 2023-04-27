@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { OpenShiftConnection } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -35,6 +34,7 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsPageProps } from "../types";
 import { saveConfigCookie } from "./OpenShiftSettingsConfig";
 import { OpenShiftSettingsSimpleConfig } from "./OpenShiftSettingsSimpleConfig";
+import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 export function OpenShiftSettings(props: SettingsPageProps) {
   const settings = useSettings();
@@ -48,7 +48,7 @@ export function OpenShiftSettings(props: SettingsPageProps) {
 
   const onDisconnect = useCallback(() => {
     settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);
-    const newConfig: OpenShiftConnection = {
+    const newConfig: KubernetesConnection = {
       namespace: settings.openshift.config.namespace,
       host: settings.openshift.config.host,
       token: "",

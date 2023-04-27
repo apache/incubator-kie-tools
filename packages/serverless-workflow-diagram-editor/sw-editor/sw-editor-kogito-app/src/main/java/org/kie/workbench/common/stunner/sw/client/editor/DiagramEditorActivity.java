@@ -74,6 +74,16 @@ public class DiagramEditorActivity extends AbstractActivity implements EditorAct
     }
 
     @Override
+    public Promise<String> getContentYAML() {
+        return realPresenter.getContentYAML();
+    }
+
+    @Override
+    public Promise<String> getContentJSON() {
+        return realPresenter.getContentJSON();
+    }
+
+    @Override
     public Promise<String> getPreview() {
         return realPresenter.getPreview();
     }

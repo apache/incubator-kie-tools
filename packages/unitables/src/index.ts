@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./Unitables";
-export * from "./UnitablesBoxedTypes";
+export * from "./UnitablesWrapper";
+export * from "./UnitablesTypes";
 export * from "./UnitablesValidator";

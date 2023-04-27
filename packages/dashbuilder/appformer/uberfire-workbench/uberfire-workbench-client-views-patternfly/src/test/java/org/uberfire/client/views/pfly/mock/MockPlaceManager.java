@@ -16,25 +16,18 @@
 
 package org.uberfire.client.views.pfly.mock;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.enterprise.inject.Alternative;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
-import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @Alternative
 public class MockPlaceManager implements PlaceManager {
@@ -50,78 +43,19 @@ public class MockPlaceManager implements PlaceManager {
     }
 
     @Override
-    public void goTo(Path path) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public void goTo(Path path,
-                     PlaceRequest place) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
     public void goTo(PartDefinition part,
                      PanelDefinition panel) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void goTo(String identifier,
-                     PanelDefinition panel) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
     public void goTo(PlaceRequest place,
                      PanelDefinition panel) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public void goTo(Path path,
-                     PanelDefinition panel) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public void goTo(Path path,
-                     PlaceRequest place,
-                     PanelDefinition panel) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public void goTo(PlaceRequest place,
-                     HasWidgets addTo) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public void goTo(String id,
-                     HTMLElement addTo) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public void goTo(PlaceRequest place,
-                     HTMLElement addTo) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public void goTo(PlaceRequest place,
-                     elemental2.dom.HTMLElement addTo) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
     public Activity getActivity(PlaceRequest place) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public PlaceStatus getStatus(String id) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 
@@ -222,16 +156,6 @@ public class MockPlaceManager implements PlaceManager {
 
     @Override
     public void executeOnOpenCallbacks(final PlaceRequest place) {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public Collection<SplashScreenActivity> getActiveSplashScreens() {
-        throw new UnsupportedOperationException("Not implemented.");
-    }
-
-    @Override
-    public Collection<PathPlaceRequest> getActivitiesForResourceType(final ResourceTypeDefinition type) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 

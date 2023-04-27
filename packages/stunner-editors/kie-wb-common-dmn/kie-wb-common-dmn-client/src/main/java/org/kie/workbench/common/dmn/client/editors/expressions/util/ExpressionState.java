@@ -24,7 +24,10 @@ import javax.enterprise.event.Event;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
@@ -130,7 +133,14 @@ public class ExpressionState {
     }
 
     void restoreExpression() {
-        getHasExpression().setExpression(getSavedExpression());
+        if (getHasExpression().asDMNModelInstrumentedBase() instanceof BusinessKnowledgeModel) {
+            BusinessKnowledgeModel bkModel = ((BusinessKnowledgeModel) getHasExpression().asDMNModelInstrumentedBase());
+            DMNModelInstrumentedBase bkModelParent = bkModel.getEncapsulatedLogic().getParent();
+            bkModel.setEncapsulatedLogic((FunctionDefinition) getSavedExpression());
+            bkModel.getEncapsulatedLogic().setParent(bkModelParent);
+        } else if (getHasExpression() instanceof HasExpression) {
+            getHasExpression().setExpression(getSavedExpression());
+        }
     }
 
     void restoreTypeRef() {
@@ -167,7 +177,7 @@ public class ExpressionState {
         if (Objects.isNull(getHasExpression().getExpression())) {
             setSavedExpression(null);
         } else {
-            setSavedExpression(getHasExpression().getExpression().copy());
+            setSavedExpression(getHasExpression().getExpression().exactCopy());
         }
     }
 }

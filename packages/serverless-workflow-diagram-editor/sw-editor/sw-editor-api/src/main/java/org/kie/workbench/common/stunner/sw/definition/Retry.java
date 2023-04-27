@@ -21,9 +21,11 @@ import jsinterop.annotations.JsType;
 @JsType
 public class Retry {
 
-    private String name;
-    private String delay;
-    private Integer maxAttempts;
+    public String name;
+
+    public String delay;
+
+    public Integer maxAttempts;
 
     public final String getName() {
         return name;

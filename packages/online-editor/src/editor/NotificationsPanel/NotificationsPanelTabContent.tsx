@@ -49,91 +49,93 @@ function variant(severity: NotificationSeverity) {
   }
 }
 
-export const NotificationPanelTabContent = React.forwardRef<NotificationsChannelApi, Props>((props, forwardedRef) => {
-  const [tabNotifications, setTabNotifications] = useState<Notification[]>([]);
+export const NotificationPanelTabContent = React.forwardRef<NotificationsChannelApi, Props>(
+  ({ onNotificationsLengthChange, name, expandAll, setExpandAll }, forwardedRef) => {
+    const [tabNotifications, setTabNotifications] = useState<Notification[]>([]);
 
-  const createNotification = useCallback(
-    (notification: Notification) => {
-      setTabNotifications([...tabNotifications, notification]);
-    },
-    [tabNotifications]
-  );
+    const createNotification = useCallback(
+      (notification: Notification) => {
+        setTabNotifications([...tabNotifications, notification]);
+      },
+      [tabNotifications]
+    );
 
-  const setNotifications = useCallback(
-    (path: string, notifications: Notification[]) => {
-      props.onNotificationsLengthChange(props.name, notifications.length);
-      setTabNotifications(notifications);
-    },
-    [props.onNotificationsLengthChange, props.name]
-  );
+    const setNotifications = useCallback(
+      (path: string, notifications: Notification[]) => {
+        onNotificationsLengthChange(name, notifications.length);
+        setTabNotifications(notifications);
+      },
+      [onNotificationsLengthChange, name]
+    );
 
-  const removeNotifications = useCallback((path: string) => {
-    setTabNotifications((previousTabNotifications) => {
-      return previousTabNotifications.filter((tabNotification) => tabNotification.path === path);
-    });
-  }, []);
+    const removeNotifications = useCallback((path: string) => {
+      setTabNotifications((previousTabNotifications) => {
+        return previousTabNotifications.filter((tabNotification) => tabNotification.path === path);
+      });
+    }, []);
 
-  useImperativeHandle(forwardedRef, () => ({
-    kogitoNotifications_createNotification: createNotification,
-    kogitoNotifications_setNotifications: setNotifications,
-    kogitoNotifications_removeNotifications: removeNotifications,
-  }));
+    useImperativeHandle(forwardedRef, () => ({
+      kogitoNotifications_createNotification: createNotification,
+      kogitoNotifications_setNotifications: setNotifications,
+      kogitoNotifications_removeNotifications: removeNotifications,
+    }));
 
-  const notificationsMap: Map<string, Notification[]> = useMemo(() => {
-    return tabNotifications.reduce((acc, notification) => {
-      const notificationEntry = acc.get(notification.path);
-      if (!notificationEntry) {
-        acc.set(notification.path, [notification]);
-      } else {
-        acc.set(notification.path, [...notificationEntry, notification]);
-      }
-      return acc;
-    }, new Map());
-  }, [tabNotifications]);
+    const notificationsMap: Map<string, Notification[]> = useMemo(() => {
+      return tabNotifications.reduce((acc, notification) => {
+        const notificationEntry = acc.get(notification.path);
+        if (!notificationEntry) {
+          acc.set(notification.path, [notification]);
+        } else {
+          acc.set(notification.path, [...notificationEntry, notification]);
+        }
+        return acc;
+      }, new Map());
+    }, [tabNotifications]);
 
-  return (
-    <>
-      {tabNotifications.length > 0 && (
-        <NotificationDrawer>
-          <NotificationDrawerBody>
-            <NotificationDrawerGroupList>
-              {[...notificationsMap.entries()]
-                .sort(([a], [b]) => (a < b ? -1 : 1))
-                .map(([path, notifications], groupIndex) => (
-                  <React.Fragment key={path}>
-                    {path === "" ? (
-                      <NotificationDrawerList isHidden={false}>
-                        {notifications.map((notification, notificationIndex) => (
-                          <NotificationDrawerListItem
-                            key={`validation-notification-${notificationIndex}`}
-                            isRead={true}
-                            variant={variant(notification.severity)}
-                          >
-                            <NotificationDrawerListItemHeader
-                              title={notification.message}
+    return (
+      <>
+        {tabNotifications.length > 0 && (
+          <NotificationDrawer>
+            <NotificationDrawerBody>
+              <NotificationDrawerGroupList>
+                {[...notificationsMap.entries()]
+                  .sort(([a], [b]) => (a < b ? -1 : 1))
+                  .map(([path, notifications], groupIndex) => (
+                    <React.Fragment key={path}>
+                      {path === "" ? (
+                        <NotificationDrawerList isHidden={false}>
+                          {notifications.map((notification, notificationIndex) => (
+                            <NotificationDrawerListItem
+                              key={`validation-notification-${notificationIndex}`}
+                              isRead={true}
                               variant={variant(notification.severity)}
-                            />
-                          </NotificationDrawerListItem>
-                        ))}
-                      </NotificationDrawerList>
-                    ) : (
-                      <NotificationTabDrawerGroup
-                        key={`execution-notification-group-${groupIndex}`}
-                        path={path}
-                        notifications={notifications}
-                        allExpanded={props.expandAll}
-                        setAllExpanded={props.setExpandAll}
-                      />
-                    )}
-                  </React.Fragment>
-                ))}
-            </NotificationDrawerGroupList>
-          </NotificationDrawerBody>
-        </NotificationDrawer>
-      )}
-    </>
-  );
-});
+                            >
+                              <NotificationDrawerListItemHeader
+                                title={notification.message}
+                                variant={variant(notification.severity)}
+                              />
+                            </NotificationDrawerListItem>
+                          ))}
+                        </NotificationDrawerList>
+                      ) : (
+                        <NotificationTabDrawerGroup
+                          key={`execution-notification-group-${groupIndex}`}
+                          path={path}
+                          notifications={notifications}
+                          allExpanded={expandAll}
+                          setAllExpanded={setExpandAll}
+                        />
+                      )}
+                    </React.Fragment>
+                  ))}
+              </NotificationDrawerGroupList>
+            </NotificationDrawerBody>
+          </NotificationDrawer>
+        )}
+      </>
+    );
+  }
+);
 
 interface NotificationDrawerGroupProps {
   path: string;
@@ -142,29 +144,34 @@ interface NotificationDrawerGroupProps {
   setAllExpanded: React.Dispatch<boolean | undefined>;
 }
 
-export function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
+export function NotificationTabDrawerGroup({
+  allExpanded,
+  path,
+  notifications,
+  setAllExpanded,
+}: NotificationDrawerGroupProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const onExpand = useCallback(() => {
     setIsExpanded((prevExpanded) => !prevExpanded);
-    props.setAllExpanded(undefined);
-  }, []);
+    setAllExpanded(undefined);
+  }, [setAllExpanded]);
 
   useEffect(() => {
-    if (props.allExpanded !== undefined) {
-      setIsExpanded(props.allExpanded);
+    if (allExpanded !== undefined) {
+      setIsExpanded(allExpanded);
     }
-  }, [props.allExpanded]);
+  }, [allExpanded]);
 
   return (
     <NotificationDrawerGroup
       isRead={true}
-      title={props.path}
+      title={path}
       isExpanded={isExpanded}
-      count={props.notifications.length}
+      count={notifications.length}
       onExpand={onExpand}
     >
-      {props.notifications.map((notification, index) => (
-        <NotificationDrawerList key={`execution-notification-item-${props.path}-${index}`} isHidden={!isExpanded}>
+      {notifications.map((notification, index) => (
+        <NotificationDrawerList key={`execution-notification-item-${path}-${index}`} isHidden={!isExpanded}>
           <NotificationDrawerListItem isRead={true} variant={variant(notification.severity)}>
             <NotificationDrawerListItemHeader title={notification.message} variant={variant(notification.severity)} />
           </NotificationDrawerListItem>

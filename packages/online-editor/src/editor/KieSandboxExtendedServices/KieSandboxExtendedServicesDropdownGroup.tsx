@@ -20,7 +20,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { useDevDeploymentsDeployDropdownItems } from "../../devDeployments/DevDeploymentsDeployDropdownItems";
-import { useDmnRunnerState, useDmnRunnerDispatch } from "../DmnRunner/DmnRunnerContext";
+import { useDmnRunnerState, useDmnRunnerDispatch } from "../../dmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import {
   DependentFeature,
@@ -30,13 +30,14 @@ import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServic
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
+import { DmnRunnerProviderActionType } from "../../dmnRunner/DmnRunnerTypes";
 
 export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace | undefined }) {
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
   const dmnRunnerState = useDmnRunnerState();
   const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
-  const dmnRunnerDispatch = useDmnRunnerDispatch();
+  const { setDmnRunnerContextProviderState } = useDmnRunnerDispatch();
 
   const isKieSandboxExtendedServicesRunning = useMemo(
     () => extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
@@ -45,12 +46,12 @@ export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: Acti
 
   const onToggleDmnRunner = useCallback(() => {
     if (isKieSandboxExtendedServicesRunning) {
-      dmnRunnerDispatch.setExpanded((prev) => !prev);
+      setDmnRunnerContextProviderState({ type: DmnRunnerProviderActionType.TOGGLE_EXPANDED });
       return;
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     extendedServices.setModalOpen(true);
-  }, [dmnRunnerDispatch, isKieSandboxExtendedServicesRunning, extendedServices]);
+  }, [setDmnRunnerContextProviderState, isKieSandboxExtendedServicesRunning, extendedServices]);
 
   return (
     <>

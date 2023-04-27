@@ -35,6 +35,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPres
 import org.kie.workbench.common.dmn.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
@@ -117,6 +118,8 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     private final ConfirmationDialog confirmationDialog;
     private final DecisionNavigatorPresenter decisionNavigatorPresenter;
 
+    private final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
+
     protected AbstractDMNDiagramEditor(final View view,
                                        final MultiPageEditorContainerView containerView,
                                        final StunnerEditor stunnerEditor,
@@ -142,7 +145,8 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
                                        final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                                        final DRDNameChanger drdNameChanger,
                                        final ConfirmationDialog confirmationDialog,
-                                       final DecisionNavigatorPresenter decisionNavigatorPresenter) {
+                                       final DecisionNavigatorPresenter decisionNavigatorPresenter,
+                                       final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider) {
         super(view, containerView);
         this.stunnerEditor = stunnerEditor;
         this.sessionManager = sessionManager;
@@ -168,6 +172,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         this.drdNameChanger = drdNameChanger;
         this.confirmationDialog = confirmationDialog;
         this.decisionNavigatorPresenter = decisionNavigatorPresenter;
+        this.pmmlDocumentMetadataProvider = pmmlDocumentMetadataProvider;
     }
 
     public void onStartup(final PlaceRequest place) {
@@ -322,6 +327,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         }
         setupEditorSearchIndex();
         setupSearchComponent();
+        pmmlDocumentMetadataProvider.loadPMMLIncludedDocuments();
     }
 
     protected void onDiagramLoad() {

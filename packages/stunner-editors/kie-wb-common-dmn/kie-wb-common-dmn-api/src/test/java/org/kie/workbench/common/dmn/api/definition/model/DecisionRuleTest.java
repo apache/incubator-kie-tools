@@ -85,6 +85,19 @@ public class DecisionRuleTest {
     }
 
     @Test
+    public void testExactCopy() {
+        final DecisionRule source = new DecisionRule(new Id(DECISION_RULE_ID), new Description(DESCRIPTION), new ArrayList<>(), new ArrayList<>());
+
+        final DecisionRule target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(DECISION_RULE_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertTrue(target.getInputEntry().isEmpty());
+        assertTrue(target.getOutputEntry().isEmpty());
+    }
+
+    @Test
     public void testFindDomainObject_FromInputEntry() {
 
         final DecisionRule decisionRule = new DecisionRule();

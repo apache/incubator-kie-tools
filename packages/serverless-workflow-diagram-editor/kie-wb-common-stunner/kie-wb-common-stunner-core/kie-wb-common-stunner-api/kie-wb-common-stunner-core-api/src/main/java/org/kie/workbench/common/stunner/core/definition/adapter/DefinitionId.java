@@ -16,8 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+@JsType
 public class DefinitionId {
 
     public final static String DYNAMIC_ID_DELIMITER = ".";
@@ -29,12 +32,14 @@ public class DefinitionId {
         return build(id, -1);
     }
 
+    @JsIgnore
     public static DefinitionId build(final String type,
                                      final String id) {
         final String value = generateId(type, id);
         return build(value, type.length());
     }
 
+    @JsIgnore
     public static DefinitionId build(final String id,
                                      final int dynamicIdStartIndex) {
         return new DefinitionId(id, dynamicIdStartIndex);

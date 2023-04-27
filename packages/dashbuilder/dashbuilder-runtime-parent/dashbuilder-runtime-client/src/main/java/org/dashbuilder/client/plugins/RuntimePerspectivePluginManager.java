@@ -17,9 +17,7 @@
 package org.dashbuilder.client.plugins;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
@@ -34,11 +32,8 @@ import org.dashbuilder.navigation.layout.LayoutTemplateContext;
 import org.dashbuilder.navigation.layout.LayoutTemplateInfo;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
-import org.uberfire.ext.plugin.model.Plugin;
-import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.mvp.ParameterizedCommand;
 
 /**
@@ -53,26 +48,6 @@ public class RuntimePerspectivePluginManager implements PerspectivePluginManager
     LayoutGenerator layoutGenerator;
 
     List<LayoutTemplate> templates = new ArrayList<>();
-
-    @Override
-    public void loadPlugins() {
-        // not used in Runtime
-    }
-
-    @Override
-    public void getPerspectivePlugins(ParameterizedCommand<Collection<Plugin>> callback) {
-        List<Plugin> plugins = templates.stream()
-                                        .map(lt -> new Plugin(lt.getName(),
-                                                              PluginType.PERSPECTIVE,
-                                                              null))
-                                        .collect(Collectors.toList());
-        callback.execute(plugins);
-    }
-
-    @Override
-    public boolean isRuntimePerspective(Plugin plugin) {
-        return searchLayoutTemplate(plugin.getName());
-    }
 
     @Override
     public boolean isRuntimePerspective(NavItem navItem) {
@@ -103,17 +78,23 @@ public class RuntimePerspectivePluginManager implements PerspectivePluginManager
     }
 
     @Override
-    public void getLayoutTemplateInfo(LayoutTemplate layoutTemplate, ParameterizedCommand<LayoutTemplateInfo> callback) {
+    public void getLayoutTemplateInfo(LayoutTemplate layoutTemplate,
+                                      ParameterizedCommand<LayoutTemplateInfo> callback) {
         // not used in runtime
     }
 
     @Override
-    public void buildPerspectiveWidget(String perspectiveName, LayoutTemplateContext layoutCtx, ParameterizedCommand<IsWidget> afterBuild, ParameterizedCommand<LayoutRecursionIssue> onInfiniteRecursion) {
-        templates.stream().filter(lt -> lt.getName().equals(perspectiveName)).findFirst().ifPresent(lt -> {
-            LayoutInstance result = layoutGenerator.build(lt);
-            IsWidget widget = ElementWrapperWidget.getWidget(result.getElement());
-            afterBuild.execute(widget);
-        });
+    public void buildPerspectiveWidget(String perspectiveName,
+                                       LayoutTemplateContext layoutCtx,
+                                       ParameterizedCommand<IsWidget> afterBuild,
+                                       ParameterizedCommand<LayoutRecursionIssue> onInfiniteRecursion) {
+        templates.stream()
+                .filter(lt -> lt.getName().equals(perspectiveName))
+                .findFirst().ifPresent(lt -> {
+                    var result = layoutGenerator.build(lt);
+                    var widget = ElementWrapperWidget.getWidget(result.getElement());
+                    afterBuild.execute(widget);
+                });
     }
 
     @Override

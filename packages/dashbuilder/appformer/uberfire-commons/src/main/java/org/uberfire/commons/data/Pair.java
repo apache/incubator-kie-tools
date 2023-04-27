@@ -39,8 +39,8 @@ public class Pair<K1, K2> {
      * @param k2
      */
     public Pair(
-            final K1 k1,
-            final K2 k2) {
+                final K1 k1,
+                final K2 k2) {
         this.k1 = k1;
         this.k2 = k2;
         this.equalsMode = PairEqualsMode.BOTH;
@@ -52,9 +52,9 @@ public class Pair<K1, K2> {
      * @param k2
      */
     public Pair(
-            final K1 k1,
-            final K2 k2,
-            final PairEqualsMode equalsMode) {
+                final K1 k1,
+                final K2 k2,
+                final PairEqualsMode equalsMode) {
         this.k1 = k1;
         this.k2 = k2;
         this.equalsMode = equalsMode;
@@ -71,8 +71,8 @@ public class Pair<K1, K2> {
     public static <K1, K2> Pair<K1, K2> newPair(final K1 k1,
                                                 final K2 k2) {
         return new Pair<K1, K2>(k1,
-                                k2,
-                                PairEqualsMode.BOTH);
+                k2,
+                PairEqualsMode.BOTH);
     }
 
     /**
@@ -86,9 +86,7 @@ public class Pair<K1, K2> {
     public static <K1, K2> Pair<K1, K2> newPair(final K1 k1,
                                                 final K2 k2,
                                                 final PairEqualsMode equalsMode) {
-        return new Pair<K1, K2>(k1,
-                                k2,
-                                equalsMode);
+        return new Pair<>(k1, k2, equalsMode);
     }
 
     @Override
@@ -150,7 +148,7 @@ public class Pair<K1, K2> {
                 '}';
     }
 
-    public static enum PairEqualsMode {
+    public enum PairEqualsMode {
         BOTH,
         K1,
         K2

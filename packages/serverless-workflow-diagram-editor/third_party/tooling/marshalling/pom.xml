@@ -16,4 +16,7 @@
     <artifactId>marshalling-parent</artifactId>
     <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling</groupId>
 
+    <name>GWT/J2CL marshallers parent</name>
+    <description>GWT/J2CL marshallers parent</description>
+
 </project>

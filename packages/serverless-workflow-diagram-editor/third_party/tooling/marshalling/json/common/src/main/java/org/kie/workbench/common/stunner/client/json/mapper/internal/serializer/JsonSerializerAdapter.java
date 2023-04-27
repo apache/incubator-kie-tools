@@ -22,19 +22,19 @@ import jakarta.json.stream.JsonGenerator;
 
 public class JsonSerializerAdapter<T> extends JsonSerializer<T> {
 
-    private final JsonbSerializer<T> serializer;
+  private final JsonbSerializer<T> serializer;
 
-    public JsonSerializerAdapter(JsonbSerializer<T> serializer) {
-        this.serializer = serializer;
-    }
+  public JsonSerializerAdapter(JsonbSerializer<T> serializer) {
+    this.serializer = serializer;
+  }
 
-    @Override
-    public void serialize(T obj, String property, JsonGenerator generator, SerializationContext ctx) {
-        throw new UnsupportedOperationException("42");
-    }
+  @Override
+  public void serialize(T obj, String property, JsonGenerator generator, SerializationContext ctx) {
+    throw new UnsupportedOperationException();
+  }
 
-    @Override
-    public void serialize(T obj, JsonGenerator generator, SerializationContext ctx) {
-        serializer.serialize(obj, generator, ctx);
-    }
+  @Override
+  public void serialize(T obj, JsonGenerator generator, SerializationContext ctx) {
+    serializer.serialize(obj, generator, ctx);
+  }
 }

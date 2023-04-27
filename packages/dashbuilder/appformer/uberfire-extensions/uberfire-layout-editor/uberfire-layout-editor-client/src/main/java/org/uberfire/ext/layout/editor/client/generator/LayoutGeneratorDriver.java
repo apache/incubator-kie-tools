@@ -19,7 +19,7 @@ package org.uberfire.ext.layout.editor.client.generator;
 import java.util.Optional;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;

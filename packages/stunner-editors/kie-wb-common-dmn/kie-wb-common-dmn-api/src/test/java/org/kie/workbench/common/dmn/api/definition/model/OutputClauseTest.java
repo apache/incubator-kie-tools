@@ -90,11 +90,37 @@ public class OutputClauseTest {
         assertNotNull(target);
         assertNotEquals(OUTPUT_ID, target.getId().getValue());
         assertEquals(DESCRIPTION, target.getDescription().getValue());
-        assertNotNull(target.getOutputValues());
-        assertNotEquals(CLAUSE_ID, target.getOutputValues().getId().getValue());
-        assertEquals(TEXT, target.getOutputValues().getText().getValue());
+        assertNotEquals(CLAUSE_ID, target.getDefaultOutputEntry().getId().getValue());
+        assertEquals(TEXT, target.getDefaultOutputEntry().getText().getValue());
+        assertEquals(DESCRIPTION, target.getDefaultOutputEntry().getDescription().getValue());
         assertNotNull(target.getOutputValues());
         assertNotEquals(UNARY_ID, target.getOutputValues().getId().getValue());
+        assertEquals(TEXT, target.getOutputValues().getText().getValue());
+        assertEquals(ConstraintType.ENUMERATION, target.getOutputValues().getConstraintType());
+    }
+
+    @Test
+    public void testExactCopy() {
+        final OutputClause source = new OutputClause(
+                new Id(OUTPUT_ID),
+                new Description(DESCRIPTION),
+                buildOutputClauseUnaryTests(),
+                buildOutputClauseLiteralExpression(),
+                NAME,
+                BuiltInType.BOOLEAN.asQName()
+        );
+
+        final OutputClause target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(OUTPUT_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertNotNull(target.getDefaultOutputEntry());
+        assertEquals(CLAUSE_ID, target.getDefaultOutputEntry().getId().getValue());
+        assertEquals(TEXT, target.getDefaultOutputEntry().getText().getValue());
+        assertEquals(DESCRIPTION, target.getDefaultOutputEntry().getDescription().getValue());
+        assertNotNull(target.getOutputValues());
+        assertEquals(UNARY_ID, target.getOutputValues().getId().getValue());
         assertEquals(TEXT, target.getOutputValues().getText().getValue());
         assertEquals(ConstraintType.ENUMERATION, target.getOutputValues().getConstraintType());
     }

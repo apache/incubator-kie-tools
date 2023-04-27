@@ -19,9 +19,9 @@ package org.kie.workbench.common.stunner.core.rule;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+import jsinterop.annotations.JsType;
 
-@Portable
+@JsType
 public class EmptyRuleSet implements RuleSet {
 
     public EmptyRuleSet() {

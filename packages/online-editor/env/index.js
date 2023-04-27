@@ -78,11 +78,15 @@ module.exports = composeEnv(
         description: "Service URL to validate commit messages.",
       },
       DMN_DEV_DEPLOYMENT__baseImageTag: {
-        default: "latest",
+        default: "daily-dev",
         description: "Image tag to be used by DMN Dev deployments when deploying DMN models.",
       },
+      DMN_DEV_DEPLOYMENT__imagePullPolicy: {
+        default: "Always",
+        description: "The image pull policy. Can be 'Always', 'IfNotPresent', or 'Never'.",
+      },
       DMN_DEV_DEPLOYMENT__onlineEditorUrl: {
-        default: `https://0.0.0.0:${devPort}`,
+        default: `https://localhost:${devPort}`,
         description: "URL that DMN Dev deployments will use to open KIE Sandbox.",
       },
     }),
@@ -116,6 +120,7 @@ module.exports = composeEnv(
             baseImage: {
               tag: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__baseImageTag),
             },
+            imagePullPolicy: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__imagePullPolicy),
           },
         },
       };

@@ -110,4 +110,20 @@ public class InputClauseUnaryTestsTest {
         assertEquals(TEXT, target.getText().getValue());
         assertEquals(ConstraintType.ENUMERATION, target.getConstraintType());
     }
+
+    @Test
+    public void testExactCopy() {
+        final InputClauseUnaryTests source = new InputClauseUnaryTests(
+                new Id(UNARY_ID),
+                new Text(TEXT),
+                ConstraintType.ENUMERATION
+        );
+
+        final InputClauseUnaryTests target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(UNARY_ID, target.getId().getValue());
+        assertEquals(TEXT, target.getText().getValue());
+        assertEquals(ConstraintType.ENUMERATION, target.getConstraintType());
+    }
 }

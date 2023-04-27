@@ -16,7 +16,6 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 
 /**
@@ -32,7 +31,8 @@ import org.uberfire.workbench.model.ActivityResourceType;
  * the super constructor.
  * </ol>
  */
-public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchActivity implements WorkbenchScreenActivity {
+public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchActivity implements
+                                                      WorkbenchScreenActivity {
 
     /**
      * Passes the given PlaceManager up to the superclass.
@@ -47,7 +47,8 @@ public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchA
     }
 
     @Override
-    public ResourceType getResourceType() {
+    public ActivityResourceType getResourceType() {
         return ActivityResourceType.SCREEN;
     }
+
 }

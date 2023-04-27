@@ -120,8 +120,12 @@ export const en: OnlineI18n = {
       tokenInfo: `The token associated with your instance.`,
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
+      missingPermissions:
+        "Missing the required permissions for Dev Deployments (deployments, services, ingresses). Check your user permissions and try again.",
+      namespaceNotFound: (namespace: string) => `The namespace ${namespace} was not found in your cluster.`,
       configExpiredWarning: "Token or account expired. Please update your configuration.",
-      useWizard: "Configure a new Developer Sandbox for Red Hat OpenShift through the guided wizard",
+      useOpenShiftWizard: "Configure a new Developer Sandbox for Red Hat OpenShift through the guided wizard",
+      useKubernetesWizard: "Configure a new local Kubernetes cluster through the guided wizard",
     },
     deployConfirmModal: {
       title: "Deploy",
@@ -145,7 +149,7 @@ export const en: OnlineI18n = {
       } is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
       getStarted: "To get started, configure your instance information.",
     },
-    configWizard: {
+    openShiftConfigWizard: {
       header: {
         provider: "Provider",
       },
@@ -184,6 +188,67 @@ export const en: OnlineI18n = {
             instanceExpired:
               "Instances expire in 30 days. After this period, you will need to recreate it, thus receiving a new host.",
             tokenExpired: "Tokens expire on a daily basis.",
+          },
+        },
+      },
+    },
+    kubernetesConfigWizard: {
+      header: {
+        provider: "Provider",
+      },
+      fields: {
+        namespace: "Namespace",
+        namespaceInfo: "The Namespace in the cluster where your Dev deployments will be created.",
+        kubernetesApiServerUrl: "Kubernetes API Server URL",
+        kubernetesApiServerUrlInfo: "The hostname associated with the Kubernetes API Server from your cluster.",
+        tokenInfo: "The token associated with your Service Account.",
+      },
+      steps: {
+        first: {
+          name: "Create your Kubernetes cluster",
+          introduction:
+            "In order to create your local Kubernetes cluster first select the flavor you would like and follow the steps:",
+          installFlavor: (flavor: string) => `Download and install ${flavor}.`,
+          installKubectl: "Install Kubectl if you don't have it already.",
+          runCommandsTerminal: "For this step, run the commands in a terminal.",
+          createCluster: "Create your cluster:",
+          installIngress: "Install the Ingress Controller and wait for it to be ready:",
+          installKieSandboxYaml:
+            "Install a proxy for the Kubernetes API Server and create the required Service Accounts:",
+        },
+        second: {
+          name: "Set connection info",
+          introduction:
+            "With your cluster up and running, it should be available in the host prefilled below, and should have a Namespace created.",
+          disclaimer:
+            "Only change the values below if you have a custom Kubernetes installation, but beware that things might not go as expected.",
+          hostInputReason: "This information is necessary for establishing a connection with your Kubernetes cluster.",
+          namespaceInputReason:
+            "This information is necessary for creating your Dev deployments in the correct Namespace.",
+          namespacePlaceholder: "The Namespace where you want to create your Dev deployments.",
+          hostPlaceholder: "The Kubernetes API Server URL",
+        },
+        third: {
+          name: "Authenticate",
+          introduction:
+            "The Kubernetes API requires an authentication token for all requests. In this step we will get the authentication token for the Service Account we created before.",
+          getToken: "Run the command below in your terminal to get the authentication token then copy it:",
+          tokenPlaceholder: "Paste the token value here",
+          tokenInputReason: "The token is necessary to authenticate requests to the Kubernetes API Server",
+        },
+        final: {
+          name: "Connect",
+          connectionSuccess: "Connection successfully established.",
+          connectionError: "Connection refused.",
+          introduction: "Now you are able to create Dev deployments on this OpenShift instance.",
+          configNote: "The token you provide is locally stored in this browser and is never shared with anyone.",
+          connectionErrorLong: `A connection with your Kubernetes cluster could not be established.`,
+          checkInfo: "Please check the information provided and try again.",
+          possibleErrorReasons: {
+            introduction: "Here are some possible reasons:",
+            emptyField: "One or more required information are not filled.",
+            clusterNotCreatedCorrectly: "Your Kubernetes cluster might not have been created correctly.",
+            tokenExpired: "Tokens might be expired, try creating a new one.",
           },
         },
       },

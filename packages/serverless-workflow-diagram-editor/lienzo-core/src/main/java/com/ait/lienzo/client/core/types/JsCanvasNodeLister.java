@@ -16,8 +16,10 @@
 
 package com.ait.lienzo.client.core.types;
 
-import java.util.Set;
+import com.ait.lienzo.tools.client.collection.NFastArrayList;
 
 public interface JsCanvasNodeLister {
-    Set<String> getNodeIdSet();
+
+    NFastArrayList<String> getNodeIds();
+
 }

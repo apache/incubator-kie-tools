@@ -31,7 +31,6 @@ import org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.HasNameUtils;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
@@ -43,22 +42,19 @@ public abstract class FillExpressionCommand<E extends ExpressionProps> {
     private final E expressionProps;
     private final String nodeUUID;
     private final Event<ExpressionEditorChanged> editorSelectedEvent;
-    private final ExpressionEditorView view;
     private final ItemDefinitionUtils itemDefinitionUtils;
     private final Optional<HasName> hasName;
 
-    public FillExpressionCommand(final HasExpression hasExpression,
-                                 final E expressionProps,
-                                 final Event<ExpressionEditorChanged> editorSelectedEvent,
-                                 final String nodeUUID,
-                                 final ExpressionEditorView view,
-                                 final ItemDefinitionUtils itemDefinitionUtils,
-                                 final Optional<HasName> hasName) {
+    protected FillExpressionCommand(final HasExpression hasExpression,
+                                    final E expressionProps,
+                                    final Event<ExpressionEditorChanged> editorSelectedEvent,
+                                    final String nodeUUID,
+                                    final ItemDefinitionUtils itemDefinitionUtils,
+                                    final Optional<HasName> hasName) {
         this.hasExpression = hasExpression;
         this.expressionProps = expressionProps;
         this.nodeUUID = nodeUUID;
         this.editorSelectedEvent = editorSelectedEvent;
-        this.view = view;
         this.itemDefinitionUtils = itemDefinitionUtils;
         this.hasName = hasName;
     }
@@ -71,8 +67,8 @@ public abstract class FillExpressionCommand<E extends ExpressionProps> {
         return expressionProps;
     }
 
-    public ExpressionEditorView getView() {
-        return view;
+    protected ItemDefinitionUtils getItemDefinitionUtils() {
+        return itemDefinitionUtils;
     }
 
     public Event<ExpressionEditorChanged> getEditorSelectedEvent() {
@@ -93,8 +89,10 @@ public abstract class FillExpressionCommand<E extends ExpressionProps> {
         fill();
     }
 
+    public abstract boolean isCurrentExpressionOfTheSameType();
+
     void createExpression() {
-        if (getHasExpression().getExpression() == null) {
+        if (getHasExpression().getExpression() == null || !isCurrentExpressionOfTheSameType()) {
             getHasExpression().setExpression(getNewExpression());
         }
     }

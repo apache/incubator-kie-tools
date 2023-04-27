@@ -108,6 +108,17 @@ public class OutputClause extends DMNElement implements HasTypeRef,
         );
     }
 
+    public OutputClause exactCopy() {
+        return new OutputClause(
+                Optional.ofNullable(id).map(Id::copy).orElse(null),
+                Optional.ofNullable(description).map(Description::copy).orElse(null),
+                Optional.ofNullable(outputValues).map(OutputClauseUnaryTests::exactCopy).orElse(null),
+                Optional.ofNullable(defaultOutputEntry).map(OutputClauseLiteralExpression::exactCopy).orElse(null),
+                name,
+                Optional.ofNullable(typeRef).map(QName::copy).orElse(null)
+        );
+    }
+
     @Override
     public List<HasTypeRef> getHasTypeRefs() {
 

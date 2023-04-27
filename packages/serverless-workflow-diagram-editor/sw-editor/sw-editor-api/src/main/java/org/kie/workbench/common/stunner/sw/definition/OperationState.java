@@ -17,42 +17,23 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
 
-/**
- * Operation state defines a set of actions to be performed in sequence or in parallel.
- * Once all actions have been performed, a transition to another state can occur.
- *
- * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Operation-State"> Operation state </a>
- */
-@Bindable
-@Definition
-@Morph(base = State.class)
 @JSONMapper
+@YAMLMapper
 @JsType
+@YamlPropertyOrder({"name", "type", "actions", "usedForCompensation", "transition", "end", "onErrors", "compensatedBy", "stateDataFilter", "timeouts", "eventTimeout", "actionMode", "metadata"})
 public class OperationState extends State {
 
     public static final String TYPE_OPERATION = "operation";
 
-    /**
-     * Defines if the actions are to be performed sequentially or in parallel.
-     * recognized values are `sequential` and `parallel`.
-     */
-    private String actionMode;
+    public String actionMode;
 
-    /**
-     * Actions to be performed.
-     */
-    private ActionNode[] actions;
+    public ActionNode[] actions;
 
-    /**
-     * Whether the state is used to compensate for another state.
-     * Defaults to false.
-     */
-    private Boolean usedForCompensation;
+    public Boolean usedForCompensation;
 
     public OperationState() {
         this.type = TYPE_OPERATION;

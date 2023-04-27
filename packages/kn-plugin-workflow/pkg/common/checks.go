@@ -19,6 +19,7 @@ package common
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 
@@ -98,7 +99,7 @@ func CheckDocker() error {
 }
 
 func CheckPodman() error {
-	fmt.Println("✅ Checking if Docker is available...")
+	fmt.Println("✅ Checking if Podman is available...")
 	dockerCheck := ExecCommand("podman", "stats", "--no-stream")
 	if err := dockerCheck.Run(); err != nil {
 		fmt.Println("ERROR: Podman not found.")
@@ -108,6 +109,21 @@ func CheckPodman() error {
 	}
 
 	fmt.Println(" - Podman is running")
+	return nil
+}
+
+func CheckKubectl() error {
+	fmt.Println("✅ Checking if kubectl is available...")
+	_, kubectlCheck := exec.LookPath("kubectl")
+	if err := kubectlCheck; err != nil {
+		fmt.Println("ERROR: kubectl not found")
+		fmt.Println("kubectl is required for deploy")
+		fmt.Println("Download from https://kubectl.docs.kubernetes.io/installation/kubectl/")
+		os.Exit(1)
+		return err
+	}
+
+	fmt.Println(" - kubectl is available")
 	return nil
 }
 
@@ -135,7 +151,7 @@ func parseMavenVersion(version string) (int64, int64, error) {
 }
 
 func CheckIfDirExists(dirName string) (bool, error) {
-	_, err := os.Stat(fmt.Sprintf("./%s", dirName))
+	_, err := FS.Stat(fmt.Sprintf("./%s", dirName))
 	if err == nil {
 		return true, nil
 	}

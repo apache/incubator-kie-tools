@@ -136,6 +136,34 @@ public class DecisionTableTest {
     }
 
     @Test
+    public void testExactCopy() {
+        final DecisionTable source = new DecisionTable(new Id(TABLE_ID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                HitPolicy.UNIQUE,
+                SUM,
+                DecisionTableOrientation.RULE_AS_ROW,
+                OUTPUT_LABEL);
+
+        final DecisionTable target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(TABLE_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertTrue(target.getInput().isEmpty());
+        assertTrue(target.getOutput().isEmpty());
+        assertTrue(target.getRule().isEmpty());
+        assertEquals(HitPolicy.UNIQUE, target.getHitPolicy());
+        assertEquals(SUM, target.getAggregation());
+        assertEquals(DecisionTableOrientation.RULE_AS_ROW, target.getPreferredOrientation());
+        assertEquals(OUTPUT_LABEL, target.getOutputLabel());
+    }
+
+    @Test
     public void testFindDomainObject_FromInput() {
 
         final DecisionTable decisionTable = new DecisionTable();
