@@ -41,10 +41,11 @@ export function dereferenceProperties<
   dereferencedJsonSchema?: Record<string, any>
 ): Record<string, any> {
   if (properties === undefined && jsonSchema.$ref) {
-    return dereferenceProperties(
-      jsonSchema,
-      getObjectValueByPath(jsonSchema, refPathToObjectPath(jsonSchema.$ref) + ".properties")
-    );
+    const properties = getObjectValueByPath(jsonSchema, refPathToObjectPath(jsonSchema.$ref) + ".properties");
+    if (properties !== undefined) {
+      return dereferenceProperties(jsonSchema, properties);
+    }
+    return jsonSchema;
   }
   return Object.entries(properties ?? {}).reduce((dereferencedJsonSchema, [fieldKey, jsonSchemaField]) => {
     if (jsonSchemaField.$ref) {
