@@ -14,28 +14,12 @@
  * limitations under the License.
  */
 
-import { DmnResult, DmnSchema } from "@kie-tools/form-dmn";
-import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api/NotificationSeverity";
-
-export interface KieSandboxExtendedServicesModelResource {
-  URI: string;
-  content: string;
-}
-
-export interface KieSandboxExtendedServicesModelPayload {
-  mainURI: string;
-  resources: KieSandboxExtendedServicesModelResource[];
-  context?: any;
-}
-
-export interface KieSandboxExtendedServicesValidateResponse {
-  severity: NotificationSeverity;
-  message: string;
-  messageType: string;
-  sourceId: string | null;
-  path: string;
-  level: string;
-}
+import {
+  ExtendedServicesDmnResult,
+  ExtendedServicesDmnJsonSchema,
+  ExtendedServicesValidateResponse,
+  ExtendedServicesModelPayload,
+} from "@kie-tools/extended-services-api";
 
 export class KieSandboxExtendedServicesClient {
   private readonly DMN_JIT_EXECUTOR_VALIDATE_URL: string;
@@ -50,7 +34,7 @@ export class KieSandboxExtendedServicesClient {
     this.BPMN_JIT_EXECUTOR_VALIDATE_URL = `${this.jitExecutorUrl}jitbpmn/validate`;
   }
 
-  public async result(payload: KieSandboxExtendedServicesModelPayload): Promise<DmnResult> {
+  public async result(payload: ExtendedServicesModelPayload): Promise<ExtendedServicesDmnResult> {
     if (!this.isPayloadValid(payload)) {
       return { messages: [] };
     }
@@ -66,9 +50,7 @@ export class KieSandboxExtendedServicesClient {
     return await response.json();
   }
 
-  public async validateDmn(
-    payload: KieSandboxExtendedServicesModelPayload
-  ): Promise<KieSandboxExtendedServicesValidateResponse[]> {
+  public async validateDmn(payload: ExtendedServicesModelPayload): Promise<ExtendedServicesValidateResponse[]> {
     if (!this.isPayloadValid(payload)) {
       return [];
     }
@@ -83,9 +65,7 @@ export class KieSandboxExtendedServicesClient {
     return await response.json();
   }
 
-  public async validateBpmn(
-    payload: KieSandboxExtendedServicesModelPayload
-  ): Promise<KieSandboxExtendedServicesValidateResponse[]> {
+  public async validateBpmn(payload: ExtendedServicesModelPayload): Promise<ExtendedServicesValidateResponse[]> {
     if (!this.isPayloadValid(payload)) {
       return [];
     }
@@ -100,7 +80,7 @@ export class KieSandboxExtendedServicesClient {
     return await response.json();
   }
 
-  public async formSchema(payload: KieSandboxExtendedServicesModelPayload): Promise<DmnSchema> {
+  public async formSchema(payload: ExtendedServicesModelPayload): Promise<ExtendedServicesDmnJsonSchema> {
     if (!this.isPayloadValid(payload)) {
       return {};
     }
@@ -128,7 +108,7 @@ export class KieSandboxExtendedServicesClient {
     );
   }
 
-  private isPayloadValid(payload: KieSandboxExtendedServicesModelPayload): boolean {
+  private isPayloadValid(payload: ExtendedServicesModelPayload): boolean {
     return payload.resources.every((resource) => resource.content !== "");
   }
 }

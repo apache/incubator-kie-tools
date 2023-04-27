@@ -76,7 +76,7 @@ describe("Try sample test", () => {
         expect($nodes.eq(3)).attr("title", "Back End Ratio");
         expect($nodes.eq(4)).attr("title", "Context");
         expect($nodes.eq(5)).attr("title", "Credit Score Rating");
-        expect($nodes.eq(6)).attr("title", "Decision Table");
+        expect($nodes.eq(6)).attr("title", "Decision table");
         expect($nodes.eq(7)).attr("title", "Credit Score");
         expect($nodes.eq(8)).attr("title", "DTI");
         expect($nodes.eq(9)).attr("title", "Function");
@@ -87,7 +87,7 @@ describe("Try sample test", () => {
         expect($nodes.eq(14)).attr("title", "Lender Acceptable PITI");
         expect($nodes.eq(15)).attr("title", "Function");
         expect($nodes.eq(16)).attr("title", "Loan Pre-Qualification");
-        expect($nodes.eq(17)).attr("title", "Decision Table");
+        expect($nodes.eq(17)).attr("title", "Decision table");
         expect($nodes.eq(18)).attr("title", "PITI");
         expect($nodes.eq(19)).attr("title", "Function");
         expect($nodes.eq(20)).attr("title", "Requested Product");

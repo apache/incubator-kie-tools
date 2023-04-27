@@ -16,31 +16,35 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import jsinterop.annotations.JsType;
 
-@Portable
+@JsType
 public final class CanConnect extends AbstractRule {
 
-    /**
-     * Permitted connections
-     */
-    @Portable
+    public static PermittedConnection buildPermittedConnection(String startRole,
+                                                               String endRole) {
+        return new PermittedConnection(startRole, endRole);
+    }
+
+    @JsType
     public static class PermittedConnection {
 
         private final String startRole;
         private final String endRole;
 
-        public PermittedConnection(final @MapsTo("startRole") String startRole,
-                                   final @MapsTo("endRole") String endRole) {
+        public PermittedConnection(String startRole,
+                                   String endRole) {
             this.startRole = startRole;
             this.endRole = endRole;
         }
 
         /**
          * Role of the start Element that can accept this Connection
+         *
          * @return
          */
         public String getStartRole() {
@@ -49,6 +53,7 @@ public final class CanConnect extends AbstractRule {
 
         /**
          * Role of then end Element that can accept this Connection
+         *
          * @return
          */
         public String getEndRole() {
@@ -59,9 +64,18 @@ public final class CanConnect extends AbstractRule {
     private final String role;
     private final List<PermittedConnection> permittedConnections;
 
-    public CanConnect(final @MapsTo("name") String name,
-                      final @MapsTo("role") String role,
-                      final @MapsTo("permittedConnections") List<PermittedConnection> permittedConnections) {
+    public static CanConnect build(String name,
+                                   String role,
+                                   PermittedConnection[] permittedConnections) {
+
+        return new CanConnect(name,
+                              role,
+                              Arrays.stream(permittedConnections).collect(Collectors.toList()));
+    }
+
+    public CanConnect(String name,
+                      String role,
+                      List<PermittedConnection> permittedConnections) {
         super(name);
         this.role = role;
         this.permittedConnections = permittedConnections;

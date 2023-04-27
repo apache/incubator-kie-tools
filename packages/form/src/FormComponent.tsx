@@ -42,7 +42,11 @@ export interface FormProps<Input, Schema> {
   formSchema?: Schema;
 }
 
-export type FormComponentProps<Input, Schema> = FormProps<Input, Schema> & FormHook<Input, Schema>;
+export type FormComponentProps<Input extends Record<string, any>, Schema extends Record<string, any>> = FormProps<
+  Input,
+  Schema
+> &
+  FormHook<Input, Schema>;
 
 export function FormComponent(props: React.PropsWithChildren<FormComponentProps<object, object>>) {
   const i18n = useMemo(

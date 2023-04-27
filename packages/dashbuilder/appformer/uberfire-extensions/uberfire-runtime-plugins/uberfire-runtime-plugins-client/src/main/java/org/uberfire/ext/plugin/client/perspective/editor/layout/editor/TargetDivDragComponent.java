@@ -18,52 +18,22 @@ package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
-import org.gwtbootstrap3.client.ui.Modal;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
-import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
-import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorNavComponent;
-import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups.EditTargetDiv;
-import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
-import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 
 @ApplicationScoped
-public class TargetDivDragComponent implements PerspectiveEditorNavComponent,
-                                               HasModalConfiguration {
+public class TargetDivDragComponent implements LayoutDragComponent {
 
     public static final String ID_PARAMETER = "ID_PARAMETER";
     public static final String DIV_ID = "divId";
-    @Inject
-    private PlaceManager placeManager;
-    private ModalConfigurationContext configContext;
+
 
     @PostConstruct
-    public void setup() {
-    }
-
-    @Override
-    public String getDragComponentTitle() {
-        return CommonConstants.INSTANCE.TargetDivComponent();
-    }
-
-    @Override
-    public IsWidget getPreviewWidget(RenderingContext ctx) {
-        String id = ctx.getComponent().getProperties().get(ID_PARAMETER);
-        FlowPanel panel = createDiv(id);
-        Label l = GWT.create(Label.class);
-        l.setText(CommonConstants.INSTANCE.TargetDivPlaceHolder() + " " + id);
-        panel.add(l);
-        return panel;
-    }
+    public void setup() {}
 
     @Override
     public IsWidget getShowWidget(RenderingContext ctx) {
@@ -82,17 +52,4 @@ public class TargetDivDragComponent implements PerspectiveEditorNavComponent,
         return panel;
     }
 
-    @Override
-    public Modal getConfigurationModal(ModalConfigurationContext ctx) {
-        this.configContext = ctx;
-        return new EditTargetDiv(ctx);
-    }
-
-    public void observeEditComponentEventFromPropertyEditor(@Observes PropertyEditorChangeEvent event) {
-        PropertyEditorFieldInfo property = event.getProperty();
-        if (property.getEventId().equalsIgnoreCase(EditTargetDiv.PROPERTY_EDITOR_KEY)) {
-            configContext.setComponentProperty(ID_PARAMETER,
-                                               property.getCurrentStringValue());
-        }
-    }
 }

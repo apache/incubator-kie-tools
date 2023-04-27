@@ -31,14 +31,13 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import elemental2.core.JsArray;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -46,7 +45,6 @@ public class JsWiresShapeTest {
 
     JsWiresShape jsWireShape;
 
-    @Mock
     WiresShape wiresShape;
 
     @Mock
@@ -90,6 +88,11 @@ public class JsWiresShapeTest {
 
     @Mock
     Node child4Node;
+
+    @Before
+    public void setUp() {
+        wiresShape = spy(new WiresShape(new MultiPath().rect(10, 10, 10, 10)));
+    }
 
     @Test
     public void testGetId() {
@@ -146,10 +149,9 @@ public class JsWiresShapeTest {
 
     @Test
     public void testGetPath() {
-        when(wiresShape.getPath()).thenReturn(path);
         jsWireShape = new JsWiresShape(wiresShape);
         final MultiPath mp = jsWireShape.getPath();
-        assertEquals("Paths should be the same", path, mp);
+        assertEquals("Paths should be the same", wiresShape.getPath(), mp);
     }
 
     @Test
@@ -231,177 +233,19 @@ public class JsWiresShapeTest {
     }
 
     @Test
-    public void testSetColorsMap() {
-        NFastArrayList<IPrimitive<?>> childNodes = new NFastArrayList<>();
-        Group group = new Group();
-        when(child3.asNode()).thenReturn(child3Node);
-        when(child4.asNode()).thenReturn(child4Node);
-        when(child3.getUserData()).thenReturn(JsWiresShape.BACKGROUND_KEY);
-        when(child4.getUserData()).thenReturn(JsWiresShape.BORDER_FILL_KEY);
-
-        group.add(child3);
-        group.add(child4);
-
-        childNodes.add(child1);
-        childNodes.add(child2);
-        childNodes.add(group);
-
-        when(container.getChildNodes()).thenReturn(childNodes);
-        when(wiresShape.getContainer()).thenReturn(container);
+    public void testSetAndGetBorderColor() {
         jsWireShape = new JsWiresShape(wiresShape);
-        jsWireShape.setColorsMap();
-        assertEquals("Background color shape should be the same", child3, jsWireShape.colorsMap.get(JsWiresShape.BACKGROUND_KEY));
-        assertEquals("Border color shape should be the same", child4, jsWireShape.colorsMap.get(JsWiresShape.BORDER_FILL_KEY));
+        jsWireShape.setBorderColor("green");
+
+        assertEquals("Background color should be the same", "green", jsWireShape.getBorderColor());
     }
 
     @Test
-    public void testSetBorderColorFill() {
-        NFastArrayList<IPrimitive<?>> childNodes = new NFastArrayList<>();
-        Group group = new Group();
-        when(child3.asNode()).thenReturn(child3Node);
-        when(child4.asNode()).thenReturn(child4Node);
-        when(child4.getUserData()).thenReturn(JsWiresShape.BORDER_FILL_KEY);
-
-        group.add(child3);
-        group.add(child4);
-
-        childNodes.add(child1);
-        childNodes.add(child2);
-        childNodes.add(group);
-
-        when(container.getChildNodes()).thenReturn(childNodes);
-        when(wiresShape.getContainer()).thenReturn(container);
-        jsWireShape = new JsWiresShape(wiresShape);
-        jsWireShape.setBorderColor("blue");
-        assertEquals("Border color shape should be the same", child4, jsWireShape.colorsMap.get(JsWiresShape.BORDER_FILL_KEY));
-        verify(child4, times(1)).setFillColor(eq("blue"));
-    }
-
-    @Test
-    public void testSetBorderColorStroke() {
-        NFastArrayList<IPrimitive<?>> childNodes = new NFastArrayList<>();
-        Group group = new Group();
-        when(child3.asNode()).thenReturn(child3Node);
-        when(child4.asNode()).thenReturn(child4Node);
-        when(child4.getUserData()).thenReturn(JsWiresShape.BORDER_STROKE_KEY);
-
-        group.add(child3);
-        group.add(child4);
-
-        childNodes.add(child1);
-        childNodes.add(child2);
-        childNodes.add(group);
-
-        when(container.getChildNodes()).thenReturn(childNodes);
-        when(wiresShape.getContainer()).thenReturn(container);
-        jsWireShape = new JsWiresShape(wiresShape);
-        jsWireShape.setBorderColor("blue");
-        assertEquals("Border color shape should be the same", child4, jsWireShape.colorsMap.get(JsWiresShape.BORDER_STROKE_KEY));
-        verify(child4, times(1)).setStrokeColor(eq("blue"));
-    }
-
-    @Test
-    public void testGetBorderColorStroke() {
-        NFastArrayList<IPrimitive<?>> childNodes = new NFastArrayList<>();
-        Group group = new Group();
-        when(child3.asNode()).thenReturn(child3Node);
-        when(child4.asNode()).thenReturn(child4Node);
-        when(child4.getUserData()).thenReturn(JsWiresShape.BORDER_STROKE_KEY);
-        when(child4.getStrokeColor()).thenReturn("red");
-
-        group.add(child3);
-        group.add(child4);
-
-        childNodes.add(child1);
-        childNodes.add(child2);
-        childNodes.add(group);
-
-        when(container.getChildNodes()).thenReturn(childNodes);
-        when(wiresShape.getContainer()).thenReturn(container);
-        jsWireShape = new JsWiresShape(wiresShape);
-        final String borderColor = jsWireShape.getBorderColor();
-        assertEquals("Border color shape should be the same", child4, jsWireShape.colorsMap.get(JsWiresShape.BORDER_STROKE_KEY));
-        assertEquals("Border color should be the same", "red", borderColor);
-    }
-
-    @Test
-    public void testGetBorderColorFill() {
-        NFastArrayList<IPrimitive<?>> childNodes = new NFastArrayList<>();
-        Group group = new Group();
-        when(child3.asNode()).thenReturn(child3Node);
-        when(child4.asNode()).thenReturn(child4Node);
-        when(child4.getUserData()).thenReturn(JsWiresShape.BORDER_FILL_KEY);
-        when(child4.getFillColor()).thenReturn("red");
-
-        group.add(child3);
-        group.add(child4);
-
-        childNodes.add(child1);
-        childNodes.add(child2);
-        childNodes.add(group);
-
-        when(container.getChildNodes()).thenReturn(childNodes);
-        when(wiresShape.getContainer()).thenReturn(container);
-        jsWireShape = new JsWiresShape(wiresShape);
-        final String borderColor = jsWireShape.getBorderColor();
-        assertEquals("Border color shape should be the same", child4, jsWireShape.colorsMap.get(JsWiresShape.BORDER_FILL_KEY));
-        assertEquals("Border color should be the same", "red", borderColor);
-    }
-
-    @Test
-    public void testDraw() {
-        jsWireShape = new JsWiresShape(wiresShape);
-        jsWireShape.draw();
-        verify(wiresShape, times(1)).refresh();
-    }
-
-    @Test
-    public void testSetBackgroundColor() {
-        NFastArrayList<IPrimitive<?>> childNodes = new NFastArrayList<>();
-        Group group = new Group();
-        when(child3.asNode()).thenReturn(child3Node);
-        when(child4.asNode()).thenReturn(child4Node);
-        when(child4.getUserData()).thenReturn(JsWiresShape.BACKGROUND_KEY);
-
-        group.add(child3);
-        group.add(child4);
-
-        childNodes.add(child1);
-        childNodes.add(child2);
-        childNodes.add(group);
-
-        when(container.getChildNodes()).thenReturn(childNodes);
-        when(wiresShape.getContainer()).thenReturn(container);
+    public void testSetAndGetBackgroundColor() {
         jsWireShape = new JsWiresShape(wiresShape);
         jsWireShape.setBackgroundColor("blue");
-        assertEquals("Background color shape should be the same", child4, jsWireShape.colorsMap.get(JsWiresShape.BACKGROUND_KEY));
-        verify(child4, times(1)).setFillColor(eq("blue"));
-    }
 
-
-    @Test
-    public void testGetBackgroundColor() {
-        NFastArrayList<IPrimitive<?>> childNodes = new NFastArrayList<>();
-        Group group = new Group();
-        when(child3.asNode()).thenReturn(child3Node);
-        when(child4.asNode()).thenReturn(child4Node);
-        when(child4.getUserData()).thenReturn(JsWiresShape.BACKGROUND_KEY);
-        when(child4.getFillColor()).thenReturn("blue");
-
-        group.add(child3);
-        group.add(child4);
-
-        childNodes.add(child1);
-        childNodes.add(child2);
-        childNodes.add(group);
-
-        when(container.getChildNodes()).thenReturn(childNodes);
-        when(wiresShape.getContainer()).thenReturn(container);
-        jsWireShape = new JsWiresShape(wiresShape);
-        final String backgroundColor = jsWireShape.getBackgroundColor();
-
-        assertEquals("Background color shape should be the same", child4, jsWireShape.colorsMap.get(JsWiresShape.BACKGROUND_KEY));
-        assertEquals("Background color should be the same", "blue", backgroundColor);
+        assertEquals("Background color should be the same", "blue", jsWireShape.getBackgroundColor());
     }
 
     @Test

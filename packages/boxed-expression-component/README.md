@@ -16,7 +16,7 @@ In the `showcase` folder, there is a tiny React application, which represent the
 Once the showcase application gets launched, you can see on the right side of the page the JSON that is actually produced for the corresponding selected logic type.
 Such JSON represents the model data that must be adopted to initialize the `BoxedExpressionEditor` component, by populating its props.
 
-The retrieval of the updated expression is performed by making usage of global functions, belonging to `beeApi` object, that must be available in the `Window` namespace and used by the `BoxedExpressionEditor` component.
+The retrieval of the updated expression is performed by making usage of global functions, belonging to `beeApiWrapper` object, that must be available in the `Window` namespace and used by the `BoxedExpressionEditor` component.
 All exposed function expected to exist, are defined in `src/api/BoxedExpressionEditor.ts`.
 
 Consider that the showcase app is able to display the most updated JSON representing an expression, because uses such APIs (please refer to `showcase/src/index.tsx`).

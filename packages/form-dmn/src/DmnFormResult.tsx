@@ -31,46 +31,22 @@ import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/di
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
 import { dmnFormI18n } from "./i18n";
 import { diff } from "deep-object-diff";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import "./styles.scss";
 import { ErrorBoundary } from "@kie-tools/form";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
+import { DecisionResult, DmnEvaluationStatus, DmnEvaluationResult } from "@kie-tools/extended-services-api";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
+
+const DATE_REGEX = /\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])T(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\dZ/;
 
 enum DmnFormResultStatus {
   EMPTY,
   ERROR,
   VALID,
-}
-
-const DATE_REGEX = /\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])T(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\dZ/;
-
-export enum EvaluationStatus {
-  SUCCEEDED = "SUCCEEDED",
-  SKIPPED = "SKIPPED",
-  FAILED = "FAILED",
-}
-
-export interface DecisionResultMessage {
-  severity: NotificationSeverity;
-  message: string;
-  messageType: string;
-  sourceId: string;
-  level: string;
-}
-
-export type Result = boolean | number | null | object | object[] | string;
-
-export interface DecisionResult {
-  decisionId: string;
-  decisionName: string;
-  result: Result;
-  messages: DecisionResultMessage[];
-  evaluationStatus: EvaluationStatus;
 }
 
 type DeepPartial<T> = {
@@ -85,20 +61,21 @@ export interface DmnFormResultProps {
   openExecutionTab?: () => void;
 }
 
-export interface DmnResult {
-  details?: string;
-  stack?: string;
-  decisionResults?: DecisionResult[];
-  messages: DecisionResultMessage[];
-}
-
-export function extractDifferences(current: DecisionResult[], previous: DecisionResult[]): object[] {
-  return current
-    .map((decisionResult: DecisionResult, index: number) => diff(previous?.[index] ?? {}, decisionResult ?? {}))
-    .map((difference: any) => {
-      delete difference.messages;
-      return difference;
-    });
+export function extractDifferences(
+  current: Array<DecisionResult[] | undefined>,
+  previous: Array<DecisionResult[] | undefined>
+): object[][] {
+  return current.map(
+    (decisionResults, index) =>
+      decisionResults
+        ?.map(
+          (decisionResult, jndex): Partial<DecisionResult> => diff(previous?.[index]?.[jndex] ?? [], decisionResult)
+        )
+        ?.map((difference) => {
+          delete difference.messages;
+          return difference;
+        }) ?? []
+  );
 }
 
 export function DmnFormResult({ openExecutionTab, ...props }: DmnFormResultProps) {
@@ -136,9 +113,9 @@ export function DmnFormResult({ openExecutionTab, ...props }: DmnFormResultProps
   }, [props.notificationsPanel, openExecutionTab]);
 
   const resultStatus = useCallback(
-    (evaluationStatus: EvaluationStatus) => {
+    (evaluationStatus: DmnEvaluationStatus) => {
       switch (evaluationStatus) {
-        case EvaluationStatus.SUCCEEDED:
+        case DmnEvaluationStatus.SUCCEEDED:
           return (
             <>
               <div className={"kie-tools__dmn-form-result__evaluation"}>
@@ -153,7 +130,7 @@ export function DmnFormResult({ openExecutionTab, ...props }: DmnFormResultProps
               </div>
             </>
           );
-        case EvaluationStatus.SKIPPED:
+        case DmnEvaluationStatus.SKIPPED:
           return (
             <>
               <div className={"kie-tools__dmn-form-result__evaluation"}>
@@ -168,7 +145,7 @@ export function DmnFormResult({ openExecutionTab, ...props }: DmnFormResultProps
               </div>
             </>
           );
-        case EvaluationStatus.FAILED:
+        case DmnEvaluationStatus.FAILED:
           return (
             <>
               <div className={"kie-tools__dmn-form-result__evaluation"}>
@@ -195,7 +172,7 @@ export function DmnFormResult({ openExecutionTab, ...props }: DmnFormResultProps
   );
 
   const result = useCallback(
-    (dmnFormResult: Result) => {
+    (dmnFormResult: DmnEvaluationResult) => {
       switch (typeof dmnFormResult) {
         case "boolean":
           return dmnFormResult ? <i>true</i> : <i>false</i>;

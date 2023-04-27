@@ -98,6 +98,7 @@ public class BuilderContext {
         return addNodeByUUID(obtainUUID(name), bean);
     }
 
+    @SuppressWarnings("all")
     public Node addNodeByUUID(String uuid,
                               Object bean) {
         final ElementFactory elementFactory = factoryManager.registry().getElementFactory(NodeFactory.class);
@@ -208,7 +209,7 @@ public class BuilderContext {
         return context;
     }
 
-    private void updateNodeBounds(Node<View, Edge> node) {
+    public static void updateNodeBounds(Node<View, Edge> node) {
         final Bounds bounds = node.getContent().getBounds();
         final Bound upperLeft = bounds.getUpperLeft();
         final double[] beanSize = getBeanSize(node.getContent().getDefinition());

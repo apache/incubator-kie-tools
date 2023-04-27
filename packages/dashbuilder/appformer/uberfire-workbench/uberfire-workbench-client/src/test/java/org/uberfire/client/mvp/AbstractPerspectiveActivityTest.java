@@ -26,6 +26,7 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
@@ -58,6 +59,11 @@ public class AbstractPerspectiveActivityTest extends AbstractActivityTest {
         @Override
         public String getIdentifier() {
             throw new UnsupportedOperationException("Not implemented.");
+        }
+
+        @Override
+        public ActivityResourceType getResourceType() {
+            return null;
         }
     };
 

@@ -20,6 +20,7 @@ import {
   AuthProvider,
   AuthProviderGroup,
   GitAuthProvider,
+  KubernetesAuthProvider,
   OpenShiftAuthProvider,
 } from "../authProviders/AuthProvidersApi";
 import { AuthSession } from "../authSessions/AuthSessionApi";
@@ -34,6 +35,7 @@ export enum AccountsSection {
   CONNECT_TO_GITHUB = "CONNECT_TO_GITHUB",
   CONNECT_TO_BITBUCKET = "CONNECT_TO_BITBUCKET",
   CONNECT_TO_OPENSHIFT = "CONNECT_TO_OPENSHIFT",
+  CONNECT_TO_KUBERNETES = "CONNECT_TO_KUBERNETES",
 }
 
 export type AccountsState =
@@ -68,6 +70,12 @@ export type AccountsState =
       selectedAuthProvider: OpenShiftAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+    }
+  | {
+      section: AccountsSection.CONNECT_TO_KUBERNETES;
+      selectedAuthProvider: KubernetesAuthProvider;
+      backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
+      onNewAuthSession?: (newAuthSession: AuthSession) => any;
     };
 
 // Reducer
@@ -79,6 +87,7 @@ export enum AccountsDispatchActionKind {
   SETUP_GITHUB_AUTH = "SETUP_GITHUB_AUTH",
   SETUP_BITBUCKET_AUTH = "SETUP_BITBUCKET_AUTH",
   SETUP_OPENSHIFT_AUTH = "SETUP_OPENSHIFT_AUTH",
+  SETUP_KUBERNETES_AUTH = "SETUP_KUBERNETES_AUTH",
 }
 
 export type AccountsDispatchAction =
@@ -108,6 +117,12 @@ export type AccountsDispatchAction =
   | {
       kind: AccountsDispatchActionKind.SETUP_OPENSHIFT_AUTH;
       selectedAuthProvider: OpenShiftAuthProvider;
+      backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
+      onNewAuthSession?: (newAuthSession: AuthSession) => any;
+    }
+  | {
+      kind: AccountsDispatchActionKind.SETUP_KUBERNETES_AUTH;
+      selectedAuthProvider: KubernetesAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
     };
@@ -160,6 +175,13 @@ export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
         case AccountsDispatchActionKind.SETUP_OPENSHIFT_AUTH:
           return {
             section: AccountsSection.CONNECT_TO_OPENSHIFT,
+            selectedAuthProvider: action.selectedAuthProvider,
+            onNewAuthSession: action.onNewAuthSession,
+            backActionKind: action.backActionKind,
+          };
+        case AccountsDispatchActionKind.SETUP_KUBERNETES_AUTH:
+          return {
+            section: AccountsSection.CONNECT_TO_KUBERNETES,
             selectedAuthProvider: action.selectedAuthProvider,
             onNewAuthSession: action.onNewAuthSession,
             backActionKind: action.backActionKind,

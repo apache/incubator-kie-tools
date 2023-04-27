@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.dashbuilder.client.screens.NotFoundScreen;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.LayoutPanelPresenter;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -36,7 +36,7 @@ public class NotFoundPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(StaticWorkbenchPanelPresenter.class.getName());
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(LayoutPanelPresenter.class.getName());
         final PlaceRequest place = new DefaultPlaceRequest(NotFoundScreen.ID);
         PartDefinitionImpl dashboardScreen = new PartDefinitionImpl(place);
         perspective.getRoot().addPart(dashboardScreen);

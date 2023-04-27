@@ -20,10 +20,9 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Window;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
@@ -45,31 +44,26 @@ public class BootstrapLayoutGeneratorDriver implements LayoutGeneratorDriver {
 
     @Override
     public HTMLElement createContainer() {
-        Div div = (Div) Window.getDocument().createElement("div");
-        return div;
+        return createDiv(null);
     }
 
     @Override
     public HTMLElement createRow(LayoutRow layoutRow) {
-        Div div = (Div) Window.getDocument().createElement("div");
-        div.setClassName("row");
-        return div;
+        return createDiv("row");
     }
 
     @Override
     public HTMLElement createColumn(LayoutColumn layoutColumn) {
-        Div div = (Div) Window.getDocument().createElement("div");
-        String colSize = ColumnSizeBuilder.buildColumnSize(new Integer(layoutColumn.getSpan()));
-        div.setClassName(colSize);
-        return div;
+        var colSize = ColumnSizeBuilder.buildColumnSize(Integer.parseInt(layoutColumn.getSpan()));
+        return createDiv(colSize);
     }
 
     @Override
     public IsWidget createComponent(HTMLElement column, LayoutComponent layoutComponent) {
-        final LayoutDragComponent dragComponent = lookupComponent(layoutComponent);
+        final var dragComponent = lookupComponent(layoutComponent);
         if (dragComponent != null) {
-            Widget columnWidget = ElementWrapperWidget.getWidget(column);
-            RenderingContext componentContext = new RenderingContext(layoutComponent, columnWidget);
+            var columnWidget = ElementWrapperWidget.getWidget(column);
+            var componentContext = new RenderingContext(layoutComponent, columnWidget);
             return dragComponent.getShowWidget(componentContext);
         }
         return null;
@@ -77,5 +71,13 @@ public class BootstrapLayoutGeneratorDriver implements LayoutGeneratorDriver {
 
     protected LayoutDragComponent lookupComponent(LayoutComponent layoutComponent) {
         return dragTypeHelper.lookupDragTypeBean(layoutComponent.getDragTypeName());
+    }
+
+    private HTMLDivElement createDiv(String className) {
+        var div = (HTMLDivElement) DomGlobal.document.createElement("div");
+        if (className != null) {
+            div.className = className;
+        }
+        return div;
     }
 }

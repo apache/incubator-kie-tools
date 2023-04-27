@@ -18,14 +18,18 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class Schedule {
 
-    private String interval;
-    private String cron;
-    private String timezone;
+    public String interval;
+
+    public String cron;
+
+    public String timezone;
 
     public final String getInterval() {
         return interval;

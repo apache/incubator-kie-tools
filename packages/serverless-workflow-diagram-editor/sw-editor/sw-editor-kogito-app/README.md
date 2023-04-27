@@ -72,25 +72,3 @@ Navigate to the test page in your root context path, eg: `http://localhost:8080/
 
         // Get the actual workflows' content
         window.frames.editorFrame.contentWindow.gwtEditorBeans.get("SWDiagramEditor").get().getContent()
-
-        // Standalone SWF Editor
-        frames[0].canvas
-
-        // Stunner - Js API
-        var jsl = window.frames.editorFrame.contentWindow.canvas
-        jsl.getNodeIds() // Get id of all nodes
-        jsl.getBackgroundColor('_A9481DBC-3E87-40EE-9925-733B24404BC0')         // gets background color
-        jsl.setBackgroundColor('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'blue') // sets background color
-        jsl.getBorderColor('_A9481DBC-3E87-40EE-9925-733B24404BC0')             // gets border color
-        jsl.setBorderColor('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'red')      // sets border color
-        jsl.getLocation('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'red')         // gets location
-        jsl.getAbsoluteLocation('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'red') // gets absolute location
-        jsl.getDimensions('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'red')       // gets dimensions
-        jsl.applyState('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'invalid')      // applies state (none, highlight, selected, invalid)
-        jsl.centerNode('_A9481DBC-3E87-40EE-9925-733B24404BC0')                 // centers node in viewable canvas
-
-        // Stunner - (Wires) Shapes API
-        var jsl = window.frames.editorFrame.contentWindow.canvas
-        jsl.log().logWiresShapes()
-        var s = jsl.getWiresShape('_A9481DBC-3E87-40EE-9925-733B24404BC0')
-        s.getChild(1).fillColor = "red"

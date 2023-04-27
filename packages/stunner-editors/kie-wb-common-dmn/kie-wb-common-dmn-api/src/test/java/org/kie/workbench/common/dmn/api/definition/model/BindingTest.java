@@ -128,6 +128,23 @@ public class BindingTest {
     }
 
     @Test
+    public void testExactCopy() {
+        final Binding source = new Binding();
+        final InformationItem informationItem = new InformationItem(new Id(ITEM_ID), new Description(DESCRIPTION), new Name(INFORMATION_ITEM_NAME), BuiltInType.BOOLEAN.asQName());
+        source.setParameter(informationItem);
+
+        final Binding target = source.exactCopy();
+
+        assertNotNull(target);
+        assertNull(target.getExpression());
+        assertNotNull(target.getParameter());
+        assertEquals(ITEM_ID, target.getParameter().getId().getValue());
+        assertEquals(DESCRIPTION, target.getParameter().getDescription().getValue());
+        assertEquals(INFORMATION_ITEM_NAME, target.getParameter().getName().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getParameter().getTypeRef());
+    }
+
+    @Test
     public void testFindDomainObject_WhenParameterMatches() {
 
         final Binding binding = new Binding();

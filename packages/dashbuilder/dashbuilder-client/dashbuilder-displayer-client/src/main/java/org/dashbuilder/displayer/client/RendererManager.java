@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -33,9 +32,6 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
-import org.dashbuilder.renderer.RendererSettings;
-import org.dashbuilder.renderer.service.RendererSettingsService;
-import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -47,49 +43,35 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 @ApplicationScoped
 public class RendererManager {
 
+    private static final String DEFAULT_UUID = "echarts";
     private SyncBeanManager beanManager;
     private List<RendererLibrary> renderersList;
     private Map<DisplayerType, RendererLibrary> renderersDefault = new EnumMap<>(DisplayerType.class);
     private Map<DisplayerType, List<RendererLibrary>> renderersByType = new EnumMap<>(DisplayerType.class);
     private Map<DisplayerSubType, List<RendererLibrary>> renderersBySubType = new EnumMap<>(DisplayerSubType.class);
-    
+
     CommonConstants i18n = CommonConstants.INSTANCE;
-    
-    Caller<RendererSettingsService> rendererSettingsService;
 
-    public RendererManager() {
-    }
-
-    @Inject
-    public RendererManager(SyncBeanManager beanManager, Caller<RendererSettingsService> rendererSettingsService) {
-        this.beanManager = beanManager;
-        this.rendererSettingsService = rendererSettingsService;
-    }
+    public RendererManager() {}
 
     @PostConstruct
     protected void init() {
-        rendererSettingsService.call((RendererSettings settings) -> lookupRenderers(settings))
-                               .getSettings();
+        lookupRenderers();
     }
 
-    protected void lookupRenderers(RendererSettings settings) {
-        var defaultUUID = settings.getDefaultRenderer();
-        var onlyOffline = settings.isOffline();
+    @Inject
+    public RendererManager(SyncBeanManager beanManager) {
+        this.beanManager = beanManager;
+    }
+
+    protected void lookupRenderers() {
         var beanDefs = beanManager.lookupBeans(RendererLibrary.class);
         renderersList = new ArrayList<>();
-        
-        if (onlyOffline) {
-            beanDefs = beanDefs.stream().filter(bd -> bd.getInstance().isOffline()).collect(Collectors.toList());
-        }
-        
-        if (defaultUUID != null && ! defaultUUID.isEmpty()) {
-            beanDefs.stream()
-                    .map(SyncBeanDef::getInstance)
-                    .filter(render -> render.getUUID().equals(defaultUUID))
-                    .findFirst().ifPresent(rend -> 
-                        rend.getSupportedTypes().forEach(c -> renderersDefault.put(c, rend))
-            );
-        }
+
+        beanDefs.stream()
+                .map(SyncBeanDef::getInstance)
+                .filter(render -> render.getUUID().equals(DEFAULT_UUID))
+                .findFirst().ifPresent(rend -> rend.getSupportedTypes().forEach(c -> renderersDefault.put(c, rend)));
         for (var beanDef : beanDefs) {
 
             var lib = beanDef.getInstance();
@@ -140,19 +122,17 @@ public class RendererManager {
     }
 
     public List<RendererLibrary> getRenderersForType(DisplayerType displayerType) {
-        return  renderersByType.getOrDefault(displayerType, new ArrayList<>());
+        return renderersByType.getOrDefault(displayerType, new ArrayList<>());
     }
 
     public List<RendererLibrary> getRenderersForType(DisplayerType type, DisplayerSubType subType) {
-        List<RendererLibrary> types  = renderersByType.getOrDefault(type, Collections.emptyList());
+        List<RendererLibrary> types = renderersByType.getOrDefault(type, Collections.emptyList());
         List<RendererLibrary> subTypes = renderersBySubType.getOrDefault(subType, Collections.emptyList());
         if (type == null) {
             return subType == null ? renderersList : subTypes;
-        }
-        else if (subType == null) {
+        } else if (subType == null) {
             return types;
-        }
-        else {
+        } else {
             List<RendererLibrary> result = new ArrayList<RendererLibrary>(subTypes);
             Iterator<RendererLibrary> it = result.iterator();
             while (it.hasNext()) {
@@ -181,12 +161,12 @@ public class RendererManager {
     public RendererLibrary getRendererByName(String renderer) {
         return getRendererByOrThrowError(renderer, lib -> lib.getName().equals(renderer));
     }
-    
+
     private RendererLibrary getRendererByOrThrowError(String renderer, Predicate<RendererLibrary> test) {
         return renderersList.stream()
-                     .filter(test)
-                     .findFirst()
-                     .orElseThrow(() -> new RuntimeException(i18n.rendererliblocator_renderer_not_found(renderer)));
+                .filter(test)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(i18n.rendererliblocator_renderer_not_found(renderer)));
     }
 
     public RendererLibrary getRendererForType(DisplayerType displayerType) {
@@ -198,7 +178,8 @@ public class RendererManager {
         // Get the renderer specified
         if (!StringUtils.isBlank(target.getRenderer())) {
             RendererLibrary targetRenderer = _getRendererByUUID(target.getRenderer());
-            if (targetRenderer != null) return targetRenderer;
+            if (targetRenderer != null)
+                return targetRenderer;
         }
 
         // Return always the renderer declared as default
@@ -210,10 +191,11 @@ public class RendererManager {
             }
         }
         // If no default then return the first supported one
-        if (!renderersSupported.isEmpty()) return renderersSupported.get(0);
+        if (!renderersSupported.isEmpty())
+            return renderersSupported.get(0);
         throw new RuntimeException(i18n.renderermanager_renderer_not_available(target.getType().name()));
     }
-    
+
     public boolean isTypeSupported(DisplayerType type) {
         return !getRenderersForType(type).isEmpty();
     }

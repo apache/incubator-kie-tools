@@ -29,6 +29,7 @@
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
+    "@kie-tools/extended-services-api": "workspace:*",
     "@kie-tools/form": "workspace:*",
     "@kie-tools/form-dmn": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",

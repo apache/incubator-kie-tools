@@ -1,1 +1,0 @@
-$registerPlugin({id:"ScreenWithTitle",title: function (){return "My Title";},template: ""});

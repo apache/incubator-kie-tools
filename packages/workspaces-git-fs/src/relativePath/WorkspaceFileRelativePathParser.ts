@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { basename, extname, parse } from "path";
-import { isOfKind, FileTypes } from "../constants/ExtensionHelper";
+import { isOfKind } from "../constants/ExtensionHelper";
 
 export function parseWorkspaceFileRelativePath(relativePath: string) {
   const extension = extractExtension(relativePath);
@@ -28,42 +28,19 @@ export function parseWorkspaceFileRelativePath(relativePath: string) {
 }
 
 export function extractExtension(relativePath: string) {
-  const fileName = basename(relativePath).toLowerCase();
+  const fileName = basename(relativePath);
+  const ultimateExtension = fileName.substring(fileName.lastIndexOf("."));
+  const fileWithoutUltimateExtension = fileName.substring(0, fileName.lastIndexOf(ultimateExtension));
+  const penultimateExtension = fileWithoutUltimateExtension.substring(fileWithoutUltimateExtension.lastIndexOf("."));
   if (fileName.includes(".")) {
-    if (isOfKind("swJson", fileName)) {
-      return FileTypes.SW_JSON;
+    if (isOfKind("supportedSingleExtensions", fileName)) {
+      //technically not needed as the else statement does the same thing. Only here for clarity
+      return ultimateExtension.replace(".", "");
     }
-    if (isOfKind("swYml", fileName)) {
-      return FileTypes.SW_YML;
-    }
-    if (isOfKind("swYaml", fileName)) {
-      return FileTypes.SW_YAML;
-    }
-    if (isOfKind("yardJson", fileName)) {
-      return FileTypes.YARD_JSON;
-    }
-    if (isOfKind("yardYml", fileName)) {
-      return FileTypes.YARD_YML;
-    }
-    if (isOfKind("yardYaml", fileName)) {
-      return FileTypes.YARD_YAML;
-    }
-    if (isOfKind("dashYml", fileName)) {
-      return FileTypes.DASH_YML;
-    }
-    if (isOfKind("dashYaml", fileName)) {
-      return FileTypes.DASH_YAML;
-    }
-    if (isOfKind("dmn", fileName)) {
-      return FileTypes.DMN;
-    }
-    if (isOfKind("bpmn", fileName)) {
-      return FileTypes.BPMN;
-    }
-    if (isOfKind("pmml", fileName)) {
-      return FileTypes.PMML;
+    if (isOfKind("supportedDoubleExtensions", fileName)) {
+      return penultimateExtension.replace(".", "") + ultimateExtension;
     } else {
-      return fileName.substring(fileName.lastIndexOf(".") + 1);
+      return ultimateExtension.replace(".", "");
     }
   } else {
     return extname(relativePath);

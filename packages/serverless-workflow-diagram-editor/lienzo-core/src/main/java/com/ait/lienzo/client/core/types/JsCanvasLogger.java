@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.types;
 
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import elemental2.dom.DomGlobal;
 import jsinterop.annotations.JsType;
@@ -30,14 +31,12 @@ public class JsCanvasLogger {
     }
 
     public void logWiresShapes() {
-        WiresShape[] shapes = canvas.getWiresManager().getShapes();
+        WiresShape[] shapes = WiresManager.get(canvas.getLayer()).getShapes();
         for (int i = 0; i < shapes.length; i++) {
             WiresShape shape = shapes[i];
             log("WiresShape[" + i + "] ==> " + shape.getID() + " / " + shape.uuid());
         }
     }
-
-
 
     private static void log(String message) {
         DomGlobal.console.log(message);

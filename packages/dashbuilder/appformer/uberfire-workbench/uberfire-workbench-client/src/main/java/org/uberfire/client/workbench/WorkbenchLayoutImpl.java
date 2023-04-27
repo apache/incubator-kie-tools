@@ -30,30 +30,22 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.util.Layouts;
-import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.client.workbench.events.WorkbenchProfileCssClass;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
@@ -75,105 +67,38 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     private static final int MAXIMIZED_PANEL_Z_INDEX = 100;
 
     /**
-     * Dock Layout panel: in center root perspective and also (if available) with east west south docks
-     */
-    private final DockLayoutPanel rootContainer = new DockLayoutPanel(Unit.PX);
-    /**
      * The panel within which the current perspective's root view resides. This panel lasts the lifetime of the app; it's
      * cleared and repopulated with the new perspective's root view each time
      * {@link org.uberfire.client.workbench.PanelManager#setPerspective(PerspectiveDefinition)} gets called.
      */
-    private final SimpleLayoutPanel perspectiveRootContainer = new SimpleLayoutPanel();
-    private final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles = new HashMap<Widget, OriginalStyleInfo>();
+    SimpleLayoutPanel perspectiveRootContainer = new SimpleLayoutPanel();
+    private final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles =
+            new HashMap<Widget, OriginalStyleInfo>();
     private SyncBeanManager iocManager;
-    /**
-     * Top-level widget of the whole workbench layout. This panel contains the nested container panels for headers,
-     * footers, and the current perspective. During a normal startup of UberFire, this panel would be added directly to
-     * the RootLayoutPanel.
-     */
-    private HeaderPanel root;
-    /**
-     * The panel within which the current perspective's header widgets reside. This panel lasts the lifetime of the app;
-     * it's cleared and repopulated with the new perspective's root view each time
-     * {@link #setHeaderContents(java.util.List)} gets called.
-     */
-    private Div headerPanel;
-    /**
-     * The panel within which the current perspective's footer widgets reside. This panel lasts the lifetime of the app;
-     * it's cleared and repopulated with the new perspective's root view each time
-     * {@link #setFooterContents(java.util.List)} gets called. The actual panel that's used for this is specified by the
-     * concrete subclass's constructor.
-     */
-    private Div footerPanel;
-    private WorkbenchDragAndDropManager dndManager;
-    /**
-     * An abstraction for DockLayoutPanel used by Uberfire Docks.
-     */
-    private UberfireDocksContainer uberfireDocksContainer;
-    /**
-     * We read the drag boundary panel out of this, and sandwich it between the root panel and the perspective container panel.
-     */
-    private WorkbenchPickupDragController dragController;
 
     public WorkbenchLayoutImpl() {
 
     }
 
     @Inject
-    public WorkbenchLayoutImpl(SyncBeanManager iocManager,
-                               HeaderPanel root,
-                               WorkbenchDragAndDropManager dndManager,
-                               UberfireDocksContainer uberfireDocksContainer,
-                               WorkbenchPickupDragController dragController,
-                               Div headerPanel,
-                               Div footerPanel) {
-
+    public WorkbenchLayoutImpl(SyncBeanManager iocManager) {
         this.iocManager = iocManager;
-        this.root = root;
-        this.dndManager = dndManager;
-        this.uberfireDocksContainer = uberfireDocksContainer;
-        this.dragController = dragController;
-        this.headerPanel = headerPanel;
-        this.footerPanel = footerPanel;
     }
 
     @PostConstruct
     private void init() {
         perspectiveRootContainer.ensureDebugId("perspectiveRootContainer");
-        headerPanel.setId("workbenchHeaderPanel");
-        footerPanel.setId("workbenchFooterPanel");
-        dragController.getBoundaryPanel().ensureDebugId("workbenchDragBoundary");
-        root.addStyleName(UF_ROOT_CSS_CLASS);
+        perspectiveRootContainer.addStyleName(UF_ROOT_CSS_CLASS);
     }
 
     @Override
-    public HeaderPanel getRoot() {
-        return root;
+    public SimplePanel getRoot() {
+        return perspectiveRootContainer;
     }
 
     @Override
     public HasWidgets getPerspectiveContainer() {
         return perspectiveRootContainer;
-    }
-
-    void setHeaderContents(List<Header> headers) {
-        DOMUtil.removeAllChildren(headerPanel);
-        if (!headers.isEmpty()) {
-            for (Header h : headers) {
-                headerPanel.appendChild(h.getElement());
-            }
-            root.setHeaderWidget(createWidgetFrom(headerPanel));
-        }
-    }
-
-    void setFooterContents(List<Footer> footers) {
-        DOMUtil.removeAllChildren(footerPanel);
-        if (!footers.isEmpty()) {
-            for (Footer f : footers) {
-                footerPanel.appendChild(f.getElement());
-            }
-            root.setFooterWidget(createWidgetFrom(footerPanel));
-        }
     }
 
     ElementWrapperWidget<?> createWidgetFrom(HTMLElement h) {
@@ -182,43 +107,27 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
     @Override
     public void onBootstrap() {
-        dndManager.unregisterDropControllers();
-
-        AbsolutePanel dragBoundary = dragController.getBoundaryPanel();
-        dragBoundary.add(perspectiveRootContainer);
-
-        setupDocksContainer();
-        rootContainer.add(dragBoundary);
-
         Layouts.setToFillParent(perspectiveRootContainer);
-        Layouts.setToFillParent(dragBoundary);
-        Layouts.setToFillParent(rootContainer);
-
-        root.setContentWidget(rootContainer);
-    }
-
-    private void setupDocksContainer() {
-        uberfireDocksContainer.setup(rootContainer,
-                                     () -> Scheduler.get().scheduleDeferred(() -> onResize()));
     }
 
     @Override
     public void onResize() {
         resizeTo(Window.getClientWidth(),
-                 Window.getClientHeight());
+                Window.getClientHeight());
     }
 
     @Override
     public void resizeTo(int width,
                          int height) {
-        root.setPixelSize(width,
-                          height);
+        perspectiveRootContainer.setPixelSize(width,
+                height);
 
         // The dragBoundary can't be a LayoutPanel, so it doesn't support ProvidesResize/RequiresResize.
         // We start the cascade of onResize() calls at its immediate child.
         perspectiveRootContainer.onResize();
 
         new Timer() {
+
             @Override
             public void run() {
                 updateMaximizedPanelSizes();
@@ -230,13 +139,13 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         for (Widget w : maximizedWidgetOriginalStyles.keySet()) {
             Style style = w.getElement().getStyle();
             style.setTop(perspectiveRootContainer.getAbsoluteTop(),
-                         Unit.PX);
+                    Unit.PX);
             style.setLeft(perspectiveRootContainer.getAbsoluteLeft(),
-                          Unit.PX);
+                    Unit.PX);
             style.setWidth(perspectiveRootContainer.getOffsetWidth(),
-                           Unit.PX);
+                    Unit.PX);
             style.setHeight(perspectiveRootContainer.getOffsetHeight(),
-                            Unit.PX);
+                    Unit.PX);
 
             if (w instanceof RequiresResize) {
                 ((RequiresResize) w).onResize();
@@ -247,7 +156,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     @Override
     public void maximize(final Widget w) {
         maximize(w,
-                 null);
+                null);
     }
 
     @Override
@@ -261,15 +170,15 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         w.addStyleName(UF_MAXIMIZED_PANEL);
 
         new ExpandAnimation(w,
-                            maximizedWidgetOriginalStyles,
-                            perspectiveRootContainer,
-                            callback).run();
+                maximizedWidgetOriginalStyles,
+                perspectiveRootContainer,
+                callback).run();
     }
 
     @Override
     public void unmaximize(final Widget w) {
         unmaximize(w,
-                   null);
+                null);
     }
 
     @Override
@@ -278,19 +187,14 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         w.removeStyleName(UF_MAXIMIZED_PANEL);
 
         new CollapseAnimation(w,
-                              maximizedWidgetOriginalStyles,
-                              callback).run();
+                maximizedWidgetOriginalStyles,
+                callback).run();
     }
 
     @Override
     public void setMarginWidgets(boolean isStandaloneMode,
                                  Set<String> headersToKeep) {
-        setHeaderContents(discoverMarginWidgets(isStandaloneMode,
-                                                headersToKeep,
-                                                Header.class));
-        setFooterContents(discoverMarginWidgets(isStandaloneMode,
-                                                headersToKeep,
-                                                Footer.class));
+        // no op
     }
 
     private <T extends Orderable> List<T> discoverMarginWidgets(boolean isStandaloneMode,
@@ -312,35 +216,28 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
             }
         }
         sort(instances,
-             new Comparator<Orderable>() {
-                 @Override
-                 public int compare(final Orderable o1,
-                                    final Orderable o2) {
-                     if (o1.getOrder() < o2.getOrder()) {
-                         return 1;
-                     } else if (o1.getOrder() > o2.getOrder()) {
-                         return -1;
-                     } else {
-                         return 0;
-                     }
-                 }
-             });
+                new Comparator<Orderable>() {
+
+                    @Override
+                    public int compare(final Orderable o1,
+                                       final Orderable o2) {
+                        if (o1.getOrder() < o2.getOrder()) {
+                            return 1;
+                        } else if (o1.getOrder() > o2.getOrder()) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
+                    }
+                });
 
         return instances;
     }
 
     public void addWorkbenchProfileCssClass(@Observes WorkbenchProfileCssClass workbenchProfileCssClass) {
-        root.removeStyleName(root.getStyleName());
-        root.addStyleName(UF_ROOT_CSS_CLASS);
-        root.addStyleName(workbenchProfileCssClass.getClassName());
-    }
-
-    protected Div getHeaderPanel() {
-        return headerPanel;
-    }
-
-    protected Div getFooterPanel() {
-        return footerPanel;
+        perspectiveRootContainer.removeStyleName(perspectiveRootContainer.getStyleName());
+        perspectiveRootContainer.addStyleName(UF_ROOT_CSS_CLASS);
+        perspectiveRootContainer.addStyleName(workbenchProfileCssClass.getClassName());
     }
 
     protected static abstract class AbstractResizeAnimation extends Animation {
@@ -362,25 +259,25 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         @Override
         protected void onUpdate(double progress) {
             final double width = newTarget(w.getElement().getClientWidth(),
-                                           getTargetWidth(),
-                                           progress);
+                    getTargetWidth(),
+                    progress);
             style.setWidth(width,
-                           Unit.PX);
+                    Unit.PX);
             final double height = newTarget(w.getElement().getClientHeight(),
-                                            getTargetHeight(),
-                                            progress);
+                    getTargetHeight(),
+                    progress);
             style.setHeight(height,
-                            Unit.PX);
+                    Unit.PX);
             final double top = newTarget(w.getAbsoluteTop(),
-                                         getTargetTop(),
-                                         progress);
+                    getTargetTop(),
+                    progress);
             style.setTop(top,
-                         Unit.PX);
+                    Unit.PX);
             final double left = newTarget(w.getAbsoluteLeft(),
-                                          getTargetLeft(),
-                                          progress);
+                    getTargetLeft(),
+                    progress);
             style.setLeft(left,
-                          Unit.PX);
+                    Unit.PX);
         }
 
         public abstract int getTargetWidth();
@@ -421,10 +318,10 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         protected final SimpleLayoutPanel perspectiveRootContainer;
 
         public ExpandAnimation(
-                final Widget w,
-                final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles,
-                final SimpleLayoutPanel perspectiveRootContainer,
-                final Command onCompleteCallback) {
+                               final Widget w,
+                               final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles,
+                               final SimpleLayoutPanel perspectiveRootContainer,
+                               final Command onCompleteCallback) {
             super(w,
                   maximizedWidgetOriginalStyles,
                   onCompleteCallback);
@@ -434,16 +331,16 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         @Override
         protected void onStart() {
             maximizedWidgetOriginalStyles.put(w,
-                                              new OriginalStyleInfo(w));
+                    new OriginalStyleInfo(w));
             style.setZIndex(MAXIMIZED_PANEL_Z_INDEX);
             style.setHeight(w.getElement().getClientHeight(),
-                            Unit.PX);
+                    Unit.PX);
             style.setWidth(w.getElement().getClientWidth(),
-                           Unit.PX);
+                    Unit.PX);
             style.setTop(w.getAbsoluteTop(),
-                         Unit.PX);
+                    Unit.PX);
             style.setLeft(w.getAbsoluteLeft(),
-                          Unit.PX);
+                    Unit.PX);
             style.setPosition(Position.FIXED);
         }
 
@@ -555,17 +452,17 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         public void restore(final Widget w) {
             final Style style = w.getElement().getStyle();
             style.setProperty("position",
-                              position);
+                    position);
             style.setProperty("top",
-                              top);
+                    top);
             style.setProperty("left",
-                              left);
+                    left);
             style.setProperty("width",
-                              width);
+                    width);
             style.setProperty("height",
-                              height);
+                    height);
             style.setProperty("zIndex",
-                              zIndex);
+                    zIndex);
         }
 
         public int getAbsoluteTop() {

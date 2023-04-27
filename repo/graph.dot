@@ -34,6 +34,7 @@ digraph G {
   "@kie-tools/backend-extended-services" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/maven-config-setup-helper" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/boxed-expression-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools-core/operating-system" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/feel-input-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "chrome-extension-pack-kogito-kie-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kie-bc-editors" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -57,7 +58,6 @@ digraph G {
   "@kie-tools/dashbuilder-component-echarts-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/dashbuilder-images" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-viewer" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -76,6 +76,7 @@ digraph G {
   "@kie-tools-core/keyboard-shortcuts" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/envelope-bus" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/extended-services" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/extended-services-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/monaco-editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/form" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/form-generation-tool" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -86,15 +87,14 @@ digraph G {
   "@kie-tools/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools-core/operating-system" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/kie-sandbox-extended-services-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kie-sandbox-fs" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/kie-sandbox-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kn-plugin-workflow" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-core/kubernetes-bridge" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/workspace" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools-core/openshift" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/react-hooks" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -161,6 +161,7 @@ digraph G {
   "@kie-tools-core/backend" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];
   "@kie-tools/backend-extended-services" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "blue" ];
   "@kie-tools/backend-extended-services" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/boxed-expression-component" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/feel-input-component" [ style = "solid", color = "blue" ];
   "@kie-tools-core/chrome-extension" -> "@kie-tools-core/editor" [ style = "solid", color = "purple" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "black" ];
@@ -212,7 +213,6 @@ digraph G {
   "@kie-tools/dashbuilder-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder-language-service" [ style = "solid", color = "blue" ];
-  "@kie-tools/dashbuilder-images" -> "@kie-tools/dashbuilder" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
@@ -243,6 +243,7 @@ digraph G {
   "@kie-tools-core/envelope-bus" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/envelope-bus" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
   "@kie-tools/extended-services" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/extended-services-api" -> "@kie-tools-core/notifications" [ style = "solid", color = "blue" ];
   "@kie-tools/feel-input-component" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/feel-input-component" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "blue" ];
   "@kie-tools/feel-input-component" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
@@ -251,6 +252,7 @@ digraph G {
   "@kie-tools/form" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/form" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "@kie-tools/form" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/form-dmn" -> "@kie-tools/extended-services-api" [ style = "solid", color = "blue" ];
   "@kie-tools/form-dmn" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
   "@kie-tools/form-generation-tool" -> "@kie-tools/uniforms-bootstrap4-codegen" [ style = "solid", color = "blue" ];
   "@kie-tools/form-generation-tool" -> "@kie-tools/uniforms-patternfly-codegen" [ style = "solid", color = "blue" ];
@@ -282,12 +284,15 @@ digraph G {
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/online-editor" [ style = "dashed", color = "black" ];
   "@kie-tools/kn-plugin-workflow" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools-core/kubernetes-bridge" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
+  "@kie-tools-core/kubernetes-bridge" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
+  "@kie-tools-core/kubernetes-bridge" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/notifications" -> "@kie-tools-core/i18n" [ style = "solid", color = "purple" ];
   "@kie-tools-core/notifications" -> "@kie-tools-core/workspace" [ style = "solid", color = "purple" ];
-  "@kie-tools/online-editor" -> "@kie-tools-core/openshift" [ style = "solid", color = "black" ];
+  "@kie-tools/online-editor" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];
@@ -296,9 +301,6 @@ digraph G {
   "@kie-tools/online-editor" -> "@kie-tools/extended-services" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/git-cors-proxy-image" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
-  "@kie-tools-core/openshift" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
-  "@kie-tools-core/openshift" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
-  "@kie-tools-core/openshift" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/operating-system" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/operating-system" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/operating-system" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
@@ -313,7 +315,7 @@ digraph G {
   "@kie-tools-core/react-hooks" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/react-hooks" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/react-hooks" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
-  "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/openshift" [ style = "solid", color = "black" ];
+  "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/dashbuilder-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "black" ];
@@ -351,7 +353,6 @@ digraph G {
   "@kie-tools/serverless-workflow-text-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/stunner-editors-dmn-loader" [ style = "solid", color = "black" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
-  "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools-core/keyboard-shortcuts" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/import-java-classes-component" [ style = "solid", color = "blue" ];
   "@kie-tools/text-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
@@ -365,7 +366,9 @@ digraph G {
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/unitables" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/unitables" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
+  "@kie-tools/unitables" -> "@kie-tools/extended-services-api" [ style = "solid", color = "blue" ];
   "@kie-tools/unitables" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
   "@kie-tools/unitables-dmn" -> "@kie-tools/form-dmn" [ style = "solid", color = "blue" ];
   "@kie-tools/unitables-dmn" -> "@kie-tools/unitables" [ style = "solid", color = "blue" ];

@@ -33,7 +33,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -166,13 +165,5 @@ public class BindableDefinitionAdapterImplTest {
     public void testGetMetaTypes() {
         String nameField = tested.getMetaPropertyField(BEAN1, PropertyMetaTypes.NAME);
         assertEquals("nameField", nameField);
-        String widthField = tested.getMetaPropertyField(BEAN1, PropertyMetaTypes.WIDTH);
-        assertNull(widthField);
-        String heightField = tested.getMetaPropertyField(BEAN1, PropertyMetaTypes.HEIGHT);
-        assertNull(heightField);
-        String radiusField = tested.getMetaPropertyField(BEAN1, PropertyMetaTypes.RADIUS);
-        assertNull(radiusField);
-        String idField = tested.getMetaPropertyField(BEAN1, PropertyMetaTypes.ID);
-        assertNull(idField);
     }
 }

@@ -15,7 +15,6 @@
  */
 package org.dashbuilder;
 
-import org.dashbuilder.dataprovider.BeanDataSetProvider;
 import org.dashbuilder.dataprovider.DataSetProviderRegistry;
 import org.dashbuilder.dataprovider.DataSetProviderRegistryImpl;
 import org.dashbuilder.dataprovider.StaticDataSetProvider;
@@ -45,7 +44,6 @@ public class DataSetCoreImpl extends DataSetCore {
     private DataSetProviderRegistry dataSetProviderRegistry;
     private DataSetDefDeployer dataSetDefDeployer;
     private DataSetManagerImpl dataSetManagerImpl;
-    private BeanDataSetProvider beanDataSetProvider;
     private StaticDataSetProvider staticDataSetProvider;
     private IntervalBuilderLocatorImpl intervalBuilderLocator;
     private IntervalBuilderDynamicDate intervalBuilderDynamicDate;
@@ -110,7 +108,6 @@ public class DataSetCoreImpl extends DataSetCore {
         if (dataSetProviderRegistry == null) {
             dataSetProviderRegistry = new DataSetProviderRegistryImpl();
             dataSetProviderRegistry.registerDataProvider(checkNotNull(getStaticDataSetProvider(), STATIC_DATA_SET_PROVIDER));
-            dataSetProviderRegistry.registerDataProvider(checkNotNull(getBeanDataSetProvider(), "BeanDataSetProvider"));
         }
         return dataSetProviderRegistry;
     }
@@ -137,14 +134,6 @@ public class DataSetCoreImpl extends DataSetCore {
                     checkNotNull(getSharedDataSetOpEngine(), "SharedDataSetOpEngine"));
         }
         return staticDataSetProvider;
-    }
-
-    public BeanDataSetProvider getBeanDataSetProvider() {
-        if (beanDataSetProvider == null) {
-            beanDataSetProvider = new BeanDataSetProvider(checkNotNull(getStaticDataSetProvider(), STATIC_DATA_SET_PROVIDER));
-            getDataSetDefRegistry().addListener(beanDataSetProvider);
-        }
-        return beanDataSetProvider;
     }
 
     public IntervalBuilderLocatorImpl getIntervalBuilderLocatorImpl() {
@@ -203,10 +192,6 @@ public class DataSetCoreImpl extends DataSetCore {
 
     public void setDataSetDefDeployer(DataSetDefDeployer dataSetDefDeployer) {
         this.dataSetDefDeployer = dataSetDefDeployer;
-    }
-
-    public void setBeanDataSetProvider(BeanDataSetProvider beanDataSetProvider) {
-        this.beanDataSetProvider = beanDataSetProvider;
     }
 
     public void setStaticDataSetProvider(StaticDataSetProvider staticDataSetProvider) {

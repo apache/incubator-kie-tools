@@ -20,20 +20,8 @@ import com.google.gwt.i18n.client.ConstantsWithLookup;
 
 public interface DashbuilderCommonConstants extends ConstantsWithLookup {
 
-    DashbuilderCommonConstants INSTANCE = GWT.create( DashbuilderCommonConstants.class );
+    DashbuilderCommonConstants INSTANCE = GWT.create(DashbuilderCommonConstants.class);
 
-    String add();
-    String remove();
-    String noData();
-    String key();
-    String value();
-    String actions();
-    String newValue();
-    String currentFilePath();
-    String uploadSuccessful();
-    String uploadFailed();
-    String uploadFailedAlreadyExists();
     String clearAll();
-    String loading();
 
 }

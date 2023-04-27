@@ -18,14 +18,18 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class WorkflowExecTimeout {
 
-    private String duration;
-    private Boolean interrupt;
-    private String runBefore;
+    public String duration;
+
+    public Boolean interrupt;
+
+    public String runBefore;
 
     public final String getDuration() {
         return duration;

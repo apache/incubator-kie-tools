@@ -25,6 +25,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
  */
 public interface StunnerTranslationService {
 
+    String I18N_SEPARATOR = ".";
+
     /**
      * Returns the localized value for a key.
      */

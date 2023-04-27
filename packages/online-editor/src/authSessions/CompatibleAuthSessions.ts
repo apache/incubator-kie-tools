@@ -188,3 +188,29 @@ export function openshiftAuthSessionSelectFilter(): AuthSessionSelectFilter {
       })),
   });
 }
+
+export function kubernetesAuthSessionSelectFilter(): AuthSessionSelectFilter {
+  return (items) => ({
+    groups: [{ label: "Same", hidden: false }],
+    items: items
+      .filter(({ authSession }) => authSession.type === "kubernetes")
+      .map(({ authSession, authProvider }) => ({
+        authSession,
+        authProvider,
+        groupLabel: "Same",
+      })),
+  });
+}
+
+export function cloudAuthSessionSelectFilter(): AuthSessionSelectFilter {
+  return (items) => ({
+    groups: [{ label: "Same", hidden: false }],
+    items: items
+      .filter(({ authSession }) => authSession.type === "kubernetes" || authSession.type === "openshift")
+      .map(({ authSession, authProvider }) => ({
+        authSession,
+        authProvider,
+        groupLabel: "Same",
+      })),
+  });
+}

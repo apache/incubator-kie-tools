@@ -22,7 +22,6 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
-const { EnvironmentPlugin } = require("webpack");
 const buildEnv = env;
 
 module.exports = async (env, argv) => {

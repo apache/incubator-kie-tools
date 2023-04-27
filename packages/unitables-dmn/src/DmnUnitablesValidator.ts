@@ -19,7 +19,7 @@ import metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { DmnUnitablesI18n } from "./i18n";
 import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/form-dmn/dist/uniforms";
-import { DmnSchema } from "@kie-tools/form-dmn";
+import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { UnitablesValidator } from "@kie-tools/unitables/dist/UnitablesValidator";
 
 const DAYS_AND_TIME = /^(-|\+)?P(?:([-+]?[0-9]*)D)?(?:T(?:([-+]?[0-9]*)H)?(?:([-+]?[0-9]*)M)?(?:([-+]?[0-9]*)S)?)?$/;
@@ -73,7 +73,7 @@ export class DmnUnitablesValidator extends UnitablesValidator {
     };
   }
 
-  public getBridge(formSchema: DmnSchema): DmnUnitablesJsonSchemaBridge {
+  public getBridge(formSchema: ExtendedServicesDmnJsonSchema): DmnUnitablesJsonSchemaBridge {
     const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
     const validator = this.createValidator(formDraft4);
     return new DmnUnitablesJsonSchemaBridge(formDraft4, validator, this.i18n);

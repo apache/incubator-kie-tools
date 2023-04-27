@@ -14,7 +14,7 @@
 package org.dashbuilder.client.external;
 
 import java.util.Arrays;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -23,55 +23,61 @@ import javax.enterprise.context.ApplicationScoped;
  *
  */
 @ApplicationScoped
-public class CSVParser implements Function<String, String> {
+public class CSVParser implements UnaryOperator<String> {
+
+    private static final char SEPARATOR = ',';
+    private static final char QUOTE = '\"';
+
     public String toJsonArray(String csvContent) {
-        StringBuffer ans = new StringBuffer("[");
+        var jsonArray = new StringBuilder("[");
         var lines = csvContent.split("\n");
-        Arrays.stream(lines).skip(1).forEach(line -> {
-            StringBuffer s = new StringBuffer("[\"");
-            int commacount = 0;
-            int i = 0;
-            while (i < line.length()) {
-                if (line.charAt(i) != ',' && line.charAt(i) != '\"') {
-                    s.append(line.charAt(i));
-                } else if (line.length() > i + 1 && line.charAt(i) == '\"') {
-                    i++;
-                    commacount++;
-                    while (true) {
-                        if (line.charAt(i) == '\"') {
-                            commacount++;
-                        }
-                        if (commacount % 2 == 0
-                                && (i + 1 >= line.length() || line.charAt(i + 1) == ',')) {
-                            break;
-                        }
-                        s.append(line.charAt(i));
-                        i++;
-                    }
-                    commacount = 0;
-                } else if (line.charAt(i) == ',') {
-                    s.append("\"" + "," + "\"");
-                }
+        Arrays.stream(lines).skip(1).forEach(line -> buildRow(jsonArray, line));
+        String finalJsonArray = jsonArray.toString();
+        finalJsonArray = finalJsonArray.substring(0, jsonArray.length() - 1);
+        finalJsonArray += "]";
+        finalJsonArray = finalJsonArray.replace("True", "true");
+        finalJsonArray = finalJsonArray.replace("False", "false");
+        return finalJsonArray;
+    }
+
+    private void buildRow(StringBuilder jsonArray, String line) {
+        var row = new StringBuilder("[\"");
+        int i = 0;
+        var len = line.length();
+        while (i < len) {
+            if (line.charAt(i) != SEPARATOR && line.charAt(i) != QUOTE) {
+                row.append(line.charAt(i));
+            } else if (i < len - 2 && line.charAt(i) == QUOTE) {
+                i++;
+                i = retrieveQuotedField(line, row, i);
+            } else if (line.charAt(i) == SEPARATOR) {
+                row.append("\",\"");
+            }
+            i++;
+        }
+        row.append("\"]");
+        jsonArray.append(row);
+        jsonArray.append(",");
+    }
+
+    private int retrieveQuotedField(String line, StringBuilder row, int i) {
+        // quoted field
+        boolean isEscapedQuote = false;
+        while (i < line.length() - 1 && (line.charAt(i) != QUOTE || (isEscapedQuote = isEscapedQuote(line, i)))) {
+            if (isEscapedQuote) {
+                row.append("\\\"");
+                i += 2;
+                isEscapedQuote = false;
+            } else {
+                row.append(line.charAt(i));
                 i++;
             }
-            s.append("\"]");
-            String s1 = s.toString();
-            int z = 1;
-            while (z < s1.length()) {
-                if (s1.substring(z - 1, z + 1).equals("\"\"")
-                        && (z + 1 < s1.length() && s1.charAt(z + 1) != ',')) {
-                    s1 = s1.substring(0, z - 1) + "\\\"" + s1.substring(z + 1);
-                }
-                z++;
-            }
-            ans.append(s1 + (","));
-        });
-        String ans1 = ans.toString();
-        ans1 = ans1.substring(0, ans.length() - 1);
-        ans1 += "]";
-        ans1 = ans1.replace("True", "true");
-        ans1 = ans1.replace("False", "false");
-        return ans1;
+        }
+        return i;
+    }
+
+    boolean isEscapedQuote(String line, int i) {
+        return line.charAt(i) == QUOTE && i < line.length() - 1 && line.charAt(i + 1) == QUOTE;
     }
 
     @Override

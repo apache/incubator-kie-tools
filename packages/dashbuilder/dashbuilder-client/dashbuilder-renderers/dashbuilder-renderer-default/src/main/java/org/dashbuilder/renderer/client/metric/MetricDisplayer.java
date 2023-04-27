@@ -16,9 +16,7 @@
 package org.dashbuilder.renderer.client.metric;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -32,13 +30,9 @@ import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.displayer.Mode;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
-import org.dashbuilder.displayer.client.resources.i18n.DisplayerConstants;
-import org.dashbuilder.displayer.client.widgets.sourcecode.HasHtmlTemplate;
-import org.dashbuilder.displayer.client.widgets.sourcecode.HasJsTemplate;
 
 @Dependent
-public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View>
-        implements HasHtmlTemplate, HasJsTemplate {
+public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View> {
 
     public interface View extends AbstractGwtDisplayer.View<MetricDisplayer> {
 
@@ -269,7 +263,6 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View>
         }
     }
 
-    @Override
     public String getHtmlTemplate() {
         String template = displayerSettings.getHtmlTemplate();
         if (StringUtils.isBlank(template)) {
@@ -278,12 +271,6 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View>
         return template;
     }
 
-    @Override
-    public Map<String, String> getHtmlVariableMap() {
-        return getCommonVariableMap();
-    }
-
-    @Override
     public String getJsTemplate() {
         String template = displayerSettings.getJsTemplate();
         if (StringUtils.isBlank(template)) {
@@ -291,46 +278,6 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View>
         }
         return template;
 
-    }
-
-    @Override
-    public Map<String, String> getJsVariableMap() {
-        Map<String, String> varMap = new HashMap<>();
-
-        // Append the user defined variables
-        String template = getHtmlTemplate();
-        codeBuilder.setTemplate(template);
-        for (String key : codeBuilder.keys()) {
-            if (!TEMPLATE_KEYS.contains(key)) {
-                String var = codeBuilder.asVar(key);
-                varMap.put(var, DisplayerConstants.INSTANCE.userDefinedVariableDescription());
-            }
-        }
-        varMap.putAll(getCommonVariableMap());
-        varMap.put(asVar("doFilter"), DisplayerConstants.INSTANCE.doFilterVariableDescription());
-        return varMap;
-    }
-
-    protected Map<String, String> getCommonVariableMap() {
-        Map<String, String> varMap = new HashMap<>();
-        varMap.put(asVar("value.raw"), DisplayerConstants.INSTANCE.valueRawVariableDescription());
-        varMap.put(asVar("value.start"), DisplayerConstants.INSTANCE.valueStartVariableDescription());
-        varMap.put(asVar("value.warning"), DisplayerConstants.INSTANCE.valueWarningVariableDescription());
-        varMap.put(asVar("value.critical"), DisplayerConstants.INSTANCE.valueCriticalVariableDescription());
-        varMap.put(asVar("value.end"), DisplayerConstants.INSTANCE.valueEndVariableDescription());
-        varMap.put(asVar("value"), DisplayerConstants.INSTANCE.valueVariableDescription());
-        varMap.put(asVar("title"), DisplayerConstants.INSTANCE.titleVariableDescription());
-        varMap.put(asVar("width"), DisplayerConstants.INSTANCE.widthVariableDescription());
-        varMap.put(asVar("height"), DisplayerConstants.INSTANCE.heightVariableDescription());
-        varMap.put(asVar("marginTop"), DisplayerConstants.INSTANCE.marginTopVariableDescription());
-        varMap.put(asVar("marginBottom"), DisplayerConstants.INSTANCE.marginBottomVariableDescription());
-        varMap.put(asVar("marginRight"), DisplayerConstants.INSTANCE.marginRightVariableDescription());
-        varMap.put(asVar("marginLeft"), DisplayerConstants.INSTANCE.marginLeftVariableDescription());
-        varMap.put(asVar("bgColor"), DisplayerConstants.INSTANCE.bgColorVariableDescription());
-        varMap.put(asVar("isFilterEnabled"), DisplayerConstants.INSTANCE.isFilterEnabledVariableDescription());
-        varMap.put(asVar("isFilterOn"), DisplayerConstants.INSTANCE.isFilterOnVariableDescription());
-        varMap.put(asVar("isEmpty"), DisplayerConstants.INSTANCE.isEmptyVariableDescription());
-        return varMap;
     }
 
     protected String asVar(String key) {

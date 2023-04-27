@@ -71,4 +71,24 @@ public class OutputClauseLiteralExpressionTest {
         assertEquals(TEXT, target.getText().getValue());
         assertNull(target.getImportedValues());
     }
+
+    @Test
+    public void testExactCopy() {
+        final OutputClauseLiteralExpression source = new OutputClauseLiteralExpression(
+                new Id(CLAUSE_ID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                new Text(TEXT),
+                null
+        );
+
+        final OutputClauseLiteralExpression target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(CLAUSE_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertEquals(TEXT, target.getText().getValue());
+        assertNull(target.getImportedValues());
+    }
 }

@@ -16,6 +16,7 @@
 package org.dashbuilder.shared.marshalling;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +63,7 @@ public class LayoutTemplateJSONMarshaller {
     private static final String STYLE = "style";
     private static final String HEIGHT = "height";
     public static final String SETTINGS = "settings";
+    public static final String DISPLAYER = "displayer";
 
     // default values
     static final String DEFAULT_HEIGHT = "1";
@@ -74,6 +76,10 @@ public class LayoutTemplateJSONMarshaller {
     static final String HTML = "HTML";
     static final String HTML_CODE_PROP = "HTML_CODE";
 
+    static final String SCREEN_DRAG_TYPE = "org.dashbuilder.client.navigation.widget.ScreenLayoutDragComponent";
+    static final String SCREEN = "SCREEN";
+    static final String SCREEN_NAME_PROP = "Screen Name";
+
     // to make the json more user friendly
     // replacement for Drag type
     private static final String TYPE = "type";
@@ -85,6 +91,7 @@ public class LayoutTemplateJSONMarshaller {
     static {
         TYPES_DRAG = new HashMap<>();
         TYPES_DRAG.put(HTML, HTML_DRAG_TYPE);
+        TYPES_DRAG.put(SCREEN, SCREEN_DRAG_TYPE);
         TYPES_DRAG.put("Displayer", "org.dashbuilder.client.editor.DisplayerDragComponent");
         TYPES_DRAG.put("External", "org.dashbuilder.client.editor.external.ExternalDragComponent");
         TYPES_DRAG.put("TABS", "org.dashbuilder.client.navigation.layout.editor.NavTabListDragComponent");
@@ -93,7 +100,6 @@ public class LayoutTemplateJSONMarshaller {
         TYPES_DRAG.put("TREE", "org.dashbuilder.client.navigation.layout.editor.NavTreeDragComponent");
         TYPES_DRAG.put("MENU", "org.dashbuilder.client.navigation.layout.editor.NavMenuBarDragComponent");
         TYPES_DRAG.put("DIV", "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivDragComponent");
-
         instance = new LayoutTemplateJSONMarshaller();
     }
 
@@ -212,7 +218,7 @@ public class LayoutTemplateJSONMarshaller {
         var dragTypeName = findDragComponent(object);
         var component = findComponentByShortcut(object).orElse(new LayoutComponent(dragTypeName));
         var propertiesObject = object.getObject(PROPERTIES);
-        var settings = object.getObject(SETTINGS);
+        var settings = object.getObject(Arrays.asList(SETTINGS, DISPLAYER));
         extractProperties(propertiesObject, component::addProperty);
         extractParts(object.getArray(PARTS)).forEach(part -> component.addPartProperties(part.getPartId(), part
                 .getCssProperties()));
@@ -349,10 +355,17 @@ public class LayoutTemplateJSONMarshaller {
      */
     protected Optional<LayoutComponent> findComponentByShortcut(JsonObject object) {
         // check HTML shortcut
-        var html = object.getString(HTML) == null ? object.getString(HTML.toLowerCase()) : object.getString(HTML);
+        var html = object.getString(Arrays.asList(HTML, HTML.toLowerCase()));
         if (html != null) {
             var layoutComponent = new LayoutComponent(HTML_DRAG_TYPE);
             layoutComponent.getProperties().put(HTML_CODE_PROP, html);
+            return Optional.of(layoutComponent);
+        }
+        // check screen shortcut
+        var screen = object.getString(Arrays.asList(SCREEN, SCREEN.toLowerCase()));
+        if (screen != null) {
+            var layoutComponent = new LayoutComponent(SCREEN_DRAG_TYPE);
+            layoutComponent.getProperties().put(SCREEN_NAME_PROP, screen);
             return Optional.of(layoutComponent);
         }
         return Optional.empty();

@@ -70,7 +70,7 @@ jobs:
 
       - name: "Start telemetry service (`main` only)"
         if: steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
-        uses: runforesight/workflow-telemetry-action@7af88337f61e495d20c0ffa970cf7691532af740
+        uses: runforesight/workflow-telemetry-action@6705383eabd01833acfe8412ec697384830e1455 #v1.8.7
 
       - name: "Setup environment"
         if: steps.setup_build_mode.outputs.mode != 'none'
@@ -94,6 +94,7 @@ jobs:
           KIE_TOOLS_BUILD__ignoreIntegrationTestFailures: ${{ !github.event.pull_request }}
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
+          NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           pnpm -r --workspace-concurrency=1 build:prod
 
@@ -127,6 +128,7 @@ jobs:
           KIE_TOOLS_BUILD__buildExamples: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
+          NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           pnpm -F "...[${{ steps.checkout_pr.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
 

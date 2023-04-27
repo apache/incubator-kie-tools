@@ -15,6 +15,9 @@
  */
 
 import { assert, expect } from "chai";
+import * as path from "path";
+import * as fs from "fs-extra";
+import { sanitize } from "sanitize-filename-ts";
 import { Key } from "selenium-webdriver";
 import {
   ActivityBar,
@@ -191,11 +194,16 @@ export default class VSCodeTestHelper {
     try {
       await this.workbench.getEditorView().closeAllEditors();
     } catch (error) {
-      // catch the error when there is nothing to close
-      // or the Save Dialog appears
-      const dialog = new ModalDialog();
-      if (dialog != null && (await dialog.isDisplayed())) {
-        await dialog.pushButton("Don't Save");
+      console.log("Error while closing all editors: " + error);
+      try {
+        // catch the error when there is nothing to close
+        // or the Save Dialog appears
+        const dialog = new ModalDialog();
+        if (dialog != null && (await dialog.isDisplayed())) {
+          await dialog.pushButton("Don't Save");
+        }
+      } catch (error) {
+        console.log("Error while pushButton called: " + error);
       }
     }
   };
@@ -204,9 +212,13 @@ export default class VSCodeTestHelper {
    * Closes all notifications that can be found using {@see Workbench}.
    */
   public closeAllNotifications = async (): Promise<void> => {
-    const activeNotifications = await this.workbench.getNotifications();
-    for (const notification of activeNotifications) {
-      await notification.dismiss();
+    try {
+      const activeNotifications = await this.workbench.getNotifications();
+      for (const notification of activeNotifications) {
+        await notification.dismiss();
+      }
+    } catch (e) {
+      console.log("Error while closing all notifications: " + e);
     }
   };
 
@@ -255,7 +267,7 @@ export default class VSCodeTestHelper {
       "Editor was still loading after ms. Please investigate."
     );
 
-    await sleep(2000);
+    await sleep(8000);
 
     await driver.switchTo().frame(null);
   };
@@ -279,6 +291,35 @@ export default class VSCodeTestHelper {
     }
 
     throw new Error(`'${command}' not found in prompt`);
+  };
+
+  /**
+   * Creates screenshot of current VSCode window and saves it to given path.
+   *
+   * @param name screenshot file name without extension
+   * @param dirPath path to a folder to store screenshots (will be created if doesn't exist)
+   */
+  private takeScreenshotAndSave = async (name: string, dirPath: string): Promise<void> => {
+    const data = await this.driver.takeScreenshot();
+    fs.mkdirpSync(dirPath);
+    fs.writeFileSync(path.join(dirPath, `${sanitize(name)}.png`), data, "base64");
+  };
+
+  /**
+   * Takes a screenshot if the current test fails and saves it in the specified directory.
+   *
+   * @param {Mocha.Context} testMochaContext The current Mocha test context.
+   * @param {string} parentScreenshotFolder The parent directory where the screenshot will be saved.
+   */
+  public takeScreenshotOnTestFailure = async (
+    testMochaContext: Mocha.Context,
+    parentScreenshotFolder: string
+  ): Promise<void> => {
+    if (testMochaContext.currentTest && testMochaContext.currentTest.state !== "passed") {
+      const screenshotName = testMochaContext.currentTest?.fullTitle() + " (failed)";
+      const screenshotDir = path.join(parentScreenshotFolder, "screenshots");
+      await this.takeScreenshotAndSave(screenshotName, screenshotDir);
+    }
   };
 }
 

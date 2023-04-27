@@ -21,8 +21,9 @@ import jsinterop.annotations.JsType;
 @JsType
 public class ProducedEvent {
 
-    private String eventRef;
-    private String data;
+    public String eventRef;
+
+    public String data;
 
     public final String getEventRef() {
         return eventRef;

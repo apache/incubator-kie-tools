@@ -190,12 +190,6 @@
 
       <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-        <artifactId>kie-wb-common-stunner-processors</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>kie-wb-common-stunner-extensions</artifactId>
         <version>${project.version}</version>
       </dependency>

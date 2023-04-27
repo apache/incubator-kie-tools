@@ -22,6 +22,7 @@ import YardTextEditorTestHelper from "./helpers/yard/YardTextEditorTestHelper";
 
 describe("yard editor - integration tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources");
+  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
   const EMPTY_YARD_YAML = "empty.yard.yaml";
   const EMPTY_YARD_YML = "empty.yard.yml";
 
@@ -40,6 +41,7 @@ describe("yard editor - integration tests", () => {
 
   afterEach(async function () {
     this.timeout(15000);
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });

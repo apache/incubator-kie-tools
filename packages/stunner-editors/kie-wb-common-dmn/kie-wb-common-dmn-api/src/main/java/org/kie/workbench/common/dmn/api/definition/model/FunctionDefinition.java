@@ -77,6 +77,23 @@ public class FunctionDefinition extends Expression implements HasExpression {
     }
 
     @Override
+    public FunctionDefinition exactCopy() {
+        final FunctionDefinition exactelyClonedFunctionDefinition = new FunctionDefinition();
+        exactelyClonedFunctionDefinition.id = Optional.ofNullable(id).map(Id::copy).orElse(null);
+        exactelyClonedFunctionDefinition.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        exactelyClonedFunctionDefinition.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
+        exactelyClonedFunctionDefinition.componentWidths = new ArrayList<>(componentWidths);
+        exactelyClonedFunctionDefinition.expression = Optional.ofNullable(expression).map(Expression::exactCopy).orElse(null);
+        exactelyClonedFunctionDefinition.formalParameter = getFormalParameter()
+                .stream()
+                .map(InformationItem::exactCopy)
+                .collect(Collectors.toList());
+        exactelyClonedFunctionDefinition.kind = kind;
+        exactelyClonedFunctionDefinition.getAdditionalAttributes().putAll(cloneAdditionalAttributes());
+        return exactelyClonedFunctionDefinition;
+    }
+
+    @Override
     public Optional<DomainObject> findDomainObject(final String uuid) {
 
         final Optional<DomainObject> domainObject = getDomainObject(getFormalParameter(), uuid);

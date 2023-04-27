@@ -29,6 +29,6 @@ public abstract class JsonbDeserializer<T>
 
   @Override
   public T deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
-    throw new UnsupportedOperationException("40");
+    return deserialize(parser.getValue(), ctx);
   }
 }

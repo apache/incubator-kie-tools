@@ -20,8 +20,6 @@ import javax.inject.Inject;
 
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
-import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
-import org.dashbuilder.client.navigation.widget.NavComponentConfigModal;
 import org.dashbuilder.client.navigation.widget.NavTreeWidget;
 
 @Dependent
@@ -30,21 +28,10 @@ public class NavTreeDragComponent extends AbstractNavDragComponent {
     @Inject
     public NavTreeDragComponent(NavigationManager navigationManager,
                                 PerspectivePluginManager pluginManager,
-                                NavComponentConfigModal navComponentConfigModal,
                                 NavTreeWidget navWidget) {
         super(navigationManager,
-                pluginManager,
-                navComponentConfigModal,
-                navWidget);
+              pluginManager,
+              navWidget);
     }
 
-    @Override
-    public String getDragComponentTitle() {
-        return NavigationConstants.INSTANCE.navTreeDragComponent();
-    }
-
-    @Override
-    public String getDragComponentNavGroupHelp() {
-        return NavigationConstants.INSTANCE.navTreeDragComponentNavGroupHelp();
-    }
 }

@@ -29,23 +29,5 @@ public enum PropertyMetaTypes {
     /**
      * Use it for the Definition's property used as name for this bean.
      */
-    NAME,
-    /**
-     * Whatever shape is being representing some Definition bean instance, Stunner considers
-     * the size for the shape as the area of its bounding box.
-     * These properties indicate the width and height (in pixels) of the bounding box for any shape
-     * which represents the bean.
-     * If the shape supports resize and it is resized on client side, these properties will be
-     * updated with the values for the new bounding box area.
-     */
-    WIDTH,
-    HEIGHT,
-    /**
-     * Whatever shape is being representing some Definition bean instance, Stunner considers
-     * the size for the shape as the area of its bounding box.
-     * If the shape supports resize and it is resized on client side, these properties will be
-     * updated with the radius value of an arc that produces the new bounding box size.
-     */
-    RADIUS,
-    ID
+    NAME
 }
