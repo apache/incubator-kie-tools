@@ -70,7 +70,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
     private List<GetPublicResult> transformCompletionItemsToResult(String fqcn, List<CompletionItem> items) {
         return items.stream()
-                .filter(item -> item.getDetail() != null && item.getDetail().contains(":"))
+                .filter(item -> item.getLabelDetails() != null)
                 .map(item -> getAccessor(item, fqcn))
                 .collect(Collectors.toList());
     }
@@ -85,9 +85,14 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         String type = item.getLabelDetails().getDescription();
         /* Retrieving the class type FQCN */
         Map<String,String> data = (Map<String, String>) item.getData();
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            JavaLanguageServerPlugin.logInfo("ENTRY: " + entry.getKey() + " " + entry.getValue());
+        }
         /* Accessor (getter) case */
         if (data != null && data.containsKey(DATA_FIELD_SIGNATURE)) {
             String fqcnType = data.get(DATA_FIELD_SIGNATURE);
+            JavaLanguageServerPlugin.logInfo("DATA_FIELD_SIGNATURE: " + data.get(DATA_FIELD_SIGNATURE));
+            JavaLanguageServerPlugin.logInfo("fqcnType: " + fqcnType);
             /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */
             if (fqcnType != null && fqcnType.contains(")L")) {
                 type = fqcnType.split("\\)L")[1];
@@ -96,9 +101,11 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         /* Public Field case */
         } else if (data != null && data.containsKey(DATA_FIELD_DECLARATION_SIGNATURE)) {
             String fqcnType = data.get(DATA_FIELD_DECLARATION_SIGNATURE);
+            JavaLanguageServerPlugin.logInfo("DATA_FIELD_DECLARATION_SIGNATURE: " + data.get(DATA_FIELD_DECLARATION_SIGNATURE));
+            JavaLanguageServerPlugin.logInfo("fqcnType: " + fqcnType);
             /* The DATA_FIELD_DECLARATION_SIGNATURE format is: `Ljava.lang.String;` */
             if (fqcnType != null && fqcnType.startsWith("L") && fqcnType.endsWith(";")) {
-                type = fqcnType.substring(1, type.length() - 1);
+                type = fqcnType.substring(1, fqcnType.length() - 1);
             }
         }
         result.setType(type);
