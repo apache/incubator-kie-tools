@@ -69,7 +69,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
     private List<GetPublicResult> transformCompletionItemsToResult(String fqcn, List<CompletionItem> items) {
         return items.stream()
-                .filter(item -> item.getLabel().contains(":"))
+                .filter(item -> item.getDetail() != null && item.getDetail().contains(":"))
                 .map(item -> getAccessor(item, fqcn))
                 .collect(Collectors.toList());
     }
@@ -77,10 +77,12 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
     protected GetPublicResult getAccessor(CompletionItem item, String fqcn) {
         GetPublicResult result = new GetPublicResult();
         result.setFqcn(fqcn);
-        if (item.getLabel().contains(":")) {
-            JavaLanguageServerPlugin.logInfo(item.getLabel());
-            String[] label = item.getLabel().split(":");
-            result.setAccessor(label[0].trim());
+        if (item.getDetail().contains(":")) {
+            JavaLanguageServerPlugin.logInfo("Accessor: " + item.getDetail());
+            /* The item.getDetail() format is: `Class.method() : Type` */
+            String[] label = item.getDetail().split(":");
+            String classAndMethodName = label[0].trim();
+            result.setAccessor(classAndMethodName.split("\\.")[1]);
             String type = label[1].trim();
             Map<String,String> data = (Map<String, String>) item.getData();
             if (data != null && data.containsKey(DATA_FIELD_SIGNATURE)) {
