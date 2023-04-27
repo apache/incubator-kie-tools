@@ -36,14 +36,14 @@ import {
 } from "vscode-extension-tester";
 
 /**
- * Common test helper class for VSCode extension testing.
- * Provides common API to work with VSCode test instance.
+ * Common test helper class for VS Code extension testing.
+ * Provides common API to work with VS Code test instance.
  * Allows you  to open folders, files, close open editor.
  * Aquire notifications, input CLI commands etc.
  */
 export default class VSCodeTestHelper {
   /**
-   * Handle for VSCode workbench.
+   * Handle for VS Code workbench.
    * Initialized in constructor.
    */
   private workbench: Workbench;
@@ -194,11 +194,16 @@ export default class VSCodeTestHelper {
     try {
       await this.workbench.getEditorView().closeAllEditors();
     } catch (error) {
-      // catch the error when there is nothing to close
-      // or the Save Dialog appears
-      const dialog = new ModalDialog();
-      if (dialog != null && (await dialog.isDisplayed())) {
-        await dialog.pushButton("Don't Save");
+      console.log("Error while closing all editors: " + error);
+      try {
+        // catch the error when there is nothing to close
+        // or the Save Dialog appears
+        const dialog = new ModalDialog();
+        if (dialog != null && (await dialog.isDisplayed())) {
+          await dialog.pushButton("Don't Save");
+        }
+      } catch (error) {
+        console.log("Error while pushButton called: " + error);
       }
     }
   };
@@ -207,9 +212,13 @@ export default class VSCodeTestHelper {
    * Closes all notifications that can be found using {@see Workbench}.
    */
   public closeAllNotifications = async (): Promise<void> => {
-    const activeNotifications = await this.workbench.getNotifications();
-    for (const notification of activeNotifications) {
-      await notification.dismiss();
+    try {
+      const activeNotifications = await this.workbench.getNotifications();
+      for (const notification of activeNotifications) {
+        await notification.dismiss();
+      }
+    } catch (e) {
+      console.log("Error while closing all notifications: " + e);
     }
   };
 
@@ -230,7 +239,7 @@ export default class VSCodeTestHelper {
       until.elementLocated(By.className("webview ready")),
       10000,
       "No iframe.webview.ready that was ready was located in webview under 2 seconds." +
-        "This should not happen and is most probably issue of VSCode." +
+        "This should not happen and is most probably issue of VS Code." +
         "In case this happens investigate vscode or vscode-extension-tester dependency."
     );
     await driver.switchTo().frame(await driver.findElement(By.className("webview ready")));
@@ -238,7 +247,7 @@ export default class VSCodeTestHelper {
       until.elementLocated(By.id("active-frame")),
       10000,
       "No iframe#active-frame located in webview under 2 seconds." +
-        "This should not happen and is most probably issue of VSCode." +
+        "This should not happen and is most probably issue of VS Code." +
         "In case this happens investigate vscode or vscode-extension-tester dependency."
     );
     await driver.switchTo().frame(await driver.findElement(By.id("active-frame")));
@@ -258,7 +267,7 @@ export default class VSCodeTestHelper {
       "Editor was still loading after ms. Please investigate."
     );
 
-    await sleep(2000);
+    await sleep(8000);
 
     await driver.switchTo().frame(null);
   };
@@ -285,7 +294,7 @@ export default class VSCodeTestHelper {
   };
 
   /**
-   * Creates screenshot of current VSCode window and saves it to given path.
+   * Creates screenshot of current VS Code window and saves it to given path.
    *
    * @param name screenshot file name without extension
    * @param dirPath path to a folder to store screenshots (will be created if doesn't exist)

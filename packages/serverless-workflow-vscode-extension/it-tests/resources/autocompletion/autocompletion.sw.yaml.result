@@ -6,21 +6,22 @@ constants: {}
 id: testid
 description: ""
 expressionLang: jq
+start: testState
 functions:
-- name: 'testFuncId'
-  operation: 'specs/api.yaml#testFuncId'
-  type: rest
+  - name: 'testFuncId'
+    operation: 'specs/api.yaml#testFuncId'
+    type: rest
 keepActive: false
 key: testkey
 metadata: {}
 name: testname
 secrets: http://testsecret.com
+specVersion: "0.8"
 states:
   - name: testState
     type: operation
     actions:
-    - functionRef:
-        refName: testFuncId
+      - functionRef:
+          refName: testFuncId
     end: true
-specVersion: "0.8"
 version: "1.0"
