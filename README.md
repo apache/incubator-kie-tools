@@ -77,9 +77,9 @@ The KIE Tools project contains several applications. To develop each one of them
 
 #### VS Code Extension (Serverless Workflow Editor)
 
-1. After you've successfully built the project following the instructions above, open the `packages/vscode-extension-serverless-workflow-editor` folder on VS Code. Use a new VS Code window so that the `packages/vscode-extension-serverless-workflow-editor` folder shows up as root in the VS Code explorer.
+1. After you've successfully built the project following the instructions above, open the `packages/serverless-workflow-vscode-extension` folder on VS Code. Use a new VS Code window so that the `packages/serverless-workflow-vscode-extension` folder shows up as root in the VS Code explorer.
 1. From there, you can Run the extension or the integration tests by using the `Debug` menu/section. You can also use the respective shortcuts (F5 to start debugging, for instance).
-1. **Remember!** If you make changes to any package other than `packages/vscode-extension-serverless-workflow-editor`, you have to manually rebuild them before relaunching the extension on VS Code.
+1. **Remember!** If you make changes to any package other than `packages/serverless-workflow-vscode-extension`, you have to manually rebuild them before relaunching the extension on VS Code.
 
 #### Chrome Extension (DMN, BPMN, and SceSim Editors)
 
