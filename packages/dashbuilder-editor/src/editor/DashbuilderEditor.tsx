@@ -140,7 +140,7 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
     return () => clearTimeout(timer);
   }, [renderContent]);
 
-  const isVSCode = useCallback(() => {
+  const isVsCode = useCallback(() => {
     return props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB;
   }, [props]);
 
@@ -196,18 +196,18 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
       if (operation === MonacoEditorOperation.EDIT) {
         props.onNewEdit(new WorkspaceEdit(newContent));
       } else if (operation === MonacoEditorOperation.UNDO) {
-        if (!isVSCode()) {
+        if (!isVsCode()) {
           dashbuilderMonacoEditorRef.current?.undo();
         }
         props.onStateControlCommandUpdate(StateControlCommand.UNDO);
       } else if (operation === MonacoEditorOperation.REDO) {
-        if (!isVSCode()) {
+        if (!isVsCode()) {
           dashbuilderMonacoEditorRef.current?.redo();
         }
         props.onStateControlCommandUpdate(StateControlCommand.REDO);
       }
     },
-    [props, isVSCode]
+    [props, isVsCode]
   );
 
   useEffect(() => {
