@@ -41,7 +41,6 @@ import { useField } from "uniforms";
 import { AUTO_ROW_ID } from "../uniforms/UnitablesJsonSchemaBridge";
 import getObjectValueByPath from "lodash/get";
 import { useUnitablesContext, useUnitablesRow } from "../UnitablesContext";
-import { UnitablesRowApi } from "../UnitablesRow";
 import moment from "moment";
 import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
 
@@ -62,7 +61,6 @@ export interface UnitablesBeeTable {
   onRowDeleted: (args: { rowIndex: number }) => void;
   configs: UnitablesInputsConfigs;
   setWidth: (newWidth: number, fieldName: string) => void;
-  rowsRefs: Map<number, UnitablesRowApi>;
 }
 
 export function UnitablesBeeTable({
@@ -78,7 +76,6 @@ export function UnitablesBeeTable({
   onRowDeleted,
   configs,
   setWidth,
-  rowsRefs,
 }: UnitablesBeeTable) {
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
