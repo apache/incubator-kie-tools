@@ -29,6 +29,7 @@
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/emscripten-fs": "^0.0.2",
     "@kie-tools/kie-sandbox-fs": "workspace:*",
+    "client-zip": "^2.3.1",
     "isomorphic-git": "^1.11.1",
     "jszip": "^3.7.1",
     "minimatch": "^3.0.4",
