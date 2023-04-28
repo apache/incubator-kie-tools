@@ -20,9 +20,6 @@ import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { useOnlineI18n } from "../i18n";
 import { UnitablesWrapper } from "@kie-tools/unitables/dist/UnitablesWrapper";
 import { DmnRunnerOutputsTable } from "@kie-tools/unitables-dmn/dist/DmnRunnerOutputsTable";
@@ -56,26 +53,29 @@ export function DmnRunnerTable() {
     setDmnRunnerMode,
     setDmnRunnerConfigInputs,
   } = useDmnRunnerDispatch();
-  // const { drawerPanelDefaultSize, drawerPanelMinSize, drawerPanelMaxSize, forceDrawerPanelRefresh } =
-  //   useAnchoredUnitablesDrawerPanel({
-  //     inputsContainerRef,
-  //     outputsContainerRef,
-  //   });
+  const { drawerPanelDefaultSize, drawerPanelMinSize, drawerPanelMaxSize, forceDrawerPanelRefresh } =
+    useAnchoredUnitablesDrawerPanel({
+      inputsContainerRef,
+      outputsContainerRef,
+    });
 
   // MEMOs
-  // const rowCount = useMemo(() => inputs?.length ?? 1, [inputs?.length]);
-  const jsonSchemaBridge = useMemo(
-    () => new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(jsonSchema ?? {}),
-    [i18n, jsonSchema]
-  );
+  const rowCount = useMemo(() => inputs?.length ?? 1, [inputs?.length]);
+  const jsonSchemaBridge = useMemo(() => {
+    try {
+      return new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(jsonSchema ?? {});
+    } catch (err) {
+      throw Error(`getBridge ${err}`);
+    }
+  }, [i18n, jsonSchema]);
 
   useEffect(() => {
     setDmnRunnerTableError(false);
   }, [jsonSchema]);
 
-  // useEffect(() => {
-  //   forceDrawerPanelRefresh();
-  // }, [forceDrawerPanelRefresh, jsonSchema]);
+  useEffect(() => {
+    forceDrawerPanelRefresh();
+  }, [forceDrawerPanelRefresh, jsonSchema]);
 
   const openRow = useCallback(
     (rowIndex: number) => {
@@ -122,7 +122,7 @@ export function DmnRunnerTable() {
               <DrawerContent
                 panelContent={
                   <>
-                    {/* <DrawerPanelContent
+                    <DrawerPanelContent
                       isResizable={true}
                       minSize={rowCount > 0 ? drawerPanelMinSize : "30%"}
                       maxSize={drawerPanelMaxSize}
@@ -136,7 +136,7 @@ export function DmnRunnerTable() {
                           results={results}
                         />
                       </div>
-                    </DrawerPanelContent> */}
+                    </DrawerPanelContent>
                   </>
                 }
               >
@@ -165,22 +165,6 @@ export function DmnRunnerTable() {
         </div>
       )}
     </>
-  );
-}
-
-function DmnRunnerTableError() {
-  return (
-    <div>
-      <EmptyState>
-        <EmptyStateIcon icon={ExclamationIcon} />
-        <TextContent>
-          <Text component={"h2"}>Error</Text>
-        </TextContent>
-        <EmptyStateBody>
-          <p>An error has happened on the DMN Runner Table</p>
-        </EmptyStateBody>
-      </EmptyState>
-    </div>
   );
 }
 
