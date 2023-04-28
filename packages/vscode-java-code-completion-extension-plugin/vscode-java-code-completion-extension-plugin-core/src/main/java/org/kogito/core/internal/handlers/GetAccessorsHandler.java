@@ -69,7 +69,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
     private List<GetPublicResult> transformCompletionItemsToResult(String fqcn, List<CompletionItem> items) {
         return items.stream()
-                .filter(item -> item.getLabel().contains(":"))
+                .filter(item -> item.getDetail() != null && item.getDetail().contains(":"))
                 .map(item -> getAccessor(item, fqcn))
                 .collect(Collectors.toList());
     }
@@ -77,25 +77,26 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
     protected GetPublicResult getAccessor(CompletionItem item, String fqcn) {
         GetPublicResult result = new GetPublicResult();
         result.setFqcn(fqcn);
-        if (item.getLabel().contains(":")) {
-            JavaLanguageServerPlugin.logInfo(item.getLabel());
-            String[] label = item.getLabel().split(":");
-            result.setAccessor(label[0].trim());
-            String type = label[1].trim();
-            Map<String,String> data = (Map<String, String>) item.getData();
-            if (data != null && data.containsKey(DATA_FIELD_SIGNATURE)) {
-                String fqcnType = data.get(DATA_FIELD_SIGNATURE);
-                /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */
-                if (fqcnType != null && fqcnType.contains(")L")) {
-                    type = fqcnType.split("\\)L")[1];
-                    type = type.replaceAll(";$", "");
-                }
-            }
-            result.setType(type);
-        } else {
-            result.setAccessor("");
-            result.setType("");
+        result.setAccessor(item.getLabelDetails().getDetail() != null ?
+                item.getLabel() + item.getLabelDetails().getDetail() :
+                item.getLabel());
+        /* Retrieving the class type SIMPLE NAME */
+        String type = item.getLabelDetails().getDescription();
+        /* Retrieving the class type FQCN */
+        Map<String,String> data = (Map<String, String>) item.getData();
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            JavaLanguageServerPlugin.logInfo("ENTRY: " + entry.getKey() + " " + entry.getValue());
         }
+        if (data != null && data.containsKey(DATA_FIELD_SIGNATURE)) {
+            String fqcnType = data.get(DATA_FIELD_SIGNATURE);
+            /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */
+            if (fqcnType != null && fqcnType.contains(")L")) {
+                type = fqcnType.split("\\)L")[1];
+                type = type.replaceAll(";$", "");
+            }
+        }
+        result.setType(type);
+
         return result;
     }
 }

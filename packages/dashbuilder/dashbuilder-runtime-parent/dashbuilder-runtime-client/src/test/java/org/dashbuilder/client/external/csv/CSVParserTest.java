@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.dashbuilder.client.external;
+package org.dashbuilder.client.external.csv;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -127,5 +127,7 @@ public class CSVParserTest {
     public void testIsEscapedQuote() {
         assertTrue(parser.isEscapedQuote("\"\"", 0));
         assertFalse(parser.isEscapedQuote("\"a\",\"\"", 2));
+        assertTrue(parser.isEscapedQuote("\\\"", 0));
     }
+
 }
