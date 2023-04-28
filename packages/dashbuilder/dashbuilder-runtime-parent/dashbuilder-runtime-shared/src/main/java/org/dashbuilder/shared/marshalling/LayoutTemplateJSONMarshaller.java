@@ -222,13 +222,15 @@ public class LayoutTemplateJSONMarshaller {
         extractProperties(propertiesObject, component::addProperty);
         extractParts(object.getArray(PARTS)).forEach(part -> component.addPartProperties(part.getPartId(), part
                 .getCssProperties()));
-
         if (settings != null) {
             try {
                 component.setSettings(DisplayerSettingsJSONMarshaller.get().fromJsonObject(settings));
             } catch (Exception e) {
                 // just log the error and let displayers handle missing configuration
                 LOGGER.warn("Error reading component settings", e);
+                var _displayer = new DisplayerSettings();
+                _displayer.setError(e.getMessage());
+                component.setSettings(_displayer);
             }
         }
         return component;

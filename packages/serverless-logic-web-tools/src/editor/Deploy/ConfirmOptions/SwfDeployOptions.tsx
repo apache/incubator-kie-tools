@@ -23,7 +23,6 @@ import { useAppI18n } from "../../../i18n";
 import { DeploymentStrategyKind } from "../../../openshift/deploy/types";
 import { useOpenShift } from "../../../openshift/OpenShiftContext";
 import { isSingleModuleProject } from "../../../project";
-import { isKafkaConfigValid } from "../../../settings/kafka/KafkaSettingsConfig";
 import { isServiceAccountConfigValid } from "../../../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../../../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings } from "../../../settings/SettingsContext";
@@ -37,7 +36,6 @@ const RefForwardingSwfDeployOptions: ForwardRefRenderFunction<ConfirmDeployOptio
   const settings = useSettings();
   const { i18n } = useAppI18n();
   const [shouldUploadOpenApi, setShouldUploadOpenApi] = useState(false);
-  const [shouldAttachKafkaSource, setShouldAttachKafkaSource] = useState(false);
   const [shouldDeployAsProject, setShouldDeployAsProject] = useState(false);
 
   const canUploadOpenApi = useMemo(
@@ -45,12 +43,6 @@ const RefForwardingSwfDeployOptions: ForwardRefRenderFunction<ConfirmDeployOptio
       isServiceAccountConfigValid(settings.serviceAccount.config) &&
       isServiceRegistryConfigValid(settings.serviceRegistry.config),
     [settings.serviceAccount.config, settings.serviceRegistry.config]
-  );
-
-  const canAttachKafkaSource = useMemo(
-    () =>
-      isServiceAccountConfigValid(settings.serviceAccount.config) && isKafkaConfigValid(settings.apacheKafka.config),
-    [settings.apacheKafka.config, settings.serviceAccount.config]
   );
 
   const canDeployAsProject = useMemo(() => isSingleModuleProject(props.workspace.files), [props.workspace.files]);
@@ -70,13 +62,12 @@ const RefForwardingSwfDeployOptions: ForwardRefRenderFunction<ConfirmDeployOptio
               kind: shouldDeployAsProject
                 ? DeploymentStrategyKind.KOGITO_PROJECT
                 : DeploymentStrategyKind.KOGITO_SWF_MODEL,
-              shouldAttachKafkaSource,
             },
             shouldUploadOpenApi,
           }),
       };
     },
-    [openshift, props.workspaceFile, shouldAttachKafkaSource, shouldDeployAsProject, shouldUploadOpenApi]
+    [openshift, props.workspaceFile, shouldDeployAsProject, shouldUploadOpenApi]
   );
   return (
     <>
@@ -116,21 +107,6 @@ const RefForwardingSwfDeployOptions: ForwardRefRenderFunction<ConfirmDeployOptio
             isChecked={shouldUploadOpenApi}
             onChange={(checked) => setShouldUploadOpenApi(checked)}
             isDisabled={!canUploadOpenApi}
-          />
-        </Tooltip>
-        <Tooltip
-          content={
-            "To use this option, you need to configure your Service Account and Streams for Apache Kafka on Settings."
-          }
-          trigger={!canAttachKafkaSource ? "mouseenter click" : ""}
-        >
-          <Checkbox
-            id="check-use-apache-kafka"
-            label="Attach KafkaSource to the deployment"
-            description={"Your deployment will listen to incoming cloud events even when scaled down."}
-            isChecked={shouldAttachKafkaSource}
-            onChange={(checked) => setShouldAttachKafkaSource(checked)}
-            isDisabled={!canAttachKafkaSource}
           />
         </Tooltip>
       </ExpandableSection>

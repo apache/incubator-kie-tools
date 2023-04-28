@@ -20,7 +20,7 @@ Client-side marshaller for _kogito_.
 
 5. `kie-wb-common-dmn-webapp-kogito-runtime`
 
-Webapp targeting _kogito_ integration with VSCode etc. No decorations.
+Webapp targeting _kogito_ integration with VS Code etc. No decorations.
 
 Please refer to the [Kogito's DMN Editor README](./kie-wb-common-dmn-webapp-kogito-runtime/README.md) for building and usage.
 

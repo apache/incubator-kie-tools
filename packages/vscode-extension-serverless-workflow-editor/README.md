@@ -1,3 +1,6 @@
+> This extension is deprecated and a new one is being published and updated by [KIE](https://marketplace.visualstudio.com/publishers/kie-group).
+> Please consider migrating to the new [Kogito Serverless Workflow Editor](https://marketplace.visualstudio.com/items?itemName=kie-group.serverless-workflow-vscode-extension) to keep up with the latest features.
+
 ## Kogito Serverless Workflow Editor
 
 ![vs-code-support](https://img.shields.io/badge/Visual%20Studio%20Code-1.66.0+-blue.svg)
@@ -80,4 +83,4 @@ Some Open Source projects were vital for the development of this extension, and 
 - [Mermaid](https://mermaid-js.github.io/): for workflow rendering and visualization;
 - [Apicurio](https://www.apicur.io/): for our service catalog integration;
 
-You can also checkout the [CNCF Serverless Workflow VSCode extension](https://marketplace.visualstudio.com/items?itemName=serverlessworkflow.serverless-workflow-vscode-extension) at VSCode Marketplace.
+You can also checkout the [CNCF Serverless Workflow VS Code extension](https://marketplace.visualstudio.com/items?itemName=serverlessworkflow.serverless-workflow-vscode-extension) at VS Code Marketplace.
