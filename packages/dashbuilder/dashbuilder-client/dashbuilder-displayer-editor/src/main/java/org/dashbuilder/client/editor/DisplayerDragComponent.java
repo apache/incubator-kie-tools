@@ -76,28 +76,27 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     public IsWidget getShowWidget(final RenderingContext ctx) {
         var settingsOp = getDisplayerSettings(ctx.getComponent());
         return settingsOp.map(settings -> {
-            Optional <String> error = settings.getError();
+            var error = settings.getError();
             if (error.isPresent()) {
                 displayError.show(error.get(), null);
                 return displayError;
-            } else {
-                viewer.removeFromParent();
-                viewer.init(settings);
-                viewer.addAttachHandler(attachEvent -> {
-                    if (attachEvent.isAttached()) {
-                        final int offsetWidth = ctx.getContainer().getOffsetWidth();
-                        int containerWidth = offsetWidth > 40 ? offsetWidth - 40 : 0;
-                        adjustSize(settings, containerWidth);
-                        Displayer displayer = viewer.draw();
-                        perspectiveCoordinator.addDisplayer(displayer);
-                    }
-                });
-                int containerWidth = ctx.getContainer().getOffsetWidth() - 40;
-                adjustSize(settings, containerWidth);
-                Displayer displayer = viewer.draw();
-                perspectiveCoordinator.addDisplayer(displayer);
-                return viewer;
             }
+            viewer.removeFromParent();
+            viewer.init(settings);
+            viewer.addAttachHandler(attachEvent -> {
+                if (attachEvent.isAttached()) {
+                    final int offsetWidth = ctx.getContainer().getOffsetWidth();
+                    int containerWidth = offsetWidth > 40 ? offsetWidth - 40 : 0;
+                    adjustSize(settings, containerWidth);
+                    Displayer displayer = viewer.draw();
+                    perspectiveCoordinator.addDisplayer(displayer);
+                }
+            });
+            int containerWidth = ctx.getContainer().getOffsetWidth() - 40;
+            adjustSize(settings, containerWidth);
+            Displayer displayer = viewer.draw();
+            perspectiveCoordinator.addDisplayer(displayer);
+            return viewer;
         }).orElse(null);
     }
 
