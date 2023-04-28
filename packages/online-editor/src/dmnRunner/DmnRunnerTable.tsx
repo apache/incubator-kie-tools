@@ -63,7 +63,7 @@ export function DmnRunnerTable() {
   const rowCount = useMemo(() => inputs?.length ?? 1, [inputs?.length]);
   const jsonSchemaBridge = useMemo(() => {
     try {
-      return new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(jsonSchema ?? {});
+      return new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(cloneDeep(jsonSchema) ?? {});
     } catch (err) {
       throw Error(`getBridge ${err}`);
     }
