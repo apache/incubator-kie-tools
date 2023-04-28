@@ -35,7 +35,7 @@ func SecurityDefaults() *corev1.SecurityContext {
 	return &corev1.SecurityContext{
 		AllowPrivilegeEscalation: utils.Pbool(false),
 		Privileged:               utils.Pbool(false),
-		RunAsNonRoot:             utils.Pbool(true),
+		RunAsNonRoot:             utils.Pbool(false),
 		SeccompProfile: &corev1.SeccompProfile{
 			Type: corev1.SeccompProfileTypeRuntimeDefault,
 		},
