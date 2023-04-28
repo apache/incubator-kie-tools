@@ -3049,6 +3049,73 @@ importers:
         specifier: ^4.4.2
         version: 4.8.4
 
+  packages/dmn-runner:
+    dependencies:
+      "@kie-tools/extended-services-api":
+        specifier: workspace:*
+        version: link:../extended-services-api
+      "@kie-tools/uniforms-patternfly":
+        specifier: workspace:*
+        version: link:../uniforms-patternfly
+      "@patternfly/react-core":
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-icons":
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      react:
+        specifier: ^17.0.2
+        version: 17.0.2
+      react-dom:
+        specifier: ^17.0.2
+        version: 17.0.2(react@17.0.2)
+      uniforms:
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
+      uniforms-bridge-json-schema:
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.16.12
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.16.11(@babel/core@7.16.12)
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      "@types/react":
+        specifier: ^17.0.6
+        version: 17.0.21
+      "@types/react-dom":
+        specifier: ^17.0.5
+        version: 17.0.8
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.4.2
+        version: 4.8.4
+
   packages/dmn-vscode-extension:
     dependencies:
       "@kie-tools-core/backend":
@@ -3559,6 +3626,9 @@ importers:
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
+      "@kie-tools/dmn-runner":
+        specifier: workspace:*
+        version: link:../dmn-runner
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
@@ -3665,6 +3735,9 @@ importers:
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
+      "@kie-tools/dmn-runner":
+        specifier: workspace:*
+        version: link:../dmn-runner
       "@kie-tools/extended-services-api":
         specifier: workspace:*
         version: link:../extended-services-api
@@ -7922,12 +7995,12 @@ importers:
       "@kie-tools/boxed-expression-component":
         specifier: workspace:*
         version: link:../boxed-expression-component
+      "@kie-tools/dmn-runner":
+        specifier: workspace:*
+        version: link:../dmn-runner
       "@kie-tools/extended-services-api":
         specifier: workspace:*
         version: link:../extended-services-api
-      "@kie-tools/form":
-        specifier: workspace:*
-        version: link:../form
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
@@ -8049,15 +8122,12 @@ importers:
       "@kie-tools/boxed-expression-component":
         specifier: workspace:*
         version: link:../boxed-expression-component
+      "@kie-tools/dmn-runner":
+        specifier: workspace:*
+        version: link:../dmn-runner
       "@kie-tools/extended-services-api":
         specifier: workspace:*
         version: link:../extended-services-api
-      "@kie-tools/form":
-        specifier: workspace:*
-        version: link:../form
-      "@kie-tools/form-dmn":
-        specifier: workspace:*
-        version: link:../form-dmn
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary

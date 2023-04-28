@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { ErrorBoundary } from "@kie-tools/form/dist/ErrorBoundary";
+import { ErrorBoundary } from "@kie-tools/dmn-runner/dist/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";

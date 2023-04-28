@@ -35,7 +35,7 @@ import { dmnFormI18n } from "./i18n";
 import { diff } from "deep-object-diff";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import "./styles.scss";
-import { ErrorBoundary } from "@kie-tools/form";
+import { ErrorBoundary } from "@kie-tools/dmn-runner/dist/ErrorBoundary";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { DecisionResult, DmnEvaluationStatus, DmnEvaluationResult } from "@kie-tools/extended-services-api";
 

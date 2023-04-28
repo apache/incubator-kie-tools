@@ -44,8 +44,6 @@ import { useUnitablesContext, useUnitablesRow } from "../UnitablesContext";
 import moment from "moment";
 import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
 
-export const UNITABLES_COLUMN_MIN_WIDTH = 150;
-
 export type ROWTYPE = Record<string, any>;
 
 export interface UnitablesBeeTable {

@@ -66,6 +66,6 @@ export class ResourceFetcher {
       }
     }
 
-    throw new Error(`Error fetching ${args.target.name()}`, { cause: error });
+    throw new Error(`Error fetching ${args.target.name()}`);
   }
 }
