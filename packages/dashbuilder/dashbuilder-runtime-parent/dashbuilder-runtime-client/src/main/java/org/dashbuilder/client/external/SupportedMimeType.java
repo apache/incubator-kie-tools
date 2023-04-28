@@ -16,16 +16,25 @@
 package org.dashbuilder.client.external;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
+
+import org.dashbuilder.client.external.csv.CSVColumnsFunction;
+import org.dashbuilder.client.external.csv.CSVParser;
+import org.dashbuilder.client.external.metrics.MetricsColumnsFunction;
+import org.dashbuilder.client.external.metrics.MetricsParser;
+import org.dashbuilder.dataset.def.DataColumnDef;
 
 enum SupportedMimeType {
 
     // JSON is a no-op transformer
     JSON("application/json", "json", v -> v),
-    CSV("text/csv", "csv", new CSVParser()),
+    CSV("text/csv", "csv", new CSVParser(), new CSVColumnsFunction()),
     // metrics is only matched by URL, otherwise it takes precedence on CSV when it is text/plain
-    METRIC("", "metrics", new MetricsParser());
+    METRIC("", "metrics", new MetricsParser(), new MetricsColumnsFunction());
 
     String mimeType;
 
@@ -33,10 +42,18 @@ enum SupportedMimeType {
 
     UnaryOperator<String> tranformer;
 
-    private SupportedMimeType(String type, String extension, UnaryOperator<String> tranformer) {
+    Function<String, List<DataColumnDef>> columnsFunction;
+
+    private SupportedMimeType(String type, String extension, UnaryOperator<String> transformer) {
+        this(type, extension, transformer, v -> Collections.emptyList());
+    }
+
+    private SupportedMimeType(String type, String extension, UnaryOperator<String> tranformer,
+                              Function<String, List<DataColumnDef>> columnsFunction) {
         this.mimeType = type;
         this.extension = extension;
         this.tranformer = tranformer;
+        this.columnsFunction = columnsFunction;
     }
 
     public String getMimeType() {

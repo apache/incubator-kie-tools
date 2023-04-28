@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.dashbuilder.client.external;
+package org.dashbuilder.client.external.csv;
 
 import java.util.Arrays;
 import java.util.function.UnaryOperator;
@@ -27,6 +27,7 @@ public class CSVParser implements UnaryOperator<String> {
 
     private static final char SEPARATOR = ',';
     private static final char QUOTE = '\"';
+    private static final char BACKSLASH = '\\';
 
     public String toJsonArray(String csvContent) {
         var jsonArray = new StringBuilder("[");
@@ -77,7 +78,8 @@ public class CSVParser implements UnaryOperator<String> {
     }
 
     boolean isEscapedQuote(String line, int i) {
-        return line.charAt(i) == QUOTE && i < line.length() - 1 && line.charAt(i + 1) == QUOTE;
+        return (line.charAt(i) == QUOTE || line.charAt(i) == BACKSLASH) &&
+               i < line.length() - 1 && line.charAt(i + 1) == QUOTE;
     }
 
     @Override
