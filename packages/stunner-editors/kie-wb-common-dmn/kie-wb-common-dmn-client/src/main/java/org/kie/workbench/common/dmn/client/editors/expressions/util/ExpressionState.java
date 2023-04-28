@@ -111,7 +111,6 @@ public class ExpressionState {
         restoreTypeRef();
         restoreExpressionName();
         fireEditorSelectedEvent();
-        getView().reloadEditor();
     }
 
     void fireEditorSelectedEvent() {
