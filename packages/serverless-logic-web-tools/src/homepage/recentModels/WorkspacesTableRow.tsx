@@ -56,11 +56,13 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
 
   const linkTo = useMemo(
     () =>
-      routes.workspaceWithFilePath.path({
-        workspaceId: editableFiles[0].workspaceId,
-        fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-        extension: editableFiles[0].extension,
-      }),
+      !isWsFolder
+        ? routes.workspaceWithFilePath.path({
+            workspaceId: editableFiles[0].workspaceId,
+            fileRelativePath: editableFiles[0].relativePathWithoutExtension,
+            extension: editableFiles[0].extension,
+          })
+        : routes.workspaceWithFiles.path({ workspaceId: editableFiles[0].workspaceId }),
     [editableFiles]
   );
 
@@ -77,7 +79,7 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
         {isWsFolder ? (
           <>
             <FolderIcon />
-            &nbsp;&nbsp;&nbsp;{name}
+            &nbsp;&nbsp;&nbsp;<Link to={linkTo}>{name}</Link>
           </>
         ) : (
           <>

@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Link } from "react-router-dom";
+import { Link, matchPath } from "react-router-dom";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
 import { routes } from "../../navigation/Routes";
 
@@ -30,7 +30,15 @@ export function HomePageNav(props: { pathname: string }) {
             <Link to={routes.home.path({})}>Overview</Link>
           </NavItem>
 
-          <NavItem itemId={1} key={"Recent-models-nav"} isActive={props.pathname === routes.recentModels.path({})}>
+          <NavItem
+            itemId={1}
+            key={"Recent-models-nav"}
+            isActive={
+              props.pathname === routes.recentModels.path({}) ||
+              matchPath(props.pathname, { path: routes.workspaceWithFiles.path({ workspaceId: ":workspaceId" }) })
+                ?.isExact
+            }
+          >
             <Link to={routes.recentModels.path({})}>Recent Models</Link>
           </NavItem>
 
