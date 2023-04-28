@@ -56,14 +56,14 @@ export function DmnRunnerTable() {
     setDmnRunnerMode,
     setDmnRunnerConfigInputs,
   } = useDmnRunnerDispatch();
-  const { drawerPanelDefaultSize, drawerPanelMinSize, drawerPanelMaxSize, forceDrawerPanelRefresh } =
-    useAnchoredUnitablesDrawerPanel({
-      inputsContainerRef,
-      outputsContainerRef,
-    });
+  // const { drawerPanelDefaultSize, drawerPanelMinSize, drawerPanelMaxSize, forceDrawerPanelRefresh } =
+  //   useAnchoredUnitablesDrawerPanel({
+  //     inputsContainerRef,
+  //     outputsContainerRef,
+  //   });
 
   // MEMOs
-  const rowCount = useMemo(() => inputs?.length ?? 1, [inputs?.length]);
+  // const rowCount = useMemo(() => inputs?.length ?? 1, [inputs?.length]);
   const jsonSchemaBridge = useMemo(
     () => new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(jsonSchema ?? {}),
     [i18n, jsonSchema]
@@ -73,9 +73,9 @@ export function DmnRunnerTable() {
     setDmnRunnerTableError(false);
   }, [jsonSchema]);
 
-  useEffect(() => {
-    forceDrawerPanelRefresh();
-  }, [forceDrawerPanelRefresh, jsonSchema]);
+  // useEffect(() => {
+  //   forceDrawerPanelRefresh();
+  // }, [forceDrawerPanelRefresh, jsonSchema]);
 
   const openRow = useCallback(
     (rowIndex: number) => {
@@ -122,7 +122,7 @@ export function DmnRunnerTable() {
               <DrawerContent
                 panelContent={
                   <>
-                    <DrawerPanelContent
+                    {/* <DrawerPanelContent
                       isResizable={true}
                       minSize={rowCount > 0 ? drawerPanelMinSize : "30%"}
                       maxSize={drawerPanelMaxSize}
@@ -136,7 +136,7 @@ export function DmnRunnerTable() {
                           results={results}
                         />
                       </div>
-                    </DrawerPanelContent>
+                    </DrawerPanelContent> */}
                   </>
                 }
               >

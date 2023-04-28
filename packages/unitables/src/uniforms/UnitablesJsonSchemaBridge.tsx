@@ -20,6 +20,12 @@ import { UnitablesI18n } from "../i18n";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 import { joinName } from "uniforms";
 import { UnitablesColumnType } from "../UnitablesTypes";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+
+const DEFAULT_COLUMN_MIN_WIDTH = 150;
+const DEFAULT_DATE_TIME_CELL_WDITH = 188;
+const DEFAULT_DATE_CELL_WIDTH = 170;
+const DEFAULT_TIME_CELL_WIDTH = 150;
 
 export const FORMS_ID = "unitables-forms";
 export const AUTO_ROW_ID = "unitables-row";
@@ -56,7 +62,51 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   }
 
   public getFieldDataType(field: Record<string, any>) {
-    return field.type ?? "string";
+    const xDmnType: string | undefined = field["x-dmn-type"]; // FIXME: Please address this as part of https://github.com/kiegroup/kie-issues/issues/166
+
+    let type: string | undefined;
+    if (!xDmnType) {
+      type = field.type;
+    } else {
+      const splitedXDmnType: string[] | undefined = xDmnType.split(":");
+      if (!splitedXDmnType) {
+        type = undefined;
+      } else if (splitedXDmnType.length > 2) {
+        type = splitedXDmnType[2].split("}")?.[0]?.trim();
+      } else {
+        type = splitedXDmnType[1];
+      }
+    }
+
+    switch (type) {
+      case "<Undefined>":
+        return { dataType: DmnBuiltInDataType.Undefined, width: DEFAULT_COLUMN_MIN_WIDTH };
+      case "Any":
+        return { dataType: DmnBuiltInDataType.Any, width: DEFAULT_COLUMN_MIN_WIDTH };
+      case "boolean":
+        return { dataType: DmnBuiltInDataType.Boolean, width: DEFAULT_COLUMN_MIN_WIDTH };
+      case "context":
+        return { dataType: DmnBuiltInDataType.Context, width: DEFAULT_COLUMN_MIN_WIDTH };
+      case "date":
+        return { dataType: DmnBuiltInDataType.Date, width: DEFAULT_DATE_CELL_WIDTH };
+      case "date and time":
+        return { dataType: DmnBuiltInDataType.DateTime, width: DEFAULT_DATE_TIME_CELL_WDITH };
+      case "days and time duration":
+        return { dataType: DmnBuiltInDataType.DateTimeDuration, width: DEFAULT_COLUMN_MIN_WIDTH };
+      case "number":
+        return { dataType: DmnBuiltInDataType.Number, width: DEFAULT_COLUMN_MIN_WIDTH };
+      case "string":
+        return { dataType: DmnBuiltInDataType.String, width: DEFAULT_COLUMN_MIN_WIDTH };
+      case "time":
+        return { dataType: DmnBuiltInDataType.Time, width: DEFAULT_TIME_CELL_WIDTH };
+      case "years and months duration":
+        return { dataType: DmnBuiltInDataType.YearsMonthsDuration, width: DEFAULT_COLUMN_MIN_WIDTH };
+      default:
+        return {
+          dataType: (type as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+        };
+    }
   }
 
   private deepTransformToUnitablesColumns(fieldName: string, parentName = ""): UnitablesColumnType {
