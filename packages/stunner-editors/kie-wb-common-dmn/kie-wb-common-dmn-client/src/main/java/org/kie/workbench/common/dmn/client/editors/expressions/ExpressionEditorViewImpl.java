@@ -667,9 +667,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     boolean isReactBoxedExpressionVisible() {
-        boolean isVisible = DomGlobal.document.getElementsByClassName("kie-dmn-new-expression-editor").length > 0;
-        DomGlobal.console.log("IS VISIBLE: " + isVisible);
-        return isVisible;
+        return DomGlobal.document.getElementsByClassName("kie-dmn-new-expression-editor").length > 0;
     }
 
     void syncExpressionWithOlderEditor() {
