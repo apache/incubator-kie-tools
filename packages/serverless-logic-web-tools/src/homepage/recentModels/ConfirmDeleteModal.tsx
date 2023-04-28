@@ -13,89 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from "react";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Button, Checkbox, Modal, ModalProps, Skeleton } from "@patternfly/react-core/dist/js";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { splitFiles } from "../../extension";
+import * as React from "react";
+import { useCallback, useState } from "react";
 
-export function ConfirmDeleteModal(
-  props: {
-    onDelete: () => void;
-    selectedWorkspaceIds: WorkspaceDescriptor["workspaceId"][];
-  } & Pick<ModalProps, "isOpen" | "onClose">
-) {
-  const { selectedWorkspaceIds, isOpen, onClose, onDelete } = props;
+export type ConfirmDeleteModalProps = Pick<ModalProps, "isOpen" | "onClose"> & {
+  onDelete: () => void;
+  elementsTypeName: string;
+  deleteMessage: React.ReactNode;
+  /**
+   * set to false to manage the loading. Default is true.
+   */
+  dataLoaded?: boolean;
+
+  /**
+   * set to true if there has been error loading the data.
+   */
+  fetchError?: boolean;
+};
+
+export function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
+  const { isOpen, onClose, onDelete, elementsTypeName, deleteMessage, dataLoaded = true, fetchError = false } = props;
   const [isDeleteCheck, setIsDeleteCheck] = useState(false);
-  const [firstSelectedWorkspaceName, setFirstSelectedWorkspaceName] = useState("");
-  const [selectedFoldersCount, setSelectedFoldersCount] = useState(0);
-  const [elementsTypeName, setElementsTypeName] = useState("models");
-  const [dataLoaded, setDataLoaded] = useState(false);
-  const [fetchError, setFetchError] = useState(false);
-  const workspaces = useWorkspaces();
-
-  const isPlural = useMemo(() => selectedWorkspaceIds.length > 1, [selectedWorkspaceIds]);
-
-  const isWsFolder = useCallback(
-    async (workspaceId: WorkspaceDescriptor["workspaceId"]) => {
-      const { editableFiles, readonlyFiles } = splitFiles(await workspaces.getFiles({ workspaceId }));
-      return editableFiles.length > 1 || readonlyFiles.length > 0;
-    },
-    [workspaces]
-  );
-
-  const getWorkspaceName = useCallback(
-    async (workspaceId: WorkspaceDescriptor["workspaceId"]) => {
-      if (selectedWorkspaceIds.length !== 1) {
-        return "";
-      }
-      const workspaceData = await workspaces.getWorkspace({ workspaceId });
-      return (await isWsFolder(workspaceId))
-        ? workspaceData.name
-        : (await workspaces.getFiles({ workspaceId }))[0].nameWithoutExtension;
-    },
-    [isWsFolder, selectedWorkspaceIds, workspaces]
-  );
 
   const onDeleteCheckChange = useCallback((checked: boolean) => {
     setIsDeleteCheck(checked);
   }, []);
-
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    const allPromises: Promise<void>[] = [];
-
-    setIsDeleteCheck(false);
-    setDataLoaded(false);
-    setFetchError(false);
-
-    if (selectedWorkspaceIds.length === 1) {
-      allPromises.push(getWorkspaceName(selectedWorkspaceIds[0]).then(setFirstSelectedWorkspaceName));
-    }
-
-    allPromises.push(
-      Promise.all(selectedWorkspaceIds.map(isWsFolder)).then((results) => {
-        const foldersCount = results.filter((r) => r).length;
-        setSelectedFoldersCount(foldersCount);
-        if (isPlural) {
-          setElementsTypeName(foldersCount ? "workspaces" : "models");
-        } else {
-          setElementsTypeName(foldersCount ? "workspace" : "model");
-        }
-      })
-    );
-
-    Promise.all(allPromises)
-      .then(() => setDataLoaded(true))
-      .catch((error) => {
-        console.error("Error retrieving workspace data:", error);
-        setFetchError(true);
-      });
-  }, [selectedWorkspaceIds, isWsFolder, isOpen, getWorkspaceName, isPlural]);
 
   return (
     <>
@@ -119,15 +63,7 @@ export function ConfirmDeleteModal(
         ]}
         variant="small"
       >
-        {dataLoaded ? (
-          <span id="modal-custom-icon-description">
-            Deleting {isPlural ? "these" : "this"}{" "}
-            <b>{isPlural ? selectedWorkspaceIds.length : firstSelectedWorkspaceName}</b> {elementsTypeName}
-            {selectedFoldersCount ? ` removes the ${elementsTypeName} and all the models inside.` : "."}
-          </span>
-        ) : (
-          <Skeleton width="80%" />
-        )}
+        {dataLoaded ? <span id="modal-custom-icon-description">{deleteMessage}</span> : <Skeleton width="80%" />}
         <br />
         <br />
         <Checkbox
