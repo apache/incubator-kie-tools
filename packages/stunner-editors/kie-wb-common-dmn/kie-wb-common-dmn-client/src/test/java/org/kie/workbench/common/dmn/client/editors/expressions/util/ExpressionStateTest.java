@@ -33,7 +33,6 @@ import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.UpdateCanvasNodeNameCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.mockito.ArgumentCaptor;
@@ -62,9 +61,6 @@ public class ExpressionStateTest {
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
     @Mock
-    private ExpressionEditorView view;
-
-    @Mock
     private UpdateCanvasNodeNameCommand updateCanvasNodeCommand;
 
     @Mock
@@ -78,7 +74,6 @@ public class ExpressionStateTest {
     public void setup() {
         expressionState = spy(new ExpressionState(hasExpression,
                                                   editorSelectedEvent,
-                                                  view,
                                                   NODE_UUID,
                                                   Optional.of(hasName),
                                                   updateCanvasNodeCommand));
@@ -122,7 +117,7 @@ public class ExpressionStateTest {
         doNothing().when(expressionState).restoreExpressionName();
         doNothing().when(expressionState).fireEditorSelectedEvent();
 
-        final InOrder inOrder = inOrder(expressionState, view);
+        final InOrder inOrder = inOrder(expressionState);
 
         expressionState.apply();
 
@@ -130,7 +125,6 @@ public class ExpressionStateTest {
         inOrder.verify(expressionState).restoreTypeRef();
         inOrder.verify(expressionState).restoreExpressionName();
         inOrder.verify(expressionState).fireEditorSelectedEvent();
-        inOrder.verify(view).reloadEditor();
     }
 
     @Test

@@ -708,7 +708,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = createCommandBuilder();
         final SaveCurrentStateCommand expressionCommand = new SaveCurrentStateCommand(getHasExpression(),
                                                                                       getEditorSelectedEvent(),
-                                                                                      this,
                                                                                       getNodeUUID(),
                                                                                       getHasName(),
                                                                                       getUpdateCanvasNodeNameCommand());
