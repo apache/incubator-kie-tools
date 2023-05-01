@@ -77,6 +77,11 @@ public class BindableDefinitionAdapterImpl<T> implements BindableDefinitionAdapt
     }
 
     @Override
+    public Class<? extends ElementFactory> getElementFactory(T pojo) {
+        return bindings.get(pojo.getClass()).getElementFactory();
+    }
+
+    @Override
     public String getTitle(T pojo) {
         String title = getFieldValue(pojo,
                                      bindings.get(pojo.getClass()).getTitleField());

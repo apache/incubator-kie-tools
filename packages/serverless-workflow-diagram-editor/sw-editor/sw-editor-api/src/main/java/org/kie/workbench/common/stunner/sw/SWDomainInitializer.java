@@ -23,6 +23,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.DomainInitializer;
+import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
+import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.sw.definition.ActionTransition;
 import org.kie.workbench.common.stunner.sw.definition.ActionsContainer;
 import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
@@ -95,6 +97,9 @@ public class SWDomainInitializer {
                         return SWEditor.class;
                     }
                 })
+                // Element Factories
+                .initializeElementFactory(NodeFactory.class, CATEGORY_STATES)
+                .initializeElementFactory(EdgeFactory.class, CATEGORY_TRANSITIONS)
                 // Categories.
                 .initializeCategory(Workflow.class, CATEGORY_STATES)
                 .initializeCategory(EventRef.class, CATEGORY_EVENTS)

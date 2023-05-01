@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.definition.jsadapter.JsDefinitionAd
 import org.kie.workbench.common.stunner.core.definition.jsadapter.JsDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.jsadapter.JsPropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.jsadapter.JsRuleAdapter;
+import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.rule.Rule;
 import org.kie.workbench.common.stunner.core.rule.RuleSetImpl;
@@ -103,6 +104,12 @@ public class DomainInitializer {
     @SuppressWarnings("all")
     public DomainInitializer initializeDefinitionNameField(Class type, String nameField) {
         JsWindow.editor.definitions.initializeDefinitionNameField(type.getName(), nameField);
+        return this;
+    }
+
+    @SuppressWarnings("all")
+    public DomainInitializer initializeElementFactory(Class<? extends ElementFactory> factory, String category) {
+        JsWindow.editor.definitions.initializeElementFactory(category, factory);
         return this;
     }
 
