@@ -58,30 +58,21 @@ final class ReadPlainScalar extends BaseScalar {
      */
     private static final Pattern QUOTED_LITERAL_MAP_SEQ = Pattern.compile("^("
             + "[ ]*(-[ ]+)"
-            + "(('(?:[^'\\\\]|\\\\.)*')|"
-            + "(\"(?:[^\"\\\\]|\\\\.)*\"))|"
-            + "(.*:[ ]+(.*))|"
-            + "(-[ ]+(.*))"
-            + ")$");
+            + "(?<EscapedScalar>"
+            + "('(?:[^'\\\\]|\\\\.)*')|"
+            + "(\"(?:[^\"\\\\]|\\\\.)*\")"
+            + ")|"
+            + "(((?<key>[^:'\"]+)|(?<keyQ>\".+\")|(?<keySQ>'.+'))*:[ ]+"
+            + "(?<MappingScalar>.*))|"
+            + "(-[ ]+(?<UnescapedSequenceScalar>.*))"
+            + ")$"
+    );
 
-    /**
-     * Name of the regex group for escaped scalars (between "" or '').
-     */
-    private static final int QUOTED_LITERAL_GROUP = 3;
-    //private static final String ESCAPED_SCALAR = "EscapedScalar";
 
-    /**
-     * Name of the regex group for scalars in a mapping.
-     */
-    private static final int MAPPING_GROUP = 7;
-    //private static final String MAPPING_SCALAR = "MappingScalar";
-
-    /**
-     * Name of the regex group for unescaped scalars in a sequence.
-     */
-    private static final int SEQUENCE_GROUP = 9;
-    //private static final String UNESCAPED_SEQUENCE_SCALAR =
-    //    "UnescapedSequenceScalar";
+    private static final String ESCAPED_SCALAR = "EscapedScalar";
+    private static final String MAPPING_SCALAR = "MappingScalar";
+    private static final String UNESCAPED_SEQUENCE_SCALAR =
+            "UnescapedSequenceScalar";
 
     /**
      * All YAML Lines of the document.
@@ -119,20 +110,13 @@ final class ReadPlainScalar extends BaseScalar {
         String value = this.scalar.trimmed();
         Matcher matcher = this.escapedSequenceScalar(this.scalar);
         if(matcher.matches()) {
-            if (matcher.group(QUOTED_LITERAL_GROUP) != null) {
-                value = matcher.group(QUOTED_LITERAL_GROUP);
-            } else if (matcher.group(MAPPING_GROUP) != null) {
-                value = matcher.group(MAPPING_GROUP).trim();
-            } else if (matcher.group(SEQUENCE_GROUP) != null) {
-                value = matcher.group(SEQUENCE_GROUP).trim();
-            }
-/*            if (matcher.group(ESCAPED_SCALAR) != null) {
+            if (matcher.group(ESCAPED_SCALAR) != null) {
                 value = matcher.group(ESCAPED_SCALAR);
             } else if (matcher.group(MAPPING_SCALAR) != null) {
                 value = matcher.group(MAPPING_SCALAR).trim();
             } else if (matcher.group(UNESCAPED_SEQUENCE_SCALAR) != null) {
                 value = matcher.group(UNESCAPED_SEQUENCE_SCALAR).trim();
-            }*/
+            }
         }
         if("null".equals(value)) {
             return null;
