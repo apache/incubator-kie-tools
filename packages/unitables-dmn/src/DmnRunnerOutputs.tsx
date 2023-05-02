@@ -26,6 +26,8 @@ interface OutputField {
   width?: number;
   name: string;
   joinedName: string;
+  // Save any additional information to use for build the columns and rows;
+  infos?: Record<string, any>;
 }
 
 interface OutputTypesField extends OutputField {

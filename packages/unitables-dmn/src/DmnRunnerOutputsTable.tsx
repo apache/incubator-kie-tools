@@ -62,7 +62,7 @@ export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrolla
   const rows = useMemo(
     () =>
       (results ?? []).map((result) => ({
-        outputEntries: (result ?? []).map(({ result }) => result),
+        outputEntries: (result ?? []).map(({ result, decisionName }) => ({ result, decisionName })),
       })),
     [results]
   );
@@ -126,7 +126,7 @@ const EMPTY_SYMBOL = "";
 interface OutputsTableProps {
   id: string;
   i18n: BoxedExpressionEditorI18n;
-  rows: { outputEntries: DmnEvaluationResult[] }[];
+  rows: { outputEntries: { result: DmnEvaluationResult; decisionName: string }[] }[];
   outputs?: UnitablesColumnType[];
   outputTypeMap: Map<string, OutputFields> | undefined;
   scrollableParentRef: React.RefObject<HTMLElement>;
@@ -157,7 +157,7 @@ function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollablePar
 
         const label = parentKey ? `${parentKey}-${myObjectKey}` : myObjectKey;
         const myObjectProperties = outputTypeMap?.get(myObjectKey);
-        const dataType = myObjectProperties ? myObjectProperties.dataType : DmnBuiltInDataType.Undefined;
+        const dataType = myObjectProperties ? myObjectProperties.dataType : DmnBuiltInDataType.Any;
 
         return {
           originalId: label + generateUuid(),
@@ -174,32 +174,41 @@ function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollablePar
     [outputTypeMap]
   );
 
-  const deepFlattenObjectRow = useCallback((myObject: Record<string, any>, parentKey?: string): Record<
-    string,
-    any
-  >[] => {
-    return Object.entries(myObject).flatMap(([myObjectKey, value]) => {
-      if (value !== null && typeof value === "object") {
-        return deepFlattenObjectRow(value, myObjectKey);
-      }
-      return value;
-    });
-  }, []);
+  const deepFlattenObjectRow = useCallback(
+    (myObject: Record<string, any>, order?: Record<string, any>, parentKey?: string): Record<string, any>[] => {
+      return Object.entries(myObject).reduce(
+        (acc: Record<string, any>[], [myObjectKey, value]) => {
+          if (value !== null && typeof value === "object") {
+            return [...acc, ...deepFlattenObjectRow(value, order, myObjectKey)];
+          }
+          const index = order?.[myObjectKey];
+          if (index !== undefined) {
+            acc[index] = value;
+          } else {
+            acc = [...acc, value];
+          }
+          return acc;
+        },
+        order ? Array(Object.keys(order).length).fill("null") : []
+      );
+    },
+    []
+  );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
-    return (rows?.[0]?.outputEntries ?? []).flatMap((outputEntry: DmnEvaluationResult, outputIndex: number) => {
+    return (rows?.[0]?.outputEntries ?? []).flatMap((outputEntry, outputIndex: number) => {
       const output: UnitablesColumnType | undefined = outputs?.[outputIndex];
 
       // Primitives and null;
       if (
-        typeof outputEntry === "string" ||
-        typeof outputEntry === "number" ||
-        typeof outputEntry === "boolean" ||
-        outputEntry === null
+        typeof outputEntry.result === "string" ||
+        typeof outputEntry.result === "number" ||
+        typeof outputEntry.result === "boolean" ||
+        outputEntry.result === null
       ) {
         return [
           {
-            originalId: `-parent-${output?.name}-` + generateUuid(),
+            originalId: `parent-${output?.name}-` + generateUuid(),
             label: "",
             accessor: (`output-parent-${output?.name}-` + generateUuid()) as any,
             dataType: undefined as any,
@@ -222,16 +231,16 @@ function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollablePar
         ];
       }
       // Lists
-      if (Array.isArray(outputEntry)) {
+      if (Array.isArray(outputEntry.result)) {
         return [
           {
-            originalId: `${output?.name}}-` + generateUuid(),
+            originalId: `${output?.name}-` + generateUuid(),
             label: `${output?.name}`,
             accessor: (`output-array-parent-${output?.name}-` + generateUuid()) as any,
             dataType: output?.dataType ?? DmnBuiltInDataType.Undefined,
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
-            columns: outputEntry.map((entry, entryIndex) => ({
+            columns: outputEntry.result.map((entry, entryIndex) => ({
               originalId: `${entryIndex}-` + generateUuid(),
               label: `[${entryIndex}]`,
               accessor: (`output-array-${entryIndex}-` + generateUuid()) as any,
@@ -244,8 +253,60 @@ function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollablePar
           },
         ];
       }
+
       // Contexts/Structures
-      if (typeof outputEntry === "object") {
+      if (output?.dataType === "context") {
+        // collect results from all rows;
+        const collectedOutputs = rows.flatMap((row) =>
+          row.outputEntries
+            .filter((outputEntry) => outputEntry.decisionName === output.joinedName)
+            .flatMap((outputEntry) => outputEntry.result)
+        );
+        let contextIndex = 0;
+        return [
+          {
+            originalId: `${output?.name}-` + generateUuid(),
+            label: output?.name ?? "",
+            accessor: (`output-object-parent-${output?.name}-` + generateUuid()) as any,
+            dataType: output?.dataType,
+            isRowIndexColumn: false,
+            groupType: "dmn-runner-output",
+            minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+            columns: collectedOutputs
+              .flatMap((collectedOutput) => {
+                if (collectedOutput !== null && typeof collectedOutput === "object") {
+                  return deepFlattenObjectColumn(collectedOutput);
+                }
+                return {
+                  originalId: "context-" + generateUuid(),
+                  label: "context",
+                  accessor: (`output-context-` + generateUuid()) as any,
+                  dataType: output?.dataType ?? DmnBuiltInDataType.Any,
+                  isRowIndexColumn: false,
+                  groupType: "dmn-runner-output",
+                  width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+                  minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+                };
+              })
+              .reduce((acc: ReactTable.Column<ROWTYPE>[], column) => {
+                if (acc.find((e) => e.label === column.label)) {
+                  return acc;
+                }
+                const outputType = outputTypeMap?.get(output?.name);
+                if (outputType) {
+                  // Save order;
+                  outputType.infos = { ...(outputType.infos ?? {}), [`${column.label}`]: contextIndex };
+                  contextIndex++;
+                  outputTypeMap?.set(output?.name, outputType);
+                }
+                return [...acc, column];
+              }, []),
+          },
+        ];
+      }
+
+      // Structures
+      if (typeof outputEntry.result === "object") {
         return [
           {
             originalId: `${output?.name}-` + generateUuid(),
@@ -255,37 +316,66 @@ function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollablePar
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
             minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-            columns: deepFlattenObjectColumn(outputEntry),
+            columns: deepFlattenObjectColumn(outputEntry.result),
           },
         ];
       }
       return [] as ReactTable.Column<ROWTYPE>[];
     });
-  }, [deepFlattenObjectColumn, outputs, rows]);
+  }, [deepFlattenObjectColumn, outputTypeMap, outputs, rows]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
     return rows.map((row, rowIndex) => {
       const rowArray = row.outputEntries.reduce(
-        (acc: DmnEvaluationResult[], entry: DmnEvaluationResult): DmnEvaluationResult[] => {
-          if (entry === undefined) {
+        (acc: DmnEvaluationResult[], { result, decisionName }, index): DmnEvaluationResult[] => {
+          const outputType = outputTypeMap?.get(decisionName);
+          // use type;
+          if (result === undefined || outputType === undefined) {
             return acc;
-          } else if (entry === null) {
+          } else if (outputType.dataType === "context") {
+            const contextDefaultIndex: number | undefined = outputType.infos?.["context"];
+            if (result === null) {
+              const tempArray = [];
+              if (contextDefaultIndex) {
+                tempArray[contextDefaultIndex] = "null";
+                return [...acc, ...tempArray];
+              } else {
+                return [...acc, "null"];
+              }
+            } else if (typeof result === "object") {
+              return [
+                ...acc,
+                ...deepFlattenObjectRow(result, outputType.infos).map((element) =>
+                  JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:")
+                ),
+              ];
+            } else {
+              const tempArray = [];
+              if (contextDefaultIndex) {
+                tempArray[contextDefaultIndex] = JSON.stringify(result);
+                return [...acc, ...tempArray];
+              } else {
+                return [...acc, JSON.stringify(result)];
+              }
+            }
+            //
+          } else if (result === null) {
             return [...acc, "null"];
-          } else if (Array.isArray(entry)) {
-            return [...acc, ...entry.map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:"))];
-          } else if (typeof entry === "object") {
+          } else if (Array.isArray(result)) {
+            return [...acc, ...result.map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:"))];
+          } else if (typeof result === "object") {
             return [
               ...acc,
-              ...deepFlattenObjectRow(entry).map((element) =>
+              ...deepFlattenObjectRow(result).map((element) =>
                 JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:")
               ),
             ];
           } else {
-            return [...acc, JSON.stringify(entry)];
+            return [...acc, JSON.stringify(result)];
           }
         },
         []
-      ) as DmnEvaluationResult[]; // compiler could not infer correctly
+      );
 
       return getColumnsAtLastLevel(beeTableColumns).reduce((tableRow: any, column, columnIndex) => {
         tableRow[column.accessor] = rowArray[columnIndex] || EMPTY_SYMBOL;
@@ -293,7 +383,7 @@ function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollablePar
         return tableRow;
       }, {});
     });
-  }, [rows, beeTableColumns, deepFlattenObjectRow, uuid]);
+  }, [rows, beeTableColumns, outputTypeMap, deepFlattenObjectRow, uuid]);
 
   const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
     return column.originalId ?? column.id;
