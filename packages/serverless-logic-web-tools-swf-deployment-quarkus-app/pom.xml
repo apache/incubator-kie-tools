@@ -32,6 +32,7 @@
     <kogito.bom.group-id>org.kie.kogito</kogito.bom.group-id>
     <kogito.bom.artifact-id>kogito-bom</kogito.bom.artifact-id>
     <io.swagger.parser.v3-swagger-parser-v3-version>2.1.12</io.swagger.parser.v3-swagger-parser-v3-version>
+    <org.apache.commons-commons-compress-version>1.22</org.apache.commons-commons-compress-version>
   </properties>
 
    <repositories>
@@ -115,6 +116,11 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-source-files</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>${org.apache.commons-commons-compress-version}</version>
     </dependency>
     <dependency>
       <groupId>io.swagger.parser.v3</groupId>

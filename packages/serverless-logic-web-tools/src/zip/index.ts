@@ -15,7 +15,7 @@
  */
 
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import JSZip from "jszip";
+import { downloadZip } from "client-zip";
 
 export async function zipFiles(files: WorkspaceFile[]): Promise<Blob> {
   const filesToZip = await Promise.all(
@@ -25,10 +25,5 @@ export async function zipFiles(files: WorkspaceFile[]): Promise<Blob> {
     }))
   );
 
-  const zip = new JSZip();
-  for (const file of filesToZip) {
-    zip.file(file.relativePath, file.content);
-  }
-
-  return zip.generateAsync({ type: "blob" });
+  return await downloadZip(filesToZip.map((file) => ({ name: file.relativePath, input: file.content }))).blob();
 }
