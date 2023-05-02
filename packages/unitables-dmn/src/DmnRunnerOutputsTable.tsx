@@ -148,16 +148,24 @@ function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollablePar
   }, []);
 
   const deepFlattenObjectColumn = useCallback(
-    (myObject: Record<string, any>, parentKey?: string): ReactTable.Column<ROWTYPE>[] => {
+    (
+      myObject: Record<string, any>,
+      propertiesTypes?: Record<string, any>,
+      parentKey?: string
+    ): ReactTable.Column<ROWTYPE>[] => {
       return Object.entries(myObject).flatMap(([myObjectKey, value]) => {
         if (value !== null && typeof value === "object") {
           const myKey = parentKey ? `${parentKey}-${myObjectKey}` : myObjectKey;
-          return deepFlattenObjectColumn(value, myKey);
+          return deepFlattenObjectColumn(
+            value,
+            propertiesTypes?.[myObjectKey]?.properties ?? propertiesTypes?.[myObjectKey]?.items,
+            myKey
+          );
         }
 
         const label = parentKey ? `${parentKey}-${myObjectKey}` : myObjectKey;
-        const myObjectProperties = outputTypeMap?.get(myObjectKey);
-        const dataType = myObjectProperties ? myObjectProperties.dataType : DmnBuiltInDataType.Any;
+        const myObjectProperties = propertiesTypes?.[myObjectKey] ?? propertiesTypes;
+        const dataType = myObjectProperties ? myObjectProperties.type : DmnBuiltInDataType.Any;
 
         return {
           originalId: label + generateUuid(),
@@ -256,6 +264,7 @@ function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollablePar
 
       // Contexts/Structures
       if (output?.dataType === "context") {
+        const outputType = outputTypeMap?.get(output?.name ?? "");
         // collect results from all rows;
         const collectedOutputs = rows.flatMap((row) =>
           row.outputEntries
@@ -275,7 +284,7 @@ function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollablePar
             columns: collectedOutputs
               .flatMap((collectedOutput) => {
                 if (collectedOutput !== null && typeof collectedOutput === "object") {
-                  return deepFlattenObjectColumn(collectedOutput);
+                  return deepFlattenObjectColumn(collectedOutput, outputType?.properties);
                 }
                 return {
                   originalId: "context-" + generateUuid(),
@@ -292,7 +301,6 @@ function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollablePar
                 if (acc.find((e) => e.label === column.label)) {
                   return acc;
                 }
-                const outputType = outputTypeMap?.get(output?.name);
                 if (outputType) {
                   // Save order;
                   outputType.infos = { ...(outputType.infos ?? {}), [`${column.label}`]: contextIndex };
@@ -307,6 +315,7 @@ function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollablePar
 
       // Structures
       if (typeof outputEntry.result === "object") {
+        const outputType = outputTypeMap?.get(output?.name ?? "");
         return [
           {
             originalId: `${output?.name}-` + generateUuid(),
@@ -316,7 +325,7 @@ function OutputsBeeTable({ id, i18n, outputs, outputTypeMap, rows, scrollablePar
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
             minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-            columns: deepFlattenObjectColumn(outputEntry.result),
+            columns: deepFlattenObjectColumn(outputEntry.result, outputType?.properties),
           },
         ];
       }
