@@ -22,6 +22,7 @@ import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - syntax highlighting test", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "syntax-highlight");
+  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
 
   let testHelper: VSCodeTestHelper;
   let driver: WebDriver;
@@ -39,6 +40,7 @@ describe("Serverless workflow editor - syntax highlighting test", () => {
 
   afterEach(async function () {
     this.timeout(15000);
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
