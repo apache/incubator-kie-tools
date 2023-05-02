@@ -44,9 +44,9 @@
   ],
   "activationEvents": [],
   "extensionDependencies": [
-    "redhat.vscode-extension-bpmn-editor",
-    "redhat.vscode-extension-dmn-editor",
-    "redhat.vscode-extension-serverless-workflow-editor",
+    "kie-group.bpmn-vscode-extension",
+    "kie-group.dmn-vscode-extension",
+    "kie-group.serverless-workflow-vscode-extension",
     "redhat.vscode-extension-dashbuilder-editor"
   ],
   "icon": "icon.png",

@@ -43,7 +43,6 @@ export class KogitoSwfModelDeployment extends DeploymentStrategy {
       targetUri: this.args.targetFile.relativePath,
       namespace: this.args.namespace,
       openShiftService: this.args.openShiftService,
-      kafkaSourceArgs: this.args.kafkaSourceArgs,
     });
   }
 

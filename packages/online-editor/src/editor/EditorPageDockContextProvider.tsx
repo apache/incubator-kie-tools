@@ -16,7 +16,7 @@
 
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState, useRef } from "react";
 import {
   NotificationsPanelDockToggle,
   NotificationsPanelDockToggleRef,
@@ -30,6 +30,8 @@ import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/
 import { useFileValidation } from "./Validation";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { DmnRunnerTable } from "../dmnRunner/DmnRunnerTable";
+import { ErrorBoundary } from "../reactExt/ErrorBoundary";
+import { DmnRunnerErrorBoundary } from "../dmnRunner/DmnRunnerErrorBoundary";
 
 interface EditorPageDockContextType {
   panel: PanelId;
@@ -43,6 +45,9 @@ interface EditorPageDockContextType {
   toggleGroupItems: Map<PanelId, JSX.Element>;
   panelContent?: JSX.Element;
   notificationsPanel?: NotificationsPanelRef;
+  error: boolean;
+  setHasError: React.Dispatch<React.SetStateAction<boolean>>;
+  errorBoundaryRef: React.MutableRefObject<ErrorBoundary | null>;
 }
 
 export const EditorPageDockContext = React.createContext<EditorPageDockContextType>({} as any);
@@ -77,6 +82,8 @@ export function EditorPageDockContextProvider({
   const [notificationsToggle, notificationsToggleRef] = useController<NotificationsPanelDockToggleRef>();
   const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelRef>();
   const { status: extendedServicesStatus } = useExtendedServices();
+  const errorBoundaryRef = useRef<ErrorBoundary>(null);
+  const [error, setHasError] = useState<boolean>(false);
   const [panel, setPanel] = useState<PanelId>(PanelId.NONE);
   const [toggleGroupItems, setToggleGroupItem] = useState(
     new Map([
@@ -165,7 +172,11 @@ export function EditorPageDockContextProvider({
       case PanelId.NOTIFICATIONS_PANEL:
         return <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />;
       case PanelId.DMN_RUNNER_TABLE:
-        return <DmnRunnerTable />;
+        return (
+          <DmnRunnerErrorBoundary>
+            <DmnRunnerTable />
+          </DmnRunnerErrorBoundary>
+        );
       default:
         return undefined;
     }
@@ -220,12 +231,15 @@ export function EditorPageDockContextProvider({
         toggleGroupItems,
         panelContent,
         notificationsPanel,
+        error,
+        errorBoundaryRef,
 
         addToggleItem,
         removeToggleItem,
         onTogglePanel,
         onOpenPanel,
         setNotifications,
+        setHasError,
       }}
     >
       {children}

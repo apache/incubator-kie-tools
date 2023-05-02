@@ -20,7 +20,6 @@ import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/componen
 import { GitHubSettingsTab } from "./github/GitHubSettingsTab";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { OpenShiftSettingsTab } from "./openshift/OpenShiftSettingsTab";
-import { ApacheKafkaSettingsTab } from "./kafka/ApacheKafkaSettingsTab";
 import { ServiceAccountSettingsTab } from "./serviceAccount/ServiceAccountSettingsTab";
 import { ServiceRegistrySettingsTab } from "./serviceRegistry/ServiceRegistrySettingsTab";
 import { KieSandboxExtendedServicesSettingsTab } from "./extendedServices/KieSandboxExtendedServicesSettingsTab";
@@ -34,7 +33,6 @@ export enum SettingsTabs {
   KIE_SANDBOX_EXTENDED_SERVICES = "kie-sandbox-extended-services",
   SERVICE_ACCOUNT = "serviceAccount",
   SERVICE_REGISTRY = "serviceRegistry",
-  KAFKA = "kafka",
   FEATURE_PREVIEW = "featurePreview",
 }
 
@@ -94,15 +92,6 @@ export function SettingsModalBody() {
       >
         <ServiceRegistrySettingsTab />
       </Tab>
-      {isCommunityMode && (
-        <Tab
-          className="kie-tools--settings-tab"
-          eventKey={SettingsTabs.KAFKA}
-          title={<TabTitleText>Streams for Apache Kafka</TabTitleText>}
-        >
-          <ApacheKafkaSettingsTab />
-        </Tab>
-      )}
       <Tab
         className="kie-tools--settings-tab"
         eventKey={SettingsTabs.FEATURE_PREVIEW}

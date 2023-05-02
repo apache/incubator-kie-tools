@@ -94,7 +94,7 @@ export function ServiceAccountSettingsTab() {
             </TextContent>
             <EmptyStateBody>
               <TextContent>
-                Accessing your Service Registry and Streams for Apache Kafka is <b>enabled</b>.
+                Accessing your Service Registry is <b>enabled</b>.
               </TextContent>
               <br />
               <TextContent>
@@ -139,8 +139,8 @@ export function ServiceAccountSettingsTab() {
               <TextContent>
                 <Text component={TextVariants.small}>
                   Data you provide here is necessary for uploading Open API specs associated with models you design to
-                  your Service Registry instance and also connecting deployments with your Streams for Apache Kafka
-                  instance. All information is locally stored in your browser and never shared with anyone.
+                  your Service Registry instance. All information is locally stored in your browser and never shared
+                  with anyone.
                 </Text>
               </TextContent>
               <FormGroup

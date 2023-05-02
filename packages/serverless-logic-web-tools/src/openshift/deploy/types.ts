@@ -19,21 +19,11 @@ import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
-export interface KafkaSourceArgs {
-  serviceAccount: {
-    clientId: string;
-    clientSecret: string;
-  };
-  bootstrapServers: string[];
-  topics: string[];
-}
-
 export interface DeploymentStrategyArgs {
   resourceName: string;
   namespace: string;
   targetFile: WorkspaceFile;
   workspace: WorkspaceDescriptor;
-  kafkaSourceArgs?: KafkaSourceArgs;
   openShiftService: OpenShiftService;
   getFiles: (args: { workspaceId: string; globPattern?: string }) => Promise<WorkspaceFile[]>;
 }
@@ -59,14 +49,8 @@ export enum DeploymentStrategyKind {
 }
 
 export type DeploymentStrategyFactoryArgs =
-  | {
-      kind: DeploymentStrategyKind.KOGITO_SWF_MODEL;
-      shouldAttachKafkaSource: boolean;
-    }
-  | {
-      kind: DeploymentStrategyKind.KOGITO_PROJECT;
-      shouldAttachKafkaSource: boolean;
-    }
+  | { kind: DeploymentStrategyKind.KOGITO_SWF_MODEL }
+  | { kind: DeploymentStrategyKind.KOGITO_PROJECT }
   | { kind: DeploymentStrategyKind.DASHBOARD_SINGLE_MODEL }
   | { kind: DeploymentStrategyKind.DASHBOARD_WORKSPACE };
 
