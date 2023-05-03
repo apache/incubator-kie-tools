@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.dashbuilder.dataset.DataColumn;
@@ -32,6 +33,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class DisplayerSettings {
 
+    private static final String ERROR = "_error";
     protected String UUID;
     protected DataSet dataSet;
     protected DataSetLookup dataSetLookup;
@@ -822,6 +824,14 @@ public class DisplayerSettings {
     public boolean isAttributeDefinedByUser(DisplayerAttributeDef attr) {
         return settings.get(getSettingPath(attr)) != null;
 
+    }
+
+    public Optional<String> getError() {
+        return Optional.ofNullable(settings.get(ERROR));
+    }
+
+    public void setError(String error) {
+        settings.put(ERROR, error);
     }
 
 }
