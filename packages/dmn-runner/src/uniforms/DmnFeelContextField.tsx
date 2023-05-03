@@ -18,6 +18,7 @@ import * as React from "react";
 import { Ref, useCallback, useMemo } from "react";
 import { TextInput, TextInputProps } from "@patternfly/react-core/dist/js/components/TextInput";
 import { connectField } from "uniforms";
+import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
 
 type DmnFeelContextComponentProps = {
   id: string;
@@ -51,7 +52,8 @@ function DmnFeelContext({ onChange, ...props }: DmnFeelContextComponentProps) {
     [onChange]
   );
 
-  return (
+  return wrapField(
+    props,
     <>
       <TextInput
         name={props.name}

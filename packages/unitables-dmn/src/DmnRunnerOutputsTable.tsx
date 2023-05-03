@@ -212,6 +212,53 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
         return [];
       }
 
+      // Contexts/Structures
+      if (outputProperties?.dataType === "context") {
+        // collect results from all rows;
+        const collectedOutputs = results?.flatMap((result) =>
+          result
+            ?.filter((decisionResult) => decisionResult.decisionName === outputProperties.joinedName)
+            ?.flatMap((decisionResult) => decisionResult.result)
+        );
+        return [
+          {
+            originalId: `${outputProperties?.name}-` + generateUuid(),
+            label: outputProperties?.name ?? "",
+            accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
+            dataType: outputProperties?.dataType,
+            isRowIndexColumn: false,
+            groupType: "dmn-runner-output",
+            minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+            columns:
+              collectedOutputs
+                ?.flatMap((collectedOutput) => {
+                  if (collectedOutput !== null && typeof collectedOutput === "object") {
+                    return deepFlattenObjectColumn(collectedOutput, outputProperties?.properties);
+                  }
+                  return {
+                    originalId: "context-" + generateUuid(),
+                    label: "context",
+                    accessor: (`output-context-` + generateUuid()) as any,
+                    dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Any,
+                    isRowIndexColumn: false,
+                    groupType: "dmn-runner-output",
+                    width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+                    minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+                  };
+                })
+                .reduce((acc: ReactTable.Column<ROWTYPE>[], column) => {
+                  if (acc.find((e) => e.label === column.label)) {
+                    return acc;
+                  }
+                  if (outputProperties) {
+                    outputsPropertiesMap?.set(outputProperties?.name, outputProperties);
+                  }
+                  return [...acc, column];
+                }, []) ?? [],
+          },
+        ];
+      }
+
       // Primitives and null;
       if (typeof result === "string" || typeof result === "number" || typeof result === "boolean" || result === null) {
         return [
@@ -262,53 +309,6 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
         ];
       }
 
-      // Contexts/Structures
-      if (outputProperties?.dataType === "context") {
-        // collect results from all rows;
-        const collectedOutputs = results?.flatMap((result) =>
-          result
-            ?.filter((decisionResult) => decisionResult.decisionName === outputProperties.joinedName)
-            ?.flatMap((decisionResult) => decisionResult.result)
-        );
-        return [
-          {
-            originalId: `${outputProperties?.name}-` + generateUuid(),
-            label: outputProperties?.name ?? "",
-            accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
-            dataType: outputProperties?.dataType,
-            isRowIndexColumn: false,
-            groupType: "dmn-runner-output",
-            minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-            columns:
-              collectedOutputs
-                ?.flatMap((collectedOutput) => {
-                  if (collectedOutput !== null && typeof collectedOutput === "object") {
-                    return deepFlattenObjectColumn(collectedOutput, outputProperties?.properties);
-                  }
-                  return {
-                    originalId: "context-" + generateUuid(),
-                    label: "context",
-                    accessor: (`output-context-` + generateUuid()) as any,
-                    dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Any,
-                    isRowIndexColumn: false,
-                    groupType: "dmn-runner-output",
-                    width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-                    minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-                  };
-                })
-                .reduce((acc: ReactTable.Column<ROWTYPE>[], column) => {
-                  if (acc.find((e) => e.label === column.label)) {
-                    return acc;
-                  }
-                  if (outputProperties) {
-                    outputsPropertiesMap?.set(outputProperties?.name, outputProperties);
-                  }
-                  return [...acc, column];
-                }, []) ?? [],
-          },
-        ];
-      }
-
       // Structures
       if (typeof result === "object") {
         return [
@@ -346,7 +346,11 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
         if (result !== null && !Array.isArray(result) && typeof result === "object") {
           columnResults = deepFlattenObjectRow(result);
         } else {
-          columnResults = { [`${decisionName}`]: getRowValue(result) };
+          if (headerColumn.dataType === "context") {
+            columnResults = { context: getRowValue(result) };
+          } else {
+            columnResults = { [`${decisionName}`]: getRowValue(result) };
+          }
         }
 
         return headerColumn.columns?.map((column) => columnResults[column.label] as DmnEvaluationResult) ?? [];
