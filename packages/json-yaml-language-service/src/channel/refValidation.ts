@@ -14,14 +14,30 @@
  * limitations under the License.
  */
 
-import { SwfRef, swfRefValidationMap } from "./swfRefValidationMap";
-import { findNodesAtLocation } from "./findNodesAtLocation";
-import { SwfLsNode } from "./types";
+import { ELsNode } from "./types";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { Diagnostic } from "vscode-languageserver-types";
+import { findNodesAtLocation } from "./findNodesAtLocation";
 
-export function doRefValidation(args: { textDocument: TextDocument; rootNode: SwfLsNode }): Diagnostic[] {
-  return [...swfRefValidationMap.entries()].flatMap(([src, refs]) => {
+export type RefValidationRef = {
+  type: "string" | "boolean" | "number" | "null";
+  path: string[];
+  isArray?: boolean;
+};
+
+export type RefValidationSrc = {
+  name: string;
+  path: string[];
+};
+
+export type RefValidationMap = Map<RefValidationSrc, RefValidationRef[]>;
+
+export function doRefValidation(args: {
+  textDocument: TextDocument;
+  rootNode: ELsNode;
+  validationMap: RefValidationMap;
+}): Diagnostic[] {
+  return [...args.validationMap.entries()].flatMap(([src, refs]) => {
     // here, we assume that all source nodes return terminal values.
     // i.e. a source node will never be an "object"
     const sourceNodeValues = new Set(
@@ -68,7 +84,7 @@ export function doRefValidation(args: { textDocument: TextDocument; rootNode: Sw
   });
 }
 
-function areArraysOfMatchingType(args: { ref: SwfRef; refNode: SwfLsNode }) {
+function areArraysOfMatchingType(args: { ref: RefValidationRef; refNode: ELsNode }) {
   return (
     args.ref.isArray &&
     args.refNode.type === "array" &&

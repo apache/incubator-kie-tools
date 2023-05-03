@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodesAtLocation } from "./findNodesAtLocation";
-import { SwfJsonPath, SwfLsNode } from "./types";
+import { nodeUpUntilType } from "./nodeUpUntilType";
+import { ELsJsonPath, ELsNode } from "./types";
 
 /**
  * Check if a Node is in Location.
@@ -27,9 +27,9 @@ import { SwfJsonPath, SwfLsNode } from "./types";
  * @returns true if the node is in the location, false otherwise
  */
 export function matchNodeWithLocation(
-  root: SwfLsNode | undefined,
-  node: SwfLsNode | undefined,
-  path: SwfJsonPath
+  root: ELsNode | undefined,
+  node: ELsNode | undefined,
+  path: ELsJsonPath
 ): boolean {
   if (!root || !node || !path || !path.length) {
     return false;

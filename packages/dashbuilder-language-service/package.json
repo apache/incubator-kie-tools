@@ -25,8 +25,10 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
+    "@kie-tools/json-yaml-language-service": "workspace:*",
     "@kie-tools/yaml-language-server": "workspace:*",
     "jsonc-parser": "^3.0.0",
+    "vscode-json-languageservice": "^4.2.1",
     "vscode-languageserver": "^7.0.0",
     "vscode-languageserver-textdocument": "^1.0.4",
     "vscode-languageserver-types": "^3.16.0",

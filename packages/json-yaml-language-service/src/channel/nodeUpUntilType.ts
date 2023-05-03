@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { SwfLsNode, SwfLsNodeType } from "./types";
+import { ELsNodeType, ELsNode } from "./types";
 
 /**
  * From a node goes up to levels until a certain node type.
@@ -23,10 +23,7 @@ import { SwfLsNode, SwfLsNodeType } from "./types";
  * @param nodeType the node type where to stop
  * @returns the parent node if found, undefined otherwise
  */
-export function nodeUpUntilType(
-  node: SwfLsNode | undefined,
-  nodeType: SwfLsNodeType | SwfLsNodeType[]
-): SwfLsNode | undefined {
+export function nodeUpUntilType(node: ELsNode | undefined, nodeType: ELsNodeType | ELsNodeType[]): ELsNode | undefined {
   if (!node) {
     return;
   }

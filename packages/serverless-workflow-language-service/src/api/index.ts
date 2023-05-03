@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-/**
- * File language for an opened file in the text editor.
- */
-export enum FileLanguage {
-  JSON = "json",
-  YAML = "yaml",
-}
+import { FileLanguage, getFileLanguageEditorLS } from "@kie-tools/json-yaml-language-service/dist/api";
 
 /**
  * Get the file language from a filename or path
@@ -29,15 +23,7 @@ export enum FileLanguage {
  * @returns the file language, null if not found
  */
 export const getFileLanguage = (fileName: string): FileLanguage | null => {
-  if (/\.sw\.json$/i.test(fileName)) {
-    return FileLanguage.JSON;
-  }
-
-  if (/\.sw\.(yml|yaml)$/i.test(fileName)) {
-    return FileLanguage.YAML;
-  }
-
-  return null;
+  return /\.sw\.\w+$/i.test(fileName) ? getFileLanguageEditorLS(fileName) : null;
 };
 
 /**
@@ -55,5 +41,5 @@ export const getFileLanguageOrThrow = (fileName: string): FileLanguage => {
   return fileLanguage;
 };
 
+export { FileLanguage };
 export * from "./SwfLanguageServiceChannelApi";
-export * from "./SwfOffsetsApi";
