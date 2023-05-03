@@ -17,24 +17,27 @@
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
-import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import { PerPageOptions } from "@patternfly/react-core/dist/js/components/Pagination";
+import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
+import { Breadcrumb } from "@patternfly/react-core/components/Breadcrumb";
+import { BreadcrumbItem, Checkbox } from "@patternfly/react-core/dist/js";
 import { Alert, AlertActionCloseButton, AlertProps } from "@patternfly/react-core/dist/js/components/Alert";
 import { AlertGroup } from "@patternfly/react-core/dist/js/components/AlertGroup";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PerPageOptions } from "@patternfly/react-core/dist/js/components/Pagination";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
-import { useCallback, useState, useMemo } from "react";
-import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
-import { TableToolbar } from "../../table/TableToolbar";
-import { WorkspacesTable } from "./WorkspacesTable";
-import { TablePagination } from "../../table/TablePagination";
-import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
-import { remove } from "jszip";
+import { useCallback, useMemo, useState } from "react";
+import { useHistory } from "react-router";
+import { isEditable } from "../../../extension";
+import { routes } from "../../../navigation/Routes";
+import { ConfirmDeleteModal } from "../../../table/ConfirmDeleteModal";
+import { TablePagination } from "../../../table/TablePagination";
+import { TableToolbar } from "../../../table/TableToolbar";
+import { WorkspaceFilesTable } from "./WorkspaceFilesTable";
 
 export interface Props {
   workspaceId: string;
@@ -46,14 +49,17 @@ const perPageOptions: PerPageOptions[] = [5, 10, 20, 50, 100].map((n) => ({
 }));
 
 export function WorkspaceFiles(props: Props) {
-  const workspacePromise = useWorkspacePromise(props.workspaceId);
+  const { workspaceId } = props;
+  const workspacePromise = useWorkspacePromise(workspaceId);
   const [selectedWorkspaceFiles, setSelectedWorkspaceFiles] = useState<WorkspaceFile[]>([]);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const [alerts, setAlerts] = useState<Partial<AlertProps>[]>([]);
   const [searchValue, setSearchValue] = React.useState("");
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(5);
+  const [isViewRoFilesChecked, setIsViewRoFilesChecked] = useState(false);
   const workspaces = useWorkspaces();
+  const history = useHistory();
   const isSelectedWorkspaceFilesPlural = useMemo(() => selectedWorkspaceFiles.length > 1, [selectedWorkspaceFiles]);
   const selectedElementTypesName = useMemo(
     () => (isSelectedWorkspaceFilesPlural ? "files" : "file"),
@@ -84,47 +90,59 @@ export function WorkspaceFiles(props: Props) {
     setAlerts((prevAlerts) => [...prevAlerts.filter((alert) => alert.key !== key)]);
   }, []);
 
-  const onConfirmDeleteModalDelete = useCallback(async () => {
-    const filesWord = selectedWorkspaceFiles.length > 1 ? "Files" : "File";
-    setIsConfirmDeleteModalOpen(false);
+  const onConfirmDeleteModalDelete = useCallback(
+    async (filesCount: number) => {
+      const filesWord = selectedWorkspaceFiles.length > 1 ? "Files" : "File";
+      setIsConfirmDeleteModalOpen(false);
 
-    Promise.all(selectedWorkspaceFiles.map((file) => workspaces.deleteFile({ file })))
-      .then(() => {
+      if (selectedWorkspaceFiles.length === filesCount) {
+        workspaces.deleteWorkspace({ workspaceId });
+        history.push({ pathname: routes.recentModels.path({}) });
         addAlert(`${filesWord} deleted successfully`, "success");
-      })
-      .catch((e) => {
-        console.error(e);
-        addAlert(
-          `Oops, something went wrong while trying to delete the selected ${filesWord}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`,
-          "danger"
-        );
-      })
-      .finally(() => {
-        setSelectedWorkspaceFiles([]);
-      });
-  }, [selectedWorkspaceFiles, addAlert, workspaces]);
+        return;
+      }
+
+      Promise.all(selectedWorkspaceFiles.map((file) => workspaces.deleteFile({ file })))
+        .then(() => {
+          addAlert(`${filesWord} deleted successfully`, "success");
+        })
+        .catch((e) => {
+          console.error(e);
+          addAlert(
+            `Oops, something went wrong while trying to delete the selected ${filesWord}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`,
+            "danger"
+          );
+        })
+        .finally(() => {
+          setSelectedWorkspaceFiles([]);
+        });
+    },
+    [selectedWorkspaceFiles, addAlert, workspaces, history, workspaceId]
+  );
 
   const onFileToggle = useCallback((workspaceFile: WorkspaceFile, checked: boolean) => {
-    setSelectedWorkspaceFiles((prevSelected) => [...prevSelected, workspaceFile]);
+    setSelectedWorkspaceFiles((prevSelected) => {
+      const otherSelectedFiles = [...prevSelected.filter((f) => f !== workspaceFile)];
+      return checked ? [...otherSelectedFiles, workspaceFile] : otherSelectedFiles;
+    });
   }, []);
 
   const onToggleAllElements = useCallback((checked: boolean, workspace: ActiveWorkspace) => {
     setSelectedWorkspaceFiles(checked ? workspace.files : []);
   }, []);
 
-  const onClearFilters = useCallback(() => {
-    setSearchValue("");
+  const handleViewRoCheckboxChange = useCallback((checked: boolean) => {
+    setIsViewRoFilesChecked(checked);
   }, []);
 
+  /* TODO: WorkspaceFiles: add "new file" button */
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
       rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
       resolved={(workspace: ActiveWorkspace) => {
-        const files = workspace.files;
+        const files = workspace.files.filter((f) => isViewRoFilesChecked || isEditable(f.relativePath));
         const filesCount = files.length;
-        /* TODO: WorkspaceFiles: remove me */
-        console.log("### workspace.files", workspace.files);
 
         return (
           <>
@@ -149,10 +167,19 @@ export function WorkspaceFiles(props: Props) {
                   )
               )}
             </AlertGroup>
-            <Page>
+            <Page
+              breadcrumb={
+                <Breadcrumb>
+                  <BreadcrumbItem to={"#" + routes.recentModels.path({})}>Recent Models</BreadcrumbItem>
+                  <BreadcrumbItem to="#" isActive>
+                    {workspace.descriptor.name}
+                  </BreadcrumbItem>
+                </Breadcrumb>
+              }
+            >
               <PageSection variant={"light"}>
                 <TextContent>
-                  <Text component={TextVariants.h1}>Recent models</Text>
+                  <Text component={TextVariants.h1}>Files in &lsquo;{workspace.descriptor.name}&rsquo;</Text>
                   <Text component={TextVariants.p}>
                     Use your recent models from GitHub Repository, a GitHub Gist or saved in your browser.
                   </Text>
@@ -175,6 +202,23 @@ export function WorkspaceFiles(props: Props) {
                         perPageOptions={perPageOptions}
                         setPage={setPage}
                         setPerPage={setPerPage}
+                        additionalComponents={
+                          <Checkbox
+                            id="viewRoFiles"
+                            label="View readonly files"
+                            isChecked={isViewRoFilesChecked}
+                            onChange={handleViewRoCheckboxChange}
+                          ></Checkbox>
+                        }
+                      />
+
+                      <WorkspaceFilesTable
+                        page={page}
+                        perPage={perPage}
+                        onFileToggle={onFileToggle}
+                        searchValue={searchValue}
+                        selectedWorkspaceFiles={selectedWorkspaceFiles}
+                        workspaceFiles={files}
                       />
 
                       <TablePagination
@@ -205,7 +249,7 @@ export function WorkspaceFiles(props: Props) {
             <ConfirmDeleteModal
               isOpen={isConfirmDeleteModalOpen}
               onClose={onConfirmDeleteModalClose}
-              onDelete={() => onConfirmDeleteModalDelete()}
+              onDelete={() => onConfirmDeleteModalDelete(filesCount)}
               elementsTypeName={selectedElementTypesName}
               deleteMessage={deleteModalMessage}
             />

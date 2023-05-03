@@ -29,7 +29,7 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
 import { useCallback, useState, useEffect, useMemo } from "react";
-import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
+import { ConfirmDeleteModal } from "../../table/ConfirmDeleteModal";
 import { TableToolbar } from "../../table/TableToolbar";
 import { WorkspacesTable } from "./WorkspacesTable";
 import { TablePagination } from "../../table/TablePagination";

@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Button, Checkbox, Modal, ModalProps, Skeleton } from "@patternfly/react-core/dist/js";
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export type ConfirmDeleteModalProps = Pick<ModalProps, "isOpen" | "onClose"> & {
-  onDelete: () => void;
-  elementsTypeName: string;
-  deleteMessage: React.ReactNode;
   /**
    * set to false to manage the loading. Default is true.
    */
   dataLoaded?: boolean;
 
+  deleteMessage: React.ReactNode;
+
+  elementsTypeName: string;
+
   /**
    * set to true if there has been error loading the data.
    */
   fetchError?: boolean;
+
+  onDelete: () => void;
 };
 
 export function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
@@ -40,6 +42,10 @@ export function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
   const onDeleteCheckChange = useCallback((checked: boolean) => {
     setIsDeleteCheck(checked);
   }, []);
+
+  useEffect(() => {
+    setIsDeleteCheck(false);
+  }, [isOpen]);
 
   return (
     <>

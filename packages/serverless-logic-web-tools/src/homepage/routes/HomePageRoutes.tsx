@@ -27,7 +27,7 @@ import { NewWorkspaceWithEmptyFilePage } from "../../workspace/components/NewWor
 import { EditorPage } from "../../editor/EditorPage";
 import { NoMatchPage } from "../../navigation/NoMatchPage";
 import { Showcase } from "../../home/sample/Showcase";
-import { WorkspaceFiles } from "../recentModels/WorkspaceFiles";
+import { WorkspaceFiles } from "../recentModels/workspaceFiles/WorkspaceFiles";
 
 export function HomePageRoutes(props: { isNavOpen: boolean }) {
   const routes = useRoutes();
