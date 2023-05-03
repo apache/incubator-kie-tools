@@ -171,7 +171,7 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
     []
   );
 
-  const getRowValue = useCallback((value: any) => {
+  const getRowValue = useCallback((value: DmnEvaluationResult) => {
     if (value === undefined) {
       return;
     } else if (value === null) {
@@ -184,11 +184,15 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
   }, []);
 
   const deepFlattenObjectRow = useCallback(
-    (myObject: Record<string, any>, parentKey?: string, flattenedObject?: Record<string, any>): Record<string, any> => {
+    (
+      myObject: Record<string, DmnEvaluationResult>,
+      parentKey?: string,
+      flattenedObject?: Record<string, any>
+    ): Record<string, any> => {
       return Object.entries(myObject).reduce((acc: Record<string, any>, [myObjectKey, value]) => {
         const myKey = parentKey ? `${parentKey}-${myObjectKey}` : myObjectKey;
 
-        if (value !== null && typeof value === "object") {
+        if (value !== null && !Array.isArray(value) && typeof value === "object") {
           return deepFlattenObjectRow(value, myKey, acc);
         }
         const rowValue = getRowValue(value);
