@@ -195,8 +195,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
+        specifier: ^2.19.0
+        version: 2.19.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -437,8 +437,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
+        specifier: ^2.19.0
+        version: 2.19.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -976,8 +976,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
+        specifier: ^2.19.0
+        version: 2.19.0
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.70.0)
@@ -3095,8 +3095,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
+        specifier: ^2.19.0
+        version: 2.19.0
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.70.0)
@@ -4528,8 +4528,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
+        specifier: ^2.19.0
+        version: 2.19.0
       chai:
         specifier: ^4.3.4
         version: 4.3.4
@@ -5763,8 +5763,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
+        specifier: ^2.19.0
+        version: 2.19.0
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.70.0)
@@ -7306,8 +7306,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
+        specifier: ^2.19.0
+        version: 2.19.0
       chai:
         specifier: ^4.3.4
         version: 4.3.4
@@ -8393,8 +8393,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
+        specifier: ^2.19.0
+        version: 2.19.0
       chai:
         specifier: ^4.3.4
         version: 4.3.4
@@ -8532,8 +8532,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
+        specifier: ^2.19.0
+        version: 2.19.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -8568,8 +8568,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
+        specifier: ^2.19.0
+        version: 2.19.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -8931,8 +8931,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
+        specifier: ^2.19.0
+        version: 2.19.0
       chai:
         specifier: ^4.3.4
         version: 4.3.4
@@ -9672,8 +9672,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.18.0
-        version: 2.18.0
+        specifier: ^2.19.0
+        version: 2.19.0
       chai:
         specifier: ^4.3.4
         version: 4.3.4
@@ -15928,6 +15928,36 @@ packages:
       typed-rest-client: 1.8.4
       url-join: 4.0.1
       xml2js: 0.4.23
+      yauzl: 2.10.0
+      yazl: 2.5.1
+    optionalDependencies:
+      keytar: 7.7.0
+    dev: true
+
+  /@vscode/vsce@2.19.0:
+    resolution:
+      { integrity: sha512-dAlILxC5ggOutcvJY24jxz913wimGiUrHaPkk16Gm9/PGFbz1YezWtrXsTKUtJws4fIlpX2UIlVlVESWq8lkfQ== }
+    engines: { node: ">= 14" }
+    hasBin: true
+    dependencies:
+      azure-devops-node-api: 11.0.1
+      chalk: 2.4.2
+      cheerio: 1.0.0-rc.10
+      commander: 6.2.1
+      glob: 7.2.0
+      hosted-git-info: 4.1.0
+      jsonc-parser: 3.2.0
+      leven: 3.1.0
+      markdown-it: 12.3.2
+      mime: 1.6.0
+      minimatch: 3.0.5
+      parse-semver: 1.1.1
+      read: 1.0.7
+      semver: 5.7.1
+      tmp: 0.2.1
+      typed-rest-client: 1.8.4
+      url-join: 4.0.1
+      xml2js: 0.5.0
       yauzl: 2.10.0
       yazl: 2.5.1
     optionalDependencies:
@@ -31756,7 +31786,7 @@ packages:
       typescript: ">=4.6.2"
     dependencies:
       "@types/selenium-webdriver": 4.1.12
-      "@vscode/vsce": 2.18.0
+      "@vscode/vsce": 2.19.0
       commander: 10.0.0
       compare-versions: 5.0.1
       fs-extra: 11.1.1
@@ -31786,7 +31816,7 @@ packages:
       typescript: ">=4.6.2"
     dependencies:
       "@types/selenium-webdriver": 4.1.12
-      "@vscode/vsce": 2.18.0
+      "@vscode/vsce": 2.19.0
       commander: 10.0.0
       compare-versions: 5.0.1
       fs-extra: 11.1.1
@@ -32497,6 +32527,15 @@ packages:
   /xml2js@0.4.23:
     resolution:
       { integrity: sha512-ySPiMjM0+pLDftHgXY4By0uswI3SPKLDw/i3UXbnO8M/p28zqexCUoPmQFrYD+/1BzhGJSs2i1ERWKJAtiLrug== }
+    engines: { node: ">=4.0.0" }
+    dependencies:
+      sax: 1.2.4
+      xmlbuilder: 11.0.1
+    dev: true
+
+  /xml2js@0.5.0:
+    resolution:
+      { integrity: sha512-drPFnkQJik/O+uPKpqSgr22mpuFHqKdbS835iAQrUC73L2F5WkboIRd63ai/2Yg6I1jzifPFKH2NTK+cfglkIA== }
     engines: { node: ">=4.0.0" }
     dependencies:
       sax: 1.2.4
