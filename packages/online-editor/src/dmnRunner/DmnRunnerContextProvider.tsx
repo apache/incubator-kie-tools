@@ -562,9 +562,9 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           propertyValue !== null &&
           typeof propertyValue === "object" &&
           (!Object.prototype.hasOwnProperty.call(propertyValue, "type") ||
-            (Object.prototype.hasOwnProperty.call(propertyValue, "type") && propertyValue.type !== undefined)) &&
+            (Object.prototype.hasOwnProperty.call(propertyValue, "type") && propertyValue.type === undefined)) &&
           (!Object.prototype.hasOwnProperty.call(propertyValue, "format") ||
-            (Object.prototype.hasOwnProperty.call(propertyValue, "format") && propertyValue.format !== undefined))
+            (Object.prototype.hasOwnProperty.call(propertyValue, "format") && propertyValue.format === undefined))
         ) {
           // not leaf;
           return handleJsonSchemaDifferences(inputs, propertyValue, fullKey);

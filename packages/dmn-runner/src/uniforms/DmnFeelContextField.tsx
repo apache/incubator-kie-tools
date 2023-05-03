@@ -56,6 +56,7 @@ function DmnFeelContext({ onChange, ...props }: DmnFeelContextComponentProps) {
     props,
     <>
       <TextInput
+        aria-label={"uniforms context field"}
         name={props.name}
         isDisabled={props.disabled}
         validated={props.error ? "error" : "default"}
