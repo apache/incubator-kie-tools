@@ -1512,7 +1512,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         toggle={
                           <DropdownToggle
                             onToggle={setNewFileDropdownMenuOpen}
-                            isPrimary={true}
+                            toggleVariant="primary"
                             toggleIndicator={CaretDownIcon}
                           >
                             <PlusIcon />

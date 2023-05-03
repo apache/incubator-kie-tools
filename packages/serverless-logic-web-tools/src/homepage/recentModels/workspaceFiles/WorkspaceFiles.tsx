@@ -15,23 +15,26 @@
  */
 
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Breadcrumb } from "@patternfly/react-core/components/Breadcrumb";
-import { BreadcrumbItem, Checkbox } from "@patternfly/react-core/dist/js";
-import { Alert, AlertActionCloseButton, AlertProps } from "@patternfly/react-core/dist/js/components/Alert";
-import { AlertGroup } from "@patternfly/react-core/dist/js/components/AlertGroup";
+import { BreadcrumbItem, Checkbox, Dropdown, DropdownToggle, ToolbarItem } from "@patternfly/react-core/dist/js";
+import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { PerPageOptions } from "@patternfly/react-core/dist/js/components/Pagination";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { CaretDownIcon, PlusIcon } from "@patternfly/react-icons/dist/js/icons";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
+import { Alerts, AlertsController, useAlert } from "../../../alerts/Alerts";
+import { NewFileDropdownMenu } from "../../../editor/NewFileDropdownMenu";
 import { isEditable } from "../../../extension";
 import { routes } from "../../../navigation/Routes";
 import { ConfirmDeleteModal } from "../../../table/ConfirmDeleteModal";
@@ -53,13 +56,14 @@ export function WorkspaceFiles(props: Props) {
   const workspacePromise = useWorkspacePromise(workspaceId);
   const [selectedWorkspaceFiles, setSelectedWorkspaceFiles] = useState<WorkspaceFile[]>([]);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
-  const [alerts, setAlerts] = useState<Partial<AlertProps>[]>([]);
   const [searchValue, setSearchValue] = React.useState("");
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(5);
   const [isViewRoFilesChecked, setIsViewRoFilesChecked] = useState(false);
+  const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const workspaces = useWorkspaces();
   const history = useHistory();
+  const [alerts, alertsRef] = useController<AlertsController>();
   const isSelectedWorkspaceFilesPlural = useMemo(() => selectedWorkspaceFiles.length > 1, [selectedWorkspaceFiles]);
   const selectedElementTypesName = useMemo(
     () => (isSelectedWorkspaceFilesPlural ? "files" : "file"),
@@ -79,45 +83,59 @@ export function WorkspaceFiles(props: Props) {
 
   const onConfirmDeleteModalClose = useCallback(() => setIsConfirmDeleteModalOpen(false), []);
 
-  const addAlert = useCallback(
-    (title: string, variant: AlertProps["variant"], key: React.Key = new Date().getTime()) => {
-      setAlerts((prevAlerts) => [...prevAlerts, { title, variant, key }]);
-    },
-    []
+  const deleteSuccessAlert = useAlert<{ selectedElementTypesName: string }>(
+    alerts,
+    useCallback(({ close }, { selectedElementTypesName }) => {
+      return <Alert variant="success" title={`${capitalizeString(selectedElementTypesName)} deleted successfully`} />;
+    }, []),
+    { durationInSeconds: 2 }
   );
 
-  const removeAlert = useCallback((key: React.Key) => {
-    setAlerts((prevAlerts) => [...prevAlerts.filter((alert) => alert.key !== key)]);
-  }, []);
+  const deleteErrorAlert = useAlert<{ selectedElementTypesName: string }>(
+    alerts,
+    useCallback(({ close }, { selectedElementTypesName }) => {
+      return (
+        <Alert
+          variant="danger"
+          title={`Oops, something went wrong while trying to delete the selected ${selectedElementTypesName}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
 
   const onConfirmDeleteModalDelete = useCallback(
     async (filesCount: number) => {
-      const filesWord = selectedWorkspaceFiles.length > 1 ? "Files" : "File";
       setIsConfirmDeleteModalOpen(false);
 
       if (selectedWorkspaceFiles.length === filesCount) {
         workspaces.deleteWorkspace({ workspaceId });
         history.push({ pathname: routes.recentModels.path({}) });
-        addAlert(`${filesWord} deleted successfully`, "success");
+        deleteSuccessAlert.show({ selectedElementTypesName });
         return;
       }
 
       Promise.all(selectedWorkspaceFiles.map((file) => workspaces.deleteFile({ file })))
         .then(() => {
-          addAlert(`${filesWord} deleted successfully`, "success");
+          deleteSuccessAlert.show({ selectedElementTypesName });
         })
         .catch((e) => {
           console.error(e);
-          addAlert(
-            `Oops, something went wrong while trying to delete the selected ${filesWord}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`,
-            "danger"
-          );
+          deleteErrorAlert.show({ selectedElementTypesName });
         })
         .finally(() => {
           setSelectedWorkspaceFiles([]);
         });
     },
-    [selectedWorkspaceFiles, addAlert, workspaces, history, workspaceId]
+    [
+      selectedWorkspaceFiles,
+      workspaces,
+      history,
+      workspaceId,
+      deleteErrorAlert,
+      deleteSuccessAlert,
+      selectedElementTypesName,
+    ]
   );
 
   const onFileToggle = useCallback((workspaceFile: WorkspaceFile, checked: boolean) => {
@@ -135,38 +153,21 @@ export function WorkspaceFiles(props: Props) {
     setIsViewRoFilesChecked(checked);
   }, []);
 
-  /* TODO: WorkspaceFiles: add "new file" button */
+  useEffect(() => {
+    setSelectedWorkspaceFiles([]);
+  }, [workspacePromise]);
+
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
       rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
       resolved={(workspace: ActiveWorkspace) => {
-        const files = workspace.files.filter((f) => isViewRoFilesChecked || isEditable(f.relativePath));
+        const files = workspace.files.filter((f: WorkspaceFile) => isViewRoFilesChecked || isEditable(f.relativePath));
         const filesCount = files.length;
 
         return (
           <>
-            <AlertGroup isToast isLiveRegion>
-              {alerts.map(
-                ({ key, variant, title }) =>
-                  key && (
-                    <Alert
-                      variant={variant}
-                      title={title}
-                      timeout
-                      onTimeout={() => removeAlert(key)}
-                      actionClose={
-                        <AlertActionCloseButton
-                          title={title as string}
-                          variantLabel={`${variant} alert`}
-                          onClose={() => removeAlert(key)}
-                        />
-                      }
-                      key={key}
-                    />
-                  )
-              )}
-            </AlertGroup>
+            <Alerts ref={alertsRef} width={"500px"} />
             <Page
               breadcrumb={
                 <Breadcrumb>
@@ -203,12 +204,52 @@ export function WorkspaceFiles(props: Props) {
                         setPage={setPage}
                         setPerPage={setPerPage}
                         additionalComponents={
-                          <Checkbox
-                            id="viewRoFiles"
-                            label="View readonly files"
-                            isChecked={isViewRoFilesChecked}
-                            onChange={handleViewRoCheckboxChange}
-                          ></Checkbox>
+                          <>
+                            <ToolbarItem>
+                              <Dropdown
+                                position={"right"}
+                                isOpen={isNewFileDropdownMenuOpen}
+                                toggle={
+                                  <DropdownToggle
+                                    onToggle={setNewFileDropdownMenuOpen}
+                                    toggleIndicator={CaretDownIcon}
+                                    toggleVariant="primary"
+                                  >
+                                    <PlusIcon />
+                                    &nbsp;&nbsp;New file
+                                  </DropdownToggle>
+                                }
+                              >
+                                <NewFileDropdownMenu
+                                  alerts={alerts}
+                                  workspaceId={workspaceId}
+                                  destinationDirPath={""}
+                                  onAddFile={async (file) => {
+                                    setNewFileDropdownMenuOpen(false);
+                                    if (!file) {
+                                      return;
+                                    }
+
+                                    history.push({
+                                      pathname: routes.workspaceWithFilePath.path({
+                                        workspaceId: file.workspaceId,
+                                        fileRelativePath: file.relativePathWithoutExtension,
+                                        extension: file.extension,
+                                      }),
+                                    });
+                                  }}
+                                />
+                              </Dropdown>
+                            </ToolbarItem>
+                            <ToolbarItem>
+                              <Checkbox
+                                id="viewRoFiles"
+                                label="View readonly files"
+                                isChecked={isViewRoFilesChecked}
+                                onChange={handleViewRoCheckboxChange}
+                              ></Checkbox>
+                            </ToolbarItem>
+                          </>
                         }
                       />
 
@@ -259,3 +300,5 @@ export function WorkspaceFiles(props: Props) {
     />
   );
 }
+
+const capitalizeString = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
