@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import { DashbuilderYamlLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 import { CodeLens, Position } from "vscode-languageserver-types";
-import { DashbuilderLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 import { codeCompletionTester, ContentWithCursor } from "./testUtils";
 
 const documentUri = "test.sw.yaml";
@@ -27,7 +27,7 @@ describe("Code lenses", () => {
       ["empty object / with cursor before the object / using JSON format", `{}`],
       ["empty object / with cursor after the object / using JSON format", `{}`],
     ])("%s", async (_description, content: ContentWithCursor) => {
-      const ls = new DashbuilderLanguageService();
+      const ls = new DashbuilderYamlLanguageService();
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
@@ -40,7 +40,7 @@ describe("Code lenses", () => {
     ["empty file with a newline before the cursor", `\n`],
     ["empty file with a newline after the cursor", `\n`],
   ])("%s", async (_description, content: ContentWithCursor) => {
-    const ls = new DashbuilderLanguageService();
+    const ls = new DashbuilderYamlLanguageService();
 
     const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
     const position = Position.create(0, 0);
@@ -50,7 +50,7 @@ describe("Code lenses", () => {
       range: { start: position, end: position },
       command: {
         title: "Create a dashboard",
-        command: "dashbuilder.ls.commands.OpenCompletionItems",
+        command: "editor.ls.commands.OpenCompletionItems",
         arguments: [{ newCursorPosition: position }],
       },
     } as CodeLens);
@@ -58,7 +58,8 @@ describe("Code lenses", () => {
 });
 
 describe("code completion", () => {
-  const ls = new DashbuilderLanguageService();
+  const ls = new DashbuilderYamlLanguageService();
+
   describe("empty file completion", () => {
     test.each([
       ["empty object / using JSON format", `{🎯}`],
@@ -84,7 +85,7 @@ describe("code completion", () => {
 });
 
 describe("diagnostic", () => {
-  const ls = new DashbuilderLanguageService();
+  const ls = new DashbuilderYamlLanguageService();
   test.each([
     ["empty file", ``],
     [

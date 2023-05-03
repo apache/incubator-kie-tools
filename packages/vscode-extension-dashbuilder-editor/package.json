@@ -57,7 +57,7 @@
     "@types/selenium-webdriver": "^4.1.12",
     "@types/vscode": "^1.66.0",
     "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.18.0",
+    "@vscode/vsce": "^2.19.0",
     "chai": "^4.3.4",
     "copy-webpack-plugin": "^11.0.0",
     "cpr": "^3.0.1",
