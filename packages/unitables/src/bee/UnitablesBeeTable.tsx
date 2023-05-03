@@ -461,6 +461,12 @@ function UnitablesBeeTableCell({
 
   const onBlur = useCallback(
     (e: React.FocusEvent<HTMLDivElement>) => {
+      if (e.target.tagName.toLowerCase() === "div") {
+        if ((e.target.getElementsByTagName("input")?.length ?? 0) > 0) {
+          submitRow();
+        }
+      }
+
       if (e.target.tagName.toLowerCase() === "input") {
         submitRow();
       }
