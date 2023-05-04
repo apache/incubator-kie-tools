@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/import-java-classes-component",
-  "version": "0.28.0",
+  "version": "0.28.1",
   "description": "This component import Java classes as DMN data types",
   "license": "Apache-2.0",
   "keywords": [],
