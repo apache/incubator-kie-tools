@@ -23,7 +23,6 @@ import {
 } from "@kie-tools-core/editor/dist/api";
 import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { DefaultVsCodeKieEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl";
@@ -114,14 +113,6 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
         console.info(`Unknown message type received: ${command}`);
         break;
     }
-  }
-
-  public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void {
-    this.defaultApiImpl.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
-  }
-
-  public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction): void {
-    this.defaultApiImpl.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
   }
 
   public kogitoI18n_getLocale(): Promise<string> {

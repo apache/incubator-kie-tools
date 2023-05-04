@@ -20,7 +20,6 @@ import {
   EditorTheme,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
-import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { YardEditor } from "./YardEditor";
@@ -39,10 +38,6 @@ export class YardEditorView implements Editor {
   ) {
     this.editorRef = React.createRef<EditorApi>();
     this.initArgs = initArgs;
-  }
-
-  public async getElementPosition() {
-    return DEFAULT_RECT;
   }
 
   public setContent(path: string, content: string): Promise<void> {

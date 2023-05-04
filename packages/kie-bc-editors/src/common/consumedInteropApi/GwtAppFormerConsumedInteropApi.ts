@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Rect } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 
 declare global {
@@ -24,19 +23,7 @@ declare global {
     appFormerGwtFinishedLoading: () => any;
     erraiBusApplicationRoot: string;
     erraiBusRemoteCommunicationEnabled: boolean;
-    JsInterop__Envelope__GuidedTour__GuidedTourCustomSelectorPositionProvider: GuidedTourCustomSelectorPositionProvider;
   }
-}
-
-export const getGuidedTourElementPosition = (selector: string) => {
-  return window.JsInterop__Envelope__GuidedTour__GuidedTourCustomSelectorPositionProvider.getInstance().getPosition(
-    selector
-  );
-};
-
-interface GuidedTourCustomSelectorPositionProvider {
-  getPosition(querySelector: string): Rect;
-  getInstance(): GuidedTourCustomSelectorPositionProvider;
 }
 
 export interface GwtEditor {

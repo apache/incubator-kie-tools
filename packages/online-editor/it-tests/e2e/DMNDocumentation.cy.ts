@@ -29,9 +29,6 @@ describe("Test DMN Documentation tab", () => {
     // check editor title name
     cy.get("[aria-label='Edit file name']").should("have.value", "testModelDocumentation");
 
-    // close DMN guided tour dialog
-    cy.ouia({ ouiaId: "dmn-guided-tour" }).get("button[aria-label='Close']").click();
-
     cy.getEditor().within(() => {
       // open Documentaion tab
       cy.ouia({ ouiaId: "Documentation", ouiaType: "editor-nav-tab" }).find("a").click();

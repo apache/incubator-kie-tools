@@ -21,7 +21,6 @@ import {
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import {
   ResourceContent,
@@ -62,14 +61,6 @@ export class SwfTextEditorChannelApiImpl implements ServerlessWorkflowTextEditor
 
   public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
     this.args.defaultApiImpl.kogitoEditor_stateControlCommandUpdate(command);
-  }
-
-  public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void {
-    this.args.defaultApiImpl.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
-  }
-
-  public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction): void {
-    this.args.defaultApiImpl.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
   }
 
   public kogitoI18n_getLocale(): Promise<string> {

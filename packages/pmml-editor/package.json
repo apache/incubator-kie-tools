@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
-    "@kie-tools-core/guided-tour": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",

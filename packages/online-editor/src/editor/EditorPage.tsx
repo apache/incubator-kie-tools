@@ -19,7 +19,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { EditorToolbar } from "./Toolbar/EditorToolbar";
-import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../i18n";
 import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
@@ -82,8 +81,6 @@ export function EditorPage(props: Props) {
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
 
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
-
-  useDmnTour(!!editor?.isReady && workspaceFilePromise.data?.workspaceFile.extension === "dmn" && !isFileBroken);
 
   useEffect(() => {
     document.title = `KIE Sandbox :: ${props.fileRelativePath}`;

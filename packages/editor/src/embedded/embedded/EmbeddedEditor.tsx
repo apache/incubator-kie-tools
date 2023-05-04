@@ -21,7 +21,6 @@ import {
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
 } from "../../api";
-import { useGuidedTourPositionProvider } from "@kie-tools-core/guided-tour/dist/channel";
 import type * as CSS from "csstype";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
@@ -34,10 +33,7 @@ import { getEditorIframeProps } from "../../channel/editorIframeProps";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-type ChannelApiMethodsAlreadyImplementedByEmbeddedEditor =
-  | "kogitoGuidedTour_guidedTourUserInteraction"
-  | "kogitoGuidedTour_guidedTourRegisterTutorial"
-  | "kogitoEditor_contentRequest";
+type ChannelApiMethodsAlreadyImplementedByEmbeddedEditor = "kogitoEditor_contentRequest";
 
 type EmbeddedEditorChannelApiOverrides = Partial<
   Omit<KogitoEditorChannelApi, ChannelApiMethodsAlreadyImplementedByEmbeddedEditor>
@@ -145,9 +141,6 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
     });
   }, [props.file.getFileContents]);
 
-  // Register position provider for Guided Tour
-  useGuidedTourPositionProvider(envelopeServer.envelopeApi, iframeRef);
-
   // Forward keyboard events to the EditorEnvelope
   const onKeyDown = useCallback(
     (envelopeServer: EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>, ke: React.KeyboardEvent) => {
@@ -179,8 +172,6 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
         isReady: props.isReady ?? isReady,
         getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,
-        getElementPosition: (s) =>
-          envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(s),
         undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorUndo.send()),
         redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo.send()),
         getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),

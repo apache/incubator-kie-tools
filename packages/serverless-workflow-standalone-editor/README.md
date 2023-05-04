@@ -49,4 +49,3 @@ The returned object will contain the methods needed to manipulate the Editor:
 - `redo(): void`: Redo the last undone change in the Editor. This will also fire the subscribed callbacks of content changes.
 - `validate(): Promise<Notification[]>`: Validates the serverless workflow json/yaml content based on its schemas and it also includes custom validations specific to serverless workflow rules.
 - `setTheme(theme: EditorTheme): Promise<void>`: This sets theme to the editors on the web application.
-- `getElementPosition(selector: string): Promise<Rect>`: Provides an alternative for extending the standard query selector when the element lives inside a canvas or even a video component. The `selector` parameter must follow the format of "\<PROVIDER\>:::\<SELECT\>“, e.g. “Canvas:::MySquare” or “Video:::PresenterHand”. Returns a `Rect` representing the element position.
