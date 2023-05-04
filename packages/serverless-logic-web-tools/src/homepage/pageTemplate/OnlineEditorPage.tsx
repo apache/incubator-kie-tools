@@ -126,6 +126,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
           style={{ textDecoration: "none" }}
         >
           <Brand className="kogito-tools-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
+          <div className="brand-name">Serverless Logic Web Tools</div>
         </MastheadBrand>
       </MastheadMain>
       <MastheadContent>{headerToolbar}</MastheadContent>

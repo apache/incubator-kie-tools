@@ -23,7 +23,6 @@ import { routes } from "../../navigation/Routes";
 export function HomePageNav(props: { pathname: string }) {
   return (
     <>
-      <div className="chr-c-app-title">Serverless Logic Web Tools</div>
       <Nav aria-label="Global NAV" theme="dark">
         <NavList>
           <NavItem itemId={0} key={"Overview-nav"} isActive={props.pathname === routes.home.path({})}>
