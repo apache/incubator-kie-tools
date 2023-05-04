@@ -39,7 +39,7 @@ public class CornerIcon extends Group {
             .setCornerRadius(9)
             .setListening(true);
 
-    public CornerIcon(String icon, Point2D position, String tooltip) {
+    public CornerIcon(String icon, Point2D position, final String tooltip) {
         setLocation(position);
         setListening(true);
         add(border);
@@ -64,7 +64,12 @@ public class CornerIcon extends Group {
             border.getLayer().batch();
         });
         mouseClickHandler = border.addNodeMouseClickHandler(
-                event -> this.getParent().asGroup().getChildren().get(0).fireEvent(event)
+                event -> {
+                    this.getParent().asGroup().getChildren().get(0).fireEvent(event);
+                    if (null != tooltipElement) {
+                        tooltipElement.asPrimitive().moveToTop();
+                    }
+                }
         );
     }
 
