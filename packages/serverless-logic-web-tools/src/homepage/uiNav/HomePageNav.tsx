@@ -19,6 +19,7 @@ import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components
 import { Link, matchPath } from "react-router-dom";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
 import { routes } from "../../navigation/Routes";
+import { SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL } from "../../AppConstants";
 
 export function HomePageNav(props: { pathname: string }) {
   return (
@@ -46,10 +47,7 @@ export function HomePageNav(props: { pathname: string }) {
           </NavItem>
 
           <NavItem itemId={3} key={"Documentation-nav"} className="chr-c-navigation__additional-links">
-            <a
-              href="https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-overview.html"
-              target="_blank"
-            >
+            <a href={SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL} target="_blank">
               Documentation
               <ExternalLinkAltIcon />
             </a>

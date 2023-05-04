@@ -36,6 +36,7 @@ import { CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/di
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
+import { SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL } from "../../AppConstants";
 
 export function Overview(props: { isNavOpen: boolean }) {
   const routes = useRoutes();
@@ -106,7 +107,7 @@ export function Overview(props: { isNavOpen: boolean }) {
               target="_blank"
               iconPosition="right"
               icon={<ExternalLinkAltIcon />}
-              href="https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-overview.html"
+              href={SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL}
               variant={ButtonVariant.secondary}
               component="a"
             >
