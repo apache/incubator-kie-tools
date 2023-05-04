@@ -15,7 +15,6 @@
  */
 import * as React from "react";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import "@patternfly/react-core/dist/styles/base.css";
 import { BanIcon, CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { ActionsColumn, Td, Tr } from "@patternfly/react-table/dist/esm";

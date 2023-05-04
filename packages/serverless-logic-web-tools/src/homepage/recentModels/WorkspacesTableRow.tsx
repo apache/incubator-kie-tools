@@ -22,7 +22,6 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import "@patternfly/react-core/dist/styles/base.css";
 import { ExclamationTriangleIcon, OutlinedQuestionCircleIcon, SearchIcon } from "@patternfly/react-icons/dist/js/icons";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
