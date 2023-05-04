@@ -52,7 +52,7 @@
   "engines": {
     "vscode": "^1.66.0"
   },
-  "displayName": "DMN Editor",
+  "displayName": "KIE DMN Editor",
   "categories": [
     "Other"
   ],
