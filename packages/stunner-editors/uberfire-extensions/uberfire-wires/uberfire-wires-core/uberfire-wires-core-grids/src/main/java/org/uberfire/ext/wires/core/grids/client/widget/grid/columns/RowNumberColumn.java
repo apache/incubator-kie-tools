@@ -26,6 +26,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.im
 
 public class RowNumberColumn extends BaseGridColumn<Integer> implements IsRowDragHandle {
 
+    public static final double DEFAULT_WIDTH = 50.0;
+
     public RowNumberColumn() {
         this(new ArrayList<HeaderMetaData>() {{
                  add(new BaseHeaderMetaData("#"));
@@ -42,7 +44,7 @@ public class RowNumberColumn extends BaseGridColumn<Integer> implements IsRowDra
                            final GridColumnRenderer<Integer> columnRenderer) {
         super(headerMetaData,
               columnRenderer,
-              50.0);
+              DEFAULT_WIDTH);
         setMovable(false);
         setResizable(false);
         setFloatable(true);

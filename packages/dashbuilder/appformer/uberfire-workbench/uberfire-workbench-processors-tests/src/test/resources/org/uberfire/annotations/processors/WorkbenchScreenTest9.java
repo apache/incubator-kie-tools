@@ -4,11 +4,9 @@ import java.util.function.Consumer;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.workbench.model.menu.Menus;
 
 @WorkbenchScreen(identifier = "test9")
 public class WorkbenchScreenTest9 {
@@ -21,10 +19,6 @@ public class WorkbenchScreenTest9 {
     @WorkbenchPartTitle
     public String getTitle() {
         return "title";
-    }
-
-    @WorkbenchMenu
-    public void getMenus(final Consumer<Menus> menusConsumer) {
     }
 
 }

@@ -91,7 +91,7 @@ public class SaveCurrentStateCommandTest {
 
         verify(stateBeforeUndo).apply();
         assertEquals(CanvasCommandResultBuilder.SUCCESS, result);
-        assertEquals(stateBeforeUndo, command.getStateBeforeUndo());
+        assertNull(command.getStateBeforeUndo());
     }
 
     @Test

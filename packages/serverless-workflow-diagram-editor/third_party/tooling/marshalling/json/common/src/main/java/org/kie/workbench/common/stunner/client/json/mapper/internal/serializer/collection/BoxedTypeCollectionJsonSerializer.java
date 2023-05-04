@@ -47,6 +47,6 @@ public class BoxedTypeCollectionJsonSerializer<T> extends JsonSerializer<Collect
 
   @Override
   public void serialize(Collection<T> obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException("60");
+    throw new UnsupportedOperationException();
   }
 }

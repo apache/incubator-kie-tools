@@ -52,6 +52,10 @@ export class WorkspacesSharedWorker {
     return callback(this.workspacesWorkerBus);
   }
 
+  public closeWorkerPort() {
+    this.workspacesWorker?.port.close();
+  }
+
   private createWorker() {
     this.workspacesWorker = new SharedWorker(this.args.workerScriptUrl, this.args.workerName);
     this.workspacesWorker.port.start();

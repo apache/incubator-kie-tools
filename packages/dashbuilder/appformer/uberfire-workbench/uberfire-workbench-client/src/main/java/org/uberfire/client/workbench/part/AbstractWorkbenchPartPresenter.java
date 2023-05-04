@@ -16,14 +16,11 @@
 
 package org.uberfire.client.workbench.part;
 
-import java.util.function.Consumer;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * A Workbench panel part.
@@ -35,8 +32,6 @@ public abstract class AbstractWorkbenchPartPresenter implements WorkbenchPartPre
     private String title;
 
     private String contextId;
-
-    private Menus menus;
 
     private IsWidget titleDecoration;
 
@@ -80,16 +75,6 @@ public abstract class AbstractWorkbenchPartPresenter implements WorkbenchPartPre
     @Override
     public void setTitle(final String title) {
         this.title = title;
-    }
-
-    @Override
-    public void getMenus(final Consumer<Menus> menusConsumer) {
-        menusConsumer.accept(menus);
-    }
-
-    @Override
-    public void setMenus(Menus menus) {
-        this.menus = menus;
     }
 
     @Override

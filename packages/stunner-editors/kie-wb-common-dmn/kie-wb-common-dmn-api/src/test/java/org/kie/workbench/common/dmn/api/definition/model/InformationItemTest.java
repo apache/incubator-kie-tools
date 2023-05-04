@@ -90,4 +90,17 @@ public class InformationItemTest {
         assertEquals(INFORMATION_ITEM_NAME, target.getName().getValue());
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
     }
+
+    @Test
+    public void testExactCopy() {
+        final InformationItem source = new InformationItem(new Id(ITEM_ID), new Description(DESCRIPTION), new Name(INFORMATION_ITEM_NAME), BuiltInType.BOOLEAN.asQName());
+
+        final InformationItem target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(ITEM_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(INFORMATION_ITEM_NAME, target.getName().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+    }
 }

@@ -16,7 +16,7 @@
 
 package org.dashbuilder.client.perspective.generator;
 
-import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.LayoutPanelPresenter;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorActivity;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorScreenActivity;
@@ -29,7 +29,7 @@ public class RuntimePerspectiveEditorActivity extends PerspectiveEditorActivity 
 
     @Override
     protected String getDefaultPanelType() {
-        return StaticWorkbenchPanelPresenter.class.getName();
+        return LayoutPanelPresenter.class.getName();
     }
 
 }

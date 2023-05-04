@@ -43,7 +43,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -64,10 +63,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -211,10 +210,6 @@ public class ResizeNodeCommandTest {
         when(propertyAdapter.getId(eq(wProperty))).thenReturn(W_PROPERTY_ID);
         when(propertyAdapter.getId(eq(hProperty))).thenReturn(H_PROPERTY_ID);
         when(propertyAdapter.getId(eq(rProperty))).thenReturn(R_PROPERTY_ID);
-
-        when(definitionAdapter.getMetaPropertyField(eq(definition), eq(PropertyMetaTypes.WIDTH))).thenReturn(W_PROPERTY_ID);
-        when(definitionAdapter.getMetaPropertyField(eq(definition), eq(PropertyMetaTypes.HEIGHT))).thenReturn(H_PROPERTY_ID);
-        when(definitionAdapter.getMetaPropertyField(eq(definition), eq(PropertyMetaTypes.RADIUS))).thenReturn(R_PROPERTY_ID);
         when(definitionAdapter.getProperty(eq(definition), eq(W_PROPERTY_ID))).thenReturn((Optional) Optional.of(wProperty));
         when(definitionAdapter.getProperty(eq(definition), eq(H_PROPERTY_ID))).thenReturn((Optional) Optional.of(hProperty));
         when(definitionAdapter.getProperty(eq(definition), eq(R_PROPERTY_ID))).thenReturn((Optional) Optional.of(rProperty));
@@ -274,31 +269,9 @@ public class ResizeNodeCommandTest {
         assertNotNull(command);
         final List commands = command.getCommands();
         assertNotNull(commands);
-        assertEquals(6,
-                     commands.size());
-        assertTrue(commands.get(0) instanceof UpdateElementPropertyCommand);
-        final UpdateElementPropertyCommand wPropertyCommand = (UpdateElementPropertyCommand) commands.get(0);
-        assertEquals(element,
-                     wPropertyCommand.getElement());
-        assertEquals(W_PROPERTY_ID, wPropertyCommand.getField());
-        assertEquals(boundingBox.getWidth(),
-                     wPropertyCommand.getValue());
-        assertTrue(commands.get(1) instanceof UpdateElementPropertyCommand);
-        final UpdateElementPropertyCommand hPropertyCommand = (UpdateElementPropertyCommand) commands.get(1);
-        assertEquals(element,
-                     hPropertyCommand.getElement());
-        assertEquals(H_PROPERTY_ID, hPropertyCommand.getField());
-        assertEquals(boundingBox.getHeight(),
-                     hPropertyCommand.getValue());
-        assertTrue(commands.get(2) instanceof UpdateElementPropertyCommand);
-        final UpdateElementPropertyCommand rPropertyCommand = (UpdateElementPropertyCommand) commands.get(2);
-        assertEquals(element,
-                     rPropertyCommand.getElement());
-        assertEquals(R_PROPERTY_ID, rPropertyCommand.getField());
-        assertEquals(50d,
-                     rPropertyCommand.getValue());
-        verify(magnetLocationProvider, times(1)).apply(eq(shape), eq(0));
-        verify(magnetLocationProvider, times(1)).apply(eq(shape), eq(1));
+        assertEquals(0, commands.size());
+        verify(magnetLocationProvider, never()).apply(eq(shape), eq(0));
+        verify(magnetLocationProvider, never()).apply(eq(shape), eq(1));
     }
 
     @Test

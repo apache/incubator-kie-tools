@@ -15,27 +15,22 @@
  */
 
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
 import "./index.css";
-// noinspection ES6PreferShortImport
 import {
-  ContextProps,
-  DataType,
-  DecisionTableProps,
-  ExpressionProps,
-  FunctionProps,
-  InvocationProps,
-  ListProps,
-  LiteralExpressionProps,
-  LogicType,
-  RelationProps,
+  BeeGwtService,
+  DmnBuiltInDataType,
+  ExpressionDefinitionLogicType,
+  ExpressionDefinition,
+  generateUuid,
 } from "../src/api";
-import { BoxedExpressionEditor } from "../src/components";
+import { BoxedExpressionEditor } from "../src/expressions";
+import { getDefaultExpressionDefinitionByLogicType } from "./defaultExpression";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
-import "../src/components/BoxedExpressionEditor/base-no-reset-wrapped.css";
+import "../src/expressions/BoxedExpressionEditor/base-no-reset-wrapped.css";
 import ReactJson from "react-json-view";
 
 /**
@@ -60,7 +55,7 @@ export const pmmlParams = [
   {
     document: "document",
     modelsFromDocument: [
-      { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DataType.Number }] },
+      { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DmnBuiltInDataType.Number }] },
     ],
   },
   {
@@ -69,9 +64,9 @@ export const pmmlParams = [
       {
         model: "MiningModelSum",
         parametersFromModel: [
-          { id: "i1", name: "input1", dataType: DataType.Any },
-          { id: "i2", name: "input2", dataType: DataType.Any },
-          { id: "i3", name: "input3", dataType: DataType.Any },
+          { id: "i1", name: "input1", dataType: DmnBuiltInDataType.Any },
+          { id: "i2", name: "input2", dataType: DmnBuiltInDataType.Any },
+          { id: "i3", name: "input3", dataType: DmnBuiltInDataType.Any },
         ],
       },
     ],
@@ -82,77 +77,74 @@ export const pmmlParams = [
       {
         model: "RegressionLinear",
         parametersFromModel: [
-          { id: "i1", name: "i1", dataType: DataType.Number },
-          { id: "i2", name: "i2", dataType: DataType.Number },
+          { id: "i1", name: "i1", dataType: DmnBuiltInDataType.Number },
+          { id: "i2", name: "i2", dataType: DmnBuiltInDataType.Number },
         ],
       },
     ],
   },
 ];
 
+const INITIAL_EXPRESSION: ExpressionDefinition = {
+  id: generateUuid(),
+  name: "Expression Name",
+  logicType: ExpressionDefinitionLogicType.Undefined,
+  dataType: DmnBuiltInDataType.Undefined,
+};
+
+//Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
+const beeGwtService: BeeGwtService = {
+  getDefaultExpressionDefinition(logicType: string, dataType: string): ExpressionDefinition {
+    return getDefaultExpressionDefinitionByLogicType(
+      logicType as ExpressionDefinitionLogicType,
+      { dataType: dataType } as ExpressionDefinition,
+      0
+    );
+  },
+  openDataTypePage(): void {},
+  selectObject(): void {},
+};
+
 export const App: React.FunctionComponent = () => {
-  //This definition comes directly from the decision node
-  const selectedExpression: ExpressionProps = {
-    name: "Expression Name",
-    dataType: DataType.Undefined,
-  };
-
-  const [expressionDefinition, setExpressionDefinition] = useState(selectedExpression);
-
-  const [typedExpressionDefinition, setTypedExpressionDefinition] = useState(JSON.stringify(selectedExpression));
-
+  const [version, setVersion] = useState(-1);
+  const [expression, setExpression] = useState<ExpressionDefinition>(INITIAL_EXPRESSION);
+  const [expressionString, setExpressionString] = useState(JSON.stringify(INITIAL_EXPRESSION));
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
-  const boxedExpressionEditorGWTService = {
-    resetExpressionDefinition: (definition: ExpressionProps) => setExpressionDefinition(definition),
-    broadcastLiteralExpressionDefinition: (definition: LiteralExpressionProps) => setExpressionDefinition(definition),
-    broadcastRelationExpressionDefinition: (definition: RelationProps) => setExpressionDefinition(definition),
-    broadcastContextExpressionDefinition: (definition: ContextProps) => setExpressionDefinition(definition),
-    broadcastListExpressionDefinition: (definition: ListProps) => setExpressionDefinition(definition),
-    broadcastInvocationExpressionDefinition: (definition: InvocationProps) => setExpressionDefinition(definition),
-    broadcastFunctionExpressionDefinition: (definition: FunctionProps) => setExpressionDefinition(definition),
-    broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) => setExpressionDefinition(definition),
-    notifyUserAction(): void {},
-    openManageDataType(): void {},
-    onLogicTypeSelect(): void {},
-    selectObject(): void {},
-  };
-
-  const onTypedExpressionChange = useCallback((e) => {
-    setTypedExpressionDefinition(e.target.value);
+  const onExpressionStringChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setExpressionString(e.target.value);
   }, []);
 
-  const handleModalToggle = useCallback(() => {
-    setIsModalOpen((isModalOpen) => {
-      const goingToOpenTheModal = !isModalOpen;
-      if (goingToOpenTheModal) {
-        setTypedExpressionDefinition(JSON.stringify(expressionDefinition));
-      }
-      return goingToOpenTheModal;
-    });
-  }, [expressionDefinition]);
+  const toggleModal = useCallback(() => {
+    setIsModalOpen((prev) => !prev);
+  }, []);
 
-  const updateExpressionDefinition = useCallback(() => {
+  const setExpressionFromString = useCallback(() => {
     try {
-      const parsedTypedExpression = JSON.parse(typedExpressionDefinition);
-      setExpressionDefinition({ logicType: LogicType.Undefined });
-      setTimeout(() => {
-        setExpressionDefinition(parsedTypedExpression);
-      }, 0);
+      const parsedTypedExpression = JSON.parse(expressionString);
+      setExpression(parsedTypedExpression);
       setIsModalOpen(false);
     } catch (e) {
       console.error(e);
     }
-  }, [typedExpressionDefinition]);
+  }, [expressionString]);
 
+  useEffect(() => {
+    setVersion((prev) => prev + 1);
+    setExpressionString(JSON.stringify(expression));
+  }, [expression]);
+
+  const emptyRef = React.useRef<HTMLElement>(null);
   return (
     <div className="showcase">
+      <h3 style={{ position: "absolute", right: 0 }}>v{version}&nbsp;&nbsp;</h3>
       <div className="boxed-expression">
         <BoxedExpressionEditor
-          boxedExpressionEditorGWTService={boxedExpressionEditorGWTService}
+          scrollableParentRef={emptyRef}
+          beeGwtService={beeGwtService}
           decisionNodeId="_00000000-0000-0000-0000-000000000000"
-          expressionDefinition={expressionDefinition}
+          expressionDefinition={expression}
+          setExpressionDefinition={setExpression}
           dataTypes={dataTypes}
           pmmlParams={pmmlParams}
         />
@@ -164,13 +156,13 @@ export const App: React.FunctionComponent = () => {
             variant="secondary"
             icon={<PenIcon />}
             iconPosition="left"
-            onClick={handleModalToggle}
+            onClick={toggleModal}
             ouiaId="edit-expression-json"
           />
         </div>
 
         <pre>
-          <ReactJson src={expressionDefinition} name={false} enableClipboard />
+          <ReactJson src={expression} name={false} enableClipboard />
         </pre>
       </div>
 
@@ -178,21 +170,21 @@ export const App: React.FunctionComponent = () => {
         title="Manually edit Expression Definition"
         className="expression-definition-editor-modal"
         isOpen={isModalOpen}
-        onClose={handleModalToggle}
+        onClose={toggleModal}
         description="This modal is supposed to provide a manual edit option for the expression definition. If «Confirm» action does nothing, probably there is an issue with JSON definition parsing: look at browser's console."
         actions={[
-          <Button key="confirm" variant="primary" onClick={updateExpressionDefinition} ouiaId="confirm-expression-json">
+          <Button key="confirm" variant="primary" onClick={setExpressionFromString} ouiaId="confirm-expression-json">
             Confirm
           </Button>,
-          <Button key="cancel" variant="link" onClick={handleModalToggle}>
+          <Button key="cancel" variant="link" onClick={toggleModal}>
             Cancel
           </Button>,
         ]}
       >
         <textarea
           className="typed-expression"
-          value={typedExpressionDefinition}
-          onChange={onTypedExpressionChange}
+          value={expressionString}
+          onChange={onExpressionStringChange}
           data-ouia-component-id="typed-expression-json"
         />
       </Modal>

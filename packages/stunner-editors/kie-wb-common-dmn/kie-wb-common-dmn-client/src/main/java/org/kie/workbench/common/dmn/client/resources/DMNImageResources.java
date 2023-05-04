@@ -46,8 +46,6 @@ public interface DMNImageResources extends ClientBundleWithLookup {
     // Logos
     String DROOLS_LOGO = "images/logos/drools-logo.svg";
 
-    String SUPPORTED_BY_RED_HAT_LOGO = "images/logos/supported-by-red-hat-logo.svg";
-
     DMNImageResources INSTANCE = GWT.create(DMNImageResources.class);
 
     String SVG_MIME_TYPE = "image/svg+xml";
@@ -110,8 +108,4 @@ public interface DMNImageResources extends ClientBundleWithLookup {
     @ClientBundle.Source(DROOLS_LOGO)
     @DataResource.MimeType(SVG_MIME_TYPE)
     DataResource droolsLogo();
-
-    @ClientBundle.Source(SUPPORTED_BY_RED_HAT_LOGO)
-    @DataResource.MimeType(SVG_MIME_TYPE)
-    DataResource supportedByRedHatLogo();
 }

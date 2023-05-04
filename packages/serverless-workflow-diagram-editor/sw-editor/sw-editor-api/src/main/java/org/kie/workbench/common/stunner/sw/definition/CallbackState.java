@@ -17,34 +17,23 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
 
-/**
- * The Callback state allows you to explicitly model manual decision steps during workflow execution.
- *
- * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Callback-State"> Callback state </a>
- */
-@Bindable
-@Definition
-@Morph(base = State.class)
 @JSONMapper
+@YAMLMapper
 @JsType
+@YamlPropertyOrder({"name", "type", "transition", "action", "eventRef", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end",  "metadata"})
 public class CallbackState extends State {
 
     public static final String TYPE_CALLBACK = "callback";
 
-    /**
-     * Reference to an unique callback event name in the defined workflow events.
-     */
-    private String eventRef;
+    public String eventRef;
 
-    /**
-     * The action to be executed.
-     */
-    private ActionNode action;
+    public ActionNode action;
+
+    EventDataFilter eventDataFilter;
 
     public CallbackState() {
         this.type = TYPE_CALLBACK;
@@ -64,5 +53,13 @@ public class CallbackState extends State {
 
     public void setAction(ActionNode action) {
         this.action = action;
+    }
+
+    public EventDataFilter getEventDataFilter() {
+        return eventDataFilter;
+    }
+
+    public void setEventDataFilter(EventDataFilter eventDataFilter) {
+        this.eventDataFilter = eventDataFilter;
     }
 }

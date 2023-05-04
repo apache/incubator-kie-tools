@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Stack;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -34,7 +33,6 @@ import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.ext.plugin.event.PluginSaved;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.ActivityResourceType;
 
@@ -201,17 +199,6 @@ public class NavTilesWidget extends BaseNavWidget {
         openItem(navItem);
     }
 
-    // Catch changes on runtime perspectives so as to display the most up to date changes
-
-    private void onPerspectiveChanged(@Observes PluginSaved event) {
-        if (currentPerspectiveNavItem != null) {
-            NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(currentPerspectiveNavItem);
-            String perspectiveId = navCtx.getResourceId();
-            if (event.getPlugin().getName().equals(perspectiveId)) {
-                openPerspective(currentPerspectiveNavItem);
-            }
-        }
-    }
 
     private void clearBreadcrumb() {
         navItemStack.clear();

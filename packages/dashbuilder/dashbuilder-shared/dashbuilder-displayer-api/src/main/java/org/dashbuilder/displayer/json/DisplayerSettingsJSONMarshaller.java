@@ -47,7 +47,9 @@ public class DisplayerSettingsJSONMarshaller {
     private static final String COLUMN_EMPTY = "empty";
     private static final String SETTINGS_UUID = "uuid";
 
-    private static DisplayerSettingsJSONMarshaller SINGLETON = new DisplayerSettingsJSONMarshaller();
+    int displayerId = 0;
+
+    private static final DisplayerSettingsJSONMarshaller SINGLETON = new DisplayerSettingsJSONMarshaller();
 
     public static DisplayerSettingsJSONMarshaller get() {
         return SINGLETON;
@@ -100,7 +102,12 @@ public class DisplayerSettingsJSONMarshaller {
         }
 
         // UUID
-        ds.setUUID(jsonObject.getString(SETTINGS_UUID));
+        var uuid = jsonObject.getString(SETTINGS_UUID);
+        if (uuid == null) {
+            uuid = "D" + displayerId++;
+        }
+
+        ds.setUUID(uuid);
         jsonObject.put(SETTINGS_UUID, (String) null);
 
         // First look if a dataset 'on-the-fly' has been specified

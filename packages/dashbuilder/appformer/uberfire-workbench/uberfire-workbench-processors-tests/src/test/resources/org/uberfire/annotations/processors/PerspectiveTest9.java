@@ -17,7 +17,6 @@
 package org.uberfire.annotations.processors;
 
 import org.uberfire.client.annotations.Perspective;
-import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
@@ -27,11 +26,6 @@ public class PerspectiveTest9 {
     @Perspective
     public PerspectiveDefinition getPerspective() {
         return null;
-    }
-
-    @WorkbenchMenu
-    public String getMenus() {
-        return "";
     }
 
 }

@@ -24,18 +24,13 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
-import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -46,8 +41,6 @@ import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.workbench.model.menu.MenuFactory;
-import org.uberfire.workbench.model.menu.Menus;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -55,11 +48,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -74,7 +65,6 @@ public class ListBarWidgetImplTest {
 
     @Before
     public void setUp() throws Exception {
-        doNothing().when(listBar).setupContextMenu();
 
         listBar.contextMenu = mock(ButtonGroup.class);
         listBar.titleDropDown = mock(PartListDropdown.class);
@@ -94,12 +84,12 @@ public class ListBarWidgetImplTest {
         final PartDefinition currentPart = mock(PartDefinition.class);
 
         listBar.partContentView.put(selectedPart,
-                                    new FlowPanel());
+                new FlowPanel());
         listBar.parts.add(selectedPart);
         listBar.currentPart = Pair.newPair(currentPart,
-                                           new FlowPanel());
+                new FlowPanel());
         listBar.partContentView.put(currentPart,
-                                    new FlowPanel());
+                new FlowPanel());
 
         listBar.selectPart(selectedPart);
 
@@ -116,82 +106,82 @@ public class ListBarWidgetImplTest {
         listBar.parts.add(secondPart);
 
         assertEquals(2,
-                     listBar.getParts().size());
+                listBar.getParts().size());
     }
 
     @Test
     public void changeTitleForSelectablePart() {
         final PartDefinition part = getPartDefinition(true,
-                                                      false);
+                false);
         final IsWidget widget = mock(IsWidget.class);
 
         listBar.changeTitle(part,
-                            "title",
-                            widget);
+                "title",
+                widget);
 
         verify(listBar.titleDropDown).changeTitle(part,
-                                                  "title",
-                                                  widget);
+                "title",
+                widget);
     }
 
     @Test
     public void changeTitleForUnselectablePart() {
         final PartDefinition part = getPartDefinition(false,
-                                                      false);
+                false);
         final IsWidget widget = mock(IsWidget.class);
 
         listBar.changeTitle(part,
-                            "title",
-                            widget);
+                "title",
+                widget);
 
         verify(listBar.titleDropDown,
-               never()).changeTitle(part,
-                                    "title",
-                                    widget);
+                never()).changeTitle(part,
+                        "title",
+                        widget);
     }
 
     @Test
     public void addNewSelectablePartTest() {
         final PartDefinition part = getPartDefinition(true,
-                                                      false);
+                false);
         final WorkbenchPartPresenter presenter = getWorkbenchPartPresenter(part);
         final WorkbenchPartPresenter.View view = getWorkbenchPartView(presenter);
 
         listBar.parts.add(getPartDefinition(false,
-                                            true));
+                true));
 
         listBar.addPart(view);
 
         verify(listBar,
-               never()).selectPart(part);
+                never()).selectPart(part);
         verify(listBar.titleDropDown).addPart(view);
         verify(listBar).setupCSSLocators(any(),
-                                         any());
+                any());
 
         assertSame(part,
-                   listBar.parts.getFirst());
+                listBar.parts.getFirst());
     }
 
     @Test
     public void addNewUnselectablePartTest() {
         final PartDefinition part = getPartDefinition(false,
-                                                      false);
+                false);
         final WorkbenchPartPresenter presenter = getWorkbenchPartPresenter(part);
         final WorkbenchPartPresenter.View view = getWorkbenchPartView(presenter);
 
         listBar.addPart(view);
 
         verify(listBar,
-               never()).selectPart(part);
+                never()).selectPart(part);
         verify(listBar.titleDropDown,
-               never()).addPart(view);
+                never()).addPart(view);
         verify(listBar).resizePanelBody();
     }
 
     @Test
     public void addExistentPartTest() {
         final PartDefinition part = getPartDefinition(true,
-                                                      true);
+                true);
         final WorkbenchPartPresenter presenter = getWorkbenchPartPresenter(part);
         final WorkbenchPartPresenter.View view = getWorkbenchPartView(presenter);
 
@@ -199,40 +189,36 @@ public class ListBarWidgetImplTest {
 
         verify(listBar).selectPart(part);
         verify(listBar.titleDropDown,
-               never()).addPart(view);
+                never()).addPart(view);
         verify(listBar).resizePanelBody();
     }
 
     @Test
     public void selectNewPartTest() {
         final PartDefinition part = getPartDefinition(true,
-                                                      false);
+                false);
 
         final boolean selected = listBar.selectPart(part);
 
         assertFalse(selected);
         verify(listBar.titleDropDown,
-               never()).selectPart(part);
-        verify(listBar,
-               never()).setupContextMenu();
+                never()).selectPart(part);
         verify(listBar.header,
-               never()).setVisible(anyBoolean());
+                never()).setVisible(anyBoolean());
         verify(listBar,
-               never()).resizePanelBody();
+                never()).resizePanelBody();
     }
 
     @Test
     public void selectExistentUnselectablePartTest() {
         final PartDefinition part = getPartDefinition(false,
-                                                      true);
+                true);
 
         final boolean selected = listBar.selectPart(part);
 
         assertTrue(selected);
         verify(listBar.titleDropDown,
-               never()).selectPart(part);
-        verify(listBar,
-               never()).setupContextMenu();
+                never()).selectPart(part);
         verify(listBar.header).setVisible(false);
         verify(listBar).resizePanelBody();
     }
@@ -240,18 +226,17 @@ public class ListBarWidgetImplTest {
     @Test
     public void selectExistentSelectablePartTest() {
         final PartDefinition currentPart = getPartDefinition(false,
-                                                             false);
+                false);
         listBar.currentPart = Pair.newPair(currentPart,
-                                           new FlowPanel());
+                new FlowPanel());
 
         final PartDefinition selectedPart = getPartDefinition(true,
-                                                              true);
+                true);
 
         final boolean selected = listBar.selectPart(selectedPart);
 
         assertTrue(selected);
         verify(listBar.titleDropDown).selectPart(selectedPart);
-        verify(listBar).setupContextMenu();
         verify(listBar.header).setVisible(true);
         verify(listBar).resizePanelBody();
 
@@ -263,19 +248,19 @@ public class ListBarWidgetImplTest {
     @Test
     public void removeUnselectablePartTest() {
         final PartDefinition part = getPartDefinition(false,
-                                                      true);
+                true);
 
         listBar.remove(part);
 
         verify(listBar.titleDropDown,
-               never()).removePart(part);
+                never()).removePart(part);
         verify(listBar).resizePanelBody();
     }
 
     @Test
     public void notifyPartHiddenOnRemoveTest() {
         final PartDefinition part = getPartDefinition(true,
-                                                      true);
+                true);
         listBar.selectPart(part);
         listBar.remove(part);
 
@@ -286,7 +271,7 @@ public class ListBarWidgetImplTest {
     @Test
     public void removeSelectablePartTest() {
         final PartDefinition part = getPartDefinition(true,
-                                                      true);
+                true);
 
         listBar.remove(part);
 
@@ -302,10 +287,10 @@ public class ListBarWidgetImplTest {
 
         if (existent) {
             listBar.partContentView.put(part,
-                                        new FlowPanel());
+                    new FlowPanel());
             listBar.parts.add(part);
             listBar.partContentView.put(part,
-                                        new FlowPanel());
+                    new FlowPanel());
         }
 
         return part;
@@ -321,60 +306,6 @@ public class ListBarWidgetImplTest {
         final WorkbenchPartPresenter.View view = mock(WorkbenchPartPresenter.View.class);
         doReturn(presenter).when(view).getPresenter();
         return view;
-    }
-
-    @Test
-    public void testSingleMenu() {
-        final String caption = "test";
-        final Menus menus = MenuFactory.newTopLevelMenu(caption).respondsWith(() -> {
-        }).endMenu().build();
-
-        final Widget widget = listBar.makeItem(menus.getItems().get(0),
-                                               true);
-
-        assertTrue(widget instanceof Button);
-        verify((Button) widget).setText(caption);
-    }
-
-    @Test
-    public void testSubMenus() {
-        final String caption = "test";
-        final String submenu1 = "submenu1";
-        final String submenu2 = "submenu2";
-        final Menus menus = MenuFactory.newTopLevelMenu(caption)
-                .menus()
-                .menu(submenu1).respondsWith(() -> {
-                }).endMenu()
-                .menu(submenu2).respondsWith(() -> {
-                }).endMenu()
-                .endMenus()
-                .endMenu()
-                .build();
-
-        final Widget widget = listBar.makeItem(menus.getItems().get(0),
-                                               true);
-
-        assertTrue(widget instanceof ButtonGroup);
-
-        ArgumentCaptor<Widget> buttonCaptor = ArgumentCaptor.forClass(Widget.class);
-        verify(((ButtonGroup) widget),
-               times(2)).add(buttonCaptor.capture());
-
-        final List<Widget> widgetList = buttonCaptor.getAllValues();
-        assertEquals(2,
-                     widgetList.size());
-        verify((Button) widgetList.get(0)).setText(caption);
-
-        ArgumentCaptor<Widget> dropCaptor = ArgumentCaptor.forClass(Widget.class);
-
-        verify((DropDownMenu) widgetList.get(1),
-               times(2)).add(dropCaptor.capture());
-
-        final List<Widget> subMenusWidgetList = dropCaptor.getAllValues();
-        assertEquals(2,
-                     subMenusWidgetList.size());
-        verify((AnchorListItem) subMenusWidgetList.get(0)).setText(submenu1);
-        verify((AnchorListItem) subMenusWidgetList.get(1)).setText(submenu2);
     }
 
     @Test
@@ -430,12 +361,12 @@ public class ListBarWidgetImplTest {
         final PartDefinitionImpl partDefinition = new PartDefinitionImpl(mock(PlaceRequest.class));
         partDefinition.setSelectable(false);
         listBar.currentPart = new Pair<>(partDefinition,
-                                         mock(FlowPanel.class));
+                mock(FlowPanel.class));
 
         listBar.resizePanelBody();
 
         verify(listBar.content.getElement().getStyle()).setProperty("height",
-                                                                    "100%");
+                "100%");
     }
 
     @Test
@@ -443,30 +374,30 @@ public class ListBarWidgetImplTest {
         final PartDefinitionImpl partDefinition = new PartDefinitionImpl(mock(PlaceRequest.class));
         partDefinition.setSelectable(true);
         listBar.currentPart = new Pair<>(partDefinition,
-                                         mock(FlowPanel.class));
+                mock(FlowPanel.class));
         doReturn(10).when(listBar.header).getOffsetHeight();
 
         listBar.resizePanelBody();
 
         verify(listBar.content.getElement().getStyle()).setProperty("height",
-                                                                    "calc(100% - 10px)");
+                "calc(100% - 10px)");
     }
 
     @Test
     public void getPartsTest() {
         listBar.currentPart = Pair.newPair(getPartDefinition(false,
-                                                             false),
-                                           null);
+                false),
+                null);
         listBar.parts = new LinkedList<>();
         listBar.parts.add(getPartDefinition(false,
-                                            false));
+                false));
 
         final List<PartDefinition> parts = (List<PartDefinition>) listBar.getParts();
 
         assertSame(listBar.currentPart.getK1(),
-                   parts.get(0));
+                parts.get(0));
         assertSame(listBar.parts.get(0),
-                   parts.get(1));
+                parts.get(1));
     }
 
     @Test

@@ -16,23 +16,21 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.StringOrValueHolderJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StringOrValueHolderYamlTypeSerializer;
 
-/**
- * Inject state can be used to inject static data into state data input.
- * Inject state does not perform any actions.
- *
- * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Inject-State"> Inject state </a>
- */
-@Bindable
-@Definition
-@Morph(base = State.class)
 @JSONMapper
+@YAMLMapper
 @JsType
+@YamlPropertyOrder({"name", "type", "transition", "usedForCompensation", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end", "data", "metadata"})
 public class InjectState extends State {
 
     public static final String TYPE_INJECT = "inject";
@@ -40,24 +38,23 @@ public class InjectState extends State {
     /**
      * JSON object as String which can be set as state's data input and can be manipulated via filter.
      */
-    //TODO it's a JSON object in examples
-    private Data data;
+    @JsonbTypeSerializer(StringOrValueHolderJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StringOrValueHolderJsonbTypeSerializer.class)
+    @YamlTypeSerializer(StringOrValueHolderYamlTypeSerializer.class)
+    @YamlTypeDeserializer(StringOrValueHolderYamlTypeSerializer.class)
+    private Object data;
 
-    /**
-     * Whether the state is used to compensate for another state.
-     * Defaults to false.
-     */
-    private Boolean usedForCompensation;
+    public Boolean usedForCompensation;
 
     public InjectState() {
         this.type = TYPE_INJECT;
     }
 
-    public Data getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(Data data) {
+    public void setData(Object data) {
         this.data = data;
     }
 

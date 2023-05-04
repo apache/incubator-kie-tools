@@ -18,18 +18,19 @@ package org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.
 
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
-import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer;
+
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer.LongJsonSerializer;
 
 public class PrimitiveLongArrayLongSerializer extends BasicArrayJsonSerializer<long[]> {
 
-  private final BaseNumberJsonSerializer.LongJsonSerializer serializer =
-      new BaseNumberJsonSerializer.LongJsonSerializer();
+  private final LongJsonSerializer serializer =
+      new LongJsonSerializer();
 
   @Override
   public void serialize(
       long[] obj, String property, JsonGenerator generator, SerializationContext ctx) {
     if (obj != null) {
-      jakarta.json.stream.JsonGenerator builder = generator.writeStartArray(property);
+      JsonGenerator builder = generator.writeStartArray(property);
       for (int i = 0; i < obj.length; i++) {
         serializer.serialize(obj[i], builder, ctx);
       }
@@ -39,6 +40,6 @@ public class PrimitiveLongArrayLongSerializer extends BasicArrayJsonSerializer<l
 
   @Override
   public void serialize(long[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException("58");
+    throw new UnsupportedOperationException();
   }
 }

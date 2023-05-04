@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.diagram;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
 public abstract class AbstractDiagram<G extends Graph, S extends Metadata> implements Diagram<G, S> {
@@ -25,15 +24,15 @@ public abstract class AbstractDiagram<G extends Graph, S extends Metadata> imple
     private final S metadata;
     private G graph;
 
-    public AbstractDiagram(final @MapsTo("name") String name,
-                           final @MapsTo("metadata") S metadata) {
+    public AbstractDiagram(final String name,
+                           final S metadata) {
         this.name = name;
         this.metadata = metadata;
     }
 
-    public AbstractDiagram(final @MapsTo("name") String name,
-                           final @MapsTo("graph") G graph,
-                           final @MapsTo("metadata") S metadata) {
+    public AbstractDiagram(final String name,
+                           final G graph,
+                           final S metadata) {
         this.name = name;
         this.metadata = metadata;
         this.graph = graph;

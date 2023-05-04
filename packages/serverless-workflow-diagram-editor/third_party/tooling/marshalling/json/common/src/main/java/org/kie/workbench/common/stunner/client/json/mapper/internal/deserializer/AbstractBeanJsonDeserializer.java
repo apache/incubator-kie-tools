@@ -27,6 +27,7 @@ import jakarta.json.bind.serializer.DeserializationContext;
 import jakarta.json.stream.JsonParser;
 import jakarta.json.stream.JsonbPropertyDeserializer;
 
+
 public abstract class AbstractBeanJsonDeserializer<T> extends JsonbDeserializer<T>
     implements jakarta.json.bind.serializer.JsonbDeserializer<T> {
 

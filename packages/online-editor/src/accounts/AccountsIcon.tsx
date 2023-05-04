@@ -41,6 +41,7 @@ import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "./AccountsContext";
 import { ConnectToOpenShiftSection } from "./openshift/ConnectToOpenShiftSection";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { ConnectToKubernetesSection } from "./kubernetes/ConnectToKubernetesSection";
 
 export function AccountsIcon() {
   const accounts = useAccounts();
@@ -171,6 +172,13 @@ export function AccountsIcon() {
                   </TextContent>
                 </>
               )}
+              {accounts.section === AccountsSection.CONNECT_TO_KUBERNETES && (
+                <>
+                  <TextContent>
+                    <Text component={TextVariants.h1}>Connect to Kubernetes</Text>
+                  </TextContent>
+                </>
+              )}
               <br />
               <Divider inset={{ default: "insetMd" }} />
             </div>
@@ -224,6 +232,7 @@ export function AccountsIcon() {
                   <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
                 )}
                 {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && <ConnectToOpenShiftSection />}
+                {accounts.section === AccountsSection.CONNECT_TO_KUBERNETES && <ConnectToKubernetesSection />}
               </>
             </PageSection>
           </Page>

@@ -26,7 +26,6 @@
   <inherits name="org.gwtbootstrap3.extras.datepicker.DatePicker"/>
 
   <inherits name="org.uberfire.UberfireAPI"/>
-  <inherits name="org.uberfire.ext.services.UberfireWidgetsServicesAPI"/>
   <inherits name="org.uberfire.ext.widgets.table.UberfireTableWidget"/>
 
 </module>

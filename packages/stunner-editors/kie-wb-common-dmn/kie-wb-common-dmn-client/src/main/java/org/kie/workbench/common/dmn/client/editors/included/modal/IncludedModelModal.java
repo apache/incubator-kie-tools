@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.client.editors.included.commands.AddIncluded
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdown;
 import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
+import org.kie.workbench.common.dmn.client.events.IncludedPMMLModelUpdate;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -54,6 +55,8 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
 
     private final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent;
 
+    private final Event<RefreshDecisionComponents> refreshPMMLComponentsEvent;
+
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     private final SessionManager sessionManager;
@@ -67,6 +70,7 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
                               final DMNIncludeModelsClient client,
                               final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent,
                               final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent,
+                              final @IncludedPMMLModelUpdate Event<RefreshDecisionComponents> refreshPMMLComponentsEvent,
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                               final SessionManager sessionManager) {
         super(view);
@@ -75,10 +79,12 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
         this.client = client;
         this.refreshDataTypesListEvent = refreshDataTypesListEvent;
         this.refreshDecisionComponentsEvent = refreshDecisionComponentsEvent;
+        this.refreshPMMLComponentsEvent = refreshPMMLComponentsEvent;
         this.sessionCommandManager = sessionCommandManager;
         this.sessionManager = sessionManager;
     }
 
+    @Override
     @PostConstruct
     public void setup() {
         superSetup();
@@ -126,6 +132,7 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
         return new AddIncludedModelCommand(value,
                                            grid,
                                            refreshDecisionComponentsEvent,
+                                           refreshPMMLComponentsEvent,
                                            refreshDataTypesListEvent,
                                            recordEngine,
                                            client,

@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.client.editors.included.commands.RemoveInclu
 import org.kie.workbench.common.dmn.client.editors.included.commands.RemovePMMLIncludedModelCommand;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
+import org.kie.workbench.common.dmn.client.events.IncludedPMMLModelUpdate;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -35,7 +36,7 @@ public class PMMLCardComponent extends BaseCardComponent<PMMLIncludedModelActive
 
     @Inject
     public PMMLCardComponent(final @PMMLCard PMMLCardComponent.ContentView contentView,
-                             final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent,
+                             final @IncludedPMMLModelUpdate Event<RefreshDecisionComponents> refreshDecisionComponentsEvent,
                              final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                              final SessionManager sessionManager,
                              final ImportRecordEngine recordEngine,

@@ -44,6 +44,7 @@ export const WorkspacesContextProviderWithCustomCommitMessagesModal: FunctionCom
           workspacesSharedWorkerScriptUrl={"workspace/worker/sharedWorker.js"}
           shouldRequireCommitMessage={env.KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE}
           onCommitMessageRequest={onCommitMessageRequest}
+          workerNamePrefix={`kie-sandbox-${env.KIE_SANDBOX_VERSION}`}
         >
           {props.children}
         </WorkspacesContextProvider>

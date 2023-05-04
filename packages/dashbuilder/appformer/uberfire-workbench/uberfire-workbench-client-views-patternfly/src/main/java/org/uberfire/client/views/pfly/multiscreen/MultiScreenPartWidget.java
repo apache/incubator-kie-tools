@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -61,9 +60,6 @@ public class MultiScreenPartWidget extends Composite implements MultiPartWidget 
     @Inject
     PanelManager panelManager;
 
-    @Inject
-    MultiScreenMenuBuilder menuBuilder;
-
     private HashMap<PartDefinition, MultiScreenView> parts = new LinkedHashMap<>();
 
     @Override
@@ -85,32 +81,25 @@ public class MultiScreenPartWidget extends Composite implements MultiPartWidget 
 
     @Override
     public void addPart(final WorkbenchPartPresenter.View view) {
-        view.getPresenter().getMenus(menus -> {
-            final PartDefinition partDefinition = view.getPresenter().getDefinition();
-            if (parts.containsKey(partDefinition) == false) {
-                final MultiScreenView screen = multiScreenViews.get();
-                screen.setContent(view);
-                screen.setTitle(view.getPresenter().getTitle());
-                if (view.getPresenter().getTitleDecoration() != null) {
-                    screen.setTitleWidget(view.getPresenter().getTitleDecoration());
-                }
-                if (parts.isEmpty() && partDefinition.getParentPanel().getPosition() == null) {
-                    screen.disableClose();
-                }
-                screen.setCloseHandler(() -> panelManager.closePart(partDefinition));
-
-                Optional.ofNullable(menus)
-                        .ifPresent(m -> m.getItems().stream().map(menuBuilder)
-                                .forEachOrdered(e -> e.ifPresent(element -> screen.addMenus(element)))
-                        );
-
-                content.appendChild(screen.getElement());
-                parts.put(partDefinition,
-                          screen);
+        final PartDefinition partDefinition = view.getPresenter().getDefinition();
+        if (parts.containsKey(partDefinition) == false) {
+            final MultiScreenView screen = multiScreenViews.get();
+            screen.setContent(view);
+            screen.setTitle(view.getPresenter().getTitle());
+            if (view.getPresenter().getTitleDecoration() != null) {
+                screen.setTitleWidget(view.getPresenter().getTitleDecoration());
             }
+            if (parts.isEmpty() && partDefinition.getParentPanel().getPosition() == null) {
+                screen.disableClose();
+            }
+            screen.setCloseHandler(() -> panelManager.closePart(partDefinition));
 
-            selectPart(partDefinition);
-        });
+            content.appendChild(screen.getElement());
+            parts.put(partDefinition,
+                    screen);
+        }
+
+        selectPart(partDefinition);
     }
 
     @Override
@@ -180,13 +169,13 @@ public class MultiScreenPartWidget extends Composite implements MultiPartWidget 
     @Override
     public HandlerRegistration addBeforeSelectionHandler(final BeforeSelectionHandler<PartDefinition> handler) {
         return addHandler(handler,
-                          BeforeSelectionEvent.getType());
+                BeforeSelectionEvent.getType());
     }
 
     @Override
     public HandlerRegistration addSelectionHandler(final SelectionHandler<PartDefinition> handler) {
         return addHandler(handler,
-                          SelectionEvent.getType());
+                SelectionEvent.getType());
     }
 
     @Override

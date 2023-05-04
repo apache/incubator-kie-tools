@@ -21,11 +21,11 @@ import jsinterop.annotations.JsType;
 @JsType
 public class DecisionTableRule {
     public final String id;
-    public final String[] inputEntries;
-    public final String[] outputEntries;
+    public final RuleEntry[] inputEntries;
+    public final RuleEntry[] outputEntries;
     public final String[] annotationEntries;
 
-    public DecisionTableRule(final String id, final String[] inputEntries, final String[] outputEntries, final String[] annotationEntries) {
+    public DecisionTableRule(final String id, final RuleEntry[] inputEntries, final RuleEntry[] outputEntries, final String[] annotationEntries) {
         this.id = id;
         this.inputEntries = inputEntries;
         this.outputEntries = outputEntries;

@@ -27,14 +27,6 @@ public class EditorXPathLocator implements XPathLocator {
         this.xPathLocator = xPathLocator;
     }
 
-    /**
-     * Ace editor is shown in case of invalid model is opened. It is an XML editor.
-     * @return xPath Locator of an xml/ace editor
-     */
-    public static EditorXPathLocator aceEditor() {
-        return new EditorXPathLocator("//div[@class='ace_content']");
-    }
-
     public static EditorXPathLocator expressionEditor() {
         return new EditorXPathLocator("//div[@class='kie-dmn-expression-editor']/div/div/input");
     }
@@ -48,7 +40,7 @@ public class EditorXPathLocator implements XPathLocator {
      * @return XPath Locator for currently opened expression title
      */
     public static EditorXPathLocator expressionEditorTitle() {
-        return new EditorXPathLocator("//div[@class='kie-dmn-expression-type']/span[@data-field='expressionName']");
+        return new EditorXPathLocator("//div[@class='expression-name-and-logic-type']/span[@class='expression-title']");
     }
 
     public static EditorXPathLocator dataTypesTab() {

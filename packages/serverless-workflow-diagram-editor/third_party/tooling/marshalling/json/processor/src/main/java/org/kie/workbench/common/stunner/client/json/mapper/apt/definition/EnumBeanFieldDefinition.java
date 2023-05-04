@@ -45,7 +45,6 @@ import org.kie.workbench.common.stunner.client.json.mapper.apt.context.Generatio
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.EnumJsonDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.EnumJsonSerializer;
 
-
 public class EnumBeanFieldDefinition extends FieldDefinition {
 
   protected EnumBeanFieldDefinition(TypeMirror property, GenerationContext context) {

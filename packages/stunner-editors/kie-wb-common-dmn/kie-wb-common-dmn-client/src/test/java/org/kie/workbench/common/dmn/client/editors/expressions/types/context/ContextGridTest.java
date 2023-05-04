@@ -65,7 +65,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextArea
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
@@ -429,7 +428,7 @@ public class ContextGridTest {
         setupGrid(0);
 
         assertComponentWidths(ContextGridRowNumberColumn.DEFAULT_WIDTH,
-                              DMNGridColumn.DEFAULT_WIDTH,
+                              ContextGrid.CONTEXT_EXPRESSION_ENTRY_INFO_DEFAULT_WIDTH,
                               UndefinedExpressionColumn.DEFAULT_WIDTH);
     }
 

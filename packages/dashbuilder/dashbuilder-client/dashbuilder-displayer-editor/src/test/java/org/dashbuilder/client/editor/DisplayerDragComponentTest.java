@@ -19,23 +19,15 @@ import java.util.Map;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.displayer.DisplayerSettings;
-import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.GlobalDisplayerSettings;
-import org.dashbuilder.displayer.client.widgets.DisplayerEditorPopup;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,15 +41,6 @@ public class DisplayerDragComponentTest {
     SyncBeanManager beanManager;
 
     @Mock
-    SyncBeanDef<DisplayerEditorPopup> editorBeanDef;
-
-    @Mock
-    DisplayerEditorPopup editorPopup;
-
-    @Mock
-    ModalConfigurationContext configurationContext;
-
-    @Mock
     Map<String,String> configurationProperties;
     
     @Mock
@@ -65,35 +48,6 @@ public class DisplayerDragComponentTest {
     
     @Mock
     GlobalDisplayerSettings globalDisplayerSettings;
-
-    @InjectMocks
-    LineChartDragComponent lineChartDragComponent;
-
-    @Before
-    public void setUp(){
-        when(configurationContext.getComponentProperties()).thenReturn(configurationProperties);
-        when(configurationContext.getLayoutComponent()).thenReturn(layoutComponent);
-        when(beanManager.lookupBean(DisplayerEditorPopup.class)).thenReturn(editorBeanDef);
-        when(editorBeanDef.newInstance()).thenReturn(editorPopup);
-    }
-
-    @Test
-    public void testDefaultDisplayerType() {
-        assertEquals(lineChartDragComponent.getDisplayerType(), DisplayerType.LINECHART);
-        assertEquals(lineChartDragComponent.getDisplayerSubType(), null);
-
-        lineChartDragComponent.getConfigurationModal(configurationContext);
-        verify(editorPopup).setDisplayerType(DisplayerType.LINECHART);
-        verify(editorPopup, never()).setDisplayerSubType(any());
-    }
-
-    @Test
-    public void testDoNotSetDisplayerType() {
-        when(configurationProperties.get("json")).thenReturn("");
-        lineChartDragComponent.getConfigurationModal(configurationContext);
-        verify(editorPopup, never()).setDisplayerType(any());
-        verify(editorPopup, never()).setDisplayerSubType(any());
-    }
 
     @Test
     public void testAdjustSize(){

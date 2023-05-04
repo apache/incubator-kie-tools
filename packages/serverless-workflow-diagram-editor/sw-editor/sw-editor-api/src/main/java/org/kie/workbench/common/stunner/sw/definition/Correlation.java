@@ -22,8 +22,9 @@ import jsinterop.annotations.JsType;
 @JsType
 public class Correlation {
 
-    private String contextAttributeName;
-    private String contextAttributeValue;
+    public String contextAttributeName;
+
+    public String contextAttributeValue;
 
     public final String getContextAttributeValue() {
         return contextAttributeValue;

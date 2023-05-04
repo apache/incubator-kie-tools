@@ -28,7 +28,7 @@ public class PrimitiveCharacterArrayJsonSerializer extends BasicArrayJsonSeriali
   public void serialize(
       char[] obj, String property, JsonGenerator generator, SerializationContext ctx) {
     if (obj != null) {
-      jakarta.json.stream.JsonGenerator builder = generator.writeStartArray(property);
+      JsonGenerator builder = generator.writeStartArray(property);
       for (int i = 0; i < obj.length; i++) {
         serializer.serialize(obj[i], builder, ctx);
       }
@@ -38,6 +38,6 @@ public class PrimitiveCharacterArrayJsonSerializer extends BasicArrayJsonSeriali
 
   @Override
   public void serialize(char[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException("54");
+    throw new UnsupportedOperationException();
   }
 }

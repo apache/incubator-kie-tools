@@ -54,11 +54,6 @@ public abstract class AbstractDefinitionManager implements DefinitionManager {
     }
 
     @SuppressWarnings("unchecked")
-    protected void addDefinitionSet(final Object object) {
-        ((DynamicRegistry) definitionSetRegistry).register(object);
-    }
-
-    @SuppressWarnings("unchecked")
     protected void addAdapter(final Adapter adapter) {
         final DynamicRegistry<Adapter> adapterDynamicRegistry = (DynamicRegistry<Adapter>) adapterManager.registry();
         adapterDynamicRegistry.register(adapter);

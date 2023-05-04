@@ -32,6 +32,7 @@ import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
  */
 describe("KIE Editors Integration Test Suite - DMN Editor", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
+  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_EXPRESSION_DMN: string = "demo-expression.dmn";
   const REUSABLE_DMN: string = "reusable-model.dmn";
@@ -53,6 +54,7 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
 
   afterEach(async function () {
     this.timeout(15000);
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
     await webview.switchBack();
@@ -115,17 +117,14 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
 
     await decisionNavigator.selectNodeExpression("context demo", "Context");
     const contextEditor = await dmnEditorTester.getExpressionEditor();
-    await contextEditor.activateBetaVersion();
     await contextEditor.assertExpressionDetails("context demo", "string");
 
     await decisionNavigator.selectNodeExpression("function demo", "Function");
     const functionEditor = await dmnEditorTester.getExpressionEditor();
-    await functionEditor.activateBetaVersion();
     await functionEditor.assertExpressionDetails("function demo", "string");
 
-    await decisionNavigator.selectNodeExpression("decision table demo", "Decision Table");
+    await decisionNavigator.selectNodeExpression("decision table demo", "Decision table");
     const decisionTableEditor = await dmnEditorTester.getExpressionEditor();
-    await decisionTableEditor.activateBetaVersion();
     await decisionTableEditor.assertExpressionDetails("decision table demo", "string");
 
     await webview.switchBack();

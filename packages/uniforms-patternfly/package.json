@@ -16,6 +16,8 @@
   "bugs": {
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
+  "types": "./dist/esm/index.d.ts",
+  "main": "dist/esm/index.js",
   "files": [
     "dist"
   ],

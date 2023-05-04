@@ -61,9 +61,23 @@ public class DisplayerErrorWidget extends Composite {
     @DataField
     private HTMLAnchorElement refreshLink;
 
+    @Inject
+    @DataField
+    private HTMLDivElement errorDetailsContainer;
+
     public void show(String message, Throwable t) {
         errorBody.textContent = message;
-        errorDetails.value = buildErrorDetails(t);
+        if (t != null) {
+            hideErrorDetails(false);
+            errorDetails.value = buildErrorDetails(t);
+        } else {
+            hideErrorDetails(true);
+        }
+    }
+
+    private void hideErrorDetails(boolean b) {
+        var visibility = b ? Visibility.HIDDEN : Visibility.VISIBLE;
+        errorDetailsContainer.style.visibility = visibility.getCssName();
     }
 
     public void setRefreshAction(Runnable refreshAction) {
@@ -76,15 +90,11 @@ public class DisplayerErrorWidget extends Composite {
 
     private String buildErrorDetails(Throwable t) {
         var sb = new StringBuilder();
-        if (t != null) {
-            var cause = t.getCause();
-
-            sb.append(t.getMessage());
-
-            while (cause != null) {
-                sb.append("\n  Caused by: " + cause.getMessage());
-                cause = cause.getCause();
-            }
+        var cause = t.getCause();
+        sb.append(t.getMessage());
+        while (cause != null) {
+            sb.append("\n  Caused by: " + cause.getMessage());
+            cause = cause.getCause();
         }
         return sb.toString();
     }

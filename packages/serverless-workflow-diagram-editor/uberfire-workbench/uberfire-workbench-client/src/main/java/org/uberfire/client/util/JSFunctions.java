@@ -38,6 +38,14 @@ public class JSFunctions {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::getContent()();
         };
 
+        $wnd.GWTEditor.prototype.getContentYAML = function () {
+            return this.instance.@org.uberfire.client.mvp.EditorActivity::getContentYAML()();
+        };
+
+        $wnd.GWTEditor.prototype.getContentJSON = function () {
+            return this.instance.@org.uberfire.client.mvp.EditorActivity::getContentJSON()();
+        };
+
         $wnd.GWTEditor.prototype.getPreview = function () {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::getPreview()();
         };
