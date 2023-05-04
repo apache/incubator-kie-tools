@@ -23,7 +23,6 @@ package-lock.json
 **/logs/
 **/screenshots/
 
-## guided-tour
 # builds
 **/build
 **/.rpt2_cache
