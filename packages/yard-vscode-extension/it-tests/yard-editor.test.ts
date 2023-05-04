@@ -16,7 +16,7 @@
 
 import * as path from "path";
 import { assert } from "chai";
-import VSCodeTestHelper from "@kie-tools/vscode-extension-common-test-helpers";
+import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import YardEditorTestHelper from "./helpers/yard/YardEditorTestHelper";
 import YardTextEditorTestHelper from "./helpers/yard/YardTextEditorTestHelper";
 
