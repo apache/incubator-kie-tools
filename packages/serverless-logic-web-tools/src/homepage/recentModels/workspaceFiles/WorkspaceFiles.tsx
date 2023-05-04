@@ -139,8 +139,8 @@ export function WorkspaceFiles(props: Props) {
     });
   }, []);
 
-  const onToggleAllElements = useCallback((checked: boolean, workspace: ActiveWorkspace) => {
-    setSelectedWorkspaceFiles(checked ? workspace.files : []);
+  const onToggleAllElements = useCallback((checked: boolean, files: WorkspaceFile[]) => {
+    setSelectedWorkspaceFiles(checked ? files : []);
   }, []);
 
   const handleViewRoCheckboxChange = useCallback((checked: boolean) => {
@@ -188,7 +188,7 @@ export function WorkspaceFiles(props: Props) {
                       <TableToolbar
                         itemCount={filesCount}
                         onDeleteActionButtonClick={() => setIsConfirmDeleteModalOpen(true)}
-                        onToggleAllElements={(checked) => onToggleAllElements(checked, workspace)}
+                        onToggleAllElements={(checked) => onToggleAllElements(checked, files)}
                         searchValue={searchValue}
                         selectedElementsCount={selectedWorkspaceFiles.length}
                         setSearchValue={setSearchValue}
