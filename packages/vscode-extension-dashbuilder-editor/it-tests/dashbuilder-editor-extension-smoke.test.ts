@@ -17,7 +17,7 @@
 import * as path from "path";
 import { expect } from "chai";
 import { By, VSBrowser, WebDriver } from "vscode-extension-tester";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import VSCodeTestHelper from "@kie-tools/vscode-extension-common-test-helpers";
 import DashbuilderEditorTestHelper from "./helpers/dashbuilder/DashbuilderEditorTestHelper";
 
 // TODO Fix tests and re-enable them
