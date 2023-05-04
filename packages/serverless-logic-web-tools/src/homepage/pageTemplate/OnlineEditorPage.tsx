@@ -125,11 +125,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
           onClick={() => history.push({ pathname: routes.home.path({}) })}
           style={{ textDecoration: "none" }}
         >
-          <Brand
-            className="kogito-tools-common--brand"
-            src="images/kogito_log_workbranch.svg"
-            alt="kogito_logo_white.png"
-          ></Brand>
+          <Brand className="kogito-tools-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
         </MastheadBrand>
       </MastheadMain>
       <MastheadContent>{headerToolbar}</MastheadContent>
