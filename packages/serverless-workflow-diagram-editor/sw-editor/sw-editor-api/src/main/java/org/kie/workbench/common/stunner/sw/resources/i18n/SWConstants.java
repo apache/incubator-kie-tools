@@ -81,4 +81,19 @@ public interface SWConstants {
     String EVENT_FILTER_DATA = "Eventfilter.data";
     @TranslationKey(defaultValue = "")
     String EVENT_FILTER_TO_STATE_DATA = "Eventfilter.tostatedata";
+
+    @TranslationKey(defaultValue = "")
+    String CONDITION_IS_NULL = "Condition.null";
+    @TranslationKey(defaultValue = "")
+    String DATA_CONDITION_TRANSITION = "Condition.data";
+    @TranslationKey(defaultValue = "")
+    String DATA_CONDITION_TRANSITION_NAME = "Condition.dataname";
+    @TranslationKey(defaultValue = "")
+    String DATA_CONDITION_TRANSITION_VALUE = "Condition.datavalue";
+    @TranslationKey(defaultValue = "")
+    String EVENT_CONDITION_TRANSITION = "Condition.event";
+    @TranslationKey(defaultValue = "")
+    String EVENT_CONDITION_TRANSITION_NAME = "Condition.eventname";
+    @TranslationKey(defaultValue = "")
+    String EVENT_CONDITION_TRANSITION_VALUE = "Condition.eventvalue";
 }
