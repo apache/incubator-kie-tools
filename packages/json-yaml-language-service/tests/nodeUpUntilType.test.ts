@@ -15,13 +15,12 @@
  */
 
 import {
+  ELsNode,
   findNodeAtOffset,
   nodeUpUntilType,
-  SwfJsonLanguageService,
-  SwfYamlLanguageService,
-  SwfLsNode,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { defaultConfig, defaultJqCompletionsConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
+  parseJsonContent,
+  parseYamlContent,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import { treat } from "./testUtils";
 
 describe("nodeUpUntilType", () => {
@@ -30,7 +29,7 @@ describe("nodeUpUntilType", () => {
   });
 
   test("simple test", () => {
-    const rootNode: SwfLsNode = {
+    const rootNode: ELsNode = {
       children: [
         {
           children: [
@@ -66,19 +65,13 @@ describe("nodeUpUntilType", () => {
 
   describe("JSON", () => {
     test("up to functionRef value", () => {
-      const ls = new SwfJsonLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`{
           "name": "testStateAction2",
           "functionRef": {
             "refName":"🎯",
           }
         }`);
-      const root = ls.parseContent(content);
+      const root = parseJsonContent(content);
       const node = findNodeAtOffset(root!, cursorOffset);
 
       const receivedNode = nodeUpUntilType(node!, "object");
@@ -91,18 +84,12 @@ describe("nodeUpUntilType", () => {
 
   describe("YAML", () => {
     test("up to functionRef value", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-        jqCompletions: defaultJqCompletionsConfig,
-      });
       const { content, cursorOffset } = treat(`---
 name: testStateAction2
 functionRef:
   refName: 🎯a
 `);
-      const root = ls.parseContent(content);
+      const root = parseYamlContent(content);
       const node = findNodeAtOffset(root!, cursorOffset);
 
       const receivedNode = nodeUpUntilType(node!, "object");

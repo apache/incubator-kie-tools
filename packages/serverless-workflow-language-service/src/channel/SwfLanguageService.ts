@@ -15,28 +15,30 @@
  */
 
 import {
-  SwfServiceCatalogFunction,
+  EditorLanguageService,
+  EditorLanguageServiceArgs,
+  ELsCompletionsMap,
+  ELsNode,
+  IEditorLanguageService,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
+import {
   SwfCatalogSourceType,
-  SwfServiceCatalogService,
+  SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSource,
+  SwfServiceCatalogService,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import * as jsonc from "jsonc-parser";
 import { posix as posixPath } from "path";
+import { JSONSchema } from "vscode-json-languageservice";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
-import { FileLanguage } from "../api";
-import { findNodesAtLocation } from "./findNodesAtLocation";
-import { doRefValidation } from "./refValidation";
 import {
-  SwfCompletionItemServiceCatalogService,
   SwfLanguageServiceCodeCompletion,
+  SwfLanguageServiceCodeCompletionFunctionsArgs,
 } from "./SwfLanguageServiceCodeCompletion";
-import {
-  SwfLanguageServiceCodeLenses,
-  SwfLanguageServiceCodeLensesFunctionsArgs,
-} from "./SwfLanguageServiceCodeLenses";
-import { CodeCompletionStrategy, JqCompletions, SwfJsonPath, SwfLsNode } from "./types";
+import { SwfLanguageServiceCodeLenses } from "./SwfLanguageServiceCodeLenses";
+import { swfRefValidationMap } from "./swfRefValidationMap";
+import { CodeCompletionStrategy } from "./types";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -53,12 +55,7 @@ export type SwfLanguageServiceConfig = {
   shouldIncludeJsonSchemaDiagnostics: () => Promise<boolean>;
 };
 
-export type SwfLanguageServiceArgs = {
-  fs: {};
-  lang: {
-    fileLanguage: FileLanguage;
-    fileMatch: string[];
-  };
+export type SwfLanguageServiceArgs = EditorLanguageServiceArgs & {
   serviceCatalog: {
     global: {
       getServices: () => Promise<SwfServiceCatalogService[]>;
@@ -94,37 +91,23 @@ export function isVirtualRegistry(serviceCatalogFunction: SwfServiceCatalogFunct
   );
 }
 
-export class SwfLanguageService {
-  constructor(private readonly args: SwfLanguageServiceArgs) {}
+export class SwfLanguageService implements IEditorLanguageService {
+  private readonly els: EditorLanguageService;
+
+  constructor(private readonly args: SwfLanguageServiceArgs) {
+    this.els = new EditorLanguageService(this.args);
+  }
 
   public async getCompletionItems(args: {
     content: string;
     uri: string;
     cursorPosition: Position;
     cursorWordRange: Range;
-    rootNode: SwfLsNode | undefined;
+    rootNode: ELsNode | undefined;
     codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CompletionItem[]> {
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
-    const cursorOffset = doc.offsetAt(args.cursorPosition);
-    if (!args.rootNode) {
-      return args.content.trim().length
-        ? []
-        : SwfLanguageServiceCodeCompletion.getEmptyFileCodeCompletions({ ...args, cursorOffset, document: doc });
-    }
 
-    const currentNode = findNodeAtOffset(args.rootNode, cursorOffset, true);
-    if (!currentNode) {
-      return [];
-    }
-
-    const currentNodeRange: Range = {
-      start: doc.positionAt(currentNode.offset),
-      end: doc.positionAt(currentNode.offset + currentNode.length),
-    };
-    const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
-      ? currentNodeRange
-      : args.cursorWordRange;
     const swfCompletionItemServiceCatalogServices = await Promise.all(
       [
         ...(await this.args.serviceCatalog.global.getServices()),
@@ -139,34 +122,34 @@ export class SwfLanguageService {
         ),
       }))
     );
-    const matchedCompletions = Array.from(completions.entries()).filter(([path, _]) =>
-      args.codeCompletionStrategy.shouldComplete({
-        content: args.content,
-        cursorOffset: cursorOffset,
-        cursorPosition: args.cursorPosition,
-        node: currentNode,
-        path,
-        root: args.rootNode,
-      })
-    );
-    const result = await Promise.all(
-      matchedCompletions.map(([_, completionItemsDelegate]) => {
-        return completionItemsDelegate({
-          codeCompletionStrategy: args.codeCompletionStrategy,
-          currentNode,
-          currentNodeRange,
-          cursorOffset,
-          cursorPosition: args.cursorPosition,
-          document: doc,
-          langServiceConfig: this.args.config,
-          overwriteRange,
-          rootNode: args.rootNode!,
-          swfCompletionItemServiceCatalogServices,
-          jqCompletions: this.args.jqCompletions,
-        });
-      })
-    );
-    return Promise.resolve(result.flat());
+
+    return this.els.getCompletionItems({
+      ...args,
+      completions,
+      extraCompletionFunctionsArgs: {
+        langServiceConfig: this.args.config,
+        swfCompletionItemServiceCatalogServices,
+        jqCompletions: this.args.jqCompletions,
+      },
+    });
+  }
+
+  public async getCodeLenses(args: {
+    content: string;
+    uri: string;
+    rootNode: ELsNode | undefined;
+    codeCompletionStrategy: CodeCompletionStrategy;
+  }): Promise<CodeLens[]> {
+    const displayRhhccIntegration = await this.args.config.shouldDisplayServiceRegistriesIntegration();
+
+    return this.els.getCodeLenses({
+      ...args,
+      codeLenses: SwfLanguageServiceCodeLenses,
+      extraCodeLensesFunctionsArgs: {
+        config: this.args.config,
+        displayRhhccIntegration,
+      },
+    });
   }
 
   private getFunctionDiagnostics(services: SwfServiceCatalogService[]): Diagnostic[] {
@@ -200,76 +183,28 @@ export class SwfLanguageService {
   public async getDiagnostics(args: {
     content: string;
     uriPath: string;
-    rootNode: SwfLsNode | undefined;
-    getSchemaDiagnostics: (textDocument: TextDocument, fileMatch: string[]) => Promise<Diagnostic[]>;
+    rootNode: ELsNode | undefined;
+    getSchemaDiagnostics: (args: { textDocument: TextDocument; fileMatch: string[] }) => Promise<Diagnostic[]>;
   }): Promise<Diagnostic[]> {
-    if (!args.rootNode) {
-      return [];
-    }
-
-    // this ensure the document is validated again
-    const docVersion = Math.floor(Math.random() * 1000);
-
-    const textDocument = TextDocument.create(
-      args.uriPath,
-      `serverless-workflow-${this.args.lang.fileLanguage}`,
-      docVersion,
-      args.content
-    );
-    const refValidationResults = doRefValidation({ textDocument, rootNode: args.rootNode });
-    const schemaValidationResults = (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
-      ? await args.getSchemaDiagnostics(textDocument, this.args.lang.fileMatch)
-      : [];
-
-    const doc = TextDocument.create(args.uriPath, this.args.lang.fileLanguage, 0, args.content);
-    const globalServices = await this.args.serviceCatalog.global.getServices();
-    const relativeServices = await this.args.serviceCatalog.relative.getServices(doc);
-    return [
-      ...schemaValidationResults,
-      ...refValidationResults,
-      ...this.getFunctionDiagnostics([...globalServices, ...relativeServices]),
-    ];
+    return await this.els.getDiagnostics({
+      ...args,
+      validationMap: swfRefValidationMap,
+      getSchemaDiagnostics: (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
+        ? args.getSchemaDiagnostics
+        : undefined,
+    });
   }
 
-  public async getCodeLenses(args: {
-    content: string;
-    uri: string;
-    rootNode: SwfLsNode | undefined;
-    codeCompletionStrategy: CodeCompletionStrategy;
-  }): Promise<CodeLens[]> {
-    if (!args.content.trim().length) {
-      return SwfLanguageServiceCodeLenses.createNewSWF();
-    }
-
-    if (!args.rootNode) {
-      return [];
-    }
-
-    const document = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
-
-    const displayRhhccIntegration = await this.args.config.shouldDisplayServiceRegistriesIntegration();
-    const codeLensesFunctionsArgs: SwfLanguageServiceCodeLensesFunctionsArgs = {
-      config: this.args.config,
-      document,
-      content: args.content,
-      rootNode: args.rootNode,
-      codeCompletionStrategy: args.codeCompletionStrategy,
-    };
-
-    return [
-      ...(displayRhhccIntegration ? SwfLanguageServiceCodeLenses.setupServiceRegistries(codeLensesFunctionsArgs) : []),
-      ...(displayRhhccIntegration ? SwfLanguageServiceCodeLenses.logInServiceRegistries(codeLensesFunctionsArgs) : []),
-      ...(displayRhhccIntegration
-        ? SwfLanguageServiceCodeLenses.refreshServiceRegistries(codeLensesFunctionsArgs)
-        : []),
-      ...SwfLanguageServiceCodeLenses.addFunction(codeLensesFunctionsArgs),
-      ...SwfLanguageServiceCodeLenses.addEvent(codeLensesFunctionsArgs),
-      ...SwfLanguageServiceCodeLenses.addState(codeLensesFunctionsArgs),
-    ];
+  public async getSchemaDiagnostics(args: {
+    textDocument: TextDocument;
+    fileMatch: string[];
+    jsonSchema: JSONSchema;
+  }): Promise<Diagnostic[]> {
+    return this.els.getSchemaDiagnostics(args);
   }
 
   public dispose() {
-    // empty for now
+    this.els.dispose();
   }
 
   private async getSwfCompletionItemServiceCatalogFunctionOperation(
@@ -314,22 +249,8 @@ export class SwfLanguageService {
   }
 }
 
-const completions = new Map<
-  SwfJsonPath,
-  (args: {
-    codeCompletionStrategy: CodeCompletionStrategy;
-    currentNode: SwfLsNode;
-    currentNodeRange: Range;
-    cursorOffset: number;
-    cursorPosition: Position;
-    document: TextDocument;
-    langServiceConfig: SwfLanguageServiceConfig;
-    overwriteRange: Range;
-    rootNode: SwfLsNode;
-    swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
-    jqCompletions: JqCompletions;
-  }) => Promise<CompletionItem[]>
->([
+const completions: ELsCompletionsMap<SwfLanguageServiceCodeCompletionFunctionsArgs> = new Map([
+  [null, SwfLanguageServiceCodeCompletion.getEmptyFileCodeCompletions],
   [["start"], SwfLanguageServiceCodeCompletion.getStartCompletions],
   [["functions", "*"], SwfLanguageServiceCodeCompletion.getFunctionCompletions],
   [["functions", "*", "operation"], SwfLanguageServiceCodeCompletion.getFunctionOperationCompletions],
@@ -356,26 +277,3 @@ const completions = new Map<
   [["states", "*", "defaultCondition", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
   [["states", "*", "eventConditions", "*", "transition"], SwfLanguageServiceCodeCompletion.getTransitionCompletions],
 ]);
-
-export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNode | undefined {
-  return findNodesAtLocation({ root, path })[0];
-}
-
-export function findNodeAtOffset(root: SwfLsNode, offset: number, includeRightBound?: boolean): SwfLsNode | undefined {
-  return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as SwfLsNode;
-}
-
-export function getNodePath(node: SwfLsNode): SwfJsonPath {
-  return jsonc.getNodePath(node as jsonc.Node);
-}
-
-/**
- * Test if position `a` equals position `b`.
- * This function is compatible with https://microsoft.github.io/monaco-editor/api/classes/monaco.Position.html#equals-1
- *
- * @param a -
- * @param b -
- * @returns true if the positions are equal, false otherwise
- */
-export const positions_equals = (a: Position | null, b: Position | null): boolean =>
-  a?.line === b?.line && a?.character == b?.character;

@@ -14,4 +14,5 @@
  * limitations under the License.
  */
 export * from "./DashbuilderLanguageService";
+export * from "./DashbuilderYamlLanguageService";
 export * from "./types";

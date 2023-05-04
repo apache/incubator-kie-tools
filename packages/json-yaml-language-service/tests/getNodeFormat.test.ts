@@ -14,35 +14,29 @@
  * limitations under the License.
  */
 
-import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   findNodeAtOffset,
   getNodeFormat,
-  SwfJsonLanguageService,
-  SwfYamlLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { defaultConfig, defaultJqCompletionsConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
+  parseJsonContent,
+  parseYamlContent,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
+import { FileLanguage } from "@kie-tools/json-yaml-language-service/dist/api";
 import { ContentWithCursor, treat } from "./testUtils";
 
 describe("getNodeFormat", () => {
   const getNodeFormatTester = (args: {
     content: ContentWithCursor;
-    ls: SwfJsonLanguageService | SwfYamlLanguageService;
+    fileLanguage: FileLanguage;
   }): FileLanguage | undefined => {
     const { content, cursorOffset } = treat(args.content);
-    const root = args.ls.parseContent(content);
+    const root = args.fileLanguage === FileLanguage.JSON ? parseJsonContent(content) : parseYamlContent(content);
     const node = findNodeAtOffset(root!, cursorOffset);
 
     return node ? getNodeFormat(content, node) : undefined;
   };
 
   describe("JSON format", () => {
-    const ls = new SwfJsonLanguageService({
-      fs: {},
-      serviceCatalog: defaultServiceCatalogConfig,
-      config: defaultConfig,
-      jqCompletions: defaultJqCompletionsConfig,
-    });
+    const fileLanguage = FileLanguage.JSON;
 
     test("string value", async () => {
       expect(
@@ -50,7 +44,7 @@ describe("getNodeFormat", () => {
           content: `{
           "name": "🎯Greeting workflow"
         }`,
-          ls,
+          fileLanguage,
         })
       ).toBe(FileLanguage.JSON);
     });
@@ -61,7 +55,7 @@ describe("getNodeFormat", () => {
           content: `{
           "end": tru🎯e
         }`,
-          ls,
+          fileLanguage,
         })
       ).toBe(FileLanguage.JSON);
     });
@@ -73,7 +67,7 @@ describe("getNodeFormat", () => {
             content: `{
           "functions": [🎯]
         }`,
-            ls,
+            fileLanguage,
           })
         ).toBe(FileLanguage.JSON);
       });
@@ -85,7 +79,7 @@ describe("getNodeFormat", () => {
           "functions": 
           [🎯]
         }`,
-            ls,
+            fileLanguage,
           })
         ).toBe(FileLanguage.JSON);
       });
@@ -103,7 +97,7 @@ describe("getNodeFormat", () => {
           ],
           "states": []
         }`,
-            ls,
+            fileLanguage,
           })
         ).toBe(FileLanguage.JSON);
       });
@@ -116,7 +110,7 @@ describe("getNodeFormat", () => {
             content: `{
           "data": {🎯}
         }`,
-            ls,
+            fileLanguage,
           })
         ).toBe(FileLanguage.JSON);
       });
@@ -130,7 +124,7 @@ describe("getNodeFormat", () => {
               "language": "Portuguese"
             }
         }`,
-            ls,
+            fileLanguage,
           })
         ).toBe(FileLanguage.JSON);
       });
@@ -146,7 +140,7 @@ describe("getNodeFormat", () => {
             },
             "transition": "GetGreeting"
         }`,
-            ls,
+            fileLanguage,
           })
         ).toBe(FileLanguage.JSON);
       });
@@ -154,18 +148,13 @@ describe("getNodeFormat", () => {
   });
 
   describe("YAML format", () => {
-    const ls = new SwfYamlLanguageService({
-      fs: {},
-      serviceCatalog: defaultServiceCatalogConfig,
-      config: defaultConfig,
-      jqCompletions: defaultJqCompletionsConfig,
-    });
+    const fileLanguage = FileLanguage.YAML;
 
     test("string value", async () => {
       expect(
         getNodeFormatTester({
           content: `name: 🎯Greeting workflow`,
-          ls,
+          fileLanguage,
         })
       ).toBe(FileLanguage.YAML);
     });
@@ -174,7 +163,7 @@ describe("getNodeFormat", () => {
       expect(
         getNodeFormatTester({
           content: `name: "🎯Greeting workflow"`,
-          ls,
+          fileLanguage,
         })
       ).toBe(FileLanguage.JSON);
     });
@@ -183,7 +172,7 @@ describe("getNodeFormat", () => {
       expect(
         getNodeFormatTester({
           content: `end: 🎯true`,
-          ls,
+          fileLanguage,
         })
       ).toBe(FileLanguage.JSON);
     });
@@ -192,14 +181,14 @@ describe("getNodeFormat", () => {
       expect(
         getNodeFormatTester({
           content: `end: 🎯True`,
-          ls,
+          fileLanguage,
         })
       ).toBe(FileLanguage.YAML);
     });
 
     describe("arrays", () => {
       test("single line declaration / JSON format", async () => {
-        expect(getNodeFormatTester({ content: `functions: [🎯]`, ls })).toBe(FileLanguage.JSON);
+        expect(getNodeFormatTester({ content: `functions: [🎯]`, fileLanguage })).toBe(FileLanguage.JSON);
       });
 
       test("two lines declaration / JSON format", async () => {
@@ -209,7 +198,7 @@ describe("getNodeFormat", () => {
         "name": "getGreetingFunction",
         "operation": "openapi.yml#getGreeting"
       }]`,
-            ls,
+            fileLanguage,
           })
         ).toBe(FileLanguage.JSON);
       });
@@ -226,7 +215,7 @@ functions:
   type: custom
   operation: sysout
 states: [] `,
-            ls,
+            fileLanguage,
           })
         ).toBe(FileLanguage.YAML);
       });
@@ -234,7 +223,7 @@ states: [] `,
 
     describe("objects", () => {
       test("single line declaration / JSON format", async () => {
-        expect(getNodeFormatTester({ content: `data: {🎯}`, ls })).toBe(FileLanguage.JSON);
+        expect(getNodeFormatTester({ content: `data: {🎯}`, fileLanguage })).toBe(FileLanguage.JSON);
       });
 
       test("two lines declaration / JSON format", async () => {
@@ -242,7 +231,7 @@ states: [] `,
           getNodeFormatTester({
             content: `data: {🎯
               "language": "Portuguese" }`,
-            ls,
+            fileLanguage,
           })
         ).toBe(FileLanguage.JSON);
       });
@@ -256,7 +245,7 @@ data:
 🎯  language: Portuguese
   message: Hello
 transition: GetGreeting `,
-            ls,
+            fileLanguage,
           })
         ).toBe(FileLanguage.YAML);
       });

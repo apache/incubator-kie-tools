@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { SwfLsNode } from "./types";
+import { ELsNode } from "./types";
 
 export interface FindNodesAtLocationArgs {
   /**
    * root node
    */
-  root: SwfLsNode | undefined;
+  root: ELsNode | undefined;
 
   /**
    * the location of the node to search
@@ -43,12 +43,12 @@ export function findNodesAtLocation({
   root,
   path,
   includeUncompleteProps = false,
-}: FindNodesAtLocationArgs): SwfLsNode[] {
+}: FindNodesAtLocationArgs): ELsNode[] {
   if (!root) {
     return [];
   }
 
-  let nodes: SwfLsNode[] = [root];
+  let nodes: ELsNode[] = [root];
 
   for (const segment of path) {
     if (segment === "*") {

@@ -59,7 +59,7 @@ digraph G {
   "@kie-tools/dashbuilder-component-echarts-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/json-yaml-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-viewer" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-viewer-deployment-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -88,6 +88,7 @@ digraph G {
   "@kie-tools/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "kie-editors-dev-vscode-extension" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -212,7 +213,7 @@ digraph G {
   "@kie-tools/dashbuilder-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder-language-service" [ style = "solid", color = "blue" ];
-  "@kie-tools/dashbuilder-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
+  "@kie-tools/dashbuilder-language-service" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-viewer" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "blue" ];
@@ -270,6 +271,7 @@ digraph G {
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/vscode-java-code-completion" [ style = "solid", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/json-yaml-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
   "@kie-tools-core/keyboard-shortcuts" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "purple" ];
   "@kie-tools-core/keyboard-shortcuts" -> "@kie-tools-core/operating-system" [ style = "solid", color = "purple" ];
   "@kie-tools/kie-bc-editors" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
@@ -349,8 +351,8 @@ digraph G {
   "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-jq-expressions" -> "@kie-tools/serverless-workflow-service-catalog" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/serverless-workflow-jq-expressions" [ style = "solid", color = "blue" ];
-  "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-service-catalog" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "blue" ];

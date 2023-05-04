@@ -13,57 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CompletionItem, CompletionItemKind, InsertTextFormat, Position, Range } from "vscode-languageserver-types";
+import {
+  EditorLanguageServiceCodeCompletionFunctions,
+  EditorLanguageServiceCodeCompletionFunctionsArgs,
+  EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
+import { CompletionItem, CompletionItemKind, InsertTextFormat, Range } from "vscode-languageserver-types";
 import { dashbuilderCompletion } from "../assets/code-completions/";
-import { DashbuilderLsNode, TranslateArgs } from "./types";
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { indentText } from "./indentText";
-import { positions_equals } from "./DashbuilderLanguageService";
-import { dump } from "yaml-language-server-parser";
 
-export type DashbuilderLanguageServiceCodeCompletionFunctionsArgs = {
-  currentNode: DashbuilderLsNode;
-  currentNodeRange: Range;
-  cursorOffset: number;
-  document: TextDocument;
-  overwriteRange: Range;
-  rootNode: DashbuilderLsNode;
-};
+export type DashbuilderLanguageServiceCodeCompletionFunctionsArgs =
+  EditorLanguageServiceCodeCompletionFunctionsArgs & {};
 
-const translateYamlDoc = (args: TranslateArgs) => {
-  const completionDump = dump(args.completion, {}).slice(2, -1).trim();
-  if (["{}", "[]"].includes(completionDump) || args.completionItemKind === CompletionItemKind.Text) {
-    return completionDump;
-  }
-  const skipFirstLineIndent = args.completionItemKind !== CompletionItemKind.Module;
-  const completionItemNewLine = args.completionItemKind === CompletionItemKind.Module ? "\n" : "";
-  const completionText = completionItemNewLine + indentText(completionDump, 2, " ", skipFirstLineIndent);
-  return ([CompletionItemKind.Interface, CompletionItemKind.Reference] as CompletionItemKind[]).includes(
-    args.completionItemKind
-  ) && positions_equals(args.overwriteRange?.start ?? null, args.currentNodeRange?.start ?? null)
-    ? `- ${completionText}\n`
-    : completionText;
-};
 /**
  * DashbuilderLanguageService CodeCompletion functions
  */
-
-export const DashbuilderLanguageServiceCodeCompletion = {
-  getEmptyFileCodeCompletions(args: {
-    cursorPosition: Position;
-    cursorOffset: number;
-    document: TextDocument;
-  }): CompletionItem[] {
+export const DashbuilderLanguageServiceCodeCompletion: EditorLanguageServiceCodeCompletionFunctions = {
+  getEmptyFileCodeCompletions(
+    args: EditorLanguageServiceEmptyFileCodeCompletionFunctionArgs
+  ): Promise<CompletionItem[]> {
     const kind = CompletionItemKind.Text;
     const label = "Create your first dashboard";
-    return [
+    return Promise.resolve([
       {
         kind,
         label,
         detail: "Start with a simple dashboard",
         sortText: `100_${label}`, //place the completion on top in the menu
         textEdit: {
-          newText: translateYamlDoc({
+          newText: args.codeCompletionStrategy.translate({
             ...args,
             completion: dashbuilderCompletion,
             completionItemKind: kind,
@@ -72,6 +49,6 @@ export const DashbuilderLanguageServiceCodeCompletion = {
         },
         insertTextFormat: InsertTextFormat.Snippet,
       },
-    ];
+    ]);
   },
 };

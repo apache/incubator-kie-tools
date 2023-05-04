@@ -14,18 +14,9 @@
  * limitations under the License.
  */
 
-export type SwfRef = {
-  type: "string" | "boolean" | "number" | "null";
-  path: string[];
-  isArray?: boolean;
-};
+import { RefValidationMap } from "@kie-tools/json-yaml-language-service/dist/channel";
 
-export type SwfSrc = {
-  name: string;
-  path: string[];
-};
-
-export const swfRefValidationMap: Map<SwfSrc, SwfRef[]> = new Map([
+export const swfRefValidationMap: RefValidationMap = new Map([
   [
     {
       name: "auth",
