@@ -30,6 +30,7 @@ RUN rm -rf src/test/ && \
   mvn clean package \
   quarkus:go-offline \
   -B \
+  -ntp \
   -Dmaven.test.skip \
   -Dquarkus-profiles=build,dev
 
