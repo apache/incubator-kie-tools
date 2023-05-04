@@ -265,6 +265,7 @@ export const en: OnlineI18n = {
         description: "The embedded Editor will contain the current content, so it cannot be changed externally.",
       },
       gist: {
+        alert: `You have new changes to push. Embedding as a ${en_common.names.github} gist won't show your latest changes.`,
         tooltip: `Only available when editing a file from a ${en_common.names.github} gist.`,
         label: `${en_common.names.github} gist`,
         description:

@@ -173,13 +173,9 @@ export function EmbedModal(props: {
       title={i18n.embedModal.title}
       description={i18n.embedModal.description}
     >
-      {isGist && hasLocalChanges && (
+      {isGist && hasLocalChanges && contentSource === ContentSource.GIST && (
         <>
-          <Alert
-            isInline={true}
-            variant={"warning"}
-            title={`You have new changes to push. Embedding '${props.workspace.name}' won't show your latest changes.`}
-          ></Alert>
+          <Alert isInline={true} variant={"warning"} title={i18n.embedModal.source.gist.alert}></Alert>
           <br />
         </>
       )}

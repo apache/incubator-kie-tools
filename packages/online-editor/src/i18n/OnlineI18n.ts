@@ -247,6 +247,7 @@ interface OnlineDictionary extends ReferenceDictionary {
         description: string;
       };
       gist: {
+        alert: string;
         tooltip: string;
         label: string;
         description: string;
