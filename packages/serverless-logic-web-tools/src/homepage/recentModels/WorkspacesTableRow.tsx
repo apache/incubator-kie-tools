@@ -61,7 +61,7 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
             fileRelativePath: editableFiles[0].relativePathWithoutExtension,
             extension: editableFiles[0].extension,
           })
-        : routes.workspaceWithFiles.path({ workspaceId: editableFiles[0].workspaceId }),
+        : routes.workspaceWithFiles.path({ workspaceId }),
     [editableFiles, isWsFolder]
   );
 
