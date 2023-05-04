@@ -88,14 +88,6 @@ export const tabWithTitle = (title: string): By => {
 };
 
 /**
- * Creates a classname locator for kogito loading spinner.
- * This is a common spinner used by envelope and will always be present.
- */
-export const kogitoLoadingSpinner = (): By => {
-  return By.className("kie-tools--loading-screen-spinner");
-};
-
-/**
  * Creates a XPATH string that locates <a> element with specific <span> with text.
  *
  * @param itemName name displayed inside of span

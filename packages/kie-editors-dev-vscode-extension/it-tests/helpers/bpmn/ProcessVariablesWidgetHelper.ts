@@ -16,7 +16,7 @@
 
 import { assert } from "chai";
 import { By, WebElement } from "vscode-extension-tester";
-import { sleep } from "../VSCodeTestHelper";
+import { sleep } from "@kie-tools/vscode-extension-common-test-helpers";
 import ProcessVariable from "./ProcessVariable";
 
 /**

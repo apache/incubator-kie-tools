@@ -19,7 +19,7 @@ require("./extension-editors-smoke.test");
 import { SideBarView, WebView } from "vscode-extension-tester";
 import * as path from "path";
 import { EditorTabs } from "./helpers/dmn/EditorTabs";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import DmnEditorTestHelper from "./helpers/dmn/DmnEditorTestHelper";
 import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
 

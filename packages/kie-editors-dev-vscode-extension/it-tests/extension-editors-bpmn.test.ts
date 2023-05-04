@@ -19,8 +19,8 @@ require("./extension-editors-smoke.test");
 import { By, SideBarView, WebView } from "vscode-extension-tester";
 import * as path from "path";
 import { h5ComponentWithText } from "./helpers/CommonLocators";
-import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import { assertWebElementIsDisplayedEnabled } from "@kie-tools/vscode-extension-common-test-helpers";
+import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import BpmnEditorTestHelper, { PaletteCategories } from "./helpers/bpmn/BpmnEditorTestHelper";
 import { assert } from "chai";
 import {

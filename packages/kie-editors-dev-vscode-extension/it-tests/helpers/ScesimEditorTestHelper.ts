@@ -15,7 +15,7 @@
  */
 
 import { By, until, WebElement, WebView } from "vscode-extension-tester";
-import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
+import { assertWebElementIsDisplayedEnabled } from "@kie-tools/vscode-extension-common-test-helpers";
 import { expandedDocksBarE, h3ComponentWithText, spanComponentWithText } from "./CommonLocators";
 
 /**

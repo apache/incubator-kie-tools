@@ -27,7 +27,7 @@ import {
 } from "./BpmnLocators";
 import { labeledAnyElementInPropertiesPanel } from "../CommonLocators";
 import { assert } from "chai";
-import { sleep } from "../VSCodeTestHelper";
+import { sleep } from "@kie-tools/vscode-extension-common-test-helpers";
 import CorrelationModalHelper from "./CorrelationModalHelper";
 import ProcessVariablesWidgetHelper from "./ProcessVariablesWidgetHelper";
 import DataAssignmentsModalHelper from "./DataAssignmentsModalHelper";

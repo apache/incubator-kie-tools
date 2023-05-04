@@ -16,8 +16,8 @@
 
 import { SideBarView, WebView } from "vscode-extension-tester";
 import * as path from "path";
-import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import { assertWebElementIsDisplayedEnabled } from "@kie-tools/vscode-extension-common-test-helpers";
+import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import BpmnEditorTestHelper from "./helpers/bpmn/BpmnEditorTestHelper";
 import ScesimEditorTestHelper from "./helpers/ScesimEditorTestHelper";
 import DmnEditorTestHelper from "./helpers/dmn/DmnEditorTestHelper";

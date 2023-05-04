@@ -16,7 +16,7 @@
 
 import { assert } from "chai";
 import { By, WebElement } from "vscode-extension-tester";
-import { assertWebElementIsDisplayedEnabled } from "../CommonAsserts";
+import { assertWebElementIsDisplayedEnabled } from "@kie-tools/vscode-extension-common-test-helpers";
 import { BuiltInType } from "./BuiltInType";
 
 /**

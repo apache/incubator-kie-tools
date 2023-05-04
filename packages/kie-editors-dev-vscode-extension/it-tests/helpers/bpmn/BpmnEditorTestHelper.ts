@@ -15,12 +15,12 @@
  */
 
 import { By, WebElement, WebView } from "vscode-extension-tester";
-import { assertWebElementIsDisplayedEnabled } from "../CommonAsserts";
+import { assertWebElementIsDisplayedEnabled } from "@kie-tools/vscode-extension-common-test-helpers";
 import { expandedDocksBarE, h3ComponentWithText } from "../CommonLocators";
 import { assert } from "chai";
 import PropertiesPanelHelper from "../bpmn/PropertiesPanelHelper";
 import DiagramExplorerHelper from "../bpmn/DiagramExplorerHelper";
-import { sleep } from "../VSCodeTestHelper";
+import { sleep } from "@kie-tools/vscode-extension-common-test-helpers";
 
 export enum PaletteCategories {
   START_EVENTS = "Start Events",
