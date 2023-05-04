@@ -1,3 +1,7 @@
+# 0.28.1 (alpha)
+
+- [KOGITO-9105](https://issues.redhat.com/browse/KOGITO-9105) - Add KIE prefix to `displayName` of new VS Code extensions
+
 # 0.28.0 (alpha)
 
 - [kie-issues#42](https://github.com/kiegroup/kie-issues/issues/42) - DMN Editor: Repetitive opening of properties panel for List expression by @danielzhe in https://github.com/kiegroup/kie-tools/pull/1502
