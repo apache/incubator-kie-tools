@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-import { TextEditor } from "vscode-extension-tester";
+import { TextEditor, WebView } from "vscode-extension-tester";
 
 /**
  * Helper class to support work with yard text editor.
  */
 export default class YardTextEditorTestHelper {
-  constructor(private readonly textEditor: TextEditor) {}
+  constructor(private readonly webview: WebView) {}
 
-  public async isDirty(): Promise<boolean> {
-    return this.textEditor.isDirty();
-  }
-
-  public async getText(): Promise<string> {
-    return this.textEditor.getText();
+  public async getYardTextEditor(): Promise<TextEditor> {
+    return Promise.resolve(new TextEditor());
   }
 }
