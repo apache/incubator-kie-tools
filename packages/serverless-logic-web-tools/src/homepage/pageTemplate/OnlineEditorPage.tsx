@@ -44,6 +44,7 @@ import {
 } from "../../quickstarts-data";
 import { SettingsButton } from "../../settings/SettingsButton";
 import { HomePageNav } from "../uiNav/HomePageNav";
+import { APP_NAME } from "../../AppConstants";
 
 export type OnlineEditorPageProps = {
   children?: React.ReactNode;
@@ -126,7 +127,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
           style={{ textDecoration: "none" }}
         >
           <Brand className="kogito-tools-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
-          <div className="brand-name">Serverless Logic Web Tools</div>
+          <div className="brand-name">{APP_NAME}</div>
         </MastheadBrand>
       </MastheadMain>
       <MastheadContent>{headerToolbar}</MastheadContent>
