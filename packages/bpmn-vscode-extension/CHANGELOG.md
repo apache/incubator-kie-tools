@@ -1,3 +1,7 @@
+# 0.28.1 (alpha)
+
+- [KOGITO-9105](https://issues.redhat.com/browse/KOGITO-9105) - Add KIE prefix to `displayName` of new VS Code extensions
+
 # 0.28.0 (alpha)
 
 - [kie-issues#102](https://github.com/kiegroup/kie-issues/issues/102) - BPMN Editor: Zooming in/out does not update the toolbox for correct size by @inodeman in https://github.com/kiegroup/kie-tools/pull/1470

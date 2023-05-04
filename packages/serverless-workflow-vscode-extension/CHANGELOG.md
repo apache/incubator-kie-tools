@@ -1,3 +1,7 @@
+# 0.28.1 (alpha)
+
+- [KOGITO-9105](https://issues.redhat.com/browse/KOGITO-9105) - Add KIE prefix to `displayName` of new VS Code extensions
+
 # 0.28.0 (alpha)
 
 - [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/kiegroup/kie-tools/pull/1485
