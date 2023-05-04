@@ -62,7 +62,8 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
 
   it("Include reusable-model in DMN Editor", async function () {
     this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN);
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const dmnEditorTester = new DmnEditorTestHelper(webview);
 
@@ -79,7 +80,8 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
 
   it("Undo command in DMN Editor", async function () {
     this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN);
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const dmnEditorTester = new DmnEditorTestHelper(webview);
 
@@ -109,7 +111,8 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
 
   it("Check new DMN Expression Editor", async function () {
     this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar(DEMO_EXPRESSION_DMN);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_EXPRESSION_DMN);
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const dmnEditorTester = new DmnEditorTestHelper(webview);
 

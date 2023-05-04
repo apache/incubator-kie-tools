@@ -73,7 +73,8 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
 
   it("Opens process with work item definition properly", async function () {
     this.timeout(30000);
-    webview = await testHelper.openFileFromSidebar(WID_BPMN, "src/main/java/org/kie/businessapp");
+    const editorWebviews = await testHelper.openFileFromSidebar(WID_BPMN, "src/main/java/org/kie/businessapp");
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
@@ -108,7 +109,8 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
 
   it("Saves a change of process name in BPMN editor properly", async function () {
     this.timeout(60000);
-    webview = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
+    let editorWebviews = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     let bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
@@ -127,7 +129,8 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
     await testHelper.executeCommandFromPrompt("File: Save");
     await testHelper.closeAllEditors();
 
-    webview = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
+    editorWebviews = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     bpmnEditorTester = new BpmnEditorTestHelper(webview);
     properties = await bpmnEditorTester.openDiagramProperties();
@@ -140,7 +143,8 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
 
   it("Reuses Data-types across BPMN editor", async function () {
     this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar("ReuseDataTypeTest.bpmn");
+    const editorWebviews = await testHelper.openFileFromSidebar("ReuseDataTypeTest.bpmn");
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
@@ -179,7 +183,8 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
   it("Opens MultipleInstanceSubprocess.bpmn file in BPMN Editor and test Implementation/Execution value change", async function () {
     this.timeout(40000);
     // Inicialization
-    webview = await testHelper.openFileFromSidebar(MULTIPLE_INSTANCE_BPMN);
+    const editorWebviews = await testHelper.openFileFromSidebar(MULTIPLE_INSTANCE_BPMN);
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
@@ -247,7 +252,8 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
 
   it("Opens UserTask.bpmn file in BPMN Editor and test On Entry and On Exit actions", async function () {
     this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar(USER_TASK_BPMN);
+    const editorWebviews = await testHelper.openFileFromSidebar(USER_TASK_BPMN);
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
@@ -288,7 +294,8 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
 
   it("Opens ProcessWithGenerics.bpmn file in BPMN Editor and validate collaborations.", async function () {
     this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar("ProcessWithCollaboration.bpmn");
+    const editorWebviews = await testHelper.openFileFromSidebar("ProcessWithCollaboration.bpmn");
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
@@ -339,7 +346,8 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
 
   it("Opens ProcessWithGenerics and diplays the generic types", async function () {
     this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar("ProcessWithGenerics.bpmn");
+    const editorWebviews = await testHelper.openFileFromSidebar("ProcessWithGenerics.bpmn");
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 

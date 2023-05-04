@@ -60,7 +60,8 @@ describe("KIE Editors Integration Test Suite - Smoke tests", () => {
 
   it("Opens demo.bpmn file in BPMN Editor and loads correct diagram", async function () {
     this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(DEMO_BPMN);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_BPMN);
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
@@ -78,7 +79,8 @@ describe("KIE Editors Integration Test Suite - Smoke tests", () => {
 
   it("Opens demo.dmn file in DMN Editor", async function () {
     this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN);
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const dmnEditorTester = new DmnEditorTestHelper(webview);
 
@@ -92,7 +94,8 @@ describe("KIE Editors Integration Test Suite - Smoke tests", () => {
   it("Opens demo.scesim file in SCESIM Editor", async function () {
     this.timeout(20000);
 
-    webview = await testHelper.openFileFromSidebar(DEMO_SCESIM);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_SCESIM);
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const scesimEditorTester = new ScesimEditorTestHelper(webview);
 
@@ -105,7 +108,8 @@ describe("KIE Editors Integration Test Suite - Smoke tests", () => {
 
   it("Opens demo.pmml file in PMML Editor", async function () {
     this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(DEMO_PMML);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_PMML);
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const pmmlEditorTester = new PmmlEditorTestHelper(webview);
 

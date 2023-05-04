@@ -64,7 +64,8 @@ describe("KIE Editors Integration Test Suite - SCESIM Editor", () => {
   it("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
     this.timeout(20000);
 
-    webview = await testHelper.openFileFromSidebar(DEMO_DMN_SCESIM);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN_SCESIM);
+    webview = editorWebviews[0];
     await testHelper.switchWebviewToFrame(webview);
     const scesimEditorTester = new ScesimEditorTestHelper(webview);
 
