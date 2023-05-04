@@ -52,7 +52,7 @@
   "engines": {
     "vscode": "^1.66.0"
   },
-  "displayName": "PMML Editor",
+  "displayName": "KIE PMML Editor",
   "categories": [
     "Other"
   ],

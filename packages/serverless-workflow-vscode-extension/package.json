@@ -91,7 +91,7 @@
   "engines": {
     "vscode": "^1.66.0"
   },
-  "displayName": "Kogito Serverless Workflow Editor",
+  "displayName": "KIE Serverless Workflow Editor",
   "categories": [
     "Other"
   ],

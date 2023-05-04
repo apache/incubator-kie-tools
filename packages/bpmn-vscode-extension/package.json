@@ -52,7 +52,7 @@
   "engines": {
     "vscode": "^1.66.0"
   },
-  "displayName": "BPMN Editor",
+  "displayName": "KIE BPMN Editor",
   "categories": [
     "Other"
   ],
