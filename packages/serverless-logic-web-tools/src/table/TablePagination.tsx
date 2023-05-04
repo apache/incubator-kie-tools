@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { OnPerPageSelect, Pagination, PaginationProps } from "@patternfly/react-core/dist/js/components/Pagination";
+import {
+  OnPerPageSelect,
+  Pagination,
+  PaginationProps,
+  PerPageOptions,
+} from "@patternfly/react-core/dist/js/components/Pagination";
 import "@patternfly/react-core/dist/styles/base.css";
 import { useCallback } from "react";
+
+export const defaultPerPageOptions: PerPageOptions[] = [5, 10, 20, 50, 100].map((n) => ({
+  title: n.toString(),
+  value: n,
+}));
 
 export type TablePaginationProps = Pick<PaginationProps, "variant" | "isCompact" | "perPageOptions"> & {
   itemCount: number;

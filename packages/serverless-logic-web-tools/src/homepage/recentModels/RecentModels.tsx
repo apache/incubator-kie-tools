@@ -22,7 +22,6 @@ import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/work
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { PerPageOptions } from "@patternfly/react-core/dist/js/components/Pagination";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -32,14 +31,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alerts, AlertsController, useAlert } from "../../alerts/Alerts";
 import { splitFiles } from "../../extension";
 import { ConfirmDeleteModal } from "../../table/ConfirmDeleteModal";
-import { TablePagination } from "../../table/TablePagination";
+import { defaultPerPageOptions, TablePagination } from "../../table/TablePagination";
 import { TableToolbar } from "../../table/TableToolbar";
 import { WorkspacesTable } from "./WorkspacesTable";
-
-const perPageOptions: PerPageOptions[] = [5, 10, 20, 50, 100].map((n) => ({
-  title: n.toString(),
-  value: n,
-}));
 
 export function RecentModels() {
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
@@ -209,7 +203,7 @@ export function RecentModels() {
                         setSearchValue={setSearchValue}
                         page={page}
                         perPage={perPage}
-                        perPageOptions={perPageOptions}
+                        perPageOptions={defaultPerPageOptions}
                         setPage={setPage}
                         setPerPage={setPerPage}
                       />
@@ -226,7 +220,7 @@ export function RecentModels() {
                         itemCount={itemCount}
                         page={page}
                         perPage={perPage}
-                        perPageOptions={perPageOptions}
+                        perPageOptions={defaultPerPageOptions}
                         setPage={setPage}
                         setPerPage={setPerPage}
                         variant="bottom"

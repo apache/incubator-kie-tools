@@ -24,7 +24,6 @@ import { BreadcrumbItem, Checkbox, Dropdown, DropdownToggle, ToolbarItem } from 
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { PerPageOptions } from "@patternfly/react-core/dist/js/components/Pagination";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -38,18 +37,13 @@ import { NewFileDropdownMenu } from "../../../editor/NewFileDropdownMenu";
 import { isEditable } from "../../../extension";
 import { routes } from "../../../navigation/Routes";
 import { ConfirmDeleteModal } from "../../../table/ConfirmDeleteModal";
-import { TablePagination } from "../../../table/TablePagination";
+import { defaultPerPageOptions, TablePagination } from "../../../table/TablePagination";
 import { TableToolbar } from "../../../table/TableToolbar";
 import { WorkspaceFilesTable } from "./WorkspaceFilesTable";
 
 export interface Props {
   workspaceId: string;
 }
-
-const perPageOptions: PerPageOptions[] = [5, 10, 20, 50, 100].map((n) => ({
-  title: n.toString(),
-  value: n,
-}));
 
 export function WorkspaceFiles(props: Props) {
   const { workspaceId } = props;
@@ -200,7 +194,7 @@ export function WorkspaceFiles(props: Props) {
                         setSearchValue={setSearchValue}
                         page={page}
                         perPage={perPage}
-                        perPageOptions={perPageOptions}
+                        perPageOptions={defaultPerPageOptions}
                         setPage={setPage}
                         setPerPage={setPerPage}
                         additionalComponents={
@@ -266,7 +260,7 @@ export function WorkspaceFiles(props: Props) {
                         itemCount={filesCount}
                         page={page}
                         perPage={perPage}
-                        perPageOptions={perPageOptions}
+                        perPageOptions={defaultPerPageOptions}
                         setPage={setPage}
                         setPerPage={setPerPage}
                         variant="bottom"
