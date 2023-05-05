@@ -253,11 +253,16 @@ export class VSCodeTestHelper {
     try {
       await this.workbench.getEditorView().closeAllEditors();
     } catch (error) {
-      // catch the error when there is nothing to close
-      // or the Save Dialog appears
-      const dialog = new ModalDialog();
-      if (dialog != null && (await dialog.isDisplayed())) {
-        await dialog.pushButton("Don't Save");
+      console.log("Error while closing all editors: " + error);
+      try {
+        // catch the error when there is nothing to close
+        // or the Save Dialog appears
+        const dialog = new ModalDialog();
+        if (dialog != null && (await dialog.isDisplayed())) {
+          await dialog.pushButton("Don't Save");
+        }
+      } catch (error) {
+        console.log("Error while pushButton called: " + error);
       }
     }
   };
@@ -266,9 +271,13 @@ export class VSCodeTestHelper {
    * Closes all notifications that can be found using {@see Workbench}.
    */
   public closeAllNotifications = async (): Promise<void> => {
-    const activeNotifications = await this.workbench.getNotifications();
-    for (const notification of activeNotifications) {
-      await notification.dismiss();
+    try {
+      const activeNotifications = await this.workbench.getNotifications();
+      for (const notification of activeNotifications) {
+        await notification.dismiss();
+      }
+    } catch (e) {
+      console.log("Error while closing all notifications: " + e);
     }
   };
 
