@@ -32,7 +32,7 @@ export type WorkspaceFilesTableRowProps = {
   /**
    * total files count
    */
-  filesCount: number;
+  totalFilesCount: number;
   isSelected: boolean;
   /**
    * event fired when the Checkbox is toggled
@@ -43,7 +43,7 @@ export type WorkspaceFilesTableRowProps = {
 };
 
 export function WorkspaceFilesTableRow(props: WorkspaceFilesTableRowProps) {
-  const { isSelected, rowIndex, filesCount } = props;
+  const { isSelected, rowIndex, totalFilesCount } = props;
   const { name, extension, isEditable, fileDescriptor } = props.rowData;
   const workspaces = useWorkspaces();
   const history = useHistory();
@@ -59,12 +59,12 @@ export function WorkspaceFilesTableRow(props: WorkspaceFilesTableRowProps) {
   );
 
   const onDelete = useCallback(async () => {
-    if (filesCount > 1) {
+    if (totalFilesCount > 1) {
       return await workspaces.deleteFile({ file: fileDescriptor });
     }
     workspaces.deleteWorkspace({ workspaceId: fileDescriptor.workspaceId });
     history.push({ pathname: routes.recentModels.path({}) });
-  }, [fileDescriptor, history, workspaces, filesCount]);
+  }, [fileDescriptor, history, workspaces, totalFilesCount]);
 
   return (
     <Tr key={name}>

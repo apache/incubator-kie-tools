@@ -90,11 +90,12 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
       allWorkspacePromises.status !== PromiseStateStatus.RESOLVED
         ? []
         : workspaceDescriptors.map((workspace, index) => {
-            const { editableFiles, readonlyFiles } = splitFiles(allWorkspacePromises.data[index] ?? []);
+            const allFiles = allWorkspacePromises.data[index];
+            const { editableFiles, readonlyFiles } = splitFiles(allFiles ?? []);
             const isWsFolder =
               editableFiles.length > 1 || readonlyFiles.length > 0 || workspace.origin.kind !== WorkspaceKind.LOCAL;
-            const hasErrors = !editableFiles || !editableFiles[0];
-            const name = getWorkspaceName(workspace, isWsFolder, hasErrors, editableFiles);
+            const hasErrors = !allFiles[0];
+            const name = getWorkspaceName(workspace, isWsFolder, hasErrors, allFiles);
 
             return {
               createdDateISO: workspace.createdDateISO,

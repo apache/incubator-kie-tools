@@ -39,6 +39,10 @@ export type WorkspaceFilesTableProps = Pick<TablePaginationProps, "page" | "perP
   onFileToggle: (workspaceFile: WorkspaceFile, checked: boolean) => void;
   searchValue: string;
   selectedWorkspaceFiles: WorkspaceFile[];
+  /**
+   * total files count
+   */
+  totalFilesCount: number;
   workspaceFiles: WorkspaceFile[];
 };
 
@@ -49,7 +53,7 @@ export type WorkspaceFilesTableRowData = Pick<WorkspaceFile, "extension"> & {
 };
 
 export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
-  const { workspaceFiles, selectedWorkspaceFiles, searchValue, page, perPage } = props;
+  const { workspaceFiles, selectedWorkspaceFiles, searchValue, page, perPage, totalFilesCount } = props;
   const [activeSortIndex, setActiveSortIndex] = useState<number>(0);
   const [activeSortDirection, setActiveSortDirection] = useState<"asc" | "desc">("desc");
 
@@ -135,7 +139,7 @@ export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
         <Tbody>
           {visibleTableData.map((rowData, rowIndex) => (
             <WorkspaceFilesTableRow
-              filesCount={visibleTableData.length}
+              totalFilesCount={totalFilesCount}
               isSelected={isFileCheckboxChecked(rowData)}
               key={rowIndex}
               onToggle={(checked) => props.onFileToggle(rowData.fileDescriptor, checked)}

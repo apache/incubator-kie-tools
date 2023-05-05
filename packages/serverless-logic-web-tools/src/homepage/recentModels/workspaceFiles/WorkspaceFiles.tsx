@@ -34,7 +34,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { Alerts, AlertsController, useAlert } from "../../../alerts/Alerts";
 import { NewFileDropdownMenu } from "../../../editor/NewFileDropdownMenu";
-import { isEditable } from "../../../extension";
+import { splitFiles } from "../../../extension";
 import { routes } from "../../../navigation/Routes";
 import { ConfirmDeleteModal } from "../../../table/ConfirmDeleteModal";
 import { defaultPerPageOptions, TablePagination } from "../../../table/TablePagination";
@@ -99,10 +99,10 @@ export function WorkspaceFiles(props: Props) {
   );
 
   const onConfirmDeleteModalDelete = useCallback(
-    async (filesCount: number) => {
+    async (totalFilesCount: number) => {
       setIsConfirmDeleteModalOpen(false);
 
-      if (selectedWorkspaceFiles.length === filesCount) {
+      if (selectedWorkspaceFiles.length === totalFilesCount) {
         workspaces.deleteWorkspace({ workspaceId });
         history.push({ pathname: routes.recentModels.path({}) });
         deleteSuccessAlert.show({ selectedElementTypesName });
@@ -156,8 +156,12 @@ export function WorkspaceFiles(props: Props) {
       promise={workspacePromise}
       rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
       resolved={(workspace: ActiveWorkspace) => {
-        const files = workspace.files.filter((f: WorkspaceFile) => isViewRoFilesChecked || isEditable(f.relativePath));
+        const allFiles = splitFiles(workspace.files);
+        const isViewRoFilesDisabled = !allFiles.editableFiles.length || !allFiles.readonlyFiles.length;
+        const isViewRoFilesCheckedInternal = isViewRoFilesDisabled ? true : isViewRoFilesChecked;
+        const files = [...allFiles.editableFiles, ...(isViewRoFilesCheckedInternal ? allFiles.readonlyFiles : [])];
         const filesCount = files.length;
+        const allFilesCount = workspace.files.length;
 
         return (
           <>
@@ -239,7 +243,8 @@ export function WorkspaceFiles(props: Props) {
                               <Checkbox
                                 id="viewRoFiles"
                                 label="View readonly files"
-                                isChecked={isViewRoFilesChecked}
+                                isChecked={isViewRoFilesCheckedInternal}
+                                isDisabled={isViewRoFilesDisabled}
                                 onChange={handleViewRoCheckboxChange}
                               ></Checkbox>
                             </ToolbarItem>
@@ -253,6 +258,7 @@ export function WorkspaceFiles(props: Props) {
                         onFileToggle={onFileToggle}
                         searchValue={searchValue}
                         selectedWorkspaceFiles={selectedWorkspaceFiles}
+                        totalFilesCount={allFilesCount}
                         workspaceFiles={files}
                       />
 
@@ -284,7 +290,7 @@ export function WorkspaceFiles(props: Props) {
             <ConfirmDeleteModal
               isOpen={isConfirmDeleteModalOpen}
               onClose={onConfirmDeleteModalClose}
-              onDelete={() => onConfirmDeleteModalDelete(filesCount)}
+              onDelete={() => onConfirmDeleteModalDelete(workspace.files.length)}
               elementsTypeName={selectedElementTypesName}
               deleteMessage={deleteModalMessage}
             />
