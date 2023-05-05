@@ -119,7 +119,7 @@
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
-      { "id": "serverless-workflow-vscode-extension" },
+      { "id": "swf-vscode-extension" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -767,24 +767,16 @@
         "target": "@kie-tools-core/envelope-bus",
         "weight": 1
       },
-      { "source": "serverless-workflow-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
+      { "source": "swf-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       {
-        "source": "serverless-workflow-vscode-extension",
+        "source": "swf-vscode-extension",
         "target": "@kie-tools/serverless-workflow-diagram-editor-envelope",
         "weight": 1
       },
+      { "source": "swf-vscode-extension", "target": "@kie-tools/serverless-workflow-language-service", "weight": 1 },
+      { "source": "swf-vscode-extension", "target": "@kie-tools/serverless-workflow-mermaid-viewer", "weight": 1 },
       {
-        "source": "serverless-workflow-vscode-extension",
-        "target": "@kie-tools/serverless-workflow-language-service",
-        "weight": 1
-      },
-      {
-        "source": "serverless-workflow-vscode-extension",
-        "target": "@kie-tools/serverless-workflow-mermaid-viewer",
-        "weight": 1
-      },
-      {
-        "source": "serverless-workflow-vscode-extension",
+        "source": "swf-vscode-extension",
         "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
         "weight": 1
       },
@@ -944,7 +936,7 @@
     ["@kie-tools/serverless-workflow-service-catalog", "packages/serverless-workflow-service-catalog"],
     ["@kie-tools/serverless-workflow-standalone-editor", "packages/serverless-workflow-standalone-editor"],
     ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],
-    ["serverless-workflow-vscode-extension", "packages/serverless-workflow-vscode-extension"],
+    ["swf-vscode-extension", "packages/serverless-workflow-vscode-extension"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
     ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],
     ["@kie-tools/text-editor", "packages/text-editor"],
