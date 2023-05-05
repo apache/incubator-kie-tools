@@ -32,7 +32,7 @@ describe.skip("Dashbuilder editor - smoke integration tests", () => {
   before(async function () {
     this.timeout(60000);
     testHelper = new VSCodeTestHelper();
-    await testHelper.openFolder(TEST_PROJECT_FOLDER, "smoke-test");
+    await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {

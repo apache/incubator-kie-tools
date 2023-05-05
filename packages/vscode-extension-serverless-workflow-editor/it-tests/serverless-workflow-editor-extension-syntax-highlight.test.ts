@@ -32,7 +32,7 @@ describe("Serverless workflow editor - syntax highlighting test", () => {
   before(async function () {
     this.timeout(30000);
     testHelper = new VSCodeTestHelper();
-    await testHelper.openFolder(TEST_PROJECT_FOLDER, "syntax-highlight");
+    await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {

@@ -31,7 +31,7 @@ describe.skip("Serverless workflow editor - Basic operations tests", () => {
   before(async function () {
     this.timeout(30000);
     testHelper = new VSCodeTestHelper();
-    await testHelper.openFolder(TEST_PROJECT_FOLDER, "basic-operations");
+    await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {

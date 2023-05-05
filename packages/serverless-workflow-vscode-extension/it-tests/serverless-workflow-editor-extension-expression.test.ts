@@ -30,7 +30,7 @@ describe("Serverless workflow editor - expression tests", () => {
   before(async function () {
     this.timeout(30000);
     testHelper = new VSCodeTestHelper();
-    await testHelper.openFolder(TEST_PROJECT_FOLDER, "expression");
+    await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {
