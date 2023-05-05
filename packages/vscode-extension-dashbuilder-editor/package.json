@@ -1,6 +1,6 @@
 {
   "name": "vscode-extension-dashbuilder-editor",
-  "version": "0.28.1",
+  "version": "0.28.2",
   "description": "Edit Dashbuilder files",
   "license": "Apache-2.0",
   "publisher": "redhat",
