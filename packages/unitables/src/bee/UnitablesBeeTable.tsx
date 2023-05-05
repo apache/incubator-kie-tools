@@ -482,11 +482,33 @@ function UnitablesBeeTableCell({
     [fieldName, submitRow]
   );
 
-  const onClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
-      setIsSelectFieldOpen((prev) => !prev);
-    }
-  }, []);
+  const onClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
+        setIsSelectFieldOpen((prev) => {
+          if (prev === true) {
+            submitRow();
+            setEditingCell(false);
+          } else {
+            setEditingCell(true);
+          }
+          return !prev;
+        });
+      }
+
+      if (!isEditing) {
+        const inputField = cellRef.current?.getElementsByTagName("input");
+        if (inputField && inputField.length > 0) {
+          inputField?.[0]?.focus();
+          setEditingCell(true);
+          return;
+        }
+      }
+
+      setEditingCell(false);
+    },
+    [isEditing, setEditingCell, submitRow]
+  );
 
   return (
     <div
