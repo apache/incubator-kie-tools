@@ -58,9 +58,6 @@ export function SettingsPageNav(props: { pathname: string }) {
           >
             <Link to={routes.settings.service_registry.path({})}>Service Registry</Link>
           </NavItem>
-          <NavItem itemId={0} key={`Settings-kafka-nav`} isActive={props.pathname === routes.settings.kafka.path({})}>
-            <Link to={routes.settings.kafka.path({})}>Streams for Apache Kafka</Link>
-          </NavItem>
           <NavItem
             itemId={0}
             key={`Settings-feature_preview-nav`}
