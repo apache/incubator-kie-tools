@@ -1313,7 +1313,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   <Button
                     className={"kie-tools--masthead-hoverable"}
                     variant={ButtonVariant.plain}
-                    onClick={() => history.push({ pathname: routes.recentModels.path({}) })}
+                    onClick={() => history.push({ pathname: routes.workspaceWithFiles.path(props.workspaceFile) })}
                   >
                     <AngleLeftIcon />
                   </Button>
@@ -1512,7 +1512,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         toggle={
                           <DropdownToggle
                             onToggle={setNewFileDropdownMenuOpen}
-                            isPrimary={true}
+                            toggleVariant="primary"
                             toggleIndicator={CaretDownIcon}
                           >
                             <PlusIcon />

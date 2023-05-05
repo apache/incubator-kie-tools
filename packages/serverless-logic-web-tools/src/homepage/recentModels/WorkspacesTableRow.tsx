@@ -22,7 +22,6 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import "@patternfly/react-core/dist/styles/base.css";
 import { ExclamationTriangleIcon, OutlinedQuestionCircleIcon, SearchIcon } from "@patternfly/react-icons/dist/js/icons";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
@@ -56,12 +55,14 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
 
   const linkTo = useMemo(
     () =>
-      routes.workspaceWithFilePath.path({
-        workspaceId: editableFiles[0].workspaceId,
-        fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-        extension: editableFiles[0].extension,
-      }),
-    [editableFiles]
+      !isWsFolder
+        ? routes.workspaceWithFilePath.path({
+            workspaceId,
+            fileRelativePath: editableFiles[0].relativePathWithoutExtension,
+            extension: editableFiles[0].extension,
+          })
+        : routes.workspaceWithFiles.path({ workspaceId }),
+    [editableFiles, isWsFolder, workspaceId]
   );
 
   return (
@@ -77,7 +78,7 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
         {isWsFolder ? (
           <>
             <FolderIcon />
-            &nbsp;&nbsp;&nbsp;{name}
+            &nbsp;&nbsp;&nbsp;<Link to={linkTo}>{name}</Link>
           </>
         ) : (
           <>

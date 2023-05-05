@@ -132,6 +132,10 @@ export const routes = {
       `/${workspaceId}/file/${fileRelativePath}${extension ? "." + extension : ""}`
   ),
 
+  workspaceWithFiles: new Route<{
+    pathParams: PathParams.WORKSPACE_ID;
+  }>(({ workspaceId }) => `/${workspaceId}/files`),
+
   recentModels: new Route<{}>(() => `/RecentModels`),
   sampleCatalog: new Route<{}>(() => `/SampleCatalog`),
 

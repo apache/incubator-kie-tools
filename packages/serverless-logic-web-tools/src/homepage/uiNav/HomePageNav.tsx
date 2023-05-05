@@ -16,21 +16,29 @@
 
 import * as React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Link } from "react-router-dom";
+import { Link, matchPath } from "react-router-dom";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
 import { routes } from "../../navigation/Routes";
+import { SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL } from "../../AppConstants";
 
 export function HomePageNav(props: { pathname: string }) {
   return (
     <>
-      <div className="chr-c-app-title">Serverless Logic Web Tools</div>
       <Nav aria-label="Global NAV" theme="dark">
         <NavList>
           <NavItem itemId={0} key={"Overview-nav"} isActive={props.pathname === routes.home.path({})}>
             <Link to={routes.home.path({})}>Overview</Link>
           </NavItem>
 
-          <NavItem itemId={1} key={"Recent-models-nav"} isActive={props.pathname === routes.recentModels.path({})}>
+          <NavItem
+            itemId={1}
+            key={"Recent-models-nav"}
+            isActive={
+              props.pathname === routes.recentModels.path({}) ||
+              matchPath(props.pathname, { path: routes.workspaceWithFiles.path({ workspaceId: ":workspaceId" }) })
+                ?.isExact
+            }
+          >
             <Link to={routes.recentModels.path({})}>Recent Models</Link>
           </NavItem>
 
@@ -39,10 +47,7 @@ export function HomePageNav(props: { pathname: string }) {
           </NavItem>
 
           <NavItem itemId={3} key={"Documentation-nav"} className="chr-c-navigation__additional-links">
-            <a
-              href="https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-overview.html"
-              target="_blank"
-            >
+            <a href={SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL} target="_blank">
               Documentation
               <ExternalLinkAltIcon />
             </a>

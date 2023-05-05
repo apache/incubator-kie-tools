@@ -33,6 +33,7 @@ export type TableToolbarProps = TablePaginationProps & {
   searchValue: string;
   selectedElementsCount: number;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
+  additionalComponents?: React.ReactNode;
 };
 
 export function TableToolbar(props: TableToolbarProps) {
@@ -48,6 +49,7 @@ export function TableToolbar(props: TableToolbarProps) {
     perPageOptions,
     setPage,
     setPerPage,
+    additionalComponents,
   } = props;
   const [isBulkDropDownOpen, setIsBulkDropDownOpen] = useState(false);
   const [isActionDropdownOpen, setIsActionDropdownOpen] = React.useState(false);
@@ -143,6 +145,7 @@ export function TableToolbar(props: TableToolbarProps) {
             dropdownItems={actionDropdownItems}
           />
         </ToolbarItem>
+        {additionalComponents}
         <ToolbarItem variant="pagination">
           <TablePagination
             itemCount={itemCount}

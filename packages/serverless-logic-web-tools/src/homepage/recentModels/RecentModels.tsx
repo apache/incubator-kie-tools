@@ -15,12 +15,11 @@
  */
 
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import { PerPageOptions } from "@patternfly/react-core/dist/js/components/Pagination";
-import { Alert, AlertActionCloseButton, AlertProps } from "@patternfly/react-core/dist/js/components/Alert";
-import { AlertGroup } from "@patternfly/react-core/dist/js/components/AlertGroup";
+import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -28,39 +27,76 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
-import { useCallback, useState } from "react";
-import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Alerts, AlertsController, useAlert } from "../../alerts/Alerts";
+import { splitFiles } from "../../extension";
+import { ConfirmDeleteModal } from "../../table/ConfirmDeleteModal";
+import { defaultPerPageOptions, TablePagination } from "../../table/TablePagination";
 import { TableToolbar } from "../../table/TableToolbar";
 import { WorkspacesTable } from "./WorkspacesTable";
-import { TablePagination } from "../../table/TablePagination";
-
-const perPageOptions: PerPageOptions[] = [5, 10, 20, 50, 100].map((n) => ({
-  title: n.toString(),
-  value: n,
-}));
 
 export function RecentModels() {
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const [selectedWorkspaceIds, setSelectedWorkspaceIds] = useState<WorkspaceDescriptor["workspaceId"][]>([]);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
-  const [alerts, setAlerts] = useState<Partial<AlertProps>[]>([]);
   const [searchValue, setSearchValue] = React.useState("");
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(5);
   const workspaces = useWorkspaces();
+  const [selectedFoldersCount, setSelectedFoldersCount] = useState(0);
+  const [firstSelectedWorkspaceName, setFirstSelectedWorkspaceName] = useState("");
+  const [deleteModalDataLoaded, setDeleteModalDataLoaded] = useState(false);
+  const [deleteModalFetchError, setDeleteModalFetchError] = useState(false);
+  const [alerts, alertsRef] = useController<AlertsController>();
+  const isSelectedWorkspacePlural = useMemo(() => selectedWorkspaceIds.length > 1, [selectedWorkspaceIds]);
+
+  const selectedElementTypesName = useMemo(() => {
+    if (selectedWorkspaceIds.length > 1) {
+      return selectedFoldersCount ? "workspaces" : "models";
+    }
+    return selectedFoldersCount ? "workspace" : "model";
+  }, [selectedFoldersCount, selectedWorkspaceIds]);
+
+  const deleteModalMessage = useMemo(
+    () => (
+      <>
+        Deleting {isSelectedWorkspacePlural ? "these" : "this"}{" "}
+        <b>{isSelectedWorkspacePlural ? selectedWorkspaceIds.length : firstSelectedWorkspaceName}</b>{" "}
+        {selectedElementTypesName}
+        {selectedFoldersCount ? ` removes the ${selectedElementTypesName} and all the models inside.` : "."}
+      </>
+    ),
+    [
+      isSelectedWorkspacePlural,
+      selectedWorkspaceIds,
+      firstSelectedWorkspaceName,
+      selectedElementTypesName,
+      selectedFoldersCount,
+    ]
+  );
 
   const onConfirmDeleteModalClose = useCallback(() => setIsConfirmDeleteModalOpen(false), []);
 
-  const addAlert = useCallback(
-    (title: string, variant: AlertProps["variant"], key: React.Key = new Date().getTime()) => {
-      setAlerts((prevAlerts) => [...prevAlerts, { title, variant, key }]);
-    },
-    []
+  const deleteSuccessAlert = useAlert<{ modelsWord: string }>(
+    alerts,
+    useCallback(({ close }, { modelsWord }) => {
+      return <Alert variant="success" title={`${capitalizeString(modelsWord)} deleted successfully`} />;
+    }, []),
+    { durationInSeconds: 2 }
   );
 
-  const removeAlert = useCallback((key: React.Key) => {
-    setAlerts((prevAlerts) => [...prevAlerts.filter((alert) => alert.key !== key)]);
-  }, []);
+  const deleteErrorAlert = useAlert<{ modelsWord: string }>(
+    alerts,
+    useCallback(({ close }, { modelsWord }) => {
+      return (
+        <Alert
+          variant="danger"
+          title={`Oops, something went wrong while trying to delete the selected ${modelsWord}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
 
   const onConfirmDeleteModalDelete = useCallback(
     async (workspaceDescriptors: WorkspaceDescriptor[]) => {
@@ -73,20 +109,17 @@ export function RecentModels() {
           .map((w) => workspaces.deleteWorkspace(w))
       )
         .then(() => {
-          addAlert(`${modelsWord} deleted successfully`, "success");
+          deleteSuccessAlert.show({ modelsWord });
         })
         .catch((e) => {
           console.error(e);
-          addAlert(
-            `Oops, something went wrong while trying to delete the selected ${modelsWord}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`,
-            "danger"
-          );
+          deleteErrorAlert.show({ modelsWord });
         })
         .finally(() => {
           setSelectedWorkspaceIds([]);
         });
     },
-    [selectedWorkspaceIds, addAlert, workspaces]
+    [selectedWorkspaceIds, workspaces, deleteErrorAlert, deleteSuccessAlert]
   );
 
   const onWsToggle = useCallback((workspaceId: WorkspaceDescriptor["workspaceId"], checked: boolean) => {
@@ -104,6 +137,39 @@ export function RecentModels() {
     setSearchValue("");
   }, []);
 
+  const isWsFolder = useCallback(
+    async (workspaceId: WorkspaceDescriptor["workspaceId"]) => {
+      const { editableFiles, readonlyFiles } = splitFiles(await workspaces.getFiles({ workspaceId }));
+      return editableFiles.length > 1 || readonlyFiles.length > 0;
+    },
+    [workspaces]
+  );
+
+  const getWorkspaceName = useCallback(
+    async (workspaceId: WorkspaceDescriptor["workspaceId"]) => {
+      if (selectedWorkspaceIds.length !== 1) {
+        return "";
+      }
+      const workspaceData = await workspaces.getWorkspace({ workspaceId });
+      return (await isWsFolder(workspaceId))
+        ? workspaceData.name
+        : (await workspaces.getFiles({ workspaceId }))[0].nameWithoutExtension;
+    },
+    [isWsFolder, selectedWorkspaceIds, workspaces]
+  );
+
+  useEffect(() => {
+    Promise.all([
+      Promise.all(selectedWorkspaceIds.map(isWsFolder)).then((results) => {
+        const foldersCount = results.filter((r) => r).length;
+        setSelectedFoldersCount(foldersCount);
+      }),
+      getWorkspaceName(selectedWorkspaceIds[0]).then(setFirstSelectedWorkspaceName),
+    ])
+      .then(() => setDeleteModalDataLoaded(true))
+      .catch(() => setDeleteModalFetchError(true));
+  }, [getWorkspaceName, selectedWorkspaceIds, isWsFolder]);
+
   return (
     <PromiseStateWrapper
       promise={workspaceDescriptorsPromise}
@@ -113,27 +179,7 @@ export function RecentModels() {
 
         return (
           <>
-            <AlertGroup isToast isLiveRegion>
-              {alerts.map(
-                ({ key, variant, title }) =>
-                  key && (
-                    <Alert
-                      variant={variant}
-                      title={title}
-                      timeout
-                      onTimeout={() => removeAlert(key)}
-                      actionClose={
-                        <AlertActionCloseButton
-                          title={title as string}
-                          variantLabel={`${variant} alert`}
-                          onClose={() => removeAlert(key)}
-                        />
-                      }
-                      key={key}
-                    />
-                  )
-              )}
-            </AlertGroup>
+            <Alerts ref={alertsRef} width={"500px"} />
             <Page>
               <PageSection variant={"light"}>
                 <TextContent>
@@ -157,7 +203,7 @@ export function RecentModels() {
                         setSearchValue={setSearchValue}
                         page={page}
                         perPage={perPage}
-                        perPageOptions={perPageOptions}
+                        perPageOptions={defaultPerPageOptions}
                         setPage={setPage}
                         setPerPage={setPerPage}
                       />
@@ -174,7 +220,7 @@ export function RecentModels() {
                         itemCount={itemCount}
                         page={page}
                         perPage={perPage}
-                        perPageOptions={perPageOptions}
+                        perPageOptions={defaultPerPageOptions}
                         setPage={setPage}
                         setPerPage={setPerPage}
                         variant="bottom"
@@ -196,10 +242,13 @@ export function RecentModels() {
               </PageSection>
             </Page>
             <ConfirmDeleteModal
-              selectedWorkspaceIds={selectedWorkspaceIds}
               isOpen={isConfirmDeleteModalOpen}
               onClose={onConfirmDeleteModalClose}
               onDelete={() => onConfirmDeleteModalDelete(workspaceDescriptors)}
+              elementsTypeName={selectedElementTypesName}
+              deleteMessage={deleteModalMessage}
+              dataLoaded={deleteModalDataLoaded}
+              fetchError={deleteModalFetchError}
             />
           </>
         );
@@ -207,3 +256,5 @@ export function RecentModels() {
     />
   );
 }
+
+const capitalizeString = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);

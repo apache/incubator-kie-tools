@@ -17,7 +17,6 @@
 import * as React from "react";
 import { QuickStartContainer, QuickStartContainerProps } from "@patternfly/quickstarts";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import {
   Masthead,
   MastheadBrand,
@@ -28,7 +27,7 @@ import {
 import { PageSidebar } from "@patternfly/react-core/dist/js/components/Page/PageSidebar";
 import { SkipToContent } from "@patternfly/react-core/dist/js/components/SkipToContent";
 import { Toolbar, ToolbarContent, ToolbarGroup, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
-import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import { Page, PageToggleButton } from "@patternfly/react-core/dist/js/components/Page";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { BarsIcon, ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";
 import { useMemo, useState } from "react";
@@ -45,6 +44,7 @@ import {
 } from "../../quickstarts-data";
 import { SettingsButton } from "../../settings/SettingsButton";
 import { HomePageNav } from "../uiNav/HomePageNav";
+import { APP_NAME } from "../../AppConstants";
 
 export type OnlineEditorPageProps = {
   children?: React.ReactNode;
@@ -57,9 +57,6 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
   const history = useHistory();
   const routes = useRoutes();
   const isRouteInSettingsSection = useRouteMatch(routes.settings.home.path({}));
-  const navToggle = () => {
-    props.setIsNavOpen(!props.isNavOpen);
-  };
   const [activeQuickStartID, setActiveQuickStartID] = useState("");
   const [allQuickStartStates, setAllQuickStartStates] = useState({});
 
@@ -120,27 +117,17 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
   const masthead = (
     <Masthead>
       <MastheadToggle>
-        <Button
-          id="nav-toggle"
-          variant="plain"
-          aria-label="Global NAV"
-          onClick={navToggle}
-          aria-expanded={props.isNavOpen}
-          aria-controls=""
-        >
+        <PageToggleButton variant="plain" aria-label="Global NAV">
           <BarsIcon />
-        </Button>
+        </PageToggleButton>
       </MastheadToggle>
       <MastheadMain>
         <MastheadBrand
           onClick={() => history.push({ pathname: routes.home.path({}) })}
           style={{ textDecoration: "none" }}
         >
-          <Brand
-            className="kogito-tools-common--brand"
-            src="images/kogito_log_workbranch.svg"
-            alt="kogito_logo_white.png"
-          ></Brand>
+          <Brand className="kogito-tools-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
+          <div className="brand-name">{APP_NAME}</div>
         </MastheadBrand>
       </MastheadMain>
       <MastheadContent>{headerToolbar}</MastheadContent>
@@ -158,7 +145,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
     [location, isRouteInSettingsSection]
   );
 
-  const sidebar = <PageSidebar nav={pageNav} isNavOpen={props.isNavOpen} theme="dark" />;
+  const sidebar = <PageSidebar nav={pageNav} theme="dark" />;
   const mainContainerId = "main-content-page-layout-tertiary-nav";
 
   const pageSkipToContent = <SkipToContent href={`#${mainContainerId}`}>Skip to content</SkipToContent>;
