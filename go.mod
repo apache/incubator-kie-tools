@@ -24,7 +24,7 @@ require (
 
 require (
 	github.com/RHsyseng/operator-utils v1.4.12
-	github.com/kiegroup/container-builder v0.0.0-20230131205716-bc25e59e2f13
+	github.com/kiegroup/container-builder v0.0.0-20230505124211-aa5d6c429960
 	github.com/magiconair/properties v1.8.7
 	github.com/onsi/ginkgo/v2 v2.3.0
 	github.com/openshift/api v0.0.0-20211209135129-c58d9f695577

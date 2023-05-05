@@ -258,8 +258,8 @@ github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1
 github.com/jstemmer/go-junit-report v0.9.1/go.mod h1:Brl9GWCQeLvo8nXZwPNNblvFj/XSXhF0NWZEnDohbsk=
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
 github.com/julienschmidt/httprouter v1.3.0/go.mod h1:JR6WtHb+2LUe8TCKY3cZOxFyyO8IZAc4RVcycCCAKdM=
-github.com/kiegroup/container-builder v0.0.0-20230131205716-bc25e59e2f13 h1:zvdgVEkN+RdJpX1FvybyxnTSByBcAMdzIokBzt8W8qQ=
-github.com/kiegroup/container-builder v0.0.0-20230131205716-bc25e59e2f13/go.mod h1:s1naiMt/mvRWXR4FNARNOsuB9LdDpQFhtrEAq9uArCM=
+github.com/kiegroup/container-builder v0.0.0-20230505124211-aa5d6c429960 h1:OPj1CQqFEyULvidBgod/Q/KzcrOSKiynpAwTXC5fvKo=
+github.com/kiegroup/container-builder v0.0.0-20230505124211-aa5d6c429960/go.mod h1:s1naiMt/mvRWXR4FNARNOsuB9LdDpQFhtrEAq9uArCM=
 github.com/kisielk/errcheck v1.5.0/go.mod h1:pFxgyoBC7bSaBwPgfKdkLd5X25qrDl4LWUI2bnpBCr8=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
