@@ -15,3 +15,4 @@
  */
 
 export * from "./VSCodeTestHelper";
+export * from "./CommonAsserts";

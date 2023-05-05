@@ -313,7 +313,7 @@ export class VSCodeTestHelper {
       "Editor was still loading after " + this.EDITOR_LOADING_TIMEOUT + "ms. Please investigate."
     );
 
-    await sleep(2000);
+    await sleep(8000);
 
     await driver.switchTo().frame(null);
   };
