@@ -30,7 +30,6 @@
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
-    "@kie-tools-core/guided-tour": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/kubernetes-bridge": "workspace:*",
@@ -103,7 +102,7 @@
     "@types/testing-library__react": "^9.1.2",
     "@types/uuid": "^8.3.0",
     "copy-webpack-plugin": "^11.0.0",
-    "cypress": "^12.8.1",
+    "cypress": "^12.11.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",

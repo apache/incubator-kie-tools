@@ -21,6 +21,7 @@ import { NotificationsPanelRef } from "./NotificationsPanel/NotificationsPanel";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { PanelId, useEditorDockContext } from "./EditorPageDockContextProvider";
+import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 
 export interface EditorPageDockDrawerRef {
   open: (panelId: PanelId) => void;
@@ -31,7 +32,7 @@ export interface EditorPageDockDrawerRef {
 }
 
 export function EditorPageDockDrawer({ children }: React.PropsWithChildren<{}>) {
-  const { panel, toggleGroupItems, panelContent } = useEditorDockContext();
+  const { panel, toggleGroupItems, panelContent, error, setHasError, errorBoundaryRef } = useEditorDockContext();
 
   const toggleGroup = useMemo(() => {
     return [...toggleGroupItems.entries()].map(([key, value]) => value).reverse();
@@ -44,7 +45,9 @@ export function EditorPageDockDrawer({ children }: React.PropsWithChildren<{}>) 
           panelContent={
             panelContent ? (
               <DrawerPanelContent style={{ height: "100%" }} isResizable={true}>
-                {panelContent}
+                <ErrorBoundary ref={errorBoundaryRef} error={error} setHasError={setHasError}>
+                  {panelContent}
+                </ErrorBoundary>
               </DrawerPanelContent>
             ) : undefined
           }

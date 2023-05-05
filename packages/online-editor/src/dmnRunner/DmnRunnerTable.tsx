@@ -23,7 +23,6 @@ import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-cor
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { useOnlineI18n } from "../i18n";
 import { UnitablesWrapper } from "@kie-tools/unitables/dist/UnitablesWrapper";
 import { DmnRunnerOutputsTable } from "@kie-tools/unitables-dmn/dist/DmnRunnerOutputsTable";
@@ -39,7 +38,6 @@ export function DmnRunnerTable() {
   const [dmnRunnerTableError, setDmnRunnerTableError] = useState<boolean>(false);
 
   // REFs
-  const dmnRunnerTableErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const [inputsContainerRef, setInputsContainerRef] = useState<HTMLDivElement | null>(null);
   const outputsContainerRef = useRef<HTMLDivElement>(null);
   const inputsScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
@@ -72,7 +70,7 @@ export function DmnRunnerTable() {
   );
 
   useEffect(() => {
-    dmnRunnerTableErrorBoundaryRef.current?.reset();
+    setDmnRunnerTableError(false);
   }, [jsonSchema]);
 
   useEffect(() => {
@@ -119,56 +117,50 @@ export function DmnRunnerTable() {
       ) : (
         <div style={{ height: "100%" }}>
           <DmnRunnerLoading>
-            <ErrorBoundary
-              ref={dmnRunnerTableErrorBoundaryRef}
-              setHasError={setDmnRunnerTableError}
-              error={DmnRunnerTableError}
-            >
-              <Drawer isInline={true} isExpanded={true} className={"kie-tools--dmn-runner-table--drawer"}>
-                {/* DMN Runner Outputs */}
-                <DrawerContent
-                  panelContent={
-                    <>
-                      <DrawerPanelContent
-                        isResizable={true}
-                        minSize={rowCount > 0 ? drawerPanelMinSize : "30%"}
-                        maxSize={drawerPanelMaxSize}
-                        defaultSize={drawerPanelDefaultSize}
-                      >
-                        <div ref={outputsContainerRef}>
-                          <DmnRunnerOutputsTable
-                            scrollableParentRef={outputsScrollableElementRef.current}
-                            i18n={i18n.dmnRunner.table}
-                            jsonSchemaBridge={jsonSchemaBridge}
-                            results={results}
-                          />
-                        </div>
-                      </DrawerPanelContent>
-                    </>
-                  }
-                >
-                  {/* DMN Runner Inputs */}
-                  <div ref={(ref) => setInputsContainerRef(ref)}>
-                    <UnitablesWrapper
-                      scrollableParentRef={inputsScrollableElementRef.current}
-                      i18n={i18n.dmnRunner.table}
-                      openRow={openRow}
-                      rows={inputs}
-                      setRows={setDmnRunnerInputs}
-                      error={dmnRunnerTableError}
-                      setError={setDmnRunnerTableError}
-                      jsonSchemaBridge={jsonSchemaBridge}
-                      onRowAdded={onRowAdded}
-                      onRowDuplicated={onRowDuplicated}
-                      onRowReset={onRowReset}
-                      onRowDeleted={onRowDeleted}
-                      configs={configs}
-                      setWidth={setWidth}
-                    />
-                  </div>
-                </DrawerContent>
-              </Drawer>
-            </ErrorBoundary>
+            <Drawer isInline={true} isExpanded={true} className={"kie-tools--dmn-runner-table--drawer"}>
+              {/* DMN Runner Outputs */}
+              <DrawerContent
+                panelContent={
+                  <>
+                    <DrawerPanelContent
+                      isResizable={true}
+                      minSize={rowCount > 0 ? drawerPanelMinSize : "30%"}
+                      maxSize={drawerPanelMaxSize}
+                      defaultSize={drawerPanelDefaultSize}
+                    >
+                      <div ref={outputsContainerRef}>
+                        <DmnRunnerOutputsTable
+                          scrollableParentRef={outputsScrollableElementRef.current}
+                          i18n={i18n.dmnRunner.table}
+                          jsonSchemaBridge={jsonSchemaBridge}
+                          results={results}
+                        />
+                      </div>
+                    </DrawerPanelContent>
+                  </>
+                }
+              >
+                {/* DMN Runner Inputs */}
+                <div ref={(ref) => setInputsContainerRef(ref)}>
+                  <UnitablesWrapper
+                    scrollableParentRef={inputsScrollableElementRef.current}
+                    i18n={i18n.dmnRunner.table}
+                    openRow={openRow}
+                    rows={inputs}
+                    setRows={setDmnRunnerInputs}
+                    error={dmnRunnerTableError}
+                    setError={setDmnRunnerTableError}
+                    jsonSchemaBridge={jsonSchemaBridge}
+                    onRowAdded={onRowAdded}
+                    onRowDuplicated={onRowDuplicated}
+                    onRowReset={onRowReset}
+                    onRowDeleted={onRowDeleted}
+                    configs={configs}
+                    setWidth={setWidth}
+                  />
+                </div>
+              </DrawerContent>
+            </Drawer>
           </DmnRunnerLoading>
         </div>
       )}

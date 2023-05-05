@@ -15,7 +15,6 @@
  */
 
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { Rect } from "@kie-tools-core/guided-tour/dist/api";
 import { EditorTheme } from "./EditorTheme";
 
 /**
@@ -38,7 +37,6 @@ export interface EditorApi {
   setContent(path: string, content: string): Promise<void>;
   getContent(): Promise<string>;
   getPreview(): Promise<string | undefined>;
-  getElementPosition(selector: string): Promise<Rect | undefined>;
   undo(): Promise<void>;
   redo(): Promise<void>;
   validate(): Promise<Notification[]>;

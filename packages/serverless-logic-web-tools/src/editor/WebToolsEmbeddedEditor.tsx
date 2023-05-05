@@ -29,11 +29,11 @@ import {
   SwfJsonLanguageService,
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { DashbuilderLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
+import { DashbuilderYamlLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 import { EmbeddedEditor, EmbeddedEditorChannelApiImpl, EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Props } from "@kie-tools-core/editor/dist/embedded/embedded/EmbeddedEditor";
 
-type SupportedLanguageService = SwfYamlLanguageService | SwfJsonLanguageService | DashbuilderLanguageService;
+type SupportedLanguageService = SwfYamlLanguageService | SwfJsonLanguageService | DashbuilderYamlLanguageService;
 
 type NotificationHandler =
   | { isSupported: false }

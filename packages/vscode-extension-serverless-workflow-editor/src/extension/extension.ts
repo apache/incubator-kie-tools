@@ -31,6 +31,7 @@ import { setupDiagramEditorCompanionTab } from "./setupDiagramEditorCompanionTab
 import { COMMAND_IDS } from "./commandIds";
 import { ServiceRegistriesStore } from "./serviceCatalog/serviceRegistry";
 import { RedHatAuthExtensionStateStore } from "./RedHatAuthExtensionStateStore";
+import { setupDeprecationNotification } from "./setupDeprecationNotification";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
@@ -126,6 +127,11 @@ export async function activate(context: vscode.ExtensionContext) {
     context,
     configuration,
     kieEditorsStore,
+  });
+
+  setupDeprecationNotification({
+    context,
+    configuration,
   });
 
   console.info("Extension is successfully setup.");

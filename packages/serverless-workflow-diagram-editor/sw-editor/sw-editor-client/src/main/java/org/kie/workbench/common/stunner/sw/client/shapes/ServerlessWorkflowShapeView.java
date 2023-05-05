@@ -22,7 +22,6 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
-import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
@@ -72,8 +71,6 @@ public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflo
                       .setStrokeWidth(SHAPE_STROKE_WIDTH), new WiresLayoutContainer());
 
         setEventHandlerManager(new ViewEventHandlerManager(getShape(), getShape(), ShapeViewSupportedEvents.ALL_DESKTOP_EVENT_TYPES));
-
-        getShape().setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
     }
 
     public void setController(ServerlessWorkflowShape<VIEW> controller) {

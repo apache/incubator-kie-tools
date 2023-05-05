@@ -26,4 +26,5 @@ export const COMMAND_IDS = {
   serviceRegistriesLogin: "extension.kogito.swf.serviceRegistries.login",
   serviceRegistriesRefresh: "extension.kogito.swf.serviceRegistries.refresh",
   serviceRegistriesConfig: "extension.kogito.swf.serviceRegistries.config",
+  showDeprecationNotification: "extension.kogito.swf.showDeprecationNotification",
 };

@@ -48,9 +48,9 @@ export function initAugmentationCommands(
         channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args);
       }
     )!,
-    "swf.ls.commands.OpenCompletionItems": editorInstance.addCommand(
+    "editor.ls.commands.OpenCompletionItems": editorInstance.addCommand(
       0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.OpenCompletionItems"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["editor.ls.commands.OpenCompletionItems"]) => {
         editorInstance.setPosition({
           lineNumber: args.newCursorPosition.line + 1,
           column: args.newCursorPosition.character + 1,

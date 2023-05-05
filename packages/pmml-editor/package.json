@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
-    "@kie-tools-core/guided-tour": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
@@ -90,7 +89,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "copyfiles": "^2.4.1",
     "cpr": "^3.0.1",
-    "cypress": "^12.8.1",
+    "cypress": "^12.11.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",

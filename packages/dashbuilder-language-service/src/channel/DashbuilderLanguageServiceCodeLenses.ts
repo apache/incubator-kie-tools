@@ -14,37 +14,20 @@
  * limitations under the License.
  */
 
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { CodeLens, Position } from "vscode-languageserver-types";
-import { DashbuilderLanguageServiceCommandArgs, DashbuilderLanguageServiceCommandTypes } from "../api";
-import { DashbuilderLsNode } from "./types";
+import {
+  createNewFileCodeLens,
+  EditorLanguageServiceCodeLenses,
+  EditorLanguageServiceCodeLensesFunctionsArgs,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
+import { CodeLens } from "vscode-languageserver-types";
+import { DashbuilderLanguageServiceCommandTypes } from "../api";
 
-export type DashBuilderLanguageServiceCodeLensesFunctionsArgs = {
-  document: TextDocument;
-  content: string;
-  rootNode: DashbuilderLsNode;
-};
+export type DashBuilderLanguageServiceCodeLensesFunctionsArgs =
+  EditorLanguageServiceCodeLensesFunctionsArgs<DashbuilderLanguageServiceCommandTypes>;
 
 /**
  * Functions to create CodeLenses
  */
-export const DashbuilderLanguageServiceCodeLenses = {
-  createNewDashboard: (): CodeLens[] => {
-    const position = Position.create(0, 0);
-    const command: DashbuilderLanguageServiceCommandTypes = "dashbuilder.ls.commands.OpenCompletionItems";
-
-    return [
-      {
-        command: {
-          command,
-          title: "Create a dashboard",
-          arguments: [{ newCursorPosition: position } as DashbuilderLanguageServiceCommandArgs[typeof command]],
-        },
-        range: {
-          start: position,
-          end: position,
-        },
-      },
-    ];
-  },
+export const DashbuilderLanguageServiceCodeLenses: EditorLanguageServiceCodeLenses = {
+  createNewFile: (): CodeLens[] => createNewFileCodeLens("Create a dashboard"),
 };

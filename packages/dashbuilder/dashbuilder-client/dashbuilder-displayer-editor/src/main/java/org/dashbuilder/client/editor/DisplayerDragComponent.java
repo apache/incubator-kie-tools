@@ -27,6 +27,7 @@ import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.GlobalDisplayerSettings;
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.PerspectiveCoordinator;
+import org.dashbuilder.displayer.client.widgets.DisplayerErrorWidget;
 import org.dashbuilder.displayer.client.widgets.DisplayerViewer;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -46,11 +47,14 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     GlobalDisplayerSettings globalDisplayerSettings;
 
     @Inject
+    DisplayerErrorWidget displayError;
+
+    @Inject
     public DisplayerDragComponent(SyncBeanManager beanManager,
-                                  DisplayerViewer viewer,
-                                  PlaceManager placeManager,
-                                  PerspectiveCoordinator perspectiveCoordinator,
-                                  GlobalDisplayerSettings globalDisplayerSettings) {
+            DisplayerViewer viewer,
+            PlaceManager placeManager,
+            PerspectiveCoordinator perspectiveCoordinator,
+            GlobalDisplayerSettings globalDisplayerSettings) {
 
         this.beanManager = beanManager;
         this.viewer = viewer;
@@ -72,7 +76,11 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     public IsWidget getShowWidget(final RenderingContext ctx) {
         var settingsOp = getDisplayerSettings(ctx.getComponent());
         return settingsOp.map(settings -> {
-            perspectiveCoordinator.closeDisplayer(settings.getUUID());
+            var error = settings.getError();
+            if (error.isPresent()) {
+                displayError.show(error.get(), null);
+                return displayError;
+            }
             viewer.removeFromParent();
             viewer.init(settings);
             viewer.addAttachHandler(attachEvent -> {
@@ -115,5 +123,4 @@ public class DisplayerDragComponent implements LayoutDragComponent {
 
         return Optional.empty();
     }
-
 }

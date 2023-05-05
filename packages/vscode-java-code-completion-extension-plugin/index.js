@@ -25,10 +25,10 @@ module.exports = {
     );
 
     if (!nodeFs.existsSync(path)) {
-      throw new Error(`VSCode Java Code Completion Extension Plugin :: path doesn't exist: ${path}`);
+      throw new Error(`VS Code Java Code Completion Extension Plugin :: path doesn't exist: ${path}`);
     }
 
-    console.info(`VSCode Java Code Completion Extension Plugin :: path: ${path}`);
+    console.info(`VS Code Java Code Completion Extension Plugin :: path: ${path}`);
 
     return path;
   },

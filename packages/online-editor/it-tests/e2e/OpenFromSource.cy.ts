@@ -67,9 +67,6 @@ describe("Open from source test", () => {
     // check editor title name
     cy.get("[aria-label='Edit file name']").should("have.value", "testModel");
 
-    // close DMN guided tour dialog
-    cy.get("[data-ouia-component-id='dmn-guided-tour'] button[aria-label='Close']").click();
-
     cy.getEditor().within(() => {
       // open properties panel and check values
       cy.get("[data-title='Properties']").click();

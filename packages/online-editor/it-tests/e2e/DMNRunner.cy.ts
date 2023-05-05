@@ -26,9 +26,6 @@ describe("DMN Runner Test", () => {
     // wait until loading dialog disappears
     cy.loadEditor();
 
-    // start the DMN Runner
-    cy.get("[data-ouia-component-id='dmn-guided-tour-skip-runner-start-button']").click();
-
     // fill in DMN Runner inputs panel
     cy.get("[data-testid='dmn-form']").within(($form) => {
       cy.wait(500);
