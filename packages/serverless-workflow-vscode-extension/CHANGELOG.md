@@ -1,3 +1,7 @@
+# 0.28.2 (alpha)
+
+- [KOGITO-9108](https://issues.redhat.com/browse/KOGITO-9108) - Rename the new Serverless Workflow VS Code extension to `swf-vscode-extension`
+
 # 0.28.1 (alpha)
 
 - [KOGITO-9105](https://issues.redhat.com/browse/KOGITO-9105) - Add KIE prefix to `displayName` of new VS Code extensions
