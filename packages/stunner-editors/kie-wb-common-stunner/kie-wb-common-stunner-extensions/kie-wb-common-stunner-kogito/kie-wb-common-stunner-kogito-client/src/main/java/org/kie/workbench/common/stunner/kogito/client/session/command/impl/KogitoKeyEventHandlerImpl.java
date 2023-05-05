@@ -27,7 +27,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
-import elemental2.dom.DomGlobal;
 import org.appformer.client.keyboardShortcuts.KeyboardShortcutsApiOpts;
 import org.appformer.kogito.bridge.client.keyboardshortcuts.KeyboardShortcutsApi;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyEventHandler;
@@ -58,12 +57,10 @@ public class KogitoKeyEventHandlerImpl implements KeyEventHandler {
 
         final Optional<KogitoKeyShortcutCallback> possibleKogitoShortcutCallback = getAssociatedKogitoKeyShortcutCallback(shortcutCallback);
         if (!possibleKogitoShortcutCallback.isPresent() || possibleKogitoShortcutCallback.get().getKeyCombination().length == 0) {
-            DomGlobal.console.debug("Not registering: " + shortcutCallback.getClass().getCanonicalName());
             return this;
         }
 
         final KogitoKeyShortcutCallback kogitoShortcutCallback = possibleKogitoShortcutCallback.get();
-        DomGlobal.console.debug("Registering: " + shortcutCallback.getClass().getCanonicalName() + " - " + kogitoShortcutCallback.getLabel());
 
         //Normal
         if (shortcutCallback instanceof KogitoKeyShortcutKeyDownThenUp) {

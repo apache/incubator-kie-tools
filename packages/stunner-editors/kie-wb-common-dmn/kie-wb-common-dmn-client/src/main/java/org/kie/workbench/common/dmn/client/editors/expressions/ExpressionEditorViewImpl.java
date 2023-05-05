@@ -119,6 +119,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMe
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
 import static java.util.stream.Stream.concat;
+import static org.kie.workbench.common.dmn.api.definition.HasName.NOP;
 import static org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.ITEM_DEFINITION_COMPARATOR;
 import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BUILT_IN_TYPE_COMPARATOR;
@@ -315,7 +316,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                               isOnlyVisualChangeAllowed);
         setExpressionNameText(hasName);
         setExpressionTypeText(Optional.ofNullable(hasExpression.getExpression()));
-        reloadEditor();
     }
 
     public ExpressionContainerGrid getExpressionContainerGrid() {
@@ -572,8 +572,14 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
             getExpressionContainerGrid().clearExpression(getNodeUUID());
         }
 
+        boolean isSameExpressionName =
+                getHasName().orElse(NOP).getName().getValue().equals(expressionCommand.getExpressionProps().name);
+
         expressionCommand.execute();
-        getUpdateCanvasNodeNameCommand().execute(getNodeUUID(), getHasName().orElse(null));
+
+        if (!isSameExpressionName) {
+            getUpdateCanvasNodeNameCommand().execute(getNodeUUID(), getHasName().orElse(NOP));
+        }
     }
 
     Stream<DataTypeProps> retrieveDefaultDataTypeProps() {
@@ -700,7 +706,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = createCommandBuilder();
         final SaveCurrentStateCommand expressionCommand = new SaveCurrentStateCommand(getHasExpression(),
                                                                                       getEditorSelectedEvent(),
-                                                                                      this,
                                                                                       getNodeUUID(),
                                                                                       getHasName(),
                                                                                       getUpdateCanvasNodeNameCommand());
