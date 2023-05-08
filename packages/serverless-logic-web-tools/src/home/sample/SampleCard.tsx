@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useMemo, useRef, useEffect } from "react";
-import { Card, CardTitle, CardFooter, CardBody } from "@patternfly/react-core/dist/js/components/Card";
-import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { useRoutes } from "../../navigation/Hooks";
-import { Link } from "react-router-dom";
-import { Text } from "@patternfly/react-core/dist/js/components/Text";
+import { Card, CardBody, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
-import { FolderIcon, FileIcon, MonitoringIcon } from "@patternfly/react-icons/dist/js/icons";
-import { Sample, SampleCategory } from "./sampleApi";
+import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
+import { FileIcon, FolderIcon, MonitoringIcon } from "@patternfly/react-icons/dist/js/icons";
+import * as React from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useHistory } from "react-router-dom";
+import { useRoutes } from "../../navigation/Hooks";
+import { Sample, SampleCategory } from "./sampleApi";
 
 const tagMap: Record<SampleCategory, { label: string; icon: React.ComponentClass; color: LabelProps["color"] }> = {
   ["serverless-workflow"]: {
@@ -50,6 +49,14 @@ export function SampleCard(props: { sample: Sample }) {
   const routes = useRoutes();
   const imgRef = useRef<HTMLImageElement>(null);
   const tag = useMemo(() => tagMap[props.sample.definition.category], [props.sample.definition.category]);
+  const history = useHistory();
+
+  const onCardClick = useCallback(() => {
+    history.push({
+      pathname: routes.sampleShowcase.path({}),
+      search: routes.sampleShowcase.queryString({ sampleId: props.sample.sampleId }),
+    });
+  }, [props.sample, history, routes]);
 
   useEffect(() => {
     const blob = new Blob([props.sample.svgContent], { type: "image/svg+xml" });
@@ -59,7 +66,7 @@ export function SampleCard(props: { sample: Sample }) {
   }, [props.sample.svgContent]);
 
   return (
-    <Card isCompact={true} isFullHeight={true}>
+    <Card isCompact={true} isFullHeight={true} onClick={onCardClick} isSelectable>
       <Grid style={{ height: "100%" }}>
         <GridItem
           lg={6}
@@ -98,18 +105,6 @@ export function SampleCard(props: { sample: Sample }) {
               </Text>
             </Tooltip>
           </CardBody>
-          <CardFooter style={{ alignItems: "baseline" }}>
-            <Link
-              to={{
-                pathname: routes.sampleShowcase.path({}),
-                search: routes.sampleShowcase.queryString({ sampleId: props.sample.sampleId }),
-              }}
-            >
-              <Button variant={ButtonVariant.tertiary} ouiaId={props.sample.sampleId + `-try-swf-sample-button`}>
-                Try it out!
-              </Button>
-            </Link>
-          </CardFooter>
         </GridItem>
       </Grid>
     </Card>

@@ -14,28 +14,30 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
-import { SampleCard } from "./SampleCard";
-import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { Sample, SampleCategory } from "./sampleApi";
-import { SampleCardSkeleton } from "./SampleCardSkeleton";
-import { SamplesLoadError } from "./SamplesLoadError";
-import { useSampleDispatch } from "./hooks/SampleContext";
-import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
-import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { Pagination, PerPageOptions } from "@patternfly/react-core/dist/js";
 import {
   Dropdown,
   DropdownItem,
   DropdownSeparator,
   DropdownToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
+import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
+import "@patternfly/react-core/dist/styles/base.css";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import * as React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FileLabel } from "../../workspace/components/FileLabel";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { useSampleDispatch } from "./hooks/SampleContext";
+import { Sample, SampleCategory } from "./sampleApi";
+import { SampleCard } from "./SampleCard";
+import { SampleCardSkeleton } from "./SampleCardSkeleton";
+import { SamplesLoadError } from "./SamplesLoadError";
 
 const SAMPLE_PRIORITY: Record<SampleCategory, number> = {
   ["serverless-workflow"]: 1,
@@ -53,6 +55,13 @@ const ALL_CATEGORIES_LABEL = "All categories";
 
 const CATEGORY_ARRAY = Object.keys(SAMPLE_PRIORITY) as SampleCategory[];
 
+export const perPageOptions: PerPageOptions[] = [
+  {
+    title: "9",
+    value: 9,
+  },
+];
+
 export function Showcase() {
   const sampleDispatch = useSampleDispatch();
   const [loading, setLoading] = useState<boolean>(true);
@@ -60,6 +69,8 @@ export function Showcase() {
   const [sampleLoadingError, setSampleLoadingError] = useState("");
   const [searchFilter, setSearchFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<SampleCategory | undefined>();
+  const [page, setPage] = React.useState(1);
+  const [perPage, setPerPage] = React.useState(9);
   const [isCategoryFilterDropdownOpen, setCategoryFilterDropdownOpen] = useState(false);
 
   const onSearch = useCallback(
@@ -91,13 +102,15 @@ export function Showcase() {
       });
   }, [sampleDispatch]);
 
+  const samplesCount = useMemo(() => samples.length, [samples]);
+
   const filterResultMessage = useMemo(() => {
-    if (samples.length === 0) {
+    if (samplesCount === 0) {
       return;
     }
-    const isPlural = samples.length > 1;
-    return `Showing ${samples.length} sample${isPlural ? "s" : ""}`;
-  }, [samples.length]);
+    const isPlural = samplesCount > 1;
+    return `Showing ${samplesCount} sample${isPlural ? "s" : ""}`;
+  }, [samplesCount]);
 
   const selectedCategory = useMemo(() => {
     if (categoryFilter) {
@@ -128,16 +141,15 @@ export function Showcase() {
   );
 
   return (
-    <>
-      {sampleLoadingError && <SamplesLoadError errors={[sampleLoadingError]} />}
-      {!sampleLoadingError && (
-        <>
-          <TextContent>
-            <Text component="h1">Samples Showcase</Text>
-          </TextContent>
-          <br />
-          <Flex flexWrap={{ default: "wrap" }}>
-            <FlexItem style={{ marginRight: 0 }}>
+    <Page>
+      <PageSection variant={"light"}>
+        <TextContent>
+          <Text component={TextVariants.h1}>Samples Catalog</Text>
+          <Text component={TextVariants.p}>Try one of our samples to start defining your model.</Text>
+        </TextContent>
+        <Toolbar style={{ paddingBottom: "0" }}>
+          <ToolbarContent style={{ paddingLeft: "0", paddingRight: "0", paddingBottom: "0" }}>
+            <ToolbarItem variant="search-filter">
               <SearchInput
                 value={""}
                 type={"search"}
@@ -150,8 +162,8 @@ export function Showcase() {
                   e.stopPropagation();
                 }}
               />
-            </FlexItem>
-            <FlexItem>
+            </ToolbarItem>
+            <ToolbarItem>
               <Dropdown
                 style={{ backgroundColor: "white" }}
                 onSelect={() => setCategoryFilterDropdownOpen(false)}
@@ -166,46 +178,54 @@ export function Showcase() {
                 }
                 isOpen={isCategoryFilterDropdownOpen}
               />
-            </FlexItem>
-            <FlexItem>
+            </ToolbarItem>
+            <ToolbarItem>
               {filterResultMessage && (
                 <TextContent>
                   <Text>{filterResultMessage}</Text>
                 </TextContent>
               )}
-            </FlexItem>
-          </Flex>
-          <br />
-          {loading && <SampleCardSkeleton numberOfCards={4} />}
-          {!loading && samples.length === 0 && (
-            <PageSection variant={"light"} isFilled={true} style={{ marginRight: "25px" }}>
-              <EmptyState style={{ height: "350px" }}>
-                <EmptyStateIcon icon={CubesIcon} />
-                <Title headingLevel="h4" size="lg">
-                  {"None of the available samples matched this search"}
-                </Title>
-              </EmptyState>
-            </PageSection>
-          )}
-          {!loading && samples.length > 0 && (
-            <Gallery
-              hasGutter={true}
-              minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}
-              style={{
-                overflowX: "auto",
-                gridAutoFlow: "column",
-                gridAutoColumns: "minmax(calc(100%/3.1 - 16px),1fr)",
-                paddingBottom: "8px",
-                paddingRight: "var(--pf-c-page__main-section--xl--PaddingRight)",
-              }}
-            >
-              {samples.map((sample) => (
-                <SampleCard sample={sample} key={`sample-${sample.sampleId}`} />
-              ))}
-            </Gallery>
-          )}
-        </>
-      )}
-    </>
+            </ToolbarItem>
+            <ToolbarItem variant="pagination">
+              <Pagination
+                isCompact
+                itemCount={samplesCount}
+                onSetPage={(_e, v) => setPage(v)}
+                page={page}
+                perPage={perPage}
+                perPageOptions={perPageOptions}
+                variant="top"
+              />
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
+      </PageSection>
+
+      <PageSection isFilled>
+        {sampleLoadingError && <SamplesLoadError errors={[sampleLoadingError]} />}
+        {!sampleLoadingError && (
+          <>
+            {loading && <SampleCardSkeleton numberOfCards={4} />}
+            {!loading && samplesCount === 0 && (
+              <PageSection variant={"light"} isFilled={true} style={{ marginRight: "25px" }}>
+                <EmptyState style={{ height: "350px" }}>
+                  <EmptyStateIcon icon={CubesIcon} />
+                  <Title headingLevel="h4" size="lg">
+                    {"None of the available samples matched this search"}
+                  </Title>
+                </EmptyState>
+              </PageSection>
+            )}
+            {!loading && samplesCount > 0 && (
+              <Gallery hasGutter={true} minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}>
+                {samples.slice((page - 1) * perPage, page * perPage).map((sample) => (
+                  <SampleCard sample={sample} key={`sample-${sample.sampleId}`} />
+                ))}
+              </Gallery>
+            )}
+          </>
+        )}
+      </PageSection>
+    </Page>
   );
 }
