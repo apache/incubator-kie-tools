@@ -36,7 +36,7 @@ export function setupDeprecationNotification(args: {
       );
 
       if (deprecatedNotificationSelection == NOTIFICATION_OPTIONS.checkNewExtension) {
-        await vscode.commands.executeCommand("extension.open", "kie-group.serverless-workflow-vscode-extension");
+        await vscode.commands.executeCommand("extension.open", "kie-group.swf-vscode-extension");
       } else if (deprecatedNotificationSelection == NOTIFICATION_OPTIONS.dontShowAgain) {
         await args.configuration.configureDeprecationNotificationDisabled(false);
       }
