@@ -156,6 +156,11 @@ public class SWEditorYamlSeleniumIT extends SWEditorSeleniumBase {
         testExampleYaml("SolveMathProblemsExample.sw.yaml");
     }
 
+    @Test
+    public void testFoodOrderWorkflowExample() throws Exception {
+        testExampleYaml("FoodOrderWorkflow.sw.yaml");
+    }
+
     private void testExampleYaml(String exampleName) throws Exception {
         final String expected = loadResourceYaml(exampleName);
         final String yaml = loadResourceEscapedYaml(exampleName);

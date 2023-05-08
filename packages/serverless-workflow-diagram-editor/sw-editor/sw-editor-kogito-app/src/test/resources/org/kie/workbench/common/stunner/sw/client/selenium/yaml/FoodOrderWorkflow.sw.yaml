@@ -1,0 +1,40 @@
+id: foodorderworkflow
+version: 1.0.0
+specVersion: 0.8
+name: Food Order Workflow
+start: Place Order
+states:
+  - name: Place Order
+    type: operation
+    actions:
+      - subFlowRef: placeorderworkflow
+    transition: Wait for ETA Deadline
+  - name: Wait for ETA Deadline
+    type: event
+    onEvents:
+      - eventDataFilter:
+          data: "${ .results.status }"
+          toStateData: "${ .status }"
+        eventRefs:
+          - ETA Deadline Event
+    transition: Deliver Order
+  - name: Deliver Order
+    type: operation
+    actions:
+      - subFlowRef: deliverorderworkflow
+    transition: Charge For Order
+  - name: Charge For Order
+    type: operation
+    actions:
+      - functionRef:
+          refName: Charge For Order Function
+          arguments:
+            order: "${ .order.id }"
+        actionDataFilter:
+          results: "${ .outcome.status }"
+          toStateData: "${ .status }"
+    end: true
+    stateDataFilter:
+      output: '.status} | .orderstatus += ["Order Completed"] }'
+events: "file://orderevents.yml"
+functions: "file://orderfunctions.yml"
