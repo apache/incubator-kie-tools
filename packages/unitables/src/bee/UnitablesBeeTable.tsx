@@ -481,7 +481,7 @@ function UnitablesBeeTableCell({
         setEditingCell(false);
       }
     },
-    [fieldName, submitRow]
+    [fieldName, setEditingCell, submitRow]
   );
 
   const onClick = useCallback(
@@ -490,7 +490,7 @@ function UnitablesBeeTableCell({
         e.stopPropagation();
         cellRef.current?.getElementsByTagName("button")?.[0]?.click();
         setIsSelectFieldOpen((prev) => {
-          if (prev === true) {
+          if (prev) {
             submitRow();
             setEditingCell(false);
           } else {
@@ -500,7 +500,7 @@ function UnitablesBeeTableCell({
         });
       }
 
-      if (!isEditing) {
+      if (!isEditing && e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "input") {
         e.stopPropagation();
         const inputField = cellRef.current?.getElementsByTagName("input");
         if (inputField && inputField.length > 0) {
