@@ -25,6 +25,8 @@ export function DmnAutoFieldProvider(props: React.PropsWithChildren<{}>) {
       value={(props, uniforms) => {
         if (props.field?.["x-dmn-type"] === X_DMN_TYPE.CONTEXT) {
           return DmnFeelContextField;
+        } else if (props.field?.enum) {
+          // list -> horizontal or vertical;
         }
         return AutoField.defaultComponentDetector(props, uniforms);
       }}

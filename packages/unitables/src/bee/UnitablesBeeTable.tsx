@@ -138,6 +138,7 @@ export function UnitablesBeeTable({
   );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
+    console.log(rows);
     return columns.map((column) => {
       if (column.insideProperties) {
         return {
@@ -148,6 +149,9 @@ export function UnitablesBeeTable({
           isRowIndexColumn: false,
           width: undefined,
           columns: column.insideProperties.map((insideProperty) => {
+            if (insideProperty.dataType === "array") {
+              //
+            }
             return {
               originalId: uuid + `field-${insideProperty.joinedName}`,
               label: insideProperty.name,
@@ -185,7 +189,7 @@ export function UnitablesBeeTable({
         };
       }
     });
-  }, [setColumnWidth, configs, columns, uuid]);
+  }, [rows, setColumnWidth, configs, columns, uuid]);
 
   const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
     return column.originalId ?? column.id;
@@ -471,6 +475,11 @@ function UnitablesBeeTableCell({
         submitRow();
       }
       if (
+        e.target.tagName.toLowerCase() === "button" &&
+        (e.relatedTarget as HTMLElement)?.tagName.toLowerCase() === "button"
+      ) {
+        // array field;
+      } else if (
         e.target.tagName.toLowerCase() === "button" ||
         (e.relatedTarget as HTMLElement)?.tagName.toLowerCase() === "button"
       ) {
@@ -486,11 +495,26 @@ function UnitablesBeeTableCell({
     [fieldName, submitRow]
   );
 
-  const onClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
-      setIsSelectFieldOpen((prev) => !prev);
-    }
-  }, []);
+  const onClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
+        if (field.type === "array") {
+          submitRow();
+        } else {
+          setIsSelectFieldOpen((prev) => !prev);
+        }
+      } else if (
+        e.isTrusted &&
+        field.type === "array" &&
+        (e.target as HTMLElement)?.tagName.toLowerCase() !== "div" &&
+        (e.target as HTMLElement)?.tagName.toLowerCase() !== "input" &&
+        (e.currentTarget as HTMLElement)?.tagName.toLowerCase() === "div"
+      ) {
+        submitRow();
+      }
+    },
+    [submitRow, field.type]
+  );
 
   return (
     <div
