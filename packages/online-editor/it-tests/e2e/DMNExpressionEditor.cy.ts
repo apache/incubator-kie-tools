@@ -26,9 +26,6 @@ describe.skip("DMN Expression Editor Test :: Expressions", () => {
     // wait until loading dialog disappears
     cy.loadEditor();
 
-    // close DMN guided tour dialog
-    cy.ouia({ ouiaId: "dmn-guided-tour" }).children("button[aria-label='Close']").click();
-
     cy.getEditor().within(() => {
       // open decision navigator and check new expression editor for expressions
       cy.ouia({ ouiaId: "docks-item-org.kie.dmn.decision.navigator" }).children("button").click();
@@ -51,9 +48,6 @@ describe.skip("DMN Expression Editor Test :: Expressions", () => {
     // wait until loading dialog disappears
     cy.loadEditor();
 
-    // close DMN guided tour dialog
-    cy.ouia({ ouiaId: "dmn-guided-tour" }).children("button[aria-label='Close']").click();
-
     cy.getEditor().within(() => {
       // open decision navigator and check new expression editor for expressions
       cy.ouia({ ouiaId: "docks-item-org.kie.dmn.decision.navigator" }).children("button").click();
@@ -75,9 +69,6 @@ describe.skip("DMN Expression Editor Test :: Expressions", () => {
 
     // wait until loading dialog disappears
     cy.loadEditor();
-
-    // close DMN guided tour dialog
-    cy.ouia({ ouiaId: "dmn-guided-tour" }).children("button[aria-label='Close']").click();
 
     cy.getEditor().within(() => {
       // open decision navigator and check new expression editor for expressions
@@ -105,9 +96,6 @@ describe.skip("DMN Expression Editor Test :: Data types", () => {
 
     // wait until loading dialog disappears
     cy.loadEditor();
-
-    // close DMN guided tour dialog
-    cy.ouia({ ouiaId: "dmn-guided-tour" }).children("button[aria-label='Close']").click();
 
     cy.getEditor().within(() => {
       // open decision navigator
@@ -167,9 +155,6 @@ describe.skip("DMN Expression Editor Test :: Data types", () => {
     // wait until loading dialog disappears
     cy.loadEditor();
 
-    // close DMN guided tour dialog
-    cy.ouiaId("dmn-guided-tour").children("button[aria-label='Close']").click();
-
     cy.getEditor().within(() => {
       // open decision navigator
       cy.ouiaId("docks-item-org.kie.dmn.decision.navigator").children("button").click();
@@ -198,9 +183,6 @@ describe.skip("DMN Expression Editor Test :: Data types", () => {
 
     // wait until loading dialog disappears
     cy.loadEditor();
-
-    // close DMN guided tour dialog
-    cy.ouiaId("dmn-guided-tour").children("button[aria-label='Close']").click();
 
     cy.getEditor().within(() => {
       // open decision navigator
@@ -272,9 +254,6 @@ describe.skip("DMN Expression Editor Test :: keyboard shortcuts", () => {
     // wait until loading dialog disappears
     cy.loadEditor();
 
-    // close DMN guided tour dialog
-    cy.ouia({ ouiaId: "dmn-guided-tour" }).children("button[aria-label='Close']").click();
-
     cy.getEditor().within(() => {
       // open decision navigator and check new expression editor for expressions
       cy.ouia({ ouiaId: "docks-item-org.kie.dmn.decision.navigator" }).children("button").click();
@@ -324,9 +303,6 @@ describe.skip("DMN Expression Editor Test :: Properties Panel", () => {
 
     // wait until loading dialog disappears
     cy.loadEditor();
-
-    // close DMN guided tour dialog
-    cy.ouia({ ouiaId: "dmn-guided-tour" }).children("button[aria-label='Close']").click();
 
     cy.getEditor().within(() => {
       // open decision navigator and check new expression editor for expressions

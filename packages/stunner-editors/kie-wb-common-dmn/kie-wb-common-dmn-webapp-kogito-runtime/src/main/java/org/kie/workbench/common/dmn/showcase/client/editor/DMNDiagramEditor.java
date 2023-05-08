@@ -44,7 +44,6 @@ import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNLayoutHelper;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
@@ -100,7 +99,6 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final Promises promises,
                             final IncludedModelsPage includedModelsPage,
                             final KogitoChannelHelper kogitoChannelHelper,
-                            final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                             final DRDNameChanger drdNameChanger,
                             final ReadOnlyProvider readOnlyProvider,
                             final LazyCanvasFocusUtils lazyCanvasFocusUtils,
@@ -130,7 +128,6 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               promises,
               includedModelsPage,
               kogitoChannelHelper,
-              guidedTourBridgeInitializer,
               drdNameChanger,
               confirmationDialog,
               decisionNavigatorPresenter,

@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import {
+  EditorLanguageServiceCommandArgs,
+  EditorLanguageServiceCommandExecution,
+  EditorLanguageServiceCommandHandlers,
+  EditorLanguageServiceCommandIds,
+  EditorLanguageServiceCommandTypes,
+} from "@kie-tools/json-yaml-language-service/dist/api";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
 export interface SwfLanguageServiceChannelApi {
   kogitoSwfLanguageService__getCompletionItems(args: {
@@ -28,35 +35,33 @@ export interface SwfLanguageServiceChannelApi {
   kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]>;
 }
 
-export type SwfLanguageServiceCommandTypes =
+export type SwfLanguageServiceCommandTypes = EditorLanguageServiceCommandTypes<
   | "swf.ls.commands.ImportFunctionFromCompletionItem"
   | "swf.ls.commands.OpenFunctionsWidget"
   | "swf.ls.commands.OpenStatesWidget"
-  | "swf.ls.commands.OpenCompletionItems"
   | "swf.ls.commands.OpenServiceRegistriesConfig"
   | "swf.ls.commands.LogInServiceRegistries"
-  | "swf.ls.commands.RefreshServiceRegistries";
+  | "swf.ls.commands.RefreshServiceRegistries"
+>;
 
-export type SwfLanguageServiceCommandArgs = {
+export type SwfLanguageServiceCommandArgs = EditorLanguageServiceCommandArgs & {
   "swf.ls.commands.ImportFunctionFromCompletionItem": {
     containingService: SwfServiceCatalogService;
     documentUri: string;
   };
   "swf.ls.commands.OpenFunctionsWidget": { position: Position };
   "swf.ls.commands.OpenStatesWidget": { position: Position };
-  "swf.ls.commands.OpenCompletionItems": { newCursorPosition: Position };
   "swf.ls.commands.OpenServiceRegistriesConfig": {};
   "swf.ls.commands.LogInServiceRegistries": {};
   "swf.ls.commands.RefreshServiceRegistries": {};
 };
 
-export type SwfLanguageServiceCommandIds = Record<SwfLanguageServiceCommandTypes, string>;
+export type SwfLanguageServiceCommandIds = EditorLanguageServiceCommandIds<SwfLanguageServiceCommandTypes>;
 
-export type SwfLanguageServiceCommandHandlers = {
-  [K in SwfLanguageServiceCommandTypes]: (args: SwfLanguageServiceCommandArgs[K]) => any;
-};
+export type SwfLanguageServiceCommandHandlers = EditorLanguageServiceCommandHandlers<
+  SwfLanguageServiceCommandTypes,
+  SwfLanguageServiceCommandArgs
+>;
 
-export interface SwfLanguageServiceCommandExecution<T extends SwfLanguageServiceCommandTypes> {
-  name: T;
-  args: SwfLanguageServiceCommandArgs[T];
-}
+export interface SwfLanguageServiceCommandExecution<T extends SwfLanguageServiceCommandTypes>
+  extends EditorLanguageServiceCommandExecution<T, SwfLanguageServiceCommandArgs> {}

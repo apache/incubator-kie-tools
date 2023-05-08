@@ -15,7 +15,6 @@
  */
 
 export * from "./EditorContextExposedInteropApi";
-export * from "./GuidedTourExposedInteropApi";
 export * from "./I18nExposedInteropApi";
 export * from "./KeyboardShorcutsApi";
 export * from "./ResourceContentExposedInteropApi";

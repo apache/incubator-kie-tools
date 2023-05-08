@@ -13,31 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  ELsCodeCompletionStrategy,
+  ELsShouldCreateCodelensArgs,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
+import { DashbuilderLanguageServiceCommandTypes } from "../api";
 
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { CompletionItemKind, Range } from "vscode-languageserver-types";
+export interface ShouldCreateCodelensArgs extends ELsShouldCreateCodelensArgs<DashbuilderLanguageServiceCommandTypes> {}
 
-export declare type DashbuilderLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
-export declare type DashbuilderJsonPath = (string | number)[];
-
-/**
- * The AST node used in the LanguageServices
- */
-export type DashbuilderLsNode = {
-  type: DashbuilderLsNodeType;
-  value?: any;
-  offset: number;
-  length: number;
-  colonOffset?: number;
-  parent?: DashbuilderLsNode;
-  children?: DashbuilderLsNode[];
-};
-
-export interface TranslateArgs {
-  completion: object | string;
-  completionItemKind: CompletionItemKind;
-  currentNodeRange?: Range;
-  cursorOffset: number;
-  document: TextDocument;
-  overwriteRange?: Range;
-}
+export interface CodeCompletionStrategy extends ELsCodeCompletionStrategy<DashbuilderLanguageServiceCommandTypes> {}

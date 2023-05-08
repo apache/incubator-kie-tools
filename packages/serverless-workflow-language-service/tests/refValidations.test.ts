@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-import { doRefValidation } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import {
+  doRefValidation,
+  parseJsonContent,
+  parseYamlContent,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { swfRefValidationMap } from "../dist/channel/swfRefValidationMap";
 import { trim } from "./testUtils";
-import * as jsonc from "jsonc-parser";
-import { SwfLanguageServiceConfig, SwfYamlLanguageService } from "../src/channel";
-import { defaultJqCompletionsConfig } from "./SwfLanguageServiceConfigs";
 
 function textDoc(content: string) {
   return TextDocument.create("", "serverless-workflow-json", 0, content);
@@ -52,7 +54,13 @@ describe("test JSON refValidation method against source and target paths", () =>
   ]
 }
             `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseJsonContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'testFunction' in 'functions'",
         range: { end: { character: 36, line: 16 }, start: { character: 22, line: 16 } },
@@ -75,7 +83,13 @@ describe("test JSON refValidation method against source and target paths", () =>
   }],
 }
           `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseJsonContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'HighBloodPressure' in 'events'",
         range: { end: { character: 38, line: 9 }, start: { character: 19, line: 9 } },
@@ -104,7 +118,13 @@ describe("test JSON refValidation method against source and target paths", () =>
   }],
 }
         `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseJsonContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'VetAppointmentInfo' in 'events'",
         range: { end: { character: 46, line: 13 }, start: { character: 26, line: 13 } },
@@ -133,7 +153,13 @@ describe("test JSON refValidation method against source and target paths", () =>
   }],
 }
         `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseJsonContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'MakeVetAppointment' in 'events'",
         range: { end: { character: 47, line: 11 }, start: { character: 27, line: 11 } },
@@ -184,7 +210,13 @@ describe("test JSON refValidation method against source and target paths", () =>
   }],
 }
         `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseJsonContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'SecondRetryStrategy' in 'retries'",
         range: { end: { character: 39, line: 35 }, start: { character: 18, line: 35 } },
@@ -230,7 +262,13 @@ describe("test JSON refValidation method against source and target paths", () =>
   }],
 }
         `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseJsonContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'SomeErrorTwo' in 'errors'",
         range: { end: { character: 56, line: 31 }, start: { character: 42, line: 31 } },
@@ -265,7 +303,13 @@ describe("test JSON refValidation method against source and target paths", () =>
   ]
 }
       `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseJsonContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'end' in 'states'",
         range: { end: { character: 25, line: 12 }, start: { character: 20, line: 12 } },
@@ -298,7 +342,13 @@ describe("test JSON refValidation method against source and target paths", () =>
   ]
 }
       `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseJsonContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'myFunc' in 'functions'",
         range: { end: { character: 30, line: 15 }, start: { character: 22, line: 15 } },
@@ -350,7 +400,13 @@ describe("test JSON refValidation method against source and target paths", () =>
   }],
 }
 `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseJsonContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'SomeErrorOne' in 'errors'",
         range: { end: { character: 40, line: 33 }, start: { character: 26, line: 33 } },
@@ -392,7 +448,13 @@ describe("test JSON refValidation method against source and target paths", () =>
   }],
 }
         `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseJsonContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'FirstRetryStrategy' in 'retries'",
         range: { end: { character: 38, line: 23 }, start: { character: 18, line: 23 } },
@@ -426,7 +488,13 @@ describe("test JSON refValidation method against source and target paths", () =>
   ]
 }
             `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseJsonContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'myFunc' in 'functions'",
         range: { end: { character: 30, line: 16 }, start: { character: 22, line: 16 } },
@@ -472,7 +540,13 @@ describe("test JSON refValidation method against source and target paths", () =>
   }],
 }
         `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseJsonContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'SomeErrorOne' in 'errors'",
         range: { end: { character: 40, line: 31 }, start: { character: 26, line: 31 } },
@@ -482,30 +556,6 @@ describe("test JSON refValidation method against source and target paths", () =>
 });
 
 describe("test YAML refValidation method against source and target paths", () => {
-  const defaultConfig: SwfLanguageServiceConfig = {
-    shouldConfigureServiceRegistries: () => false,
-    shouldServiceRegistriesLogIn: () => false,
-    canRefreshServices: () => false,
-    getSpecsDirPosixPaths: async () => ({ specsDirRelativePosixPath: "specs", specsDirAbsolutePosixPath: "" }),
-    getRoutesDirPosixPaths: async () => ({ routesDirRelativePosixPath: "routes", routesDirAbsolutePosixPath: "" }),
-    shouldDisplayServiceRegistriesIntegration: async () => true,
-    shouldReferenceServiceRegistryFunctionsWithUrls: async () => false,
-    shouldIncludeJsonSchemaDiagnostics: async () => true,
-  };
-
-  const defaultServiceCatalogConfig = {
-    relative: { getServices: async () => [] },
-    global: { getServices: async () => [] },
-    getServiceFileNameFromSwfServiceCatalogServiceId: async (registryName: string, serviceId: string) =>
-      `${serviceId}.yaml`,
-  };
-
-  const ls = new SwfYamlLanguageService({
-    fs: {},
-    serviceCatalog: defaultServiceCatalogConfig,
-    config: defaultConfig,
-    jqCompletions: defaultJqCompletionsConfig,
-  });
   test("check functionRef against functions array", () => {
     const { content } = trim(`
 ---
@@ -521,7 +571,13 @@ states:
       functionRef:
         refName: "testFunc"
 `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: ls.parseContent(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseYamlContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'testFunc' in 'functions'",
         range: { end: { character: 27, line: 11 }, start: { character: 17, line: 11 } },
@@ -540,7 +596,13 @@ onEvents:
 - eventRefs:
   - HighBloodPressure
 `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: ls.parseContent(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseYamlContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'HighBloodPressure' in 'events'",
         range: { end: { character: 21, line: 7 }, start: { character: 4, line: 7 } },
@@ -562,7 +624,13 @@ onEvents:
       data: test
       resultEventRef: VetAppointmentInfo
 `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: ls.parseContent(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseYamlContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'VetAppointmentInfo' in 'events'",
         range: { end: { character: 40, line: 10 }, start: { character: 22, line: 10 } },
@@ -584,7 +652,13 @@ onEvents:
       data: test
       resultEventRef: VetAppointmentInfo        
 `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: ls.parseContent(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseYamlContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'MakeVetAppointment' in 'events'",
         range: { end: { character: 41, line: 8 }, start: { character: 23, line: 8 } },
@@ -622,7 +696,13 @@ states:
     retryableErrors:
     - SomeErrorOne
 `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: ls.parseContent(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseYamlContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'SecondRetryStrategy' in 'retries'",
         range: { end: { character: 33, line: 24 }, start: { character: 14, line: 24 } },
@@ -657,7 +737,13 @@ states:
     - SomeErrorOne
     - SomeErrorTwo
 `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: ls.parseContent(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseYamlContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'SomeErrorTwo' in 'errors'",
         range: { end: { character: 18, line: 23 }, start: { character: 6, line: 23 } },
@@ -681,7 +767,13 @@ states:
       functionRef:
         refName: "myFunc"
 `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: ls.parseContent(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseYamlContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'end' in 'states'",
         range: { end: { character: 17, line: 8 }, start: { character: 14, line: 8 } },
@@ -701,7 +793,13 @@ onEvents:
 - eventRefs:
   - HighBloodPressure
 `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: ls.parseContent(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseYamlContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'HighBloodPressure' in 'events'",
         range: { end: { character: 21, line: 8 }, start: { character: 4, line: 8 } },
@@ -725,7 +823,13 @@ states:
       functionRef:
         refName: "testFunc"
 `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: ls.parseContent(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseYamlContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'testFunc' in 'functions'",
         range: { end: { character: 27, line: 12 }, start: { character: 17, line: 12 } },
@@ -759,7 +863,13 @@ states:
     retryableErrors:
     - SomeErrorOne
 `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: ls.parseContent(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseYamlContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'SomeErrorOne' in 'errors'",
         range: { end: { character: 18, line: 22 }, start: { character: 6, line: 22 } },
@@ -794,7 +904,13 @@ states:
     retryableErrors:
     - SomeErrorOne
 `);
-    expect(doRefValidation({ textDocument: textDoc(content), rootNode: ls.parseContent(content)! })).toEqual([
+    expect(
+      doRefValidation({
+        textDocument: textDoc(content),
+        rootNode: parseYamlContent(content)!,
+        validationMap: swfRefValidationMap,
+      })
+    ).toEqual([
       {
         message: "Missing 'FirstRetryStrategy' in 'retries'",
         range: { end: { character: 32, line: 21 }, start: { character: 14, line: 21 } },

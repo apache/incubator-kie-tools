@@ -14,6 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./commands";
 export { VsCodeBackendProxy } from "./VsCodeBackendProxy";
 export { VsCodeTestScenarioRunnerService } from "./VsCodeTestScenarioRunnerService";

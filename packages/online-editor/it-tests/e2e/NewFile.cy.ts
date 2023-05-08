@@ -55,9 +55,6 @@ describe("New file test", () => {
     // check editor title name
     cy.get("[aria-label='Edit file name']").should("have.value", "Untitled");
 
-    // close DMN guided tour dialog
-    cy.get("[data-ouia-component-id='dmn-guided-tour'] button[aria-label='Close']").click();
-
     cy.getEditor().within(() => {
       // open Decision navigator and check nodes
       cy.get("[data-title='Decision Navigator']").click();

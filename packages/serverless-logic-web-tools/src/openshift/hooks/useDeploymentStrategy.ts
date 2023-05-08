@@ -15,7 +15,7 @@
  */
 
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { DashboardSingleModelDeployment } from "../deploy/strategies/DashboardSingleModelDeployment";
 import { DashboardWorkspaceDeployment } from "../deploy/strategies/DashboardWorkspaceDeployment";
@@ -30,18 +30,6 @@ export function useDeploymentStrategy() {
   const settingsDispatch = useSettingsDispatch();
   const workspaces = useWorkspaces();
 
-  const kafkaSourceArgs = useMemo(
-    () => ({
-      bootstrapServers: [settings.apacheKafka.config.bootstrapServer],
-      serviceAccount: {
-        clientId: settings.serviceAccount.config.clientId,
-        clientSecret: settings.serviceAccount.config.clientSecret,
-      },
-      topics: [settings.apacheKafka.config.topic],
-    }),
-    [settings.apacheKafka.config, settings.serviceAccount.config]
-  );
-
   const createDeploymentStrategy = useCallback(
     async (args: InitDeployArgs) => {
       const resourceName = settingsDispatch.openshift.service.newResourceName(RESOURCE_PREFIX);
@@ -55,7 +43,6 @@ export function useDeploymentStrategy() {
           targetFile: args.targetFile,
           getFiles: workspaces.getFiles,
           openShiftService: settingsDispatch.openshift.service,
-          kafkaSourceArgs: args.factoryArgs.shouldAttachKafkaSource ? kafkaSourceArgs : undefined,
         });
       }
 
@@ -68,7 +55,6 @@ export function useDeploymentStrategy() {
           targetFile: args.targetFile,
           getFiles: workspaces.getFiles,
           openShiftService: settingsDispatch.openshift.service,
-          kafkaSourceArgs: args.factoryArgs.shouldAttachKafkaSource ? kafkaSourceArgs : undefined,
         });
       }
 
@@ -96,7 +82,7 @@ export function useDeploymentStrategy() {
 
       throw new Error("Unknown deployment strategy");
     },
-    [kafkaSourceArgs, settings.openshift.config, settingsDispatch.openshift.service, workspaces]
+    [settings.openshift.config, settingsDispatch.openshift.service, workspaces]
   );
 
   return { createDeploymentStrategy };
