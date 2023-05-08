@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { AutoField, AutoFields } from "@kie-tools/uniforms-patternfly/dist/esm";
-import { ComponentDetector } from "uniforms/esm";
+import { Context, GuaranteedProps } from "uniforms/esm";
+import { AutoField } from "@kie-tools/uniforms-patternfly/dist/esm";
+import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
+import { DmnFeelContextField } from "./DmnFeelContextField";
 
-interface DmnAutoFieldValue {
-  value: ComponentDetector;
-}
-
-export function DmnAutoFieldProvider(props: React.PropsWithChildren<DmnAutoFieldValue>) {
-  return (
-    <AutoField.componentDetectorContext.Provider value={props.value}>
-      {props.children ? props.children : <AutoFields />}
-    </AutoField.componentDetectorContext.Provider>
-  );
+export function defaultDmnRunnerAutoFieldValue(
+  props: GuaranteedProps<unknown>,
+  uniforms: Context<Record<string, unknown>>
+) {
+  if (props.field?.["x-dmn-type"] === X_DMN_TYPE.CONTEXT) {
+    return DmnFeelContextField;
+  }
+  return AutoField.defaultComponentDetector(props, uniforms);
 }

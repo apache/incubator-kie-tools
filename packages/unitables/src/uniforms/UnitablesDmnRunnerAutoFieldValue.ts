@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { AutoField, AutoFields } from "@kie-tools/uniforms-patternfly/dist/esm";
-import { ComponentDetector } from "uniforms/esm";
+import { defaultDmnRunnerAutoFieldValue } from "@kie-tools/dmn-runner/dist/uniforms";
+import { Context, GuaranteedProps } from "uniforms/esm";
+import UniformsListField from "./UniformsListField";
 
-interface DmnAutoFieldValue {
-  value: ComponentDetector;
-}
-
-export function DmnAutoFieldProvider(props: React.PropsWithChildren<DmnAutoFieldValue>) {
-  return (
-    <AutoField.componentDetectorContext.Provider value={props.value}>
-      {props.children ? props.children : <AutoFields />}
-    </AutoField.componentDetectorContext.Provider>
-  );
+export function unitablesDmnRunnerAutoFieldValue(
+  props: GuaranteedProps<unknown>,
+  uniforms: Context<Record<string, unknown>>
+) {
+  if (props.field?.type === "array") {
+    return UniformsListField;
+  }
+  return defaultDmnRunnerAutoFieldValue(props, uniforms);
 }
