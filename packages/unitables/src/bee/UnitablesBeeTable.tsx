@@ -465,6 +465,7 @@ function UnitablesBeeTableCell({
     (e: React.FocusEvent<HTMLDivElement>) => {
       if (e.target.tagName.toLowerCase() === "input") {
         submitRow();
+        setEditingCell(false);
       }
       if (
         e.target.tagName.toLowerCase() === "button" ||
@@ -472,11 +473,12 @@ function UnitablesBeeTableCell({
       ) {
         // if the select field is open and it blurs to another cell, close it;
         const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
-        if ((selectOptions?.length ?? 0) > 0 && (e.relatedTarget as HTMLElement).tagName.toLowerCase() === "td") {
+        if ((selectOptions?.length ?? 0) > 0 && (e.relatedTarget as HTMLElement)?.tagName?.toLowerCase() === "td") {
           e.target.click();
           setIsSelectFieldOpen(false);
         }
         submitRow();
+        setEditingCell(false);
       }
     },
     [fieldName, submitRow]
@@ -485,6 +487,8 @@ function UnitablesBeeTableCell({
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
+        e.stopPropagation();
+        cellRef.current?.getElementsByTagName("button")?.[0]?.click();
         setIsSelectFieldOpen((prev) => {
           if (prev === true) {
             submitRow();
@@ -497,6 +501,7 @@ function UnitablesBeeTableCell({
       }
 
       if (!isEditing) {
+        e.stopPropagation();
         const inputField = cellRef.current?.getElementsByTagName("input");
         if (inputField && inputField.length > 0) {
           inputField?.[0]?.focus();
@@ -504,8 +509,6 @@ function UnitablesBeeTableCell({
           return;
         }
       }
-
-      setEditingCell(false);
     },
     [isEditing, setEditingCell, submitRow]
   );
@@ -536,3 +539,106 @@ function isEditModeTriggeringKey(e: React.KeyboardEvent) {
 
   return /^[\d\w ()[\]{},.\-_'"/?<>+\\|]$/.test(e.key);
 }
+
+/*
+const onClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      setIsSelectFieldOpen((prev) => {
+        if (prev) {
+          submitRow();
+          setEditingCell(false);
+        } else {
+          setEditingCell(true);
+        }
+        return !prev;
+      });
+
+      console.log("CLICKED: " + (e.target as HTMLElement).tagName?.toLowerCase());
+
+      if (isEditing) {
+        console.log("CLICKED ELEMENT IS NOT FOCUSED");
+        console.log("CURRENT ACTIVE ELEMENT: " + (document.activeElement as HTMLElement).tagName?.toLowerCase());
+
+        if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "input") {
+          const inputField = cellRef.current?.getElementsByTagName("input");
+          if (inputField && inputField.length > 0) {
+            console.log("Focusing INPUT");
+            inputField?.[0]?.focus();
+            setEditingCell(true);
+            return;
+          }
+        }
+        if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
+          const buttonField = cellRef.current?.getElementsByTagName("button");
+          if (buttonField && buttonField.length > 0) {
+            console.log("Focusing BUTTON")
+            buttonField?.[0]?.focus();
+            setEditingCell(true);
+            return;
+          }
+        }
+      }
+    },
+    [isEditing, setEditingCell]
+  );
+*/
+
+/*
+  const onBlur = useCallback(
+    (e: React.FocusEvent<HTMLDivElement>) => {
+      // target : event target receiving focus 
+      console.log("onBlur: Losing focus " + e.target.tagName + " id: " + e.target.id);
+      // relatedTarget : event target losing focus (if any). 
+      console.log("onBlur: Receiving focus " + (e.relatedTarget as HTMLElement)?.tagName?.toLowerCase() + " id: " + (e.relatedTarget as HTMLElement)?.id);
+
+      if (e.target.tagName.toLowerCase() === "input") {
+        setEditingCell(false);
+        submitRow();
+      }
+      if (
+        e.target.tagName.toLowerCase() === "button" ||
+        (e.relatedTarget as HTMLElement)?.tagName.toLowerCase() === "button"
+      ) {
+        // if the select field is open and it blurs to another cell, close it;
+        const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
+        if ((selectOptions?.length ?? 0) > 0 && (e.relatedTarget as HTMLElement)?.tagName?.toLowerCase() === "td") {
+          e.target.click();
+          setIsSelectFieldOpen(false);
+        }
+        console.log("SUBMIT BUTTON CASE DURING ONBLUR");
+        setEditingCell(false);
+        submitRow();
+      }
+    },
+    [fieldName, submitRow]
+  ); 
+*/
+
+/*
+const onClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if(!isEditing) {
+      if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
+        e.stopPropagation();
+        cellRef.current?.getElementsByTagName("button")?.[0]?.click();
+        setIsSelectFieldOpen((prev) => {
+          if (prev) {
+            submitRow();
+            setEditingCell(false);
+          } else {
+            setEditingCell(true);
+          }
+          return !prev;
+        });
+      }
+
+      if (!isEditing && e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "input") {
+        e.stopPropagation();
+        const inputField = cellRef.current?.getElementsByTagName("input");
+        if (inputField && inputField.length > 0) {
+          inputField?.[0]?.focus();
+          setEditingCell(true);
+          return;
+        }
+      }
+    }
+  }, [isEditing, setEditingCell, submitRow]); */
