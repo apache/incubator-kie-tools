@@ -18,7 +18,5 @@ package common
 
 import "github.com/spf13/afero"
 
-/* Global variable for Afero filesystem.
-* Works as a wrapper for the OS package and can be mocked in tests.
- */
+// FS /* Global variable for Afero filesystem.
 var FS afero.Fs = afero.NewOsFs()

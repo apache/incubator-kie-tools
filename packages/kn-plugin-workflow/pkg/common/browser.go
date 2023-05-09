@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,25 @@
 
 package common
 
-import "os/exec"
+import (
+	"log"
+	"os/exec"
+	"runtime"
+)
 
-var ExecCommand = exec.Command // Make it a global var, so it can be override in tests
+func OpenBrowserURL(url string) {
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "start", url)
+	case "darwin":
+		cmd = exec.Command("open", url)
+	default:
+		cmd = exec.Command("xdg-open", url)
+	}
+
+	err := cmd.Start()
+	if err != nil {
+		log.Printf("Error opening browser: %v", err)
+	}
+}

@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package command
+package common
 
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/spf13/afero"
 )
 
@@ -33,6 +31,7 @@ type WorkflowStates struct {
 
 type Workflow struct {
 	Id          string           `json:"id"`
+	Version     string           `json:"version"`
 	SpecVersion string           `json:"specVersion"`
 	Name        string           `json:"name"`
 	Start       string           `json:"start"`
@@ -49,6 +48,7 @@ func getWorkflowTemplate() (workflowJsonByte []byte, err error) {
 
 	workflow := Workflow{
 		Id:          "hello",
+		Version:     "1.0",
 		SpecVersion: "0.8.0",
 		Name:        "Hello World",
 		Start:       "HelloWorld",
@@ -57,7 +57,7 @@ func getWorkflowTemplate() (workflowJsonByte []byte, err error) {
 
 	workflowJsonByte, err = json.MarshalIndent(workflow, "", "  ")
 	if err != nil {
-		fmt.Println("ERROR: marshaling the workflow json file.")
+		return nil, fmt.Errorf("ERROR: marshaling the workflow json file. %w", err)
 	}
 	return
 }
@@ -68,10 +68,9 @@ func CreateWorkflow(workflowFilePath string) (err error) {
 		return err
 	}
 
-	err = afero.WriteFile(common.FS, workflowFilePath, workflowFileData, 0644)
+	err = afero.WriteFile(FS, workflowFilePath, workflowFileData, 0644)
 	if err != nil {
-		fmt.Println("ERROR: writing the workflow json file.")
-		return err
+		return fmt.Errorf("ERROR: writing the workflow json file. %w", err)
 	}
 
 	fmt.Printf("Workflow file created on %s \n", workflowFilePath)
