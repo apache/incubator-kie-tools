@@ -67,4 +67,33 @@ public interface SWConstants {
     String ENUM_ATLEAST = "Enum.atleast";
     @TranslationKey(defaultValue = "")
     String ENUM_ALLOF = "Enum.allof";
+
+    @TranslationKey(defaultValue = "")
+    String EVENT_REFERENCE = "Event.reference";
+
+    @TranslationKey(defaultValue = "")
+    String EVENT_FILTER_IS_NULL = "Eventfilter.null";
+    @TranslationKey(defaultValue = "")
+    String EVENT_FILTER_PARAMETER = "Eventfilter.parameter";
+    @TranslationKey(defaultValue = "")
+    String EVENT_FILTER_USE_DATA = "Eventfilter.usedata";
+    @TranslationKey(defaultValue = "")
+    String EVENT_FILTER_DATA = "Eventfilter.data";
+    @TranslationKey(defaultValue = "")
+    String EVENT_FILTER_TO_STATE_DATA = "Eventfilter.tostatedata";
+
+    @TranslationKey(defaultValue = "")
+    String CONDITION_IS_NULL = "Condition.null";
+    @TranslationKey(defaultValue = "")
+    String DATA_CONDITION_TRANSITION = "Condition.data";
+    @TranslationKey(defaultValue = "")
+    String DATA_CONDITION_TRANSITION_NAME = "Condition.dataname";
+    @TranslationKey(defaultValue = "")
+    String DATA_CONDITION_TRANSITION_VALUE = "Condition.datavalue";
+    @TranslationKey(defaultValue = "")
+    String EVENT_CONDITION_TRANSITION = "Condition.event";
+    @TranslationKey(defaultValue = "")
+    String EVENT_CONDITION_TRANSITION_NAME = "Condition.eventname";
+    @TranslationKey(defaultValue = "")
+    String EVENT_CONDITION_TRANSITION_VALUE = "Condition.eventvalue";
 }

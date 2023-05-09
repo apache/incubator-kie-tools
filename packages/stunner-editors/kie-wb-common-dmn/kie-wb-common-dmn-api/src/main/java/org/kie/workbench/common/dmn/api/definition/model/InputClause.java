@@ -96,6 +96,15 @@ public class InputClause extends DMNElement implements HasTypeRefs,
         );
     }
 
+    public InputClause exactCopy() {
+        return new InputClause(
+                Optional.ofNullable(id).map(Id::copy).orElse(null),
+                Optional.ofNullable(description).map(Description::copy).orElse(null),
+                Optional.ofNullable(inputExpression).map(InputClauseLiteralExpression::exactCopy).orElse(null),
+                Optional.ofNullable(inputValues).map(InputClauseUnaryTests::exactCopy).orElse(null)
+        );
+    }
+
     @Override
     public List<HasTypeRef> getHasTypeRefs() {
         return new ArrayList<>(getNotNullHasTypeRefs(getInputExpression()));

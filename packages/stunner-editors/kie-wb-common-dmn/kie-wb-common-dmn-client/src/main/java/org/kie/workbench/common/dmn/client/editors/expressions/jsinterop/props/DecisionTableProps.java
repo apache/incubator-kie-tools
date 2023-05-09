@@ -25,7 +25,7 @@ public class DecisionTableProps extends ExpressionProps {
     public final String hitPolicy;
     public final String aggregation;
     public final Annotation[] annotations;
-    public final Clause[] input;
+    public final InputClauseProps[] input;
     public final Clause[] output;
     public final DecisionTableRule[] rules;
 
@@ -35,7 +35,7 @@ public class DecisionTableProps extends ExpressionProps {
                               final String hitPolicy,
                               final String aggregation,
                               final Annotation[] annotations,
-                              final Clause[] input,
+                              final InputClauseProps[] input,
                               final Clause[] output,
                               final DecisionTableRule[] rules) {
         super(id, name, dataType, DECISION_TABLE.getText());

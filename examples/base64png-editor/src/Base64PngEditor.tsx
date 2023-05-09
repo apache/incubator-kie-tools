@@ -22,7 +22,6 @@ import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import "./styles.scss";
 import { Base64PngEdit, Base64PngStateControl } from "./Base64PngStateControl";
@@ -169,7 +168,6 @@ export const Base64PngEditor = React.forwardRef<EditorApi, Props>((props, forwar
       getPreview: () => Promise.resolve(getPreview()),
       undo: () => Promise.resolve(undo()),
       redo: () => Promise.resolve(redo()),
-      getElementPosition: (selector: string) => Promise.resolve(DEFAULT_RECT),
       validate: () => Promise.resolve([]),
       setTheme: () => Promise.resolve(),
     };

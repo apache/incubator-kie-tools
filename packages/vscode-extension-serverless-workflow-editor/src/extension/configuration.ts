@@ -32,6 +32,7 @@ export const CONFIGURATION_SECTIONS = {
   shouldReferenceServiceRegistryFunctionsWithUrls: "kogito.swf.shouldReferenceServiceRegistryFunctionsWithUrls",
   automaticallyOpenDiagramEditorAlongsideTextEditor: "kogito.swf.automaticallyOpenDiagramEditorAlongsideTextEditor",
   enableKogitoServerlessWorkflowVisualizationPreview: "kogito.swf.enableKogitoServerlessWorkflowVisualizationPreview",
+  enableDeprecationNotification: "kogito.swf.enableDeprecationNotification",
 };
 
 type ShouldOpenDiagramEditorAutomaticallyType = "Ask next time" | "Do not open" | "Open automatically";
@@ -137,5 +138,15 @@ export class SwfVsCodeExtensionConfiguration {
     return vscode.workspace
       .getConfiguration()
       .get(CONFIGURATION_SECTIONS.enableKogitoServerlessWorkflowVisualizationPreview, false);
+  }
+
+  public async configureDeprecationNotificationDisabled(deprecationNotificationEnabled: boolean) {
+    await vscode.workspace
+      .getConfiguration()
+      .update(CONFIGURATION_SECTIONS.enableDeprecationNotification, deprecationNotificationEnabled, true);
+  }
+
+  public isDeprecationNotificationEnabled(): boolean {
+    return vscode.workspace.getConfiguration().get(CONFIGURATION_SECTIONS.enableDeprecationNotification, true);
   }
 }

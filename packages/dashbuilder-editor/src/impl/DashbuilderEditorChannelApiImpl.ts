@@ -19,7 +19,6 @@ import {
   KogitoEditorChannelApi,
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
-import { UserInteraction, Tutorial } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import {
   WorkspaceEdit,
@@ -53,12 +52,7 @@ export class DashbuilderEditorChannelApiImpl implements DashbuilderEditorChannel
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
     return this.defaultApiImpl.kogitoEditor_contentRequest();
   }
-  public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction): void {
-    this.defaultApiImpl.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
-  }
-  public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void {
-    this.defaultApiImpl.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
-  }
+
   public kogitoI18n_getLocale(): Promise<string> {
     return this.defaultApiImpl.kogitoI18n_getLocale();
   }

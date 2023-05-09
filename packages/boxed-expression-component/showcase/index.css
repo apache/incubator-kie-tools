@@ -17,20 +17,17 @@
 .showcase {
   display: flex;
   flex-direction: column;
-  padding: 1.5em;
 }
 
 .showcase .boxed-expression {
   overflow-y: auto;
-  height: 40vh;
-  border: 1px dashed rgb(211, 211, 211);
+  height: calc(70vh - 8px);
 }
 
 .showcase .updated-json {
-  margin-top: 2em;
   border-style: inset;
   padding: 1em;
-  max-height: 30em;
+  height: calc(30vh - 8px - 2em - 4px);
   overflow-y: auto;
 }
 

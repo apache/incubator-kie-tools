@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
 import org.kie.workbench.common.dmn.api.definition.model.Invocation;
 import org.kie.workbench.common.dmn.api.definition.model.IsLiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.IsUnaryTests;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocument;
@@ -38,7 +39,9 @@ import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Annotation;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Cell;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Clause;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ClauseUnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Column;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextEntryProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
@@ -48,6 +51,8 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.E
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FeelFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FunctionProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InputClauseProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.JavaFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ListProps;
@@ -55,6 +60,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PmmlFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RuleEntry;
 
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.UNDEFINED;
 
@@ -75,14 +81,12 @@ public class ExpressionPropsFiller {
             return new RelationProps(expressionId, expressionName, dataType, columnsConvertForRelationProps(relationExpression), rowsConvertForRelationProps(relationExpression));
         } else if (wrappedExpression instanceof List) {
             final List listExpression = (List) wrappedExpression;
-            final Double width = listExpression.getComponentWidths().get(1);
-            return new ListProps(expressionId, expressionName, dataType, itemsConvertForListProps(listExpression), width);
+            return new ListProps(expressionId, expressionName, dataType, itemsConvertForListProps(listExpression));
         } else if (wrappedExpression instanceof Invocation) {
             final Invocation invocationExpression = (Invocation) wrappedExpression;
-            final String invokedFunction = ((LiteralExpression) Optional.ofNullable(invocationExpression.getExpression()).orElse(new LiteralExpression())).getText().getValue();
             final Double entryInfoWidth = invocationExpression.getComponentWidths().get(1);
             final Double entryExpressionWidth = invocationExpression.getComponentWidths().get(2);
-            return new InvocationProps(expressionId, expressionName, dataType, invokedFunction, bindingsConvertForInvocationProps(invocationExpression), entryInfoWidth, entryExpressionWidth);
+            return new InvocationProps(expressionId, expressionName, dataType, createInvocationFunctionProps(invocationExpression), bindingsConvertForInvocationProps(invocationExpression), entryInfoWidth, entryExpressionWidth);
         } else if (wrappedExpression instanceof FunctionDefinition) {
             final FunctionDefinition functionExpression = (FunctionDefinition) wrappedExpression;
             final EntryInfo[] formalParameters = formalParametersConvertForFunctionProps(functionExpression);
@@ -98,7 +102,7 @@ public class ExpressionPropsFiller {
                                           outputConvertForDecisionTableProps(decisionTableExpression, expressionName, dataType),
                                           rulesConvertForDecisionTableProps(decisionTableExpression));
         }
-        return new ExpressionProps(expressionId, expressionName, dataType, null);
+        return new ExpressionProps(expressionId, expressionName, dataType, UNDEFINED.getText());
     }
 
     public static ExpressionProps buildAndFillJsInteropProp(final Expression wrappedExpression, final String expressionName, final String dataType) {
@@ -136,10 +140,13 @@ public class ExpressionPropsFiller {
                 .getRow()
                 .stream()
                 .map(list -> {
-                         final String[] cells = list
+                         final Cell[] cells = list
                                  .getExpression()
                                  .stream()
-                                 .map(wrappedLiteralExpression -> ((LiteralExpression) wrappedLiteralExpression.getExpression()).getText().getValue()).toArray(String[]::new);
+                                 .map(wrappedLiteralExpression -> new Cell(wrappedLiteralExpression.getExpression().getId().getValue(),
+                                                                           ((LiteralExpression) wrappedLiteralExpression.getExpression()).getText().getValue())
+                                 )
+                                 .toArray(Cell[]::new);
                          return new Row(list.getId().getValue(), cells);
                      }
                 )
@@ -162,12 +169,19 @@ public class ExpressionPropsFiller {
                 .toArray(ContextEntryProps[]::new);
     }
 
+    private static InvocationFunctionProps createInvocationFunctionProps(final Invocation invocationExpression) {
+        String functionId = Optional.ofNullable(invocationExpression.getExpression()).map(DMNElement::getId).orElse(new Id()).getValue();
+        String functionName = ((LiteralExpression) Optional.ofNullable(invocationExpression.getExpression()).orElse(new LiteralExpression())).getText().getValue();
+
+        return new InvocationFunctionProps(functionId, functionName);
+    }
+
     private static ContextEntryProps fromModelToPropsContextEntryMapper(final InformationItem contextEntryVariable, final Expression expression) {
         final String entryId = contextEntryVariable.getId().getValue();
         final String entryName = contextEntryVariable.getName().getValue();
         final String entryDataType = contextEntryVariable.getTypeRef().getLocalPart();
         final EntryInfo entryInfo = new EntryInfo(entryId, entryName, entryDataType);
-        final ExpressionProps entryExpression = buildAndFillJsInteropProp(expression, entryName, entryDataType, entryId);
+        final ExpressionProps entryExpression = buildAndFillJsInteropProp(expression, entryName, entryDataType);
         return new ContextEntryProps(entryInfo, entryExpression);
     }
 
@@ -243,23 +257,26 @@ public class ExpressionPropsFiller {
                 .stream()
                 .map(rule -> new DecisionTableRule(
                         rule.getId().getValue(),
-                        rule.getInputEntry().stream().map(inputEntry -> inputEntry.getText().getValue()).toArray(String[]::new),
-                        rule.getOutputEntry().stream().map(outputEntry -> outputEntry.getText().getValue()).toArray(String[]::new),
+                        rule.getInputEntry().stream().map(inputEntry -> new RuleEntry(inputEntry.getDomainObjectUUID(),
+                                                                                      inputEntry.getText().getValue())).toArray(RuleEntry[]::new),
+                        rule.getOutputEntry().stream().map(outputEntry -> new RuleEntry(outputEntry.getDomainObjectUUID(),
+                                                                                        outputEntry.getText().getValue())).toArray(RuleEntry[]::new),
                         rule.getAnnotationEntry().stream().map(annotationClauseText -> annotationClauseText.getText().getValue()).toArray(String[]::new)))
                 .toArray(DecisionTableRule[]::new);
     }
 
-    private static Clause[] inputConvertForDecisionTableProps(final DecisionTable decisionTableExpression) {
+    private static InputClauseProps[] inputConvertForDecisionTableProps(final DecisionTable decisionTableExpression) {
         return IntStream.range(0, decisionTableExpression.getInput().size())
                 .mapToObj(index -> {
                     final InputClause inputClause = decisionTableExpression.getInput().get(index);
                     final String id = inputClause.getId().getValue();
+                    final String idLiteralExpression = inputClause.getInputExpression().getId().getValue();
                     final String name = inputClause.getInputExpression().getText().getValue();
                     final String dataType = inputClause.getInputExpression().getTypeRefHolder().getValue().getLocalPart();
                     final Double width = decisionTableExpression.getComponentWidths().get(index + 1);
-                    return new Clause(id, name, dataType, width);
+                    return new InputClauseProps(id, name, dataType, width, convertToClauseUnaryTests(inputClause.getInputValues()), idLiteralExpression);
                 })
-                .toArray(Clause[]::new);
+                .toArray(InputClauseProps[]::new);
     }
 
     private static Clause[] outputConvertForDecisionTableProps(final DecisionTable decisionTableExpression, final String expressionName, final String expressionDataType) {
@@ -272,11 +289,21 @@ public class ExpressionPropsFiller {
                     final Double width = decisionTableExpression.getComponentWidths().get(decisionTableExpression.getInput().size() + index + 1);
                     // When output clause is empty, then we should use expression name and dataType for it
                     if (name == null) {
-                        return new Clause(id, expressionName, expressionDataType, width);
+                        return new Clause(id, expressionName, expressionDataType, width, convertToClauseUnaryTests(outputClause.getOutputValues()));
                     }
-                    return new Clause(id, name, dataType, width);
+                    return new Clause(id, name, dataType, width, convertToClauseUnaryTests(outputClause.getOutputValues()));
                 })
                 .toArray(Clause[]::new);
+    }
+
+    public static ClauseUnaryTests convertToClauseUnaryTests(IsUnaryTests isUnaryTests) {
+        if (isUnaryTests != null) {
+            return new ClauseUnaryTests(isUnaryTests.getId().getValue(),
+                                        isUnaryTests.getText().getValue(),
+                                        isUnaryTests.getConstraintType().value());
+        } else {
+            return null;
+        }
     }
 
     private static Annotation[] annotationsConvertForDecisionTableProps(final DecisionTable decisionTableExpression) {
@@ -285,9 +312,8 @@ public class ExpressionPropsFiller {
                     final RuleAnnotationClause ruleAnnotationClause = decisionTableExpression.getAnnotations().get(index);
                     final Double width = decisionTableExpression.getComponentWidths()
                             .get(decisionTableExpression.getInput().size() + decisionTableExpression.getOutput().size() + index + 1);
-                    final String annotationId = Optional.ofNullable(ruleAnnotationClause.getId()).orElse(new Id()).getValue();
                     final String annotationName = ruleAnnotationClause.getName().getValue();
-                    return new Annotation(annotationId, annotationName, width);
+                    return new Annotation(annotationName, width);
                 })
                 .toArray(Annotation[]::new);
     }

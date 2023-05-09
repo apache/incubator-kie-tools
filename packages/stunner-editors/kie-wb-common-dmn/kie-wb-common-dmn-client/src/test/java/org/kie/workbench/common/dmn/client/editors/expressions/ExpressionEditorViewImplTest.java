@@ -29,9 +29,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
 import elemental2.dom.DOMTokenList;
-import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
-import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -39,12 +38,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.ClearExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillContextExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillDecisionTableExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillExpressionCommand;
@@ -52,6 +56,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillFunc
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillInvocationExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillListExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillLiteralExpressionCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.UpdateCanvasNodeNameCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DataTypeProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DecisionTableProps;
@@ -62,6 +67,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.LiteralProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
@@ -82,10 +88,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
@@ -106,7 +114,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorViewImpl.ENABLED_BETA_CSS_CLASS;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.CONTEXT;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.LITERAL_EXPRESSION;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.UNDEFINED;
 import static org.mockito.ArgumentMatchers.any;
@@ -117,6 +125,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -132,7 +141,7 @@ public class ExpressionEditorViewImplTest {
     private static final String UNDEFINED_EXPRESSION_DEFINITION_NAME = "Undefined";
 
     @Mock
-    private Anchor returnToLink;
+    private Span returnToDRGLabel;
 
     @Mock
     private Span expressionName;
@@ -224,26 +233,14 @@ public class ExpressionEditorViewImplTest {
     @Mock
     private BaseExpressionGrid editor;
 
-    @Mock
+    @Mock(extraInterfaces = DomainObject.class)
     private HasExpression hasExpression;
 
     @Mock
-    private HTMLAnchorElement tryIt;
-
-    @Mock
-    private HTMLAnchorElement switchBack;
+    private HasName hasName;
 
     @Mock
     private HTMLDivElement betaBoxedExpressionToggle;
-
-    @Mock
-    private HTMLDivElement newBoxedExpression;
-
-    @Mock
-    private HTMLDivElement dmnExpressionType;
-
-    @Mock
-    private HTMLDivElement dmnExpressionEditor;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -263,6 +260,8 @@ public class ExpressionEditorViewImplTest {
     @Captor
     private ArgumentCaptor<FillExpressionCommand> commandCaptor;
 
+    private HTMLButtonElement returnToLink;
+
     private ExpressionGridCache expressionGridCache;
 
     private DMNGridPanelContainer gridPanelContainer;
@@ -273,6 +272,7 @@ public class ExpressionEditorViewImplTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         this.expressionGridCache = new ExpressionGridCacheImpl();
+        this.returnToLink = new HTMLButtonElement();
         this.gridPanelContainer = spy(new DMNGridPanelContainer());
         when(sessionManager.getCurrentSession()).thenReturn(session);
         when(session.getExpressionGridCache()).thenReturn(expressionGridCache);
@@ -294,6 +294,7 @@ public class ExpressionEditorViewImplTest {
         doReturn(new BaseGridData()).when(editor).getModel();
 
         this.view = spy(new ExpressionEditorViewImpl(returnToLink,
+                                                     returnToDRGLabel,
                                                      expressionName,
                                                      expressionType,
                                                      gridPanelContainer,
@@ -309,19 +310,14 @@ public class ExpressionEditorViewImplTest {
                                                      dataTypePageActiveEvent,
                                                      pmmlDocumentMetadataProvider,
                                                      definitionUtils,
-                                                     itemDefinitionUtils,
-                                                     tryIt,
-                                                     switchBack,
-                                                     betaBoxedExpressionToggle,
-                                                     newBoxedExpression,
-                                                     dmnExpressionType,
-                                                     dmnExpressionEditor));
+                                                     itemDefinitionUtils));
         view.init(presenter);
         view.bind(session);
 
         doReturn(hasExpression).when(view).getHasExpression();
         doReturn(editorSelectedEvent).when(view).getEditorSelectedEvent();
         doReturn(NODE_UUID).when(view).getNodeUUID();
+        doReturn(false).when(view).isReactBoxedExpressionVisible();
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
@@ -354,9 +350,6 @@ public class ExpressionEditorViewImplTest {
         doAnswer((i) -> i.getArguments()[0]).when(translationService).getTranslation(Mockito.<String>any());
 
         betaBoxedExpressionToggle.classList = mock(DOMTokenList.class);
-        newBoxedExpression.classList = mock(DOMTokenList.class);
-        dmnExpressionType.classList = mock(DOMTokenList.class);
-        dmnExpressionEditor.classList = mock(DOMTokenList.class);
     }
 
     @Test
@@ -402,9 +395,8 @@ public class ExpressionEditorViewImplTest {
 
         final GridWidget expressionContainer = expressionContainerArgumentCaptor.getValue();
 
-        verify(gridLayer).select(eq(expressionContainer));
-        verify(gridLayer).enterPinnedMode(eq(expressionContainer),
-                                          any(Command.class));
+        verify(gridLayer).select(expressionContainer);
+        verify(gridLayer).enterPinnedMode(eq(expressionContainer), any(Command.class));
     }
 
     @Test
@@ -414,8 +406,8 @@ public class ExpressionEditorViewImplTest {
         final TransformMediator transformMediator = transformMediatorArgumentCaptor.getValue();
 
         verify(mousePanMediator).setBatchDraw(true);
-        verify(gridLayer).setDefaultTransformMediator(eq(transformMediator));
-        verify(viewportMediators).push(eq(mousePanMediator));
+        verify(gridLayer).setDefaultTransformMediator(transformMediator);
+        verify(viewportMediators).push(mousePanMediator);
     }
 
     @Test
@@ -432,7 +424,7 @@ public class ExpressionEditorViewImplTest {
 
         view.setReturnToLinkText(RETURN_LINK);
 
-        verify(returnToLink).setTextContent(eq(RETURN_LINK));
+        verify(returnToDRGLabel).setTextContent(RETURN_LINK);
     }
 
     @Test
@@ -476,7 +468,7 @@ public class ExpressionEditorViewImplTest {
                            hasName,
                            false);
 
-        verify(expressionName).setTextContent(eq(NAME));
+        verify(expressionName).setTextContent(NAME);
     }
 
     @Test
@@ -502,7 +494,7 @@ public class ExpressionEditorViewImplTest {
                            hasName,
                            false);
 
-        verify(expressionType).setTextContent(eq(LITERAL_EXPRESSION.getText()));
+        verify(expressionType).setTextContent(LITERAL_EXPRESSION.getText());
     }
 
     @Test
@@ -514,12 +506,12 @@ public class ExpressionEditorViewImplTest {
                            hasName,
                            false);
 
-        verify(expressionType).setTextContent(eq("<" + UNDEFINED_EXPRESSION_DEFINITION_NAME + ">"));
+        verify(expressionType).setTextContent("<" + UNDEFINED_EXPRESSION_DEFINITION_NAME + ">");
     }
 
     @Test
     public void testOnClickReturnToLink() {
-        view.onClickReturnToLink(mock(ClickEvent.class));
+        view.onClickReturnToDRGLink(mock(ClickEvent.class));
 
         verify(presenter).exit();
     }
@@ -533,55 +525,22 @@ public class ExpressionEditorViewImplTest {
 
     @Test
     public void testSetFocus() {
+        doNothing().when(view).loadNewBoxedExpressionEditor();
+
         view.setFocus();
 
-        verify(gridPanel).setFocus(true);
-    }
-
-    @Test
-    public void testOnTryIt() {
-        final ClickEvent event = mock(ClickEvent.class);
-        view.setExpression(NODE_UUID,
-                           hasExpression,
-                           Optional.of(HasName.NOP),
-                           false);
-
-        view.onTryIt(event);
-
-        verify(view).toggleLegacyExpressionEditor(false);
-        verify(view).toggleBetaBoxedExpressionEditor(true);
-        verify(event).preventDefault();
-        verify(event).stopPropagation();
+        verify(view).loadNewBoxedExpressionEditor();
     }
 
     @Test
     public void testEditingExpression() {
-        final ClickEvent event = mock(ClickEvent.class);
+        final Optional<HasName> hasName = Optional.of(HasName.NOP);
         view.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(HasName.NOP),
+                           hasName,
                            false);
 
-        verify(view).toggleLegacyExpressionEditor(true);
-        verify(view).toggleBetaBoxedExpressionEditor(false);
-    }
-
-    @Test
-    public void testToggleBoxedExpressionAndEnableIt() {
-        view.toggleBetaBoxedExpressionEditor(true);
-        verify(betaBoxedExpressionToggle.classList).toggle(ENABLED_BETA_CSS_CLASS, true);
-    }
-
-    @Test
-    public void testClear() {
-
-        final ExpressionContainerGrid expressionContainerGrid = mock(ExpressionContainerGrid.class);
-
-        doReturn(expressionContainerGrid).when(view).getExpressionContainerGrid();
-
-        view.clear();
-
-        verify(expressionContainerGrid).clearExpressionType();
+        verify(view).setExpressionNameText(hasName);
     }
 
     private void assertCommandParameters(final FillExpressionCommand command,
@@ -593,15 +552,14 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testBroadcastLiteralExpressionDefinition() {
+    public void testUpdateExpressionLiteralProps() {
+        final LiteralProps props = new LiteralProps("", "", ExpressionType.LITERAL_EXPRESSION.getText(), null, 0d);
 
-        final LiteralProps props = mock(LiteralProps.class);
+        doNothing().when(view).executeUndoableExpressionCommand(any());
 
-        doNothing().when(view).executeExpressionCommand(any());
+        view.updateExpression(props);
 
-        view.broadcastLiteralExpressionDefinition(props);
-
-        verify(view).executeExpressionCommand(commandCaptor.capture());
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
@@ -610,15 +568,14 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testBroadcastContextExpressionDefinition() {
+    public void testUpdateExpressionContextProps() {
+        final ContextProps props = new ContextProps("", "", CONTEXT.getText(), null, null, 0d, 0d);
 
-        final ContextProps props = mock(ContextProps.class);
+        doNothing().when(view).executeUndoableExpressionCommand(any());
 
-        doNothing().when(view).executeExpressionCommand(any());
+        view.updateExpression(props);
 
-        view.broadcastContextExpressionDefinition(props);
-
-        verify(view).executeExpressionCommand(commandCaptor.capture());
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
@@ -627,15 +584,14 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testBroadcastListExpressionDefinition() {
+    public void testUpdateExpressionListProps() {
+        final ListProps props = new ListProps("", "", ExpressionType.LIST.getText(), null);
 
-        final ListProps props = mock(ListProps.class);
+        doNothing().when(view).executeUndoableExpressionCommand(any());
 
-        doNothing().when(view).executeExpressionCommand(any());
+        view.updateExpression(props);
 
-        view.broadcastListExpressionDefinition(props);
-
-        verify(view).executeExpressionCommand(commandCaptor.capture());
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
@@ -644,15 +600,14 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testBroadcastInvocationExpressionDefinition() {
+    public void testUpdateExpressionInvocationProps() {
+        final InvocationProps props = new InvocationProps("", "", ExpressionType.INVOCATION.getText(), null, null, 0d, 0d);
 
-        final InvocationProps props = mock(InvocationProps.class);
+        doNothing().when(view).executeUndoableExpressionCommand(any());
 
-        doNothing().when(view).executeExpressionCommand(any());
+        view.updateExpression(props);
 
-        view.broadcastInvocationExpressionDefinition(props);
-
-        verify(view).executeExpressionCommand(commandCaptor.capture());
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
@@ -661,15 +616,14 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testBroadcastFunctionExpressionDefinition() {
+    public void testUpdateExpressionFunctionProps() {
+        final FunctionProps props = new FunctionProps("", "", ExpressionType.FUNCTION.getText(), null, 0d, "");
 
-        final FunctionProps props = mock(FunctionProps.class);
+        doNothing().when(view).executeUndoableExpressionCommand(any());
 
-        doNothing().when(view).executeExpressionCommand(any());
+        view.updateExpression(props);
 
-        view.broadcastFunctionExpressionDefinition(props);
-
-        verify(view).executeExpressionCommand(commandCaptor.capture());
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
@@ -678,15 +632,14 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testBroadcastDecisionTableExpressionDefinition() {
+    public void testUpdateExpressionDecisionTable() {
+        final DecisionTableProps props = new DecisionTableProps("", "", ExpressionType.DECISION_TABLE.getText(), null, "", null, null, null, null);
 
-        final DecisionTableProps props = mock(DecisionTableProps.class);
+        doNothing().when(view).executeUndoableExpressionCommand(any());
 
-        doNothing().when(view).executeExpressionCommand(any());
+        view.updateExpression(props);
 
-        view.broadcastDecisionTableExpressionDefinition(props);
-
-        verify(view).executeExpressionCommand(commandCaptor.capture());
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
 
         final FillExpressionCommand command = commandCaptor.getValue();
 
@@ -695,7 +648,26 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testNotifyUserAction() {
+    public void testUpdateExpressionUndefined() {
+        final ExpressionProps props = new ExpressionProps("", "", ExpressionType.UNDEFINED.getText(), null);
+        final ExpressionContainerGrid expressionContainerGrid = mock(ExpressionContainerGrid.class);
+
+        doNothing().when(view).executeUndoableExpressionCommand(any());
+        doReturn(expressionContainerGrid).when(view).getExpressionContainerGrid();
+
+        view.updateExpression(props);
+
+        verify(view).executeUndoableExpressionCommand(commandCaptor.capture());
+        verify(expressionContainerGrid).clearExpression(NODE_UUID);
+
+        final FillExpressionCommand command = commandCaptor.getValue();
+
+        assertTrue(command instanceof ClearExpressionCommand);
+        assertCommandParameters(command, props);
+    }
+
+    @Test
+    public void testCreateUndoAction() {
 
         final ArgumentCaptor<SaveCurrentStateCommand> captor = ArgumentCaptor.forClass(SaveCurrentStateCommand.class);
 
@@ -705,7 +677,7 @@ public class ExpressionEditorViewImplTest {
         doNothing().when(view).execute(commandBuilder);
         doReturn(Optional.empty()).when(view).getHasName();
 
-        view.notifyUserAction();
+        view.createUndoCommand();
 
         verify(view).addExpressionCommand(captor.capture(), eq(commandBuilder));
         verify(view).execute(commandBuilder);
@@ -714,13 +686,12 @@ public class ExpressionEditorViewImplTest {
 
         assertEquals(hasExpression, command.getHasExpression());
         assertEquals(editorSelectedEvent, command.getEditorSelectedEvent());
-        assertEquals(view, command.getView());
         assertEquals(NODE_UUID, command.getNodeUUID());
     }
 
     @Test
-    public void testOpenManageDataType() {
-        view.openManageDataType();
+    public void testOpenDataTypePage() {
+        view.openDataTypePage();
 
         verify(dataTypePageActiveEvent).fire(any(DataTypePageTabActiveEvent.class));
     }
@@ -734,17 +705,6 @@ public class ExpressionEditorViewImplTest {
         view.addExpressionCommand(expressionCommand, builder);
 
         verify(builder).addCommand(expressionCommand);
-    }
-
-    @Test
-    public void testReloadEditor() {
-        doNothing().when(view).loadNewBoxedExpressionEditor();
-        doNothing().when(view).syncExpressionWithOlderEditor();
-
-        view.reloadEditor();
-
-        verify(view).loadNewBoxedExpressionEditor();
-        verify(view).syncExpressionWithOlderEditor();
     }
 
     @Test
@@ -770,25 +730,22 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testReloadIfIsNewEditor_WhenItIs() {
+    public void testReloadEditor() {
+        doNothing().when(view).loadNewBoxedExpressionEditor();
+        doReturn(true).when(view).isReactBoxedExpressionVisible();
 
-        doReturn(true).when(view).isNewEditorEnabled();
-        doNothing().when(view).reloadEditor();
+        view.reloadEditor();
 
-        view.reloadIfIsNewEditor();
-
-        verify(view).reloadEditor();
+        verify(view).loadNewBoxedExpressionEditor();
     }
 
     @Test
-    public void testReloadIfIsNewEditor_WhenItIsNot() {
+    public void testReloadEditorNotShowing() {
+        doNothing().when(view).loadNewBoxedExpressionEditor();
 
-        doReturn(false).when(view).isNewEditorEnabled();
-        doNothing().when(view).reloadEditor();
+        view.reloadEditor();
 
-        view.reloadIfIsNewEditor();
-
-        verify(view, never()).reloadEditor();
+        verify(view, never()).loadNewBoxedExpressionEditor();
     }
 
     @Test
@@ -822,11 +779,305 @@ public class ExpressionEditorViewImplTest {
 
     @Test
     public void testOnLogicTypeSelect() {
-        doNothing().when(view).loadNewBoxedExpressionEditor();
+        doNothing().when(view).setExpressionNameText(any());
 
-        view.onLogicTypeSelect(LITERAL_EXPRESSION.getText());
+        view.setExpression(NODE_UUID, hasExpression, Optional.empty(), false);
 
-        verify(literalExpressionEditorDefinition).enrich(any(), any(), any());
-        verify(view).loadNewBoxedExpressionEditor();
+        ExpressionProps expressionProps = view.getDefaultExpressionDefinition(LITERAL_EXPRESSION.getText(), BuiltInType.UNDEFINED.getName());
+
+        verify(literalExpressionEditorDefinition).enrichRootExpression(any(), any(), any(), eq(BuiltInType.UNDEFINED.getName()));
+
+        assertThat(expressionProps)
+                .isInstanceOf(LiteralProps.class)
+                .isNotNull()
+                .extracting(expression -> expression.logicType)
+                .isEqualTo(LITERAL_EXPRESSION.getText());
+
+        assertThat(expressionProps)
+                .extracting(expression -> expression.dataType)
+                .isEqualTo(BuiltInType.UNDEFINED.getName());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenObjectIsInsideHasExpression() {
+
+        final String uuid = "someUuid";
+        final DomainObject domainObject = mock(DomainObject.class);
+
+        doReturn(false).when(view).currentDomainObjectMatches(uuid);
+        doReturn(false).when(view).businessKnowledgeModelMatches(uuid);
+        doReturn(domainObject).when(view).findDomainObject(uuid);
+
+        final DomainObject foundDomainObject = view.findDomainObject(uuid);
+
+        assertEquals(domainObject, foundDomainObject);
+    }
+
+    @Test
+    public void testFindDomainObject_WhenObjectIsInsideBkm() {
+
+        final String uuid = "someUuid";
+        final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
+
+        doReturn(false).when(view).currentDomainObjectMatches(uuid);
+        doReturn(false).when(view).innerExpressionMatches(eq(uuid));
+        doReturn(true).when(view).businessKnowledgeModelMatches(uuid);
+        doReturn(bkm).when(view).getBusinessKnowledgeModel();
+
+        final DomainObject foundDomainObject = view.findDomainObject(uuid);
+
+        assertEquals(bkm, foundDomainObject);
+    }
+
+    @Test
+    public void testFindDomainObject_WhenObjectIsTheInnerExpression() {
+
+        final String uuid = "someUuid";
+
+        doReturn(true).when(view).currentDomainObjectMatches(uuid);
+
+        final DomainObject foundDomainObject = view.findDomainObject(uuid);
+
+        assertEquals(hasExpression, foundDomainObject);
+    }
+
+    @Test
+    public void testFindDomainObjectInCurrentExpression_WhenInnerExpressionIsNull() {
+
+        when(hasExpression.getExpression()).thenReturn(null);
+
+        final DomainObject domainObject = view.findDomainObjectInCurrentExpression("randomUuid");
+
+        assertTrue(domainObject instanceof NOPDomainObject);
+    }
+
+    @Test
+    public void testFindDomainObjectInCurrentExpression_WhenIsNotFound() {
+
+        final String uuid = "uuid";
+        final Expression expression = mock(Expression.class);
+
+        when(expression.findDomainObject(uuid)).thenReturn(Optional.empty());
+        when(hasExpression.getExpression()).thenReturn(expression);
+        doReturn(false).when(view).innerExpressionMatches(uuid);
+
+        final DomainObject domainObject = view.findDomainObjectInCurrentExpression(uuid);
+
+        assertTrue(domainObject instanceof NOPDomainObject);
+        verify(expression).findDomainObject(uuid);
+    }
+
+    @Test
+    public void testFindDomainObjectInCurrentExpression_WhenIsFound() {
+
+        final String uuid = "uuid";
+        final Expression expression = mock(Expression.class);
+
+        final DomainObject domainObject = mock(DomainObject.class);
+        when(expression.findDomainObject(uuid)).thenReturn(Optional.of(domainObject));
+        when(hasExpression.getExpression()).thenReturn(expression);
+
+        final DomainObject result = view.findDomainObjectInCurrentExpression(uuid);
+
+        verify(expression).findDomainObject(uuid);
+        assertFalse(result instanceof NOPDomainObject);
+        assertEquals(domainObject, result);
+    }
+
+    @Test
+    public void testInnerExpressionMatches() {
+
+        final String uuid = "uuid";
+        final Id id = new Id(uuid);
+        final Expression expression = mock(Expression.class);
+
+        when(expression.getId()).thenReturn(id);
+        when(hasExpression.getExpression()).thenReturn(expression);
+
+        assertTrue(view.innerExpressionMatches(uuid));
+    }
+
+    @Test
+    public void testInnerExpressionMatches_WhenDoesNot() {
+
+        final String uuid = "uuid";
+        final Id id = new Id(uuid);
+        final Expression expression = mock(Expression.class);
+
+        when(expression.getId()).thenReturn(id);
+        when(hasExpression.getExpression()).thenReturn(expression);
+
+        assertFalse(view.innerExpressionMatches("anotherUuid"));
+    }
+
+    @Test
+    public void testInnerExpressionMatches_WhenExpressionIsNull() {
+
+        final String uuid = "uuid";
+
+        when(hasExpression.getExpression()).thenReturn(null);
+
+        assertFalse(view.innerExpressionMatches(uuid));
+    }
+
+    @Test
+    public void testBusinessKnowledgeModelMatches_WhenIsNotABkm() {
+
+        final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+        final BusinessKnowledgeModel anotherBkm = mock(BusinessKnowledgeModel.class);
+
+        when(hasExpression.getExpression()).thenReturn(functionDefinition);
+        when(functionDefinition.asDMNModelInstrumentedBase()).thenReturn(functionDefinition);
+        when(functionDefinition.getParent()).thenReturn(anotherBkm);
+
+        doReturn(null).when(view).getBusinessKnowledgeModel();
+
+        assertFalse(view.businessKnowledgeModelMatches("someUuid"));
+    }
+
+    @Test
+    public void testBusinessKnowledgeModelMatches_WhenExpressionIsNotAFunctionDefinition() {
+
+        doReturn(null).when(view).getBusinessKnowledgeModel();
+
+        assertFalse(view.businessKnowledgeModelMatches("someUuid"));
+    }
+
+    @Test
+    public void testBusinessKnowledgeModelMatches_WhenDoesNotMatch() {
+
+        final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+        final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
+        final String someUuid = "uuid";
+        final Id id = new Id(someUuid);
+
+        when(bkm.getEncapsulatedLogic()).thenReturn(functionDefinition);
+        when(functionDefinition.getId()).thenReturn(id);
+        when(hasExpression.getExpression()).thenReturn(functionDefinition);
+        when(functionDefinition.asDMNModelInstrumentedBase()).thenReturn(functionDefinition);
+        when(functionDefinition.getParent()).thenReturn(bkm);
+
+        doReturn(bkm).when(view).getBusinessKnowledgeModel();
+
+        assertFalse(view.businessKnowledgeModelMatches("anotherUuid"));
+    }
+
+    @Test
+    public void testBusinessKnowledgeModelMatches_WhenMatches() {
+
+        final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+        final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
+        final String someUuid = "uuid";
+        final Id id = new Id(someUuid);
+
+        when(bkm.getEncapsulatedLogic()).thenReturn(functionDefinition);
+        when(functionDefinition.getId()).thenReturn(id);
+        when(hasExpression.getExpression()).thenReturn(functionDefinition);
+        when(functionDefinition.asDMNModelInstrumentedBase()).thenReturn(functionDefinition);
+        when(functionDefinition.getParent()).thenReturn(bkm);
+
+        doReturn(bkm).when(view).getBusinessKnowledgeModel();
+
+        assertTrue(view.businessKnowledgeModelMatches(someUuid));
+    }
+
+    @Test
+    public void testBusinessKnowledgeModelMatches_WhenEncapsulatedLogicMatches() {
+
+        final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+        final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
+        final String someUuid = "uuid";
+        final Id id = new Id(someUuid);
+        final String encapsulatedLogicUuid = "otherUuid";
+
+        when(bkm.getEncapsulatedLogic()).thenReturn(functionDefinition);
+        when(functionDefinition.getId()).thenReturn(id);
+        when(hasExpression.getExpression()).thenReturn(functionDefinition);
+        when(functionDefinition.asDMNModelInstrumentedBase()).thenReturn(functionDefinition);
+        when(functionDefinition.getParent()).thenReturn(bkm);
+
+        doReturn(true).when(view).encapsulatedLogicMatches(encapsulatedLogicUuid);
+        doReturn(bkm).when(view).getBusinessKnowledgeModel();
+
+        assertTrue(view.businessKnowledgeModelMatches(encapsulatedLogicUuid));
+    }
+
+    @Test
+    public void testBusinessKnowledgeModelMatches_WhenNothingMatches() {
+
+        final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+        final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
+        final String someUuid = "uuid";
+        final Id id = new Id(someUuid);
+        final String encapsulatedLogicUuid = "otherUuid";
+
+        when(bkm.getEncapsulatedLogic()).thenReturn(functionDefinition);
+        when(functionDefinition.getId()).thenReturn(id);
+        when(hasExpression.getExpression()).thenReturn(functionDefinition);
+        when(functionDefinition.asDMNModelInstrumentedBase()).thenReturn(functionDefinition);
+        when(functionDefinition.getParent()).thenReturn(bkm);
+
+        doReturn(false).when(view).encapsulatedLogicMatches(encapsulatedLogicUuid);
+        doReturn(bkm).when(view).getBusinessKnowledgeModel();
+
+        assertFalse(view.businessKnowledgeModelMatches(encapsulatedLogicUuid));
+    }
+
+    @Test
+    public void test_executeUndoableExpressionCommand_WhenExpressionIsNotOfTheSameType() {
+
+        final FillExpressionCommand fillExpressionCommand = mock(FillExpressionCommand.class);
+        final ExpressionContainerGrid expressionContainerGrid = mock(ExpressionContainerGrid.class);
+        final UpdateCanvasNodeNameCommand updateCanvasNodeNameCommand = mock(UpdateCanvasNodeNameCommand.class);
+
+        doReturn(expressionContainerGrid).when(view).getExpressionContainerGrid();
+        doNothing().when(view).createUndoCommand();
+        doReturn(updateCanvasNodeNameCommand).when(view).getUpdateCanvasNodeNameCommand();
+        doReturn(Optional.of(HasName.NOP)).when(view).getHasName();
+        when(fillExpressionCommand.isCurrentExpressionOfTheSameType()).thenReturn(false);
+        when(fillExpressionCommand.getExpressionProps()).thenReturn(new ExpressionProps("id", "name", "dataType", "logicType"));
+
+        final InOrder inOrder = inOrder(view,
+                                        hasExpression,
+                                        expressionContainerGrid,
+                                        fillExpressionCommand,
+                                        updateCanvasNodeNameCommand);
+
+        view.executeUndoableExpressionCommand(fillExpressionCommand);
+
+        inOrder.verify(view).createUndoCommand();
+        inOrder.verify(hasExpression).setExpression(null);
+        inOrder.verify(expressionContainerGrid).clearExpression(NODE_UUID);
+        inOrder.verify(fillExpressionCommand).execute();
+        inOrder.verify(updateCanvasNodeNameCommand).execute(NODE_UUID, HasName.NOP);
+    }
+
+    @Test
+    public void test_executeUndoableExpressionCommand_WhenExpressionIsOfTheSameType() {
+
+        final FillExpressionCommand fillExpressionCommand = mock(FillExpressionCommand.class);
+        final ExpressionContainerGrid expressionContainerGrid = mock(ExpressionContainerGrid.class);
+        final UpdateCanvasNodeNameCommand updateCanvasNodeNameCommand = mock(UpdateCanvasNodeNameCommand.class);
+
+        doReturn(expressionContainerGrid).when(view).getExpressionContainerGrid();
+        doNothing().when(view).createUndoCommand();
+        doReturn(updateCanvasNodeNameCommand).when(view).getUpdateCanvasNodeNameCommand();
+        doReturn(Optional.of(HasName.NOP)).when(view).getHasName();
+        when(fillExpressionCommand.isCurrentExpressionOfTheSameType()).thenReturn(true);
+        when(fillExpressionCommand.getExpressionProps()).thenReturn(new ExpressionProps("id", "name", "dataType", "logicType"));
+
+        final InOrder inOrder = inOrder(view,
+                                        hasExpression,
+                                        expressionContainerGrid,
+                                        fillExpressionCommand,
+                                        updateCanvasNodeNameCommand);
+
+        view.executeUndoableExpressionCommand(fillExpressionCommand);
+
+        inOrder.verify(view).createUndoCommand();
+        verify(hasExpression, never()).setExpression(null);
+        verify(expressionContainerGrid, never()).clearExpression(NODE_UUID);
+        inOrder.verify(fillExpressionCommand).execute();
+        inOrder.verify(updateCanvasNodeNameCommand).execute(NODE_UUID, HasName.NOP);
     }
 }

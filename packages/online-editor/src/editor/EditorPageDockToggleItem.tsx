@@ -16,19 +16,20 @@
 
 import * as React from "react";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { useEditorDockContext } from "./EditorPageDockContextProvider";
 
 interface Props {
-  isDisabled: boolean;
-  disabledReason?: React.ReactNode;
   // required by Tooltip
   children: React.ReactElement;
 }
 
 export function EditorPageDockToggleItem(props: Props) {
+  const { isDisabled, disabledReason } = useEditorDockContext();
+
   return (
     <>
-      {props.isDisabled ? (
-        <Tooltip key={"disabled"} content={props.disabledReason} position={"top-end"}>
+      {isDisabled ? (
+        <Tooltip key={"disabled"} content={disabledReason} position={"top-end"}>
           {props.children}
         </Tooltip>
       ) : (

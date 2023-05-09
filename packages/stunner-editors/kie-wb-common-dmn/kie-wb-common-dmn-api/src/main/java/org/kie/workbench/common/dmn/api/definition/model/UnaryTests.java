@@ -96,6 +96,16 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
         );
     }
 
+    public UnaryTests exactCopy() {
+        return new UnaryTests(
+                Optional.ofNullable(id).map(Id::copy).orElse(null),
+                Optional.ofNullable(description).map(Description::copy).orElse(null),
+                Optional.ofNullable(text).map(Text::copy).orElse(null),
+                Optional.ofNullable(expressionLanguage).map(ExpressionLanguage::copy).orElse(null),
+                constraintType
+        );
+    }
+
     // -----------------------
     // Stunner core properties
     // -----------------------

@@ -26,6 +26,7 @@
   height: 100%;
 
   .kie-dmn-new-expression-editor {
+    margin-top: 10px;
     overflow: auto;
     height: 100%;
   }
@@ -67,79 +68,4 @@
   width: 100%;
   height: ~"calc(100% - @{blockHeight_total})";
   top: @blockHeight_total px;
-}
-
-[data-i18n-prefix="ExpressionEditorViewImpl."] {
-  .kie-beta-boxed-expression-editor {
-    // PatterFly 4 mocked font-style
-    font-family: RedHatDisplay, Overpass, overpass, helvetica, arial, sans-serif;
-    color: #555;
-    font-size: 13px;
-    padding: 4px;
-    display: flex;
-    flex-grow: 1;
-    align-items: center;
-    user-select: none;
-
-    a {
-      color: #06c;
-    }
-
-    .beta-description,
-    .stable-description {
-      padding: 0 3px;
-      flex-grow: 1;
-    }
-
-    .beta-dash,
-    .beta-badge,
-    .stable-badge,
-    .beta-description,
-    .stable-description {
-      user-select: none;
-      display: unset;
-    }
-
-    .beta-badge,
-    .beta-description {
-      display: none;
-    }
-
-    &.kie-beta-boxed-expression-editor--enabled {
-      .beta-badge,
-      .beta-description {
-        display: unset;
-      }
-
-      .stable-badge,
-      .stable-description {
-        display: none;
-      }
-    }
-
-    .beta-badge,
-    .stable-badge {
-      border-width: 1px;
-      border-style: solid;
-      border-radius: 20px;
-      padding: 0 8px;
-    }
-
-    .beta-badge {
-      border-color: #06c;
-      color: #06c;
-    }
-
-    .stable-badge {
-      border-color: #c1c1c5;
-      color: #818195;
-    }
-
-    .beta-dash {
-      border-top: 1px solid #ccc;
-      width: 22px;
-      height: 4px;
-      margin: 0 8px;
-    }
-  }
 }

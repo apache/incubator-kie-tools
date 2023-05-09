@@ -50,7 +50,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -72,6 +71,9 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGridData, InvocationUIModelMapper> implements HasListSelectorControl {
+
+    /** MUST BE SYNCHRONIZED WITH WidthConstants.ts */
+    static final double INVOCATION_EXPRESSION_ENTRY_INFO_DEFAULT_WIDTH = 120d;
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final ValueAndDataTypePopoverView.Presenter headerEditor;
@@ -172,7 +174,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                                                         this::onItemSelected));
 
         final InvocationParameterColumn nameColumn = new InvocationParameterColumn(headerMetaData,
-                                                                                   getAndSetInitialWidth(1, DMNGridColumn.DEFAULT_WIDTH),
+                                                                                   getAndSetInitialWidth(1, INVOCATION_EXPRESSION_ENTRY_INFO_DEFAULT_WIDTH),
                                                                                    this,
                                                                                    rowIndex -> true,
                                                                                    clearValueConsumer(false, new Name()),

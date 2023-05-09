@@ -35,6 +35,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPres
 import org.kie.workbench.common.dmn.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
@@ -46,7 +47,6 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNLayoutHelper;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
@@ -111,11 +111,12 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     protected final Promises promises;
     protected final IncludedModelsPage includedModelsPage;
     protected final KogitoChannelHelper kogitoChannelHelper;
-    protected final GuidedTourBridgeInitializer guidedTourBridgeInitializer;
     protected final DRDNameChanger drdNameChanger;
 
     private final ConfirmationDialog confirmationDialog;
     private final DecisionNavigatorPresenter decisionNavigatorPresenter;
+
+    private final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
 
     protected AbstractDMNDiagramEditor(final View view,
                                        final MultiPageEditorContainerView containerView,
@@ -139,10 +140,10 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
                                        final Promises promises,
                                        final IncludedModelsPage includedModelsPage,
                                        final KogitoChannelHelper kogitoChannelHelper,
-                                       final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                                        final DRDNameChanger drdNameChanger,
                                        final ConfirmationDialog confirmationDialog,
-                                       final DecisionNavigatorPresenter decisionNavigatorPresenter) {
+                                       final DecisionNavigatorPresenter decisionNavigatorPresenter,
+                                       final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider) {
         super(view, containerView);
         this.stunnerEditor = stunnerEditor;
         this.sessionManager = sessionManager;
@@ -164,16 +165,15 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         this.promises = promises;
         this.includedModelsPage = includedModelsPage;
         this.kogitoChannelHelper = kogitoChannelHelper;
-        this.guidedTourBridgeInitializer = guidedTourBridgeInitializer;
         this.drdNameChanger = drdNameChanger;
         this.confirmationDialog = confirmationDialog;
         this.decisionNavigatorPresenter = decisionNavigatorPresenter;
+        this.pmmlDocumentMetadataProvider = pmmlDocumentMetadataProvider;
     }
 
     public void onStartup(final PlaceRequest place) {
         init(place);
         stunnerEditor.setReadOnly(this.isReadOnly());
-        guidedTourBridgeInitializer.init();
         ensureDocksAreInitialized();
         ensureTabBarVisibility(true);
         setParsingErrorBehavior();
@@ -322,6 +322,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         }
         setupEditorSearchIndex();
         setupSearchComponent();
+        pmmlDocumentMetadataProvider.loadPMMLIncludedDocuments();
     }
 
     protected void onDiagramLoad() {

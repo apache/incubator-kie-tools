@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.client.json.mapper.apt.definition.FieldD
 import org.kie.workbench.common.stunner.client.json.mapper.apt.logger.TreeLogger;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.AbstractBeanJsonSerializer;
 
+
 public class SerializerGenerator extends AbstractGenerator {
 
   private final FieldDefinitionFactory fieldDefinitionFactory;

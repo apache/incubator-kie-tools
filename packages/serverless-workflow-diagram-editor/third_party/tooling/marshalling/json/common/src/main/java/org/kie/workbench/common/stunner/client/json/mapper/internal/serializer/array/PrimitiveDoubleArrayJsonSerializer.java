@@ -18,17 +18,18 @@ package org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.
 
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
-import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer;
+
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer.DoubleJsonSerializer;
 
 public class PrimitiveDoubleArrayJsonSerializer extends BasicArrayJsonSerializer<double[]> {
 
-  private final BaseNumberJsonSerializer.DoubleJsonSerializer serializer = new BaseNumberJsonSerializer.DoubleJsonSerializer();
+  private final DoubleJsonSerializer serializer = new DoubleJsonSerializer();
 
   @Override
   public void serialize(
       double[] obj, String property, JsonGenerator generator, SerializationContext ctx) {
     if (obj != null) {
-      jakarta.json.stream.JsonGenerator builder = generator.writeStartArray(property);
+      JsonGenerator builder = generator.writeStartArray(property);
       for (int i = 0; i < obj.length; i++) {
         serializer.serialize(obj[i], builder, ctx);
       }
@@ -38,6 +39,6 @@ public class PrimitiveDoubleArrayJsonSerializer extends BasicArrayJsonSerializer
 
   @Override
   public void serialize(double[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException("55");
+    throw new UnsupportedOperationException();
   }
 }

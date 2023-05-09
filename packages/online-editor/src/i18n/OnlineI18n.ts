@@ -48,6 +48,11 @@ interface OnlineDictionary extends ReferenceDictionary {
         proceedAnyway: string;
       };
     };
+    error: {
+      title: string;
+      explanation: string;
+      message: Array<string | Wrapped<"issues">>;
+    };
   };
   editorToolbar: {
     closeAndReturnHome: string;
@@ -350,32 +355,6 @@ interface OnlineDictionary extends ReferenceDictionary {
     trySample: string;
     chooseLocalFile: string;
   };
-  guidedTour: {
-    init: {
-      title: string;
-      learnMore: string;
-      dmnRunnerIntro: string;
-      takeTour: string;
-      skipTour: string;
-      skipTourAndUseDmnRunner: string;
-    };
-    end: {
-      title: string;
-      motivational: string;
-      nextSteps: {
-        title: string;
-        firstStep: string;
-        secondStep: string;
-        thirdStep: string;
-        startDmnRunner: string;
-      };
-      findUsefulInfo: string;
-      learnDMN: string;
-      courseOr: string;
-      kogitoDoc: string;
-      finish: string;
-    };
-  };
   alerts: {
     gistError: string;
     goToHomePage: string;
@@ -391,12 +370,10 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
   };
   dmnRunner: {
-    drawer: {
-      error: {
-        title: string;
-        explanation: string;
-        message: Array<string | Wrapped<"jira">>;
-      };
+    error: {
+      title: string;
+      explanation: string;
+      message: Array<string | Wrapped<"issues">>;
     };
     table: DmnUnitablesI18n;
     modal: {

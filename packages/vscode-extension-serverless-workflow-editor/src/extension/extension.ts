@@ -31,6 +31,7 @@ import { setupDiagramEditorCompanionTab } from "./setupDiagramEditorCompanionTab
 import { COMMAND_IDS } from "./commandIds";
 import { ServiceRegistriesStore } from "./serviceCatalog/serviceRegistry";
 import { RedHatAuthExtensionStateStore } from "./RedHatAuthExtensionStateStore";
+import { setupDeprecationNotification } from "./setupDeprecationNotification";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
@@ -95,18 +96,9 @@ export async function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping({
         type: swEnvelopeType,
-        filePathGlob: "**/*.sw.json",
+        filePathGlob: "**/*.sw.+(json|yml|yaml)",
         resourcesPathPrefix: diagramEnvelopeMappingConfig.resourcesPathPrefix,
         envelopeContent: { type: EnvelopeContentType.PATH, path: diagramEnvelopeMappingConfig.envelopePath },
-      }),
-      new EnvelopeMapping({
-        type: swEnvelopeType,
-        filePathGlob: "**/*.sw.+(yml|yaml)",
-        resourcesPathPrefix: baseEnvelopePath,
-        envelopeContent: {
-          type: EnvelopeContentType.PATH,
-          path: baseEnvelopePath + "/serverless-workflow-mermaid-viewer-envelope.js",
-        },
       }),
     ]),
     channelApiProducer: new ServerlessWorkflowDiagramEditorChannelApiProducer({
@@ -135,6 +127,11 @@ export async function activate(context: vscode.ExtensionContext) {
     context,
     configuration,
     kieEditorsStore,
+  });
+
+  setupDeprecationNotification({
+    context,
+    configuration,
   });
 
   console.info("Extension is successfully setup.");

@@ -29,7 +29,6 @@ import {
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { ChannelKeyboardEvent } from "@kie-tools-core/keyboard-shortcuts/dist/api";
-import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { EditorEnvelopeI18n, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
 import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";
@@ -129,10 +128,6 @@ export class KogitoEditorEnvelopeApiImpl<
   public kogitoEditor_previewRequest() {
     return this.editor.getPreview().then((previewSvg) => previewSvg ?? "");
   }
-
-  public kogitoGuidedTour_guidedTourElementPositionRequest = async (selector: string) => {
-    return this.editor.getElementPosition(selector).then((rect) => rect ?? DEFAULT_RECT);
-  };
 
   public kogitoKeyboardShortcuts_channelKeyboardEvent = (channelKeyboardEvent: ChannelKeyboardEvent) => {
     window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));

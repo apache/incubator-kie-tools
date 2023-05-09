@@ -17,7 +17,16 @@
 import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { FileLanguage, SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { SwfJsonOffsets, SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import {
+  SwfJsonLanguageService,
+  SwfYamlLanguageService,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import {
+  getJsonStateNameFromOffset,
+  getJsonStateNameOffset,
+  getYamlStateNameFromOffset,
+  getYamlStateNameOffset,
+} from "@kie-tools/serverless-workflow-language-service/dist/editor";
 import { editor, KeyCode, KeyMod, Position } from "monaco-editor";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
@@ -51,8 +60,6 @@ export interface SwfTextEditorInstance {
 
 export class SwfTextEditorController implements SwfTextEditorApi {
   private readonly model: editor.ITextModel;
-  private swfJsonOffsets = new SwfJsonOffsets();
-  private swfYamlOffsets = new SwfYamlOffsets();
 
   public editor: editor.IStandaloneCodeEditor | undefined;
 
@@ -80,10 +87,6 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     editor.onDidCreateEditor((codeEditor) => {
       codeEditor.onDidChangeCursorSelection((event) => this.handleDidChangeCursorSelection(event));
     });
-  }
-
-  private get swfOffsetsApi(): SwfJsonOffsets | SwfYamlOffsets {
-    return this.language === FileLanguage.YAML ? this.swfYamlOffsets : this.swfJsonOffsets;
   }
 
   public redo(): void {
@@ -159,9 +162,14 @@ export class SwfTextEditorController implements SwfTextEditorApi {
       return;
     }
 
-    this.swfOffsetsApi.parseContent(this.getContent());
-
-    const targetOffset = this.swfOffsetsApi.getStateNameOffset(nodeName);
+    const getStateNameOffsetArgs = {
+      content: this.getContent(),
+      stateName: nodeName,
+    };
+    const targetOffset =
+      this.language === FileLanguage.JSON
+        ? getJsonStateNameOffset(getStateNameOffsetArgs)
+        : getYamlStateNameOffset(getStateNameOffsetArgs);
 
     if (!targetOffset) {
       return;
@@ -206,9 +214,11 @@ export class SwfTextEditorController implements SwfTextEditorApi {
       return;
     }
 
-    this.swfOffsetsApi.parseContent(this.getContent());
-
-    const nodeName = this.swfOffsetsApi.getStateNameFromOffset(offset);
+    const getStateNameFromOffsetArgs = { content: this.getContent(), offset };
+    const nodeName =
+      this.language === FileLanguage.JSON
+        ? getJsonStateNameFromOffset(getStateNameFromOffsetArgs)
+        : getYamlStateNameFromOffset(getStateNameFromOffsetArgs);
     if (!nodeName) {
       return;
     }

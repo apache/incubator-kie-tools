@@ -15,4 +15,4 @@
  */
 
 export * from "./FeelInput";
-export * from "./Monaco";
+export * from "./FeelConfigs";

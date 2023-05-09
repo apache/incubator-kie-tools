@@ -182,18 +182,9 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     return new EditorEnvelopeLocator(targetOrigin, [
       new EnvelopeMapping({
         type: ENVELOPE_LOCATOR_TYPE,
-        filePathGlob: "**/*.sw.json",
+        filePathGlob: "**/*.sw.+(json|yml|yaml)",
         resourcesPathPrefix: diagramEnvelopeMappingConfig.resourcesPathPrefix,
         envelopeContent: diagramEnvelopeMappingConfig.envelopeContent,
-      }),
-      new EnvelopeMapping({
-        type: ENVELOPE_LOCATOR_TYPE,
-        filePathGlob: "**/*.sw.+(yml|yaml)",
-        resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
-        envelopeContent: buildEnvelopeContent(
-          mermaidEnvelopeContent ?? "",
-          props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html"
-        ),
       }),
     ]);
   }, [featureToggle, props.resourcesPathPrefix, targetOrigin, mermaidEnvelopeContent, diagramEditorEnvelopeContent]);

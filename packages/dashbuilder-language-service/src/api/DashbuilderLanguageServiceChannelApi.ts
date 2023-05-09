@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+import {
+  EditorLanguageServiceCommandArgs,
+  EditorLanguageServiceCommandExecution,
+  EditorLanguageServiceCommandHandlers,
+  EditorLanguageServiceCommandIds,
+  EditorLanguageServiceCommandTypes,
+} from "@kie-tools/json-yaml-language-service/dist/api";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
 export interface DashbuilderLanguageServiceChannelApi {
@@ -27,19 +34,17 @@ export interface DashbuilderLanguageServiceChannelApi {
   kogitoDashbuilderLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]>;
 }
 
-export type DashbuilderLanguageServiceCommandTypes = "dashbuilder.ls.commands.OpenCompletionItems";
+export type DashbuilderLanguageServiceCommandTypes = EditorLanguageServiceCommandTypes;
 
-export type DashbuilderLanguageServiceCommandArgs = {
-  "dashbuilder.ls.commands.OpenCompletionItems": { newCursorPosition: Position };
-};
+export type DashbuilderLanguageServiceCommandArgs = EditorLanguageServiceCommandArgs & {};
 
-export type DashbuilderLanguageServiceCommandIds = Record<DashbuilderLanguageServiceCommandTypes, string>;
+export type DashbuilderLanguageServiceCommandIds =
+  EditorLanguageServiceCommandIds<DashbuilderLanguageServiceCommandTypes>;
 
-export type DashbuilderLanguageServiceCommandHandlers = {
-  [K in DashbuilderLanguageServiceCommandTypes]: (args: DashbuilderLanguageServiceCommandArgs[K]) => any;
-};
+export type DashbuilderLanguageServiceCommandHandlers = EditorLanguageServiceCommandHandlers<
+  DashbuilderLanguageServiceCommandTypes,
+  DashbuilderLanguageServiceCommandArgs
+>;
 
-export interface DashbuilderLanguageServiceCommandExecution<T extends DashbuilderLanguageServiceCommandTypes> {
-  name: T;
-  args: DashbuilderLanguageServiceCommandArgs[T];
-}
+export interface DashbuilderLanguageServiceCommandExecution<T extends DashbuilderLanguageServiceCommandTypes>
+  extends EditorLanguageServiceCommandExecution<T, DashbuilderLanguageServiceCommandArgs> {}

@@ -15,10 +15,12 @@
  */
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -27,9 +29,8 @@ import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.event.dom.client.ClickEvent;
-import elemental2.dom.HTMLAnchorElement;
-import elemental2.dom.HTMLDivElement;
-import org.jboss.errai.common.client.dom.Anchor;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLButtonElement;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -71,14 +72,13 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ModelsFromDocument;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PMMLParam;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
-import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.BoxedExpressionService;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.ExpressionEditorService;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.ExpressionPropsFiller;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
-import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.js.DMNLoader;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -96,13 +96,17 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelContainer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.forms.client.event.FormFieldChanged;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
@@ -115,6 +119,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMe
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
 import static java.util.stream.Stream.concat;
+import static org.kie.workbench.common.dmn.api.definition.HasName.NOP;
 import static org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.ITEM_DEFINITION_COMPARATOR;
 import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BUILT_IN_TYPE_COMPARATOR;
@@ -125,12 +130,13 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     static final double VP_SCALE = 1.0;
 
-    static final String ENABLED_BETA_CSS_CLASS = "kie-beta-boxed-expression-editor--enabled";
-
     private ExpressionEditorView.Presenter presenter;
 
-    @DataField("returnToLink")
-    private Anchor returnToLink;
+    @DataField("returnToDRGLink")
+    private HTMLButtonElement returnToDRGLink;
+
+    @DataField("returnToDRGLabel")
+    private Span returnToDRGLabel;
 
     @DataField("expressionName")
     private Span expressionName;
@@ -140,24 +146,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @DataField("dmn-table")
     private DMNGridPanelContainer gridPanelContainer;
-
-    @DataField("try-it")
-    private HTMLAnchorElement tryIt;
-
-    @DataField("switch-back")
-    private HTMLAnchorElement switchBack;
-
-    @DataField("beta-boxed-expression-toggle")
-    private HTMLDivElement betaBoxedExpressionToggle;
-
-    @DataField("dmn-new-expression-editor")
-    private HTMLDivElement newBoxedExpression;
-
-    @DataField("dmn-expression-type")
-    private HTMLDivElement dmnExpressionType;
-
-    @DataField("dmn-expression-editor")
-    private HTMLDivElement dmnExpressionEditor;
 
     private TranslationService translationService;
     private ListSelectorView.Presenter listSelector;
@@ -182,13 +170,15 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private Optional<HasName> hasName;
     private boolean isOnlyVisualChangeAllowed;
     private UpdateCanvasNodeNameCommand updateCanvasNodeNameCommand;
+    private String selectedUUID;
 
     public ExpressionEditorViewImpl() {
         //CDI proxy
     }
 
     @Inject
-    public ExpressionEditorViewImpl(final Anchor returnToLink,
+    public ExpressionEditorViewImpl(final HTMLButtonElement returnToDRGLink,
+                                    final Span returnToDRGLabel,
                                     final Span expressionName,
                                     final Span expressionType,
                                     final @DMNEditor DMNGridPanelContainer gridPanelContainer,
@@ -204,21 +194,14 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final Event<DataTypePageTabActiveEvent> dataTypePageActiveEvent,
                                     final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider,
                                     final DefinitionUtils definitionUtils,
-                                    final ItemDefinitionUtils itemDefinitionUtils,
-                                    final HTMLAnchorElement tryIt,
-                                    final HTMLAnchorElement switchBack,
-                                    final HTMLDivElement betaBoxedExpressionToggle,
-                                    final HTMLDivElement newBoxedExpression,
-                                    final HTMLDivElement dmnExpressionType,
-                                    final HTMLDivElement dmnExpressionEditor) {
-        this.returnToLink = returnToLink;
+                                    final ItemDefinitionUtils itemDefinitionUtils) {
+        this.returnToDRGLink = returnToDRGLink;
+        this.returnToDRGLabel = returnToDRGLabel;
         this.expressionName = expressionName;
         this.expressionType = expressionType;
         this.gridPanelContainer = gridPanelContainer;
-
         this.translationService = translationService;
         this.listSelector = listSelector;
-
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactory = canvasCommandFactory;
@@ -229,13 +212,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.dataTypePageActiveEvent = dataTypePageActiveEvent;
         this.pmmlDocumentMetadataProvider = pmmlDocumentMetadataProvider;
         this.itemDefinitionUtils = itemDefinitionUtils;
-
-        this.tryIt = tryIt;
-        this.switchBack = switchBack;
-        this.betaBoxedExpressionToggle = betaBoxedExpressionToggle;
-        this.newBoxedExpression = newBoxedExpression;
-        this.dmnExpressionType = dmnExpressionType;
-        this.dmnExpressionEditor = dmnExpressionEditor;
         this.updateCanvasNodeNameCommand = new UpdateCanvasNodeNameCommand(sessionManager,
                                                                            definitionUtils,
                                                                            canvasCommandFactory);
@@ -244,7 +220,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     @Override
     public void init(final ExpressionEditorView.Presenter presenter) {
         this.presenter = presenter;
-        BoxedExpressionService.registerBroadcastForExpression(this);
+        ExpressionEditorService.registerExpressionEditorView(this);
     }
 
     @Override
@@ -297,8 +273,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                               this::setExpressionNameText,
                                                               refreshFormPropertiesEvent,
                                                               domainObjectSelectionEvent);
-
-        expressionContainerGrid.setOnUndoClear(Optional.of(o -> reloadIfIsNewEditor()));
         gridLayer.removeAll();
         gridLayer.add(expressionContainerGrid);
         gridLayer.select(expressionContainerGrid);
@@ -322,13 +296,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Override
-    public void disableBetaBoxedExpressionToggle() {
-        betaBoxedExpressionToggle.classList.toggle("hidden", true);
-    }
-
-    @Override
     public void setReturnToLinkText(final String text) {
-        returnToLink.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToLink, text));
+        returnToDRGLabel.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToLink, text));
     }
 
     @Override
@@ -336,12 +305,11 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                               final HasExpression hasExpression,
                               final Optional<HasName> hasName,
                               final boolean isOnlyVisualChangeAllowed) {
-        toggleBetaBoxedExpressionEditor(false);
-        toggleLegacyExpressionEditor(true);
         this.nodeUUID = nodeUUID;
         this.hasExpression = hasExpression;
         this.hasName = hasName;
         this.isOnlyVisualChangeAllowed = isOnlyVisualChangeAllowed;
+        this.selectedUUID = nodeUUID;
         expressionContainerGrid.setExpression(nodeUUID,
                                               hasExpression,
                                               hasName,
@@ -368,24 +336,13 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                         "<" + expressionTypeText + ">"));
     }
 
+    @SuppressWarnings("unused")
     public void onEditorSelectedPageEvent(@Observes MultiPageEditorSelectedPageEvent editorSelectedPageEvent) {
-        toggleBetaBoxedExpressionEditor(false);
-        toggleLegacyExpressionEditor(true);
-    }
-
-    public void onPropertiesPanelFormFieldChanged(@Observes FormFieldChanged event) {
-        reloadIfIsNewEditor();
-    }
-
-    @EventHandler("try-it")
-    public void onTryIt(final ClickEvent event) {
-        loadNewBoxedExpressionEditor();
-        toggleLegacyExpressionEditor(false);
-        toggleBetaBoxedExpressionEditor(true);
-        preventDefault(event);
+        reloadEditor();
     }
 
     void loadNewBoxedExpressionEditor() {
+        ExpressionProps expression = ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef());
         String decisionNodeId = null;
         if (hasExpression instanceof Decision) {
             decisionNodeId = ((Decision) hasExpression).getId().getValue();
@@ -395,179 +352,234 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         DMNLoader.renderBoxedExpressionEditor(
                 ".kie-dmn-new-expression-editor",
                 decisionNodeId,
-                ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef()),
+                expression,
                 concat(retrieveDefaultDataTypeProps(), retrieveCustomDataTypeProps()).toArray(DataTypeProps[]::new),
                 hasExpression.isClearSupported(),
                 buildPmmlParams()
         );
     }
 
-    @EventHandler("switch-back")
-    public void onSwitchBack(final ClickEvent event) {
-        getExpressionGridCacheSupplier()
-                .get()
-                .removeExpressionGrid(nodeUUID);
-        setExpression(nodeUUID, hasExpression, hasName, isOnlyVisualChangeAllowed);
-        toggleLegacyExpressionEditor(true);
-        toggleBetaBoxedExpressionEditor(false);
-        preventDefault(event);
-    }
-
-    @Override
-    public void clear() {
-        getExpressionContainerGrid().clearExpressionType();
-    }
-
     @Override
     public void selectDomainObject(final String uuid) {
+        this.selectedUUID = uuid;
         fireDomainObjectSelectionEvent(findDomainObject(uuid));
     }
 
     DomainObject findDomainObject(final String uuid) {
 
-        if (innerExpressionMatches(uuid)) {
-            return (DomainObject) hasExpression;
+        if (currentDomainObjectMatches(uuid)) {
+            return (DomainObject) getHasExpression();
         } else if (businessKnowledgeModelMatches(uuid)) {
             return getBusinessKnowledgeModel();
         } else {
-            final Optional<DomainObject> domainObject = hasExpression.getExpression().findDomainObject(uuid);
+            return findDomainObjectInCurrentExpression(uuid);
+        }
+    }
+
+    DomainObject findDomainObjectInCurrentExpression(final String uuid) {
+
+        if (!Objects.isNull(getHasExpression().getExpression())) {
+            final Optional<DomainObject> domainObject = getHasExpression().getExpression().findDomainObject(uuid);
             if (domainObject.isPresent()) {
                 return domainObject.get();
+            } else if (innerExpressionMatches(uuid)) {
+                return (DomainObject) getHasExpression();
             }
-            return new NOPDomainObject();
         }
+        return new NOPDomainObject();
     }
 
     BusinessKnowledgeModel getBusinessKnowledgeModel() {
         return ((BusinessKnowledgeModel) hasExpression.getExpression().asDMNModelInstrumentedBase().getParent());
     }
 
+    boolean currentDomainObjectMatches(final String uuid) {
+        return getHasExpression() instanceof DomainObject
+                && matches(((DomainObject) getHasExpression()), uuid);
+    }
+
     boolean innerExpressionMatches(final String uuid) {
-        return hasExpression instanceof DomainObject
-                && matches(((DomainObject) hasExpression), uuid);
+
+        return getHasExpression() instanceof DomainObject
+                && !Objects.isNull(getHasExpression().getExpression())
+                && Objects.equals(getHasExpression().getExpression().getId().getValue(), uuid);
     }
 
     boolean businessKnowledgeModelMatches(final String uuid) {
 
-        return hasExpression.getExpression() instanceof FunctionDefinition
-                && matches(getBusinessKnowledgeModel(), uuid);
+        return getHasExpression().getExpression() instanceof FunctionDefinition
+                && getHasExpression().getExpression().asDMNModelInstrumentedBase().getParent() instanceof BusinessKnowledgeModel
+                && (matches(getBusinessKnowledgeModel(), uuid) || encapsulatedLogicMatches(uuid));
+    }
+
+    boolean encapsulatedLogicMatches(final String uuid) {
+
+        final BusinessKnowledgeModel bkm = getBusinessKnowledgeModel();
+        return !Objects.isNull(bkm)
+                && Objects.equals(bkm.getEncapsulatedLogic().getId().getValue(), uuid);
     }
 
     void fireDomainObjectSelectionEvent(final DomainObject domainObject) {
+        final Optional<CanvasHandler> canvasHandler = getCanvasHandler();
+        if (!canvasHandler.isPresent()) {
+            return;
+        }
 
-        final DomainObjectSelectionEvent event = new DomainObjectSelectionEvent(sessionManager.getCurrentSession().getCanvasHandler(),
-                                                                                domainObject);
-        this.domainObjectSelectionEvent.fire(event);
+        final Optional<Node> domainObjectNode = findDomainObjectNodeByDomainObject(domainObject);
+
+        if (domainObjectNode.isPresent()) {
+            refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(getCurrentSession(), domainObjectNode.get().getUUID()));
+        } else {
+            domainObjectSelectionEvent.fire(new DomainObjectSelectionEvent(canvasHandler.get(), domainObject));
+        }
     }
 
-    public void resetExpressionDefinition(final ExpressionProps expressionProps) {
-        executeExpressionCommand(new ClearExpressionCommand(getHasExpression(),
-                                                            expressionProps,
-                                                            getEditorSelectedEvent(),
-                                                            getNodeUUID(),
-                                                            this,
-                                                            itemDefinitionUtils,
-                                                            getHasName()));
+    private Optional<Node> findDomainObjectNodeByDomainObject(final DomainObject domainObject) {
+        return getCanvasHandler()
+                .map(canvasHandler -> {
+                    final Graph<?, Node> graph = canvasHandler.getDiagram().getGraph();
+                    return StreamSupport
+                            .stream(graph.nodes().spliterator(), false)
+                            .filter(node -> node.getContent() instanceof Definition)
+                            .filter(node -> Objects.equals(domainObject, ((Definition) node.getContent()).getDefinition()))
+                            .findFirst();
+                })
+                .orElse(Optional.empty());
     }
 
-    public void broadcastLiteralExpressionDefinition(final LiteralProps literalProps) {
-        executeExpressionCommand(new FillLiteralExpressionCommand(getHasExpression(),
-                                                                  literalProps,
-                                                                  getEditorSelectedEvent(),
-                                                                  getNodeUUID(),
-                                                                  this,
-                                                                  itemDefinitionUtils,
-                                                                  getHasName()));
+    private Optional<CanvasHandler> getCanvasHandler() {
+        final Optional<ClientSession> session = Optional.ofNullable(sessionManager.getCurrentSession());
+        return session.map(ClientSession::getCanvasHandler);
     }
 
-    public void broadcastContextExpressionDefinition(final ContextProps contextProps) {
-        executeExpressionCommand(new FillContextExpressionCommand(getHasExpression(),
-                                                                  contextProps,
-                                                                  getEditorSelectedEvent(),
-                                                                  getNodeUUID(),
-                                                                  this,
-                                                                  itemDefinitionUtils,
-                                                                  getHasName()));
+    private ClientSession getCurrentSession() {
+        return sessionManager.getCurrentSession();
     }
 
-    public void broadcastRelationExpressionDefinition(final RelationProps relationProps) {
-        executeExpressionCommand(new FillRelationExpressionCommand(getHasExpression(),
-                                                                   relationProps,
-                                                                   getEditorSelectedEvent(),
-                                                                   getNodeUUID(),
-                                                                   this,
-                                                                   itemDefinitionUtils,
-                                                                   getHasName()));
+    public void updateExpression(final ExpressionProps expressionProps) {
+        ExpressionType logicType = ExpressionType.getTypeByText(expressionProps.logicType);
+        switch (logicType) {
+            case CONTEXT:
+                executeUndoableExpressionCommand(new FillContextExpressionCommand(getHasExpression(),
+                                                                                  (ContextProps) expressionProps,
+                                                                                  getEditorSelectedEvent(),
+                                                                                  getNodeUUID(),
+                                                                                  itemDefinitionUtils,
+                                                                                  getHasName()));
+                break;
+            case DECISION_TABLE:
+                executeUndoableExpressionCommand(new FillDecisionTableExpressionCommand(getHasExpression(),
+                                                                                        (DecisionTableProps) expressionProps,
+                                                                                        getEditorSelectedEvent(),
+                                                                                        getNodeUUID(),
+                                                                                        itemDefinitionUtils,
+                                                                                        getHasName()));
+                break;
+            case FUNCTION:
+                executeUndoableExpressionCommand(new FillFunctionExpressionCommand(getHasExpression(),
+                                                                                   (FunctionProps) expressionProps,
+                                                                                   getEditorSelectedEvent(),
+                                                                                   getNodeUUID(),
+                                                                                   itemDefinitionUtils,
+                                                                                   getHasName()));
+                break;
+            case INVOCATION:
+                executeUndoableExpressionCommand(new FillInvocationExpressionCommand(getHasExpression(),
+                                                                                     (InvocationProps) expressionProps,
+                                                                                     getEditorSelectedEvent(),
+                                                                                     getNodeUUID(),
+                                                                                     itemDefinitionUtils,
+                                                                                     getHasName()));
+                break;
+            case LIST:
+                executeUndoableExpressionCommand(new FillListExpressionCommand(getHasExpression(),
+                                                                               (ListProps) expressionProps,
+                                                                               getEditorSelectedEvent(),
+                                                                               getNodeUUID(),
+                                                                               itemDefinitionUtils,
+                                                                               getHasName()));
+                break;
+            case LITERAL_EXPRESSION:
+                executeUndoableExpressionCommand(new FillLiteralExpressionCommand(getHasExpression(),
+                                                                                  (LiteralProps) expressionProps,
+                                                                                  getEditorSelectedEvent(),
+                                                                                  getNodeUUID(),
+                                                                                  itemDefinitionUtils,
+                                                                                  getHasName()));
+                break;
+            case RELATION:
+                executeUndoableExpressionCommand(new FillRelationExpressionCommand(getHasExpression(),
+                                                                                   (RelationProps) expressionProps,
+                                                                                   getEditorSelectedEvent(),
+                                                                                   getNodeUUID(),
+                                                                                   itemDefinitionUtils,
+                                                                                   getHasName()));
+                break;
+            case UNDEFINED:
+                executeUndoableExpressionCommand(new ClearExpressionCommand(getHasExpression(),
+                                                                            expressionProps,
+                                                                            getEditorSelectedEvent(),
+                                                                            getNodeUUID(),
+                                                                            itemDefinitionUtils,
+                                                                            getHasName()));
+                getExpressionContainerGrid().clearExpression(getNodeUUID());
+                break;
+            default:
+                throw new UnsupportedOperationException("Logic type: " + logicType + " is currently unsupported");
+        }
+
+        if (Objects.nonNull(selectedUUID)) {
+            refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(getCurrentSession(), null));
+            fireDomainObjectSelectionEvent(findDomainObject(selectedUUID));
+        }
     }
 
-    public void broadcastListExpressionDefinition(final ListProps listProps) {
-        executeExpressionCommand(new FillListExpressionCommand(getHasExpression(),
-                                                               listProps,
-                                                               getEditorSelectedEvent(),
-                                                               getNodeUUID(),
-                                                               this,
-                                                               itemDefinitionUtils,
-                                                               getHasName()));
-    }
-
-    public void broadcastInvocationExpressionDefinition(final InvocationProps invocationProps) {
-        executeExpressionCommand(new FillInvocationExpressionCommand(getHasExpression(),
-                                                                     invocationProps,
-                                                                     getEditorSelectedEvent(),
-                                                                     getNodeUUID(),
-                                                                     this,
-                                                                     itemDefinitionUtils,
-                                                                     getHasName()));
-    }
-
-    public void broadcastFunctionExpressionDefinition(final FunctionProps functionProps) {
-        executeExpressionCommand(new FillFunctionExpressionCommand(getHasExpression(),
-                                                                   functionProps,
-                                                                   getEditorSelectedEvent(),
-                                                                   getNodeUUID(),
-                                                                   this,
-                                                                   itemDefinitionUtils,
-                                                                   getHasName()));
-    }
-
-    public void broadcastDecisionTableExpressionDefinition(final DecisionTableProps decisionTableProps) {
-        executeExpressionCommand(new FillDecisionTableExpressionCommand(getHasExpression(),
-                                                                        decisionTableProps,
-                                                                        getEditorSelectedEvent(),
-                                                                        getNodeUUID(),
-                                                                        this,
-                                                                        itemDefinitionUtils,
-                                                                        getHasName()));
-    }
-
-    public void openManageDataType() {
+    public void openDataTypePage() {
         dataTypePageActiveEvent.fire(new DataTypePageTabActiveEvent());
     }
 
-    public void onLogicTypeSelect(final String selectedLogicType) {
-        expressionEditorDefinitionsSupplier
+    public ExpressionProps getDefaultExpressionDefinition(String logicType, String dataType) {
+        return expressionEditorDefinitionsSupplier
                 .get()
-                .getExpressionEditorDefinition(ExpressionType.getTypeByText(selectedLogicType))
-                .ifPresent(this::enrichModelExpression);
+                .getExpressionEditorDefinition(ExpressionType.getTypeByText(logicType))
+                .map(expressionExpressionEditorDefinition -> generateExpressionProps(expressionExpressionEditorDefinition, dataType))
+                .orElseThrow(IllegalStateException::new);
     }
 
-    void executeExpressionCommand(final FillExpressionCommand expressionCommand) {
+    private ExpressionProps generateExpressionProps(final ExpressionEditorDefinition<Expression> expressionExpressionEditorDefinition,
+                                                    final String dataType) {
+        final Optional<Expression> modelExpression = expressionExpressionEditorDefinition.getModelClass();
+        expressionExpressionEditorDefinition.enrichRootExpression(getNodeUUID(),
+                                                                  hasExpression,
+                                                                  modelExpression.orElse(null),
+                                                                  dataType);
+        return modelExpression
+                .map(expression -> ExpressionPropsFiller.buildAndFillJsInteropProp(expression, getExpressionName(), getTypeRef()))
+                .orElseThrow(IllegalStateException::new);
+    }
+
+    /**
+     * It executes a given expression command. Before executing it, it creates and UNDO command with the current model
+     * status. Statement ordering matters: the UNDO command MUST be called before executing the expression command change.
+     *
+     * @param expressionCommand
+     */
+    void executeUndoableExpressionCommand(final FillExpressionCommand expressionCommand) {
+
+        createUndoCommand();
+        if (!expressionCommand.isCurrentExpressionOfTheSameType()) {
+            getHasExpression().setExpression(null);
+            getExpressionContainerGrid().clearExpression(getNodeUUID());
+        }
+
+        boolean isSameExpressionName =
+                getHasName().orElse(NOP).getName().getValue().equals(expressionCommand.getExpressionProps().name);
+
         expressionCommand.execute();
-        updateCanvasNodeNameCommand.execute(getNodeUUID(), getHasName().orElse(null));
-    }
 
-    void toggleBetaBoxedExpressionEditor(final boolean enabled) {
-        betaBoxedExpressionToggle.classList.toggle(ENABLED_BETA_CSS_CLASS, enabled);
-        newBoxedExpression.classList.toggle("hidden", !enabled);
-    }
-
-    void toggleLegacyExpressionEditor(final boolean enabled) {
-        dmnExpressionType.classList.toggle("hidden", !enabled);
-        dmnExpressionEditor.classList.toggle("hidden", !enabled);
-    }
-
-    boolean isNewEditorEnabled() {
-        return !HiddenHelper.isHidden(newBoxedExpression);
+        if (!isSameExpressionName) {
+            getUpdateCanvasNodeNameCommand().execute(getNodeUUID(), getHasName().orElse(NOP));
+        }
     }
 
     Stream<DataTypeProps> retrieveDefaultDataTypeProps() {
@@ -585,11 +597,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                     final String itemDefinitionName = itemDefinition.getName().getValue();
                     return new DataTypeProps(itemDefinitionName, itemDefinitionName, true);
                 });
-    }
-
-    private void preventDefault(final ClickEvent event) {
-        event.preventDefault();
-        event.stopPropagation();
     }
 
     private String getExpressionName() {
@@ -637,19 +644,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         };
     }
 
-    private void enrichModelExpression(final ExpressionEditorDefinition<Expression> expressionExpressionEditorDefinition) {
-        final Optional<Expression> modelExpression = expressionExpressionEditorDefinition.getModelClass();
-        expressionExpressionEditorDefinition.enrich(Optional.of(getNodeUUID()), hasExpression, modelExpression);
-        modelExpression.ifPresent(this::reloadNewBoxedExpressionEditorWithUpdatedModel);
-    }
-
-    private void reloadNewBoxedExpressionEditorWithUpdatedModel(final Expression expression) {
-        getHasExpression().setExpression(expression);
-        loadNewBoxedExpressionEditor();
-    }
-
-    @EventHandler("returnToLink")
-    void onClickReturnToLink(final ClickEvent event) {
+    @EventHandler("returnToDRGLink")
+    void onClickReturnToDRGLink(final ClickEvent event) {
         presenter.exit();
     }
 
@@ -665,10 +661,13 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Override
     public void reloadEditor() {
-        loadNewBoxedExpressionEditor();
+        if (isReactBoxedExpressionVisible()) {
+            loadNewBoxedExpressionEditor();
+        }
+    }
 
-        // This should be removed when the older editor is removed.
-        syncExpressionWithOlderEditor();
+    boolean isReactBoxedExpressionVisible() {
+        return DomGlobal.document.getElementsByClassName("kie-dmn-new-expression-editor").length > 0;
     }
 
     void syncExpressionWithOlderEditor() {
@@ -679,19 +678,17 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                    isOnlyVisualChangeAllowed);
     }
 
-    void reloadIfIsNewEditor() {
-        if (isNewEditorEnabled()) {
-            reloadEditor();
-        }
-    }
-
     @Override
     public void setFocus() {
-        gridPanel.setFocus(true);
+        loadNewBoxedExpressionEditor();
     }
 
     HasExpression getHasExpression() {
         return hasExpression;
+    }
+
+    public UpdateCanvasNodeNameCommand getUpdateCanvasNodeNameCommand() {
+        return updateCanvasNodeNameCommand;
     }
 
     Event<ExpressionEditorChanged> getEditorSelectedEvent() {
@@ -702,21 +699,23 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         return nodeUUID;
     }
 
-    public void notifyUserAction() {
+    /**
+     * It creates an UNDO command with the current expression status
+     */
+    protected void createUndoCommand() {
         final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = createCommandBuilder();
         final SaveCurrentStateCommand expressionCommand = new SaveCurrentStateCommand(getHasExpression(),
                                                                                       getEditorSelectedEvent(),
-                                                                                      this,
                                                                                       getNodeUUID(),
                                                                                       getHasName(),
-                                                                                      updateCanvasNodeNameCommand);
+                                                                                      getUpdateCanvasNodeNameCommand());
         addExpressionCommand(expressionCommand, commandBuilder);
 
         execute(commandBuilder);
     }
 
     void execute(final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder) {
-        sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+        sessionCommandManager.execute((AbstractCanvasHandler) getCurrentSession().getCanvasHandler(),
                                       commandBuilder.build());
     }
 

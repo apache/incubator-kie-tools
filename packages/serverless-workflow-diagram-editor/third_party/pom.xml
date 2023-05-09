@@ -14,6 +14,8 @@
     <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
 
     <modules>
+        <module>jakarta-spec</module>
+        <module>stdlib</module>
         <module>tooling</module>
     </modules>
 </project>

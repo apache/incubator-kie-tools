@@ -24,6 +24,10 @@ import {
   SwfJsonLanguageService,
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import {
+  getJsonStateNameFromOffset,
+  getYamlStateNameFromOffset,
+} from "@kie-tools/serverless-workflow-language-service/dist/editor";
 import * as vscode from "vscode";
 import { TextDocument } from "vscode";
 import * as ls from "vscode-languageserver-types";
@@ -31,7 +35,6 @@ import { debounce } from "../debounce";
 import { COMMAND_IDS } from "./commandIds";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
-import { initSwfOffsetsApi } from "./languageService/initSwfOffsetsApi";
 import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import {
@@ -65,7 +68,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
     "swf.ls.commands.ImportFunctionFromCompletionItem": (cmdArgs) => {
       args.swfServiceCatalogSupportActions.importFunctionFromCompletionItem(cmdArgs);
     },
-    "swf.ls.commands.OpenCompletionItems": (cmdArgs) => {
+    "editor.ls.commands.OpenCompletionItems": (cmdArgs) => {
       if (!vscode.window.activeTextEditor) {
         return;
       }
@@ -247,7 +250,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
         const selection = await vscode.window.showInformationMessage(
           `Kogito Serverless Workflow Visualization Preview will be ${
             isStunnerEnabled ? "enabled" : "disabled"
-          } for JSON files after VS Code is restarted.`,
+          } for JSON and YAML files after VS Code is restarted.`,
           restartNowLabel
         );
         if (selection !== restartNowLabel) {
@@ -267,10 +270,11 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 
     const uri = e.textEditor.document.uri;
     const offset = e.textEditor.document.offsetAt(e.selections[0].active);
-
-    const swfOffsetsApi = initSwfOffsetsApi(e.textEditor.document);
-
-    const nodeName = swfOffsetsApi.getStateNameFromOffset(offset);
+    const getStateNameFromOffsetArgs = { content: e.textEditor.document.getText(), offset };
+    const nodeName =
+      e.textEditor.document.languageId === FileLanguage.JSON
+        ? getJsonStateNameFromOffset(getStateNameFromOffsetArgs)
+        : getYamlStateNameFromOffset(getStateNameFromOffsetArgs);
 
     const envelopeServer = args.kieEditorsStore.get(uri)?.envelopeServer as unknown as EnvelopeServer<
       ServerlessWorkflowDiagramEditorChannelApi,
@@ -281,7 +285,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       return;
     }
 
-    envelopeServer.envelopeApi.notifications.kogitoSwfDiagramEditor__highlightNode.send({ nodeName });
+    envelopeServer.envelopeApi.notifications.kogitoSwfDiagramEditor__highlightNode.send({ nodeName: nodeName || null });
   });
 }
 

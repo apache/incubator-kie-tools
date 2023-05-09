@@ -36,7 +36,6 @@ import org.dashbuilder.client.external.transformer.JSONAtaInjector;
 import org.dashbuilder.client.external.transformer.JSONAtaTransformer;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.DataSet;
-import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
@@ -186,6 +185,7 @@ public class ExternalDataSetClientProvider {
                                        final DataSetReadyCallback callback,
                                        final String responseText,
                                        final SupportedMimeType contentType) {
+        DataSet dataSet = null;
         var content = contentType.tranformer.apply(responseText);
 
         if (def.getExpression() != null && !def.getExpression().trim().isEmpty()) {
@@ -195,8 +195,11 @@ public class ExternalDataSetClientProvider {
                 callback.onError(new ClientRuntimeError("Error evaluating dataset expression", e));
                 return null;
             }
+        } else if (def.getColumns().isEmpty()) {
+            var columns = contentType.columnsFunction.apply(responseText);
+            def.setColumns(columns);
         }
-        var dataSet = DataSetFactory.newEmptyDataSet();
+
         try {
             dataSet = externalParser.parseDataSet(content);
         } catch (Exception e) {
@@ -204,7 +207,7 @@ public class ExternalDataSetClientProvider {
             return null;
         }
 
-        if (def != null && !def.getColumns().isEmpty()) {
+        if (!def.getColumns().isEmpty()) {
             for (int i = 0; i < def.getColumns().size(); i++) {
                 var defColumn = def.getColumns().get(i);
                 var dsColumn = dataSet.getColumnByIndex(i);

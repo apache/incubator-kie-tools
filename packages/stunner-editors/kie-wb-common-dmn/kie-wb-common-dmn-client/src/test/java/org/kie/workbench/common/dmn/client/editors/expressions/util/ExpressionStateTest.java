@@ -25,12 +25,14 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.UpdateCanvasNodeNameCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.mockito.ArgumentCaptor;
@@ -43,7 +45,9 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -55,9 +59,6 @@ public class ExpressionStateTest {
 
     @Mock
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
-
-    @Mock
-    private ExpressionEditorView view;
 
     @Mock
     private UpdateCanvasNodeNameCommand updateCanvasNodeCommand;
@@ -73,7 +74,6 @@ public class ExpressionStateTest {
     public void setup() {
         expressionState = spy(new ExpressionState(hasExpression,
                                                   editorSelectedEvent,
-                                                  view,
                                                   NODE_UUID,
                                                   Optional.of(hasName),
                                                   updateCanvasNodeCommand));
@@ -117,7 +117,7 @@ public class ExpressionStateTest {
         doNothing().when(expressionState).restoreExpressionName();
         doNothing().when(expressionState).fireEditorSelectedEvent();
 
-        final InOrder inOrder = inOrder(expressionState, view);
+        final InOrder inOrder = inOrder(expressionState);
 
         expressionState.apply();
 
@@ -125,7 +125,6 @@ public class ExpressionStateTest {
         inOrder.verify(expressionState).restoreTypeRef();
         inOrder.verify(expressionState).restoreExpressionName();
         inOrder.verify(expressionState).fireEditorSelectedEvent();
-        inOrder.verify(view).reloadEditor();
     }
 
     @Test
@@ -164,6 +163,29 @@ public class ExpressionStateTest {
         expressionState.restoreExpression();
 
         verify(hasExpression).setExpression(savedExpression);
+    }
+
+    @Test
+    public void testRestoreExpressionBKMNode() {
+
+        final FunctionDefinition savedExpression = mock(FunctionDefinition.class);
+        final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
+        final FunctionDefinition fd = mock(FunctionDefinition.class);
+        final DMNModelInstrumentedBase parent = mock(DMNModelInstrumentedBase.class);
+
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(bkm);
+        when(bkm.getEncapsulatedLogic()).thenReturn(fd);
+        when(fd.getParent()).thenReturn(parent);
+
+        expressionState.setSavedExpression(savedExpression);
+
+        expressionState.restoreExpression();
+
+        final InOrder inOrder = inOrder(bkm, fd);
+
+        verify(hasExpression, never()).setExpression(savedExpression);
+        inOrder.verify(bkm, times(1)).setEncapsulatedLogic(savedExpression);
+        inOrder.verify(fd, times(1)).setParent(parent);
     }
 
     @Test
@@ -272,7 +294,7 @@ public class ExpressionStateTest {
         final Expression expression = mock(Expression.class);
         final Expression expressionCopy = mock(Expression.class);
 
-        when(expression.copy()).thenReturn(expressionCopy);
+        when(expression.exactCopy()).thenReturn(expressionCopy);
         when(hasExpression.getExpression()).thenReturn(expression);
 
         expressionState.saveCurrentExpression();

@@ -24,7 +24,6 @@ import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.Pair;
 
-
 public class JsonbSubtypeDeserializer<T> extends JsonbDeserializer<T> {
 
   private Map<String, JsonbDeserializer> types = new HashMap<>();
@@ -40,7 +39,7 @@ public class JsonbSubtypeDeserializer<T> extends JsonbDeserializer<T> {
   @Override
   public T deserialize(JsonValue value, DeserializationContext ctx) {
     JsonObject valueHolder =
-            (value instanceof JsonObject) ? ((JsonObject) value) : value.asJsonObject();
+        (value instanceof JsonObject) ? ((JsonObject) value) : value.asJsonObject();
     if (valueHolder.containsKey(typeFieldName)) {
       if (types.containsKey(valueHolder.getString(typeFieldName))) {
         return (T) types.get(valueHolder.getString(typeFieldName)).deserialize(value, ctx);

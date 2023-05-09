@@ -47,7 +47,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRender
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -75,6 +74,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlers
 
 public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, ContextUIModelMapper> implements HasRowDragRestrictions,
                                                                                                                HasListSelectorControl {
+
+    /** MUST BE SYNCHRONIZED WITH WidthConstants.ts */
+    static final double CONTEXT_EXPRESSION_ENTRY_INFO_DEFAULT_WIDTH = 120d;
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final ValueAndDataTypePopoverView.Presenter headerEditor;
@@ -170,7 +172,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
 
         final NameColumn nameColumn = new NameColumn(headerMetaData,
                                                      getAndSetInitialWidth(ContextUIModelMapperHelper.NAME_COLUMN_INDEX,
-                                                                           DMNGridColumn.DEFAULT_WIDTH),
+                                                             CONTEXT_EXPRESSION_ENTRY_INFO_DEFAULT_WIDTH),
                                                      this,
                                                      (rowIndex) -> rowIndex != getModel().getRowCount() - 1,
                                                      clearValueConsumer(false, new Name()),

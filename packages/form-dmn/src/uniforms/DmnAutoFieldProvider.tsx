@@ -17,13 +17,13 @@
 import { AutoField, AutoFields } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { DmnFeelContextField } from "./DmnFeelContextField";
 import * as React from "react";
-import { FEEL_CONTEXT } from "./DmnFormJsonSchemaBridge";
+import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
 
 export function DmnAutoFieldProvider() {
   return (
     <AutoField.componentDetectorContext.Provider
       value={(props, uniforms) => {
-        if (props.field?.["x-dmn-type"] === FEEL_CONTEXT) {
+        if (props.field?.["x-dmn-type"] === X_DMN_TYPE.CONTEXT) {
           return DmnFeelContextField;
         }
         return AutoField.defaultComponentDetector(props, uniforms);

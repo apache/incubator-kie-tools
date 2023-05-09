@@ -51,7 +51,6 @@ import { KieSandboxExtendedServicesDropdownGroup } from "../KieSandboxExtendedSe
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
-import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { ResponsiveDropdown } from "../../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../../ResponsiveDropdown/ResponsiveDropdownToggle";
@@ -79,7 +78,6 @@ import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
   workspaceFile: WorkspaceFile;
-  editorPageDock: EditorPageDockDrawerRef | undefined;
 }
 
 const showWhenSmall: ToolbarItemProps["visibility"] = {
@@ -352,7 +350,6 @@ export function EditorToolbarWithWorkspace(
                         <KieSandboxExtendedServicesButtons
                           workspace={props.workspace}
                           workspaceFile={props.workspaceFile}
-                          editorPageDock={props.editorPageDock}
                         />
                       </ToolbarGroup>
                     )}

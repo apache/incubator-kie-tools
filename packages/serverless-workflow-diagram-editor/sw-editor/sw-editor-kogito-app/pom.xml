@@ -324,6 +324,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
+      <artifactId>stdlib</artifactId>
+    </dependency>
+
     <!-- Test dependencies -->
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>
@@ -359,7 +364,7 @@
       <groupId>io.github.bonigarcia</groupId>
       <artifactId>webdrivermanager</artifactId>
       <scope>test</scope>
-    </dependency>   
+    </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
