@@ -40,7 +40,7 @@ fi
 sed -i "s|IMAGE_TAG_BASE ?=.*|IMAGE_TAG_BASE ?= ${imageTag}|g" Makefile
 sed -i "s|newName:.*|newName: ${imageTag}|g" config/manager/kustomization.yaml
 
+make generate-all
 make vet
-make bundle
 
 echo "Version bumped to ${new_version}"
