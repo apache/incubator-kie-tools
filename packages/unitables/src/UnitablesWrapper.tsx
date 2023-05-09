@@ -21,7 +21,7 @@ import { UnitablesContextProvider } from "./UnitablesContextProvider";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { ErrorBoundary } from "@kie-tools/form/dist/ErrorBoundary";
+import { ErrorBoundary } from "@kie-tools/dmn-runner/dist/ErrorBoundary";
 
 export function UnitablesWrapper(props: UnitablesProps) {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);

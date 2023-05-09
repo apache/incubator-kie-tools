@@ -18,17 +18,17 @@ import * as React from "react";
 import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
 import { UnitablesI18n } from "../i18n";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { joinName } from "uniforms";
-import { UNITABLES_COLUMN_MIN_WIDTH } from "../bee";
 import { UnitablesColumnType } from "../UnitablesTypes";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
-export const FORMS_ID = "unitables-forms";
-export const AUTO_ROW_ID = "unitables-row";
-
+const DEFAULT_COLUMN_MIN_WIDTH = 150;
 const DEFAULT_DATE_TIME_CELL_WDITH = 188;
 const DEFAULT_DATE_CELL_WIDTH = 170;
 const DEFAULT_TIME_CELL_WIDTH = 150;
+
+export const FORMS_ID = "unitables-forms";
+export const AUTO_ROW_ID = "unitables-row";
 
 export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   constructor(
@@ -80,31 +80,31 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
 
     switch (type) {
       case "<Undefined>":
-        return { dataType: DmnBuiltInDataType.Undefined, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return { dataType: DmnBuiltInDataType.Undefined, width: DEFAULT_COLUMN_MIN_WIDTH };
       case "Any":
-        return { dataType: DmnBuiltInDataType.Any, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return { dataType: DmnBuiltInDataType.Any, width: DEFAULT_COLUMN_MIN_WIDTH };
       case "boolean":
-        return { dataType: DmnBuiltInDataType.Boolean, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return { dataType: DmnBuiltInDataType.Boolean, width: DEFAULT_COLUMN_MIN_WIDTH };
       case "context":
-        return { dataType: DmnBuiltInDataType.Context, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return { dataType: DmnBuiltInDataType.Context, width: DEFAULT_COLUMN_MIN_WIDTH };
       case "date":
         return { dataType: DmnBuiltInDataType.Date, width: DEFAULT_DATE_CELL_WIDTH };
       case "date and time":
         return { dataType: DmnBuiltInDataType.DateTime, width: DEFAULT_DATE_TIME_CELL_WDITH };
       case "days and time duration":
-        return { dataType: DmnBuiltInDataType.DateTimeDuration, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return { dataType: DmnBuiltInDataType.DateTimeDuration, width: DEFAULT_COLUMN_MIN_WIDTH };
       case "number":
-        return { dataType: DmnBuiltInDataType.Number, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return { dataType: DmnBuiltInDataType.Number, width: DEFAULT_COLUMN_MIN_WIDTH };
       case "string":
-        return { dataType: DmnBuiltInDataType.String, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return { dataType: DmnBuiltInDataType.String, width: DEFAULT_COLUMN_MIN_WIDTH };
       case "time":
         return { dataType: DmnBuiltInDataType.Time, width: DEFAULT_TIME_CELL_WIDTH };
       case "years and months duration":
-        return { dataType: DmnBuiltInDataType.YearsMonthsDuration, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return { dataType: DmnBuiltInDataType.YearsMonthsDuration, width: DEFAULT_COLUMN_MIN_WIDTH };
       default:
         return {
           dataType: (type as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
-          width: UNITABLES_COLUMN_MIN_WIDTH,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
         };
     }
   }

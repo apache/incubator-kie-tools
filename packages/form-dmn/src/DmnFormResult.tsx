@@ -35,7 +35,7 @@ import { dmnFormI18n } from "./i18n";
 import { diff } from "deep-object-diff";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import "./styles.scss";
-import { ErrorBoundary } from "@kie-tools/form";
+import { ErrorBoundary } from "@kie-tools/dmn-runner/dist/ErrorBoundary";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { DecisionResult, DmnEvaluationStatus, DmnEvaluationResult } from "@kie-tools/extended-services-api";
 
@@ -172,7 +172,7 @@ export function DmnFormResult({ openExecutionTab, ...props }: DmnFormResultProps
   );
 
   const result = useCallback(
-    (dmnFormResult: DmnEvaluationResult) => {
+    (dmnFormResult: DmnEvaluationResult, parentKey?: string) => {
       switch (typeof dmnFormResult) {
         case "boolean":
           return dmnFormResult ? <i>true</i> : <i>false</i>;
@@ -199,44 +199,62 @@ export function DmnFormResult({ openExecutionTab, ...props }: DmnFormResultProps
           }
           return dmnFormResult;
         case "object":
-          if (dmnFormResult) {
-            if (Array.isArray(dmnFormResult)) {
+          if (!dmnFormResult) {
+            return <i>(null)</i>;
+          }
+
+          if (Array.isArray(dmnFormResult)) {
+            if (dmnFormResult.length === 0) {
               return (
-                <DescriptionList>
-                  {dmnFormResult.map((dmnResult, index) => (
-                    <DescriptionListGroup key={`array-result-${index}`}>
-                      <DescriptionListTerm>{index}</DescriptionListTerm>
-                      {dmnResult && typeof dmnResult === "object" ? (
-                        <DescriptionListDescription>{result(dmnResult)}</DescriptionListDescription>
-                      ) : (
-                        <DescriptionListDescription>{dmnResult}</DescriptionListDescription>
-                      )}
-                    </DescriptionListGroup>
-                  ))}
-                </DescriptionList>
+                <>
+                  {parentKey && <DescriptionListTerm>{parentKey}</DescriptionListTerm>}
+                  <i>(null)</i>
+                </>
               );
             }
             return (
               <DescriptionList>
-                {Object.entries(dmnFormResult).map(([key, value]: [string, object | string]) => (
-                  <DescriptionListGroup key={`object-result-${key}-${value}`}>
-                    <DescriptionListTerm>{key}</DescriptionListTerm>
-                    {value && typeof value === "object" ? (
-                      Object.entries(value).map(([key2, value2]: [string, any]) => (
-                        <DescriptionListGroup key={`object2-result-${key2}-${value2}`}>
-                          <DescriptionListTerm>{key2}</DescriptionListTerm>
-                          <DescriptionListDescription>{value2}</DescriptionListDescription>
-                        </DescriptionListGroup>
-                      ))
-                    ) : (
-                      <DescriptionListDescription>{result(value)}</DescriptionListDescription>
-                    )}
-                  </DescriptionListGroup>
-                ))}
+                <DescriptionListGroup
+                  style={{
+                    boxShadow: "0 0px 3px rgba(3, 3, 3, 0.15)",
+                    padding: "10px",
+                  }}
+                >
+                  {dmnFormResult.map((dmnResult, index) => (
+                    <React.Fragment key={`array-result-${index}`}>
+                      <DescriptionListTerm>{parentKey ? `${parentKey}-${index}` : index}</DescriptionListTerm>
+                      <DescriptionListDescription>{result(dmnResult)}</DescriptionListDescription>
+                    </React.Fragment>
+                  ))}
+                </DescriptionListGroup>
               </DescriptionList>
             );
           }
-          return <i>(null)</i>;
+          return (
+            <DescriptionList>
+              <DescriptionListGroup
+                style={{
+                  boxShadow: "0 0px 3px rgba(3, 3, 3, 0.15)",
+                  padding: "10px",
+                }}
+              >
+                {Object.entries(dmnFormResult).map(([key, value]: [string, object | string]) => (
+                  <React.Fragment key={`object-result-${key}-${value}`}>
+                    {value === null && (
+                      <DescriptionListTerm>{parentKey ? `${parentKey}-${key}` : key}</DescriptionListTerm>
+                    )}
+                    {value !== null && typeof value !== "object" && (
+                      <DescriptionListTerm>{parentKey ? `${parentKey}-${key}` : key}</DescriptionListTerm>
+                    )}
+                    <DescriptionListDescription>
+                      {result(value, parentKey ? `${parentKey}-${key}` : key)}
+                    </DescriptionListDescription>
+                  </React.Fragment>
+                ))}
+              </DescriptionListGroup>
+            </DescriptionList>
+          );
+
         default:
           return <i>(null)</i>;
       }
