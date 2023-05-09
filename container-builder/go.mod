@@ -6,7 +6,7 @@ require (
 	github.com/containers/buildah v1.28.0
 	github.com/containers/common v0.50.1
 	github.com/containers/podman/v4 v4.3.1
-	github.com/docker/docker v20.10.18+incompatible
+	github.com/docker/docker v20.10.24+incompatible
 	github.com/docker/go-connections v0.4.1-0.20210727194412-58542c764a11
 	github.com/go-logr/logr v1.2.3
 	github.com/hashicorp/go-version v1.6.0
