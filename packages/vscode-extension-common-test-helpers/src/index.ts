@@ -16,3 +16,4 @@
 
 export * from "./VSCodeTestHelper";
 export * from "./CommonAsserts";
+export * from "./EditorTestHelper";

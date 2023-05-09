@@ -64,8 +64,8 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
     this.timeout(20000);
     const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN);
     webview = editorWebviews[0];
-    await testHelper.switchWebviewToFrame(webview);
     const dmnEditorTester = new DmnEditorTestHelper(webview);
+    await dmnEditorTester.switchToEditorFrame();
 
     await dmnEditorTester.switchEditorTab(EditorTabs.IncludedModels);
     await dmnEditorTester.includeModel(REUSABLE_DMN, "reusable-model");
@@ -75,15 +75,15 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
 
     await dmnEditorTester.switchEditorTab(EditorTabs.Editor);
 
-    await webview.switchBack();
+    await dmnEditorTester.switchBack();
   });
 
   it("Undo command in DMN Editor", async function () {
     this.timeout(40000);
     const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN);
     webview = editorWebviews[0];
-    await testHelper.switchWebviewToFrame(webview);
     const dmnEditorTester = new DmnEditorTestHelper(webview);
+    await dmnEditorTester.switchToEditorFrame();
 
     const decisionNavigator = await dmnEditorTester.openDecisionNavigator();
     await decisionNavigator.selectDiagramNode("?DemoDecision1");
@@ -95,26 +95,26 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
     await navigatorPanel.assertDiagramNodeIsPresent("Updated Name 1");
     await navigatorPanel.assertDiagramNodeIsPresent("?DecisionFinal1");
 
-    await webview.switchBack();
+    await dmnEditorTester.switchBack();
 
     // changeProperty() is implemented as clear() and sendKeys(), that is why we need two undo operations
     await testHelper.executeCommandFromPrompt("Undo");
     await testHelper.executeCommandFromPrompt("Undo");
 
-    await testHelper.switchWebviewToFrame(webview);
+    await dmnEditorTester.switchToEditorFrame();
 
     await navigatorPanel.assertDiagramNodeIsPresent("?DemoDecision1");
     await navigatorPanel.assertDiagramNodeIsPresent("?DecisionFinal1");
 
-    await webview.switchBack();
+    await dmnEditorTester.switchBack();
   });
 
   it("Check new DMN Expression Editor", async function () {
     this.timeout(40000);
     const editorWebviews = await testHelper.openFileFromSidebar(DEMO_EXPRESSION_DMN);
     webview = editorWebviews[0];
-    await testHelper.switchWebviewToFrame(webview);
     const dmnEditorTester = new DmnEditorTestHelper(webview);
+    await dmnEditorTester.switchToEditorFrame();
 
     const decisionNavigator = await dmnEditorTester.openDecisionNavigator();
 
@@ -130,6 +130,6 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
     const decisionTableEditor = await dmnEditorTester.getExpressionEditor();
     await decisionTableEditor.assertExpressionDetails("decision table demo", "string");
 
-    await webview.switchBack();
+    await dmnEditorTester.switchBack();
   });
 });

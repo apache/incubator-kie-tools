@@ -66,12 +66,12 @@ describe("KIE Editors Integration Test Suite - SCESIM Editor", () => {
 
     const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN_SCESIM);
     webview = editorWebviews[0];
-    await testHelper.switchWebviewToFrame(webview);
     const scesimEditorTester = new ScesimEditorTestHelper(webview);
+    await scesimEditorTester.switchToEditorFrame();
 
     await scesimEditorTester.specifyDmnOnLandingPage(DEMO_DMN);
 
-    await webview.switchBack();
+    await scesimEditorTester.switchBack();
 
     // save file so we can check the plain text source
     await testHelper.executeCommandFromPrompt("File: Save");

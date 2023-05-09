@@ -300,7 +300,7 @@ export class VSCodeTestHelper {
   public waitUntilKogitoEditorIsLoaded = async (webview: WebView): Promise<void> => {
     const driver = webview.getDriver();
 
-    this.switchWebviewToFrame(webview);
+    switchWebviewToFrame(webview);
 
     await driver.wait(
       until.elementLocated(envelopeApp()),
@@ -320,7 +320,7 @@ export class VSCodeTestHelper {
 
     await sleep(8000);
 
-    await driver.switchTo().frame(null);
+    await switchBack(webview);
   };
 
   /**
@@ -342,31 +342,6 @@ export class VSCodeTestHelper {
     }
 
     throw new Error(`'${command}' not found in prompt`);
-  };
-
-  /**
-   * Switches provided webview's context to iframe#active-frame within it.
-   *
-   * @param webview
-   */
-  public switchWebviewToFrame = async (webview: WebView): Promise<void> => {
-    const driver = webview.getDriver();
-    await driver.wait(
-      until.elementLocated(webViewReady()),
-      10000,
-      "No iframe.webview.ready that was ready was located in webview under 10 seconds." +
-        "This should not happen and is most probably issue of VSCode." +
-        "In case this happens investigate vscode or vscode-extension-tester dependency."
-    );
-    await driver.switchTo().frame(await driver.findElement(webViewReady()));
-    await driver.wait(
-      until.elementLocated(activeFrame()),
-      10000,
-      "No iframe#active-frame located in webview under 10 seconds." +
-        "This should not happen and is most probably issue of VSCode." +
-        "In case this happens investigate vscode or vscode-extension-tester dependency."
-    );
-    await driver.switchTo().frame(await driver.findElement(activeFrame()));
   };
 
   /**
@@ -397,6 +372,40 @@ export class VSCodeTestHelper {
     fs.mkdirpSync(dirPath);
     fs.writeFileSync(path.join(dirPath, `${sanitize(name)}.png`), data, "base64");
   };
+}
+
+/**
+ * Switches provided webview's context to iframe#active-frame within it.
+ *
+ * @param webview
+ */
+export async function switchWebviewToFrame(webview: WebView): Promise<void> {
+  const driver = webview.getDriver();
+  await driver.wait(
+    until.elementLocated(webViewReady()),
+    10000,
+    "No iframe.webview.ready that was ready was located in webview under 10 seconds." +
+      "This should not happen and is most probably issue of VSCode." +
+      "In case this happens investigate vscode or vscode-extension-tester dependency."
+  );
+  await driver.switchTo().frame(await driver.findElement(webViewReady()));
+  await driver.wait(
+    until.elementLocated(activeFrame()),
+    10000,
+    "No iframe#active-frame located in webview under 10 seconds." +
+      "This should not happen and is most probably issue of VSCode." +
+      "In case this happens investigate vscode or vscode-extension-tester dependency."
+  );
+  await driver.switchTo().frame(await driver.findElement(activeFrame()));
+}
+
+/**
+ * Switch back to the the topmost frame on the page.
+ *
+ * @param webview
+ */
+export async function switchBack(webview: WebView): Promise<void> {
+  await webview.getDriver().switchTo().frame(null);
 }
 
 export function sleep(ms: number) {
