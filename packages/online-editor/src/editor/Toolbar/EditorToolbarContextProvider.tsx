@@ -35,7 +35,6 @@ import { EmbedModal } from "./Share/EmbedModal";
 import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { useAuthSession } from "../../authSessions/AuthSessionsContext";
-import { GitStatusProps } from "../../workspace/components/GitStatusIndicatorActions";
 import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { WorkspaceGitStatusType } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 
@@ -76,7 +75,7 @@ export const EditorToolbarDispatchContext = createContext<EditorToolbarDispatchC
 type Props = {
   workspace: ActiveWorkspace;
   workspaceFile: WorkspaceFile;
-  gitStatusProps?: GitStatusProps;
+  workspaceGitStatusPromise?: PromiseState<WorkspaceGitStatusType>;
   children: ReactNode;
   editor: EmbeddedEditorRef | undefined;
 };
@@ -190,10 +189,7 @@ export function EditorToolbarContextProvider(
           <EmbedModal
             workspace={props.workspace.descriptor}
             workspaceFile={props.workspaceFile}
-            gitStatusProps={{
-              workspaceDescriptor: props.workspace.descriptor,
-              workspaceGitStatusPromise: props.workspaceGitStatusPromise,
-            }}
+            workspaceGitStatusPromise={props.workspaceGitStatusPromise}
             isOpen={isEmbedModalOpen}
             onClose={() => setEmbedModalOpen(false)}
           />
