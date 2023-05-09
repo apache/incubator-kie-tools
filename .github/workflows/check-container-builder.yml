@@ -1,0 +1,91 @@
+name: Verify Container Builder
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches:
+      - main
+
+env:
+  REGISTRY_STORAGE_DELETE_ENABLED : true
+
+jobs:
+  unit-tests:
+    concurrency:
+      group: kogito_serverless_operator_pr-unit-${{ github.head_ref }}
+      cancel-in-progress: true
+    timeout-minutes: 120
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install package
+        run: |
+          sudo apt-get -y install \
+          btrfs-progs \
+          libgpgme-dev \
+          libbtrfs-dev \
+          libdevmapper-dev
+      - name: Setup golang
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: make test
+
+  integration-tests:
+    needs: unit-tests
+    strategy:
+      matrix:
+        container-engine:
+          - docker
+          - podman
+          - kaniko-docker
+          - buildah
+      fail-fast: false
+    concurrency:
+      group: kogito_serverless_operator_pr-integration-${{ matrix.container-engine }}-${{ github.head_ref }}
+      cancel-in-progress: true
+    # should be set back to 120 here and stable and kogito-swf-builder in Kogito.dockerfile once kogito-swf-builder 1.33 is released
+    timeout-minutes: 300
+    name: Integration tests (${{ matrix.container-engine }})
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Install packages
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libbtrfs-dev libgpgme-dev libdevmapper-dev
+          version: 1.0
+      - name: Install Podman 4.3.1
+        run: |
+          wget http://security.ubuntu.com/ubuntu/pool/main/s/shadow/libsubid4_4.11.1+dfsg1-2ubuntu1.1_amd64.deb
+          sudo dpkg -i libsubid4_4.11.1+dfsg1-2ubuntu1.1_amd64.deb
+          wget http://ftp.us.debian.org/debian/pool/main/libp/libpod/podman_4.3.1+ds1-6+b2_amd64.deb
+          sudo dpkg -i podman_4.3.1+ds1-6+b2_amd64.deb
+      - name: Setup golang
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Display Podman info
+        run: podman info
+      - name: Start Podman socket
+        run: |
+          systemctl --user start podman.socket
+          systemctl --user status podman.socket
+      - name: Run integration tests
+        run: |
+          mkdir -p ~/.config/systemd/user/podman.service.d/
+          printf "[Service]\nExecStart=\nExecStart=/usr/bin/podman $LOGGING system service -t 0\nDelegate=true\nType=exec\nKillMode=process\nEnvironment=LOGGING="--log-level=info"\n" > ~/.config/systemd/user/podman.service.d/override.conf
+          systemctl --user daemon-reload
+          systemctl --user start podman.service
+          pid=$(systemctl --user show podman.service  | grep ^MainPID | sed -e 's|MainPID=||')
+          sudo prlimit --pid $pid --nofile=262144:262144
+          sudo prlimit --pid $$ --nofile=262144:262144
+          cd container-builder
+          make ${{ matrix.container-engine }}-integration-test

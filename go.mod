@@ -2,6 +2,8 @@ module github.com/kiegroup/kogito-serverless-operator
 
 go 1.19
 
+replace github.com/kiegroup/kogito-serverless-operator/container-builder v0.0.0 => ./container-builder
+
 require (
 	github.com/go-logr/logr v1.2.3
 	github.com/jpillora/backoff v1.0.0 // indirect
@@ -24,7 +26,7 @@ require (
 
 require (
 	github.com/RHsyseng/operator-utils v1.4.12
-	github.com/kiegroup/container-builder v0.0.0-20230505124211-aa5d6c429960
+	github.com/kiegroup/kogito-serverless-operator/container-builder v0.0.0
 	github.com/magiconair/properties v1.8.7
 	github.com/onsi/ginkgo/v2 v2.3.0
 	github.com/openshift/api v0.0.0-20211209135129-c58d9f695577

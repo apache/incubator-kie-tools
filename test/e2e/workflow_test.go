@@ -54,7 +54,7 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 		// restricted so that we can ensure that both can be admitted and run with the enforcement
 
 		// See: https://kubernetes.io/docs/tutorials/security/seccomp/
-		
+
 		/*
 			   TODO: Uncomment to enable when https://issues.redhat.com/browse/KOGITO-9110 will be available
 				By("labeling all namespaces to warn when we apply the manifest if would violate the PodStandards")

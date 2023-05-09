@@ -26,7 +26,7 @@ import (
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/container-builder/client"
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
 
 	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"

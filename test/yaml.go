@@ -18,7 +18,7 @@ import (
 	"bytes"
 	"os"
 
-	"github.com/kiegroup/container-builder/util/log"
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 
 	"k8s.io/apimachinery/pkg/util/yaml"
 

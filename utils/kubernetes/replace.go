@@ -18,7 +18,7 @@ import (
 	"context"
 	"fmt"
 
-	client "github.com/kiegroup/container-builder/client"
+	client "github.com/kiegroup/kogito-serverless-operator/container-builder/client"
 
 	"github.com/pkg/errors"
 

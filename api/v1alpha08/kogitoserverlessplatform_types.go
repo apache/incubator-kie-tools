@@ -18,7 +18,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/kiegroup/container-builder/api"
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 )
 
 // ConfigurationSpecType is used to define the enum values of the supported types for ConfigurationSpec

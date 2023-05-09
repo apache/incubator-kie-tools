@@ -32,11 +32,11 @@ import (
 
 	"github.com/kiegroup/kogito-serverless-operator/api"
 
-	builderapi "github.com/kiegroup/container-builder/api"
+	builderapi "github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/builder"
-	"github.com/kiegroup/kogito-serverless-operator/platform"
+	"github.com/kiegroup/kogito-serverless-operator/controllers/builder"
+	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
 	"github.com/kiegroup/kogito-serverless-operator/utils"
 )
 

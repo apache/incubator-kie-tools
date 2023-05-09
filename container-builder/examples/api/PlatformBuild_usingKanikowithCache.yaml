@@ -1,0 +1,9 @@
+name: platform-kaniko-using-cache
+spec:
+  publishStrategy: "Kaniko"
+  baseImage: quay.io/kiegroup/kogito-swf-builder-nightly:latest
+  registry:
+    address: quay.io/kiegroup
+    secret: regcred
+  PublishStrategyOptions:
+    KanikoBuildCacheEnabled: "true"

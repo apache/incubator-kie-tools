@@ -17,7 +17,7 @@ package v1alpha08
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/kiegroup/container-builder/api"
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 )
 
 // KogitoServerlessBuildSpec defines the desired state of KogitoServerlessBuild

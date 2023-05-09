@@ -5,6 +5,10 @@ WORKDIR /workspace
 # Copy the Go Modules manifests
 COPY go.mod go.mod
 COPY go.sum go.sum
+
+# Copy internal dependency
+COPY container-builder/ container-builder/
+
 # cache deps before building and copying source so that we don't need to re-download as much
 # and so that source changes don't invalidate our downloaded layer
 RUN go mod download
@@ -12,10 +16,8 @@ RUN go mod download
 # Copy the go source
 COPY main.go main.go
 COPY api/ api/
-COPY builder/ builder/
 COPY controllers/ controllers/
 COPY install/ install/
-COPY platform/ platform/
 COPY resources/ resources/
 COPY utils/ utils/
 COPY version/ version/

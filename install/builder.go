@@ -17,7 +17,7 @@ package install
 import (
 	"context"
 
-	"github.com/kiegroup/container-builder/client"
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
 
 	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/utils/resources"

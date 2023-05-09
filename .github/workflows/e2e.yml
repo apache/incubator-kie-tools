@@ -28,6 +28,14 @@ jobs:
     runs-on: ubuntu-latest
     name: End-to-end tests (Minikube)
     steps:
+      - name: Install package
+        run: |
+            sudo apt-get -y install \
+            btrfs-progs \
+            libgpgme-dev \
+            libbtrfs-dev \
+            libdevmapper-dev
+
       - name: Checkout Code
         uses: actions/checkout@v3
         with:

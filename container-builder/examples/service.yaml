@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: kogito-greetings-external
+  labels:
+    app: kogito-greetings
+spec:
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 31961
+  selector:
+    app: kogito-greetings
+  type: NodePort
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  allocateLoadBalancerNodePorts: true
+  internalTrafficPolicy: Cluster

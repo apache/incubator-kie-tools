@@ -27,10 +27,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	clientr "github.com/kiegroup/container-builder/client"
-	klog "github.com/kiegroup/container-builder/util/log"
+	clientr "github.com/kiegroup/kogito-serverless-operator/container-builder/client"
+	klog "github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 
-	"github.com/kiegroup/kogito-serverless-operator/platform"
+	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
 
 	ctrlrun "sigs.k8s.io/controller-runtime"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"

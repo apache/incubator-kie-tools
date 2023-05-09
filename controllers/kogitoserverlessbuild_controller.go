@@ -21,7 +21,7 @@ import (
 
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/kiegroup/kogito-serverless-operator/platform"
+	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
 
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
@@ -33,11 +33,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 
-	"github.com/kiegroup/container-builder/api"
-	clientr "github.com/kiegroup/container-builder/client"
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
+	clientr "github.com/kiegroup/kogito-serverless-operator/container-builder/client"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/builder"
+	"github.com/kiegroup/kogito-serverless-operator/controllers/builder"
 	"github.com/kiegroup/kogito-serverless-operator/utils"
 )
 

@@ -1,0 +1,15 @@
+name: build-kaniko-using-cache-and-customizations
+spec:
+  tasks:
+    - kaniko:
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1"
+          limits:
+            memory: "2Gi"
+            cpu: "2"
+        additionalFlags:
+          - "--use-new-run=true"
+          - "--cache=true"
+          - "--cache-dir=/kaniko/cache"

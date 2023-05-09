@@ -25,8 +25,8 @@ import (
 	clientruntime "sigs.k8s.io/controller-runtime/pkg/client"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 
-	builderapi "github.com/kiegroup/container-builder/api"
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	builderapi "github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 
 	"github.com/kiegroup/kogito-serverless-operator/api"
 

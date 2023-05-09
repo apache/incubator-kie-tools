@@ -28,7 +28,9 @@ jobs:
         run: |
           sudo apt-get -y install \
           btrfs-progs \
-          libgpgme-dev
+          libgpgme-dev \
+          libbtrfs-dev \
+          libdevmapper-dev
 
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -83,6 +85,16 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      # since we now have to download container-builder deps, we need these packages installed before generating our types.
+      # we should be able to remove this after https://issues.redhat.com/browse/KOGITO-9106
+      - name: Install packages
+        run: |
+          sudo apt-get -y install \
+          btrfs-progs \
+          libgpgme-dev \
+          libbtrfs-dev \
+          libdevmapper-dev
 
       - name: Install Go
         id: go

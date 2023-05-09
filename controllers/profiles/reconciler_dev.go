@@ -28,7 +28,7 @@ import (
 
 	"github.com/kiegroup/kogito-serverless-operator/version"
 
-	"github.com/kiegroup/kogito-serverless-operator/platform"
+	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
 
 	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
