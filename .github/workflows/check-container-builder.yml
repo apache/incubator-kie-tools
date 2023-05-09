@@ -5,6 +5,9 @@ on:
     types: [opened, reopened, edited, synchronize]
     branches:
       - main
+    paths:
+      - 'container-builder/**'
+      - '.github/workflows/check-container-builder.yml'
 
 env:
   REGISTRY_STORAGE_DELETE_ENABLED : true
