@@ -29,3 +29,7 @@ func ReadFile(filename string) ([]byte, error) {
 func Pbool(value bool) *bool {
 	return &value
 }
+
+func Pint(value int) *int {
+	return &value
+}

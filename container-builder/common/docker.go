@@ -20,13 +20,13 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"io/ioutil"
-	"time"
-
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/util"
 	"github.com/sirupsen/logrus"
+	"io/ioutil"
 )
 
 type Docker struct {
@@ -199,8 +199,10 @@ func (d Docker) GetContainerID(imageName string) (string, error) {
 }
 
 func (d Docker) ContainerStop(containerID string) error {
-	duration := 10 * time.Second
-	err := d.Connection.ContainerStop(context.Background(), containerID, &duration)
+	stopOptions := container.StopOptions{
+		Timeout: util.Pint(10),
+	}
+	err := d.Connection.ContainerStop(context.Background(), containerID, stopOptions)
 	if err != nil {
 		logrus.Errorf("%s %s\n", err, "Error during container stop")
 	}
