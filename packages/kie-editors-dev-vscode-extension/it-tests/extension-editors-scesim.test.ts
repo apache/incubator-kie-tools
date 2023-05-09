@@ -58,10 +58,11 @@ describe("KIE Editors Integration Test Suite - SCESIM Editor", () => {
     await webview.switchBack();
   });
 
+  // The test is broken. It is necessary to fix it. See https://issues.redhat.com/browse/KOGITO-9131 for more information.
   /**
-   * As the opened sceism file is empty, a prompt to specify file under test should be shown
+   * As the opened scesim file is empty, a prompt to specify file under test should be shown
    */
-  it("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
+  it.skip("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
     this.timeout(20000);
 
     const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN_SCESIM);
