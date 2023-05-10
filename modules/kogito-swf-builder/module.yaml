@@ -5,7 +5,7 @@ description: "Kogito Serverless Workflow builder with required extensions"
 
 envs:
   - name: QUARKUS_EXTENSIONS
-    example: 'quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing'
+    example: 'quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,kogito-quarkus-serverless-workflow-devui,source-files'
     description: To add extension to your application
   - name: PROJECT_GROUP_ID
     value: "org.acme"

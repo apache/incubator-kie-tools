@@ -51,7 +51,7 @@ mvn ${MAVEN_OPTIONS} \
     -DprojectArtifactId="serverless-workflow-project" \
     -DprojectVersionId="1.0.0-SNAPSHOT" \
     -DplatformVersion="${quarkus_platform_version}" \
-    -Dextensions="quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health" \
+    -Dextensions="quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,kogito-quarkus-serverless-workflow-devui,source-files" \
     io.quarkus.platform:quarkus-maven-plugin:"${quarkus_platform_version}":create
 
 echo "Build quarkus app"
