@@ -12,6 +12,8 @@ set -o pipefail
 image_name="${1}"
 quarkus_platform_version="${2}"
 
+quarkus_extensions='quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health'
+
 if [ -z ${quarkus_platform_version} ]; then
     echo "Please provide the quarkus version"
     exit 1
@@ -19,6 +21,9 @@ fi
 
 case ${image_name} in
     "kogito-swf-builder")        ;;
+    "kogito-swf-devmode")        
+        quarkus_extensions="${quarkus_extensions},kogito-quarkus-serverless-workflow-devui,source-files"
+        ;;
     *)
         echo "${image_name} is not a quarkus app image, exiting..."
         exit 0
@@ -28,9 +33,9 @@ esac
 
 script_dir_path=$(cd `dirname "${BASH_SOURCE[0]}"`; pwd -P)
 
-target_tmp_dir="/tmp/build/kogito-swf-builder"
-build_target_dir="/tmp/kogito-swf-builder"
-mvn_local_repo="/tmp/temp_maven/kogito-swf-builder"
+target_tmp_dir="/tmp/build/${image_name}"
+build_target_dir="/tmp/${image_name}"
+mvn_local_repo="/tmp/temp_maven/${image_name}"
 
 rm -rf ${target_tmp_dir} && mkdir -p ${target_tmp_dir}
 rm -rf ${build_target_dir} && mkdir -p ${build_target_dir}
@@ -51,7 +56,7 @@ mvn ${MAVEN_OPTIONS} \
     -DprojectArtifactId="serverless-workflow-project" \
     -DprojectVersionId="1.0.0-SNAPSHOT" \
     -DplatformVersion="${quarkus_platform_version}" \
-    -Dextensions="quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,kogito-quarkus-serverless-workflow-devui,source-files" \
+    -Dextensions="${quarkus_extensions}" \
     io.quarkus.platform:quarkus-maven-plugin:"${quarkus_platform_version}":create
 
 echo "Build quarkus app"
@@ -82,9 +87,9 @@ find ${mvn_local_repo} -name _maven.repositories -type f -delete
 find ${mvn_local_repo} -name *.lastUpdated -type f -delete
 
 echo "Zip and copy scaffold project"
-zip -r kogito-swf-builder-quarkus-app.zip serverless-workflow-project/ 
-cp -v kogito-swf-builder-quarkus-app.zip ${target_tmp_dir}/
+zip -r ${image_name}-quarkus-app.zip serverless-workflow-project/ 
+cp -v ${image_name}-quarkus-app.zip ${target_tmp_dir}/
 echo "Zip and copy maven repo"
 cd ${mvn_local_repo}
-zip -r kogito-swf-builder-maven-repo.zip *
-cp -v kogito-swf-builder-maven-repo.zip ${target_tmp_dir}/
+zip -r ${image_name}-maven-repo.zip *
+cp -v ${image_name}-maven-repo.zip ${target_tmp_dir}/

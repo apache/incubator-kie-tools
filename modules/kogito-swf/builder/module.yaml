@@ -5,7 +5,7 @@ description: "Kogito Serverless Workflow builder with required extensions"
 
 envs:
   - name: QUARKUS_EXTENSIONS
-    example: 'quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,kogito-quarkus-serverless-workflow-devui,source-files'
+    example: 'quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing'
     description: To add extension to your application
   - name: PROJECT_GROUP_ID
     value: "org.acme"
@@ -19,14 +19,6 @@ envs:
   - name: QUARKUS_CREATE_ARGS
     example: -DnoCode
     description: To use only if you plan to use the ${KOGITO_HOME}/launch/create-app.sh
-  - name: QUARKUS_ADD_EXTENSION_ARGS
-    description: To use only if you plan to use the ${KOGITO_HOME}/launch/add-extension.sh
-  - name: QUARKUS_KOGITO_DEVSERVICES_ENABLED
-    description: Whether to enable Kogito Devservices or not. Default to "false" since Data Index needs Docker.
-    value: "false"
-  - name: QUARKUS_KUBERNETES_CLIENT_DEVSERVICES_ENABLED
-    description: Whether to enable Kogito Devservices or not. Default to "false" since Kubernetes objects are managed by the Kogito Serverless Operator.
-    value: "false"
 
 # see build-quarkus-app.sh script, responsible for building those artifacts.
 # called by the Makefile before builds

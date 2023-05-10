@@ -1,0 +1,26 @@
+schema_version: 1
+name: org.kie.kogito.swf.devmode
+version: "2.0.0-snapshot"
+description: "Kogito Serverless Workflow builder with required extensions"
+
+envs:
+  - name: QUARKUS_EXTENSIONS
+    example: 'quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing'
+    description: To add extension to your application
+  - name: QUARKUS_KOGITO_DEVSERVICES_ENABLED
+    description: Whether to enable Kogito Devservices or not. Default to "false" since Data Index needs Docker.
+    value: "false"
+  - name: QUARKUS_KUBERNETES_CLIENT_DEVSERVICES_ENABLED
+    description: Whether to enable Kogito Devservices or not. Default to "false" since Kubernetes objects are managed by the Kogito Serverless Operator.
+    value: "false"
+
+# see build-quarkus-app.sh script, responsible for building those artifacts.
+# called by the Makefile before builds
+artifacts:
+  - path: /tmp/build/kogito-swf-devmode/kogito-swf-devmode-quarkus-app.zip
+    name: kogito-swf-devmode-quarkus-app.zip
+  - path: /tmp/build/kogito-swf-devmode/kogito-swf-devmode-maven-repo.zip
+    name: kogito-swf-devmode-maven-repo.zip
+
+execute:
+  - script: configure.sh

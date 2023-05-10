@@ -1,6 +1,6 @@
 schema_version: 1
 
-name: "quay.io/kiegroup/kogito-swf-builder"
+name: "quay.io/kiegroup/kogito-swf-devmode"
 description: "Kogito Serverless Workflow base builder with Quarkus extensions libraries preinstalled"
 
 modules:
@@ -15,8 +15,14 @@ modules:
     - name: org.kie.kogito.maven
       version: "3.8.6"
     - name: org.kie.kogito.swf.common
-    - name: org.kie.kogito.swf.builder
+    - name: org.kie.kogito.swf.devmode
 
 run:
   workdir: "/home/kogito"
   user: 1001
+  cmd: 
+    - "/home/kogito/launch/run-app-devmode.sh"
+
+ports:
+  - value: 8080
+  - value: 5005
