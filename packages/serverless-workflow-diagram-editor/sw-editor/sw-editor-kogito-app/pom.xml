@@ -275,6 +275,11 @@
       <artifactId>stdlib</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
+      <artifactId>patternfly</artifactId>
+    </dependency>
+
     <!-- Test dependencies -->
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>
@@ -369,12 +374,10 @@
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-workbench-client</compileSourcesArtifact>
             <!-- Errai, Drools etc -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:errai-data-binding</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-ui</compileSourcesArtifact>
             <!-- UF-ext -->
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-commons-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-commons-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-widgets-commons</compileSourcesArtifact>
             <!-- Appformer -->
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:appformer-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:appformer-kogito-bridge</compileSourcesArtifact>

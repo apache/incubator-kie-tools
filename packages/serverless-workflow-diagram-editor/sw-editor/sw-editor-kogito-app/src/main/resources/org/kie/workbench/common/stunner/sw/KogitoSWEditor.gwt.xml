@@ -36,6 +36,8 @@
   <inherits name="org.kie.workbench.common.stunner.sw.SWEditorApi"/>
   <inherits name="org.kie.workbench.common.stunner.sw.SWEditorClient"/>
 
+  <inherits name="org.patternfly.Patternfly"/>
+
   <!-- Only default locale support for kogito. -->
   <set-property name="locale" value="default"/>
 

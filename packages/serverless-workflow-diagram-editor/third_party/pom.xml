@@ -18,5 +18,6 @@
         <module>stdlib</module>
         <module>tooling</module>
         <module>gwtbootstrap3</module>
+        <module>patternfly</module>
     </modules>
 </project>

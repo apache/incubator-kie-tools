@@ -524,6 +524,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
+        <artifactId>patternfly</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>lienzo-tests</artifactId>
         <version>${project.version}</version>
