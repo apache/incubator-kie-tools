@@ -76,6 +76,10 @@ export type Sample = {
   svgContent: string;
 };
 
+export type SampleCoversHashtable = {
+  [sampleId: string]: string;
+};
+
 export const KIE_SAMPLES_REPO: GitHubFileInfo = {
   owner: "kiegroup",
   repo: "kie-samples",
@@ -166,23 +170,10 @@ export async function fetchSampleDefinitions(octokit: Octokit): Promise<Sample[]
         }
 
         const definition = JSON.parse(fileContent) as SampleDefinition;
-        const svgContent = await fetchFileContent({
-          octokit,
-          fileInfo: {
-            ...KIE_SAMPLES_REPO,
-            path: join("samples", definitionFile.sampleId, definition.cover),
-          },
-        });
-
-        if (!svgContent) {
-          console.error(`Could not read sample svg for ${definitionFile.sampleId}`);
-          return null;
-        }
 
         return {
           sampleId: definitionFile.sampleId,
           definition,
-          svgContent,
         };
       })
     )
@@ -193,6 +184,26 @@ export async function fetchSampleDefinitions(octokit: Octokit): Promise<Sample[]
   }
 
   return samples;
+}
+
+export async function fetchSampleCover(args: { octokit: Octokit; sample: Sample }): Promise<string | undefined> {
+  const { sample } = args;
+
+  const svgContent = await fetchFileContent({
+    octokit: args.octokit,
+    fileInfo: {
+      ...KIE_SAMPLES_REPO,
+      path: join("samples", sample.sampleId, sample.definition.cover),
+    },
+  });
+  console.log("###fetchSampleCover sample.sampleId", { id: sample.sampleId, svg: svgContent!.slice(0, 1000) });
+
+  if (!svgContent) {
+    console.error(`Could not read sample svg for ${sample.sampleId}`);
+    return;
+  }
+
+  return svgContent;
 }
 
 export async function fetchSampleFiles(args: { octokit: Octokit; sampleId: string }): Promise<LocalFile[]> {

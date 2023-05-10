@@ -34,7 +34,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { useSampleDispatch } from "./hooks/SampleContext";
-import { Sample, SampleCategory } from "./sampleApi";
+import { Sample, SampleCategory, SampleCoversHashtable } from "./sampleApi";
 import { SampleCard } from "./SampleCard";
 import { SampleCardSkeleton } from "./SampleCardSkeleton";
 import { SamplesLoadError } from "./SamplesLoadError";
@@ -52,7 +52,7 @@ const LABEL_MAP: Record<SampleCategory, JSX.Element> = {
 };
 
 const ALL_CATEGORIES_LABEL = "All categories";
-
+const perPage = 9;
 const CATEGORY_ARRAY = Object.keys(SAMPLE_PRIORITY) as SampleCategory[];
 
 export const perPageOptions: PerPageOptions[] = [
@@ -66,12 +66,31 @@ export function Showcase() {
   const sampleDispatch = useSampleDispatch();
   const [loading, setLoading] = useState<boolean>(true);
   const [samples, setSamples] = useState<Sample[]>([]);
+  const [sampleCovers, setSampleCovers] = useState<SampleCoversHashtable>({});
   const [sampleLoadingError, setSampleLoadingError] = useState("");
   const [searchFilter, setSearchFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<SampleCategory | undefined>();
   const [page, setPage] = React.useState(1);
-  const [perPage, setPerPage] = React.useState(9);
   const [isCategoryFilterDropdownOpen, setCategoryFilterDropdownOpen] = useState(false);
+
+  const visibleSamples = useMemo(() => samples.slice((page - 1) * perPage, page * perPage), [samples, page]);
+
+  const samplesCount = useMemo(() => samples.length, [samples]);
+
+  const filterResultMessage = useMemo(() => {
+    if (samplesCount === 0) {
+      return;
+    }
+    const isPlural = samplesCount > 1;
+    return `Showing ${samplesCount} sample${isPlural ? "s" : ""}`;
+  }, [samplesCount]);
+
+  const selectedCategory = useMemo(() => {
+    if (categoryFilter) {
+      return LABEL_MAP[categoryFilter];
+    }
+    return ALL_CATEGORIES_LABEL;
+  }, [categoryFilter]);
 
   const onSearch = useCallback(
     async (args: { searchValue: string; category?: SampleCategory }) => {
@@ -102,22 +121,10 @@ export function Showcase() {
       });
   }, [sampleDispatch]);
 
-  const samplesCount = useMemo(() => samples.length, [samples]);
-
-  const filterResultMessage = useMemo(() => {
-    if (samplesCount === 0) {
-      return;
-    }
-    const isPlural = samplesCount > 1;
-    return `Showing ${samplesCount} sample${isPlural ? "s" : ""}`;
-  }, [samplesCount]);
-
-  const selectedCategory = useMemo(() => {
-    if (categoryFilter) {
-      return LABEL_MAP[categoryFilter];
-    }
-    return ALL_CATEGORIES_LABEL;
-  }, [categoryFilter]);
+  useEffect(() => {
+    sampleDispatch.getSampleCovers({ samples: visibleSamples, prevState: sampleCovers }).then(setSampleCovers);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleSamples, sampleDispatch]);
 
   const categoryFilterDropdownItems = useMemo(
     () => [
@@ -218,8 +225,8 @@ export function Showcase() {
             )}
             {!loading && samplesCount > 0 && (
               <Gallery hasGutter={true} minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}>
-                {samples.slice((page - 1) * perPage, page * perPage).map((sample) => (
-                  <SampleCard sample={sample} key={`sample-${sample.sampleId}`} />
+                {visibleSamples.map((sample) => (
+                  <SampleCard sample={sample} key={`sample-${sample.sampleId}`} cover={sampleCovers[sample.sampleId]} />
                 ))}
               </Gallery>
             )}

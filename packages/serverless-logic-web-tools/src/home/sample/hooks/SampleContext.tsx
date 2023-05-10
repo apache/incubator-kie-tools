@@ -20,17 +20,42 @@ import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/Loc
 import * as React from "react";
 import { useContext, useMemo, useCallback, useState } from "react";
 import { useSettingsDispatch } from "../../../settings/SettingsContext";
-import { fetchSampleDefinitions, fetchSampleFiles, Sample, SampleCategory } from "../sampleApi";
+import {
+  fetchSampleCover,
+  fetchSampleDefinitions,
+  fetchSampleFiles,
+  Sample,
+  SampleCategory,
+  SampleCoversHashtable,
+} from "../sampleApi";
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import Fuse from "fuse.js";
 
 const SAMPLE_DEFINITIONS_CACHE_FILE_PATH = "/definitions.json";
+const SAMPLE_COVERS_CACHE_FILE_PATH = "/covers.json";
 const SAMPLES_FS_MOUNT_POINT = `lfs_v1__samples__${process.env.WEBPACK_REPLACE__version!}`;
 const SEARCH_KEYS = ["definition.category", "definition.title", "definition.description"];
 
 export interface SampleDispatchContextType {
   getSamples(args: { categoryFilter?: SampleCategory; searchFilter?: string }): Promise<Sample[]>;
   getSampleFiles(sampleId: string): Promise<LocalFile[]>;
+  /**
+   * Gets the cover image for a sample from cache, or loads it from the API and caches it.
+   * @param args.sample The sample to get the cover image for.
+   * @param args.noCacheWriting A flag indicating whether to write the loaded cover image to cache.
+   * @returns The cover image as a base64-encoded string.
+   */
+  getSampleCover(args: { sample: Sample; noCacheWriting?: boolean }): Promise<string | undefined>;
+  /**
+   * Gets the cover images for an array of samples from cache, or loads them from the API and caches them.
+   * @param args.samples An array of samples to get the cover images for.
+   * @param args.prevState The previous state of the entities being loaded
+   * @returns An object containing the sample IDs as keys and the cover images as base64-encoded strings.
+   */
+  getSampleCovers(args: {
+    samples: Sample[];
+    prevState: { [key: string]: string | undefined };
+  }): Promise<SampleCoversHashtable>;
 }
 
 export const SampleDispatchContext = React.createContext<SampleDispatchContextType>({} as any);
@@ -43,23 +68,85 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
   const sampleStorageService = useMemo(() => new LfsStorageService(), []);
 
   const [allSampleDefinitions, setAllSampleDefinitions] = useState<Sample[]>();
+  const [allSampleCovers, setAllSampleCovers] = useState<{ [sampleId: string]: string }>({});
 
-  const loadCache = useCallback(
-    async (args: { path: string; loadFn: () => Promise<any> }) => {
+  /**
+   * Retrieves the contents of a cache file
+   *
+   * @param args.path The path of the cache file to retrieve.
+   * @returns The JSON-parsed contents of the cache file, or `null` if the file doesn't exist.
+   */
+  const getCacheContent = useCallback(
+    async (args: { path: string }) => {
       const storageFile = await sampleStorageService.getFile(fs, args.path);
       if (storageFile) {
         const cacheContent = decoder.decode(await storageFile.getFileContents());
         return JSON.parse(cacheContent);
       }
-      const content = await args.loadFn();
+      return null;
+    },
+    [sampleStorageService, fs]
+  );
+
+  /**
+   * Adds or updates the contents of a cache file
+   *
+   * @param args.path The path of the cache file to retrieve.
+   * @param args.content The content to add in the cache file.
+   * @returns The content stored in the cache file.
+   */
+  const addCacheContent = useCallback(
+    async (args: { path: string; content: any }) => {
+      console.log("### addCacheContent", args);
+
       const cacheFile = new LfsStorageFile({
         path: args.path,
-        getFileContents: async () => encoder.encode(JSON.stringify(content)),
+        getFileContents: async () => encoder.encode(JSON.stringify(args.content)),
       });
-      await sampleStorageService.createFiles(fs, [cacheFile]);
-      return content;
+      await sampleStorageService.createOrOverwriteFile(fs, cacheFile);
+      return args.content;
     },
-    [fs, sampleStorageService]
+    [sampleStorageService, fs]
+  );
+
+  const loadCache = useCallback(
+    async (args: { path: string; loadFn: () => Promise<any> }) => {
+      const cacheContent = await getCacheContent(args);
+
+      if (cacheContent) {
+        return cacheContent;
+      }
+      const content = await args.loadFn();
+
+      return await addCacheContent({ ...args, content });
+    },
+    [getCacheContent, addCacheContent]
+  );
+
+  /**
+   * Loads an entity from cache if available, otherwise loads it from the provided load function and saves it to cache.
+   * @param args.path The path of the cache file.
+   * @param args.id The unique identifier for the entity being loaded.
+   * @param args.noCacheWriting A flag indicating whether to write the loaded entity to cache.
+   * @param args.loadFn The function to use to load the entity if it is not found in cache.
+   * @returns The loaded entity.
+   */
+  const loadCacheEntity = useCallback(
+    async (args: { path: string; id: string; noCacheWriting?: boolean; loadFn: () => Promise<any> }) => {
+      const cacheContent = (await getCacheContent(args)) || {};
+      console.log("### loadCacheEntity", args, cacheContent);
+
+      if (cacheContent[args.id]) {
+        return cacheContent[args.id];
+      }
+
+      cacheContent[args.id] = await args.loadFn();
+
+      return !args.noCacheWriting
+        ? (await addCacheContent({ ...args, content: cacheContent }))[args.id]
+        : cacheContent[args.id];
+    },
+    [getCacheContent, addCacheContent]
   );
 
   const getSamples = useCallback(
@@ -95,12 +182,62 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
     [allSampleDefinitions, loadCache, settingsDispatch.github.octokit]
   );
 
+  const getSampleCover = useCallback(
+    async (args: { sample: Sample; noCacheWriting?: boolean }) => {
+      const cachedCover = allSampleCovers[args.sample.sampleId];
+
+      if (!cachedCover) {
+        console.log("### getSampleCover sample.sampleId", {
+          id: args.sample.sampleId,
+          asc: allSampleCovers[args.sample.sampleId],
+        });
+        const cover = await loadCacheEntity({
+          path: SAMPLE_COVERS_CACHE_FILE_PATH,
+          id: args.sample.sampleId,
+          loadFn: async () => fetchSampleCover({ octokit: settingsDispatch.github.octokit, sample: args.sample }),
+          noCacheWriting: args.noCacheWriting,
+        });
+
+        allSampleCovers[args.sample.sampleId] = cover;
+        setAllSampleCovers(allSampleCovers);
+        return cover;
+      } else {
+        return cachedCover;
+      }
+    },
+    [settingsDispatch.github.octokit, loadCacheEntity, allSampleCovers]
+  );
+
+  const getSampleCovers = useCallback(
+    async (args: { samples: Sample[]; prevState: { [key: string]: string } }) => {
+      if (!args.samples.length) {
+        return {};
+      }
+
+      const covers = (
+        await Promise.all(
+          args.samples.map(async (sample) => ({
+            [sample.sampleId]: await getSampleCover({ ...args, sample, noCacheWriting: true }),
+          }))
+        )
+      ).reduce((acc, curr) => ({ ...acc, ...curr }), args.prevState || {});
+
+      const cacheContent = await getCacheContent({ path: SAMPLE_COVERS_CACHE_FILE_PATH });
+      console.log("### getSampleCovers", args, { covers, cacheContent });
+      return await addCacheContent({ path: SAMPLE_COVERS_CACHE_FILE_PATH, content: { ...covers, ...cacheContent } });
+    },
+    [getSampleCover, addCacheContent, getCacheContent]
+  );
+
   const getSampleFiles = useCallback(
     async (sampleId: string) => fetchSampleFiles({ octokit: settingsDispatch.github.octokit, sampleId }),
     [settingsDispatch.github.octokit]
   );
 
-  const dispatch = useMemo(() => ({ getSamples, getSampleFiles }), [getSamples, getSampleFiles]);
+  const dispatch = useMemo(
+    () => ({ getSamples, getSampleFiles, getSampleCover, getSampleCovers }),
+    [getSamples, getSampleFiles, getSampleCover, getSampleCovers]
+  );
   return <SampleDispatchContext.Provider value={dispatch}>{props.children}</SampleDispatchContext.Provider>;
 }
 

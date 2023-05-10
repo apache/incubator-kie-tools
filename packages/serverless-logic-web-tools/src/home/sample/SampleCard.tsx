@@ -45,7 +45,7 @@ const tagMap: Record<SampleCategory, { label: string; icon: React.ComponentClass
   },
 };
 
-export function SampleCard(props: { sample: Sample }) {
+export function SampleCard(props: { sample: Sample; cover: string | undefined }) {
   const routes = useRoutes();
   const imgRef = useRef<HTMLImageElement>(null);
   const tag = useMemo(() => tagMap[props.sample.definition.category], [props.sample.definition.category]);
@@ -59,11 +59,11 @@ export function SampleCard(props: { sample: Sample }) {
   }, [props.sample, history, routes]);
 
   useEffect(() => {
-    const blob = new Blob([props.sample.svgContent], { type: "image/svg+xml" });
+    const blob = new Blob([props.cover || ""], { type: "image/svg+xml" });
     const url = URL.createObjectURL(blob);
     imgRef.current!.addEventListener("load", () => URL.revokeObjectURL(url), { once: true });
     imgRef.current!.src = url;
-  }, [props.sample.svgContent]);
+  }, [props.cover]);
 
   return (
     <Card isCompact={true} isFullHeight={true} onClick={onCardClick} isSelectable>
