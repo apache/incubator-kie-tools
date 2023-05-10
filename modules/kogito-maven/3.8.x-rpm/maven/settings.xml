@@ -12,7 +12,7 @@
   </proxies>
 
   <profiles>
-    <!-- ### extra maven repositories ### -->
+    <!-- ### redhat maven repositories ### -->
 
     <profile>
       <id>kogito-images</id>
@@ -54,7 +54,7 @@
     </profile>
   </profiles>
   <activeProfiles>
-    <!-- ### extra maven profile ### -->
+    <!-- ### redhat maven profile ### -->
     <activeProfile>kogito-images</activeProfile>
   </activeProfiles>
 </settings>
