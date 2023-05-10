@@ -25,6 +25,10 @@ export interface SwfServiceCatalogChannelApi {
     containingService: SwfServiceCatalogService;
     documentUri: string;
   }): void;
+  kogitoSwfServiceCatalog_importEventFromCompletionItem(args: {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  }): void;
   kogitoSwfServiceCatalog_logInServiceRegistries(): void;
   kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void;
 }

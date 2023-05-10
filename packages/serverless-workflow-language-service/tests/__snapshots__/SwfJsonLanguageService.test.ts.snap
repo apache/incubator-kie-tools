@@ -21624,6 +21624,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {
@@ -21715,6 +21716,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {
@@ -21806,6 +21808,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {
@@ -21897,6 +21900,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {
@@ -21988,6 +21992,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {

@@ -40,8 +40,8 @@ export interface SwfServiceCatalogService {
   name: string;
   type: SwfServiceCatalogServiceType;
   source: SwfServiceCatalogServiceSource;
-
   functions: SwfServiceCatalogFunction[];
+  events?: SwfServiceCatalogEvent[];
   rawContent: string;
 }
 
@@ -58,6 +58,13 @@ export type SwfServiceCatalogServiceSource =
     };
 
 export enum SwfServiceCatalogFunctionType {
+  rest = "rest",
+  graphql = "graphql",
+  asyncapi = "asyncapi",
+  custom = "custom",
+}
+
+export enum SwfServiceCatalogEventType {
   rest = "rest",
   graphql = "graphql",
   asyncapi = "asyncapi",
@@ -84,7 +91,23 @@ export enum SwfCatalogSourceType {
   LOCAL_FS = "LOCAL_FS",
 }
 
+export enum SwfServiceCatalogEventKind {
+  CONSUMED = "consumed",
+  PRODUCED = "produced",
+}
+
 export type SwfServiceCatalogFunctionSource =
+  | {
+      registry: string;
+      serviceId: string;
+      type: SwfCatalogSourceType.SERVICE_REGISTRY;
+    }
+  | {
+      type: SwfCatalogSourceType.LOCAL_FS;
+      serviceFileAbsolutePath: string;
+    };
+
+export type SwfServiceCatalogEventSource =
   | {
       registry: string;
       serviceId: string;
@@ -100,4 +123,13 @@ export interface SwfServiceCatalogFunction {
   name: string;
   arguments: Record<string, SwfServiceCatalogFunctionArgumentType>;
   type: SwfServiceCatalogFunctionType;
+}
+
+export interface SwfServiceCatalogEvent {
+  source: SwfServiceCatalogEventSource;
+  name: string;
+  kind: SwfServiceCatalogEventKind;
+  type: SwfServiceCatalogEventType;
+  eventSource: string;
+  eventType: string;
 }
