@@ -5,7 +5,7 @@ description: "Kogito Serverless Workflow builder with required extensions"
 
 envs:
   - name: QUARKUS_EXTENSIONS
-    example: 'quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing'
+    example: 'quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,kogito-quarkus-serverless-workflow-devui,kogito-addons-quarkus-source-files'
     description: To add extension to your application
   - name: QUARKUS_KOGITO_DEVSERVICES_ENABLED
     description: Whether to enable Kogito Devservices or not. Default to "false" since Data Index needs Docker.

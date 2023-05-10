@@ -22,7 +22,7 @@ fi
 case ${image_name} in
     "kogito-swf-builder")        ;;
     "kogito-swf-devmode")        
-        quarkus_extensions="${quarkus_extensions},kogito-quarkus-serverless-workflow-devui,source-files"
+        quarkus_extensions="${quarkus_extensions},kogito-quarkus-serverless-workflow-devui,kogito-addons-quarkus-source-files"
         ;;
     *)
         echo "${image_name} is not a quarkus app image, exiting..."
