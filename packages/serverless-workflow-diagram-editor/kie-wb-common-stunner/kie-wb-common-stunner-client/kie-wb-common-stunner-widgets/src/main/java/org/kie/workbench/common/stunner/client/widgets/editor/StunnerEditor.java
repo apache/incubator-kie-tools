@@ -115,7 +115,7 @@ public class StunnerEditor {
                 diagramPresenter = viewerSessionPresenterInstances.get();
             }
             diagramPresenter.displayNotifications(type -> true);
-            diagramPresenter.withPalette(!isReadOnly);
+            diagramPresenter.withPalette(false);
             diagramPresenter.withToolbar(false);
             view.setWidget(diagramPresenter.getView());
         }

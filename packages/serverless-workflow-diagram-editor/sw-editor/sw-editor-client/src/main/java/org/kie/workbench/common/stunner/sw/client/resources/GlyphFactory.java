@@ -26,6 +26,14 @@ public interface GlyphFactory {
 
     ImageDataUriGlyph STATE_INJECT = ImageDataUriGlyph.create(ImageResources.INSTANCE.stateInject().getSafeUri());
 
+    ImageDataUriGlyph STATE_SLEEP = ImageDataUriGlyph.create(ImageResources.INSTANCE.stateSleep().getSafeUri());
+
+    ImageDataUriGlyph STATE_PARALLEL = ImageDataUriGlyph.create(ImageResources.INSTANCE.stateParallel().getSafeUri());
+
+    ImageDataUriGlyph STATE_FOREACH = ImageDataUriGlyph.create(ImageResources.INSTANCE.stateForeach().getSafeUri());
+
+    ImageDataUriGlyph STATE_CALLBACK = ImageDataUriGlyph.create(ImageResources.INSTANCE.stateCallback().getSafeUri());
+
     ImageDataUriGlyph STATE_SWITCH = ImageDataUriGlyph.create(ImageResources.INSTANCE.stateSwitch().getSafeUri());
 
     ImageDataUriGlyph STATE_OPERATION = ImageDataUriGlyph.create(ImageResources.INSTANCE.stateOperation().getSafeUri());
@@ -48,9 +56,13 @@ public interface GlyphFactory {
 
     ImageDataUriGlyph TRANSITION_ERROR = ImageDataUriGlyph.create(ImageResources.INSTANCE.transitionError().getSafeUri());
 
-    ImageDataUriGlyph TRANSITION_CONDITION = ImageDataUriGlyph.create(ImageResources.INSTANCE.transitionCondition().getSafeUri());
-
     ImageDataUriGlyph TRANSITION_ACTION = ImageDataUriGlyph.create(ImageResources.INSTANCE.transitionAction().getSafeUri());
 
     ImageDataUriGlyph TRANSITION_COMPENSATION = ImageDataUriGlyph.create(ImageResources.INSTANCE.transitionCompensation().getSafeUri());
+
+    ImageDataUriGlyph TRANSITION_DEFAULT_CONDITION = ImageDataUriGlyph.create(ImageResources.INSTANCE.transitionDefaultCondition().getSafeUri());
+
+    ImageDataUriGlyph TRANSITION_DATA_CONDITION = ImageDataUriGlyph.create(ImageResources.INSTANCE.transitionDataCondition().getSafeUri());
+
+    ImageDataUriGlyph TRANSITION_EVENT_CONDITION = ImageDataUriGlyph.create(ImageResources.INSTANCE.transitionEventCondition().getSafeUri());
 }

@@ -49,6 +49,7 @@ import static org.kie.workbench.common.stunner.core.client.session.impl.Instance
  * the source toolbox' element.
  */
 @Dependent
+@GroupActionsToolbox
 @FlowActionsToolbox
 @Default
 public class CreateNodeToolboxAction
