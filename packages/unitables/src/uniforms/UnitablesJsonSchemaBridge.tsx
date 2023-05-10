@@ -22,7 +22,7 @@ import { joinName } from "uniforms";
 import { UnitablesColumnType } from "../UnitablesTypes";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
-const DEFAULT_COLUMN_MIN_WIDTH = 150;
+export const DEFAULT_COLUMN_MIN_WIDTH = 150;
 const DEFAULT_DATE_TIME_CELL_WDITH = 188;
 const DEFAULT_DATE_CELL_WIDTH = 170;
 const DEFAULT_TIME_CELL_WIDTH = 150;
@@ -55,6 +55,10 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
       field.placeholder = this.i18n.schema.selectPlaceholder;
       field.direction = SelectDirection.up;
       field.menuAppendTo = document.body;
+    } else if (field.type === "array") {
+      field.itemProps = {
+        width: "150px",
+      };
     } else if (!field.type) {
       field.type = "string";
     }

@@ -38,11 +38,12 @@ import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import { AutoField } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { useField } from "uniforms";
-import { AUTO_ROW_ID } from "../uniforms/UnitablesJsonSchemaBridge";
+import { AUTO_ROW_ID, DEFAULT_COLUMN_MIN_WIDTH } from "../uniforms/UnitablesJsonSchemaBridge";
 import getObjectValueByPath from "lodash/get";
 import { useUnitablesContext, useUnitablesRow } from "../UnitablesContext";
 import moment from "moment";
 import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
+import setObjectValueByPath from "lodash/set";
 
 export type ROWTYPE = Record<string, any>;
 
@@ -137,8 +138,23 @@ export function UnitablesBeeTable({
     [setWidth]
   );
 
+  const listFieldOnColumnAdd = useCallback(
+    (columnIndex: number, name: string) => {
+      return (args: { beforeIndex: number; groupType: string | undefined }) => {
+        // const inputs = getObjectValueByPath(rows[0], name)
+        // if (inputs === undefined) {
+        //   setObjectValueByPath(rows[0], name, [null])
+        // } else if (inputs) {
+        //   inputs.splice(args.beforeIndex, 0, null);
+        //   setObjectValueByPath(rows[0], name, inputs)
+        // }
+        // console.log(rows, args, name);
+      };
+    },
+    [rows]
+  );
+
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
-    console.log(rows);
     return columns.map((column) => {
       if (column.insideProperties) {
         return {
@@ -148,9 +164,40 @@ export function UnitablesBeeTable({
           dataType: column.dataType,
           isRowIndexColumn: false,
           width: undefined,
-          columns: column.insideProperties.map((insideProperty) => {
+          columns: column.insideProperties.flatMap((insideProperty, columnIndex) => {
             if (insideProperty.dataType === "array") {
-              //
+              const arrayInput = getObjectValueByPath(rows[0], insideProperty.joinedName) as [] | undefined;
+              return {
+                originalId: uuid + `field-${insideProperty.joinedName}`,
+                label: `${insideProperty.name}`,
+                accessor: `${getColumnAccessor(insideProperty)}`,
+                dataType: insideProperty.dataType,
+                isRowIndexColumn: false,
+                headerInlineControls: true,
+                headerInlineColumnControl: listFieldOnColumnAdd(columnIndex, insideProperty.joinedName),
+                width:
+                  (getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ??
+                  insideProperty.width,
+                setWidth: setColumnWidth(`${insideProperty.joinedName}`),
+                minWidth: insideProperty.minWidth ?? insideProperty.width,
+              };
+              // return arrayInput.map((_, index) => {
+              //   return {
+              //     originalId: uuid + `field-${insideProperty.joinedName}-${index}`,
+              //     label: `${insideProperty.name}-${index}`,
+              //     accessor: `${getColumnAccessor(insideProperty)}-${index}`,
+              //     dataType: insideProperty.dataType,
+              //     isRowIndexColumn: false,
+              //     headerInlineControls: true,
+              //     headerInlineColumnControl: listFieldOnColumnAdd(columnIndex, insideProperty.joinedName),
+              //     width:
+              //       ((getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ??
+              //         insideProperty.width ??
+              //         DEFAULT_COLUMN_MIN_WIDTH),
+              //     setWidth: setColumnWidth(`${insideProperty.joinedName}-${index}`),
+              //     minWidth: insideProperty.minWidth ?? insideProperty.width,
+              //   };
+              // });
             }
             return {
               originalId: uuid + `field-${insideProperty.joinedName}`,
@@ -162,7 +209,7 @@ export function UnitablesBeeTable({
                 (getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ??
                 insideProperty.width,
               setWidth: setColumnWidth(insideProperty.joinedName),
-              minWidth: insideProperty.width,
+              minWidth: insideProperty.minWidth ?? insideProperty.width,
             };
           }),
         };
@@ -189,7 +236,7 @@ export function UnitablesBeeTable({
         };
       }
     });
-  }, [rows, setColumnWidth, configs, columns, uuid]);
+  }, [columns, uuid, configs, setColumnWidth, rows, listFieldOnColumnAdd, rows.length]);
 
   const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
     return column.originalId ?? column.id;

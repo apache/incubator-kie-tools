@@ -16,9 +16,15 @@
 
 import * as React from "react";
 import { ReactNode } from "react";
-import { connectField, HTMLFieldProps } from "uniforms";
-import { ListField } from "@kie-tools/uniforms-patternfly/dist/esm";
+import { HTMLFieldProps } from "uniforms";
 import UniformsListItemField from "./UniformsListItemField";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon";
+import { connectField, filterDOMProps } from "uniforms/esm";
+import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
+import { ListAddField } from "@kie-tools/uniforms-patternfly/dist/esm";
 
 export type ListFieldProps = HTMLFieldProps<
   unknown[],
@@ -33,8 +39,48 @@ export type ListFieldProps = HTMLFieldProps<
   }
 >;
 
-function UniformsListField({ children = <UniformsListItemField name={"$"} />, ...props }: ListFieldProps) {
-  return <ListField {...props}>{children}</ListField>;
+function UniformsListField({ children = <UniformsListItemField name={"$"} />, itemProps, ...props }: ListFieldProps) {
+  return wrapField(
+    props as any,
+    <div data-testid={"unitables-list-field"} {...filterDOMProps(props)} style={{ display: "flex" }}>
+      <Split hasGutter>
+        <SplitItem>
+          {props.label && (
+            <label>
+              {props.label}
+              {!!props.info && (
+                <span>
+                  &nbsp;
+                  <Tooltip content={props.info}>
+                    <OutlinedQuestionCircleIcon />
+                  </Tooltip>
+                </span>
+              )}
+            </label>
+          )}
+        </SplitItem>
+        <SplitItem isFilled />
+        <SplitItem>
+          <ListAddField name={"$"} initialCount={props.initialCount} />
+        </SplitItem>
+      </Split>
+
+      {props.value?.map((item, itemIndex) =>
+        React.Children.map(children, (child, childIndex) =>
+          React.isValidElement(child)
+            ? React.cloneElement(child as React.ReactElement<{ name: string }, string>, {
+                key: `${itemIndex}-${childIndex}`,
+                name: child.props.name
+                  ?.split(/\$(.*)/s)
+                  .slice(0, -1)
+                  .join(`${itemIndex}`),
+                ...itemProps,
+              })
+            : child
+        )
+      )}
+    </div>
+  );
 }
 
 export default connectField(UniformsListField);

@@ -28,7 +28,7 @@ export type UniformsListItemFieldProps = {
 function UniformsListItemField({ children = <AutoField label={null} name={""} /> }: UniformsListItemFieldProps) {
   return (
     <div
-      data-testid={"list-item-field"}
+      data-testid={"unitables-list-item-field"}
       style={{
         marginBottom: "1rem",
         display: "flex",
