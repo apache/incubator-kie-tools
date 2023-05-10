@@ -35,7 +35,6 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.A
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.GroupActionsToolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.GroupedActionsToolbox;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.IsToolboxActionDraggable;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
@@ -112,12 +111,6 @@ public class GroupActionsToolboxView
                 button.onClick(event -> {
                     onButtonClick(groupedActionsToolbox, toolboxAction, button, event);
                 });
-
-                if (toolboxAction instanceof IsToolboxActionDraggable) {
-                    button.onMoveStart(event -> {
-                        onButtonMoveStart(groupedActionsToolbox, (IsToolboxActionDraggable) toolboxAction, button, event);
-                    });
-                }
             });
         }
     }
