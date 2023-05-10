@@ -15,7 +15,7 @@
 package v1alpha08
 
 import (
-	v1 "k8s.io/api/core/v1"
+	"github.com/serverlessworkflow/sdk-go/v2/model"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"knative.dev/pkg/apis"
 	duckv1 "knative.dev/pkg/apis/duck/v1"
@@ -25,18 +25,7 @@ import (
 
 // KogitoServerlessWorkflowSpec defines the desired state of KogitoServerlessWorkflow
 type KogitoServerlessWorkflowSpec struct {
-	Constants   []Constant   `json:"conditions,omitempty"`
-	Secrets     *[]v1.Secret `json:"secrets,omitempty"`
-	Start       string       `json:"start"`
-	Timeouts    []Timeout    `json:"timeouts,omitempty"`
-	Errors      []Error      `json:"errors,omitempty"`
-	KeepActive  bool         `json:"keepActive,omitempty"`
-	Auth        Auth         `json:"auth,omitempty"`
-	Events      *[]Event     `json:"events,omitempty"`
-	Functions   []Function   `json:"functions,omitempty"`
-	AutoRetries bool         `json:"autoRetries,omitempty"`
-	Retries     Retry        `json:"retries,omitempty"`
-	States      []State      `json:"states"`
+	model.Workflow `json:",inline"`
 }
 
 // KogitoServerlessWorkflowStatus defines the observed state of KogitoServerlessWorkflow

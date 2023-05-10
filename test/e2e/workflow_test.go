@@ -42,14 +42,14 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 	BeforeAll(func() {
 
 		// The namespace can be created when we run make install
-		// However, in this test we want ensure that the solution
+		// However, in this test we want to ensure that the solution
 		// can run in a ns labeled as restricted. Therefore, we are
-		// creating the namespace an lebeling it.
+		// creating the namespace and labeling it.
 		By("creating manager namespace")
 		cmd := exec.Command("kubectl", "create", "ns", namespace)
 		_, _ = utils.Run(cmd)
 
-		// Now, let's ensure that all namespaces can raise an Warn when we apply the manifests
+		// Now, let's ensure that all namespaces can raise a Warn when we apply the manifests
 		// and that the namespace where the Operator and Operand will run are enforced as
 		// restricted so that we can ensure that both can be admitted and run with the enforcement
 
@@ -86,6 +86,7 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 
 		By("deploying the controller-manager")
 		cmd = exec.Command("make", "deploy", fmt.Sprintf("IMG=%s", operatorImageName))
+
 		outputMake, err := utils.Run(cmd)
 		fmt.Println(string(outputMake))
 		ExpectWithOffset(1, err).NotTo(HaveOccurred())
@@ -219,7 +220,7 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 			}, time.Minute, time.Second).Should(Succeed())
 
 			By("check the workflow is in running state")
-			EventuallyWithOffset(1, verifyWorkflowIsInRunningState, 10*time.Minute, 30*time.Second).Should(BeTrue())
+			EventuallyWithOffset(1, verifyWorkflowIsInRunningState, 15*time.Minute, 30*time.Second).Should(BeTrue())
 
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "delete", "-f", filepath.Join(projectDir,

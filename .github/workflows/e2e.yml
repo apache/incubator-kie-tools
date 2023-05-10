@@ -77,7 +77,7 @@ jobs:
           timeout 60s bash -c 'kubectl get pods -l kubernetes.io/minikube-addons=registry -l actual-registry=true -n kube-system && while [[ "$(kubectl get pods -l kubernetes.io/minikube-addons=registry -l actual-registry=true -n kube-system -o jsonpath={.items[0].status.phase})" != "Running" ]] ; do sleep 2 && kubectl get pods -l kubernetes.io/minikube-addons=registry -l actual-registry=true -n kube-system -o jsonpath={.items[0].status.phase}; done'
           
 
-      - name: Retrieve Minikube regsitry
+      - name: Retrieve Minikube registry
         run: |
           minikube_registry="$(minikube ip):5000"
           echo "MINIKUBE_REGISTRY=${minikube_registry}" >> $GITHUB_ENV

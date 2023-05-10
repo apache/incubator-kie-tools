@@ -18,6 +18,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/serverlessworkflow/sdk-go/v2/model"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/kiegroup/kogito-serverless-operator/test"
@@ -30,8 +32,13 @@ func TestKogitoServerlessWorkflowConverter(t *testing.T) {
 		out, err := ToCNCFWorkflow(context.TODO(), ksw)
 		assert.NoError(t, err)
 		assert.True(t, out != nil)
-		assert.True(t, out.Name == "greeting")
-		assert.True(t, out.Description == "Greeting example on k8s!")
+		assert.Equal(t, "greeting", out.ID)
+		//assert.Equal(t, "greeting-key", out.Key)
+		assert.Equal(t, "0.0.1", out.Version)
+		assert.Equal(t, "v1alpha08", out.SpecVersion)
+		assert.Equal(t, "Greeting example on k8s!", out.Description)
+		assert.Equal(t, model.JqExpressionLang, out.ExpressionLang)
+		assert.Equal(t, "greeting", out.Name)
 		assert.True(t, out.Functions != nil && len(out.Functions) == 1)
 		assert.True(t, out.States != nil && len(out.States) == 4)
 	})

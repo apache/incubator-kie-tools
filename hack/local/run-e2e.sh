@@ -15,9 +15,11 @@
 
 # runs the e2e locally
 # You must have minikube installed
+MINIKUBE_PROFILE=${1:-minikube}
+echo "Using minikube profile ${MINIKUBE_PROFILE}"
 
 export OPERATOR_IMAGE_NAME=localhost/kogito-serverless-operator:0.0.1
-eval "$(minikube -p minikube docker-env)"
+eval "$(minikube -p ${MINIKUBE_PROFILE} docker-env)"
 make container-build BUILDER=docker IMG="${OPERATOR_IMAGE_NAME}"
 
 make test-e2e

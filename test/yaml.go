@@ -44,7 +44,8 @@ func GetKogitoServerlessWorkflow(path string, namespace string) *operatorapi.Kog
 		log.Errorf(err, "yamlFile.Get err   #%v ", err)
 		panic(err)
 	}
-	// Important: Here we are reading the CR deployment file from a given path and creating a &operatorapi.KogitoServerlessWorkflow struct
+
+	// Important: Here we are reading the CR deployment file from a given path and creating an &operatorapi.KogitoServerlessWorkflow struct
 	err = yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 100).Decode(ksw)
 	if err != nil {
 		log.Errorf(err, "Unmarshal: #%v", err)

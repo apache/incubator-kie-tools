@@ -143,11 +143,11 @@ type KogitoServerlessPlatformStatus struct {
 	Info map[string]string `json:"info,omitempty"`
 }
 
+// KogitoServerlessPlatform is the Schema for the kogitoserverlessplatforms API
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 // +kubebuilder:object:generate=true
 // +kubebuilder:subresource:status
-// KogitoServerlessPlatform is the Schema for the kogitoserverlessplatforms API
 type KogitoServerlessPlatform struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

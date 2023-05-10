@@ -20,13 +20,15 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"io/ioutil"
+
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util"
 	"github.com/sirupsen/logrus"
-	"io/ioutil"
+
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/util"
 )
 
 type Docker struct {
