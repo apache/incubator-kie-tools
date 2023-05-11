@@ -248,7 +248,7 @@ public class ExpressionModelFillerTest {
 
         assertThat(functionExpression).isNotNull();
         assertFormalParameters(functionExpression);
-        assertParameterWidth(functionExpression, PARAMETERS_WIDTH);
+        assertParameterWidth(functionExpression, null);
         assertNestedContextEntries(functionExpression, documentName, modelName);
     }
 
