@@ -21,8 +21,16 @@ interface RefProperty {
   $ref?: string;
 }
 
-function getPropertiesFullKey(fieldKey: string, parentKey?: string) {
-  return parentKey ? `${parentKey}.properties.${fieldKey}` : fieldKey;
+function getItemsFullKey(fieldKey: string) {
+  return `${fieldKey}.items`;
+}
+
+function getPropertiesFullKey(fieldKey: string) {
+  return `${fieldKey}.properties`;
+}
+
+function getFullKey(fieldKey: string, parentKey?: string) {
+  return parentKey ? `${parentKey}.${fieldKey}` : fieldKey;
 }
 
 function refPathToObjectPath(path: string) {
@@ -33,7 +41,7 @@ function refPathToObjectPath(path: string) {
 // if no property is passed down, it will dereference the entire JSON Schema
 export function dereferenceProperties<
   JSONSchema extends Record<string, any>,
-  Properties extends Record<string, RefProperty>
+  Properties extends Record<string, RefProperty> & RefProperty
 >(
   jsonSchema: JSONSchema,
   properties?: Properties,
@@ -47,20 +55,45 @@ export function dereferenceProperties<
     }
     return jsonSchema;
   }
+
+  if (properties !== null && typeof properties === "object" && properties.$ref && dereferencedJsonSchema && parentKey) {
+    const referenceField = getObjectValueByPath(jsonSchema, refPathToObjectPath(properties.$ref));
+    setObjectValueByPath(dereferencedJsonSchema, parentKey, referenceField);
+    if (referenceField.properties) {
+      dereferenceProperties(
+        jsonSchema,
+        referenceField.properties,
+        getPropertiesFullKey(parentKey),
+        dereferencedJsonSchema
+      );
+    }
+    if (referenceField.items) {
+      dereferenceProperties(jsonSchema, referenceField.items, getItemsFullKey(parentKey), dereferencedJsonSchema);
+    }
+    return dereferencedJsonSchema;
+  }
+
   return Object.entries(properties ?? {}).reduce((dereferencedJsonSchema, [fieldKey, jsonSchemaField]) => {
     if (jsonSchemaField.$ref) {
-      const referenceField = getObjectValueByPath(jsonSchema, refPathToObjectPath(jsonSchemaField.$ref));
-      setObjectValueByPath(dereferencedJsonSchema, getPropertiesFullKey(fieldKey, parentKey), referenceField);
+      let referenceField = getObjectValueByPath(jsonSchema, refPathToObjectPath(jsonSchemaField.$ref));
+      if (referenceField !== null && typeof referenceField === "object" && referenceField.$ref) {
+        referenceField = getObjectValueByPath(jsonSchema, refPathToObjectPath(referenceField.$ref));
+      }
+
+      setObjectValueByPath(dereferencedJsonSchema, getFullKey(fieldKey, parentKey), referenceField);
       if (referenceField.properties) {
         dereferenceProperties(
           jsonSchema,
           referenceField.properties,
-          getPropertiesFullKey(fieldKey, parentKey),
+          getPropertiesFullKey(fieldKey),
           dereferencedJsonSchema
         );
       }
+      if (referenceField.items) {
+        dereferenceProperties(jsonSchema, referenceField.items, getItemsFullKey(fieldKey), dereferencedJsonSchema);
+      }
     } else {
-      setObjectValueByPath(dereferencedJsonSchema, getPropertiesFullKey(fieldKey, parentKey), jsonSchemaField);
+      setObjectValueByPath(dereferencedJsonSchema, getFullKey(fieldKey, parentKey), jsonSchemaField);
     }
     return dereferencedJsonSchema;
   }, dereferencedJsonSchema ?? ({} as Record<string, any>));
