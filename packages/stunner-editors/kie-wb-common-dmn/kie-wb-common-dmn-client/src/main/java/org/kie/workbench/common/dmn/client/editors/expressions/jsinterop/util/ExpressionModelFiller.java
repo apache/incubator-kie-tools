@@ -209,7 +209,8 @@ public class ExpressionModelFiller {
         } else if (props.functionKind.equals(FunctionKind.JAVA.value())) {
             functionExpressionWidth = props.classAndMethodNamesWidth;
         } else if (props.functionKind.equals(FunctionKind.PMML.value())) {
-            functionExpressionWidth = props.classAndMethodNamesWidth;
+            /* PMML FUnction expressions have FIXED widths - Using defaults with NULL */
+            functionExpressionWidth = null;
         }
         return functionExpressionWidth;
     }
