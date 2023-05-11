@@ -86,12 +86,12 @@ export class Edge extends Element {
 
 /**
  * Represents a domain model object by some of its attributes.
- * So notice it does not correspond to the object in memory for the domain model.
+ * It does not correspond to the object in memory for the domain model.
  */
 export class Definition {
   /**
    * The domain model object's identifier.
-   * It uses to match with FQCN of the objec'ts class.
+   * It is used to match with FQCN of the object's fully qualified class name.
    * Examples:
    * - org.kie.workbench.common.stunner.sw.definition.InjectState
    * - org.kie.workbench.common.stunner.sw.definition.OperationState
