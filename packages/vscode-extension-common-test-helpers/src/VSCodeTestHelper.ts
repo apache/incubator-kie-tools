@@ -209,7 +209,7 @@ export class VSCodeTestHelper {
         return currentValue === "true";
       },
       25000,
-      'Timeout waiting for aria-expanded="true" on element with id "list_id_1_0"'
+      "Folder structure didn't expanded in time. Please investigate."
     );
   };
 
