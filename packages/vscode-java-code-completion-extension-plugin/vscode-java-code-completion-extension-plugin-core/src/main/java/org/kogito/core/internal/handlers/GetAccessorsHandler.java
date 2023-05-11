@@ -28,7 +28,7 @@ import org.kogito.core.internal.api.GetPublicResult;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
 
-//import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_SIGNATURE;
+import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_SIGNATURE;
 
 public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
@@ -86,16 +86,15 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         Map<String,String> data = (Map<String, String>) item.getData();
         for (Map.Entry<String, String> entry : data.entrySet()) {
             JavaLanguageServerPlugin.logInfo("ENTRY: " + entry.getKey() + " " + entry.getValue());
-        }/*
+        }
         if (data != null && data.containsKey(DATA_FIELD_SIGNATURE)) {
             String fqcnType = data.get(DATA_FIELD_SIGNATURE);
             /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */
-            /*
             if (fqcnType != null && fqcnType.contains(")L")) {
                 type = fqcnType.split("\\)L")[1];
                 type = type.replaceAll(";$", "");
             }
-        }*/
+        }
         result.setType(type);
 
         return result;
