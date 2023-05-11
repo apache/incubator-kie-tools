@@ -21,7 +21,7 @@ import jsinterop.annotations.JsType;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.FUNCTION;
 
 @JsType
-public class FunctionProps extends ExpressionProps {
+public abstract class FunctionProps extends ExpressionProps {
     public final EntryInfo[] formalParameters;
     public final String functionKind;
     public final Double classAndMethodNamesWidth;

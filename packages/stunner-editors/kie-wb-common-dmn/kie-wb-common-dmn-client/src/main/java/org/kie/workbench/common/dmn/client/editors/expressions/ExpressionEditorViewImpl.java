@@ -532,6 +532,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
             refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(getCurrentSession(), null));
             fireDomainObjectSelectionEvent(findDomainObject(selectedUUID));
         }
+
+        syncExpressionWithOlderEditor();
     }
 
     public void openDataTypePage() {
@@ -663,6 +665,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     public void reloadEditor() {
         if (isReactBoxedExpressionVisible()) {
             loadNewBoxedExpressionEditor();
+            syncExpressionWithOlderEditor();
         }
     }
 
