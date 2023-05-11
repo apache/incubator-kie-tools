@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  kie_sandbox:
+    container_name: kie_sandbox
+    image: "quay.io/kie-tools/kie-sandbox-image:${KIE_SANDBOX_DISTRIBUITION__kieSandboxImageTag}"
+    ports:
+      - ${KIE_SANDBOX_DISTRIBUITION__kieSandboxPort}:8080
+    environment:
+      KIE_SANDBOX_EXTENDED_SERVICES_URL: http://localhost:${KIE_SANDBOX_DISTRIBUITION__extendedServicesPort}
+      KIE_SANDBOX_GIT_CORS_PROXY_URL: http://localhost:${KIE_SANDBOX_DISTRIBUITION__gitCorsProxyPort}
+
+    depends_on:
+      - extended_services
+      - git_cors_proxy
+
+  extended_services:
+    container_name: extended_services
+    image: "quay.io/kie-tools/kie-sandbox-extended-services-image:${KIE_SANDBOX_DISTRIBUITION__extendedServicesImageTag}"
+    ports:
+      - ${KIE_SANDBOX_DISTRIBUITION__extendedServicesPort}:21345
+
+  git_cors_proxy:
+    container_name: git_cors_proxy
+    image: "quay.io/kie-tools/git-cors-proxy-image:${KIE_SANDBOX_DISTRIBUITION__gitCorsProxyImageTag}"
+    ports:
+      - ${KIE_SANDBOX_DISTRIBUITION__gitCorsProxyPort}:8080
