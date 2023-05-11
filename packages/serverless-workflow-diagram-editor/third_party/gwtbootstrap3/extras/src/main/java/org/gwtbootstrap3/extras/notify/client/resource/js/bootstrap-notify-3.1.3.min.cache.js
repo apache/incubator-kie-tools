@@ -26,6 +26,7 @@
         (this.settings.offset = { x: this.settings.offset, y: this.settings.offset }),
       this.init();
   }
+
   var s = {
     element: "body",
     position: null,
@@ -130,17 +131,15 @@
               .append('<img src="' + this.settings.content.icon + '" alt="Notify Icon" />');
       },
       styleURL: function () {
-        this.$ele
-          .find('[data-notify="url"]')
-          .css({
-            backgroundImage: "url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7)",
-            height: "100%",
-            left: "0px",
-            position: "absolute",
-            top: "0px",
-            width: "100%",
-            zIndex: this.settings.z_index + 1,
-          }),
+        this.$ele.find('[data-notify="url"]').css({
+          backgroundImage: "url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7)",
+          height: "100%",
+          left: "0px",
+          position: "absolute",
+          top: "0px",
+          width: "100%",
+          zIndex: this.settings.z_index + 1,
+        }),
           this.$ele
             .find('[data-notify="dismiss"]')
             .css({ position: "absolute", right: "10px", top: "5px", zIndex: this.settings.z_index + 2 });
