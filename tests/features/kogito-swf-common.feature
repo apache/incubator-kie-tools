@@ -1,4 +1,5 @@
 @quay.io/kiegroup/kogito-swf-builder
+@quay.io/kiegroup/kogito-swf-devmode
 Feature: SWF and Quarkus installation
 
   Scenario: verify if the swf and quarkus files are under /home/kogito/.m2/repository
@@ -13,16 +14,3 @@ Feature: SWF and Quarkus installation
   # Scenario: verify if there is no dependencies with multiple versions in /home/kogito/.m2/repository
   #   When container is started with command bash
   #   Then run sh -c 'ls /home/kogito/.m2/repository/io/quarkus/quarkus-bom  | wc -l' in container and immediately check its output for 1
-
-  Scenario: verify if container starts in devmode by default
-    When container is started with env
-      | variable     | value |
-      | SCRIPT_DEBUG | true  |
-    Then container log should contain -Duser.home=/home/kogito
-    And check that page is served
-      | property             | value                                                                         |
-      | port                 | 8080                                                                          |
-      | path                 | /q/health/ready                                                               |
-      | wait                 | 480                                                                           |
-      | request_method       | GET                                                                           |
-      | expected_status_code | 200                                                                           |
