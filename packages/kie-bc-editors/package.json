@@ -28,7 +28,6 @@
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
-    "@kie-tools-core/guided-tour": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools-core/operating-system": "workspace:*",
@@ -58,6 +57,6 @@
     "jest-when": "^3.5.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.5.6",
-    "typescript": "^4.4.2"
+    "typescript": "^4.6.2"
   }
 }

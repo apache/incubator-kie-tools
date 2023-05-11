@@ -41,7 +41,7 @@ node('rhel8') {
 
         if (publishToMarketPlace.equals('true')) {
             stage('Publish to VS Code Marketplace') {
-                sh 'npm install -g vsce'
+                sh 'npm install -g @vscode/vsce'
                 withCredentials([[$class: 'StringBinding', credentialsId: 'vscode_java_marketplace', variable: 'TOKEN']]) {
                     sh 'vsce publish -p ${TOKEN} --packagePath' + " ${vsix_vscode_extension_serverless_workflow_editor[0].path}"
                     sh 'vsce publish -p ${TOKEN} --packagePath' + " ${vsix_vscode_extension_dashbuilder_editor[0].path}"

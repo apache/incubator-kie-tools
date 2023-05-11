@@ -23,7 +23,6 @@ import {
 } from "@kie-tools-core/editor/dist/api";
 import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { DefaultVsCodeKieEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl";
@@ -43,7 +42,17 @@ import {
   ServerlessWorkflowDiagramEditorChannelApi,
   ServerlessWorkflowDiagramEditorEnvelopeApi,
 } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
-import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { FileLanguage, SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import {
+  SwfJsonLanguageService,
+  SwfYamlLanguageService,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import {
+  getJsonStateNameFromOffset,
+  getJsonStateNameOffset,
+  getYamlStateNameFromOffset,
+  getYamlStateNameOffset,
+} from "@kie-tools/serverless-workflow-language-service/dist/editor";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
@@ -51,7 +60,6 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as vscode from "vscode";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import { initSwfOffsetsApi } from "./languageService/initSwfOffsetsApi";
 
 export class ServerlessWorkflowDiagramEditorChannelApiImpl implements ServerlessWorkflowDiagramEditorChannelApi {
   private readonly defaultApiImpl: KogitoEditorChannelApi;
@@ -105,14 +113,6 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
         console.info(`Unknown message type received: ${command}`);
         break;
     }
-  }
-
-  public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void {
-    this.defaultApiImpl.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
-  }
-
-  public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction): void {
-    this.defaultApiImpl.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
   }
 
   public kogitoI18n_getLocale(): Promise<string> {
@@ -190,9 +190,12 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
 
     const resourceUri = textEditor.document.uri;
 
-    const swfOffsetsApi = initSwfOffsetsApi(textEditor.document);
-
-    const targetOffset = swfOffsetsApi.getStateNameOffset(args.nodeName);
+    const content = textEditor.document.getText();
+    const getStateNameOffsetArgs = { content, stateName: args.nodeName };
+    const targetOffset =
+      textEditor.document.languageId === FileLanguage.JSON
+        ? getJsonStateNameOffset(getStateNameOffsetArgs)
+        : getYamlStateNameOffset(getStateNameOffsetArgs);
     if (!targetOffset) {
       return;
     }
@@ -220,9 +223,11 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
 
     const offset = textEditor.document.offsetAt(textEditor.selection.active);
 
-    const swfOffsetsApi = initSwfOffsetsApi(textEditor.document);
-
-    const nodeName = swfOffsetsApi.getStateNameFromOffset(offset);
+    const getStateNameFromOffsetArgs = { content: textEditor.document.getText(), offset };
+    const nodeName =
+      textEditor.document.languageId === FileLanguage.JSON
+        ? getJsonStateNameFromOffset(getStateNameFromOffsetArgs)
+        : getYamlStateNameFromOffset(getStateNameFromOffsetArgs);
 
     if (!nodeName) {
       return;

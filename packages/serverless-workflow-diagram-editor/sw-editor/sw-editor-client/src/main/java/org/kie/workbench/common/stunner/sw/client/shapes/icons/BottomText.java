@@ -19,16 +19,12 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.shared.core.types.TextAlign;
-import com.ait.lienzo.tools.client.event.HandlerRegistration;
 
 import static org.kie.workbench.common.stunner.sw.client.shapes.StateShapeView.STATE_SHAPE_HEIGHT;
 import static org.kie.workbench.common.stunner.sw.client.shapes.StateShapeView.STATE_SHAPE_WIDTH;
 
 public class BottomText extends Group {
-
-    private final HandlerRegistration mouseClickHandler;
 
     public BottomText(String text) {
         setLocation(new Point2D(STATE_SHAPE_WIDTH / 2, STATE_SHAPE_HEIGHT - 4));
@@ -38,7 +34,6 @@ public class BottomText extends Group {
                 .setStrokeAlpha(0.001)
                 .setStrokeColor("white")
                 .setCornerRadius(9)
-                .setEventPropagationMode(EventPropagationMode.NO_ANCESTORS)
                 .setListening(true);
         add(border);
         setListening(true);
@@ -50,15 +45,5 @@ public class BottomText extends Group {
                 .setTextAlign(TextAlign.CENTER)
                 .setListening(false);
         add(textElement);
-
-        mouseClickHandler = border.addNodeMouseClickHandler(
-                event -> this.getParent().asGroup().getChildren().get(0).fireEvent(event)
-        );
-    }
-
-    @Override
-    public void destroy() {
-        super.destroy();
-        mouseClickHandler.removeHandler();
     }
 }

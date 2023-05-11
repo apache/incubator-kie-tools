@@ -23,7 +23,6 @@ import {
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
-import { Rect } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Base64PngEditor } from "./Base64PngEditor";
 
@@ -69,15 +68,6 @@ export class Base64PngEditorInterface implements Editor {
    */
   public getContent(): Promise<string> {
     return this.editorRef.current!.getContent()!;
-  }
-
-  /**
-   * Retrieve the Guided Tour current position.
-   * The Editor must return a Promise of the current position of the Guided Tour.
-   * @param selector
-   */
-  public getElementPosition(selector: string): Promise<Rect | undefined> {
-    return this.editorRef.current!.getElementPosition(selector)!;
   }
 
   /**

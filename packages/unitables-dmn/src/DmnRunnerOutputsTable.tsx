@@ -22,7 +22,7 @@ import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import nextId from "react-id-generator";
-import { OutputFields, useDmnRunnerOutputs as useDmnRunnerOutputs } from "./DmnRunnerOutputs";
+import { OutputField, useDmnRunnerOutputs as useDmnRunnerOutputs } from "./DmnRunnerOutputs";
 import { DmnUnitablesI18n } from "./i18n";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import * as ReactTable from "react-table";
@@ -117,7 +117,7 @@ interface OutputsTableProps {
   id: string;
   i18n: BoxedExpressionEditorI18n;
   results: (DecisionResult[] | undefined)[] | undefined;
-  outputsPropertiesMap: Map<string, OutputFields>;
+  outputsPropertiesMap: Map<string, OutputField>;
   scrollableParentRef: React.RefObject<HTMLElement>;
 }
 

@@ -28,7 +28,6 @@ import {
   KogitoEditorChannelApi,
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { Minimatch } from "minimatch";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
@@ -60,14 +59,6 @@ export class StandaloneEditorsEditorChannelApiImpl implements KogitoEditorChanne
         break;
     }
     this.overrides.kogitoEditor_stateControlCommandUpdate?.(command);
-  }
-
-  public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction) {
-    /* unsupported */
-  }
-
-  public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial) {
-    /* unsupported */
   }
 
   public async kogitoEditor_contentRequest() {

@@ -424,7 +424,11 @@ export function EditorToolbar(props: Props) {
   }
 
   return (
-    <EditorToolbarContextProvider {...props} workspace={workspacePromise.data}>
+    <EditorToolbarContextProvider
+      {...props}
+      workspace={workspacePromise.data}
+      workspaceGitStatusPromise={workspaceGitStatusPromise}
+    >
       <EditorToolbarWithWorkspace
         {...props}
         workspace={workspacePromise.data}

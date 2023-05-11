@@ -40,6 +40,6 @@ export function immutableDeepMerge<D extends ReferenceDictionary>(
   return deepMerge(targetCopy, source);
 }
 
-function createObjectCopy<T>(obj?: T) {
+function createObjectCopy<T extends Record<string, unknown>>(obj?: T) {
   return Object.assign({} as T, obj);
 }

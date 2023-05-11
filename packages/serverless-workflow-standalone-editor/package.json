@@ -27,7 +27,6 @@
   "devDependencies": {
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
-    "@kie-tools-core/guided-tour": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
@@ -70,7 +69,7 @@
     "run-script-os": "^1.1.6",
     "start-server-and-test": "^1.12.1",
     "ts-jest": "^26.5.6",
-    "typescript": "^4.4.2",
+    "typescript": "^4.6.2",
     "underscore": "^1.13.1",
     "vscode-json-languageservice": "^4.2.1",
     "vscode-languageserver-textdocument": "^1.0.4",

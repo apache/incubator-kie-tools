@@ -20,7 +20,7 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { DecisionResult, DmnInputFieldProperties } from "@kie-tools/extended-services-api";
 
-interface OutputField {
+export interface OutputField {
   type: string;
   dataType: DmnBuiltInDataType;
   width?: number;
@@ -30,21 +30,19 @@ interface OutputField {
   items?: Record<string, any>[];
 }
 
-export type OutputFields = OutputField;
-
 export function useDmnRunnerOutputs(
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge,
   results: Array<DecisionResult[] | undefined> | undefined
 ) {
   return useMemo(() => {
     if (jsonSchemaBridge === undefined || results === undefined) {
-      return { outputsPropertiesMap: new Map<string, OutputFields>() };
+      return { outputsPropertiesMap: new Map<string, OutputField>() };
     }
 
     // generate a map that contains output types
     const outputsPropertiesMap = Object.entries(
       jsonSchemaBridge.schema.definitions?.OutputSet?.properties ?? []
-    ).reduce((outputTypeMap: Map<string, OutputFields>, [name, properties]: [string, DmnInputFieldProperties]) => {
+    ).reduce((outputTypeMap: Map<string, OutputField>, [name, properties]: [string, DmnInputFieldProperties]) => {
       const dataType = jsonSchemaBridge.getFieldDataType(properties).dataType;
       outputTypeMap.set(name, {
         type: properties.type!,
@@ -55,7 +53,7 @@ export function useDmnRunnerOutputs(
         items: properties.items,
       });
       return outputTypeMap;
-    }, new Map<string, OutputFields>());
+    }, new Map<string, OutputField>());
 
     return {
       outputsPropertiesMap,
