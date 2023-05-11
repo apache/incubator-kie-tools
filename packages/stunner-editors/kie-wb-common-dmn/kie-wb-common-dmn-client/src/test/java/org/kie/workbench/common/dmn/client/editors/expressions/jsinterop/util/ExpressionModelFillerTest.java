@@ -73,6 +73,8 @@ public class ExpressionModelFillerTest {
     private static final String ENTRY_EXPRESSION_CONTENT = "content";
     private static final Double ENTRY_INFO_WIDTH = 200d;
     private static final Double ENTRY_EXPRESSION_WIDTH = 350d;
+
+    private static final Double EMPTY_EXPRESSION_WIDTH = 190d;
     private static final Double PARAMETERS_WIDTH = 450d;
     private static final String PARAM_ID = "param-id";
     private static final String PARAM_NAME = "p-1";
@@ -246,7 +248,7 @@ public class ExpressionModelFillerTest {
 
         assertThat(functionExpression).isNotNull();
         assertFormalParameters(functionExpression);
-        assertParameterWidth(functionExpression);
+        assertParameterWidth(functionExpression, PARAMETERS_WIDTH);
         assertNestedContextEntries(functionExpression, documentName, modelName);
     }
 
@@ -261,7 +263,7 @@ public class ExpressionModelFillerTest {
 
         assertThat(functionExpression).isNotNull();
         assertFormalParameters(functionExpression);
-        assertParameterWidth(functionExpression);
+        assertParameterWidth(functionExpression, PARAMETERS_WIDTH);
         assertNestedContextEntries(functionExpression, className, methodName);
     }
 
@@ -276,7 +278,7 @@ public class ExpressionModelFillerTest {
 
         assertThat(functionExpression).isNotNull();
         assertFormalParameters(functionExpression);
-        assertParameterWidth(functionExpression);
+        assertParameterWidth(functionExpression, EMPTY_EXPRESSION_WIDTH);
         assertThat(functionExpression.getExpression())
                 .isNotNull()
                 .isExactlyInstanceOf(LiteralExpression.class);
@@ -396,7 +398,7 @@ public class ExpressionModelFillerTest {
                 .isNotNull()
                 .hasSize(3);
         assertThat(componentWidths).element(1).isEqualTo(ENTRY_INFO_WIDTH);
-        assertThat(componentWidths).element(2).isEqualTo(ENTRY_EXPRESSION_WIDTH);
+        assertThat(componentWidths).element(2).isEqualTo(EMPTY_EXPRESSION_WIDTH);
     }
 
     private Consumer<List> checkRelationRow(final Cell firstCell, final Cell secondCell) {
@@ -428,11 +430,11 @@ public class ExpressionModelFillerTest {
                 });
     }
 
-    private void assertParameterWidth(FunctionDefinition functionExpression) {
+    private void assertParameterWidth(FunctionDefinition functionExpression, Double expectedWidth) {
         assertThat(functionExpression.getComponentWidths())
                 .isNotNull()
                 .hasSize(2)
-                .element(1).isEqualTo(PARAMETERS_WIDTH);
+                .element(1).isEqualTo(expectedWidth);
     }
 
     private void assertNestedContextEntries(FunctionDefinition functionExpression, String documentName, String modelName) {
