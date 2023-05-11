@@ -14,7 +14,7 @@ fi
 
 source "${script_dir_path}"/configure-jvm-mvn.sh
 
-cd "${PROJECT_ARTIFACT_ID}"
+cd serverless-workflow-project
 
 if [ ! -z "${QUARKUS_EXTENSIONS}" ]; then
   ${KOGITO_HOME}/launch/add-extension.sh "${QUARKUS_EXTENSIONS}"
