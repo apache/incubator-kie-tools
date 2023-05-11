@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Pagination, PerPageOptions } from "@patternfly/react-core/dist/js";
+import { Pagination, PaginationVariant, PerPageOptions } from "@patternfly/react-core/dist/js";
 import {
   Dropdown,
   DropdownItem,
@@ -147,6 +147,10 @@ export function Showcase() {
     [onSearch, searchFilter]
   );
 
+  const onSetPage = useCallback((_e, v) => {
+    setPage(v);
+  }, []);
+
   return (
     <Page>
       <PageSection variant={"light"}>
@@ -197,7 +201,7 @@ export function Showcase() {
               <Pagination
                 isCompact
                 itemCount={samplesCount}
-                onSetPage={(_e, v) => setPage(v)}
+                onSetPage={onSetPage}
                 page={page}
                 perPage={perPage}
                 perPageOptions={perPageOptions}
@@ -224,11 +228,28 @@ export function Showcase() {
               </PageSection>
             )}
             {!loading && samplesCount > 0 && (
-              <Gallery hasGutter={true} minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}>
-                {visibleSamples.map((sample) => (
-                  <SampleCard sample={sample} key={`sample-${sample.sampleId}`} cover={sampleCovers[sample.sampleId]} />
-                ))}
-              </Gallery>
+              <>
+                <Gallery hasGutter={true} minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}>
+                  {visibleSamples.map((sample) => (
+                    <SampleCard
+                      sample={sample}
+                      key={`sample-${sample.sampleId}`}
+                      cover={sampleCovers[sample.sampleId]}
+                    />
+                  ))}
+                </Gallery>
+                <br />
+                <Pagination
+                  itemCount={samplesCount}
+                  onSetPage={onSetPage}
+                  page={page}
+                  perPage={perPage}
+                  perPageComponent="button"
+                  perPageOptions={perPageOptions}
+                  variant={PaginationVariant.bottom}
+                  widgetId="bottom-example"
+                />
+              </>
             )}
           </>
         )}
