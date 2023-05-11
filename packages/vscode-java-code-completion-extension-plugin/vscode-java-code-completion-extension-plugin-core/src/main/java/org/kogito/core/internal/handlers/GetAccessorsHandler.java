@@ -28,7 +28,7 @@ import org.kogito.core.internal.api.GetPublicResult;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
 
-import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandle;
+//import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_SIGNATURE;
 
 public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
