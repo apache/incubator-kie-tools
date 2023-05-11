@@ -44,4 +44,4 @@ echo "----> running bats on kogito-s2i-core"
 ./bats/bin/bats modules/kogito-s2i-core/tests/bats
 
 echo "----> running bats on kogito-swf-builder"
-./bats/bin/bats modules/kogito-swf-builder/tests/bats
+./bats/bin/bats modules/kogito-swf/common/tests/bats
