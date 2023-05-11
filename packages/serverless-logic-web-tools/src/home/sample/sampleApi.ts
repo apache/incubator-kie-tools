@@ -39,7 +39,10 @@ type GitHubFileInfo = GitHubRepoInfo & { path: string };
 
 export type SampleCategory = "serverless-workflow" | "serverless-decision" | "dashbuilder";
 
+const SUPPORTING_FILES_FOLDER = join(".github", "supporting-files");
+
 const SAMPLE_DEFINITION_FILE = "definition.json";
+const SAMPLE_DEFINITIONS_FILE = join(SUPPORTING_FILES_FOLDER, "sample-definitions.json");
 
 const SAMPLE_TEMPLATE_FOLDER = "template";
 
@@ -49,6 +52,18 @@ const SAMPLE_FOLDER = "samples";
 
 type SampleStatus = "ok" | "out of date" | "deprecated";
 
+interface SampleSocial {
+  network: string;
+  id: string;
+}
+
+interface SampleAuthor {
+  name: string;
+  email: string;
+  github: string;
+  social: SampleSocial[];
+}
+
 interface SampleDefinition {
   category: SampleCategory;
   status: SampleStatus;
@@ -56,6 +71,12 @@ interface SampleDefinition {
   description: string;
   cover: string;
   tags: string[];
+  type: string;
+  dependencies: string[];
+  related_to: string[];
+  resources: string[];
+  authors: SampleAuthor[];
+  sample_path: string;
 }
 
 interface ContentData {
@@ -73,7 +94,6 @@ interface ContentData {
 export type Sample = {
   sampleId: string;
   definition: SampleDefinition;
-  svgContent: string;
 };
 
 export type SampleCoversHashtable = {
@@ -147,45 +167,39 @@ async function listSampleDefinitionFiles(args: {
     .map((folder) => ({ sampleId: folder.name, definitionPath: join(folder.path, SAMPLE_DEFINITION_FILE) }));
 }
 
+/**
+ * fetch the Sample Definitions file from the repository.
+ * @param args.octokit An instance of the Octokit GitHub API client.
+ * @returns an array of Samples
+ */
 export async function fetchSampleDefinitions(octokit: Octokit): Promise<Sample[]> {
-  const sampleDefinitionFiles = await listSampleDefinitionFiles({
+  const fileContent = await fetchFileContent({
     octokit,
-    repoInfo: { ...KIE_SAMPLES_REPO },
+    fileInfo: {
+      ...KIE_SAMPLES_REPO,
+      path: SAMPLE_DEFINITIONS_FILE,
+    },
   });
 
-  const samples = (
-    await Promise.all(
-      sampleDefinitionFiles.map(async (definitionFile) => {
-        const fileContent = await fetchFileContent({
-          octokit,
-          fileInfo: {
-            ...KIE_SAMPLES_REPO,
-            path: definitionFile.definitionPath,
-          },
-        });
-
-        if (!fileContent) {
-          console.error(`Could not read sample definition for ${definitionFile.sampleId}`);
-          return null;
-        }
-
-        const definition = JSON.parse(fileContent) as SampleDefinition;
-
-        return {
-          sampleId: definitionFile.sampleId,
-          definition,
-        };
-      })
-    )
-  ).filter((sample) => sample !== null) as Sample[];
-
-  if (samples.length === 0) {
-    throw new Error("No samples could be loaded.");
+  if (!fileContent) {
+    console.error(`Could not read sample definitions`);
+    return [];
   }
 
-  return samples;
+  const definitions = JSON.parse(fileContent) as SampleDefinition[];
+
+  return definitions.map((definition) => ({
+    sampleId: definition.sample_path.replace(new RegExp(`^${SAMPLE_FOLDER}/`), ""),
+    definition,
+  }));
 }
 
+/**
+ * Fetches the cover of a given sample using the GitHub API.
+ * @param args.octokit An instance of the Octokit GitHub API client.
+ * @param args.sample The sample object for which the cover is being fetched.
+ * @returns The content of the SVG cover file for the sample, or undefined if it could not be fetched.
+ */
 export async function fetchSampleCover(args: { octokit: Octokit; sample: Sample }): Promise<string | undefined> {
   const { sample } = args;
 
