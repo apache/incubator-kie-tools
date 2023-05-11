@@ -49,9 +49,18 @@ export function dereferenceProperties<
   dereferencedJsonSchema?: Record<string, any>
 ): Record<string, any> {
   if (properties === undefined && jsonSchema.$ref) {
-    const properties = getObjectValueByPath(jsonSchema, refPathToObjectPath(jsonSchema.$ref) + ".properties");
+    const dereferencedJsonSchema = {};
+    const schemaFirstProperty = refPathToObjectPath(jsonSchema.$ref);
+    setObjectValueByPath(
+      dereferencedJsonSchema,
+      schemaFirstProperty,
+      getObjectValueByPath(jsonSchema, schemaFirstProperty)
+    );
+
+    const fieldKey = getPropertiesFullKey(schemaFirstProperty);
+    const properties = getObjectValueByPath(jsonSchema, fieldKey);
     if (properties !== undefined) {
-      return dereferenceProperties(jsonSchema, properties);
+      return dereferenceProperties(jsonSchema, properties, fieldKey, dereferencedJsonSchema);
     }
     return jsonSchema;
   }
@@ -60,7 +69,7 @@ export function dereferenceProperties<
     const referenceField = getObjectValueByPath(jsonSchema, refPathToObjectPath(properties.$ref));
     setObjectValueByPath(dereferencedJsonSchema, parentKey, referenceField);
     if (referenceField.properties) {
-      dereferenceProperties(
+      return dereferenceProperties(
         jsonSchema,
         referenceField.properties,
         getPropertiesFullKey(parentKey),
@@ -68,7 +77,12 @@ export function dereferenceProperties<
       );
     }
     if (referenceField.items) {
-      dereferenceProperties(jsonSchema, referenceField.items, getItemsFullKey(parentKey), dereferencedJsonSchema);
+      return dereferenceProperties(
+        jsonSchema,
+        referenceField.items,
+        getItemsFullKey(parentKey),
+        dereferencedJsonSchema
+      );
     }
     return dereferencedJsonSchema;
   }
@@ -85,12 +99,17 @@ export function dereferenceProperties<
         dereferenceProperties(
           jsonSchema,
           referenceField.properties,
-          getPropertiesFullKey(fieldKey),
+          getPropertiesFullKey(getFullKey(fieldKey, parentKey)),
           dereferencedJsonSchema
         );
       }
       if (referenceField.items) {
-        dereferenceProperties(jsonSchema, referenceField.items, getItemsFullKey(fieldKey), dereferencedJsonSchema);
+        dereferenceProperties(
+          jsonSchema,
+          referenceField.items,
+          getItemsFullKey(getFullKey(fieldKey, parentKey)),
+          dereferencedJsonSchema
+        );
       }
     } else {
       setObjectValueByPath(dereferencedJsonSchema, getFullKey(fieldKey, parentKey), jsonSchemaField);
