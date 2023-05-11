@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import getObjectValueByPath from "lodash/get";
-import setObjectValueByPath from "lodash/set";
+import { get as getObjectValueByPath, set as setObjectValueByPath } from "lodash";
 
 interface RefProperty {
   $ref?: string;
