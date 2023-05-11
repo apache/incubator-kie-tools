@@ -307,7 +307,7 @@ export class EnvelopeBusMessageManager<
       }
 
       if (!(response instanceof Promise)) {
-        throw new Error(`Cannot make a request to '${request.type}' because it does not return a Promise`);
+        throw new Error(`Cannot make a request to '${String(request.type)}' because it does not return a Promise`);
       }
 
       response
