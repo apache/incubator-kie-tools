@@ -210,7 +210,6 @@ export async function fetchSampleCover(args: { octokit: Octokit; sample: Sample 
       path: join("samples", sample.sampleId, sample.definition.cover),
     },
   });
-  console.log("###fetchSampleCover sample.sampleId", { id: sample.sampleId, svg: svgContent!.slice(0, 1000) });
 
   if (!svgContent) {
     console.error(`Could not read sample svg for ${sample.sampleId}`);

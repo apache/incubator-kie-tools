@@ -97,8 +97,6 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
    */
   const addCacheContent = useCallback(
     async (args: { path: string; content: any }) => {
-      console.log("### addCacheContent", args);
-
       const cacheFile = new LfsStorageFile({
         path: args.path,
         getFileContents: async () => encoder.encode(JSON.stringify(args.content)),
@@ -134,8 +132,6 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
   const loadCacheEntity = useCallback(
     async (args: { path: string; id: string; noCacheWriting?: boolean; loadFn: () => Promise<any> }) => {
       const cacheContent = (await getCacheContent(args)) || {};
-      console.log("### loadCacheEntity", args, cacheContent);
-
       if (cacheContent[args.id]) {
         return cacheContent[args.id];
       }
@@ -187,10 +183,6 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
       const cachedCover = allSampleCovers[args.sample.sampleId];
 
       if (!cachedCover) {
-        console.log("### getSampleCover sample.sampleId", {
-          id: args.sample.sampleId,
-          asc: allSampleCovers[args.sample.sampleId],
-        });
         const cover = await loadCacheEntity({
           path: SAMPLE_COVERS_CACHE_FILE_PATH,
           id: args.sample.sampleId,
@@ -223,7 +215,6 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
       ).reduce((acc, curr) => ({ ...acc, ...curr }), args.prevState || {});
 
       const cacheContent = await getCacheContent({ path: SAMPLE_COVERS_CACHE_FILE_PATH });
-      console.log("### getSampleCovers", args, { covers, cacheContent });
       return await addCacheContent({ path: SAMPLE_COVERS_CACHE_FILE_PATH, content: { ...covers, ...cacheContent } });
     },
     [getSampleCover, addCacheContent, getCacheContent]
