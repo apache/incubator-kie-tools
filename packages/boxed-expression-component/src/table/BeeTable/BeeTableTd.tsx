@@ -66,6 +66,7 @@ export function BeeTableTd<R extends object>({
 }: BeeTableTdProps<R>) {
   const [isResizing, setResizing] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
+  const [isFocused, setIsFocused] = useState(false);
 
   const tdRef = useRef<HTMLTableCellElement>(null);
 
@@ -122,14 +123,26 @@ export function BeeTableTd<R extends object>({
       setHoverInfo((prev) => ({ isHovered: false }));
     }
 
+    function onFocusIn() {
+      setIsFocused(true);
+    }
+
+    function onFocusOut() {
+      setIsFocused(false);
+    }
+
     const td = tdRef.current;
     td?.addEventListener("mouseenter", onEnter);
     td?.addEventListener("mousemove", onMove);
     td?.addEventListener("mouseleave", onLeave);
+    td?.addEventListener("focusin", onFocusIn);
+    td?.addEventListener("focusout", onFocusOut);
     return () => {
       td?.removeEventListener("mouseleave", onLeave);
       td?.removeEventListener("mousemove", onMove);
       td?.removeEventListener("mouseenter", onEnter);
+      td?.removeEventListener("focusin", onFocusIn);
+      td?.removeEventListener("focusout", onFocusOut);
     };
   }, []);
 
@@ -205,17 +218,18 @@ export function BeeTableTd<R extends object>({
           <>
             {tdContent}
 
-            {!column.isWidthConstant && (hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
-              <Resizer
-                getWidthToFitData={cellWidthToFitDataRef?.getWidthToFitData}
-                minWidth={lastColumnMinWidth ?? cell.column.minWidth}
-                width={cell.column.width}
-                setWidth={cell.column.setWidth}
-                resizingWidth={resizingWidth}
-                setResizingWidth={setResizingWidth}
-                setResizing={setResizing}
-              />
-            )}
+            {!column.isWidthConstant &&
+              (hoverInfo.isHovered || isFocused || (resizingWidth?.isPivoting && isResizing)) && (
+                <Resizer
+                  getWidthToFitData={cellWidthToFitDataRef?.getWidthToFitData}
+                  minWidth={lastColumnMinWidth ?? cell.column.minWidth}
+                  width={cell.column.width}
+                  setWidth={cell.column.setWidth}
+                  resizingWidth={resizingWidth}
+                  setResizingWidth={setResizingWidth}
+                  setResizing={setResizing}
+                />
+              )}
           </>
         )}
 
