@@ -234,7 +234,9 @@ export async function fetchSampleFiles(args: { octokit: Octokit; sampleId: strin
   }
 
   const sampleFiles = sampleFolderFiles
-    .filter((file) => file.name !== SAMPLE_DEFINITION_FILE && extname(file.name) !== SVG_EXTENSION)
+    .filter(
+      (file) => file.name !== SAMPLE_DEFINITION_FILE && extname(file.name) !== SVG_EXTENSION && file.type === "file"
+    )
     .map(async (file) => {
       const fileContent = await fetchFileContent({
         octokit: args.octokit,
