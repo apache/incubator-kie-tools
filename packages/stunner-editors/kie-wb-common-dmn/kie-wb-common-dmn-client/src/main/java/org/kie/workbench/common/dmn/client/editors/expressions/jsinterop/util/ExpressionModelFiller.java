@@ -173,6 +173,8 @@ public class ExpressionModelFiller {
         }
         if (StringUtils.nonEmpty(decisionTableProps.aggregation) && !decisionTableProps.aggregation.equals("?")) {
             decisionTableExpression.setAggregation(BuiltinAggregator.fromCode(decisionTableProps.aggregation));
+        } else {
+            decisionTableExpression.setAggregation(null);
         }
         decisionTableExpression.getAnnotations().clear();
         decisionTableExpression.getAnnotations().addAll(annotationsConvertForDecisionTableExpression(decisionTableProps));
