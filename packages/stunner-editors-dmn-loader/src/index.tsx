@@ -109,7 +109,9 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
   // Stop propagation to Editor and forward keydown events down the tree;
   useEffect(() => {
     const listener = (ev: KeyboardEvent) => {
-      ev.stopPropagation();
+      if (!ev.ctrlKey && !ev.metaKey) {
+        ev.stopPropagation();
+      }
     };
 
     boxedExpressionEditorRootNode?.addEventListener("keydown", listener);
