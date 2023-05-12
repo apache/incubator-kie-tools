@@ -25,7 +25,7 @@ export type UniformsListItemFieldProps = {
   name: string;
 };
 
-function UniformsListItemField({ children = <AutoField label={null} name={""} /> }: UniformsListItemFieldProps) {
+function UniformsListItemField(props: React.PropsWithChildren<UniformsListItemFieldProps>) {
   return (
     <div
       data-testid={"unitables-list-item-field"}
@@ -35,8 +35,10 @@ function UniformsListItemField({ children = <AutoField label={null} name={""} />
         justifyContent: "space-between",
       }}
     >
-      <div style={{ width: "100%", marginRight: "10px" }}>{children}</div>
-      <div>
+      <div style={{ width: "100%", marginRight: "10px" }}>
+        {props.children ?? <AutoField label={null} name={""} placeholder={props.name} />}
+      </div>
+      <div style={{ borderRight: "1px solid var(--pf-global--palette--black-300)" }}>
         <ListDelField name={""} />
       </div>
     </div>

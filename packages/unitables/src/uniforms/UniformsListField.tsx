@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { HTMLFieldProps } from "uniforms";
 import UniformsListItemField from "./UniformsListItemField";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -40,45 +40,55 @@ export type ListFieldProps = HTMLFieldProps<
 >;
 
 function UniformsListField({ children = <UniformsListItemField name={"$"} />, itemProps, ...props }: ListFieldProps) {
+  const hasValue = useMemo(() => props.value && props.value.length > 0, [props.value]);
+
   return wrapField(
     props as any,
-    <div data-testid={"unitables-list-field"} {...filterDOMProps(props)} style={{ display: "flex" }}>
-      <Split hasGutter>
-        <SplitItem>
-          {props.label && (
-            <label>
-              {props.label}
-              {!!props.info && (
-                <span>
-                  &nbsp;
-                  <Tooltip content={props.info}>
-                    <OutlinedQuestionCircleIcon />
-                  </Tooltip>
-                </span>
-              )}
-            </label>
-          )}
-        </SplitItem>
-        <SplitItem isFilled />
-        <SplitItem>
+    <div data-testid={"unitables-list-field"} {...filterDOMProps(props)} style={{ display: "flex", width: "100%" }}>
+      <Split hasGutter={hasValue}>
+        {props.label && (
+          <>
+            <SplitItem>
+              <label>
+                {props.label}
+                {!!props.info && (
+                  <span>
+                    &nbsp;
+                    <Tooltip content={props.info}>
+                      <OutlinedQuestionCircleIcon />
+                    </Tooltip>
+                  </span>
+                )}
+              </label>
+            </SplitItem>
+            <SplitItem isFilled={true} />
+          </>
+        )}
+        {!hasValue && (
+          <SplitItem>
+            <TextInput isDisabled={true} value={"Add inputs"} />
+          </SplitItem>
+        )}
+        <SplitItem style={{ borderRight: "1px solid var(--pf-global--palette--black-300)" }}>
           <ListAddField name={"$"} initialCount={props.initialCount} />
         </SplitItem>
       </Split>
 
-      {props.value?.map((item, itemIndex) =>
-        React.Children.map(children, (child, childIndex) =>
-          React.isValidElement(child)
-            ? React.cloneElement(child as React.ReactElement<{ name: string }, string>, {
-                key: `${itemIndex}-${childIndex}`,
-                name: child.props.name
-                  ?.split(/\$(.*)/s)
-                  .slice(0, -1)
-                  .join(`${itemIndex}`),
-                ...itemProps,
-              })
-            : child
-        )
-      )}
+      {hasValue &&
+        props.value!.map((item, itemIndex) =>
+          React.Children.map(children, (child, childIndex) =>
+            React.isValidElement(child)
+              ? React.cloneElement(child as React.ReactElement<{ name: string }, string>, {
+                  key: `${itemIndex}-${childIndex}`,
+                  name: child.props.name
+                    ?.split(/\$(.*)/s)
+                    .slice(0, -1)
+                    .join(`${itemIndex}`),
+                  ...itemProps,
+                })
+              : child
+          )
+        )}
     </div>
   );
 }

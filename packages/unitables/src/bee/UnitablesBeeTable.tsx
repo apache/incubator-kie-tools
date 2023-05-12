@@ -43,7 +43,6 @@ import getObjectValueByPath from "lodash/get";
 import { useUnitablesContext, useUnitablesRow } from "../UnitablesContext";
 import moment from "moment";
 import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
-import setObjectValueByPath from "lodash/set";
 
 export type ROWTYPE = Record<string, any>;
 
@@ -138,22 +137,6 @@ export function UnitablesBeeTable({
     [setWidth]
   );
 
-  const listFieldOnColumnAdd = useCallback(
-    (columnIndex: number, name: string) => {
-      return (args: { beforeIndex: number; groupType: string | undefined }) => {
-        // const inputs = getObjectValueByPath(rows[0], name)
-        // if (inputs === undefined) {
-        //   setObjectValueByPath(rows[0], name, [null])
-        // } else if (inputs) {
-        //   inputs.splice(args.beforeIndex, 0, null);
-        //   setObjectValueByPath(rows[0], name, inputs)
-        // }
-        // console.log(rows, args, name);
-      };
-    },
-    [rows]
-  );
-
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return columns.map((column) => {
       if (column.insideProperties) {
@@ -166,38 +149,28 @@ export function UnitablesBeeTable({
           width: undefined,
           columns: column.insideProperties.flatMap((insideProperty, columnIndex) => {
             if (insideProperty.dataType === "array") {
-              const arrayInput = getObjectValueByPath(rows[0], insideProperty.joinedName) as [] | undefined;
+              const length = rows.reduce((length, row) => {
+                const arrayInput = getObjectValueByPath(row, insideProperty.joinedName) as [] | undefined;
+                if (arrayInput && Array.isArray(arrayInput) && arrayInput.length > length) {
+                  return arrayInput.length;
+                }
+                return length;
+              }, 0);
               return {
                 originalId: uuid + `field-${insideProperty.joinedName}`,
                 label: `${insideProperty.name}`,
                 accessor: `${getColumnAccessor(insideProperty)}`,
                 dataType: insideProperty.dataType,
                 isRowIndexColumn: false,
-                headerInlineControls: true,
-                headerInlineColumnControl: listFieldOnColumnAdd(columnIndex, insideProperty.joinedName),
                 width:
                   (getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ??
                   insideProperty.width,
                 setWidth: setColumnWidth(`${insideProperty.joinedName}`),
-                minWidth: insideProperty.minWidth ?? insideProperty.width,
+                minWidth:
+                  length > 0
+                    ? 60 + length * (insideProperty.minWidth ?? insideProperty.width)
+                    : insideProperty.minWidth ?? insideProperty.width,
               };
-              // return arrayInput.map((_, index) => {
-              //   return {
-              //     originalId: uuid + `field-${insideProperty.joinedName}-${index}`,
-              //     label: `${insideProperty.name}-${index}`,
-              //     accessor: `${getColumnAccessor(insideProperty)}-${index}`,
-              //     dataType: insideProperty.dataType,
-              //     isRowIndexColumn: false,
-              //     headerInlineControls: true,
-              //     headerInlineColumnControl: listFieldOnColumnAdd(columnIndex, insideProperty.joinedName),
-              //     width:
-              //       ((getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ??
-              //         insideProperty.width ??
-              //         DEFAULT_COLUMN_MIN_WIDTH),
-              //     setWidth: setColumnWidth(`${insideProperty.joinedName}-${index}`),
-              //     minWidth: insideProperty.minWidth ?? insideProperty.width,
-              //   };
-              // });
             }
             return {
               originalId: uuid + `field-${insideProperty.joinedName}`,
@@ -214,6 +187,17 @@ export function UnitablesBeeTable({
           }),
         };
       } else {
+        let minWidth = column.width;
+        if (column.type === "array") {
+          const length = rows.reduce((length, row) => {
+            const arrayInput = getObjectValueByPath(row, column.joinedName) as [] | undefined;
+            if (arrayInput && Array.isArray(arrayInput) && arrayInput.length > length) {
+              return arrayInput.length;
+            }
+            return length;
+          }, 0);
+          minWidth = length > 0 ? 60 + length * (column.width ?? 0) : column.width;
+        }
         return {
           originalId: uuid + `field-${column.name}-parent`,
           label: "",
@@ -230,13 +214,13 @@ export function UnitablesBeeTable({
               isRowIndexColumn: false,
               width: (getObjectValueByPath(configs, column.name) as UnitablesCellConfigs)?.width ?? column.width,
               setWidth: setColumnWidth(column.name),
-              minWidth: column.width,
+              minWidth,
             },
           ],
         };
       }
     });
-  }, [columns, uuid, configs, setColumnWidth, rows, listFieldOnColumnAdd, rows.length]);
+  }, [columns, uuid, configs, setColumnWidth, rows]);
 
   const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
     return column.originalId ?? column.id;

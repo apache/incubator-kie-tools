@@ -84,31 +84,76 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
 
     switch (type) {
       case "<Undefined>":
-        return { dataType: DmnBuiltInDataType.Undefined, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Undefined,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "Any":
-        return { dataType: DmnBuiltInDataType.Any, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Any,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "boolean":
-        return { dataType: DmnBuiltInDataType.Boolean, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Boolean,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "context":
-        return { dataType: DmnBuiltInDataType.Context, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Context,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "date":
-        return { dataType: DmnBuiltInDataType.Date, width: DEFAULT_DATE_CELL_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Date,
+          width: DEFAULT_DATE_CELL_WIDTH,
+          type: field.type,
+        };
       case "date and time":
-        return { dataType: DmnBuiltInDataType.DateTime, width: DEFAULT_DATE_TIME_CELL_WDITH };
+        return {
+          dataType: DmnBuiltInDataType.DateTime,
+          width: DEFAULT_DATE_TIME_CELL_WDITH,
+          type: field.type,
+        };
       case "days and time duration":
-        return { dataType: DmnBuiltInDataType.DateTimeDuration, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.DateTimeDuration,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "number":
-        return { dataType: DmnBuiltInDataType.Number, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Number,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "string":
-        return { dataType: DmnBuiltInDataType.String, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.String,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "time":
-        return { dataType: DmnBuiltInDataType.Time, width: DEFAULT_TIME_CELL_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Time,
+          width: DEFAULT_TIME_CELL_WIDTH,
+          type: field.type,
+        };
       case "years and months duration":
-        return { dataType: DmnBuiltInDataType.YearsMonthsDuration, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.YearsMonthsDuration,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       default:
         return {
           dataType: (type as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
           width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
         };
     }
   }
