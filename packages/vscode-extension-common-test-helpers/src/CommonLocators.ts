@@ -54,3 +54,10 @@ export const kogitoLoadingSpinner = (): By => {
 export const inputBox = (): By => {
   return By.xpath('.//input[@type="text"]');
 };
+
+/**
+ * Creates a locator for the first folder in a folder structure in explorer.
+ */
+export const explorerFirstFolder = (): By => {
+  return By.id("list_id_1_0");
+};
