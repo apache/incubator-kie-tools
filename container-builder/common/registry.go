@@ -17,7 +17,6 @@
 package common
 
 import (
-	"context"
 	"fmt"
 	"net"
 	"net/http"
@@ -52,10 +51,6 @@ type Registry interface {
 
 type DockerLocalRegistry struct {
 	Connection *client.Client
-}
-
-type PodmanLocalRegistry struct {
-	Connection context.Context
 }
 
 type RegistryContainer struct {
