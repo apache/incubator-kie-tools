@@ -137,6 +137,19 @@ export function UnitablesBeeTable({
     [setWidth]
   );
 
+  const calculateArrayFieldLength = useCallback(
+    (columnName: string) => {
+      return rows.reduce((length, row) => {
+        const arrayInput = getObjectValueByPath(row, columnName) as [] | undefined;
+        if (arrayInput && Array.isArray(arrayInput) && arrayInput.length > length) {
+          return arrayInput.length;
+        }
+        return length;
+      }, 0);
+    },
+    [rows]
+  );
+
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return columns.map((column) => {
       if (column.insideProperties) {
@@ -147,30 +160,14 @@ export function UnitablesBeeTable({
           dataType: column.dataType,
           isRowIndexColumn: false,
           width: undefined,
-          columns: column.insideProperties.flatMap((insideProperty, columnIndex) => {
+          columns: column.insideProperties.flatMap((insideProperty) => {
+            let minWidth = insideProperty.minWidth ?? insideProperty.width;
             if (insideProperty.dataType === "array") {
-              const length = rows.reduce((length, row) => {
-                const arrayInput = getObjectValueByPath(row, insideProperty.joinedName) as [] | undefined;
-                if (arrayInput && Array.isArray(arrayInput) && arrayInput.length > length) {
-                  return arrayInput.length;
-                }
-                return length;
-              }, 0);
-              return {
-                originalId: uuid + `field-${insideProperty.joinedName}`,
-                label: `${insideProperty.name}`,
-                accessor: `${getColumnAccessor(insideProperty)}`,
-                dataType: insideProperty.dataType,
-                isRowIndexColumn: false,
-                width:
-                  (getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ??
-                  insideProperty.width,
-                setWidth: setColumnWidth(`${insideProperty.joinedName}`),
-                minWidth:
-                  length > 0
-                    ? 60 + length * (insideProperty.minWidth ?? insideProperty.width)
-                    : insideProperty.minWidth ?? insideProperty.width,
-              };
+              const length = calculateArrayFieldLength(insideProperty.joinedName);
+              minWidth =
+                length > 0
+                  ? 60 + length * (insideProperty.minWidth ?? insideProperty.width)
+                  : insideProperty.minWidth ?? insideProperty.width;
             }
             return {
               originalId: uuid + `field-${insideProperty.joinedName}`,
@@ -179,23 +176,16 @@ export function UnitablesBeeTable({
               dataType: insideProperty.dataType,
               isRowIndexColumn: false,
               width:
-                (getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ??
-                insideProperty.width,
+                (getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ?? minWidth,
               setWidth: setColumnWidth(insideProperty.joinedName),
-              minWidth: insideProperty.minWidth ?? insideProperty.width,
+              minWidth,
             };
           }),
         };
       } else {
         let minWidth = column.width;
         if (column.type === "array") {
-          const length = rows.reduce((length, row) => {
-            const arrayInput = getObjectValueByPath(row, column.joinedName) as [] | undefined;
-            if (arrayInput && Array.isArray(arrayInput) && arrayInput.length > length) {
-              return arrayInput.length;
-            }
-            return length;
-          }, 0);
+          const length = calculateArrayFieldLength(column.joinedName);
           minWidth = length > 0 ? 60 + length * (column.width ?? 0) : column.width;
         }
         return {
@@ -212,7 +202,7 @@ export function UnitablesBeeTable({
               accessor: getColumnAccessor(column),
               dataType: column.dataType,
               isRowIndexColumn: false,
-              width: (getObjectValueByPath(configs, column.name) as UnitablesCellConfigs)?.width ?? column.width,
+              width: (getObjectValueByPath(configs, column.name) as UnitablesCellConfigs)?.width ?? minWidth,
               setWidth: setColumnWidth(column.name),
               minWidth,
             },
@@ -220,7 +210,7 @@ export function UnitablesBeeTable({
         };
       }
     });
-  }, [columns, uuid, configs, setColumnWidth, rows]);
+  }, [columns, uuid, configs, setColumnWidth, calculateArrayFieldLength]);
 
   const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
     return column.originalId ?? column.id;

@@ -64,14 +64,18 @@ function UniformsListField({ children = <UniformsListItemField name={"$"} />, it
             <SplitItem isFilled={true} />
           </>
         )}
+        <SplitItem>
+          <ListAddField
+            name={"$"}
+            initialCount={props.initialCount}
+            style={{ width: 60, borderRight: "1px solid var(--pf-global--palette--black-300)" }}
+          />
+        </SplitItem>
         {!hasValue && (
           <SplitItem>
-            <TextInput isDisabled={true} value={"Add inputs"} />
+            <TextInput isDisabled={true} value={"Add inputs"} {...itemProps} />
           </SplitItem>
         )}
-        <SplitItem style={{ borderRight: "1px solid var(--pf-global--palette--black-300)" }}>
-          <ListAddField name={"$"} initialCount={props.initialCount} />
-        </SplitItem>
       </Split>
 
       {hasValue &&

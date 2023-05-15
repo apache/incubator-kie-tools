@@ -57,7 +57,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
       field.menuAppendTo = document.body;
     } else if (field.type === "array") {
       field.itemProps = {
-        width: "150px",
+        style: { width: DEFAULT_TIME_CELL_WIDTH },
       };
     } else if (!field.type) {
       field.type = "string";
@@ -65,7 +65,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     return field;
   }
 
-  public getFieldDataType(field: Record<string, any>) {
+  public getFieldDataType(field: Record<string, any>): { dataType: DmnBuiltInDataType; width: number; type: string } {
     const xDmnType: string | undefined = field["x-dmn-type"]; // FIXME: Please address this as part of https://github.com/kiegroup/kie-issues/issues/166
 
     let type: string | undefined;
@@ -150,6 +150,14 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
           type: field.type,
         };
       default:
+        if (field.type === "array") {
+          const itemsType = this.getFieldDataType(field.items);
+          return {
+            dataType: `${type} - List of ${itemsType.dataType}` as DmnBuiltInDataType,
+            width: DEFAULT_COLUMN_MIN_WIDTH,
+            type: field.type,
+          };
+        }
         return {
           dataType: (type as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
           width: DEFAULT_COLUMN_MIN_WIDTH,

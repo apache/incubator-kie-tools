@@ -23,6 +23,7 @@ export type UniformsListItemFieldProps = {
   children?: ReactNode;
   value?: unknown;
   name: string;
+  style?: object;
 };
 
 function UniformsListItemField(props: React.PropsWithChildren<UniformsListItemFieldProps>) {
@@ -30,13 +31,13 @@ function UniformsListItemField(props: React.PropsWithChildren<UniformsListItemFi
     <div
       data-testid={"unitables-list-item-field"}
       style={{
-        marginBottom: "1rem",
         display: "flex",
         justifyContent: "space-between",
+        ...props.style,
       }}
     >
-      <div style={{ width: "100%", marginRight: "10px" }}>
-        {props.children ?? <AutoField label={null} name={""} placeholder={props.name} />}
+      <div style={{ width: "100%" }}>
+        {props.children ?? <AutoField label={null} name={""} placeholder={`<${props.name}>`} />}
       </div>
       <div style={{ borderRight: "1px solid var(--pf-global--palette--black-300)" }}>
         <ListDelField name={""} />
