@@ -27,14 +27,14 @@ public interface HasCollections extends HasDataFilter {
 
     default String getCollections(ForEachState state) {
         StringBuilder result = new StringBuilder();
-        result.append(getTranslation(INPUT_COLLECTION) + ": " + truncate(state.inputCollection, 30) + "\r\n");
+        result.append(getTranslation(INPUT_COLLECTION) + ": " + truncate(state.inputCollection) + "\r\n");
 
         if (state.outputCollection != null && !state.outputCollection.isEmpty()) {
-            result.append(getTranslation(OUTPUT_COLLECTION) + ": " + truncate(state.outputCollection, 30) + "\r\n");
+            result.append(getTranslation(OUTPUT_COLLECTION) + ": " + truncate(state.outputCollection) + "\r\n");
         }
 
         if (state.iterationParam != null && !state.iterationParam.isEmpty()) {
-            result.append(getTranslation(ITERATION_PARAMETER) + ": " + state.iterationParam + "\r\n");
+            result.append(getTranslation(ITERATION_PARAMETER) + ": " + truncate(state.iterationParam) + "\r\n");
         }
 
         if (isDefaultMode(state.getMode())) {

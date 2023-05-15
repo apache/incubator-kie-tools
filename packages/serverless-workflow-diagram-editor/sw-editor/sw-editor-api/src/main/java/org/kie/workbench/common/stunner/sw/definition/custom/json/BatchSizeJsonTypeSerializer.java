@@ -37,7 +37,7 @@ public class BatchSizeJsonTypeSerializer extends JsonbDeserializer<Object> imple
             case STRING:
                 return new StringJsonDeserializer().deserialize(value, ctx);
             case NUMBER:
-                return new BaseNumberJsonDeserializer.IntegerJsonDeserializer().deserialize(value, ctx);
+                return new BaseNumberJsonDeserializer.LongJsonDeserializer().deserialize(value, ctx);
             default:
                 return null;
         }
@@ -47,8 +47,8 @@ public class BatchSizeJsonTypeSerializer extends JsonbDeserializer<Object> imple
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
         if (obj instanceof String) {
             new StringJsonSerializer().serialize((String) obj, PARAMETER_NAME, generator, ctx);
-        } else if (obj instanceof Integer) {
-            new BaseNumberJsonSerializer.IntegerJsonSerializer().serialize((Integer) obj, PARAMETER_NAME, generator, ctx);
+        } else if (obj instanceof Long) {
+            new BaseNumberJsonSerializer.LongJsonSerializer().serialize((Long) obj, PARAMETER_NAME, generator, ctx);
         }
     }
 }

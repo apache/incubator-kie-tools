@@ -91,6 +91,16 @@ public class HasCollectionsTest extends HasTranslationGeneralTest {
     }
 
     @Test
+    public void testGetCollectionsLongIterationParam() {
+        state.setIterationParam(LONG_VALUE);
+        assertTranslations(TEST_STRING + ": null\r\n" + TEST_STRING + ": " + TRUNCATE_VALUE + "\r\n" + TEST_STRING + ": ∞",
+                           hasCollections.getCollections(state),
+                           INPUT_COLLECTION,
+                           ITERATION_PARAMETER,
+                           FOR_EACH_BATCH_SIZE);
+    }
+
+    @Test
     public void testIsDefaultBatchSizeInteger() {
         state.setBatchSize(Integer.valueOf(5));
         assertTranslations(TEST_STRING + ": null\r\n" + TEST_STRING + ": 5",

@@ -31,8 +31,8 @@ public interface HasEventAndDataFilter extends HasDataFilter {
         }
 
         return getTranslation(EVENT_FILTER_PARAMETER) + ":\r\n"
-                + getTranslation(EVENT_FILTER_DATA) + ": " + truncate(filter.getData(), 30) + "\r\n"
-                + getTranslation(EVENT_FILTER_TO_STATE_DATA) + ": " + truncate(filter.getToStateData(), 30) + "\r\n"
+                + getTranslation(EVENT_FILTER_DATA) + ": " + truncate(filter.getData()) + "\r\n"
+                + getTranslation(EVENT_FILTER_TO_STATE_DATA) + ": " + truncate(filter.getToStateData()) + "\r\n"
                 + getTranslation(EVENT_FILTER_USE_DATA) + ": " + (filter.getUseData() == null ? "true" : filter.getUseData());
     }
 }
