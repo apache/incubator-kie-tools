@@ -28,7 +28,6 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import "@patternfly/react-core/dist/styles/base.css";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
