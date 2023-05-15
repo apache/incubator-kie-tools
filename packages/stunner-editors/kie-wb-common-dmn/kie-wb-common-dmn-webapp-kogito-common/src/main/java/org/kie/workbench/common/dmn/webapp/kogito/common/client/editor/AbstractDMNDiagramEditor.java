@@ -47,7 +47,6 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNLayoutHelper;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
@@ -112,7 +111,6 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     protected final Promises promises;
     protected final IncludedModelsPage includedModelsPage;
     protected final KogitoChannelHelper kogitoChannelHelper;
-    protected final GuidedTourBridgeInitializer guidedTourBridgeInitializer;
     protected final DRDNameChanger drdNameChanger;
 
     private final ConfirmationDialog confirmationDialog;
@@ -142,7 +140,6 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
                                        final Promises promises,
                                        final IncludedModelsPage includedModelsPage,
                                        final KogitoChannelHelper kogitoChannelHelper,
-                                       final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                                        final DRDNameChanger drdNameChanger,
                                        final ConfirmationDialog confirmationDialog,
                                        final DecisionNavigatorPresenter decisionNavigatorPresenter,
@@ -168,7 +165,6 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         this.promises = promises;
         this.includedModelsPage = includedModelsPage;
         this.kogitoChannelHelper = kogitoChannelHelper;
-        this.guidedTourBridgeInitializer = guidedTourBridgeInitializer;
         this.drdNameChanger = drdNameChanger;
         this.confirmationDialog = confirmationDialog;
         this.decisionNavigatorPresenter = decisionNavigatorPresenter;
@@ -178,7 +174,6 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     public void onStartup(final PlaceRequest place) {
         init(place);
         stunnerEditor.setReadOnly(this.isReadOnly());
-        guidedTourBridgeInitializer.init();
         ensureDocksAreInitialized();
         ensureTabBarVisibility(true);
         setParsingErrorBehavior();

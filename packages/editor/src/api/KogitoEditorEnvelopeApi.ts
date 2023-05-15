@@ -16,7 +16,6 @@
 
 import { EditorContent } from "./EditorContent";
 import { KeyboardShortcutsEnvelopeApi } from "@kie-tools-core/keyboard-shortcuts/dist/api";
-import { GuidedTourEnvelopeApi } from "@kie-tools-core/guided-tour/dist/api";
 import { I18nEnvelopeApi } from "@kie-tools-core/i18n/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 
@@ -44,7 +43,7 @@ export interface EditorInitArgs {
   channel: ChannelType;
 }
 
-export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, GuidedTourEnvelopeApi, I18nEnvelopeApi {
+export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, I18nEnvelopeApi {
   kogitoEditor_contentChanged(content: EditorContent, args: { showLoadingOverlay: boolean }): Promise<void>;
   kogitoEditor_editorUndo(): void;
   kogitoEditor_editorRedo(): void;

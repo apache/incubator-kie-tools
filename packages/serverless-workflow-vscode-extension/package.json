@@ -1,5 +1,5 @@
 {
-  "name": "serverless-workflow-vscode-extension",
+  "name": "swf-vscode-extension",
   "version": "0.0.0",
   "description": "Edit Serverless Workflow definitions",
   "license": "Apache-2.0",
@@ -20,7 +20,7 @@
     "build:prod": "rimraf dist && webpack && pnpm pack:prod && pnpm test:it",
     "compile": "webpack --env dev",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/serverless-workflow-vscode-extension_$npm_package_version.vsix",
+    "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/serverless_workflow_vscode_extension_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
     "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c max -u -e ./test-resources -o ./it-tests/settings.json out/*.test.js\"",
     "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resources && rimraf ./out && rimraf ./it-tests-tmp && rimraf *.vsix",
@@ -33,7 +33,6 @@
     "@kie-tools-core/backend": "workspace:*",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
-    "@kie-tools-core/guided-tour": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
@@ -81,7 +80,7 @@
     "rimraf": "^3.0.2",
     "sanitize-filename-ts": "^1.0.2",
     "selenium-webdriver": "^4.8.1",
-    "typescript": "^4.4.2",
+    "typescript": "^4.6.2",
     "vscode-extension-tester": "5.5.2",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.10.0",
@@ -91,7 +90,7 @@
   "engines": {
     "vscode": "^1.66.0"
   },
-  "displayName": "Kogito Serverless Workflow Editor",
+  "displayName": "KIE Serverless Workflow Editor",
   "categories": [
     "Other"
   ],

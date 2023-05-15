@@ -16,7 +16,6 @@
 
 import { CapabilityChannelApi } from "@kie-tools-core/backend/dist/channel-api";
 import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
-import { GuidedTourChannelApi } from "@kie-tools-core/guided-tour/dist/api";
 import { I18nChannelApi } from "@kie-tools-core/i18n/dist/api";
 import { WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import { EditorContent } from "./EditorContent";
@@ -25,8 +24,7 @@ import { EditorTheme } from "./EditorTheme";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface KogitoEditorChannelApi
-  extends GuidedTourChannelApi,
-    I18nChannelApi,
+  extends I18nChannelApi,
     CapabilityChannelApi,
     WorkspaceChannelApi,
     NotificationsChannelApi {

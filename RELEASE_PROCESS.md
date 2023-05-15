@@ -1,5 +1,12 @@
 Release workflow (post 0.13.0)
 
+Make sure an associated tag to the release is created on:
+
+- https://github.com/kiegroup/kie-samples
+- https://github.com/kiegroup/kie-sandbox-quarkus-accelerator
+
+---
+
 1. Update the `CHANGELOG.md` files and send a PR to `main`.
 1. Create a `{version}-prerelease` branch from the commit you just made with the CHANGELOG updates.
 1. Update version from `0.0.0` to `{version}` -- `pnpm update-version-to {version}`.

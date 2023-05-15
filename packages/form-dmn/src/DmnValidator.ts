@@ -15,15 +15,16 @@
  */
 
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
-import { Validator } from "@kie-tools/form";
+import { Validator } from "@kie-tools/form/dist/Validator";
 import { DmnFormI18n } from "./i18n";
-import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "./uniforms/DmnFormJsonSchemaBridge";
+import {
+  DAYS_AND_TIME_DURATION_FORMAT,
+  DAYS_AND_TIME_DURATION_REGEXP,
+  YEARS_AND_MONTHS_DURATION_FORMAT,
+  YEARS_AND_MONTHS_DURATION_REGEXP,
+} from "@kie-tools/dmn-runner/dist/constants";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
-
-export const DAYS_AND_TIME =
-  /^(-|\+)?P(?:([-+]?[0-9]*)D)?(?:T(?:([-+]?[0-9]*)H)?(?:([-+]?[0-9]*)M)?(?:([-+]?[0-9]*)S)?)?$/;
-export const YEARS_AND_MONTHS = /^(-|\+)?P(?:([-+]?[0-9]*)Y)?(?:([-+]?[0-9]*)M)?$/;
 
 export class DmnValidator extends Validator {
   private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
@@ -39,12 +40,12 @@ export class DmnValidator extends Validator {
     this.ajv.addMetaSchema(metaSchemaDraft04);
     this.ajv.addFormat(DAYS_AND_TIME_DURATION_FORMAT, {
       type: "string",
-      validate: (data: string) => !!data.match(DAYS_AND_TIME),
+      validate: (data: string) => !!data.match(DAYS_AND_TIME_DURATION_REGEXP),
     });
 
     this.ajv.addFormat(YEARS_AND_MONTHS_DURATION_FORMAT, {
       type: "string",
-      validate: (data: string) => !!data.match(YEARS_AND_MONTHS),
+      validate: (data: string) => !!data.match(YEARS_AND_MONTHS_DURATION_REGEXP),
     });
   }
 

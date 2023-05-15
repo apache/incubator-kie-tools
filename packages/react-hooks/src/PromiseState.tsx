@@ -100,7 +100,9 @@ export function usePromiseState<T>(): [
   return [state, set];
 }
 
-export function useCombinedPromiseState<T = { [key: string]: PromiseState<any> }>(args: T): PromiseState<Unwrapped<T>> {
+export function useCombinedPromiseState<T extends { [key: string]: PromiseState<any> }>(
+  args: T
+): PromiseState<Unwrapped<T>> {
   return useMemo(() => {
     const statuses = new Map<PromiseStateStatus, number>();
     const data: Unwrapped<T> = {} as any;

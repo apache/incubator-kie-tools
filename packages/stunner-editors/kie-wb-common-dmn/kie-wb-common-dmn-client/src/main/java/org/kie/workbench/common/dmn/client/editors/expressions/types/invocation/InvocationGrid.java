@@ -73,7 +73,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGridData, InvocationUIModelMapper> implements HasListSelectorControl {
 
     /** MUST BE SYNCHRONIZED WITH WidthConstants.ts */
-    static final double INVOCATION_EXPRESSION_ENTRY_INFO_DEFAULT_WIDTH = 120d;
+    public static final double INVOCATION_EXPRESSION_ENTRY_INFO_DEFAULT_WIDTH = 120d;
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final ValueAndDataTypePopoverView.Presenter headerEditor;

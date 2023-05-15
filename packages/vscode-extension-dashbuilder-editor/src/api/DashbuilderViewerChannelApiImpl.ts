@@ -23,7 +23,6 @@ import {
 } from "@kie-tools-core/editor/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { DefaultVsCodeKieEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl";
@@ -86,12 +85,6 @@ export class DashbuilderViewerChannelApiImpl implements DashbuilderViewerChannel
   }
   kogitoEditor_theme(): SharedValueProvider<EditorTheme> {
     return this.defaultApiImpl.kogitoEditor_theme();
-  }
-  kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction): void {
-    this.defaultApiImpl.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
-  }
-  kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void {
-    this.defaultApiImpl.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
   }
   kogitoI18n_getLocale(): Promise<string> {
     return this.defaultApiImpl.kogitoI18n_getLocale();

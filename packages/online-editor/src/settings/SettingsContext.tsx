@@ -26,7 +26,6 @@ import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExt
 
 export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
 export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
-const GUIDED_TOUR_ENABLED_COOKIE_NAME = "kie-tools-COOKIE__guided-tour--is-enabled";
 
 export class ExtendedServicesConfig {
   constructor(public readonly host: string, public readonly port: string) {}
@@ -53,11 +52,6 @@ export interface SettingsContextType {
   kieSandboxExtendedServices: {
     config: ExtendedServicesConfig;
   };
-  general: {
-    guidedTour: {
-      isEnabled: boolean;
-    };
-  };
 }
 
 export interface SettingsDispatchContextType {
@@ -65,11 +59,6 @@ export interface SettingsDispatchContextType {
   close: () => void;
   kieSandboxExtendedServices: {
     setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;
-  };
-  general: {
-    guidedTour: {
-      setEnabled: React.Dispatch<React.SetStateAction<boolean>>;
-    };
   };
 }
 
@@ -102,15 +91,6 @@ export function SettingsContextProvider(props: any) {
     });
   }, [history, queryParams]);
 
-  //guided tour
-  const [isGuidedTourEnabled, setGuidedTourEnabled] = useState(
-    getBooleanCookieInitialValue(GUIDED_TOUR_ENABLED_COOKIE_NAME, true)
-  );
-
-  useEffect(() => {
-    setCookie(GUIDED_TOUR_ENABLED_COOKIE_NAME, `${isGuidedTourEnabled}`);
-  }, [isGuidedTourEnabled]);
-
   const extendedServices = useExtendedServices();
 
   const dispatch = useMemo(() => {
@@ -119,11 +99,6 @@ export function SettingsContextProvider(props: any) {
       close,
       kieSandboxExtendedServices: {
         setConfig: extendedServices.saveNewConfig,
-      },
-      general: {
-        guidedTour: {
-          setEnabled: setGuidedTourEnabled,
-        },
       },
     };
   }, [close, extendedServices.saveNewConfig, open]);
@@ -135,13 +110,8 @@ export function SettingsContextProvider(props: any) {
       kieSandboxExtendedServices: {
         config: extendedServices.config,
       },
-      general: {
-        guidedTour: {
-          isEnabled: isGuidedTourEnabled,
-        },
-      },
     };
-  }, [activeTab, isGuidedTourEnabled, isOpen, extendedServices.config]);
+  }, [activeTab, isOpen, extendedServices.config]);
 
   return (
     <SettingsContext.Provider value={value}>

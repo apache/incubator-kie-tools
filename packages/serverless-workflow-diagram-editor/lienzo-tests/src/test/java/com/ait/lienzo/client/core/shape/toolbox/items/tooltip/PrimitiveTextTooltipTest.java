@@ -63,6 +63,7 @@ public class PrimitiveTextTooltipTest {
     public void setup() {
         when(locationExecutor.at(any(Direction.class))).thenReturn(locationExecutor);
         when(locationExecutor.forBoundingBox(any(Supplier.class))).thenReturn(locationExecutor);
+        when(locationExecutor.offset(any(Supplier.class))).thenReturn(locationExecutor);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -136,6 +137,19 @@ public class PrimitiveTextTooltipTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void testOffset() {
+        final Supplier offsetSupplier = mock(Supplier.class);
+        final PrimitiveTextTooltip cascade = tested.offset(offsetSupplier);
+        assertEquals(tested,
+                     cascade);
+        verify(locationExecutor,
+               times(1)).offset(eq(offsetSupplier));
+        verify(locationExecutor,
+               times(1)).accept(eq(tooltip));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testBoundingBox() {
         final Supplier bbSupplier = mock(Supplier.class);
         final PrimitiveTextTooltip cascade = tested.forComputedBoundingBox(bbSupplier);
@@ -205,16 +219,17 @@ public class PrimitiveTextTooltipTest {
                                                                 100d,
                                                                 200d);
         executor.at(Direction.SOUTH)
+                .offset(() -> new Point2D(50, 50))
                 .forBoundingBox(() -> boundingBox)
                 .accept(tooltip);
         final ArgumentCaptor<Point2D> pointCaptor = ArgumentCaptor.forClass(Point2D.class);
         verify(tooltip,
                times(1)).setLocation(pointCaptor.capture());
         Point2D point = pointCaptor.getValue();
-        assertEquals(50,
+        assertEquals(100,
                      point.getX(),
                      0);
-        assertEquals(200,
+        assertEquals(250,
                      point.getY(),
                      0);
     }
