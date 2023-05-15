@@ -525,7 +525,7 @@
 
       <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
-        <artifactId>patternfly</artifactId>
+        <artifactId>stylesheets</artifactId>
         <version>${project.version}</version>
       </dependency>
 

@@ -16,8 +16,19 @@
   -->
 <module>
     <public path="client/resource">
+        <include name="jquery-ui/jquery-ui.min.css"/>
+        <include name="bootstrap-daterangepicker/daterangepicker.css"/>
+        <include name="bootstrap-select/css/bootstrap-select.min.css"/>
+        <include name="uberfire-patternfly.css"/>
         <include name="css/patternfly.min.css"/>
+        <include name="css/patternfly-additions.min.css"/>
+        <include name="css/bootstrap-datepicker3-1.6.4.min.cache.css"/>
+        <include name="css/animate-3.5.2.min.cache.css"/>
+        <include name="css/bootstrap-notify-custom.min.cache.css"/>
+        <include name="css/card-1.0.1.cache.css"/>
+        <include name="css/bootstrap-slider-9.2.0.min.cache.css"/>
+        <include name="css/bootstrap-datetimepicker-2.4.4.min.cache.css"/>
+        <include name="css/typeahead-0.10.5.min.cache.css"/>
     </public>
 
-    <stylesheet src="css/patternfly.min.css"/>
 </module>
