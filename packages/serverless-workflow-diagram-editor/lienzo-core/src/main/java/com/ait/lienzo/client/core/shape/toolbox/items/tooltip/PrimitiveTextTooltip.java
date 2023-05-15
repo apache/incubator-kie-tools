@@ -20,10 +20,12 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.toolbox.Positions;
 import com.ait.lienzo.client.core.shape.toolbox.items.AbstractPrimitiveItem;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 
 public class PrimitiveTextTooltip
@@ -80,6 +82,13 @@ public class PrimitiveTextTooltip
         return this;
     }
 
+    public PrimitiveTextTooltip offset(final Supplier<Point2D> offset) {
+        this.locationExecutor
+                .offset(offset)
+                .accept(tooltip);
+        return this;
+    }
+
     public PrimitiveTextTooltip at(final Direction at) {
         this.locationExecutor
                 .at(at)
@@ -119,7 +128,11 @@ public class PrimitiveTextTooltip
 
     @Override
     public void destroy() {
+        final Layer layer = null != asPrimitive() ? asPrimitive().getLayer() : null;
         tooltip.destroy();
+        if (null != layer) {
+            layer.batch();
+        }
     }
 
     @Override
@@ -133,8 +146,14 @@ public class PrimitiveTextTooltip
 
     public static class BoundingLocationExecutor implements Consumer<Tooltip> {
 
-        private Supplier<BoundingBox> boundingBoxSupplier;
+        private Supplier<BoundingBox> boundingBoxSupplier = () -> BoundingBox.fromDoubles(0, 0, 1, 1);
+        private Supplier<Point2D> offset = () -> new Point2D(0, 0);
         private Direction at;
+
+        public BoundingLocationExecutor offset(final Supplier<Point2D> offset) {
+            this.offset = offset;
+            return this;
+        }
 
         public BoundingLocationExecutor at(final Direction at) {
             this.at = at;
@@ -149,8 +168,12 @@ public class PrimitiveTextTooltip
         @Override
         public void accept(final Tooltip tooltip) {
             final BoundingBox bb = boundingBoxSupplier.get();
-            tooltip.setLocation(Positions.anchorFor(bb,
-                                                    this.at));
+            Point2D l = Positions.anchorFor(bb, this.at);
+            Point2D o = offset.get();
+            if (null != o) {
+                l.offset(o.getX(), o.getY());
+            }
+            tooltip.setLocation(l);
         }
     }
 }

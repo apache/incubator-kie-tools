@@ -15,7 +15,6 @@
  */
 
 import { Editor, EditorInitArgs, EditorTheme, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
-import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Position } from "monaco-editor";
 import * as React from "react";
@@ -38,10 +37,6 @@ export class ServerlessWorkflowTextEditorView implements ServerlessWorkflowTextE
     private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<ServerlessWorkflowTextEditorApi>();
-  }
-
-  public async getElementPosition() {
-    return DEFAULT_RECT;
   }
 
   public setContent(path: string, content: string): Promise<void> {

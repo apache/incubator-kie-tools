@@ -18,7 +18,7 @@ import * as React from "react";
 import { ForwardRefRenderFunction, useImperativeHandle, forwardRef, useMemo, useCallback } from "react";
 import { EditorChannelComponentProps, EditorChannelComponentRef } from "../WebToolsEmbeddedEditor";
 import { DashbuilderEditorChannelApiImpl } from "@kie-tools/dashbuilder-editor/dist/impl";
-import { DashbuilderLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
+import { DashbuilderYamlLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 import { DashbuilderLanguageServiceChannelApiImpl } from "../api/DashbuilderLanguageServiceChannelApiImpl";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { DashbuilderEditorChannelApi } from "@kie-tools/dashbuilder-editor";
@@ -30,7 +30,7 @@ const RefForwardingDashChannelComponent: ForwardRefRenderFunction<
   EditorChannelComponentProps
 > = (props, fowardedRef) => {
   const { editor, channelApiImpl } = { ...props };
-  const languageService = useMemo(() => new DashbuilderLanguageService(), []);
+  const languageService = useMemo(() => new DashbuilderYamlLanguageService(), []);
 
   const apiImpl = useMemo(() => {
     const lsChannelApiImpl = new DashbuilderLanguageServiceChannelApiImpl(languageService);

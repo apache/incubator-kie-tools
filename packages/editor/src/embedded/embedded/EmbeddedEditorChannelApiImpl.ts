@@ -15,8 +15,6 @@
  */
 
 import { StateControl } from "../../channel";
-import { KogitoGuidedTour } from "@kie-tools-core/guided-tour/dist/channel";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { KogitoEditorChannelApi, StateControlCommand, EditorContent } from "../../api";
 import {
   WorkspaceEdit,
@@ -55,14 +53,6 @@ export class EmbeddedEditorChannelApiImpl implements KogitoEditorChannelApi {
         break;
     }
     this.overrides.kogitoEditor_stateControlCommandUpdate?.(command);
-  }
-
-  public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction) {
-    KogitoGuidedTour.getInstance().onUserInteraction(userInteraction);
-  }
-
-  public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial) {
-    KogitoGuidedTour.getInstance().registerTutorial(tutorial);
   }
 
   public async kogitoEditor_contentRequest() {

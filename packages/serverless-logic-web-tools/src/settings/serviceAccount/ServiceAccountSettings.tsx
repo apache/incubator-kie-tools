@@ -102,8 +102,7 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
           <Text component={TextVariants.h1}>Service Account</Text>
           <Text component={TextVariants.p}>
             Data you provide here is necessary for uploading Open API specs associated with models you design to your
-            Service Registry instance and also connecting deployments with your Streams for Apache Kafka instance.
-            <br /> All information is locally stored in your browser and never shared with anyone.
+            Service Registry instance. All information is locally stored in your browser and never shared with anyone.
           </Text>
         </TextContent>
       </PageSection>
@@ -138,7 +137,7 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
                 <Text component={"h2"}>{"Your Service Account information is set."}</Text>
               </TextContent>
               <EmptyStateBody>
-                Accessing your Service Registry and Streams for Apache Kafka is <b>enabled</b>.
+                Accessing your Service Registry is <b>enabled</b>.
                 <br />
                 <b>Client ID: </b>
                 <i>{config.clientId}</i>

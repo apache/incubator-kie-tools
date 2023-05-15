@@ -25,7 +25,6 @@ import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftService";
 import { FeaturePreviewSettingsConfig, readFeaturePreviewConfigCookie } from "./featurePreview/FeaturePreviewConfig";
 import { GITHUB_AUTH_TOKEN_COOKIE_NAME } from "./github/GitHubSettings";
-import { KafkaSettingsConfig, readKafkaConfigCookie } from "./kafka/KafkaSettingsConfig";
 import { readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
 import { readServiceAccountConfigCookie, ServiceAccountSettingsConfig } from "./serviceAccount/ServiceAccountConfig";
 import {
@@ -77,9 +76,6 @@ export interface SettingsContextType {
     scopes?: string[];
     authStatus: AuthStatus;
   };
-  apacheKafka: {
-    config: KafkaSettingsConfig;
-  };
   serviceAccount: {
     config: ServiceAccountSettingsConfig;
   };
@@ -103,9 +99,6 @@ export interface SettingsDispatchContextType {
   github: {
     authService: { reset: () => void; authenticate: (token: string) => Promise<void> };
     octokit: Octokit;
-  };
-  apacheKafka: {
-    setConfig: React.Dispatch<React.SetStateAction<KafkaSettingsConfig>>;
   };
   serviceAccount: {
     setConfig: React.Dispatch<React.SetStateAction<ServiceAccountSettingsConfig>>;
@@ -183,7 +176,6 @@ export function SettingsContextProvider(props: any) {
 
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
-  const [kafkaConfig, setKafkaConfig] = useState<KafkaSettingsConfig>(readKafkaConfigCookie());
   const [serviceAccountConfig, setServiceAccountConfig] = useState<ServiceAccountSettingsConfig>(
     readServiceAccountConfigCookie()
   );
@@ -234,9 +226,6 @@ export function SettingsContextProvider(props: any) {
       kieSandboxExtendedServices: {
         setConfig: kieSandboxExtendedServices.saveNewConfig,
       },
-      apacheKafka: {
-        setConfig: setKafkaConfig,
-      },
       serviceAccount: {
         setConfig: setServiceAccountConfig,
       },
@@ -271,9 +260,6 @@ export function SettingsContextProvider(props: any) {
       kieSandboxExtendedServices: {
         config: kieSandboxExtendedServices.config,
       },
-      apacheKafka: {
-        config: kafkaConfig,
-      },
       serviceAccount: {
         config: serviceAccountConfig,
       },
@@ -291,7 +277,6 @@ export function SettingsContextProvider(props: any) {
     githubToken,
     githubUser,
     githubScopes,
-    kafkaConfig,
     serviceAccountConfig,
     serviceRegistryConfig,
     kieSandboxExtendedServices.config,

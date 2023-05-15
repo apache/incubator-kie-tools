@@ -36,7 +36,6 @@ import {
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 import { Position as MonacoPosition } from "monaco-editor";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import {
   ResourceContent,
@@ -73,14 +72,6 @@ export class StandaloneServerlessWorkflowCombinedEditorChannelApi
 
   public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
     this.defaultApiImpl.kogitoEditor_stateControlCommandUpdate(command);
-  }
-
-  public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void {
-    this.defaultApiImpl.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
-  }
-
-  public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction): void {
-    this.defaultApiImpl.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
   }
 
   public kogitoI18n_getLocale(): Promise<string> {

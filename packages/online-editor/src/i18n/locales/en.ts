@@ -48,6 +48,15 @@ export const en: OnlineI18n = {
         message: "Your files are temporarily persisted on your browser, but may be erased before you come back.",
       },
     },
+    error: {
+      title: `${en_common.terms.oops}!`,
+      explanation: `The ${en_common.names.dmnRunner} couldn't be rendered due to an error.`,
+      message: [
+        `This ${en_common.names.dmn} has a construct that is not supported. Please refer to `,
+        wrapped("issues"),
+        " and report an issue. Don't forget to upload the current file, and the used inputs",
+      ],
+    },
   },
   editorToolbar: {
     closeAndReturnHome: "Close and return Home",
@@ -393,33 +402,6 @@ export const en: OnlineI18n = {
     trySample: "Try Sample",
     chooseLocalFile: "Choose a local file",
   },
-  guidedTour: {
-    init: {
-      title: `Welcome to the ${en_common.names.dmn} Editor`,
-      learnMore: `Take this 5-minute tour to learn more about the ${en_common.names.dmn} Editor in a brief and interactive way.`,
-      dmnRunnerIntro: `If you already know your way around the ${en_common.names.dmn} Editor, you can skip this tour and start executing your models with the ${en_common.names.dmnRunner}.`,
-      takeTour: "Take tour",
-      skipTour: "Skip tour",
-      skipTourAndUseDmnRunner: `Skip tour and start ${en_common.names.dmnRunner}`,
-    },
-    end: {
-      title: "Congratulations",
-      motivational: `Now you know how each part of the ${en_common.names.dmn} Editor works, and you're empowered to go ahead and explore!`,
-      nextSteps: {
-        title: "As next steps, you can try to",
-        firstStep: `Connect the ${"Age".bold()} input with the ${"Can drive?".bold()} decision;`,
-        secondStep: `Define the decision logic in the ${"Can drive?".bold()} node to return ${"true".bold()} when ${"Age".bold()} is
-              greater than ${"21".bold()}, otherwise ${"false".bold()};`,
-        thirdStep: "Execute the model.",
-        startDmnRunner: `Start ${en_common.names.dmnRunner}`,
-      },
-      findUsefulInfo: "You can find useful information in the",
-      learnDMN: `Learn ${en_common.names.dmn} in 15 minutes`,
-      courseOr: "course or in the",
-      kogitoDoc: `${en_common.names.kogito} documentation`,
-      finish: "Finish the Tour",
-    },
-  },
   alerts: {
     gistError: `Not able to open this Gist. If you have updated your Gist filename it can take a few seconds until the URL is available to be used.`,
     goToHomePage: "Go to Home Page",
@@ -435,16 +417,14 @@ export const en: OnlineI18n = {
     },
   },
   dmnRunner: {
-    drawer: {
-      error: {
-        title: `${en_common.terms.oops}!`,
-        explanation: `The ${en_common.names.dmnRunner} drawer couldn't be rendered due to an error.`,
-        message: [
-          `This ${en_common.names.dmn} has a construct that is not supported. Please refer to `,
-          wrapped("jira"),
-          " and report an issue. Don't forget to upload the current file, and the used inputs",
-        ],
-      },
+    error: {
+      title: `${en_common.terms.oops}!`,
+      explanation: `The ${en_common.names.dmnRunner} couldn't be rendered due to an error.`,
+      message: [
+        `This ${en_common.names.dmn} has a construct that is not supported. Please refer to `,
+        wrapped("issues"),
+        " and report an issue. Don't forget to upload the current file, and the used inputs",
+      ],
     },
     table: { ...en_unitables },
     modal: {

@@ -14,48 +14,25 @@
  * limitations under the License.
  */
 
-import * as jsonc from "jsonc-parser";
-import { getLanguageService } from "vscode-json-languageservice";
+import {
+  EditorJsonCodeCompletionStrategy,
+  EditorJsonLanguageService,
+  ELsNode,
+  ELsShouldCreateCodelensArgs,
+  IEditorLanguageService,
+  ShouldCompleteArgs,
+  TranslateArgs,
+} from "@kie-tools/json-yaml-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, Diagnostic, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../api";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import {
-  CodeCompletionStrategy,
-  ShouldCompleteArgs,
-  ShouldCreateCodelensArgs,
-  SwfLsNode,
-  TranslateArgs,
-} from "./types";
+import { CodeCompletionStrategy, ShouldCreateCodelensArgs } from "./types";
 
-/**
- * Check if a node has a comma after the end
- *
- * @param content -
- * @param cursorOffset -
- * @returns true if found, false otherwise
- */
-export function hasNodeComma(content: string, cursorOffset: number): boolean {
-  return /^"?[\s\n]*,/.test(content.slice(cursorOffset));
-}
-
-/**
- * Check if an offset is at the last child.
- *
- * @param content -
- * @param cursorOffset -
- * @returns true if yes, false otherwise. If the content is empty returns true.
- */
-export function isOffsetAtLastChild(content: string, cursorOffset: number): boolean {
-  if (!content.trim()) {
-    return true;
-  }
-  return /^"?[\s\n]*[\]}]/.test(content.slice(cursorOffset));
-}
-
-export class SwfJsonLanguageService {
+export class SwfJsonLanguageService implements IEditorLanguageService {
   private readonly ls: SwfLanguageService;
+  private readonly jsonELs: EditorJsonLanguageService;
   private readonly codeCompletionStrategy: JsonCodeCompletionStrategy;
 
   constructor(args: Omit<SwfLanguageServiceArgs, "lang">) {
@@ -68,10 +45,10 @@ export class SwfJsonLanguageService {
     });
 
     this.codeCompletionStrategy = new JsonCodeCompletionStrategy();
-  }
-
-  parseContent(content: string): SwfLsNode | undefined {
-    return jsonc.parseTree(content);
+    this.jsonELs = new EditorJsonLanguageService({
+      ls: this.ls,
+      codeCompletionStrategy: this.codeCompletionStrategy,
+    });
   }
 
   public async getCompletionItems(args: {
@@ -80,86 +57,57 @@ export class SwfJsonLanguageService {
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.ls.getCompletionItems({
-      ...args,
-      rootNode: this.parseContent(args.content),
-      codeCompletionStrategy: this.codeCompletionStrategy,
-    });
+    return await this.jsonELs.getCompletionItems(args);
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
-    return this.ls.getCodeLenses({
+    return await this.jsonELs.getCodeLenses(args);
+  }
+
+  public async getDiagnostics(args: { content: string; uriPath: string }): Promise<Diagnostic[]> {
+    return await this.jsonELs.getDiagnostics({
       ...args,
-      rootNode: this.parseContent(args.content),
-      codeCompletionStrategy: this.codeCompletionStrategy,
+      getSchemaDiagnostics: (args: { textDocument: TextDocument; fileMatch: string[] }) =>
+        this.getSchemaDiagnostics(args),
     });
   }
 
-  public async getDiagnostics(args: { content: string; uriPath: string }) {
-    return this.ls.getDiagnostics({
+  public async getSchemaDiagnostics(args: { textDocument: TextDocument; fileMatch: string[] }): Promise<Diagnostic[]> {
+    return await this.jsonELs.getSchemaDiagnostics({
       ...args,
-      rootNode: this.parseContent(args.content),
-      getSchemaDiagnostics: this.getSchemaDiagnostics,
+      jsonSchema: SW_SPEC_WORKFLOW_SCHEMA,
     });
-  }
-
-  private async getSchemaDiagnostics(textDocument: TextDocument, fileMatch: string[]): Promise<Diagnostic[]> {
-    const jsonLs = getLanguageService({
-      schemaRequestService: async (uri) => {
-        if (uri === SW_SPEC_WORKFLOW_SCHEMA.$id) {
-          return JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA);
-        } else {
-          throw new Error(`Unable to load schema from '${uri}'`);
-        }
-      },
-    });
-
-    jsonLs.configure({
-      allowComments: false,
-      schemas: [{ fileMatch: fileMatch, uri: SW_SPEC_WORKFLOW_SCHEMA.$id }],
-    });
-
-    const jsonDocument = jsonLs.parseJSONDocument(textDocument);
-    return jsonLs.doValidation(textDocument, jsonDocument);
   }
 
   public dispose() {
-    return this.ls.dispose();
+    return this.jsonELs.dispose();
   }
 }
 
 export class JsonCodeCompletionStrategy implements CodeCompletionStrategy {
-  public translate(args: TranslateArgs): string {
-    const content = args.document.getText();
-    const isContentEmpty = !content.trim();
-    const isLastChild = isOffsetAtLastChild(content, args.cursorOffset);
-    const hasNodeCommaAlready = !isContentEmpty ? hasNodeComma(content, args.cursorOffset) : false;
+  private eLsCodeCompletionStrategy: EditorJsonCodeCompletionStrategy;
 
-    return (
-      JSON.stringify(args.completion, null, 2) + (!isContentEmpty && !isLastChild && !hasNodeCommaAlready ? "," : "")
-    );
+  constructor() {
+    this.eLsCodeCompletionStrategy = new EditorJsonCodeCompletionStrategy();
+  }
+
+  public translate(args: TranslateArgs): string {
+    return this.eLsCodeCompletionStrategy.translate(args);
   }
 
   public formatLabel(label: string, completionItemKind: CompletionItemKind): string {
-    return (
-      [CompletionItemKind.Value, CompletionItemKind.Function, CompletionItemKind.Folder] as CompletionItemKind[]
-    ).includes(completionItemKind)
-      ? `"${label}"`
-      : label;
+    return this.eLsCodeCompletionStrategy.formatLabel(label, completionItemKind);
   }
 
-  public getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined {
-    const position = document.positionAt(node.offset);
-    const nextPosition = document.positionAt(node.offset + 1);
-    return node.type === "boolean" ? position : nextPosition;
+  public getStartNodeValuePosition(document: TextDocument, node: ELsNode): Position | undefined {
+    return this.eLsCodeCompletionStrategy.getStartNodeValuePosition(document, node);
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {
-    const cursorJsonLocation = jsonc.getLocation(args.content, args.cursorOffset);
-    return cursorJsonLocation.matches(args.path) && cursorJsonLocation.path.length === args.path.length;
+    return this.eLsCodeCompletionStrategy.shouldComplete(args);
   }
 
-  public shouldCreateCodelens(_args: ShouldCreateCodelensArgs): boolean {
-    return true;
+  public shouldCreateCodelens(args: ShouldCreateCodelensArgs): boolean {
+    return this.eLsCodeCompletionStrategy.shouldCreateCodelens(args as ELsShouldCreateCodelensArgs);
   }
 }

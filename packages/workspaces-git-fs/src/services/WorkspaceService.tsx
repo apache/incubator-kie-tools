@@ -15,7 +15,7 @@
  */
 
 import { encoder } from "../encoderdecoder/EncoderDecoder";
-import JSZip from "jszip";
+import { downloadZip } from "client-zip";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { StorageFile, StorageService } from "./StorageService";
 import { basename, join, relative } from "path";
@@ -168,12 +168,7 @@ export class WorkspaceService {
         }))
     );
 
-    const zip = new JSZip();
-    for (const file of filesToZip) {
-      zip.file(file.relativePath, file.content);
-    }
-
-    return zip.generateAsync({ type: "blob" });
+    return await downloadZip(filesToZip.map((file) => ({ name: file.relativePath, input: file.content }))).blob();
   }
 
   public async createOrOverwriteFile(

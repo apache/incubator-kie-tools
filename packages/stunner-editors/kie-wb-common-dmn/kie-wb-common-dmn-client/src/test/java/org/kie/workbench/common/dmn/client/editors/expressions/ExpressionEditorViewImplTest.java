@@ -686,7 +686,6 @@ public class ExpressionEditorViewImplTest {
 
         assertEquals(hasExpression, command.getHasExpression());
         assertEquals(editorSelectedEvent, command.getEditorSelectedEvent());
-        assertEquals(view, command.getView());
         assertEquals(NODE_UUID, command.getNodeUUID());
     }
 
@@ -1034,8 +1033,9 @@ public class ExpressionEditorViewImplTest {
         doReturn(expressionContainerGrid).when(view).getExpressionContainerGrid();
         doNothing().when(view).createUndoCommand();
         doReturn(updateCanvasNodeNameCommand).when(view).getUpdateCanvasNodeNameCommand();
-        doReturn(Optional.of(hasName)).when(view).getHasName();
+        doReturn(Optional.of(HasName.NOP)).when(view).getHasName();
         when(fillExpressionCommand.isCurrentExpressionOfTheSameType()).thenReturn(false);
+        when(fillExpressionCommand.getExpressionProps()).thenReturn(new ExpressionProps("id", "name", "dataType", "logicType"));
 
         final InOrder inOrder = inOrder(view,
                                         hasExpression,
@@ -1049,7 +1049,7 @@ public class ExpressionEditorViewImplTest {
         inOrder.verify(hasExpression).setExpression(null);
         inOrder.verify(expressionContainerGrid).clearExpression(NODE_UUID);
         inOrder.verify(fillExpressionCommand).execute();
-        inOrder.verify(updateCanvasNodeNameCommand).execute(NODE_UUID, hasName);
+        inOrder.verify(updateCanvasNodeNameCommand).execute(NODE_UUID, HasName.NOP);
     }
 
     @Test
@@ -1062,8 +1062,9 @@ public class ExpressionEditorViewImplTest {
         doReturn(expressionContainerGrid).when(view).getExpressionContainerGrid();
         doNothing().when(view).createUndoCommand();
         doReturn(updateCanvasNodeNameCommand).when(view).getUpdateCanvasNodeNameCommand();
-        doReturn(Optional.of(hasName)).when(view).getHasName();
+        doReturn(Optional.of(HasName.NOP)).when(view).getHasName();
         when(fillExpressionCommand.isCurrentExpressionOfTheSameType()).thenReturn(true);
+        when(fillExpressionCommand.getExpressionProps()).thenReturn(new ExpressionProps("id", "name", "dataType", "logicType"));
 
         final InOrder inOrder = inOrder(view,
                                         hasExpression,
@@ -1077,6 +1078,6 @@ public class ExpressionEditorViewImplTest {
         verify(hasExpression, never()).setExpression(null);
         verify(expressionContainerGrid, never()).clearExpression(NODE_UUID);
         inOrder.verify(fillExpressionCommand).execute();
-        inOrder.verify(updateCanvasNodeNameCommand).execute(NODE_UUID, hasName);
+        inOrder.verify(updateCanvasNodeNameCommand).execute(NODE_UUID, HasName.NOP);
     }
 }

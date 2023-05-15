@@ -122,13 +122,6 @@ main.applicationServices {
   width: 100%;
 }
 
-.kafka-overview--page-section--marketing {
-  --pf-c-page__main-section--PaddingTop: 0;
-  --pf-c-page__main-section--PaddingRight: var(--pf-global--spacer--lg);
-  --pf-c-page__main-section--PaddingBottom: var(--pf-global--spacer--xl);
-  --pf-c-page__main-section--PaddingLeft: var(--pf-global--spacer--lg);
-}
-
 .appserv-devpreview {
   height: 100%;
 }
@@ -144,29 +137,6 @@ main.applicationServices {
 
 tr.mas--ResponsiveTable__Tr--deleted > td {
   color: var(--pf-global--Color--200);
-}
-
-.kafka-ui-form-group--readonly .pf-c-form-control[readonly] {
-  --pf-c-form-control--readonly--BackgroundColor: transparent;
-  --pf-c-form-control--readonly--focus--PaddingBottom: 0;
-  border: none;
-  padding: 0;
-}
-
-.kafka-ui-form-group--readonly .pf-c-form__group-label {
-  --pf-c-form__group-label--PaddingBottom: 0;
-}
-
-.mas--CreateKafkaInstance__sidebar .pf-c-content dl {
-  display: block;
-}
-
-.mas--CreateKafkaInstance__sidebar dt {
-  font-size: var(--pf-global--FontSize--sm);
-}
-
-.mas--CreateKafkaInstance__creationTimeAlert {
-  margin-top: var(--pf-global--spacer--md);
 }
 
 .mas--details__drawer--tab-content {
@@ -193,15 +163,6 @@ tr.mas--ResponsiveTable__Tr--deleted > td {
 
 .mas-m-deleting {
   color: var(--pf-global--Color--200);
-}
-
-.mas-KafkaMessageBrowser-Toolbar {
-  z-index: 999;
-}
-
-.mas-KafkaMessageBrowser-Toolbar .pf-c-toolbar__content-section,
-.mas-KafkaMessageBrowser-Toolbar .pf-c-toolbar__group {
-  align-items: flex-start;
 }
 
 .pf-c-label.mas-m-solid {

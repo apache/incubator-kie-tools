@@ -146,7 +146,6 @@ export const routes = {
     kie_sandbox_extended_services: new Route<{}>(() => `${SETTINGS_ROUTE}/kie_sandbox_extended_services`),
     service_account: new Route<{}>(() => `${SETTINGS_ROUTE}/serviceAccount`),
     service_registry: new Route<{}>(() => `${SETTINGS_ROUTE}/serviceRegistry`),
-    kafka: new Route<{}>(() => `${SETTINGS_ROUTE}/kafka`),
     feature_preview: new Route<{}>(() => `${SETTINGS_ROUTE}/featurePreview`),
   },
 

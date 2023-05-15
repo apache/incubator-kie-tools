@@ -35,7 +35,6 @@ public class SaveCurrentStateCommand extends AbstractCanvasCommand {
 
     private final HasExpression hasExpression;
     private final Event<ExpressionEditorChanged> editorSelectedEvent;
-    private final ExpressionEditorView view;
     private final String nodeUUID;
     private final Optional<HasName> hasName;
     private final UpdateCanvasNodeNameCommand updateCanvasNodeCommand;
@@ -45,19 +44,16 @@ public class SaveCurrentStateCommand extends AbstractCanvasCommand {
 
     public SaveCurrentStateCommand(final HasExpression hasExpression,
                                    final Event<ExpressionEditorChanged> editorSelectedEvent,
-                                   final ExpressionEditorView view,
                                    final String nodeUUID,
                                    final Optional<HasName> hasName,
                                    final UpdateCanvasNodeNameCommand updateCanvasNodeNameCommand) {
         this.hasExpression = hasExpression;
         this.editorSelectedEvent = editorSelectedEvent;
-        this.view = view;
         this.nodeUUID = nodeUUID;
         this.hasName = hasName;
         this.updateCanvasNodeCommand = updateCanvasNodeNameCommand;
         this.originalState = new ExpressionState(hasExpression,
                                                  editorSelectedEvent,
-                                                 view,
                                                  nodeUUID,
                                                  hasName,
                                                  updateCanvasNodeCommand);
@@ -70,10 +66,6 @@ public class SaveCurrentStateCommand extends AbstractCanvasCommand {
 
     public HasExpression getHasExpression() {
         return hasExpression;
-    }
-
-    public ExpressionEditorView getView() {
-        return view;
     }
 
     public String getNodeUUID() {
@@ -110,7 +102,6 @@ public class SaveCurrentStateCommand extends AbstractCanvasCommand {
         if (Objects.isNull(getStateBeforeUndo())) {
             final ExpressionState newStateBeforeUndo = new ExpressionState(getHasExpression(),
                                                                            getEditorSelectedEvent(),
-                                                                           getView(),
                                                                            getNodeUUID(),
                                                                            getHasName(),
                                                                            updateCanvasNodeCommand);

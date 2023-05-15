@@ -22,11 +22,9 @@ import {
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
   EditorContextExposedInteropApi,
-  GuidedTourExposedInteropApi,
   I18nExposedInteropApi,
   KeyboardShortcutsExposedInteropApi,
   NotificationsExposedInteropApi,
@@ -47,7 +45,6 @@ export interface CustomWindow extends Window {
     stateControlService: StateControlExposedInteropApi;
   };
   envelope: {
-    guidedTourService: GuidedTourExposedInteropApi;
     editorContext: EditorContextExposedInteropApi;
     resourceContentEditorService?: ResourceContentExposedInteropApi;
     keyboardShortcutsService: KeyboardShortcutsExposedInteropApi;
@@ -115,17 +112,6 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         readOnly: initArgs.isReadOnly,
       },
       keyboardShortcutsService: envelopeContext.services.keyboardShortcuts,
-      guidedTourService: {
-        refresh(userInteraction: UserInteraction): void {
-          envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourUserInteraction.send(userInteraction);
-        },
-        registerTutorial(tutorial: Tutorial): void {
-          envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourRegisterTutorial.send(tutorial);
-        },
-        isEnabled(): boolean {
-          return true;
-        },
-      },
       resourceContentEditorService: {
         get(path: string, opts?: ResourceContentOptions) {
           return envelopeContext.channelApi.requests
