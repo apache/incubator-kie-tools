@@ -36,6 +36,7 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 import { webViewReady, activeFrame, envelopeApp, kogitoLoadingSpinner, inputBox } from "./CommonLocators";
+import { isKieEditorWithDualView, isKieEditorWithSingleView, isDashbuilderEditor } from "./KieFileExtensions";
 
 /**
  * Common test helper class for VSCode extension testing.
@@ -121,10 +122,10 @@ export class VSCodeTestHelper {
    *          For any other files all its WebViews are returned.
    */
   public openFileFromSidebar = async (fileName: string, fileParentPath?: string): Promise<WebView[]> => {
-    if (this.isKieEditorWithOneWebView(fileName)) {
+    if (isKieEditorWithSingleView(fileName)) {
       const webView = await this.openEditorWithOneWebView(fileName, fileParentPath);
       return [webView];
-    } else if (this.isKieEditorWithTwoWebViews(fileName)) {
+    } else if (isKieEditorWithDualView(fileName)) {
       return await this.openEditorWithTwoWebViews(fileName, fileParentPath);
     }
     return await this.openNonKieEditorFile(fileName, fileParentPath);
@@ -147,7 +148,7 @@ export class VSCodeTestHelper {
 
     const webviewLeft = new WebView(editorGroups[0], By.linkText(fileName));
 
-    if (this.isDashbuilderEditor(fileName)) {
+    if (isDashbuilderEditor(fileName)) {
       this.forceOpeningDashbuilderEditor(webviewLeft);
     }
 
@@ -188,18 +189,6 @@ export class VSCodeTestHelper {
 
     return await this.workbench.getEditorView().getEditorGroups();
   };
-
-  private isKieEditorWithTwoWebViews(fileName: string): boolean {
-    return /\.sw\.(json|ya?ml)|\.dash\.ya?ml|\.yard\.ya?ml$/.test(fileName);
-  }
-
-  private isKieEditorWithOneWebView(fileName: string): boolean {
-    return /\.bpmn|\.dmn|\.scesim|\.pmml$/.test(fileName);
-  }
-
-  private isDashbuilderEditor(fileName: string): boolean {
-    return /\.dash\.ya?ml|$/.test(fileName);
-  }
 
   private async forceOpeningDashbuilderEditor(textEditorWebView: WebView): Promise<void> {
     const webDriver = textEditorWebView.getDriver();
