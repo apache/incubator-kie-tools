@@ -209,7 +209,7 @@ export class VSCodeTestHelper {
         return currentValue === "true";
       },
       25000,
-      "Folder structure didn't expanded in time. Please investigate."
+      "Folder structure didn't expand in time. Please investigate."
     );
   };
 
