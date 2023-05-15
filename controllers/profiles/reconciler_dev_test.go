@@ -224,7 +224,7 @@ func Test_devProfileWithWPlatformWithoutDevBaseImageAndWithBaseImage(t *testing.
 
 	// check if the objects have been created
 	deployment := test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, "quay.io/kiegroup/kogito-swf-builder-nightly:latest", deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, "quay.io/kiegroup/kogito-swf-devmode-nightly:latest", deployment.Spec.Template.Spec.Containers[0].Image)
 }
 
 func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testing.T) {

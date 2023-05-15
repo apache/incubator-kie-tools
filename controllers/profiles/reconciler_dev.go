@@ -64,7 +64,7 @@ var prefixMountPathMap = map[string]string{
 
 const (
 	// TODO: read from the platform config. Default tag MUST align with the current operator's version. See: https://issues.redhat.com/browse/KOGITO-8675
-	defaultKogitoServerlessWorkflowDevImage = "quay.io/kiegroup/kogito-swf-builder"
+	defaultKogitoServerlessWorkflowDevImage = "quay.io/kiegroup/kogito-swf-devmode"
 	configMapWorkflowDefVolumeName          = "workflow-definition"
 	configMapWorkflowDefMountPath           = "/home/kogito/serverless-workflow-project/src/main/resources/workflows"
 	// quarkusDevConfigMountPath mount path for application properties file in the Workflow Quarkus Application
