@@ -111,19 +111,20 @@ export function SampleCard(props: { sample: Sample; cover: string | undefined })
             <CardTitle data-ouia-component-type="sample-title">{props.sample.definition.title}</CardTitle>
             <CardBody isFilled={true}>
               <Tooltip content={<div>{props.sample.definition.description}</div>}>
-                <Text
-                  component="p"
-                  style={{
-                    display: "-webkit-box",
-                    WebkitBoxOrient: "vertical",
-                    WebkitLineClamp: 5,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
-                  {props.sample.definition.description}
-                  <br />
+                <>
+                  <Text
+                    component="p"
+                    style={{
+                      display: "-webkit-box",
+                      WebkitBoxOrient: "vertical",
+                      WebkitLineClamp: 5,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "pre-wrap",
+                    }}
+                  >
+                    {props.sample.definition.description}
+                  </Text>
                   <Button
                     type="button"
                     onClick={handleModalToggle}
@@ -138,7 +139,7 @@ export function SampleCard(props: { sample: Sample; cover: string | undefined })
                   >
                     <SearchPlusIcon size="sm" />
                   </Button>
-                </Text>
+                </>
               </Tooltip>
             </CardBody>
           </GridItem>
