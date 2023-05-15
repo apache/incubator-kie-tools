@@ -104,7 +104,7 @@ export const KIE_SAMPLES_REPO: GitHubFileInfo = {
   owner: "kiegroup",
   repo: "kie-samples",
   ref: process.env["WEBPACK_REPLACE__samplesRepositoryRef"]!,
-  path: "samples",
+  path: SAMPLE_FOLDER,
 };
 
 async function fetchFileContent(args: { octokit: Octokit; fileInfo: GitHubFileInfo }): Promise<string | undefined> {
@@ -207,7 +207,7 @@ export async function fetchSampleCover(args: { octokit: Octokit; sample: Sample 
     octokit: args.octokit,
     fileInfo: {
       ...KIE_SAMPLES_REPO,
-      path: join("samples", sample.sampleId, sample.definition.cover),
+      path: join(SAMPLE_FOLDER, sample.sampleId, sample.definition.cover),
     },
   });
 
