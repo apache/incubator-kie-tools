@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.graph.util;
 import java.util.List;
 import java.util.OptionalInt;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -245,7 +246,7 @@ public class GraphUtilsTest {
         Point2D tconnectionLocation = tconnection.getLocation();
         sconnection.setLocation(Point2D.create(123d, 123d));
         tconnection.setLocation(Point2D.create(321d, 321d));
-        assertNotEquals(hashCode, GraphUtils.computeGraphHashCode(graph), 0d);
+        Assertions.assertThat(hashCode).isNotEqualTo(GraphUtils.computeGraphHashCode(graph));
         sconnection.setLocation(sconnectionLocation);
         tconnection.setLocation(tconnectionLocation);
         // Rollback connection changed.
