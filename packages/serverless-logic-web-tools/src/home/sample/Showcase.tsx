@@ -51,13 +51,13 @@ const LABEL_MAP: Record<SampleCategory, JSX.Element> = {
 };
 
 const ALL_CATEGORIES_LABEL = "All categories";
-const perPage = 9;
+const CARDS_PER_PAGE = 9;
 const CATEGORY_ARRAY = Object.keys(SAMPLE_PRIORITY) as SampleCategory[];
 
-export const perPageOptions: PerPageOptions[] = [
+export const SAMPLE_CARDS_PER_PAGE_OPTIONS: PerPageOptions[] = [
   {
-    title: "9",
-    value: 9,
+    title: `${CARDS_PER_PAGE}`,
+    value: CARDS_PER_PAGE,
   },
 ];
 
@@ -72,7 +72,10 @@ export function Showcase() {
   const [page, setPage] = React.useState(1);
   const [isCategoryFilterDropdownOpen, setCategoryFilterDropdownOpen] = useState(false);
 
-  const visibleSamples = useMemo(() => samples.slice((page - 1) * perPage, page * perPage), [samples, page]);
+  const visibleSamples = useMemo(
+    () => samples.slice((page - 1) * CARDS_PER_PAGE, page * CARDS_PER_PAGE),
+    [samples, page]
+  );
 
   const samplesCount = useMemo(() => samples.length, [samples]);
 
@@ -202,8 +205,8 @@ export function Showcase() {
                 itemCount={samplesCount}
                 onSetPage={onSetPage}
                 page={page}
-                perPage={perPage}
-                perPageOptions={perPageOptions}
+                perPage={CARDS_PER_PAGE}
+                perPageOptions={SAMPLE_CARDS_PER_PAGE_OPTIONS}
                 variant="top"
               />
             </ToolbarItem>
@@ -242,9 +245,9 @@ export function Showcase() {
                   itemCount={samplesCount}
                   onSetPage={onSetPage}
                   page={page}
-                  perPage={perPage}
+                  perPage={CARDS_PER_PAGE}
                   perPageComponent="button"
-                  perPageOptions={perPageOptions}
+                  perPageOptions={SAMPLE_CARDS_PER_PAGE_OPTIONS}
                   variant={PaginationVariant.bottom}
                   widgetId="bottom-example"
                 />
