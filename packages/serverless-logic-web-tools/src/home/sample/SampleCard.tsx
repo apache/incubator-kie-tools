@@ -98,6 +98,22 @@ export function SampleCard(props: { sample: Sample; cover: string | undefined })
             style={{ overflow: "hidden", textAlign: "center", verticalAlign: "middle", position: "relative" }}
           >
             <div style={{ position: "absolute", bottom: "16px", right: 0, left: 0, margin: "auto" }}>
+              <Button
+                type="button"
+                onClick={handleModalToggle}
+                isLarge
+                variant="plain"
+                style={
+                  {
+                    "--pf-c-button--PaddingLeft": "0",
+                    "--pf-c-button--PaddingRight": "0",
+                    marginTop: "-16px",
+                    marginLeft: "80%",
+                  } as React.CSSProperties
+                }
+              >
+                <SearchPlusIcon size="sm" />
+              </Button>
               <Label color={tag.color}>
                 <tag.icon />
                 &nbsp;&nbsp;<b>{tag.label}</b>
@@ -111,35 +127,19 @@ export function SampleCard(props: { sample: Sample; cover: string | undefined })
             <CardTitle data-ouia-component-type="sample-title">{props.sample.definition.title}</CardTitle>
             <CardBody isFilled={true}>
               <Tooltip content={<div>{props.sample.definition.description}</div>}>
-                <>
-                  <Text
-                    component="p"
-                    style={{
-                      display: "-webkit-box",
-                      WebkitBoxOrient: "vertical",
-                      WebkitLineClamp: 5,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "pre-wrap",
-                    }}
-                  >
-                    {props.sample.definition.description}
-                  </Text>
-                  <Button
-                    type="button"
-                    onClick={handleModalToggle}
-                    isLarge
-                    variant="plain"
-                    style={
-                      {
-                        "--pf-c-button--PaddingLeft": "0",
-                        "--pf-c-button--PaddingRight": "0",
-                      } as React.CSSProperties
-                    }
-                  >
-                    <SearchPlusIcon size="sm" />
-                  </Button>
-                </>
+                <Text
+                  component="p"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    WebkitLineClamp: 5,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {props.sample.definition.description}
+                </Text>
               </Tooltip>
             </CardBody>
           </GridItem>
