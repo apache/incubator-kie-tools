@@ -27,17 +27,22 @@ import { FileLabel } from "../../workspace/components/FileLabel";
 
 export function NewServerlessModelCard(props: {
   title: string;
-  jsonExtension: SupportedFileExtensions;
-  yamlExtension: SupportedFileExtensions;
+  jsonExtension?: SupportedFileExtensions;
+  yamlExtension?: SupportedFileExtensions;
   description: string;
 }) {
   const routes = useRoutes();
+  const { jsonExtension, yamlExtension } = props;
+
+  if (!jsonExtension && !yamlExtension) {
+    throw new Error("At least one of jsonExtension or yamlExtension must be provided.");
+  }
 
   return (
     <GridItem sm={12} md={4}>
       <Card isFullHeight={true} isPlain={true} isCompact={true}>
         <CardTitle>
-          <FileLabel style={{ fontSize: "0.6em" }} extension={props.jsonExtension} />
+          <FileLabel style={{ fontSize: "0.6em" }} extension={(jsonExtension || yamlExtension)!} />
         </CardTitle>
         <CardBody>
           <TextContent>
@@ -51,16 +56,20 @@ export function NewServerlessModelCard(props: {
             </Text>
           </TextContent>
           <Flex>
-            <Link to={{ pathname: routes.newModel.path({ extension: props.jsonExtension }) }}>
-              <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.jsonExtension}-button`}>
-                JSON
-              </Button>
-            </Link>
-            <Link to={{ pathname: routes.newModel.path({ extension: props.yamlExtension }) }}>
-              <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.yamlExtension}-button`}>
-                YAML
-              </Button>
-            </Link>
+            {jsonExtension && (
+              <Link to={{ pathname: routes.newModel.path({ extension: jsonExtension }) }}>
+                <Button variant={ButtonVariant.secondary} ouiaId={`new-${jsonExtension}-button`} isSmall>
+                  JSON
+                </Button>
+              </Link>
+            )}
+            {yamlExtension && (
+              <Link to={{ pathname: routes.newModel.path({ extension: yamlExtension }) }}>
+                <Button variant={ButtonVariant.secondary} ouiaId={`new-${yamlExtension}-button`} isSmall>
+                  YAML
+                </Button>
+              </Link>
+            )}
           </Flex>
         </CardFooter>
       </Card>

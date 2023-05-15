@@ -29,7 +29,6 @@ import { useHistory } from "react-router";
 import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
 import { QueryParams } from "../../navigation/Routes";
 import { useCallback, useContext, useMemo } from "react";
-import { NewModelCard } from "./NewModelCard";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
@@ -133,20 +132,18 @@ export function Overview(props: { isNavOpen: boolean }) {
                     title={"Workflow"}
                     jsonExtension={FileTypes.SW_JSON}
                     yamlExtension={FileTypes.SW_YAML}
-                    description={"Serverless Workflow files are used to define orchestration logic for services."}
+                    description={"Define orchestration logic for services."}
                   />
                   <NewServerlessModelCard
                     title={"Decision"}
                     jsonExtension={FileTypes.YARD_JSON}
                     yamlExtension={FileTypes.YARD_YAML}
-                    description={"Serverless Decision files are used to define decision logic for services."}
+                    description={"Define decision logic for services."}
                   />
-                  <NewModelCard
+                  <NewServerlessModelCard
                     title={"Dashboard"}
-                    extension={FileTypes.DASH_YAML}
-                    description={
-                      "Dashboard files are used to define data visualization from data extracted from applications."
-                    }
+                    yamlExtension={FileTypes.DASH_YML}
+                    description={"Define data visualization from data extracted from applications."}
                   />
                 </Grid>
               </CardBody>
