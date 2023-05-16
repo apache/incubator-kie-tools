@@ -134,9 +134,6 @@ export function BeeTableTd<R extends object>({
     }
 
     function onLeave() {
-      if (hasTextSelectedInBoxedExpressionEditor()) {
-        return;
-      }
       setHoverInfo((prev) => ({ isHovered: false }));
     }
     td?.addEventListener("mouseenter", onEnter);

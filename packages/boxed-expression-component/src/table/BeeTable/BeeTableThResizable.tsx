@@ -146,9 +146,6 @@ export function BeeTableThResizable<R extends object>({
     }
 
     function onLeave() {
-      if (hasTextSelectedInBoxedExpressionEditor()) {
-        return;
-      }
       setHoverInfo(() => ({ isHovered: false }));
     }
 
