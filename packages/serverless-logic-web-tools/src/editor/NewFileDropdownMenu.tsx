@@ -18,7 +18,6 @@ import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { FileLabel } from "../workspace/components/FileLabel";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
   DrilldownMenu,
@@ -39,6 +38,7 @@ import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/Exte
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 
@@ -54,6 +54,8 @@ export function NewFileDropdownMenu(props: {
   const [drilldownPath, setDrilldownPath] = useState<string[]>([]);
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
   const [activeMenu, setActiveMenu] = useState(ROOT_MENU_ID);
+  const [url, setUrl] = useState("");
+  const [isUrlValid, setIsUrlValid] = useState(ValidatedOptions.default);
 
   const drillIn = useCallback((_event, fromMenuId, toMenuId, pathId) => {
     setMenuDrilledIn((prev) => [...prev, fromMenuId]);
@@ -206,8 +208,6 @@ export function NewFileDropdownMenu(props: {
     [workspaces, props, successfullyUploadedAlert]
   );
 
-  const [url, setUrl] = useState("");
-
   return (
     <Menu
       style={{ boxShadow: "none", minWidth: "400px" }}
@@ -267,6 +267,7 @@ export function NewFileDropdownMenu(props: {
                       setUrl(url);
                       setImportingError(undefined);
                     }}
+                    onValidate={setIsUrlValid}
                     onSubmit={() => importFromUrl(url)}
                   />
                 </MenuInput>
@@ -275,6 +276,7 @@ export function NewFileDropdownMenu(props: {
                     variant={url.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
                     isLoading={isImporting}
                     onClick={() => importFromUrl(url)}
+                    isDisabled={isUrlValid !== ValidatedOptions.success}
                   >
                     Import
                   </Button>
