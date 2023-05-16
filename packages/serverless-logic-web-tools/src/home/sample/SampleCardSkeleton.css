@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 
-.sample-card-skeleton--gallery {
-  overflow-x: auto;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(calc(100% / 3.1 - 16px), 1fr);
-  padding-bottom: 8px;
-  padding-right: var(--pf-c-page__main-section--xl--PaddingRight);
-  height: 430px;
-}
-
 .sample-card-skeleton--grid {
   height: 100%;
 }
