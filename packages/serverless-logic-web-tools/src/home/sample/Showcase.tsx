@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Pagination, PaginationVariant, PerPageOptions } from "@patternfly/react-core/dist/js";
+import { Pagination, PaginationVariant, PerPageOptions, Skeleton } from "@patternfly/react-core/dist/js";
 import {
   Dropdown,
   DropdownItem,
@@ -200,15 +200,18 @@ export function Showcase() {
               )}
             </ToolbarItem>
             <ToolbarItem variant="pagination">
-              <Pagination
-                isCompact
-                itemCount={samplesCount}
-                onSetPage={onSetPage}
-                page={page}
-                perPage={CARDS_PER_PAGE}
-                perPageOptions={SAMPLE_CARDS_PER_PAGE_OPTIONS}
-                variant="top"
-              />
+              {loading && <Skeleton width="200px" />}
+              {!loading && (
+                <Pagination
+                  isCompact
+                  itemCount={samplesCount}
+                  onSetPage={onSetPage}
+                  page={page}
+                  perPage={CARDS_PER_PAGE}
+                  perPageOptions={SAMPLE_CARDS_PER_PAGE_OPTIONS}
+                  variant="top"
+                />
+              )}
             </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
@@ -218,7 +221,7 @@ export function Showcase() {
         {sampleLoadingError && <SamplesLoadError errors={[sampleLoadingError]} />}
         {!sampleLoadingError && (
           <>
-            {loading && <SampleCardSkeleton numberOfCards={4} />}
+            {loading && <SampleCardSkeleton numberOfCards={6} />}
             {!loading && samplesCount === 0 && (
               <PageSection variant={"light"} isFilled={true} style={{ marginRight: "25px" }}>
                 <EmptyState style={{ height: "350px" }}>

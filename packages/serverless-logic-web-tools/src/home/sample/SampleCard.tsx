@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Button, Modal, ModalVariant } from "@patternfly/react-core/dist/js";
+import { Button, Modal, ModalVariant, Skeleton } from "@patternfly/react-core/dist/js";
 import { Card, CardBody, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
@@ -66,6 +66,10 @@ function SampleSvgImg(props: {
     };
   }, [props.svgBlob]);
 
+  if (!svgUrl || !props.svgBlob) {
+    return <Skeleton height={height} width="100%" style={{ maxHeight: "80%" }} />;
+  }
+
   return (
     <img style={{ height, width, maxWidth, maxHeight }} src={svgUrl} alt={`SVG for sample ${props.sample.sampleId}`} />
   );
@@ -98,22 +102,24 @@ export function SampleCard(props: { sample: Sample; cover: string | undefined })
             style={{ overflow: "hidden", textAlign: "center", verticalAlign: "middle", position: "relative" }}
           >
             <div style={{ position: "absolute", bottom: "16px", right: 0, left: 0, margin: "auto" }}>
-              <Button
-                type="button"
-                onClick={handleModalToggle}
-                isLarge
-                variant="plain"
-                style={
-                  {
-                    "--pf-c-button--PaddingLeft": "0",
-                    "--pf-c-button--PaddingRight": "0",
-                    marginTop: "-16px",
-                    marginLeft: "80%",
-                  } as React.CSSProperties
-                }
-              >
-                <SearchPlusIcon size="sm" />
-              </Button>
+              {props.cover && (
+                <Button
+                  type="button"
+                  onClick={handleModalToggle}
+                  isLarge
+                  variant="plain"
+                  style={
+                    {
+                      "--pf-c-button--PaddingLeft": "0",
+                      "--pf-c-button--PaddingRight": "0",
+                      marginTop: "-16px",
+                      marginLeft: "80%",
+                    } as React.CSSProperties
+                  }
+                >
+                  <SearchPlusIcon size="sm" />
+                </Button>
+              )}
               <Label color={tag.color}>
                 <tag.icon />
                 &nbsp;&nbsp;<b>{tag.label}</b>
