@@ -25,7 +25,8 @@ import (
 
 // KogitoServerlessWorkflowSpec defines the desired state of KogitoServerlessWorkflow
 type KogitoServerlessWorkflowSpec struct {
-	model.Workflow `json:",inline"`
+	// +kubebuilder:validation:Required
+	Flow model.Workflow `json:"flow"`
 }
 
 // KogitoServerlessWorkflowStatus defines the observed state of KogitoServerlessWorkflow

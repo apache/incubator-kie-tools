@@ -31,63 +31,65 @@ metadata:
             "name": "greeting"
           },
           "spec": {
-            "functions": [
-              {
-                "name": "greetFunction",
-                "operation": "sysout",
-                "type": "custom"
-              }
-            ],
-            "start": "ChooseOnLanguage",
-            "states": [
-              {
-                "dataConditions": [
-                  {
-                    "condition": "${ .language == \"English\" }",
-                    "transition": "GreetInEnglish"
-                  },
-                  {
-                    "condition": "${ .language == \"Spanish\" }",
-                    "transition": "GreetInSpanish"
-                  }
-                ],
-                "defaultCondition": "GreetInEnglish",
-                "name": "ChooseOnLanguage",
-                "type": "switch"
-              },
-              {
-                "data": {
-                  "greeting": "Hello from JSON Workflow, "
-                },
-                "name": "GreetInEnglish",
-                "transition": "GreetPerson",
-                "type": "inject"
-              },
-              {
-                "data": {
-                  "greeting": "Saludos desde JSON Workflow, "
-                },
-                "name": "GreetInSpanish",
-                "transition": "GreetPerson",
-                "type": "inject"
-              },
-              {
-                "actions": [
-                  {
-                    "functionRef": {
-                      "arguments": {
-                        "message": ".greeting+.name"
-                      },
-                      "refName": "greetFunction"
+            "flow": {
+              "functions": [
+                {
+                  "name": "greetFunction",
+                  "operation": "sysout",
+                  "type": "custom"
+                }
+              ],
+              "start": "ChooseOnLanguage",
+              "states": [
+                {
+                  "dataConditions": [
+                    {
+                      "condition": "${ .language == \"English\" }",
+                      "transition": "GreetInEnglish"
                     },
-                    "name": "greetAction"
-                  }
-                ],
-                "end": true,
-                "name": "GreetPerson",
-                "type": "operation"
-              }
-            ]
+                    {
+                      "condition": "${ .language == \"Spanish\" }",
+                      "transition": "GreetInSpanish"
+                    }
+                  ],
+                  "defaultCondition": "GreetInEnglish",
+                  "name": "ChooseOnLanguage",
+                  "type": "switch"
+                },
+                {
+                  "data": {
+                    "greeting": "Hello from JSON Workflow, "
+                  },
+                  "name": "GreetInEnglish",
+                  "transition": "GreetPerson",
+                  "type": "inject"
+                },
+                {
+                  "data": {
+                    "greeting": "Saludos desde JSON Workflow, "
+                  },
+                  "name": "GreetInSpanish",
+                  "transition": "GreetPerson",
+                  "type": "inject"
+                },
+                {
+                  "actions": [
+                    {
+                      "functionRef": {
+                        "arguments": {
+                          "message": ".greeting+.name"
+                        },
+                        "refName": "greetFunction"
+                      },
+                      "name": "greetAction"
+                    }
+                  ],
+                  "end": true,
+                  "name": "GreetPerson",
+                  "type": "operation"
+                }
+              ]
+            }
           }
         }
       ]

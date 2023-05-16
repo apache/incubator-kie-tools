@@ -64,14 +64,14 @@ func TestKogitoServerlessWorkflowController(t *testing.T) {
 		}
 		// Perform some checks on the created CR
 
-		assert.True(t, afterReconcileWorkflow.Spec.Workflow.Start.StateName == "ChooseOnLanguage")
+		assert.True(t, afterReconcileWorkflow.Spec.Flow.Start.StateName == "ChooseOnLanguage")
 		// We create the initial build and return
 		assert.True(t, afterReconcileWorkflow.Status.GetCondition(api.BuiltConditionType).IsFalse())
 		assert.True(t, afterReconcileWorkflow.Status.GetCondition(api.RunningConditionType).IsFalse())
 		assert.True(t, afterReconcileWorkflow.Status.IsWaitingForBuild())
-		assert.True(t, len(afterReconcileWorkflow.Spec.States) == 4)
+		assert.True(t, len(afterReconcileWorkflow.Spec.Flow.States) == 4)
 
-		assert.True(t, ksw.Spec.BaseWorkflow.Start.StateName == "ChooseOnLanguage")
-		assert.True(t, len(ksw.Spec.States) == 4)
+		assert.True(t, ksw.Spec.Flow.Start.StateName == "ChooseOnLanguage")
+		assert.True(t, len(ksw.Spec.Flow.States) == 4)
 	})
 }

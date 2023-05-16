@@ -36,16 +36,16 @@ func ToCNCFWorkflow(ctx context.Context, serverlessWorkflow *operatorapi.KogitoS
 	if serverlessWorkflow != nil {
 		logger = ctrllog.FromContext(ctx)
 
-		serverlessWorkflow.Spec.Workflow.ID = serverlessWorkflow.ObjectMeta.Name
-		serverlessWorkflow.Spec.Workflow.Key = serverlessWorkflow.ObjectMeta.Annotations[metadata.Key]
-		serverlessWorkflow.Spec.Workflow.Name = serverlessWorkflow.ObjectMeta.Name
-		serverlessWorkflow.Spec.Workflow.Description = serverlessWorkflow.ObjectMeta.Annotations[metadata.Description]
-		serverlessWorkflow.Spec.Workflow.Version = serverlessWorkflow.ObjectMeta.Annotations[metadata.Version]
-		serverlessWorkflow.Spec.Workflow.SpecVersion = extractSchemaVersion(serverlessWorkflow.APIVersion)
-		serverlessWorkflow.Spec.Workflow.ExpressionLang = model.ExpressionLangType(extractExpressionLang(serverlessWorkflow.ObjectMeta.Annotations))
+		serverlessWorkflow.Spec.Flow.ID = serverlessWorkflow.ObjectMeta.Name
+		serverlessWorkflow.Spec.Flow.Key = serverlessWorkflow.ObjectMeta.Annotations[metadata.Key]
+		serverlessWorkflow.Spec.Flow.Name = serverlessWorkflow.ObjectMeta.Name
+		serverlessWorkflow.Spec.Flow.Description = serverlessWorkflow.ObjectMeta.Annotations[metadata.Description]
+		serverlessWorkflow.Spec.Flow.Version = serverlessWorkflow.ObjectMeta.Annotations[metadata.Version]
+		serverlessWorkflow.Spec.Flow.SpecVersion = extractSchemaVersion(serverlessWorkflow.APIVersion)
+		serverlessWorkflow.Spec.Flow.ExpressionLang = model.ExpressionLangType(extractExpressionLang(serverlessWorkflow.ObjectMeta.Annotations))
 
-		logger.V(DebugV).Info("Created new Base Workflow with name", "name", serverlessWorkflow.Spec.Workflow.Name)
-		return &serverlessWorkflow.Spec.Workflow, nil
+		logger.V(DebugV).Info("Created new Base Workflow with name", "name", serverlessWorkflow.Spec.Flow.Name)
+		return &serverlessWorkflow.Spec.Flow, nil
 	}
 	return nil, errors.New("kogitoServerlessWorkflow is nil")
 }
