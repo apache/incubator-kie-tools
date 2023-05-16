@@ -123,8 +123,7 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
               isInline
             >
               KIE Sandbox Extended Services is necessary for uploading Open API specs associated with models you design
-              to your Service Registry instance and also connecting deployments with your Streams for Apache Kafka
-              instance.
+              to your Service Registry instance.
             </Alert>
             <br />
           </>
