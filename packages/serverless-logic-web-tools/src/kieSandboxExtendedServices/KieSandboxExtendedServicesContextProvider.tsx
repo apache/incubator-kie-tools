@@ -23,7 +23,6 @@ import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesSt
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
 import { KieSandboxExtendedServicesModal } from "./KieSandboxExtendedServicesModal";
 import { useEnv } from "../env/EnvContext";
-import { AppDistributionMode } from "../AppConstants";
 
 interface Props {
   children: React.ReactNode;
@@ -71,12 +70,8 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
       const envHost = `${envUrl.protocol}//${envUrl.hostname}`;
       const envPort = envUrl.port;
 
-      let host = envHost;
-      let port = envPort;
-      if (env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY) {
-        host = getCookie(KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envHost;
-        port = getCookie(KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envPort;
-      }
+      const host = getCookie(KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envHost;
+      const port = getCookie(KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envPort;
 
       const newConfig = new ExtendedServicesConfig(host, port);
       setConfig(newConfig);
@@ -89,7 +84,7 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
     } catch (e) {
       console.error("Invalid KIE_SANDBOX_EXTENDED_SERVICES_URL", e);
     }
-  }, [env.FEATURE_FLAGS.MODE, env.KIE_SANDBOX_EXTENDED_SERVICES_URL, saveNewConfig]);
+  }, [env.KIE_SANDBOX_EXTENDED_SERVICES_URL, saveNewConfig]);
 
   useEffect(() => {
     // Pooling to detect either if KieSandboxExtendedServices is running or has stopped

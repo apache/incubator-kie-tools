@@ -32,7 +32,6 @@ import { OpenShiftDeploymentDropdownItem } from "./OpenShiftDeploymentDropdownIt
 import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { useEnv } from "../../env/EnvContext";
-import { AppDistributionMode } from "../../AppConstants";
 import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useDevModeDispatch } from "../swfDevMode/DevModeContext";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
@@ -97,22 +96,19 @@ export function OpenshiftDeploymentsDropdown() {
   }, [refresh, refreshCountdownInSeconds]);
 
   const connectionItem = useMemo(
-    () =>
-      env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY
-        ? [
-            <DropdownItem
-              key={"dropdown-openshift-setup-as"}
-              component={"button"}
-              onClick={openOpenShiftSettings}
-              ouiaId={"setup-as-openshift-dropdown-button"}
-              description={"Change..."}
-            >
-              {`Connected to ${settings.openshift.config.namespace}`}
-            </DropdownItem>,
-            <DropdownSeparator key={"dropdown-openshift-separator-deployments-2"} />,
-          ]
-        : [],
-    [env.FEATURE_FLAGS.MODE, openOpenShiftSettings, settings.openshift.config.namespace]
+    () => [
+      <DropdownItem
+        key={"dropdown-openshift-setup-as"}
+        component={"button"}
+        onClick={openOpenShiftSettings}
+        ouiaId={"setup-as-openshift-dropdown-button"}
+        description={"Change..."}
+      >
+        {`Connected to ${settings.openshift.config.namespace}`}
+      </DropdownItem>,
+      <DropdownSeparator key={"dropdown-openshift-separator-deployments-2"} />,
+    ],
+    [openOpenShiftSettings, settings.openshift.config.namespace]
   );
 
   const deploymentItems = useMemo(() => {

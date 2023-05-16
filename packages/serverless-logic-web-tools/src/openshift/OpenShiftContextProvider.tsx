@@ -23,8 +23,6 @@ import { useOpenApi } from "./hooks/useOpenApi";
 import { useRemoteServiceRegistry } from "./hooks/useRemoteServiceRegistry";
 import { OpenShiftContext } from "./OpenShiftContext";
 import { KnativeDeploymentLoaderPipeline } from "./pipelines/KnativeDeploymentLoaderPipeline";
-import { useEnv } from "../env/EnvContext";
-import { AppDistributionMode } from "../AppConstants";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
@@ -36,7 +34,6 @@ import {
 const FETCH_OPEN_API_POLLING_TIME = 5000;
 
 export function OpenShiftContextProvider(props: React.PropsWithChildren<{}>) {
-  const { env } = useEnv();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
@@ -48,15 +45,14 @@ export function OpenShiftContextProvider(props: React.PropsWithChildren<{}>) {
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
 
-  const deploymentLoaderPipeline = useMemo(() => {
-    if (env.FEATURE_FLAGS.MODE !== AppDistributionMode.COMMUNITY) {
-      return;
-    }
-    return new KnativeDeploymentLoaderPipeline({
-      namespace: settings.openshift.config.namespace,
-      openShiftService: settingsDispatch.openshift.service,
-    });
-  }, [env.FEATURE_FLAGS.MODE, settings.openshift.config.namespace, settingsDispatch.openshift.service]);
+  const deploymentLoaderPipeline = useMemo(
+    () =>
+      new KnativeDeploymentLoaderPipeline({
+        namespace: settings.openshift.config.namespace,
+        openShiftService: settingsDispatch.openshift.service,
+      }),
+    [settings.openshift.config.namespace, settingsDispatch.openshift.service]
+  );
 
   const onDisconnect = useCallback(() => {
     settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);

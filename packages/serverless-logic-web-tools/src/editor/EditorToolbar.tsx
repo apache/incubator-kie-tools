@@ -94,7 +94,6 @@ import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocat
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { useEnv } from "../env/EnvContext";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
-import { AppDistributionMode } from "../AppConstants";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -179,13 +178,10 @@ export function EditorToolbar(props: Props) {
     };
   }, [isSaved]);
 
-  const canBeDeployed = useMemo(() => {
-    if (env.FEATURE_FLAGS.MODE === AppDistributionMode.OPERATE_FIRST) {
-      return isOfKind("sw", props.workspaceFile.relativePath);
-    }
-
-    return isOfKind("sw", props.workspaceFile.relativePath) || isOfKind("dash", props.workspaceFile.relativePath);
-  }, [env.FEATURE_FLAGS.MODE, props.workspaceFile.relativePath]);
+  const canBeDeployed = useMemo(
+    () => isOfKind("sw", props.workspaceFile.relativePath) || isOfKind("dash", props.workspaceFile.relativePath),
+    [props.workspaceFile.relativePath]
+  );
 
   useCancelableEffect(
     useCallback(

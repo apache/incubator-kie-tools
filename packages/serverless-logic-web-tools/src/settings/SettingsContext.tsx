@@ -38,7 +38,6 @@ import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/
 import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
 import { FeaturePreviewSettingsConfig, readFeaturePreviewConfigCookie } from "./featurePreview/FeaturePreviewConfig";
 import { useEnv } from "../env/EnvContext";
-import { AppDistributionMode } from "../AppConstants";
 import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 export enum AuthStatus {
@@ -215,19 +214,11 @@ export function SettingsContextProvider(props: any) {
   }, [githubAuthService]);
 
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
-  const [openshiftConfig, setOpenShiftConfig] = useState(
-    isKubernetesConnectionValid(env.OPENSHIFT_CONNECTION) ? env.OPENSHIFT_CONNECTION : readOpenShiftConfigCookie()
-  );
-  const [serviceAccountConfig, setServiceAccountConfig] = useState<ServiceAccountSettingsConfig>(
-    readServiceAccountConfigCookie()
-  );
-  const [serviceRegistryConfig, setServiceRegistryConfig] = useState<ServiceRegistrySettingsConfig>(
-    readServiceRegistryConfigCookie()
-  );
 
-  const [featurePreviewConfig, setFeaturePreviewConfig] = useState<FeaturePreviewSettingsConfig>(
-    readFeaturePreviewConfigCookie()
-  );
+  const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
+  const [serviceAccountConfig, setServiceAccountConfig] = useState(readServiceAccountConfigCookie());
+  const [serviceRegistryConfig, setServiceRegistryConfig] = useState(readServiceRegistryConfigCookie());
+  const [featurePreviewConfig, setFeaturePreviewConfig] = useState(readFeaturePreviewConfigCookie());
 
   const [openshiftStatus, setOpenshiftStatus] = useState(
     kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.AVAILABLE
@@ -239,16 +230,12 @@ export function SettingsContextProvider(props: any) {
     () =>
       new OpenShiftService({
         connection: openshiftConfig,
-        proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/${
-          env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY ? "cors-proxy" : "operate-first"
-        }`,
+        proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/${"cors-proxy"}`,
       }),
-    [openshiftConfig, kieSandboxExtendedServices.config, env.FEATURE_FLAGS.MODE]
+    [openshiftConfig, kieSandboxExtendedServices.config]
   );
 
-  const [isOpenShiftDevModeEnabled, setOpenShiftDevModeEnabled] = useState<boolean>(
-    env.FEATURE_FLAGS.MODE === AppDistributionMode.OPERATE_FIRST || readDevModeEnabledConfigCookie()
-  );
+  const [isOpenShiftDevModeEnabled, setOpenShiftDevModeEnabled] = useState(readDevModeEnabledConfigCookie());
 
   const serviceCatalogStore = useMemo(
     () =>

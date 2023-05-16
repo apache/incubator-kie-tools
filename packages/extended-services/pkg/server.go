@@ -14,326 +14,269 @@
  * limitations under the License.
  */
 
-package pkg
+ package pkg
 
-import (
-	"bufio"
-	"context"
-	"crypto/tls"
-	"net"
+ import (
+	 "bufio"
+	 "context"
+	 "crypto/tls"
+	 "net"
 
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-	"net/http/httputil"
-	"net/url"
-	"os"
-	"os/exec"
-	"os/signal"
-	"path/filepath"
-	"runtime"
-	"strconv"
-	"time"
+	 "encoding/json"
+	 "fmt"
+	 "log"
+	 "net/http"
+	 "net/http/httputil"
+	 "net/url"
+	 "os"
+	 "os/exec"
+	 "os/signal"
+	 "path/filepath"
+	 "runtime"
+	 "strconv"
+	 "time"
 
-	"github.com/gorilla/mux"
-	"github.com/kiegroup/kie-tools/packages/extended-services/pkg/metadata"
-	"github.com/phayes/freeport"
-)
+	 "github.com/gorilla/mux"
+	 "github.com/kiegroup/kie-tools/packages/extended-services/pkg/metadata"
+	 "github.com/phayes/freeport"
+ )
 
-type Proxy struct {
-	View               *Systray
-	Started            bool
-	URL                string
-	Port               string
-	RunnerPort         string
-	InsecureSkipVerify bool
+ type Proxy struct {
+	 View               *Systray
+	 Started            bool
+	 URL                string
+	 Port               string
+	 RunnerPort         string
+	 InsecureSkipVerify bool
 
-	cmd             *exec.Cmd
-	jitexecutorPath string
-	server          *http.Server
-}
+	 cmd             *exec.Cmd
+	 jitexecutorPath string
+	 server          *http.Server
+ }
 
-func NewProxy(port string, jitexecutor []byte) *Proxy {
-	return &Proxy{
-		jitexecutorPath:    createJitExecutor(jitexecutor),
-		Started:            false,
-		Port:               port,
-		InsecureSkipVerify: false,
-	}
-}
+ func NewProxy(port string, jitexecutor []byte) *Proxy {
+	 return &Proxy{
+		 jitexecutorPath:    createJitExecutor(jitexecutor),
+		 Started:            false,
+		 Port:               port,
+		 InsecureSkipVerify: false,
+	 }
+ }
 
-func (p *Proxy) Start() {
-	port, err := freeport.GetFreePort()
-	if err != nil {
-		log.Fatal(err)
-	}
-	p.RunnerPort = strconv.Itoa(port)
-	p.URL = "http://127.0.0.1:" + p.RunnerPort
+ func (p *Proxy) Start() {
+	 port, err := freeport.GetFreePort()
+	 if err != nil {
+		 log.Fatal(err)
+	 }
+	 p.RunnerPort = strconv.Itoa(port)
+	 p.URL = "http://127.0.0.1:" + p.RunnerPort
 
-	p.cmd = exec.Command(p.jitexecutorPath, "-Dquarkus.http.port="+p.RunnerPort)
-	stdout, _ := p.cmd.StdoutPipe()
-	go func() {
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			msg := scanner.Text()
-			fmt.Printf("msg: %s\n", msg)
-		}
-	}()
+	 p.cmd = exec.Command(p.jitexecutorPath, "-Dquarkus.http.port="+p.RunnerPort)
+	 stdout, _ := p.cmd.StdoutPipe()
+	 go func() {
+		 scanner := bufio.NewScanner(stdout)
+		 for scanner.Scan() {
+			 msg := scanner.Text()
+			 fmt.Printf("msg: %s\n", msg)
+		 }
+	 }()
 
-	err = p.cmd.Start()
-	if err != nil {
-		log.Fatal(err)
-	}
+	 err = p.cmd.Start()
+	 if err != nil {
+		 log.Fatal(err)
+	 }
 
-	router := mux.NewRouter()
+	 router := mux.NewRouter()
+	 router.PathPrefix("/cors-proxy").HandlerFunc(p.corsProxyHandler())
+	 router.PathPrefix("/ping").HandlerFunc(p.pingHandler())
+	 router.PathPrefix("/").HandlerFunc(p.jitExecutorHandler())
 
-	if _, isOpenShiftTokenAvailable := os.LookupEnv("OPENSHIFT_TOKEN"); isOpenShiftTokenAvailable {
-		fmt.Println("OPENSHIFT_TOKEN is set")
-		router.PathPrefix("/operate-first").HandlerFunc(p.operateFirstHandler())
-	} else {
-		fmt.Println("OPENSHIFT_TOKEN is not set")
-	}
+	 addr := metadata.Ip + ":" + p.Port
 
-	router.PathPrefix("/cors-proxy").HandlerFunc(p.corsProxyHandler())
-	router.PathPrefix("/ping").HandlerFunc(p.pingHandler())
-	router.PathPrefix("/").HandlerFunc(p.jitExecutorHandler())
+	 p.server = &http.Server{
+		 Handler:      router,
+		 Addr:         addr,
+		 WriteTimeout: 15 * time.Second,
+		 ReadTimeout:  15 * time.Second,
+	 }
 
-	addr := metadata.Ip + ":" + p.Port
+	 fmt.Printf("Server started: %s \n", addr)
 
-	p.server = &http.Server{
-		Handler:      router,
-		Addr:         addr,
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
-	}
+	 go p.server.ListenAndServe()
+	 go p.GracefulShutdown()
 
-	fmt.Printf("Server started: %s \n", addr)
+	 p.Refresh()
+ }
 
-	go p.server.ListenAndServe()
-	go p.GracefulShutdown()
+ func (p *Proxy) GracefulShutdown() {
+	 c := make(chan os.Signal, 1)
+	 signal.Notify(c, os.Interrupt)
+	 <-c
+	 ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	 defer cancel()
+	 log.Println("Signal detected, shutting down...")
+	 p.Stop()
+	 p.server.Shutdown(ctx)
+	 os.Exit(0)
+ }
 
-	p.Refresh()
-}
+ func (p *Proxy) Stop() {
+	 log.Println("Shutting down")
 
-func (p *Proxy) GracefulShutdown() {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	<-c
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	log.Println("Signal detected, shutting down...")
-	p.Stop()
-	p.server.Shutdown(ctx)
-	os.Exit(0)
-}
+	 p.cmd.Process.Kill()
 
-func (p *Proxy) Stop() {
-	log.Println("Shutting down")
+	 ctx, cancel := context.WithTimeout(context.TODO(), time.Second*15)
+	 defer cancel()
 
-	p.cmd.Process.Kill()
+	 if err := p.server.Shutdown(ctx); err != nil {
+		 log.Fatalf("Server Shutdown Failed:%+v", err)
+	 }
+	 log.Println("Shutdown complete")
 
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*15)
-	defer cancel()
+	 p.RunnerPort = "0"
+	 p.Started = false
+	 p.View.Refresh()
+ }
 
-	if err := p.server.Shutdown(ctx); err != nil {
-		log.Fatalf("Server Shutdown Failed:%+v", err)
-	}
-	log.Println("Shutdown complete")
+ func (p *Proxy) Refresh() {
+	 p.View.SetLoading()
 
-	p.RunnerPort = "0"
-	p.Started = false
-	p.View.Refresh()
-}
+	 for !p.Started {
+		 resp, err := http.Get(p.URL)
+		 if err != nil {
+			 fmt.Println(err.Error())
+		 } else {
+			 if resp.StatusCode == 200 {
+				 p.Started = true
+			 } else {
+				 fmt.Println(strconv.Itoa(resp.StatusCode) + " -> " + resp.Status)
+			 }
+		 }
+		 time.Sleep(1 * time.Second)
+	 }
 
-func (p *Proxy) Refresh() {
-	p.View.SetLoading()
+	 p.View.Refresh()
+ }
 
-	for !p.Started {
-		resp, err := http.Get(p.URL)
-		if err != nil {
-			fmt.Println(err.Error())
-		} else {
-			if resp.StatusCode == 200 {
-				p.Started = true
-			} else {
-				fmt.Println(strconv.Itoa(resp.StatusCode) + " -> " + resp.Status)
-			}
-		}
-		time.Sleep(1 * time.Second)
-	}
+ func (p *Proxy) corsProxyHandler() func(rw http.ResponseWriter, req *http.Request) {
+	 return func(rw http.ResponseWriter, req *http.Request) {
+		 if req.Method == "OPTIONS" {
+			 rw.Header().Set("Access-Control-Allow-Origin", "*")
+			 rw.Header().Set("Access-Control-Allow-Methods", "*")
+			 rw.Header().Set("Access-Control-Allow-Headers", "*")
+			 return
+		 }
 
-	p.View.Refresh()
-}
+		 targetUrl, err := url.Parse(req.Header.Get("Target-Url"))
+		 if err != nil {
+			 log.Fatal(err)
+		 }
+		 emptyUrl, _ := url.Parse("")
+		 req.URL = emptyUrl
+		 req.Host = req.URL.Host
 
-// TODO CAPONETTO: Same code as `corsProxyHandler`, but automatically appends the token
-func (p *Proxy) operateFirstHandler() func(rw http.ResponseWriter, req *http.Request) {
-	return func(rw http.ResponseWriter, req *http.Request) {
-		if req.Method == "OPTIONS" {
-			rw.Header().Set("Access-Control-Allow-Origin", "*")
-			rw.Header().Set("Access-Control-Allow-Methods", "*")
-			rw.Header().Set("Access-Control-Allow-Headers", "*")
-			return
-		}
+		 req.Header.Del("Origin")
 
-		targetUrl, err := url.Parse(req.Header.Get("Target-Url"))
-		if err != nil {
-			log.Fatal(err)
-		}
-		emptyUrl, _ := url.Parse("")
-		req.URL = emptyUrl
-		req.Host = req.URL.Host
-		// Automatically appends the token
-		req.Header.Set("Authorization", "Bearer " + os.Getenv("OPENSHIFT_TOKEN"))
+		 proxy := httputil.NewSingleHostReverseProxy(targetUrl)
 
-		proxy := httputil.NewSingleHostReverseProxy(targetUrl)
+		 // tolerate p-signed certificates
+		 proxy.Transport = &http.Transport{
+			 Proxy: http.ProxyFromEnvironment,
+			 DialContext: (&net.Dialer{
+				 Timeout:   30 * time.Second,
+				 KeepAlive: 30 * time.Second,
+			 }).DialContext,
+			 ForceAttemptHTTP2:     true,
+			 MaxIdleConns:          10,
+			 IdleConnTimeout:       60 * time.Second,
+			 TLSHandshakeTimeout:   10 * time.Second,
+			 ExpectContinueTimeout: 1 * time.Second,
+			 TLSClientConfig: &tls.Config{
+				 InsecureSkipVerify: p.InsecureSkipVerify,
+			 },
+		 }
 
-		// tolerate p-signed certificates
-		proxy.Transport = &http.Transport{
-			Proxy: http.ProxyFromEnvironment,
-			DialContext: (&net.Dialer{
-				Timeout:   30 * time.Second,
-				KeepAlive: 30 * time.Second,
-			}).DialContext,
-			ForceAttemptHTTP2:     true,
-			MaxIdleConns:          10,
-			IdleConnTimeout:       60 * time.Second,
-			TLSHandshakeTimeout:   10 * time.Second,
-			ExpectContinueTimeout: 1 * time.Second,
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: p.InsecureSkipVerify,
-			},
-		}
+		 proxy.ModifyResponse = func(resp *http.Response) error {
+			 resp.Header.Set("Access-Control-Allow-Origin", "*")
+			 resp.Header.Set("Access-Control-Allow-Methods", "*")
+			 resp.Header.Set("Access-Control-Allow-Headers", "*")
+			 return nil
+		 }
+		 proxy.ServeHTTP(rw, req)
+	 }
+ }
 
-		proxy.ModifyResponse = func(resp *http.Response) error {
-			resp.Header.Set("Access-Control-Allow-Origin", "*")
-			resp.Header.Set("Access-Control-Allow-Methods", "*")
-			resp.Header.Set("Access-Control-Allow-Headers", "*")
-			return nil
-		}
-		proxy.ServeHTTP(rw, req)
-	}
-}
+ func (p *Proxy) jitExecutorHandler() func(rw http.ResponseWriter, req *http.Request) {
+	 return func(rw http.ResponseWriter, req *http.Request) {
+		 if req.Method == "OPTIONS" {
+			 rw.Header().Set("Access-Control-Allow-Origin", "*")
+			 rw.Header().Set("Access-Control-Allow-Methods", "*")
+			 rw.Header().Set("Access-Control-Allow-Headers", "*")
+			 return
+		 }
 
-func (p *Proxy) corsProxyHandler() func(rw http.ResponseWriter, req *http.Request) {
-	return func(rw http.ResponseWriter, req *http.Request) {
-		if req.Method == "OPTIONS" {
-			rw.Header().Set("Access-Control-Allow-Origin", "*")
-			rw.Header().Set("Access-Control-Allow-Methods", "*")
-			rw.Header().Set("Access-Control-Allow-Headers", "*")
-			return
-		}
+		 target, err := url.Parse(p.URL)
+		 if err != nil {
+			 log.Fatal(err)
+		 }
+		 proxy := httputil.NewSingleHostReverseProxy(target)
 
-		targetUrl, err := url.Parse(req.Header.Get("Target-Url"))
-		if err != nil {
-			log.Fatal(err)
-		}
-		emptyUrl, _ := url.Parse("")
-		req.URL = emptyUrl
-		req.Host = req.URL.Host
+		 req.Host = req.URL.Host
+		 proxy.ServeHTTP(rw, req)
+	 }
+ }
 
-		req.Header.Del("Origin")
+ func (p *Proxy) pingHandler() func(rw http.ResponseWriter, req *http.Request) {
+	 return func(rw http.ResponseWriter, req *http.Request) {
+		 rw.Header().Set("Access-Control-Allow-Origin", "*")
+		 rw.Header().Set("Access-Control-Allow-Methods", "GET")
 
-		proxy := httputil.NewSingleHostReverseProxy(targetUrl)
+		 conf := GetPingResponse(p.InsecureSkipVerify, p.Started)
+		 rw.WriteHeader(http.StatusOK)
+		 json, _ := json.Marshal(conf)
+		 _, err := rw.Write(json)
+		 if err != nil {
+			 log.Fatal(err)
+		 }
+	 }
+ }
 
-		// tolerate p-signed certificates
-		proxy.Transport = &http.Transport{
-			Proxy: http.ProxyFromEnvironment,
-			DialContext: (&net.Dialer{
-				Timeout:   30 * time.Second,
-				KeepAlive: 30 * time.Second,
-			}).DialContext,
-			ForceAttemptHTTP2:     true,
-			MaxIdleConns:          10,
-			IdleConnTimeout:       60 * time.Second,
-			TLSHandshakeTimeout:   10 * time.Second,
-			ExpectContinueTimeout: 1 * time.Second,
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: p.InsecureSkipVerify,
-			},
-		}
+ func createJitExecutor(jitexecutor []byte) string {
+	 cacheDir, err := os.UserCacheDir()
+	 if err != nil {
+		 log.Fatal(err)
+	 }
 
-		proxy.ModifyResponse = func(resp *http.Response) error {
-			resp.Header.Set("Access-Control-Allow-Origin", "*")
-			resp.Header.Set("Access-Control-Allow-Methods", "*")
-			resp.Header.Set("Access-Control-Allow-Headers", "*")
-			return nil
-		}
-		proxy.ServeHTTP(rw, req)
-	}
-}
+	 cachePath := filepath.Join(cacheDir, "org.kie.kogito")
+	 if _, err := os.Stat(cachePath); os.IsNotExist(err) {
+		 if err = os.Mkdir(cachePath, os.ModePerm); err != nil {
+			 log.Fatal(err)
+		 }
+	 }
 
-func (p *Proxy) jitExecutorHandler() func(rw http.ResponseWriter, req *http.Request) {
-	return func(rw http.ResponseWriter, req *http.Request) {
-		if req.Method == "OPTIONS" {
-			rw.Header().Set("Access-Control-Allow-Origin", "*")
-			rw.Header().Set("Access-Control-Allow-Methods", "*")
-			rw.Header().Set("Access-Control-Allow-Headers", "*")
-			return
-		}
+	 var jitExecutorPath string
+	 if runtime.GOOS == "windows" {
+		 jitExecutorPath = filepath.Join(cachePath, "runner.exe")
+	 } else {
+		 jitExecutorPath = filepath.Join(cachePath, "runner")
+	 }
 
-		target, err := url.Parse(p.URL)
-		if err != nil {
-			log.Fatal(err)
-		}
-		proxy := httputil.NewSingleHostReverseProxy(target)
+	 _, err = os.Stat(jitExecutorPath)
+	 if err == nil {
+		 os.Remove(jitExecutorPath)
+	 }
 
-		req.Host = req.URL.Host
-		proxy.ServeHTTP(rw, req)
-	}
-}
+	 f, err := os.Create(jitExecutorPath)
+	 if err != nil {
+		 log.Fatal(err)
+	 }
+	 f.Chmod(0777)
 
-func (p *Proxy) pingHandler() func(rw http.ResponseWriter, req *http.Request) {
-	return func(rw http.ResponseWriter, req *http.Request) {
-		rw.Header().Set("Access-Control-Allow-Origin", "*")
-		rw.Header().Set("Access-Control-Allow-Methods", "GET")
+	 _, err = f.Write(jitexecutor)
+	 if err != nil {
+		 log.Fatal(err)
+	 }
 
-		conf := GetPingResponse(p.InsecureSkipVerify, p.Started)
-		rw.WriteHeader(http.StatusOK)
-		json, _ := json.Marshal(conf)
-		_, err := rw.Write(json)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-}
-
-func createJitExecutor(jitexecutor []byte) string {
-	cacheDir, err := os.UserCacheDir()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	cachePath := filepath.Join(cacheDir, "org.kie.kogito")
-	if _, err := os.Stat(cachePath); os.IsNotExist(err) {
-		if err = os.Mkdir(cachePath, os.ModePerm); err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	var jitExecutorPath string
-	if runtime.GOOS == "windows" {
-		jitExecutorPath = filepath.Join(cachePath, "runner.exe")
-	} else {
-		jitExecutorPath = filepath.Join(cachePath, "runner")
-	}
-
-	_, err = os.Stat(jitExecutorPath)
-	if err == nil {
-		os.Remove(jitExecutorPath)
-	}
-
-	f, err := os.Create(jitExecutorPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	f.Chmod(0777)
-
-	_, err = f.Write(jitexecutor)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	f.Close()
-	return jitExecutorPath
-}
+	 f.Close()
+	 return jitExecutorPath
+ }

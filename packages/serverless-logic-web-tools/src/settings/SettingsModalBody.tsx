@@ -15,7 +15,6 @@
  */
 
 import * as React from "react";
-import { useMemo } from "react";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { GitHubSettingsTab } from "./github/GitHubSettingsTab";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
@@ -24,8 +23,6 @@ import { ServiceAccountSettingsTab } from "./serviceAccount/ServiceAccountSettin
 import { ServiceRegistrySettingsTab } from "./serviceRegistry/ServiceRegistrySettingsTab";
 import { KieSandboxExtendedServicesSettingsTab } from "./extendedServices/KieSandboxExtendedServicesSettingsTab";
 import { FeaturePreviewSettingsTab } from "./featurePreview/FeaturePreviewSettingsTab";
-import { useEnv } from "../env/EnvContext";
-import { AppDistributionMode } from "../AppConstants";
 
 export enum SettingsTabs {
   GITHUB = "github",
@@ -37,19 +34,13 @@ export enum SettingsTabs {
 }
 
 export function SettingsModalBody() {
-  const { env } = useEnv();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-
-  const isCommunityMode = useMemo(
-    () => env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY,
-    [env.FEATURE_FLAGS.MODE]
-  );
 
   return (
     <Tabs
       activeKey={settings.activeTab}
-      onSelect={(e, k) => settingsDispatch.open(k as SettingsTabs)}
+      onSelect={(_e, k) => settingsDispatch.open(k as SettingsTabs)}
       isVertical={false}
       isBox={false}
     >
@@ -60,24 +51,20 @@ export function SettingsModalBody() {
       >
         <GitHubSettingsTab />
       </Tab>
-      {isCommunityMode && (
-        <Tab
-          className="kie-tools--settings-tab"
-          eventKey={SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES}
-          title={<TabTitleText>KIE Sandbox Extended Services</TabTitleText>}
-        >
-          <KieSandboxExtendedServicesSettingsTab />
-        </Tab>
-      )}
-      {isCommunityMode && (
-        <Tab
-          className="kie-tools--settings-tab"
-          eventKey={SettingsTabs.OPENSHIFT}
-          title={<TabTitleText>OpenShift</TabTitleText>}
-        >
-          <OpenShiftSettingsTab />
-        </Tab>
-      )}
+      <Tab
+        className="kie-tools--settings-tab"
+        eventKey={SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES}
+        title={<TabTitleText>KIE Sandbox Extended Services</TabTitleText>}
+      >
+        <KieSandboxExtendedServicesSettingsTab />
+      </Tab>
+      <Tab
+        className="kie-tools--settings-tab"
+        eventKey={SettingsTabs.OPENSHIFT}
+        title={<TabTitleText>OpenShift</TabTitleText>}
+      >
+        <OpenShiftSettingsTab />
+      </Tab>
       <Tab
         className="kie-tools--settings-tab"
         eventKey={SettingsTabs.SERVICE_ACCOUNT}

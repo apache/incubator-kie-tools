@@ -47,7 +47,6 @@ import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/reac
 import { useEnv } from "../../env/EnvContext";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { useEditor } from "../hooks/EditorContext";
-import { AppDistributionMode } from "../../AppConstants";
 import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 const FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME = 2000;
@@ -311,37 +310,35 @@ export function useDeployDropdownItems(props: Props) {
                 )}
               </DropdownItem>
             )}
-            {env.FEATURE_FLAGS.MODE === AppDistributionMode.COMMUNITY && (
-              <DropdownItem
-                icon={<OpenshiftIcon />}
-                id="deploy-your-model-button"
-                key={`dropdown-deploy`}
-                component={"button"}
-                onClick={onDeploy}
-                isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
-                ouiaId={"deploy-to-openshift-dropdown-button"}
-              >
-                {props.workspace.files.length > 1 && (
-                  <Flex flexWrap={{ default: "nowrap" }}>
-                    <FlexItem>
-                      Deploy models in <b>{`"${props.workspace.descriptor.name}"`}</b>
-                    </FlexItem>
-                  </Flex>
-                )}
-                {props.workspace.files.length === 1 && (
-                  <Flex flexWrap={{ default: "nowrap" }}>
-                    <FlexItem>
-                      Deploy <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b>
-                    </FlexItem>
-                    <FlexItem>
-                      <b>
-                        <FileLabel extension={props.workspace.files[0].extension} />
-                      </b>
-                    </FlexItem>
-                  </Flex>
-                )}
-              </DropdownItem>
-            )}
+            <DropdownItem
+              icon={<OpenshiftIcon />}
+              id="deploy-your-model-button"
+              key={`dropdown-deploy`}
+              component={"button"}
+              onClick={onDeploy}
+              isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
+              ouiaId={"deploy-to-openshift-dropdown-button"}
+            >
+              {props.workspace.files.length > 1 && (
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>
+                    Deploy models in <b>{`"${props.workspace.descriptor.name}"`}</b>
+                  </FlexItem>
+                </Flex>
+              )}
+              {props.workspace.files.length === 1 && (
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>
+                    Deploy <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b>
+                  </FlexItem>
+                  <FlexItem>
+                    <b>
+                      <FileLabel extension={props.workspace.files[0].extension} />
+                    </b>
+                  </FlexItem>
+                </Flex>
+              )}
+            </DropdownItem>
             {needsDependencyDeployment && (
               <>
                 <Divider />
@@ -400,7 +397,6 @@ export function useDeployDropdownItems(props: Props) {
     ];
   }, [
     props.workspace,
-    env.FEATURE_FLAGS.MODE,
     onDeploy,
     isKieSandboxExtendedServicesRunning,
     isOpenShiftConnected,
