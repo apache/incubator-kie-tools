@@ -15,16 +15,21 @@
  */
 
 import * as React from "react";
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { connectField } from "uniforms";
 import { AutoField, ListDelField } from "@kie-tools/uniforms-patternfly/dist/esm";
+import { HTMLFieldProps, useField } from "uniforms/esm";
 
-export type UniformsListItemFieldProps = {
-  children?: ReactNode;
-  value?: unknown;
-  name: string;
-  style?: object;
-};
+export type UniformsListItemFieldProps = HTMLFieldProps<
+  unknown[],
+  HTMLDivElement,
+  {
+    children?: ReactNode;
+    value?: unknown;
+    name: string;
+    style?: object;
+  }
+>;
 
 function UniformsListItemField(props: React.PropsWithChildren<UniformsListItemFieldProps>) {
   return (
@@ -33,14 +38,15 @@ function UniformsListItemField(props: React.PropsWithChildren<UniformsListItemFi
       style={{
         display: "flex",
         justifyContent: "space-between",
+        width: "100%",
         ...props.style,
       }}
     >
       <div style={{ width: "100%" }}>
         {props.children ?? <AutoField label={null} name={""} placeholder={`<${props.name}>`} />}
       </div>
-      <div style={{ borderRight: "1px solid var(--pf-global--palette--black-300)" }}>
-        <ListDelField name={""} />
+      <div>
+        <ListDelField name={""} style={{ minWidth: "60px", maxWidth: "60px" }} />
       </div>
     </div>
   );

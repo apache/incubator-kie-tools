@@ -166,7 +166,7 @@ export function UnitablesBeeTable({
               const length = calculateArrayFieldLength(insideProperty.joinedName);
               minWidth =
                 length > 0
-                  ? 60 + length * (insideProperty.minWidth ?? insideProperty.width)
+                  ? 63 + length * (insideProperty.minWidth ?? insideProperty.width)
                   : insideProperty.minWidth ?? insideProperty.width;
             }
             return {
@@ -186,7 +186,7 @@ export function UnitablesBeeTable({
         let minWidth = column.width;
         if (column.type === "array") {
           const length = calculateArrayFieldLength(column.joinedName);
-          minWidth = length > 0 ? 60 + length * (column.width ?? 0) : column.width;
+          minWidth = length > 0 ? 63 + length * (column.width ?? 0) : column.width;
         }
         return {
           originalId: uuid + `field-${column.name}-parent`,

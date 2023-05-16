@@ -25,6 +25,8 @@ import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icon
 import { connectField, filterDOMProps } from "uniforms/esm";
 import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
 import { ListAddField } from "@kie-tools/uniforms-patternfly/dist/esm";
+import { useField } from "uniforms/esm";
+import { UnitablesJsonSchemaBridge } from "./UnitablesJsonSchemaBridge";
 
 export type ListFieldProps = HTMLFieldProps<
   unknown[],
@@ -45,7 +47,7 @@ function UniformsListField({ children = <UniformsListItemField name={"$"} />, it
   return wrapField(
     props as any,
     <div data-testid={"unitables-list-field"} {...filterDOMProps(props)} style={{ display: "flex", width: "100%" }}>
-      <Split hasGutter={hasValue}>
+      <Split hasGutter={hasValue} style={!hasValue ? { width: "100%" } : {}}>
         {props.label && (
           <>
             <SplitItem>
@@ -64,35 +66,66 @@ function UniformsListField({ children = <UniformsListItemField name={"$"} />, it
             <SplitItem isFilled={true} />
           </>
         )}
-        <SplitItem>
+        <SplitItem
+          style={{
+            borderRight: "3px solid var(--pf-global--palette--black-300)",
+          }}
+        >
           <ListAddField
+            style={{
+              minWidth: "60px",
+              maxWidth: "60px",
+            }}
             name={"$"}
             initialCount={props.initialCount}
-            style={{ width: 60, borderRight: "1px solid var(--pf-global--palette--black-300)" }}
           />
         </SplitItem>
         {!hasValue && (
-          <SplitItem>
-            <TextInput isDisabled={true} value={"Add inputs"} {...itemProps} />
+          <SplitItem style={{ width: "100%" }}>
+            <TextInput aria-label={"Add inputs placeholder"} isDisabled={true} value={"Add inputs"} />
           </SplitItem>
         )}
       </Split>
 
       {hasValue &&
-        props.value!.map((item, itemIndex) =>
-          React.Children.map(children, (child, childIndex) =>
-            React.isValidElement(child)
-              ? React.cloneElement(child as React.ReactElement<{ name: string }, string>, {
-                  key: `${itemIndex}-${childIndex}`,
-                  name: child.props.name
-                    ?.split(/\$(.*)/s)
-                    .slice(0, -1)
-                    .join(`${itemIndex}`),
-                  ...itemProps,
-                })
-              : child
-          )
-        )}
+        props.value!.map((_, itemIndex) => {
+          return (
+            <div key={itemIndex} style={{ display: "flex", width: "100%" }}>
+              <div
+                style={{
+                  maxWidth: "60px",
+                  minWidth: "60px",
+                  minHeight: "60px",
+                  fontSize: "16px",
+                  color: "gray",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRight: "1px solid lightgray",
+                }}
+              >
+                {itemIndex}
+              </div>
+              {React.isValidElement(children)
+                ? React.cloneElement(
+                    children as React.ReactElement<{ name: string; style: React.CSSProperties }, string>,
+                    {
+                      key: `${itemIndex}-${itemIndex}`,
+                      name: children.props.name
+                        ?.split(/\$(.*)/s)
+                        .slice(0, -1)
+                        .join(`${itemIndex}`),
+                      ...itemProps,
+                      style:
+                        props.value!.length - 1 !== itemIndex
+                          ? { width: "100%", borderRight: "3px solid var(--pf-global--palette--black-300)" }
+                          : { width: "100%" },
+                    }
+                  )
+                : children}
+            </div>
+          );
+        })}
     </div>
   );
 }

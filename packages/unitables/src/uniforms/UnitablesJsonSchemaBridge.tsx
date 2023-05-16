@@ -42,7 +42,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   public getProps(name: string, props: Record<string, any> = {}) {
     const finalProps = super.getProps(name, props);
     finalProps.label = "";
-    finalProps.style = { height: "100%" };
+    finalProps.style = { ...finalProps.style, height: "100%" };
     if (finalProps.required) {
       finalProps.required = false;
     }
@@ -55,14 +55,29 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
       field.placeholder = this.i18n.schema.selectPlaceholder;
       field.direction = SelectDirection.up;
       field.menuAppendTo = document.body;
-    } else if (field.type === "array") {
-      field.itemProps = {
-        style: { width: DEFAULT_TIME_CELL_WIDTH },
-      };
     } else if (!field.type) {
       field.type = "string";
     }
+    if (field.type === "string" || field.type === "number") {
+      field.style = { width: "100%" };
+    }
+    field.style = { ...field.style, minWidth: this.getFieldDataType(field).width };
     return field;
+  }
+
+  private getNestedFieldWidth(field: Record<string, any>): number {
+    if (field.items?.type === "object") {
+      return Object.entries(field.items.properties).reduce((acc, [_, fieldValue]: [string, any]) => {
+        return acc + this.getNestedFieldWidth(fieldValue);
+      }, 0);
+    }
+    if (field?.type === "object") {
+      return Object.entries(field.properties).reduce((acc, [_, fieldValue]: [string, any]) => {
+        return acc + this.getNestedFieldWidth(fieldValue);
+      }, 0);
+    }
+
+    return this.getFieldDataType(field).width;
   }
 
   public getFieldDataType(field: Record<string, any>): { dataType: DmnBuiltInDataType; width: number; type: string } {
@@ -151,10 +166,18 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
         };
       default:
         if (field.type === "array") {
-          const itemsType = this.getFieldDataType(field.items);
+          const width = this.getNestedFieldWidth(field) + 120;
           return {
-            dataType: `${type} - List of ${itemsType.dataType}` as DmnBuiltInDataType,
-            width: DEFAULT_COLUMN_MIN_WIDTH,
+            dataType: type as DmnBuiltInDataType,
+            width: width,
+            type: field.type,
+          };
+        }
+        if (field.type === "object") {
+          const width = this.getNestedFieldWidth(field);
+          return {
+            dataType: type as DmnBuiltInDataType,
+            width: width,
             type: field.type,
           };
         }

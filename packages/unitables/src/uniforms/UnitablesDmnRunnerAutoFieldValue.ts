@@ -17,6 +17,7 @@
 import { defaultDmnRunnerAutoFieldValue } from "@kie-tools/dmn-runner/dist/uniforms";
 import { Context, GuaranteedProps } from "uniforms/esm";
 import UniformsListField from "./UniformsListField";
+import UniformsNestField from "./UniformsNestField";
 
 export function unitablesDmnRunnerAutoFieldValue(
   props: GuaranteedProps<unknown>,
@@ -24,6 +25,9 @@ export function unitablesDmnRunnerAutoFieldValue(
 ) {
   if (props.field?.type === "array") {
     return UniformsListField;
+  }
+  if (props.field?.type === "object") {
+    return UniformsNestField;
   }
   return defaultDmnRunnerAutoFieldValue(props, uniforms);
 }
