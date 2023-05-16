@@ -226,17 +226,23 @@ public class GraphUtilsTest {
         final GraphImpl graph = (GraphImpl) graphInstance.graph;
         final int hashCode = GraphUtils.computeGraphHashCode(graph);
         // Assert hash is time inmutable
-        assertEquals(hashCode, GraphUtils.computeGraphHashCode(graph), 0d);
+        final int hashCodeCheck = GraphUtils.computeGraphHashCode(graph);
+        System.out.println("HASHCODE: " + hashCodeCheck + " CURRENT HASHCODE: " + hashCodeCheck);
+        assertEquals(hashCode, hashCodeCheck, 0d);
         // Change some node's shape location.
         View nodeContent = (View) graphInstance.startNode.getContent();
         Bound lowerRight = nodeContent.getBounds().getLowerRight();
         Double x = lowerRight.getX();
         Double y = lowerRight.getY();
         nodeContent.getBounds().setLowerRight(Bound.create(123d, 123d));
-        assertNotEquals(hashCode, GraphUtils.computeGraphHashCode(graph), 0d);
+        final int hashCodeCheck2 = GraphUtils.computeGraphHashCode(graph);
+        System.out.println("HASHCODE: " + hashCode + " CURRENT HASHCODE: " + hashCodeCheck2);
+        assertNotEquals(hashCode, hashCodeCheck2, 0d);
         nodeContent.getBounds().setLowerRight(Bound.create(x, y));
         // Rollback node's location changed.
-        assertEquals(hashCode, GraphUtils.computeGraphHashCode(graph), 0d);
+        final int hashCodeCheck3 = GraphUtils.computeGraphHashCode(graph);
+        System.out.println("HASHCODE: " + hashCode + " CURRENT HASHCODE: " + hashCodeCheck3);
+        assertEquals(hashCode, hashCodeCheck3, 0d);
         // Change some connection.
         ViewConnector<MagnetConnection> connectorContent = (ViewConnector) graphInstance.edge1.getContent();
         MagnetConnection sconnection = (MagnetConnection) connectorContent.getSourceConnection().get();
@@ -245,10 +251,14 @@ public class GraphUtilsTest {
         Point2D tconnectionLocation = tconnection.getLocation();
         sconnection.setLocation(Point2D.create(123d, 123d));
         tconnection.setLocation(Point2D.create(321d, 321d));
-        assertNotEquals(hashCode, GraphUtils.computeGraphHashCode(graph), 0d);
+        final int hashCodeCheck4 = GraphUtils.computeGraphHashCode(graph);
+        System.out.println("HASHCODE: " + hashCode + " CURRENT HASHCODE: " + hashCodeCheck4);
+        assertNotEquals(hashCode, hashCodeCheck4, 0d);
         sconnection.setLocation(sconnectionLocation);
         tconnection.setLocation(tconnectionLocation);
         // Rollback connection changed.
-        assertEquals(hashCode, GraphUtils.computeGraphHashCode(graph), 0d);
+        final int hashCodeCheck5 = GraphUtils.computeGraphHashCode(graph);
+        System.out.println("HASHCODE: " + hashCode + " CURRENT HASHCODE: " + hashCodeCheck5);
+        assertEquals(hashCode, hashCodeCheck5, 0d);
     }
 }
