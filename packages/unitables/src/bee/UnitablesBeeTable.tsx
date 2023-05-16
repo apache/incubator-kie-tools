@@ -469,7 +469,6 @@ function UnitablesBeeTableCell({
 
       if (e.target.tagName.toLowerCase() === "input") {
         submitRow();
-        setEditingCell(false);
       }
       if (
         e.target.tagName.toLowerCase() === "button" ||
@@ -482,19 +481,16 @@ function UnitablesBeeTableCell({
           setIsSelectFieldOpen(false);
         }
         submitRow();
-        setEditingCell(false);
       }
     },
-    [fieldName, setEditingCell, submitRow]
+    [fieldName, submitRow]
   );
 
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
-        e.stopPropagation();
-        cellRef.current?.getElementsByTagName("button")?.[0]?.click();
         setIsSelectFieldOpen((prev) => {
-          if (prev) {
+          if (prev === true) {
             submitRow();
             setEditingCell(false);
           } else {
@@ -505,7 +501,6 @@ function UnitablesBeeTableCell({
       }
 
       if (!isEditing && e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "input") {
-        e.stopPropagation();
         const inputField = cellRef.current?.getElementsByTagName("input");
         if (inputField && inputField.length > 0) {
           inputField?.[0]?.focus();
