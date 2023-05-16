@@ -22,10 +22,12 @@ import {
   UpdateDeployment,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
-import { resolveDevModeResourceName } from "../swfDevMode/DevModeConstants";
+import { APP_VERSION_KUBERNETES_LABEL } from "../OpenShiftConstants";
+import { DEV_MODE_ID_KUBERNETES_LABEL } from "../swfDevMode/DevModeConstants";
 
 interface RestartDevModePipelineArgs {
-  webToolsId: string;
+  devModeId: string;
+  version: string;
 }
 
 export class RestartDevModePipeline extends OpenShiftPipeline {
@@ -89,12 +91,17 @@ export class RestartDevModePipeline extends OpenShiftPipeline {
         fetcher.execute<DeploymentGroupDescriptor>({
           target: new ListDeployments({
             namespace: this.args.namespace,
-            labelSelector: this.args.webToolsId,
+            labelSelector: DEV_MODE_ID_KUBERNETES_LABEL,
           }),
         })
       )
     ).items
-      .filter((d) => d.metadata.name === resolveDevModeResourceName(this.args.webToolsId))
+      .filter(
+        (d) =>
+          d.metadata.labels &&
+          d.metadata.labels[DEV_MODE_ID_KUBERNETES_LABEL] === this.args.devModeId &&
+          d.metadata.labels[APP_VERSION_KUBERNETES_LABEL] === this.args.version
+      )
       .sort(
         (a, b) =>
           new Date(b.metadata.creationTimestamp ?? 0).getTime() - new Date(a.metadata.creationTimestamp ?? 0).getTime()

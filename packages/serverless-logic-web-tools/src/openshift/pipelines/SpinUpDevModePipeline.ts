@@ -34,13 +34,14 @@ import {
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { Deployment } from "kubernetes-models/apps/v1";
 import { DeployConstants } from "../DeployConstants";
-import { RESOURCE_OWNER } from "../OpenShiftConstants";
+import { APP_VERSION_KUBERNETES_LABEL, RESOURCE_OWNER } from "../OpenShiftConstants";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
 import { SwfDevMode } from "../deploy/BaseContainerImages";
-import { resolveDevModeResourceName } from "../swfDevMode/DevModeConstants";
+import { DEV_MODE_ID_KUBERNETES_LABEL, resolveDevModeResourceName } from "../swfDevMode/DevModeConstants";
 
 interface SpinUpDevModePipelineArgs {
-  webToolsId: string;
+  devModeId: string;
+  version: string;
 }
 
 type SpinUpDevModePipelineResponse =
@@ -65,12 +66,17 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<SpinUpDevModePipeli
         fetcher.execute<DeploymentGroupDescriptor>({
           target: new ListDeployments({
             namespace: this.args.namespace,
-            labelSelector: this.args.webToolsId,
+            labelSelector: DEV_MODE_ID_KUBERNETES_LABEL,
           }),
         })
       )
     ).items
-      .filter((d) => d.metadata.name === resolveDevModeResourceName(this.args.webToolsId))
+      .filter(
+        (d) =>
+          d.metadata.labels &&
+          d.metadata.labels[DEV_MODE_ID_KUBERNETES_LABEL] === this.args.devModeId &&
+          d.metadata.labels[APP_VERSION_KUBERNETES_LABEL] === this.args.version
+      )
       .sort(
         (a, b) =>
           new Date(b.metadata.creationTimestamp ?? 0).getTime() - new Date(a.metadata.creationTimestamp ?? 0).getTime()
@@ -135,7 +141,7 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<SpinUpDevModePipeli
   private async createDevModeDeployment(): Promise<SpinUpDevModePipelineResponse> {
     const resourceArgs = {
       namespace: this.args.namespace,
-      resourceName: resolveDevModeResourceName(this.args.webToolsId),
+      resourceName: resolveDevModeResourceName({ appVersion: this.args.version, devModeId: this.args.devModeId }),
       createdBy: RESOURCE_OWNER,
     };
 
@@ -159,7 +165,8 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<SpinUpDevModePipeli
       const routeUrl = this.args.openShiftService.composeDeploymentUrlFromRoute(route);
 
       const appLabels = {
-        [this.args.webToolsId]: "true",
+        [DEV_MODE_ID_KUBERNETES_LABEL]: this.args.devModeId,
+        [APP_VERSION_KUBERNETES_LABEL]: this.args.version,
       };
 
       const deploymentDescriptor = new Deployment({

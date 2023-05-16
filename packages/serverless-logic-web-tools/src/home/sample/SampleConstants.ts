@@ -15,8 +15,11 @@
  */
 
 export const SAMPLES_FS_MOUNT_POINT_PREFIX = "lfs_v1__samples__";
-export const SAMPLES_FS_MOUNT_POINT = `${SAMPLES_FS_MOUNT_POINT_PREFIX}${process.env.WEBPACK_REPLACE__version!}`;
 
 export const SAMPLE_DEFINITIONS_CACHE_FILE_PATH = "/definitions.json";
 
 export const SAMPLE_SEARCH_KEYS = ["definition.category", "definition.title", "definition.description"];
+
+export const resolveSampleFsMountPoint = (appVersion: string) => {
+  return `${SAMPLES_FS_MOUNT_POINT_PREFIX}${appVersion}`;
+};

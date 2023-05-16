@@ -23,7 +23,8 @@ import { useSettingsDispatch } from "../../../settings/SettingsContext";
 import { fetchSampleDefinitions, fetchSampleFiles, Sample, SampleCategory } from "../SampleApi";
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import Fuse from "fuse.js";
-import { SAMPLES_FS_MOUNT_POINT, SAMPLE_DEFINITIONS_CACHE_FILE_PATH, SAMPLE_SEARCH_KEYS } from "../SampleConstants";
+import { SAMPLE_DEFINITIONS_CACHE_FILE_PATH, SAMPLE_SEARCH_KEYS, resolveSampleFsMountPoint } from "../SampleConstants";
+import { useEnv } from "../../../env/EnvContext";
 
 export interface SampleDispatchContextType {
   getSamples(args: { categoryFilter?: SampleCategory; searchFilter?: string }): Promise<Sample[]>;
@@ -33,10 +34,14 @@ export interface SampleDispatchContextType {
 export const SampleDispatchContext = React.createContext<SampleDispatchContextType>({} as any);
 
 export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
+  const { env } = useEnv();
   const settingsDispatch = useSettingsDispatch();
 
   const fsCache = useMemo(() => new LfsFsCache(), []);
-  const fs = useMemo(() => fsCache.getOrCreateFs(SAMPLES_FS_MOUNT_POINT), [fsCache]);
+  const fs = useMemo(
+    () => fsCache.getOrCreateFs(resolveSampleFsMountPoint(env.SERVERLESS_LOGIC_WEB_TOOLS_VERSION)),
+    [env, fsCache]
+  );
   const sampleStorageService = useMemo(() => new LfsStorageService(), []);
 
   const [allSampleDefinitions, setAllSampleDefinitions] = useState<Sample[]>();

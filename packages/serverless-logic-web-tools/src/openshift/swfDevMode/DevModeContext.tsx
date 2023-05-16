@@ -21,7 +21,7 @@ import {
   buildEndpoints,
   DevModeEndpoints,
   DevModeUploadResult,
-  resolveWebToolsId,
+  resolveDevModeId,
   UploadApiResponseError,
   UploadApiResponseSuccess,
   ZIP_FILE_NAME,
@@ -40,6 +40,7 @@ import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/co
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { DevModeDeploymentLoaderPipeline } from "../pipelines/DevModeDeploymentLoaderPipeline";
+import { useEnv } from "../../env/EnvContext";
 
 export interface DevModeContextType {
   isEnabled: boolean;
@@ -65,6 +66,7 @@ export function useDevModeDispatch() {
 }
 
 export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
+  const { env } = useEnv();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [isEnabled, setEnabled] = useState(false);
@@ -75,11 +77,12 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
       return;
     }
     return new DevModeDeploymentLoaderPipeline({
-      webToolsId: resolveWebToolsId(),
+      devModeId: resolveDevModeId(),
+      version: env.SERVERLESS_LOGIC_WEB_TOOLS_VERSION,
       namespace: settings.openshift.config.namespace,
       openShiftService: settingsDispatch.openshift.service,
     });
-  }, [isEnabled, settings.openshift.config.namespace, settingsDispatch.openshift.service]);
+  }, [env, isEnabled, settings.openshift.config.namespace, settingsDispatch.openshift.service]);
 
   const devModeCreatedSuccessAlert = useGlobalAlert(
     useCallback(({ close }) => {
@@ -128,7 +131,8 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
         }
 
         const spinUpDevModePipeline = new SpinUpDevModePipeline({
-          webToolsId: resolveWebToolsId(),
+          devModeId: resolveDevModeId(),
+          version: env.SERVERLESS_LOGIC_WEB_TOOLS_VERSION,
           namespace: settings.openshift.config.namespace,
           openShiftService: settingsDispatch.openshift.service,
         });
@@ -154,6 +158,7 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
           });
       },
       [
+        env,
         settings.openshift.config.namespace,
         settings.openshift.isDevModeEnabled,
         settings.openshift.status,
@@ -260,12 +265,13 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
 
   const restart = useCallback(async () => {
     const restartDevModePipeline = new RestartDevModePipeline({
-      webToolsId: resolveWebToolsId(),
+      devModeId: resolveDevModeId(),
+      version: env.SERVERLESS_LOGIC_WEB_TOOLS_VERSION,
       namespace: settings.openshift.config.namespace,
       openShiftService: settingsDispatch.openshift.service,
     });
     restartDevModePipeline.execute().catch((e) => console.error(e));
-  }, [settings.openshift.config.namespace, settingsDispatch.openshift.service]);
+  }, [env, settings.openshift.config.namespace, settingsDispatch.openshift.service]);
 
   const loadDeployments = useCallback(
     async () => devModeDeploymentLoaderPipeline?.execute() ?? [],

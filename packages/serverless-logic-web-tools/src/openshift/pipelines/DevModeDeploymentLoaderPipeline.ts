@@ -26,7 +26,8 @@ import {
 import { fetchWithTimeout } from "../../fetch";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
-import { DevModeEndpoints, buildEndpoints, resolveDevModeResourceName } from "../swfDevMode/DevModeConstants";
+import { DEV_MODE_ID_KUBERNETES_LABEL, DevModeEndpoints, buildEndpoints } from "../swfDevMode/DevModeConstants";
+import { APP_VERSION_KUBERNETES_LABEL } from "../OpenShiftConstants";
 
 interface ExtendedDeployment {
   endpoints: DevModeEndpoints;
@@ -35,7 +36,8 @@ interface ExtendedDeployment {
 }
 
 interface DevModeDeploymentLoaderPipelineArgs {
-  webToolsId: string;
+  devModeId: string;
+  version: string;
 }
 
 export class DevModeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsOpenShiftDeployedModel[]> {
@@ -50,11 +52,16 @@ export class DevModeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
           fetcher.execute<DeploymentGroupDescriptor>({
             target: new ListDeployments({
               namespace: this.args.namespace,
-              labelSelector: this.args.webToolsId,
+              labelSelector: DEV_MODE_ID_KUBERNETES_LABEL,
             }),
           })
         )
-      ).items.filter((d) => d.metadata.name === resolveDevModeResourceName(this.args.webToolsId));
+      ).items.filter(
+        (d) =>
+          d.metadata.labels &&
+          d.metadata.labels[DEV_MODE_ID_KUBERNETES_LABEL] === this.args.devModeId &&
+          d.metadata.labels[APP_VERSION_KUBERNETES_LABEL] === this.args.version
+      );
 
       if (deployments.length === 0) {
         return [];
@@ -69,6 +76,10 @@ export class DevModeDeploymentLoaderPipeline extends OpenShiftPipeline<WebToolsO
           })
         )
       ).items.filter((route) => deployments.some((d) => route.metadata.name === d.metadata.name));
+
+      if (devModeRoutes.length === 0) {
+        return [];
+      }
 
       const extendedDeployments = devModeRoutes.map((route) => {
         const routeUrl = this.args.openShiftService.composeDeploymentUrlFromRoute(route);

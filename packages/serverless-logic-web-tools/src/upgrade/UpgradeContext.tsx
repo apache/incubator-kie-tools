@@ -17,24 +17,25 @@
 import Dexie from "dexie";
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { SAMPLES_FS_MOUNT_POINT, SAMPLES_FS_MOUNT_POINT_PREFIX } from "../home/sample/SampleConstants";
+import { SAMPLES_FS_MOUNT_POINT_PREFIX } from "../home/sample/SampleConstants";
+import { useEnv } from "../env/EnvContext";
 
 export const UpgradeContext = React.createContext<{}>({} as any);
 
-const APP_CURRENT_VERSION_KEY = "SERVERLESS_LOGIC_WEB_TOOLS_VERSION";
-const APP_CURRENT_VERSION = process.env.WEBPACK_REPLACE__version!;
+const APP_CURRENT_VERSION_STORAGE_KEY = "SERVERLESS_LOGIC_WEB_TOOLS_VERSION";
 
 export function UpgradeContextProvider(props: React.PropsWithChildren<{}>) {
+  const { env } = useEnv();
   const [shouldExecuteUpgrade, setShouldExecuteUpgrade] = useState(false);
 
   useEffect(() => {
-    const storedVersion = localStorage.getItem(APP_CURRENT_VERSION_KEY);
-    if (storedVersion === APP_CURRENT_VERSION) {
+    const storedVersion = localStorage.getItem(APP_CURRENT_VERSION_STORAGE_KEY);
+    if (storedVersion === env.SERVERLESS_LOGIC_WEB_TOOLS_VERSION) {
       return;
     }
-    localStorage.setItem(APP_CURRENT_VERSION_KEY, APP_CURRENT_VERSION);
+    localStorage.setItem(APP_CURRENT_VERSION_STORAGE_KEY, env.SERVERLESS_LOGIC_WEB_TOOLS_VERSION);
     setShouldExecuteUpgrade(true);
-  }, []);
+  }, [env]);
 
   useEffect(() => {
     if (!shouldExecuteUpgrade) {
@@ -46,7 +47,10 @@ export function UpgradeContextProvider(props: React.PropsWithChildren<{}>) {
         // clean up sample cache from other versions
         await Promise.all(
           (await Dexie.getDatabaseNames())
-            .filter((dbName) => dbName !== SAMPLES_FS_MOUNT_POINT && dbName.startsWith(SAMPLES_FS_MOUNT_POINT_PREFIX))
+            .filter(
+              (dbName) =>
+                dbName !== env.SERVERLESS_LOGIC_WEB_TOOLS_VERSION && dbName.startsWith(SAMPLES_FS_MOUNT_POINT_PREFIX)
+            )
             .map(async (dbName) => Dexie.delete(dbName))
         );
       } catch (e) {
@@ -57,7 +61,7 @@ export function UpgradeContextProvider(props: React.PropsWithChildren<{}>) {
     }
 
     execute();
-  }, [shouldExecuteUpgrade]);
+  }, [env, shouldExecuteUpgrade]);
 
   return <UpgradeContext.Provider value={{}}>{props.children}</UpgradeContext.Provider>;
 }
