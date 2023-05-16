@@ -38,7 +38,7 @@ import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import { AutoField } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { useField } from "uniforms";
-import { AUTO_ROW_ID, DEFAULT_COLUMN_MIN_WIDTH } from "../uniforms/UnitablesJsonSchemaBridge";
+import { AUTO_ROW_ID, DEFAULT_COLUMN_MIN_WIDTH, DEFAULT_LIST_CELL_WIDTH } from "../uniforms/UnitablesJsonSchemaBridge";
 import getObjectValueByPath from "lodash/get";
 import { useUnitablesContext, useUnitablesRow } from "../UnitablesContext";
 import moment from "moment";
@@ -176,7 +176,8 @@ export function UnitablesBeeTable({
               dataType: insideProperty.dataType,
               isRowIndexColumn: false,
               width:
-                (getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ?? minWidth,
+                (getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ??
+                DEFAULT_COLUMN_MIN_WIDTH,
               setWidth: setColumnWidth(insideProperty.joinedName),
               minWidth,
             };
@@ -186,7 +187,7 @@ export function UnitablesBeeTable({
         let minWidth = column.width;
         if (column.type === "array") {
           const length = calculateArrayFieldLength(column.joinedName);
-          minWidth = length > 0 ? 63 + length * (column.width ?? 0) : column.width;
+          minWidth = length > 0 ? 63 + length * (column.width ?? 0) : DEFAULT_LIST_CELL_WIDTH;
         }
         return {
           originalId: uuid + `field-${column.name}-parent`,
@@ -202,7 +203,7 @@ export function UnitablesBeeTable({
               accessor: getColumnAccessor(column),
               dataType: column.dataType,
               isRowIndexColumn: false,
-              width: (getObjectValueByPath(configs, column.name) as UnitablesCellConfigs)?.width ?? minWidth,
+              width: (getObjectValueByPath(configs, column.name) as UnitablesCellConfigs)?.width ?? column.width,
               setWidth: setColumnWidth(column.name),
               minWidth,
             },

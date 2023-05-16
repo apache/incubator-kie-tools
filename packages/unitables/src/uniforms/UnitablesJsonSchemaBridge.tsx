@@ -26,6 +26,7 @@ export const DEFAULT_COLUMN_MIN_WIDTH = 150;
 const DEFAULT_DATE_TIME_CELL_WDITH = 188;
 const DEFAULT_DATE_CELL_WIDTH = 170;
 const DEFAULT_TIME_CELL_WIDTH = 150;
+export const DEFAULT_LIST_CELL_WIDTH = 210;
 
 export const FORMS_ID = "unitables-forms";
 export const AUTO_ROW_ID = "unitables-row";
