@@ -69,12 +69,12 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   private getNestedFieldWidth(field: Record<string, any>): number {
     if (field.items?.type === "object") {
       return Object.entries(field.items.properties).reduce((acc, [_, fieldValue]: [string, any]) => {
-        return acc + this.getNestedFieldWidth(fieldValue);
+        return acc + this.getNestedFieldWidth(fieldValue) + 3;
       }, 0);
     }
     if (field?.type === "object") {
       return Object.entries(field.properties).reduce((acc, [_, fieldValue]: [string, any]) => {
-        return acc + this.getNestedFieldWidth(fieldValue);
+        return acc + this.getNestedFieldWidth(fieldValue) + 3;
       }, 0);
     }
 
