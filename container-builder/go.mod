@@ -3,7 +3,7 @@ module github.com/kiegroup/kogito-serverless-operator/container-builder
 go 1.19
 
 require (
-	github.com/docker/docker v23.0.1+incompatible
+	github.com/docker/docker v23.0.3+incompatible
 	github.com/docker/go-connections v0.4.1-0.20210727194412-58542c764a11
 	github.com/go-logr/logr v1.2.3
 	github.com/hashicorp/go-version v1.6.0
