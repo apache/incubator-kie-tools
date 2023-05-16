@@ -26,7 +26,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
-import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
@@ -68,8 +67,6 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
     private BiConsumer<String, ConstraintType> onSave;
 
     private String constraintValueType = "";
-
-    private DataType dataType;
 
     @Inject
     public DataTypeConstraintModal(final View view,
@@ -113,7 +110,6 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
     void load(final DataTypeListItem dataTypeListItem) {
         this.constraintValue = dataTypeListItem.getDataType().getConstraint();
         this.constraintValueType = dataTypeListItem.getType();
-        this.dataType = dataTypeListItem.getDataType();
 
         if (!StringUtils.isEmpty(constraintValue) && isNone(constraintType)) {
             this.constraintType = inferComponentType(constraintValue);
@@ -172,7 +168,7 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
     void prepareView() {
 
         getView().setType(getConstraintValueType());
-        getView().setDataType(dataType);
+        getView().setDataType(constraintValueType);
 
         if (!isEmpty(getConstraintValue()) || !isNone(getConstraintType())) {
             getView().loadComponent(getConstraintType());
@@ -291,7 +287,7 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
 
         void setType(final String type);
 
-        void setDataType(final DataType dataType);
+        void setDataType(final String dataType);
 
         void setupEmptyContainer();
 
