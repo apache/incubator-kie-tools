@@ -50,7 +50,7 @@ build-image: clone-repos _build-image
 _build-image:
 ifneq ($(ignore_build),true)
 	scripts/build-kogito-apps-components.sh ${image_name} ${KOGITO_APPS_TARGET_BRANCH} ${KOGITO_APPS_TARGET_URI};
-	scripts/build-quarkus-app.sh ${image_name} $(QUARKUS_PLATFORM_VERSION)
+	scripts/build-quarkus-app.sh ${image_name} $(QUARKUS_PLATFORM_VERSION) $(KOGITO_VERSION)
 	${CEKIT_CMD} build --overrides-file ${image_name}-overrides.yaml ${BUILD_ENGINE}
 endif
 # tag with shortened version

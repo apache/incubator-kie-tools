@@ -62,17 +62,19 @@ pipeline {
                 }
             }
         }
-        stage('Setup Quarkus platform') {
-            steps {
-                script {
-                    String kogitoVersion = sh(returnStdout: true, script: 'make display-kogito-version')
-                    String quarkusPlatformVersion = "kogito-${kogitoVersion}"
+        // Commented as we cannot fully rely on Quarkus platform
+        // Should be uncommmented once https://issues.redhat.com/browse/KOGITO-9120 is implemented
+        // stage('Setup Quarkus platform') {
+        //     steps {
+        //         script {
+        //             String kogitoVersion = sh(returnStdout: true, script: 'make display-kogito-version')
+        //             String quarkusPlatformVersion = "kogito-${kogitoVersion}"
 
-                    // Setup quarkus platform repo configuration
-                    runPythonCommand("python3 scripts/update-repository.py --repo-url ${QUARKUS_PLATFORM_NEXUS_URL} --ignore-self-signed-cert --quarkus-platform-version ${quarkusPlatformVersion}")
-                }
-            }
-        }
+        //             // Setup quarkus platform repo configuration
+        //             runPythonCommand("python3 scripts/update-repository.py --repo-url ${QUARKUS_PLATFORM_NEXUS_URL} --ignore-self-signed-cert --quarkus-platform-version ${quarkusPlatformVersion}")
+        //         }
+        //     }
+        // }
         stage('Prepare offline kogito-examples') {
             steps {
                 script {

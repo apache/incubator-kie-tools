@@ -11,6 +11,7 @@ set -o pipefail
 # Read entries before sourcing
 image_name="${1}"
 quarkus_platform_version="${2}"
+kogito_version="${KOGITO_VERSION:-${3}}"
 
 quarkus_extensions='quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health'
 
@@ -58,6 +59,27 @@ mvn ${MAVEN_OPTIONS} \
     -DplatformVersion="${quarkus_platform_version}" \
     -Dextensions="${quarkus_extensions}" \
     io.quarkus.platform:quarkus-maven-plugin:"${quarkus_platform_version}":create
+
+# Fix as we cannot rely on Quarkus platform
+# Should be removed once https://issues.redhat.com/browse/KOGITO-9120 is implemented
+if [ ! -z ${kogito_version} ]; then
+    echo "Replacing Kogito Platform BOM with version ${kogito_version}"
+    # [ ]* -> is a regexp pattern to match any number of spaces
+    pattern_1="[ ]*<groupId>.*<\/groupId>"
+    pattern_2="[ ]*<artifactId>quarkus-kogito-bom<\/artifactId>\n"
+    pattern_3="[ ]*<version>.*<\/version>\n"
+    complete_pattern="$pattern_1\n$pattern_2$pattern_3"
+
+    replace_1="        <groupId>org.kie.kogito<\/groupId>\n"
+    replace_2="        <artifactId>kogito-bom<\/artifactId>\n"
+    replace_3="        <version>${kogito_version}<\/version>\n"
+    complete_replace="$replace_1$replace_2$replace_3"
+
+    sed -i.bak -e "/$pattern_1/{
+        N;N;N
+        s/$complete_pattern/$complete_replace/
+        }" serverless-workflow-project/pom.xml
+fi
 
 echo "Build quarkus app"
 cd "serverless-workflow-project"

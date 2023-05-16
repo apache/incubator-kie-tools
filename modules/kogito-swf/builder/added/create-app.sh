@@ -43,7 +43,7 @@ if [ ! -z ${KOGITO_VERSION} ]; then
     sed -i.bak -e "/$pattern_1/{
         N;N;N
         s/$complete_pattern/$complete_replace/
-        }" serverless-workflow-project/pom.xml
+        }" pom.xml
 fi
 
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \

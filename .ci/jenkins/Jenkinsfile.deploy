@@ -134,28 +134,30 @@ pipeline {
                 }
             }
         }
-        stage('Setup Quarkus platform') {
-            steps {
-                script {
-                    String kogitoVersion = sh(returnStdout: true, script: 'make display-kogito-version')
-                    String quarkusPlatformVersion = "kogito-${kogitoVersion}"
+        // Commented as we cannot fully rely on Quarkus platform
+        // Should be uncommmented once https://issues.redhat.com/browse/KOGITO-9120 is implemented
+        // stage('Setup Quarkus platform') {
+        //     steps {
+        //         script {
+        //             String kogitoVersion = sh(returnStdout: true, script: 'make display-kogito-version')
+        //             String quarkusPlatformVersion = "kogito-${kogitoVersion}"
 
-                    if (isRelease()) {
-                        if (params.QUARKUS_PLATFORM_VERSION) {
-                            runPythonCommand("python3 scripts/update-repository.py --quarkus-platform-version ${params.QUARKUS_PLATFORM_VERSION}")
-                        } else {
-                            echo "No new quarkus version given for the release. Statu quo ..."
-                        }
-                    } else {
-                        if (getMavenArtifactRepository()) {
-                            echo "[WARN] Artifacts repository defined in env will override the quarkus platform URL in tests. Make sure the platform artifacts are available on that artifacts repository (you can use a maven group)"
-                        }
-                        // Setup quarkus platform repo configuration
-                        runPythonCommand("python3 scripts/update-repository.py --repo-url ${QUARKUS_PLATFORM_NEXUS_URL} --ignore-self-signed-cert --quarkus-platform-version ${quarkusPlatformVersion}")
-                    }
-                }
-            }
-        }
+        //             if (isRelease()) {
+        //                 if (params.QUARKUS_PLATFORM_VERSION) {
+        //                     runPythonCommand("python3 scripts/update-repository.py --quarkus-platform-version ${params.QUARKUS_PLATFORM_VERSION}")
+        //                 } else {
+        //                     echo "No new quarkus version given for the release. Statu quo ..."
+        //                 }
+        //             } else {
+        //                 if (getMavenArtifactRepository()) {
+        //                     echo "[WARN] Artifacts repository defined in env will override the quarkus platform URL in tests. Make sure the platform artifacts are available on that artifacts repository (you can use a maven group)"
+        //                 }
+        //                 // Setup quarkus platform repo configuration
+        //                 runPythonCommand("python3 scripts/update-repository.py --repo-url ${QUARKUS_PLATFORM_NEXUS_URL} --ignore-self-signed-cert --quarkus-platform-version ${quarkusPlatformVersion}")
+        //             }
+        //         }
+        //     }
+        // }
         stage('Setup for testing') {
             when {
                 expression { return !shouldSkipTests() }
