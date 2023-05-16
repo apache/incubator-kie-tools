@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { AutoField, AutoFields } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { DmnFeelContextField } from "./DmnFeelContextField";
-import * as React from "react";
 import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
 
-export function DmnAutoFieldProvider() {
+export function DmnAutoFieldProvider(props: React.PropsWithChildren<{}>) {
   return (
     <AutoField.componentDetectorContext.Provider
       value={(props, uniforms) => {
@@ -29,7 +29,7 @@ export function DmnAutoFieldProvider() {
         return AutoField.defaultComponentDetector(props, uniforms);
       }}
     >
-      <AutoFields />
+      {props.children ? props.children : <AutoFields />}
     </AutoField.componentDetectorContext.Provider>
   );
 }

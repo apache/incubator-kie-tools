@@ -37,7 +37,7 @@
     "@types/vscode": "^1.66.0",
     "@vscode/vsce": "^2.19.0",
     "rimraf": "^3.0.2",
-    "typescript": "^4.4.2",
+    "typescript": "^4.6.2",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.7.3",

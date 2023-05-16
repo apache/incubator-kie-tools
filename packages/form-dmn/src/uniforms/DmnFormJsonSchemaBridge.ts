@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import { FormJsonSchemaBridge } from "@kie-tools/form";
+import { FormJsonSchemaBridge } from "@kie-tools/form/dist/uniforms/FormJsonSchemaBridge";
 import { DmnFormI18n } from "../i18n";
 import { DmnInputFieldProperties, ExtendedServicesDmnJsonSchema, X_DMN_TYPE } from "@kie-tools/extended-services-api";
-
-export const DAYS_AND_TIME_DURATION_FORMAT = "days and time duration";
-export const YEARS_AND_MONTHS_DURATION_FORMAT = "years and months duration";
+import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/constants";
 
 export enum Duration {
   DaysAndTimeDuration,

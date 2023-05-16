@@ -15,11 +15,12 @@
  */
 
 import * as React from "react";
-import { PropsWithChildren, useCallback, useRef, useEffect, useState, useImperativeHandle } from "react";
+import { PropsWithChildren, useCallback, useRef, useEffect, useImperativeHandle } from "react";
 import { AutoRow } from "./uniforms/AutoRow";
 import { createPortal } from "react-dom";
 import { context as UniformsContext } from "uniforms";
 import { AUTO_ROW_ID, UnitablesJsonSchemaBridge } from "./uniforms";
+import { DmnAutoFieldProvider } from "@kie-tools/dmn-runner/dist/uniforms/DmnAutoFieldProvider";
 
 interface Props {
   formsId: string;
@@ -84,7 +85,7 @@ export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<
                   <form id={`${AUTO_ROW_ID}-${rowIndex}`} onSubmit={(data) => uniformsContext?.onSubmit(data)} />,
                   document.getElementById(formsId)!
                 )}
-                {children}
+                <DmnAutoFieldProvider>{children}</DmnAutoFieldProvider>
               </>
             )}
           </UniformsContext.Consumer>

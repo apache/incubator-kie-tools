@@ -216,7 +216,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                       final RuleAnnotationClause ruleAnnotationClause) {
         final RuleAnnotationClauseColumn column = new RuleAnnotationClauseColumn(ruleAnnotationClauseHeaderMetaData(ruleAnnotationClause),
                                                                                  textAreaFactory,
-                                                                                 getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH),
+                                                                                 getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH), // MUST BE SYNCHRONIZED WITH WidthConstants.ts
                                                                                  this);
         return column;
     }
@@ -249,7 +249,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                                    this::getHeaderItems,
                                                                                                    this::onItemSelected),
                                                                textAreaFactory,
-                                                               getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH),
+                                                               getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH), // MUST BE SYNCHRONIZED WITH WidthConstants.ts
                                                                this);
         return column;
     }
@@ -258,7 +258,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                       final OutputClause oc) {
         final OutputClauseColumn column = new OutputClauseColumn(outputClauseHeaderMetaData(oc),
                                                                  textAreaFactory,
-                                                                 getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH),
+                                                                 getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH), // MUST BE SYNCHRONIZED WITH WidthConstants.ts
                                                                  this);
         return column;
     }

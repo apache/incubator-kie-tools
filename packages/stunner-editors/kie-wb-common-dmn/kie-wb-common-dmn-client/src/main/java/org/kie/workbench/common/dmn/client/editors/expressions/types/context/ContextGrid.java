@@ -76,7 +76,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                                                                                                HasListSelectorControl {
 
     /** MUST BE SYNCHRONIZED WITH WidthConstants.ts */
-    static final double CONTEXT_EXPRESSION_ENTRY_INFO_DEFAULT_WIDTH = 120d;
+    public static final double CONTEXT_EXPRESSION_ENTRY_INFO_DEFAULT_WIDTH = 120d;
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final ValueAndDataTypePopoverView.Presenter headerEditor;

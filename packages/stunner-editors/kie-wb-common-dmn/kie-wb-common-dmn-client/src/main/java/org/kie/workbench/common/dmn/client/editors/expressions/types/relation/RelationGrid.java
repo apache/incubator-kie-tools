@@ -169,7 +169,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                                                   this::getHeaderItems,
                                                                                                   this::onItemSelected),
                                                                  factory,
-                                                                 getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH),
+                                                                 getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH), // MUST BE SYNCHRONIZED WITH WidthConstants.ts
                                                                  this);
         return relationColumn;
     }

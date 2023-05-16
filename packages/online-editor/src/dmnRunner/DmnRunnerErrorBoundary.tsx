@@ -28,13 +28,13 @@ const KIE_ISSUES_LINK = "https://github.com/kiegroup/kie-issues/issues";
 
 export function DmnRunnerErrorBoundary({ children }: React.PropsWithChildren<{}>) {
   const [_, setDmnRunnerError] = useState<boolean>(false);
-  const errorBoundaryRef = useRef<ErrorBoundary>(null);
-  const { jsonSchema } = useDmnRunnerState();
+  const [errorBoundaryRef, setErrorBoundaryRef] = useState<ErrorBoundary | null>(null);
+  const { mode, isExpanded, jsonSchema } = useDmnRunnerState();
   const { i18n } = useOnlineI18n();
 
   useEffect(() => {
-    errorBoundaryRef.current?.reset();
-  }, [jsonSchema]);
+    errorBoundaryRef?.reset();
+  }, [errorBoundaryRef, jsonSchema, isExpanded, mode]);
 
   const errorMessage = useMemo(
     () => (
@@ -69,7 +69,7 @@ export function DmnRunnerErrorBoundary({ children }: React.PropsWithChildren<{}>
 
   return (
     <>
-      <ErrorBoundary ref={errorBoundaryRef} error={errorMessage} setHasError={setDmnRunnerError}>
+      <ErrorBoundary ref={setErrorBoundaryRef} error={errorMessage} setHasError={setDmnRunnerError}>
         {children}
       </ErrorBoundary>
     </>
