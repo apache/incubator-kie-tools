@@ -136,17 +136,17 @@ export const routes = {
     pathParams: PathParams.WORKSPACE_ID;
   }>(({ workspaceId }) => `/${workspaceId}/files`),
 
-  recentModels: new Route<{}>(() => `/RecentModels`),
-  sampleCatalog: new Route<{}>(() => `/SampleCatalog`),
+  recentModels: new Route<{}>(() => `/recent-models`),
+  sampleCatalog: new Route<{}>(() => `/sample-catalog`),
 
   settings: {
     home: new Route<{}>(() => SETTINGS_ROUTE),
     github: new Route<{}>(() => `${SETTINGS_ROUTE}/github`),
     openshift: new Route<{}>(() => `${SETTINGS_ROUTE}/openshift`),
-    kie_sandbox_extended_services: new Route<{}>(() => `${SETTINGS_ROUTE}/kie_sandbox_extended_services`),
-    service_account: new Route<{}>(() => `${SETTINGS_ROUTE}/serviceAccount`),
-    service_registry: new Route<{}>(() => `${SETTINGS_ROUTE}/serviceRegistry`),
-    feature_preview: new Route<{}>(() => `${SETTINGS_ROUTE}/featurePreview`),
+    kie_sandbox_extended_services: new Route<{}>(() => `${SETTINGS_ROUTE}/kie-sandbox-extended-services`),
+    service_account: new Route<{}>(() => `${SETTINGS_ROUTE}/service-account`),
+    service_registry: new Route<{}>(() => `${SETTINGS_ROUTE}/service-registry`),
+    feature_preview: new Route<{}>(() => `${SETTINGS_ROUTE}/feature-preview`),
   },
 
   static: {
