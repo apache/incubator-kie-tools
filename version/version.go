@@ -13,7 +13,28 @@
 // limitations under the License.
 package version
 
+import (
+	"strings"
+)
+
 const (
 	// Current version
 	OperatorVersion = "2.0.0-snapshot"
+
+	// Should not be changed
+	snapshotSuffix = "snapshot"
+	latestVersion  = "2.0.0-snapshot"
 )
+
+func IsSnapshot() bool {
+	return strings.HasSuffix(OperatorVersion, snapshotSuffix)
+}
+
+func IsLatestVersion() bool {
+	return latestVersion == OperatorVersion
+}
+
+func GetMajorMinor() string {
+	v := strings.Split(OperatorVersion, ".")
+	return v[0] + "." + v[1]
+}

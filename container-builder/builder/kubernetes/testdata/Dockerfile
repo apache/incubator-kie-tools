@@ -1,4 +1,3 @@
-#Not yet released Change the 31 st oct with quay.io/repository/kiegroup/kogito-swf-builder:latest
 FROM quay.io/kiegroup/kogito-swf-builder-nightly:latest AS builder
 
 # Kogito User

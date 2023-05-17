@@ -20,25 +20,38 @@ source "${script_dir_path}"/env.sh
 imageTag='quay.io/kiegroup/kogito-serverless-operator'
 # shellcheck disable=SC2034
 old_version=$(getOperatorVersion)
+latest_version=$(getOperatorLatestVersion)
 new_version=$1
 
 if [ -z "${new_version}" ]; then
-  echo "Please inform the new version. Use X.X.X"
+  echo "Please inform the new version"
   exit 1
 fi
 
-snapshot=$(if [[ "${new_version}" == *snapshot ]]; then echo 'true'; else echo 'false'; fi)
+imageSuffix=$(if [[ "${new_version}" == *snapshot ]]; then echo '-nightly'; else echo ''; fi)
 
-echo "Set new version to ${new_version} (set nightly image tag ? ${snapshot})"
+oldMajorMinorVersion=${old_version%.*}
+newMajorMinorVersion=${new_version%.*}
+if [ "${old_version}" = "${latest_version}" ]; then
+  oldMajorMinorVersion='latest'
+fi
+
+echo "Set new version to ${new_version} (nightly = ${snapshot}, majorMinor = ${majorMinor})"
 
 sed -i "s|^VERSION ?=.*|VERSION ?= ${new_version}|g" Makefile
 sed -i "s|newTag:.*|newTag: ${new_version}|g" config/manager/kustomization.yaml
 
-if [ "${snapshot}" = 'true' ]; then
-  imageTag="${imageTag}-nightly"
-fi
-sed -i "s|IMAGE_TAG_BASE ?=.*|IMAGE_TAG_BASE ?= ${imageTag}|g" Makefile
-sed -i "s|newName:.*|newName: ${imageTag}|g" config/manager/kustomization.yaml
+sed -i "s|IMAGE_TAG_BASE ?=.*|IMAGE_TAG_BASE ?= ${imageTag}${imageSuffix}|g" Makefile
+sed -i "s|newName:.*|newName: ${imageTag}${imageSuffix}|g" config/manager/kustomization.yaml
+
+# Update kogito-swf-* images
+find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
+sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" Dockerfile
+
+find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
+sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" Dockerfile
+
+sed -i -r "s|OperatorVersion =.*|OperatorVersion = \"${new_version}\"|g" version/version.go
 
 make generate-all
 make vet

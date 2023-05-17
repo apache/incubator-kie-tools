@@ -20,7 +20,6 @@ spec:
             - "--cache-dir=/kaniko/cache"
   platform:
     publishStrategy: "Kaniko"
-    baseImage: quay.io/kiegroup/kogito-swf-builder-nightly:latest
     registry:
       address: quay.io/kiegroup
       secret: regcred

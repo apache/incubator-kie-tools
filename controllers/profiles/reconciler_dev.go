@@ -17,7 +17,6 @@ package profiles
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/RHsyseng/operator-utils/pkg/utils/openshift"
@@ -82,7 +81,7 @@ const (
 	extResOpenAPISuffix            = "resource-openapi"
 	extResAsyncAPISuffix           = "resource-asyncapi"
 	nightlySuffix                  = "nightly"
-	snapshotSuffix                 = "snapshot"
+	defaultImageTag                = "latest"
 )
 
 type developmentProfile struct {
@@ -206,18 +205,13 @@ func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, wo
 		e.logger.Error(err, "External Resources ConfigMap not found")
 	}
 
-	devBaseContainerImage := defaultKogitoServerlessWorkflowDevImage + ":" + version.OperatorVersion
+	devBaseContainerImage := getDefaultKogitoServerlessWorkflowDevImageTag()
 	pl, errPl := platform.GetActivePlatform(ctx, e.client, workflow.Namespace)
 	// check if the Platform available
 	if errPl == nil && len(pl.Spec.DevBaseImage) > 0 {
 
 		devBaseContainerImage = pl.Spec.DevBaseImage
 
-	} else {
-		// is the operator version is a snapshot we add the nightly version
-		if isSnapshot(version.OperatorVersion) {
-			devBaseContainerImage = defaultKogitoServerlessWorkflowDevImage + "-" + nightlySuffix + ":latest"
-		}
 	}
 
 	deployment, _, err := e.ensurers.deployment.ensure(ctx, workflow,
@@ -262,10 +256,6 @@ func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, wo
 	}
 
 	return ctrl.Result{RequeueAfter: requeueAfterIsRunning}, objs, nil
-}
-
-func isSnapshot(operatorVersion string) bool {
-	return strings.HasSuffix(operatorVersion, snapshotSuffix)
 }
 
 type followDeployDevWorkflowReconciliationState struct {
@@ -464,4 +454,18 @@ func (e ensureRunningDevWorkflowReconciliationState) fetchConfigMap(configMapNam
 		return v1.ConfigMap{}, err
 	}
 	return existingConfigMap, nil
+}
+
+func getDefaultKogitoServerlessWorkflowDevImageTag() string {
+	imgTag := defaultKogitoServerlessWorkflowDevImage
+	if version.IsSnapshot() {
+		imgTag += "-" + nightlySuffix
+	}
+	imgTag += ":"
+	if version.IsLatestVersion() {
+		imgTag += defaultImageTag
+	} else {
+		imgTag += version.GetMajorMinor()
+	}
+	return imgTag
 }

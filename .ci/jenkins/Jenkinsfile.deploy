@@ -126,6 +126,27 @@ pipeline {
             }
         }
 
+        stage('Prepare for e2e tests') {
+            when {
+                expression { 
+                    return helper.shouldLaunchTests() && helper.isRelease() 
+                }
+            }
+            steps {
+                script {
+                    // Define specific tests images as those to override defaults
+                    // Because released builder and devmode images are not yet available
+                    String platformCRFile = 'config/samples/sw.kogito_v1alpha08_kogitoserverlessplatform_withCache_minikube.yaml'
+                    String[] versionSplit = getOperatorVersion().split("\\.")
+                    String majorMinor = "${versionSplit[0]}.${versionSplit[1]}"
+                    def platformCR = readYaml(file: platformCRFile)
+                    platformCR.spec.devBaseImage = "quay.io/kogito-swf-devmode-nightly:${majorMinor}"
+                    platformCR.spec.platform.baseImage = "quay.io/kogito-swf-builder-nightly:${majorMinor}"
+                    writeYaml(file: platformCRFile, data: platformCR, overwrite: true)
+                }
+            }
+        }
+
         stage('Run e2e tests') {
             when {
                 expression {

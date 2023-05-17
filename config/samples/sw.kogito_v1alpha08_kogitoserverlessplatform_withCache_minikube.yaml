@@ -6,6 +6,5 @@ spec:
   cluster: kubernetes
   platform:
     publishStrategy: "Kaniko"
-    baseImage: quay.io/kiegroup/kogito-swf-builder-nightly:latest
     PublishStrategyOptions:
       KanikoBuildCacheEnabled: "true"

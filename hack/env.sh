@@ -16,7 +16,12 @@
 CSV_DIR="config/manifests/bases"
 
 getOperatorVersion() {
-  local version=$(grep -m 1 'VERSION ?=' Makefile | awk -F= '{print $2}' | tr -d ' ')
+  local version=$(grep -m 1 'OperatorVersion' version/version.go | awk -F\" '{print $2}')
+  echo "${version}"
+}
+
+getOperatorLatestVersion() {
+  local version=$(grep -m 1 'latestVersion' version/version.go | awk -F\" '{print $2}')
   echo "${version}"
 }
 
