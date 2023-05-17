@@ -25,6 +25,7 @@ export enum QueryParams {
   REMOVE_REMOTE = "removeRemote",
   RENAME_WORKSPACE = "renameWorkspace",
   SAMPLE_ID = "sampleId",
+  SAMPLES_CATEGORY = "category",
 }
 
 export enum PathParams {

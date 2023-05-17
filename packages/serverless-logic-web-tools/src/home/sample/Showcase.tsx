@@ -31,12 +31,17 @@ import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useHistory, useLocation } from "react-router";
+import { QueryParams } from "../../navigation/Routes";
+import { useQueryParam } from "../../queryParams/QueryParamsContext";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { useSampleDispatch } from "./hooks/SampleContext";
-import { Sample, SampleCategory, SampleCoversHashtable } from "./sampleApi";
+import { Sample, SampleCategories, SampleCategory, SampleCoversHashtable } from "./sampleApi";
 import { SampleCard } from "./SampleCard";
 import { SampleCardSkeleton } from "./SampleCardSkeleton";
 import { SamplesLoadError } from "./SamplesLoadError";
+
+type SearchParams = { searchValue: string; category?: SampleCategory };
 
 const SAMPLE_PRIORITY: Record<SampleCategory, number> = {
   ["serverless-workflow"]: 1,
@@ -68,9 +73,13 @@ export function Showcase() {
   const [sampleCovers, setSampleCovers] = useState<SampleCoversHashtable>({});
   const [sampleLoadingError, setSampleLoadingError] = useState("");
   const [searchFilter, setSearchFilter] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<SampleCategory | undefined>();
+  const [searchParams, setSearchParams] = useState<SearchParams>({ searchValue: "", category: undefined });
   const [page, setPage] = React.useState(1);
   const [isCategoryFilterDropdownOpen, setCategoryFilterDropdownOpen] = useState(false);
+  const history = useHistory();
+  const location = useLocation();
+
+  const categoryFilter = useQueryParam(QueryParams.SAMPLES_CATEGORY) as SampleCategory;
 
   const visibleSamples = useMemo(
     () => samples.slice((page - 1) * CARDS_PER_PAGE, page * CARDS_PER_PAGE),
@@ -94,17 +103,37 @@ export function Showcase() {
     return ALL_CATEGORIES_LABEL;
   }, [categoryFilter]);
 
+  const setCategoryFilter = useCallback(
+    (category?: SampleCategory) => {
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set(QueryParams.SAMPLES_CATEGORY, category || "");
+      const newSearchString = searchParams.toString();
+      history.push({ search: newSearchString });
+    },
+    [history, location]
+  );
+
   const onSearch = useCallback(
-    async (args: { searchValue: string; category?: SampleCategory }) => {
-      if (args.searchValue === searchFilter && args.category === categoryFilter) {
+    async (args: SearchParams) => {
+      if (args.searchValue === searchParams.searchValue && args.category === searchParams.category) {
         return;
       }
       setSearchFilter(args.searchValue);
       setCategoryFilter(args.category);
+      setSearchParams(args);
       setSamples(await sampleDispatch.getSamples({ searchFilter: args.searchValue, categoryFilter: args.category }));
     },
-    [categoryFilter, sampleDispatch, searchFilter]
+    [sampleDispatch, setCategoryFilter, searchParams]
   );
+
+  useEffect(() => {
+    if (categoryFilter && !SampleCategories.includes(categoryFilter)) {
+      setCategoryFilter(undefined);
+      return;
+    }
+
+    onSearch({ searchValue: searchFilter, category: categoryFilter });
+  }, [categoryFilter, onSearch, searchFilter, setCategoryFilter]);
 
   useEffect(() => {
     sampleDispatch
