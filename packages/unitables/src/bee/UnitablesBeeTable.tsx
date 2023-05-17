@@ -162,7 +162,7 @@ export function UnitablesBeeTable({
           width: undefined,
           columns: column.insideProperties.flatMap((insideProperty) => {
             let minWidth = insideProperty.minWidth ?? insideProperty.width;
-            if (insideProperty.dataType === "array") {
+            if (insideProperty.type === "array") {
               const length = calculateArrayFieldLength(insideProperty.joinedName);
               minWidth =
                 length > 0

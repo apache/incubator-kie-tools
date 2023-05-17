@@ -69,7 +69,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   private getNestedFieldWidth(field: Record<string, any>): number {
     if (field.items?.type === "object") {
       return Object.entries(field.items.properties).reduce((acc, [_, fieldValue]: [string, any]) => {
-        return acc + this.getNestedFieldWidth(fieldValue) + 3;
+        return acc + this.getNestedFieldWidth(fieldValue) + 3 + 120;
       }, 0);
     }
     if (field?.type === "object") {
@@ -167,7 +167,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
         };
       default:
         if (field.type === "array") {
-          const width = this.getNestedFieldWidth(field) + 120;
+          const width = this.getNestedFieldWidth(field);
           return {
             dataType: type as DmnBuiltInDataType,
             width: width,
