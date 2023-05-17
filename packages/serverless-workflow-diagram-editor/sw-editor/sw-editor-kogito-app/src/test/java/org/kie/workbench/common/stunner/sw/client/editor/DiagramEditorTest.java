@@ -60,7 +60,6 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.sw.SWDomainInitializer;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
-import org.kie.workbench.common.stunner.sw.client.services.IncrementalMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Context;
 import org.kie.workbench.common.stunner.sw.marshall.DocType;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller;
@@ -128,9 +127,6 @@ public class DiagramEditorTest {
 
     @Mock
     private StunnerEditor stunnerEditor2;
-
-    @Mock
-    private IncrementalMarshaller incrementalMarshaller;
 
     @Mock
     private ViewerSession viewerSession;
@@ -240,7 +236,6 @@ public class DiagramEditorTest {
         tested = spy(new DiagramEditor(promises,
                                        stunnerEditor2,
                                        diagramServices,
-                                       incrementalMarshaller,
                                        canvasFileExport,
                                        togglePreviewEvent,
                                        diagramApi));
