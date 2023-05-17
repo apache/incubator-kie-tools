@@ -26,7 +26,6 @@ export const DEFAULT_COLUMN_MIN_WIDTH = 150;
 const DEFAULT_DATE_TIME_CELL_WDITH = 188;
 const DEFAULT_DATE_CELL_WIDTH = 170;
 const DEFAULT_TIME_CELL_WIDTH = 150;
-export const DEFAULT_LIST_CELL_WIDTH = 210;
 
 export const FORMS_ID = "unitables-forms";
 export const AUTO_ROW_ID = "unitables-row";
@@ -64,21 +63,6 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     }
     field.style = { ...field.style, minWidth: this.getFieldDataType(field).width };
     return field;
-  }
-
-  private getNestedFieldWidth(field: Record<string, any>): number {
-    if (field.items?.type === "object") {
-      return Object.entries(field.items.properties).reduce((acc, [_, fieldValue]: [string, any]) => {
-        return acc + this.getNestedFieldWidth(fieldValue) + 3 + 120;
-      }, 0);
-    }
-    if (field?.type === "object") {
-      return Object.entries(field.properties).reduce((acc, [_, fieldValue]: [string, any]) => {
-        return acc + this.getNestedFieldWidth(fieldValue) + 3;
-      }, 0);
-    }
-
-    return this.getFieldDataType(field).width;
   }
 
   public getFieldDataType(field: Record<string, any>): { dataType: DmnBuiltInDataType; width: number; type: string } {
@@ -169,7 +153,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
         if (field.type === "array") {
           return {
             dataType: type as DmnBuiltInDataType,
-            width: DEFAULT_LIST_CELL_WIDTH,
+            width: DEFAULT_COLUMN_MIN_WIDTH,
             type: field.type,
           };
         }

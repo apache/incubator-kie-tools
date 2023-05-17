@@ -41,7 +41,6 @@ import { useField } from "uniforms";
 import {
   AUTO_ROW_ID,
   DEFAULT_COLUMN_MIN_WIDTH,
-  DEFAULT_LIST_CELL_WIDTH,
   UnitablesJsonSchemaBridge,
 } from "../uniforms/UnitablesJsonSchemaBridge";
 import getObjectValueByPath from "lodash/get";
@@ -52,8 +51,8 @@ import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
 export type ROWTYPE = Record<string, any>;
 
 const LIST_ADD_WIDTH = 63;
-const LIST_DEL_WIDTH = 60;
-const LIST_IDX_WIDTH = 60;
+const LIST_DEL_WIDTH = 61;
+const LIST_IDX_WIDTH = 61;
 
 export interface UnitablesBeeTable {
   id: string;
@@ -149,35 +148,31 @@ export function UnitablesBeeTable({
   );
 
   const deepSomething = useCallback(
-    (columnName: string, row: Record<string, any>, inputIndex = 0): number => {
+    (columnName: string, row: Record<string, any>): number => {
       const field = bridge.getField(columnName);
       const listInput = getObjectValueByPath(row, columnName) as [] | undefined;
       if (listInput && Array.isArray(listInput)) {
         if (listInput.length === 0) {
           return DEFAULT_COLUMN_MIN_WIDTH;
         }
-        return listInput.reduce((length, input, index) => {
-          if (input === null) {
-            if (field.type === "array") {
-              length += LIST_ADD_WIDTH;
-            }
-            return length + LIST_IDX_WIDTH + DEFAULT_COLUMN_MIN_WIDTH + LIST_DEL_WIDTH;
-          }
+        return listInput.reduce((length, _, index) => {
           return (
-            length +
+            LIST_IDX_WIDTH +
             Object.entries(field.items.properties).reduce(
               (length, [fieldKey, fieldProperty]: [string, Record<string, any>]) => {
                 if (fieldProperty.type === "array") {
-                  const a = deepSomething(`${columnName}.${index}.${fieldKey}`, row, index);
-                  return length + LIST_ADD_WIDTH + a;
+                  return length + LIST_ADD_WIDTH + deepSomething(`${columnName}.${index}.${fieldKey}`, row);
                 }
-                const b = bridge.getFieldDataType(field).width;
-                return length + LIST_IDX_WIDTH + b + LIST_DEL_WIDTH;
+                return length + bridge.getFieldDataType(fieldProperty).width;
               },
-              0
-            )
+              length
+            ) +
+            LIST_DEL_WIDTH
           );
         }, 0);
+      }
+      if (listInput === undefined) {
+        return DEFAULT_COLUMN_MIN_WIDTH;
       }
       return bridge.getFieldDataType(field).width + LIST_DEL_WIDTH;
     },
