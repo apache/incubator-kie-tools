@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { APP_NAME } from "./AppConstants";
 
-export const APP_NAME = "Serverless Logic Web Tools";
-export const SETTINGS_PAGE_SECTION_TITLE = "Settings";
-export const SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL =
-  "https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-overview.html";
+/**
+ *
+ * Sets the title of the page by concatenating the given title sections and append the application name.
+ * @param titleSections An array of strings representing the sections of the title in the order of [parent, children]
+ * @returns
+ */
+export function setPageTitle(titleSections: string[]): void {
+  document.title = [APP_NAME, ...titleSections].reverse().join(" | ");
+}

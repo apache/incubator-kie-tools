@@ -36,6 +36,7 @@ import { Alerts, AlertsController, useAlert } from "../../../alerts/Alerts";
 import { NewFileDropdownMenu } from "../../../editor/NewFileDropdownMenu";
 import { splitFiles } from "../../../extension";
 import { routes } from "../../../navigation/Routes";
+import { setPageTitle } from "../../../PageTitle";
 import { ConfirmDeleteModal } from "../../../table/ConfirmDeleteModal";
 import { defaultPerPageOptions, TablePagination } from "../../../table/TablePagination";
 import { TableToolbar } from "../../../table/TableToolbar";
@@ -162,6 +163,8 @@ export function WorkspaceFiles(props: Props) {
         const files = [...allFiles.editableFiles, ...(isViewRoFilesCheckedInternal ? allFiles.readonlyFiles : [])];
         const filesCount = files.length;
         const allFilesCount = workspace.files.length;
+
+        setPageTitle([workspace.descriptor.name]);
 
         return (
           <>

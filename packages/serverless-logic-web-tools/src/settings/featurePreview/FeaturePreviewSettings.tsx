@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-import * as React from "react";
+import React from "react";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Form } from "@patternfly/react-core/dist/js/components/Form";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { useCallback, useEffect, useState } from "react";
+import { SETTINGS_PAGE_SECTION_TITLE } from "../../AppConstants";
+import { setPageTitle } from "../../PageTitle";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
-import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { saveConfigCookie } from "./FeaturePreviewConfig";
+
+const PAGE_TITLE = "Feature Preview";
 
 export function FeaturePreviewSettings() {
   const settings = useSettings();
@@ -42,11 +46,15 @@ export function FeaturePreviewSettings() {
     [config]
   );
 
+  useEffect(() => {
+    setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
+  }, []);
+
   return (
     <Page>
       <PageSection variant={"light"} isWidthLimited>
         <TextContent>
-          <Text component={TextVariants.h1}>Feature Preview</Text>
+          <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
           <Text component={TextVariants.p}>
             Data you provide here is necessary for configuring the preview of features that are not fully supported yet.
             <br /> All information is locally stored in your browser and never shared with anyone.

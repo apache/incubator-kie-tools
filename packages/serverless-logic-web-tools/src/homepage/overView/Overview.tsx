@@ -28,7 +28,7 @@ import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
 import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
 import { QueryParams } from "../../navigation/Routes";
-import { useCallback, useContext, useMemo } from "react";
+import { useEffect, useCallback, useContext, useMemo } from "react";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
@@ -36,6 +36,9 @@ import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
 import { SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL } from "../../AppConstants";
+import { setPageTitle } from "../../PageTitle";
+
+const PAGE_TITLE = "Overview";
 
 export function Overview(props: { isNavOpen: boolean }) {
   const routes = useRoutes();
@@ -71,6 +74,10 @@ export function Overview(props: { isNavOpen: boolean }) {
     },
     [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
   );
+
+  useEffect(() => {
+    setPageTitle([PAGE_TITLE]);
+  }, []);
 
   return (
     <>

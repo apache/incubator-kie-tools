@@ -30,10 +30,13 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alerts, AlertsController, useAlert } from "../../alerts/Alerts";
 import { splitFiles } from "../../extension";
+import { setPageTitle } from "../../PageTitle";
 import { ConfirmDeleteModal } from "../../table/ConfirmDeleteModal";
 import { defaultPerPageOptions, TablePagination } from "../../table/TablePagination";
 import { TableToolbar } from "../../table/TableToolbar";
 import { WorkspacesTable } from "./WorkspacesTable";
+
+const PAGE_TITLE = "Recent models";
 
 export function RecentModels() {
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
@@ -170,6 +173,10 @@ export function RecentModels() {
       .catch(() => setDeleteModalFetchError(true));
   }, [getWorkspaceName, selectedWorkspaceIds, isWsFolder]);
 
+  useEffect(() => {
+    setPageTitle([PAGE_TITLE]);
+  }, []);
+
   return (
     <PromiseStateWrapper
       promise={workspaceDescriptorsPromise}
@@ -183,7 +190,7 @@ export function RecentModels() {
             <Page>
               <PageSection variant={"light"}>
                 <TextContent>
-                  <Text component={TextVariants.h1}>Recent models</Text>
+                  <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
                   <Text component={TextVariants.p}>
                     Use your recent models from GitHub Repository, a GitHub Gist or saved in your browser.
                   </Text>

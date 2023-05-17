@@ -33,6 +33,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { QueryParams } from "../../navigation/Routes";
+import { setPageTitle } from "../../PageTitle";
 import { useQueryParam } from "../../queryParams/QueryParamsContext";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { useSampleDispatch } from "./hooks/SampleContext";
@@ -43,6 +44,7 @@ import { SamplesLoadError } from "./SamplesLoadError";
 
 type SearchParams = { searchValue: string; category?: SampleCategory };
 
+const PAGE_TITLE = "Samples Catalog";
 const SAMPLE_PRIORITY: Record<SampleCategory, number> = {
   ["serverless-workflow"]: 1,
   ["dashbuilder"]: 2,
@@ -182,11 +184,15 @@ export function Showcase() {
     setPage(v);
   }, []);
 
+  useEffect(() => {
+    setPageTitle([PAGE_TITLE]);
+  }, []);
+
   return (
     <Page>
       <PageSection variant={"light"}>
         <TextContent>
-          <Text component={TextVariants.h1}>Samples Catalog</Text>
+          <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
           <Text component={TextVariants.p}>Try one of our samples to start defining your model.</Text>
         </TextContent>
         <Toolbar style={{ paddingBottom: "0" }}>

@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import React from "react";
+import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AddCircleOIcon } from "@patternfly/react-icons/dist/js/icons/add-circle-o-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { SETTINGS_PAGE_SECTION_TITLE } from "../../AppConstants";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { routes } from "../../navigation/Routes";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
+import { setPageTitle } from "../../PageTitle";
 import { obfuscate } from "../github/GitHubSettings";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsPageProps } from "../types";
 import { saveConfigCookie } from "./OpenShiftSettingsConfig";
 import { OpenShiftSettingsSimpleConfig } from "./OpenShiftSettingsSimpleConfig";
-import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
+
+const PAGE_TITLE = "OpenShift";
 
 export function OpenShiftSettings(props: SettingsPageProps) {
   const settings = useSettings();
@@ -57,11 +61,15 @@ export function OpenShiftSettings(props: SettingsPageProps) {
     saveConfigCookie(newConfig);
   }, [settings.openshift.config, settingsDispatch.openshift]);
 
+  useEffect(() => {
+    setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
+  }, []);
+
   return (
     <Page>
       <PageSection variant={"light"} isWidthLimited>
         <TextContent>
-          <Text component={TextVariants.h1}>OpenShift</Text>
+          <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
           <Text component={TextVariants.p}>
             Data you provide here is necessary for deploying models you design to your OpenShift instance.
             <br />
