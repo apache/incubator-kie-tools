@@ -30,6 +30,7 @@ import {
   isParentColumn,
   useFillingResizingWidth,
 } from "../../resizing/FillingColumnResizingWidth";
+import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export interface BeeTableThResizableProps<R extends object> {
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
@@ -118,13 +119,29 @@ export function BeeTableThResizable<R extends object>({
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
   const [isResizing, setResizing] = useState<boolean>(false);
 
+  const { editorRef } = useBoxedExpressionEditor();
+
   useEffect(() => {
+    function hasTextSelectedInBoxedExpressionEditor() {
+      const selection = window.getSelection();
+      if (selection) {
+        return selection?.toString() && editorRef.current?.contains(selection.focusNode);
+      }
+      return false;
+    }
+
     function onEnter(e: MouseEvent) {
       e.stopPropagation();
+      if (hasTextSelectedInBoxedExpressionEditor()) {
+        return;
+      }
       setHoverInfo(() => getHoverInfo(e, th!));
     }
 
     function onMove(e: MouseEvent) {
+      if (hasTextSelectedInBoxedExpressionEditor()) {
+        return;
+      }
       setHoverInfo(() => getHoverInfo(e, th!));
     }
 
@@ -141,7 +158,7 @@ export function BeeTableThResizable<R extends object>({
       th?.removeEventListener("mousemove", onMove);
       th?.removeEventListener("mouseenter", onEnter);
     };
-  }, [columnIndex, rowIndex, forwardRef]);
+  }, [columnIndex, rowIndex, forwardRef, editorRef]);
 
   return (
     <BeeTableTh<R>
