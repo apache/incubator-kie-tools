@@ -387,12 +387,10 @@ function UnitablesBeeTableCell({
           setIsSelectFieldOpen((prev) => {
             if (prev === true) {
               submitRow();
-              setEditingCell(false);
-            } else {
-              setEditingCell(true);
             }
             return !prev;
           });
+          setEditingCell(!isEditing);
           return;
         }
 
@@ -492,12 +490,10 @@ function UnitablesBeeTableCell({
         setIsSelectFieldOpen((prev) => {
           if (prev === true) {
             submitRow();
-            setEditingCell(false);
-          } else {
-            setEditingCell(true);
           }
           return !prev;
         });
+        setEditingCell(!isEditing);
       }
 
       if (!isEditing && e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "input") {
