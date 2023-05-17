@@ -247,6 +247,7 @@ export const Unitables = ({
             onRowDeleted={onRowDeleted}
             configs={configs}
             setWidth={setWidth}
+            bridge={jsonSchemaBridge}
           />
         </div>
       ) : (

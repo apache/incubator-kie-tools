@@ -167,18 +167,9 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
         };
       default:
         if (field.type === "array") {
-          const width = this.getNestedFieldWidth(field);
           return {
             dataType: type as DmnBuiltInDataType,
-            width: width,
-            type: field.type,
-          };
-        }
-        if (field.type === "object") {
-          const width = this.getNestedFieldWidth(field);
-          return {
-            dataType: type as DmnBuiltInDataType,
-            width: width,
+            width: DEFAULT_LIST_CELL_WIDTH,
             type: field.type,
           };
         }

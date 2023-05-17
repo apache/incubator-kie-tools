@@ -38,13 +38,22 @@ import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import { AutoField } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { useField } from "uniforms";
-import { AUTO_ROW_ID, DEFAULT_COLUMN_MIN_WIDTH, DEFAULT_LIST_CELL_WIDTH } from "../uniforms/UnitablesJsonSchemaBridge";
+import {
+  AUTO_ROW_ID,
+  DEFAULT_COLUMN_MIN_WIDTH,
+  DEFAULT_LIST_CELL_WIDTH,
+  UnitablesJsonSchemaBridge,
+} from "../uniforms/UnitablesJsonSchemaBridge";
 import getObjectValueByPath from "lodash/get";
 import { useUnitablesContext, useUnitablesRow } from "../UnitablesContext";
 import moment from "moment";
 import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
 
 export type ROWTYPE = Record<string, any>;
+
+const LIST_ADD_WIDTH = 63;
+const LIST_DEL_WIDTH = 60;
+const LIST_IDX_WIDTH = 60;
 
 export interface UnitablesBeeTable {
   id: string;
@@ -59,6 +68,7 @@ export interface UnitablesBeeTable {
   onRowDeleted: (args: { rowIndex: number }) => void;
   configs: UnitablesInputsConfigs;
   setWidth: (newWidth: number, fieldName: string) => void;
+  bridge: UnitablesJsonSchemaBridge;
 }
 
 export function UnitablesBeeTable({
@@ -74,6 +84,7 @@ export function UnitablesBeeTable({
   onRowDeleted,
   configs,
   setWidth,
+  bridge,
 }: UnitablesBeeTable) {
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
@@ -137,17 +148,53 @@ export function UnitablesBeeTable({
     [setWidth]
   );
 
+  const deepSomething = useCallback(
+    (columnName: string, row: Record<string, any>, inputIndex = 0): number => {
+      const field = bridge.getField(columnName);
+      const listInput = getObjectValueByPath(row, columnName) as [] | undefined;
+      if (listInput && Array.isArray(listInput)) {
+        if (listInput.length === 0) {
+          return DEFAULT_COLUMN_MIN_WIDTH;
+        }
+        return listInput.reduce((length, input, index) => {
+          if (input === null) {
+            if (field.type === "array") {
+              length += LIST_ADD_WIDTH;
+            }
+            return length + LIST_IDX_WIDTH + DEFAULT_COLUMN_MIN_WIDTH + LIST_DEL_WIDTH;
+          }
+          return (
+            length +
+            Object.entries(field.items.properties).reduce(
+              (length, [fieldKey, fieldProperty]: [string, Record<string, any>]) => {
+                if (fieldProperty.type === "array") {
+                  const a = deepSomething(`${columnName}.${index}.${fieldKey}`, row, index);
+                  return length + LIST_ADD_WIDTH + a;
+                }
+                const b = bridge.getFieldDataType(field).width;
+                return length + LIST_IDX_WIDTH + b + LIST_DEL_WIDTH;
+              },
+              0
+            )
+          );
+        }, 0);
+      }
+      return bridge.getFieldDataType(field).width + LIST_DEL_WIDTH;
+    },
+    [bridge]
+  );
+
   const calculateArrayFieldLength = useCallback(
     (columnName: string) => {
-      return rows.reduce((length, row) => {
-        const arrayInput = getObjectValueByPath(row, columnName) as [] | undefined;
-        if (arrayInput && Array.isArray(arrayInput) && arrayInput.length > length) {
-          return arrayInput.length;
+      return rows.reduce((width, row) => {
+        const rowWidth = LIST_ADD_WIDTH + deepSomething(columnName, row);
+        if (rowWidth > width) {
+          return rowWidth;
         }
-        return length;
+        return width;
       }, 0);
     },
-    [rows]
+    [deepSomething, rows]
   );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
@@ -163,11 +210,11 @@ export function UnitablesBeeTable({
           columns: column.insideProperties.flatMap((insideProperty) => {
             let minWidth = insideProperty.minWidth ?? insideProperty.width;
             if (insideProperty.type === "array") {
-              const length = calculateArrayFieldLength(insideProperty.joinedName);
-              minWidth =
-                length > 0
-                  ? 63 + length * (insideProperty.minWidth ?? insideProperty.width)
-                  : insideProperty.minWidth ?? insideProperty.width;
+              minWidth = calculateArrayFieldLength(insideProperty.joinedName);
+              // minWidth =
+              //   length > 0
+              //     ? 63 + length * (insideProperty.minWidth ?? insideProperty.width)
+              //     : insideProperty.minWidth ?? insideProperty.width;
             }
             return {
               originalId: uuid + `field-${insideProperty.joinedName}`,
@@ -186,8 +233,7 @@ export function UnitablesBeeTable({
       } else {
         let minWidth = column.width;
         if (column.type === "array") {
-          const length = calculateArrayFieldLength(column.joinedName);
-          minWidth = length > 0 ? 63 + length * (column.width ?? 0) : DEFAULT_LIST_CELL_WIDTH;
+          minWidth = calculateArrayFieldLength(column.joinedName);
         }
         return {
           originalId: uuid + `field-${column.name}-parent`,
