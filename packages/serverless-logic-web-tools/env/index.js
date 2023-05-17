@@ -30,67 +30,65 @@ module.exports = composeEnv(
     vars: varsWithName({
       SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: {
         default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
-        description: "",
+        description: "Build information",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__version: {
         default: version,
-        description: "",
+        description: "Version of the application",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef: {
         default: "main",
-        description: "",
+        description: "Tag/branch to fetch samples from `kiegroup/kie-samples` repository",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__gtmId: {
         default: undefined,
-        description: "",
+        description: "Google Tag Manager ID for Analytics",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
-        description: "",
+        description: "Download URL for getting KIE Sandbox Extended Services (Linux)",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
-        description: "",
+        description: "Download URL for getting KIE Sandbox Extended Services (macOS)",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlWindows: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
-        description: "",
+        description: "Download URL for getting KIE Sandbox Extended Services (Windows)",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesUrl: {
         default: `http://localhost:${extendedServicesEnv.env.extendedServices.port}`,
-        description: "",
+        description: "Base URL to access KIE Sandbox Extended Services",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion: {
         default: version,
-        description: "",
+        description: "Compatible version to run KIE Sandbox Extended Services",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag: {
         default: "latest",
-        description: "",
+        description:
+          "Tag for the Serverless Workflow Builder Image that has a pre-configured Serverless Workflow project",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag: {
         default: "latest",
-        description: "",
+        description: "Tag for the Base Builder Image that is able to build Java projects with Maven",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag: {
         default: "latest",
-        description: "",
+        description: "Tag for the Dashbuilder Viewer Image that has a pre-configured project to load Dashbuilder files",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag: {
         default: "latest",
-        description: "",
+        description:
+          "Tag for the Serverless Workflow Dev Mode Image that runs a pre-configured Serverless Workflow project in Quarkus Dev Mode",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl: {
         default: "https://cors.isomorphic-git.org",
-        description: "",
-      },
-      SERVERLESS_LOGIC_WEB_TOOLS__featureFlagMode: {
-        default: "COMMUNITY",
-        description: "",
+        description: "Git CORS Proxy URL to make the application able to interact with GitHub using `isomorphic-git`",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__cypressUrl: {
         default: "https://localhost:9020/",
-        description: "",
+        description: "The application URL for Cypress",
       },
     }),
     get env() {
