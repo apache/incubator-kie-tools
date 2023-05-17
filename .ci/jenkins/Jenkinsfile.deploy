@@ -156,7 +156,7 @@ pipeline {
                             kubectl get pods -A
                         """
                     } catch(err) {
-                        echo "echo "Caught: ${err}"
+                        echo "Caught: ${err}"
                         unstable("Error while running e2e tests")
                     }
                 }
