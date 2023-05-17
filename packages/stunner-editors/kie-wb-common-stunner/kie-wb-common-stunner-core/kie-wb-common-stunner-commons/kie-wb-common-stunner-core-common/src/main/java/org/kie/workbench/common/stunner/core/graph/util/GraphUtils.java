@@ -415,7 +415,10 @@ public class GraphUtils {
                               public boolean startEdgeTraversal(final Edge edge) {
                                   super.startEdgeTraversal(edge);
                                   final Object content = edge.getContent();
+                                  System.out.println("HASHCODE BEFORE startEdgeTrasversal combine hash: " + result[0]);
+                                  System.out.println("HASH to combine: " + content.hashCode());
                                   result[0] = combineHashCodes(result[0], content.hashCode());
+                                  System.out.println("Combined hash: " + content.hashCode());
                                   if (edge.getContent() instanceof ViewConnector) {
                                       Optional<Connection> sourceConnection = ((ViewConnector) edge.getContent()).getSourceConnection();
                                       sourceConnection.ifPresent(c -> result[0] = combineHashCodes(result[0], c.hashCode()));
