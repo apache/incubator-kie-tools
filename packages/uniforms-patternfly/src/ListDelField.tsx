@@ -28,7 +28,7 @@ function ListDelField({ name, disabled, ...props }: ListDelFieldProps) {
   const parentName = joinName(nameParts.slice(0, -1));
   const parent = useField<{ minCount?: number }, unknown[]>(parentName, {}, { absoluteName: true })[0];
 
-  const limitNotReached = !disabled && !((parent.minCount ?? 0) <= (parent.value?.length ?? -1));
+  const limitNotReached = !disabled && !(parent.minCount! <= (parent.value?.length ?? -1));
 
   return (
     <Button

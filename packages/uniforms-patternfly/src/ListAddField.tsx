@@ -36,7 +36,7 @@ function ListAddField({ disabled = false, name, value, ...props }: ListAddFieldP
   const parentName = joinName(nameParts.slice(0, -1));
   const parent = useField<{ maxCount?: number }, unknown[]>(parentName, {}, { absoluteName: true })[0];
 
-  const limitNotReached = !disabled && !((parent.maxCount ?? 0) <= (parent.value?.length ?? -1));
+  const limitNotReached = !disabled && !(parent.maxCount! <= (parent.value?.length ?? -1));
 
   return (
     <Button
