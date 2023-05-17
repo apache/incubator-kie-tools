@@ -16,6 +16,7 @@
 
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "../api";
+import { Node } from "../api/StunnerEditorEnvelopeAPI";
 import { SwfStunnerEditorAPI, SwfStunnerEditorCanvas, SwfStunnerEditoSession } from "../api/SwfStunnerEditorAPI";
 
 export class SwfStunnerEditor implements SwfStunnerEditorAPI {
@@ -39,8 +40,8 @@ export class SwfStunnerEditor implements SwfStunnerEditorAPI {
       getNodeByName: (name: string) => {
         return envelopeApi.requests.editor_session_getNodeByName(name);
       },
-      getNodeName: (uuid: string) => {
-        return envelopeApi.requests.editor_session_getNodeName(uuid);
+      getNodeName: (node: Node) => {
+        return envelopeApi.requests.editor_session_getNodeName(node);
       },
       getSelectedElementUUID: () => {
         return envelopeApi.requests.editor_session_getSelectedElementUUID();

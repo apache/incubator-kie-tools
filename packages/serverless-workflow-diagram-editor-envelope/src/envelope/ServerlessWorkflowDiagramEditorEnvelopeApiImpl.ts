@@ -20,6 +20,7 @@ import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { ServerlessWorkflowDiagramEditorChannelApi, ServerlessWorkflowDiagramEditorEnvelopeApi } from "../api";
 import { ServerlessWorkflowDiagramEditor } from "./ServerlessWorkflowDiagramEditor";
 import { StunnerEdge, StunnerNode, StunnerGraph } from "../api/StunnerAPI";
+import { Node } from "../api/StunnerEditorEnvelopeAPI";
 import { createEdge, createNode, DefinitionMapper } from "../api/StunnerEditorEnvelopeAPIFactory";
 
 export type ServerlessWorkflowDiagramEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
@@ -68,8 +69,8 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
     return this.toNode(node);
   }
 
-  public async editor_session_getNodeName(uuid: string) {
-    return this.getEditorOrThrowError().getNodeName(uuid);
+  public async editor_session_getNodeName(node: Node) {
+    return this.getEditorOrThrowError().getNodeName(this.toStunnerNode(node));
   }
 
   public async editor_session_getSelectedElementUUID() {
@@ -100,6 +101,10 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
 
   public async editor_session_clearSelection() {
     this.getEditorOrThrowError().clearSelection();
+  }
+
+  private toStunnerNode(node: Node) {
+    return this.getEditorOrThrowError().getNodeByUUID(node.uuid);
   }
 
   private toNode(node: StunnerNode) {

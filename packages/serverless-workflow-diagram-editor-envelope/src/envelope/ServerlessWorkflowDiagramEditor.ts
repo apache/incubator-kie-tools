@@ -15,7 +15,7 @@
  */
 
 import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors/dist/common";
-import { StunnerCanvas, StunnerEditor, StunnerSession } from "../api/StunnerAPI";
+import { StunnerCanvas, StunnerEditor, StunnerNode, StunnerSession } from "../api/StunnerAPI";
 
 interface CustomWindow extends Window {
   canvas: StunnerCanvas;
@@ -53,8 +53,8 @@ export class ServerlessWorkflowDiagramEditorImpl extends GwtEditorWrapper implem
     return window.editor.session.getNodeByName(name);
   }
 
-  public getNodeName(uuid: string) {
-    return window.editor.session.getNodeName(uuid);
+  public getNodeName(node: StunnerNode) {
+    return window.editor.session.getNodeName(node);
   }
 
   public getDefinitionId(bean: Object) {

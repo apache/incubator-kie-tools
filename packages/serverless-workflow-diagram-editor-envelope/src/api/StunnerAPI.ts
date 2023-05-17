@@ -25,7 +25,7 @@ export interface StunnerSession {
   getNodeByUUID(uuid: string): StunnerNode;
   getDefinitionByElementUUID(uuid: string): Object;
   getNodeByName(name: string): StunnerNode;
-  getNodeName(uuid: string): string;
+  getNodeName(node: StunnerNode): string;
   getDefinitionId(bean: Object): string;
   getDefinitionName(bean: Object): string;
   getSelectedElementUUID(): string;

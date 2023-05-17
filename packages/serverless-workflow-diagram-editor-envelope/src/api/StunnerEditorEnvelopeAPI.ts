@@ -21,7 +21,7 @@ export interface StunnerEditorEnvelopeAPI {
   editor_session_getNodeByUUID(uuid: string): Promise<Node>;
   editor_session_getDefinitionByElementUUID(uuid: string): Promise<Object>;
   editor_session_getNodeByName(name: string): Promise<Node>;
-  editor_session_getNodeName(uuid: string): Promise<string>;
+  editor_session_getNodeName(node: Node): Promise<string>;
   editor_session_getSelectedElementUUID(): Promise<string>;
   editor_session_getSelectedNode(): Promise<Node>;
   editor_session_getSelectedEdge(): Promise<Edge>;

@@ -43,13 +43,13 @@ export interface SwfStunnerEditoSession {
    */
   getAllNodesUUID(): Promise<string[]>;
   /**
-   * It return the Edge for the given identifier (UUID).
+   * It returns the Edge for the given identifier (UUID).
    * @param uuid The edge's identifier (UUID).
    * @returns Asynchronously returns the edge object.
    */
   getEdgeByUUID(uuid: string): Promise<Edge>;
   /**
-   * It return the Node for the given identifier (UUID).
+   * It returns the Node for the given identifier (UUID).
    * @param uuid The node's identifier (UUID).
    * @returns Asynchronously returns the node object.
    */
@@ -63,17 +63,17 @@ export interface SwfStunnerEditoSession {
    */
   getDefinitionByElementUUID(uuid: string): Promise<Object>;
   /**
-   * It return the Node which has a given name.
+   * It returns the Node which has a given name.
    * @param uuid The node's name.
    * @returns Asynchronously returns the node object.
    */
   getNodeByName(name: string): Promise<Node>;
   /**
-   * It return the name for a Node.
-   * @param uuid The node's identifier (UUID).
-   * @returns Asynchronously returns the name.
+   * It returns the name for a Node.
+   * @param node The Node instance.
+   * @returns Asynchronously returns the node's name.
    */
-  getNodeName(uuid: string): Promise<string>;
+  getNodeName(node: Node): Promise<string>;
   /**
    * Returns the graph element (Node, Edge) identifier (UUID) for the selected shape in the editor's view.
    * @returns Asynchronously returns the element's identifier (UUID).
@@ -86,12 +86,12 @@ export interface SwfStunnerEditoSession {
   getSelectedNode(): Promise<Node>;
   /**
    * Returns the Edge identifier (UUID) for the selected shape in the editor's view.
-   * @returns Asyncrhonouly returns the edge object.
+   * @returns Asynchronously returns the edge object.
    */
   getSelectedEdge(): Promise<Edge>;
   /**
    * Returns the node's or edge's definition object, for the selected shape in the editor's view.
-   * @returns Asynchronously returns the node's or edge's definition object (eg: InjectState object).
+   * @returns Asynchronously returns the node's or edge's definition object (eg: the InjectState object).
    */
   getSelectedDefinition(): Promise<Object>;
   /**
@@ -145,10 +145,10 @@ export interface SwfStunnerEditorCanvas {
   /**
    * Sets the shape's border (stroke) color.
    * @param uuid The shape's identifier. It is used to match with the graph element's identifier.
-   * @param backgroundColor The color name or RGB value for the border color.
+   * @param borderColor The color name or RGB value for the border color.
    * @returns Asynchronously notifies when the border color is being changed. Notice you may need to call a draw function once all attributes have been changed.
    */
-  setBorderColor(uuid: string, backgroundColor: string): Promise<void>;
+  setBorderColor(uuid: string, borderColor: string): Promise<void>;
   /**
    * Obtains the shape's location relative to the parent, if any.
    * @param uuid The shape's identifier. It is used to match with the graph element's identifier.
