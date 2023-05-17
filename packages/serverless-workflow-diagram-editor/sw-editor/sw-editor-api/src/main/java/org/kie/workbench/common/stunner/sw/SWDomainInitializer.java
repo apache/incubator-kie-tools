@@ -209,7 +209,6 @@ public class SWDomainInitializer {
                                    new String[]{LABEL_INJECT_STATE, LABEL_PARALLEL_STATE},
                                    new String[]{LABEL_INJECT_STATE, LABEL_FOREACH_STATE},
                                    new String[]{LABEL_INJECT_STATE, LABEL_CALLBACK_STATE},
-                                   new String[]{LABEL_INJECT_STATE, LABEL_END},
                                    // Event State
                                    new String[]{LABEL_EVENT_STATE, LABEL_INJECT_STATE},
                                    new String[]{LABEL_EVENT_STATE, LABEL_EVENT_STATE},
@@ -219,7 +218,6 @@ public class SWDomainInitializer {
                                    new String[]{LABEL_EVENT_STATE, LABEL_PARALLEL_STATE},
                                    new String[]{LABEL_EVENT_STATE, LABEL_FOREACH_STATE},
                                    new String[]{LABEL_EVENT_STATE, LABEL_CALLBACK_STATE},
-                                   new String[]{LABEL_EVENT_STATE, LABEL_END},
                                    // Operation State
                                    new String[]{LABEL_OPERATION_STATE, LABEL_INJECT_STATE},
                                    new String[]{LABEL_OPERATION_STATE, LABEL_EVENT_STATE},
@@ -229,7 +227,6 @@ public class SWDomainInitializer {
                                    new String[]{LABEL_OPERATION_STATE, LABEL_PARALLEL_STATE},
                                    new String[]{LABEL_OPERATION_STATE, LABEL_FOREACH_STATE},
                                    new String[]{LABEL_OPERATION_STATE, LABEL_CALLBACK_STATE},
-                                   new String[]{LABEL_OPERATION_STATE, LABEL_END},
                                    // Sleep State
                                    new String[]{LABEL_SLEEP_STATE, LABEL_INJECT_STATE},
                                    new String[]{LABEL_SLEEP_STATE, LABEL_EVENT_STATE},
@@ -239,7 +236,6 @@ public class SWDomainInitializer {
                                    new String[]{LABEL_SLEEP_STATE, LABEL_PARALLEL_STATE},
                                    new String[]{LABEL_SLEEP_STATE, LABEL_FOREACH_STATE},
                                    new String[]{LABEL_SLEEP_STATE, LABEL_CALLBACK_STATE},
-                                   new String[]{LABEL_SLEEP_STATE, LABEL_END},
                                    // Parallel State
                                    new String[]{LABEL_PARALLEL_STATE, LABEL_INJECT_STATE},
                                    new String[]{LABEL_PARALLEL_STATE, LABEL_EVENT_STATE},
@@ -249,7 +245,6 @@ public class SWDomainInitializer {
                                    new String[]{LABEL_PARALLEL_STATE, LABEL_PARALLEL_STATE},
                                    new String[]{LABEL_PARALLEL_STATE, LABEL_FOREACH_STATE},
                                    new String[]{LABEL_PARALLEL_STATE, LABEL_CALLBACK_STATE},
-                                   new String[]{LABEL_PARALLEL_STATE, LABEL_END},
                                    // Foreach State
                                    new String[]{LABEL_FOREACH_STATE, LABEL_INJECT_STATE},
                                    new String[]{LABEL_FOREACH_STATE, LABEL_EVENT_STATE},
@@ -259,7 +254,6 @@ public class SWDomainInitializer {
                                    new String[]{LABEL_FOREACH_STATE, LABEL_PARALLEL_STATE},
                                    new String[]{LABEL_FOREACH_STATE, LABEL_FOREACH_STATE},
                                    new String[]{LABEL_FOREACH_STATE, LABEL_CALLBACK_STATE},
-                                   new String[]{LABEL_FOREACH_STATE, LABEL_END},
                                    // Callback State
                                    new String[]{LABEL_CALLBACK_STATE, LABEL_INJECT_STATE},
                                    new String[]{LABEL_CALLBACK_STATE, LABEL_EVENT_STATE},
@@ -268,8 +262,7 @@ public class SWDomainInitializer {
                                    new String[]{LABEL_CALLBACK_STATE, LABEL_SLEEP_STATE},
                                    new String[]{LABEL_CALLBACK_STATE, LABEL_PARALLEL_STATE},
                                    new String[]{LABEL_CALLBACK_STATE, LABEL_FOREACH_STATE},
-                                   new String[]{LABEL_CALLBACK_STATE, LABEL_CALLBACK_STATE},
-                                   new String[]{LABEL_CALLBACK_STATE, LABEL_END})
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_CALLBACK_STATE})
                 .setConnectionRule(CompensationTransition.class,
                                    // Inject State
                                    new String[]{LABEL_INJECT_STATE, LABEL_INJECT_STATE},
