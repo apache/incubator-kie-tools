@@ -4953,13 +4953,14 @@ importers:
         version: 4.8.4
 
   packages/kie-sandbox-image:
-    devDependencies:
+    dependencies:
       "@kie-tools/image-env-to-json":
         specifier: workspace:*
         version: link:../image-env-to-json
       "@kie-tools/online-editor":
         specifier: workspace:*
         version: link:../online-editor
+    devDependencies:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
