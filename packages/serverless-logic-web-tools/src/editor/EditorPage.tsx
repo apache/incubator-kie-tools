@@ -42,6 +42,7 @@ import { EditorToolbar } from "./EditorToolbar";
 import { APP_NAME } from "../AppConstants";
 import { WebToolsEmbeddedEditor, WebToolsEmbeddedEditorRef } from "./WebToolsEmbeddedEditor";
 import { useEditorNotifications } from "./hooks/useEditorNotifications";
+import { setPageTitle } from "../PageTitle";
 
 export interface Props {
   workspaceId: string;
@@ -73,7 +74,7 @@ export function EditorPage(props: Props) {
   });
 
   useEffect(() => {
-    document.title = `${APP_NAME} :: ${props.fileRelativePath}`;
+    setPageTitle([props.fileRelativePath]);
   }, [props.fileRelativePath]);
 
   // keep the page in sync with the name of `workspaceFilePromise`, even if changes

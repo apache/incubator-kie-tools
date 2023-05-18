@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import React from "react";
+import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -28,22 +30,24 @@ import { AddCircleOIcon } from "@patternfly/react-icons/dist/js/icons/add-circle
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import * as React from "react";
-import { useCallback, useMemo, useState, useContext } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { routes } from "../../navigation/Routes";
+import { setPageTitle } from "../../PageTitle";
+import { QuickStartIds } from "../../quickstarts-data";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { SettingsPageProps } from "../types";
 import {
   EMPTY_CONFIG,
   isServiceRegistryConfigValid,
   resetConfigCookie,
   saveConfigCookie,
 } from "./ServiceRegistryConfig";
-import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
-import { QuickStartIds } from "../../quickstarts-data";
-import { SettingsPageProps } from "../types";
+
+const PAGE_TITLE = "Service Registry";
 
 export function ServiceRegistrySettings(props: SettingsPageProps) {
   const settings = useSettings();
@@ -94,11 +98,15 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
     saveConfigCookie(config);
   }, [config, settingsDispatch.serviceRegistry]);
 
+  useEffect(() => {
+    setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
+  }, []);
+
   return (
     <Page>
       <PageSection variant={"light"} isWidthLimited>
         <TextContent>
-          <Text component={TextVariants.h1}>Service Registry</Text>
+          <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
           <Text component={TextVariants.p}>
             Data you provide here is necessary for uploading specs associated with models you design to your Service
             Registry instance. All information is locally stored in your browser and never shared with anyone.

@@ -25,12 +25,14 @@ import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { ImportFromUrlForm } from "../../workspace/components/ImportFromUrlForm";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
 export function ImportFromUrlCard() {
   const routes = useRoutes();
   const history = useHistory();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const [url, setUrl] = useState("");
+  const [isUrlValid, setIsUrlValid] = useState(ValidatedOptions.default);
 
   const importFromUrl = useCallback(() => {
     history.push({
@@ -67,12 +69,13 @@ export function ImportFromUrlCard() {
           <Text component={TextVariants.p}>Import a GitHub Repository, a GitHub Gist, or any other file URL.</Text>
         </TextContent>
         <br />
-        <ImportFromUrlForm url={url} onChange={setUrl} onSubmit={importFromUrl} />
+        <ImportFromUrlForm url={url} onChange={setUrl} onSubmit={importFromUrl} onValidate={setIsUrlValid} />
       </CardBody>
       <CardFooter>
         <Button
           variant={url.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
           onClick={importFromUrl}
+          isDisabled={isUrlValid !== ValidatedOptions.success}
           ouiaId="import-from-url-button"
         >
           {buttonLabel}

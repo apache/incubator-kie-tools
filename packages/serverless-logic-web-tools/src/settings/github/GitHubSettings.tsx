@@ -30,12 +30,15 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import * as React from "react";
-import { useCallback, useContext, useMemo, useRef, useState } from "react";
+import { useEffect, useCallback, useContext, useMemo, useRef, useState } from "react";
 import { makeCookieName } from "../../cookies";
 import { QuickStartIds } from "../../quickstarts-data";
 import { AuthStatus, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { SettingsPageProps } from "../types";
+import { setPageTitle } from "../../PageTitle";
+import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
 
+const PAGE_TITLE = "GitHub";
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const GITHUB_TOKENS_URL = "https://github.com/settings/tokens";
 export const GITHUB_TOKENS_HOW_TO_URL =
@@ -97,11 +100,15 @@ export function GitHubSettings(props: SettingsPageProps) {
     setPotentialGitHubToken(undefined);
   }, [settingsDispatch.github.authService]);
 
+  useEffect(() => {
+    setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
+  }, []);
+
   return (
     <Page>
       <PageSection variant={"light"}>
         <TextContent>
-          <Text component={TextVariants.h1}>GitHub</Text>
+          <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
           <Text component={TextVariants.p}>
             Data you provide here is necessary for creating repositories containing models you design, and syncing
             changes with GitHub.

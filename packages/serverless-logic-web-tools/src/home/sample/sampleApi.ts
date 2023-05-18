@@ -38,6 +38,7 @@ interface GitHubRepoInfo {
 type GitHubFileInfo = GitHubRepoInfo & { path: string };
 
 export type SampleCategory = "serverless-workflow" | "serverless-decision" | "dashbuilder";
+export const SampleCategories: SampleCategory[] = ["serverless-workflow", "serverless-decision", "dashbuilder"];
 
 const SUPPORTING_FILES_FOLDER = join(".github", "supporting-files");
 

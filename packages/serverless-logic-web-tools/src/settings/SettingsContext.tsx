@@ -112,6 +112,7 @@ export interface SettingsDispatchContextType {
   };
 }
 
+export const SETTINGS_PAGE_SECTION_TITLE = "Settings";
 export const SettingsContext = React.createContext<SettingsContextType>({} as any);
 export const SettingsDispatchContext = React.createContext<SettingsDispatchContextType>({} as any);
 

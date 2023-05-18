@@ -20,7 +20,7 @@ import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { NewServerlessModelCard } from "./NewServerlessModelCard";
+import { NewModelCard } from "./NewModelCard";
 import { Button, ButtonVariant, Card, CardBody } from "@patternfly/react-core/dist/js";
 import { ImportFromUrlCard } from "./ImportFromUrlCard";
 import { UploadCard } from "./UploadCard";
@@ -28,8 +28,7 @@ import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
 import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
 import { QueryParams } from "../../navigation/Routes";
-import { useCallback, useContext, useMemo } from "react";
-import { NewModelCard } from "./NewModelCard";
+import { useEffect, useCallback, useContext, useMemo } from "react";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
@@ -37,6 +36,9 @@ import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
 import { SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL } from "../../AppConstants";
+import { setPageTitle } from "../../PageTitle";
+
+const PAGE_TITLE = "Overview";
 
 export function Overview(props: { isNavOpen: boolean }) {
   const routes = useRoutes();
@@ -72,6 +74,10 @@ export function Overview(props: { isNavOpen: boolean }) {
     },
     [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
   );
+
+  useEffect(() => {
+    setPageTitle([PAGE_TITLE]);
+  }, []);
 
   return (
     <>
@@ -129,24 +135,22 @@ export function Overview(props: { isNavOpen: boolean }) {
               </CardHeader>
               <CardBody>
                 <Grid>
-                  <NewServerlessModelCard
+                  <NewModelCard
                     title={"Workflow"}
                     jsonExtension={FileTypes.SW_JSON}
                     yamlExtension={FileTypes.SW_YAML}
-                    description={"Serverless Workflow files are used to define orchestration logic for services."}
+                    description={"Define orchestration logic for services."}
                   />
-                  <NewServerlessModelCard
+                  <NewModelCard
                     title={"Decision"}
                     jsonExtension={FileTypes.YARD_JSON}
                     yamlExtension={FileTypes.YARD_YAML}
-                    description={"Serverless Decision files are used to define decision logic for services."}
+                    description={"Define decision logic for services."}
                   />
                   <NewModelCard
                     title={"Dashboard"}
-                    extension={FileTypes.DASH_YAML}
-                    description={
-                      "Dashboard files are used to define data visualization from data extracted from applications."
-                    }
+                    yamlExtension={FileTypes.DASH_YML}
+                    description={"Define data visualization from data extracted from applications."}
                   />
                 </Grid>
               </CardBody>
