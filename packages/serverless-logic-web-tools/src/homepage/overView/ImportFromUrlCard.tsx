@@ -25,7 +25,7 @@ import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { ImportFromUrlForm } from "../../workspace/components/ImportFromUrlForm";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
-import { ValidatedOptions } from "@patternfly/react-core/dist/js";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
 export function ImportFromUrlCard() {
   const routes = useRoutes();
