@@ -37,7 +37,14 @@ import {
   WebView,
   Workbench,
 } from "vscode-extension-tester";
-import { webViewReady, activeFrame, envelopeApp, kogitoLoadingSpinner, inputBox } from "./CommonLocators";
+import {
+  webViewReady,
+  activeFrame,
+  envelopeApp,
+  kogitoLoadingSpinner,
+  inputBox,
+  explorerFirstFolder,
+} from "./CommonLocators";
 import { isKieEditorWithDualView, isKieEditorWithSingleView, isDashbuilderEditor } from "./KieFileExtensions";
 
 /**
