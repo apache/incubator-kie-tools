@@ -15,10 +15,10 @@
  */
 
 import * as React from "react";
-import { ReactNode, useMemo } from "react";
+import { ReactNode } from "react";
 import { connectField } from "uniforms";
 import { AutoField, ListDelField } from "@kie-tools/uniforms-patternfly/dist/esm";
-import { HTMLFieldProps, useField } from "uniforms/esm";
+import { HTMLFieldProps } from "uniforms/esm";
 
 export type UniformsListItemFieldProps = HTMLFieldProps<
   unknown[],

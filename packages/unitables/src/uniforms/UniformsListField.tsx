@@ -25,8 +25,6 @@ import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icon
 import { connectField, filterDOMProps } from "uniforms/esm";
 import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
 import { ListAddField } from "@kie-tools/uniforms-patternfly/dist/esm";
-import { useField } from "uniforms/esm";
-import { UnitablesJsonSchemaBridge } from "./UnitablesJsonSchemaBridge";
 
 export type ListFieldProps = HTMLFieldProps<
   unknown[],

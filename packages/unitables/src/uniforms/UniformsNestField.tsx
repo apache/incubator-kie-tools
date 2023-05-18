@@ -15,17 +15,9 @@
  */
 
 import * as React from "react";
-import { ReactNode, useMemo } from "react";
 import { HTMLFieldProps } from "uniforms";
-import UniformsListItemField from "./UniformsListItemField";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
-import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon";
-import { connectField, filterDOMProps, useField } from "uniforms/esm";
-import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
-import { AutoField, ListAddField } from "@kie-tools/uniforms-patternfly/dist/esm";
-import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
+import { connectField } from "uniforms/esm";
+import { AutoField } from "@kie-tools/uniforms-patternfly/dist/esm";
 
 export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { helperText?: string; itemProps?: object }>;
 
