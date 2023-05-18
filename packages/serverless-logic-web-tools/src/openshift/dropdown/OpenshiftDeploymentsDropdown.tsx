@@ -95,6 +95,13 @@ export function OpenshiftDeploymentsDropdown() {
     }
   }, [openshift.deployments, isConnected, openOpenShiftSettings, settings.openshift.config.namespace]);
 
+  const onDeploymensDropdownToggle = useCallback(() => {
+    if (!isConnected) {
+      history.push(routes.settings.openshift.path({}));
+    }
+    openshift.setDeploymentsDropdownOpen((dropdownOpen) => isConnected && !dropdownOpen);
+  }, [history, isConnected, openshift]);
+
   return (
     <>
       <Tooltip
@@ -110,7 +117,7 @@ export function OpenshiftDeploymentsDropdown() {
           toggle={
             <ResponsiveDropdownToggle
               toggleIndicator={null}
-              onToggle={() => openshift.setDeploymentsDropdownOpen((dropdownOpen) => isConnected && !dropdownOpen)}
+              onToggle={onDeploymensDropdownToggle}
               className={"kie-tools--masthead-hoverable-dark"}
             >
               <OpenshiftIcon color={!isConnected ? "gray" : undefined} />
