@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-import { TextEditor, WebView } from "vscode-extension-tester";
+import { WebView } from "vscode-extension-tester";
+import { switchWebviewToFrame, switchBack } from "./VSCodeTestHelper";
 
 /**
- * Helper class to support work with yard text editor.
+ * Helper class to support work with kie editor webviews.
+ *
+ * Extend the class to add functionality for the specific kie editor.
+ * Make sure you switch to the webview's frame before creating an instance of extended class.
  */
-export default class YardTextEditorTestHelper {
-  constructor(private readonly webview: WebView) {}
+export abstract class EditorTestHelper {
+  constructor(protected readonly webview: WebView) {}
 
-  public async getYardTextEditor(): Promise<TextEditor> {
-    return Promise.resolve(new TextEditor());
+  public async switchToEditorFrame(): Promise<void> {
+    await switchWebviewToFrame(this.webview);
+  }
+
+  public async switchBack(): Promise<void> {
+    await switchBack(this.webview);
   }
 }

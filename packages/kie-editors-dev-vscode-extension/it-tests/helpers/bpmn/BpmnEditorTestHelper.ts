@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,15 @@
  */
 
 import { By, WebElement, WebView } from "vscode-extension-tester";
-import { assertWebElementIsDisplayedEnabled } from "../CommonAsserts";
+import {
+  assertWebElementIsDisplayedEnabled,
+  EditorTestHelper,
+  sleep,
+} from "@kie-tools/vscode-extension-common-test-helpers";
 import { expandedDocksBarE, h3ComponentWithText } from "../CommonLocators";
 import { assert } from "chai";
 import PropertiesPanelHelper from "../bpmn/PropertiesPanelHelper";
 import DiagramExplorerHelper from "../bpmn/DiagramExplorerHelper";
-import { sleep } from "../VSCodeTestHelper";
 
 export enum PaletteCategories {
   START_EVENTS = "Start Events",
@@ -39,12 +42,18 @@ export enum PaletteCategories {
  * Make sure you switch to the webview's frame before creating and instance
  * via contructor.
  */
-export default class BpmnEditorTestHelper {
+export default class BpmnEditorTestHelper extends EditorTestHelper {
   properties: WebElement;
   diagramExplorer: WebElement;
   palette: WebElement;
 
-  constructor(private readonly webview: WebView) {}
+  /**
+   *
+   * @param webview WebView where the editor Iframe is located.
+   */
+  constructor(webview: WebView) {
+    super(webview);
+  }
 
   /**
    * Finds BPMN diagram properties element. Clicking it opens/closes properties panel.

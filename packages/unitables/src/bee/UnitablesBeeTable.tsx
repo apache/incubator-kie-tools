@@ -387,12 +387,10 @@ function UnitablesBeeTableCell({
           setIsSelectFieldOpen((prev) => {
             if (prev === true) {
               submitRow();
-              setEditingCell(false);
-            } else {
-              setEditingCell(true);
             }
             return !prev;
           });
+          setEditingCell(!isEditing);
           return;
         }
 
@@ -476,7 +474,7 @@ function UnitablesBeeTableCell({
       ) {
         // if the select field is open and it blurs to another cell, close it;
         const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
-        if ((selectOptions?.length ?? 0) > 0 && (e.relatedTarget as HTMLElement).tagName.toLowerCase() === "td") {
+        if ((selectOptions?.length ?? 0) > 0 && (e.relatedTarget as HTMLElement)?.tagName?.toLowerCase() === "td") {
           e.target.click();
           setIsSelectFieldOpen(false);
         }
@@ -486,11 +484,29 @@ function UnitablesBeeTableCell({
     [fieldName, submitRow]
   );
 
-  const onClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
-      setIsSelectFieldOpen((prev) => !prev);
-    }
-  }, []);
+  const onClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
+        setIsSelectFieldOpen((prev) => {
+          if (prev === true) {
+            submitRow();
+          }
+          return !prev;
+        });
+        setEditingCell(!isEditing);
+      }
+
+      if (!isEditing && e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "input") {
+        const inputField = cellRef.current?.getElementsByTagName("input");
+        if (inputField && inputField.length > 0) {
+          inputField?.[0]?.focus();
+          setEditingCell(true);
+          return;
+        }
+      }
+    },
+    [isEditing, setEditingCell, submitRow]
+  );
 
   return (
     <div
