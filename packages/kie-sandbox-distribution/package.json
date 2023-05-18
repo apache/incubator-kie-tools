@@ -13,9 +13,10 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "scripts": {
-    "build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"KIE_SANDBOX_DISTRIBUITION__kieSandboxImageTag=$(echo $(build-env kieSandboxDistribution.kieSandbox.imageTag)) KIE_SANDBOX_DISTRIBUITION__kieSandboxPort=$(echo $(build-env kieSandboxDistribution.kieSandbox.port)) KIE_SANDBOX_DISTRIBUITION__extendedServicesImageTag=$(echo $(build-env kieSandboxDistribution.extendedServices.imageTag)) KIE_SANDBOX_DISTRIBUITION__extendedServicesPort=$(echo $(build-env kieSandboxDistribution.extendedServices.port)) KIE_SANDBOX_DISTRIBUITION__gitCorsProxyImageTag=$(echo $(build-env kieSandboxDistribution.gitCorsProxy.imageTag)) KIE_SANDBOX_DISTRIBUITION__gitCorsProxyPort=$(echo $(build-env kieSandboxDistribution.gitCorsProxy.port)) docker compose build\" --else \"echo Docker not found, skipping image stop.\"",
-    "start": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"KIE_SANDBOX_DISTRIBUITION__kieSandboxImageTag=$(echo $(build-env kieSandboxDistribution.kieSandbox.imageTag)) KIE_SANDBOX_DISTRIBUITION__kieSandboxPort=$(echo $(build-env kieSandboxDistribution.kieSandbox.port)) KIE_SANDBOX_DISTRIBUITION__extendedServicesImageTag=$(echo $(build-env kieSandboxDistribution.extendedServices.imageTag)) KIE_SANDBOX_DISTRIBUITION__extendedServicesPort=$(echo $(build-env kieSandboxDistribution.extendedServices.port)) KIE_SANDBOX_DISTRIBUITION__gitCorsProxyImageTag=$(echo $(build-env kieSandboxDistribution.gitCorsProxy.imageTag)) KIE_SANDBOX_DISTRIBUITION__gitCorsProxyPort=$(echo $(build-env kieSandboxDistribution.gitCorsProxy.port)) docker compose up\" --else \"echo Docker not found, skipping image build.\"",
-    "stop": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"KIE_SANDBOX_DISTRIBUITION__kieSandboxImageTag=$(echo $(build-env kieSandboxDistribution.kieSandbox.imageTag)) KIE_SANDBOX_DISTRIBUITION__kieSandboxPort=$(echo $(build-env kieSandboxDistribution.kieSandbox.port)) KIE_SANDBOX_DISTRIBUITION__extendedServicesImageTag=$(echo $(build-env kieSandboxDistribution.extendedServices.imageTag)) KIE_SANDBOX_DISTRIBUITION__extendedServicesPort=$(echo $(build-env kieSandboxDistribution.extendedServices.port)) KIE_SANDBOX_DISTRIBUITION__gitCorsProxyImageTag=$(echo $(build-env kieSandboxDistribution.gitCorsProxy.imageTag)) KIE_SANDBOX_DISTRIBUITION__gitCorsProxyPort=$(echo $(build-env kieSandboxDistribution.gitCorsProxy.port))  docker compose down\" --else \"echo Docker not found, skipping image stop.\""
+    "docker:build": "pnpm docker:create-env-file && run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose build\" --else \"echo Docker not found, skipping image stop.\"",
+    "docker:create-env-file": "rimraf .env && echo \"$(pnpm build-env --print-env-file:self)\" > .env",
+    "docker:start": "pnpm docker:create-env-file && run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose up\" --else \"echo Docker not found, skipping image build.\"",
+    "docker:stop": "pnpm docker:create-env-file && run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose down\" --else \"echo Docker not found, skipping image stop.\""
   },
   "dependencies": {
     "@kie-tools/git-cors-proxy-image": "workspace:*",
@@ -23,6 +24,7 @@
     "@kie-tools/kie-sandbox-image": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools/root-env": "workspace:*"
+    "@kie-tools/root-env": "workspace:*",
+    "rimraf": "^3.0.2"
   }
 }

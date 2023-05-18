@@ -29,12 +29,21 @@ This package contains the `docker-compose` file to run KIE Sandbox and all relat
 - (Optional) Use the following environment variables:
 
   ```bash
-  export KIE_SANDBOX_DISTRIBUITION__kieSandboxImageTag=<kieSandboxImageTag>
-  export KIE_SANDBOX_DISTRIBUITION__kieSandboxPort=<sandbox_port>
-  export KIE_SANDBOX_DISTRIBUITION__extendedServicesImageTag=<extendedServicesImageTag>
-  export KIE_SANDBOX_DISTRIBUITION__extendedServicesPort=<extendedServicesPort>
-  export KIE_SANDBOX_DISTRIBUITION__gitCorsProxyImageTag=<gitCorsProxyImageTag>
-  export KIE_SANDBOX_DISTRIBUITION__gitCorsProxyPort=<gitCorsProxyPort>
+  export KIE_SANDBOX_DISTRIBUTION__kieSandboxImageRegistry=<kieSandboxImageRegistry>
+  export KIE_SANDBOX_DISTRIBUTION__kieSandboxImageAccount=<kieSandboxImageAccount>
+  export KIE_SANDBOX_DISTRIBUTION__kieSandboxImageName=<kieSandboxImageName>
+  export KIE_SANDBOX_DISTRIBUTION__kieSandboxImageTag=<kieSandboxImageTag>
+  export KIE_SANDBOX_DISTRIBUTION__kieSandboxPort=<kieSandboxPort>
+  export KIE_SANDBOX_DISTRIBUTION__extendedServicesImageRegistry=<extendedServicesImageRegistry>
+  export KIE_SANDBOX_DISTRIBUTION__extendedServicesImageAccount=<extendedServicesImageAccount>
+  export KIE_SANDBOX_DISTRIBUTION__extendedServicesImageName=<extendedServicesImageName>
+  export KIE_SANDBOX_DISTRIBUTION__extendedServicesImageTag=<extendedServicesImageTag>
+  export KIE_SANDBOX_DISTRIBUTION__extendedServicesPort=<extendedServicesPort>
+  export KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageRegistry=<gitCorsProxyImageRegistry>
+  export KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageAccount=<gitCorsProxyImageAccount>
+  export KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageName=<gitCorsProxyImageName>
+  export KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageTag=<gitCorsProxyImageTag>
+  export KIE_SANDBOX_DISTRIBUTION__gitCorsProxyPort=<gitCorsProxyPort>
   ```
 
 ## Run
@@ -42,7 +51,7 @@ This package contains the `docker-compose` file to run KIE Sandbox and all relat
 - Run KIE Sandbox with docker compose
 
   ```bash
-  docker compose up
+  pnpm docker:start
   ```
 
   KIE Sandbox will be up at http://localhost:9090
