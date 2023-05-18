@@ -370,7 +370,9 @@ export const SwfLanguageServiceCodeCompletion: EditorLanguageServiceCodeCompleti
           const swfEvent = {
             name: `$\{1:${swfServiceCatalogEvent.name}}`,
             source: swfServiceCatalogEvent.eventSource,
-            type: swfServiceCatalogEvent.type,
+            type: swfServiceCatalogEvent.eventType,
+            kind: swfServiceCatalogEvent.kind,
+            metadata: swfServiceCatalogEvent.metadata,
           };
 
           const command: SwfLanguageServiceCommandExecution<"swf.ls.commands.ImportEventFromCompletionItem"> = {
