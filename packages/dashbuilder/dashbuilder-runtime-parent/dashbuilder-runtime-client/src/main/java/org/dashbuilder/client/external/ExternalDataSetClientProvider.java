@@ -188,6 +188,10 @@ public class ExternalDataSetClientProvider {
         DataSet dataSet = null;
         var content = contentType.tranformer.apply(responseText);
 
+        if (def.getType() != null) {
+            def.setExpression(def.getType().getExpression());
+        }
+
         if (def.getExpression() != null && !def.getExpression().trim().isEmpty()) {
             try {
                 content = applyExpression(def.getExpression(), content);
