@@ -20,7 +20,7 @@ import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { NewServerlessModelCard } from "./NewServerlessModelCard";
+import { NewModelCard } from "./NewModelCard";
 import { Button, ButtonVariant, Card, CardBody } from "@patternfly/react-core/dist/js";
 import { ImportFromUrlCard } from "./ImportFromUrlCard";
 import { UploadCard } from "./UploadCard";
@@ -135,19 +135,19 @@ export function Overview(props: { isNavOpen: boolean }) {
               </CardHeader>
               <CardBody>
                 <Grid>
-                  <NewServerlessModelCard
+                  <NewModelCard
                     title={"Workflow"}
                     jsonExtension={FileTypes.SW_JSON}
                     yamlExtension={FileTypes.SW_YAML}
                     description={"Define orchestration logic for services."}
                   />
-                  <NewServerlessModelCard
+                  <NewModelCard
                     title={"Decision"}
                     jsonExtension={FileTypes.YARD_JSON}
                     yamlExtension={FileTypes.YARD_YAML}
                     description={"Define decision logic for services."}
                   />
-                  <NewServerlessModelCard
+                  <NewModelCard
                     title={"Dashboard"}
                     yamlExtension={FileTypes.DASH_YML}
                     description={"Define data visualization from data extracted from applications."}

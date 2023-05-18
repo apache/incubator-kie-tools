@@ -25,7 +25,7 @@ import { SupportedFileExtensions } from "../../extension";
 import { useRoutes } from "../../navigation/Hooks";
 import { FileLabel } from "../../workspace/components/FileLabel";
 
-export function NewServerlessModelCard(props: {
+export function NewModelCard(props: {
   title: string;
   jsonExtension?: SupportedFileExtensions;
   yamlExtension?: SupportedFileExtensions;
