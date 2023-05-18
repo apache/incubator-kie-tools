@@ -208,6 +208,33 @@ export function NewFileDropdownMenu(props: {
     [workspaces, props, successfullyUploadedAlert]
   );
 
+  const NewJsonYamlDrilldownMenuItem = useCallback(
+    (args: { prefixId: string; description: string; fileTypes: { json: FileTypes; yaml: FileTypes } }) => (
+      <MenuItem
+        itemId={`${args.prefixId}ItemId`}
+        description={args.description}
+        direction={"down"}
+        drilldownMenu={
+          <DrilldownMenu id={`${args.prefixId}File`}>
+            <MenuItem direction="up">Back</MenuItem>
+            <Divider />
+            <MenuItem onClick={() => addEmptyFile(args.fileTypes.json)} itemId={`${args.prefixId}Json`}>
+              JSON
+            </MenuItem>
+            <MenuItem onClick={() => addEmptyFile(args.fileTypes.yaml)} itemId={`${args.prefixId}Yaml`}>
+              YAML
+            </MenuItem>
+          </DrilldownMenu>
+        }
+      >
+        <b>
+          <FileLabel style={{ marginBottom: "4px" }} extension={args.fileTypes.json} />
+        </b>
+      </MenuItem>
+    ),
+    [addEmptyFile]
+  );
+
   return (
     <Menu
       style={{ boxShadow: "none", minWidth: "400px" }}
@@ -222,28 +249,20 @@ export function NewFileDropdownMenu(props: {
     >
       <MenuContent menuHeight={`${menuHeights[activeMenu]}px`}>
         <MenuList style={{ padding: 0 }}>
-          <MenuItem
-            itemId={"newSwfItemId"}
-            onClick={() => addEmptyFile(FileTypes.SW_JSON)}
-            description="Serverless Workflow files are used to define orchestration logic for services."
-          >
-            <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.SW_JSON} />
-            </b>
-          </MenuItem>
-          <MenuItem
-            itemId={"newSdItemId"}
-            onClick={() => addEmptyFile(FileTypes.YARD_YAML)}
-            description="Serverless Decision files are used to define decision logic for services."
-          >
-            <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.YARD_YAML} />
-            </b>
-          </MenuItem>
+          <NewJsonYamlDrilldownMenuItem
+            prefixId="newSwf"
+            description="Define orchestration logic for services."
+            fileTypes={{ json: FileTypes.SW_JSON, yaml: FileTypes.SW_YAML }}
+          />
+          <NewJsonYamlDrilldownMenuItem
+            prefixId="newSd"
+            description="Define decision logic for services."
+            fileTypes={{ json: FileTypes.YARD_JSON, yaml: FileTypes.YARD_YAML }}
+          />
           <MenuItem
             itemId={"newDashboardItemId"}
             onClick={() => addEmptyFile(FileTypes.DASH_YAML)}
-            description="Dashboard files are used to define data visualization from data extracted from applications."
+            description="Define data visualization from data extracted from applications."
           >
             <b>
               <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.DASH_YAML} />
