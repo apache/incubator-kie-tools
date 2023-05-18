@@ -68,7 +68,7 @@ export const SAMPLE_CARDS_PER_PAGE_OPTIONS: PerPageOptions[] = [
   },
 ];
 
-export function Showcase() {
+export function SamplesCatalog() {
   const sampleDispatch = useSampleDispatch();
   const [loading, setLoading] = useState<boolean>(true);
   const [samples, setSamples] = useState<Sample[]>([]);

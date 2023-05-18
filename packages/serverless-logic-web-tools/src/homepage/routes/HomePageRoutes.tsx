@@ -26,7 +26,7 @@ import { NewWorkspaceFromUrlPage } from "../../workspace/components/NewWorkspace
 import { NewWorkspaceWithEmptyFilePage } from "../../workspace/components/NewWorkspaceWithEmptyFilePage";
 import { EditorPage } from "../../editor/EditorPage";
 import { NoMatchPage } from "../../navigation/NoMatchPage";
-import { Showcase } from "../../home/sample/Showcase";
+import { SamplesCatalog } from "../../home/sample/SamplesCatalog";
 import { WorkspaceFiles } from "../recentModels/workspaceFiles/WorkspaceFiles";
 
 export function HomePageRoutes(props: { isNavOpen: boolean }) {
@@ -69,7 +69,7 @@ export function HomePageRoutes(props: { isNavOpen: boolean }) {
         {({ match }) => <WorkspaceFiles workspaceId={match!.params.workspaceId!} />}
       </Route>
       <Route path={routes.sampleCatalog.path({})}>
-        <Showcase />
+        <SamplesCatalog />
       </Route>
       <Route component={NoMatchPage} />
     </Switch>
