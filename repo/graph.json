@@ -101,6 +101,7 @@
       { "id": "@kie-tools/import-java-classes-component" },
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
+      { "id": "@kie-tools/vscode-extension-common-test-helpers" },
       { "id": "@kie-tools/kie-sandbox-extended-services-image" },
       { "id": "@kie-tools/kie-sandbox-image" },
       { "id": "@kie-tools/online-editor" },
@@ -639,10 +640,16 @@
         "weight": 1
       },
       { "source": "kie-editors-dev-vscode-extension", "target": "@kie-tools/stunner-editors", "weight": 1 },
+      {
+        "source": "kie-editors-dev-vscode-extension",
+        "target": "@kie-tools/vscode-extension-common-test-helpers",
+        "weight": 1
+      },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/monaco-editor", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools/pmml-editor-marshaller", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/vscode-extension-common-test-helpers", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
         "source": "@kie-tools/kie-sandbox-extended-services-image",
         "target": "@kie-tools/extended-services",
@@ -780,6 +787,7 @@
         "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
         "weight": 1
       },
+      { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       {
         "source": "vscode-extension-dashbuilder-editor",
@@ -787,6 +795,11 @@
         "weight": 1
       },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools/dashbuilder-viewer", "weight": 1 },
+      {
+        "source": "vscode-extension-dashbuilder-editor",
+        "target": "@kie-tools/vscode-extension-common-test-helpers",
+        "weight": 1
+      },
       { "source": "vscode-extension-kie-ba-bundle", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "vscode-extension-kie-ba-bundle", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "vscode-extension-kie-ba-bundle", "target": "@kie-tools/tsconfig", "weight": 1 },
@@ -818,10 +831,16 @@
         "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
         "weight": 1
       },
+      {
+        "source": "vscode-extension-serverless-workflow-editor",
+        "target": "@kie-tools/vscode-extension-common-test-helpers",
+        "weight": 1
+      },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
-      { "source": "yard-vscode-extension", "target": "@kie-tools/yard-editor", "weight": 1 }
+      { "source": "yard-vscode-extension", "target": "@kie-tools/yard-editor", "weight": 1 },
+      { "source": "yard-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 }
     ]
   },
   "serializedPackagesLocationByName": [
@@ -948,6 +967,7 @@
     ["@kie-tools/unitables", "packages/unitables"],
     ["@kie-tools/unitables-dmn", "packages/unitables-dmn"],
     ["@kie-tools-core/vscode-extension", "packages/vscode-extension"],
+    ["@kie-tools/vscode-extension-common-test-helpers", "packages/vscode-extension-common-test-helpers"],
     ["vscode-extension-dashbuilder-editor", "packages/vscode-extension-dashbuilder-editor"],
     ["vscode-extension-kie-ba-bundle", "packages/vscode-extension-kie-ba-bundle"],
     ["vscode-extension-kogito-bundle", "packages/vscode-extension-kogito-bundle"],

@@ -93,6 +93,7 @@ digraph G {
   "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "kie-editors-dev-vscode-extension" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/vscode-extension-common-test-helpers" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/kie-sandbox-extended-services-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kie-sandbox-fs" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/kie-sandbox-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -284,6 +285,7 @@ digraph G {
   "kie-editors-dev-vscode-extension" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];
   "kie-editors-dev-vscode-extension" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "solid", color = "black" ];
   "kie-editors-dev-vscode-extension" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
+  "kie-editors-dev-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "black" ];
   "@kie-tools/kie-editors-standalone" -> "@kie-tools/kie-bc-editors" [ style = "dashed", color = "blue" ];
   "@kie-tools/kie-editors-standalone" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "blue" ];
   "@kie-tools/kie-sandbox-extended-services-image" -> "@kie-tools/extended-services" [ style = "solid", color = "black" ];
@@ -367,6 +369,7 @@ digraph G {
   "swf-vscode-extension" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/serverless-workflow-mermaid-viewer" [ style = "solid", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "dashed", color = "blue" ];
+  "swf-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/stunner-editors-dmn-loader" [ style = "solid", color = "black" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
@@ -388,9 +391,11 @@ digraph G {
   "@kie-tools/unitables-dmn" -> "@kie-tools/unitables" [ style = "solid", color = "blue" ];
   "@kie-tools-core/vscode-extension" -> "@kie-tools-core/editor" [ style = "solid", color = "purple" ];
   "@kie-tools-core/vscode-extension" -> "@kie-tools-core/vscode-java-code-completion" [ style = "solid", color = "purple" ];
+  "@kie-tools/vscode-extension-common-test-helpers" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "vscode-extension-dashbuilder-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-dashbuilder-editor" -> "@kie-tools/dashbuilder-language-service" [ style = "solid", color = "blue" ];
   "vscode-extension-dashbuilder-editor" -> "@kie-tools/dashbuilder-viewer" [ style = "solid", color = "blue" ];
+  "vscode-extension-dashbuilder-editor" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
   "vscode-extension-kie-ba-bundle" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "vscode-extension-kie-ba-bundle" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "vscode-extension-kie-ba-bundle" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
@@ -402,6 +407,7 @@ digraph G {
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-mermaid-viewer" [ style = "solid", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "dashed", color = "blue" ];
+  "vscode-extension-serverless-workflow-editor" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/vscode-java-code-completion" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/vscode-java-code-completion" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/vscode-java-code-completion" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
@@ -420,5 +426,6 @@ digraph G {
   "@kie-tools/yard-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];
+  "yard-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
   "@kie-tools-scripts/bootstrap" -> "@kie-tools-scripts/build-env" [ style = "dashed", color = "black" ];
 }

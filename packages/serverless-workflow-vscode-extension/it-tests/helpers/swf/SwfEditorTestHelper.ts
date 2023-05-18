@@ -16,15 +16,17 @@
 
 import { WebElement } from "selenium-webdriver";
 import { By, WebView } from "vscode-extension-tester";
-import { sleep } from "../VSCodeTestHelper";
+import { EditorTestHelper, sleep } from "@kie-tools/vscode-extension-common-test-helpers";
 
 /**
  * Helper class to easen work with SWF editor inside of a webview.
  * Make sure you switch to the webview's frame before creating and instance
  * via constructor.
  */
-export default class SwfEditorTestHelper {
-  constructor(private readonly webview: WebView) {}
+export default class SwfEditorTestHelper extends EditorTestHelper {
+  constructor(webview: WebView) {
+    super(webview);
+  }
 
   public async getAllNodeIds(): Promise<string[]> {
     await this.switchToEditorFrame();
@@ -92,16 +94,6 @@ export default class SwfEditorTestHelper {
     const result = await this.webview.findWebElement(By.xpath(".//div[@class='mermaid']"));
     await this.switchBack();
     return Promise.resolve(result);
-  }
-
-  private async switchToEditorFrame(): Promise<void> {
-    const driver = this.webview.getDriver();
-    await driver.switchTo().frame(await driver.findElement(By.className("webview ready")));
-    await driver.switchTo().frame(await driver.findElement(By.id("active-frame")));
-  }
-
-  private async switchBack(): Promise<void> {
-    await this.webview.getDriver().switchTo().frame(null);
   }
 
   /**
