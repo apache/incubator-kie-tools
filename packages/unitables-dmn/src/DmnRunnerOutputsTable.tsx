@@ -40,6 +40,8 @@ import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/
 import "./DmnRunnerOutputsTable.css";
 import { DecisionResult, DmnEvaluationResult } from "@kie-tools/extended-services-api";
 
+const PROPERTY_SEPARATOR = "-";
+
 interface Props {
   i18n: DmnUnitablesI18n;
   results: Array<DecisionResult[] | undefined> | undefined;
@@ -194,6 +196,19 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
 
         if (value !== null && !Array.isArray(value) && typeof value === "object") {
           return deepFlattenObjectRow(value, myKey, acc);
+        }
+        if (value !== null && Array.isArray(value)) {
+          return value.reduce((acc, v, index) => {
+            if (v !== null && !Array.isArray(v) && typeof v === "object") {
+              return { ...acc, ...deepFlattenObjectRow(v, `${myKey}-${index}`, acc) };
+            } else {
+              const rowValue = getRowValue(v);
+              if (rowValue) {
+                acc[`${myKey}-${index}`] = rowValue;
+              }
+              return acc;
+            }
+          }, acc);
         }
         const rowValue = getRowValue(value);
         if (rowValue) {
