@@ -125,7 +125,6 @@
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
-      { "id": "vscode-extension-serverless-workflow-editor" },
       { "id": "@kie-tools/yard-editor" },
       { "id": "yard-vscode-extension" }
     ],
@@ -806,36 +805,6 @@
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/tsconfig", "weight": 1 },
-      {
-        "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools-core/vscode-extension",
-        "weight": 1
-      },
-      {
-        "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools/serverless-workflow-diagram-editor-envelope",
-        "weight": 1
-      },
-      {
-        "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools/serverless-workflow-language-service",
-        "weight": 1
-      },
-      {
-        "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools/serverless-workflow-mermaid-viewer",
-        "weight": 1
-      },
-      {
-        "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
-        "weight": 1
-      },
-      {
-        "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools/vscode-extension-common-test-helpers",
-        "weight": 1
-      },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
@@ -971,7 +940,6 @@
     ["vscode-extension-dashbuilder-editor", "packages/vscode-extension-dashbuilder-editor"],
     ["vscode-extension-kie-ba-bundle", "packages/vscode-extension-kie-ba-bundle"],
     ["vscode-extension-kogito-bundle", "packages/vscode-extension-kogito-bundle"],
-    ["vscode-extension-serverless-workflow-editor", "packages/vscode-extension-serverless-workflow-editor"],
     ["@kie-tools-core/vscode-java-code-completion", "packages/vscode-java-code-completion"],
     [
       "@kie-tools/vscode-java-code-completion-extension-plugin",
