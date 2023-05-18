@@ -20,7 +20,7 @@ import { Form } from "@patternfly/react-core/dist/js/components/Form";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { useCallback, useEffect, useState } from "react";
-import { SETTINGS_PAGE_SECTION_TITLE } from "../../AppConstants";
+import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
 import { setPageTitle } from "../../PageTitle";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { saveConfigCookie } from "./FeaturePreviewConfig";

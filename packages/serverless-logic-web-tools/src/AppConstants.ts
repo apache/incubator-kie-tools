@@ -15,6 +15,5 @@
  */
 
 export const APP_NAME = "Serverless Logic Web Tools";
-export const SETTINGS_PAGE_SECTION_TITLE = "Settings";
 export const SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL =
   "https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-overview.html";

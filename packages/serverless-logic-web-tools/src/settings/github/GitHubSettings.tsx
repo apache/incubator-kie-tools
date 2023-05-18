@@ -36,7 +36,7 @@ import { QuickStartIds } from "../../quickstarts-data";
 import { AuthStatus, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { SettingsPageProps } from "../types";
 import { setPageTitle } from "../../PageTitle";
-import { SETTINGS_PAGE_SECTION_TITLE } from "../../AppConstants";
+import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
 
 const PAGE_TITLE = "GitHub";
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
