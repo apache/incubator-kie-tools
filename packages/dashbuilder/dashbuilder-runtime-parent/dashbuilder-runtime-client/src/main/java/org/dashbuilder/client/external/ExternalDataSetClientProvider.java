@@ -34,6 +34,7 @@ import elemental2.dom.Response;
 import elemental2.promise.IThenable;
 import org.dashbuilder.client.external.transformer.JSONAtaInjector;
 import org.dashbuilder.client.external.transformer.JSONAtaTransformer;
+import org.dashbuilder.common.client.StringUtils;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetLookup;
@@ -188,7 +189,7 @@ public class ExternalDataSetClientProvider {
         DataSet dataSet = null;
         var content = contentType.tranformer.apply(responseText);
 
-        if (def.getType() != null) {
+        if (def.getType() != null && StringUtils.isBlank(def.getExpression())) {
             def.setExpression(def.getType().getExpression());
         }
 
