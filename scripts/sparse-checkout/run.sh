@@ -7,7 +7,7 @@ KIE_TOOLS_PACKAGE_NAMES_TO_BUILD=("${ARGV[@]:2}")
 KIE_TOOLS_PACKAGES_PNPM_FILTER_STRING=$(echo ${KIE_TOOLS_PACKAGE_NAMES_TO_BUILD[@]} | xargs -n1 -I{} echo -n "-F {}... " | xargs)
 KIE_TOOLS_GIT_REMOTE_URL="https://github.com/$KIE_TOOLS_ORG/kie-tools"
 KIE_TOOLS_CLONE_DIR_PATH='kie-tools'
-KIE_TOOLS_PATHS_INCLUDED_BY_DEFAULT='scripts repo docs'
+KIE_TOOLS_PATHS_INCLUDED_BY_DEFAULT='scripts repo docs patches'
 
 echo "[kie-tools-sparse-checkout] Starting..."
 echo "KIE_TOOLS_ORG:                           $KIE_TOOLS_ORG"
