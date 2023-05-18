@@ -152,6 +152,7 @@ jobs:
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
         env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
           KIE_TOOLS_BUILD__runIntegrationTests: "false"
           KIE_TOOLS_BUILD__runTests: "false"
           KIE_TOOLS_BUILD__runLinters: "false"
