@@ -33,11 +33,11 @@ public class MetricsParser implements UnaryOperator<String> {
     private static final char LABEL_CLOSE = '}';
     private static final String COMMENT = "#";
     private static final String NAN = "NaN";
-    
+
     static final String DEFAULT_NAN_VALUE = "-1";
 
     protected JsonArray metricToJsonArray(String line) {
-        var array = Json.createArray();        
+        var array = Json.createArray();
         var chars = line.toCharArray();
 
         var metricBuffer = new StringBuilder();
