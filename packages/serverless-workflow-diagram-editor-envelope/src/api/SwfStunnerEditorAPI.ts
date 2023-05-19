@@ -43,13 +43,13 @@ export interface SwfStunnerEditoSession {
    */
   getAllNodesUUID(): Promise<string[]>;
   /**
-   * It returns the Edge for the given identifier (UUID).
+   * Returns the Edge for the given identifier (UUID).
    * @param uuid The edge's identifier (UUID).
    * @returns Asynchronously returns the edge object.
    */
   getEdgeByUUID(uuid: string): Promise<Edge>;
   /**
-   * It returns the Node for the given identifier (UUID).
+   * Returns the Node for the given identifier (UUID).
    * @param uuid The node's identifier (UUID).
    * @returns Asynchronously returns the node object.
    */
@@ -63,13 +63,13 @@ export interface SwfStunnerEditoSession {
    */
   getDefinitionByElementUUID(uuid: string): Promise<Object>;
   /**
-   * It returns the Node which has a given name.
+   * Returns the Node which has a given name.
    * @param uuid The node's name.
    * @returns Asynchronously returns the node object.
    */
   getNodeByName(name: string): Promise<Node>;
   /**
-   * It returns the name for a Node.
+   * Returns the name for a Node.
    * @param node The Node instance.
    * @returns Asynchronously returns the node's name.
    */

@@ -100,7 +100,8 @@ export class Definition {
   id: string;
   /**
    * The domain model object's name.
-   * It returns the value for the field that represents the name for a graph element.
+   * It returns the value for the name field for the object that this definition represents (eg: the name of an InjectState, or an OperationState).
+   * The returned name is also the one being displayed on the shape.
    */
   name: string;
 }
