@@ -108,7 +108,7 @@ function UniformsListField({ children = <UniformsListItemField name={"$"} />, it
                 ? React.cloneElement(
                     children as React.ReactElement<{ name: string; style: React.CSSProperties }, string>,
                     {
-                      key: `${itemIndex}-${itemIndex}`,
+                      key: `${itemIndex}`,
                       name: children.props.name
                         ?.split(/\$(.*)/s)
                         .slice(0, -1)

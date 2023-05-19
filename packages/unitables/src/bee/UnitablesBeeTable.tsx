@@ -312,6 +312,7 @@ function UnitablesBeeTableCell({
   const [isSelectFieldOpen, setIsSelectFieldOpen] = useState(false);
   const xDmnFieldType = useMemo(() => field?.["x-dmn-type"], [field]);
   const isEnumField = useMemo(() => !!field?.enum, [field]);
+  const isListField = useMemo(() => field?.type === "array", [field?.type]);
   const previousFieldInput = useRef(fieldInput);
 
   // keep previous updated;
@@ -417,6 +418,56 @@ function UnitablesBeeTableCell({
       // TAB
       if (e.key.toLowerCase() === "tab") {
         submitRow();
+        if (isListField) {
+          // Get all uniforms components in the cell;
+          const uniformsComponents = cellRef.current?.querySelectorAll('[id^="uniforms-"]');
+          const uniformComponentTargetIndex = Array.from(uniformsComponents ?? []).findIndex(
+            (component) => component.id === (e.target as HTMLElement).id
+          );
+          if (uniformsComponents === undefined || uniformComponentTargetIndex < 0) {
+            setEditingCell(false);
+            return;
+          }
+
+          const nextUniformsComponent = e.shiftKey
+            ? uniformsComponents[uniformComponentTargetIndex - 1]
+            : uniformsComponents[uniformComponentTargetIndex + 1];
+
+          if (nextUniformsComponent === undefined) {
+            // Should leave ListField
+            setEditingCell(false);
+            return;
+          }
+
+          // TextField, BoolField, DateTimeField, NumField, ListAddField, ListDelField
+          if (
+            nextUniformsComponent.tagName.toLowerCase() === "input" ||
+            nextUniformsComponent.tagName.toLowerCase() === "button"
+          ) {
+            (nextUniformsComponent as HTMLButtonElement | HTMLInputElement).parentElement?.focus();
+            e.stopPropagation();
+            return;
+          }
+
+          // SelectField
+          if (nextUniformsComponent.tagName.toLowerCase() === "div") {
+            const buttons = Array.from(nextUniformsComponent?.getElementsByTagName("button"));
+            if (buttons.length === 1) {
+              // Check if it's a ListField
+              if ((nextUniformsComponent as HTMLElement).attributes.getNamedItem("items")) {
+                nextUniformsComponent?.getElementsByTagName("button")?.[0]?.parentElement?.focus();
+              } else {
+                nextUniformsComponent?.getElementsByTagName("button")?.[0]?.click();
+                setIsSelectFieldOpen(true);
+              }
+            } else {
+              (nextUniformsComponent as HTMLElement).focus();
+            }
+            e.stopPropagation();
+          }
+          return;
+        }
+
         setEditingCell(false);
         if (isEnumField) {
           setIsSelectFieldOpen((prev) => {
@@ -448,6 +499,23 @@ function UnitablesBeeTableCell({
 
       // ENTER
       if (e.key.toLowerCase() === "enter") {
+        if (isListField) {
+          const uniformsComponents = cellRef.current?.querySelectorAll('[id^="uniforms-"]');
+          if (!uniformsComponents) {
+            return;
+          }
+
+          const targetIsPresent = Array.from(uniformsComponents).find((component) => component === e.target);
+          // From top level, what happens with lower levels?
+          if (!targetIsPresent) {
+            if (uniformsComponents[1].tagName.toLowerCase() === "button") {
+              (uniformsComponents[1] as HTMLButtonElement)?.focus();
+            }
+          }
+
+          return;
+        }
+
         e.stopPropagation();
         if (isEnumField) {
           cellRef.current?.getElementsByTagName("button")?.[0]?.click();
@@ -500,7 +568,7 @@ function UnitablesBeeTableCell({
         e.stopPropagation();
       }
     },
-    [xDmnFieldType, isEditing, isEnumField, navigateVertically, onFieldChange, setEditingCell, submitRow]
+    [isEditing, submitRow, isListField, setEditingCell, isEnumField, onFieldChange, navigateVertically, xDmnFieldType]
   );
 
   // if it's active should focus on cell;
@@ -520,14 +588,31 @@ function UnitablesBeeTableCell({
           cellRef.current?.focus();
         }
       }
+      if (isListField) {
+        console.log("here2");
+        if (isSelectFieldOpen) {
+          // if a SelectField is open, it takes a time to render the select options;
+          // After the select options are rendered we focus in the selected option;
+          setTimeout(() => {
+            const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
+            Array.from(selectOptions ?? [])
+              ?.filter((selectOption) => selectOption.innerText === cellRef.current?.innerText)?.[0]
+              ?.focus();
+          }, 0);
+        }
+      }
       if (!isEditing) {
         cellRef.current?.focus();
       }
     }
-  }, [fieldName, isActive, isEditing, isEnumField, isSelectFieldOpen]);
+  }, [fieldName, isActive, isEditing, isListField, isEnumField, isSelectFieldOpen]);
 
   const onBlur = useCallback(
     (e: React.FocusEvent<HTMLDivElement>) => {
+      if (isListField) {
+        console.log("here3");
+        return;
+      }
       if (e.target.tagName.toLowerCase() === "div") {
         if ((e.target.getElementsByTagName("input")?.length ?? 0) > 0) {
           submitRow();
@@ -555,13 +640,14 @@ function UnitablesBeeTableCell({
         submitRow();
       }
     },
-    [fieldName, submitRow]
+    [fieldName, isListField, submitRow]
   );
 
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
         if (field.type === "array") {
+          console.log("here4");
           submitRow();
         } else {
           setIsSelectFieldOpen((prev) => !prev);
