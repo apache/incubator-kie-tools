@@ -108,11 +108,7 @@ export function SamplesCatalog() {
   const setCategoryFilter = useCallback(
     (category?: SampleCategory) => {
       const searchParams = new URLSearchParams(location.search);
-      if (category) {
-        searchParams.set(QueryParams.SAMPLES_CATEGORY, category);
-      } else {
-        searchParams.delete(QueryParams.SAMPLES_CATEGORY);
-      }
+      searchParams.set(QueryParams.SAMPLES_CATEGORY, category || "");
       const newSearchString = searchParams.toString();
       history.push({ search: newSearchString });
     },
@@ -142,8 +138,12 @@ export function SamplesCatalog() {
   }, [categoryFilter, onSearch, searchFilter, setCategoryFilter]);
 
   useEffect(() => {
+    if (searchFilter === searchParams.searchValue && categoryFilter === searchParams.category) {
+      return;
+    }
+
     sampleDispatch
-      .getSamples({})
+      .getSamples({ categoryFilter })
       .then((data) => {
         const sortedSamples = data.sort(
           (a: Sample, b: Sample) => SAMPLE_PRIORITY[a.definition.category] - SAMPLE_PRIORITY[b.definition.category]
@@ -156,7 +156,7 @@ export function SamplesCatalog() {
       .finally(() => {
         setLoading(false);
       });
-  }, [sampleDispatch]);
+  }, [sampleDispatch, categoryFilter, searchFilter, searchParams]);
 
   useEffect(() => {
     sampleDispatch.getSampleCovers({ samples: visibleSamples, prevState: sampleCovers }).then(setSampleCovers);
