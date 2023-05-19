@@ -152,7 +152,6 @@ jobs:
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
         env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
           KIE_TOOLS_BUILD__runIntegrationTests: "false"
           KIE_TOOLS_BUILD__runTests: "false"
           KIE_TOOLS_BUILD__runLinters: "false"
@@ -185,7 +184,7 @@ jobs:
           SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
           SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl: "https://staging-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
         run: |
-          pnpm -r build:prod
+          pnpm -r --workspace-concurrency=1 build:prod
 
       - name: "STAGING: Push dmn-dev-deployment-base-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
