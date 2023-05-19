@@ -65,6 +65,13 @@ export function SettingsPageNav(props: { pathname: string }) {
           >
             <Link to={routes.settings.feature_preview.path({})}>Feature Preview</Link>
           </NavItem>
+          <NavItem
+            itemId={0}
+            key={`Settings-storage-nav`}
+            isActive={props.pathname === routes.settings.storage.path({})}
+          >
+            <Link to={routes.settings.storage.path({})}>Storage</Link>
+          </NavItem>
         </NavList>
       </Nav>
     </>
