@@ -42,7 +42,7 @@ public interface HasConditionsAndHasDataFilter extends HasDataFilter {
                 if (d.getName() != null && !d.getName().isEmpty()) {
                     conditionString.append(getTranslation(DATA_CONDITION_TRANSITION_NAME) + ": " + d.getName() + "\r\n");
                 } else {
-                    conditionString.append(getTranslation(DATA_CONDITION_TRANSITION_VALUE) + ": " + truncate(d.getCondition(), 30) + "\r\n");
+                    conditionString.append(getTranslation(DATA_CONDITION_TRANSITION_VALUE) + ": " + truncate(d.getCondition()) + "\r\n");
                 }
             }
             return conditionString.toString();

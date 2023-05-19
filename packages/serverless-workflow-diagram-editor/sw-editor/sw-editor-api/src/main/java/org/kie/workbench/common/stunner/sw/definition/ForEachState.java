@@ -16,10 +16,16 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.BatchSizeJsonTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StringNumberYamlTypeSerializer;
 
 @JSONMapper
 @YAMLMapper
@@ -36,6 +42,30 @@ public class ForEachState extends State {
     public String outputCollection;
 
     public String iterationParam;
+
+    public String mode;
+
+    @JsonbTypeSerializer(BatchSizeJsonTypeSerializer.class)
+    @JsonbTypeDeserializer(BatchSizeJsonTypeSerializer.class)
+    @YamlTypeSerializer(StringNumberYamlTypeSerializer.class)
+    @YamlTypeDeserializer(StringNumberYamlTypeSerializer.class)
+    public Object batchSize;
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public Object getBatchSize() {
+        return batchSize;
+    }
+
+    public void setBatchSize(Object batchSize) {
+        this.batchSize = batchSize;
+    }
 
     public ForEachState() {
         this.type = TYPE_FOR_EACH;

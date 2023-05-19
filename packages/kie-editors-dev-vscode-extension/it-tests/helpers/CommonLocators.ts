@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,14 +85,6 @@ export const expandedDocksBarE = (): By => {
  */
 export const tabWithTitle = (title: string): By => {
   return By.xpath(`//ul/li[@data-ouia-component-type='editor-nav-tab' and @data-ouia-component-id='${title}']/a`);
-};
-
-/**
- * Creates a classname locator for kogito loading spinner.
- * This is a common spinner used by envelope and will always be present.
- */
-export const kogitoLoadingSpinner = (): By => {
-  return By.className("kie-tools--loading-screen-spinner");
 };
 
 /**

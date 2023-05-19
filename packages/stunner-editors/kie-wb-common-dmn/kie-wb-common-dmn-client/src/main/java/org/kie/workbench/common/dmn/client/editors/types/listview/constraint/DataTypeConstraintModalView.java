@@ -38,8 +38,8 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
-import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.uberfire.client.views.pfly.selectpicker.JQuery;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
@@ -89,7 +89,7 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     private final HTMLButtonElement closeConstraintWarningMessage;
 
     private DataTypeConstraintModal presenter;
-    private DataType dataType;
+    private String dataType;
 
     @Inject
     public DataTypeConstraintModalView(final HTMLDivElement header,
@@ -174,7 +174,7 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     }
 
     @Override
-    public void setDataType(DataType dataType) {
+    public void setDataType(String dataType) {
         this.dataType = dataType;
     }
 
@@ -206,7 +206,7 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     public void onShow() {
         final HTMLSelectElement selectElement = (HTMLSelectElement) getSelectPicker();
         final HTMLOptionsCollection options = getSelectOptionsElement();
-        if (Objects.equals("Any", dataType.getType())) {
+        if (Objects.equals(BuiltInType.ANY.getName(), dataType)) {
             disableOptionElement(options.getAt(1));
             disableOptionElement(options.getAt(3));
         } else {

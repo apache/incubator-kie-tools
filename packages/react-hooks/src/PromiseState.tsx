@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,9 @@ export function usePromiseState<T>(): [
   return [state, set];
 }
 
-export function useCombinedPromiseState<T = { [key: string]: PromiseState<any> }>(args: T): PromiseState<Unwrapped<T>> {
+export function useCombinedPromiseState<T extends { [key: string]: PromiseState<any> }>(
+  args: T
+): PromiseState<Unwrapped<T>> {
   return useMemo(() => {
     const statuses = new Map<PromiseStateStatus, number>();
     const data: Unwrapped<T> = {} as any;
