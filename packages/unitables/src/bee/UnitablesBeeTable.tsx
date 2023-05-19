@@ -424,8 +424,18 @@ function UnitablesBeeTableCell({
           const uniformComponentTargetIndex = Array.from(uniformsComponents ?? []).findIndex(
             (component) => component.id === (e.target as HTMLElement).id
           );
-          if (uniformsComponents === undefined || uniformComponentTargetIndex < 0) {
+          if (uniformsComponents === undefined) {
+            console.log("false");
             setEditingCell(false);
+            return;
+          }
+
+          // Event from ListField;
+          if (uniformComponentTargetIndex < 0) {
+            (uniformsComponents?.item(1) as HTMLElement).parentElement?.focus();
+            console.log("true");
+            setEditingCell(true);
+            e.stopPropagation();
             return;
           }
 
@@ -435,6 +445,7 @@ function UnitablesBeeTableCell({
 
           if (nextUniformsComponent === undefined) {
             // Should leave ListField
+            console.log("false");
             setEditingCell(false);
             return;
           }
@@ -445,12 +456,13 @@ function UnitablesBeeTableCell({
             nextUniformsComponent.tagName.toLowerCase() === "button"
           ) {
             (nextUniformsComponent as HTMLButtonElement | HTMLInputElement).parentElement?.focus();
+            setEditingCell(true);
             e.stopPropagation();
             return;
           }
 
-          // SelectField
           if (nextUniformsComponent.tagName.toLowerCase() === "div") {
+            setEditingCell(true);
             const buttons = Array.from(nextUniformsComponent?.getElementsByTagName("button"));
             if (buttons.length === 1) {
               // Check if it's a ListField
@@ -610,7 +622,7 @@ function UnitablesBeeTableCell({
   const onBlur = useCallback(
     (e: React.FocusEvent<HTMLDivElement>) => {
       if (isListField) {
-        console.log("here3");
+        console.log("here3", isEditing, e);
         return;
       }
       if (e.target.tagName.toLowerCase() === "div") {
@@ -640,14 +652,13 @@ function UnitablesBeeTableCell({
         submitRow();
       }
     },
-    [fieldName, isListField, submitRow]
+    [fieldName, isEditing, isListField, submitRow]
   );
 
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
         if (field.type === "array") {
-          console.log("here4");
           submitRow();
         } else {
           setIsSelectFieldOpen((prev) => !prev);
