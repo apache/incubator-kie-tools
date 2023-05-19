@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 import * as path from "path";
 import { assert } from "chai";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import YardEditorTestHelper from "./helpers/yard/YardEditorTestHelper";
 import YardTextEditorTestHelper from "./helpers/yard/YardTextEditorTestHelper";
 
@@ -31,7 +31,7 @@ describe("yard editor - integration tests", () => {
   before(async function () {
     this.timeout(60000);
     testHelper = new VSCodeTestHelper();
-    await testHelper.openFolder(TEST_PROJECT_FOLDER, "resources");
+    await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {
@@ -49,13 +49,14 @@ describe("yard editor - integration tests", () => {
   [EMPTY_YARD_YAML, EMPTY_YARD_YML].forEach(function (fileName) {
     it("Opens " + fileName + " and loads two editor groups (text editor and a web view)", async function () {
       this.timeout(30000);
-      let [textEditor, webView] = await testHelper.openFileFromSidebar(fileName);
+      const editorWebviews = await testHelper.openFileFromSidebar(fileName);
 
-      const yardTextEditor = new YardTextEditorTestHelper(textEditor);
-      const yardWebView = new YardEditorTestHelper(webView);
+      const yardTextEditor = new YardTextEditorTestHelper(editorWebviews[0]);
+      const textEditor = await yardTextEditor.getYardTextEditor();
+      const yardWebView = new YardEditorTestHelper(editorWebviews[1]);
 
-      assert.isFalse(await yardTextEditor.isDirty());
-      assert.equal("\n", await yardTextEditor.getText());
+      assert.isFalse(await textEditor.isDirty());
+      assert.equal("\n", await textEditor.getText());
 
       const yardUITab = await yardWebView.getYardTabElements();
       assert.isNotNull(yardUITab);
