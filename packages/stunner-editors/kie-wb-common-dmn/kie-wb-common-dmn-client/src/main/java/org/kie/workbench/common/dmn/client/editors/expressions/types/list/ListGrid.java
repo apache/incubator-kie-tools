@@ -65,7 +65,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 public class ListGrid extends BaseExpressionGrid<List, ListGridData, ListUIModelMapper> implements HasListSelectorControl {
 
     /** MUST BE SYNCHRONIZED WITH WidthConstants.ts */
-    static final double LIST_DEFAULT_WIDTH = 190d;
+    public static final double LIST_DEFAULT_WIDTH = 190d;
 
     private final ValueAndDataTypePopoverView.Presenter headerEditor;
 

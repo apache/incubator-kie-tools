@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import {
 } from "./BpmnLocators";
 import { labeledAnyElementInPropertiesPanel } from "../CommonLocators";
 import { assert } from "chai";
-import { sleep } from "../VSCodeTestHelper";
+import { sleep } from "@kie-tools/vscode-extension-common-test-helpers";
 import CorrelationModalHelper from "./CorrelationModalHelper";
 import ProcessVariablesWidgetHelper from "./ProcessVariablesWidgetHelper";
 import DataAssignmentsModalHelper from "./DataAssignmentsModalHelper";

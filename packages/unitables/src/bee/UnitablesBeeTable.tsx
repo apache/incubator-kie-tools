@@ -44,8 +44,6 @@ import { useUnitablesContext, useUnitablesRow } from "../UnitablesContext";
 import moment from "moment";
 import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
 
-export const UNITABLES_COLUMN_MIN_WIDTH = 150;
-
 export type ROWTYPE = Record<string, any>;
 
 export interface UnitablesBeeTable {
@@ -389,12 +387,10 @@ function UnitablesBeeTableCell({
           setIsSelectFieldOpen((prev) => {
             if (prev === true) {
               submitRow();
-              setEditingCell(false);
-            } else {
-              setEditingCell(true);
             }
             return !prev;
           });
+          setEditingCell(!isEditing);
           return;
         }
 
@@ -463,6 +459,12 @@ function UnitablesBeeTableCell({
 
   const onBlur = useCallback(
     (e: React.FocusEvent<HTMLDivElement>) => {
+      if (e.target.tagName.toLowerCase() === "div") {
+        if ((e.target.getElementsByTagName("input")?.length ?? 0) > 0) {
+          submitRow();
+        }
+      }
+
       if (e.target.tagName.toLowerCase() === "input") {
         submitRow();
       }
@@ -472,7 +474,7 @@ function UnitablesBeeTableCell({
       ) {
         // if the select field is open and it blurs to another cell, close it;
         const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
-        if ((selectOptions?.length ?? 0) > 0 && (e.relatedTarget as HTMLElement).tagName.toLowerCase() === "td") {
+        if ((selectOptions?.length ?? 0) > 0 && (e.relatedTarget as HTMLElement)?.tagName?.toLowerCase() === "td") {
           e.target.click();
           setIsSelectFieldOpen(false);
         }
@@ -482,11 +484,29 @@ function UnitablesBeeTableCell({
     [fieldName, submitRow]
   );
 
-  const onClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
-      setIsSelectFieldOpen((prev) => !prev);
-    }
-  }, []);
+  const onClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
+        setIsSelectFieldOpen((prev) => {
+          if (prev === true) {
+            submitRow();
+          }
+          return !prev;
+        });
+        setEditingCell(!isEditing);
+      }
+
+      if (!isEditing && e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "input") {
+        const inputField = cellRef.current?.getElementsByTagName("input");
+        if (inputField && inputField.length > 0) {
+          inputField?.[0]?.focus();
+          setEditingCell(true);
+          return;
+        }
+      }
+    },
+    [isEditing, setEditingCell, submitRow]
+  );
 
   return (
     <div

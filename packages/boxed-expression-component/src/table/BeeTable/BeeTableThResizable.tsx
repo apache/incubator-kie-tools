@@ -30,6 +30,7 @@ import {
   isParentColumn,
   useFillingResizingWidth,
 } from "../../resizing/FillingColumnResizingWidth";
+import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export interface BeeTableThResizableProps<R extends object> {
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
@@ -83,7 +84,7 @@ export function BeeTableThResizable<R extends object>({
     cssClasses.push(column.groupType ?? "");
     // cssClasses.push(column.cssClasses ?? ""); // FIXME: Breaking Decision tables because of positioning of rowSpan=2 column headers (See https://github.com/kiegroup/kie-issues/issues/162)
     return cssClasses.join(" ");
-  }, [column, columnKey]);
+  }, [columnKey, column.dataType, column.groupType]);
 
   const onClick = useMemo(() => {
     return onHeaderClick(columnKey);
@@ -106,53 +107,6 @@ export function BeeTableThResizable<R extends object>({
     return onGetWidthToFitData() + extraSpace;
   }, [onGetWidthToFitData]);
 
-  // const { updateColumnResizingWidths } = useBeeTableResizableColumnsDispatch();
-  // const [isCalcWidthResizing, setCalcWidthResizing] = useState<boolean>(false);
-  // const [calcWidth, setCalcWidth] = useState<number | undefined>(undefined);
-  // const [calcResizingWidth, setCalcResizingWidth] = useState<ResizingWidth | undefined>(undefined);
-
-  // useLayoutEffect(() => {
-  //   if (column.width) {
-  //     return;
-  //   }
-
-  //   const calcWidth = forwardRef?.current?.getBoundingClientRect().width;
-  //   if (!calcWidth) {
-  //     return;
-  //   }
-
-  //   setCalcWidth(calcWidth);
-  //   setCalcResizingWidth({ isPivoting: false, value: calcWidth ?? 0 });
-  // }, [column.width, forwardRef]);
-
-  // useEffect(() => {
-  //   if (!calcResizingWidth?.isPivoting) {
-  //     return;
-  //   }
-
-  //   const apportionedColumnWidths = apportionColumnWidths(
-  //     calcResizingWidth.value,
-  //     (column.columns ?? []).map((c) => ({
-  //       minWidth: c.minWidth ?? 0,
-  //       currentWidth: c.width ?? 0,
-  //       isFrozen: c.isWidthPinned ?? false,
-  //     }))
-  //   );
-
-  //   (column.columns ?? []).forEach((c, i) => {
-  //     updateColumnResizingWidths(firstColumnIndexOfGroup + i, (prev) => {
-  //       return { isPivoting: true, value: apportionedColumnWidths[i] };
-  //     });
-  //   });
-  // }, [
-  //   calcResizingWidth?.isPivoting,
-  //   calcResizingWidth?.value,
-  //   column.columns,
-  //   columnIndex,
-  //   firstColumnIndexOfGroup,
-  //   updateColumnResizingWidths,
-  // ]);
-
   const {
     // Filling resizing widths are used for header columns that are either parent or flexible.
     fillingResizingWidth,
@@ -165,18 +119,34 @@ export function BeeTableThResizable<R extends object>({
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
   const [isResizing, setResizing] = useState<boolean>(false);
 
+  const { editorRef } = useBoxedExpressionEditor();
+
   useEffect(() => {
+    function hasTextSelectedInBoxedExpressionEditor() {
+      const selection = window.getSelection();
+      if (selection) {
+        return selection?.toString() && editorRef.current?.contains(selection.focusNode);
+      }
+      return false;
+    }
+
     function onEnter(e: MouseEvent) {
       e.stopPropagation();
-      setHoverInfo((prev) => getHoverInfo(e, th!));
+      if (hasTextSelectedInBoxedExpressionEditor()) {
+        return;
+      }
+      setHoverInfo(() => getHoverInfo(e, th!));
     }
 
     function onMove(e: MouseEvent) {
-      setHoverInfo((prev) => getHoverInfo(e, th!));
+      if (hasTextSelectedInBoxedExpressionEditor()) {
+        return;
+      }
+      setHoverInfo(() => getHoverInfo(e, th!));
     }
 
     function onLeave() {
-      setHoverInfo((prev) => ({ isHovered: false }));
+      setHoverInfo(() => ({ isHovered: false }));
     }
 
     const th = forwardRef?.current;
@@ -188,7 +158,7 @@ export function BeeTableThResizable<R extends object>({
       th?.removeEventListener("mousemove", onMove);
       th?.removeEventListener("mouseenter", onEnter);
     };
-  }, [columnIndex, rowIndex, forwardRef]);
+  }, [columnIndex, rowIndex, forwardRef, editorRef]);
 
   return (
     <BeeTableTh<R>
@@ -199,7 +169,12 @@ export function BeeTableThResizable<R extends object>({
         style: {
           width: column.width ? resizingWidth?.value : "100%",
           minWidth: column.width ? resizingWidth?.value : "100%",
-          maxWidth: column.width ? resizingWidth?.value : "100%",
+          maxWidth:
+            isParentColumn(column) || isFlexbileColumn(column)
+              ? fillingWidth
+              : column.width
+              ? resizingWidth?.value
+              : "100%",
         },
       }}
       onClick={onClick}

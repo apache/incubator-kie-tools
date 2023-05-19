@@ -26,9 +26,11 @@
     "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build $(echo $(build-env kieSandbox.image.buildTags) | xargs printf -- \"-t $(build-env kieSandbox.image.registry)/$(build-env kieSandbox.image.account)/$(build-env kieSandbox.image.name):%s\n\" | xargs echo) . -f Containerfile\" --else \"echo Docker not found, skipping image build.\"",
     "image:podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env kieSandbox.image.buildTags) | xargs printf -- \"-t $(build-env kieSandbox.image.registry)/$(build-env kieSandbox.image.account)/$(build-env kieSandbox.image.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
   },
-  "devDependencies": {
+  "dependencies": {
     "@kie-tools/image-env-to-json": "workspace:*",
-    "@kie-tools/online-editor": "workspace:*",
+    "@kie-tools/online-editor": "workspace:*"
+  },
+  "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",

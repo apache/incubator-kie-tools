@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 import { By, WebElement, WebView } from "vscode-extension-tester";
-import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
+import { assertWebElementIsDisplayedEnabled, EditorTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 
 export class Modal {
   constructor(readonly webview: WebElement, private closeButton: WebElement) {}
@@ -30,19 +30,17 @@ export class Modal {
  * Make sure you switch to the webview's frame before creating and instance
  * via contructor.
  */
-export default class PmmlEditorTestHelper {
-  /**
-   * WebView in which the editor Iframe is located.
-   * Initialize in constructor.
-   */
-  private webview: WebView;
-
+export default class PmmlEditorTestHelper extends EditorTestHelper {
   private dataDictionaryButton: WebElement;
   private miningSchemaButton: WebElement;
   private outputsButton: WebElement;
 
+  /**
+   *
+   * @param webview WebView where the editor Iframe is located.
+   */
   constructor(webview: WebView) {
-    this.webview = webview;
+    super(webview);
   }
 
   /**

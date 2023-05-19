@@ -1,3 +1,7 @@
+# 0.28.2 (alpha)
+
+- [KOGITO-9108](https://issues.redhat.com/browse/KOGITO-9108) - Rename the new Serverless Workflow VS Code extension to `swf-vscode-extension`
+
 # 0.28.0 (alpha)
 
 - [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/kiegroup/kie-tools/pull/1485

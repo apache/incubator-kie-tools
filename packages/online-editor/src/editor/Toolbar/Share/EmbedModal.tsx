@@ -26,6 +26,9 @@ import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/work
 import { GistOrigin, WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
+import { WorkspaceGitStatusType } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
+import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
 type StandaloneEditorLibraryName = "BpmnEditor" | "DmnEditor";
@@ -55,6 +58,7 @@ enum ContentSource {
 export function EmbedModal(props: {
   workspace: WorkspaceDescriptor;
   workspaceFile: WorkspaceFile;
+  workspaceGitStatusPromise: PromiseState<WorkspaceGitStatusType>;
   isOpen: boolean;
   onClose: () => void;
 }) {
@@ -64,6 +68,7 @@ export function EmbedModal(props: {
   );
   const [editorContent, setEditorContent] = useState("");
   const { i18n } = useOnlineI18n();
+  const hasLocalChanges = props.workspaceGitStatusPromise.data?.hasLocalChanges;
 
   useEffect(() => {
     if (props.isOpen) {
@@ -169,6 +174,12 @@ export function EmbedModal(props: {
       title={i18n.embedModal.title}
       description={i18n.embedModal.description}
     >
+      {hasLocalChanges && contentSource === ContentSource.GIST && (
+        <>
+          <Alert isInline={true} variant={"warning"} title={i18n.embedModal.source.gist.alert}></Alert>
+          <br />
+        </>
+      )}
       <div style={{ padding: "0 16px 0 16px" }}>
         <Radio
           aria-label="Current content source option"
