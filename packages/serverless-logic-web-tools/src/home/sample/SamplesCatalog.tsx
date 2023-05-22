@@ -108,7 +108,11 @@ export function SamplesCatalog() {
   const setCategoryFilter = useCallback(
     (category?: SampleCategory) => {
       const searchParams = new URLSearchParams(location.search);
-      searchParams.set(QueryParams.SAMPLES_CATEGORY, category || "");
+      if (category) {
+        searchParams.set(QueryParams.SAMPLES_CATEGORY, category);
+      } else {
+        searchParams.delete(QueryParams.SAMPLES_CATEGORY);
+      }
       const newSearchString = searchParams.toString();
       history.push({ search: newSearchString });
     },
