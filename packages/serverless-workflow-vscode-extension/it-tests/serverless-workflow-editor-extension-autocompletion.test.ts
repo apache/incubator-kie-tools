@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { expect } from "chai";
 import { Key, TextEditor } from "vscode-extension-tester";
-import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
+import { VSCodeTestHelper, sleep } from "@kie-tools/vscode-extension-common-test-helpers";
 import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
@@ -33,7 +33,7 @@ describe("Serverless workflow editor - autocompletion tests", () => {
   before(async function () {
     this.timeout(60000);
     testHelper = new VSCodeTestHelper();
-    await testHelper.openFolder(TEST_PROJECT_FOLDER, "autocompletion");
+    await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {

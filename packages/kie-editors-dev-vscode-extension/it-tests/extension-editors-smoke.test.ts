@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 import { SideBarView, WebView } from "vscode-extension-tester";
 import * as path from "path";
-import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import { assertWebElementIsDisplayedEnabled, VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import BpmnEditorTestHelper from "./helpers/bpmn/BpmnEditorTestHelper";
 import ScesimEditorTestHelper from "./helpers/ScesimEditorTestHelper";
 import DmnEditorTestHelper from "./helpers/dmn/DmnEditorTestHelper";
@@ -60,9 +59,10 @@ describe("KIE Editors Integration Test Suite - Smoke tests", () => {
 
   it("Opens demo.bpmn file in BPMN Editor and loads correct diagram", async function () {
     this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(DEMO_BPMN);
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_BPMN);
+    webview = editorWebviews[0];
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+    await bpmnEditorTester.switchToEditorFrame();
 
     const palette = await bpmnEditorTester.getPalette();
     await assertWebElementIsDisplayedEnabled(palette);
@@ -73,41 +73,44 @@ describe("KIE Editors Integration Test Suite - Smoke tests", () => {
     await explorer.assertDiagramNodeIsPresent("Start");
     await explorer.assertDiagramNodeIsPresent("End");
 
-    await webview.switchBack();
+    await bpmnEditorTester.switchBack();
   });
 
   it("Opens demo.dmn file in DMN Editor", async function () {
     this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN);
+    webview = editorWebviews[0];
     const dmnEditorTester = new DmnEditorTestHelper(webview);
+    await dmnEditorTester.switchToEditorFrame();
 
     await dmnEditorTester.openDiagramProperties();
     await dmnEditorTester.openDiagramExplorer();
     await dmnEditorTester.openDecisionNavigator();
 
-    await webview.switchBack();
+    await dmnEditorTester.switchBack();
   });
 
   it("Opens demo.scesim file in SCESIM Editor", async function () {
     this.timeout(20000);
 
-    webview = await testHelper.openFileFromSidebar(DEMO_SCESIM);
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_SCESIM);
+    webview = editorWebviews[0];
     const scesimEditorTester = new ScesimEditorTestHelper(webview);
+    await scesimEditorTester.switchToEditorFrame();
 
     await scesimEditorTester.openScenarioCheatsheet();
     await scesimEditorTester.openSettings();
     await scesimEditorTester.openTestTools();
 
-    await webview.switchBack();
+    await scesimEditorTester.switchBack();
   });
 
   it("Opens demo.pmml file in PMML Editor", async function () {
     this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(DEMO_PMML);
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_PMML);
+    webview = editorWebviews[0];
     const pmmlEditorTester = new PmmlEditorTestHelper(webview);
+    await pmmlEditorTester.switchToEditorFrame();
 
     const dataDictionaryModel = await pmmlEditorTester.openDataDictionary();
     dataDictionaryModel.close();
@@ -118,6 +121,6 @@ describe("KIE Editors Integration Test Suite - Smoke tests", () => {
     const outputsModal = await pmmlEditorTester.openOutputs();
     outputsModal.close();
 
-    await webview.switchBack();
+    await pmmlEditorTester.switchBack();
   });
 });

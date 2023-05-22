@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import * as path from "path";
 import * as fs from "fs";
 import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
-import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
+import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 
 // The following test is failing in github CI. See https://issues.redhat.com/browse/KOGITO-8952.
 describe.skip("Serverless workflow editor - Basic operations tests", () => {
@@ -31,7 +31,7 @@ describe.skip("Serverless workflow editor - Basic operations tests", () => {
   before(async function () {
     this.timeout(30000);
     testHelper = new VSCodeTestHelper();
-    await testHelper.openFolder(TEST_PROJECT_FOLDER, "basic-operations");
+    await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {

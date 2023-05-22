@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import { Key } from "selenium-webdriver";
 import {
   ActivityBar,
   By,
+  EditorGroup,
   InputBox,
   ModalDialog,
   SideBarView,
@@ -34,16 +35,18 @@ import {
   WebView,
   Workbench,
 } from "vscode-extension-tester";
+import { webViewReady, activeFrame, envelopeApp, kogitoLoadingSpinner, inputBox } from "./CommonLocators";
+import { isKieEditorWithDualView, isKieEditorWithSingleView, isDashbuilderEditor } from "./KieFileExtensions";
 
 /**
- * Common test helper class for VS Code extension testing.
- * Provides common API to work with VS Code test instance.
+ * Common test helper class for VSCode extension testing.
+ * Provides common API to work with VSCode test instance.
  * Allows you  to open folders, files, close open editor.
  * Aquire notifications, input CLI commands etc.
  */
-export default class VSCodeTestHelper {
+export class VSCodeTestHelper {
   /**
-   * Handle for VS Code workbench.
+   * Handle for VSCode workbench.
    * Initialized in constructor.
    */
   private workbench: Workbench;
@@ -71,6 +74,11 @@ export default class VSCodeTestHelper {
    */
   private sidebarView: SideBarView;
 
+  /**
+   * Loading timeout for editors.
+   */
+  private readonly EDITOR_LOADING_TIMEOUT: number = 60000;
+
   constructor() {
     this.workbench = new Workbench() as Workbench;
     this.browser = VSBrowser.instance;
@@ -84,37 +92,89 @@ export default class VSCodeTestHelper {
    * @param absolutePath absolute path to the folder that needs to be openned
    * @returns a promise that resolves to a SideBarView of the openned folder
    */
-  public openFolder = async (absolutePath: string, folderName: string): Promise<SideBarView> => {
+  public openFolder = async (absolutePath: string): Promise<SideBarView> => {
     await this.browser.openResources(absolutePath);
 
     const control = (await new ActivityBar().getViewControl("Explorer")) as ViewControl;
     this.sidebarView = await control.openView();
     assert.isTrue(await this.sidebarView.isDisplayed(), "Explorer side bar view was not opened");
 
+    const folderName = absolutePath.split("/").pop();
+    if (folderName == undefined) {
+      throw new Error("Wrong absolutePath format: " + absolutePath);
+    }
+
     this.workspaceSectionView = await this.sidebarView.getContent().getSection(folderName);
     return this.sidebarView;
   };
 
   /**
-   * Opens serverless workflow file from a sidebarview. Expects that the sideBarView will be defined and open.
-   * To define sideBarView a folder needs to be openned using openFolder function.
-   * Once the file is openned using a click, function assert existence of two
-   * editor groups and assigns each group to Webview. Both webviews are confirmed loaded and returned
-   * in an array on predefined indexes - see returns definition.
-   *
-   * If the file is not located in root of resources folder, specify a relative path to its
-   * parent directory.
-   * To open file in ".../resources/org/kie" call the method as openFileFromSidebar(fileName, "org/kie").
-   * Always separate the directories in path by "/"
+   * Opens file from a sidebarview. Expects that the sideBarView will be defined and open.
+   * To define sideBarView a folder needs to be opened using openFolder function.
+   * All webviews are loaded and returned in an array.
    *
    * @param fileName name of the file to open
    * @param fileParentPath optional, use when file is not in root of resources. This is the path of file's parent directory, relative to resources
    *                       if not used the file will be looked in root of resources.
-   * @returns promise that resolves to an array of WebViews of the openned serverless worklow file.
-   *          The lenght of the array is always 2 and there is guaranteed TextEditor as webview on O index.
-   *          Custom kogito swf editor as webview is always on index 1
+   * @returns promise that resolves to an array of WebViews of the opened file.
+   *          For editors with one webview the editor is at index 0.
+   *          For editors with two webviews the TextEditor as WebView is at index 0 and the graphical editor as WebView is at index 1.
+   *          For any other files all its WebViews are returned.
    */
   public openFileFromSidebar = async (fileName: string, fileParentPath?: string): Promise<WebView[]> => {
+    if (isKieEditorWithSingleView(fileName)) {
+      const webView = await this.openEditorWithOneWebView(fileName, fileParentPath);
+      return [webView];
+    } else if (isKieEditorWithDualView(fileName)) {
+      return await this.openEditorWithTwoWebViews(fileName, fileParentPath);
+    }
+    return await this.openNonKieEditorFile(fileName, fileParentPath);
+  };
+
+  private openEditorWithOneWebView = async (fileName: string, fileParentPath?: string): Promise<WebView> => {
+    const editorGroups = await this.openItemFromSidebar(fileName, fileParentPath);
+
+    assert.equal(editorGroups.length, 1);
+
+    const webview = new WebView(this.workbench.getEditorView(), By.linkText(fileName));
+    await this.waitUntilKogitoEditorIsLoaded(webview);
+    return webview;
+  };
+
+  private openEditorWithTwoWebViews = async (fileName: string, fileParentPath?: string): Promise<WebView[]> => {
+    const editorGroups = await this.openItemFromSidebar(fileName, fileParentPath);
+
+    assert.equal(editorGroups.length, 2);
+
+    const webviewLeft = new WebView(editorGroups[0], By.linkText(fileName));
+
+    if (isDashbuilderEditor(fileName)) {
+      this.forceOpeningDashbuilderEditor(webviewLeft);
+    }
+
+    const webviewRight = new WebView(editorGroups[1], By.linkText(fileName));
+    await this.waitUntilKogitoEditorIsLoaded(webviewRight);
+
+    const webviews = [] as WebView[];
+    webviews.push(webviewLeft);
+    webviews.push(webviewRight);
+
+    return Promise.resolve(webviews);
+  };
+
+  private openNonKieEditorFile = async (fileName: string, fileParentPath?: string): Promise<WebView[]> => {
+    const editorGroups = await this.openItemFromSidebar(fileName, fileParentPath);
+
+    const webviews = [] as WebView[];
+    editorGroups.forEach((editorGroup) => {
+      const webview = new WebView(editorGroup, By.linkText(fileName));
+      webviews.push(webview);
+    });
+
+    return Promise.resolve(webviews);
+  };
+
+  private openItemFromSidebar = async (fileName: string, fileParentPath?: string): Promise<EditorGroup[]> => {
     if (fileParentPath == undefined || fileParentPath == "") {
       await this.workspaceSectionView.openItem(fileName);
     } else {
@@ -127,21 +187,14 @@ export default class VSCodeTestHelper {
     }
     await sleep(5000);
 
-    const editorGroups = await this.workbench.getEditorView().getEditorGroups();
-    // should be always two groups, one text editor and one swf editor
-    assert.equal(editorGroups.length, 2);
-
-    const webviewLeft = new WebView(editorGroups[0], By.linkText(fileName));
-    const webviewRight = new WebView(editorGroups[1], By.linkText(fileName));
-
-    // right webview has the custom kogito editor, wait for it to load
-    await this.waitUntilKogitoEditorIsLoaded(webviewRight);
-
-    const webviews = [] as WebView[];
-    webviews.push(webviewLeft, webviewRight);
-
-    return Promise.resolve(webviews);
+    return await this.workbench.getEditorView().getEditorGroups();
   };
+
+  private async forceOpeningDashbuilderEditor(textEditorWebView: WebView): Promise<void> {
+    const webDriver = textEditorWebView.getDriver();
+    const consoleHelper = await webDriver.findElement(webViewReady());
+    await consoleHelper.sendKeys(Key.ENTER);
+  }
 
   /**
    * Renames file in SideBarView.
@@ -175,7 +228,7 @@ export default class VSCodeTestHelper {
     const menu = await fileItem?.openContextMenu();
     await menu?.select("Rename...");
 
-    const inputElement = await this.workspaceSectionView.findElement(By.xpath('.//input[@type="text"]'));
+    const inputElement = await this.workspaceSectionView.findElement(inputBox());
     await inputElement.sendKeys(Key.chord(Key.CONTROL, "a"));
     await inputElement.sendKeys(newFileName);
     await inputElement.sendKeys(Key.ENTER);
@@ -235,41 +288,28 @@ export default class VSCodeTestHelper {
    */
   public waitUntilKogitoEditorIsLoaded = async (webview: WebView): Promise<void> => {
     const driver = webview.getDriver();
+
+    switchWebviewToFrame(webview);
+
     await driver.wait(
-      until.elementLocated(By.className("webview ready")),
-      10000,
-      "No iframe.webview.ready that was ready was located in webview under 2 seconds." +
-        "This should not happen and is most probably issue of VS Code." +
-        "In case this happens investigate vscode or vscode-extension-tester dependency."
-    );
-    await driver.switchTo().frame(await driver.findElement(By.className("webview ready")));
-    await driver.wait(
-      until.elementLocated(By.id("active-frame")),
-      10000,
-      "No iframe#active-frame located in webview under 2 seconds." +
-        "This should not happen and is most probably issue of VS Code." +
-        "In case this happens investigate vscode or vscode-extension-tester dependency."
-    );
-    await driver.switchTo().frame(await driver.findElement(By.id("active-frame")));
-    await driver.wait(
-      until.elementLocated(By.id("envelope-app")),
-      60000,
-      "No 'div#envelope-app' located in webview's active-frame in ms. Please investigate."
+      until.elementLocated(envelopeApp()),
+      this.EDITOR_LOADING_TIMEOUT,
+      "No 'div#envelope-app' located in webview's active-frame in " +
+        this.EDITOR_LOADING_TIMEOUT +
+        "ms. Please investigate."
     );
     await driver.wait(
       async () => {
-        const loadingSpinners = await webview
-          .getDriver()
-          .findElements(By.className("kie-tools--loading-screen-spinner"));
+        const loadingSpinners = await webview.getDriver().findElements(kogitoLoadingSpinner());
         return !loadingSpinners || loadingSpinners.length <= 0;
       },
-      60000,
-      "Editor was still loading after ms. Please investigate."
+      this.EDITOR_LOADING_TIMEOUT,
+      "Editor was still loading after " + this.EDITOR_LOADING_TIMEOUT + "ms. Please investigate."
     );
 
     await sleep(8000);
 
-    await driver.switchTo().frame(null);
+    await switchBack(webview);
   };
 
   /**
@@ -294,18 +334,6 @@ export default class VSCodeTestHelper {
   };
 
   /**
-   * Creates screenshot of current VS Code window and saves it to given path.
-   *
-   * @param name screenshot file name without extension
-   * @param dirPath path to a folder to store screenshots (will be created if doesn't exist)
-   */
-  private takeScreenshotAndSave = async (name: string, dirPath: string): Promise<void> => {
-    const data = await this.driver.takeScreenshot();
-    fs.mkdirpSync(dirPath);
-    fs.writeFileSync(path.join(dirPath, `${sanitize(name)}.png`), data, "base64");
-  };
-
-  /**
    * Takes a screenshot if the current test fails and saves it in the specified directory.
    *
    * @param {Mocha.Context} testMochaContext The current Mocha test context.
@@ -321,6 +349,52 @@ export default class VSCodeTestHelper {
       await this.takeScreenshotAndSave(screenshotName, screenshotDir);
     }
   };
+
+  /**
+   * Creates screenshot of current VSCode window and saves it to given path.
+   *
+   * @param name screenshot file name without extension
+   * @param dirPath path to a folder to store screenshots (will be created if doesn't exist)
+   */
+  private takeScreenshotAndSave = async (name: string, dirPath: string): Promise<void> => {
+    const data = await this.driver.takeScreenshot();
+    fs.mkdirpSync(dirPath);
+    fs.writeFileSync(path.join(dirPath, `${sanitize(name)}.png`), data, "base64");
+  };
+}
+
+/**
+ * Switches provided webview's context to iframe#active-frame within it.
+ *
+ * @param webview
+ */
+export async function switchWebviewToFrame(webview: WebView): Promise<void> {
+  const driver = webview.getDriver();
+  await driver.wait(
+    until.elementLocated(webViewReady()),
+    10000,
+    "No iframe.webview.ready that was ready was located in webview under 10 seconds." +
+      "This should not happen and is most probably issue of VSCode." +
+      "In case this happens investigate vscode or vscode-extension-tester dependency."
+  );
+  await driver.switchTo().frame(await driver.findElement(webViewReady()));
+  await driver.wait(
+    until.elementLocated(activeFrame()),
+    10000,
+    "No iframe#active-frame located in webview under 10 seconds." +
+      "This should not happen and is most probably issue of VSCode." +
+      "In case this happens investigate vscode or vscode-extension-tester dependency."
+  );
+  await driver.switchTo().frame(await driver.findElement(activeFrame()));
+}
+
+/**
+ * Switch back to the the topmost frame on the page.
+ *
+ * @param webview
+ */
+export async function switchBack(webview: WebView): Promise<void> {
+  await webview.getDriver().switchTo().frame(null);
 }
 
 export function sleep(ms: number) {

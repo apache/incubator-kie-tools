@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
-import { FormI18n } from "@kie-tools/form";
+import { Wrapped } from "@kie-tools-core/i18n/dist/core";
+import { FormI18n } from "@kie-tools/form/dist/i18n/FormI18n";
 
 export interface DmnFormI18n extends FormI18n {
   validation: {

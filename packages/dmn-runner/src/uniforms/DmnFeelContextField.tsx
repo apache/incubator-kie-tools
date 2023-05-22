@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import * as React from "react";
 import { Ref, useCallback, useMemo } from "react";
 import { TextInput, TextInputProps } from "@patternfly/react-core/dist/js/components/TextInput";
 import { connectField } from "uniforms";
+import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
 
 type DmnFeelContextComponentProps = {
   id: string;
@@ -31,7 +32,7 @@ type DmnFeelContextComponentProps = {
   field?: { format: string };
 } & Omit<TextInputProps, "isDisabled">;
 
-function DmnFeelContext(props: DmnFeelContextComponentProps) {
+function DmnFeelContext({ onChange, ...props }: DmnFeelContextComponentProps) {
   const stringifiedValue = useMemo(() => {
     if (props.value && typeof props.value === "object") {
       return JSON.stringify(props.value);
@@ -39,25 +40,27 @@ function DmnFeelContext(props: DmnFeelContextComponentProps) {
     return props.value;
   }, [props.value]);
 
-  const onChange = useCallback(
+  const onTextInputChange = useCallback(
     (value: string, event: React.FormEvent<HTMLInputElement>) => {
       try {
         const parsedObject = JSON.parse((event.target as any).value);
-        props.onChange(parsedObject);
+        onChange(parsedObject);
       } catch (err) {
-        props.onChange((event.target as any).value);
+        onChange((event.target as any).value);
       }
     },
-    [props.onChange]
+    [onChange]
   );
 
-  return (
+  return wrapField(
+    props,
     <>
       <TextInput
+        aria-label={"uniforms context field"}
         name={props.name}
         isDisabled={props.disabled}
         validated={props.error ? "error" : "default"}
-        onChange={onChange}
+        onChange={onTextInputChange}
         placeholder={props.placeholder}
         ref={props.inputRef}
         type={props.type ?? "text"}
