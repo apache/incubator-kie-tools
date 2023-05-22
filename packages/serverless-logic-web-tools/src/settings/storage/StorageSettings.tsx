@@ -29,6 +29,7 @@ import { setPageTitle } from "../../PageTitle";
 import { ConfirmDeleteModal } from "../../table/ConfirmDeleteModal";
 import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
 import Dexie from "dexie";
+import { deleteAllCookies } from "../../cookies";
 
 const PAGE_TITLE = "Storage";
 
@@ -40,15 +41,6 @@ const deleteAllIndexedDBs = async () => {
 
   // is not possible to use await here: Dexie doesn't reject or resolve the promise if the db is locked
   dbNames.forEach(Dexie.delete);
-};
-
-/**
- * Delete all cookies
- */
-const deleteAllCookies = () => {
-  document.cookie.split(";").forEach(function (c) {
-    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-  });
 };
 
 export function StorageSettings() {
