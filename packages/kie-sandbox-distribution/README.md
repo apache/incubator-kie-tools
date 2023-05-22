@@ -48,10 +48,16 @@ This package contains the `docker-compose` file to run KIE Sandbox and all relat
 
 ## Run
 
-- Run KIE Sandbox with docker compose
+- Run KIE Sandbox with docker compose and current environment variables
 
   ```bash
   pnpm docker:start
   ```
 
   KIE Sandbox will be up at http://localhost:9090
+
+- Run KIE Sandbox with docker compose and default environment variables
+
+  ```bash
+  docker compose --env-file .env.default up
+  ```
