@@ -16,14 +16,16 @@ source "${script_dir_path}"/configure-jvm-mvn.sh
 
 cd serverless-workflow-project
 
+offline_param="-o"
 if [ ! -z "${QUARKUS_EXTENSIONS}" ]; then
   ${KOGITO_HOME}/launch/add-extension.sh "${QUARKUS_EXTENSIONS}"
+  offline_param=""
 fi
 
 
 # `-o` means offline mode
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
-  -o \
+  ${offline_param} \
   -s "${MAVEN_SETTINGS_PATH}" \
   -DskipTests \
   -Dquarkus.http.host=0.0.0.0 \

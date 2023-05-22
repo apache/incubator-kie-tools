@@ -41,7 +41,7 @@ SUPPORTING_SERVICES_IMAGES = {"kogito-data-index-ephemeral", "kogito-data-index-
                               "kogito-trusty-redis", "kogito-trusty-ui"}
 
 PROD_SUPPORTING_SERVICES_IMAGES = {"logic-data-index-ephemeral-rhel8"}
-SWF_BUILDER_IMAGES = {"kogito-swf-builder", "kogito-base-builder"}
+SWF_BUILDER_IMAGES = {"kogito-swf-builder", "kogito-base-builder", "kogito-swf-devmode"}
 
 
 def yaml_loader():
