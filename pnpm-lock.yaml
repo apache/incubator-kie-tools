@@ -4860,6 +4860,25 @@ importers:
         specifier: ^5.8.0
         version: 5.8.0
 
+  packages/kie-sandbox-distribution:
+    dependencies:
+      "@kie-tools/git-cors-proxy-image":
+        specifier: workspace:*
+        version: link:../git-cors-proxy-image
+      "@kie-tools/kie-sandbox-extended-services-image":
+        specifier: workspace:*
+        version: link:../kie-sandbox-extended-services-image
+      "@kie-tools/kie-sandbox-image":
+        specifier: workspace:*
+        version: link:../kie-sandbox-image
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+
   packages/kie-sandbox-extended-services-image:
     dependencies:
       "@kie-tools/extended-services":

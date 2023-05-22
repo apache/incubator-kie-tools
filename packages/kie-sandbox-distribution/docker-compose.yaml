@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  kie_sandbox:
+    container_name: kie_sandbox
+    image: "${KIE_SANDBOX_DISTRIBUTION__kieSandboxImageRegistry}/${KIE_SANDBOX_DISTRIBUTION__kieSandboxImageAccount}/${KIE_SANDBOX_DISTRIBUTION__kieSandboxImageName}:${KIE_SANDBOX_DISTRIBUTION__kieSandboxImageTag}"
+    ports:
+      - ${KIE_SANDBOX_DISTRIBUTION__kieSandboxPort}:8080
+    environment:
+      KIE_SANDBOX_EXTENDED_SERVICES_URL: "http://localhost:${KIE_SANDBOX_DISTRIBUTION__extendedServicesPort}"
+      KIE_SANDBOX_GIT_CORS_PROXY_URL: "http://localhost:${KIE_SANDBOX_DISTRIBUTION__gitCorsProxyPort}"
+
+    depends_on:
+      - extended_services
+      - git_cors_proxy
+
+  extended_services:
+    container_name: extended_services
+    image: "${KIE_SANDBOX_DISTRIBUTION__extendedServicesImageRegistry}/${KIE_SANDBOX_DISTRIBUTION__extendedServicesImageAccount}/${KIE_SANDBOX_DISTRIBUTION__extendedServicesImageName}:${KIE_SANDBOX_DISTRIBUTION__extendedServicesImageTag}"
+    ports:
+      - ${KIE_SANDBOX_DISTRIBUTION__extendedServicesPort}:21345
+
+  git_cors_proxy:
+    container_name: git_cors_proxy
+    image: "${KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageRegistry}/${KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageAccount}/${KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageName}:${KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageTag}"
+    ports:
+      - ${KIE_SANDBOX_DISTRIBUTION__gitCorsProxyPort}:8080
