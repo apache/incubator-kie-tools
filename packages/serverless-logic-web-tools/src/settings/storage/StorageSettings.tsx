@@ -30,6 +30,8 @@ import { ConfirmDeleteModal } from "../../table/ConfirmDeleteModal";
 import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
 import Dexie from "dexie";
 import { deleteAllCookies } from "../../cookies";
+import { isBrowserChromiumBased } from "../../workspace/startupBlockers/SupportedBrowsers";
+import { useHistory } from "react-router";
 
 const PAGE_TITLE = "Storage";
 
@@ -64,6 +66,7 @@ export function StorageSettings() {
   const [isDeleteLocalStorageChecked, setIsDeleteLocalStorageChecked] = useState(false);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const [alerts, alertsRef] = useController<AlertsController>();
+  const history = useHistory();
 
   const toggleConfirmModal = useCallback(() => {
     setIsConfirmDeleteModalOpen((isOpen) => !isOpen);
@@ -120,8 +123,11 @@ export function StorageSettings() {
   }, [toggleConfirmModal, deleteSuccessAlert, isDeleteLocalStorageChecked, deleteErrorAlert, isDeleteCookiesChecked]);
 
   useEffect(() => {
+    if (!isBrowserChromiumBased()) {
+      history.push(routes.settings.home.path({}));
+    }
     setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
-  }, []);
+  }, [history]);
 
   return (
     <>
