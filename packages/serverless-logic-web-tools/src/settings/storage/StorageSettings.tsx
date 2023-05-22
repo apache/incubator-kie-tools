@@ -28,8 +28,28 @@ import { routes } from "../../navigation/Routes";
 import { setPageTitle } from "../../PageTitle";
 import { ConfirmDeleteModal } from "../../table/ConfirmDeleteModal";
 import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
+import Dexie from "dexie";
 
 const PAGE_TITLE = "Storage";
+
+/**
+ * Delete all indexed DBs using Dexie
+ */
+const deleteAllIndexedDBs = async () => {
+  const dbNames = await Dexie.getDatabaseNames();
+
+  // is not possible to use await here: Dexie doesn't reject or resolve the promise if the db is locked
+  dbNames.forEach(Dexie.delete);
+};
+
+/**
+ * Delete all cookies
+ */
+const deleteAllCookies = () => {
+  document.cookie.split(";").forEach(function (c) {
+    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+  });
+};
 
 export function StorageSettings() {
   const [isDeleteCookiesChecked, setIsDeleteCookiesChecked] = useState(false);
@@ -45,7 +65,6 @@ export function StorageSettings() {
     alerts,
     useCallback(({ close }) => {
       setTimeout(() => {
-        // history.push(routes.home.path({}));
         window.location.href = routes.home.path({});
       }, 3000);
       return <Alert variant="success" title={`Data deleted successfully`} />;
@@ -67,14 +86,24 @@ export function StorageSettings() {
 
   const onConfirmDeleteModalDelete = useCallback(async () => {
     toggleConfirmModal();
-    deleteSuccessAlert.show();
-  }, [toggleConfirmModal, deleteSuccessAlert]);
+
+    try {
+      await deleteAllIndexedDBs();
+      if (isDeleteLocalStorageChecked) {
+        localStorage.clear();
+      }
+      if (isDeleteCookiesChecked) {
+        deleteAllCookies();
+      }
+      deleteSuccessAlert.show();
+    } catch (e) {
+      deleteErrorAlert.show();
+    }
+  }, [toggleConfirmModal, deleteSuccessAlert, isDeleteLocalStorageChecked, deleteErrorAlert, isDeleteCookiesChecked]);
 
   useEffect(() => {
     setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
   }, []);
-
-  /* TODO: StorageSettings:If confirmed, the clean-up code should use Dexie to list and delete all indexed DBs */
 
   return (
     <>

@@ -75,7 +75,7 @@ export function SamplesCatalog() {
   const [sampleCovers, setSampleCovers] = useState<SampleCoversHashtable>({});
   const [sampleLoadingError, setSampleLoadingError] = useState("");
   const [searchFilter, setSearchFilter] = useState("");
-  const [searchParams, setSearchParams] = useState<SearchParams>({ searchValue: "", category: undefined });
+  const [searchParams, setSearchParams] = useState<SearchParams | undefined>(undefined);
   const [page, setPage] = React.useState(1);
   const [isCategoryFilterDropdownOpen, setCategoryFilterDropdownOpen] = useState(false);
   const history = useHistory();
@@ -117,7 +117,7 @@ export function SamplesCatalog() {
 
   const onSearch = useCallback(
     async (args: SearchParams) => {
-      if (args.searchValue === searchParams.searchValue && args.category === searchParams.category) {
+      if (searchParams && args.searchValue === searchParams.searchValue && args.category === searchParams.category) {
         return;
       }
       setSearchFilter(args.searchValue);
@@ -138,9 +138,10 @@ export function SamplesCatalog() {
   }, [categoryFilter, onSearch, searchFilter, setCategoryFilter]);
 
   useEffect(() => {
-    if (searchFilter === searchParams.searchValue && categoryFilter === searchParams.category) {
+    if (searchParams && searchFilter === searchParams.searchValue && categoryFilter === searchParams.category) {
       return;
     }
+    setSearchParams({ searchValue: searchFilter, category: categoryFilter });
 
     sampleDispatch
       .getSamples({ categoryFilter })
