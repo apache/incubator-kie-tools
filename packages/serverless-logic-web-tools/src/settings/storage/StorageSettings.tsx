@@ -43,6 +43,22 @@ const deleteAllIndexedDBs = async () => {
   dbNames.forEach(Dexie.delete);
 };
 
+function Timer(props: { delay: number }) {
+  const [delay, setDelay] = useState(props.delay);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDelay((prevDelay) => prevDelay - 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  return <>{delay}</>;
+}
+
 export function StorageSettings() {
   const [isDeleteCookiesChecked, setIsDeleteCookiesChecked] = useState(false);
   const [isDeleteLocalStorageChecked, setIsDeleteLocalStorageChecked] = useState(false);
@@ -58,8 +74,18 @@ export function StorageSettings() {
     useCallback(({ close }) => {
       setTimeout(() => {
         window.location.href = routes.home.path({});
-      }, 3000);
-      return <Alert variant="success" title={`Data deleted successfully`} />;
+      }, 5000);
+      return (
+        <Alert
+          variant="success"
+          title={
+            <>
+              Data deleted successfully. <br />
+              You will be redirected to the home page in <Timer delay={5} /> seconds
+            </>
+          }
+        />
+      );
     }, [])
   );
 
