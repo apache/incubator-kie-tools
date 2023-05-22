@@ -54,10 +54,8 @@ declare module "react-table" {
     dataType: DmnBuiltInDataType;
     /** It tells whether column is of type counter or not */
     isRowIndexColumn: boolean;
-    /** Customizable column inline controls */
-    headerInlineControls?: boolean;
-    /** Customizable column controll callback */
-    headerInlineColumnControl?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+
+    //
 
     cellDelegate?: (id: string) => React.ReactNode;
 

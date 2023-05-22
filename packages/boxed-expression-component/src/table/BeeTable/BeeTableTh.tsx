@@ -77,18 +77,12 @@ export function BeeTableTh<R extends object>({
 
       // This index doesn't take into account the rowIndex column, so we actually need to subtract 1.
       onColumnAdded?.({ beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex, groupType: groupType });
-      if (column.headerInlineControls) {
-        column.headerInlineColumnControl?.({
-          beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex,
-          groupType: groupType,
-        });
-      }
 
       if (hoverInfo.part === "left") {
         setHoverInfo({ isHovered: false });
       }
     },
-    [columnIndex, groupType, hoverInfo, onColumnAdded, column]
+    [columnIndex, groupType, hoverInfo, onColumnAdded]
   );
 
   const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
@@ -177,20 +171,17 @@ export function BeeTableTh<R extends object>({
         tabIndex={-1}
       >
         {children}
-        {hoverInfo.isHovered &&
-          onColumnAdded &&
-          isLastLevelColumn &&
-          (shouldShowRowsInlineControls || column.headerInlineControls) && (
-            <div
-              onMouseDown={(e) => e.stopPropagation()}
-              onDoubleClick={(e) => e.stopPropagation()}
-              onClick={onAddColumnButtonClick}
-              className={"add-column-button"}
-              style={addColumButtonStyle}
-            >
-              <PlusIcon size="sm" />
-            </div>
-          )}
+        {hoverInfo.isHovered && onColumnAdded && isLastLevelColumn && shouldShowRowsInlineControls && (
+          <div
+            onMouseDown={(e) => e.stopPropagation()}
+            onDoubleClick={(e) => e.stopPropagation()}
+            onClick={onAddColumnButtonClick}
+            className={"add-column-button"}
+            style={addColumButtonStyle}
+          >
+            <PlusIcon size="sm" />
+          </div>
+        )}
       </th>
     </BeeTableCoordinatesContextProvider>
   );
