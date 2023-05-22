@@ -557,12 +557,10 @@ function UnitablesBeeTableCell({
           setIsSelectFieldOpen((prev) => {
             if (prev === true) {
               submitRow();
-              setEditingCell(false);
-            } else {
-              setEditingCell(true);
             }
             return !prev;
           });
+          setEditingCell(!isEditing);
           return;
         }
 
@@ -670,7 +668,7 @@ function UnitablesBeeTableCell({
       ) {
         // if the select field is open and it blurs to another cell, close it;
         const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
-        if ((selectOptions?.length ?? 0) > 0 && (e.relatedTarget as HTMLElement).tagName.toLowerCase() === "td") {
+        if ((selectOptions?.length ?? 0) > 0 && (e.relatedTarget as HTMLElement)?.tagName?.toLowerCase() === "td") {
           e.target.click();
           setIsSelectFieldOpen(false);
         }
@@ -685,23 +683,28 @@ function UnitablesBeeTableCell({
       if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
         if (isListField) {
           console.log("onClick, isListField", isEditing, e);
-        }
-        if (field.type === "array") {
           submitRow();
-        } else {
-          setIsSelectFieldOpen((prev) => !prev);
         }
-      } else if (
-        e.isTrusted &&
-        field.type === "array" &&
-        (e.target as HTMLElement)?.tagName.toLowerCase() !== "div" &&
-        (e.target as HTMLElement)?.tagName.toLowerCase() !== "input" &&
-        (e.currentTarget as HTMLElement)?.tagName.toLowerCase() === "div"
-      ) {
-        submitRow();
+
+        setIsSelectFieldOpen((prev) => {
+          if (prev === true) {
+            submitRow();
+          }
+          return !prev;
+        });
+        setEditingCell(!isEditing);
+      }
+
+      if (!isEditing && e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "input") {
+        const inputField = cellRef.current?.getElementsByTagName("input");
+        if (inputField && inputField.length > 0) {
+          inputField?.[0]?.focus();
+          setEditingCell(true);
+          return;
+        }
       }
     },
-    [submitRow, field.type, isListField]
+    [isEditing, isListField, setEditingCell, submitRow]
   );
 
   return (

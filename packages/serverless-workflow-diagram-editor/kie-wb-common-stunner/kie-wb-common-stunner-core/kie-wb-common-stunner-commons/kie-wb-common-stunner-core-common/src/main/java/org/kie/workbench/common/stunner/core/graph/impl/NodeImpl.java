@@ -43,8 +43,8 @@ public class NodeImpl<C> extends AbstractElement<C> implements Node<C, Edge> {
         return inEdges.toArray(new Edge[0]);
     }
 
-    public static Edge[] inConnectors(Node node) {
-        List<Edge> inEdges = node.getInEdges();
+    public Edge[] inConnectors() {
+        List<Edge> inEdges = getInEdges();
         return inEdges.stream()
                 .filter(e -> e.getContent() instanceof ViewConnector)
                 .toArray(Edge[]::new);
@@ -59,8 +59,8 @@ public class NodeImpl<C> extends AbstractElement<C> implements Node<C, Edge> {
         return outEdges.toArray(new Edge[0]);
     }
 
-    public static Edge[] outConnectors(Node node) {
-        List<Edge> outEdges = node.getOutEdges();
+    public Edge[] outConnectors() {
+        List<Edge> outEdges = getOutEdges();
         return outEdges.stream()
                 .filter(e -> e.getContent() instanceof ViewConnector)
                 .toArray(Edge[]::new);

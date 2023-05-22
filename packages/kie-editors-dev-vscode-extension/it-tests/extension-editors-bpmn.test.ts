@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,7 @@ require("./extension-editors-smoke.test");
 import { By, SideBarView, WebView } from "vscode-extension-tester";
 import * as path from "path";
 import { h5ComponentWithText } from "./helpers/CommonLocators";
-import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import { assertWebElementIsDisplayedEnabled, VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import BpmnEditorTestHelper, { PaletteCategories } from "./helpers/bpmn/BpmnEditorTestHelper";
 import { assert } from "chai";
 import {
@@ -73,9 +72,10 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
 
   it("Opens process with work item definition properly", async function () {
     this.timeout(30000);
-    webview = await testHelper.openFileFromSidebar(WID_BPMN, "src/main/java/org/kie/businessapp");
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar(WID_BPMN, "src/main/java/org/kie/businessapp");
+    webview = editorWebviews[0];
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+    await bpmnEditorTester.switchToEditorFrame();
 
     const customTasksPaletteCategory = await bpmnEditorTester.openDiagramPalette(PaletteCategories.CUSTOM_TASKS);
     assertWebElementIsDisplayedEnabled(await customTasksPaletteCategory.findElement(h5ComponentWithText("Milestone")));
@@ -103,14 +103,15 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
     );
     await propertiesPanel.assertPropertyValue("Assignments", "7 data inputs, 1 data output", "div/input");
 
-    await webview.switchBack();
+    await bpmnEditorTester.switchBack();
   });
 
   it("Saves a change of process name in BPMN editor properly", async function () {
     this.timeout(60000);
-    webview = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
-    await testHelper.switchWebviewToFrame(webview);
+    let editorWebviews = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
+    webview = editorWebviews[0];
     let bpmnEditorTester = new BpmnEditorTestHelper(webview);
+    await bpmnEditorTester.switchToEditorFrame();
 
     let properties = await bpmnEditorTester.openDiagramProperties();
     let processNameInputField = await properties.getProperty("Name");
@@ -122,27 +123,29 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
     await processNameInputField.sendKeys("Renamed");
     await bpmnEditorTester.openDiagramExplorer();
 
-    await webview.switchBack();
+    await bpmnEditorTester.switchBack();
 
     await testHelper.executeCommandFromPrompt("File: Save");
     await testHelper.closeAllEditors();
 
-    webview = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
-    await testHelper.switchWebviewToFrame(webview);
+    editorWebviews = await testHelper.openFileFromSidebar("SaveAssetTest.bpmn");
+    webview = editorWebviews[0];
     bpmnEditorTester = new BpmnEditorTestHelper(webview);
+    await bpmnEditorTester.switchToEditorFrame();
     properties = await bpmnEditorTester.openDiagramProperties();
     processNameInputField = await properties.getProperty("Name");
     assert.isTrue(await processNameInputField.isEnabled());
     assert.equal(await processNameInputField.getAttribute("value"), formerProcessId + "Renamed");
 
-    await webview.switchBack();
+    await bpmnEditorTester.switchBack();
   });
 
   it("Reuses Data-types across BPMN editor", async function () {
     this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar("ReuseDataTypeTest.bpmn");
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar("ReuseDataTypeTest.bpmn");
+    webview = editorWebviews[0];
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+    await bpmnEditorTester.switchToEditorFrame();
 
     const variableName = "fuelAccelerator";
     const dataTypeType = "com.superbankofpeople.FuelAccelerator";
@@ -173,15 +176,16 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
       false
     );
 
-    await webview.switchBack();
+    await bpmnEditorTester.switchBack();
   });
 
   it("Opens MultipleInstanceSubprocess.bpmn file in BPMN Editor and test Implementation/Execution value change", async function () {
     this.timeout(40000);
     // Inicialization
-    webview = await testHelper.openFileFromSidebar(MULTIPLE_INSTANCE_BPMN);
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar(MULTIPLE_INSTANCE_BPMN);
+    webview = editorWebviews[0];
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+    await bpmnEditorTester.switchToEditorFrame();
 
     const explorerPanel = await bpmnEditorTester.openDiagramExplorer();
     await explorerPanel.selectDiagramNode("Multiple Instance Sub-Process");
@@ -242,14 +246,15 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
     await MIDataOutputWidget.assertMiDataInput(newProcessMIDataOutputName, newProcessMIDataOutputType);
     await propertiesPanel.assertPropertyValue("MI Completion Condition (mvel)", newMvelExpression, "textarea");
 
-    await webview.switchBack();
+    await bpmnEditorTester.switchBack();
   });
 
   it("Opens UserTask.bpmn file in BPMN Editor and test On Entry and On Exit actions", async function () {
     this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar(USER_TASK_BPMN);
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar(USER_TASK_BPMN);
+    webview = editorWebviews[0];
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+    await bpmnEditorTester.switchToEditorFrame();
 
     const explorerPanel = await bpmnEditorTester.openDiagramExplorer();
     await explorerPanel.selectDiagramNode("User Task");
@@ -283,14 +288,15 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
     await propertiesPanel.assertWidgetedPropertyValue("On Exit Action", newOnExitAction, "textarea");
     await propertiesPanel.assertWidgetedPropertyValue("On Exit Action", newOnExitLanguage, "select");
 
-    await webview.switchBack();
+    await bpmnEditorTester.switchBack();
   });
 
   it("Opens ProcessWithGenerics.bpmn file in BPMN Editor and validate collaborations.", async function () {
     this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar("ProcessWithCollaboration.bpmn");
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar("ProcessWithCollaboration.bpmn");
+    webview = editorWebviews[0];
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+    await bpmnEditorTester.switchToEditorFrame();
 
     let propertiesPanel = await bpmnEditorTester.openDiagramProperties();
     const correllationsModalHelper = await propertiesPanel.getCollerationModalHelper();
@@ -334,14 +340,15 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
     await propertiesPanel.assertPropertyValue("Message Expression Type", "java.util.ArrayList<String>", "div/select");
     await propertiesPanel.assertPropertyValue("Data Expression Type", "java.util.ArrayList<String>", "div/select");
 
-    await webview.switchBack();
+    await bpmnEditorTester.switchBack();
   });
 
   it("Opens ProcessWithGenerics and diplays the generic types", async function () {
     this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar("ProcessWithGenerics.bpmn");
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar("ProcessWithGenerics.bpmn");
+    webview = editorWebviews[0];
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+    await bpmnEditorTester.switchToEditorFrame();
 
     let propertiesPanel = await bpmnEditorTester.openDiagramProperties();
     const processVariablesWidget = await propertiesPanel.getProcessVariablesHelper();
@@ -361,6 +368,6 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
     const dataAssignmentsModalHelper = await propertiesPanel.getDataAssignmentsModalHelper();
     await dataAssignmentsModalHelper.assertDataInputContain("m_input", "java.util.List<String>", "map_generic_var");
 
-    await webview.switchBack();
+    await bpmnEditorTester.switchBack();
   });
 });

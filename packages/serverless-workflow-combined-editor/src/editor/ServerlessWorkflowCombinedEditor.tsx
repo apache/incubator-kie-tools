@@ -34,6 +34,8 @@ import {
   ServerlessWorkflowDiagramEditorChannelApi,
   ServerlessWorkflowDiagramEditorEnvelopeApi,
 } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import { SwfStunnerEditorAPI } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api/SwfStunnerEditorAPI";
+import { SwfStunnerEditor } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope/ServerlessWorkflowStunnerEditor";
 import {
   ServerlessWorkflowTextEditorChannelApi,
   ServerlessWorkflowTextEditorEnvelopeApi,
@@ -80,6 +82,12 @@ interface File {
 }
 
 const ENVELOPE_LOCATOR_TYPE = "swf";
+
+declare global {
+  interface Window {
+    editor: SwfStunnerEditorAPI;
+  }
+}
 
 const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   ServerlessWorkflowCombinedEditorRef | undefined,
@@ -398,6 +406,15 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
       },
       [textEditor]
     )
+  );
+
+  window.editor = useMemo(
+    () =>
+      new SwfStunnerEditor(
+        diagramEditor?.getEnvelopeServer()
+          .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>
+      ),
+    [diagramEditor]
   );
 
   return (

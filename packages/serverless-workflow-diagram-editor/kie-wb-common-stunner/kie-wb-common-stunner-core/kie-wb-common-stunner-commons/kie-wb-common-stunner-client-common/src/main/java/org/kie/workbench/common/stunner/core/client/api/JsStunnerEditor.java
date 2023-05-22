@@ -8,4 +8,6 @@ public class JsStunnerEditor {
 
     public JsDefinitionManager definitions;
     public JsStunnerSession session;
+    public Object canvas;
+
 }

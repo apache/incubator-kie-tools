@@ -1,9 +1,0 @@
-{
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
-  "compilerOptions": {
-    "declaration": false,
-    "declarationMap": false,
-    "allowJs": true
-  },
-  "include": ["src"]
-}

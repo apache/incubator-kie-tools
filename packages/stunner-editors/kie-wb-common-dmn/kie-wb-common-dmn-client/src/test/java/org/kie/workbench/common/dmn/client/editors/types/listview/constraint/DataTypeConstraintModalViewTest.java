@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
-import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -268,15 +268,12 @@ public class DataTypeConstraintModalViewTest {
         doReturn(optionOne).when(options).getAt(eq(1));
         doReturn(optionThree).when(options).getAt(eq(3));
 
-        final DataType dataType = mock(DataType.class);
-        when(dataType.getType()).thenReturn("string");
-
         when(presenter.getConstraintValue()).thenReturn(null);
         when(presenter.inferComponentType(any())).thenCallRealMethod();
         doReturn(selectPicker).when(view).getSelectPicker();
         doReturn(options).when(view).getSelectOptionsElement();
         doNothing().when(view).setPickerValue(any(), Mockito.<String>any());
-        view.setDataType(dataType);
+        view.setDataType(BuiltInType.STRING.getName());
 
         view.onShow();
 
@@ -298,15 +295,13 @@ public class DataTypeConstraintModalViewTest {
         doReturn(optionThree).when(options).getAt(eq(3));
 
         final String constraint = "1,2,3";
-        final DataType dataType = mock(DataType.class);
-        when(dataType.getType()).thenReturn("string");
 
         when(presenter.getConstraintValue()).thenReturn(constraint);
         when(presenter.inferComponentType(constraint)).thenReturn(ENUMERATION);
         doReturn(selectPicker).when(view).getSelectPicker();
         doReturn(options).when(view).getSelectOptionsElement();
         doNothing().when(view).setPickerValue(any(), Mockito.<String>any());
-        view.setDataType(dataType);
+        view.setDataType(BuiltInType.STRING.getName());
 
         view.onShow();
 
@@ -328,15 +323,13 @@ public class DataTypeConstraintModalViewTest {
         doReturn(optionThree).when(options).getAt(eq(3));
 
         final String constraint = "123";
-        final DataType dataType = mock(DataType.class);
-        when(dataType.getType()).thenReturn("Any");
 
         when(presenter.getConstraintValue()).thenReturn(constraint);
         when(presenter.inferComponentType(constraint)).thenReturn(EXPRESSION);
         doReturn(selectPicker).when(view).getSelectPicker();
         doReturn(options).when(view).getSelectOptionsElement();
         doNothing().when(view).setPickerValue(any(), Mockito.<String>any());
-        view.setDataType(dataType);
+        view.setDataType(BuiltInType.ANY.getName());
 
         view.onShow();
 

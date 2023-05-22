@@ -19,11 +19,8 @@ package org.kie.workbench.common.stunner.core.graph.content;
 import java.util.Objects;
 
 import jsinterop.annotations.JsType;
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@Portable
 @JsType
 public class Bounds {
 
@@ -54,8 +51,8 @@ public class Bounds {
     private Bound lr;
     private Bound ul;
 
-    public Bounds(final @MapsTo("ul") Bound ul,
-                  final @MapsTo("lr") Bound lr) {
+    public Bounds(Bound ul,
+                  Bound lr) {
         this.ul = ul;
         this.lr = lr;
     }

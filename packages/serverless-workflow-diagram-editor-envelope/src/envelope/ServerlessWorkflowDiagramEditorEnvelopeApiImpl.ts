@@ -19,6 +19,9 @@ import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kie-tools-c
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { ServerlessWorkflowDiagramEditorChannelApi, ServerlessWorkflowDiagramEditorEnvelopeApi } from "../api";
 import { ServerlessWorkflowDiagramEditor } from "./ServerlessWorkflowDiagramEditor";
+import { StunnerEdge, StunnerNode, StunnerGraph } from "../api/StunnerAPI";
+import { Node } from "../api/StunnerEditorEnvelopeAPI";
+import { createEdge, createNode, DefinitionMapper } from "../api/StunnerEditorEnvelopeAPIFactory";
 
 export type ServerlessWorkflowDiagramEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   ServerlessWorkflowDiagramEditorEnvelopeApi,
@@ -42,44 +45,125 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
     super(serverlessWorkflowArgs, editorFactory);
   }
 
-  public async canvas_getNodeIds() {
-    return this.getEditorOrThrowError().getNodeIds();
+  public async editor_session_getAllNodesUUID() {
+    const graph: StunnerGraph = this.getEditorOrThrowError().getGraph();
+    return graph.nodesArray().map((node) => node.getUUID());
   }
 
-  public async canvas_getBackgroundColor(uuid: string) {
+  public async editor_session_getEdgeByUUID(uuid: string) {
+    const edge: StunnerEdge = this.getEditorOrThrowError().getEdgeByUUID(uuid);
+    return this.toEdge(edge);
+  }
+
+  public async editor_session_getNodeByUUID(uuid: string) {
+    const node: StunnerNode = this.getEditorOrThrowError().getNodeByUUID(uuid);
+    return this.toNode(node);
+  }
+
+  public async editor_session_getDefinitionByElementUUID(uuid: string): Promise<Object> {
+    return this.getEditorOrThrowError().getDefinitionByElementUUID(uuid);
+  }
+
+  public async editor_session_getNodeByName(name: string) {
+    const node: StunnerNode = this.getEditorOrThrowError().getNodeByName(name);
+    return this.toNode(node);
+  }
+
+  public async editor_session_getNodeName(node: Node) {
+    return this.getEditorOrThrowError().getNodeName(this.toStunnerNode(node));
+  }
+
+  public async editor_session_getSelectedElementUUID() {
+    return this.getEditorOrThrowError().getSelectedElementUUID();
+  }
+
+  public async editor_session_getSelectedNode() {
+    const node: StunnerNode = this.getEditorOrThrowError().getSelectedNode();
+    return this.toNode(node);
+  }
+
+  public async editor_session_getSelectedEdge() {
+    const edge: StunnerEdge = this.getEditorOrThrowError().getSelectedEdge();
+    return this.toEdge(edge);
+  }
+
+  public async editor_session_getSelectedDefinition() {
+    return this.getEditorOrThrowError().getSelectedDefinition();
+  }
+
+  public async editor_session_selectByUUID(uuid: string) {
+    this.getEditorOrThrowError().selectByUUID(uuid);
+  }
+
+  public async editor_session_selectByName(name: string) {
+    this.getEditorOrThrowError().selectByName(name);
+  }
+
+  public async editor_session_clearSelection() {
+    this.getEditorOrThrowError().clearSelection();
+  }
+
+  private toStunnerNode(node: Node) {
+    return this.getEditorOrThrowError().getNodeByUUID(node.uuid);
+  }
+
+  private toNode(node: StunnerNode) {
+    return createNode(node, this.toDefinition(node));
+  }
+
+  private toEdge(edge: StunnerEdge) {
+    return createEdge(edge, this.toDefinition(edge));
+  }
+
+  private toDefinition(bean: Object): DefinitionMapper {
+    return {
+      getId: (bean) => {
+        return this.getEditorOrThrowError().getDefinitionId(bean);
+      },
+      getName: (bean) => {
+        return this.getEditorOrThrowError().getDefinitionName(bean);
+      },
+    };
+  }
+
+  public async editor_canvas_getShapeIds() {
+    return this.getEditorOrThrowError().getShapeIds();
+  }
+
+  public async editor_canvas_getBackgroundColor(uuid: string) {
     return this.getEditorOrThrowError().getBackgroundColor(uuid);
   }
 
-  public async canvas_setBackgroundColor(uuid: string, backgroundColor: string) {
+  public async editor_canvas_setBackgroundColor(uuid: string, backgroundColor: string) {
     return this.getEditorOrThrowError().setBackgroundColor(uuid, backgroundColor);
   }
 
-  public async canvas_getBorderColor(uuid: string) {
+  public async editor_canvas_getBorderColor(uuid: string) {
     return this.getEditorOrThrowError().getBorderColor(uuid);
   }
 
-  public async canvas_setBorderColor(uuid: string, borderColor: string) {
+  public async editor_canvas_setBorderColor(uuid: string, borderColor: string) {
     return this.getEditorOrThrowError().setBorderColor(uuid, borderColor);
   }
 
-  public async canvas_getLocation(uuid: string) {
+  public async editor_canvas_getLocation(uuid: string) {
     return this.getEditorOrThrowError().getLocation(uuid);
   }
 
-  public async canvas_getAbsoluteLocation(uuid: string) {
+  public async editor_canvas_getAbsoluteLocation(uuid: string) {
     return this.getEditorOrThrowError().getAbsoluteLocation(uuid);
   }
 
-  public async canvas_getDimensions(uuid: string) {
+  public async editor_canvas_getDimensions(uuid: string) {
     return this.getEditorOrThrowError().getDimensions(uuid);
   }
 
-  public async canvas_applyState(uuid: string, state: string) {
-    return this.getEditorOrThrowError().applyState(uuid, state);
+  public async editor_canvas_center(uuid: string) {
+    return this.getEditorOrThrowError().center(uuid);
   }
 
-  public async canvas_centerNode(uuid: string) {
-    return this.getEditorOrThrowError().centerNode(uuid);
+  public async editor_canvas_draw() {
+    return this.getEditorOrThrowError().draw();
   }
 
   public kogitoSwfDiagramEditor__highlightNode(args: { nodeName: string | null }) {

@@ -61,13 +61,6 @@
       <artifactId>commons-io</artifactId>
     </dependency>
 
-    <!-- JSON -->
-
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-json</artifactId>
-    </dependency>
-
     <!-- Unit testing -->
     <dependency>
       <groupId>org.assertj</groupId>
