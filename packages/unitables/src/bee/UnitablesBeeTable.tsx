@@ -52,6 +52,7 @@ export type ROWTYPE = Record<string, any>;
 
 const LIST_ADD_WIDTH = 63;
 const LIST_DEL_WIDTH = 61;
+const NESTED_LIST_DEL_WIDTH = 63;
 const LIST_IDX_WIDTH = 61;
 
 export interface UnitablesBeeTable {
@@ -147,7 +148,7 @@ export function UnitablesBeeTable({
     [setWidth]
   );
 
-  const deepSomething = useCallback(
+  const recursiveCalculateListFieldWidth = useCallback(
     (columnName: string, row: Record<string, any>): number => {
       const field = bridge.getField(columnName);
       const listInput = getObjectValueByPath(row, columnName) as [] | undefined;
@@ -161,13 +162,17 @@ export function UnitablesBeeTable({
             Object.entries(field.items.properties).reduce(
               (length, [fieldKey, fieldProperty]: [string, Record<string, any>]) => {
                 if (fieldProperty.type === "array") {
-                  return length + LIST_ADD_WIDTH + deepSomething(`${columnName}.${index}.${fieldKey}`, row);
+                  return (
+                    length +
+                    LIST_ADD_WIDTH +
+                    recursiveCalculateListFieldWidth(`${columnName}.${index}.${fieldKey}`, row)
+                  );
                 }
                 return length + bridge.getFieldDataType(fieldProperty).width;
               },
               length
             ) +
-            LIST_DEL_WIDTH
+            NESTED_LIST_DEL_WIDTH
           );
         }, 0);
       }
@@ -179,17 +184,17 @@ export function UnitablesBeeTable({
     [bridge]
   );
 
-  const calculateArrayFieldLength = useCallback(
+  const calculateListFieldWidth = useCallback(
     (columnName: string) => {
       return rows.reduce((width, row) => {
-        const rowWidth = LIST_ADD_WIDTH + deepSomething(columnName, row);
+        const rowWidth = LIST_ADD_WIDTH + recursiveCalculateListFieldWidth(columnName, row);
         if (rowWidth > width) {
           return rowWidth;
         }
         return width;
       }, 0);
     },
-    [deepSomething, rows]
+    [recursiveCalculateListFieldWidth, rows]
   );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
@@ -205,11 +210,7 @@ export function UnitablesBeeTable({
           columns: column.insideProperties.flatMap((insideProperty) => {
             let minWidth = insideProperty.minWidth ?? insideProperty.width;
             if (insideProperty.type === "array") {
-              minWidth = calculateArrayFieldLength(insideProperty.joinedName);
-              // minWidth =
-              //   length > 0
-              //     ? 63 + length * (insideProperty.minWidth ?? insideProperty.width)
-              //     : insideProperty.minWidth ?? insideProperty.width;
+              minWidth = calculateListFieldWidth(insideProperty.joinedName);
             }
             return {
               originalId: uuid + `field-${insideProperty.joinedName}`,
@@ -228,7 +229,7 @@ export function UnitablesBeeTable({
       } else {
         let minWidth = column.width;
         if (column.type === "array") {
-          minWidth = calculateArrayFieldLength(column.joinedName);
+          minWidth = calculateListFieldWidth(column.joinedName);
         }
         return {
           originalId: uuid + `field-${column.name}-parent`,
@@ -252,7 +253,7 @@ export function UnitablesBeeTable({
         };
       }
     });
-  }, [columns, uuid, configs, setColumnWidth, calculateArrayFieldLength]);
+  }, [columns, uuid, configs, setColumnWidth, calculateListFieldWidth]);
 
   const getColumnKey = useCallback((column: ReactTable.ColumnInstance<ROWTYPE>) => {
     return column.originalId ?? column.id;
@@ -421,19 +422,20 @@ function UnitablesBeeTableCell({
         if (isListField) {
           // Get all uniforms components in the cell;
           const uniformsComponents = cellRef.current?.querySelectorAll('[id^="uniforms-"]');
-          const uniformComponentTargetIndex = Array.from(uniformsComponents ?? []).findIndex(
-            (component) => component.id === (e.target as HTMLElement).id
-          );
           if (uniformsComponents === undefined) {
-            console.log("false");
             setEditingCell(false);
             return;
           }
 
+          const uniformComponentTargetIndex = Array.from(uniformsComponents ?? []).findIndex(
+            (component) => component.id === (e.target as HTMLElement).id
+          );
+
+          console.log("AAAAAA", uniformsComponents, uniformComponentTargetIndex);
+
           // Event from ListField;
           if (uniformComponentTargetIndex < 0) {
             (uniformsComponents?.item(1) as HTMLElement).parentElement?.focus();
-            console.log("true");
             setEditingCell(true);
             e.stopPropagation();
             return;
@@ -445,7 +447,6 @@ function UnitablesBeeTableCell({
 
           if (nextUniformsComponent === undefined) {
             // Should leave ListField
-            console.log("false");
             setEditingCell(false);
             return;
           }
@@ -461,6 +462,7 @@ function UnitablesBeeTableCell({
             return;
           }
 
+          // Nested ListFields or SelectField
           if (nextUniformsComponent.tagName.toLowerCase() === "div") {
             setEditingCell(true);
             const buttons = Array.from(nextUniformsComponent?.getElementsByTagName("button"));
@@ -517,14 +519,35 @@ function UnitablesBeeTableCell({
             return;
           }
 
-          const targetIsPresent = Array.from(uniformsComponents).find((component) => component === e.target);
-          // From top level, what happens with lower levels?
+          const uniformComponentTargetIndex = Array.from(uniformsComponents).findIndex(
+            (component) => component === e.target
+          );
+
+          const targetIsPresent = uniformsComponents[uniformComponentTargetIndex];
+
+          // If field is selected, and the target is not present
           if (!targetIsPresent) {
             if (uniformsComponents[1].tagName.toLowerCase() === "button") {
               (uniformsComponents[1] as HTMLButtonElement)?.focus();
             }
+          } else {
+            if (targetIsPresent.tagName.toLowerCase() === "button") {
+              // is last element?
+              (targetIsPresent as HTMLButtonElement)?.click();
+              if (uniformComponentTargetIndex === uniformsComponents.length - 1) {
+                // focus on top element;
+                const uniformsComponents = cellRef.current?.querySelectorAll('[id^="uniforms-"]');
+                if (!uniformsComponents) {
+                  return;
+                } else {
+                  if (uniformsComponents[1].tagName.toLowerCase() === "button") {
+                    (uniformsComponents[1] as HTMLButtonElement)?.focus();
+                  }
+                }
+              }
+              submitRow();
+            }
           }
-
           return;
         }
 
@@ -568,7 +591,9 @@ function UnitablesBeeTableCell({
             cellRef.current?.getElementsByTagName("input")?.[0]?.click();
             submitRow();
             return;
-          } else {
+          }
+
+          if (!isListField) {
             cellRef.current?.getElementsByTagName("input")?.[0]?.select();
           }
         }
@@ -601,7 +626,7 @@ function UnitablesBeeTableCell({
         }
       }
       if (isListField) {
-        console.log("here2");
+        console.log("useEffect, isListField");
         if (isSelectFieldOpen) {
           // if a SelectField is open, it takes a time to render the select options;
           // After the select options are rendered we focus in the selected option;
@@ -622,7 +647,7 @@ function UnitablesBeeTableCell({
   const onBlur = useCallback(
     (e: React.FocusEvent<HTMLDivElement>) => {
       if (isListField) {
-        console.log("here3", isEditing, e);
+        console.log("onBlue, isListField", isEditing, e);
         return;
       }
       if (e.target.tagName.toLowerCase() === "div") {
@@ -638,7 +663,7 @@ function UnitablesBeeTableCell({
         e.target.tagName.toLowerCase() === "button" &&
         (e.relatedTarget as HTMLElement)?.tagName.toLowerCase() === "button"
       ) {
-        // array field;
+        // ListField;
       } else if (
         e.target.tagName.toLowerCase() === "button" ||
         (e.relatedTarget as HTMLElement)?.tagName.toLowerCase() === "button"
@@ -658,6 +683,9 @@ function UnitablesBeeTableCell({
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
+        if (isListField) {
+          console.log("onClick, isListField", isEditing, e);
+        }
         if (field.type === "array") {
           submitRow();
         } else {
@@ -673,7 +701,7 @@ function UnitablesBeeTableCell({
         submitRow();
       }
     },
-    [submitRow, field.type]
+    [submitRow, field.type, isListField]
   );
 
   return (
