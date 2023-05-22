@@ -17,19 +17,16 @@
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
 import jsinterop.annotations.JsType;
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
-@Portable
 @JsType
 public final class ViewImpl<W> implements View<W> {
 
     protected W definition;
     protected Bounds bounds;
 
-    public ViewImpl(final @MapsTo("definition") W definition,
-                    final @MapsTo("bounds") Bounds bounds) {
+    public ViewImpl(W definition,
+                    Bounds bounds) {
         this.definition = definition;
         this.bounds = bounds;
     }
