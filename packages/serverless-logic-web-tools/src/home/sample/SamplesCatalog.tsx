@@ -127,6 +127,7 @@ export function SamplesCatalog() {
       setSearchFilter(args.searchValue);
       setCategoryFilter(args.category);
       setSearchParams(args);
+      setPage(1);
       setSamples(await sampleDispatch.getSamples({ searchFilter: args.searchValue, categoryFilter: args.category }));
     },
     [sampleDispatch, setCategoryFilter, searchParams]
