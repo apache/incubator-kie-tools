@@ -152,7 +152,6 @@ public class BuilderContext {
                 if (null != targetNode) {
                     asMagnetConnection().setIndex(1);
                     asMagnetConnection().setAuto(false);
-                    // asMagnetConnection().setLocation(MagnetConnection.Builder.forTarget(source, targetNode).getLocation().copy());
                 }
                 return super.execute(context);
             }

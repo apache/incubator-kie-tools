@@ -137,7 +137,7 @@ public class StateShapeTest {
 
     @Test
     public void ansibleStateColorTest() {
-        customTypeStateIconTest(ANSIBLE, ANSIBLE, ANSIBLE_COLOR);
+        customTypeStateIconTest(INJECT, ANSIBLE, ANSIBLE_COLOR);
     }
 
     @Test
@@ -166,7 +166,7 @@ public class StateShapeTest {
 
     @Test
     public void customBase64IconStateIconTest() {
-        State state = spy(createState(INJECT));
+        InjectState state = (InjectState) spy(createState(INJECT));
         Metadata metadata = new Metadata();
         metadata.setIcon("data://png..lalala");
         state.setMetadata(metadata);
@@ -182,7 +182,7 @@ public class StateShapeTest {
 
     @Test
     public void invalidIconStateTest() {
-        State state = spy(createState(INJECT));
+        InjectState state = (InjectState) spy(createState(INJECT));
         Metadata metadata = new Metadata();
         metadata.setIcon("png..lalala");
         state.setMetadata(metadata);
@@ -427,7 +427,7 @@ public class StateShapeTest {
     }
 
     private void customTypeStateIconTest(String defaultType, String customType, String color) {
-        State state = createState(defaultType);
+        InjectState state = (InjectState) createState(defaultType);
         Metadata metadata = new Metadata();
         metadata.setType(customType);
         state.setMetadata(metadata);

@@ -37,6 +37,9 @@ import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventRef;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.ForEachState;
+import org.kie.workbench.common.stunner.sw.definition.HasCompensatedBy;
+import org.kie.workbench.common.stunner.sw.definition.HasEnd;
+import org.kie.workbench.common.stunner.sw.definition.HasErrors;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.State;
@@ -45,24 +48,24 @@ import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.NodeMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.NodeUnmarshaller;
 
-import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getEnd;
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getTransition;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.marshallEdge;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.unmarshallEdge;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.getElementDefinition;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.isValidString;
+import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.DUPLICATE_STATE_NAME;
 
 public interface StateMarshalling {
 
     NodeMarshaller<Object> ANY_NODE_MARSHALLER =
             (context, node) -> node.getContent().getDefinition();
 
-    NodeUnmarshaller<State> STATE_UNMARSHALLER =
+    NodeUnmarshaller<State<?>> STATE_UNMARSHALLER =
             (context, state) -> {
                 // Parse common fields.
                 String name = state.getName();
                 if (context.isStateAlreadyExist(name)) {
-                    context.getContext().addMessage(new Message(MessageCode.DUPLICATE_STATE_NAME,
+                    context.getContext().addMessage(new Message(DUPLICATE_STATE_NAME,
                                                                 name));
                 }
                 final Node stateNode = context.addNode(name, state);
@@ -70,8 +73,7 @@ public interface StateMarshalling {
                 context.sourceNode = stateNode;
 
                 // Parse end.
-                boolean end = getEnd(state.getEnd());
-                if (end) {
+                if (state instanceof HasEnd && ((HasEnd<?>) state).toEnd()) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -82,38 +84,39 @@ public interface StateMarshalling {
                 }
 
                 // Parse transition.
-                String transition = getTransition(state.getTransition());
-                if (isValidString(transition)) {
-                    final Transition t = new Transition();
-                    t.setTo(transition);
-                    Edge edge = unmarshallEdge(context, t);
-                }
-
-                // Parse compensation transition.
-                if (isValidString(state.getCompensatedBy())) {
-                    CompensationTransition compensationTransition = new CompensationTransition();
-                    compensationTransition.setTransition(state.getCompensatedBy());
-                    Edge<ViewConnector<Object>, Node> compensationEdge = unmarshallEdge(context, compensationTransition);
-                }
-
-                // Parse on-errors.
-                ErrorTransition[] onErrors = state.getOnErrors();
-                if (null != onErrors && onErrors.length > 0) {
-                    for (int i = 0; i < onErrors.length; i++) {
-                        ErrorTransition onError = onErrors[i];
-                        if (null != onError) {
-                            Edge errorEdge = unmarshallEdge(context, onError);
-                        }
+                if (state instanceof HasEnd) {
+                    String transition = getTransition(((HasEnd) state).getTransition());
+                    if (isValidString(transition)) {
+                        final Transition t = new Transition();
+                        t.setTo(transition);
+                        Edge edge = unmarshallEdge(context, t);
                     }
                 }
 
-                // TODO: Timeouts not in use, just was a PoC, consider dropping at the end if not making sense.
-                /*if (isValidString(state.eventTimeout)) {
-                    EventTimeout eventTimeout = new EventTimeout();
-                    eventTimeout.setEventTimeout(state.eventTimeout);
-                    Node eventTimeoutNode = context.addNode(null, eventTimeout);
-                    context.dock(stateNode, eventTimeoutNode);
-                }*/
+                if (state instanceof HasCompensatedBy) {
+                    HasCompensatedBy hasCompensatedBy = (HasCompensatedBy) state;
+                    // Parse compensation transition.
+                    if (isValidString(hasCompensatedBy.getCompensatedBy())) {
+                        CompensationTransition compensationTransition = new CompensationTransition();
+                        compensationTransition.setTransition(hasCompensatedBy.getCompensatedBy());
+                        Edge<ViewConnector<Object>, Node> compensationEdge = unmarshallEdge(context, compensationTransition);
+                    }
+                }
+
+
+                if (state instanceof HasErrors) {
+                    HasErrors hasErrors = (HasErrors) state;
+                    // Parse on-errors.
+                    ErrorTransition[] onErrors = hasErrors.getOnErrors();
+                    if (null != onErrors && onErrors.length > 0) {
+                        for (int i = 0; i < onErrors.length; i++) {
+                            ErrorTransition onError = onErrors[i];
+                            if (null != onError) {
+                                Edge errorEdge = unmarshallEdge(context, onError);
+                            }
+                        }
+                    }
+                }
 
                 context.sourceNode = null;
 
@@ -137,7 +140,11 @@ public interface StateMarshalling {
                         marshallEdge(context, edge);
                     }
                 }
-                state.setOnErrors(errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]));
+
+                if (state instanceof HasErrors) {
+                    HasErrors hasErrors = (HasErrors) state;
+                    hasErrors.setOnErrors(errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]));
+                }
                 return state;
             };
 
@@ -185,7 +192,6 @@ public interface StateMarshalling {
 
     NodeUnmarshaller<OnEvent[]> ONEVENTS_UNMARSHALLER =
             (context, onEvents) -> {
-                // TODO: Only parsing a SINGLE (FIRST) onEvent def.
                 OnEvent onEvent = onEvents[0];
                 final Node onEventsNode = context.addNode(null, onEvent);
 
@@ -196,7 +202,6 @@ public interface StateMarshalling {
                 String[] eventRefs = onEvent.getEventRefs();
                 ActionNode[] actions = onEvent.getActions();
 
-                // TODO: Only parsing a SINGLE (FIRST) event definition.
                 // Event Node.
                 String eventRef = eventRefs[0];
                 EventRef event = new EventRef();
@@ -204,14 +209,12 @@ public interface StateMarshalling {
                 event.setName(eventRef);
                 final Node eventNode = context.addNode(null, event);
 
-                // TODO: Only parsing a SINGLE (FIRST) action definition.
                 // Action Node.
                 ActionNode action = actions[0];
                 final Node actionNode = context.addNode(null, action);
 
                 // Transition to Actions Node.
                 final ActionTransition at = new ActionTransition();
-                // at.setName("Call " + action.getName());
                 Edge actionsEdge = context.addEdgeToTargetUUID(at, eventNode, actionNode.getUUID());
 
                 // Set the original parent.
@@ -255,7 +258,6 @@ public interface StateMarshalling {
     NodeUnmarshaller<CallbackState> CALLBACK_STATE_UNMARSHALLER =
             (context, state) -> {
                 Node stateNode = STATE_UNMARSHALLER.unmarshall(context, state);
-                // TODO: Parser for [eventRef + Action]
                 return stateNode;
             };
 
@@ -296,11 +298,6 @@ public interface StateMarshalling {
                     ActionNode[] actions = state.getActions();
                     if (null != actions && actions.length > 0) {
                         Node actionsNode = ACTIONS_UNMARSHALLER.unmarshall(context, actions);
-                        /*
-                        TODO: If necessary, enable the transition (but missing to check connection rules for ActionTransition)
-                        final ActionTransition actionsTransition = new ActionTransition();
-                        Edge onEventsEdge = context.addEdgeToTargetUUID(actionsTransition, stateNode, actionsNode.getUUID());
-                        */
                     }
                 }
                 return stateNode;

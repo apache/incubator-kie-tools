@@ -22,7 +22,6 @@ import elemental2.core.Global;
 import elemental2.core.JsObject;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -64,19 +63,6 @@ public class MarshallerUtils {
         return (T) JsObject.assign(instance, jso);
     }
 
-    private static <T> T stunnerMerge(DefinitionManager definitionManager, Object instance, Object jso) {
-        JsPropertyMap<Object> instanceMap = Js.asPropertyMap(instance);
-        JsPropertyMap<Object> jsoMap = Js.asPropertyMap(jso);
-        String[] propertyFields = definitionManager.adapters().forDefinition().getPropertyFields(instance);
-        for (String propertyField : propertyFields) {
-            Object value = jsoMap.get(propertyField);
-            if (null != value) {
-                instanceMap.set(propertyField, value);
-            }
-        }
-        return Js.uncheckedCast(instance);
-    }
-
     /**
      * The original JSON could have the properties, that are not defined in Java based models.
      * But we still need to have them in the JSON after the serialization. So we preserve them
@@ -90,17 +76,16 @@ public class MarshallerUtils {
      * @param workflow - the definition of the workflow
      */
     static void onPostDeserialize(String json, Workflow workflow, DocType docType) {
-        if(docType == DocType.JSON) {
+        if (docType == DocType.JSON) {
             Object parsed = Global.JSON.parse(json);
             Js.asPropertyMap(workflow).set("__original__", parsed);
         } else {
             Js.asPropertyMap(workflow).set("__original__", "empty");
-
         }
     }
 
     static String onPostSerialize(String model, Workflow workflow, DocType docType) {
-        if(docType == DocType.YAML) {
+        if (docType == DocType.YAML) {
             return model;
         }
         Object parsed = Global.JSON.parse(model);
@@ -131,5 +116,4 @@ public class MarshallerUtils {
             });
         }
     }
-
 }

@@ -6,8 +6,8 @@ import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.MetadataJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.MetadataYamlSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.MetadataJsonSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.MetadataYamlSerializer;
 
 @JsType
 @JsonbTypeSerializer(MetadataJsonSerializer.class)

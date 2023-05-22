@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.sw.marshall;
 
 import org.junit.Test;
+import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 
@@ -35,13 +36,13 @@ public class StatesFlowMarshallingTest extends BaseMarshallingTest {
                 .setName(WORKFLOW_NAME)
                 .setStart("State1")
                 .setStates(new State[]{
-                        new State()
+                        new InjectState()
                                 .setName("State1")
                                 .setTransition("State2"),
-                        new State()
+                        new InjectState()
                                 .setName("State2")
                                 .setTransition("State3"),
-                        new State()
+                        new InjectState()
                                 .setName("State3")
                                 .setEnd(true)
                 });

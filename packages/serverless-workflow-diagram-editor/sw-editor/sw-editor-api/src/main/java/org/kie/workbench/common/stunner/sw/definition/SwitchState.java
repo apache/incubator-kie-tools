@@ -16,16 +16,22 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.WorkflowTimeoutsJsonSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowTimeoutsYamlSerializer;
 
 @JSONMapper
 @YAMLMapper
 @JsType
 @YamlPropertyOrder({"name", "type", "dataConditions", "eventConditions", "transition", "end", "onErrors", "usedForCompensation", "compensatedBy", "dataConditions", "stateDataFilter", "timeouts", "eventTimeout", "metadata"})
-public class SwitchState extends State {
+public class SwitchState extends State<SwitchState> implements HasMetadata<SwitchState>, HasErrors<SwitchState>, HasCompensatedBy<SwitchState> {
 
     public static final String TYPE_SWITCH = "switch";
 
@@ -36,6 +42,20 @@ public class SwitchState extends State {
     public DataConditionTransition[] dataConditions;
 
     public Boolean usedForCompensation;
+
+    public StateDataFilter stateDataFilter;
+
+    public Metadata metadata;
+
+    public ErrorTransition[] onErrors;
+
+    @JsonbTypeSerializer(WorkflowTimeoutsJsonSerializer.class)
+    @JsonbTypeDeserializer(WorkflowTimeoutsJsonSerializer.class)
+    @YamlTypeSerializer(WorkflowTimeoutsYamlSerializer.class)
+    @YamlTypeDeserializer(WorkflowTimeoutsYamlSerializer.class)
+    private Object timeouts;
+
+    public String compensatedBy;
 
     public SwitchState() {
         this.type = TYPE_SWITCH;
@@ -48,7 +68,6 @@ public class SwitchState extends State {
     public void setDefaultCondition(DefaultConditionTransition defaultCondition) {
         this.defaultCondition = defaultCondition;
     }
-
     public EventConditionTransition[] getEventConditions() {
         return eventConditions;
     }
@@ -71,5 +90,48 @@ public class SwitchState extends State {
 
     public void setUsedForCompensation(Boolean usedForCompensation) {
         this.usedForCompensation = usedForCompensation;
+    }
+
+    public StateDataFilter getStateDataFilter() {
+        return stateDataFilter;
+    }
+
+    public void setStateDataFilter(StateDataFilter stateDataFilter) {
+        this.stateDataFilter = stateDataFilter;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public SwitchState setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+        return this;
+    }
+
+    public ErrorTransition[] getOnErrors() {
+        return onErrors;
+    }
+
+    public SwitchState setOnErrors(ErrorTransition[] onErrors) {
+        this.onErrors = onErrors;
+        return this;
+    }
+
+    public Object getTimeouts() {
+        return timeouts;
+    }
+
+    public void setTimeouts(Object timeouts) {
+        this.timeouts = timeouts;
+    }
+
+    public String getCompensatedBy() {
+        return compensatedBy;
+    }
+
+    public SwitchState setCompensatedBy(String compensatedBy) {
+        this.compensatedBy = compensatedBy;
+        return this;
     }
 }

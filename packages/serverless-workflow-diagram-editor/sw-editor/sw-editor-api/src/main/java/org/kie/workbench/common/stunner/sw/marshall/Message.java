@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+
 public class Message {
 
     private final String messageCode;
@@ -35,9 +37,13 @@ public class Message {
         return value;
     }
 
+    public String translateMessage(TranslationService translationService) {
+        return translationService.getTranslation(messageCode).replaceAll("%s", value);
+    }
+
     @Override
     public String toString() {
-        return messageCode.replaceAll("%s", value);
+        return "Message: {\"messageCode\": " +  messageCode + ", \"value\": " + value + "}";
     }
 
     @Override

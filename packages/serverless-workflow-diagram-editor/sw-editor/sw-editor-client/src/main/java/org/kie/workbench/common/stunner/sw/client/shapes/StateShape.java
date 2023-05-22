@@ -28,6 +28,8 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
+import org.kie.workbench.common.stunner.sw.definition.HasMetadata;
+import org.kie.workbench.common.stunner.sw.definition.Metadata;
 import org.kie.workbench.common.stunner.sw.definition.State;
 
 import static java.lang.Math.floor;
@@ -87,17 +89,24 @@ public class StateShape extends ServerlessWorkflowShape<StateShapeView> implemen
 
         State state = element.getContent().getDefinition();
         getView().setTitle(state.getName());
-        if (state.metadata == null) {
+        if (!(state instanceof HasMetadata)) {
             shapeView.setSvgIcon(getIconColor(), getIconSvg());
             return;
         }
 
-        if (StringUtils.nonEmpty(state.metadata.icon)) {
-            if (state.metadata.icon.startsWith("data:")) {
-                Picture picture = new Picture(state.metadata.icon);
+        Metadata metadata = ((HasMetadata) state).getMetadata();
+
+        if (metadata == null) {
+            shapeView.setSvgIcon(getIconColor(), getIconSvg());
+            return;
+        }
+
+        if (StringUtils.nonEmpty(metadata.icon)) {
+            if (metadata.icon.startsWith("data:")) {
+                Picture picture = new Picture(metadata.icon);
                 setIconPicture(picture);
             } else {
-                loadIconFromFile(state, resourceContentService);
+                loadIconFromFile(metadata, resourceContentService);
             }
         }
 
@@ -105,8 +114,8 @@ public class StateShape extends ServerlessWorkflowShape<StateShapeView> implemen
             return;
         }
 
-        if (StringUtils.nonEmpty(state.metadata.type)) {
-            setPredefinedIcon(state.metadata.type);
+        if (StringUtils.nonEmpty(metadata.type)) {
+            setPredefinedIcon(metadata.type);
         }
 
         if (isIconEmpty()) {
@@ -114,11 +123,11 @@ public class StateShape extends ServerlessWorkflowShape<StateShapeView> implemen
         }
     }
 
-    private void loadIconFromFile(State state, ResourceContentService resourceContentService) {
+    private void loadIconFromFile(Metadata metadata, ResourceContentService resourceContentService) {
         resourceContentService
-                .get(state.metadata.icon, ResourceContentOptions.binary())
+                .get(metadata.icon, ResourceContentOptions.binary())
                 .then(image -> {
-                    setIconPicture(image, state.metadata.icon);
+                    setIconPicture(image, metadata.icon);
                     return null;
                 });
     }
@@ -259,7 +268,8 @@ public class StateShape extends ServerlessWorkflowShape<StateShapeView> implemen
      * of the not-square image as a reference. The longer side of the image is cut to fill
      * the entire icon circle with the source image. If the source image is smaller than
      * the icon circle, it is scaled to full size.
-     * @param width of the source image
+     *
+     * @param width  of the source image
      * @param height of the source image
      * @return scale rate to fit the icon in the icon circle
      */

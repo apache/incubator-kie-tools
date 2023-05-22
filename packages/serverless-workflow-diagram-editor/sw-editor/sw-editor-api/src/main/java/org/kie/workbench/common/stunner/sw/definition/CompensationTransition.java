@@ -21,8 +21,8 @@ import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.StateTransitionDefinitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StateTransitionDefinitionYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.StateTransitionDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.StateTransitionDefinitionYamlTypeSerializer;
 
 @JsType
 public class CompensationTransition {

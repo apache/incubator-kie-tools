@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import org.kie.workbench.common.stunner.sw.definition.HasEnd;
+import org.kie.workbench.common.stunner.sw.definition.HasErrors;
 import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.StateEnd;
 import org.kie.workbench.common.stunner.sw.definition.StateTransition;
@@ -32,7 +34,7 @@ public class StartTransitionEndObjectsTest {
     private final Workflow_JsonMapperImpl mapper = Workflow_JsonMapperImpl.INSTANCE;
 
     //@Test
-    public void test(){
+    public void test() {
         String json = "{\n" +
                 " \"id\": \"startTransitionEndObjects\",\n" +
                 " \"name\": \"Start, Transition and End as Objects\",\n" +
@@ -79,8 +81,8 @@ public class StartTransitionEndObjectsTest {
         assertEquals("startTransitionEndObjects", workflow.getId());
         assertEquals("Start, Transition and End as Objects", workflow.getName());
         assertEquals(StartDefinition.class, workflow.getStart().getClass());
-        assertEquals("Init State", ((StartDefinition)workflow.getStart()).getStateName());
-        assertEquals("2020-03-20T09:00:00Z/2020-03-20T15:00:00Z", ((StartDefinition)workflow.getStart()).getSchedule());
+        assertEquals("Init State", ((StartDefinition) workflow.getStart()).getStateName());
+        assertEquals("2020-03-20T09:00:00Z/2020-03-20T15:00:00Z", ((StartDefinition) workflow.getStart()).getSchedule());
         assertEquals(3, workflow.getStates().length);
         assertEquals("Init State", workflow.getStates()[0].getName());
         assertEquals("Error State", workflow.getStates()[1].getName());
@@ -90,14 +92,15 @@ public class StartTransitionEndObjectsTest {
         assertEquals("inject", workflow.getStates()[1].getType());
         assertEquals("inject", workflow.getStates()[2].getType());
 
-        assertFalse((Boolean)workflow.getStates()[0].getEnd());
-        assertTrue((Boolean)workflow.getStates()[1].getEnd());
-        assertTrue(((StateEnd)workflow.getStates()[2].getEnd()).getTerminate());
+        assertFalse((Boolean) ((HasEnd) workflow.getStates()[0]).getEnd());
+        assertTrue((Boolean) ((HasEnd) workflow.getStates()[1]).getEnd());
+        assertTrue(((StateEnd) ((HasEnd) workflow.getStates()[2]).getEnd()).getTerminate());
 
-        assertEquals("Next State", ((StateTransition)workflow.getStates()[0].getTransition()).getNextState());
-        assertEquals(1, workflow.getStates()[0].getOnErrors().length);
-        assertFalse((Boolean) workflow.getStates()[0].getOnErrors()[0].getEnd());
-        assertEquals("Some Error", workflow.getStates()[0].getOnErrors()[0].getErrorRef());
-        assertEquals("Error State", ((StateTransition)workflow.getStates()[0].getOnErrors()[0].getTransition()).getNextState());
+        assertEquals("Next State", ((StateTransition) ((HasEnd) workflow.getStates()[0]).getTransition()).getNextState());
+        HasErrors hasErrors = (HasErrors) workflow.getStates()[0];
+        assertEquals(1, hasErrors.getOnErrors().length);
+        assertFalse((Boolean) hasErrors.getOnErrors()[0].getEnd());
+        assertEquals("Some Error", hasErrors.getOnErrors()[0].getErrorRef());
+        assertEquals("Error State", ((StateTransition) hasErrors.getOnErrors()[0].getTransition()).getNextState());
     }
 }
