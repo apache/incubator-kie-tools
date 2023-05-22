@@ -101,6 +101,7 @@
       { "id": "@kie-tools/import-java-classes-component" },
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
+      { "id": "@kie-tools/vscode-extension-common-test-helpers" },
       { "id": "@kie-tools/kie-sandbox-distribution" },
       { "id": "@kie-tools/kie-sandbox-extended-services-image" },
       { "id": "@kie-tools/kie-sandbox-image" },
