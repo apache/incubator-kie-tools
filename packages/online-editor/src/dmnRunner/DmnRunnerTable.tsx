@@ -124,7 +124,7 @@ export function DmnRunnerTable() {
                   <>
                     <DrawerPanelContent
                       isResizable={true}
-                      minSize={rowCount > 0 ? drawerPanelMinSize : "30%"}
+                      minSize={rowCount > 0 ? drawerPanelMinSize : "50%"}
                       maxSize={drawerPanelMaxSize}
                       defaultSize={drawerPanelDefaultSize}
                     >
@@ -141,7 +141,7 @@ export function DmnRunnerTable() {
                 }
               >
                 {/* DMN Runner Inputs */}
-                <div ref={(ref) => setInputsContainerRef(ref)}>
+                <div ref={(ref) => setInputsContainerRef(ref)} style={{ width: "100%" }}>
                   <UnitablesWrapper
                     scrollableParentRef={inputsScrollableElementRef.current}
                     i18n={i18n.dmnRunner.table}
@@ -212,7 +212,7 @@ function useAnchoredUnitablesDrawerPanel(args: {
 
     const children = Object.values(args.inputsContainerRef.childNodes?.[0]?.childNodes);
     const newWidth = children?.reduce((acc, child: HTMLElement) => acc + child.offsetWidth, 1) ?? 0;
-    const newDefaultSize = `calc(100vw - ${newWidth + scrollbarWidth}px)`;
+    const newDefaultSize = `max(50%, calc(100vw - ${newWidth + scrollbarWidth}px))`;
 
     setDrawerPanelDefaultSize((prev) => {
       // This is a nasty trick to force refreshing even when the value is the same.
