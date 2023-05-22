@@ -56,8 +56,10 @@ export const inputBox = (): By => {
 };
 
 /**
- * Creates a locator for the first folder in a folder structure in explorer.
+ * Creates a locator for a folder with the corresponding name in the folder structure of the explorer.
+ *
+ * @param folderName the name of the folder for which the locator is to be created
  */
-export const explorerFirstFolder = (): By => {
-  return By.id("list_id_1_0");
+export const explorerFolder = (folderName: string): By => {
+  return By.xpath(`//div[contains(@class, "monaco-list-row") and @aria-label="${folderName}"]`);
 };
