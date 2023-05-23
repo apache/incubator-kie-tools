@@ -63,6 +63,7 @@ import { Position } from "monaco-editor";
 import { ServerlessWorkflowCombinedEditorChannelApi, SwfFeatureToggle, SwfPreviewOptions } from "../api";
 import { useSwfDiagramEditorChannelApi } from "./hooks/useSwfDiagramEditorChannelApi";
 import { useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
+import { paintCompletedNodes } from "./helpers/PaintNodes";
 
 interface Props {
   locale: string;
@@ -395,6 +396,12 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     );
   };
 
+  useEffect(() => {
+    if (isCombinedEditorReady) {
+      editorEnvelopeCtx.channelApi.notifications.kogitoSwfCombinedEditor_combinedEditorReady.send();
+    }
+  }, [isCombinedEditorReady]);
+
   useSubscription(
     editorEnvelopeCtx.channelApi.notifications.kogitoSwfCombinedEditor_moveCursorToPosition,
     useCallback(
@@ -415,6 +422,18 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>
       ),
     [diagramEditor]
+  );
+
+  useSubscription(
+    editorEnvelopeCtx.channelApi.notifications.kogitoSwfCombinedEditor_colorNodesBasedOnNames,
+    useCallback(
+      async (nodeNameList: string[], isWorkflowCompleted) => {
+        if (isDiagramEditorReady) {
+          paintCompletedNodes(nodeNameList, isWorkflowCompleted);
+        }
+      },
+      [isDiagramEditorReady]
+    )
   );
 
   return (

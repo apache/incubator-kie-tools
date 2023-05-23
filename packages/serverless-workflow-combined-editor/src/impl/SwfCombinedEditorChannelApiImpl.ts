@@ -191,4 +191,12 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
   public kogitoSwfCombinedEditor_moveCursorToPosition(_position: MonacoPosition): void {
     // no-op
   }
+
+  public kogitoSwfCombinedEditor_colorNodesBasedOnNames(_nodeNameList: string[], _isWorkflowCompleted: boolean): void {
+    // no-op
+  }
+
+  public kogitoSwfCombinedEditor_combinedEditorReady(): void {
+    //no-op
+  }
 }
