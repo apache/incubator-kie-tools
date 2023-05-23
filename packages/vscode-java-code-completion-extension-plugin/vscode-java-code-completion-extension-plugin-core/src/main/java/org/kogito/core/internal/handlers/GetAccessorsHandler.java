@@ -62,9 +62,9 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         JavaLanguageServerPlugin.logInfo(autoCompleteBuildInformation.getText());
         List<CompletionItem> items = this.autocompleteHandler.handle("GetAccessorsHandler", autoCompleteBuildInformation);
 
-        return this.transformCompletionItemsToResult(parameters.getFqcn(), items);
+        var publicResults = this.transformCompletionItemsToResult(parameters.getFqcn(), items);
 
-        /* Decorating the accessor results with their FQCN type
+        /* Decorating the accessor results with their FQCN type */
         publicResults.stream()
                 .filter(getPublicResult -> !getPublicResult.getType().equalsIgnoreCase("void"))
                 .forEach(getPublicResult -> {
@@ -91,9 +91,9 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
                             JavaLanguageServerPlugin.logInfo("Hover result size " + contentList.size());
 
                             contentList.stream().forEach(item -> {
-                                if (item.isLeft()) {
+                                if (item.isLeft() && item != null) {
                                     JavaLanguageServerPlugin.logInfo("String " + content.getLeft());
-                                } else if (item.isRight()) {
+                                } else if (item.isRight() && content.getRight() != null) {
                                     JavaLanguageServerPlugin.logInfo("MarkedString " + content.getRight().getValue());
                                 } else {
                                     JavaLanguageServerPlugin.logInfo("Item empty right and left");
@@ -108,7 +108,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
                     }
                 });
 
-        return publicResults;*/
+        return publicResults;
     }
 
     private GetPublicParameters checkParameters(List<Object> arguments) {
@@ -142,10 +142,11 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             JavaLanguageServerPlugin.logInfo("ENTRY: " + entry.getKey() + " " + entry.getValue());
         }
+        /*
         if (data != null && data.containsKey(DATA_FIELD_REQUEST_ID) && data.containsKey(DATA_FIELD_PROPOSAL_ID)) {
             CompletionResponse completionResponse = CompletionResponses.get(Long.getLong(data.get(DATA_FIELD_REQUEST_ID)));
             CompletionProposal proposal = completionResponse.getProposals().get(Integer.getInteger(data.get(DATA_FIELD_PROPOSAL_ID)));
-            /* The `DeclarationSignature` format is: `method()Ljava.lang.String;` */
+            /* The `DeclarationSignature` format is: `method()Ljava.lang.String;`
             String fqcnType = String.valueOf(proposal.getDeclarationSignature());
             JavaLanguageServerPlugin.logInfo("FQCN: " + fqcnType);
 
@@ -153,7 +154,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
                 type = fqcnType.split("\\)L")[1];
                 type = type.replaceAll(";$", "");
             }
-        }
+        }*/
         result.setType(type);
 
         return result;

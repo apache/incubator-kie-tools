@@ -18,12 +18,16 @@ package org.kogito.core.internal.handlers;
 
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 import org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer;
+import org.eclipse.lsp4j.DidChangeTextDocumentParams;
 import org.eclipse.lsp4j.DidOpenTextDocumentParams;
+
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.HoverParams;
 import org.eclipse.lsp4j.Position;
+import org.eclipse.lsp4j.TextDocumentContentChangeEvent;
 import org.eclipse.lsp4j.TextDocumentItem;
 import org.eclipse.lsp4j.TextDocumentIdentifier;
+import org.eclipse.lsp4j.VersionedTextDocumentIdentifier;
 
 import org.kogito.core.internal.engine.ActivationChecker;
 import org.kogito.core.internal.engine.BuildInformation;
@@ -56,6 +60,16 @@ public class HoverHandler {
         textDocumentItem.setVersion(1);
         didOpenTextDocumentParams.setTextDocument(textDocumentItem);
         languageServer.didOpen(didOpenTextDocumentParams);
+
+        DidChangeTextDocumentParams didChangeTextDocumentParams = new DidChangeTextDocumentParams();
+        TextDocumentContentChangeEvent textDocumentContentChangeEvent = new TextDocumentContentChangeEvent();
+        textDocumentContentChangeEvent.setText(buildInformation.getText());
+        VersionedTextDocumentIdentifier versionedTextDocumentIdentifier = new VersionedTextDocumentIdentifier();
+        versionedTextDocumentIdentifier.setUri(uri);
+        versionedTextDocumentIdentifier.setVersion(2);
+        didChangeTextDocumentParams.setTextDocument(versionedTextDocumentIdentifier);
+        didChangeTextDocumentParams.setContentChanges(Collections.singletonList(textDocumentContentChangeEvent));
+        languageServer.didChange(didChangeTextDocumentParams);
 
         Position pos = new Position();
         pos.setLine(buildInformation.getLine());
