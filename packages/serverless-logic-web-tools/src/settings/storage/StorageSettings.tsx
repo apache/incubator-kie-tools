@@ -126,7 +126,7 @@ export function StorageSettings() {
 
   useEffect(() => {
     if (!isBrowserChromiumBased()) {
-      history.push(routes.settings.home.path({}));
+      history.replace(routes.settings.home.path({}));
     }
     setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
   }, [history]);
