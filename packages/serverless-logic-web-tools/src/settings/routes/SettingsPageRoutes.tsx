@@ -25,6 +25,7 @@ import { OpenShiftSettings } from "../openshift/OpenShiftSettings";
 import { ServiceAccountSettings } from "../serviceAccount/ServiceAccountSettings";
 import { ServiceRegistrySettings } from "../serviceRegistry/ServiceRegistrySettings";
 import { SettingsPageProps } from "../types";
+import { StorageSettings } from "../storage/StorageSettings";
 
 export function SettingsPageRoutes(props: {} & SettingsPageProps) {
   const routes = useRoutes();
@@ -51,6 +52,9 @@ export function SettingsPageRoutes(props: {} & SettingsPageProps) {
       </Route>
       <Route path={routes.settings.feature_preview.path({})}>
         <FeaturePreviewSettings />
+      </Route>
+      <Route path={routes.settings.storage.path({})}>
+        <StorageSettings />
       </Route>
       <Route>
         <Redirect to={routes.settings.github.path({})} />
