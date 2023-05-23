@@ -16,10 +16,8 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { assert, expect } from "chai";
+import { expect } from "chai";
 import { VSCodeTestHelper, sleep } from "@kie-tools/vscode-extension-common-test-helpers";
-import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
-import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - SVG generation with path setting integration tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "svg-filepath");
