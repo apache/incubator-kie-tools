@@ -23,7 +23,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { FormI18n } from "./i18n";
 
-const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
+const KIE_ISSUES_LINK = "https://github.com/kiegroup/kie-issues/issues";
 
 export enum FormStatus {
   WITHOUT_ERROR,
@@ -110,9 +110,9 @@ export function ValidatorErrorFormStatus({ i18n }: ValidatorErrorFormStatusProps
             <Text>
               <I18nWrapped
                 components={{
-                  jira: (
-                    <a href={KOGITO_JIRA_LINK} target={"_blank"}>
-                      {KOGITO_JIRA_LINK}
+                  issues: (
+                    <a href={KIE_ISSUES_LINK} target={"_blank"}>
+                      {KIE_ISSUES_LINK}
                     </a>
                   ),
                 }}

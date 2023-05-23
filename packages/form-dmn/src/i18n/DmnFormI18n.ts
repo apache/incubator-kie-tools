@@ -35,7 +35,7 @@ export interface DmnFormI18n extends FormI18n {
     error: {
       title: string;
       explanation: string;
-      message: Array<string | Wrapped<"jira">>;
+      message: Array<string | Wrapped<"issues">>;
     };
     dateTooltip: Array<string | Wrapped<"date">>;
     withoutResponse: {

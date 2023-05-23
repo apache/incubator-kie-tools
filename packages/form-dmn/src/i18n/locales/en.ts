@@ -35,7 +35,7 @@ export const en: DmnFormI18n = {
         title: "An error occurred while trying to generate the form",
         message: [
           `This ${en_common.names.dmn} model contains a construct that is not yet supported. Please refer to `,
-          wrapped("jira"),
+          wrapped("issues"),
           " and report an issue. Don't forget to upload the current file.",
         ],
       },
@@ -63,7 +63,7 @@ export const en: DmnFormI18n = {
       explanation: "Result cannot be rendered because of an error.",
       message: [
         `This result contains a construct that is not yet supported. Please refer to `,
-        wrapped("jira"),
+        wrapped("issues"),
         " and report an issue. Don't forget to upload the current file, and the used inputs",
       ],
     },
