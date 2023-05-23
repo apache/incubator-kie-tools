@@ -29,6 +29,8 @@ describe("Serverless workflow editor - SVG generation with path setting integrat
   const WORKFLOW_NAME: string = `${FILE_NAME_NO_EXTENSION}.sw.json`;
   const RESOURCE_FOLDER: string = path.join("src", "main", "resources");
 
+  const IS_VALID_SVG_REGEX = new RegExp("<svg.*<\\/svg>");
+
   let testHelper: VSCodeTestHelper;
 
   before(async function () {
@@ -62,7 +64,7 @@ describe("Serverless workflow editor - SVG generation with path setting integrat
     // verify SVG was generated after file save
     const SVG_FILE_PATH: string = path.resolve(TEST_PROJECT_FOLDER, RESOURCE_FOLDER, svgName);
     expect(fs.readFileSync(SVG_FILE_PATH, "utf-8")).to.match(
-      new RegExp("<svg.*<\\/svg>"),
+      IS_VALID_SVG_REGEX,
       `SVG file was not generated correctly at path: ${SVG_FILE_PATH}.`
     );
   });
@@ -101,7 +103,7 @@ describe("Serverless workflow editor - SVG generation with path setting integrat
     // verify SVG was generated after file save
     const SVG_FILE_PATH: string = path.resolve(TEST_PROJECT_FOLDER, changedDirectory, svgName);
     expect(fs.readFileSync(SVG_FILE_PATH, "utf-8")).to.match(
-      new RegExp("<svg.*<\\/svg>"),
+      IS_VALID_SVG_REGEX,
       `SVG file was not generated correctly at path: ${SVG_FILE_PATH}.`
     );
 
