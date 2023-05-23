@@ -33,6 +33,10 @@ import { isBrowserChromiumBased } from "../../workspace/startupBlockers/Supporte
 import { useHistory } from "react-router";
 
 const PAGE_TITLE = "Storage";
+/**
+ * delete alert delay in seconds before reloading the app.
+ */
+const DELETE_ALERT_DELAY = 5;
 
 /**
  * Delete all indexed DBs
@@ -75,14 +79,14 @@ export function StorageSettings() {
     useCallback(({ close }) => {
       setTimeout(() => {
         window.location.href = routes.home.path({});
-      }, 5000);
+      }, DELETE_ALERT_DELAY * 1000);
       return (
         <Alert
           variant="success"
           title={
             <>
               Data deleted successfully. <br />
-              You will be redirected to the home page in <Timer delay={5} /> seconds
+              You will be redirected to the home page in <Timer delay={DELETE_ALERT_DELAY} /> seconds
             </>
           }
         />
