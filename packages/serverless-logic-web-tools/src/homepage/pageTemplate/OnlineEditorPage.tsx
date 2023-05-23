@@ -125,7 +125,9 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
           style={{ textDecoration: "none" }}
         >
           <Brand className="kogito-tools-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
-          <div className="brand-name">{APP_NAME}</div>
+          <div className="brand-name" data-ouia-component-id="app-title">
+            {APP_NAME}
+          </div>
         </MastheadBrand>
       </MastheadMain>
       <MastheadContent>{headerToolbar}</MastheadContent>
