@@ -149,7 +149,7 @@ export function Overview(props: { isNavOpen: boolean }) {
                   />
                   <NewModelCard
                     title={"Dashboard"}
-                    yamlExtension={FileTypes.DASH_YML}
+                    yamlExtension={FileTypes.DASH_YAML}
                     description={"Define data visualization from data extracted from applications."}
                   />
                 </Grid>
