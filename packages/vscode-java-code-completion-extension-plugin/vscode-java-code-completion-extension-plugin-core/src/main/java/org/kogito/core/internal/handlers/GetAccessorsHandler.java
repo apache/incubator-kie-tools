@@ -81,16 +81,20 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
                         JavaLanguageServerPlugin.logInfo("Hover results content found!");
 
                         Either<List<Either<String, MarkedString>>, MarkupContent> content = hoverResult.getContents();
+                        JavaLanguageServerPlugin.logInfo("CONTENT " + content);
 
                         if (content.isRight()) {
                             JavaLanguageServerPlugin.logInfo("CONTENT RIGHT");
                             JavaLanguageServerPlugin.logInfo("MarkupContent " + content.getRight().getValue());
-                        } else if (content.isLeft()) {
+                        } else if (content.isLeft() && content != null) {
                             List<Either<String, MarkedString>> contentList = content.getLeft();
                             JavaLanguageServerPlugin.logInfo("CONTENT LEFT");
+                            JavaLanguageServerPlugin.logInfo("CONTENT LEFT " + content.getRight());
+
                             JavaLanguageServerPlugin.logInfo("Hover result size " + contentList.size());
 
                             contentList.stream().forEach(item -> {
+
                                 if (item.isLeft() && item != null) {
                                     JavaLanguageServerPlugin.logInfo("String " + content.getLeft());
                                 } else if (item.isRight() && content.getRight() != null) {

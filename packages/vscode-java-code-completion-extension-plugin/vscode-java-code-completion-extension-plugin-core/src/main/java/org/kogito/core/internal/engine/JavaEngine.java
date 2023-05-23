@@ -83,7 +83,8 @@ public class JavaEngine {
 
         String content = this.evaluate(Templates.TEMPLATE_ACCESSORS, item);
 
-        return new BuildInformation(filePath, getContent(filePath), content, 5, getFirstCharInLinePosition(content, 5) + 2);
+        // That should position on target, first char in line + 1
+        return new BuildInformation(filePath, getContent(filePath), content, 5, getEndOfLinePosition(content, 5) - 2);
     }
 
     protected int getFirstCharInLinePosition(String content, int lineNumber) {
