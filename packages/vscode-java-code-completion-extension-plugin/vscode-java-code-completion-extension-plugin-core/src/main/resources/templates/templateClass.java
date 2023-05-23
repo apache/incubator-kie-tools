@@ -1,4 +1,4 @@
-package com.redhat;
+package org.kie;
 
 import ${ query }
 

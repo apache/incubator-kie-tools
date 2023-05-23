@@ -74,9 +74,34 @@ public class JavaEngine {
         return new BuildInformation(filePath, getContent(filePath), content, 5, getEndOfLinePosition(content, 5));
     }
 
+    public BuildInformation buildVarTypePublicContent(Path filePath, String fqcn, String completeText) {
+
+        TemplateParameters item = new TemplateParameters();
+        item.setClassName(getClassName(filePath));
+        item.setQuery(completeText);
+        item.setFqcn(fqcn);
+
+        String content = this.evaluate(Templates.TEMPLATE_ACCESSORS, item);
+
+        return new BuildInformation(filePath, getContent(filePath), content, 5, getFirstCharInLinePosition(content, 5) + 2);
+    }
+
+    protected int getFirstCharInLinePosition(String content, int lineNumber) {
+        String[] split = content.split("\n");
+        String line = split[lineNumber];
+        JavaLanguageServerPlugin.logInfo("LINE:" + line);
+        int index = 0;
+        for (int i = 0; i < line.length(); i++) {
+            if (line.charAt(i) != ' ') {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
     protected int getEndOfLinePosition(String content, int lineNumber) {
         String[] split = content.split("\n");
-        JavaLanguageServerPlugin.logInfo(split[lineNumber]);
         return split[lineNumber].length();
     }
 
