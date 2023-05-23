@@ -16,10 +16,9 @@
   "main": "dist/index.js",
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test:it",
     "cy:open": "cypress open --project it-tests --config baseUrl=$(build-env serverlessLogicWebTools.dev.cypressUrl)",
     "cy:run": "cypress run --headed -b chrome --project it-tests --config baseUrl=$(build-env serverlessLogicWebTools.dev.cypressUrl)",
-    "format": "prettier --write  './src/**/*.{tsx,ts,js}'",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "postreport": "jrm ./dist-it-tests/junit-transformed.xml \"./dist-it-tests/junit-report*.xml\"",
     "start": "webpack serve --host 0.0.0.0 --env dev",
