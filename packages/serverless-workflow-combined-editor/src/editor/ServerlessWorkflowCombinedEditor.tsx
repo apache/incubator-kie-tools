@@ -75,6 +75,7 @@ interface Props {
 
 export type ServerlessWorkflowCombinedEditorRef = {
   setContent(path: string, content: string): Promise<void>;
+  colorNodes(nodeNames: string[], color: string, isWorkflowCompleted: boolean): void;
 };
 
 interface File {
@@ -246,6 +247,9 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           textEditor?.setTheme(theme);
           diagramEditor?.setTheme(theme);
         },
+        colorNodes: (nodeNames: string[], color: string, isWorkflowCompleted: boolean) => {
+          paintCompletedNodes(nodeNames, color, isWorkflowCompleted);
+        },
       };
     },
     [diagramEditor, file, props.isReadOnly, textEditor]
@@ -396,6 +400,14 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     );
   };
 
+  window.editor = useMemo(
+    () =>
+      new SwfStunnerEditor(
+        diagramEditor?.getEnvelopeServer()
+          .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>
+      ),
+    [diagramEditor]
+  );
   useEffect(() => {
     if (isCombinedEditorReady) {
       editorEnvelopeCtx.channelApi.notifications.kogitoSwfCombinedEditor_combinedEditorReady.send();
@@ -412,27 +424,6 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         swfTextEditorEnvelopeApi.notifications.kogitoSwfTextEditor__moveCursorToPosition.send(position);
       },
       [textEditor]
-    )
-  );
-
-  window.editor = useMemo(
-    () =>
-      new SwfStunnerEditor(
-        diagramEditor?.getEnvelopeServer()
-          .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>
-      ),
-    [diagramEditor]
-  );
-
-  useSubscription(
-    editorEnvelopeCtx.channelApi.notifications.kogitoSwfCombinedEditor_colorNodesBasedOnNames,
-    useCallback(
-      async (nodeNameList: string[], isWorkflowCompleted) => {
-        if (isDiagramEditorReady) {
-          paintCompletedNodes(nodeNameList, isWorkflowCompleted);
-        }
-      },
-      [isDiagramEditorReady]
     )
   );
 

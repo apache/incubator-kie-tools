@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",

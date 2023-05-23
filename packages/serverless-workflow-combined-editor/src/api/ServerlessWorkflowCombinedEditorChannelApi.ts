@@ -34,18 +34,6 @@ export interface ServerlessWorkflowCombinedEditorChannelApi
    * @returns
    */
   kogitoSwfCombinedEditor_moveCursorToPosition(position: Position): void;
-  /**
-   * Colors nodes in the diagram based on the list of names provided.
-   *
-   * @param nodeNameList
-   * @param isWorkflowCompleted
-   * @returns
-   */
-  kogitoSwfCombinedEditor_colorNodesBasedOnNames(nodeNameList: string[], isWorkflowCompleted: boolean): void;
-  /**
-   * Checks combined editor ready state.
-   *
-   * @returns
-   */
+  // TODO: remove after testing
   kogitoSwfCombinedEditor_combinedEditorReady(): void;
 }

@@ -6416,6 +6416,9 @@ importers:
       "@kie-tools-core/editor":
         specifier: workspace:*
         version: link:../editor
+      "@kie-tools-core/envelope":
+        specifier: workspace:*
+        version: link:../envelope
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus

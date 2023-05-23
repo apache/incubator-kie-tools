@@ -16,8 +16,9 @@
 
 import { Node } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api/StunnerEditorEnvelopeAPI";
 
-const paintCompletedNode = async (node: Node) => {
-  await window.editor.canvas.setBackgroundColor(node.uuid, "#d5f4e6");
+const paintCompletedNode = async (node: Node, color: string) => {
+  //"#d5f4e6"
+  await window.editor.canvas.setBackgroundColor(node.uuid, color);
 };
 
 const isPointingToAnyCompletedNode = (completedNodes: (Node | null)[], node: Node): boolean => {
@@ -27,12 +28,12 @@ const isPointingToAnyCompletedNode = (completedNodes: (Node | null)[], node: Nod
   );
 };
 
-export const paintCompletedNodes = (nodeNameList: string[], isWorkflowCompleted: boolean): void => {
+export const paintCompletedNodes = (nodeNameList: string[], color: string, isWorkflowCompleted: boolean): void => {
   Promise.all(nodeNameList.map((name) => window.editor.session.getNodeByName(name).catch(() => null)))
     .then((completedNodes) =>
       completedNodes.forEach((completedNode) => {
         if (completedNode) {
-          paintCompletedNode(completedNode);
+          paintCompletedNode(completedNode, color);
           if (isWorkflowCompleted && !isPointingToAnyCompletedNode(completedNodes, completedNode)) {
             Promise.all(
               completedNode.outEdges
@@ -42,7 +43,7 @@ export const paintCompletedNodes = (nodeNameList: string[], isWorkflowCompleted:
               .then((outNodes) =>
                 outNodes
                   .filter((outNode) => outNode.definition.id === "org.kie.workbench.common.stunner.sw.definition.End")
-                  .forEach((outNode) => paintCompletedNode(outNode))
+                  .forEach((outNode) => paintCompletedNode(outNode, color))
               )
               .then((_) => window.editor.canvas.draw());
           }

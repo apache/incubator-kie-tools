@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-export * from "./SwfCombinedEditorChannelApiImpl";
-export * from "./SwfFeatureToggleChannelApiImpl";
-export * from "./SwfLanguageServiceChannelApiImpl";
-export * from "./SwfServiceCatalogChannelApiImpl";
-export * from "./SwfPreviewOptionsChannelApiImpl";
-export * from "./NoOpSwfStaticEnvelopeContentProviderChannelApiImpl";
-export * from "./SwfStaticEnvelopeContentProviderChannelApiImpl";
-export * from "./NoOpSwfServiceCatalogChannelApiImpl";
-export * from "./ServerlessWorkflowCombinedEditorEnvelopeApiImpl";
+import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
+
+export interface ServerlessWorkflowCombinedEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
+  kogitoSwfCombinedEditor_colorNodes(args: { nodeNames: string[]; color: string; isWorkflowCompleted: boolean }): void;
+}
