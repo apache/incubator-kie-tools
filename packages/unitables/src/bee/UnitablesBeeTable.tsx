@@ -209,11 +209,11 @@ export function UnitablesBeeTable({
           width: undefined,
           columns: column.insideProperties.flatMap((insideProperty) => {
             let minWidth = insideProperty.minWidth ?? insideProperty.width;
-            const width =
+            let width =
               (getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ??
               DEFAULT_COLUMN_MIN_WIDTH;
             if (insideProperty.type === "array") {
-              // width = calculateListFieldWidth(insideProperty.joinedName);
+              width = calculateListFieldWidth(insideProperty.joinedName);
               minWidth = calculateListFieldWidth(insideProperty.joinedName);
             }
             return {
@@ -230,9 +230,9 @@ export function UnitablesBeeTable({
         };
       } else {
         let minWidth = column.width;
-        const width = (getObjectValueByPath(configs, column.name) as UnitablesCellConfigs)?.width ?? column.width;
+        let width = (getObjectValueByPath(configs, column.name) as UnitablesCellConfigs)?.width ?? column.width;
         if (column.type === "array") {
-          // width = calculateListFieldWidth(column.joinedName);
+          width = calculateListFieldWidth(column.joinedName);
           minWidth = calculateListFieldWidth(column.joinedName);
         }
         return {

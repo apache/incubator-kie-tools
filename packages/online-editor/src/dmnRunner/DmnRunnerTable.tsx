@@ -141,7 +141,10 @@ export function DmnRunnerTable() {
                 }
               >
                 {/* DMN Runner Inputs */}
-                <div ref={(ref) => setInputsContainerRef(ref)} style={{ width: "100%" }}>
+                <div
+                  ref={(ref) => setInputsContainerRef(ref)}
+                  style={{ display: "inline-block", width: "fit-content" }}
+                >
                   <UnitablesWrapper
                     scrollableParentRef={inputsScrollableElementRef.current}
                     i18n={i18n.dmnRunner.table}
