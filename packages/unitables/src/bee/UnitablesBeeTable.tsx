@@ -420,11 +420,13 @@ function UnitablesBeeTableCell({
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
+      console.log("onKeyDown", e);
+
       // TAB
       if (e.key.toLowerCase() === "tab") {
-        submitRow();
+        // ListField - START
         if (isListField) {
-          // Get all uniforms components in the cell;
+          // Get all uniforms components inside the ListField;
           const uniformsComponents = cellRef.current?.querySelectorAll('[id^="uniforms-"]');
           if (uniformsComponents === undefined) {
             setEditingCell(false);
@@ -435,9 +437,7 @@ function UnitablesBeeTableCell({
             (component) => component.id === (e.target as HTMLElement).id
           );
 
-          console.log("AAAAAA", uniformsComponents, uniformComponentTargetIndex);
-
-          // Event from ListField;
+          // If it wasn't possible to retrieve the index, it should focus on the first button;
           if (uniformComponentTargetIndex < 0) {
             (uniformsComponents?.item(1) as HTMLElement).parentElement?.focus();
             setEditingCell(true);
@@ -449,8 +449,8 @@ function UnitablesBeeTableCell({
             ? uniformsComponents[uniformComponentTargetIndex - 1]
             : uniformsComponents[uniformComponentTargetIndex + 1];
 
+          // Should leave ListField if nextUniformsComponent doesn't exist
           if (nextUniformsComponent === undefined) {
-            // Should leave ListField
             setEditingCell(false);
             return;
           }
@@ -462,6 +462,7 @@ function UnitablesBeeTableCell({
           ) {
             (nextUniformsComponent as HTMLButtonElement | HTMLInputElement).parentElement?.focus();
             setEditingCell(true);
+            submitRow();
             e.stopPropagation();
             return;
           }
@@ -471,21 +472,17 @@ function UnitablesBeeTableCell({
             setEditingCell(true);
             const buttons = Array.from(nextUniformsComponent?.getElementsByTagName("button"));
             if (buttons.length === 1) {
-              // Check if it's a ListField
-              if ((nextUniformsComponent as HTMLElement).attributes.getNamedItem("items")) {
-                nextUniformsComponent?.getElementsByTagName("button")?.[0]?.parentElement?.focus();
-              } else {
-                nextUniformsComponent?.getElementsByTagName("button")?.[0]?.click();
-                setIsSelectFieldOpen(true);
-              }
+              nextUniformsComponent?.getElementsByTagName("button")?.[0]?.parentElement?.focus();
             } else {
               (nextUniformsComponent as HTMLElement).focus();
             }
+            submitRow();
             e.stopPropagation();
           }
           return;
-        }
+        } // ListField - END
 
+        submitRow();
         setEditingCell(false);
         if (isEnumField) {
           setIsSelectFieldOpen((prev) => {
@@ -517,43 +514,59 @@ function UnitablesBeeTableCell({
 
       // ENTER
       if (e.key.toLowerCase() === "enter") {
+        // ListField - START
         if (isListField) {
+          e.stopPropagation();
           const uniformsComponents = cellRef.current?.querySelectorAll('[id^="uniforms-"]');
           if (!uniformsComponents) {
             return;
           }
 
-          const uniformComponentTargetIndex = Array.from(uniformsComponents).findIndex(
-            (component) => component === e.target
-          );
+          // To search the uniforms components avoiding returning the top ListField
+          // we search backwards;
+          const reversedUniformsComponents = Array.from(uniformsComponents).reverse();
 
-          const targetIsPresent = uniformsComponents[uniformComponentTargetIndex];
+          const reversedUniformComponentTargetIndex = reversedUniformsComponents.findIndex((component) =>
+            component.contains(e.target as HTMLElement)
+          );
+          const uniformsComponent = reversedUniformsComponents[reversedUniformComponentTargetIndex];
 
           // If field is selected, and the target is not present
-          if (!targetIsPresent) {
-            if (uniformsComponents[1].tagName.toLowerCase() === "button") {
+          if (!uniformsComponent) {
+            // check if it's a button from a SelectField
+            const selectFieldUl = document.querySelectorAll(`ul[name^="${fieldName}."]`)?.item(0);
+            if (selectFieldUl && selectFieldUl.contains(e.target as HTMLElement)) {
+              setIsSelectFieldOpen(false);
+              submitRow();
+              (cellRef.current?.querySelector(`[id=${selectFieldUl.id}]`) as HTMLDivElement)
+                ?.getElementsByTagName("button")
+                ?.item(0)
+                ?.focus();
+            } else if (uniformsComponents[1].tagName.toLowerCase() === "button") {
               (uniformsComponents[1] as HTMLButtonElement)?.focus();
             }
           } else {
-            if (targetIsPresent.tagName.toLowerCase() === "button") {
-              // is last element?
-              (targetIsPresent as HTMLButtonElement)?.click();
-              if (uniformComponentTargetIndex === uniformsComponents.length - 1) {
-                // focus on top element;
-                const uniformsComponents = cellRef.current?.querySelectorAll('[id^="uniforms-"]');
-                if (!uniformsComponents) {
-                  return;
-                } else {
-                  if (uniformsComponents[1].tagName.toLowerCase() === "button") {
-                    (uniformsComponents[1] as HTMLButtonElement)?.focus();
-                  }
+            // A button is the ListAddField or ListDelField
+            if (uniformsComponent.tagName.toLowerCase() === "button") {
+              (uniformsComponent as HTMLButtonElement)?.click();
+
+              // The ListField ListDelField is the last element
+              if (reversedUniformComponentTargetIndex === 0) {
+                // focus on ListField parent element;
+                if (uniformsComponents[1].tagName.toLowerCase() === "button") {
+                  (uniformsComponents[1] as HTMLButtonElement)?.focus();
                 }
               }
               submitRow();
             }
+
+            // SelectField
+            if (uniformsComponent.tagName.toLowerCase() === "div") {
+              setIsSelectFieldOpen(true);
+            }
           }
           return;
-        }
+        } // ListField - END
 
         e.stopPropagation();
         if (isEnumField) {
@@ -607,46 +620,51 @@ function UnitablesBeeTableCell({
         e.stopPropagation();
       }
     },
-    [isEditing, submitRow, isListField, setEditingCell, isEnumField, onFieldChange, navigateVertically, xDmnFieldType]
+    [
+      isEditing,
+      isListField,
+      submitRow,
+      setEditingCell,
+      isEnumField,
+      onFieldChange,
+      navigateVertically,
+      fieldName,
+      xDmnFieldType,
+    ]
   );
 
   // if it's active should focus on cell;
   useEffect(() => {
-    if (isActive) {
-      if (isListField) {
-        console.log("useEffect, isListField");
-        if (isSelectFieldOpen) {
-          // if a SelectField is open, it takes a time to render the select options;
-          // After the select options are rendered we focus in the selected option;
-          setTimeout(() => {
-            const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
-            Array.from(selectOptions ?? [])
-              ?.filter((selectOption) => selectOption.innerText === cellRef.current?.innerText)?.[0]
-              ?.focus();
-          }, 0);
-        }
-        if (!isEditing) {
-          cellRef.current?.focus();
-        }
-        return;
+    if (!isActive) {
+      return;
+    }
+
+    if (isListField) {
+      console.log("useEffect", isSelectFieldOpen);
+      if (isSelectFieldOpen) {
+        setTimeout(() => {
+          document.querySelectorAll(`ul[name^="${fieldName}."]`)?.[0]?.getElementsByTagName("button")?.item(0)?.focus();
+        }, 0);
       }
-      if (isEnumField) {
-        if (isSelectFieldOpen) {
-          // if a SelectField is open, it takes a time to render the select options;
-          // After the select options are rendered we focus in the selected option;
-          setTimeout(() => {
-            const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
-            Array.from(selectOptions ?? [])
-              ?.filter((selectOption) => selectOption.innerText === cellRef.current?.innerText)?.[0]
-              ?.focus();
-          }, 0);
-        } else {
-          cellRef.current?.focus();
-        }
-      }
-      if (!isEditing) {
+    }
+
+    if (isEnumField) {
+      if (isSelectFieldOpen) {
+        // if a SelectField is open, it takes a time to render the select options;
+        // After the select options are rendered we focus in the selected option;
+        setTimeout(() => {
+          const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
+          Array.from(selectOptions ?? [])
+            ?.filter((selectOption) => selectOption.innerText === cellRef.current?.innerText)?.[0]
+            ?.focus();
+        }, 0);
+      } else {
         cellRef.current?.focus();
       }
+    }
+
+    if (!isEditing) {
+      cellRef.current?.focus();
     }
   }, [fieldName, isActive, isEditing, isListField, isEnumField, isSelectFieldOpen]);
 
@@ -654,8 +672,23 @@ function UnitablesBeeTableCell({
     (e: React.FocusEvent<HTMLDivElement>) => {
       if (isListField) {
         console.log("onBlur, isListField", isEditing, e);
+        if (
+          e.target.tagName.toLowerCase() === "button" &&
+          (e.relatedTarget as HTMLElement)?.tagName.toLowerCase() === "button"
+        ) {
+          // if the select field is open and it blurs to another cell, close it;
+          const selectField = document.querySelectorAll(`ul[name^="${fieldName}."]`).item(0);
+
+          // if relatedTarget aka button is not in the SelectField UL, it should close the SelectField
+          if (!selectField?.contains(e.relatedTarget as HTMLButtonElement)) {
+            (cellRef.current?.querySelector(`[id="${selectField?.id}"]`) as HTMLDivElement)?.click();
+            setIsSelectFieldOpen(false);
+            submitRow();
+          }
+        }
         return;
       }
+
       if (e.target.tagName.toLowerCase() === "div") {
         if ((e.target.getElementsByTagName("input")?.length ?? 0) > 0) {
           submitRow();
@@ -665,12 +698,8 @@ function UnitablesBeeTableCell({
       if (e.target.tagName.toLowerCase() === "input") {
         submitRow();
       }
+
       if (
-        e.target.tagName.toLowerCase() === "button" &&
-        (e.relatedTarget as HTMLElement)?.tagName.toLowerCase() === "button"
-      ) {
-        // ListField;
-      } else if (
         e.target.tagName.toLowerCase() === "button" ||
         (e.relatedTarget as HTMLElement)?.tagName.toLowerCase() === "button"
       ) {
@@ -688,6 +717,10 @@ function UnitablesBeeTableCell({
 
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
+      // The "enter" key triggers the onClick if the button is inside a form
+      if (e.detail === 0) {
+        return;
+      }
       // ListField
       if (
         e.isTrusted &&
@@ -696,6 +729,12 @@ function UnitablesBeeTableCell({
           (e.target as HTMLElement).tagName.toLowerCase() === "svg" ||
           (e.target as HTMLElement).tagName.toLowerCase() === "button")
       ) {
+        console.log("onClick, isListField", isEditing, e);
+        // if the select field is open and it blurs to another cell, close it;
+        const selectField = document.querySelectorAll(`ul[name^="${fieldName}."]`).item(0);
+        if (selectField?.contains(e.target as HTMLButtonElement)) {
+          setIsSelectFieldOpen((prev) => !prev);
+        }
         submitRow();
         return;
       }
@@ -720,7 +759,7 @@ function UnitablesBeeTableCell({
         }
       }
     },
-    [isEditing, isListField, setEditingCell, submitRow]
+    [fieldName, isEditing, isListField, setEditingCell, submitRow]
   );
 
   return (
