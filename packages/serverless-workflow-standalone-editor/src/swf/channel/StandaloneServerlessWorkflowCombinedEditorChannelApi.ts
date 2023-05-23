@@ -204,4 +204,11 @@ export class StandaloneServerlessWorkflowCombinedEditorChannelApi
   public kogitoSwfCombinedEditor_moveCursorToPosition(_position: MonacoPosition): void {
     // no-op
   }
+
+  kogitoSwfCombinedEditor_colorNodesBasedOnNames(_nodeNameList: string[], _isWorkflowCompleted: boolean): void {
+    // no-op
+  }
+  kogitoSwfCombinedEditor_combinedEditorReady(): void {
+    // no-op
+  }
 }
