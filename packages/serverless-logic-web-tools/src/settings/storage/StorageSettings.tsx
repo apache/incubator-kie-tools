@@ -78,7 +78,7 @@ export function StorageSettings() {
     alerts,
     useCallback(({ close }) => {
       setTimeout(() => {
-        history.push({ pathname: routes.home.path({}) });
+        window.location.href = window.location.origin + window.location.pathname;
       }, DELETE_ALERT_DELAY * 1000);
       return (
         <Alert
