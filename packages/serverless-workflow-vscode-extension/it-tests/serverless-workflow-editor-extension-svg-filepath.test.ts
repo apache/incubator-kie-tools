@@ -61,7 +61,6 @@ describe("Serverless workflow editor - SVG generation with path setting integrat
 
     // verify SVG was generated after file save
     const SVG_FILE_PATH: string = path.resolve(TEST_PROJECT_FOLDER, RESOURCE_FOLDER, svgName);
-    // assert(fs.existsSync(SVG_FILE_PATH), `SVG file was not generated at path: ${SVG_FILE_PATH}.`);
     expect(fs.readFileSync(SVG_FILE_PATH, "utf-8")).to.match(
       new RegExp("<svg.*<\\/svg>"),
       `SVG file was not generated correctly at path: ${SVG_FILE_PATH}.`
