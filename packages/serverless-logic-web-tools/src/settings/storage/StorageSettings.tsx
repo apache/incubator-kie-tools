@@ -28,7 +28,6 @@ import { routes } from "../../navigation/Routes";
 import { setPageTitle } from "../../PageTitle";
 import { ConfirmDeleteModal } from "../../table/ConfirmDeleteModal";
 import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
-import Dexie from "dexie";
 import { deleteAllCookies } from "../../cookies";
 import { isBrowserChromiumBased } from "../../workspace/startupBlockers/SupportedBrowsers";
 import { useHistory } from "react-router";
@@ -36,13 +35,12 @@ import { useHistory } from "react-router";
 const PAGE_TITLE = "Storage";
 
 /**
- * Delete all indexed DBs using Dexie
+ * Delete all indexed DBs
  */
 const deleteAllIndexedDBs = async () => {
-  const dbNames = await Dexie.getDatabaseNames();
-
-  // is not possible to use await here: Dexie doesn't reject or resolve the promise if the db is locked
-  dbNames.forEach(Dexie.delete);
+  Promise.all(
+    (await indexedDB.databases()).filter((db) => db.name).map(async (db) => indexedDB.deleteDatabase(db.name!))
+  );
 };
 
 function Timer(props: { delay: number }) {
