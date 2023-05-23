@@ -53,6 +53,8 @@ import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { assertUnreachable } from "../ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
 import "./DecisionTableExpression.css";
+import { BeeTableSelection, BeeTableSelectionActiveCell } from "../../selection/BeeTableSelectionContext";
+import _ from "lodash";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
@@ -91,13 +93,22 @@ export function DecisionTableExpression(
           { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
         ],
       },
+      {
+        group: _.upperCase(i18n.terms.selection),
+        items: [
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.paste, type: BeeTableOperation.SelectionPaste },
+          { name: i18n.terms.reset, type: BeeTableOperation.SelectionReset },
+        ],
+      },
     ],
     [i18n]
   );
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
     const config: BeeTableOperationConfig = {};
-    config[""] = generateOperationConfig(i18n.inputClause);
+    config[""] = generateOperationConfig(i18n.outputClause);
     config[DecisionTableColumnType.InputClause] = generateOperationConfig(i18n.inputClause);
     config[DecisionTableColumnType.OutputClause] = generateOperationConfig(i18n.outputClause);
     config[DecisionTableColumnType.Annotation] = generateOperationConfig(i18n.ruleAnnotation);
@@ -663,6 +674,62 @@ export function DecisionTableExpression(
     return decisionTableExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
   }, [decisionTableExpression.isNested]);
 
+  const allowedOperations = useCallback(
+    (
+      selection: BeeTableSelection,
+      reactTableInstanceRowsLength: number,
+      column: ReactTable.ColumnInstance<any> | undefined,
+      columns: ReactTable.ColumnInstance<any>[] | undefined
+    ) => {
+      if (!selection.selectionStart || !selection.selectionEnd) {
+        return [];
+      }
+
+      const columnIndex = selection.selectionStart.columnIndex;
+
+      const atLeastTwoColumnsOfTheSameGroupType = column?.groupType
+        ? _.groupBy(columns, (column) => column?.groupType)[column.groupType].length > 1
+        : true;
+
+      const columnCanBeDeleted =
+        columnIndex > 0 &&
+        atLeastTwoColumnsOfTheSameGroupType &&
+        (columns?.length ?? 0) > 2 && // That's a regular column and the rowIndex column
+        (column?.columns?.length ?? 0) <= 0;
+
+      const columnOperations =
+        columnIndex === 0 // This is the rowIndex column
+          ? []
+          : [
+              BeeTableOperation.ColumnInsertLeft,
+              BeeTableOperation.ColumnInsertRight,
+              ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
+            ];
+
+      return [
+        ...columnOperations,
+        ...(selection.selectionStart.rowIndex >= 0 && columnIndex > 0
+          ? [
+              BeeTableOperation.SelectionCopy,
+              BeeTableOperation.SelectionCut,
+              BeeTableOperation.SelectionPaste,
+              BeeTableOperation.SelectionReset,
+            ]
+          : []),
+        ...(selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              ...(reactTableInstanceRowsLength > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowReset,
+              BeeTableOperation.RowDuplicate,
+            ]
+          : []),
+      ];
+    },
+    []
+  );
+
   return (
     <div className={`decision-table-expression ${decisionTableExpression.id}`}>
       <BeeTable
@@ -674,6 +741,7 @@ export function DecisionTableExpression(
         headerVisibility={beeTableHeaderVisibility}
         editColumnLabel={getEditColumnLabel}
         operationConfig={beeTableOperationConfig}
+        allowedOperations={allowedOperations}
         columns={beeTableColumns}
         rows={beeTableRows}
         onColumnUpdates={onColumnUpdates}

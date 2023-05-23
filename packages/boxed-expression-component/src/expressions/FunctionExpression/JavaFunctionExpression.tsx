@@ -23,6 +23,7 @@ import * as ReactTable from "react-table";
 import {
   BeeTableCellProps,
   BeeTableHeaderVisibility,
+  BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
   DmnBuiltInDataType,
@@ -40,7 +41,11 @@ import {
   JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
-import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
+import {
+  BeeTableSelection,
+  BeeTableSelectionActiveCell,
+  useBeeTableSelectableCellRef,
+} from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
@@ -150,7 +155,7 @@ export function JavaFunctionExpression({
     return [
       {
         group: _.upperCase(i18n.function),
-        items: [],
+        items: [{ name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset }],
       },
     ];
   }, [i18n]);
@@ -258,6 +263,18 @@ export function JavaFunctionExpression({
     [setExpression]
   );
 
+  const allowedOperations = useCallback(
+    (
+      selection: BeeTableSelection,
+      reactTableInstanceRowsLength: number,
+      column: ReactTable.ColumnInstance<any> | undefined,
+      columns: ReactTable.ColumnInstance<any>[] | undefined
+    ) => {
+      return [];
+    },
+    []
+  );
+
   return (
     <div className={`function-expression ${functionExpression.id}`}>
       <BeeTable<JAVA_ROWTYPE>
@@ -265,6 +282,7 @@ export function JavaFunctionExpression({
         onColumnResizingWidthChange={onColumnResizingWidthChange}
         resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
         operationConfig={beeTableOperationConfig}
+        allowedOperations={allowedOperations}
         onColumnUpdates={onColumnUpdates}
         getRowKey={getRowKey}
         onRowReset={onRowReset}

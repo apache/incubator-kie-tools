@@ -45,6 +45,8 @@ import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
 import { ContextEntryInfoCell } from "../ContextExpression";
 import "./InvocationExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { BeeTableSelection, BeeTableSelectionActiveCell } from "../../selection/BeeTableSelectionContext";
+import _ from "lodash";
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -231,6 +233,16 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+          { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
+        ],
+      },
+      {
+        group: _.upperCase(i18n.terms.selection),
+        items: [
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.paste, type: BeeTableOperation.SelectionPaste },
+          { name: i18n.terms.reset, type: BeeTableOperation.SelectionReset },
         ],
       },
     ];
@@ -306,6 +318,32 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     [getDefaultArgumentEntry, setExpression]
   );
 
+  const allowedOperations = useCallback(
+    (
+      selection: BeeTableSelection,
+      reactTableInstanceRowsLength: number,
+      column: ReactTable.ColumnInstance<any> | undefined,
+      columns: ReactTable.ColumnInstance<any>[] | undefined
+    ) => {
+      if (!selection.selectionStart || !selection.selectionEnd) {
+        return [];
+      }
+
+      return [
+        ...(selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              ...(reactTableInstanceRowsLength > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowReset,
+              BeeTableOperation.RowDuplicate,
+            ]
+          : []),
+      ];
+    },
+    []
+  );
+
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`invocation-expression ${invocationExpression.id}`}>
@@ -321,6 +359,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
           onColumnUpdates={onColumnUpdates}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           operationConfig={beeTableOperationConfig}
+          allowedOperations={allowedOperations}
           getRowKey={getRowKey}
           onRowAdded={onRowAdded}
           onRowReset={onRowReset}

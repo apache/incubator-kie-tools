@@ -26,7 +26,11 @@ import { useCustomContextMenuHandler } from "../../contextMenu/Hooks";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import "./BeeTableContextMenuHandler.css";
-import { useBeeTableSelection, useBeeTableSelectionDispatch } from "../../selection/BeeTableSelectionContext";
+import {
+  BeeTableSelection,
+  useBeeTableSelection,
+  useBeeTableSelectionDispatch,
+} from "../../selection/BeeTableSelectionContext";
 import * as ReactTable from "react-table";
 import * as _ from "lodash";
 import CutIcon from "@patternfly/react-icons/dist/js/icons/cut-icon";
@@ -34,10 +38,18 @@ import CopyIcon from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import PasteIcon from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { EmptyState } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 export interface BeeTableContextMenuHandlerProps {
   tableRef: React.RefObject<HTMLDivElement | null>;
   operationConfig: BeeTableOperationConfig | undefined;
+  allowedOperations: (
+    selection: BeeTableSelection,
+    reactTableInstanceRowsLength: number,
+    column: ReactTable.ColumnInstance<any> | undefined,
+    columns: ReactTable.ColumnInstance<any>[] | undefined
+  ) => BeeTableOperation[];
   reactTableInstance: ReactTable.TableInstance<any>;
   //
   onRowAdded?: (args: { beforeIndex: number }) => void;
@@ -51,6 +63,7 @@ export interface BeeTableContextMenuHandlerProps {
 export function BeeTableContextMenuHandler({
   tableRef,
   operationConfig,
+  allowedOperations,
   reactTableInstance,
   onRowAdded,
   onRowDuplicated,
@@ -62,7 +75,12 @@ export function BeeTableContextMenuHandler({
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
 
-  const { activeCell } = useBeeTableSelection();
+  const { activeCell, selectionStart, selectionEnd } = useBeeTableSelection();
+  const selection: BeeTableSelection = {
+    active: activeCell,
+    selectionStart: selectionStart,
+    selectionEnd: selectionEnd,
+  };
   const { copy, cut, paste, erase } = useBeeTableSelectionDispatch();
 
   const columns = useMemo(() => {
@@ -85,32 +103,6 @@ export function BeeTableContextMenuHandler({
     return columns?.[columnIndex];
   }, [activeCell, columns]);
 
-  const columnOperations = useMemo(() => {
-    if (!activeCell) {
-      return [];
-    }
-
-    const columnIndex = activeCell.columnIndex;
-
-    const atLeastTwoColumnsOfTheSameGroupType = column?.groupType
-      ? _.groupBy(columns, (column) => column?.groupType)[column.groupType].length > 1
-      : true;
-
-    const columnCanBeDeleted =
-      columnIndex > 0 &&
-      atLeastTwoColumnsOfTheSameGroupType &&
-      (columns?.length ?? 0) > 2 && // That's a regular column and the rowIndex column
-      (column?.columns?.length ?? 0) <= 0;
-
-    return columnIndex === 0 // This is the rowIndex column
-      ? []
-      : [
-          BeeTableOperation.ColumnInsertLeft,
-          BeeTableOperation.ColumnInsertRight,
-          ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
-        ];
-  }, [activeCell, column, columns]);
-
   const operationGroups = useMemo(() => {
     if (!activeCell) {
       return [];
@@ -121,24 +113,9 @@ export function BeeTableContextMenuHandler({
     return (operationConfig ?? {})[column?.groupType || ""];
   }, [activeCell, column?.groupType, operationConfig]);
 
-  const allowedOperations = useMemo(() => {
-    if (!activeCell) {
-      return [];
-    }
-
-    return [
-      ...columnOperations,
-      ...(activeCell.rowIndex >= 0
-        ? [
-            BeeTableOperation.RowInsertAbove,
-            BeeTableOperation.RowInsertBelow,
-            ...(reactTableInstance.rows.length > 1 ? [BeeTableOperation.RowDelete] : []),
-            BeeTableOperation.RowReset,
-            BeeTableOperation.RowDuplicate,
-          ]
-        : []),
-    ];
-  }, [activeCell, columnOperations, reactTableInstance.rows.length]);
+  const allOperations = useMemo(() => {
+    return operationGroups.flatMap(({ group, items }) => items);
+  }, [operationGroups]);
 
   const operationLabel = useCallback(
     (operation: BeeTableOperation) => {
@@ -159,6 +136,14 @@ export function BeeTableContextMenuHandler({
           return i18n.rowOperations.reset;
         case BeeTableOperation.RowDuplicate:
           return i18n.rowOperations.duplicate;
+        case BeeTableOperation.SelectionCopy:
+          return i18n.terms.copy;
+        case BeeTableOperation.SelectionCut:
+          return i18n.terms.cut;
+        case BeeTableOperation.SelectionPaste:
+          return i18n.terms.paste;
+        case BeeTableOperation.SelectionReset:
+          return i18n.terms.reset;
         default:
           assertUnreachable(operation);
       }
@@ -184,6 +169,14 @@ export function BeeTableContextMenuHandler({
         return <CompressIcon />;
       case BeeTableOperation.RowDuplicate:
         return <BlueprintIcon />;
+      case BeeTableOperation.SelectionCopy:
+        return <CopyIcon />;
+      case BeeTableOperation.SelectionCut:
+        return <CutIcon />;
+      case BeeTableOperation.SelectionPaste:
+        return <PasteIcon />;
+      case BeeTableOperation.SelectionReset:
+        return <CompressIcon />;
       default:
         assertUnreachable(operation);
     }
@@ -243,6 +236,22 @@ export function BeeTableContextMenuHandler({
           onRowDuplicated?.({ rowIndex: rowIndex });
           console.info(`Duplicate row ${rowIndex}`);
           break;
+        case BeeTableOperation.SelectionCopy:
+          copy();
+          console.info("Copying");
+          break;
+        case BeeTableOperation.SelectionCut:
+          cut();
+          console.info("Cuting");
+          break;
+        case BeeTableOperation.SelectionPaste:
+          paste();
+          console.info("Pasting");
+          break;
+        case BeeTableOperation.SelectionReset:
+          erase();
+          console.info("Reseting");
+          break;
         default:
           assertUnreachable(operation);
       }
@@ -259,6 +268,10 @@ export function BeeTableContextMenuHandler({
       onRowDeleted,
       onRowReset,
       onRowDuplicated,
+      copy,
+      cut,
+      paste,
+      erase,
     ]
   );
 
@@ -293,6 +306,13 @@ export function BeeTableContextMenuHandler({
     }
   });
 
+  const reactTableInstanceRowsLength = useMemo(() => {
+    return reactTableInstance.rows.length;
+  }, [reactTableInstance.rows.length]);
+
+  const currentAllowedOperations = allowedOperations(selection, reactTableInstanceRowsLength, column, columns);
+  const someOperationIsAllowed = allOperations.some((operation) => currentAllowedOperations.includes(operation.type));
+
   return (
     <>
       {isOpen && (
@@ -307,56 +327,40 @@ export function BeeTableContextMenuHandler({
             className="table-context-menu"
             onSelect={(e, itemId) => handleOperation(itemId as BeeTableOperation)}
           >
-            {operationGroups.map(({ group, items }) => (
-              <React.Fragment key={group}>
-                <MenuGroup
-                  label={group}
-                  className={
-                    items.every((operation) => !allowedOperations.includes(operation.type))
-                      ? "no-allowed-actions-in-group"
-                      : ""
-                  }
-                >
-                  <MenuList>
-                    {items.map((operation) => (
-                      <MenuItem
-                        icon={operationIcon(operation.type)}
-                        data-ouia-component-id={"expression-table-context-menu-" + operation.name}
-                        key={operation.type + group}
-                        itemId={operation.type}
-                        isDisabled={!allowedOperations.includes(operation.type)}
-                      >
-                        {operationLabel(operation.type)}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </MenuGroup>
-                {items.some((operation) => allowedOperations.includes(operation.type)) && (
-                  <Divider key={"divider-" + group} style={{ padding: "16px" }} />
-                )}
-              </React.Fragment>
-            ))}
-
-            <MenuGroup label={"SELECTION"}>
-              <MenuList>
-                {/* FIXME: Depends on some cells registering setValue (https://github.com/kiegroup/kie-issues/issues/168) */}
-                <MenuItem onClick={erase} icon={<CompressIcon />}>
-                  {i18n.terms.reset}
-                </MenuItem>
-                {/* FIXME: Depends on some cells registering getValue (https://github.com/kiegroup/kie-issues/issues/168) */}
-                <MenuItem onClick={copy} icon={<CopyIcon />}>
-                  {i18n.terms.copy}
-                </MenuItem>
-                {/* FIXME: Depends on some cells registering getValue AND setValue (https://github.com/kiegroup/kie-issues/issues/168) */}
-                <MenuItem onClick={cut} icon={<CutIcon />}>
-                  {i18n.terms.cut}
-                </MenuItem>
-                {/* FIXME: Depends on some cells registering setValue (https://github.com/kiegroup/kie-issues/issues/168)*/}
-                <MenuItem onClick={paste} icon={<PasteIcon />}>
-                  {i18n.terms.paste}
-                </MenuItem>
-              </MenuList>
-            </MenuGroup>
+            {someOperationIsAllowed &&
+              operationGroups.map(({ group, items }, operationGroupIndex) => (
+                <React.Fragment key={group}>
+                  {items.some((operation) => currentAllowedOperations.includes(operation.type)) &&
+                    operationGroupIndex > 0 && <Divider key={"divider-" + group} style={{ padding: "16px" }} />}
+                  <MenuGroup
+                    label={group}
+                    className={
+                      items.every((operation) => !currentAllowedOperations.includes(operation.type))
+                        ? "no-allowed-actions-in-group"
+                        : ""
+                    }
+                  >
+                    <MenuList>
+                      {items.map((operation) => (
+                        <MenuItem
+                          icon={operationIcon(operation.type)}
+                          data-ouia-component-id={"expression-table-context-menu-" + operation.name}
+                          key={operation.type + group}
+                          itemId={operation.type}
+                          isDisabled={!currentAllowedOperations.includes(operation.type)}
+                        >
+                          {operationLabel(operation.type)}
+                        </MenuItem>
+                      ))}
+                    </MenuList>
+                  </MenuGroup>
+                </React.Fragment>
+              ))}
+            {!someOperationIsAllowed && (
+              <EmptyState>
+                <Title headingLevel="h6">{i18n.noOperationsAvailable}</Title>
+              </EmptyState>
+            )}
           </Menu>
         </div>
       )}

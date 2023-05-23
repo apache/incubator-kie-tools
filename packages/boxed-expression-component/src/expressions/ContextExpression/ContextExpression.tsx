@@ -38,7 +38,12 @@ import {
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
   CONTEXT_EXPRESSION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
-import { useBeeTableSelectableCellRef, useBeeTableCoordinates } from "../../selection/BeeTableSelectionContext";
+import {
+  useBeeTableSelectableCellRef,
+  useBeeTableCoordinates,
+  BeeTableSelectionActiveCell,
+  BeeTableSelection,
+} from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
@@ -49,6 +54,7 @@ import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
 import "./ContextExpression.css";
 import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
+import _ from "lodash";
 
 const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
@@ -196,6 +202,16 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+          { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
+        ],
+      },
+      {
+        group: _.upperCase(i18n.terms.selection),
+        items: [
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.paste, type: BeeTableOperation.SelectionPaste },
+          { name: i18n.terms.reset, type: BeeTableOperation.SelectionReset },
         ],
       },
     ];
@@ -298,6 +314,45 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     [getDefaultContextEntry, setExpression]
   );
 
+  const allowedOperations = useCallback(
+    (
+      selection: BeeTableSelection,
+      reactTableInstanceRowsLength: number,
+      column: ReactTable.ColumnInstance<any> | undefined,
+      columns: ReactTable.ColumnInstance<any>[] | undefined
+    ) => {
+      if (!selection.selectionStart || !selection.selectionEnd) {
+        return [];
+      }
+
+      const columnIndex = selection.selectionStart.columnIndex;
+      const rowIndex = selection.selectionStart.rowIndex;
+
+      return [
+        ...(columnIndex > 1
+          ? [
+              BeeTableOperation.SelectionCopy,
+              BeeTableOperation.SelectionCut,
+              BeeTableOperation.SelectionPaste,
+              BeeTableOperation.SelectionReset,
+            ]
+          : []),
+        ...(selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              ...(rowIndex !== reactTableInstanceRowsLength ? [BeeTableOperation.RowInsertBelow] : []), // do not insert below <result>
+              ...(reactTableInstanceRowsLength > 1 && rowIndex !== reactTableInstanceRowsLength
+                ? [BeeTableOperation.RowDelete]
+                : []), // do not delete <result>
+              BeeTableOperation.RowReset,
+              ...(rowIndex !== reactTableInstanceRowsLength ? [BeeTableOperation.RowDuplicate] : []), // do not duplicate <result>
+            ]
+          : []),
+      ];
+    },
+    []
+  );
+
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`context-expression ${contextExpression.id}`}>
@@ -311,6 +366,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           rows={contextExpression.contextEntries}
           onColumnUpdates={onColumnUpdates}
           operationConfig={beeTableOperationConfig}
+          allowedOperations={allowedOperations}
           getRowKey={getRowKey}
           additionalRow={beeTableAdditionalRow}
           onRowAdded={onRowAdded}

@@ -42,6 +42,8 @@ import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./ListExpression.css";
 import { ListItemCell } from "./ListItemCell";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
+import { BeeTableSelection, BeeTableSelectionActiveCell } from "../../selection/BeeTableSelectionContext";
+import _ from "lodash";
 
 export type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -81,6 +83,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+          { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
         ],
       },
     ],
@@ -181,6 +184,32 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
     [setExpression]
   );
 
+  const allowedOperations = useCallback(
+    (
+      selection: BeeTableSelection,
+      reactTableInstanceRowsLength: number,
+      column: ReactTable.ColumnInstance<any> | undefined,
+      columns: ReactTable.ColumnInstance<any>[] | undefined
+    ) => {
+      if (!selection.selectionStart || !selection.selectionEnd) {
+        return [];
+      }
+
+      return [
+        ...(selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              ...(reactTableInstanceRowsLength > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowReset,
+              BeeTableOperation.RowDuplicate,
+            ]
+          : []),
+      ];
+    },
+    []
+  );
+
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`${listExpression.id} list-expression`}>
@@ -193,6 +222,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
           columns={beeTableColumns}
           rows={beeTableRows}
           operationConfig={beeTableOperationConfig}
+          allowedOperations={allowedOperations}
           getRowKey={getRowKey}
           onRowAdded={onRowAdded}
           onRowDeleted={onRowDeleted}
