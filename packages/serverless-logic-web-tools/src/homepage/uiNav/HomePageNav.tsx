@@ -26,7 +26,12 @@ export function HomePageNav(props: { pathname: string }) {
     <>
       <Nav aria-label="Global NAV" theme="dark">
         <NavList>
-          <NavItem itemId={0} key={"Overview-nav"} isActive={props.pathname === routes.home.path({})}>
+          <NavItem
+            itemId={0}
+            key={"Overview-nav"}
+            isActive={props.pathname === routes.home.path({})}
+            ouiaId="overview-nav"
+          >
             <Link to={routes.home.path({})}>Overview</Link>
           </NavItem>
 
@@ -38,11 +43,17 @@ export function HomePageNav(props: { pathname: string }) {
               matchPath(props.pathname, { path: routes.workspaceWithFiles.path({ workspaceId: ":workspaceId" }) })
                 ?.isExact
             }
+            ouiaId="recent-models-nav"
           >
             <Link to={routes.recentModels.path({})}>Recent Models</Link>
           </NavItem>
 
-          <NavItem itemId={2} key={"SampleCatalog-nav"} isActive={props.pathname === routes.sampleCatalog.path({})}>
+          <NavItem
+            itemId={2}
+            key={"SampleCatalog-nav"}
+            isActive={props.pathname === routes.sampleCatalog.path({})}
+            ouiaId="samples-catalog-nav"
+          >
             <Link to={routes.sampleCatalog.path({})}>Sample Catalog</Link>
           </NavItem>
 
