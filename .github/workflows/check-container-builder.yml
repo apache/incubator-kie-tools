@@ -62,8 +62,8 @@ jobs:
         run: |
           wget http://security.ubuntu.com/ubuntu/pool/main/s/shadow/libsubid4_4.11.1+dfsg1-2ubuntu1.1_amd64.deb
           sudo dpkg -i libsubid4_4.11.1+dfsg1-2ubuntu1.1_amd64.deb
-          wget http://ftp.us.debian.org/debian/pool/main/libp/libpod/podman_4.3.1+ds1-6+b2_amd64.deb
-          sudo dpkg -i podman_4.3.1+ds1-6+b2_amd64.deb
+          wget http://ftp.us.debian.org/debian/pool/main/libp/libpod/podman_4.4.0+ds1-1_amd64.deb
+          sudo dpkg -i podman_4.4.0+ds1-1_amd64.deb
       - name: Setup golang
         uses: actions/setup-go@v2
         with:

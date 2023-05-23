@@ -35,8 +35,11 @@ newMajorMinorVersion=${new_version%.*}
 if [ "${old_version}" = "${latest_version}" ]; then
   oldMajorMinorVersion='latest'
 fi
+if [ "${new_version}" = "${latest_version}" ]; then
+  newMajorMinorVersion='latest'
+fi
 
-echo "Set new version to ${new_version} (nightly = ${snapshot}, majorMinor = ${majorMinor})"
+echo "Set new version to ${new_version} (img_suffix = '${imageSuffix}', majorMinor = ${newMajorMinorVersion})"
 
 sed -i "s|^VERSION ?=.*|VERSION ?= ${new_version}|g" Makefile
 sed -i "s|newTag:.*|newTag: ${new_version}|g" config/manager/kustomization.yaml
