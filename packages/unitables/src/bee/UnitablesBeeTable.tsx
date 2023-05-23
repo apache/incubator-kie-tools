@@ -328,6 +328,7 @@ function UnitablesBeeTableCell({
   // FIXME: Decouple from DMN --> https://github.com/kiegroup/kie-issues/issues/166
   const setValue = useCallback(
     (newValue?: string) => {
+      console.log("setValue", newValue);
       isBeeTableChange.current = true;
       const newValueWithoutSymbols = newValue?.replace(/\r/g, "") ?? "";
 
@@ -420,7 +421,7 @@ function UnitablesBeeTableCell({
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      console.log("onKeyDown", e);
+      console.log("onKeyDown, isListField", isListField, e);
 
       // TAB
       if (e.key.toLowerCase() === "tab") {
@@ -517,6 +518,7 @@ function UnitablesBeeTableCell({
         // ListField - START
         if (isListField) {
           e.stopPropagation();
+          e.preventDefault();
           const uniformsComponents = cellRef.current?.querySelectorAll('[id^="uniforms-"]');
           if (!uniformsComponents) {
             return;
@@ -525,7 +527,6 @@ function UnitablesBeeTableCell({
           // To search the uniforms components avoiding returning the top ListField
           // we search backwards;
           const reversedUniformsComponents = Array.from(uniformsComponents).reverse();
-
           const reversedUniformComponentTargetIndex = reversedUniformsComponents.findIndex((component) =>
             component.contains(e.target as HTMLElement)
           );
@@ -635,20 +636,19 @@ function UnitablesBeeTableCell({
 
   // if it's active should focus on cell;
   useEffect(() => {
+    console.log("useEffect, isListField", isListField);
+
     if (!isActive) {
       return;
     }
 
     if (isListField) {
-      console.log("useEffect", isSelectFieldOpen);
       if (isSelectFieldOpen) {
         setTimeout(() => {
           document.querySelectorAll(`ul[name^="${fieldName}."]`)?.[0]?.getElementsByTagName("button")?.item(0)?.focus();
         }, 0);
       }
-    }
-
-    if (isEnumField) {
+    } else if (isEnumField) {
       if (isSelectFieldOpen) {
         // if a SelectField is open, it takes a time to render the select options;
         // After the select options are rendered we focus in the selected option;
@@ -670,18 +670,17 @@ function UnitablesBeeTableCell({
 
   const onBlur = useCallback(
     (e: React.FocusEvent<HTMLDivElement>) => {
+      console.log("onBlur, isListField", isListField, e);
       if (isListField) {
-        console.log("onBlur, isListField", isEditing, e);
         if (
           e.target.tagName.toLowerCase() === "button" &&
           (e.relatedTarget as HTMLElement)?.tagName.toLowerCase() === "button"
         ) {
           // if the select field is open and it blurs to another cell, close it;
-          const selectField = document.querySelectorAll(`ul[name^="${fieldName}."]`).item(0);
-
+          const selectFieldUl = document.querySelectorAll(`ul[name^="${fieldName}."]`).item(0);
           // if relatedTarget aka button is not in the SelectField UL, it should close the SelectField
-          if (!selectField?.contains(e.relatedTarget as HTMLButtonElement)) {
-            (cellRef.current?.querySelector(`[id="${selectField?.id}"]`) as HTMLDivElement)?.click();
+          if (selectFieldUl && !selectFieldUl?.contains(e.relatedTarget as HTMLButtonElement)) {
+            (cellRef.current?.querySelector(`[id="${selectFieldUl?.id}"]`) as HTMLDivElement)?.click();
             setIsSelectFieldOpen(false);
             submitRow();
           }
@@ -712,11 +711,12 @@ function UnitablesBeeTableCell({
         submitRow();
       }
     },
-    [fieldName, isEditing, isListField, submitRow]
+    [fieldName, isListField, submitRow]
   );
 
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
+      console.log("onClick, isListField", isListField, e);
       // The "enter" key triggers the onClick if the button is inside a form
       if (e.detail === 0) {
         return;
@@ -729,7 +729,6 @@ function UnitablesBeeTableCell({
           (e.target as HTMLElement).tagName.toLowerCase() === "svg" ||
           (e.target as HTMLElement).tagName.toLowerCase() === "button")
       ) {
-        console.log("onClick, isListField", isEditing, e);
         // if the select field is open and it blurs to another cell, close it;
         const selectField = document.querySelectorAll(`ul[name^="${fieldName}."]`).item(0);
         if (selectField?.contains(e.target as HTMLButtonElement)) {
