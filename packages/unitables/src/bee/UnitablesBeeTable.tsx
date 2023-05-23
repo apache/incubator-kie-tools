@@ -209,7 +209,11 @@ export function UnitablesBeeTable({
           width: undefined,
           columns: column.insideProperties.flatMap((insideProperty) => {
             let minWidth = insideProperty.minWidth ?? insideProperty.width;
+            const width =
+              (getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ??
+              DEFAULT_COLUMN_MIN_WIDTH;
             if (insideProperty.type === "array") {
+              // width = calculateListFieldWidth(insideProperty.joinedName);
               minWidth = calculateListFieldWidth(insideProperty.joinedName);
             }
             return {
@@ -218,9 +222,7 @@ export function UnitablesBeeTable({
               accessor: getColumnAccessor(insideProperty),
               dataType: insideProperty.dataType,
               isRowIndexColumn: false,
-              width:
-                (getObjectValueByPath(configs, insideProperty.joinedName) as UnitablesCellConfigs)?.width ??
-                DEFAULT_COLUMN_MIN_WIDTH,
+              width,
               setWidth: setColumnWidth(insideProperty.joinedName),
               minWidth,
             };
@@ -228,7 +230,9 @@ export function UnitablesBeeTable({
         };
       } else {
         let minWidth = column.width;
+        const width = (getObjectValueByPath(configs, column.name) as UnitablesCellConfigs)?.width ?? column.width;
         if (column.type === "array") {
+          // width = calculateListFieldWidth(column.joinedName);
           minWidth = calculateListFieldWidth(column.joinedName);
         }
         return {
@@ -245,7 +249,7 @@ export function UnitablesBeeTable({
               accessor: getColumnAccessor(column),
               dataType: column.dataType,
               isRowIndexColumn: false,
-              width: (getObjectValueByPath(configs, column.name) as UnitablesCellConfigs)?.width ?? column.width,
+              width,
               setWidth: setColumnWidth(column.name),
               minWidth,
             },
@@ -609,6 +613,20 @@ function UnitablesBeeTableCell({
   // if it's active should focus on cell;
   useEffect(() => {
     if (isActive) {
+      if (isListField) {
+        console.log("useEffect, isListField");
+        if (isSelectFieldOpen) {
+          // if a SelectField is open, it takes a time to render the select options;
+          // After the select options are rendered we focus in the selected option;
+          setTimeout(() => {
+            const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
+            Array.from(selectOptions ?? [])
+              ?.filter((selectOption) => selectOption.innerText === cellRef.current?.innerText)?.[0]
+              ?.focus();
+          }, 0);
+        }
+        return;
+      }
       if (isEnumField) {
         if (isSelectFieldOpen) {
           // if a SelectField is open, it takes a time to render the select options;
@@ -623,19 +641,6 @@ function UnitablesBeeTableCell({
           cellRef.current?.focus();
         }
       }
-      if (isListField) {
-        console.log("useEffect, isListField");
-        if (isSelectFieldOpen) {
-          // if a SelectField is open, it takes a time to render the select options;
-          // After the select options are rendered we focus in the selected option;
-          setTimeout(() => {
-            const selectOptions = document.getElementsByName(fieldName)?.[0]?.getElementsByTagName("button");
-            Array.from(selectOptions ?? [])
-              ?.filter((selectOption) => selectOption.innerText === cellRef.current?.innerText)?.[0]
-              ?.focus();
-          }, 0);
-        }
-      }
       if (!isEditing) {
         cellRef.current?.focus();
       }
@@ -645,7 +650,7 @@ function UnitablesBeeTableCell({
   const onBlur = useCallback(
     (e: React.FocusEvent<HTMLDivElement>) => {
       if (isListField) {
-        console.log("onBlue, isListField", isEditing, e);
+        console.log("onBlur, isListField", isEditing, e);
         return;
       }
       if (e.target.tagName.toLowerCase() === "div") {
@@ -680,12 +685,20 @@ function UnitablesBeeTableCell({
 
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
-        if (isListField) {
-          console.log("onClick, isListField", isEditing, e);
-          submitRow();
-        }
+      // ListField
+      if (
+        e.isTrusted &&
+        isListField &&
+        ((e.target as HTMLElement).tagName.toLowerCase() === "path" ||
+          (e.target as HTMLElement).tagName.toLowerCase() === "svg" ||
+          (e.target as HTMLElement).tagName.toLowerCase() === "button")
+      ) {
+        submitRow();
+        return;
+      }
 
+      // SelectField
+      if (e.isTrusted && (e.target as HTMLElement).tagName.toLowerCase() === "button") {
         setIsSelectFieldOpen((prev) => {
           if (prev === true) {
             submitRow();

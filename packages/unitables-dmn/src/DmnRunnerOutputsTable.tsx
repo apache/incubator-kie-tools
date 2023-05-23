@@ -60,11 +60,13 @@ export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrolla
     outputErrorBoundaryRef.current?.reset();
   }, [outputsPropertiesMap]);
 
+  const resultsQtt = useMemo(() => results?.reduce((acc, result) => acc + (result?.length ?? 0), 0) ?? 0, [results]);
+
   return (
     <>
       {outputError ? (
         outputError
-      ) : Array.from(outputsPropertiesMap).length > 0 ? (
+      ) : resultsQtt > 0 ? (
         <ErrorBoundary ref={outputErrorBoundaryRef} setHasError={setOutputError} error={<OutputError />}>
           <OutputsBeeTable
             scrollableParentRef={scrollableParentRef}
