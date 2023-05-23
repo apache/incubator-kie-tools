@@ -208,6 +208,8 @@ export class VSCodeTestHelper {
 
   /**
    * Waits until folder structure in explorer is loaded and expanded.
+   *
+   * @param firstFolderOfPath the name of the first folder of a path in the explorer
    */
   private waitUntilFolderStructureIsExpanded = async (firstFolderOfPath: string): Promise<void> => {
     await this.driver.wait(
