@@ -45,6 +45,7 @@ import {
 import { SettingsButton } from "../../settings/SettingsButton";
 import { HomePageNav } from "../uiNav/HomePageNav";
 import { APP_NAME } from "../../AppConstants";
+import { isBrowserChromiumBased } from "../../workspace/startupBlockers/SupportedBrowsers";
 
 export type OnlineEditorPageProps = {
   children?: React.ReactNode;
@@ -69,10 +70,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
     useQueryParams: false,
   };
 
-  const isChromiumBased = useMemo(() => {
-    const agent = window.navigator.userAgent.toLowerCase();
-    return agent.indexOf("edg") > -1 || agent.indexOf("chrome") > -1;
-  }, []);
+  const isChromiumBased = useMemo(isBrowserChromiumBased, []);
 
   const headerToolbar = (
     <Toolbar id="toolbar" isFullHeight isStatic>

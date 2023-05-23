@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
+import React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import * as React from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
+import { isBrowserChromiumBased } from "../../workspace/startupBlockers/SupportedBrowsers";
 
 export function SettingsPageNav(props: { pathname: string }) {
   const routes = useRoutes();
+
+  const isChromiumBased = useMemo(isBrowserChromiumBased, []);
 
   return (
     <>
@@ -65,6 +69,15 @@ export function SettingsPageNav(props: { pathname: string }) {
           >
             <Link to={routes.settings.feature_preview.path({})}>Feature Preview</Link>
           </NavItem>
+          {isChromiumBased && (
+            <NavItem
+              itemId={0}
+              key={`Settings-storage-nav`}
+              isActive={props.pathname === routes.settings.storage.path({})}
+            >
+              <Link to={routes.settings.storage.path({})}>Storage</Link>
+            </NavItem>
+          )}
         </NavList>
       </Nav>
     </>
