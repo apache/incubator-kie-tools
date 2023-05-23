@@ -209,13 +209,13 @@ export class VSCodeTestHelper {
   /**
    * Waits until folder structure in explorer is loaded and expanded.
    *
-   * @param firstFolderOfPath the name of the first folder of a path in the explorer
+   * @param topLevelFolderName the name of the top level folder in the explorer
    */
-  private waitUntilFolderStructureIsExpanded = async (firstFolderOfPath: string): Promise<void> => {
+  private waitUntilFolderStructureIsExpanded = async (topLevelFolderName: string): Promise<void> => {
     await this.driver.wait(
       async () => {
         const currentValue = await this.driver
-          .findElement(explorerFolder(firstFolderOfPath))
+          .findElement(explorerFolder(topLevelFolderName))
           .getAttribute("aria-expanded");
         return currentValue === "true";
       },
