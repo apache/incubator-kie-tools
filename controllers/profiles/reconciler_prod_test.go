@@ -17,6 +17,7 @@ package profiles
 import (
 	"context"
 	"testing"
+	"time"
 
 	"k8s.io/client-go/rest"
 
@@ -128,4 +129,35 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	assert.Equal(t, int32(8080), deployment.Spec.Template.Spec.Containers[0].Ports[0].ContainerPort)
 	*/
 
+}
+
+func Test_GenerationAnnotationCheck(t *testing.T) {
+	logger := ctrllog.FromContext(context.TODO())
+	// we load a workflow with metadata.generation to 0
+	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
+	// make sure that the workflow won't trigger a change
+	workflow.Status.Applied = workflow.Spec
+	platform := test.GetKogitoServerlessPlatformInReadyPhase("../../config/samples/"+test.KogitoServerlessPlatformWithCacheYamlCR, t.Name())
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).Build()
+	handler := &deployWorkflowReconciliationState{
+		stateSupport: fakeReconcilerSupport(client),
+		ensurers:     newProdObjectEnsurers(&stateSupport{logger: &logger, client: client}),
+	}
+	result, objects, err := handler.Do(context.TODO(), workflow)
+	assert.Greater(t, result.RequeueAfter, int64(0))
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+	assert.Len(t, objects, 2)
+	// then we load a workflow with metadata.generation set to 1
+	workflowChanged := test.GetKogitoServerlessWorkflow("../../test/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
+	client = test.NewKogitoClientBuilder().WithRuntimeObjects(workflowChanged, platform).Build()
+	handler = &deployWorkflowReconciliationState{
+		stateSupport: fakeReconcilerSupport(client),
+		ensurers:     newProdObjectEnsurers(&stateSupport{logger: &logger, client: client}),
+	}
+	result, objects, err = handler.Do(context.TODO(), workflowChanged)
+	assert.Equal(t, result.RequeueAfter, time.Duration(0))
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+	assert.Len(t, objects, 0)
 }

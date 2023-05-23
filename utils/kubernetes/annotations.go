@@ -14,10 +14,19 @@
 package kubernetes
 
 import (
+	"context"
 	"strings"
+
+	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+
+	"github.com/go-logr/logr"
+	client "sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 )
+
+const LastAppliedConfigurationAnnotation = "kubectl.kubernetes.io/last-applied-configuration"
+const GenerationAnnotation = "generation"
 
 func GetAnnotationResource(value string) string {
 	stringArray := strings.Split(value, "/")
@@ -26,4 +35,20 @@ func GetAnnotationResource(value string) string {
 	} else {
 		return ""
 	}
+}
+
+func getWorkflow(namespace string, name string, c client.Client, ctx context.Context, logger *logr.Logger) *operatorapi.KogitoServerlessWorkflow {
+	serverlessWorkflowType := &operatorapi.KogitoServerlessWorkflow{}
+	serverlessWorkflowType.Namespace = namespace
+	serverlessWorkflowType.Name = name
+	serverlessWorkflow := &operatorapi.KogitoServerlessWorkflow{}
+	if err := c.Get(ctx, client.ObjectKeyFromObject(serverlessWorkflowType), serverlessWorkflow); err != nil {
+		logger.Error(err, "Error during Get")
+	}
+	return serverlessWorkflow
+}
+
+func GetLastGeneration(namespace string, name string, c client.Client, ctx context.Context, logger *logr.Logger) int64 {
+	workflow := getWorkflow(namespace, name, c, ctx, logger)
+	return workflow.Generation
 }

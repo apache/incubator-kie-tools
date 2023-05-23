@@ -19,6 +19,8 @@ import (
 	"fmt"
 	"time"
 
+	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
+
 	"k8s.io/client-go/rest"
 
 	"github.com/go-logr/logr"
@@ -196,7 +198,7 @@ func (h *deployWorkflowReconciliationState) Do(ctx context.Context, workflow *op
 		return ctrl.Result{RequeueAfter: requeueWhileWaitForPlatform}, nil, err
 	}
 
-	if markRunningUnknownIfWorkflowChanged(workflow) { // Let's check that the 2 workflow definition are different
+	if markRunningUnknownIfWorkflowChanged(ctx, workflow, h.client, h.logger) { // Let's check that the 2 workflow definition are different
 		_, err = h.performStatusUpdate(ctx, workflow)
 		return ctrl.Result{Requeue: true}, nil, err
 	}
@@ -258,10 +260,9 @@ func (h *deployWorkflowReconciliationState) handleObjects(ctx context.Context, w
 }
 
 // markRunningUnknownIfWorkflowChanged marks the workflow status as unknown to require a new build reconciliation
-func markRunningUnknownIfWorkflowChanged(workflow *operatorapi.KogitoServerlessWorkflow) bool {
-	// TODO: make sure that we handle this differently and not a copy of the spec in the status attribute, this can potentially make the status field unreadable. See: https://issues.redhat.com/browse/KOGITO-8644
-	if !utils.Compare(utils.GetWorkflowSpecHash(workflow.Status.Applied), utils.GetWorkflowSpecHash(workflow.Spec)) { // Let's check that the 2 workflow definition are different
-		workflow.Status.Manager().MarkUnknown(api.RunningConditionType, "", "")
+func markRunningUnknownIfWorkflowChanged(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow, client client.Client, logger *logr.Logger) bool {
+	generation := kubeutil.GetLastGeneration(workflow.Namespace, workflow.Name, client, ctx, logger)
+	if generation > workflow.Status.ObservedGeneration {
 		return true
 	}
 	return false
