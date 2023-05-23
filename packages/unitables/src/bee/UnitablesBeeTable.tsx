@@ -625,6 +625,9 @@ function UnitablesBeeTableCell({
               ?.focus();
           }, 0);
         }
+        if (!isEditing) {
+          cellRef.current?.focus();
+        }
         return;
       }
       if (isEnumField) {
