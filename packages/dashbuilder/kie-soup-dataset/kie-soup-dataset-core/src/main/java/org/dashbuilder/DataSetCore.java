@@ -15,7 +15,6 @@
  */
 package org.dashbuilder;
 
-import org.dashbuilder.dataprovider.BeanDataSetProvider;
 import org.dashbuilder.dataprovider.DataSetProviderRegistry;
 import org.dashbuilder.dataprovider.StaticDataSetProvider;
 import org.dashbuilder.dataset.AbstractDataSetCore;
@@ -58,8 +57,6 @@ public abstract class DataSetCore extends AbstractDataSetCore {
 
     public abstract DataSetDefDeployer getDataSetDefDeployer();
 
-    public abstract BeanDataSetProvider getBeanDataSetProvider();
-
     public abstract StaticDataSetProvider getStaticDataSetProvider();
 
     public abstract IntervalBuilderDynamicDate getIntervalBuilderDynamicDate();
@@ -77,8 +74,6 @@ public abstract class DataSetCore extends AbstractDataSetCore {
     public abstract void setDataSetProviderRegistry(DataSetProviderRegistry dataSetProviderRegistry);
 
     public abstract void setDataSetDefDeployer(DataSetDefDeployer dataSetDefDeployer);
-
-    public abstract void setBeanDataSetProvider(BeanDataSetProvider beanDataSetProvider);
 
     public abstract void setStaticDataSetProvider(StaticDataSetProvider staticDataSetProvider);
 

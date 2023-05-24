@@ -41,6 +41,11 @@ public class ExpressionTest {
             }
 
             @Override
+            public Expression exactCopy() {
+                return expression;
+            }
+
+            @Override
             public Optional<DomainObject> findDomainObject(final String uuid) {
                 return Optional.empty();
             }

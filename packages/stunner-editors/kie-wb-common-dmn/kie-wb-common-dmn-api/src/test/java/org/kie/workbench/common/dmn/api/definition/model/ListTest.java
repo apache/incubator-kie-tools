@@ -102,6 +102,24 @@ public class ListTest {
     }
 
     @Test
+    public void testExactCopy() {
+        final List source = new List(
+                new Id(LIST_ID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                new ArrayList<>()
+        );
+
+        final List target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(LIST_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertTrue(target.getExpression().isEmpty());
+    }
+
+    @Test
     public void testFindDomainObject() {
 
         final List list = new List();

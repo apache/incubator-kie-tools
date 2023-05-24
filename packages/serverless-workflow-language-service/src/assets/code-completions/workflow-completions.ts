@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Specification } from "@severlessworkflow/sdk-typescript";
-import { OmitRecursively } from "../../channel";
+import { OmitRecursively } from "@kie-tools/json-yaml-language-service/dist/channel";
 
 export const workflowCompletion: OmitRecursively<Specification.Workflow, "normalize"> = {
   id: "${1:Workflow unique identifier}",

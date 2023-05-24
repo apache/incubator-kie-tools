@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { useCallback, useMemo } from "react";
 import { ResourceContentOptions } from "@kie-tools-core/workspace/dist/api";
 import { WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
@@ -26,25 +26,46 @@ import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 type Props = {
   children: React.ReactNode;
   workspacesSharedWorkerScriptUrl: string;
+  workerNamePrefix: string;
 } & (
   | {
       shouldRequireCommitMessage: false;
     }
   | {
       shouldRequireCommitMessage: true;
-      onCommitMessageRequest: () => Promise<string>;
+      onCommitMessageRequest: (defaultCommitMessage?: string) => Promise<string>;
     }
 );
 
 export function WorkspacesContextProvider(props: Props) {
-  const workspacesSharedWorker = useMemo(
-    () =>
-      new WorkspacesSharedWorker({
-        workerName: "workspaces-shared-worker",
-        workerScriptUrl: props.workspacesSharedWorkerScriptUrl,
-      }),
-    [props.workspacesSharedWorkerScriptUrl]
+  const [workspacesSharedWorker, setWorkspacesSharedWorker] = useState<WorkspacesSharedWorker>(
+    new WorkspacesSharedWorker({
+      workerName: `${props.workerNamePrefix}-workspaces-shared-worker`,
+      workerScriptUrl: props.workspacesSharedWorkerScriptUrl,
+    })
   );
+
+  const updateWorkspaceSharedWorker = useCallback(() => {
+    setWorkspacesSharedWorker((currentWorkspacesSharedWorker) => {
+      currentWorkspacesSharedWorker.closeWorkerPort();
+      return new WorkspacesSharedWorker({
+        workerName: `${props.workerNamePrefix}-workspaces-shared-worker`,
+        workerScriptUrl: props.workspacesSharedWorkerScriptUrl,
+      });
+    });
+  }, [props.workerNamePrefix, props.workspacesSharedWorkerScriptUrl]);
+
+  // Listen to the `resume` event from the Page Lifecycle API (https://developer.chrome.com/blog/page-lifecycle-api/).
+  // This event indicates that the Chrome tab was in a frozen state and is now in one of the active/passive/hidden states.
+  // Updating the WorkspacesSharedWorker is necessary because its connection will be lost after some time while the tab is frozen.
+  // This happens because the Shared Worker ping function will timeout without an answer and close the connection.
+  useEffect(() => {
+    window.addEventListener("resume", updateWorkspaceSharedWorker, { capture: true });
+
+    return () => {
+      window.removeEventListener("resume", updateWorkspaceSharedWorker, { capture: true });
+    };
+  }, [updateWorkspaceSharedWorker]);
 
   const toWorkspaceFile = useCallback(
     (wwfd: WorkspaceWorkerFileDescriptor) =>
@@ -63,6 +84,14 @@ export function WorkspacesContextProvider(props: Props) {
     async (args: { workspaceId: string }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_hasLocalChanges(args)
+      ),
+    [workspacesSharedWorker]
+  );
+
+  const getUnstagedModifiedFilesStatus = useCallback(
+    async (args: { workspaceId: string }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_getUnstagedModifiedFilesStatus(args)
       ),
     [workspacesSharedWorker]
   );
@@ -93,6 +122,14 @@ export function WorkspacesContextProvider(props: Props) {
     }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) => {
         return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_push(args);
+      }),
+    [workspacesSharedWorker]
+  );
+
+  const deleteBranch = useCallback(
+    async (args: { workspaceId: string; ref: string }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) => {
+        return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_deleteBranch(args);
       }),
     [workspacesSharedWorker]
   );
@@ -137,6 +174,14 @@ export function WorkspacesContextProvider(props: Props) {
     [workspacesSharedWorker]
   );
 
+  const checkoutFilesFromLocalHead = useCallback(
+    async (args: { workspaceId: string; ref?: string; filepaths: string[] }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_checkoutFilesFromLocalHead(args)
+      ),
+    [workspacesSharedWorker]
+  );
+
   const resolveRef = useCallback(
     async (args: { workspaceId: string; ref: string }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
@@ -145,28 +190,56 @@ export function WorkspacesContextProvider(props: Props) {
     [workspacesSharedWorker]
   );
 
+  const commit = useCallback(
+    async (args: {
+      workspaceId: string;
+      targetBranch: string;
+      commitMessage: string;
+      gitConfig?: { email: string; name: string };
+    }) => {
+      return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit(args)
+      );
+    },
+    [workspacesSharedWorker]
+  );
+
   const createSavePoint = useCallback(
-    async (args: { workspaceId: string; gitConfig?: { email: string; name: string }; commitMessage?: string }) => {
-      if (!(await hasLocalChanges(args))) {
+    async (args: {
+      workspaceId: string;
+      gitConfig?: { email: string; name: string };
+      commitMessage?: string;
+      forceHasChanges?: boolean;
+    }) => {
+      if (!args.forceHasChanges && !(await hasLocalChanges(args))) {
         return;
       }
-      if (props.shouldRequireCommitMessage && !args.commitMessage) {
+      if (props.shouldRequireCommitMessage) {
         let commitMessage: string;
         try {
-          commitMessage = await props.onCommitMessageRequest();
+          commitMessage = await props.onCommitMessageRequest(args.commitMessage);
         } catch (e) {
           throw new Error("No commit message!");
         }
         return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
-          workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit({ ...args, commitMessage })
+          workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_createSavePoint({ ...args, commitMessage })
         );
       } else {
         return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
-          workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit(args)
+          workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_createSavePoint(args)
         );
       }
     },
-    [props, workspacesSharedWorker, hasLocalChanges]
+    [hasLocalChanges, props, workspacesSharedWorker]
+  );
+
+  const stageFile = useCallback(
+    async (args: { workspaceId: string; relativePath: string }) => {
+      return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_stageFile(args)
+      );
+    },
+    [workspacesSharedWorker]
   );
 
   const getGitServerRefs = useCallback(
@@ -497,16 +570,21 @@ export function WorkspacesContextProvider(props: Props) {
       prepareZip,
       getUniqueFileIdentifier,
       createSavePoint,
+      stageFile,
+      commit,
       pull,
       addRemote,
       deleteRemote,
       push,
+      deleteBranch,
       branch,
       checkout,
+      checkoutFilesFromLocalHead,
       fetch,
       resolveRef,
       getFiles,
       hasLocalChanges,
+      getUnstagedModifiedFilesStatus,
       moveFile,
       addEmptyFile,
       addFile,
@@ -532,6 +610,8 @@ export function WorkspacesContextProvider(props: Props) {
       addFile,
       existsFile,
       createSavePoint,
+      stageFile,
+      commit,
       createWorkspaceFromGitRepository,
       createWorkspaceFromLocal,
       deleteFile,
@@ -541,14 +621,17 @@ export function WorkspacesContextProvider(props: Props) {
       getFiles,
       getUniqueFileIdentifier,
       hasLocalChanges,
+      getUnstagedModifiedFilesStatus,
       moveFile,
       prepareZip,
       pull,
       addRemote,
       deleteRemote,
       push,
+      deleteBranch,
       branch,
       checkout,
+      checkoutFilesFromLocalHead,
       fetch,
       resolveRef,
       renameFile,

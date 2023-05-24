@@ -33,7 +33,7 @@ public interface LayoutEditorElement extends LayoutElementWithProperties {
 
     LayoutEditorElement getParentElement();
 
-    default List<? extends LayoutEditorElement> getChildElements() {
+    default List<LayoutEditorElement> getChildElements() {
         return new ArrayList<>();
     }
 

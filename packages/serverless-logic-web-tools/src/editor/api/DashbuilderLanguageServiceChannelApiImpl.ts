@@ -15,11 +15,11 @@
  */
 
 import { DashbuilderLanguageServiceChannelApi } from "@kie-tools/dashbuilder-language-service/dist/api";
-import { DashbuilderLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
+import { DashbuilderYamlLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
 export class DashbuilderLanguageServiceChannelApiImpl implements DashbuilderLanguageServiceChannelApi {
-  constructor(private readonly ls: DashbuilderLanguageService) {}
+  constructor(private readonly ls: DashbuilderYamlLanguageService) {}
 
   public async kogitoDashbuilderLanguageService__getCompletionItems(args: {
     content: string;

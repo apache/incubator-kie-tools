@@ -21,9 +21,9 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
+import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayerView;
 import org.dashbuilder.renderer.echarts.client.js.ECharts;
@@ -47,6 +47,9 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
     @Inject
     EChartsTypeFactory echartsFactory;
 
+    @Inject
+    EChartsResizeHandlerRegister eChartsResizeHandlerRegister;
+
     @Override
     public void init(P presenter) {
         super.setPresenter(presenter);
@@ -60,10 +63,8 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
         lblNoData.setText(EChartsDisplayerConstants.INSTANCE.common_noData());
         noDataPanel.add(lblNoData);
 
-        if (chart != null) {
-            chart.dispose();
-            chart = null;
-        }
+        disposeChart();
+        chart = null;
 
         displayerPanel.clear();
         displayerPanel.add(noDataPanel);
@@ -78,6 +79,8 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
             chart.setOption(option);
             chart.resize();
         });
+        // timeout reinforcement, some parent may not be completed resized
+        DomGlobal.setTimeout(e -> chart.resize(), 100);
     }
 
     @Override
@@ -101,9 +104,7 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
 
         initParams.setRenderer(bootstrapParams.getRenderer().name());
 
-        if (chart != null) {
-            chart.dispose();
-        }
+        disposeChart();
 
         chart = ECharts.Builder
                 .get()
@@ -111,9 +112,20 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
                         bootstrapParams.getMode().name().toLowerCase(),
                         initParams);
         if (bootstrapParams.isResizable()) {
-            Window.addResizeHandler(v -> chart.resize());
+            eChartsResizeHandlerRegister.add(chart);
         }
-
     }
 
+    private void disposeChart() {
+        if (chart != null) {
+            chart.dispose();
+        }
+    }
+
+    @Override
+    public void close() {
+        if (chart != null) {
+            eChartsResizeHandlerRegister.remove(chart);
+        }
+    }
 }

@@ -63,6 +63,10 @@ public class Id implements DMNProperty {
         this.value = value;
     }
 
+    public Id copy() {
+        return new Id(value);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

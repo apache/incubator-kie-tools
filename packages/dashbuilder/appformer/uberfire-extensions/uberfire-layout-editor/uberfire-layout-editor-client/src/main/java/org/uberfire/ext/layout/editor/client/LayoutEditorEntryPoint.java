@@ -26,6 +26,6 @@ public class LayoutEditorEntryPoint {
 
     @PostConstruct
     public void init() {
-        WebAppResource.INSTANCE.CSS().ensureInjected();
+        WebAppResource.INSTANCE.css().ensureInjected();
     }
 }

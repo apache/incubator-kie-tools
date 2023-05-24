@@ -23,7 +23,6 @@ import {
   WorkspaceChannelApi,
 } from "@kie-tools-core/workspace/dist/api";
 import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import * as __path from "path";
 import * as vscode from "vscode";
 import { VsCodeKieEditorController } from "./VsCodeKieEditorController";
@@ -147,14 +146,6 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
 
   public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
     /* VS Code has his own state control API. */
-  }
-
-  public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial) {
-    /* empty */
-  }
-
-  public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction) {
-    /* empty */
   }
 
   public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {

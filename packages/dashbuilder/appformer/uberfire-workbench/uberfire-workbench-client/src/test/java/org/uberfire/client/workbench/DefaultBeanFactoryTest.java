@@ -57,7 +57,6 @@ public class DefaultBeanFactoryTest {
         beanFactory.newWorkbenchPart(null,
                                      null,
                                      null,
-                                     null,
                                      UnanchoredWorkbenchPartPresenter.class);
         verify(iocManager.lookupBean(UnanchoredWorkbenchPartPresenter.class)).getInstance();
         verify(iocManager.lookupBean(WorkbenchPartPresenterDefault.class),
@@ -67,7 +66,6 @@ public class DefaultBeanFactoryTest {
     @Test
     public void testNewWorkbenchPartPresenterDefault() {
         beanFactory.newWorkbenchPart(null,
-                                     null,
                                      null,
                                      null,
                                      WorkbenchPartPresenterDefault.class);

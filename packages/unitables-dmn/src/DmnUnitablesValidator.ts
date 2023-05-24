@@ -18,12 +18,14 @@ import Ajv from "ajv";
 import metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { DmnUnitablesI18n } from "./i18n";
-import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/form-dmn/dist/uniforms";
-import { DmnSchema } from "@kie-tools/form-dmn";
+import {
+  DAYS_AND_TIME_DURATION_FORMAT,
+  DAYS_AND_TIME_DURATION_REGEXP,
+  YEARS_AND_MONTHS_DURATION_FORMAT,
+  YEARS_AND_MONTHS_DURATION_REGEXP,
+} from "@kie-tools/dmn-runner/dist/constants";
+import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { UnitablesValidator } from "@kie-tools/unitables/dist/UnitablesValidator";
-
-const DAYS_AND_TIME = /^(-|\+)?P(?:([-+]?[0-9]*)D)?(?:T(?:([-+]?[0-9]*)H)?(?:([-+]?[0-9]*)M)?(?:([-+]?[0-9]*)S)?)?$/;
-const YEARS_AND_MONTHS = /^(-|\+)?P(?:([-+]?[0-9]*)Y)?(?:([-+]?[0-9]*)M)?$/;
 
 export class DmnUnitablesValidator extends UnitablesValidator {
   protected readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
@@ -38,12 +40,12 @@ export class DmnUnitablesValidator extends UnitablesValidator {
     this.ajv.addMetaSchema(metaSchemaDraft04);
     this.ajv.addFormat(DAYS_AND_TIME_DURATION_FORMAT, {
       type: "string",
-      validate: (data: string) => !!data.match(DAYS_AND_TIME),
+      validate: (data: string) => !!data.match(DAYS_AND_TIME_DURATION_REGEXP),
     });
 
     this.ajv.addFormat(YEARS_AND_MONTHS_DURATION_FORMAT, {
       type: "string",
-      validate: (data: string) => !!data.match(YEARS_AND_MONTHS),
+      validate: (data: string) => !!data.match(YEARS_AND_MONTHS_DURATION_REGEXP),
     });
   }
 
@@ -73,7 +75,7 @@ export class DmnUnitablesValidator extends UnitablesValidator {
     };
   }
 
-  public getBridge(formSchema: DmnSchema): DmnUnitablesJsonSchemaBridge {
+  public getBridge(formSchema: ExtendedServicesDmnJsonSchema): DmnUnitablesJsonSchemaBridge {
     const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
     const validator = this.createValidator(formDraft4);
     return new DmnUnitablesJsonSchemaBridge(formDraft4, validator, this.i18n);

@@ -80,14 +80,13 @@ public class ExternalDataSetJSONParser {
             columnTypes.add(type);
         }
 
-        var dataSetMetadata = new DataSetMetadataImpl(null,
+        return new DataSetMetadataImpl(null,
                 DEFAULT_COLUMN_ID,
                 numberOfRows,
                 columnTypes.size(),
                 columnIds,
                 columnTypes,
                 estimatedSize);
-        return dataSetMetadata;
     }
 
     public DataSet parseDataSet(String json) {
@@ -134,7 +133,7 @@ public class ExternalDataSetJSONParser {
         }
     }
 
-    private void addColumns(DataSet dataSet, JsonObject dataSetObject) {
+    public void addColumns(DataSet dataSet, JsonObject dataSetObject) {
         var columnsArray = dataSetObject.getArray(COLUMNS);
         if (columnsArray != null) {
             for (int i = 0; i < columnsArray.length(); i++) {
@@ -144,10 +143,9 @@ public class ExternalDataSetJSONParser {
                 dataSet.addColumn(id, type);
             }
         }
-
     }
 
-    private void addValues(DataSet dataSet, JsonArray valuesArray) {
+    public void addValues(DataSet dataSet, JsonArray valuesArray) {
         if (valuesArray != null && valuesArray.length() > 0) {
             if (dataSet.getColumns().size() == 0 && valuesArray.length() != 0) {
                 throw new IllegalArgumentException("DataSet is missing columns.");

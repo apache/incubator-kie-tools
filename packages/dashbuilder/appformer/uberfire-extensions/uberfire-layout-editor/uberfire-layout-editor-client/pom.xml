@@ -33,21 +33,8 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-properties-editor-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-properties-editor-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-common</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons-editor-client</artifactId>
     </dependency>
 
     <dependency>
@@ -58,18 +45,10 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ui</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-layout-editor-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-runtime-plugins-api</artifactId>
     </dependency>
 
     <dependency>
@@ -90,15 +69,7 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-client-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-client-all</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -112,20 +83,11 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-core-client</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-commons</artifactId>
-    </dependency>
 
     <!-- test -->
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>
       <artifactId>gwtmockito</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

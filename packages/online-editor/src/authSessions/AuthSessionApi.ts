@@ -45,9 +45,21 @@ export type OpenShiftAuthSession = {
   host: string;
 };
 
+export type KubernetesAuthSession = {
+  type: "kubernetes";
+  id: string;
+  authProviderId: string;
+  createdAtDateISO: string;
+  token: string;
+  namespace: string;
+  host: string;
+};
+
+export type CloudAuthSession = OpenShiftAuthSession | KubernetesAuthSession;
+
 export enum AuthSessionStatus {
   VALID,
   INVALID,
 }
 
-export type AuthSession = GitAuthSession | OpenShiftAuthSession | NoneAuthSession;
+export type AuthSession = GitAuthSession | OpenShiftAuthSession | KubernetesAuthSession | NoneAuthSession;

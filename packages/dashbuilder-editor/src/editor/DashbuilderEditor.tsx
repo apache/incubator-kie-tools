@@ -26,9 +26,17 @@ import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { MonacoEditorOperation, DashbuilderMonacoEditorApi } from "../monaco/DashbuilderMonacoEditorApi";
 import { DashbuilderMonacoEditor } from "../monaco/DashbuilderMonacoEditor";
-import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  EditorTheme,
+  StateControlCommand,
+  useKogitoEditorEnvelopeContext,
+} from "@kie-tools-core/editor/dist/api";
 import { Dashbuilder } from "../dashbuilder/Dashbuilder";
 import { Toolbar } from "./Toolbar";
+import { Position } from "monaco-editor";
+import { useSubscription } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { DashbuilderEditorChannelApi } from "../api";
 
 const INITIAL_CONTENT = `datasets:
 - uuid: products
@@ -123,6 +131,7 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
   const [renderContent, setRenderContent] = useState("");
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const dashbuilderMonacoEditorRef = useRef<DashbuilderMonacoEditorApi>(null);
+  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<DashbuilderEditorChannelApi>();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -131,7 +140,7 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
     return () => clearTimeout(timer);
   }, [renderContent]);
 
-  const isVSCode = useCallback(() => {
+  const isVsCode = useCallback(() => {
     return props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB;
   }, [props]);
 
@@ -175,23 +184,30 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
     []
   );
 
+  useSubscription(
+    editorEnvelopeCtx.channelApi.notifications.kogitoDashbuilderTextEditor_moveCursorToPosition,
+    useCallback((position: Position) => {
+      dashbuilderMonacoEditorRef.current?.moveCursorToPosition(position);
+    }, [])
+  );
+
   const onContentChanged = useCallback(
     (newContent: string, operation?: MonacoEditorOperation) => {
       if (operation === MonacoEditorOperation.EDIT) {
         props.onNewEdit(new WorkspaceEdit(newContent));
       } else if (operation === MonacoEditorOperation.UNDO) {
-        if (!isVSCode()) {
+        if (!isVsCode()) {
           dashbuilderMonacoEditorRef.current?.undo();
         }
         props.onStateControlCommandUpdate(StateControlCommand.UNDO);
       } else if (operation === MonacoEditorOperation.REDO) {
-        if (!isVSCode()) {
+        if (!isVsCode()) {
           dashbuilderMonacoEditorRef.current?.redo();
         }
         props.onStateControlCommandUpdate(StateControlCommand.REDO);
       }
     },
-    [props, isVSCode]
+    [props, isVsCode]
   );
 
   useEffect(() => {

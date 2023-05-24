@@ -15,7 +15,8 @@
  */
 
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
-import { DecisionResult, DmnForm, DmnFormResult, extractDifferences } from "@kie-tools/form-dmn";
+import { DmnForm, DmnFormResult, extractDifferences } from "@kie-tools/form-dmn";
+import { DecisionResult } from "@kie-tools/extended-services-api";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -61,7 +62,8 @@ export function DmnFormPage(props: Props) {
       });
 
       setFormOutputs((previousOutputs: DecisionResult[]) => {
-        const differences = extractDifferences(formOutputs, previousOutputs);
+        // extractDifferences was refactor to accept an array of inputs;
+        const [differences] = extractDifferences([formOutputs], [previousOutputs]);
         if (differences?.length !== 0) {
           setFormOutputDiffs(differences);
         }

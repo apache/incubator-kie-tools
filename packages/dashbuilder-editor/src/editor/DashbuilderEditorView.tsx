@@ -20,7 +20,6 @@ import {
   EditorTheme,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
-import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { DashbuilderEditor } from "./DashbuilderEditor";
@@ -37,10 +36,6 @@ export class DashbuilderEditorView implements Editor {
     private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();
-  }
-
-  public async getElementPosition() {
-    return DEFAULT_RECT;
   }
 
   public setContent(path: string, content: string): Promise<void> {

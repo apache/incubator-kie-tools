@@ -16,37 +16,56 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.BatchSizeJsonTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StringNumberYamlTypeSerializer;
 
-/**
- * ForEach states can be used to execute actions for each element of a data set.
- * Each iteration of the ForEach state is by default executed in parallel by default.
- * However, executing iterations sequentially is also possible by setting the value of the mode property to sequential.
- *
- * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#ForEach-State"> ForEach state </a>
- */
-@Bindable
-@Definition
-@Morph(base = State.class)
 @JSONMapper
+@YAMLMapper
 @JsType
+@YamlPropertyOrder({"name", "type", "actions", "inputCollection", "outputCollection", "iterationParam", "transition", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end", "metadata"})
 public class ForEachState extends State {
 
     public static final String TYPE_FOR_EACH = "foreach";
 
-    /**
-     * Actions to be executed for each of the elements of inputCollection.
-     */
-    private ActionNode[] actions;
+    public ActionNode[] actions;
 
     public String inputCollection;
+
     public String outputCollection;
 
     public String iterationParam;
+
+    public String mode;
+
+    @JsonbTypeSerializer(BatchSizeJsonTypeSerializer.class)
+    @JsonbTypeDeserializer(BatchSizeJsonTypeSerializer.class)
+    @YamlTypeSerializer(StringNumberYamlTypeSerializer.class)
+    @YamlTypeDeserializer(StringNumberYamlTypeSerializer.class)
+    public Object batchSize;
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public Object getBatchSize() {
+        return batchSize;
+    }
+
+    public void setBatchSize(Object batchSize) {
+        this.batchSize = batchSize;
+    }
 
     public ForEachState() {
         this.type = TYPE_FOR_EACH;

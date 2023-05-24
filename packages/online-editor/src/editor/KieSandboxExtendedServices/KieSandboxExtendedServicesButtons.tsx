@@ -26,15 +26,14 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { useDevDeployments } from "../../devDeployments/DevDeploymentsContext";
 import { useDevDeploymentsDeployDropdownItems } from "../../devDeployments/DevDeploymentsDeployDropdownItems";
-import { useDmnRunnerDispatch, useDmnRunnerState } from "../DmnRunner/DmnRunnerContext";
+import { useDmnRunnerDispatch, useDmnRunnerState } from "../../dmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import {
   DependentFeature,
   useExtendedServices,
 } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { DmnRunnerMode } from "../DmnRunner/DmnRunnerStatus";
-import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
+import { DmnRunnerMode } from "../../dmnRunner/DmnRunnerStatus";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
@@ -43,10 +42,11 @@ import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
 import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import { DeleteDropdownWithConfirmation } from "../DeleteDropdownWithConfirmation";
-import { useDmnRunnerInputsDispatch } from "../../dmnRunnerInputs/DmnRunnerInputsDispatchContext";
+import { useDmnRunnerPersistenceDispatch } from "../../dmnRunnerPersistence/DmnRunnerPersistenceDispatchContext";
+import { DmnRunnerProviderActionType } from "../../dmnRunner/DmnRunnerTypes";
+import { PanelId, useEditorDockContext } from "../EditorPageDockContextProvider";
 
 interface Props {
-  editorPageDock: EditorPageDockDrawerRef | undefined;
   workspace: ActiveWorkspace | undefined;
   workspaceFile: WorkspaceFile;
 }
@@ -55,25 +55,27 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
   const devDeployments = useDevDeployments();
-  const dmnRunnerState = useDmnRunnerState();
-  const dmnRunnerDispatch = useDmnRunnerDispatch();
+  const { onTogglePanel, onOpenPanel } = useEditorDockContext();
+  const { isExpanded, mode } = useDmnRunnerState();
+  const { setDmnRunnerMode, setDmnRunnerContextProviderState } = useDmnRunnerDispatch();
   const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
-  const dmnRunnerInputsDispatch = useDmnRunnerInputsDispatch();
+  const { onDeleteDmnRunnerPersistenceJson, onDownloadDmnRunnerPersistenceJson, onUploadDmnRunnerPersistenceJson } =
+    useDmnRunnerPersistenceDispatch();
   const downloadDmnRunnerInputsRef = useRef<HTMLAnchorElement>(null);
   const uploadDmnRunnerInputsRef = useRef<HTMLInputElement>(null);
 
   const toggleDmnRunnerDrawer = useCallback(() => {
     if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-      if (dmnRunnerState.mode === DmnRunnerMode.TABLE) {
-        props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABLE);
-      } else {
-        dmnRunnerDispatch.setExpanded((prev) => !prev);
+      if (mode === DmnRunnerMode.TABLE) {
+        onTogglePanel(PanelId.DMN_RUNNER_TABLE);
+        return;
       }
+      setDmnRunnerContextProviderState({ type: DmnRunnerProviderActionType.TOGGLE_EXPANDED });
       return;
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     extendedServices.setModalOpen(true);
-  }, [dmnRunnerState.mode, dmnRunnerDispatch, extendedServices, props.editorPageDock]);
+  }, [setDmnRunnerContextProviderState, extendedServices, mode, onTogglePanel]);
 
   const toggleDevDeploymentsDropdown = useCallback(
     (isOpen: boolean) => {
@@ -95,23 +97,23 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
 
   const handleDmnRunnerInputsDownload = useCallback(async () => {
     if (downloadDmnRunnerInputsRef.current) {
-      const fileBlob = await dmnRunnerInputsDispatch.getInputRowsForDownload(props.workspaceFile);
+      const fileBlob = await onDownloadDmnRunnerPersistenceJson(props.workspaceFile);
       if (fileBlob) {
         downloadDmnRunnerInputsRef.current.download = props.workspaceFile.name.split(".")[0] + ".json";
         downloadDmnRunnerInputsRef.current.href = URL.createObjectURL(fileBlob);
         downloadDmnRunnerInputsRef.current?.click();
       }
     }
-  }, [props.workspaceFile, dmnRunnerInputsDispatch]);
+  }, [props.workspaceFile, onDownloadDmnRunnerPersistenceJson]);
 
   const handleDmnRunnerInputsUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) {
-        dmnRunnerInputsDispatch.uploadInputRows(props.workspaceFile, file);
+        onUploadDmnRunnerPersistenceJson(props.workspaceFile, file);
       }
     },
-    [dmnRunnerInputsDispatch, props.workspaceFile]
+    [onUploadDmnRunnerPersistenceJson, props.workspaceFile]
   );
 
   return (
@@ -145,14 +147,16 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
                   key={"dmn-runner-run-button"}
                   id="dmn-runner-button"
                   onClick={toggleDmnRunnerDrawer}
-                  className={dmnRunnerState.isExpanded ? "pf-m-active" : ""}
+                  className={isExpanded ? "pf-m-active" : ""}
                   data-testid={"dmn-runner-button"}
                 >
                   {i18n.terms.run}
                 </DropdownToggleAction>,
               ]}
               splitButtonVariant="action"
-              onToggle={(isOpen) => setRunModeOpen(isOpen)}
+              onToggle={(isOpen) => {
+                setRunModeOpen(isOpen);
+              }}
             />
           }
           isOpen={runModeOpen}
@@ -163,9 +167,11 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<ListIcon />}
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-                  dmnRunnerDispatch.setMode(DmnRunnerMode.FORM);
-                  props.editorPageDock?.close();
-                  dmnRunnerDispatch.setExpanded(true);
+                  setDmnRunnerMode(DmnRunnerMode.FORM);
+                  setDmnRunnerContextProviderState({
+                    type: DmnRunnerProviderActionType.DEFAULT,
+                    newState: { isExpanded: true },
+                  });
                 }
               }}
             >
@@ -177,9 +183,12 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<TableIcon />}
               onClick={() => {
                 if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-                  dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
-                  props.editorPageDock?.open(PanelId.DMN_RUNNER_TABLE);
-                  dmnRunnerDispatch.setExpanded(true);
+                  setDmnRunnerMode(DmnRunnerMode.TABLE);
+                  onOpenPanel(PanelId.DMN_RUNNER_TABLE);
+                  setDmnRunnerContextProviderState({
+                    type: DmnRunnerProviderActionType.DEFAULT,
+                    newState: { isExpanded: true },
+                  });
                 }
               }}
             >
@@ -205,11 +214,14 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
             </DropdownItem>,
             <React.Fragment key={"dmn-runner--delete-inputs"}>
               <Divider />
-              <DropdownItem component={"button"} style={{ padding: "4px" }}>
+              <DropdownItem component={"div"} style={{ padding: "4px" }}>
                 <DeleteDropdownWithConfirmation
                   onDelete={() => {
-                    dmnRunnerDispatch.setCurrentInputRowIndex(0);
-                    dmnRunnerInputsDispatch.deletePersistedInputRows(props.workspaceFile);
+                    setDmnRunnerContextProviderState({
+                      type: DmnRunnerProviderActionType.DEFAULT,
+                      newState: { currentInputIndex: 0 },
+                    });
+                    onDeleteDmnRunnerPersistenceJson(props.workspaceFile);
                   }}
                   item={`Delete DMN Runner inputs`}
                   label={" Delete inputs"}

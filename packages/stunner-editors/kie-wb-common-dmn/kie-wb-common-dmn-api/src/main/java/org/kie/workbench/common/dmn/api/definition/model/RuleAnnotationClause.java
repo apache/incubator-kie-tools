@@ -23,6 +23,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
+/**
+ * RuleAnnotationClause extends DMNElement, but it doesn't store "id" and "description" fields.
+ * It's only field is "name". DMN Specs 8.3.2 - Table 35
+ */
 @Portable
 public class RuleAnnotationClause extends DMNElement implements HasName {
 

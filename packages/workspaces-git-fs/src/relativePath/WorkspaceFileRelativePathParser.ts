@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { basename, extname, parse } from "path";
+import { isOfKind } from "../constants/ExtensionHelper";
 
 export function parseWorkspaceFileRelativePath(relativePath: string) {
   const extension = extractExtension(relativePath);
   return {
-    relativePathWithoutExtension: relativePath.replace(`.${extension}`, ""),
+    relativePathWithoutExtension: relativePath.substring(0, relativePath.lastIndexOf("." + extension)) || relativePath,
     relativeDirPath: parse(relativePath).dir,
     extension: extension,
     nameWithoutExtension: basename(relativePath, `.${extension}`),
@@ -29,17 +29,20 @@ export function parseWorkspaceFileRelativePath(relativePath: string) {
 
 export function extractExtension(relativePath: string) {
   const fileName = basename(relativePath);
-  if (fileName.startsWith(".")) {
-    return fileName.slice(1);
+  const ultimateExtension = fileName.substring(fileName.lastIndexOf("."));
+  const fileWithoutUltimateExtension = fileName.substring(0, fileName.lastIndexOf(ultimateExtension));
+  const penultimateExtension = fileWithoutUltimateExtension.substring(fileWithoutUltimateExtension.lastIndexOf("."));
+  if (fileName.includes(".")) {
+    if (isOfKind("supportedSingleExtensions", fileName)) {
+      //technically not needed as the else statement does the same thing. Only here for clarity
+      return ultimateExtension.replace(".", "");
+    }
+    if (isOfKind("supportedDoubleExtensions", fileName)) {
+      return penultimateExtension.replace(".", "") + ultimateExtension;
+    } else {
+      return ultimateExtension.replace(".", "");
+    }
+  } else {
+    return extname(relativePath);
   }
-
-  const matchDots = fileName.match(/\./g);
-  if (matchDots && matchDots.length > 1) {
-    return fileName
-      .split(/\.(.*)/s)
-      .slice(1)
-      .join("");
-  }
-
-  return extname(relativePath).replace(".", "");
 }

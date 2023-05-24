@@ -15,19 +15,17 @@
  */
 package org.dashbuilder.dataset;
 
-import org.dashbuilder.dataset.def.DataSetDefBuilder;
-import org.dashbuilder.dataset.impl.BeanDataSetDefBuilderImpl;
-import org.dashbuilder.dataset.impl.CSVDataSetDefBuilderImpl;
 import org.dashbuilder.dataset.impl.DataSetBuilderImpl;
 import org.dashbuilder.dataset.impl.DataSetImpl;
-import org.dashbuilder.dataset.impl.DataSetLookupBuilderImpl;
-import org.dashbuilder.dataset.impl.SQLDataSetDefBuilderImpl;
-import org.dashbuilder.dataset.impl.StaticDataSetDefBuilderImpl;
 
 /**
  * Factory class for building DataSet instances.
  */
 public final class DataSetFactory {
+
+    private DataSetFactory() {
+        // no op
+    }
 
     public static DataSet newEmptyDataSet() {
         return new DataSetImpl();
@@ -37,38 +35,4 @@ public final class DataSetFactory {
         return new DataSetBuilderImpl();
     }
 
-    /**
-     * @deprecated Used DataSetLookupFactory instead
-     */
-    public static DataSetLookupBuilder<DataSetLookupBuilderImpl> newDataSetLookupBuilder() {
-        return new DataSetLookupBuilderImpl();
-    }
-
-    /**
-     * @deprecated Used DataSetDefFactory instead
-     */
-    public static DataSetDefBuilder<StaticDataSetDefBuilderImpl> newStaticDataSetDef() {
-        return new StaticDataSetDefBuilderImpl();
-    }
-
-    /**
-     * @deprecated Used DataSetDefFactory instead
-     */
-    public static DataSetDefBuilder<CSVDataSetDefBuilderImpl> newCSVDataSetDef() {
-        return new CSVDataSetDefBuilderImpl();
-    }
-
-    /**
-     * @deprecated Used DataSetDefFactory instead
-     */
-    public static DataSetDefBuilder<SQLDataSetDefBuilderImpl> newSQLDataSetDef() {
-        return new SQLDataSetDefBuilderImpl();
-    }
-
-    /**
-     * @deprecated Used DataSetDefFactory instead
-     */
-    public static DataSetDefBuilder<BeanDataSetDefBuilderImpl> newBeanDataSetDef() {
-        return new BeanDataSetDefBuilderImpl();
-    }
 }

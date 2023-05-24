@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 import jsinterop.annotations.JsType;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 /**
@@ -60,13 +59,6 @@ public interface PlaceRequest {
     boolean isUpdateLocationBarAllowed();
 
     void setUpdateLocationBar(boolean updateLocationBar);
-    /**
-     * Returns the path associated with this {@link PlaceRequest}.
-     */
-    default Path getPath() {
-        // TODO go over all UF public API and start using Optional
-        return null;
-    }
 
     /**
      * Invokes {@link #toString()} but exported to JavaScript so it can be invoked from different scripts.

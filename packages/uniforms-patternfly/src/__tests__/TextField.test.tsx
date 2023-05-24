@@ -138,7 +138,7 @@ test("<TextField> - renders a help", () => {
   expect(screen.getByTestId("wrapper-field").querySelector(".pf-c-form__helper-text")?.textContent).toBe("y");
 });
 
-test("<TextField> - renders a initial value on date field (DatePicker)", () => {
+test("<TextField> - renders a initial value on date field (type = date)", () => {
   const date = "2000-04-04";
   render(
     usingUniformsContext(
@@ -148,22 +148,22 @@ test("<TextField> - renders a initial value on date field (DatePicker)", () => {
     )
   );
 
-  expect(screen.getByTestId("text-field-date-picker")).toBeInTheDocument();
-  expect(screen.getByTestId("text-field-date-picker").getElementsByTagName("input")[0].value).toBe(date);
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
+  expect((screen.getByTestId("text-field") as HTMLInputElement).value).toBe(date);
 });
 
-test("<TextField> - renders a disabled date field (DatePicker)", () => {
+test("<TextField> - renders a disabled date field (type = date)", () => {
   render(
     usingUniformsContext(<TextField required={true} name="x" label="y" type={"date"} disabled={true} />, {
       x: { type: String },
     })
   );
 
-  expect(screen.getByTestId("text-field-date-picker")).toBeInTheDocument();
-  expect(screen.getByTestId("text-field-date-picker").getElementsByTagName("input")[0]).toBeDisabled();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field") as HTMLInputElement).toBeDisabled();
 });
 
-test("<TextField> - renders a input which correctly reacts on change (DatePicker)", () => {
+test("<TextField> - renders a input which correctly reacts on change (type = date)", () => {
   const onChange = jest.fn();
   const date = "2000-04-04";
 
@@ -175,15 +175,15 @@ test("<TextField> - renders a input which correctly reacts on change (DatePicker
     )
   );
 
-  const input = screen.getByTestId("text-field-date-picker").getElementsByTagName("input")[0];
+  const input = screen.getByTestId("text-field") as HTMLInputElement;
   fireEvent.change(input, { target: { value: date } });
 
-  expect(screen.getByTestId("text-field-date-picker")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
   expect(screen.getByTestId("wrapper-field").getElementsByTagName("label")[0].textContent).toBe("y *");
   expect(onChange).toHaveBeenLastCalledWith("x", date);
 });
 
-test("<TextField> - renders a input which correctly reacts on change (DatePicker - empty)", () => {
+test("<TextField> - renders a input which correctly reacts on change (type = date - empty)", () => {
   const onChange = jest.fn();
   const date = "";
 
@@ -195,15 +195,15 @@ test("<TextField> - renders a input which correctly reacts on change (DatePicker
     )
   );
 
-  const input = screen.getByTestId("text-field-date-picker").getElementsByTagName("input")[0];
+  const input = screen.getByTestId("text-field") as HTMLInputElement;
   fireEvent.change(input, { target: { value: date } });
 
-  expect(screen.getByTestId("text-field-date-picker")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
   expect(screen.getByTestId("wrapper-field").getElementsByTagName("label")[0].textContent).toBe("y *");
   expect(onChange).not.toHaveBeenCalled();
 });
 
-test("<TextField> - renders a initial value on time field (TimePicker)", () => {
+test("<TextField> - renders a initial value on time field (type = time)", () => {
   const time = "10:00";
   render(
     usingUniformsContext(
@@ -213,22 +213,22 @@ test("<TextField> - renders a initial value on time field (TimePicker)", () => {
     )
   );
 
-  expect(screen.getByTestId("text-field-time-picker")).toBeInTheDocument();
-  expect(screen.getByTestId("text-field-time-picker").getAttribute("value")).toBe(time);
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field").getAttribute("value")).toBe(time);
 });
 
-test("<TextField> - renders a disabled date field (TimePicker)", () => {
+test("<TextField> - renders a disabled date field (type = time)", () => {
   render(
     usingUniformsContext(<TextField required={true} name="x" label="y" type={"time"} disabled={true} />, {
       x: { type: String },
     })
   );
 
-  expect(screen.getByTestId("text-field-time-picker")).toBeInTheDocument();
-  expect(screen.getByTestId("text-field-time-picker").getElementsByTagName("input")[0]).toBeDisabled();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeDisabled();
 });
 
-test("<TextField> - renders a input which correctly reacts on change (TimePicker)", () => {
+test("<TextField> - renders a input which correctly reacts on change (type = time)", () => {
   const onChange = jest.fn();
   const time = "10:10";
 
@@ -240,15 +240,15 @@ test("<TextField> - renders a input which correctly reacts on change (TimePicker
     )
   );
 
-  const input = screen.getByTestId("text-field-time-picker").getElementsByTagName("input")[0];
+  const input = screen.getByTestId("text-field") as HTMLInputElement;
   fireEvent.change(input, { target: { value: time } });
 
-  expect(screen.getByTestId("text-field-time-picker")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
   expect(screen.getByTestId("wrapper-field").getElementsByTagName("label")[0].textContent).toBe("y *");
   expect(onChange).toHaveBeenLastCalledWith("x", "10:10:00");
 });
 
-test("<TextField> - renders a input which correctly reacts on change (TimePicker - empty)", () => {
+test("<TextField> - renders a input which correctly reacts on change (type = time - empty)", () => {
   const onChange = jest.fn();
   const time = "";
 
@@ -260,98 +260,98 @@ test("<TextField> - renders a input which correctly reacts on change (TimePicker
     )
   );
 
-  const input = screen.getByTestId("text-field-time-picker").getElementsByTagName("input")[0];
+  const input = screen.getByTestId("text-field") as HTMLInputElement;
   fireEvent.change(input, { target: { value: time } });
 
-  expect(screen.getByTestId("text-field-time-picker")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
   expect(screen.getByTestId("wrapper-field").getElementsByTagName("label")[0].textContent).toBe("y *");
   expect(onChange).not.toHaveBeenCalled();
 });
 
-test("<TextField> - test max property (TimePicker - valid)", () => {
+test("<TextField> - test max property (type = time - valid)", () => {
   const time = "10:00";
   const max = "12:00";
   render(
     usingUniformsContext(<TextField name="x" label="y" max={max} type={"time"} value={time} />, { x: { type: String } })
   );
 
-  expect(screen.getByTestId("text-field-time-picker")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
   expect(screen.queryByText("Should be before")).not.toBeInTheDocument();
 });
 
-test("<TextField> - test max property (TimePicker - invalid)", () => {
+test("<TextField> - test max property (type = time - invalid)", () => {
   const time = "13:00";
   const max = "12:00";
   render(
     usingUniformsContext(<TextField name="x" label="y" max={max} type={"time"} value={time} />, { x: { type: String } })
   );
 
-  expect(screen.getByTestId("text-field-time-picker")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
   expect(screen.queryByText("Should be before 12:00")).toBeInTheDocument();
 });
 
-test("<TextField> - test min property (TimePicker - valid)", () => {
+test("<TextField> - test min property (type = time - valid)", () => {
   const time = "13:00";
   const min = "12:00";
   render(
     usingUniformsContext(<TextField name="x" label="y" min={min} type={"time"} value={time} />, { x: { type: String } })
   );
 
-  expect(screen.getByTestId("text-field-time-picker")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
   expect(screen.queryByText("Should be after")).not.toBeInTheDocument();
 });
 
-test("<TextField> - test min property (TimePicker - invalid)", () => {
+test("<TextField> - test min property (type = time - invalid)", () => {
   const time = "10:00";
   const min = "12:00";
   render(
     usingUniformsContext(<TextField name="x" label="y" min={min} type={"time"} value={time} />, { x: { type: String } })
   );
 
-  expect(screen.getByTestId("text-field-time-picker")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
   expect(screen.queryByText("Should be after 12:00")).toBeInTheDocument();
 });
 
-test("<TextField> - test max property (DatePicker - valid)", () => {
+test("<TextField> - test max property (type = date - valid)", () => {
   const date = "2000-01-01";
   const max = "2000-01-02";
   render(
     usingUniformsContext(<TextField name="x" label="y" max={max} type={"date"} value={date} />, { x: { type: String } })
   );
 
-  expect(screen.getByTestId("text-field-date-picker")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
   expect(screen.queryByText("Should be before")).not.toBeInTheDocument();
 });
 
-test("<TextField> - test max property (DatePicker - invalid)", () => {
+test("<TextField> - test max property (type = date - invalid)", () => {
   const date = "2000-01-02";
   const max = "2000-01-01";
   render(
     usingUniformsContext(<TextField name="x" label="y" max={max} type={"date"} value={date} />, { x: { type: String } })
   );
 
-  expect(screen.getByTestId("text-field-date-picker")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
   expect(screen.queryByText("Should be before 2000-01-01")).toBeInTheDocument();
 });
 
-test("<TextField> - test min property (DatePicker - valid)", () => {
+test("<TextField> - test min property (type = date - valid)", () => {
   const date = "2000-01-02";
   const min = "2000-01-01";
   render(
     usingUniformsContext(<TextField name="x" label="y" min={min} type={"date"} value={date} />, { x: { type: String } })
   );
 
-  expect(screen.getByTestId("text-field-date-picker")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
   expect(screen.queryByText("Should be after")).not.toBeInTheDocument();
 });
 
-test("<TextField> - test min property (DatePicker - invalid)", () => {
+test("<TextField> - test min property (type = date - invalid)", () => {
   const date = "2000-01-01";
   const min = "2000-01-02";
   render(
     usingUniformsContext(<TextField name="x" label="y" min={min} type={"date"} value={date} />, { x: { type: String } })
   );
 
-  expect(screen.getByTestId("text-field-date-picker")).toBeInTheDocument();
+  expect(screen.getByTestId("text-field")).toBeInTheDocument();
   expect(screen.queryByText("Should be after 2000-01-02")).toBeInTheDocument();
 });

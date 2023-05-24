@@ -27,4 +27,8 @@ public interface DiagramApi {
      */
     void onNodeSelected(String nodeName);
 
+    /**
+     * Notify that the diagram finished setting its content
+     */
+    void setContentSuccess();
 }

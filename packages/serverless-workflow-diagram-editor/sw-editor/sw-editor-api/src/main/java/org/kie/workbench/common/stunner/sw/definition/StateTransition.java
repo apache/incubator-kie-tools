@@ -18,13 +18,16 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class StateTransition {
 
-    private String nextState;
-    private Boolean compensate;
+    public String nextState;
+
+    public Boolean compensate;
 
     public final String getNextState() {
         return nextState;

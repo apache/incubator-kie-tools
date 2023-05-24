@@ -18,14 +18,24 @@ import { extractExtension } from "../../src/relativePath/WorkspaceFileRelativePa
 
 describe("WorkspaceFileRelativePathParser :: extractExtension", () => {
   it.each([
+    ["foo.yaml", "yaml"],
+    ["foo.yml", "yml"],
     ["foo.json", "json"],
     [".gitignore", "gitignore"],
     ["noExtension", ""],
-    ["bar.sw.json", "sw.json"],
+    ["bar.sw.yml", "sw.yml"],
+    ["bar.yard.json", "yard.json"],
+    ["bar.yard.yaml.yard.yaml", "yard.yaml"],
+    ["bar.dash.yaml", "dash.yaml"],
     ["a/b/c/foo.json", "json"],
     ["a/b/c/.gitignore", "gitignore"],
     ["a/b/c/noExtension", ""],
     ["a/b/c/bar.sw.json", "sw.json"],
+    ["asd.dmn.dmn", "dmn"],
+    ["a/b/c'asd.DMn", "DMn"],
+    ["foo.bpmN2", "bpmN2"],
+    ["pmml.pmml", "pmml"],
+    ["TEST.BPMN", "BPMN"],
   ])("should extract extension properly for %p", (relativePath: string, extension: string) => {
     expect(extractExtension(relativePath)).toBe(extension);
   });

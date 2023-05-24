@@ -20,7 +20,6 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 
 import static org.kie.workbench.common.stunner.sw.client.shapes.StateShapeView.STATE_SHAPE_HEIGHT;
@@ -38,7 +37,6 @@ public class BottomDepiction extends Group {
                 .setStrokeAlpha(0.001)
                 .setStrokeColor("white")
                 .setCornerRadius(9)
-                .setEventPropagationMode(EventPropagationMode.NO_ANCESTORS)
                 .setListening(true);
         add(border);
         setListening(true);

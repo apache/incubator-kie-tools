@@ -65,13 +65,17 @@ export function DevDeploymentsConfirmDeleteModal() {
   );
 
   const onConfirm = useCallback(async () => {
-    if (isLoading || authSession?.type !== "openshift" || !devDeployments.confirmDeleteModalState.isOpen) {
+    if (
+      isLoading ||
+      (authSession?.type !== "openshift" && authSession?.type !== "kubernetes") ||
+      !devDeployments.confirmDeleteModalState.isOpen
+    ) {
       return;
     }
 
     setLoading(true);
     const deleteStarted = await devDeployments.deleteDeployments({
-      connection: authSession,
+      authSession,
       resourceNames: devDeployments.confirmDeleteModalState.resourceNames,
     });
     await delay(600);

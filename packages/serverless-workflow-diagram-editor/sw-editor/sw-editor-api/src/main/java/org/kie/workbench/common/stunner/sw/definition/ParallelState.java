@@ -16,25 +16,21 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.NumCompletedJsonTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StringNumberYamlTypeSerializer;
 
-/**
- * Parallel state defines a collection of branches that are executed in parallel.
- * A parallel state can be seen a state which splits up the current workflow instance execution path into multiple ones,
- * one for each branch. These execution paths are performed in parallel and are joined back into the current execution
- * path depending on the defined completionType parameter value.
- *
- * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Parallel-State"> Parallel state </a>
- */
-@Bindable
-@Definition
-@Morph(base = State.class)
 @JSONMapper
+@YAMLMapper
 @JsType
+@YamlPropertyOrder({"name", "type", "transition", "stateDataFilter", "compensatedBy", "branches", "timeouts", "eventTimeout", "onErrors", "end",  "metadata"})
 public class ParallelState extends State {
 
     public static final String TYPE_PARALLEL = "parallel";
@@ -43,9 +39,15 @@ public class ParallelState extends State {
         this.type = TYPE_PARALLEL;
     }
 
-    private String completionType;
+    public String completionType;
 
-    private ParallelStateBranch[] branches;
+    @JsonbTypeSerializer(NumCompletedJsonTypeSerializer.class)
+    @JsonbTypeDeserializer(NumCompletedJsonTypeSerializer.class)
+    @YamlTypeSerializer(StringNumberYamlTypeSerializer.class)
+    @YamlTypeDeserializer(StringNumberYamlTypeSerializer.class)
+    private Object numCompleted;
+
+    public ParallelStateBranch[] branches;
 
     public String getCompletionType() {
         return completionType;
@@ -61,5 +63,13 @@ public class ParallelState extends State {
 
     public void setBranches(ParallelStateBranch[] branches) {
         this.branches = branches;
+    }
+
+    public Object getNumCompleted() {
+        return numCompleted;
+    }
+
+    public void setNumCompleted(Object numCompleted) {
+        this.numCompleted = numCompleted;
     }
 }

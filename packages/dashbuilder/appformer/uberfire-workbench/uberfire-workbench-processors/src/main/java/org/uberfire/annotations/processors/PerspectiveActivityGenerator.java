@@ -92,10 +92,6 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                                                                            processingEnvironment);
         final String getPerspectiveMethodName = GeneratorUtils.getPerspectiveMethodName(classElement,
                                                                                         processingEnvironment);
-        final String getMenuBarMethodName = GeneratorUtils.getMenuBarMethodName(classElement,
-                                                                                processingEnvironment);
-        final String getToolBarMethodName = GeneratorUtils.getToolBarMethodName(classElement,
-                                                                                processingEnvironment);
         final List<String> qualifiers = GeneratorUtils.getAllQualifiersDeclarationFromType(classElement);
 
         if (GeneratorUtils.debugLoggingEnabled()) {
@@ -121,10 +117,6 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                                   "onOpenMethodName: " + onOpenMethodName);
             messager.printMessage(Kind.NOTE,
                                   "getPerspectiveMethodName: " + getPerspectiveMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "getMenuBarMethodName: " + getMenuBarMethodName);
-            messager.printMessage(Kind.NOTE,
-                                  "getToolBarMethodName: " + getToolBarMethodName);
             messager.printMessage(Kind.NOTE,
                                   "Qualifiers: " + String.join(", ",
                                                                qualifiers));
@@ -185,10 +177,6 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                  onOpenMethodName);
         root.put("getPerspectiveMethodName",
                  getPerspectiveMethodName);
-        root.put("getMenuBarMethodName",
-                 getMenuBarMethodName);
-        root.put("getToolBarMethodName",
-                 getToolBarMethodName);
         root.put("isDynamic",
                  isDynamic);
         root.put("qualifiers",

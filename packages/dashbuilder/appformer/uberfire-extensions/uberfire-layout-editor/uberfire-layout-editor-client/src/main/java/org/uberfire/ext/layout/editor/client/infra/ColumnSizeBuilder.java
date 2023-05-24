@@ -20,6 +20,10 @@ import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 
 public class ColumnSizeBuilder {
 
+    private ColumnSizeBuilder() {
+        // noop
+    }
+
     public static String buildColumnSize(final int value) {
         switch (value) {
             case 1:

@@ -70,16 +70,16 @@ The KIE Tools project contains several applications. To develop each one of them
 
 #### VS Code Extension (DMN, BPMN, SceSim, and PMML Editors)
 
-1. After you've successfully built the project following the instructions above, open the `packages/vscode-extension-pack-kogito-kie-editors` folder on VS Code. Use a new VS Code window so that the `packages/vscode-extension-pack-kogito-kie-editors` folder shows up as root in the VS Code explorer.
+1. After you've successfully built the project following the instructions above, open the `packages/kie-editors-dev-vscode-extension` folder on VS Code. Use a new VS Code window so that the `packages/kie-editors-dev-vscode-extension` folder shows up as root in the VS Code explorer.
 2. From there, you can Run the extension or the integration tests by using the `Debug` menu/section. You can also use the respective shortcuts (F5 to start debugging, for instance).
 3. **NOTE:** To run the VS Code extension in development mode, you need `webpack` and `webpack-cli` to be globally installed on NPM. Normally you can do that with `npm install -g webpack@^5.36.2 webpack-cli@^4.7.0`, but `sudo` may be required depending on your installation.
-4. **Remember!** If you make changes to any package other than `packages/vscode-extension-pack-kogito-kie-editors`, you have to manually rebuild them before relaunching the extension on VS Code.
+4. **Remember!** If you make changes to any package other than `packages/kie-editors-dev-vscode-extension`, you have to manually rebuild them before relaunching the extension on VS Code.
 
 #### VS Code Extension (Serverless Workflow Editor)
 
-1. After you've successfully built the project following the instructions above, open the `packages/vscode-extension-serverless-workflow-editor` folder on VS Code. Use a new VS Code window so that the `packages/vscode-extension-serverless-workflow-editor` folder shows up as root in the VS Code explorer.
+1. After you've successfully built the project following the instructions above, open the `packages/serverless-workflow-vscode-extension` folder on VS Code. Use a new VS Code window so that the `packages/serverless-workflow-vscode-extension` folder shows up as root in the VS Code explorer.
 1. From there, you can Run the extension or the integration tests by using the `Debug` menu/section. You can also use the respective shortcuts (F5 to start debugging, for instance).
-1. **Remember!** If you make changes to any package other than `packages/vscode-extension-serverless-workflow-editor`, you have to manually rebuild them before relaunching the extension on VS Code.
+1. **Remember!** If you make changes to any package other than `packages/serverless-workflow-vscode-extension`, you have to manually rebuild them before relaunching the extension on VS Code.
 
 #### Chrome Extension (DMN, BPMN, and SceSim Editors)
 
@@ -138,12 +138,12 @@ After that, you're ready to start developing the Editors individually.
 - BPMN
 
   - Located at `packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime`.
-  - Run `mvn clean gwt:run` to start.
+  - Run `mvn clean gwt:run` to start. To enable live-reloading capability, run `mvn clean gwt:run -Phot-reload`
 
 - DMN
 
   - Located at `packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime`.
-  - Run `mvn clean gwt:run` to start.
+  - Run `mvn clean gwt:run` to start. To enable live-reloading capability, run `mvn clean gwt:run -Phot-reload`
   - If you want to enable live-reloading capabilities of the React components that are part of the DMN Editor, follow [these steps](./packages/stunner-editors/docs/live-reload-dmn-loader.md).
 
 - Test Scenario (SceSim)

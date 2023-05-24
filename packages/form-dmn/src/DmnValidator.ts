@@ -15,13 +15,16 @@
  */
 
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
-import { Validator } from "@kie-tools/form";
+import { Validator } from "@kie-tools/form/dist/Validator";
 import { DmnFormI18n } from "./i18n";
+import {
+  DAYS_AND_TIME_DURATION_FORMAT,
+  DAYS_AND_TIME_DURATION_REGEXP,
+  YEARS_AND_MONTHS_DURATION_FORMAT,
+  YEARS_AND_MONTHS_DURATION_REGEXP,
+} from "@kie-tools/dmn-runner/dist/constants";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
-
-export const DAYS_AND_TIME =
-  /^(-|\+)?P(?:([-+]?[0-9]*)D)?(?:T(?:([-+]?[0-9]*)H)?(?:([-+]?[0-9]*)M)?(?:([-+]?[0-9]*)S)?)?$/;
-export const YEARS_AND_MONTHS = /^(-|\+)?P(?:([-+]?[0-9]*)Y)?(?:([-+]?[0-9]*)M)?$/;
+import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 
 export class DmnValidator extends Validator {
   private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
@@ -35,14 +38,14 @@ export class DmnValidator extends Validator {
   // Add meta schema v4 and period format
   private setupValidator() {
     this.ajv.addMetaSchema(metaSchemaDraft04);
-    this.ajv.addFormat("days and time duration", {
+    this.ajv.addFormat(DAYS_AND_TIME_DURATION_FORMAT, {
       type: "string",
-      validate: (data: string) => !!data.match(DAYS_AND_TIME),
+      validate: (data: string) => !!data.match(DAYS_AND_TIME_DURATION_REGEXP),
     });
 
-    this.ajv.addFormat("years and months duration", {
+    this.ajv.addFormat(YEARS_AND_MONTHS_DURATION_FORMAT, {
       type: "string",
-      validate: (data: string) => !!data.match(YEARS_AND_MONTHS),
+      validate: (data: string) => !!data.match(YEARS_AND_MONTHS_DURATION_REGEXP),
     });
   }
 
@@ -61,10 +64,10 @@ export class DmnValidator extends Validator {
       return {
         details: validator.errors?.map((error: any) => {
           if (error.keyword === "format") {
-            if ((error.params as any).format === "days and time duration") {
+            if ((error.params as any).format === DAYS_AND_TIME_DURATION_FORMAT) {
               return { ...error, message: (this.i18n as DmnFormI18n).validation.daysAndTimeError };
             }
-            if ((error.params as any).format === "years and months duration") {
+            if ((error.params as any).format === YEARS_AND_MONTHS_DURATION_FORMAT) {
               return { ...error, message: (this.i18n as DmnFormI18n).validation.yearsAndMonthsError };
             }
           }
@@ -74,7 +77,7 @@ export class DmnValidator extends Validator {
     };
   }
 
-  public getBridge(formSchema: object): DmnFormJsonSchemaBridge {
+  public getBridge(formSchema: ExtendedServicesDmnJsonSchema): DmnFormJsonSchemaBridge {
     const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
     const validator = this.createValidator(formDraft4);
     return new DmnFormJsonSchemaBridge(formDraft4, validator, this.i18n as DmnFormI18n);

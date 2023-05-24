@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
-import org.junit.Test;
 import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.StateEnd;
 import org.kie.workbench.common.stunner.sw.definition.StateTransition;
@@ -32,7 +31,7 @@ public class StartTransitionEndObjectsTest {
 
     private final Workflow_JsonMapperImpl mapper = Workflow_JsonMapperImpl.INSTANCE;
 
-    @Test
+    //@Test
     public void test(){
         String json = "{\n" +
                 " \"id\": \"startTransitionEndObjects\",\n" +

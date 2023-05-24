@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.sw.client.editor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.enterprise.event.Event;
 
@@ -34,6 +36,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.promise.Promise;
+import org.appformer.kogito.bridge.client.diagramApi.DiagramApi;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +45,7 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasVi
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
+import org.kie.workbench.common.stunner.core.client.api.JsStunnerEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.AbstractSelectionControl;
@@ -55,8 +59,12 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.sw.SWDomainInitializer;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
 import org.kie.workbench.common.stunner.sw.client.services.IncrementalMarshaller;
+import org.kie.workbench.common.stunner.sw.marshall.Context;
+import org.kie.workbench.common.stunner.sw.marshall.DocType;
+import org.kie.workbench.common.stunner.sw.marshall.Marshaller;
 import org.mockito.Mock;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -66,6 +74,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
@@ -137,6 +146,9 @@ public class DiagramEditorTest {
     private Graph graph;
 
     @Mock
+    private JsStunnerEditor jsEditor;
+
+    @Mock
     private JsCanvas jsCanvas;
 
     @Mock
@@ -147,6 +159,18 @@ public class DiagramEditorTest {
 
     @Mock
     private Event togglePreviewEvent;
+
+    @Mock
+    private SWDomainInitializer domainInitializer;
+
+    @Mock
+    private DiagramApi diagramApi;
+
+    @Mock
+    private Marshaller marshaller;
+
+    @Mock
+    private Context context;
 
     private DiagramEditor tested;
     private Promises promises;
@@ -204,13 +228,14 @@ public class DiagramEditorTest {
         metadata = spy(new MetadataImpl.MetadataImplBuilder("testSet")
                                .setTitle("testDiagram")
                                .build());
-        diagram = spy(new DiagramImpl("testDiagram",
-                                      graph,
-                                      metadata));
+        DiagramImpl d = new DiagramImpl("testDiagram", metadata);
+        d.setGraph(graph);
+        diagram = spy(d);
         when(session.getCanvasHandler()).thenReturn(canvasHandler2);
         when(canvasHandler2.getDiagram()).thenReturn(diagram);
         doReturn(stunnerEditor2).when(stunnerEditor2).close();
         when(stunnerEditor2.getSession()).thenReturn(viewerSession);
+        when(selectionControl.clearSelection()).thenReturn(selectionControl);
         when(viewerSession.getSelectionControl()).thenReturn(selectionControl);
         when(selectionControl.getSelectedItems()).thenReturn(new ArrayList<>(Arrays.asList("uuid")));
         when(viewerSession.getCanvasHandler()).thenReturn(canvasHandler2);
@@ -221,9 +246,11 @@ public class DiagramEditorTest {
                                        diagramServices,
                                        incrementalMarshaller,
                                        canvasFileExport,
-                                       togglePreviewEvent));
-        tested.jsRegExp = jsRegExp;
-        tested.jsCanvas = jsCanvas;
+                                       togglePreviewEvent,
+                                       diagramApi));
+        tested.jsRegExpJson = jsRegExp;
+        tested.domainInitializer = domainInitializer;
+        doReturn(jsCanvas).when(tested).getJsCanvas();
     }
 
     @Test
@@ -286,6 +313,12 @@ public class DiagramEditorTest {
     }
 
     @Test
+    public void testDomainInitializer() {
+        tested.onStartup(new DefaultPlaceRequest());
+        verify(domainInitializer, times(1)).initialize();
+    }
+
+    @Test
     public void testAsWidget() {
         IsWidget w = mock(IsWidget.class);
         when(stunnerEditor2.getView()).thenReturn(w);
@@ -310,11 +343,14 @@ public class DiagramEditorTest {
         when(regExpResult.getAt(2)).thenReturn("injectExample");
         when(graph.getUUID()).thenReturn("SomeOtherStuff");
 
+        doReturn(promises.create((success, failure) -> success.onInvoke((Void) null))).when(tested).setNewContent(anyString(), anyString(), any(DocType.class));
+
         tested.setContent("", rawJSON);
 
-        verify(tested, times(1)).setNewContent("", rawJSON);
-        verify(tested, never()).updateContent("", rawJSON);
+        verify(tested, times(1)).setNewContent("", rawJSON, DocType.JSON);
+        verify(tested, never()).updateContent("", rawJSON, DocType.JSON);
         verify(tested, never()).close();
+        verify(diagramApi).setContentSuccess();
     }
 
     @Test
@@ -323,15 +359,18 @@ public class DiagramEditorTest {
         when(regExpResult.getAt(2)).thenReturn("injectExample");
         when(graph.getUUID()).thenReturn("injectExample");
 
-        final Promise<Void> promise = tested.setContent("", rawJSON);
+        doReturn(promises.create((success, failure) -> success.onInvoke((Void) null))).when(tested).updateContent(anyString(), anyString(), any(DocType.class));
 
-        verify(tested, times(1)).updateContent("", rawJSON);
-        verify(tested, never()).setNewContent("", rawJSON);
+        tested.setContent("", rawJSON);
+
+        verify(tested, times(1)).updateContent("", rawJSON, DocType.JSON);
+        verify(tested, never()).setNewContent("", rawJSON, DocType.JSON);
+        verify(diagramApi).setContentSuccess();
     }
 
     @Test
     public void testRegex() {
-        RegExp regExp = RegExp.compile(DiagramEditor.ID_SEARCH_PATTERN);
+        RegExp regExp = RegExp.compile(DiagramEditor.ID_SEARCH_PATTERN_JSON);
         MatchResult matcher = regExp.exec(rawJSON);
 
         assertNotNull(matcher);
@@ -373,6 +412,21 @@ public class DiagramEditorTest {
         // Keep selection
         verify(selectionControl, times(1)).addSelection("uuid");
         // Center selected node
-        verify(jsCanvas, times(1)).centerNode("uuid");
+        verify(jsCanvas, times(1)).center("uuid");
+    }
+
+    @Test
+    public void testSelectStateByName() {
+        Map<String, String> nameToUUIDBindings = new HashMap<>();
+        nameToUUIDBindings.put("name", "uuid");
+
+        doReturn(nameToUUIDBindings).when(context).getNameToUUIDBindings();
+        doReturn(context).when(marshaller).getContext();
+        doReturn(marshaller).when(diagramServices).getMarshaller();
+
+        tested.selectStateByName("name");
+
+        verify(selectionControl).addSelection("uuid");
+        verify(jsCanvas).center("uuid");
     }
 }

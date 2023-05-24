@@ -31,13 +31,14 @@ import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
+import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNLayoutHelper;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -46,7 +47,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.ConfirmationDialog;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -122,7 +122,7 @@ public class AbstractDMNDiagramEditorTest {
     private PreviewDiagramDock diagramPreviewAndExplorerDock;
 
     @Mock
-    private LayoutHelper layoutHelper;
+    private DMNLayoutHelper layoutHelper;
 
     @Mock
     private OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
@@ -155,9 +155,6 @@ public class AbstractDMNDiagramEditorTest {
     private KogitoChannelHelper kogitoChannelHelper;
 
     @Mock
-    private GuidedTourBridgeInitializer guidedTourBridgeInitializer;
-
-    @Mock
     private DRDNameChanger drdNameChanger;
 
     @Mock
@@ -165,6 +162,9 @@ public class AbstractDMNDiagramEditorTest {
 
     @Mock
     private DecisionNavigatorPresenter decisionNavigatorPresenter;
+
+    @Mock
+    private PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
 
     private AbstractDMNDiagramEditor editor;
 
@@ -192,10 +192,10 @@ public class AbstractDMNDiagramEditorTest {
                                                       promises,
                                                       includedModelsPage,
                                                       kogitoChannelHelper,
-                                                      guidedTourBridgeInitializer,
                                                       drdNameChanger,
                                                       confirmationDialog,
-                                                      decisionNavigatorPresenter));
+                                                      decisionNavigatorPresenter,
+                                                      pmmlDocumentMetadataProvider));
 
         when(containerView.getMultiPage()).thenReturn(multiPageEditor);
     }
@@ -208,7 +208,6 @@ public class AbstractDMNDiagramEditorTest {
         editor.onStartup(mock(PlaceRequest.class));
 
         verify(stunnerEditor, times(1)).setReadOnly(isReadOnly);
-        verify(guidedTourBridgeInitializer, times(1)).init();
         verify(decisionNavigatorDock, times(1)).init();
         verify(diagramPropertiesDock, times(1)).init();
         verify(diagramPreviewAndExplorerDock, times(1)).init();
@@ -462,7 +461,7 @@ public class AbstractDMNDiagramEditorTest {
                                                final DecisionNavigatorDock decisionNavigatorDock,
                                                final DiagramEditorPropertiesDock diagramPropertiesDock,
                                                final PreviewDiagramDock diagramPreviewAndExplorerDock,
-                                               final LayoutHelper layoutHelper,
+                                               final DMNLayoutHelper layoutHelper,
                                                final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                                                final DataTypesPage dataTypesPage,
                                                final KogitoClientDiagramService diagramServices,
@@ -471,10 +470,10 @@ public class AbstractDMNDiagramEditorTest {
                                                final Promises promises,
                                                final IncludedModelsPage includedModelsPage,
                                                final KogitoChannelHelper kogitoChannelHelper,
-                                               final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                                                final DRDNameChanger drdNameChanger,
                                                final ConfirmationDialog confirmationDialog,
-                                               final DecisionNavigatorPresenter decisionNavigatorPresenter) {
+                                               final DecisionNavigatorPresenter decisionNavigatorPresenter,
+                                               final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider) {
             super(view,
                   containerView,
                   stunnerEditor,
@@ -497,10 +496,10 @@ public class AbstractDMNDiagramEditorTest {
                   promises,
                   includedModelsPage,
                   kogitoChannelHelper,
-                  guidedTourBridgeInitializer,
                   drdNameChanger,
                   confirmationDialog,
-                  decisionNavigatorPresenter);
+                  decisionNavigatorPresenter,
+                  pmmlDocumentMetadataProvider);
         }
     }
 

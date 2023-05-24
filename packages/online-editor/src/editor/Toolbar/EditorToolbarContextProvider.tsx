@@ -35,6 +35,8 @@ import { EmbedModal } from "./Share/EmbedModal";
 import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { useAuthSession } from "../../authSessions/AuthSessionsContext";
+import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { WorkspaceGitStatusType } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 
 export type EditorToolbarContextType = {
   isEmbedModalOpen: boolean;
@@ -46,10 +48,12 @@ export type EditorToolbarContextType = {
   isLargeKebabOpen: boolean;
   isSmallKebabOpen: boolean;
   isNewFileDropdownMenuOpen: boolean;
+  isAcceleratorsDropdownOpen: boolean;
   downloadRef: RefObject<HTMLAnchorElement>;
   downloadAllRef: RefObject<HTMLAnchorElement>;
   downloadPreviewRef: RefObject<HTMLAnchorElement>;
   downloadWorkspaceZip: () => Promise<void>;
+  workspace: ActiveWorkspace;
 };
 
 export type EditorToolbarDispatchContextType = {
@@ -62,6 +66,7 @@ export type EditorToolbarDispatchContextType = {
   setLargeKebabOpen: Dispatch<SetStateAction<boolean>>;
   setSmallKebabOpen: Dispatch<SetStateAction<boolean>>;
   setNewFileDropdownMenuOpen: Dispatch<SetStateAction<boolean>>;
+  setAcceleratorsDropdownOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export const EditorToolbarContext = createContext<EditorToolbarContextType>({} as any);
@@ -70,17 +75,21 @@ export const EditorToolbarDispatchContext = createContext<EditorToolbarDispatchC
 type Props = {
   workspace: ActiveWorkspace;
   workspaceFile: WorkspaceFile;
+  workspaceGitStatusPromise?: PromiseState<WorkspaceGitStatusType>;
   children: ReactNode;
   editor: EmbeddedEditorRef | undefined;
 };
 
-export function EditorToolbarContextProvider(props: Props) {
+export function EditorToolbarContextProvider(
+  props: Props & { workspace: ActiveWorkspace; workspaceGitStatusPromise: PromiseState<WorkspaceGitStatusType> }
+) {
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
   const [isCreateGitRepositoryModalOpen, setCreateGitRepositoryModalOpen] = useState(false);
   const [isCreateGistOrSnippetModalOpen, setCreateGistOrSnippetModalOpen] = useState(false);
   const [isShareDropdownOpen, setShareDropdownOpen] = useState(false);
   const [isSyncGistOrSnippetDropdownOpen, setSyncGistOrSnippetDropdownOpen] = useState(false);
   const [isSyncGitRepositoryDropdownOpen, setSyncGitRepositoryDropdownOpen] = useState(false);
+  const [isAcceleratorsDropdownOpen, setAcceleratorsDropdownOpen] = useState(false);
   const [isLargeKebabOpen, setLargeKebabOpen] = useState(false);
   const [isSmallKebabOpen, setSmallKebabOpen] = useState(false);
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
@@ -120,6 +129,7 @@ export function EditorToolbarContextProvider(props: Props) {
       isShareDropdownOpen,
       isSyncGistOrSnippetDropdownOpen,
       isSyncGitRepositoryDropdownOpen,
+      isAcceleratorsDropdownOpen,
       isLargeKebabOpen,
       isSmallKebabOpen,
       isNewFileDropdownMenuOpen,
@@ -127,6 +137,7 @@ export function EditorToolbarContextProvider(props: Props) {
       downloadAllRef,
       downloadPreviewRef,
       downloadWorkspaceZip,
+      workspace: props.workspace,
     }),
     [
       isCreateGistOrSnippetModalOpen,
@@ -138,7 +149,9 @@ export function EditorToolbarContextProvider(props: Props) {
       isSmallKebabOpen,
       isSyncGistOrSnippetDropdownOpen,
       isSyncGitRepositoryDropdownOpen,
+      isAcceleratorsDropdownOpen,
       downloadWorkspaceZip,
+      props.workspace,
     ]
   );
 
@@ -153,6 +166,7 @@ export function EditorToolbarContextProvider(props: Props) {
       setLargeKebabOpen,
       setSmallKebabOpen,
       setNewFileDropdownMenuOpen,
+      setAcceleratorsDropdownOpen,
     }),
     []
   );
@@ -175,6 +189,7 @@ export function EditorToolbarContextProvider(props: Props) {
           <EmbedModal
             workspace={props.workspace.descriptor}
             workspaceFile={props.workspaceFile}
+            workspaceGitStatusPromise={props.workspaceGitStatusPromise}
             isOpen={isEmbedModalOpen}
             onClose={() => setEmbedModalOpen(false)}
           />

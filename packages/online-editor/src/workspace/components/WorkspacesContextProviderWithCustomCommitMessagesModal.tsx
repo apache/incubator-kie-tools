@@ -20,17 +20,20 @@ import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dis
 import { useEnv } from "../../env/hooks/EnvContext";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { PromiseModal, PromiseModalRef } from "./PromiseModal";
-import { WorkspaceCommitModal } from "./WorkspaceCommitModal";
+import { WorkspaceCommitModal, WorkspaceCommitModalArgs } from "./WorkspaceCommitModal";
 import { ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { useOnlineI18n } from "../../i18n";
 
 export const WorkspacesContextProviderWithCustomCommitMessagesModal: FunctionComponent = (props) => {
   const { env } = useEnv();
   const { i18n } = useOnlineI18n();
-  const [promiseModalController, promiseModalRef] = useController<PromiseModalRef<string>>();
+  const [promiseModalController, promiseModalRef] = useController<PromiseModalRef<string, WorkspaceCommitModalArgs>>();
 
   const onCommitMessageRequest = useMemo(
-    () => (promiseModalController ? () => promiseModalController.open() : undefined),
+    () =>
+      promiseModalController
+        ? (defaultCommitMessage?: string) => promiseModalController.open({ defaultCommitMessage })
+        : undefined,
     [promiseModalController]
   );
 
@@ -41,12 +44,17 @@ export const WorkspacesContextProviderWithCustomCommitMessagesModal: FunctionCom
           workspacesSharedWorkerScriptUrl={"workspace/worker/sharedWorker.js"}
           shouldRequireCommitMessage={env.KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE}
           onCommitMessageRequest={onCommitMessageRequest}
+          workerNamePrefix={`kie-sandbox-${env.KIE_SANDBOX_VERSION}`}
         >
           {props.children}
         </WorkspacesContextProvider>
       )}
-      <PromiseModal<string> title={i18n.commitModal.title} variant={ModalVariant.medium} forwardRef={promiseModalRef}>
-        {({ onReturn, onClose }) => <WorkspaceCommitModal onReturn={onReturn} onClose={onClose} />}
+      <PromiseModal<string, WorkspaceCommitModalArgs>
+        title={i18n.commitModal.title}
+        variant={ModalVariant.medium}
+        forwardRef={promiseModalRef}
+      >
+        {({ onReturn, onClose, args }) => <WorkspaceCommitModal onReturn={onReturn} onClose={onClose} args={args} />}
       </PromiseModal>
     </>
   );

@@ -51,8 +51,16 @@ public abstract class Expression extends DMNElement implements HasTypeRef,
     /**
      * It represents a contract for all subclasses of {@link Expression}.
      * Its purpose is to exploit polymorphism when we deeply copy the Expression boxed inside the {@link Decision}
+     * It copies the Expression properties only, and NOT the IDs.
      */
     public abstract Expression copy();
+
+    /**
+     * It represents a contract for all subclasses of {@link Expression}.
+     * Its purpose is to exploit polymorphism when we deeply copy the Expression boxed inside the {@link Decision}
+     * It performs a 1:1 Expression copy, with IDs as well
+     */
+    public abstract Expression exactCopy();
 
     /**
      * Find a {@link DomainObject} in the expression with the given the UUID.

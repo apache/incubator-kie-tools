@@ -18,15 +18,20 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class ContinueAs {
 
-    private String workflowId;
-    private String version;
-    private String data;
-    private String workflowExecTimeout;
+    public String workflowId;
+
+    public String version;
+
+    public String data;
+
+    public String workflowExecTimeout;
 
     public final String getWorkflowId() {
         return workflowId;

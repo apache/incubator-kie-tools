@@ -102,17 +102,17 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 }
 
 export const routes = {
-  root: new Route<{}>(() => "/"),
+  root: new Route<{}>(() => "./"),
 
   error: new Route<{}>(() => "/error"),
 
-  dataJson: new Route<{}>(() => "/data.json"),
+  dataJson: new Route<{}>(() => "./data.json"),
 
-  swaggerUi: new Route<{}>(() => "/q/swagger-ui"),
+  swaggerUi: new Route<{}>(() => "./q/swagger-ui"),
 
   dmnResult: new Route<{
     pathParams: PathParams.MODEL_NAME;
-  }>(({ modelName }) => `/${modelName}/dmnresult`),
+  }>(({ modelName }) => `./${modelName}/dmnresult`),
 
   form: new Route<{
     pathParams: PathParams.FILE_PATH;
@@ -124,7 +124,7 @@ export const routes = {
 
   static: {
     images: {
-      kieHorizontalLogoReverse: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_reverse.svg`),
+      kieHorizontalLogoReverse: new Route<{}>(() => `./images/kie_horizontal_rgb_fullcolor_reverse.svg`),
     },
   },
 };

@@ -235,6 +235,11 @@
       <artifactId>uberfire-commons-editor-client</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>appformer-kogito-bridge</artifactId>
+    </dependency>
+
     <!-- Lienzo. -->
 
     <dependency>

@@ -27,4 +27,9 @@ public class DiagramApiService implements DiagramApi {
             DiagramApiInteropWrapper.get().onNodeSelected(nodeName);
         }
     }
+
+    @Override
+    public void setContentSuccess() {
+        DiagramApiInteropWrapper.get().setContentSuccess();
+    }
 }

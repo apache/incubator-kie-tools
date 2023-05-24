@@ -55,21 +55,11 @@ public class GetClassesHandler extends Handler<List<GetClassesResult>> {
 
     private List<GetClassesResult> transformCompletionItemsToResult(List<CompletionItem> items) {
         return items.stream()
-                .filter(item -> item.getLabel().contains("-"))
                 .map(item -> {
                     GetClassesResult result = new GetClassesResult();
-                    result.setFqcn(getFQCN(item.getLabel()));
+                    result.setFqcn(item.getDetail());
                     return result;
                 })
                 .collect(Collectors.toList());
-    }
-
-    protected String getFQCN(String label) {
-        if (label.contains("-")) {
-            String[] split = label.split("-");
-            return split[1].trim() + "." + split[0].trim();
-        } else {
-            return "";
-        }
     }
 }

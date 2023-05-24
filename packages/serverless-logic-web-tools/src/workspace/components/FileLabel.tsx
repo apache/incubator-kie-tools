@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
-import { FileTypes } from "../../extension";
+import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 type LabelColorType = { color: LabelProps["color"]; label: string };
 
@@ -24,7 +24,7 @@ const swfLabel: LabelColorType = { color: "green", label: "Serverless Workflow" 
 const sdLabel: LabelColorType = { color: "blue", label: "Serverless Decision" };
 const dashboardLabel: LabelColorType = { color: "purple", label: "Dashboard" };
 
-export const labelColors: Record<FileTypes, LabelColorType> = {
+export const labelColors: Record<string, LabelColorType> = {
   [FileTypes.SW_JSON]: swfLabel,
   [FileTypes.SW_YML]: swfLabel,
   [FileTypes.SW_YAML]: swfLabel,
@@ -35,14 +35,19 @@ export const labelColors: Record<FileTypes, LabelColorType> = {
   [FileTypes.DASH_YML]: dashboardLabel,
 };
 
-export function FileLabel(props: { style?: LabelProps["style"]; extension: string }) {
+export function FileLabel(props: { style?: LabelProps["style"]; extension: string; labelProps?: LabelProps }) {
   const parsedExtension = props.extension.toLowerCase();
-  const labelColor = labelColors[parsedExtension as FileTypes];
+  const labelColor = labelColors[parsedExtension as string];
 
   return (
     <>
       {props.extension && (
-        <Label style={props.style ?? {}} color={labelColor?.color ?? "grey"} data-ouia-component-id="file-type-label">
+        <Label
+          {...props.labelProps}
+          style={props.style ?? {}}
+          color={labelColor?.color ?? "grey"}
+          data-ouia-component-id="file-type-label"
+        >
           {labelColor?.label ?? props.extension.toUpperCase()}
         </Label>
       )}

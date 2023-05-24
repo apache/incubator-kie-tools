@@ -18,8 +18,6 @@ package command
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
 	"time"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
@@ -76,18 +74,28 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("initializing deploy config: %w", err)
 	}
 
-	if _, err := exec.LookPath("kubectl"); err != nil {
-		fmt.Println("ERROR: kubectl is required for deploy")
-		fmt.Println("Download from https://kubectl.docs.kubernetes.io/installation/kubectl/")
-		os.Exit(1)
+	if err = common.CheckKubectl(); err != nil {
+		return err
 	}
 
+	if _, err = deployKnativeServiceAndEventingBindings(cfg); err != nil {
+		return err
+	}
+
+	finish := time.Since(start)
+	fmt.Printf("🚀 Deploy took: %s \n", finish)
+	return nil
+}
+
+func deployKnativeServiceAndEventingBindings(cfg DeployCmdConfig) (bool, error) {
+	isKnativeEventingBindingsCreated := false
 	createService := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/knative.yml", cfg.Path))
 	if err := common.RunCommand(
 		createService,
 		"deploy",
 	); err != nil {
-		return err
+		fmt.Println("❌ Deploy failed, Knative service was not created.")
+		return isKnativeEventingBindingsCreated, err
 	}
 	fmt.Println("✅ Knative service sucessufully created")
 
@@ -98,14 +106,13 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 			deploy,
 			"deploy",
 		); err != nil {
-			return err
+			fmt.Println("❌ Deploy failed, Knative Eventing binding was not created.")
+			return isKnativeEventingBindingsCreated, err
 		}
+		isKnativeEventingBindingsCreated = true
 		fmt.Println("✅ Knative Eventing bindings successfully created")
 	}
-
-	finish := time.Since(start)
-	fmt.Printf("🚀 Deploy took: %s \n", finish)
-	return nil
+	return isKnativeEventingBindingsCreated, nil
 }
 
 func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployCmdConfig, err error) {
@@ -116,7 +123,7 @@ func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployCmdConfig, err error) {
 }
 
 func checkIfKogitoFileExists(cfg DeployCmdConfig) (bool, error) {
-	if _, err := os.Stat(fmt.Sprintf("%s/kogito.yml", cfg.Path)); err == nil {
+	if _, err := common.FS.Stat(fmt.Sprintf("%s/kogito.yml", cfg.Path)); err == nil {
 		return true, nil
 	} else {
 		return false, err

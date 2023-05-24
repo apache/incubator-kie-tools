@@ -101,6 +101,27 @@ public class DecisionTable extends Expression {
     }
 
     @Override
+    public DecisionTable exactCopy() {
+        final DecisionTable exactelyClonedDecisionTable = new DecisionTable();
+        exactelyClonedDecisionTable.id = Optional.ofNullable(id).map(Id::copy).orElse(null);
+        exactelyClonedDecisionTable.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        exactelyClonedDecisionTable.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
+        exactelyClonedDecisionTable.componentWidths = new ArrayList<>(componentWidths);
+        exactelyClonedDecisionTable.input = input.stream().map(InputClause::exactCopy).collect(Collectors.toList());
+        exactelyClonedDecisionTable.output = output.stream().map(OutputClause::exactCopy).collect(Collectors.toList());
+        exactelyClonedDecisionTable.rule = rule.stream().map(DecisionRule::exactCopy).collect(Collectors.toList());
+        exactelyClonedDecisionTable.annotations = Optional.ofNullable(annotations)
+                .map(annotationEntryList ->
+                        annotationEntryList.stream().map(RuleAnnotationClause::copy).collect(Collectors.toList()))
+                .orElse(null);
+        exactelyClonedDecisionTable.hitPolicy = hitPolicy;
+        exactelyClonedDecisionTable.aggregation = aggregation;
+        exactelyClonedDecisionTable.preferredOrientation = preferredOrientation;
+        exactelyClonedDecisionTable.outputLabel = outputLabel;
+        return exactelyClonedDecisionTable;
+    }
+
+    @Override
     public Optional<DomainObject> findDomainObject(final String uuid) {
 
         Optional<DomainObject> domainObject = find(getInput(), uuid);

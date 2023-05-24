@@ -46,9 +46,9 @@ public class AbstractControlPointCommandTest extends AbstractGraphCommandTest {
         when(edge.getUUID()).thenReturn(EDGE_UUID);
         when(graphIndex.get(eq(EDGE_UUID))).thenReturn(edge);
         when(graphIndex.getEdge(eq(EDGE_UUID))).thenReturn(edge);
-        controlPoint1 = ControlPoint.build(new Point2D(1, 1));
-        controlPoint2 = ControlPoint.build(new Point2D(2, 2));
-        controlPoint3 = ControlPoint.build(new Point2D(3, 3));
+        controlPoint1 = ControlPoint.create(new Point2D(1, 1));
+        controlPoint2 = ControlPoint.create(new Point2D(2, 2));
+        controlPoint3 = ControlPoint.create(new Point2D(3, 3));
         when(edge.getContent()).thenReturn(viewConnector);
         when(viewConnector.getControlPoints())
                 .thenReturn(new ControlPoint[]{controlPoint1, controlPoint2, controlPoint3});

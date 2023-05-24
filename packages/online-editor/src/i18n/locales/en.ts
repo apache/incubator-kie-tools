@@ -18,7 +18,6 @@ import { OnlineI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { en as en_unitables } from "@kie-tools/unitables/dist/i18n/locales/en";
 import { wrapped } from "@kie-tools-core/i18n/dist/core";
-import { names } from "@kie-tools/i18n-common-dictionary/dist/names";
 
 export const en: OnlineI18n = {
   ...en_common,
@@ -49,6 +48,15 @@ export const en: OnlineI18n = {
         message: "Your files are temporarily persisted on your browser, but may be erased before you come back.",
       },
     },
+    error: {
+      title: `${en_common.terms.oops}!`,
+      explanation: `The ${en_common.names.dmnRunner} couldn't be rendered due to an error.`,
+      message: [
+        `This ${en_common.names.dmn} has a construct that is not supported. Please refer to `,
+        wrapped("issues"),
+        " and report an issue. Don't forget to upload the current file, and the used inputs",
+      ],
+    },
   },
   editorToolbar: {
     closeAndReturnHome: "Close and return Home",
@@ -65,6 +73,28 @@ export const en: OnlineI18n = {
     cantUpdateSnippetTooltip: `You can't update your Snippet because you're either not logged in, not the owner, or your models are in nested directories.`,
     share: "Share",
     embed: "Embed",
+  },
+  accelerators: {
+    commitMessage: (acceleratorName: string) =>
+      `${en_common.names.businessModeler.online}: Applying ${acceleratorName} Accelerator`,
+    loadingAlert: (acceleratorName: string) => `Applying ${acceleratorName} Accelerator...`,
+    successAlert: (acceleratorName: string) => `Successfully applied ${acceleratorName} Accelerator`,
+    failAlert: (acceleratorName: string) => `Failed to apply ${acceleratorName} Accelerator`,
+    acceleratorDescription:
+      "An Accelerator is a template. Applying it will move your current files according to the Accelerator specifications and create a new commit for it.",
+    acceleratorDetails: "This Accelerator is hosted at",
+    dmnFilesMove: "Decisions (.dmn) will be moved to:",
+    dmnFilesLocation: "Decisions (.dmn) were moved to:",
+    pmmlFilesMove: "Score cards (.pmml) will moved to:",
+    pmmlFilesLocation: "Score cards (.pmml) were moved to:",
+    bpmnFilesMove: "Workflows (.bpmn, .bpmn2) will be moved to:",
+    bpmnFilesLocation: "Workflows (.bpmn, .bpmn2) were moved to:",
+    otherFilesMove: "Other files will be moved to:",
+    otherFilesLocation: "Other files were moved to:",
+    applyAccelerator: "Apply Accelerator",
+    appliedAt: "This Accelerator was applied at:",
+    applyDisclaimer:
+      "This action is permanent. Any changes made after applying an Accelerator may result in your files being in different directories.",
   },
   devDeployments: {
     common: {
@@ -99,8 +129,12 @@ export const en: OnlineI18n = {
       tokenInfo: `The token associated with your instance.`,
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
+      missingPermissions:
+        "Missing the required permissions for Dev Deployments (deployments, services, ingresses). Check your user permissions and try again.",
+      namespaceNotFound: (namespace: string) => `The namespace ${namespace} was not found in your cluster.`,
       configExpiredWarning: "Token or account expired. Please update your configuration.",
-      useWizard: "Configure a new Developer Sandbox for Red Hat OpenShift through the guided wizard",
+      useOpenShiftWizard: "Configure a new Developer Sandbox for Red Hat OpenShift through the guided wizard",
+      useKubernetesWizard: "Configure a new local Kubernetes cluster through the guided wizard",
     },
     deployConfirmModal: {
       title: "Deploy",
@@ -124,7 +158,7 @@ export const en: OnlineI18n = {
       } is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
       getStarted: "To get started, configure your instance information.",
     },
-    configWizard: {
+    openShiftConfigWizard: {
       header: {
         provider: "Provider",
       },
@@ -167,6 +201,67 @@ export const en: OnlineI18n = {
         },
       },
     },
+    kubernetesConfigWizard: {
+      header: {
+        provider: "Provider",
+      },
+      fields: {
+        namespace: "Namespace",
+        namespaceInfo: "The Namespace in the cluster where your Dev deployments will be created.",
+        kubernetesApiServerUrl: "Kubernetes API Server URL",
+        kubernetesApiServerUrlInfo: "The hostname associated with the Kubernetes API Server from your cluster.",
+        tokenInfo: "The token associated with your Service Account.",
+      },
+      steps: {
+        first: {
+          name: "Create your Kubernetes cluster",
+          introduction:
+            "In order to create your local Kubernetes cluster first select the flavor you would like and follow the steps:",
+          installFlavor: (flavor: string) => `Download and install ${flavor}.`,
+          installKubectl: "Install Kubectl if you don't have it already.",
+          runCommandsTerminal: "For this step, run the commands in a terminal.",
+          createCluster: "Create your cluster:",
+          installIngress: "Install the Ingress Controller and wait for it to be ready:",
+          installKieSandboxYaml:
+            "Install a proxy for the Kubernetes API Server and create the required Service Accounts:",
+        },
+        second: {
+          name: "Set connection info",
+          introduction:
+            "With your cluster up and running, it should be available in the host prefilled below, and should have a Namespace created.",
+          disclaimer:
+            "Only change the values below if you have a custom Kubernetes installation, but beware that things might not go as expected.",
+          hostInputReason: "This information is necessary for establishing a connection with your Kubernetes cluster.",
+          namespaceInputReason:
+            "This information is necessary for creating your Dev deployments in the correct Namespace.",
+          namespacePlaceholder: "The Namespace where you want to create your Dev deployments.",
+          hostPlaceholder: "The Kubernetes API Server URL",
+        },
+        third: {
+          name: "Authenticate",
+          introduction:
+            "The Kubernetes API requires an authentication token for all requests. In this step we will get the authentication token for the Service Account we created before.",
+          getToken: "Run the command below in your terminal to get the authentication token then copy it:",
+          tokenPlaceholder: "Paste the token value here",
+          tokenInputReason: "The token is necessary to authenticate requests to the Kubernetes API Server",
+        },
+        final: {
+          name: "Connect",
+          connectionSuccess: "Connection successfully established.",
+          connectionError: "Connection refused.",
+          introduction: "Now you are able to create Dev deployments on this OpenShift instance.",
+          configNote: "The token you provide is locally stored in this browser and is never shared with anyone.",
+          connectionErrorLong: `A connection with your Kubernetes cluster could not be established.`,
+          checkInfo: "Please check the information provided and try again.",
+          possibleErrorReasons: {
+            introduction: "Here are some possible reasons:",
+            emptyField: "One or more required information are not filled.",
+            clusterNotCreatedCorrectly: "Your Kubernetes cluster might not have been created correctly.",
+            tokenExpired: "Tokens might be expired, try creating a new one.",
+          },
+        },
+      },
+    },
   },
   embedModal: {
     title: "Embed",
@@ -179,6 +274,7 @@ export const en: OnlineI18n = {
         description: "The embedded Editor will contain the current content, so it cannot be changed externally.",
       },
       gist: {
+        alert: `You have new changes to push. Embedding as a ${en_common.names.github} gist won't show your latest changes.`,
         tooltip: `Only available when editing a file from a ${en_common.names.github} gist.`,
         label: `${en_common.names.github} gist`,
         description:
@@ -307,33 +403,6 @@ export const en: OnlineI18n = {
     trySample: "Try Sample",
     chooseLocalFile: "Choose a local file",
   },
-  guidedTour: {
-    init: {
-      title: `Welcome to the ${en_common.names.dmn} Editor`,
-      learnMore: `Take this 5-minute tour to learn more about the ${en_common.names.dmn} Editor in a brief and interactive way.`,
-      dmnRunnerIntro: `If you already know your way around the ${en_common.names.dmn} Editor, you can skip this tour and start executing your models with the ${en_common.names.dmnRunner}.`,
-      takeTour: "Take tour",
-      skipTour: "Skip tour",
-      skipTourAndUseDmnRunner: `Skip tour and start ${en_common.names.dmnRunner}`,
-    },
-    end: {
-      title: "Congratulations",
-      motivational: `Now you know how each part of the ${en_common.names.dmn} Editor works, and you're empowered to go ahead and explore!`,
-      nextSteps: {
-        title: "As next steps, you can try to",
-        firstStep: `Connect the ${"Age".bold()} input with the ${"Can drive?".bold()} decision;`,
-        secondStep: `Define the decision logic in the ${"Can drive?".bold()} node to return ${"true".bold()} when ${"Age".bold()} is
-              greater than ${"21".bold()}, otherwise ${"false".bold()};`,
-        thirdStep: "Execute the model.",
-        startDmnRunner: `Start ${en_common.names.dmnRunner}`,
-      },
-      findUsefulInfo: "You can find useful information in the",
-      learnDMN: `Learn ${en_common.names.dmn} in 15 minutes`,
-      courseOr: "course or in the",
-      kogitoDoc: `${en_common.names.kogito} documentation`,
-      finish: "Finish the Tour",
-    },
-  },
   alerts: {
     gistError: `Not able to open this Gist. If you have updated your Gist filename it can take a few seconds until the URL is available to be used.`,
     goToHomePage: "Go to Home Page",
@@ -349,16 +418,14 @@ export const en: OnlineI18n = {
     },
   },
   dmnRunner: {
-    drawer: {
-      error: {
-        title: `${en_common.terms.oops}!`,
-        explanation: `The ${en_common.names.dmnRunner} drawer couldn't be rendered due to an error.`,
-        message: [
-          `This ${en_common.names.dmn} has a construct that is not supported. Please refer to `,
-          wrapped("jira"),
-          " and report an issue. Don't forget to upload the current file, and the used inputs",
-        ],
-      },
+    error: {
+      title: `${en_common.terms.oops}!`,
+      explanation: `The ${en_common.names.dmnRunner} couldn't be rendered due to an error.`,
+      message: [
+        `This ${en_common.names.dmn} has a construct that is not supported. Please refer to `,
+        wrapped("issues"),
+        " and report an issue. Don't forget to upload the current file, and the used inputs",
+      ],
     },
     table: { ...en_unitables },
     modal: {
@@ -624,6 +691,20 @@ export const en: OnlineI18n = {
     github: {
       user: "GitHub user",
       organizations: "GitHub organizations",
+    },
+  },
+  gitStatusIndicatorActions: {
+    revert: {
+      title: "Revert",
+      warning: "This action is permanent",
+      description: "Are you sure you want to revert local changes to:",
+      confirmButtonText: "Yes, revert permanently",
+    },
+    revertAll: {
+      title: "Revert all changes",
+      warning: "This action is permanent",
+      description: "Are you sure? The following files will be reverted to the last commit:",
+      confirmButtonText: "Yes, revert permanently",
     },
   },
 };

@@ -16,10 +16,7 @@
 
 package org.uberfire.ext.layout.editor.client.api;
 
-import java.util.List;
 import java.util.Map;
-
-import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 
 public interface LayoutElementWithProperties {
 
@@ -32,8 +29,6 @@ public interface LayoutElementWithProperties {
     void setProperty(String property, String value);
 
     void removeProperty(String property);
-
-    List<PropertyEditorCategory> getPropertyCategories();
     
     void setSelected(boolean status);
     

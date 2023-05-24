@@ -24,7 +24,6 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.LiteralProps;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
@@ -37,10 +36,9 @@ public class FillLiteralExpressionCommand extends FillExpressionCommand<LiteralP
                                         final LiteralProps expressionProps,
                                         final Event<ExpressionEditorChanged> editorSelectedEvent,
                                         final String nodeUUID,
-                                        final ExpressionEditorView view,
                                         final ItemDefinitionUtils itemDefinitionUtils,
                                         final Optional<HasName> hasName) {
-        super(hasExpression, expressionProps, editorSelectedEvent, nodeUUID, view, itemDefinitionUtils, hasName);
+        super(hasExpression, expressionProps, editorSelectedEvent, nodeUUID, itemDefinitionUtils, hasName);
     }
 
     @Override
@@ -52,6 +50,11 @@ public class FillLiteralExpressionCommand extends FillExpressionCommand<LiteralP
     protected void fill() {
         final LiteralExpression literalExpression = (LiteralExpression) getHasExpression().getExpression();
         fill(literalExpression, getExpressionProps());
+    }
+
+    @Override
+    public boolean isCurrentExpressionOfTheSameType() {
+        return getHasExpression().getExpression() instanceof LiteralExpression;
     }
 
     void fill(final LiteralExpression expression, final LiteralProps props) {

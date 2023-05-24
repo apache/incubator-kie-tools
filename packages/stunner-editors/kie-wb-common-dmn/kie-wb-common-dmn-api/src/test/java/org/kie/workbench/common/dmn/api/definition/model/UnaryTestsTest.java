@@ -53,4 +53,24 @@ public class UnaryTestsTest {
         assertEquals(EXPRESSION_LANGUAGE, target.getExpressionLanguage().getValue());
         assertEquals(NONE, target.getConstraintType());
     }
+
+    @Test
+    public void testExactCopy() {
+        final UnaryTests source = new UnaryTests(
+                new Id(UNARY_ID),
+                new Description(DESCRIPTION),
+                new Text(TEXT_VALUE),
+                new ExpressionLanguage(EXPRESSION_LANGUAGE),
+                NONE
+        );
+
+        final UnaryTests target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(UNARY_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(TEXT_VALUE, target.getText().getValue());
+        assertEquals(EXPRESSION_LANGUAGE, target.getExpressionLanguage().getValue());
+        assertEquals(NONE, target.getConstraintType());
+    }
 }

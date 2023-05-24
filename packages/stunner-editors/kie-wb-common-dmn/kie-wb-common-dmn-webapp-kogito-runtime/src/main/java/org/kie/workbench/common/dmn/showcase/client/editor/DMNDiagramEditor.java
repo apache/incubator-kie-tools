@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPres
 import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
 import org.kie.workbench.common.dmn.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
@@ -41,8 +42,8 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
+import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNLayoutHelper;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
@@ -55,7 +56,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.ConfirmationDialog;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -90,7 +90,7 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final DecisionNavigatorDock decisionNavigatorDock,
                             final DiagramEditorPropertiesDock diagramPropertiesDock,
                             final PreviewDiagramDock diagramPreviewAndExplorerDock,
-                            final LayoutHelper layoutHelper,
+                            final @DMNEditor DMNLayoutHelper layoutHelper,
                             final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                             final DataTypesPage dataTypesPage,
                             final KogitoClientDiagramService diagramServices,
@@ -99,13 +99,13 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final Promises promises,
                             final IncludedModelsPage includedModelsPage,
                             final KogitoChannelHelper kogitoChannelHelper,
-                            final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                             final DRDNameChanger drdNameChanger,
                             final ReadOnlyProvider readOnlyProvider,
                             final LazyCanvasFocusUtils lazyCanvasFocusUtils,
                             final EditorSessionCommands commands,
                             final ConfirmationDialog confirmationDialog,
-                            final DecisionNavigatorPresenter decisionNavigatorPresenter) {
+                            final DecisionNavigatorPresenter decisionNavigatorPresenter,
+                            final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider) {
         super(view,
               containerView,
               stunnerEditor,
@@ -128,10 +128,10 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               promises,
               includedModelsPage,
               kogitoChannelHelper,
-              guidedTourBridgeInitializer,
               drdNameChanger,
               confirmationDialog,
-              decisionNavigatorPresenter);
+              decisionNavigatorPresenter,
+              pmmlDocumentMetadataProvider);
         this.readOnlyProvider = readOnlyProvider;
         this.lazyCanvasFocusUtils = lazyCanvasFocusUtils;
         this.commands = commands;

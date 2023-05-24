@@ -109,6 +109,26 @@ public class InvocationTest {
     }
 
     @Test
+    public void testExactCopy() {
+        final Invocation source = new Invocation(
+                new Id(INVOCATION_ID),
+                new Description(DESCRIPTION),
+                BuiltInType.BOOLEAN.asQName(),
+                null,
+                new ArrayList<>()
+        );
+
+        final Invocation target = source.exactCopy();
+
+        assertNotNull(target);
+        assertEquals(INVOCATION_ID, target.getId().getValue());
+        assertEquals(DESCRIPTION, target.getDescription().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+        assertNull(target.getExpression());
+        assertTrue(target.getBinding().isEmpty());
+    }
+
+    @Test
     public void testFindDomainObject_FromExpression() {
 
         final DomainObject expectedDomainObject = mock(DomainObject.class);

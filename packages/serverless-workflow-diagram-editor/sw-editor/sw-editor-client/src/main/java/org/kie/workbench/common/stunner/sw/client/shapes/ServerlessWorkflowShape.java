@@ -20,7 +20,6 @@ import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractShape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.NodeShapeImpl;
-import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
 import org.kie.workbench.common.stunner.sw.definition.State;
 
 import static org.kie.workbench.common.stunner.core.client.shape.ShapeState.HIGHLIGHT;
@@ -38,26 +37,21 @@ public abstract class ServerlessWorkflowShape<V extends ServerlessWorkflowShapeV
 
     public NodeMouseExitHandler getExitHandler() {
         return event -> {
-            if (getShapeStateHandler().getShapeState() == SELECTED) {
+            if (getShapeView().getShapeState() == SELECTED) {
                 return;
             }
-            getShapeStateHandler().applyState(NONE);
-            getShapeView().getShape().getLayer().batch();
+            getShapeView().applyState(NONE);
         };
     }
 
     public NodeMouseEnterHandler getEnterHandler() {
         return event -> {
-            if (getShapeStateHandler().getShapeState() == SELECTED) {
+            if (getShapeView().getShapeState() == SELECTED) {
                 return;
             }
-            getShapeStateHandler().applyState(HIGHLIGHT);
-            getShapeView().getShape().getLayer().batch();
-        };
-    }
 
-    protected ShapeStateHandler getShapeStateHandler() {
-        return getShapeView().getShapeStateHandler();
+            getShapeView().applyState(HIGHLIGHT);
+        };
     }
 
     public String getTranslation(String constant) {

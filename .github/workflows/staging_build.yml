@@ -50,13 +50,6 @@ jobs:
       DMN_DEV_DEPLOYMENT__baseImageTag: "${{ inputs.tag }}-prerelease"
       DMN_DEV_DEPLOYMENT__baseImageBuildTags: "${{ inputs.tag }}-prerelease"
 
-      DASHBUILDER__baseImageRegistry: "quay.io"
-      DASHBUILDER__baseImageAccount: "kie-tools"
-      DASHBUILDER_AUTHORING__baseImageName: "dashbuilder-authoring"
-      DASHBUILDER_RUNTIME__baseImageName: "dashbuilder-runtime"
-      DASHBUILDER__baseImageTag: "${{ inputs.tag }}-prerelease"
-      DASHBUILDER__baseImageBuildTags: "${{ inputs.tag }}-prerelease"
-
       KIE_SANDBOX__imageRegistry: "quay.io"
       KIE_SANDBOX__imageAccount: "kie-tools"
       KIE_SANDBOX__imageName: "kie-sandbox-image"
@@ -177,6 +170,8 @@ jobs:
           DMN_DEV_DEPLOYMENT__gtmId: ""
           DMN_DEV_DEPLOYMENT__onlineEditorUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
           EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
+          SERVERLESS_LOGIC_WEB_TOOLS__version: "${{ inputs.tag }}-prerelease"
+          SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef: "${{ inputs.tag }}"
           SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: "${{ inputs.tag }} (staging) @ ${{ inputs.commit_sha }}"
           SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
           SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
@@ -398,19 +393,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/kie-editors-dev-vscode-extension/dist/kie_editors_dev_vscode_extension_${{ inputs.tag }}.vsix
           asset_name: STAGING__vscode_extension_dev_${{ inputs.tag }}.vsix
-          asset_content_type: application/zip
-
-      - name: "STAGING: Upload VS Code Extension Backend (dev) (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-backend/dist/vscode-extension-backend_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_backend_dev_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "STAGING: Upload VS Code Extension - BPMN Editor (prod) (Ubuntu only)"
@@ -420,8 +404,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-bpmn-editor/dist/vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/bpmn-vscode-extension/dist/bpmn_vscode_extension_${{ inputs.tag }}.vsix
+          asset_name: STAGING__bpmn_vscode_extension_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "STAGING: Upload VS Code Extension - DMN Editor (prod) (Ubuntu only)"
@@ -431,8 +415,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-dmn-editor/dist/vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/dmn-vscode-extension/dist/dmn_vscode_extension_${{ inputs.tag }}.vsix
+          asset_name: STAGING__dmn_vscode_extension_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "STAGING: Upload VS Code Extension - PMML Editor (prod) (Ubuntu only)"
@@ -442,19 +426,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-pmml-editor/dist/vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/pmml-vscode-extension/dist/pmml_vscode_extension_${{ inputs.tag }}.vsix
+          asset_name: STAGING__pmml_vscode_extension_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
-      - name: "STAGING: Upload VS Code Extension - Serverless Workflow Editor (prod) (Ubuntu only)"
+      - name: "STAGING: Upload VS Code Extension - Serverless Workflow Editor - KIE (prod) (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-serverless-workflow-editor/dist/vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
+          asset_path: ${{ github.workspace }}/kie-tools/packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${{ inputs.tag }}.vsix
+          asset_name: STAGING__serverless_workflow_vscode_extension_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "STAGING: Upload VS Code Extension - Dashbuilder Editor (prod) (Ubuntu only)"
@@ -488,17 +472,6 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${{ inputs.tag }}.vsix
           asset_name: STAGING__vscode_extension_kie_ba_bundle_${{ inputs.tag }}.vsix
-          asset_content_type: application/zip
-
-      - name: "STAGING: Upload VS Code Extension - Red Hat Business Automation Bundle (prod) (Ubuntu only)"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-red-hat-business-automation-bundle/dist/vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "STAGING: Upload Chrome Extension for KIE Editors (Ubuntu only)"
@@ -555,37 +528,6 @@ jobs:
           asset_path: "${{ github.workspace }}/kie-tools/packages/extended-services/dist/win32/kie_sandbox_extended_services.exe"
           asset_name: "STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
           asset_content_type: application/octet-stream
-
-      - name: "STAGING: Upload DashBuilder Assets (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/dashbuilder/dist/dashbuilder_dist.zip
-          asset_name: STAGING__dashbuilder_dist_${{ inputs.tag }}.zip
-          asset_content_type: application/zip
-
-      - name: "STAGING Push dashbuilder-authoring image to quay.io (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: "${{ env.DASHBUILDER_AUTHORING__baseImageName }}"
-          tags: "${{ env.DASHBUILDER__baseImageBuildTags }}"
-          registry: "${{ env.DASHBUILDER__baseImageRegistry }}/${{ env.DASHBUILDER__baseImageAccount }}"
-          username: "${{ env.DASHBUILDER__baseImageAccount }}"
-          password: "${{ secrets.quay_registry_password }}"
-
-      - name: "STAGING Push dashbuilder-runtime image to quay.io (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: "${{ env.DASHBUILDER_RUNTIME__baseImageName }}"
-          tags: "${{ env.DASHBUILDER__baseImageBuildTags }}"
-          registry: "${{ env.DASHBUILDER__baseImageRegistry }}/${{ env.DASHBUILDER__baseImageAccount }}"
-          username: "${{ env.DASHBUILDER__baseImageAccount }}"
-          password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Upload Knative CLI Workflow Plugin for Linux (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}

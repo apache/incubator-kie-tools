@@ -75,6 +75,9 @@ public class IncludedModelModalTest {
     private EventSourceMock<RefreshDecisionComponents> refreshDecisionComponentsEvent;
 
     @Mock
+    private EventSourceMock<RefreshDecisionComponents> refreshPMMLComponentsEvent;
+
+    @Mock
     private EventSourceMock<RefreshDataTypesListEvent> refreshDataTypesListEvent;
 
     @Mock
@@ -249,16 +252,13 @@ public class IncludedModelModalTest {
         assertTrue(modal.isValidValues());
     }
 
-//
-
     class IncludedModelModalFake extends IncludedModelModal {
 
         IncludedModelModalFake(final View view,
                                final DMNAssetsDropdown dropdown,
                                final ImportRecordEngine recordEngine) {
             super(view, dropdown, recordEngine, client, refreshDataTypesListEvent, refreshDecisionComponentsEvent,
-                  sessionCommandManager,
-                  sessionManager);
+                    refreshPMMLComponentsEvent, sessionCommandManager, sessionManager);
         }
 
         @Override

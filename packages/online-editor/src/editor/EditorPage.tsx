@@ -19,7 +19,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { EditorToolbar } from "./Toolbar/EditorToolbar";
-import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../i18n";
 import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
@@ -27,7 +26,7 @@ import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/component
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DevDeploymentsConfirmDeployModal } from "../devDeployments/DevDeploymentsConfirmDeployModal";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
-import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
+import { DmnRunnerDrawer } from "../dmnRunner/DmnRunnerDrawer";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
@@ -44,13 +43,17 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
-import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
+import { EditorPageDockDrawer } from "./EditorPageDockDrawer";
+import { DmnRunnerContextProvider } from "../dmnRunner/DmnRunnerContextProvider";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
-import { useFileValidation } from "./Validation";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { EditorPageDockContextProvider } from "./EditorPageDockContextProvider";
+import { ErrorBoundary } from "../reactExt/ErrorBoundary";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 
 export interface Props {
   workspaceId: string;
@@ -60,6 +63,8 @@ export interface Props {
 let saveVersion = 1;
 let refreshVersion = 0;
 
+const KIE_ISSUES_LINK = "https://github.com/kiegroup/kie-issues/issues";
+
 export function EditorPage(props: Props) {
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
@@ -68,17 +73,14 @@ export function EditorPage(props: Props) {
   const { previewSvgService } = usePreviewSvgs();
   const { locale, i18n } = useOnlineI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
-  const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const alertsDispatch = useGlobalAlertsDispatchContext();
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
   const [isFileBroken, setFileBroken] = useState(false);
-
+  const [_, setEditorPageError] = useState(false);
   const lastContent = useRef<string>();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
 
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
-
-  useDmnTour(!!editor?.isReady && workspaceFilePromise.data?.workspaceFile.extension === "dmn" && !isFileBroken);
 
   useEffect(() => {
     document.title = `KIE Sandbox :: ${props.fileRelativePath}`;
@@ -285,31 +287,6 @@ export function EditorPage(props: Props) {
     setTextEditorModalOpen(false);
   }, [alertsDispatch]);
 
-  // validate
-  useEffect(() => {
-    if (
-      workspaceFilePromise.data?.workspaceFile.extension === "dmn" ||
-      workspaceFilePromise.data?.workspaceFile.extension === "bpmn" ||
-      workspaceFilePromise.data?.workspaceFile.extension === "bpmn2" ||
-      !workspaceFilePromise.data ||
-      !editor?.isReady
-    ) {
-      return;
-    }
-
-    //FIXME: Removing this timeout makes the notifications not work some times. Need to investigate.
-    setTimeout(() => {
-      editor?.validate().then((notifications) => {
-        editorPageDock?.setNotifications(
-          i18n.terms.validation,
-          "",
-          // Removing the notification path so that we don't group it by path, as we're only validating one file.
-          Array.isArray(notifications) ? notifications.map((n) => ({ ...n, path: "" })) : []
-        );
-      });
-    }, 200);
-  }, [workspaceFilePromise, editor, i18n, editorPageDock]);
-
   const handleOpenFile = useCallback(
     async (relativePath: string) => {
       if (!workspaceFilePromise.data) {
@@ -364,10 +341,46 @@ export function EditorPage(props: Props) {
     });
   }, [workspaces, workspaceFilePromise.data?.workspaceFile]);
 
-  useFileValidation(workspaces, workspaceFilePromise.data?.workspaceFile, editorPageDock, dmnLanguageService);
+  const onKeyDown = useCallback(
+    (ke: React.KeyboardEvent) => {
+      editor?.onKeyDown(ke);
+    },
+    [editor]
+  );
+
+  const errorMessage = useMemo(
+    () => (
+      <div>
+        <EmptyState>
+          <EmptyStateIcon icon={ExclamationTriangleIcon} />
+          <TextContent>
+            <Text component={"h2"}>{i18n.editorPage.error.title}</Text>
+          </TextContent>
+          <EmptyStateBody>
+            <TextContent>{i18n.editorPage.error.explanation}</TextContent>
+            <br />
+            <TextContent>
+              <I18nWrapped
+                components={{
+                  issues: (
+                    <a href={KIE_ISSUES_LINK} target={"_blank"}>
+                      {KIE_ISSUES_LINK}
+                    </a>
+                  ),
+                }}
+              >
+                {i18n.editorPage.error.message}
+              </I18nWrapped>
+            </TextContent>
+          </EmptyStateBody>
+        </EmptyState>
+      </div>
+    ),
+    [i18n]
+  );
 
   return (
-    <OnlineEditorPage>
+    <OnlineEditorPage onKeyDown={onKeyDown}>
       <PromiseStateWrapper
         promise={workspaceFilePromise}
         pending={
@@ -385,40 +398,48 @@ export function EditorPage(props: Props) {
           <EditorPageErrorPage title={"Can't open file"} errors={errors} path={props.fileRelativePath} />
         )}
         resolved={(file) => (
-          <>
-            <DmnRunnerProvider
-              workspaceFile={file.workspaceFile}
-              isEditorReady={editor?.isReady}
-              dmnLanguageService={dmnLanguageService}
-            >
-              <Page>
-                <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} editorPageDock={editorPageDock} />
-                <Divider />
-                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor section">
-                  <DmnRunnerDrawer workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
-                    <EditorPageDockDrawer ref={editorPageDockRef} workspaceFile={file.workspaceFile}>
-                      {embeddedEditorFile && (
-                        <EmbeddedEditor
-                          /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
-                           * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
-                           */
-                          key={uniqueFileId}
-                          ref={editorRef}
-                          file={embeddedEditorFile}
-                          kogitoWorkspace_openFile={handleOpenFile}
-                          kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
-                          kogitoWorkspace_resourceListRequest={handleResourceListRequest}
-                          kogitoEditor_setContentError={handleSetContentError}
-                          editorEnvelopeLocator={editorEnvelopeLocator}
-                          channelType={ChannelType.ONLINE_MULTI_FILE}
-                          locale={locale}
-                        />
-                      )}
-                    </EditorPageDockDrawer>
-                  </DmnRunnerDrawer>
-                </PageSection>
-              </Page>
-            </DmnRunnerProvider>
+          <ErrorBoundary error={errorMessage} setHasError={setEditorPageError}>
+            <Page>
+              <EditorPageDockContextProvider
+                workspaceFile={file.workspaceFile}
+                workspaces={workspaces}
+                dmnLanguageService={dmnLanguageService}
+                isEditorReady={editor?.isReady ?? false}
+                editorValidate={editor?.validate}
+              >
+                <DmnRunnerContextProvider
+                  workspaceFile={file.workspaceFile}
+                  isEditorReady={editor?.isReady}
+                  dmnLanguageService={dmnLanguageService}
+                >
+                  <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} />
+                  <Divider />
+                  <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor section">
+                    <DmnRunnerDrawer>
+                      <EditorPageDockDrawer>
+                        {embeddedEditorFile && (
+                          <EmbeddedEditor
+                            /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+                             * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+                             */
+                            key={uniqueFileId}
+                            ref={editorRef}
+                            file={embeddedEditorFile}
+                            kogitoWorkspace_openFile={handleOpenFile}
+                            kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
+                            kogitoWorkspace_resourceListRequest={handleResourceListRequest}
+                            kogitoEditor_setContentError={handleSetContentError}
+                            editorEnvelopeLocator={editorEnvelopeLocator}
+                            channelType={ChannelType.ONLINE_MULTI_FILE}
+                            locale={locale}
+                          />
+                        )}
+                      </EditorPageDockDrawer>
+                    </DmnRunnerDrawer>
+                  </PageSection>
+                </DmnRunnerContextProvider>
+              </EditorPageDockContextProvider>
+            </Page>
             <TextEditorModal
               editor={editor}
               workspaceFile={file.workspaceFile}
@@ -426,7 +447,7 @@ export function EditorPage(props: Props) {
               isOpen={isTextEditorModalOpen}
             />
             <DevDeploymentsConfirmDeployModal workspaceFile={file.workspaceFile} />
-          </>
+          </ErrorBoundary>
         )}
       />
     </OnlineEditorPage>

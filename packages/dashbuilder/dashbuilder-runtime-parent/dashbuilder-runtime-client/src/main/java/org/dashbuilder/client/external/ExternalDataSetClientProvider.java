@@ -34,9 +34,9 @@ import elemental2.dom.Response;
 import elemental2.promise.IThenable;
 import org.dashbuilder.client.external.transformer.JSONAtaInjector;
 import org.dashbuilder.client.external.transformer.JSONAtaTransformer;
+import org.dashbuilder.common.client.StringUtils;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.DataSet;
-import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
@@ -51,9 +51,6 @@ public class ExternalDataSetClientProvider {
     ClientDataSetManager clientDataSetManager;
 
     @Inject
-    CSVParser csvParser;
-
-    @Inject
     ExternalDataCallbackCoordinator dataSetCallbackCoordinator;
 
     ExternalDataSetJSONParser externalParser;
@@ -62,7 +59,7 @@ public class ExternalDataSetClientProvider {
 
     private Map<String, Double> scheduledTimeouts;
 
-    SupportedMimeType DEFAULT_TYPE = SupportedMimeType.JSON;
+    private static final SupportedMimeType DEFAULT_TYPE = SupportedMimeType.JSON;
 
     @PostConstruct
     public void setup() {
@@ -163,19 +160,16 @@ public class ExternalDataSetClientProvider {
                     return register(def, callback, responseText, mimeType);
                 } else {
                     var exception = buildExceptionForResponse(responseText, response);
-                   return notAbleToRetrieveDataSet(def, callback, exception);
+                    return notAbleToRetrieveDataSet(def, callback, exception);
                 }
 
             }, error -> notAbleToRetrieveDataSet(def, callback));
         }).catch_(e -> notAbleToRetrieveDataSet(def, callback,
-                new RuntimeException("Request not started, make sure that CORS is enabled. Message: " + e)
-        ));
+                new RuntimeException("Request not started, make sure that CORS is enabled.\nMessage: " + e)));
     }
 
-    
-
     private Throwable buildExceptionForResponse(String responseText, Response response) {
-        var sb = new StringBuffer("The dataset URL is unreachable with status ");
+        var sb = new StringBuilder("The dataset URL is unreachable with status ");
         sb.append(response.status);
         sb.append(" - ");
         sb.append(response.statusText);
@@ -186,13 +180,18 @@ public class ExternalDataSetClientProvider {
             sb.append(responseText);
         }
         return new RuntimeException(sb.toString());
-   }
+    }
 
     private IThenable<Object> register(ExternalDataSetDef def,
                                        final DataSetReadyCallback callback,
                                        final String responseText,
                                        final SupportedMimeType contentType) {
+        DataSet dataSet = null;
         var content = contentType.tranformer.apply(responseText);
+
+        if (def.getType() != null && StringUtils.isBlank(def.getExpression())) {
+            def.setExpression(def.getType().getExpression());
+        }
 
         if (def.getExpression() != null && !def.getExpression().trim().isEmpty()) {
             try {
@@ -201,8 +200,11 @@ public class ExternalDataSetClientProvider {
                 callback.onError(new ClientRuntimeError("Error evaluating dataset expression", e));
                 return null;
             }
+        } else if (def.getColumns().isEmpty()) {
+            var columns = contentType.columnsFunction.apply(responseText);
+            def.setColumns(columns);
         }
-        var dataSet = DataSetFactory.newEmptyDataSet();
+
         try {
             dataSet = externalParser.parseDataSet(content);
         } catch (Exception e) {
@@ -210,7 +212,7 @@ public class ExternalDataSetClientProvider {
             return null;
         }
 
-        if (def != null && !def.getColumns().isEmpty()) {
+        if (!def.getColumns().isEmpty()) {
             for (int i = 0; i < def.getColumns().size(); i++) {
                 var defColumn = def.getColumns().get(i);
                 var dsColumn = dataSet.getColumnByIndex(i);
@@ -219,10 +221,35 @@ public class ExternalDataSetClientProvider {
             }
         }
 
+        var existingDs = clientDataSetManager.getDataSet(def.getUUID());
+        if (def.isAccumulate() && existingDs != null) {
+            // no new data, so keep existing data set
+            if (dataSet.getRowCount() == 0) {
+                dataSet = existingDs;
+            } else {
+                accumulateDataSet(dataSet, existingDs);
+            }
+        }
+        dataSet.setDefinition(def);
         dataSet.setUUID(def.getUUID());
         clientDataSetManager.registerDataSet(dataSet);
         callback.callback(dataSet);
         return null;
+    }
+
+    void accumulateDataSet(DataSet dataSet, DataSet existingDs) {
+        if (dataSet.getRowCount() > 0 && !existingDs.getColumns().equals(dataSet.getColumns())) {
+            throw new RuntimeException("New data is not compatible with existing data.");
+        }
+        for (int i = dataSet.getRowCount(), j = 0; i < existingDs.getDefinition().getCacheMaxRows() && j < existingDs
+                .getRowCount(); i++, j++) {
+            final int row = j;
+            var values = existingDs.getColumns()
+                    .stream()
+                    .map(cl -> existingDs.getValueAt(row, cl.getId()))
+                    .toArray(Object[]::new);
+            dataSet.addValues(values);
+        }
     }
 
     private void doLookup(DataSetLookup lookup, DataSetReadyCallback listener) {
@@ -236,11 +263,14 @@ public class ExternalDataSetClientProvider {
 
     private void handleCache(String uuid) {
         var def = externalDataSets.get(uuid);
+        if (def == null || def.isAccumulate()) {
+            return;
+        }
         scheduledTimeouts.computeIfPresent(uuid, (k, v) -> {
             DomGlobal.clearTimeout(v);
             return null;
         });
-        if (def != null && def.isCacheEnabled()) {
+        if (def.isCacheEnabled()) {
             var refreshTimeAmount = def.getRefreshTimeAmount();
             if (refreshTimeAmount != null) {
                 var id = DomGlobal.setTimeout(params -> {

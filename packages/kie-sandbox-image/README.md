@@ -54,13 +54,15 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
    [comment]: <> (//TODO: Use EnvJson.schema.json to generate this documentation somehow.. See https://github.com/kiegroup/kie-issues/issues/16)
 
-   |                            Name                            |                                                     Description                                                      |                               Default                               |
-   | :--------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
-   |            `KIE_SANDBOX_EXTENDED_SERVICES_URL`             |                              The URL that points to the KIE Sandbox Extended Services.                               | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |              `KIE_SANDBOX_GIT_CORS_PROXY_URL`              |                    The URL that points to the Git CORS proxy for interacting with Git providers.                     | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |        `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE`         |                      Require users to type a custom commit message when creating a new commit.                       | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   | `KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL` |                                       Service URL to validate commit messages.                                       | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |                `KIE_SANDBOX_AUTH_PROVIDERS`                | Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more. | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                            Name                             |                                                          Description                                                          |                               Default                               |
+   | :---------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
+   |             `KIE_SANDBOX_EXTENDED_SERVICES_URL`             |                                   The URL that points to the KIE Sandbox Extended Services.                                   | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |              `KIE_SANDBOX_GIT_CORS_PROXY_URL`               |                         The URL that points to the Git CORS proxy for interacting with Git providers.                         | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |         `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE`         |                           Require users to type a custom commit message when creating a new commit.                           | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   | `KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL` |                                           Service URL to validate commit messages.                                            | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                `KIE_SANDBOX_AUTH_PROVIDERS`                 |     Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more.      | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                 `KIE_SANDBOX_ACCELERATORS`                  |  Accelerators configuration. Used to add a template to a set of Decisions and Workflows, making it buildable and deployable.  | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                    `KIE_SANDBOX_EDITORS`                    | Editors configuration. Allows the enabling/disabling of specific editors and removes the disabled editors from the home page. | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
 
    ### Examples
 
@@ -73,7 +75,15 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    2. Enabling authentication with a GitHub Enterprise Server instance.
 
       ```bash
-      podman run -t -p 8080:8080 -e KIE_SANDBOX_AUTH_PROVIDERS='[{"id":"github_at_my_company","domain":"github.my-company.com","supportedGitRemoteDomains":["github.my-company.com","gist.github.my-company.com"],"type":"github","name":"GitHub @ MyCompany","enabled":true, "group":"git" }]' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      podman run -t -p 8080:8080 -e KIE_SANDBOX_AUTH_PROVIDERS='[{
+        "id":"github_at_my_company", \
+        "domain":"github.my-company.com", \
+        "supportedGitRemoteDomains":["github.my-company.com","gist.github.my-company.com"], \
+        "type":"github", \
+        "name":"GitHub @ MyCompany", \
+        "enabled":true, \
+        "group":"git" \
+      }]' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
 
    3. Requiring users to input a custom commit message on every commit.
@@ -88,6 +98,20 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
       podman run -t -p 8080:8080 -e KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE='true' KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL='http://localhost:8090/validate' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
 
+   5. Adding Accelerators available for your users.
+
+      ```bash
+      podman run -t -p 8080:8080 -e KIE_SANDBOX_ACCELERATORS='[{ \
+        name: "Quarkus", \
+        iconUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator/raw/0.0.0/quarkus-logo.png", \
+        gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator", \
+        gitRepositoryGitRef: "0.0.0", \
+        dmnDestinationFolder: "src/main/resources/dmn", \
+        bpmnDestinationFolder: "src/main/resources/bpmn", \
+        otherFilesDestinationFolder: "src/main/resources/others", \
+      }]' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      ```
+
 2. Write a custom `Containerfile/Dockerfile` from the image:
 
    ```docker
@@ -98,6 +122,8 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    ENV KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE=<my_value>
    ENV KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL=<my_value>
    ENV KIE_SANDBOX_AUTH_PROVIDERS=<my_value>
+   ENV KIE_SANDBOX_ACCELERATORS=<my_value>
+   ENV KIE_SANDBOX_EDITORS=<my_value>
    ```
 
 3. Create the application from the image in OpenShift and set the deployment environment variable right from the OpenShift UI.
@@ -168,3 +194,103 @@ Content-Type: application/json
 
 - #### HTTP Status different from 200
   If the service responds with an HTTP code other than 200, an error message is displayed alongside the HTTP Code + the response body of the request in full.
+
+### Accelerators
+
+Accelerators are Git repositories that contain a skeleton of an application and will convert a working directory with your .dmn and .bpmn files into a fully functional application that can be built and deployed.
+
+After creating yours you must define where resources should be placed inside these repositories. For example, `.dmn` files should be placed inside `src/main/resources` for a Quarkus application. As a bonus, adding an image/logo can be used to better represent your Accelerator wherever it's listed.
+
+#### The Accelerator configuration
+
+Having all of that, it's time to create the configuration required to add it to the **KIE_SANDBOX_ACCELERATORS** list env var.
+It looks like this:
+
+```js
+{
+    name: "Your Accelerator name",
+    iconUrl: "https://link.to/your/logo/image",
+    gitRepositoryUrl: "https://github.com/...",
+    gitRepositoryGitRef: "branchName",
+    dmnDestinationFolder: "path/to/place/dmn/files",
+    bpmnDestinationFolder: "path/to/place/bpmn/files",
+    otherFilesDestinationFolder: "path/to/place/other/files",
+}
+```
+
+- **name**: This is how the Accelerator will be known inside KIE Sandbox.
+- **iconUrl**: An optional parameter to add an image/logo besides you Accelerator name.
+- **gitRepositoryUrl**: This is where your Accelerator is hosted. Should be an URL that can be used with `git clone`.
+- **gitRepositoryGitRef**: Where in your repository is this Accelerator located. Could be a branch, commit, tag, anything that can be used with `git checkout`.
+- **dmnDestinationFolder**: Where your DMN and PMML files will be moved to after applying the Accelerator.
+- **bpmnDestinationFolder**: Where your BPMN files will be moved to after applying the Accelerator.
+- **otherFilesDestinationFolder**: Where other files will be moved to after applying the Accelerator.
+
+Here's an example of what it should look like:
+
+```js
+{
+    name: "Quarkus",
+    iconUrl: `https://github.com/kiegroup/kie-sandbox-quarkus-accelerator/raw/0.0.0/quarkus-logo.png`,
+    gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator",
+    gitRepositoryGitRef: "main,
+    dmnDestinationFolder: "src/main/resources/dmn",
+    bpmnDestinationFolder: "src/main/resources/bpmn",
+    otherFilesDestinationFolder: "src/main/resources/others",
+}
+```
+
+### Editors
+
+By default all three standard editors will be enabled (BPMN, DMN, PMML). To disable an editor simply delete/comment out the respective json.
+
+- **extension**: The extension of the file that you want to edit.
+- **filePathGlob**: The glob pattern of the file you want to edit.
+- **editor.resourcesPathPrefix**: The path to the gwt-editor.
+- **editor.path**: The path of the editor envelope.html.
+- **card.title**: The title of the editor that will be displayed on the home page.
+- **card.description**: Displays a short description of the editor under the title on the home page.
+
+Here's an example of what it should look like:
+
+```js
+    {
+      extension: "bpmn",
+      filePathGlob: "**/*.bpmn?(2)",
+      editor: {
+        resourcesPathPrefix: "gwt-editors/bpmn",
+        path: "bpmn-envelope.html",
+      },
+      card: {
+        title: "Workflow",
+        description: "BPMN files are used to generate business workflows.",
+      },
+    },
+    {
+      extension: "dmn",
+      filePathGlob: "**/*.dmn",
+      editor: {
+        resourcesPathPrefix: "gwt-editors/dmn",
+        path: "dmn-envelope.html",
+      },
+      card: {
+        title: "Decision",
+        description: "DMN files are used to generate decision models",
+      },
+    },
+    {
+      extension: "pmml",
+      filePathGlob: "**/*.pmml",
+      editor: {
+        resourcesPathPrefix: "",
+        path: "pmml-envelope.html",
+      },
+      card: {
+        title: "Scorecard",
+        description: "PMML files are used to generate scorecards",
+      },
+    }
+
+
+
+```

@@ -23,7 +23,6 @@ import javax.enterprise.context.Dependent;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.SplashScreenFilter;
 
 // TODO: Completely remove later?
 @Dependent
@@ -56,17 +55,6 @@ public class WorkbenchServicesProxyClientImpl implements WorkbenchServicesProxy 
     @Override
     public void removePerspectiveStates(final Command doWhenFinished) {
         doWhenFinished.execute();
-    }
-
-    @Override
-    public void save(final SplashScreenFilter splashFilter) {
-
-    }
-
-    @Override
-    public void loadSplashScreenFilter(final String name,
-                                       final ParameterizedCommand<SplashScreenFilter> parameterizedCommand) {
-        parameterizedCommand.execute(null);
     }
 
     @Override

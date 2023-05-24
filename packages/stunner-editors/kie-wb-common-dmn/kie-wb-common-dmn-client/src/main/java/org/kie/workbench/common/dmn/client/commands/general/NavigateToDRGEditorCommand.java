@@ -89,8 +89,7 @@ public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements V
                                      hasExpression,
                                      hasName,
                                      isOnlyVisualChangeAllowed);
-                editor.setExitCommand(() -> navigateToExpressionEditor(hasExpression,
-                                                                       hasName));
+                editor.setExitCommand(() -> navigateToDRGEditor(hasExpression, hasName));
                 addExpressionEditorToCanvasWidget();
                 return CanvasCommandResultBuilder.SUCCESS;
             }

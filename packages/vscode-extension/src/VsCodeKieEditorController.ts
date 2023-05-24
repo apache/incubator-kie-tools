@@ -106,10 +106,6 @@ export class VsCodeKieEditorController implements EditorApi {
     return this.getEditorThemeByVscodeTheme(vscode.window.activeColorTheme.kind);
   }
 
-  public getElementPosition(selector: string) {
-    return this.envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(selector);
-  }
-
   public getContent() {
     return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content);
   }
