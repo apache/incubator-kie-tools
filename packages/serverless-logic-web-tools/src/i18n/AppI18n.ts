@@ -54,19 +54,8 @@ interface AppDictionary extends ReferenceDictionary {
     cantCreateGistTooltip: string;
     cantUpdateGistTooltip: string;
     share: string;
-    embed: string;
   };
   openshift: {
-    common: {
-      deployYourModel: string;
-      deployInstanceInfo: string;
-      disclaimer: string;
-      learnMore: string;
-      requiredField: string;
-      deploying: string;
-      saving: string;
-      setupFirst: string;
-    };
     introduction: {
       explanation: string;
     };
@@ -82,65 +71,6 @@ interface AppDictionary extends ReferenceDictionary {
       title: string;
       body: string;
     };
-    configWizard: {
-      header: {
-        provider: string;
-      };
-      steps: {
-        first: {
-          name: string;
-          introduction: string;
-          goToGetStartedPage: string;
-          followSteps: string;
-          informNamespace: string;
-          inputReason: string;
-          namespacePlaceholder: string;
-        };
-        second: {
-          name: string;
-          introduction: string;
-          accessLoginCommand: string;
-          accessDisplayToken: string;
-          copyInformation: string;
-          inputReason: string;
-          hostPlaceholder: string;
-          tokenPlaceholder: string;
-        };
-        final: {
-          name: string;
-          connectionError: string;
-          connectionSuccess: string;
-          introduction: string;
-          configNote: string;
-          connectionErrorLong: string;
-          checkInfo: string;
-          possibleErrorReasons: {
-            introduction: string;
-            emptyField: string;
-            tokenExpired: string;
-            instanceExpired: string;
-          };
-        };
-      };
-    };
-  };
-  embedModal: {
-    title: string;
-    description: string;
-    copy: string;
-    source: {
-      current: {
-        label: string;
-        description: string;
-      };
-      gist: {
-        tooltip: string;
-        label: string;
-        description: string;
-      };
-    };
-    embedCode: string;
-    copiedToClipboard: string;
   };
   githubTokenModal: {
     header: {

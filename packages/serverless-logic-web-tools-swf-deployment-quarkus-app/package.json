@@ -1,0 +1,40 @@
+{
+  "private": true,
+  "name": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "run-script-os",
+    "build:dev:darwin:linux": "mvn clean install -DskipTests",
+    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests\"",
+    "build:prod": "pnpm lint && run-script-os",
+    "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
+    "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
+    "install": "node install.js",
+    "lint": "echo 'Linting'",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "quarkus:dev": "run-script-os",
+    "quarkus:dev:darwin:linux": "mvn clean package quarkus:dev -DskipTests",
+    "quarkus:dev:win32": "mvn clean package quarkus:dev `-DskipTests"
+  },
+  "devDependencies": {
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}

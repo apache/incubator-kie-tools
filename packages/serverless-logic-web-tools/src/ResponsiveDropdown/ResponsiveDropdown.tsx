@@ -52,6 +52,7 @@ export function ResponsiveDropdown(props: ResponsiveDropdownProps) {
       ) : (
         <Dropdown
           {...props}
+          title={undefined}
           dropdownItems={[
             <DropdownItem isDisabled key="responsive-dropdown-title">
               {props.title}

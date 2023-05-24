@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import * as React from "react";
+import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { useCallback, useMemo } from "react";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
@@ -42,7 +42,7 @@ export function KieSandboxExtendedServicesIcon() {
     }
     kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
     kieSandboxExtendedServices.setModalOpen(true);
-  }, [settingsDispatch, kieSandboxExtendedServices]);
+  }, [kieSandboxExtendedServices, settingsDispatch]);
 
   const dropdownToggleIcon = useMemo(
     () => (

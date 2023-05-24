@@ -21,7 +21,8 @@ import { Octokit } from "@octokit/rest";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
-import { readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
+import { readDevModeEnabledConfigCookie, readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
+import { isKubernetesConnectionValid } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftService";
 import { useHistory } from "react-router";
@@ -36,6 +37,7 @@ import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/Kie
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
 import { FeaturePreviewSettingsConfig, readFeaturePreviewConfigCookie } from "./featurePreview/FeaturePreviewConfig";
+import { useEnv } from "../env/EnvContext";
 import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 export enum AuthStatus {
@@ -73,6 +75,7 @@ export interface SettingsContextType {
   openshift: {
     status: OpenShiftInstanceStatus;
     config: KubernetesConnection;
+    isDevModeEnabled: boolean;
   };
   kieSandboxExtendedServices: {
     config: ExtendedServicesConfig;
@@ -101,6 +104,7 @@ export interface SettingsDispatchContextType {
     service: OpenShiftService;
     setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
     setConfig: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
+    setDevModeEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   };
   kieSandboxExtendedServices: {
     setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;
@@ -127,6 +131,7 @@ export const SettingsDispatchContext = React.createContext<SettingsDispatchConte
 export function SettingsContextProvider(props: any) {
   const queryParams = useQueryParams();
   const history = useHistory();
+  const { env } = useEnv();
   const [isOpen, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(SettingsTabs.GITHUB);
 
@@ -209,17 +214,11 @@ export function SettingsContextProvider(props: any) {
   }, [githubAuthService]);
 
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
-  const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
-  const [serviceAccountConfig, setServiceAccountConfig] = useState<ServiceAccountSettingsConfig>(
-    readServiceAccountConfigCookie()
-  );
-  const [serviceRegistryConfig, setServiceRegistryConfig] = useState<ServiceRegistrySettingsConfig>(
-    readServiceRegistryConfigCookie()
-  );
 
-  const [featurePreviewConfig, setFeaturePreviewConfig] = useState<FeaturePreviewSettingsConfig>(
-    readFeaturePreviewConfigCookie()
-  );
+  const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
+  const [serviceAccountConfig, setServiceAccountConfig] = useState(readServiceAccountConfigCookie());
+  const [serviceRegistryConfig, setServiceRegistryConfig] = useState(readServiceRegistryConfigCookie());
+  const [featurePreviewConfig, setFeaturePreviewConfig] = useState(readFeaturePreviewConfigCookie());
 
   const [openshiftStatus, setOpenshiftStatus] = useState(
     kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.AVAILABLE
@@ -231,10 +230,12 @@ export function SettingsContextProvider(props: any) {
     () =>
       new OpenShiftService({
         connection: openshiftConfig,
-        proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/cors-proxy`,
+        proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/${"cors-proxy"}`,
       }),
     [openshiftConfig, kieSandboxExtendedServices.config]
   );
+
+  const [isOpenShiftDevModeEnabled, setOpenShiftDevModeEnabled] = useState(readDevModeEnabledConfigCookie());
 
   const serviceCatalogStore = useMemo(
     () =>
@@ -254,6 +255,7 @@ export function SettingsContextProvider(props: any) {
         service: openshiftService,
         setStatus: setOpenshiftStatus,
         setConfig: setOpenShiftConfig,
+        setDevModeEnabled: setOpenShiftDevModeEnabled,
       },
       github: {
         authService: githubAuthService,
@@ -290,6 +292,7 @@ export function SettingsContextProvider(props: any) {
       openshift: {
         status: openshiftStatus,
         config: openshiftConfig,
+        isDevModeEnabled: isOpenShiftDevModeEnabled,
       },
       github: {
         authStatus: githubAuthStatus,
@@ -315,13 +318,14 @@ export function SettingsContextProvider(props: any) {
     activeTab,
     openshiftStatus,
     openshiftConfig,
+    isOpenShiftDevModeEnabled,
     githubAuthStatus,
     githubToken,
     githubUser,
     githubScopes,
+    kieSandboxExtendedServices.config,
     serviceAccountConfig,
     serviceRegistryConfig,
-    kieSandboxExtendedServices.config,
     featurePreviewConfig,
   ]);
 
