@@ -40,6 +40,8 @@ public class ExternalDataSetDef extends DataSetDef {
 
     private boolean accumulate;
 
+    private ExternalServiceType type;
+
     public ExternalDataSetDef() {
         super.setProvider(DataSetProviderType.EXTERNAL);
     }
@@ -99,6 +101,14 @@ public class ExternalDataSetDef extends DataSetDef {
         this.accumulate = accumulate;
     }
 
+    public ExternalServiceType getType() {
+        return type;
+    }
+
+    public void setType(ExternalServiceType type) {
+        this.type = type;
+    }
+
     @Override
     public DataSetDef clone() {
         var def = new ExternalDataSetDef();
@@ -107,6 +117,7 @@ public class ExternalDataSetDef extends DataSetDef {
         def.setDynamic(isDynamic());
         def.setHeaders(getHeaders());
         def.setAccumulate(isAccumulate());
+        def.setType(getType());
         return def;
     }
 
@@ -124,7 +135,8 @@ public class ExternalDataSetDef extends DataSetDef {
                Objects.equals(expression, other.expression) &&
                Objects.equals(headers, other.headers) &&
                Objects.equals(url, other.url) &&
-               Objects.equals(accumulate, other.accumulate);
+               Objects.equals(accumulate, other.accumulate) &&
+               Objects.equals(type, other.type);
     }
 
     public String toString() {
@@ -139,7 +151,8 @@ public class ExternalDataSetDef extends DataSetDef {
         out.append("Expression=").append(expression).append("\n");
         out.append("Content=").append(content).append("\n");
         out.append("Headers=").append(headers).append("\n");
-        out.append("Accumulate=").append(accumulate);
+        out.append("Accumulate=").append(accumulate).append("\n");
+        out.append("Type=").append(type);
         return out.toString();
     }
 

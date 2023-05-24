@@ -710,7 +710,6 @@ jobs:
             -F pmml-vscode-extension...
             -F vscode-extension-kogito-bundle...
             -F swf-vscode-extension...
-            -F vscode-extension-serverless-workflow-editor...
             -F vscode-extension-kie-ba-bundle...
             -F vscode-extension-dashbuilder-editor...
 
@@ -771,17 +770,6 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${{ inputs.tag }}.vsix
           asset_name: vscode_extension_kie_ba_bundle_${{ inputs.tag }}.vsix
-          asset_content_type: application/zip
-
-      - name: "Upload VS Code Extension - Serverless Workflow Editor - Red Hat (prod)"
-        if: ${{ !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-serverless-workflow-editor/dist/vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
-          asset_name: vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "Upload VS Code Extension - Serverless Workflow Editor - KIE (prod)"
@@ -1343,7 +1331,7 @@ jobs:
         run: |
           echo "Reset deployment dir"
           shopt -s extglob
-          rm -rf -- !("dev"|"staging"|".nojekyll"|"CNAME"|"0.25.0")
+          rm -rf -- !("dev"|"staging"|".nojekyll"|"CNAME"|"0.25.0"|"schemas")
           echo "Copy resources"
           cp -r ${{ github.workspace }}/kie-tools/packages/serverless-logic-web-tools/dist/* .
           echo "Commit changes and push"

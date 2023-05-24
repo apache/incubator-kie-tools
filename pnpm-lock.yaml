@@ -4644,8 +4644,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/test-electron":
-        specifier: ^2.3.0
-        version: 2.3.0
+        specifier: ^2.3.2
+        version: 2.3.2
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -4698,8 +4698,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.5.2
-        version: 5.5.2(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.6.0
+        version: 5.6.0(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -4859,6 +4859,25 @@ importers:
       webpack-merge:
         specifier: ^5.8.0
         version: 5.8.0
+
+  packages/kie-sandbox-distribution:
+    dependencies:
+      "@kie-tools/git-cors-proxy-image":
+        specifier: workspace:*
+        version: link:../git-cors-proxy-image
+      "@kie-tools/kie-sandbox-extended-services-image":
+        specifier: workspace:*
+        version: link:../kie-sandbox-extended-services-image
+      "@kie-tools/kie-sandbox-image":
+        specifier: workspace:*
+        version: link:../kie-sandbox-image
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
 
   packages/kie-sandbox-extended-services-image:
     dependencies:
@@ -7453,8 +7472,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/test-electron":
-        specifier: ^2.3.0
-        version: 2.3.0
+        specifier: ^2.3.2
+        version: 2.3.2
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -7498,8 +7517,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.5.2
-        version: 5.5.2(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.6.0
+        version: 5.6.0(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -8492,8 +8511,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.5.2
-        version: 5.5.2(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.6.0
+        version: 5.6.0(mocha@9.2.0)(typescript@4.8.4)
 
   packages/vscode-extension-dashbuilder-editor:
     dependencies:
@@ -8613,8 +8632,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.5.2
-        version: 5.5.2(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.6.0
+        version: 5.6.0(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -8987,169 +9006,6 @@ importers:
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
-      webpack:
-        specifier: ^5.36.2
-        version: 5.70.0(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
-      webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(webpack-cli@4.10.0)(webpack@5.70.0)
-      webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
-
-  packages/vscode-extension-serverless-workflow-editor:
-    dependencies:
-      "@kie-tools-core/backend":
-        specifier: workspace:*
-        version: link:../backend
-      "@kie-tools-core/editor":
-        specifier: workspace:*
-        version: link:../editor
-      "@kie-tools-core/envelope-bus":
-        specifier: workspace:*
-        version: link:../envelope-bus
-      "@kie-tools-core/i18n":
-        specifier: workspace:*
-        version: link:../i18n
-      "@kie-tools-core/keyboard-shortcuts":
-        specifier: workspace:*
-        version: link:../keyboard-shortcuts
-      "@kie-tools-core/notifications":
-        specifier: workspace:*
-        version: link:../notifications
-      "@kie-tools-core/patternfly-base":
-        specifier: workspace:*
-        version: link:../patternfly-base
-      "@kie-tools-core/vscode-extension":
-        specifier: workspace:*
-        version: link:../vscode-extension
-      "@kie-tools-core/vscode-java-code-completion":
-        specifier: workspace:*
-        version: link:../vscode-java-code-completion
-      "@kie-tools-core/workspace":
-        specifier: workspace:*
-        version: link:../workspace
-      "@kie-tools/serverless-workflow-diagram-editor-envelope":
-        specifier: workspace:*
-        version: link:../serverless-workflow-diagram-editor-envelope
-      "@kie-tools/serverless-workflow-jq-expressions":
-        specifier: workspace:*
-        version: link:../serverless-workflow-jq-expressions
-      "@kie-tools/serverless-workflow-language-service":
-        specifier: workspace:*
-        version: link:../serverless-workflow-language-service
-      "@kie-tools/serverless-workflow-mermaid-viewer":
-        specifier: workspace:*
-        version: link:../serverless-workflow-mermaid-viewer
-      "@kie-tools/serverless-workflow-service-catalog":
-        specifier: workspace:*
-        version: link:../serverless-workflow-service-catalog
-      "@rhoas/registry-instance-sdk":
-        specifier: ^0.34.1
-        version: 0.34.1
-      monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
-      monaco-yaml:
-        specifier: ^4.0.0
-        version: 4.0.0(monaco-editor@0.33.0)
-      openapi-types:
-        specifier: ^7.0.1
-        version: 7.2.3
-      vscode-languageserver-textdocument:
-        specifier: ^1.0.4
-        version: 1.0.4
-      vscode-languageserver-types:
-        specifier: ^3.16.0
-        version: 3.16.0
-      yaml:
-        specifier: ^2.0.1
-        version: 2.0.1
-    devDependencies:
-      "@kie-tools-core/webpack-base":
-        specifier: workspace:*
-        version: link:../webpack-base
-      "@kie-tools/eslint":
-        specifier: workspace:*
-        version: link:../eslint
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      "@kie-tools/serverless-workflow-diagram-editor-assets":
-        specifier: workspace:*
-        version: link:../serverless-workflow-diagram-editor-assets
-      "@kie-tools/tsconfig":
-        specifier: workspace:*
-        version: link:../tsconfig
-      "@kie-tools/vscode-extension-common-test-helpers":
-        specifier: workspace:*
-        version: link:../vscode-extension-common-test-helpers
-      "@types/chai":
-        specifier: ^4.2.17
-        version: 4.2.18
-      "@types/fs-extra":
-        specifier: ^11.0.1
-        version: 11.0.1
-      "@types/mocha":
-        specifier: ^8.2.2
-        version: 8.2.2
-      "@types/selenium-webdriver":
-        specifier: ^4.1.12
-        version: 4.1.12
-      "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
-      "@vscode/test-electron":
-        specifier: ^2.3.0
-        version: 2.3.0
-      "@vscode/test-web":
-        specifier: ^0.0.30
-        version: 0.0.30
-      "@vscode/vsce":
-        specifier: ^2.19.0
-        version: 2.19.0
-      chai:
-        specifier: ^4.3.4
-        version: 4.3.4
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.70.0)
-      cpr:
-        specifier: ^3.0.1
-        version: 3.0.1
-      mocha:
-        specifier: ^9.2.0
-        version: 9.2.0
-      mocha-jenkins-reporter:
-        specifier: ^0.4.5
-        version: 0.4.5(mocha@9.2.0)
-      mocha-junit-reporter:
-        specifier: ^2.0.2
-        version: 2.0.2(mocha@9.2.0)
-      mocha-multi-reporters:
-        specifier: ^1.5.1
-        version: 1.5.1(mocha@9.2.0)
-      monaco-editor-webpack-plugin:
-        specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.33.0)(monaco-yaml@4.0.0)(webpack@5.70.0)
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      sanitize-filename-ts:
-        specifier: ^1.0.2
-        version: 1.0.2
-      selenium-webdriver:
-        specifier: ^4.8.1
-        version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
-      typescript:
-        specifier: ^4.6.2
-        version: 4.8.4
-      vscode-extension-tester:
-        specifier: 5.5.2
-        version: 5.5.2(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -9832,8 +9688,8 @@ importers:
         specifier: ^1.66.0
         version: 1.66.0
       "@vscode/test-electron":
-        specifier: ^2.3.0
-        version: 2.3.0
+        specifier: ^2.3.2
+        version: 2.3.2
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -9874,8 +9730,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.5.2
-        version: 5.5.2(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.6.0
+        version: 5.6.0(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -17580,6 +17436,19 @@ packages:
   /@vscode/test-electron@2.3.0:
     resolution:
       { integrity: sha512-fwzA9RtazH1GT/sckYlbxu6t5e4VaMXwCVtyLv4UAG0hP6NTfnMaaG25XCfWqlVwFhBMcQXHBCy5dmz2eLUnkw== }
+    engines: { node: ">=16" }
+    dependencies:
+      http-proxy-agent: 4.0.1
+      https-proxy-agent: 5.0.1
+      jszip: 3.10.1
+      semver: 7.3.8
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@vscode/test-electron@2.3.2:
+    resolution:
+      { integrity: sha512-CRfQIs5Wi5Ok5SUCC3PTvRRXa74LD43cSXHC8EuNlmHHEPaJa/AGrv76brcA1hVSxrdja9tiYwp95Lq8kwY0tw== }
     engines: { node: ">=16" }
     dependencies:
       http-proxy-agent: 4.0.1
@@ -27944,6 +27813,22 @@ packages:
       typescript: 4.8.4
     dev: true
 
+  /monaco-page-objects@3.6.0(selenium-webdriver@4.8.1)(typescript@4.8.4):
+    resolution:
+      { integrity: sha512-hMhILl3pc73+FHdnQ1No9I4WqfQsbvTdwHeGL0oZC2rjSp6zn+MJpJqVLRyppJYvSWC0RXJENMgUKunzqrKBPg== }
+    peerDependencies:
+      selenium-webdriver: ^4.6.1
+      typescript: ">=4.6.2"
+    dependencies:
+      clipboardy: 2.3.0
+      clone-deep: 4.0.1
+      compare-versions: 5.0.1
+      fs-extra: 11.1.1
+      selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+      ts-essentials: 9.3.1(typescript@4.8.4)
+      typescript: 4.8.4
+    dev: true
+
   /monaco-worker-manager@2.0.1(monaco-editor@0.33.0):
     resolution:
       { integrity: sha512-kdPL0yvg5qjhKPNVjJoym331PY/5JC11aPJXtCZNwWRvBr6jhkIamvYAyiY5P1AWFmNOy0aRDRoMdZfa71h8kg== }
@@ -34194,6 +34079,17 @@ packages:
       selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
     dev: true
 
+  /vscode-extension-tester-locators@3.4.2(monaco-page-objects@3.6.0)(selenium-webdriver@4.8.1):
+    resolution:
+      { integrity: sha512-ytJkUTDJ9Wj7pJgg3ocHXkTAQO90XY3YzqSFZkB6t96H0osAvjP26MYqB6QMNG9AA6w34hLJRPBscadi35f4LA== }
+    peerDependencies:
+      monaco-page-objects: ^3.6.0
+      selenium-webdriver: ^4.6.1
+    dependencies:
+      monaco-page-objects: 3.6.0(selenium-webdriver@4.8.1)(typescript@4.8.4)
+      selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+    dev: true
+
   /vscode-extension-tester@5.5.2(mocha@9.2.0)(typescript@4.5.4):
     resolution:
       { integrity: sha512-+vRgJ7vdH5vsoF1kD4T7c0urxp5KETXuSeNvJcvsT+hBlWABdBjPHvyydtK7SQmcPKB4DtmsZVH2s2UX1+4GiA== }
@@ -34224,9 +34120,9 @@ packages:
       - utf-8-validate
     dev: true
 
-  /vscode-extension-tester@5.5.2(mocha@9.2.0)(typescript@4.8.4):
+  /vscode-extension-tester@5.6.0(mocha@9.2.0)(typescript@4.8.4):
     resolution:
-      { integrity: sha512-+vRgJ7vdH5vsoF1kD4T7c0urxp5KETXuSeNvJcvsT+hBlWABdBjPHvyydtK7SQmcPKB4DtmsZVH2s2UX1+4GiA== }
+      { integrity: sha512-HOhjeV4tY8kb1ieBjC+ThWSZfhcpxgpSDpZa0d+G6vsA5xOwRsNQQFk26SKlv+IkSD5kSzrxh665+xSMGECsdQ== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
@@ -34242,13 +34138,13 @@ packages:
       hpagent: 1.2.0
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 3.5.1(selenium-webdriver@4.8.1)(typescript@4.8.4)
+      monaco-page-objects: 3.6.0(selenium-webdriver@4.8.1)(typescript@4.8.4)
       sanitize-filename: 1.6.3
       selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       targz: 1.0.1
       typescript: 4.8.4
       unzip-stream: 0.3.1
-      vscode-extension-tester-locators: 3.4.1(monaco-page-objects@3.5.1)(selenium-webdriver@4.8.1)
+      vscode-extension-tester-locators: 3.4.2(monaco-page-objects@3.6.0)(selenium-webdriver@4.8.1)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate

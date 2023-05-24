@@ -18,11 +18,10 @@ package org.kie.workbench.common.stunner.core.graph.content.view;
 
 import java.util.Objects;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@Portable
+@JsType
 public class Point2DConnection implements Connection {
 
     private final Point2D location;
@@ -31,7 +30,7 @@ public class Point2DConnection implements Connection {
         return new Point2DConnection(location);
     }
 
-    public Point2DConnection(@MapsTo("location") final Point2D location) {
+    public Point2DConnection(Point2D location) {
         this.location = location;
     }
 
