@@ -40,8 +40,6 @@ import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/
 import "./DmnRunnerOutputsTable.css";
 import { DecisionResult, DmnEvaluationResult } from "@kie-tools/extended-services-api";
 
-const PROPERTY_SEPARATOR = "-";
-
 interface Props {
   i18n: DmnUnitablesI18n;
   results: Array<DecisionResult[] | undefined> | undefined;
@@ -60,13 +58,16 @@ export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrolla
     outputErrorBoundaryRef.current?.reset();
   }, [outputsPropertiesMap]);
 
-  const resultsQtt = useMemo(() => results?.reduce((acc, result) => acc + (result?.length ?? 0), 0) ?? 0, [results]);
+  const numberOfResults = useMemo(
+    () => results?.reduce((acc, result) => acc + (result?.length ?? 0), 0) ?? 0,
+    [results]
+  );
 
   return (
     <>
       {outputError ? (
         outputError
-      ) : resultsQtt > 0 ? (
+      ) : numberOfResults > 0 ? (
         <ErrorBoundary ref={outputErrorBoundaryRef} setHasError={setOutputError} error={<OutputError />}>
           <OutputsBeeTable
             scrollableParentRef={scrollableParentRef}
