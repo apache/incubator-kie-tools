@@ -470,17 +470,12 @@ function UnitablesBeeTableCell({
 
           // Nested ListFields or SelectField
           if (nextUniformsComponent.tagName.toLowerCase() === "div") {
+            (nextUniformsComponent as HTMLElement)?.focus();
             setEditingCell(true);
-            const buttons = Array.from(nextUniformsComponent?.getElementsByTagName("button"));
-            if (buttons.length === 1) {
-              nextUniformsComponent?.getElementsByTagName("button")?.[0]?.parentElement?.focus();
-            } else {
-              (nextUniformsComponent as HTMLElement).focus();
-            }
             submitRow();
             e.stopPropagation();
+            return;
           }
-          return;
         } // ListField - END
 
         submitRow();
@@ -601,21 +596,41 @@ function UnitablesBeeTableCell({
         e.stopPropagation();
 
         // If the target is an input node it is already editing the cell;
-        if (!isEditing && (e.target as HTMLInputElement).tagName.toLowerCase() !== "input") {
+        if (!isListField && !isEditing && (e.target as HTMLInputElement).tagName.toLowerCase() !== "input") {
           // handle checkbox field;
+          const inputField = cellRef.current?.getElementsByTagName("input")?.[0];
           if (e.code.toLowerCase() === "space" && xDmnFieldType === X_DMN_TYPE.BOOLEAN) {
-            cellRef.current?.getElementsByTagName("input")?.[0]?.click();
+            inputField?.click();
+            submitRow();
+            return;
+          }
+          inputField?.select();
+        }
+
+        if (isListField) {
+          e.preventDefault();
+
+          if (
+            e.code.toLowerCase() === "space" &&
+            (e.target as HTMLElement)?.tagName?.toLowerCase() === "input" &&
+            (e.target as HTMLInputElement)?.type === "checkbox"
+          ) {
+            (e.target as HTMLInputElement).click();
             submitRow();
             return;
           }
 
-          if (!isListField) {
-            cellRef.current?.getElementsByTagName("input")?.[0]?.select();
+          if (e.code.toLowerCase() === "space" && (e.target as HTMLElement)?.tagName?.toLowerCase() === "button") {
+            if ((e.target as HTMLButtonElement).id.match(/^uniforms-/g)) {
+              return;
+            }
+            setIsSelectFieldOpen(true);
+            return;
           }
         }
-
-        setEditingCell(true);
       }
+
+      setEditingCell(true);
 
       if (isEditing) {
         e.stopPropagation();
