@@ -41,7 +41,6 @@ export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<
 
     const onSubmit = useCallback(
       (rowInput: Record<string, any>) => {
-        console.log("SUBMITTING ROW: " + rowIndex);
         onSubmitRow(rowInput, rowIndex, {});
       },
       [onSubmitRow, rowIndex]

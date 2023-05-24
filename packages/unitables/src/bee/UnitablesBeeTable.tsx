@@ -335,7 +335,6 @@ function UnitablesBeeTableCell({
   // FIXME: Decouple from DMN --> https://github.com/kiegroup/kie-issues/issues/166
   const setValue = useCallback(
     (newValue?: string) => {
-      console.log("setValue", newValue);
       isBeeTableChange.current = true;
       const newValueWithoutSymbols = newValue?.replace(/\r/g, "") ?? "";
 
@@ -428,8 +427,6 @@ function UnitablesBeeTableCell({
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      console.log("onKeyDown, isListField", fieldCharacteristics, e);
-
       // TAB
       if (e.key.toLowerCase() === "tab") {
         // ListField - START
