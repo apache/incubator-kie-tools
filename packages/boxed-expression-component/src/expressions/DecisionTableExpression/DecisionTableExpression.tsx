@@ -22,7 +22,6 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   DecisionTableExpressionDefinition,
-  DecisionTableExpressionDefinitionRule,
   DecisionTableExpressionDefinitionBuiltInAggregation,
   DecisionTableExpressionDefinitionHitPolicy,
   DmnBuiltInDataType,
