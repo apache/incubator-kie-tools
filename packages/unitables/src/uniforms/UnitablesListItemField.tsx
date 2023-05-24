@@ -20,7 +20,7 @@ import { connectField } from "uniforms";
 import { AutoField, ListDelField } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { HTMLFieldProps } from "uniforms/esm";
 
-export type UniformsListItemFieldProps = HTMLFieldProps<
+export type UnitablesListItemFieldProps = HTMLFieldProps<
   unknown[],
   HTMLDivElement,
   {
@@ -31,7 +31,7 @@ export type UniformsListItemFieldProps = HTMLFieldProps<
   }
 >;
 
-function UniformsListItemField(props: React.PropsWithChildren<UniformsListItemFieldProps>) {
+function UnitablesListItemField(props: React.PropsWithChildren<UnitablesListItemFieldProps>) {
   return (
     <div
       data-testid={"unitables-list-item-field"}
@@ -52,6 +52,6 @@ function UniformsListItemField(props: React.PropsWithChildren<UniformsListItemFi
   );
 }
 
-export default connectField<UniformsListItemFieldProps>(UniformsListItemField, {
+export default connectField<UnitablesListItemFieldProps>(UnitablesListItemField, {
   initialValue: false,
 });

@@ -17,7 +17,7 @@
 import * as React from "react";
 import { ReactNode, useMemo } from "react";
 import { HTMLFieldProps } from "uniforms";
-import UniformsListItemField from "./UniformsListItemField";
+import UnitablesListItemField from "./UnitablesListItemField";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
@@ -26,7 +26,7 @@ import { connectField, filterDOMProps } from "uniforms/esm";
 import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
 import { ListAddField } from "@kie-tools/uniforms-patternfly/dist/esm";
 
-export type ListFieldProps = HTMLFieldProps<
+export type UnitablesListFieldProps = HTMLFieldProps<
   unknown[],
   HTMLDivElement,
   {
@@ -39,7 +39,11 @@ export type ListFieldProps = HTMLFieldProps<
   }
 >;
 
-function UniformsListField({ children = <UniformsListItemField name={"$"} />, itemProps, ...props }: ListFieldProps) {
+function UnitablesListField({
+  children = <UnitablesListItemField name={"$"} />,
+  itemProps,
+  ...props
+}: UnitablesListFieldProps) {
   const hasValue = useMemo(() => props.value && props.value.length > 0, [props.value]);
 
   return wrapField(
@@ -128,4 +132,4 @@ function UniformsListField({ children = <UniformsListItemField name={"$"} />, it
   );
 }
 
-export default connectField(UniformsListField);
+export default connectField(UnitablesListField);

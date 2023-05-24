@@ -19,9 +19,13 @@ import { HTMLFieldProps } from "uniforms";
 import { connectField } from "uniforms/esm";
 import { AutoField } from "@kie-tools/uniforms-patternfly/dist/esm";
 
-export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { helperText?: string; itemProps?: object }>;
+export type UnitablesNestFieldProps = HTMLFieldProps<
+  object,
+  HTMLDivElement,
+  { helperText?: string; itemProps?: object }
+>;
 
-function NestField({
+function UnitablesNestField({
   children,
   error,
   errorMessage,
@@ -32,7 +36,7 @@ function NestField({
   showInlineError,
   disabled,
   ...props
-}: NestFieldProps) {
+}: UnitablesNestFieldProps) {
   return (
     <div style={{ display: "flex" }}>
       {children ||
@@ -45,4 +49,4 @@ function NestField({
   );
 }
 
-export default connectField(NestField);
+export default connectField(UnitablesNestField);
