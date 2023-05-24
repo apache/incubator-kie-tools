@@ -59,5 +59,5 @@ This package contains the `docker-compose` file to run KIE Sandbox and all relat
 - Run KIE Sandbox with docker compose and default environment variables
 
   ```bash
-  docker compose --env-file .env.default up
+  docker compose --env-file .env up
   ```
