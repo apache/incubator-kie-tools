@@ -1272,7 +1272,7 @@ jobs:
         run: |
           echo "Reset deployment dir"
           shopt -s extglob
-          rm -rf -- !("dev"|"staging"|".nojekyll"|"CNAME"|"0.25.0")
+          rm -rf -- !("dev"|"staging"|".nojekyll"|"CNAME"|"0.25.0"|"schemas")
           echo "Copy resources"
           cp -r ${{ github.workspace }}/kie-tools/packages/serverless-logic-web-tools/dist/* .
           echo "Commit changes and push"
