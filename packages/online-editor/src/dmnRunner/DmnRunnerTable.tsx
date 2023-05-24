@@ -124,7 +124,7 @@ export function DmnRunnerTable() {
                   <>
                     <DrawerPanelContent
                       isResizable={true}
-                      minSize={rowCount > 0 ? drawerPanelMinSize : "50%"}
+                      minSize={rowCount > 0 ? drawerPanelMinSize : "30%"}
                       maxSize={drawerPanelMaxSize}
                       defaultSize={drawerPanelDefaultSize}
                     >
@@ -208,6 +208,34 @@ function useAnchoredUnitablesDrawerPanel(args: {
   const [drawerPanelMinSize, setDrawerPanelMinSize] = useState<string>();
   const [drawerPanelDefaultSize, setDrawerPanelDefaultSize] = useState<string>();
 
+  useEffect(() => {
+    if (!args.inputsContainerRef) {
+      return;
+    }
+
+    const resizerObserver = new ResizeObserver(() => {
+      if (!args.inputsContainerRef) {
+        return;
+      }
+
+      const children = Object.values(args.inputsContainerRef.childNodes?.[0]?.childNodes);
+      const newWidth = children?.reduce((acc, child: HTMLElement) => acc + child.offsetWidth, 1) ?? 0;
+      const newDefaultSize = `calc(100vw - ${newWidth + scrollbarWidth}px)`;
+
+      setDrawerPanelDefaultSize((prev) => {
+        // This is a nasty trick to force refreshing even when the value is the same.
+        // Alternate with a space at the end of the state.
+        return prev?.endsWith(" ") ? newDefaultSize : newDefaultSize + " ";
+      });
+    });
+
+    resizerObserver.observe(args.inputsContainerRef);
+
+    return () => {
+      resizerObserver.disconnect();
+    };
+  }, [args.inputsContainerRef, scrollbarWidth]);
+
   const refreshDrawerPanelDefaultSize = useCallback(() => {
     if (!args.inputsContainerRef) {
       return { didRefresh: false };
@@ -215,7 +243,7 @@ function useAnchoredUnitablesDrawerPanel(args: {
 
     const children = Object.values(args.inputsContainerRef.childNodes?.[0]?.childNodes);
     const newWidth = children?.reduce((acc, child: HTMLElement) => acc + child.offsetWidth, 1) ?? 0;
-    const newDefaultSize = `max(50%, calc(100vw - ${newWidth + scrollbarWidth}px))`;
+    const newDefaultSize = `calc(100vw - ${newWidth + scrollbarWidth}px)`;
 
     setDrawerPanelDefaultSize((prev) => {
       // This is a nasty trick to force refreshing even when the value is the same.
