@@ -51,7 +51,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     error: {
       title: string;
       explanation: string;
-      message: Array<string | Wrapped<"issues">>;
+      message: Array<string | Wrapped<"jira">>;
     };
   };
   editorToolbar: {
@@ -373,7 +373,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     error: {
       title: string;
       explanation: string;
-      message: Array<string | Wrapped<"issues">>;
+      message: Array<string | Wrapped<"jira">>;
     };
     table: DmnUnitablesI18n;
     modal: {

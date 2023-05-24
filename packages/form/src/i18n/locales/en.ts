@@ -35,7 +35,7 @@ export const en: FormI18n = {
         title: "An error occurred while trying to generate the form",
         message: [
           `The JSON schema contains a construct that is not yet supported. Please refer to `,
-          wrapped("issues"),
+          wrapped("jira"),
           " and report an issue. Don't forget to upload the current file.",
         ],
       },

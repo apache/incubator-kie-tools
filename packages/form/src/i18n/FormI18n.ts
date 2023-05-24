@@ -31,7 +31,7 @@ interface FormDictionary extends ReferenceDictionary {
       };
       validatorError: {
         title: string;
-        message: Array<string | Wrapped<"issues">>;
+        message: Array<string | Wrapped<"jira">>;
       };
     };
   };
