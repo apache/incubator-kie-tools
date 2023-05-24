@@ -19,7 +19,6 @@ import { JSONSchema7 } from "json-schema";
 import { SW_SPEC_YARD_SCEMA } from "../schemas/yardSchema";
 
 export function initYamlSchemaDiagnostics() {
-  console.info(" Setting up YAML Diagnostics");
   setDiagnosticsOptions({
     hover: true,
     completion: true,
@@ -27,7 +26,7 @@ export function initYamlSchemaDiagnostics() {
     format: true,
     schemas: [
       {
-        uri: "https://github.com/kiegroup/yard/blob/main/yard-api/src/main/resources/YaRD-schema.json",
+        uri: "https://start.kubesmarts.org/schemas/yard/draft-07/YaRD-schema.json",
         fileMatch: ["*"],
         schema: SW_SPEC_YARD_SCEMA as JSONSchema7,
       },

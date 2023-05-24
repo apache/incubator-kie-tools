@@ -135,7 +135,7 @@
         "*.yard.yml": "yaml"
       },
       "yaml.schemas": {
-        "https://raw.githubusercontent.com/kiegroup/yard/main/yard-api/src/main/resources/YaRD-schema.json": [
+        "https://start.kubesmarts.org/schemas/yard/draft-07/YaRD-schema.json": [
           "**/*.yard.yml",
           "**/*.yard.yaml"
         ]
@@ -218,6 +218,9 @@
     "onLanguage:yaml",
     "onLanguage:yard-yaml",
     "onCustomEditor:kieKogitoWebviewEditorsYard"
+  ],
+  "extensionDependencies": [
+    "redhat.vscode-yaml"
   ],
   "icon": "icon.png",
   "capabilities": {
