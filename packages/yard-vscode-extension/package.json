@@ -133,6 +133,12 @@
       "files.associations": {
         "*.yard.yaml": "yaml",
         "*.yard.yml": "yaml"
+      },
+      "yaml.schemas": {
+        "https://start.kubesmarts.org/schemas/yard/draft-07/YaRD-schema.json": [
+          "**/*.yard.yml",
+          "**/*.yard.yaml"
+        ]
       }
     },
     "customEditors": [
@@ -212,6 +218,9 @@
     "onLanguage:yaml",
     "onLanguage:yard-yaml",
     "onCustomEditor:kieKogitoWebviewEditorsYard"
+  ],
+  "extensionDependencies": [
+    "redhat.vscode-yaml"
   ],
   "icon": "icon.png",
   "capabilities": {
