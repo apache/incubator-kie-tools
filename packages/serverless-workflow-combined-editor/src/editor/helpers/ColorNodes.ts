@@ -25,17 +25,19 @@ export const colorNodes = (nodeNameList: string[], color: string, colorConnected
     .then((nodeListToColor) => {
       const nodeList = nodeListToColor.filter((node) => node !== null) as Node[];
       return nodeList.forEach((node) => {
-        if (node.definition.name !== "End") colorNode(node, color);
-        if (colorConnectedEnds) {
-          Promise.all(
-            node.outEdges.map((edge) => edge.target).map((target) => window.editor.session.getNodeByUUID(target))
-          )
-            .then((outNodes) => {
-              return outNodes
-                .filter((outNode) => outNode.definition.id === "org.kie.workbench.common.stunner.sw.definition.End")
-                .forEach((outNode) => colorNode(outNode, color));
-            })
-            .then((_) => window.editor.canvas.draw());
+        if (node.definition.name !== "End") {
+          colorNode(node, color);
+          if (colorConnectedEnds) {
+            Promise.all(
+              node.outEdges.map((edge) => edge.target).map((target) => window.editor.session.getNodeByUUID(target))
+            )
+              .then((outNodes) => {
+                return outNodes
+                  .filter((outNode) => outNode.definition.id === "org.kie.workbench.common.stunner.sw.definition.End")
+                  .forEach((outNode) => colorNode(outNode, color));
+              })
+              .then((_) => window.editor.canvas.draw());
+          }
         }
       });
     })
