@@ -19,23 +19,25 @@ import { Node } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dis
 const colorNode = async (node: Node, color: string) => {
   await window.editor.canvas.setBackgroundColor(node.uuid, color);
 };
+
 export const colorNodes = (nodeNameList: string[], color: string, colorConnectedEnds: boolean): void => {
   Promise.all(nodeNameList.map((name) => window.editor.session.getNodeByName(name).catch(() => null)))
-    .then((nodeListToColor) =>
-      nodeListToColor.forEach((node) => {
-        if (node) {
-          colorNode(node, color);
-          if (colorConnectedEnds) {
-            Promise.all(
-              node.outEdges.map((edge) => edge.target).map((target) => window.editor.session.getNodeByUUID(target))
-            ).then((outNodes) =>
-              outNodes
+    .then((nodeListToColor) => {
+      const nodeList = nodeListToColor.filter((node) => node !== null) as Node[];
+      return nodeList.forEach((node) => {
+        if (node.definition.name !== "End") colorNode(node, color);
+        if (colorConnectedEnds) {
+          Promise.all(
+            node.outEdges.map((edge) => edge.target).map((target) => window.editor.session.getNodeByUUID(target))
+          )
+            .then((outNodes) => {
+              return outNodes
                 .filter((outNode) => outNode.definition.id === "org.kie.workbench.common.stunner.sw.definition.End")
-                .forEach((outNode) => colorNode(outNode, color))
-            );
-          }
+                .forEach((outNode) => colorNode(outNode, color));
+            })
+            .then((_) => window.editor.canvas.draw());
         }
-      })
-    )
-    .finally(() => window.editor.canvas.draw());
+      });
+    })
+    .then((_) => window.editor.canvas.draw());
 };

@@ -63,7 +63,7 @@ import { Position } from "monaco-editor";
 import { ServerlessWorkflowCombinedEditorChannelApi, SwfFeatureToggle, SwfPreviewOptions } from "../api";
 import { useSwfDiagramEditorChannelApi } from "./hooks/useSwfDiagramEditorChannelApi";
 import { useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
-import { colorNodes } from "./helpers/PaintNodes";
+import { colorNodes } from "./helpers/ColorNodes";
 
 interface Props {
   locale: string;
