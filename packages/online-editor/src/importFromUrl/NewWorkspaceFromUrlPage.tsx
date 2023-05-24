@@ -51,12 +51,14 @@ import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
 import { useBitbucketClient } from "../bitbucket/Hooks";
+import { useOnlineI18n } from "../i18n";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
   const routes = useRoutes();
   const history = useHistory();
   const accountsDispatch = useAccountsDispatch();
+  const { i18n } = useOnlineI18n();
 
   const [importingError, setImportingError] = useState("");
 
@@ -172,6 +174,17 @@ export function NewWorkspaceFromUrlPage() {
     selectedGitRefName,
     setGitRefName,
   ]);
+
+  useEffect(() => {
+    const urlDomain = importableUrl.url?.hostname;
+    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
+      authProviders,
+      authSessions,
+      authSessionStatus,
+      urlDomain,
+    });
+    setAuthSessionId(compatible[0]!.id);
+  }, [authProviders, authSessionStatus, authSessions, importableUrl, setAuthSessionId]);
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
@@ -410,7 +423,7 @@ export function NewWorkspaceFromUrlPage() {
         <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
           {importingError && (
             <EditorPageErrorPage
-              title={`Can't import`}
+              title={i18n.newWorkspaceFromUrlPage.error}
               path={importableUrl.url?.toString() ?? ""}
               errors={[importingError]}
             />

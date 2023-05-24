@@ -706,4 +706,8 @@ export const en: OnlineI18n = {
       confirmButtonText: "Yes, revert permanently",
     },
   },
+  newWorkspaceFromUrlPage: {
+    error:
+      "Can't import. If you've landed here in error after trying to import a private repository, please authenticate your GitHub account using the link below.",
+  },
 };
