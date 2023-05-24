@@ -247,8 +247,8 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           textEditor?.setTheme(theme);
           diagramEditor?.setTheme(theme);
         },
-        colorNodes: (nodeNames: string[], color: string, isWorkflowCompleted: boolean) => {
-          paintCompletedNodes(nodeNames, color, isWorkflowCompleted);
+        colorNodes: (nodeNames: string[], color: string, colorConnectedEnds: boolean) => {
+          paintCompletedNodes(nodeNames, color, colorConnectedEnds);
         },
       };
     },
@@ -408,6 +408,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
       ),
     [diagramEditor]
   );
+
   useEffect(() => {
     if (isCombinedEditorReady) {
       editorEnvelopeCtx.channelApi.notifications.kogitoSwfCombinedEditor_combinedEditorReady.send();

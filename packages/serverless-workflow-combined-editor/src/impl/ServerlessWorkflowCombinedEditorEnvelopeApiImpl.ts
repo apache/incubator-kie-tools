@@ -16,22 +16,21 @@
 
 import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kie-tools-core/editor/dist/envelope";
 import { ServerlessWorkflowCombinedEditorEnvelopeApi } from "../api/ServerlessWorkflowCombinedEditorEnvelopeApi";
-import { ServerlessWorkflowCombinedEditorView } from "../editor";
+import { ServerlessWorkflowCombinedEditorApi, ServerlessWorkflowCombinedEditorView } from "../editor";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 import { EditorFactory, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
-//add it to pck.json
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 
 export type ServerlessWorkflowCombinedEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   ServerlessWorkflowCombinedEditorEnvelopeApi,
   ServerlessWorkflowCombinedEditorChannelApi,
-  EditorEnvelopeViewApi<ServerlessWorkflowCombinedEditorView>,
+  EditorEnvelopeViewApi<ServerlessWorkflowCombinedEditorApi>,
   KogitoEditorEnvelopeContextType<ServerlessWorkflowCombinedEditorChannelApi>
 >;
 
 export class ServerlessWorkflowCombinedEditorEnvelopeApiImpl
   extends KogitoEditorEnvelopeApiImpl<
-    ServerlessWorkflowCombinedEditorView,
+    ServerlessWorkflowCombinedEditorApi,
     ServerlessWorkflowCombinedEditorEnvelopeApi,
     ServerlessWorkflowCombinedEditorChannelApi
   >
@@ -39,15 +38,15 @@ export class ServerlessWorkflowCombinedEditorEnvelopeApiImpl
 {
   constructor(
     private readonly serverlessWorkflowArgs: ServerlessWorkflowCombinedEnvelopeApiFactoryArgs,
-    editorFactory: EditorFactory<ServerlessWorkflowCombinedEditorView, ServerlessWorkflowCombinedEditorChannelApi>
+    editorFactory: EditorFactory<ServerlessWorkflowCombinedEditorApi, ServerlessWorkflowCombinedEditorChannelApi>
   ) {
     super(serverlessWorkflowArgs, editorFactory);
   }
   public kogitoSwfCombinedEditor_colorNodes(args: {
     nodeNames: string[];
     color: string;
-    isWorkflowCompleted: boolean;
+    colorConnectedEnds: boolean;
   }): void {
-    this.getEditorOrThrowError().colorNodes(args.nodeNames, args.color, args.isWorkflowCompleted);
+    this.getEditorOrThrowError().colorNodes(args.nodeNames, args.color, args.colorConnectedEnds);
   }
 }

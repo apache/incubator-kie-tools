@@ -55,10 +55,6 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     private readonly swfPreviewOptionsChannelApiImpl?: SwfPreviewOptionsChannelApi,
     private readonly swfStaticEnvelopeContentProviderChannelApi?: SwfStaticEnvelopeContentProviderChannelApi
   ) {}
-  // TODO: remove after testing
-  kogitoSwfCombinedEditor_combinedEditorReady(): void {
-    // no -op
-  }
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
     return this.defaultApiImpl.kogitoEditor_contentRequest();
@@ -194,5 +190,9 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
 
   public kogitoSwfCombinedEditor_moveCursorToPosition(_position: MonacoPosition): void {
     // no-op
+  }
+
+  kogitoSwfCombinedEditor_combinedEditorReady(): void {
+    // no -op
   }
 }

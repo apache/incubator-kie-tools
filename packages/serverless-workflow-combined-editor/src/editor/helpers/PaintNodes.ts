@@ -17,7 +17,6 @@
 import { Node } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api/StunnerEditorEnvelopeAPI";
 
 const paintCompletedNode = async (node: Node, color: string) => {
-  //"#d5f4e6"
   await window.editor.canvas.setBackgroundColor(node.uuid, color);
 };
 
@@ -28,13 +27,13 @@ const isPointingToAnyCompletedNode = (completedNodes: (Node | null)[], node: Nod
   );
 };
 
-export const paintCompletedNodes = (nodeNameList: string[], color: string, isWorkflowCompleted: boolean): void => {
+export const paintCompletedNodes = (nodeNameList: string[], color: string, colorConnectedEnds: boolean): void => {
   Promise.all(nodeNameList.map((name) => window.editor.session.getNodeByName(name).catch(() => null)))
     .then((completedNodes) =>
       completedNodes.forEach((completedNode) => {
         if (completedNode) {
           paintCompletedNode(completedNode, color);
-          if (isWorkflowCompleted && !isPointingToAnyCompletedNode(completedNodes, completedNode)) {
+          if (colorConnectedEnds && !isPointingToAnyCompletedNode(completedNodes, completedNode)) {
             Promise.all(
               completedNode.outEdges
                 .map((edge) => edge.target)

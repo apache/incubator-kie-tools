@@ -17,5 +17,5 @@
 import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 
 export interface ServerlessWorkflowCombinedEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
-  kogitoSwfCombinedEditor_colorNodes(args: { nodeNames: string[]; color: string; isWorkflowCompleted: boolean }): void;
+  kogitoSwfCombinedEditor_colorNodes(args: { nodeNames: string[]; color: string; colorConnectedEnds: boolean }): void;
 }

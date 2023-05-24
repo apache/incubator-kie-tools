@@ -26,9 +26,9 @@ import * as React from "react";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 import { ServerlessWorkflowCombinedEditor } from "./ServerlessWorkflowCombinedEditor";
 export interface ServerlessWorkflowCombinedEditorApi extends Editor {
-  colorNodes(nodeNames: string[], color: string, isWorkflowCompleted: boolean): void;
+  colorNodes(nodeNames: string[], color: string, colorConnectedEnds: boolean): void;
 }
-export class ServerlessWorkflowCombinedEditorView implements Editor {
+export class ServerlessWorkflowCombinedEditorView implements ServerlessWorkflowCombinedEditorApi {
   private readonly editorRef: React.RefObject<ServerlessWorkflowCombinedEditorApi>;
   public af_isReact = true;
   public af_componentId: "serverless-workflow-combined-editor";
@@ -82,7 +82,7 @@ export class ServerlessWorkflowCombinedEditorView implements Editor {
     return this.editorRef.current!.setTheme(theme);
   }
 
-  public colorNodes(nodeNames: string[], color: string, isWorkflowCompleted: boolean): void {
-    return this.editorRef.current!.colorNodes(nodeNames, color, isWorkflowCompleted);
+  public colorNodes(nodeNames: string[], color: string, colorConnectedEnds: boolean): void {
+    return this.editorRef.current!.colorNodes(nodeNames, color, colorConnectedEnds);
   }
 }
