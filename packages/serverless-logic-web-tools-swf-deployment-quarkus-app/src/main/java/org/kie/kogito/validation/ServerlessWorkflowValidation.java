@@ -27,13 +27,15 @@ import io.serverlessworkflow.api.Workflow;
 import org.kie.kogito.api.FileValidation;
 import org.kie.kogito.model.FileValidationResult;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 
 public class ServerlessWorkflowValidation implements FileValidation {
 
     @Override
     public FileValidationResult isValid(final Path path) {
         try {
-            final String format = resolveFormat(path);
+            final WorkflowFormat format = resolveFormat(path);
+
             if (format == null) {
                 return FileValidationResult.createInvalidResult(path, "Not a valid Serverless Workflow file format");
             }
@@ -50,13 +52,13 @@ public class ServerlessWorkflowValidation implements FileValidation {
         }
     }
 
-    private String resolveFormat(final Path path) {
+    private WorkflowFormat resolveFormat(final Path path) {
         final String fileName = path.getFileName().toString();
         if (fileName.endsWith(".sw.json")) {
-            return "json";
+            return WorkflowFormat.JSON;
         }
         if (fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
-            return "yaml";
+            return WorkflowFormat.YAML;
         }
         return null;
     }

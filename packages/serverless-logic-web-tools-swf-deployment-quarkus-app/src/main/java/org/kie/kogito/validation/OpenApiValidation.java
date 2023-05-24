@@ -18,15 +18,15 @@ package org.kie.kogito.validation;
 
 import java.nio.file.Path;
 
-import io.swagger.parser.OpenAPIParser;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.parser.OpenAPIV3Parser;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
 import org.kie.kogito.api.FileValidation;
 import org.kie.kogito.model.FileValidationResult;
 
 public class OpenApiValidation implements FileValidation {
 
-    private final OpenAPIParser parser = new OpenAPIParser();
+    private final OpenAPIV3Parser parser = new OpenAPIV3Parser();
 
     @Override
     public FileValidationResult isValid(final Path path) {
