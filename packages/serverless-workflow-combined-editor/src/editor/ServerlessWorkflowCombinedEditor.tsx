@@ -63,7 +63,7 @@ import { Position } from "monaco-editor";
 import { ServerlessWorkflowCombinedEditorChannelApi, SwfFeatureToggle, SwfPreviewOptions } from "../api";
 import { useSwfDiagramEditorChannelApi } from "./hooks/useSwfDiagramEditorChannelApi";
 import { useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
-import { paintCompletedNodes } from "./helpers/PaintNodes";
+import { colorNodes } from "./helpers/PaintNodes";
 
 interface Props {
   locale: string;
@@ -75,7 +75,7 @@ interface Props {
 
 export type ServerlessWorkflowCombinedEditorRef = {
   setContent(path: string, content: string): Promise<void>;
-  colorNodes(nodeNames: string[], color: string, isWorkflowCompleted: boolean): void;
+  colorNodes(nodeNames: string[], color: string, colorConnectedEnds: boolean): void;
 };
 
 interface File {
@@ -248,7 +248,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           diagramEditor?.setTheme(theme);
         },
         colorNodes: (nodeNames: string[], color: string, colorConnectedEnds: boolean) => {
-          paintCompletedNodes(nodeNames, color, colorConnectedEnds);
+          colorNodes(nodeNames, color, colorConnectedEnds);
         },
       };
     },

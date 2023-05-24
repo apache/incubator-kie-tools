@@ -16,38 +16,26 @@
 
 import { Node } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api/StunnerEditorEnvelopeAPI";
 
-const paintCompletedNode = async (node: Node, color: string) => {
+const colorNode = async (node: Node, color: string) => {
   await window.editor.canvas.setBackgroundColor(node.uuid, color);
 };
-
-const isPointingToAnyCompletedNode = (completedNodes: (Node | null)[], node: Node): boolean => {
-  return (
-    node.outEdges.filter((edge) => completedNodes.filter((node) => node && edge.target === node.uuid).length > 0)
-      .length > 0
-  );
-};
-
-export const paintCompletedNodes = (nodeNameList: string[], color: string, colorConnectedEnds: boolean): void => {
+export const colorNodes = (nodeNameList: string[], color: string, colorConnectedEnds: boolean): void => {
   Promise.all(nodeNameList.map((name) => window.editor.session.getNodeByName(name).catch(() => null)))
-    .then((completedNodes) =>
-      completedNodes.forEach((completedNode) => {
-        if (completedNode) {
-          paintCompletedNode(completedNode, color);
-          if (colorConnectedEnds && !isPointingToAnyCompletedNode(completedNodes, completedNode)) {
+    .then((nodeListToColor) =>
+      nodeListToColor.forEach((node) => {
+        if (node) {
+          colorNode(node, color);
+          if (colorConnectedEnds) {
             Promise.all(
-              completedNode.outEdges
-                .map((edge) => edge.target)
-                .map((target) => window.editor.session.getNodeByUUID(target))
-            )
-              .then((outNodes) =>
-                outNodes
-                  .filter((outNode) => outNode.definition.id === "org.kie.workbench.common.stunner.sw.definition.End")
-                  .forEach((outNode) => paintCompletedNode(outNode, color))
-              )
-              .then((_) => window.editor.canvas.draw());
+              node.outEdges.map((edge) => edge.target).map((target) => window.editor.session.getNodeByUUID(target))
+            ).then((outNodes) =>
+              outNodes
+                .filter((outNode) => outNode.definition.id === "org.kie.workbench.common.stunner.sw.definition.End")
+                .forEach((outNode) => colorNode(outNode, color))
+            );
           }
         }
       })
     )
-    .then((_) => window.editor.canvas.draw());
+    .finally(() => window.editor.canvas.draw());
 };
