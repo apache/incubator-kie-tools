@@ -23,7 +23,7 @@ import { UnitablesColumnType } from "../UnitablesTypes";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 export const DEFAULT_COLUMN_MIN_WIDTH = 150;
-const DEFAULT_DATE_TIME_CELL_WDITH = 188;
+const DEFAULT_DATE_TIME_CELL_WDITH = 210;
 const DEFAULT_DATE_CELL_WIDTH = 170;
 const DEFAULT_TIME_CELL_WIDTH = 150;
 
