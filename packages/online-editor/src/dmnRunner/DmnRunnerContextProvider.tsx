@@ -71,6 +71,7 @@ import getObjectValueByPath from "lodash/get";
 import setObjectValueByPath from "lodash/set";
 import unsetObjectValueByPath from "lodash/unset";
 import { dereferenceProperties } from "../jsonSchema/dereference";
+import { NIL } from "uuid";
 
 const JSON_SCHEMA_PROPERTIES_PATH = "definitions.InputSet.properties";
 
@@ -552,8 +553,15 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   // Set to undefined changed formats;
   const handleJsonSchemaDifferences = useCallback(
     <T extends Record<string, any>>(inputs: T, propertiesDifference: Record<string, any>, parentKey?: string): T => {
+      const checkIfPropertyExistsOrIsUndefined = <T extends Record<string, any>>(value: T, property: keyof T) => {
+        return (
+          !Object.prototype.hasOwnProperty.call(value, property) ||
+          (Object.prototype.hasOwnProperty.call(value, property) && value[property] === undefined)
+        );
+      };
+
       return Object.entries(propertiesDifference).reduce((inputs, [propertyKey, propertyValue]: [string, any]) => {
-        if (propertyKey === "properties") {
+        if (propertyKey === "properties" && propertyValue !== undefined) {
           return handleJsonSchemaDifferences(inputs, propertyValue, parentKey);
         }
 
@@ -561,16 +569,15 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         if (
           propertyValue !== null &&
           typeof propertyValue === "object" &&
-          (!Object.prototype.hasOwnProperty.call(propertyValue, "type") ||
-            (Object.prototype.hasOwnProperty.call(propertyValue, "type") && propertyValue.type === undefined)) &&
-          (!Object.prototype.hasOwnProperty.call(propertyValue, "format") ||
-            (Object.prototype.hasOwnProperty.call(propertyValue, "format") && propertyValue.format === undefined))
+          checkIfPropertyExistsOrIsUndefined(propertyValue, "type") &&
+          checkIfPropertyExistsOrIsUndefined(propertyValue, "format") &&
+          checkIfPropertyExistsOrIsUndefined(propertyValue, "x-dmn-type")
         ) {
           // not leaf;
           return handleJsonSchemaDifferences(inputs, propertyValue, fullKey);
         }
 
-        if (!propertyValue || propertyValue?.type) {
+        if (!propertyValue || propertyValue?.type || propertyValue?.["x-dmn-type"]) {
           unsetObjectValueByPath(inputs, fullKey);
           return inputs;
         }
