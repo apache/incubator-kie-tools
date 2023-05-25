@@ -1,6 +1,6 @@
 {
   "name": "pmml-vscode-extension",
-  "version": "0.0.0",
+  "version": "0.29.0",
   "description": "Edit PMML Scorecards",
   "license": "Apache-2.0",
   "publisher": "kie-group",
