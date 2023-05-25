@@ -23,9 +23,11 @@ import {
   ActivityBar,
   By,
   EditorGroup,
+  EditorView,
   InputBox,
   ModalDialog,
   SideBarView,
+  TextEditor,
   until,
   ViewControl,
   ViewItem,
@@ -360,6 +362,44 @@ export class VSCodeTestHelper {
     const data = await this.driver.takeScreenshot();
     fs.mkdirpSync(dirPath);
     fs.writeFileSync(path.join(dirPath, `${sanitize(name)}.png`), data, "base64");
+  };
+
+  /**
+   * Saves the currently open file in the text editor.
+   */
+  public saveFileInTextEditor = async (): Promise<void> => {
+    const textEditor = new TextEditor(this.workbench.getEditorView());
+    await textEditor.save();
+    await sleep(1000);
+  };
+
+  /**
+   * Open VSCode settings, change the specified settings to the desired values, and close the settings editor.
+   *
+   * @param settings an array of objects specifying the settings to be changed
+   *   - `settingValue`: the new value to set for the setting
+   *   - `settingName`: the name of the setting to be changed
+   *   - `settingCategories` (optional): the category or categories under which the setting is located
+   * @returns an array containing the previous values of the settings (in the order they were provided)
+   *   These values can be used to revert the settings afterwards.
+   */
+  public setVSCodeSettings = async (
+    ...settings: { settingValue: string; settingName: string; settingCategories?: string[] }[]
+  ): Promise<(string | boolean)[]> => {
+    const previousSettingValuesArray: (string | boolean)[] = [];
+    const settingsEditor = await new Workbench().openSettings();
+
+    for (const { settingValue, settingName, settingCategories } of settings) {
+      const locatedSetting = await settingsEditor.findSetting(settingName, ...(settingCategories || []));
+      const previousSettingValue = await locatedSetting.getValue();
+      previousSettingValuesArray.push(previousSettingValue);
+      await locatedSetting.setValue(settingValue);
+    }
+
+    await new EditorView().closeEditor("Settings");
+    await sleep(1000);
+
+    return previousSettingValuesArray;
   };
 }
 

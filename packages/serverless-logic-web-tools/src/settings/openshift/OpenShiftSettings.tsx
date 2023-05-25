@@ -24,7 +24,7 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AddCircleOIcon } from "@patternfly/react-icons/dist/js/icons/add-circle-o-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
@@ -60,6 +60,11 @@ export function OpenShiftSettings(props: SettingsPageProps) {
     settingsDispatch.openshift.setConfig(newConfig);
     saveConfigCookie(newConfig);
   }, [settings.openshift.config, settingsDispatch.openshift]);
+
+  const devModeEnabledLabel = useMemo(
+    () => (settings.openshift.isDevModeEnabled ? "enabled" : "disabled"),
+    [settings.openshift.isDevModeEnabled]
+  );
 
   useEffect(() => {
     setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
@@ -108,6 +113,8 @@ export function OpenShiftSettings(props: SettingsPageProps) {
               </TextContent>
               <EmptyStateBody>
                 Deploying models is <b>enabled</b>.
+                <br />
+                Uploading models to Dev Mode is <b>{devModeEnabledLabel}</b>.
                 <br />
                 <b>Token: </b>
                 <i>{obfuscate(settings.openshift.config.token)}</i>

@@ -114,6 +114,16 @@ async function main() {
     process.exit(0);
   }
 
+  if (opt === "--print-env-file") {
+    const flattenedParsedVars = flattenObj(parseVars(vars));
+    let envFile = "";
+    for (const key of Object.keys(flattenedParsedVars)) {
+      envFile += `${key}=${flattenedParsedVars[key]}\n`;
+    }
+    console.log(envFile);
+    process.exit(0);
+  }
+
   if (opt === "--print-vars:self") {
     console.log(JSON.stringify(flattenObj(parseVars(self.vars)), undefined, 2));
     process.exit(0);
@@ -121,6 +131,16 @@ async function main() {
 
   if (opt === "--print-env:self") {
     console.log(JSON.stringify(flattenObj(self.env), undefined, 2));
+    process.exit(0);
+  }
+
+  if (opt === "--print-env-file:self") {
+    const flattenedParsedVars = flattenObj(parseVars(self.vars));
+    let envFile = "";
+    for (const key of Object.keys(flattenedParsedVars)) {
+      envFile += `${key}=${flattenedParsedVars[key]}\n`;
+    }
+    console.log(envFile);
     process.exit(0);
   }
 

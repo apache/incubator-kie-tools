@@ -22,7 +22,6 @@ import { Form } from "@patternfly/react-core/dist/js/components/Form";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { useCallback, useEffect, useState } from "react";
-import { Alerts, AlertsController, useAlert } from "../../alerts/Alerts";
 import { APP_NAME } from "../../AppConstants";
 import { routes } from "../../navigation/Routes";
 import { setPageTitle } from "../../PageTitle";
@@ -31,6 +30,7 @@ import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
 import { deleteAllCookies } from "../../cookies";
 import { isBrowserChromiumBased } from "../../workspace/startupBlockers/SupportedBrowsers";
 import { useHistory } from "react-router";
+import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 
 const PAGE_TITLE = "Storage";
 /**
@@ -67,15 +67,13 @@ export function StorageSettings() {
   const [isDeleteCookiesChecked, setIsDeleteCookiesChecked] = useState(false);
   const [isDeleteLocalStorageChecked, setIsDeleteLocalStorageChecked] = useState(false);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
-  const [alerts, alertsRef] = useController<AlertsController>();
   const history = useHistory();
 
   const toggleConfirmModal = useCallback(() => {
     setIsConfirmDeleteModalOpen((isOpen) => !isOpen);
   }, []);
 
-  const deleteSuccessAlert = useAlert(
-    alerts,
+  const deleteSuccessAlert = useGlobalAlert(
     useCallback(({ close }) => {
       setTimeout(() => {
         window.location.href = window.location.origin + window.location.pathname;
@@ -94,8 +92,7 @@ export function StorageSettings() {
     }, [])
   );
 
-  const deleteErrorAlert = useAlert(
-    alerts,
+  const deleteErrorAlert = useGlobalAlert(
     useCallback(({ close }) => {
       return (
         <Alert
@@ -133,7 +130,6 @@ export function StorageSettings() {
 
   return (
     <>
-      <Alerts ref={alertsRef} width={"500px"} />
       <Page>
         <PageSection variant={"light"} isWidthLimited>
           <TextContent>

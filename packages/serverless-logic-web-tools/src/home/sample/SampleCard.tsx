@@ -17,6 +17,7 @@
 import { Button, Modal, ModalVariant, Skeleton } from "@patternfly/react-core/dist/js";
 import { Card, CardBody, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
+import { Sample, SampleCategory } from "./SampleApi";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -26,7 +27,6 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
-import { Sample, SampleCategory } from "./sampleApi";
 
 const tagMap: Record<SampleCategory, { label: string; icon: React.ComponentClass; color: LabelProps["color"] }> = {
   ["serverless-workflow"]: {

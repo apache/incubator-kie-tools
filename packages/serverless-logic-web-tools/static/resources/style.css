@@ -90,15 +90,28 @@
   pointer-events: visible;
 }
 
+.kogito--global-alert-container {
+  top: 30px;
+}
+
 .kogito--alert-container {
-  margin-top: 2.5rem;
-  position: absolute;
+  position: fixed;
   display: flex;
   width: 100%;
   justify-content: center;
   align-items: center;
   pointer-events: none;
   z-index: 99999;
+}
+
+.kogito--alert-list {
+  max-width: 700px;
+  min-width: 200px;
+  z-index: 999999;
+  position: absolute;
+  display: block;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .kogito--alert-container .pf-c-alert {
@@ -238,56 +251,6 @@
   overflow: hidden;
   z-index: 1;
   max-height: calc(100vh - 171px);
-}
-
-.kogito--editor__dmn-runner {
-  display: flex;
-  height: calc(100vh - 171px);
-}
-
-.kogito--editor__dmn-runner-content {
-  min-width: 350px;
-}
-
-.kogito--editor__dmn-runner-content-page {
-  flex-grow: 0;
-  flex-shrink: 0;
-  overflow: hidden;
-  max-height: calc(100vh - 171px);
-}
-
-@media screen and (min-width: 1200px) {
-  .kogito--editor__dmn-runner-content-page {
-    flex-basis: 50%;
-  }
-}
-
-@media screen and (min-width: 0px) and (max-width: 1200px) {
-  .kogito--editor__dmn-runner-content-page {
-    flex-basis: 100%;
-  }
-}
-
-.kogito--editor__dmn-runner-content-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 60px;
-}
-
-.kogito--editor__dmn-runner-drawer-content-body {
-  overflow-y: auto;
-  height: 100%;
-}
-
-.kogito--editor__dmn-runner-drawer-content-body-input {
-  padding-top: 0;
-}
-
-.kogito--editor__dmn-runner-drawer-content-body-output {
-  padding-top: 0;
-  padding-left: 12px;
-  padding-right: 12px;
 }
 
 .kogito--editor__kie-sandbox-extended-services-modal-footer {
@@ -486,20 +449,6 @@
   --pf-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
 }
 
-.kogito--editor__dmn-dev-deployment-wizard-loading-spinner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.kogito--editor__dmn-dev-deployment-dropdown-item-status {
-  pointer-events: auto;
-}
-
-.kogito--editor__dmn-dev-deployment-dropdown-item-status:focus {
-  outline: none;
-}
-
 .success-icon {
   color: var(--pf-global--success-color--100);
 }
@@ -612,6 +561,10 @@ section.kie-tools--settings-tab {
   overflow: auto;
 }
 
+.kogito--editor__openshift-deployments-dropdown-item-action:not(disabled):hover {
+  color: var(--pf-global--palette--black-800) !important;
+}
+
 @media screen and (min-width: 576px) {
   .kogito--editor__openshift-deployments-dropdown .pf-c-dropdown__menu {
     min-width: 400px;
@@ -625,21 +578,6 @@ section.kie-tools--settings-tab {
 .kogito--editor__responsive-dropdown-container .pf-c-dropdown__menu {
   position: relative;
   min-width: 100%;
-}
-
-.kie-tools--dmn-runner-loading-screen {
-  width: 100%;
-  height: 100%;
-  z-index: 999;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.kie-tools--dmn-runner-loading {
-  animation-name: fade-out;
-  animation-duration: 400ms;
-  background-color: white;
 }
 
 @keyframes fade-out {
