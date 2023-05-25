@@ -36,8 +36,8 @@ func NewCreateCommand() *cobra.Command {
 		Long: `
 	Creates a Workflow file in the specified directory (new-project is the default).
 
-	This plain serverless workflow project targets use cases requiring a single serverless
-	workflow file definition.
+	This plain Serverless Workflow project targets use cases requiring a single Serverless
+	Workflow file definition.
 
 	Additionally, you can define the configurable parameters of your application in the 
 	"application.properties" file (inside the root directory). 
@@ -48,7 +48,7 @@ func NewCreateCommand() *cobra.Command {
 	# By default the project is named "new-project"
 	{{.Name}} create
 
-	# Create a project with an specfic name
+	# Create a project with an specific name
 	{{.Name}} create --name myproject
 		`,
 		SuggestFor: []string{"vreate", "creaet", "craete", "new"},
@@ -73,12 +73,12 @@ func runCreate(cfg CreateCmdConfig) error {
 	fmt.Println("🔨 Creating workflow project")
 
 	if err := os.Mkdir(cfg.ProjectName, os.ModePerm); err != nil {
-		return fmt.Errorf("❌  Error creating project directory: %w", err)
+		return fmt.Errorf("❌ Error creating project directory: %w", err)
 	}
 
 	workflowPath := fmt.Sprintf("./%s/%s", cfg.ProjectName, metadata.WorkflowSwJson)
 	if err := common.CreateWorkflow(workflowPath); err != nil {
-		return fmt.Errorf("❌ ERROR: creating workflow file: %w", err)
+		return fmt.Errorf("❌ Error creating workflow file: %w", err)
 	}
 
 	fmt.Println("✅ Kogito Serverless Workflow project successfully created")

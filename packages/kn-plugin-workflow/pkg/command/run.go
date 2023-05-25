@@ -34,11 +34,11 @@ type RunCmdConfig struct {
 func NewRunCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "run",
-		Short: "Run a workflow project in development mode.",
+		Short: "Run a Workflow project in development mode",
 		Long: `
-	 Run a workflow project in development mode.
-	 By default, it runs over ` + metadata.KogitoImage + ` on docker.
-	 Alternatively, you can run the same image with podman.
+	 Run a Workflow project in development mode.
+	 By default, it runs over ` + metadata.KogitoImage + ` on Docker.
+	 Alternatively, you can run the same image with Podman.
 		
 		 `,
 		Example: `
@@ -74,9 +74,9 @@ func run() error {
 		}
 		return nil
 	} else if common.IsQuarkusSWFProject() {
-		return fmt.Errorf("looks like you are inside a quarkus project. If that is the case, you should run it with \"quarkus run\" command")
+		return fmt.Errorf("Looks like you are inside a Quarkus project. If that is the case, you should run it with \"quarkus run\" command.")
 	} else {
-		return fmt.Errorf("cannot find serverless workflow project")
+		return fmt.Errorf("cannot find Serverless Workflow project")
 	}
 }
 
@@ -98,7 +98,7 @@ func runSWFProject(cfg RunCmdConfig) error {
 			return err
 		}
 	} else {
-		return fmt.Errorf("ERROR: there is no docker  or podman available")
+		return fmt.Errorf("there is no docker or podman available")
 	}
 	return nil
 }
@@ -107,7 +107,7 @@ func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
 	fmt.Println("🔨 Starting your Kogito Serverless Workflow in dev mode...")
 	path, err := os.Getwd()
 	if err != nil {
-		fmt.Errorf("❌  Error running kogito project: %w", err)
+		fmt.Errorf("❌ Error running Kogito project: %w", err)
 	}
 
 	common.GracefullyStopTheContainerWhenInterrupted(containerTool)
@@ -121,7 +121,7 @@ func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
 			common.RunContainerCommand(containerTool, cfg.PortMapping, path),
 			"container run",
 		); err != nil {
-			err = fmt.Errorf("❌  Error running kogito project: %w", err)
+			err = fmt.Errorf("❌ Error running Kogito project: %w", err)
 		}
 	}()
 

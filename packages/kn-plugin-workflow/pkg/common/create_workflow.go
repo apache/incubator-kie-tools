@@ -57,7 +57,7 @@ func getWorkflowTemplate() (workflowJsonByte []byte, err error) {
 
 	workflowJsonByte, err = json.MarshalIndent(workflow, "", "  ")
 	if err != nil {
-		return nil, fmt.Errorf("ERROR: marshaling the workflow json file. %w", err)
+		return nil, fmt.Errorf("error marshaling the workflow json file. %w", err)
 	}
 	return
 }
@@ -70,7 +70,7 @@ func CreateWorkflow(workflowFilePath string) (err error) {
 
 	err = afero.WriteFile(FS, workflowFilePath, workflowFileData, 0644)
 	if err != nil {
-		return fmt.Errorf("ERROR: writing the workflow json file. %w", err)
+		return fmt.Errorf("error writing the workflow json file. %w", err)
 	}
 
 	fmt.Printf("Workflow file created on %s \n", workflowFilePath)

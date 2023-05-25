@@ -54,8 +54,9 @@ func NewDeployCommand() *cobra.Command {
 }
 
 func runDeploy(cmd *cobra.Command, args []string) error {
-	fmt.Println("😮‍💨  the deploy command is not available yet for single workflow file projects.")
-	fmt.Println("Meanwhile, you can deploy your project via quarkus build and deploy commands.")
-	fmt.Println("To convert it to quarkus, run \"quarkus convert\" command")
+
+	fmt.Println("😮‍💨 the deploy command is not available yet for workflow single file projects.")
+	fmt.Println("Meanwhile, you can deploy your project via \"quarkus build\" and \"quarkus deploy\" commands.")
+	fmt.Println("To convert it to Quarkus, run \"quarkus convert\" command")
 	return nil
 }

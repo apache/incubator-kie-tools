@@ -34,7 +34,7 @@ func NewRunCommand() *cobra.Command {
 		Use:   "run",
 		Short: "Run a workflow project in development mode",
 		Long: `
-	Run a workflow project based on quarkus in development mode.
+	Run a workflow project based on Quarkus in development mode.
  	 `,
 		Example: `
 	# Run the local directory
@@ -49,7 +49,7 @@ func NewRunCommand() *cobra.Command {
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return run(cmd, args)
 	}
-	cmd.Flags().StringP("port", "p", "8080", "Maps a different port to quarkus dev mode.")
+	cmd.Flags().StringP("port", "p", "8080", "Maps a different port to Quarkus dev mode.")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -66,7 +66,7 @@ func run(cmd *cobra.Command, args []string) error {
 		return runQuarkusSWFProject(cfg)
 	}
 
-	return fmt.Errorf("cannot find serverless workflow quarkus project")
+	return fmt.Errorf("cannot find Quarkus Kogito Serverless Workflow project")
 }
 
 func runDevCmdConfig(cmd *cobra.Command) (cfg RunCmdConfig, err error) {
@@ -86,7 +86,7 @@ func runQuarkusSWFProject(cfg RunCmdConfig) error {
 }
 
 func runQuarkusProjectDevMode(cfg RunCmdConfig) (err error) {
-	fmt.Println("🔨 Starting your Kogito Serverless Workflow in dev mode...")
+	fmt.Println("🔨 Starting your Quarkus Kogito Serverless Workflow in dev mode...")
 	create := common.ExecCommand(
 		"mvn",
 		"quarkus:dev",
@@ -99,8 +99,8 @@ func runQuarkusProjectDevMode(cfg RunCmdConfig) (err error) {
 	go func() {
 		defer wg.Done()
 		if err := common.RunCommand(create, "mvn quarkus:dev"); err != nil {
-			fmt.Printf("❌  Error running quarkus project: %v", err)
-			err = fmt.Errorf("error running Quarkus project: %w", err)
+			fmt.Printf("❌ Error running Quarkus project: %v", err)
+			err = fmt.Errorf("Error running Quarkus project: %w", err)
 		}
 	}()
 

@@ -64,7 +64,7 @@ func NewDeployCommand() *cobra.Command {
 }
 
 func runDeploy(cmd *cobra.Command, args []string) error {
-	fmt.Println("🔨 Deploying your Kogito Serverless Workflow project...")
+	fmt.Println("🔨 Deploying your Quarkus Kogito Serverless Workflow project...")
 
 	cfg, err := runDeployCmdConfig(cmd)
 	if err != nil {

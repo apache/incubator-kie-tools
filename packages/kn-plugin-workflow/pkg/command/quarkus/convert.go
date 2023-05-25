@@ -31,7 +31,7 @@ import (
 func NewConvertCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "convert",
-		Short: "Convert a single-file Kogito Serverless Workflow project to a quarkus project",
+		Short: "Convert a single-file Kogito Serverless Workflow project to a Quarkus project",
 		Long: `
 	Convert a Single Kogito Serverless Workflow project to a Quarkus Project.
 		`,
@@ -62,9 +62,9 @@ func runConvert() error {
 	if common.IsSWFProject() {
 		return convert()
 	} else if common.IsQuarkusSWFProject() {
-		return fmt.Errorf("looks like you are already inside a quarkus project, so no need to convert it")
+		return fmt.Errorf("looks like you are already inside a Quarkus project, so no need to convert it")
 	} else {
-		return fmt.Errorf("cannot find serverless workflow project")
+		return fmt.Errorf("cannot find Kogito Serverless Workflow project")
 	}
 }
 
@@ -118,9 +118,9 @@ func convert() error {
 
 func runConvertProject(cfg CreateQuarkusProjectConfig) (err error) {
 
-	fmt.Println("🔨 Creating a Kogito Serverless Workflow project...")
+	fmt.Println("🔨 Creating a Quarkus Kogito Serverless Workflow project...")
 	if err = CreateQuarkusProject(cfg); err != nil {
-		fmt.Println("❌  Error creating quarkus project", err)
+		fmt.Println("❌ Error creating Quarkus project", err)
 		return err
 	}
 
@@ -137,11 +137,11 @@ func runConvertProject(cfg CreateQuarkusProjectConfig) (err error) {
 	generatedQuarkusProjectPath := rootFolder + "/" + cfg.ProjectName
 
 	if err := copyDir(generatedQuarkusProjectPath, rootFolder); err != nil {
-		fmt.Println("❌  Error migrating quarkus project files", err)
+		fmt.Println("❌ Error migrating Quarkus project files", err)
 		return err
 	}
 	if err := os.RemoveAll(generatedQuarkusProjectPath); err != nil {
-		fmt.Println("❌  Error migrating quarkus project", err)
+		fmt.Println("❌ Error migrating Quarkus project", err)
 		return err
 	}
 
