@@ -1,6 +1,4 @@
-IMAGE_VERSION := $(shell cat image.yaml | egrep ^version  | cut -d"\"" -f2)
-QUARKUS_PLATFORM_VERSION := $(shell awk '/- name: "QUARKUS_PLATFORM_VERSION"/,/description/' image.yaml | grep value | awk -F'"' '{print $$2}')
-KOGITO_VERSION := $(shell awk '/- name: "KOGITO_VERSION"/,/description/' image.yaml | grep value | awk -F'"' '{print $$2}')
+IMAGE_VERSION := $(shell python3 scripts/retrieve_version.py)
 SHORTENED_LATEST_VERSION := $(shell echo $(IMAGE_VERSION) | awk -F. '{print $$1"."$$2}')
 KOGITO_APPS_TARGET_BRANCH ?= main
 KOGITO_APPS_TARGET_URI ?= https://github.com/kiegroup/kogito-apps.git
@@ -26,14 +24,6 @@ list:
 display-image-version:
 	@echo $(IMAGE_VERSION)
 
-.PHONY: display-kogito-version
-display-kogito-version:
-	@echo $(KOGITO_VERSION)
-
-.PHONY: display-quarkus-platform-version
-display-quarkus-version:
-	@echo $(QUARKUS_PLATFORM_VERSION)
-
 # Build all images
 .PHONY: build
 # start to build the images
@@ -50,8 +40,7 @@ build-image: clone-repos _build-image
 _build-image:
 ifneq ($(ignore_build),true)
 	scripts/build-kogito-apps-components.sh ${image_name} ${KOGITO_APPS_TARGET_BRANCH} ${KOGITO_APPS_TARGET_URI};
-	scripts/build-quarkus-app.sh ${image_name} $(QUARKUS_PLATFORM_VERSION) $(KOGITO_VERSION)
-	${CEKIT_CMD} build --overrides-file ${image_name}-overrides.yaml ${BUILD_ENGINE}
+	${CEKIT_CMD} --descriptor ${image_name}-image.yaml build ${BUILD_ENGINE}
 endif
 # tag with shortened version
 ifneq ($(ignore_tag),true)
@@ -61,7 +50,7 @@ ifneq ($(ignore_tag),true)
 endif
 # if ignore_test is set to true, ignore the tests
 ifneq ($(ignore_test),true)
-	${CEKIT_CMD} test --overrides-file ${image_name}-overrides.yaml behave ${test_options}
+	${CEKIT_CMD} --descriptor ${image_name}-image.yaml test behave ${test_options}
 	tests/shell/run.sh ${image_name} ${SHORTENED_LATEST_VERSION}
 endif
 
@@ -131,4 +120,4 @@ bats:
 prod_component=
 container-build-osbs:
 	echo "calling RHPAM container-build-osbs......................................"
-	$(CEKIT_CMD) --redhat build --overrides-file $(prod_component).yaml osbs --assume-yes
+	$(CEKIT_CMD) --descriptor $(prod_component).yaml --redhat build osbs --assume-yes

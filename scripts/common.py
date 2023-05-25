@@ -14,10 +14,9 @@ COMMUNITY_PREFIX = 'kogito-'
 PRODUCT_PREFIX = 'logic-'
 
 # imagestream file that contains all images, this file aldo needs to be updated.
+PROJECT_VERSIONS_MODULE = "modules/kogito-project-versions/module.yaml"
 IMAGE_STREAM_FILENAME = "kogito-imagestream.yaml"
 PROD_IMAGE_STREAM_FILENAME = "logic-imagestream.yaml"
-# image.yaml file definition that needs to be updated
-IMAGE_FILENAME = "image.yaml"
 KOGITO_VERSION_ENV_KEY = "KOGITO_VERSION"
 KOGITO_VERSION_LABEL_NAME = "org.kie.kogito.version"
 
@@ -56,22 +55,22 @@ def yaml_loader():
     return yaml
 
 
-def update_community_image_version(target_version):
+def update_community_images_version(target_version):
     """
-    Update image.yaml version tag.
-    :param target_version: version used to update the image.yaml file
+    Update image.yml files version tag.
+    :param target_version: version used to update
     """
-    update_image_version_tag_in_yaml_file(target_version, IMAGE_FILENAME)
+    for img in sorted(get_community_images()):
+        update_image_version_tag_in_yaml_file(target_version, "{}-image.yaml".format(img))
 
 
 def update_prod_image_version(target_version):
     """
-    Update logic-*-overrides.yaml files version tag.
+    Update logic-*-image.yaml files version tag.
     :param target_version: version used to update the files
     """
     for img in sorted(get_prod_images()):
-        file = "{}-overrides.yaml".format(img)
-        update_image_version_tag_in_yaml_file(target_version, file)
+        update_image_version_tag_in_yaml_file(target_version, "{}-image.yaml".format(img))
 
 
 def update_image_version_tag_in_yaml_file(target_version, yaml_file):
@@ -84,17 +83,12 @@ def update_image_version_tag_in_yaml_file(target_version, yaml_file):
     try:
         with open(yaml_file) as image:
             data = yaml_loader().load(image)
-            if 'version' in data:
-                data['version'] = target_version
-            else:
-                print("Field version not found, returning...")
-                return
+            update_field_in_dict(data, 'version', target_version)
 
         with open(yaml_file, 'w') as image:
             yaml_loader().dump(data, image)
     except TypeError as err:
         print("Unexpected error:", err)
-
 
 def update_image_stream(target_version, prod=False):
     """
@@ -174,9 +168,9 @@ def get_images(prefix):
     # r=>root, d=>directories, f=>files
     for r, d, f in os.walk("."):
         for item in f:
-            if re.compile(r'.*-overrides.yaml').match(item):
+            if re.compile(r'.*-image.yaml').match(item):
                 if item.startswith(prefix):
-                    images.append(item.replace("-overrides.yaml", ''))
+                    images.append(item.replace("-image.yaml", ''))
 
     return images
 
@@ -224,6 +218,27 @@ def get_swf_builder_images():
     return SWF_BUILDER_IMAGES
 
 
+def retrieve_version():
+    """
+    Retrieve the project version from project data file
+    """
+    return get_project_versions_module_data()['version']
+
+
+def get_project_versions_module_data():
+    """
+    Get a specific field value from project versions module file
+    :param field_name: Field to search for
+    """
+    try:
+        project_versions_module_file = os.path.join(PROJECT_VERSIONS_MODULE)
+        with open(project_versions_module_file) as project_versions_data:
+            return yaml_loader().load(project_versions_data)
+
+    except TypeError:
+        raise
+
+
 def update_kogito_modules_version(target_version, prod=False):
     """
     Update every Kogito module.yaml to the given version.
@@ -231,64 +246,33 @@ def update_kogito_modules_version(target_version, prod=False):
     :param target_version: version used to update all Kogito module.yaml files
     """
     modules = []
+    current_version = retrieve_version()
     if prod:
         modules = get_prod_module_dirs()
     else:
         modules = get_community_module_dirs()
 
     for module_dir in modules:
-        update_kogito_module_version(module_dir, target_version)
+        update_kogito_module_version(module_dir, current_version, target_version)
 
 
-def update_kogito_module_version(module_dir, target_version):
+def update_kogito_module_version(module_dir, old_version, target_version):
     """
     Set Kogito module.yaml to given version.
     :param module_dir: directory where cekit modules are hold
     :param target_version: version to set into the module
     """
-
-    image_version = retrieve_image_version()
-    file_updated = False
-
     try:
         module_file = os.path.join(module_dir, "module.yaml")
         with open(module_file) as module:
             data = yaml_loader().load(module)
-            if data['version'] == image_version:
+            if data['version'] == old_version:
                 print(
                     "Updating module {0} version from {1} to {2}".format(data['name'], data['version'], target_version))
                 data['version'] = target_version
-                file_updated = True
 
-        if file_updated:
-            with open(module_file, 'w') as module:
-                yaml_loader().dump(data, module)
-
-    except TypeError:
-        raise
-
-def retrieve_artifacts_version():
-    """
-    Retrieve the artifacts version from envs in main image.yaml
-    """
-    try:
-        with open(IMAGE_FILENAME) as imageFile:
-            data = yaml_loader().load(imageFile)
-            for index, env in enumerate(data['envs'], start=0):
-                if env['name'] == KOGITO_VERSION_ENV_KEY:
-                    return data['envs'][index]['value']
-
-    except TypeError:
-        raise
-
-def retrieve_image_version():
-    """
-    Retrieve the image version from main image.yaml
-    """
-    try:
-        with open(IMAGE_FILENAME) as imageFile:
-            data = yaml_loader().load(imageFile)
-            return data['version']
+        with open(module_file, 'w') as module:
+            yaml_loader().dump(data, module)
 
     except TypeError:
         raise
@@ -390,16 +374,23 @@ def update_maven_repo_in_behave_tests(repo_url, replace_jboss_repository):
     update_in_behave_tests(pattern, replacement)
 
 
-def update_maven_mirror_url_in_quarkus_plugin_behave_tests(repo_url):
+def update_maven_mirror_url_in_build_config(mirror_url):
     """
-    Update maven repository into behave tests
-    :param repo_url: Maven repository url
+    Update maven mirror url into behave tests
+    :param repo_url: Maven mirror url
     """
-    print("Set maven repo {} in quarkus plugin behave tests".format(repo_url))
+    update_env_value_in_build_config_modules('MAVEN_MIRROR_URL', mirror_url, True)
+
+def update_maven_mirror_url_in_quarkus_plugin_behave_tests(mirror_url):
+    """
+    Update maven mirror url into behave tests
+    :param repo_url: Maven mirror url
+    """
+    print("Set maven repo {} in quarkus plugin behave tests".format(mirror_url))
     pattern = re.compile(
         '(Kogito Maven archetype.*(?<!springboot)\r?\n\s*Given.*\r?\n\s*)\|\s*variable[\s]*\|[\s]*value[\s]*\|')
     replacement = "\g<1>| variable | value |\n      | {} | {} |\n      | MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE | true |\n      | DEBUG | true |".format(
-        "MAVEN_MIRROR_URL", repo_url)
+        "MAVEN_MIRROR_URL", mirror_url)
     update_in_behave_tests(pattern, replacement)
 
 def update_maven_repo_env_value(repo_url, replace_jboss_repository, prod=False):
@@ -459,6 +450,16 @@ def update_examples_uri_in_clone_repo(examples_uri):
     replacement = "git clone {}".format(examples_uri)
     update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
 
+def update_maven_repo_in_build_config(repo_url, replace_jboss_repository):
+    """
+    Update maven repository in build config modules
+    :param repo_url: Maven repository url
+    :param replace_jboss_repository: Set to true if default Jboss repository needs to be overridden
+    """
+    maven_env_name = 'MAVEN_REPO_URL'
+    if replace_jboss_repository:
+        maven_env_name = 'JBOSS_MAVEN_REPO_URL'
+    update_env_value_in_build_config_modules(maven_env_name, repo_url, True)
 
 def update_maven_repo_in_setup_maven(repo_url, replace_jboss_repository):
     """
@@ -493,10 +494,8 @@ def update_env_value(env_name, env_value, prod=False):
         images = get_community_images()
         modules = get_community_module_dirs()
 
-    update_env_value_in_file(IMAGE_FILENAME, env_name, env_value)
-
     for image_name in images:
-        image_filename = "{}-overrides.yaml".format(image_name)
+        image_filename = "{}-image.yaml".format(image_name)
         update_env_value_in_file(image_filename, env_name, env_value)
     
     for module_dir in modules:
@@ -510,24 +509,65 @@ def update_env_value_in_file(filename, env_name, env_value):
     :param env_name: environment variable name to update
     :param env_value: value to set
     """
+    print("Updating {0} label {1} with value {2}".format(filename, env_name, env_value))
     try:
-        file_updated = False
         with open(filename) as yaml_file:
             data = yaml_loader().load(yaml_file)
-            if 'envs' in data:
-                for index, env in enumerate(data['envs'], start=0):
-                    if env['name'] == env_name:
-                        print("Updating {0} label {1} with value {2}".format(filename, env_name,
-                                                                                    env_value))
-                        data['envs'][index]['value'] = env_value
-                        file_updated = True
+            update_env_value_in_data(data, env_name, env_value)
 
-        if file_updated:
-            with open(filename, 'w') as yaml_file:
-                yaml_loader().dump(data, yaml_file)
+        with open(filename, 'w') as yaml_file:
+            yaml_loader().dump(data, yaml_file)
 
     except TypeError:
         raise
+
+
+def update_env_value_in_data(data, env_name, env_value, ignore_empty = False):
+    """
+    Update environment variable value in data dict if exists
+    :param data: dict to update
+    :param env_name: environment variable name
+    :param env_value: environment variable value to set
+    :param ignore_empty: Whether previous value should be present to set the new value
+    """
+    if isinstance(data, list):
+        for data_item in data:
+            update_env_value_in_data(data_item, env_name, env_value, ignore_empty)
+    else:
+        if ignore_empty:
+            if 'envs' not in data:
+                data['envs'] = []
+            data['envs'] += [ dict(name=env_name, value=env_value) ]
+        elif 'envs' in data:
+            for _, env in enumerate(data['envs'], start=0):
+                if env['name'] == env_name:
+                    update_field_in_dict(env, 'value', env_value, ignore_empty)
+
+
+def update_env_value_in_build_config_modules(env_name, new_value, ignore_empty = False):
+    """
+    Update environment variable in build config modules
+    :param env_name: Environment variable to lookup
+    :param new_value: New value to set
+    :param ignore_empty: Whether previous value should be present to set the new value
+    """
+    print("Updating env value {0} into build config modules")
+    for module_dir in get_all_module_dirs():
+        try:
+            module_file = os.path.join(module_dir, "module.yaml")
+            with open(module_file) as module:
+                data = yaml_loader().load(module)
+                print(data['name'])
+                if data['name'].endswith('build-config'):
+                    print(
+                        "Updating module {0} maven repo env {1} to {2}".format(data['name'], env_name, new_value))
+                    update_env_value_in_data(data, env_name, new_value, ignore_empty)
+
+            with open(module_file, 'w') as module:
+                yaml_loader().dump(data, module)
+
+        except TypeError:
+            raise
 
 def update_label_value(label_name, label_value, prod=False):
     """
@@ -545,10 +585,8 @@ def update_label_value(label_name, label_value, prod=False):
         images = get_community_images()
         modules = get_community_module_dirs()
 
-    update_label_value_in_file(IMAGE_FILENAME, label_name, label_value)
-
     for image_name in images:
-        image_filename = "{}-overrides.yaml".format(image_name)
+        image_filename = "{}-image.yaml".format(image_name)
         update_label_value_in_file(image_filename, label_name, label_value)
     
     for module_dir in modules:
@@ -562,25 +600,47 @@ def update_label_value_in_file(filename, label_name, label_value):
     :param label_name: label name to update
     :param label_value: value to set
     """
+    print("Updating {0} label {1} with value {2}".format(filename, label_name, label_value))
     try:
-        file_updated = False
         with open(filename) as yaml_file:
             data = yaml_loader().load(yaml_file)
-            if 'labels' in data:
-                for index, env in enumerate(data['labels'], start=0):
-                    if env['name'] == label_name:
-                        print("Updating {0} label {1} with value {2}".format(filename, label_name,
-                                                                                    label_value))
-                        if 'value' in data['labels'][index]: # Do not update if no value already defined
-                            data['labels'][index]['value'] = label_value
-                            file_updated = True
+            update_label_value_in_data(data, label_name, label_value)            
 
-        if file_updated:
-            with open(filename, 'w') as yaml_file:
-                yaml_loader().dump(data, yaml_file)
+        with open(filename, 'w') as yaml_file:
+            yaml_loader().dump(data, yaml_file)
 
     except TypeError:
         raise
+
+
+def update_label_value_in_data(data, label_name, label_value, ignore_empty = False):
+    """
+    Update label value in data dict if exists
+    :param data: dict to update
+    :param label_name: label name
+    :param label_value: label value to set
+    :param ignore_empty: Whether previous value should be present to set the new value
+    """
+    if isinstance(data, list):
+        for data_item in data:
+            update_label_value_in_data(data_item, label_name, label_value, ignore_empty)
+    else:
+        if ignore_empty:
+            if 'labels' not in data:
+                data['labels'] = []
+            data['labels'] += [ dict(name=label_name, value=label_value) ]
+        elif 'labels' in data:
+            for _, label in enumerate(data['labels'], start=0):
+                if label['name'] == label_name:
+                    update_field_in_dict(label, 'value', label_value, ignore_empty)
+
+
+def ignore_maven_self_signed_certificate_in_build_config():
+    """
+    Sets the environment variable to ignore the self-signed certificates in build config modules
+    """
+    update_env_value_in_build_config_modules('MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE', 'true', True)
+
 
 def ignore_maven_self_signed_certificate_in_setup_maven():
     """
@@ -604,6 +664,22 @@ def update_in_file(file, pattern, replacement):
     with open(file, 'w') as fe:
         fe.write(updated_value)
 
+def update_field_in_dict(data, key, new_value, ignore_empty = False):
+    """
+    Update version field in given data dict
+    :param data: dictionary to update
+    :param key: key to lookup
+    :param new_value: value to set
+    :param ignore_empty: Whether previous value should be present to set the new value
+    """
+    if isinstance(data, list):
+        for data_item in data:
+            update_field_in_dict(data_item, key, new_value, ignore_empty)
+    else:
+        if ignore_empty or key in data:
+            data[key] = new_value
+        else:
+            print("Field " + key + " not found, returning...")
 
 if __name__ == "__main__":
     print("Community modules:")

@@ -216,7 +216,7 @@ fi
 
 cd ../
 set -x
-PROD_C="${PROD_COMPONENT}-overrides"
+PROD_C="${PROD_COMPONENT}-image"
 # hack to replace the branch overrides as cekit detects two osbs sections and don't know which one to override.
 sed -i 's/rhba-7-rhel-8/rhba-7-rhel-8-nightly/g' ${PROD_C}.yaml
 make container-build-osbs prod_component=${PROD_C}

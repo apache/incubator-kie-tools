@@ -66,8 +66,7 @@ pipeline {
                             chmod +x cekit-image-validator-runner
                         '''
                         sh './cekit-image-validator-runner modules/'
-                        sh './cekit-image-validator-runner image.yaml'
-                        getImages().each { image -> sh "./cekit-image-validator-runner ${image}-overrides.yaml" }
+                        getImages().each { image -> sh "./cekit-image-validator-runner ${image}-image.yaml" }
                     }
                 }
             }

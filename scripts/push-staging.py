@@ -63,7 +63,7 @@ def tag_and_push_images():
     tag and push the images to quay.io
     """
     cli = docker.client.from_env()
-    current_version = get_current_version()
+    current_version = common.retrieve_version()
     print("New rc tags %s" % IMAGES_NEXT_RC_TAG)
     if '-rc' not in current_version:
         for next_tag in IMAGES_NEXT_RC_TAG:
@@ -88,7 +88,7 @@ def tag_and_push_images():
             iname_tag = QUAY_KOGITO_ORG_PLACE_HOLDER.format(iname, current_version)
             cr_tag = QUAY_KOGITO_ORG_PLACE_HOLDER_NO_TAG.format(iname)
             try:
-                if iversion_next_tag != get_current_version():
+                if iversion_next_tag != common.retrieve_version():
                     print("Tagging image %s as %s" % (iname_tag, iversion_next_tag))
                     cli.images.get(iname_tag).tag(cr_tag, iversion_next_tag)
 
@@ -97,24 +97,12 @@ def tag_and_push_images():
             except:
                 raise
 
-
-def get_current_version():
-    """
-    get the current image version from image.yaml. The version defined there will be considered
-    the point of truth, update it carefully.
-    :return: current image.yaml defined version
-    """
-    with open('image.yaml') as image_yaml:
-        data = yaml.load(image_yaml, Loader=yaml.FullLoader)
-        return data['version']
-
-
 def find_current_rc_version():
     """
     If the current version already includes the rc tag, keep it, otherwise add it -rc1 tag.
     :return: the current image tag version
     """
-    version = get_current_version()
+    version = common.retrieve_version()
     if '-rc' in version:
         current_image_version = version
     else:
@@ -145,7 +133,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     version = get_next_rc_version(find_current_rc_version(), args.override_tags)
-    common.update_community_image_version(version)
+    common.update_community_images_version(version)
     common.update_image_stream(version)
     common.update_kogito_modules_version(version)
     common.update_artifacts_version_env_in_modules(version)

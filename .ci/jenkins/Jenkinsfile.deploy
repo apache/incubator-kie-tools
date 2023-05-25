@@ -111,8 +111,7 @@ pipeline {
                         chmod +x cekit-image-validator-runner
                     '''
                     sh './cekit-image-validator-runner modules/'
-                    sh './cekit-image-validator-runner image.yaml'
-                    getImages().each { image -> sh "./cekit-image-validator-runner ${image}-overrides.yaml" }
+                    getImages().each { image -> sh "./cekit-image-validator-runner ${image}-image.yaml" }
                 }
             }
             post {
@@ -129,7 +128,7 @@ pipeline {
                         env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
 
                         // Ignore self-signed certificates if MAVEN_MIRROR_URL is defined
-                        runPythonCommand("python3 scripts/update-repository.py --ignore-self-signed-cert")
+                        runPythonCommand("python3 scripts/update-repository.py --build-maven-mirror-url ${MAVEN_MIRROR_URL} --ignore-self-signed-cert")
                     }
                 }
             }

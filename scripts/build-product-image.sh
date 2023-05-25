@@ -21,11 +21,11 @@ ACTION=${1}
 case ${ACTION} in
     "build")
         echo "Using ${BUILD_ENGINE} build engine"
-        ${CEKIT_CMD} build --overrides-file ${image_name}-overrides.yaml ${BUILD_ENGINE}
+        ${CEKIT_CMD} --descriptor ${image_name}-image.yaml build ${BUILD_ENGINE}
     ;;
 
     "test")
-        ${CEKIT_CMD} test --overrides-file ${image_name}-overrides.yaml behave $3
+        ${CEKIT_CMD} --descriptor ${image_name}-image.yaml test behave $3
     ;;
     *)
         echo "Please use build or test actions."

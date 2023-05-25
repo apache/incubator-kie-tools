@@ -65,8 +65,8 @@ if __name__ == "__main__":
                 common.update_prod_image_version(args.bump_to)
                 common.update_image_stream(args.bump_to, args.prod)
             else:
-                common.update_kogito_modules_version(args.bump_to) # Need to be done before updating the main image version
-                common.update_community_image_version(args.bump_to)
+                common.update_kogito_modules_version(args.bump_to) # Need to be done before updating the project data version
+                common.update_community_images_version(args.bump_to)
                 common.update_image_stream(args.bump_to)
                 common.update_artifacts_version_in_build(artifacts_version)
 

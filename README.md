@@ -166,7 +166,7 @@ The Kogito s2i Builder Image is equipped with the following components:
  * OpenJDK 11+
  * Maven 3.8.6
  
-For more information about what is installed on this image, take a look [here](kogito-s2i-builder-overrides.yaml) in the
+For more information about what is installed on this image, take a look [here](kogito-s2i-builder-image.yaml) in the
 **modules.install** section. 
 
 
@@ -631,15 +631,15 @@ The Data Index Service depends on a running Infinispan, MongoDB or PostgreSQL.
 The Persistence service can be switched by using its corresponding image
 
 - Infinispan: quay.io/kiegroup/kogito-data-index-infinispan
-  [image.yaml](kogito-data-index-infinispan-overrides.yaml)
+  [image.yaml](kogito-data-index-infinispan-image.yaml)
 - Ephemeral PostgreSQL: quay.io/kiegroup/kogito-data-index-ephemeral
-  [image.yaml](kogito-data-index-ephemeral-overrides.yaml)
+  [image.yaml](kogito-data-index-ephemeral-image.yaml)
 - Mongodb: quay.io/kiegroup/kogito-data-index-mongodb 
-  [image.yaml](kogito-data-index-mongodb-overrides.yaml)
+  [image.yaml](kogito-data-index-mongodb-image.yaml)
 - Oracle: quay.io/kiegroup/kogito-data-index-oracle
-  [image.yaml](kogito-data-index-oracle-overrides.yaml)
+  [image.yaml](kogito-data-index-oracle-image.yaml)
 - PostgreSQL: quay.io/kiegroup/kogito-data-index-postgresql
-  [image.yaml](kogito-data-index-postgresql-overrides.yaml)
+  [image.yaml](kogito-data-index-postgresql-image.yaml)
 
 
 Basic usage with Infinispan:
@@ -700,7 +700,7 @@ docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-explainability:la
 ```
 You should notice a few debug messages being printed in the system output.
 
-To know what configurations this image accepts please take a look [here](kogito-explainability-overrides.yaml) on the **envs** section.
+To know what configurations this image accepts please take a look [here](kogito-explainability-image.yaml) on the **envs** section.
 
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Explainability Service 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
@@ -713,11 +713,11 @@ The Trusty Service depends on a running Infinispan, Redis Server or PostgreSQL R
 The Trusty service can be switched by using its corresponding image
 
 - Infinispan: quay.io/kiegroup/kogito-trusty-infinispan
-    [image.yaml](kogito-trusty-infinispan-overrides.yaml)
+    [image.yaml](kogito-trusty-infinispan-image.yaml)
 - Redis: quay.io/kiegroup/kogito-trusty-redis
-    [image.yaml](kogito-trusty-redis-overrides.yaml)
+    [image.yaml](kogito-trusty-redis-image.yaml)
 - PostgreSQL: quay.io/kiegroup/kogito-trusty-postgresql
-    [image.yaml](kogito-trusty-postgresql-overrides.yaml)
+    [image.yaml](kogito-trusty-postgresql-image.yaml)
 
 Basic usage with Infinispan:
 ```bash
@@ -744,7 +744,7 @@ docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_HOSTS=my-
 ```
 You should notice a few debug messages being printed in the system output.
 
-To know what configurations this image accepts please take a look [here](kogito-trusty-overrides.yaml) on the **envs** section.
+To know what configurations this image accepts please take a look [here](kogito-trusty-image.yaml) on the **envs** section.
 
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Trusty Service 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
@@ -758,11 +758,11 @@ For more information please visit this [link](https://github.com/kiegroup/kogito
 
 Today, the Jobs service contains four images:
 
-- [ephemeral](kogito-jobs-service-ephemeral-overrides.yaml)
-- [infinispan](kogito-jobs-service-infinispan-overrides.yaml)
-- [mongodb](kogito-jobs-service-mongodb-overrides.yaml)
-- [postgresql](kogito-jobs-service-postgresql-overrides.yaml)
-- [all-in-one](kogito-jobs-service-allinone-overrides.yaml)
+- [ephemeral](kogito-jobs-service-ephemeral-image.yaml)
+- [infinispan](kogito-jobs-service-infinispan-image.yaml)
+- [mongodb](kogito-jobs-service-mongodb-image.yaml)
+- [postgresql](kogito-jobs-service-postgresql-image.yaml)
+- [all-in-one](kogito-jobs-service-allinone-image.yaml)
 
 Basic usage:
 
@@ -847,7 +847,7 @@ docker run -it --env SCRIPT_DEBUG=true --env KOGITO_DATAINDEX_HTTP_URL=data-inde
 ```
 You should notice a few debug messages being printed in the system output.
 
-To know what configurations this image accepts please take a look [here](kogito-management-console-overrides.yaml) on the **envs** section.
+To know what configurations this image accepts please take a look [here](kogito-management-console-image.yaml) on the **envs** section.
 
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Management Console 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
@@ -872,7 +872,7 @@ docker run -it --env SCRIPT_DEBUG=true --env KOGITO_DATAINDEX_HTTP_URL=data-inde
 ```
 You should notice a few debug messages being printed in the system output.
 
-To know what configurations this image accepts please take a look [here](kogito-task-console-overrides.yaml) on the **envs** section.
+To know what configurations this image accepts please take a look [here](kogito-task-console-image.yaml) on the **envs** section.
 
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Task Console
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
@@ -897,7 +897,7 @@ docker run -it --env SCRIPT_DEBUG=true --env KOGITO_TRUSTY_ENDPOINT=trusty-servi
 ```
 You should notice a few debug messages being printed in the system output.
 
-To know what configurations this image accepts please take a look [here](kogito-trusty-ui-overrides.yaml) on the **envs** section.
+To know what configurations this image accepts please take a look [here](kogito-trusty-ui-image.yaml) on the **envs** section.
 
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Trusty UI 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
@@ -919,7 +919,7 @@ docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jit-runner:latest
 ```
 You should notice a few debug messages being printed in the system output. You can then visit `localhost:8080/index.html` to test the service.
 
-To know what configurations this image accepts please take a look [here](kogito-jit-runner-overrides.yaml) on the **envs** section.
+To know what configurations this image accepts please take a look [here](kogito-jit-runner-image.yaml) on the **envs** section.
 
 ## Using Kogito Images to Deploy Apps on OpenShift
 
@@ -1251,29 +1251,29 @@ Below you can find all modules used to build the Kogito Images
 - [kogito-s2i-core](modules/kogito-s2i-core): Provides the source-to-image needed scripts and configurations.
 
 
-For each image, we use a specific *-overrides.yaml file which will specific the modules needed.
-Please inspect the images overrides files to learn which modules are being installed on each image:
+For each image, we use a specific *-image.yaml file.
+Please inspect the image files to learn which modules are being installed on each image:
 
-- [quay.io/kiegroup/kogito-data-index-infinispan](kogito-data-index-infinispan-overrides.yaml)
-- [quay.io/kiegroup/kogito-data-index-ephemeral](kogito-data-index-ephemeral-overrides.yaml)
-- [quay.io/kiegroup/kogito-data-index-mongodb](kogito-data-index-mongodb-overrides.yaml)
-- [quay.io/kiegroup/kogito-data-index-oracle](kogito-data-index-oracle-overrides.yaml)
-- [quay.io/kiegroup/kogito-data-index-postgresql](kogito-data-index-postgresql-overrides.yaml)
-- [quay.io/kiegroup/kogito-trusty-infinispan](kogito-trusty-infinispan-overrides.yaml)
-- [quay.io/kiegroup/kogito-trusty-redis](kogito-trusty-redis-overrides.yaml)
-- [quay.io/kiegroup/kogito-trusty-postgresql](kogito-trusty-postgresql-overrides.yaml)
-- [quay.io/kiegroup/kogito-explainability](kogito-explainability-overrides.yaml)
-- [quay.io/kiegroup/kogito-jobs-service-ephemeral](kogito-jobs-service-ephemeral-overrides.yaml)
-- [quay.io/kiegroup/kogito-jobs-service-infinispan](kogito-jobs-service-infinispan-overrides.yaml)
-- [quay.io/kiegroup/kogito-jobs-service-mongodb](kogito-jobs-service-mongodb-overrides.yaml)
-- [quay.io/kiegroup/kogito-jobs-service-postgresql](kogito-jobs-service-postgresql-overrides.yaml)
-- [quay.io/kiegroup/kogito-jobs-service-allinone](kogito-jobs-service-allinone-overrides.yaml) 
-- [quay.io/kiegroup/kogito-management-console](kogito-management-console-overrides.yaml)
-- [quay.io/kiegroup/kogito-trusty-ui](kogito-trusty-ui-overrides.yaml)
-- [quay.io/kiegroup/kogito-jit-runner](kogito-jit-runner-overrides.yaml)
-- [quay.io/kiegroup/kogito-runtime-jvm](kogito-runtime-jvm-overrides.yaml)
-- [quay.io/kiegroup/kogito-runtime-native](kogito-runtime-native-overrides.yaml)
-- [quay.io/kiegroup/kogito-s2i-builder](kogito-s2i-builder-overrides.yaml)
+- [quay.io/kiegroup/kogito-data-index-infinispan](kogito-data-index-infinispan-image.yaml)
+- [quay.io/kiegroup/kogito-data-index-ephemeral](kogito-data-index-ephemeral-image.yaml)
+- [quay.io/kiegroup/kogito-data-index-mongodb](kogito-data-index-mongodb-image.yaml)
+- [quay.io/kiegroup/kogito-data-index-oracle](kogito-data-index-oracle-image.yaml)
+- [quay.io/kiegroup/kogito-data-index-postgresql](kogito-data-index-postgresql-image.yaml)
+- [quay.io/kiegroup/kogito-trusty-infinispan](kogito-trusty-infinispan-image.yaml)
+- [quay.io/kiegroup/kogito-trusty-redis](kogito-trusty-redis-image.yaml)
+- [quay.io/kiegroup/kogito-trusty-postgresql](kogito-trusty-postgresql-image.yaml)
+- [quay.io/kiegroup/kogito-explainability](kogito-explainability-image.yaml)
+- [quay.io/kiegroup/kogito-jobs-service-ephemeral](kogito-jobs-service-ephemeral-image.yaml)
+- [quay.io/kiegroup/kogito-jobs-service-infinispan](kogito-jobs-service-infinispan-image.yaml)
+- [quay.io/kiegroup/kogito-jobs-service-mongodb](kogito-jobs-service-mongodb-image.yaml)
+- [quay.io/kiegroup/kogito-jobs-service-postgresql](kogito-jobs-service-postgresql-image.yaml)
+- [quay.io/kiegroup/kogito-jobs-service-allinone](kogito-jobs-service-allinone-image.yaml) 
+- [quay.io/kiegroup/kogito-management-console](kogito-management-console-image.yaml)
+- [quay.io/kiegroup/kogito-trusty-ui](kogito-trusty-ui-image.yaml)
+- [quay.io/kiegroup/kogito-jit-runner](kogito-jit-runner-image.yaml)
+- [quay.io/kiegroup/kogito-runtime-jvm](kogito-runtime-jvm-image.yaml)
+- [quay.io/kiegroup/kogito-runtime-native](kogito-runtime-native-image.yaml)
+- [quay.io/kiegroup/kogito-s2i-builder](kogito-s2i-builder-image.yaml)
 
 
 ### Testing Images

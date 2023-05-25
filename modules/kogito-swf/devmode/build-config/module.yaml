@@ -1,0 +1,10 @@
+schema_version: 1
+name: org.kie.kogito.swf.devmode.build-config
+version: "2.0.0-snapshot"
+description: "Kogito Serverless Workflow devmode image build configuration"
+
+envs:
+  - name: "SCRIPT_DEBUG"
+    value: "true"
+  - name: QUARKUS_EXTENSIONS
+    value: quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,kogito-quarkus-serverless-workflow-devui,kogito-addons-quarkus-source-files,kogito-addons-quarkus-jobs-service-embedded,kogito-addons-quarkus-data-index-inmemory

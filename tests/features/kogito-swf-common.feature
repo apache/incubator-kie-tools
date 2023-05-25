@@ -1,8 +1,8 @@
 @quay.io/kiegroup/kogito-swf-builder
 @quay.io/kiegroup/kogito-swf-devmode
-Feature: SWF and Quarkus installation
+Feature: Serverless Workflow images common
 
-  Scenario: verify if the swf and quarkus files are under /home/kogito/.m2/repository
+  Scenario: Verify if the swf and quarkus files are under /home/kogito/.m2/repository
     When container is started with command bash
     Then file /home/kogito/.m2/repository/org/acme/serverless-workflow-project/1.0.0-SNAPSHOT/serverless-workflow-project-1.0.0-SNAPSHOT.jar should exist
       And file /home/kogito/.m2/repository/io/quarkus/platform/quarkus-bom/2.16.7.Final/quarkus-bom-2.16.7.Final.pom should exist

@@ -28,14 +28,10 @@ make BUILD_ENGINE=osbs build-prod
 
 It receives the Product image name to build the images.
 
-The build works in the follow CEKit build hierarchy:
-
- - image.yaml -> kogito-community-image-name-overrides.yaml -> kogito-product-image-name-overrides.yaml
-
 Example: 
 
 ```bash 
-cekit --verbose --redhat build --overrides-file kogito-runtime-jvm-overrides.yaml --overrides-file rhpam-kogito-runtime-jvm-rhel8-overrides.yaml docker
+cekit --verbose --redhat --descriptor logic-data-index-ephemeral-rhel8-image.yaml build docker
 ```
 
 The product image name must respect the community image name:
@@ -98,7 +94,7 @@ The command above will update all the needed files to the given version(s).
 These changes include updates on
 
  - all cekit modules
- - image.yaml file descriptor
+ - *-image.yaml files descriptor for each container image
  - kogito-imagestream.yaml
  - tests files for default values
  
@@ -134,7 +130,7 @@ the images will behave and also when new functionality is added.
 The script updates the version on:
 
 - all cekit modules
-- image.yaml file descriptor
+- *-image.yaml files descriptor for each container image
 - kogito-imagestream.yaml
 
 
@@ -195,7 +191,7 @@ This will set the default artifacts version.
 ##### Update quarkus version
 
 ```bash
-$ python update-repository.py quarkus-platform-version 2.16.0.Final
+$ python update-repository.py --quarkus-platform-version 2.16.7.Final
 ```
 
 This will set the image quarkus version to 2.16.0.Final.

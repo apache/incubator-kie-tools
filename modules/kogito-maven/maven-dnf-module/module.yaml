@@ -1,8 +1,7 @@
 schema_version: 1
 name: org.kie.kogito.maven.dnf.module
 version: "3.8"
-description: ^
-  Enables the AppStream RPM Module for Maven 3.8 packages.
+description: Enables the AppStream RPM Module for Maven 3.8 packages.
 
 execute:
   - script: configure

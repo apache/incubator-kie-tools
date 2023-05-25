@@ -1,0 +1,13 @@
+schema_version: 1
+name: org.kie.kogito.swf.builder.runtime
+version: "2.0.0-snapshot"
+description: "Kogito Serverless Workflow builder runtime module"
+
+artifacts:
+  - image: builder
+    path: /home/kogito/build_output/kogito-swf-quarkus-app.zip
+  - image: builder
+    path: /home/kogito/build_output/kogito-swf-maven-repo.zip
+
+execute:
+  - script: configure.sh

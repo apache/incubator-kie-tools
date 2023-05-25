@@ -19,6 +19,8 @@ if __name__ == "__main__":
     parser.add_argument('--ignore-self-signed-cert', dest='ignore_self_signed_cert', default=False,
                         action='store_true',
                         help='If set to true will relax the SSL for user-generated self-signed certificates')
+    parser.add_argument('--build-maven-mirror-url', dest='build_maven_mirror_url',
+                        help='Maven mirror URL to be used for cekit build')
     parser.add_argument('--archetype-maven-mirror-url', dest='archetype_maven_mirror_url',
                         help='Maven mirror URL to be used for archetype generation')
 
@@ -39,17 +41,22 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.repo_url:
+        common.update_maven_repo_in_build_config(args.repo_url, args.replace_jboss_repo)
         common.update_maven_repo_in_setup_maven(args.repo_url, args.replace_jboss_repo)
-        if args.tests_only:
-            common.update_maven_repo_in_behave_tests(args.repo_url, args.replace_jboss_repo)
-        else:
+        common.update_maven_repo_in_behave_tests(args.repo_url, args.replace_jboss_repo)
+        if not args.tests_only:
             common.update_maven_repo_env_value(args.repo_url, args.replace_jboss_repo, args.prod)
     
     if args.ignore_self_signed_cert:
+        common.ignore_maven_self_signed_certificate_in_build_config()
         common.ignore_maven_self_signed_certificate_in_setup_maven()
         common.ignore_maven_self_signed_certificate_in_behave_tests()
 
+    if args.build_maven_mirror_url:
+        common.update_maven_mirror_url_in_build_config(args.build_maven_mirror_url)
+
     if args.archetype_maven_mirror_url:
+        common.update_maven_mirror_url_in_build_config(args.archetype_maven_mirror_url)
         common.update_maven_mirror_url_in_quarkus_plugin_behave_tests(args.archetype_maven_mirror_url)
 
     if args.examples_uri:

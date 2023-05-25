@@ -1,0 +1,27 @@
+schema_version: 1
+name: org.kie.kogito.swf.common.scripts
+version: "2.0.0-snapshot"
+description: "Kogito Serverless Workflow image common scripts"
+
+envs:
+  - name: QUARKUS_EXTENSIONS
+    example: 'quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing'
+    description: To add extension to your application
+
+  - name: PROJECT_GROUP_ID
+    value: "org.acme"
+    description: Please do not change. To change only if you plan to use the ${KOGITO_HOME}/launch/create-app.sh
+  - name: PROJECT_ARTIFACT_ID
+    value: "serverless-workflow-project"
+    description: Please do not change. To change only if you plan to use the ${KOGITO_HOME}/launch/create-app.sh
+  - name: PROJECT_VERSION
+    value: "1.0.0-SNAPSHOT"
+    description: Please do not change. To change only if you plan to use the ${KOGITO_HOME}/launch/create-app.sh
+  - name: QUARKUS_CREATE_ARGS
+    example: -DnoCode
+    description: To use only if you plan to use the ${KOGITO_HOME}/launch/create-app.sh
+  - name: QUARKUS_ADD_EXTENSION_ARGS
+    description: To use only if you plan to use the ${KOGITO_HOME}/launch/add-extension.sh
+
+execute:
+  - script: configure.sh
