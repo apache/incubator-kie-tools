@@ -4645,7 +4645,7 @@ importers:
         version: 1.66.0
       "@vscode/test-electron":
         specifier: ^2.3.0
-        version: 2.3.0
+        version: 2.3.2
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -7416,7 +7416,7 @@ importers:
         version: 1.66.0
       "@vscode/test-electron":
         specifier: ^2.3.0
-        version: 2.3.0
+        version: 2.3.2
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -9258,8 +9258,8 @@ importers:
         specifier: workspace:*
         version: link:../kie-sandbox-fs
       client-zip:
-        specifier: ^2.4.1
-        version: 2.4.3
+        specifier: ^2.3.1
+        version: 2.3.1
       isomorphic-git:
         specifier: ^1.11.1
         version: 1.11.1
@@ -9632,7 +9632,7 @@ importers:
         version: 1.66.0
       "@vscode/test-electron":
         specifier: ^2.3.0
-        version: 2.3.0
+        version: 2.3.2
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -17389,6 +17389,19 @@ packages:
       - supports-color
     dev: true
 
+  /@vscode/test-electron@2.3.2:
+    resolution:
+      { integrity: sha512-CRfQIs5Wi5Ok5SUCC3PTvRRXa74LD43cSXHC8EuNlmHHEPaJa/AGrv76brcA1hVSxrdja9tiYwp95Lq8kwY0tw== }
+    engines: { node: ">=16" }
+    dependencies:
+      http-proxy-agent: 4.0.1
+      https-proxy-agent: 5.0.1
+      jszip: 3.10.1
+      semver: 7.3.8
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@vscode/test-web@0.0.30:
     resolution:
       { integrity: sha512-l1StjU5FINfgVrgaKxSrbh+wrpZiFqTT5uQ/r1qano2yn9zWYmZUczQjjzzcUI0m4/38IPkwwI3gezSwdkKtpQ== }
@@ -19655,9 +19668,9 @@ packages:
       { integrity: sha512-FxqpkPPwu1HjuN93Omfm4h8uIanXofW0RxVEW3k5RKx+mJJYSthzNhp32Kzxxy3YAEZ/Dc/EWN1vZRY0+kOhbw== }
     engines: { node: ">= 10" }
 
-  /client-zip@2.4.3:
+  /client-zip@2.3.1:
     resolution:
-      { integrity: sha512-PRJsVv+Q742auicTQD47IgatSCRdZ7e09sQoQ+jXH/fz4nXF69cVxCeiTS+kV9xx+4iTSO8JbD5iwsqkIkNDZw== }
+      { integrity: sha512-iRSvLjnKWXln/Q3m4thNe7IQWHBZg1fYjnuFXjLOgXg7GQYTFdVfHJ3n1J7qpgFpGbfXYt8pfngfIl/FVDYPqg== }
     dev: false
 
   /clipanion@3.2.0-rc.11:
@@ -27738,6 +27751,22 @@ packages:
       typescript: 4.8.4
     dev: true
 
+  /monaco-page-objects@3.6.0(selenium-webdriver@4.8.1)(typescript@4.8.4):
+    resolution:
+      { integrity: sha512-hMhILl3pc73+FHdnQ1No9I4WqfQsbvTdwHeGL0oZC2rjSp6zn+MJpJqVLRyppJYvSWC0RXJENMgUKunzqrKBPg== }
+    peerDependencies:
+      selenium-webdriver: ^4.6.1
+      typescript: ">=4.6.2"
+    dependencies:
+      clipboardy: 2.3.0
+      clone-deep: 4.0.1
+      compare-versions: 5.0.1
+      fs-extra: 11.1.1
+      selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+      ts-essentials: 9.3.1(typescript@4.8.4)
+      typescript: 4.8.4
+    dev: true
+
   /monaco-worker-manager@2.0.1(monaco-editor@0.33.0):
     resolution:
       { integrity: sha512-kdPL0yvg5qjhKPNVjJoym331PY/5JC11aPJXtCZNwWRvBr6jhkIamvYAyiY5P1AWFmNOy0aRDRoMdZfa71h8kg== }
@@ -33977,6 +34006,17 @@ packages:
       selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
     dev: true
 
+  /vscode-extension-tester-locators@3.4.2(monaco-page-objects@3.6.0)(selenium-webdriver@4.8.1):
+    resolution:
+      { integrity: sha512-ytJkUTDJ9Wj7pJgg3ocHXkTAQO90XY3YzqSFZkB6t96H0osAvjP26MYqB6QMNG9AA6w34hLJRPBscadi35f4LA== }
+    peerDependencies:
+      monaco-page-objects: ^3.6.0
+      selenium-webdriver: ^4.6.1
+    dependencies:
+      monaco-page-objects: 3.6.0(selenium-webdriver@4.8.1)(typescript@4.8.4)
+      selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+    dev: true
+
   /vscode-extension-tester@5.5.2(mocha@9.2.0)(typescript@4.5.4):
     resolution:
       { integrity: sha512-+vRgJ7vdH5vsoF1kD4T7c0urxp5KETXuSeNvJcvsT+hBlWABdBjPHvyydtK7SQmcPKB4DtmsZVH2s2UX1+4GiA== }
@@ -34025,13 +34065,13 @@ packages:
       hpagent: 1.2.0
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 3.5.1(selenium-webdriver@4.8.1)(typescript@4.8.4)
+      monaco-page-objects: 3.6.0(selenium-webdriver@4.8.1)(typescript@4.8.4)
       sanitize-filename: 1.6.3
       selenium-webdriver: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       targz: 1.0.1
       typescript: 4.8.4
       unzip-stream: 0.3.1
-      vscode-extension-tester-locators: 3.4.1(monaco-page-objects@3.5.1)(selenium-webdriver@4.8.1)
+      vscode-extension-tester-locators: 3.4.2(monaco-page-objects@3.6.0)(selenium-webdriver@4.8.1)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
