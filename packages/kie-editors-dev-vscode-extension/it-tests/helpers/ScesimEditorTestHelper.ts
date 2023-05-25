@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 import { By, until, WebElement, WebView } from "vscode-extension-tester";
-import { assertWebElementIsDisplayedEnabled } from "./CommonAsserts";
+import { assertWebElementIsDisplayedEnabled, EditorTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import { expandedDocksBarE, h3ComponentWithText, spanComponentWithText } from "./CommonLocators";
 
 /**
@@ -23,15 +23,13 @@ import { expandedDocksBarE, h3ComponentWithText, spanComponentWithText } from ".
  * Make sure you switch to the webview's frame before creating and instance
  * via contructor.
  */
-export default class ScesimEditorTestHelper {
+export default class ScesimEditorTestHelper extends EditorTestHelper {
   /**
-   * WebView in whitch the editor Iframe is located.
-   * Initialize in constructor.
+   *
+   * @param webview WebView where the editor Iframe is located.
    */
-  private webview: WebView;
-
   constructor(webview: WebView) {
-    this.webview = webview;
+    super(webview);
   }
 
   /**

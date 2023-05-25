@@ -142,6 +142,12 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         /* Retrieving the class type SIMPLE NAME */
         String type = item.getLabelDetails().getDescription();
         /* Retrieving the class type FQCN */
+        /* The API we used to retrieve the FQNC are no more available. To enable the Project
+         * compilation, the following block is temporary commented. The impact on the feature, is
+         * that the Fecthing feature will no work properly, until we found an alternative solution
+         * https://github.com/kiegroup/kie-issues/issues/114
+         */
+        /*
         Map<String,String> data = (Map<String, String>) item.getData();
         for (Map.Entry<String, String> entry : data.entrySet()) {
             JavaLanguageServerPlugin.logInfo("ENTRY: " + entry.getKey() + " " + entry.getValue());

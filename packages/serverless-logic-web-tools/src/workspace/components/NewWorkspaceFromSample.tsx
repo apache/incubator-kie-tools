@@ -27,7 +27,7 @@ import { useQueryParam } from "../../queryParams/QueryParamsContext";
 import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
-import { KIE_SAMPLES_REPO } from "../../home/sample/sampleApi";
+import { KIE_SAMPLES_REPO } from "../../home/sample/SampleApi";
 import { useSampleDispatch } from "../../home/sample/hooks/SampleContext";
 
 export function NewWorkspaceFromSample() {
@@ -42,7 +42,7 @@ export function NewWorkspaceFromSample() {
   useEffect(() => {
     sampleDispatch
       .getSampleFiles(sampleId)
-      .then((sampleFiles) => workspaces.createWorkspaceFromLocal({ localFiles: sampleFiles }))
+      .then((sampleFiles) => workspaces.createWorkspaceFromLocal({ preferredName: sampleId, localFiles: sampleFiles }))
       .then(({ workspace, suggestedFirstFile }) => {
         if (!suggestedFirstFile) {
           return;

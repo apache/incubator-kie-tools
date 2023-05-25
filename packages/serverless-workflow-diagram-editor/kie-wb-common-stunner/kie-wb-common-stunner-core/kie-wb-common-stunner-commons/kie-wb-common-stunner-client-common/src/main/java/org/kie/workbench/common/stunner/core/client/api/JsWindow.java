@@ -10,6 +10,7 @@ public class JsWindow {
     @JsProperty
     public static JsStunnerEditor editor;
 
+    @Deprecated // Use editor.canvas instead
     @JsProperty
     public static Object canvas;
 }

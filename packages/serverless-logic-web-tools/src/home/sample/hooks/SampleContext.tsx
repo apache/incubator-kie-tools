@@ -20,13 +20,11 @@ import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/Loc
 import * as React from "react";
 import { useContext, useMemo, useCallback, useState } from "react";
 import { useSettingsDispatch } from "../../../settings/SettingsContext";
-import { fetchSampleDefinitions, fetchSampleFiles, Sample, SampleCategory } from "../sampleApi";
+import { fetchSampleDefinitions, fetchSampleFiles, Sample, SampleCategory } from "../SampleApi";
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import Fuse from "fuse.js";
-
-const SAMPLE_DEFINITIONS_CACHE_FILE_PATH = "/definitions.json";
-const SAMPLES_FS_MOUNT_POINT = `lfs_v1__samples__${process.env.WEBPACK_REPLACE__version!}`;
-const SEARCH_KEYS = ["definition.category", "definition.title", "definition.description"];
+import { SAMPLE_DEFINITIONS_CACHE_FILE_PATH, SAMPLE_SEARCH_KEYS, resolveSampleFsMountPoint } from "../SampleConstants";
+import { useEnv } from "../../../env/EnvContext";
 
 export interface SampleDispatchContextType {
   getSamples(args: { categoryFilter?: SampleCategory; searchFilter?: string }): Promise<Sample[]>;
@@ -36,10 +34,14 @@ export interface SampleDispatchContextType {
 export const SampleDispatchContext = React.createContext<SampleDispatchContextType>({} as any);
 
 export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
+  const { env } = useEnv();
   const settingsDispatch = useSettingsDispatch();
 
   const fsCache = useMemo(() => new LfsFsCache(), []);
-  const fs = useMemo(() => fsCache.getOrCreateFs(SAMPLES_FS_MOUNT_POINT), [fsCache]);
+  const fs = useMemo(
+    () => fsCache.getOrCreateFs(resolveSampleFsMountPoint(env.SERVERLESS_LOGIC_WEB_TOOLS_VERSION)),
+    [env, fsCache]
+  );
   const sampleStorageService = useMemo(() => new LfsStorageService(), []);
 
   const [allSampleDefinitions, setAllSampleDefinitions] = useState<Sample[]>();
@@ -82,7 +84,7 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
 
       if (args.searchFilter && args.searchFilter.trim().length > 0) {
         const fuse = new Fuse(filteredSamples, {
-          keys: SEARCH_KEYS,
+          keys: SAMPLE_SEARCH_KEYS,
           shouldSort: false,
           threshold: 0.3,
         });

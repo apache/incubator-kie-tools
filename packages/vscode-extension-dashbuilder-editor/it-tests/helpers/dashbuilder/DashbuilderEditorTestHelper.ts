@@ -15,12 +15,15 @@
  */
 
 import { By, WebElement, WebView } from "vscode-extension-tester";
+import { EditorTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 
 /**
  * Helper class to easen work with Dashbuilder editor inside of a webview.
  */
-export default class DashbuilderEditorTestHelper {
-  constructor(private readonly webview: WebView) {}
+export default class DashbuilderEditorTestHelper extends EditorTestHelper {
+  constructor(webview: WebView) {
+    super(webview);
+  }
 
   public async getDashbuilderRenderedContent(): Promise<WebElement> {
     const result = await this.webview.findWebElement(By.xpath("//*[@id='mainContainer']"));
@@ -30,21 +33,5 @@ export default class DashbuilderEditorTestHelper {
   public async getEmptyContentView(): Promise<WebElement> {
     const result = await this.webview.findWebElement(By.xpath("//*[@id='emptyImport']"));
     return Promise.resolve(result);
-  }
-
-  /**
-   * Helper method that needs to be called when Dashbuilder editor is being interacted with
-   */
-  public async switchToEditorFrame(): Promise<void> {
-    const driver = this.webview.getDriver();
-    await driver.switchTo().frame(await driver.findElement(By.className("webview ready")));
-    await driver.switchTo().frame(await driver.findElement(By.id("active-frame")));
-  }
-
-  /**
-   * Helper method to switch back from Dashbuilder editor to Text editor
-   */
-  public async switchBack(): Promise<void> {
-    await this.webview.getDriver().switchTo().frame(null);
   }
 }
