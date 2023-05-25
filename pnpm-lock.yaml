@@ -9257,12 +9257,12 @@ importers:
       "@kie-tools/kie-sandbox-fs":
         specifier: workspace:*
         version: link:../kie-sandbox-fs
-      client-zip:
-        specifier: ^2.3.1
-        version: 2.4.3
       isomorphic-git:
         specifier: ^1.11.1
         version: 1.11.1
+      jszip:
+        specifier: ^3.7.1
+        version: 3.7.1
       minimatch:
         specifier: ^3.0.4
         version: 3.0.5
@@ -19668,11 +19668,6 @@ packages:
       { integrity: sha512-FxqpkPPwu1HjuN93Omfm4h8uIanXofW0RxVEW3k5RKx+mJJYSthzNhp32Kzxxy3YAEZ/Dc/EWN1vZRY0+kOhbw== }
     engines: { node: ">= 10" }
 
-  /client-zip@2.4.3:
-    resolution:
-      { integrity: sha512-PRJsVv+Q742auicTQD47IgatSCRdZ7e09sQoQ+jXH/fz4nXF69cVxCeiTS+kV9xx+4iTSO8JbD5iwsqkIkNDZw== }
-    dev: false
-
   /clipanion@3.2.0-rc.11:
     resolution:
       { integrity: sha512-fugY+N5uPop31VDYhjTc31DwPjCCLx6kmvdlFTf8fztpOxwplopiZr1XSHSA2qNmfpcXlJZKJsXMkxvXmdzK7g== }
@@ -26344,6 +26339,16 @@ packages:
       readable-stream: 2.3.7
       setimmediate: 1.0.5
 
+  /jszip@3.7.1:
+    resolution:
+      { integrity: sha512-ghL0tz1XG9ZEmRMcEN2vt7xabrDdqHHeykgARpmZ0BiIctWxM47Vt63ZO2dnp4QYt/xJVLLy5Zv1l/xRdh2byg== }
+    dependencies:
+      lie: 3.3.0
+      pako: 1.0.11
+      readable-stream: 2.3.7
+      set-immediate-shim: 1.0.1
+    dev: false
+
   /junit-report-merger@4.0.0:
     resolution:
       { integrity: sha512-bn7VCzTF0k4sIvP9WK0TLSfixzvr6I5Y0yVoYj45sXCh8uvy5ZQBGGUAzi/zb8sQpZitp6hDMOcN6mbpsVNyKw== }
@@ -31578,6 +31583,12 @@ packages:
     resolution:
       { integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw== }
     dev: true
+
+  /set-immediate-shim@1.0.1:
+    resolution:
+      { integrity: sha512-Li5AOqrZWCVA2n5kryzEmqai6bKSIvpz5oUJHPVj6+dsbD3X1ixtsY5tEnsaNpH3pFAHmG8eIHUrtEtohrg+UQ== }
+    engines: { node: ">=0.10.0" }
+    dev: false
 
   /set-value@2.0.1:
     resolution:
