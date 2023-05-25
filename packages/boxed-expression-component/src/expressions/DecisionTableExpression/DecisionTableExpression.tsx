@@ -627,8 +627,16 @@ export function DecisionTableExpression(
     (args: { rowIndex: number }) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
         const duplicatedRule = {
-          ...JSON.parse(JSON.stringify(prev.rules?.[args.rowIndex])),
           id: generateUuid(),
+          inputEntries: prev.rules![args.rowIndex].inputEntries.map((input) => ({
+            ...input,
+            id: generateUuid(),
+          })),
+          outputEntries: prev.rules![args.rowIndex].outputEntries.map((output) => ({
+            ...output,
+            id: generateUuid(),
+          })),
+          annotationEntries: prev.rules![args.rowIndex].annotationEntries.slice(),
         };
 
         const newRules = [...(prev.rules ?? [])];
