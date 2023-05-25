@@ -311,7 +311,7 @@ export function BeeTableHeader<R extends object>({
 
               if (placeholder.isRowIndexColumn) {
                 if (headerVisibility === BeeTableHeaderVisibility.AllLevels) {
-                  if (rowIndex == -reactTableInstance.headerGroups.length) {
+                  if (rowIndex === -reactTableInstance.headerGroups.length) {
                     return renderColumn(
                       rowIndex + depth - 1,
                       placeholder,
