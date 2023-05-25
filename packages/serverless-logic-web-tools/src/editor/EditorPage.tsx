@@ -23,7 +23,6 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { isEditable } from "../extension";
@@ -42,6 +41,7 @@ import { EditorToolbar } from "./EditorToolbar";
 import { APP_NAME } from "../AppConstants";
 import { WebToolsEmbeddedEditor, WebToolsEmbeddedEditorRef } from "./WebToolsEmbeddedEditor";
 import { useEditorNotifications } from "./hooks/useEditorNotifications";
+import { useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
 import { setPageTitle } from "../PageTitle";
 
 export interface Props {
@@ -59,13 +59,13 @@ export function EditorPage(props: Props) {
   const workspaces = useWorkspaces();
   const { i18n, locale } = useAppI18n();
   const [webToolsEditor, webToolsEditorRef] = useController<WebToolsEmbeddedEditorRef>();
-  const [alerts, alertsRef] = useController<AlertsController>();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const lastContent = useRef<string>();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
   const isEditorReady = useMemo(() => webToolsEditor?.editor?.isReady, [webToolsEditor]);
   const queryParams = useQueryParams();
+  const alertsDispatch = useGlobalAlertsDispatchContext();
 
   const notifications = useEditorNotifications({
     webToolsEditor,
@@ -201,8 +201,8 @@ export function EditorPage(props: Props) {
   // end (AUTO-SAVE)
 
   useEffect(() => {
-    alerts?.closeAll();
-  }, [alerts]);
+    alertsDispatch.closeAll();
+  }, [alertsDispatch]);
 
   useEffect(() => {
     editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
@@ -225,13 +225,7 @@ export function EditorPage(props: Props) {
       resolved={(file) => (
         <>
           <Page>
-            <EditorToolbar
-              workspaceFile={file.workspaceFile}
-              editor={webToolsEditor?.editor}
-              alerts={alerts}
-              alertsRef={alertsRef}
-              editorPageDock={editorPageDock}
-            />
+            <EditorToolbar workspaceFile={file.workspaceFile} editor={webToolsEditor?.editor} />
             <Divider />
             <EditorPageDockDrawer
               ref={editorPageDockRef}

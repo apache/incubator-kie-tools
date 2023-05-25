@@ -15,3 +15,7 @@
  */
 
 export const RESOURCE_OWNER = "kie-tools__serverless-logic-web-tools";
+
+export const RESOURCE_PREFIX = "kubesmarts";
+
+export const APP_VERSION_KUBERNETES_LABEL = "kogito.kie.org/kubesmarts-version";

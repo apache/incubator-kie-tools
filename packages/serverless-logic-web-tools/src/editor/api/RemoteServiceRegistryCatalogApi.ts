@@ -54,7 +54,7 @@ export class RemoteArtifactCatalogApi {
   ) {
     this.commonHeaders = {
       // We are facing a 401 Error when using OAuth, let's use Basic Auth for now.
-      Authorization: "Basic " + btoa(`${args.auth.clientId}:${args.auth.clientSecret}`),
+      Authorization: "Basic " + window.btoa(`${args.auth.clientId}:${args.auth.clientSecret}`),
       "Content-Type": "application/json",
     };
   }

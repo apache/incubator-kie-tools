@@ -22,8 +22,7 @@ import { DashboardWorkspaceDeployment } from "../deploy/strategies/DashboardWork
 import { KogitoProjectDeployment } from "../deploy/strategies/KogitoProjectDeployment";
 import { KogitoSwfModelDeployment } from "../deploy/strategies/KogitoSwfModelDeployment";
 import { DeploymentStrategyKind, InitDeployArgs } from "../deploy/types";
-
-const RESOURCE_PREFIX = "webtools";
+import { RESOURCE_PREFIX } from "../OpenShiftConstants";
 
 export function useDeploymentStrategy() {
   const settings = useSettings();

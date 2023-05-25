@@ -20,12 +20,11 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@Portable
+@JsType
 public final class ViewConnectorImpl<W> implements ViewConnector<W> {
 
     protected W definition;
@@ -34,8 +33,8 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
     private Connection targetConnection;
     private ControlPoint[] controlPoints;
 
-    public ViewConnectorImpl(final @MapsTo("definition") W definition,
-                             final @MapsTo("bounds") Bounds bounds) {
+    public ViewConnectorImpl(W definition,
+                             Bounds bounds) {
         this.definition = definition;
         this.bounds = bounds;
         this.sourceConnection = null;

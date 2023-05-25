@@ -28,7 +28,7 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Alerts, AlertsController, useAlert } from "../../alerts/Alerts";
+import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { splitFiles } from "../../extension";
 import { setPageTitle } from "../../PageTitle";
 import { ConfirmDeleteModal } from "../../table/ConfirmDeleteModal";
@@ -50,7 +50,6 @@ export function RecentModels() {
   const [firstSelectedWorkspaceName, setFirstSelectedWorkspaceName] = useState("");
   const [deleteModalDataLoaded, setDeleteModalDataLoaded] = useState(false);
   const [deleteModalFetchError, setDeleteModalFetchError] = useState(false);
-  const [alerts, alertsRef] = useController<AlertsController>();
   const isSelectedWorkspacePlural = useMemo(() => selectedWorkspaceIds.length > 1, [selectedWorkspaceIds]);
 
   const selectedElementTypesName = useMemo(() => {
@@ -80,16 +79,14 @@ export function RecentModels() {
 
   const onConfirmDeleteModalClose = useCallback(() => setIsConfirmDeleteModalOpen(false), []);
 
-  const deleteSuccessAlert = useAlert<{ modelsWord: string }>(
-    alerts,
+  const deleteSuccessAlert = useGlobalAlert<{ modelsWord: string }>(
     useCallback(({ close }, { modelsWord }) => {
       return <Alert variant="success" title={`${capitalizeString(modelsWord)} deleted successfully`} />;
     }, []),
     { durationInSeconds: 2 }
   );
 
-  const deleteErrorAlert = useAlert<{ modelsWord: string }>(
-    alerts,
+  const deleteErrorAlert = useGlobalAlert<{ modelsWord: string }>(
     useCallback(({ close }, { modelsWord }) => {
       return (
         <Alert
@@ -186,7 +183,6 @@ export function RecentModels() {
 
         return (
           <>
-            <Alerts ref={alertsRef} width={"500px"} />
             <Page>
               <PageSection variant={"light"}>
                 <TextContent>

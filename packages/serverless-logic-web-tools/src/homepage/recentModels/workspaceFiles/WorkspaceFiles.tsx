@@ -32,7 +32,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { Alerts, AlertsController, useAlert } from "../../../alerts/Alerts";
+import { useGlobalAlert } from "../../../alerts/GlobalAlertsContext";
 import { NewFileDropdownMenu } from "../../../editor/NewFileDropdownMenu";
 import { splitFiles } from "../../../extension";
 import { routes } from "../../../navigation/Routes";
@@ -58,7 +58,6 @@ export function WorkspaceFiles(props: Props) {
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const workspaces = useWorkspaces();
   const history = useHistory();
-  const [alerts, alertsRef] = useController<AlertsController>();
   const isSelectedWorkspaceFilesPlural = useMemo(() => selectedWorkspaceFiles.length > 1, [selectedWorkspaceFiles]);
   const selectedElementTypesName = useMemo(
     () => (isSelectedWorkspaceFilesPlural ? "files" : "file"),
@@ -78,16 +77,14 @@ export function WorkspaceFiles(props: Props) {
 
   const onConfirmDeleteModalClose = useCallback(() => setIsConfirmDeleteModalOpen(false), []);
 
-  const deleteSuccessAlert = useAlert<{ selectedElementTypesName: string }>(
-    alerts,
+  const deleteSuccessAlert = useGlobalAlert<{ selectedElementTypesName: string }>(
     useCallback(({ close }, { selectedElementTypesName }) => {
       return <Alert variant="success" title={`${capitalizeString(selectedElementTypesName)} deleted successfully`} />;
     }, []),
     { durationInSeconds: 2 }
   );
 
-  const deleteErrorAlert = useAlert<{ selectedElementTypesName: string }>(
-    alerts,
+  const deleteErrorAlert = useGlobalAlert<{ selectedElementTypesName: string }>(
     useCallback(({ close }, { selectedElementTypesName }) => {
       return (
         <Alert
@@ -168,7 +165,6 @@ export function WorkspaceFiles(props: Props) {
 
         return (
           <>
-            <Alerts ref={alertsRef} width={"500px"} />
             <Page
               breadcrumb={
                 <Breadcrumb>
@@ -222,7 +218,6 @@ export function WorkspaceFiles(props: Props) {
                                 }
                               >
                                 <NewFileDropdownMenu
-                                  alerts={alerts}
                                   workspaceId={workspaceId}
                                   destinationDirPath={""}
                                   onAddFile={async (file) => {
