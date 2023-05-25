@@ -14,7 +14,7 @@
   },
   "scripts": {
     "docker:build": "pnpm docker:create-env-file && run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose build\" --else \"echo Docker not found, skipping image stop.\"",
-    "docker:create-env-file": "rimraf .env && echo \"$(pnpm build-env --print-env-file:self)\" > .env",
+    "docker:create-env-file": "rimraf .env && pnpm build-env --print-env-file:self > .env",
     "docker:start": "pnpm docker:create-env-file && run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose up\" --else \"echo Docker not found, skipping image build.\"",
     "docker:stop": "pnpm docker:create-env-file && run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose down\" --else \"echo Docker not found, skipping image stop.\"",
     "postinstall": "pnpm docker:create-env-file"
