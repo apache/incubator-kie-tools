@@ -16,7 +16,7 @@ kogito_version="${KOGITO_VERSION:-${3}}"
 # common extensions used by the kogito-swf-builder and kogito-swf-devmode
 quarkus_extensions='quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health'
 # dev mode purpose extensions used only by the kogito-swf-devmode
-kogito_swf_devmode_extensions='kogito-quarkus-serverless-workflow-devui,kogito-addons-quarkus-source-files,kogito-addons-quarkus-jobs-service-embedded'
+kogito_swf_devmode_extensions='kogito-quarkus-serverless-workflow-devui,kogito-addons-quarkus-source-files,kogito-addons-quarkus-jobs-service-embedded,kogito-addons-quarkus-data-index-inmemory'
 
 if [ -z ${quarkus_platform_version} ]; then
     echo "Please provide the quarkus version"
