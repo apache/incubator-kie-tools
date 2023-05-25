@@ -1,3 +1,15 @@
+# 0.29.0 (alpha)
+
+- [kie-issues#113](https://github.com/kiegroup/kie-issues/issues/113) - Remove unnecessary rendering calls to DMN Editor's Boxed Expression Editor
+- [kie-issues#163](https://github.com/kiegroup/kie-issues/issues/163) - In DMN Editor's Boxed Expression Editor, long names are not being truncated in DecisionTable sub-headers and in the name of root expressions
+- [kie-issues#255](https://github.com/kiegroup/kie-issues/issues/255) - A Not-collect Hit Policy should clear aggregation type
+- [kie-issues#250](https://github.com/kiegroup/kie-issues/issues/250) - Width changes are not correctly persisted
+- [kie-issues#258](https://github.com/kiegroup/kie-issues/issues/258) - Use data type current value when opening DMN constraint modal
+- [kie-issues#222](https://github.com/kiegroup/kie-issues/issues/222) - When editing a BeeTable cell with selected text, the selection is lost when mouse hovers in or out of it
+- [kie-issues#210](https://github.com/kiegroup/kie-issues/issues/210) - Keyboard shortcuts stop working after blurring out of some components on the BeeTable
+- [kie-issues#114](https://github.com/kiegroup/kie-issues/issues/114) - Part 2: Temporary comment code no more supported by API
+- [kie-issues#278](https://github.com/kiegroup/kie-issues/issues/278) - Duplicate row should not copy the inputEntry id of that row
+
 # 0.28.1 (alpha)
 
 - [KOGITO-9105](https://issues.redhat.com/browse/KOGITO-9105) - Add KIE prefix to `displayName` of new VS Code extensions
