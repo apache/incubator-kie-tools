@@ -19,4 +19,8 @@ export const eventCompletion: Omit<Specification.Eventdef, "normalize"> = {
   name: "${1:Unique event name}",
   source: "${2:CloudEvent source}",
   type: "${3:CloudEvent type}",
+  // @ts-expect-error not using the original type to use CodeCompletions placeholder
+  kind: "${4:Eventdef kind}",
+  // @ts-expect-error not using the original type to use CodeCompletions placeholder
+  metadata: "${5:Eventdef metdata}",
 };

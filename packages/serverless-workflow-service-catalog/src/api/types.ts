@@ -65,10 +65,7 @@ export enum SwfServiceCatalogFunctionType {
 }
 
 export enum SwfServiceCatalogEventType {
-  rest = "rest",
-  graphql = "graphql",
   asyncapi = "asyncapi",
-  custom = "custom",
 }
 
 export enum SupportArtifactTypes {
