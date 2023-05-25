@@ -195,6 +195,12 @@ export function FileSwitcher(props: {
   }, [props.workspace, filesMenuMode, activeMenu]);
 
   useEffect(() => {
+    if (workspaceFileNameRef.current !== null && props.workspaceFile.nameWithoutExtension.includes("Untitled")) {
+      workspaceFileNameRef.current.select();
+    }
+  }, [props.workspaceFile.nameWithoutExtension, workspaceFileNameRef]);
+
+  useEffect(() => {
     if (isFilesDropdownOpen) {
       return;
     }
