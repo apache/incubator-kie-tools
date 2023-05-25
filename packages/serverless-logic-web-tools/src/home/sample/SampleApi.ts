@@ -59,15 +59,9 @@ interface SampleDefinition {
 }
 
 interface ContentData {
-  type: string;
-  download_url: string;
-  git_url: string;
-  html_url: string;
+  type: "dir" | "file";
   name: string;
   path: string;
-  sha: string;
-  size: number;
-  url: string;
 }
 
 export type Sample = {
@@ -101,9 +95,10 @@ async function fetchFileContent(args: { octokit: Octokit; fileInfo: GitHubFileIn
   }
 }
 
-async function fetchFolderFiles(args: {
+async function fetchFolderContent(args: {
   octokit: Octokit;
   fileInfo: GitHubFileInfo;
+  onlyFilesRecursively: boolean;
 }): Promise<ContentData[] | undefined> {
   try {
     const folderContent = await args.octokit.repos.getContent({
@@ -114,7 +109,30 @@ async function fetchFolderFiles(args: {
       return;
     }
 
-    return folderContent.data as ContentData[];
+    const contents = folderContent.data as ContentData[];
+
+    if (!args.onlyFilesRecursively) {
+      return contents;
+    }
+
+    const promises: Promise<ContentData[] | undefined>[] = [];
+
+    for (const content of contents) {
+      if (content.type === "file") {
+        promises.push(Promise.resolve([content]));
+      } else if (content.type === "dir") {
+        promises.push(
+          fetchFolderContent({
+            octokit: args.octokit,
+            onlyFilesRecursively: true,
+            fileInfo: { ...args.fileInfo, path: content.path },
+          })
+        );
+      }
+    }
+
+    const resolvedPromises = await Promise.all(promises);
+    return resolvedPromises.flat().filter((r): r is ContentData => r !== undefined);
   } catch (e) {
     console.debug(`Error fetching ${args.fileInfo.path} with Octokit.`);
   }
@@ -124,21 +142,22 @@ async function listSampleDefinitionFiles(args: {
   octokit: Octokit;
   repoInfo: GitHubRepoInfo;
 }): Promise<SampleDefinitionFile[]> {
-  const samplesFolders = await fetchFolderFiles({
+  const sampleFolders = await fetchFolderContent({
     octokit: args.octokit,
     fileInfo: {
       ...args.repoInfo,
       path: SAMPLE_FOLDER,
     },
+    onlyFilesRecursively: false,
   });
 
-  if (!samplesFolders) {
+  if (!sampleFolders) {
     throw new Error(
       `Cannot fetch samples folder at https://github.com/${KIE_SAMPLES_REPO.owner}/${KIE_SAMPLES_REPO.repo}`
     );
   }
 
-  return samplesFolders
+  return sampleFolders
     .filter((folder) => folder.name !== SAMPLE_TEMPLATE_FOLDER)
     .map((folder) => ({ sampleId: folder.name, definitionPath: join(folder.path, SAMPLE_DEFINITION_FILE) }));
 }
@@ -196,12 +215,13 @@ export async function fetchSampleDefinitions(octokit: Octokit): Promise<Sample[]
 }
 
 export async function fetchSampleFiles(args: { octokit: Octokit; sampleId: string }): Promise<LocalFile[]> {
-  const sampleFolderFiles = await fetchFolderFiles({
+  const sampleFolderFiles = await fetchFolderContent({
     octokit: args.octokit,
     fileInfo: {
       ...KIE_SAMPLES_REPO,
       path: decodeURIComponent(`${KIE_SAMPLES_REPO.path}/${args.sampleId}`),
     },
+    onlyFilesRecursively: true,
   });
 
   if (!sampleFolderFiles) {

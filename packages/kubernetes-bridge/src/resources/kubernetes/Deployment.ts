@@ -178,3 +178,21 @@ export class GetDeployment extends ResourceFetch {
     return `/apis/${Deployment.apiVersion}/namespaces/${this.args.namespace}/deployments/${this.args.resourceName}`;
   }
 }
+
+export class UpdateDeployment extends ResourceFetch {
+  constructor(protected args: UniqueResourceFetchArgs & { descriptor: DeploymentDescriptor }) {
+    super(args);
+  }
+
+  public method(): HttpMethod {
+    return HttpMethod.PUT;
+  }
+
+  public body(): string {
+    return JSON.stringify(this.args.descriptor);
+  }
+
+  public endpoint(): string {
+    return `/apis/${Deployment.apiVersion}/namespaces/${this.args.namespace}/deployments/${this.args.resourceName}`;
+  }
+}

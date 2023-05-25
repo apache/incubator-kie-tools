@@ -27,16 +27,18 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useCallback, useEffect, useState } from "react";
 import { useAppI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
+import { EMPTY_CONFIG, saveConfigCookie, saveDevModeEnabledConfigCookie } from "./OpenShiftSettingsConfig";
 import {
   isKubernetesConnectionValid,
   KubernetesConnection,
   KubernetesConnectionStatus,
 } from "@kie-tools-core/kubernetes-bridge/dist/service";
-import { EMPTY_CONFIG, saveConfigCookie } from "./OpenShiftSettingsConfig";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { SettingsTabs } from "../SettingsModalBody";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { DEV_MODE_FEATURE_NAME } from "../../openshift/swfDevMode/DevModeConstants";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -53,6 +55,7 @@ export function OpenShiftSettingsTabSimpleConfig() {
   const [isConfigValidated, setConfigValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const [isDevModeConfigEnabled, setDevModeConfigEnabled] = useState(settings.openshift.isDevModeEnabled);
 
   useEffect(() => {
     setConfig(settings.openshift.config);
@@ -130,6 +133,15 @@ export function OpenShiftSettingsTabSimpleConfig() {
       setConfig({ ...config, token: newValue });
     },
     [config]
+  );
+
+  const onEnableDevModeConfigChanged = useCallback(
+    (isEnabled: boolean) => {
+      setDevModeConfigEnabled(isEnabled);
+      saveDevModeEnabledConfigCookie(isEnabled);
+      settingsDispatch.openshift.setDevModeEnabled(isEnabled);
+    },
+    [settingsDispatch.openshift]
   );
 
   return (
@@ -314,6 +326,38 @@ export function OpenShiftSettingsTabSimpleConfig() {
               </Button>
             </InputGroupText>
           </InputGroup>
+        </FormGroup>
+        <FormGroup
+          label={DEV_MODE_FEATURE_NAME}
+          labelIcon={
+            <Popover
+              bodyContent={
+                "Automatically spins up a deployment running Quarkus in dev mode, making it quick to try model changes"
+              }
+            >
+              <button
+                type="button"
+                aria-label="More info for Dev Mode field"
+                onClick={(e) => e.preventDefault()}
+                aria-describedby="dev-mode-field"
+                className="pf-c-form__group-label-help"
+              >
+                <HelpIcon noVerticalAlign />
+              </button>
+            </Popover>
+          }
+          isRequired
+          fieldId="dev-mode-field"
+        >
+          <Checkbox
+            id="enable-dev-mode-checkbox"
+            label="Enable Dev Mode"
+            description={
+              "Be sure to set up at least 4GB of ram for your OpenShift deployments, otherwise, the Dev Mode deployment may run into issues."
+            }
+            isChecked={isDevModeConfigEnabled}
+            onChange={onEnableDevModeConfigChanged}
+          />
         </FormGroup>
         <ActionGroup>
           <Button

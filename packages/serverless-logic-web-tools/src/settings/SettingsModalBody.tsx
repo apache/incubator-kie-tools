@@ -40,7 +40,7 @@ export function SettingsModalBody() {
   return (
     <Tabs
       activeKey={settings.activeTab}
-      onSelect={(e, k) => settingsDispatch.open(k as SettingsTabs)}
+      onSelect={(_e, k) => settingsDispatch.open(k as SettingsTabs)}
       isVertical={false}
       isBox={false}
     >

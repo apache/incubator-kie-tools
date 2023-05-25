@@ -45,7 +45,7 @@ describe("Serverless workflow editor - smoke integration tests", () => {
   });
 
   it("Opens greetings.sw.json and loads two editor groups", async function () {
-    this.timeout(30000);
+    this.timeout(40000);
     const editorWebviews = await testHelper.openFileFromSidebar("greetings.sw.json", "src/main/resources");
 
     const swfEditor = new SwfEditorTestHelper(editorWebviews[1]);

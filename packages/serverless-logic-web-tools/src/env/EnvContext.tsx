@@ -16,21 +16,10 @@
 
 import * as React from "react";
 import { useContext } from "react";
-
-type EnvVarNames = "KIE_SANDBOX_EXTENDED_SERVICES_URL" | "SERVERLESS_LOGIC_WEB_TOOLS_GIT_CORS_PROXY_URL";
-
-export type EnvVars = Record<EnvVarNames, string>;
-
-export const DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST = "http://localhost";
-export const DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT = "21345";
-
-export const DEFAULT_ENV_VARS: EnvVars = {
-  KIE_SANDBOX_EXTENDED_SERVICES_URL: `${DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST}:${DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT}`,
-  SERVERLESS_LOGIC_WEB_TOOLS_GIT_CORS_PROXY_URL: process.env.WEBPACK_REPLACE__gitCorsProxyUrl ?? "",
-};
+import { EnvJson } from "./EnvJson";
 
 export interface EnvContextType {
-  vars: EnvVars;
+  env: EnvJson;
 }
 
 export const EnvContext = React.createContext<EnvContextType>({} as any);
