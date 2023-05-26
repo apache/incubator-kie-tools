@@ -18,11 +18,18 @@ import { DropdownGroup } from "@patternfly/react-core/dist/js/components/Dropdow
 import * as React from "react";
 import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
-import { useDeployDropdownItems } from "../Deploy/DeployDropdownItems";
+import { useDeployDropdownItems } from "../hooks/useDeployDropdownItems";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
-export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace }) {
+interface Props {
+  workspace: ActiveWorkspace;
+  workspaceFile: WorkspaceFile;
+}
+
+export function KieSandboxExtendedServicesDropdownGroup(props: Props) {
   const deployDropdownItems = useDeployDropdownItems({
     workspace: props.workspace,
+    workspaceFile: props.workspaceFile,
   });
 
   return (

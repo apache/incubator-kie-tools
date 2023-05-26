@@ -56,20 +56,8 @@ export const en: AppI18n = {
     cantCreateGistTooltip: `You can't create a Gist because you're either not logged in, or your models are in nested directories.`,
     cantUpdateGistTooltip: `You can't update your Gist because you're either not logged in, not the owner, or your models are in nested directories.`,
     share: "Share",
-    embed: "Embed",
   },
   openshift: {
-    common: {
-      deployYourModel: "Deploy",
-      deployInstanceInfo: "Deploy instance information",
-      disclaimer:
-        "When you set up the required information, you are able to deploy models on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
-      learnMore: "Learn more",
-      requiredField: "This field cannot be empty.",
-      deploying: "Deploying ...",
-      saving: "Saving ...",
-      setupFirst: `Set up your ${en_common.names.devSandbox} to be able to deploy your models`,
-    },
     configModal: {
       hostInfo: `The hostname associated with your instance.`,
       namespaceInfo: `The namespace (project) you want to deploy the model.`,
@@ -83,72 +71,8 @@ export const en: AppI18n = {
       body: "Are you sure you want to deploy models from this workspace to your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your models.",
     },
     introduction: {
-      explanation: `Deploy your models to a cloud instance on ${
-        en_common.names.devSandbox
-      } and share with others. This tool is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
+      explanation: `Deploy your models to a cloud instance on OpenShift and share with others. This tool is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
     },
-    configWizard: {
-      header: {
-        provider: "Provider",
-      },
-      steps: {
-        first: {
-          name: "Create your instance",
-          introduction: `In order to create your ${en_common.names.shortDevSandbox} instance:`,
-          goToGetStartedPage: "Go to the Get Started page",
-          followSteps: `Follow the steps to launch your instance. You will be asked to log in with your ${en_common.names.redHat} account.`,
-          informNamespace: `Once your instance is up and running, inform the namespace (project) in your cluster you want to have the model deployed to.`,
-          inputReason: "This information is necessary for deploying your models into the right project namespace.",
-          namespacePlaceholder: `The namespace (project) you want to deploy the models.`,
-        },
-        second: {
-          name: "Set credentials",
-          introduction: `In your ${en_common.names.shortDevSandbox} instance:`,
-          accessLoginCommand: `Click on your username on the top right corner and then ${"'Copy login command'".bold()}.`,
-          accessDisplayToken: `If asked, log in with ${"'DevSandbox'".bold()}, and then access the ${"'Display Token'".bold()} link.`,
-          copyInformation: `In ${"'Log in with this token'".bold()} section, copy your ${"'--server'".bold()} and ${"'--token'".bold()} values, and paste them below.`,
-          inputReason: "This information is necessary for establishing a connection with your instance.",
-          hostPlaceholder: "Paste the --server value here",
-          tokenPlaceholder: "Paste the --token value here",
-        },
-        final: {
-          name: "Connect",
-          connectionSuccess: "Connection successfully established.",
-          connectionError: "Connection refused.",
-          introduction: "Now you are able to deploy models to your OpenShift instance.",
-          configNote: "Your configuration will be stored as browser cookies after the operations above.",
-          connectionErrorLong: `A connection with your ${en_common.names.shortDevSandbox} instance could not be established.`,
-          checkInfo: "Please check the information provided and try again.",
-          possibleErrorReasons: {
-            introduction: "Here are some possible reasons:",
-            emptyField: "One or more required information are not filled.",
-            instanceExpired:
-              "Instances expire in 30 days. After this period, you will need to recreate it, thus receiving a new host.",
-            tokenExpired: "Tokens expire on a daily basis.",
-          },
-        },
-      },
-    },
-  },
-  embedModal: {
-    title: "Embed",
-    description:
-      "Embed the editor and content in your page. Choose the options below and copy the embed code to your clipboard:",
-    copy: "Copy",
-    source: {
-      current: {
-        label: "Current content",
-        description: "The embedded Editor will contain the current content, so it cannot be changed externally.",
-      },
-      gist: {
-        tooltip: `Only available when editing a file from a ${en_common.names.github} gist.`,
-        label: `${en_common.names.github} gist`,
-        description:
-          "The embedded Editor will fetch the content from the open gist. Changes made to this gist will be reflected in the Editor.",
-      },
-    },
-    embedCode: "Embed code",
-    copiedToClipboard: "Copied to clipboard",
   },
   githubTokenModal: {
     header: {

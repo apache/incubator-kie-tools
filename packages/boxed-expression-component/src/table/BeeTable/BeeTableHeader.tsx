@@ -123,14 +123,16 @@ export function BeeTableHeader<R extends object>({
     [onColumnUpdates]
   );
 
-  const renderRowIndexColumn = useCallback<(column: ReactTable.ColumnInstance<R>, rowIndex: number) => JSX.Element>(
-    (column, rowIndex) => {
+  const renderRowIndexColumn = useCallback<
+    (column: ReactTable.ColumnInstance<R>, rowIndex: number, rowSpan: number) => JSX.Element
+  >(
+    (column, rowIndex, rowSpan) => {
       const columnKey = getColumnKey(column);
       const classNames = `${columnKey} fixed-column no-clickable-cell counter-header-cell`;
 
       return (
         <BeeTableTh
-          rowSpan={1}
+          rowSpan={rowSpan}
           key={columnKey}
           column={column}
           columnIndex={0}
@@ -171,7 +173,7 @@ export function BeeTableHeader<R extends object>({
 
       const ret = column.isRowIndexColumn ? (
         <React.Fragment key={"row-index-column"}>
-          {shouldRenderRowIndexColumn && renderRowIndexColumn(column, rowIndex)}
+          {shouldRenderRowIndexColumn && renderRowIndexColumn(column, rowIndex, rowSpan)}
         </React.Fragment>
       ) : (
         <React.Fragment key={getColumnKey(column)}>
@@ -293,7 +295,7 @@ export function BeeTableHeader<R extends object>({
       // rowIndex === -1 --> Last headerGroup
       // rowIndex === -2 --> Second to last headerGroup
       // ... and so on
-      const rowIndex = -(reactTableInstance.headerGroups.length - 1 - index + 1);
+      const rowIndex = -(reactTableInstance.headerGroups.length - index);
       let lastParentalHeaderCellIndex = 0;
 
       const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
@@ -306,7 +308,24 @@ export function BeeTableHeader<R extends object>({
                 getColumnIndexOfHeader(reactTableInstance, placeholder) >= 0
                   ? getColumnIndexOfHeader(reactTableInstance, placeholder)
                   : lastParentalHeaderCellIndex++;
-              return renderColumn(rowIndex + depth - 1, placeholder, columnIndex, visitedColumns, depth);
+
+              if (placeholder.isRowIndexColumn) {
+                if (headerVisibility === BeeTableHeaderVisibility.AllLevels) {
+                  if (rowIndex === -reactTableInstance.headerGroups.length) {
+                    return renderColumn(
+                      rowIndex + depth - 1,
+                      placeholder,
+                      columnIndex,
+                      visitedColumns,
+                      reactTableInstance.headerGroups.length
+                    );
+                  }
+                } else {
+                  return renderColumn(rowIndex + depth - 1, placeholder, columnIndex, visitedColumns, depth);
+                }
+              } else {
+                return renderColumn(rowIndex + depth - 1, placeholder, columnIndex, visitedColumns, depth);
+              }
             })}
           </tr>
         );

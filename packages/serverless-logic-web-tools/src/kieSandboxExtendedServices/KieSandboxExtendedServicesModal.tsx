@@ -30,7 +30,6 @@ import {
   WizardContextConsumer,
   WizardFooter,
 } from "@patternfly/react-core/dist/js/components/Wizard";
-import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AnimatedTripleDotLabel } from "./AnimatedTripleDotLabel";
@@ -38,7 +37,6 @@ import { useAppI18n } from "../i18n";
 import { I18nHtml, I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { SelectOs } from "../os/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
-import { DEVELOPER_SANDBOX_URL } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftConstants";
 import { useKieSandboxExtendedServices } from "./KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
@@ -711,7 +709,7 @@ export function KieSandboxExtendedServicesModal() {
         <div className={"kogito--editor__kie-sandbox-extended-services-modal-initial"}>
           <div className={"kogito--editor__kie-sandbox-extended-services-modal-initial-title"}>
             <TextContent>
-              <Text component={TextVariants.h1}>{i18n.names.devSandbox}</Text>
+              <Text component={TextVariants.h1}>Deploy to your OpenShift instance</Text>
             </TextContent>
           </div>
           <div className="pf-u-mt-xl pf-u-display-flex pf-u-flex-direction-row" style={{ marginTop: "16px" }}>
@@ -719,14 +717,6 @@ export function KieSandboxExtendedServicesModal() {
               <TextContent>
                 <Text component={TextVariants.p}>
                   <I18nHtml>{i18n.openshift.introduction.explanation}</I18nHtml>
-                </Text>
-              </TextContent>
-              <TextContent>
-                <Text component={TextVariants.p}>
-                  <Text component={TextVariants.a} href={DEVELOPER_SANDBOX_URL} target={"_blank"}>
-                    {i18n.openshift.common.learnMore}&nbsp;&nbsp;
-                    <ExternalLinkAltIcon />
-                  </Text>
                 </Text>
               </TextContent>
             </div>

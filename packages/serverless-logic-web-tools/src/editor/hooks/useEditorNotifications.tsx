@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import { useCallback, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { WebToolsEmbeddedEditorRef } from "../WebToolsEmbeddedEditor";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DiagnosticSeverity } from "vscode-languageserver-types";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { useEditorDispatch } from "../hooks/EditorContext";
 
 interface HookArgs {
   webToolsEditor: WebToolsEmbeddedEditorRef | undefined;
@@ -29,6 +30,11 @@ interface HookArgs {
 export function useEditorNotifications(args: HookArgs) {
   const { webToolsEditor, content, fileRelativePath } = { ...args };
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const editorDispatch = useEditorDispatch();
+
+  useEffect(() => {
+    editorDispatch.setNotifications(notifications);
+  }, [editorDispatch, notifications]);
 
   useCancelableEffect(
     useCallback(

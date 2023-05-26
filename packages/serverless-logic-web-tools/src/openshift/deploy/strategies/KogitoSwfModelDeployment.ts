@@ -20,6 +20,7 @@ import { DeploymentStrategy } from "../DeploymentStrategy";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
 import { KnativeBuilderPipeline } from "../../pipelines/KnativeBuilderPipeline";
 import { GLOB_PATTERN } from "../../../extension";
+import { zipFiles } from "../../../zip";
 
 export class KogitoSwfModelDeployment extends DeploymentStrategy {
   public async buildPipeline(): Promise<OpenShiftPipeline> {
@@ -33,7 +34,7 @@ export class KogitoSwfModelDeployment extends DeploymentStrategy {
 
     filesToBeDeployed.push(dockerfileFile, dockerIgnoreFile);
 
-    const workspaceZipBlob = await this.createZipBlob(filesToBeDeployed);
+    const workspaceZipBlob = await zipFiles(filesToBeDeployed);
 
     return new KnativeBuilderPipeline({
       workspaceName: this.resolveWorkspaceName(filesToBeDeployed),

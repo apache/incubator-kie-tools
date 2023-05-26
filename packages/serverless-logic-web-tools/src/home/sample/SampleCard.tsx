@@ -24,7 +24,7 @@ import { Link } from "react-router-dom";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
 import { FolderIcon, FileIcon, MonitoringIcon } from "@patternfly/react-icons/dist/js/icons";
-import { Sample, SampleCategory } from "./sampleApi";
+import { Sample, SampleCategory } from "./SampleApi";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 

@@ -34,4 +34,10 @@ export interface ServerlessWorkflowCombinedEditorChannelApi
    * @returns
    */
   kogitoSwfCombinedEditor_moveCursorToPosition(position: Position): void;
+  /**
+   * Checks if combined editor is ready
+   *
+   * @returns
+   */
+  kogitoSwfCombinedEditor_combinedEditorReady(): void;
 }

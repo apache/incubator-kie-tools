@@ -48,6 +48,7 @@ import static org.dashbuilder.displayer.DisplayerType.LINECHART;
 import static org.dashbuilder.displayer.DisplayerType.METERCHART;
 import static org.dashbuilder.displayer.DisplayerType.PIECHART;
 import static org.dashbuilder.displayer.DisplayerType.SCATTERCHART;
+import static org.dashbuilder.displayer.DisplayerType.TIMESERIES;
 
 @ApplicationScoped
 public class EChartsRenderer extends AbstractRendererLibrary {
@@ -56,13 +57,14 @@ public class EChartsRenderer extends AbstractRendererLibrary {
 
     public static final String UUID = "echarts";
 
-    private static List<DisplayerType> SUPPORTED_TYPES = Arrays.asList(LINECHART,
+    private static final List<DisplayerType> SUPPORTED_TYPES = Arrays.asList(LINECHART,
             BARCHART,
             PIECHART,
             AREACHART,
             BUBBLECHART,
             METERCHART, 
-            SCATTERCHART);
+            SCATTERCHART,
+            TIMESERIES);
 
     @PostConstruct
     public void prepare() {
@@ -107,6 +109,8 @@ public class EChartsRenderer extends AbstractRendererLibrary {
             case AREACHART:
             case SCATTERCHART:
                 return beanManager.lookupBean(EChartsXYChartDisplayer.class).newInstance();
+            case TIMESERIES:
+                return beanManager.lookupBean(EChartsTimeseriesDisplayer.class).newInstance();
             case BUBBLECHART:
                 return beanManager.lookupBean(EChartsBubbleChartDisplayer.class).newInstance();
             case PIECHART:

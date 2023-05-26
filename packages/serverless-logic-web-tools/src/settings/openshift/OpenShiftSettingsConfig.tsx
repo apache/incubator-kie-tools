@@ -20,6 +20,7 @@ import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/ser
 export const OPENSHIFT_NAMESPACE_COOKIE_NAME = makeCookieName("openshift", "namespace");
 export const OPENSHIFT_HOST_COOKIE_NAME = makeCookieName("openshift", "host");
 export const OPENSHIFT_TOKEN_COOKIE_NAME = makeCookieName("openshift", "token");
+export const OPENSHIFT_DEV_MODE_ENABLED_NAME = makeCookieName("openshift", "dev-mode-enabled");
 
 export const EMPTY_CONFIG: KubernetesConnection = {
   namespace: "",
@@ -55,4 +56,13 @@ export function saveConfigCookie(config: KubernetesConnection): void {
   saveNamespaceCookie(config.namespace);
   saveHostCookie(config.host);
   saveTokenCookie(config.token);
+}
+
+export function readDevModeEnabledConfigCookie(): boolean {
+  const devModeEnabledCookie = getCookie(OPENSHIFT_DEV_MODE_ENABLED_NAME);
+  return devModeEnabledCookie ? devModeEnabledCookie === "true" : false;
+}
+
+export function saveDevModeEnabledConfigCookie(isEnabled: boolean): void {
+  setCookie(OPENSHIFT_DEV_MODE_ENABLED_NAME, String(isEnabled));
 }

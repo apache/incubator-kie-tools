@@ -6078,6 +6078,9 @@ importers:
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
+      client-zip:
+        specifier: ^2.3.1
+        version: 2.3.1
       dexie:
         specifier: ^3.2.2
         version: 3.2.2
@@ -6087,9 +6090,9 @@ importers:
       history:
         specifier: ^4.9.0
         version: 4.10.1
-      jszip:
-        specifier: ^3.7.1
-        version: 3.10.1
+      kubernetes-models:
+        specifier: ^4.1.0
+        version: 4.1.0
       moment:
         specifier: ^2.29.4
         version: 2.29.4
@@ -6117,6 +6120,12 @@ importers:
       react-router-dom:
         specifier: ^5.2.1
         version: 5.3.0(react@17.0.2)
+      short-unique-id:
+        specifier: ^4.4.4
+        version: 4.4.4
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
       vscode-languageserver-types:
         specifier: ^3.16.0
         version: 3.17.2
@@ -6145,6 +6154,9 @@ importers:
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
+      "@kie-tools/extended-services":
+        specifier: workspace:*
+        version: link:../extended-services
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -6154,6 +6166,9 @@ importers:
       "@kie-tools/serverless-logic-web-tools-swf-builder-image-env":
         specifier: workspace:*
         version: link:../serverless-logic-web-tools-swf-builder-image-env
+      "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env":
+        specifier: workspace:*
+        version: link:../serverless-logic-web-tools-swf-dev-mode-image-env
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
@@ -6187,6 +6202,9 @@ importers:
       "@types/react-router-dom":
         specifier: ^5.1.7
         version: 5.1.7
+      "@types/uuid":
+        specifier: ^8.3.0
+        version: 8.3.0
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.70.0)
@@ -6210,7 +6228,7 @@ importers:
         version: 5.3.2(webpack@5.70.0)
       jest:
         specifier: ^26.6.3
-        version: 26.6.3
+        version: 26.6.3(ts-node@10.9.1)
       jest-junit:
         specifier: ^14.0.0
         version: 14.0.0
@@ -6235,6 +6253,9 @@ importers:
       ts-jest:
         specifier: ^26.5.6
         version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.1(typescript@4.8.4)
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
@@ -6301,6 +6322,18 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+
+  packages/serverless-logic-web-tools-swf-deployment-quarkus-app:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   packages/serverless-logic-web-tools-swf-deployment-webapp:
     dependencies:
@@ -6411,11 +6444,38 @@ importers:
         specifier: ^5.8.0
         version: 5.8.0
 
+  packages/serverless-logic-web-tools-swf-dev-mode-image:
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app":
+        specifier: workspace:*
+        version: link:../serverless-logic-web-tools-swf-deployment-quarkus-app
+      "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env":
+        specifier: workspace:*
+        version: link:../serverless-logic-web-tools-swf-dev-mode-image-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/serverless-logic-web-tools-swf-dev-mode-image-env:
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+
   packages/serverless-workflow-combined-editor:
     dependencies:
       "@kie-tools-core/editor":
         specifier: workspace:*
         version: link:../editor
+      "@kie-tools-core/envelope":
+        specifier: workspace:*
+        version: link:../envelope
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
@@ -20143,6 +20203,7 @@ packages:
   /core-util-is@1.0.2:
     resolution:
       { integrity: sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ== }
+    dev: true
 
   /cors@2.8.5:
     resolution:
@@ -24654,6 +24715,7 @@ packages:
   /immediate@3.0.6:
     resolution:
       { integrity: sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ== }
+    dev: true
 
   /immer@9.0.7:
     resolution:
@@ -25255,6 +25317,7 @@ packages:
   /isarray@1.0.0:
     resolution:
       { integrity: sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ== }
+    dev: true
 
   /isbinaryfile@4.0.8:
     resolution:
@@ -26038,7 +26101,7 @@ packages:
     peerDependencies:
       jest: ">= 25"
     dependencies:
-      jest: 26.6.3
+      jest: 26.6.3(ts-node@10.9.1)
     dev: true
 
   /jest-worker@26.6.2:
@@ -26343,6 +26406,7 @@ packages:
       pako: 1.0.11
       readable-stream: 2.3.7
       setimmediate: 1.0.5
+    dev: true
 
   /junit-report-merger@4.0.0:
     resolution:
@@ -26795,6 +26859,7 @@ packages:
       { integrity: sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ== }
     dependencies:
       immediate: 3.0.6
+    dev: true
 
   /lines-and-columns@1.1.6:
     resolution:
@@ -29923,6 +29988,7 @@ packages:
   /process-nextick-args@2.0.1:
     resolution:
       { integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag== }
+    dev: true
 
   /progress@2.0.3:
     resolution:
@@ -30675,6 +30741,7 @@ packages:
       safe-buffer: 5.1.2
       string_decoder: 1.1.1
       util-deprecate: 1.0.2
+    dev: true
 
   /readable-stream@3.6.0:
     resolution:
@@ -31187,6 +31254,7 @@ packages:
   /safe-buffer@5.1.2:
     resolution:
       { integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g== }
+    dev: true
 
   /safe-buffer@5.2.1:
     resolution:
@@ -31593,6 +31661,7 @@ packages:
   /setimmediate@1.0.5:
     resolution:
       { integrity: sha512-MATJdZp8sLqDl/68LfQmbP8zKPLQNV6BIZoIgrscFDQ+RsvK/BxeDQOgyxKKoh0y/8h3BqVFnCqQ/gd+reiIXA== }
+    dev: true
 
   /setprototypeof@1.0.3:
     resolution:
@@ -31664,6 +31733,12 @@ packages:
       { integrity: sha512-vFwSUfQvqybiICwZY5+DAWIPLKsWO31Q91JSKl3UYv+K5c2QRPzn0qzec6QPu1Qc9eHYItiP3NdJqNVqetYAww== }
     dev: true
     optional: true
+
+  /short-unique-id@4.4.4:
+    resolution:
+      { integrity: sha512-oLF1NCmtbiTWl2SqdXZQbo5KM1b7axdp0RgQLq8qCBBLoq+o3A5wmLrNM6bZIh54/a8BJ3l69kTXuxwZ+XCYuw== }
+    hasBin: true
+    dev: false
 
   /side-channel@1.0.4:
     resolution:
@@ -32327,6 +32402,7 @@ packages:
       { integrity: sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg== }
     dependencies:
       safe-buffer: 5.1.2
+    dev: true
 
   /string_decoder@1.3.0:
     resolution:
@@ -33015,7 +33091,7 @@ packages:
       bs-logger: 0.2.6
       buffer-from: 1.1.1
       fast-json-stable-stringify: 2.1.0
-      jest: 26.6.3
+      jest: 26.6.3(ts-node@10.9.1)
       jest-util: 26.6.2
       json5: 2.2.1
       lodash: 4.17.21
