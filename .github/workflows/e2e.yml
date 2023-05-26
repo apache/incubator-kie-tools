@@ -34,7 +34,8 @@ jobs:
             btrfs-progs \
             libgpgme-dev \
             libbtrfs-dev \
-            libdevmapper-dev
+            libdevmapper-dev \
+            libkrb5-dev
 
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -82,9 +83,16 @@ jobs:
           minikube_registry="$(minikube ip):5000"
           echo "MINIKUBE_REGISTRY=${minikube_registry}" >> $GITHUB_ENV
           echo "OPERATOR_IMAGE_NAME=${minikube_registry}/kogito-serverless-operator:0.0.1" >> $GITHUB_ENV
-      
+
+      - name: Setup Python for cekit
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
       - name: Build operator image
         run: |
+          pip install cekit==4.5.0
+          pip install odcs podman behave lxml krb5
           make container-build BUILDER=podman IMG=${{ env.OPERATOR_IMAGE_NAME }}
 
       - name: Load image in Minikube

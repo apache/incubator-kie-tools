@@ -5671,7 +5671,7 @@ spec:
         - --metrics-bind-address=127.0.0.1:8080
         - --leader-elect
         command:
-        - /manager
+        - /usr/local/bin/manager
         env:
         - name: POD_NAMESPACE
           valueFrom:

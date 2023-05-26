@@ -27,10 +27,13 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
+	"github.com/kiegroup/kogito-serverless-operator/utils"
 
 	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 )
+
+var builderResourcesPath = utils.GetEnv("BUILDER_RESOURCES_PATH", "/usr/local/etc/serverless-operator")
 
 // ResourceCustomizer can be used to inject code that changes the objects before they are created.
 type ResourceCustomizer func(object ctrl.Object) ctrl.Object
@@ -107,8 +110,8 @@ func ResourceAsString(name string) (string, error) {
 // Resource provides an easy way to access to embedded assets.
 func Resource(name string) ([]byte, error) {
 	name = strings.Trim(name, " ")
-	if !strings.HasPrefix(name, "/") {
-		name = "/" + name
+	if !strings.HasPrefix(name, builderResourcesPath) {
+		name = builderResourcesPath + name
 	}
 
 	file, err := openAsset(name)

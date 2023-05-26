@@ -166,7 +166,8 @@ podman-push: ## Push container image with the manager.
 
 .PHONY: container-build
 container-build: test ## Build the container image
-	$(BUILDER) build -t ${IMG} .
+	cekit -v --descriptor image.yaml build $(BUILDER)
+	$(BUILDER) tag kogito-serverless-operator ${IMG}
 
 .PHONY: container-push
 container-push: ## Push the container image

@@ -1,0 +1,21 @@
+name: org.kie.kogito.goModDownload
+version: "1.0"
+description: Download and cache the modules
+artifacts:
+  - name: gomod
+    path: "../../../../go.mod"
+    target: "go.mod"
+    dest: /workspace/
+
+  - name: gosum
+    path: "../../../../go.sum"
+    target: "go.sum"
+    dest: /workspace/
+
+    # this is a local module, adding in here since the main go.mod refers to it
+  - name: container-builder-module
+    path: "../../../../container-builder"
+    dest: /workspace/container-builder
+
+execute:
+  - script: install.sh

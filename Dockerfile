@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM docker.io/library/golang:1.19 as builder
+FROM docker.io/library/golang:1.19.9 as builder
 
 WORKDIR /workspace
 # Copy the Go Modules manifests
@@ -25,14 +25,12 @@ COPY version/ version/
 # Build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager main.go
 
-# Use distroless as minimal base image to package the manager binary
-# Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM gcr.io/distroless/static:nonroot
-#FROM registry.access.redhat.com/ubi8/ubi-micro:latest
-WORKDIR /
-COPY --from=builder /workspace/manager .
-COPY --from=builder /workspace/resources/ ./resources/
+FROM registry.access.redhat.com/ubi8/ubi-micro:latest
+WORKDIR /usr/local/bin
+
+COPY --from=builder /workspace/manager /usr/local/bin/manager
+COPY --from=builder /workspace/resources/ /usr/local/etc/serverless-operator/resources/
 
 USER 65532:65532
 
-ENTRYPOINT ["/manager"]
+ENTRYPOINT ["manager"]
