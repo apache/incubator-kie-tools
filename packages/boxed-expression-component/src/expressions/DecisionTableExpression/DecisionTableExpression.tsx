@@ -203,6 +203,24 @@ export function DecisionTableExpression(
       })
     );
 
+    const outputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.output ?? []).map(
+      (outputClause, outputIndex) => ({
+        accessor: outputClause.id ?? generateUuid(),
+        id: outputClause.id,
+        label:
+          decisionTableExpression.output?.length == 1
+            ? decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME
+            : outputClause.name,
+        dataType: outputClause.dataType,
+        width: outputClause.width ?? DECISION_TABLE_OUTPUT_MIN_WIDTH,
+        setWidth: setOutputColumnWidth(outputIndex),
+        minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,
+        groupType: DecisionTableColumnType.OutputClause,
+        cssClasses: "decision-table--output",
+        isRowIndexColumn: false,
+      })
+    );
+
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
       id: decisionTableExpression.id,
@@ -212,18 +230,7 @@ export function DecisionTableExpression(
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,
       width: undefined,
-      columns: (decisionTableExpression.output ?? []).map((outputClause, outputIndex) => ({
-        accessor: outputClause.id ?? generateUuid(),
-        id: outputClause.id,
-        label: outputClause.name,
-        dataType: outputClause.dataType,
-        width: outputClause.width ?? DECISION_TABLE_OUTPUT_MIN_WIDTH,
-        setWidth: setOutputColumnWidth(outputIndex),
-        minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,
-        groupType: DecisionTableColumnType.OutputClause,
-        cssClasses: "decision-table--output",
-        isRowIndexColumn: false,
-      })),
+      columns: outputColumns,
     };
 
     const annotationColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.annotations ?? []).map(
@@ -245,7 +252,11 @@ export function DecisionTableExpression(
       }
     );
 
-    return [...inputColumns, outputSection, ...annotationColumns];
+    if (outputColumns.length == 1) {
+      return [...inputColumns, ...outputColumns, ...annotationColumns];
+    } else {
+      return [...inputColumns, outputSection, ...annotationColumns];
+    }
   }, [
     decisionTableExpression.annotations,
     decisionTableExpression.dataType,
