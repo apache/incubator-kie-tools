@@ -47,6 +47,11 @@ export class DmnValidator extends Validator {
       type: "string",
       validate: (data: string) => !!data.match(YEARS_AND_MONTHS_DURATION_REGEXP),
     });
+
+    this.ajv.addKeyword("recursion", {
+      type: "object",
+      validate: (data: object) => Object.prototype.hasOwnProperty.call(data, "recursionRoot"),
+    });
   }
 
   // Override to add period validation

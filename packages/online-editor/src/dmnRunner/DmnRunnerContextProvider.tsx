@@ -71,7 +71,6 @@ import getObjectValueByPath from "lodash/get";
 import setObjectValueByPath from "lodash/set";
 import unsetObjectValueByPath from "lodash/unset";
 import { dereferenceProperties } from "../jsonSchema/dereference";
-import { NIL } from "uuid";
 
 const JSON_SCHEMA_PROPERTIES_PATH = "definitions.InputSet.properties";
 
@@ -536,13 +535,30 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
   const dereferenceExtendedServicesJsonSchema = useCallback(
     (jsonSchema: ExtendedServicesDmnJsonSchema): ExtendedServicesDmnJsonSchema => {
-      const inputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.InputSet?.properties);
-      const outputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.OutputSet?.properties);
+      const inputSet = dereferenceProperties(
+        jsonSchema,
+        jsonSchema.definitions?.InputSet?.properties,
+        "definitions.InputSet.properties"
+      );
+      const outputSet = dereferenceProperties(
+        jsonSchema,
+        jsonSchema.definitions?.OutputSet?.properties,
+        "definitions.OutputSet.properties"
+      );
+
       return {
         $ref: "#/definitions/InputSet",
         definitions: {
-          InputSet: { properties: inputSet, type: "object" },
-          OutputSet: { properties: outputSet, type: "object" },
+          InputSet: {
+            ...jsonSchema.definitions?.InputSet,
+            properties: inputSet.definitions.InputSet.properties,
+            type: "object",
+          },
+          OutputSet: {
+            ...jsonSchema.definitions?.OutputSet,
+            properties: outputSet.definitions.OutputSet.properties,
+            type: "object",
+          },
         },
       };
     },
@@ -620,6 +636,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
               setJsonSchema((previousJsonSchema) => {
                 const derefererJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
+
                 // On the first render the previous will be undefined;
                 if (!previousJsonSchema) {
                   return derefererJsonSchema;

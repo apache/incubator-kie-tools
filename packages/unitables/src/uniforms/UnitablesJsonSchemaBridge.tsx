@@ -55,6 +55,8 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
       field.placeholder = this.i18n.schema.selectPlaceholder;
       field.direction = SelectDirection.up;
       field.menuAppendTo = document.body;
+    } else if (field.recursionRef) {
+      field.type = "recursion";
     } else if (!field.type) {
       field.type = "string";
     }

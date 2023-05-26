@@ -30139,14 +30139,6 @@ packages:
     engines: { node: ">=0.9" }
     dev: true
 
-  /qs@6.10.1:
-    resolution:
-      { integrity: sha512-M528Hph6wsSVOBiYUnGf+K/7w0hNshs/duGsNXPUCLH5XAqjEtiPGwNONLV0tBH8NoGb0mvD5JubnUTrujKDTg== }
-    engines: { node: ">=0.6" }
-    dependencies:
-      side-channel: 1.0.4
-    dev: true
-
   /qs@6.11.0:
     resolution:
       { integrity: sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q== }
@@ -33227,7 +33219,7 @@ packages:
     resolution:
       { integrity: sha512-MyfKKYzk3I6/QQp6e1T50py4qg+c+9BzOEl2rBmQIpStwNUoqQ73An+Tkfy9YuV7O+o2mpVVJpe+fH//POZkbg== }
     dependencies:
-      qs: 6.10.1
+      qs: 6.11.0
       tunnel: 0.0.6
       underscore: 1.13.1
     dev: true

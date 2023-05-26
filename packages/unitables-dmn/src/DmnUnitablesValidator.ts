@@ -26,6 +26,7 @@ import {
 } from "@kie-tools/dmn-runner/dist/constants";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { UnitablesValidator } from "@kie-tools/unitables/dist/UnitablesValidator";
+import { get as getObjectValueByPath } from "lodash";
 
 export class DmnUnitablesValidator extends UnitablesValidator {
   protected readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
@@ -46,6 +47,13 @@ export class DmnUnitablesValidator extends UnitablesValidator {
     this.ajv.addFormat(YEARS_AND_MONTHS_DURATION_FORMAT, {
       type: "string",
       validate: (data: string) => !!data.match(YEARS_AND_MONTHS_DURATION_REGEXP),
+    });
+
+    this.ajv.addKeyword("recursionRef", {
+      compile: (schema: any, _) => (data) => {
+        const dataPath = data.split("/").splice(1).join(".");
+        return !!getObjectValueByPath(schema, dataPath);
+      },
     });
   }
 
