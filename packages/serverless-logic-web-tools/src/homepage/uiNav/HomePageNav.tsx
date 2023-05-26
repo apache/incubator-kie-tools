@@ -58,7 +58,7 @@ export function HomePageNav(props: { pathname: string }) {
           </NavItem>
 
           <NavItem itemId={3} key={"Documentation-nav"} className="chr-c-navigation__additional-links">
-            <a href={SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL} target="_blank">
+            <a href={SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL} target="_blank" rel="noopener noreferrer">
               Documentation
               <ExternalLinkAltIcon />
             </a>
