@@ -21,5 +21,5 @@ import java.util.List;
 
 public interface ZipService {
 
-    List<String> unzip(String zipFile, String destination) throws IOException;
+    List<String> unzip(String zipFilePath, String destination) throws IOException;
 }
