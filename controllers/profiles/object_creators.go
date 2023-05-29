@@ -31,9 +31,11 @@ import (
 )
 
 const (
-	defaultHTTPWorkflowPort = 8080
-	defaultHTTPServicePort  = 80
-	defaultContainerName    = "workflow"
+	defaultHTTPWorkflowPortInt = 8080
+	defaultHTTPWorkflowPortStr = "8080"
+	defaultContainerName       = "workflow"
+
+	defaultHTTPServicePort = 80
 
 	applicationPropertiesFileName = "application.properties"
 
@@ -55,6 +57,8 @@ const (
 	healthStartedPeriodSeconds       = 15
 	healthStartedInitialDelaySeconds = 10
 )
+
+var defaultHTTPWorkflowPortIntStr = intstr.FromInt(defaultHTTPWorkflowPortInt)
 
 // same for now
 var defaultProdApplicationProperties = defaultDevApplicationProperties
@@ -87,14 +91,14 @@ func defaultDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (c
 					Containers: []corev1.Container{{
 						Name: defaultContainerName,
 						Ports: []corev1.ContainerPort{{
-							ContainerPort: defaultHTTPWorkflowPort,
+							ContainerPort: defaultHTTPWorkflowPortInt,
 							Name:          "http",
 						}},
 						LivenessProbe: &corev1.Probe{
 							ProbeHandler: corev1.ProbeHandler{
 								HTTPGet: &corev1.HTTPGetAction{
 									Path: quarkusHealthPathLive,
-									Port: intstr.FromInt(defaultHTTPWorkflowPort),
+									Port: defaultHTTPWorkflowPortIntStr,
 								},
 							},
 							TimeoutSeconds: healthTimeoutSeconds,
@@ -103,7 +107,7 @@ func defaultDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (c
 							ProbeHandler: corev1.ProbeHandler{
 								HTTPGet: &corev1.HTTPGetAction{
 									Path: quarkusHealthPathReady,
-									Port: intstr.FromInt(defaultHTTPWorkflowPort),
+									Port: defaultHTTPWorkflowPortIntStr,
 								},
 							},
 							TimeoutSeconds: healthTimeoutSeconds,
@@ -112,7 +116,7 @@ func defaultDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (c
 							ProbeHandler: corev1.ProbeHandler{
 								HTTPGet: &corev1.HTTPGetAction{
 									Path: quarkusHealthPathStarted,
-									Port: intstr.FromInt(defaultHTTPWorkflowPort),
+									Port: defaultHTTPWorkflowPortIntStr,
 								},
 							},
 							InitialDelaySeconds: healthStartedInitialDelaySeconds,
@@ -178,7 +182,7 @@ func defaultServiceCreator(workflow *operatorapi.KogitoServerlessWorkflow) (clie
 			Ports: []corev1.ServicePort{{
 				Protocol:   corev1.ProtocolTCP,
 				Port:       defaultHTTPServicePort,
-				TargetPort: intstr.FromInt(defaultHTTPWorkflowPort),
+				TargetPort: defaultHTTPWorkflowPortIntStr,
 			}},
 		},
 	}

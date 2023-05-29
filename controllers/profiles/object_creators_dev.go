@@ -15,8 +15,6 @@
 package profiles
 
 import (
-	"strconv"
-
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -27,11 +25,13 @@ import (
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
-var defaultDevApplicationProperties = "quarkus.http.port=" + strconv.Itoa(defaultHTTPWorkflowPort) + "\n" +
+var defaultDevApplicationProperties = "quarkus.http.port=" + defaultHTTPWorkflowPortStr + "\n" +
 	"quarkus.http.host=0.0.0.0\n" +
 	// We disable the Knative health checks to not block the dev pod to run if Knative objects are not available
 	// See: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/eventing/consume-produce-events-with-knative-eventing.html#ref-knative-eventing-add-on-source-configuration
-	"org.kie.kogito.addons.knative.eventing.health-enabled=false\n"
+	"org.kie.kogito.addons.knative.eventing.health-enabled=false\n" +
+	"quarkus.devservices.enabled=false=false\n" +
+	"quarkus.kogito.devservices.enabled=false=false\n"
 
 // devServiceCreator is an objectCreator for a basic Service for a workflow using dev profile
 // aiming a vanilla Kubernetes Deployment.

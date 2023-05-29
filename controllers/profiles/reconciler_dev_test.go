@@ -118,7 +118,7 @@ func Test_newDevProfile(t *testing.T) {
 	assert.Contains(t, propCM.Data[applicationPropertiesFileName], "quarkus.http.port")
 
 	service := test.MustGetService(t, client, workflow)
-	assert.Equal(t, int32(defaultHTTPWorkflowPort), service.Spec.Ports[0].TargetPort.IntVal)
+	assert.Equal(t, int32(defaultHTTPWorkflowPortInt), service.Spec.Ports[0].TargetPort.IntVal)
 
 	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
 	err = client.Status().Update(context.TODO(), workflow)
@@ -136,7 +136,7 @@ func Test_newDevProfile(t *testing.T) {
 
 	// check if the reconciliation ensures the object correctly
 	service = test.MustGetService(t, client, workflow)
-	assert.Equal(t, int32(defaultHTTPWorkflowPort), service.Spec.Ports[0].TargetPort.IntVal)
+	assert.Equal(t, int32(defaultHTTPWorkflowPortInt), service.Spec.Ports[0].TargetPort.IntVal)
 
 	// now with the deployment
 	deployment = test.MustGetDeployment(t, client, workflow)
