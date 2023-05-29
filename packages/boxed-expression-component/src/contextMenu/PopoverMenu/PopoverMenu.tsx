@@ -143,7 +143,7 @@ export const PopoverMenu = React.forwardRef(
         }
       }
       return PopoverPosition.bottom;
-    }, [appendElement, document.documentElement.clientHeight]);
+    }, [appendElement]);
 
     return (
       <Popover

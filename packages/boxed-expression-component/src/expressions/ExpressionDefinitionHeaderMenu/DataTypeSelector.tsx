@@ -140,12 +140,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
       }
     }
     return DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT;
-  }, [
-    selectContainerRef,
-    selectContainerRef.current,
-    document.documentElement.clientHeight,
-    selectContainerRef.current?.getBoundingClientRect().top,
-  ]);
+  }, [selectContainerRef, selectContainerRef.current, selectContainerRef.current?.getBoundingClientRect().top]);
   return (
     <div ref={selectContainerRef} onKeyDown={onKeyDown}>
       <Select

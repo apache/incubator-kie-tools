@@ -15,7 +15,8 @@
  */
 
 import "./ExpressionDefinitionHeaderMenu.css";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import * as React from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { PopoverMenu, PopoverMenuRef } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { DmnBuiltInDataType, ExpressionDefinition } from "../../api";
