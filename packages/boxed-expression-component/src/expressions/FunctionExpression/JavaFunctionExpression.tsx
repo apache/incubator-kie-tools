@@ -238,19 +238,19 @@ export function JavaFunctionExpression({
       for (const u of cellUpdates) {
         // Class
         if (u.rowIndex === 0) {
-          setExpression((prev) => ({
+          setExpression((prev: JavaFunctionExpressionDefinition) => ({
             ...prev,
             className: u.value,
-            classFieldId: u.value,
+            classFieldId: prev.classFieldId ?? generateUuid(),
           }));
         }
 
         // Method
         else if (u.rowIndex === 1) {
-          setExpression((prev) => ({
+          setExpression((prev: JavaFunctionExpressionDefinition) => ({
             ...prev,
             methodName: u.value,
-            methodFieldId: u.value,
+            methodFieldId: prev.methodFieldId ?? generateUuid(),
           }));
         }
       }
