@@ -229,7 +229,7 @@ export function RecentModels() {
                         searchValue={searchValue}
                         selectedWorkspaceIds={selectedWorkspaceIds}
                         workspaceDescriptors={workspaceDescriptors}
-                        onDelete={onWorkspaceDelete}
+                        onWsDelete={onWorkspaceDelete}
                       />
                       <TablePagination
                         itemCount={itemCount}
