@@ -98,6 +98,11 @@ export function RecentModels() {
     }, [])
   );
 
+  const onWorkspaceDelete = useCallback(() => {
+    setSelectedWorkspaceIds([]);
+    setPage(1);
+  }, []);
+
   const onConfirmDeleteModalDelete = useCallback(
     async (workspaceDescriptors: WorkspaceDescriptor[]) => {
       const modelsWord = selectedWorkspaceIds.length > 1 ? "Models" : "Model";
@@ -117,6 +122,7 @@ export function RecentModels() {
         })
         .finally(() => {
           setSelectedWorkspaceIds([]);
+          setPage(1);
         });
     },
     [selectedWorkspaceIds, workspaces, deleteErrorAlert, deleteSuccessAlert]
@@ -218,6 +224,7 @@ export function RecentModels() {
                         searchValue={searchValue}
                         selectedWorkspaceIds={selectedWorkspaceIds}
                         workspaceDescriptors={workspaceDescriptors}
+                        onDelete={onWorkspaceDelete}
                       />
                       <TablePagination
                         itemCount={itemCount}
