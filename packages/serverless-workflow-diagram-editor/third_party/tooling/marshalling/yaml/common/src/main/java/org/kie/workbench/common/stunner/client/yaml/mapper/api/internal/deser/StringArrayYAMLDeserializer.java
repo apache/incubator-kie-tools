@@ -19,10 +19,10 @@ package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlSequence;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.array.AbstractArrayYAMLDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Default {@link YAMLDeserializer} implementation for array of {@link java.lang.String}.
@@ -51,10 +51,10 @@ public class StringArrayYAMLDeserializer extends AbstractArrayYAMLDeserializer<S
   @Override
   public String[] doDeserializeArray(YamlMapping yaml, String key, YAMLDeserializationContext ctx) {
     List<String> list = new ArrayList<>();
-    YamlSequence yamlSequence = yaml.yamlSequence(key);
+    YamlSequence yamlSequence = yaml.getSequenceNode(key);
 
     for (int i = 0; i < yamlSequence.size(); i++) {
-      list.add(yamlSequence.string(i));
+      list.add(yamlSequence.scalar(i));
     }
     return list.toArray(new String[list.size()]);
   }

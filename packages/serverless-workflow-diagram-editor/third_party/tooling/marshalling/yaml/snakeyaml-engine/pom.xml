@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.yaml</groupId>
+        <artifactId>parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>snakeyaml-engine</artifactId>
+    <packaging>jar</packaging>
+    <description>Core YAML 1.2 parser and emitter for Java</description>
+
+    <inceptionYear>2018</inceptionYear>
+    <url>https://bitbucket.org/snakeyaml/snakeyaml-engine</url>
+    <issueManagement>
+        <system>Bitbucket</system>
+        <url>https://bitbucket.org/snakeyaml/snakeyaml-engine/issues</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>SnakeYAML developers and users List</name>
+            <post>snakeyaml-core@googlegroups.com</post>
+        </mailingList>
+    </mailingLists>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>asomov</id>
+            <name>Andrey Somov</name>
+            <email>public.somov@gmail.com</email>
+        </developer>
+        <developer>
+            <id>maslovalex</id>
+            <name>Alexander Maslov</name>
+            <email>alexander.maslov@gmail.com</email>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.elemental2</groupId>
+            <artifactId>elemental2-dom</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
+            <artifactId>stdlib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.treblereel.gwt.nio</groupId>
+            <artifactId>gwt-nio</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.java</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${version.source.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

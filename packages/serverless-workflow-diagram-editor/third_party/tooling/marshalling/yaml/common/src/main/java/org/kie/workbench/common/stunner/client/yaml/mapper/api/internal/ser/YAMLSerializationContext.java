@@ -16,14 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser;
 
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
-
 public interface YAMLSerializationContext {
   boolean isSerializeNulls();
 
   boolean isWriteDatesAsTimestamps();
 
   boolean isWriteEmptyYAMLArrays();
-
-  YAMLWriter newYAMLWriter();
 }

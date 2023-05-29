@@ -16,11 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser;
 
-import java.io.IOException;
-
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.exception.YAMLDeserializationException;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLReader;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.impl.DefaultYAMLReader;
 
 /**
  * Context for the deserialization process.
@@ -66,17 +62,6 @@ public class DefaultYAMLDeserializationContext implements YAMLDeserializationCon
   @Override
   public boolean isFailOnUnknownProperties() {
     return failOnUnknownProperties;
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * <p>newYAMLReader
-   */
-  @Override
-  public YAMLReader newYAMLReader(String input) throws IOException {
-    YAMLReader reader = new DefaultYAMLReader(input);
-    return reader;
   }
 
   public static class Builder {

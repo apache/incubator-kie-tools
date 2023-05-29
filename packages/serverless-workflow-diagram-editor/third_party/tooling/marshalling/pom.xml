@@ -11,6 +11,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>json</module>
+        <module>yaml</module>
     </modules>
 
     <artifactId>marshalling-parent</artifactId>

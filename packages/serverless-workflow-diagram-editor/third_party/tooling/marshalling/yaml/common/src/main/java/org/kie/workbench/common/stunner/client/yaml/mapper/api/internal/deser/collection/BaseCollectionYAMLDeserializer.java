@@ -21,12 +21,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
-import com.amihaiemil.eoyaml.YamlSequence;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.bean.AbstractBeanYAMLDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Base {@link YAMLDeserializer} implementation for {@link java.util.Collection}.
@@ -52,7 +52,7 @@ public abstract class BaseCollectionYAMLDeserializer<C extends Collection<T>, T>
   /** {@inheritDoc} */
   @Override
   public C deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) {
-    return deserialize(yaml.yamlSequence(key), ctx);
+    return deserialize(yaml.getSequenceNode(key), ctx);
   }
 
   protected C deserialize(YamlSequence sequence, YAMLDeserializationContext ctx) {
@@ -63,8 +63,7 @@ public abstract class BaseCollectionYAMLDeserializer<C extends Collection<T>, T>
     if (deserializer instanceof AbstractBeanYAMLDeserializer) {
       for (int i = 0; i < sequence.size(); i++) {
         list.add(
-            ((AbstractBeanYAMLDeserializer<T>) deserializer)
-                .deserialize(sequence.yamlMapping(i), ctx));
+            ((AbstractBeanYAMLDeserializer<T>) deserializer).deserialize(sequence.mapping(i), ctx));
       }
     } else {
       Iterator<YamlNode> iterator = sequence.iterator();

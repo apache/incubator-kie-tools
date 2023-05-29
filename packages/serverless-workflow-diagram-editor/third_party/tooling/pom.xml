@@ -11,8 +11,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>marshalling</module>
-        <module>eo-yaml</module>
-        <module>marshalling/yaml</module>
     </modules>
 
     <artifactId>tooling-parent</artifactId>

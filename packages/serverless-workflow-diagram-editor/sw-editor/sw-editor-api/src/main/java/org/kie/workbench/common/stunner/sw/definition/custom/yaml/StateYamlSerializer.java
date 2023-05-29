@@ -1,14 +1,13 @@
 package org.kie.workbench.common.stunner.sw.definition.custom.yaml;
 
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.exception.YAMLDeserializationException;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState_YamlMapperImpl;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
@@ -33,9 +32,9 @@ public class StateYamlSerializer implements YAMLDeserializer<State>, YAMLSeriali
 
     @Override
     public State deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
-        YamlMapping value = yaml.yamlMapping(key);
+        YamlMapping value = yaml.getMappingNode(key);
         if(value != null) {
-            String type = value.string("type");
+            String type = value.<String>getScalarNode("type").value();
             switch (type) {
                 case CallbackState.TYPE_CALLBACK:
                     return CallbackState_YamlMapperImpl.INSTANCE.getDeserializer().deserialize(value, key, ctx);
@@ -64,7 +63,7 @@ public class StateYamlSerializer implements YAMLDeserializer<State>, YAMLSeriali
     public State deserialize(YamlNode node, YAMLDeserializationContext ctx) {
         if(node != null) {
             YamlMapping value = node.asMapping();
-            String type = value.string("type");
+            String type = value.<String>getScalarNode("type").value();
             switch (type) {
                 case CallbackState.TYPE_CALLBACK:
                     return CallbackState_YamlMapperImpl.INSTANCE.getDeserializer().deserialize(value, ctx);
@@ -90,7 +89,7 @@ public class StateYamlSerializer implements YAMLDeserializer<State>, YAMLSeriali
     }
 
     @Override
-    public void serialize(YAMLWriter writer, String propertyName, State obj, YAMLSerializationContext ctx) {
+    public void serialize(YamlMapping writer, String propertyName, State obj, YAMLSerializationContext ctx) {
         if(obj instanceof CallbackState) {
             CallbackState_YamlMapperImpl.INSTANCE.getSerializer().serialize(writer, propertyName, (CallbackState) obj, ctx);
         } else if(obj instanceof EventState) {
@@ -113,7 +112,7 @@ public class StateYamlSerializer implements YAMLDeserializer<State>, YAMLSeriali
     }
 
     @Override
-    public void serialize(YAMLSequenceWriter writer, State obj, YAMLSerializationContext ctx) {
+    public void serialize(YamlSequence writer, State obj, YAMLSerializationContext ctx) {
         if(obj instanceof CallbackState) {
             CallbackState_YamlMapperImpl.INSTANCE.getSerializer().serialize(writer, (CallbackState) obj, ctx);
         } else if(obj instanceof EventState) {

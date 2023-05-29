@@ -3,7 +3,7 @@
     "http://gwtproject.org/doctype/2.8.2/gwt-module.dtd">
 <module>
   <inherits name="com.google.gwt.user.User"/>
-  <inherits name="com.amihaiemil.EOYaml"/>
   <inherits name='elemental2.dom.Dom'/>
+  <inherits name='org.snakeyaml.SnakeEngine'/>
   <source path="api" />
 </module>

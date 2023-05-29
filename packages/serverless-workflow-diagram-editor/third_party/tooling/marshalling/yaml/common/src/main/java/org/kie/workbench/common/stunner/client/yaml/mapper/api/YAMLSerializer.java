@@ -17,12 +17,12 @@
 package org.kie.workbench.common.stunner.client.yaml.mapper.api;
 
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 public interface YAMLSerializer<T> {
 
-  void serialize(YAMLWriter writer, String propertyName, T value, YAMLSerializationContext ctx);
+  void serialize(YamlMapping writer, String propertyName, T value, YAMLSerializationContext ctx);
 
-  void serialize(YAMLSequenceWriter writer, T value, YAMLSerializationContext ctx);
+  void serialize(YamlSequence writer, T value, YAMLSerializationContext ctx);
 }

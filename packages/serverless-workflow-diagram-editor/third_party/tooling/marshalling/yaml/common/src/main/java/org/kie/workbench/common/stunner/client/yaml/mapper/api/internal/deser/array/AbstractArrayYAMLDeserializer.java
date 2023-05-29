@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
-import com.amihaiemil.eoyaml.YamlSequence;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.bean.AbstractBeanYAMLDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Base implementation of {@link YAMLDeserializer} for array.
@@ -67,11 +67,10 @@ public abstract class AbstractArrayYAMLDeserializer<T> implements YAMLDeserializ
     if (deserializer instanceof AbstractBeanYAMLDeserializer) {
       for (int i = 0; i < sequence.size(); i++) {
         list.add(
-            ((AbstractBeanYAMLDeserializer<C>) deserializer)
-                .deserialize(sequence.yamlMapping(i), ctx));
+            ((AbstractBeanYAMLDeserializer<C>) deserializer).deserialize(sequence.mapping(i), ctx));
       }
     } else {
-      Iterator<com.amihaiemil.eoyaml.YamlNode> iterator = sequence.iterator();
+      Iterator<YamlNode> iterator = sequence.iterator();
       while (iterator.hasNext()) {
         list.add(deserializer.deserialize(iterator.next(), ctx));
       }

@@ -16,9 +16,6 @@
 
 package org.kie.workbench.common.stunner.sw.definition.custom.yaml;
 
-import com.amihaiemil.eoyaml.Node;
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
 import elemental2.core.JsArray;
 import elemental2.core.Reflect;
 import jsinterop.base.Js;
@@ -28,8 +25,10 @@ import org.kie.workbench.common.stunner.client.yaml.mapper.api.exception.YAMLDes
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.StringYAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.NodeType;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 import org.kie.workbench.common.stunner.sw.definition.Metadata;
 import org.kie.workbench.common.stunner.sw.definition.ValueHolder;
 
@@ -42,7 +41,7 @@ public class MetadataYamlSerializer implements YAMLSerializer<Metadata>, YAMLDes
 
     @Override
     public Metadata deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
-        YamlNode value = yaml.value(key);
+        YamlNode value = yaml.getNode(key);
         if (value == null) {
             return null;
         }
@@ -51,11 +50,11 @@ public class MetadataYamlSerializer implements YAMLSerializer<Metadata>, YAMLDes
 
     @Override
     public Metadata deserialize(YamlNode node, YAMLDeserializationContext ctx) {
-        if (node != null && node.type() == Node.MAPPING && !node.asMapping().isEmpty()) {
+        if (node != null && node.type() == NodeType.MAPPING && !node.asMapping().isEmpty()) {
             YamlMapping yaml = node.asMapping();
             Metadata metadata = new Metadata();
             yaml.keys().forEach(key -> {
-                readObject(yaml.value(key), key.asScalar().value(), metadata);
+                readObject(yaml.getNode(key), key, metadata);
             });
 
             return metadata;
@@ -68,26 +67,26 @@ public class MetadataYamlSerializer implements YAMLSerializer<Metadata>, YAMLDes
         if(node == null) {
             return;
         }
-        if(node.type() == Node.SCALAR) {
+        if(node.type() == NodeType.SCALAR) {
             Reflect.set(obj, prop, stringYAMLDeserializer.deserialize(node, null));
-        } else if(node.type() == Node.MAPPING) {
+        } else if(node.type() == NodeType.MAPPING) {
             YamlMapping yaml = node.asMapping();
             ValueHolder valueHolder = new ValueHolder();
             yaml.keys().forEach(key -> {
-                readObject(yaml.value(key), key.asScalar().value(), valueHolder);
+                readObject(yaml.getNode(key), key, valueHolder);
                 Reflect.set(obj, prop, valueHolder);
             });
-        } else if(node.type() == Node.SEQUENCE) {
+        } else if(node.type() == NodeType.SEQUENCE) {
             JsArray array = new JsArray();
 
             node.asSequence().values().forEach(value -> {
-                if(value.type() == Node.SCALAR) {
+                if(value.type() == NodeType.SCALAR) {
                     array.push(stringYAMLDeserializer.deserialize(value, null));
-                } else if(value.type() == Node.MAPPING) {
+                } else if(value.type() == NodeType.MAPPING) {
                     YamlMapping yaml = value.asMapping();
                     yaml.keys().forEach(key -> {
                         ValueHolder valueHolder = new ValueHolder();
-                        readObject(yaml.value(key), key.asScalar().value(), valueHolder);
+                        readObject(yaml.getNode(key), key, valueHolder);
                         array.push(valueHolder);
                     });
                 }
@@ -99,18 +98,17 @@ public class MetadataYamlSerializer implements YAMLSerializer<Metadata>, YAMLDes
     }
 
     @Override
-    public void serialize(YAMLWriter writer, String propertyName, Metadata metadata, YAMLSerializationContext ctx) {
+    public void serialize(YamlMapping writer, String propertyName, Metadata metadata, YAMLSerializationContext ctx) {
         writeObjectProps(writer, metadata, ctx);
     }
 
     @Override
-    public void serialize(YAMLSequenceWriter writer, Metadata value, YAMLSerializationContext ctx) {
-        YAMLWriter innerWrite = ctx.newYAMLWriter();
+    public void serialize(YamlSequence writer, Metadata value, YAMLSerializationContext ctx) {
+        YamlMapping innerWrite = writer.addMappingNode();
         writeObjectProps(innerWrite, value, ctx);
-        writer.value(innerWrite.getWriter().build());
     }
 
-    private void writeObjectProps(YAMLWriter writer, Metadata metadata, YAMLSerializationContext ctx) {
+    private void writeObjectProps(YamlMapping writer, Metadata metadata, YAMLSerializationContext ctx) {
         if(metadata != null) {
             valueHolderYamlTypeSerializer.serialize(writer, "metadata", Js.uncheckedCast(metadata), ctx);
         }
