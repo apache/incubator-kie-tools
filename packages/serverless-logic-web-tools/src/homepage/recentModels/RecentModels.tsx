@@ -141,6 +141,7 @@ export function RecentModels() {
 
   const onClearFilters = useCallback(() => {
     setSearchValue("");
+    setPage(1);
   }, []);
 
   const isWsFolder = useCallback(
@@ -163,6 +164,10 @@ export function RecentModels() {
     },
     [isWsFolder, selectedWorkspaceIds, workspaces]
   );
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchValue]);
 
   useEffect(() => {
     Promise.all([
