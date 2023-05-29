@@ -78,8 +78,10 @@ export function dereferenceProperties<
     referenceMap.set(properties.$ref, (propertyPaths ?? []).concat([parentKey]));
 
     if (recursionRoot) {
+      const { properties, ...types } = referenceObj;
       setObjectValueByPath(dereferencedJsonSchema, parentKey, {
         recursionRef: objectPathToRefPath(recursionRoot),
+        ...types,
       });
       return dereferencedJsonSchema;
     }
@@ -118,8 +120,10 @@ export function dereferenceProperties<
       }
 
       if (recursionRoot) {
+        const { properties, ...types } = referenceObj;
         setObjectValueByPath(dereferencedJsonSchema, getFullKey(fieldKey, parentKey), {
           recursionRef: objectPathToRefPath(recursionRoot),
+          ...types,
         });
       } else {
         setObjectValueByPath(dereferencedJsonSchema, getFullKey(fieldKey, parentKey), referenceObj);

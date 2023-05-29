@@ -24,7 +24,7 @@ export enum Duration {
   YearsAndMonthsDuration,
 }
 
-export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
+export class FormDmnJsonSchemaBridge extends FormJsonSchemaBridge {
   schema: ExtendedServicesDmnJsonSchema;
 
   constructor(formSchema: ExtendedServicesDmnJsonSchema, validator: (model: object) => void, i18n: DmnFormI18n) {

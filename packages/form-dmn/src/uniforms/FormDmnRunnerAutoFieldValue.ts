@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,4 +14,16 @@
  * limitations under the License.
  */
 
-export * from "./FormDmnJsonSchemaBridge";
+import { defaultDmnRunnerAutoFieldValue } from "@kie-tools/dmn-runner/dist/uniforms";
+import { Context, GuaranteedProps } from "uniforms/esm";
+import FormDmnNotSupportedField from "./FormDmnNotSupportedField";
+
+export function formDmnRunnerAutoFieldValue(
+  props: GuaranteedProps<unknown>,
+  uniforms: Context<Record<string, unknown>>
+) {
+  if (props.field?.type === "recursion") {
+    return FormDmnNotSupportedField;
+  }
+  return defaultDmnRunnerAutoFieldValue(props, uniforms);
+}

@@ -36,6 +36,9 @@ export class FormJsonSchemaBridge extends JSONSchemaBridge {
 
   public getField(name: string): Record<string, any> {
     const field = super.getField(name);
+    if (field.recursionRef) {
+      field.type = "recursion";
+    }
     if (!field.type) {
       field.type = "string";
     }
