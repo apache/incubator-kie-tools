@@ -115,7 +115,7 @@ export interface DecisionTableExpressionDefinition extends ExpressionDefinitionB
   /** Input columns definition */
   input?: DecisionTableExpressionDefinitionInputClause[];
   /** Output columns definition */
-  output?: DecisionTableExpressionDefinitionClause[];
+  output?: DecisionTableExpressionDefinitionOutputClause[];
   /** Rules represent rows values */
   rules?: DecisionTableExpressionDefinitionRule[];
 }
@@ -154,6 +154,15 @@ export interface DecisionTableExpressionDefinitionClause {
 export interface DecisionTableExpressionDefinitionInputClause extends DecisionTableExpressionDefinitionClause {
   /** Clause Literal Expression identifier */
   idLiteralExpression: string;
+}
+
+export interface DecisionTableExpressionDefinitionOutputClause extends DecisionTableExpressionDefinitionClause {
+  /**
+   * defaultOutputEntry: Expression [0..1]
+   * In an Incomplete table, this attribute lists an instance of Expression that is selected when no rules match
+   * for the decision table, which is also an instance of LiteralExpression
+   */
+  defaultOutputEntry?: ExpressionDefinition;
 }
 
 export interface DecisionTableExpressionDefinitionClauseUnaryTests {

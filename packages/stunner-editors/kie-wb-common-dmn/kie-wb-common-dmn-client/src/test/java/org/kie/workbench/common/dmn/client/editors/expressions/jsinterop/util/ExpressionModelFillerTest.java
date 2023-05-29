@@ -40,7 +40,6 @@ import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Annotation;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Cell;
-import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Clause;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ClauseUnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Column;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextEntryProps;
@@ -56,6 +55,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.I
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.JavaFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ListProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.LiteralProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.OutputClauseProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PmmlFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
@@ -318,7 +318,10 @@ public class ExpressionModelFillerTest {
         final String outputClauseUnaryTestsText = "";
         final String outputClauseUnaryTestsConstraintType = "none";
         final ClauseUnaryTests outputClauseUnaryTest = new ClauseUnaryTests(outputClauseUnaryTestsId, outputClauseUnaryTestsText, outputClauseUnaryTestsConstraintType);
-        final Clause[] output = new Clause[]{new Clause(outputId, outputColumn, outputDataType, outputWidth, outputClauseUnaryTest), new Clause(outputId2, outputColumn2, outputDataType2, outputWidth2, null)};
+        final String defaultOutputValueId = "dovID";
+        final String defaultOutputValueContent = "Default-Test";
+        final LiteralProps defaultOutputValue = new LiteralProps(defaultOutputValueId, null, BuiltInType.UNDEFINED.asQName().getLocalPart(), defaultOutputValueContent, null);
+        final OutputClauseProps[] output = new OutputClauseProps[]{new OutputClauseProps(outputId, outputColumn, outputDataType, outputWidth, outputClauseUnaryTest, defaultOutputValue), new OutputClauseProps(outputId2, outputColumn2, outputDataType2, outputWidth2, null, null)};
         final String inputValue = "input value";
         final String outputValue = "output value";
         final String annotationValue = "annotation value";
@@ -365,6 +368,8 @@ public class ExpressionModelFillerTest {
                     assertThat(outputRef).extracting(OutputClause::getOutputValues).extracting(outputClauseUnaryTests -> outputClauseUnaryTests.getId().getValue()).isEqualTo(outputClauseUnaryTestsId);
                     assertThat(outputRef).extracting(OutputClause::getOutputValues).extracting(outputClauseUnaryTests -> outputClauseUnaryTests.getText().getValue()).isEqualTo(outputClauseUnaryTestsText);
                     assertThat(outputRef).extracting(OutputClause::getOutputValues).extracting(outputClauseUnaryTests -> outputClauseUnaryTests.getConstraintType().value()).isEqualTo(outputClauseUnaryTestsConstraintType);
+                    assertThat(outputRef).extracting(OutputClause::getDefaultOutputEntry).extracting(defaultOutputEntry -> defaultOutputEntry.getId().getValue()).isEqualTo(defaultOutputValueId);
+                    assertThat(outputRef).extracting(OutputClause::getDefaultOutputEntry).extracting(defaultOutputEntry -> defaultOutputEntry.getText().getValue()).isEqualTo(defaultOutputValueContent);
                 });
         assertThat(decisionTableExpression.getOutput().get(1))
                 .satisfies(outputRef -> {

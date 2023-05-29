@@ -45,12 +45,14 @@ import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocument;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocumentModel;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClauseUnaryTests;
 import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -75,6 +77,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.I
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.JavaFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ListProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.LiteralProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.OutputClauseProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PmmlFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
@@ -515,13 +518,22 @@ public class ExpressionModelFiller {
     private static Collection<OutputClause> outputConvertForDecisionTableExpression(final DecisionTableProps decisionTableProps,
                                                                                     final UnaryOperator<QName> qNameNormalizer) {
         return Arrays
-                .stream(Optional.ofNullable(decisionTableProps.output).orElse(new Clause[0]))
+                .stream(Optional.ofNullable(decisionTableProps.output).orElse(new OutputClauseProps[0]))
                 .map(output -> {
                     final OutputClause outputClause = new OutputClause();
                     outputClause.setId(new Id(output.id));
                     outputClause.setName(output.name);
                     QName qName = qNameNormalizer.apply(makeQName(output.dataType));
                     outputClause.setTypeRef(qName);
+                    if (output.defaultOutputValue != null && Objects.equals(LITERAL_EXPRESSION.getText(), output.defaultOutputValue.logicType)) {
+                        OutputClauseLiteralExpression outputClauseLiteralExpression =
+                                new OutputClauseLiteralExpression(new Id(output.defaultOutputValue.id),
+                                                                  new Description(),
+                                                                  new QName(),
+                                                                  new Text(((LiteralProps) output.defaultOutputValue).content),
+                                                                  null);
+                        outputClause.setDefaultOutputEntry(outputClauseLiteralExpression);
+                    }
                     if (output.clauseUnaryTests != null) {
                         outputClause.setOutputValues(convertOutputClauseUnaryTest(output.clauseUnaryTests));
                     }
@@ -556,7 +568,7 @@ public class ExpressionModelFiller {
 
     private static void updateComponentWidthsForDecisionTableExpression(final DecisionTable decisionTableExpression, final DecisionTableProps decisionTableProps) {
         final Clause[] inputProps = Optional.ofNullable(decisionTableProps.input).orElse(new InputClauseProps[0]);
-        final Clause[] outputProps = Optional.ofNullable(decisionTableProps.output).orElse(new Clause[0]);
+        final Clause[] outputProps = Optional.ofNullable(decisionTableProps.output).orElse(new OutputClauseProps[0]);
         final Annotation[] annotationProps = Optional.ofNullable(decisionTableProps.annotations).orElse(new Annotation[0]);
         decisionTableExpression.getComponentWidths().set(0, RowNumberColumn.DEFAULT_WIDTH);
         IntStream.range(0, inputProps.length)
