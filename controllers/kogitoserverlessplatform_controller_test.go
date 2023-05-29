@@ -19,8 +19,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
@@ -31,36 +31,35 @@ import (
 
 func TestKogitoServerlessPlatformController(t *testing.T) {
 	t.Run("verify that a basic reconcile is performed without error", func(t *testing.T) {
-		var (
-			name      = "kogito-serverless-operator"
-			namespace = "kogito-serverless-operator-system"
-		)
 		// Create a KogitoServerlessPlatform object with metadata and spec.
 		ksp := test.GetKogitoServerlessPlatform("../config/samples/sw.kogito_v1alpha08_kogitoserverlessplatform.yaml")
-		kspl := &v1alpha08.KogitoServerlessPlatformList{}
-		// Objects to track in the fake Client.
-		objs := []runtime.Object{ksp, kspl}
 
 		// Create a fake client to mock API calls.
-		cl := test.NewKogitoClientBuilder().WithRuntimeObjects(objs...).Build()
+		cl := test.NewKogitoClientBuilder().WithRuntimeObjects(ksp).Build()
 		// Create a KogitoServerlessPlatformReconciler object with the scheme and fake client.
-		r := &KogitoServerlessPlatformReconciler{cl, cl, nil, cfg, &record.FakeRecorder{}}
+		r := &KogitoServerlessPlatformReconciler{cl, cl, cl.Scheme(), &rest.Config{}, &record.FakeRecorder{}}
 
 		// Mock request to simulate Reconcile() being called on an event for a
 		// watched resource .
 		req := reconcile.Request{
 			NamespacedName: types.NamespacedName{
-				Name:      name,
-				Namespace: namespace,
+				Name:      ksp.Name,
+				Namespace: ksp.Namespace,
 			},
 		}
 		_, err := r.Reconcile(context.TODO(), req)
 		if err != nil {
 			t.Fatalf("reconcile: (%v)", err)
 		}
+
+		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp.Name, Namespace: ksp.Namespace}, ksp))
+
 		// Perform some checks on the created CR
-		assert.True(t, ksp.Spec.BuildPlatform.Registry.Address == "quay.io/kiegroup")
-		assert.True(t, ksp.Spec.BuildPlatform.Registry.Secret == "regcred")
-		assert.True(t, ksp.Status.Phase == "")
+		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.BuildPlatform.Registry.Address)
+		assert.Equal(t, "regcred", ksp.Spec.BuildPlatform.Registry.Secret)
+		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.BuildPlatform.BuildStrategy)
+		assert.Equal(t, v1alpha08.PlatformClusterKubernetes, ksp.Status.Cluster)
+
+		assert.Equal(t, v1alpha08.PlatformPhaseCreating, ksp.Status.Phase)
 	})
 }

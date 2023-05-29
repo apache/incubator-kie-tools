@@ -3,7 +3,6 @@ kind: KogitoServerlessPlatform
 metadata:
   name: kogito-workflow-platform
 spec:
-  cluster: kubernetes
   platform:
     baseImage: quay.io/customx/custom-swf-builder:24.8.17
     registry:

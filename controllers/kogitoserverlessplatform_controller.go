@@ -36,7 +36,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
 // KogitoServerlessPlatformReconciler reconciles a KogitoServerlessPlatform object
@@ -75,7 +75,7 @@ func (r *KogitoServerlessPlatformReconciler) Reconcile(ctx context.Context, req 
 	}
 
 	// Fetch the Platform instance
-	var instance v08.KogitoServerlessPlatform
+	var instance operatorapi.KogitoServerlessPlatform
 
 	if err := r.Reader.Get(ctx, req.NamespacedName, &instance); err != nil {
 		if errors.IsNotFound(err) {
@@ -102,7 +102,7 @@ func (r *KogitoServerlessPlatformReconciler) Reconcile(ctx context.Context, req 
 		platform.NewMonitorAction(),
 	}
 
-	var targetPhase v08.PlatformPhase
+	var targetPhase operatorapi.PlatformPhase
 
 	var err error
 
@@ -129,7 +129,12 @@ func (r *KogitoServerlessPlatformReconciler) Reconcile(ctx context.Context, req 
 				target.Status.ObservedGeneration = instance.Generation
 
 				if err := r.Client.Status().Patch(ctx, target, ctrl.MergeFrom(&instance)); err != nil {
-					r.Recorder.Event(&instance, corev1.EventTypeNormal, "Updated", fmt.Sprintf("Updated platform phase to  %s", instance.Status.Phase))
+					r.Recorder.Event(&instance, corev1.EventTypeNormal, "Status Updated", fmt.Sprintf("Updated platform phase to  %s", instance.Status.Phase))
+					return reconcile.Result{}, err
+				}
+
+				if err := r.Client.Update(ctx, target); err != nil {
+					r.Recorder.Event(&instance, corev1.EventTypeNormal, "Spec Updated", fmt.Sprintf("Updated platform phase to  %s", instance.Status.Phase))
 					return reconcile.Result{}, err
 				}
 
@@ -151,7 +156,7 @@ func (r *KogitoServerlessPlatformReconciler) Reconcile(ctx context.Context, req 
 		}
 	}
 
-	if targetPhase == v08.PlatformPhaseReady {
+	if targetPhase == operatorapi.PlatformPhaseReady {
 		return reconcile.Result{}, nil
 	}
 
@@ -165,6 +170,6 @@ func (r *KogitoServerlessPlatformReconciler) Reconcile(ctx context.Context, req 
 // SetupWithManager sets up the controller with the Manager.
 func (r *KogitoServerlessPlatformReconciler) SetupWithManager(mgr ctrlrun.Manager) error {
 	return ctrlrun.NewControllerManagedBy(mgr).
-		For(&v08.KogitoServerlessPlatform{}).
+		For(&operatorapi.KogitoServerlessPlatform{}).
 		Complete(r)
 }

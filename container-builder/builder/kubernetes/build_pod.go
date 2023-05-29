@@ -1,3 +1,17 @@
+// Copyright 2023 Red Hat, Inc. and/or its affiliates
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package kubernetes
 
 import (
@@ -25,7 +39,7 @@ type registrySecret struct {
 	refEnv      string
 }
 
-func newBuildPod(ctx context.Context, c client.Client, build *api.Build) (*corev1.Pod, error) {
+func newBuildPod(ctx context.Context, c client.Client, build *api.ContainerBuild) (*corev1.Pod, error) {
 	pod := &corev1.Pod{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: corev1.SchemeGroupVersion.String(),
@@ -35,8 +49,8 @@ func newBuildPod(ctx context.Context, c client.Client, build *api.Build) (*corev
 			Namespace: build.Namespace,
 			Name:      buildPodName(build),
 			Labels: map[string]string{
-				"kie.kogito.org/buildContext": build.Name,
-				"kie.kogito.org/component":    "builder",
+				"kie.kogito.org/containerBuildContext": build.Name,
+				"kie.kogito.org/component":             "builder",
 			},
 		},
 		Spec: corev1.PodSpec{
@@ -57,11 +71,11 @@ func newBuildPod(ctx context.Context, c client.Client, build *api.Build) (*corev
 	return pod, nil
 }
 
-func buildPodName(build *api.Build) string {
+func buildPodName(build *api.ContainerBuild) string {
 	return "kogito-" + strings.ToLower(build.Name) + "-builder"
 }
 
-func getBuilderPod(ctx context.Context, c client.Client, build *api.Build) (*corev1.Pod, error) {
+func getBuilderPod(ctx context.Context, c client.Client, build *api.ContainerBuild) (*corev1.Pod, error) {
 	pod := corev1.Pod{}
 	err := c.Get(ctx, types.NamespacedName{Name: buildPodName(build), Namespace: build.Namespace}, &pod)
 	if err != nil && k8serrors.IsNotFound(err) {
@@ -74,7 +88,7 @@ func getBuilderPod(ctx context.Context, c client.Client, build *api.Build) (*cor
 	return &pod, nil
 }
 
-func deleteBuilderPod(ctx context.Context, c client.Client, build *api.Build) error {
+func deleteBuilderPod(ctx context.Context, c client.Client, build *api.ContainerBuild) error {
 	pod := corev1.Pod{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: corev1.SchemeGroupVersion.String(),

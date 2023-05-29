@@ -15,6 +15,7 @@ spec:
     shortNames:
     - ksw
     - workflow
+    - workflows
     singular: kogitoserverlessworkflow
   scope: Namespaced
   versions:

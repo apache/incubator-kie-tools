@@ -19,13 +19,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/RHsyseng/operator-utils/pkg/utils/openshift"
+	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+	"github.com/kiegroup/kogito-serverless-operator/utils"
 
-	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/util/retry"
-
-	"github.com/kiegroup/kogito-serverless-operator/version"
 
 	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
 
@@ -43,29 +41,9 @@ import (
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 )
 
-var _ ProfileReconciler = &developmentProfile{}
-
-var configMountPathMap = map[ConfigPath]string{
-	QUARKUS:  quarkusDevConfigMountPath,
-	CAMEL:    quarkusDevConfigMountPath + "/routes",
-	ASYNCAPI: quarkusDevConfigMountPath + "/templates",
-	OPENAPI:  quarkusDevConfigMountPath + "/specs",
-	WORKFLOW: quarkusDevConfigMountPath + "/workflows",
-	GENERIC:  quarkusDevConfigMountPath + "/generic",
-}
-
-var prefixMountPathMap = map[string]string{
-	extResCamelSuffix:    configMountPathMap[CAMEL],
-	extResGenericSuffix:  configMountPathMap[GENERIC],
-	extResAsyncAPISuffix: configMountPathMap[ASYNCAPI],
-	extResOpenAPISuffix:  configMountPathMap[OPENAPI],
-}
-
 const (
-	// TODO: read from the platform config. Default tag MUST align with the current operator's version. See: https://issues.redhat.com/browse/KOGITO-8675
-	defaultKogitoServerlessWorkflowDevImage = "quay.io/kiegroup/kogito-swf-devmode"
-	configMapWorkflowDefVolumeName          = "workflow-definition"
-	configMapWorkflowDefMountPath           = "/home/kogito/serverless-workflow-project/src/main/resources/workflows"
+	configMapWorkflowDefVolumeName = "workflow-definition"
+	configMapWorkflowDefMountPath  = "/home/kogito/serverless-workflow-project/src/main/resources/workflows"
 	// quarkusDevConfigMountPath mount path for application properties file in the Workflow Quarkus Application
 	// See: https://quarkus.io/guides/config-reference#application-properties-file
 	quarkusDevConfigMountPath    = "/home/kogito/serverless-workflow-project/src/main/resources"
@@ -76,28 +54,20 @@ const (
 	recoverDeploymentErrorRetries = 3
 	// recoverDeploymentErrorInterval interval between recovering from failures
 	recoverDeploymentErrorInterval = 5 * time.Minute
-	extResCamelSuffix              = "resource-camel"
-	extResGenericSuffix            = "resource-generic"
-	extResOpenAPISuffix            = "resource-openapi"
-	extResAsyncAPISuffix           = "resource-asyncapi"
-	nightlySuffix                  = "nightly"
-	defaultImageTag                = "latest"
 )
+
+var _ ProfileReconciler = &developmentProfile{}
+
+var externalResourceTypeMountPathDevMode = map[workflowdef.ExternalResourceType]string{
+	workflowdef.ExternalResourceCamel:    quarkusDevConfigMountPath + "/" + workflowdef.ExternalResourceCamelMountDir,
+	workflowdef.ExternalResourceGeneric:  quarkusDevConfigMountPath,
+	workflowdef.ExternalResourceAsyncApi: quarkusDevConfigMountPath,
+	workflowdef.ExternalResourceOpenApi:  quarkusDevConfigMountPath,
+}
 
 type developmentProfile struct {
 	baseReconciler
 }
-
-type ConfigPath string
-
-const (
-	QUARKUS  = "QUARKUS"
-	CAMEL    = "CAMEL"
-	ASYNCAPI = "ASYNCAPI"
-	OPENAPI  = "OPENAPI"
-	WORKFLOW = "WORKFLOW"
-	GENERIC  = "GENERIC"
-)
 
 func (d developmentProfile) GetProfile() Profile {
 	return Development
@@ -111,7 +81,7 @@ func newDevProfileReconciler(client client.Client, config *rest.Config, logger *
 
 	var ensurers *devProfileObjectEnsurers
 	var enrichers *devProfileObjectEnrichers
-	if ok, _ := openshift.IsOpenShift(config); ok {
+	if utils.IsOpenShift() {
 		ensurers = newDevelopmentObjectEnsurersForOpenShift(support)
 		enrichers = newDevelopmentObjectEnrichersForOpenShift(support)
 	} else {
@@ -138,7 +108,7 @@ func newDevelopmentObjectEnsurers(support *stateSupport) *devProfileObjectEnsure
 		service:             newDefaultObjectEnsurer(support.client, support.logger, devServiceCreator),
 		network:             newDummyObjectEnsurer(),
 		definitionConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowDefConfigMapCreator),
-		propertiesConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowDevPropsConfigMapCreator),
+		propertiesConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowPropsConfigMapCreator),
 	}
 }
 
@@ -148,7 +118,7 @@ func newDevelopmentObjectEnsurersForOpenShift(support *stateSupport) *devProfile
 		service:             newDefaultObjectEnsurer(support.client, support.logger, defaultServiceCreator),
 		network:             newDefaultObjectEnsurer(support.client, support.logger, defaultNetworkCreator),
 		definitionConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowDefConfigMapCreator),
-		propertiesConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowDevPropsConfigMapCreator),
+		propertiesConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowPropsConfigMapCreator),
 	}
 }
 
@@ -176,6 +146,7 @@ type devProfileObjectEnrichers struct {
 	networkInfo *statusEnricher
 	//Here we can add more enrichers if we need in future to enrich objects with more info coming from reconciliation
 }
+
 type ensureRunningDevWorkflowReconciliationState struct {
 	*stateSupport
 	ensurers *devProfileObjectEnsurers
@@ -188,7 +159,7 @@ func (e *ensureRunningDevWorkflowReconciliationState) CanReconcile(workflow *ope
 func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, []client.Object, error) {
 	var objs []client.Object
 
-	flowDefCM, _, err := e.ensurers.definitionConfigMap.ensure(ctx, workflow, ensureWorkflowSpecConfigMapMutator(workflow))
+	flowDefCM, _, err := e.ensurers.definitionConfigMap.ensure(ctx, workflow, ensureWorkflowDefConfigMapMutator(workflow))
 	if err != nil {
 		return ctrl.Result{Requeue: false}, objs, err
 	}
@@ -200,18 +171,16 @@ func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, wo
 	}
 	objs = append(objs, propsCM)
 
-	externalCM, err := e.fetchExternalResourcesConfigMaps(workflow)
+	externalCM, err := workflowdef.FetchExternalResourcesConfigMapsRef(e.client, workflow)
 	if err != nil {
 		e.logger.Error(err, "External Resources ConfigMap not found")
 	}
 
-	devBaseContainerImage := getDefaultKogitoServerlessWorkflowDevImageTag()
+	devBaseContainerImage := workflowdef.GetDefaultWorkflowDevModeImageTag()
 	pl, errPl := platform.GetActivePlatform(ctx, e.client, workflow.Namespace)
 	// check if the Platform available
 	if errPl == nil && len(pl.Spec.DevBaseImage) > 0 {
-
 		devBaseContainerImage = pl.Spec.DevBaseImage
-
 	}
 
 	deployment, _, err := e.ensurers.deployment.ensure(ctx, workflow,
@@ -311,7 +280,9 @@ func (f *followDeployDevWorkflowReconciliationState) PostReconcile(ctx context.C
 	}
 	if deployment != nil && kubeutil.IsDeploymentAvailable(deployment) {
 		// Enriching Workflow CR status with needed network info
-		f.enrichers.networkInfo.Enrich(ctx, workflow)
+		if _, err := f.enrichers.networkInfo.Enrich(ctx, workflow); err != nil {
+			return err
+		}
 		if _, err := f.performStatusUpdate(ctx, workflow); err != nil {
 			return err
 		}
@@ -398,7 +369,7 @@ func getDeploymentFailureMessage(deployment *appsv1.Deployment) string {
 }
 
 // mountDevConfigMapsMutateVisitor mounts the required configMaps in the Workflow Dev Deployment
-func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *v1.ConfigMap, externalResourceConfigMaps map[string]v1.ConfigMap) mutateVisitor {
+func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *v1.ConfigMap, resourceConfigMapsRef map[workflowdef.ExternalResourceType]*v1.LocalObjectReference) mutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			deployment := object.(*appsv1.Deployment)
@@ -415,7 +386,7 @@ func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *v1.ConfigMap, externalR
 				kubeutil.VolumeMount(configMapWorkflowPropsVolumeName, true, quarkusDevConfigMountPath),
 			)
 
-			externalVolumes, externalVolumesMount := kubeutil.ConfigMapsToVolumesAndMount(externalResourceConfigMaps, prefixMountPathMap)
+			externalVolumes, externalVolumesMount := workflowdef.ExternalResCMsToVolumesAndMount(resourceConfigMapsRef, externalResourceTypeMountPathDevMode)
 			volumes = append(volumes, externalVolumes...)
 			volumeMounts = append(volumeMounts, externalVolumesMount...)
 
@@ -427,45 +398,4 @@ func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *v1.ConfigMap, externalR
 			return nil
 		}
 	}
-}
-
-func (e ensureRunningDevWorkflowReconciliationState) fetchExternalResourcesConfigMaps(workflow *operatorapi.KogitoServerlessWorkflow) (map[string]v1.ConfigMap, error) {
-	externalConfigMaps := make(map[string]v1.ConfigMap, 0)
-	for k, val := range workflow.Annotations {
-		resource := kubeutil.GetAnnotationResource(k)
-		if len(resource) > 0 {
-			cm, err := e.fetchConfigMap(val, workflow.Namespace)
-			if err != nil {
-				return externalConfigMaps, err
-			} else {
-				externalConfigMaps[resource] = cm
-			}
-		}
-	}
-	return externalConfigMaps, nil
-}
-
-func (e ensureRunningDevWorkflowReconciliationState) fetchConfigMap(configMapName string, namespace string) (v1.ConfigMap, error) {
-
-	existingConfigMap := v1.ConfigMap{}
-	err := e.stateSupport.client.Get(context.TODO(), types.NamespacedName{Name: configMapName, Namespace: namespace}, &existingConfigMap)
-	if err != nil {
-		e.logger.Error(err, "reading configmap")
-		return v1.ConfigMap{}, err
-	}
-	return existingConfigMap, nil
-}
-
-func getDefaultKogitoServerlessWorkflowDevImageTag() string {
-	imgTag := defaultKogitoServerlessWorkflowDevImage
-	if version.IsSnapshot() {
-		imgTag += "-" + nightlySuffix
-	}
-	imgTag += ":"
-	if version.IsLatestVersion() {
-		imgTag += defaultImageTag
-	} else {
-		imgTag += version.GetMajorMinor()
-	}
-	return imgTag
 }

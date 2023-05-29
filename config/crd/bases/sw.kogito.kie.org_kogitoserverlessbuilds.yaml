@@ -12,10 +12,21 @@ spec:
     kind: KogitoServerlessBuild
     listKind: KogitoServerlessBuildList
     plural: kogitoserverlessbuilds
+    shortNames:
+    - ksb
+    - kbuild
+    - kbuilds
     singular: kogitoserverlessbuild
   scope: Namespaced
   versions:
-  - name: v1alpha08
+  - additionalPrinterColumns:
+    - jsonPath: .status.imageTag
+      name: Image
+      type: string
+    - jsonPath: .status.buildPhase
+      name: Phase
+      type: string
+    name: v1alpha08
     schema:
       openAPIV3Schema:
         description: KogitoServerlessBuild is the Schema for the kogitoserverlessbuilds
@@ -34,20 +45,69 @@ spec:
           metadata:
             type: object
           spec:
-            description: KogitoServerlessBuildSpec defines the desired state of KogitoServerlessBuild
+            description: KogitoServerlessBuildSpec an abstraction over the actual
+              build process performed by the platform.
             properties:
-              containerFile:
-                description: ContainerFile content used for the build
-                format: byte
-                type: string
-              imageName:
-                description: Image name
-                type: string
-              podMiddleName:
-                description: Middlename of the pod
-                type: string
-              workflowId:
-                description: Workflow's unique identifier
+              arguments:
+                description: Arguments lists the command line arguments to send to
+                  the builder
+                items:
+                  type: string
+                type: array
+              resources:
+                description: Resources optional compute resource requirements for
+                  the builder
+                properties:
+                  claims:
+                    description: "Claims lists the names of resources, defined in
+                      spec.resourceClaims, that are used by this container. \n This
+                      is an alpha field and requires enabling the DynamicResourceAllocation
+                      feature gate. \n This field is immutable. It can only be set
+                      for containers."
+                    items:
+                      description: ResourceClaim references one entry in PodSpec.ResourceClaims.
+                      properties:
+                        name:
+                          description: Name must match the name of one entry in pod.spec.resourceClaims
+                            of the Pod where this field is used. It makes that resource
+                            available inside a container.
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: array
+                    x-kubernetes-list-map-keys:
+                    - name
+                    x-kubernetes-list-type: map
+                  limits:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                      x-kubernetes-int-or-string: true
+                    description: 'Limits describes the maximum amount of compute resources
+                      allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                    type: object
+                  requests:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                      x-kubernetes-int-or-string: true
+                    description: 'Requests describes the minimum amount of compute
+                      resources required. If Requests is omitted for a container,
+                      it defaults to Limits if that is explicitly specified, otherwise
+                      to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                    type: object
+                type: object
+              timeout:
+                description: Timeout defines the Build maximum execution duration.
+                  The Build deadline is set to the Build start time plus the Timeout
+                  duration. If the Build deadline is exceeded, the Build context is
+                  canceled, and its phase set to BuildPhaseFailed.
+                format: duration
                 type: string
             type: object
           status:
@@ -55,254 +115,19 @@ spec:
               KogitoServerlessBuild
             properties:
               buildPhase:
-                description: Current kaniko buildphase
+                description: Current phase of the build
                 type: string
-              builder:
-                description: Kaniko's build, used to ping the build to update the
-                  buildphase
-                properties:
-                  meta:
-                    description: ObjectReference is a subset of the kubernetes k8s.io/apimachinery/pkg/apis/meta/v1.Object
-                      interface. Objects in this API not necessarily represent Kubernetes
-                      objects, but this structure can help when needed.
-                    properties:
-                      name:
-                        type: string
-                      namespace:
-                        type: string
-                    type: object
-                  spec:
-                    description: BuildSpec defines the Build operation to be executed
-                    properties:
-                      strategy:
-                        description: The strategy that should be used to perform the
-                          Build.
-                        enum:
-                        - routine
-                        - pod
-                        type: string
-                      tasks:
-                        description: The sequence of Build tasks to be performed as
-                          part of the Build execution.
-                        items:
-                          description: Task represents the abstract task. Only one
-                            of the task should be configured to represent the specific
-                            task chosen.
-                          properties:
-                            kaniko:
-                              description: a KanikoTask, for Kaniko strategy
-                              properties:
-                                additionalFlags:
-                                  description: AdditionalFlags -- List of additional
-                                    flags for  the Kaniko process (see https://github.com/GoogleContainerTools/kaniko/blob/main/README.md#additional-flags)
-                                  items:
-                                    type: string
-                                  type: array
-                                baseImage:
-                                  description: base image layer
-                                  type: string
-                                cache:
-                                  description: use a cache
-                                  properties:
-                                    enabled:
-                                      description: true if a cache is enabled
-                                      type: boolean
-                                    persistentVolumeClaim:
-                                      description: the PVC used to store the cache
-                                      type: string
-                                  type: object
-                                contextDir:
-                                  description: can be useful to share info with other
-                                    tasks
-                                  type: string
-                                image:
-                                  description: final image name
-                                  type: string
-                                name:
-                                  description: name of the task
-                                  type: string
-                                registry:
-                                  description: where to publish the final image
-                                  properties:
-                                    address:
-                                      description: the URI to access
-                                      type: string
-                                    ca:
-                                      description: the configmap which stores the
-                                        Certificate Authority
-                                      type: string
-                                    insecure:
-                                      description: if the container registry is insecure
-                                        (ie, http only)
-                                      type: boolean
-                                    organization:
-                                      description: the registry organization
-                                      type: string
-                                    secret:
-                                      description: the secret where credentials are
-                                        stored
-                                      type: string
-                                  type: object
-                                resources:
-                                  description: Resources -- optional compute resource
-                                    requirements for the Kaniko container
-                                  properties:
-                                    limits:
-                                      additionalProperties:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
-                                      description: 'Limits describes the maximum amount
-                                        of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                                      type: object
-                                    requests:
-                                      additionalProperties:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
-                                      description: 'Requests describes the minimum
-                                        amount of compute resources required. If Requests
-                                        is omitted for a container, it defaults to
-                                        Limits if that is explicitly specified, otherwise
-                                        to an implementation-defined value. More info:
-                                        https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                                      type: object
-                                  type: object
-                                verbose:
-                                  description: log more information
-                                  type: boolean
-                              type: object
-                          type: object
-                        type: array
-                      timeout:
-                        description: Timeout defines the Build maximum execution duration.
-                          The Build deadline is set to the Build start time plus the
-                          Timeout duration. If the Build deadline is exceeded, the
-                          Build context is canceled, and its phase set to BuildPhaseFailed.
-                        format: duration
-                        type: string
-                    type: object
-                  status:
-                    description: BuildStatus defines the observed state of Build
-                    properties:
-                      baseImage:
-                        description: the base image used for this build
-                        type: string
-                      conditions:
-                        description: a list of conditions occurred during the build
-                        items:
-                          description: BuildCondition describes the state of a resource
-                            at a certain point.
-                          properties:
-                            lastTransitionTime:
-                              description: Last time the condition transitioned from
-                                one status to another.
-                              format: date-time
-                              type: string
-                            lastUpdateTime:
-                              description: The last time this condition was updated.
-                              format: date-time
-                              type: string
-                            message:
-                              description: A human-readable message indicating details
-                                about the transition.
-                              type: string
-                            reason:
-                              description: The reason for the condition's last transition.
-                              type: string
-                            status:
-                              description: Status of the condition, one of True, False,
-                                Unknown.
-                              type: string
-                            type:
-                              description: Type of integration condition.
-                              type: string
-                          required:
-                          - status
-                          - type
-                          type: object
-                        type: array
-                      digest:
-                        description: the digest from image
-                        type: string
-                      duration:
-                        description: how long it took for the build Change to Duration
-                          / ISO 8601 when CRD uses OpenAPI spec v3 https://github.com/OAI/OpenAPI-Specification/issues/845
-                        type: string
-                      error:
-                        description: the error description (if any)
-                        type: string
-                      failure:
-                        description: the reason of the failure (if any)
-                        properties:
-                          reason:
-                            description: a short text specifying the reason
-                            type: string
-                          recovery:
-                            description: the recovery attempted for this failure
-                            properties:
-                              attempt:
-                                description: attempt number
-                                type: integer
-                              attemptMax:
-                                description: maximum number of attempts
-                                type: integer
-                              attemptTime:
-                                description: time of the attempt execution
-                                format: date-time
-                                type: string
-                            required:
-                            - attempt
-                            - attemptMax
-                            type: object
-                          time:
-                            description: the time when the failure has happened
-                            format: date-time
-                            type: string
-                        required:
-                        - reason
-                        - recovery
-                        - time
-                        type: object
-                      image:
-                        description: the image name built
-                        type: string
-                      observedGeneration:
-                        description: ObservedGeneration is the most recent generation
-                          observed for this Build.
-                        format: int64
-                        type: integer
-                      phase:
-                        description: describes the phase
-                        type: string
-                      resourceVolume:
-                        description: reference to where the build resources are located
-                        properties:
-                          referenceName:
-                            description: ReferenceName name of the object holding
-                              the resources reference
-                            type: string
-                          referenceType:
-                            description: ReferenceType type of the resource holding
-                              the reference
-                            type: string
-                        required:
-                        - referenceName
-                        - referenceType
-                        type: object
-                      startedAt:
-                        description: the time when it started
-                        format: date-time
-                        type: string
-                    type: object
+              error:
+                description: Last error found during build
+                type: string
+              imageTag:
+                description: The final image tag produced by this build instance
+                type: string
+              innerBuild:
+                description: InnerBuild is a reference to an internal build object,
+                  which can be anything known only to internal builders.
                 type: object
-              workflowId:
-                description: Workflow's unique identifier
-                type: string
+                x-kubernetes-preserve-unknown-fields: true
             type: object
         type: object
     served: true

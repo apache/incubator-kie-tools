@@ -38,12 +38,12 @@ func (action *initializePodAction) Name() string {
 }
 
 // CanHandle tells whether this action can handle the build.
-func (action *initializePodAction) CanHandle(build *api.Build) bool {
-	return build.Status.Phase == "" || build.Status.Phase == api.BuildPhaseInitialization
+func (action *initializePodAction) CanHandle(build *api.ContainerBuild) bool {
+	return build.Status.Phase == "" || build.Status.Phase == api.ContainerBuildPhaseInitialization
 }
 
 // Handle handles the builds.
-func (action *initializePodAction) Handle(ctx context.Context, build *api.Build) (*api.Build, error) {
+func (action *initializePodAction) Handle(ctx context.Context, build *api.ContainerBuild) (*api.ContainerBuild, error) {
 	if err := deleteBuilderPod(ctx, action.client, build); err != nil {
 		return nil, errors.Wrap(err, "cannot delete build pod")
 	}
@@ -54,7 +54,7 @@ func (action *initializePodAction) Handle(ctx context.Context, build *api.Build)
 		return nil, err
 	}
 
-	build.Status.Phase = api.BuildPhaseScheduling
+	build.Status.Phase = api.ContainerBuildPhaseScheduling
 
 	return build, nil
 }

@@ -1,3 +1,17 @@
+// Copyright 2023 Red Hat, Inc. and/or its affiliates
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package kubernetes
 
 import (
@@ -27,19 +41,19 @@ func TestNewBuild(t *testing.T) {
 	workflowDefinition, err := os.ReadFile("testdata/greetings.sw.json")
 	assert.NoError(t, err)
 
-	platform := api.PlatformBuild{
+	platform := api.PlatformContainerBuild{
 		ObjectReference: api.ObjectReference{
 			Namespace: ns,
 			Name:      "testPlatform",
 		},
-		Spec: api.PlatformBuildSpec{
-			BuildStrategy:   api.BuildStrategyPod,
+		Spec: api.PlatformContainerBuildSpec{
+			BuildStrategy:   api.ContainerBuildStrategyPod,
 			PublishStrategy: api.PlatformBuildPublishStrategyKaniko,
 			Timeout:         &metav1.Duration{Duration: 5 * time.Minute},
 		},
 	}
 	// create the new build, schedule
-	build, err := NewBuild(BuilderInfo{FinalImageName: "quay.io/kiegroup/buildexample:latest", BuildUniqueName: "build1", Platform: platform}).
+	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "quay.io/kiegroup/buildexample:latest", BuildUniqueName: "build1", Platform: platform}).
 		WithClient(c).
 		WithResource("Dockerfile", dockerFile).
 		WithResource("greetings.sw.json", workflowDefinition).
@@ -47,18 +61,18 @@ func TestNewBuild(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.NotNil(t, build)
-	assert.Equal(t, api.BuildPhaseScheduling, build.Status.Phase)
+	assert.Equal(t, api.ContainerBuildPhaseScheduling, build.Status.Phase)
 
 	build, err = FromBuild(build).WithClient(c).Reconcile()
 	assert.NoError(t, err)
 	assert.NotNil(t, build)
-	assert.Equal(t, api.BuildPhasePending, build.Status.Phase)
+	assert.Equal(t, api.ContainerBuildPhasePending, build.Status.Phase)
 
 	// The status won't change since FakeClient won't set the status upon creation, since we don't have a controller :)
 	build, err = FromBuild(build).WithClient(c).Reconcile()
 	assert.NoError(t, err)
 	assert.NotNil(t, build)
-	assert.Equal(t, api.BuildPhasePending, build.Status.Phase)
+	assert.Equal(t, api.ContainerBuildPhasePending, build.Status.Phase)
 
 	podName := buildPodName(build)
 	pod := &v1.Pod{}

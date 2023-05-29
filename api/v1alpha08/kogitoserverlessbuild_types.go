@@ -15,38 +15,96 @@
 package v1alpha08
 
 import (
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"encoding/json"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 )
 
-// KogitoServerlessBuildSpec defines the desired state of KogitoServerlessBuild
+type BuildPhase string
+
+const (
+	// BuildPhaseNone --
+	BuildPhaseNone BuildPhase = ""
+	// BuildPhaseInitialization --
+	BuildPhaseInitialization BuildPhase = "Initialization"
+	// BuildPhaseScheduling --
+	BuildPhaseScheduling BuildPhase = "Scheduling"
+	// BuildPhasePending --
+	BuildPhasePending BuildPhase = "Pending"
+	// BuildPhaseRunning --
+	BuildPhaseRunning BuildPhase = "Running"
+	// BuildPhaseSucceeded --
+	BuildPhaseSucceeded BuildPhase = "Succeeded"
+	// BuildPhaseFailed --
+	BuildPhaseFailed BuildPhase = "Failed"
+	// BuildPhaseInterrupted --
+	BuildPhaseInterrupted BuildPhase = "Interrupted"
+	// BuildPhaseError --
+	BuildPhaseError BuildPhase = "Error"
+)
+
+type BuildTemplate struct {
+	// Timeout defines the Build maximum execution duration.
+	// The Build deadline is set to the Build start time plus the Timeout duration.
+	// If the Build deadline is exceeded, the Build context is canceled,
+	// and its phase set to BuildPhaseFailed.
+	// +kubebuilder:validation:Format=duration
+	Timeout metav1.Duration `json:"timeout,omitempty"`
+	// Resources optional compute resource requirements for the builder
+	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
+	// Arguments lists the command line arguments to send to the builder
+	Arguments []string `json:"arguments,omitempty"`
+}
+
+// KogitoServerlessBuildSpec an abstraction over the actual build process performed by the platform.
 type KogitoServerlessBuildSpec struct {
-	// Workflow's unique identifier
-	WorkflowId string `json:"workflowId,omitempty"`
-	// Image name
-	ImageName string `json:"imageName,omitempty"`
-	// Middlename of the pod
-	PodMiddleName string `json:"podMiddleName,omitempty"`
-	// ContainerFile content used for the build
-	ContainerFile []byte `json:"containerFile,omitempty"`
+	BuildTemplate `json:",inline"`
 }
 
 // KogitoServerlessBuildStatus defines the observed state of KogitoServerlessBuild
 type KogitoServerlessBuildStatus struct {
-	// Workflow's unique identifier
-	WorkflowId string `json:"workflowId,omitempty"`
-	// Current kaniko buildphase
-	BuildPhase api.BuildPhase `json:"buildPhase,omitempty"`
-	// Kaniko's build, used to ping the build to update the buildphase
-	Builder api.Build `json:"builder,omitempty"`
+	// The final image tag produced by this build instance
+	ImageTag string `json:"imageTag,omitempty"`
+	// Current phase of the build
+	BuildPhase BuildPhase `json:"buildPhase,omitempty"`
+	// Last error found during build
+	Error string `json:"error,omitempty"`
+	// InnerBuild is a reference to an internal build object, which can be anything known only to internal builders.
+	// +kubebuilder:pruning:PreserveUnknownFields
+	InnerBuild runtime.RawExtension `json:"innerBuild,omitempty" patchStrategy:"replace"`
 }
 
+// SetInnerBuild use to define a new object pointer to the inner build.
+func (k *KogitoServerlessBuildStatus) SetInnerBuild(innerBuilder interface{}) error {
+	obj, err := json.Marshal(innerBuilder)
+	if err != nil {
+		return err
+	}
+	k.InnerBuild.Raw = obj
+	return nil
+}
+
+// GetInnerBuild fetch into the given inner build the value from unstructured.
+func (k *KogitoServerlessBuildStatus) GetInnerBuild(innerBuild interface{}) error {
+	if len(k.InnerBuild.Raw) == 0 {
+		return nil
+	}
+	if err := json.Unmarshal(k.InnerBuild.Raw, innerBuild); err != nil {
+		return err
+	}
+	return nil
+}
+
+// KogitoServerlessBuild is the Schema for the kogitoserverlessbuilds API
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 // +kubebuilder:object:generate=true
 // +kubebuilder:subresource:status
-// KogitoServerlessBuild is the Schema for the kogitoserverlessbuilds API
+// +kubebuilder:printcolumn:name="Image",type=string,JSONPath=`.status.imageTag`
+// +kubebuilder:printcolumn:name="Phase",type=string,JSONPath=`.status.buildPhase`
+// +kubebuilder:resource:shortName={"ksb", "kbuild", "kbuilds"}
 type KogitoServerlessBuild struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -55,10 +113,10 @@ type KogitoServerlessBuild struct {
 	Status KogitoServerlessBuildStatus `json:"status,omitempty"`
 }
 
+// KogitoServerlessBuildList is the Schema for the kogitoserverlessbuildsList API
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 // +kubebuilder:object:generate=true
-// KogitoServerlessBuildList is the Schema for the kogitoserverlessbuildsList API
 type KogitoServerlessBuildList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`

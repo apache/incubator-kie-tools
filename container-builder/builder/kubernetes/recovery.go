@@ -49,16 +49,16 @@ func (action *errorRecoveryAction) Name() string {
 	return "error-recovery"
 }
 
-func (action *errorRecoveryAction) CanHandle(build *api.Build) bool {
-	return build.Status.Phase == api.BuildPhaseFailed
+func (action *errorRecoveryAction) CanHandle(build *api.ContainerBuild) bool {
+	return build.Status.Phase == api.ContainerBuildPhaseFailed
 }
 
-func (action *errorRecoveryAction) Handle(ctx context.Context, build *api.Build) (*api.Build, error) {
+func (action *errorRecoveryAction) Handle(ctx context.Context, build *api.ContainerBuild) (*api.ContainerBuild, error) {
 	if build.Status.Failure == nil {
-		build.Status.Failure = &api.Failure{
+		build.Status.Failure = &api.ContainerBuildFailure{
 			Reason: build.Status.Error,
 			Time:   metav1.Now(),
-			Recovery: api.FailureRecovery{
+			Recovery: api.ContainerBuildFailureRecovery{
 				Attempt:    0,
 				AttemptMax: 5,
 			},
@@ -67,7 +67,7 @@ func (action *errorRecoveryAction) Handle(ctx context.Context, build *api.Build)
 	}
 
 	if build.Status.Failure.Recovery.Attempt >= build.Status.Failure.Recovery.AttemptMax {
-		build.Status.Phase = api.BuildPhaseError
+		build.Status.Phase = api.ContainerBuildPhaseError
 		return build, nil
 	}
 
@@ -83,7 +83,7 @@ func (action *errorRecoveryAction) Handle(ctx context.Context, build *api.Build)
 		return nil, nil
 	}
 
-	build.Status.Phase = api.BuildPhaseInitialization
+	build.Status.Phase = api.ContainerBuildPhaseInitialization
 	build.Status.Failure.Recovery.Attempt++
 	build.Status.Failure.Recovery.AttemptTime = metav1.Now()
 

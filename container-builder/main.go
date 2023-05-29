@@ -51,15 +51,15 @@ func main() {
 		fmt.Println("Failed to create client")
 		fmt.Println(err.Error())
 	}
-	platform := api.PlatformBuild{
+	platform := api.PlatformContainerBuild{
 		ObjectReference: api.ObjectReference{
 			Namespace: "kogito-builder",
 			Name:      "testPlatform",
 		},
-		Spec: api.PlatformBuildSpec{
-			BuildStrategy:   api.BuildStrategyPod,
+		Spec: api.PlatformContainerBuildSpec{
+			BuildStrategy:   api.ContainerBuildStrategyPod,
 			PublishStrategy: api.PlatformBuildPublishStrategyKaniko,
-			Registry: api.RegistrySpec{
+			Registry: api.ContainerRegistrySpec{
 				Insecure: true,
 			},
 			Timeout: &metav1.Duration{
@@ -71,7 +71,7 @@ func main() {
 	cpuQty, _ := resource2.ParseQuantity("1")
 	memQty, _ := resource2.ParseQuantity("4Gi")
 
-	build, err := builder.NewBuild(builder.BuilderInfo{FinalImageName: "greetings:latest", BuildUniqueName: "kogito-test", Platform: platform}).
+	build, err := builder.NewBuild(builder.ContainerBuilderInfo{FinalImageName: "greetings:latest", BuildUniqueName: "kogito-test", Platform: platform}).
 		WithResource("Dockerfile", dockerFile).WithResource("greetings.sw.json", source).
 		WithAdditionalArgs([]string{"--build-arg=QUARKUS_PACKAGE_TYPE=mutable-jar", "--build-arg=QUARKUS_LAUNCH_DEVMODE=true", "--build-arg=SCRIPT_DEBUG=false"}).
 		WithResourceRequirements(v1.ResourceRequirements{
@@ -92,9 +92,9 @@ func main() {
 	}
 
 	// from now the Reconcile method can be called until the build is finished
-	for build.Status.Phase != api.BuildPhaseSucceeded &&
-		build.Status.Phase != api.BuildPhaseError &&
-		build.Status.Phase != api.BuildPhaseFailed {
+	for build.Status.Phase != api.ContainerBuildPhaseSucceeded &&
+		build.Status.Phase != api.ContainerBuildPhaseError &&
+		build.Status.Phase != api.ContainerBuildPhaseFailed {
 		fmt.Printf("\nBuild status is %s", build.Status.Phase)
 		build, err = builder.FromBuild(build).WithClient(cli).Reconcile()
 		if err != nil {

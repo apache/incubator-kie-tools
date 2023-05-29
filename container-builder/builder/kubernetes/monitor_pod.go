@@ -52,11 +52,11 @@ func (action *monitorPodAction) Name() string {
 }
 
 // CanHandle tells whether this action can handle the build.
-func (action *monitorPodAction) CanHandle(build *api.Build) bool {
-	return build.Status.Phase == api.BuildPhasePending || build.Status.Phase == api.BuildPhaseRunning
+func (action *monitorPodAction) CanHandle(build *api.ContainerBuild) bool {
+	return build.Status.Phase == api.ContainerBuildPhasePending || build.Status.Phase == api.ContainerBuildPhaseRunning
 }
 
-func (action *monitorPodAction) Handle(ctx context.Context, build *api.Build) (*api.Build, error) {
+func (action *monitorPodAction) Handle(ctx context.Context, build *api.ContainerBuild) (*api.ContainerBuild, error) {
 	pod, err := getBuilderPod(ctx, action.client, build)
 	if err != nil {
 		return nil, err
@@ -65,7 +65,7 @@ func (action *monitorPodAction) Handle(ctx context.Context, build *api.Build) (*
 	if pod == nil {
 		switch build.Status.Phase {
 
-		case api.BuildPhasePending:
+		case api.ContainerBuildPhasePending:
 			if pod, err = newBuildPod(ctx, action.client, build); err != nil {
 				return nil, err
 			}
@@ -75,9 +75,9 @@ func (action *monitorPodAction) Handle(ctx context.Context, build *api.Build) (*
 				return nil, errors.Wrap(err, "cannot create build pod")
 			}
 
-		case api.BuildPhaseRunning:
+		case api.ContainerBuildPhaseRunning:
 			// Emulate context cancellation
-			build.Status.Phase = api.BuildPhaseInterrupted
+			build.Status.Phase = api.ContainerBuildPhaseInterrupted
 			build.Status.Error = "Pod deleted"
 			return build, nil
 		}
@@ -88,11 +88,11 @@ func (action *monitorPodAction) Handle(ctx context.Context, build *api.Build) (*
 	case corev1.PodPending, corev1.PodRunning:
 		// Pod remains in pending phase when init containers execute
 		if action.isPodScheduled(pod) {
-			build.Status.Phase = api.BuildPhaseRunning
+			build.Status.Phase = api.ContainerBuildPhaseRunning
 		}
 		if time.Since(build.Status.StartedAt.Time) > build.Spec.Timeout.Duration {
 			// Patch the Pod with an annotation, to identify termination signal
-			// has been sent because the Build has timed out
+			// has been sent because the ContainerBuild has timed out
 			if err = action.addTimeoutAnnotation(ctx, pod, metav1.Now()); err != nil {
 				return nil, err
 			}
@@ -109,8 +109,8 @@ func (action *monitorPodAction) Handle(ctx context.Context, build *api.Build) (*
 		}
 
 	case corev1.PodSucceeded:
-		build.Status.Phase = api.BuildPhaseSucceeded
-		// Remove the annotation in case the Build succeeded, between
+		build.Status.Phase = api.ContainerBuildPhaseSucceeded
+		// Remove the annotation in case the ContainerBuild succeeded, between
 		// the timeout deadline and the termination signal.
 		if err = action.removeTimeoutAnnotation(ctx, pod); err != nil {
 			return nil, err
@@ -127,20 +127,20 @@ func (action *monitorPodAction) Handle(ctx context.Context, build *api.Build) (*
 		}
 
 	case corev1.PodFailed:
-		phase := api.BuildPhaseFailed
+		phase := api.ContainerBuildPhaseFailed
 		message := "Pod failed"
 		if terminationMessage := action.getTerminationMessage(pod); terminationMessage != "" {
 			message = terminationMessage
 		}
 		if pod.DeletionTimestamp != nil {
-			phase = api.BuildPhaseInterrupted
+			phase = api.ContainerBuildPhaseInterrupted
 			message = "Pod deleted"
 		} else if _, ok := pod.GetAnnotations()[timeoutAnnotation]; ok {
-			message = "Build timeout"
+			message = "ContainerBuild timeout"
 		}
 		// Do not override errored build
-		if build.Status.Phase == api.BuildPhaseError {
-			phase = api.BuildPhaseError
+		if build.Status.Phase == api.ContainerBuildPhaseError {
+			phase = api.ContainerBuildPhaseError
 		}
 		build.Status.Phase = phase
 		build.Status.Error = message

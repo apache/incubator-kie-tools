@@ -16,10 +16,6 @@ artifacts:
     path: "../../../../api"
     dest: /workspace/api
 
-  - name: install
-    path: "../../../../install"
-    dest: /workspace/install
-
   - name: version
     path: "../../../../version"
     dest: /workspace/version
@@ -27,10 +23,6 @@ artifacts:
   - name: utils
     path: "../../../../utils"
     dest: /workspace/utils
-
-  - name: resources
-    path: "../../../../resources"
-    dest: /workspace/resources
 
 execute:
   - script: install.sh

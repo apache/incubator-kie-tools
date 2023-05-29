@@ -21,6 +21,8 @@ import (
 	openshiftv1 "github.com/openshift/api/route/v1"
 	"knative.dev/pkg/apis"
 
+	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -41,12 +43,12 @@ func defaultDevStatusEnricher(ctx context.Context, c client.Client, workflow *op
 	//If the service has got a Port that is a nodePort we have to use it to create the workflow's NodePort Endpoint
 	if service.Spec.Ports != nil && len(service.Spec.Ports) > 0 {
 		if port := findNodePortFromPorts(service.Spec.Ports); port > 0 {
-			labels := labels(workflow)
+			labels := workflowdef.GetDefaultLabels(workflow)
 
 			podList := &v1.PodList{}
 			opts := []client.ListOption{
 				client.InNamespace(workflow.Namespace),
-				client.MatchingLabels{labelApp: labels[labelApp]},
+				client.MatchingLabels{workflowdef.LabelApp: labels[workflowdef.LabelApp]},
 			}
 			err := c.List(ctx, podList, opts...)
 			if err != nil {

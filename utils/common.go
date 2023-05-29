@@ -15,9 +15,7 @@
 package utils
 
 import (
-	"math/rand"
 	"os"
-	"time"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -62,24 +60,9 @@ func Pbool(b bool) *bool {
 	return &b
 }
 
-// GeneratePassword returns an alphanumeric password of the length provided
-func GeneratePassword(length int) []byte {
-	rand.Seed(time.Now().UnixNano())
-	digits := "0123456789"
-	all := "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-		"abcdefghijklmnopqrstuvwxyz" +
-		digits
-	buf := make([]byte, length)
-	buf[0] = digits[rand.Intn(len(digits))]
-	for i := 1; i < length; i++ {
-		buf[i] = all[rand.Intn(len(all))]
-	}
-
-	rand.Shuffle(len(buf), func(i, j int) {
-		buf[i], buf[j] = buf[j], buf[i]
-	})
-
-	return buf
+// Pint returns a pointer to an int
+func Pint(i int32) *int32 {
+	return &i
 }
 
 func Compare(a, b []byte) bool {

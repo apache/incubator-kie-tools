@@ -21,44 +21,44 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// Build is the Schema for the builder API. Follows the Kubernetes resource structure, but it's not tied to it. Can be used in any environment.
-type Build struct {
-	ObjectReference `json:"meta,omitempty"`
-	Spec            BuildSpec   `json:"spec,omitempty"`
-	Status          BuildStatus `json:"status,omitempty"`
+// ContainerBuild is the Schema for the builder API. Follows the Kubernetes resource structure, but it's not tied to it. Can be used in any environment.
+type ContainerBuild struct {
+	ObjectReference `json:"metadata,omitempty"`
+	Spec            ContainerBuildSpec   `json:"spec,omitempty"`
+	Status          ContainerBuildStatus `json:"status,omitempty"`
 }
 
-// BuildStrategy specifies how the Build should be executed.
+// ContainerBuildStrategy specifies how the ContainerBuild should be executed.
 // It will trigger a Maven process that will take care of producing the expected runtime.
 // +kubebuilder:validation:Enum=routine;pod
-type BuildStrategy string
+type ContainerBuildStrategy string
 
 const (
-	// BuildStrategyRoutine performs the build in a routine (will be executed as a process inside the same owner `Pod` or local process).
+	// ContainerBuildStrategyRoutine performs the build in a routine (will be executed as a process inside the same owner `Pod` or local process).
 	// A routine may be preferred to a `pod` strategy since it reuse the Maven repository dependency cached locally. It is executed as
 	// a parallel process, so you may need to consider the quantity of concurrent build process running simultaneously.
-	BuildStrategyRoutine BuildStrategy = "routine"
-	// BuildStrategyPod performs the build in a `Pod` (will schedule a new builder ephemeral `Pod` which will take care of the build action).
+	ContainerBuildStrategyRoutine ContainerBuildStrategy = "routine"
+	// ContainerBuildStrategyPod performs the build in a `Pod` (will schedule a new builder ephemeral `Pod` which will take care of the build action).
 	// This strategy has the limitation that every build will have to download all the dependencies required by the Maven build.
-	BuildStrategyPod BuildStrategy = "pod"
+	ContainerBuildStrategyPod ContainerBuildStrategy = "pod"
 )
 
-// BuildSpec defines the Build operation to be executed
-type BuildSpec struct {
-	// The sequence of Build tasks to be performed as part of the Build execution.
-	Tasks []Task `json:"tasks,omitempty"`
-	// The strategy that should be used to perform the Build.
-	Strategy BuildStrategy `json:"strategy,omitempty"`
-	// Timeout defines the Build maximum execution duration.
-	// The Build deadline is set to the Build start time plus the Timeout duration.
-	// If the Build deadline is exceeded, the Build context is canceled,
-	// and its phase set to BuildPhaseFailed.
+// ContainerBuildSpec defines the ContainerBuild operation to be executed
+type ContainerBuildSpec struct {
+	// The sequence of ContainerBuild tasks to be performed as part of the ContainerBuild execution.
+	Tasks []ContainerBuildTask `json:"tasks,omitempty"`
+	// The strategy that should be used to perform the ContainerBuild.
+	Strategy ContainerBuildStrategy `json:"strategy,omitempty"`
+	// Timeout defines the ContainerBuild maximum execution duration.
+	// The ContainerBuild deadline is set to the ContainerBuild start time plus the Timeout duration.
+	// If the ContainerBuild deadline is exceeded, the ContainerBuild context is canceled,
+	// and its phase set to ContainerBuildPhaseFailed.
 	// +kubebuilder:validation:Format=duration
 	Timeout metav1.Duration `json:"timeout,omitempty"`
 }
 
-// RegistrySpec provides the configuration for the container registry
-type RegistrySpec struct {
+// ContainerRegistrySpec provides the configuration for the container registry
+type ContainerRegistrySpec struct {
 	// if the container registry is insecure (ie, http only)
 	Insecure bool `json:"insecure,omitempty"`
 	// the URI to access
@@ -71,14 +71,14 @@ type RegistrySpec struct {
 	Organization string `json:"organization,omitempty"`
 }
 
-// Task represents the abstract task. Only one of the task should be configured to represent the specific task chosen.
-type Task struct {
+// ContainerBuildTask represents the abstract task. Only one of the task should be configured to represent the specific task chosen.
+type ContainerBuildTask struct {
 	// a KanikoTask, for Kaniko strategy
 	Kaniko *KanikoTask `json:"kaniko,omitempty"`
 }
 
-// BaseTask is a base for the struct hierarchy
-type BaseTask struct {
+// ContainerBuildBaseTask is a base for the struct hierarchy
+type ContainerBuildBaseTask struct {
 	// name of the task
 	Name string `json:"name,omitempty"`
 }
@@ -92,13 +92,13 @@ type PublishTask struct {
 	// final image name
 	Image string `json:"image,omitempty"`
 	// where to publish the final image
-	Registry RegistrySpec `json:"registry,omitempty"`
+	Registry ContainerRegistrySpec `json:"registry,omitempty"`
 }
 
 // KanikoTask is used to configure Kaniko
 type KanikoTask struct {
-	BaseTask    `json:",inline"`
-	PublishTask `json:",inline"`
+	ContainerBuildBaseTask `json:",inline"`
+	PublishTask            `json:",inline"`
 	// log more information
 	Verbose *bool `json:"verbose,omitempty"`
 	// use a cache
@@ -117,37 +117,37 @@ type KanikoTaskCache struct {
 	PersistentVolumeClaim string `json:"persistentVolumeClaim,omitempty"`
 }
 
-// BuildPhase --
-type BuildPhase string
+// ContainerBuildPhase --
+type ContainerBuildPhase string
 
 const (
-	// BuildPhaseNone --
-	BuildPhaseNone BuildPhase = ""
-	// BuildPhaseInitialization --
-	BuildPhaseInitialization BuildPhase = "Initialization"
-	// BuildPhaseScheduling --
-	BuildPhaseScheduling BuildPhase = "Scheduling"
-	// BuildPhasePending --
-	BuildPhasePending BuildPhase = "Pending"
-	// BuildPhaseRunning --
-	BuildPhaseRunning BuildPhase = "Running"
-	// BuildPhaseSucceeded --
-	BuildPhaseSucceeded BuildPhase = "Succeeded"
-	// BuildPhaseFailed --
-	BuildPhaseFailed BuildPhase = "Failed"
-	// BuildPhaseInterrupted --
-	BuildPhaseInterrupted = "Interrupted"
-	// BuildPhaseError --
-	BuildPhaseError BuildPhase = "Error"
+	// ContainerBuildPhaseNone --
+	ContainerBuildPhaseNone ContainerBuildPhase = ""
+	// ContainerBuildPhaseInitialization --
+	ContainerBuildPhaseInitialization ContainerBuildPhase = "Initialization"
+	// ContainerBuildPhaseScheduling --
+	ContainerBuildPhaseScheduling ContainerBuildPhase = "Scheduling"
+	// ContainerBuildPhasePending --
+	ContainerBuildPhasePending ContainerBuildPhase = "Pending"
+	// ContainerBuildPhaseRunning --
+	ContainerBuildPhaseRunning ContainerBuildPhase = "Running"
+	// ContainerBuildPhaseSucceeded --
+	ContainerBuildPhaseSucceeded ContainerBuildPhase = "Succeeded"
+	// ContainerBuildPhaseFailed --
+	ContainerBuildPhaseFailed ContainerBuildPhase = "Failed"
+	// ContainerBuildPhaseInterrupted --
+	ContainerBuildPhaseInterrupted ContainerBuildPhase = "Interrupted"
+	// ContainerBuildPhaseError --
+	ContainerBuildPhaseError ContainerBuildPhase = "Error"
 )
 
-// BuildConditionType --
-type BuildConditionType string
+// ContainerBuildConditionType --
+type ContainerBuildConditionType string
 
-// BuildCondition describes the state of a resource at a certain point.
-type BuildCondition struct {
+// ContainerBuildCondition describes the state of a resource at a certain point.
+type ContainerBuildCondition struct {
 	// Type of integration condition.
-	Type BuildConditionType `json:"type"`
+	Type ContainerBuildConditionType `json:"type"`
 	// Status of the condition, one of True, False, Unknown.
 	Status corev1.ConditionStatus `json:"status"`
 	// The last time this condition was updated.
@@ -160,12 +160,12 @@ type BuildCondition struct {
 	Message string `json:"message,omitempty"`
 }
 
-// BuildStatus defines the observed state of Build
-type BuildStatus struct {
-	// ObservedGeneration is the most recent generation observed for this Build.
+// ContainerBuildStatus defines the observed state of ContainerBuild
+type ContainerBuildStatus struct {
+	// ObservedGeneration is the most recent generation observed for this ContainerBuild.
 	ObservedGeneration int64 `json:"observedGeneration,omitempty"`
 	// describes the phase
-	Phase BuildPhase `json:"phase,omitempty"`
+	Phase ContainerBuildPhase `json:"phase,omitempty"`
 	// the image name built
 	Image string `json:"image,omitempty"`
 	// the digest from image
@@ -175,31 +175,31 @@ type BuildStatus struct {
 	// the error description (if any)
 	Error string `json:"error,omitempty"`
 	// the reason of the failure (if any)
-	Failure *Failure `json:"failure,omitempty"`
+	Failure *ContainerBuildFailure `json:"failure,omitempty"`
 	// the time when it started
 	StartedAt *metav1.Time `json:"startedAt,omitempty"`
 	// a list of conditions occurred during the build
-	Conditions []BuildCondition `json:"conditions,omitempty"`
+	Conditions []ContainerBuildCondition `json:"conditions,omitempty"`
 	// how long it took for the build
 	// Change to Duration / ISO 8601 when CRD uses OpenAPI spec v3
 	// https://github.com/OAI/OpenAPI-Specification/issues/845
 	Duration string `json:"duration,omitempty"`
 	// reference to where the build resources are located
-	ResourceVolume *ResourceVolume `json:"resourceVolume,omitempty"`
+	ResourceVolume *ContainerBuildResourceVolume `json:"resourceVolume,omitempty"`
 }
 
-// Failure represent a message specifying the reason and the time of an event failure
-type Failure struct {
+// ContainerBuildFailure represent a message specifying the reason and the time of an event failure
+type ContainerBuildFailure struct {
 	// a short text specifying the reason
 	Reason string `json:"reason"`
 	// the time when the failure has happened
 	Time metav1.Time `json:"time"`
 	// the recovery attempted for this failure
-	Recovery FailureRecovery `json:"recovery"`
+	Recovery ContainerBuildFailureRecovery `json:"recovery"`
 }
 
-// FailureRecovery defines the attempts to recover a failure
-type FailureRecovery struct {
+// ContainerBuildFailureRecovery defines the attempts to recover a failure
+type ContainerBuildFailureRecovery struct {
 	// attempt number
 	Attempt int `json:"attempt"`
 	// maximum number of attempts
@@ -209,16 +209,16 @@ type FailureRecovery struct {
 	AttemptTime metav1.Time `json:"attemptTime"`
 }
 
-type ResourceReferenceType string
+type ContainerBuildResourceReferenceType string
 
 const (
-	ResourceReferenceTypeConfigMap ResourceReferenceType = "configMap"
+	ResourceReferenceTypeConfigMap ContainerBuildResourceReferenceType = "configMap"
 )
 
-// ResourceVolume dictates where the build resources are mount
-type ResourceVolume struct {
+// ContainerBuildResourceVolume dictates where the build resources are mount
+type ContainerBuildResourceVolume struct {
 	// ReferenceName name of the object holding the resources reference
 	ReferenceName string `json:"referenceName"`
 	// ReferenceType type of the resource holding the reference
-	ReferenceType ResourceReferenceType `json:"referenceType"`
+	ReferenceType ContainerBuildResourceReferenceType `json:"referenceType"`
 }

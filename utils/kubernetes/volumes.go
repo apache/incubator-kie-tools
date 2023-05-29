@@ -18,16 +18,6 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-func ConfigMapsToVolumesAndMount(configMaps map[string]v1.ConfigMap, prefixMountPathMap map[string]string) ([]v1.Volume, []v1.VolumeMount) {
-	volumes := make([]v1.Volume, 0)
-	volumeMounts := make([]v1.VolumeMount, 0)
-	for keycm, cm := range configMaps {
-		volumes = append(volumes, Volume(cm.Name, cm.Name))
-		volumeMounts = append(volumeMounts, VolumeMount(cm.Name, true, prefixMountPathMap[keycm]))
-	}
-	return volumes, volumeMounts
-}
-
 func Volume(name string, localObjRefName string) v1.Volume {
 	return v1.Volume{
 		Name: name,

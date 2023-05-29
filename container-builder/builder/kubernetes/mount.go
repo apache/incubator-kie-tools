@@ -31,7 +31,7 @@ import (
 )
 
 // addResourcesToVolume add to the given volumes the build resources context. The resources reference must be previously created.
-func addResourcesToVolume(ctx context.Context, client client.Client, task api.PublishTask, build *api.Build, volumes *[]corev1.Volume, volumeMounts *[]corev1.VolumeMount) error {
+func addResourcesToVolume(ctx context.Context, client client.Client, task api.PublishTask, build *api.ContainerBuild, volumes *[]corev1.Volume, volumeMounts *[]corev1.VolumeMount) error {
 	// TODO: do it via specialized handlers
 	switch build.Status.ResourceVolume.ReferenceType {
 	case api.ResourceReferenceTypeConfigMap:
@@ -76,13 +76,13 @@ func addResourcesToVolume(ctx context.Context, client client.Client, task api.Pu
 }
 
 // TODO: create an actual handler for resources build context. For PoC level, CM will do
-func mountResourcesWithConfigMap(buildContext *buildContext, resources *[]resource) error {
+func mountResourcesWithConfigMap(buildContext *containerBuildContext, resources *[]resource) error {
 	configMap, err := getOrCreateResourcesConfigMap(buildContext, resources)
 	if err != nil {
 		return err
 	}
 
-	buildContext.Build.Status.ResourceVolume = &api.ResourceVolume{
+	buildContext.ContainerBuild.Status.ResourceVolume = &api.ContainerBuildResourceVolume{
 		ReferenceName: configMap.Name,
 		ReferenceType: api.ResourceReferenceTypeConfigMap,
 	}
@@ -90,7 +90,7 @@ func mountResourcesWithConfigMap(buildContext *buildContext, resources *[]resour
 	return nil
 }
 
-func getResourcesConfigMap(c context.Context, client client.Client, build *api.Build) (*corev1.ConfigMap, error) {
+func getResourcesConfigMap(c context.Context, client client.Client, build *api.ContainerBuild) (*corev1.ConfigMap, error) {
 	resourcesConfigMap := corev1.ConfigMap{}
 	configMapId := types.NamespacedName{Name: buildPodName(build), Namespace: build.Namespace}
 
@@ -104,16 +104,16 @@ func getResourcesConfigMap(c context.Context, client client.Client, build *api.B
 	return &resourcesConfigMap, nil
 }
 
-func getOrCreateResourcesConfigMap(buildContext *buildContext, resources *[]resource) (*corev1.ConfigMap, error) {
+func getOrCreateResourcesConfigMap(buildContext *containerBuildContext, resources *[]resource) (*corev1.ConfigMap, error) {
 	// TODO: build an actual configMap builder context handler
-	resourcesConfigMap, err := getResourcesConfigMap(buildContext.C, buildContext.Client, buildContext.Build)
+	resourcesConfigMap, err := getResourcesConfigMap(buildContext.C, buildContext.Client, buildContext.ContainerBuild)
 	if err != nil {
 		return nil, err
 	}
 
 	if resourcesConfigMap == nil {
 		resourcesConfigMap = &corev1.ConfigMap{}
-		configMapId := types.NamespacedName{Name: buildPodName(buildContext.Build), Namespace: buildContext.Build.Namespace}
+		configMapId := types.NamespacedName{Name: buildPodName(buildContext.ContainerBuild), Namespace: buildContext.ContainerBuild.Namespace}
 		resourcesConfigMap.Namespace = configMapId.Namespace
 		resourcesConfigMap.Name = configMapId.Name
 		addContentToConfigMap(resourcesConfigMap, resources)

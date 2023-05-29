@@ -15,11 +15,23 @@
 package profiles
 
 import (
+	"strconv"
+
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+
+	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
+
+var defaultDevApplicationProperties = "quarkus.http.port=" + strconv.Itoa(defaultHTTPWorkflowPort) + "\n" +
+	"quarkus.http.host=0.0.0.0\n" +
+	// We disable the Knative health checks to not block the dev pod to run if Knative objects are not available
+	// See: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/eventing/consume-produce-events-with-knative-eventing.html#ref-knative-eventing-add-on-source-configuration
+	"org.kie.kogito.addons.knative.eventing.health-enabled=false\n"
 
 // devServiceCreator is an objectCreator for a basic Service for a workflow using dev profile
 // aiming a vanilla Kubernetes Deployment.
@@ -33,4 +45,35 @@ func devServiceCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.O
 		service.Spec.Type = corev1.ServiceTypeNodePort
 	}
 	return service, nil
+}
+
+// workflowDefConfigMapCreator creates a new ConfigMap that holds the definition of a workflow specification.
+func workflowDefConfigMapCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+	configMap, err := workflowdef.NewConfigMap(workflow)
+	if err != nil {
+		return nil, err
+	}
+	workflowdef.SetDefaultLabels(workflow, configMap)
+	return configMap, nil
+}
+
+func ensureWorkflowDefConfigMapMutator(workflow *operatorapi.KogitoServerlessWorkflow) mutateVisitor {
+	return func(object client.Object) controllerutil.MutateFn {
+		return func() error {
+			if kubeutil.IsObjectNew(object) {
+				return nil
+			}
+			original, err := workflowDefConfigMapCreator(workflow)
+			if err != nil {
+				return err
+			}
+			object.(*corev1.ConfigMap).Data = original.(*corev1.ConfigMap).Data
+			object.(*corev1.ConfigMap).Labels = original.GetLabels()
+			return nil
+		}
+	}
+}
+
+func ensureWorkflowDevPropertiesConfigMapMutator(workflow *operatorapi.KogitoServerlessWorkflow) mutateVisitor {
+	return ensureWorkflowPropertiesConfigMapMutator(workflow, defaultDevApplicationProperties)
 }

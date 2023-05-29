@@ -92,7 +92,7 @@ help: ## Display this help.
 ##@ Development
 
 .PHONY: manifests
-manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
+manifests: generate ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
 	$(CONTROLLER_GEN) rbac:roleName=manager-role crd:allowDangerousTypes=true webhook paths="./..." output:crd:artifacts:config=config/crd/bases
 
 .PHONY: generate
@@ -110,21 +110,21 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 .PHONY: test
-test: manifests generate fmt vet envtest ## Run tests.
+test: manifests generate envtest vet fmt ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test $(shell go list ./... | grep -v /test/) -coverprofile cover.out
 
 ##@ Build
 
 .PHONY: build
-build: generate fmt vet ## Build manager binary.
+build: generate ## Build manager binary.
 	go build -o bin/manager main.go
 
 .PHONY: build-4-debug
-build-4-debug: generate fmt vet ## Build manager binary with debug options.
+build-4-debug: generate ## Build manager binary with debug options.
 	go build -gcflags="all=-N -l" -o bin/manager main.go
 
 .PHONY: run
-run: manifests generate fmt vet ## Run a controller from your host.
+run: manifests generate ## Run a controller from your host.
 	go run ./main.go
 
 .PHONY: debug
@@ -307,11 +307,11 @@ addheaders:
 	./hack/addheaders.sh
 
 .PHONY: generate-all
-generate-all: generate generate-deploy bundle
+generate-all: generate generate-deploy bundle addheaders vet fmt
 
 .PHONY: test-e2e # You will need to have a Minikube/Kind cluster up in running to run this target, and run container-builder before the test
 test-e2e: install-operator-sdk
 	go test ./test/e2e/* -v -ginkgo.v
 
 .PHONY: before-pr
-before-pr: addheaders test generate-all
+before-pr: test generate-all

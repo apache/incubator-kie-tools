@@ -3,8 +3,7 @@ kind: KogitoServerlessPlatform
 metadata:
   name: kogito-workflow-platform
 spec:
-  cluster: kubernetes
   platform:
-    publishStrategy: "Kaniko"
-    PublishStrategyOptions:
+    baseImage: quay.io/kiegroup/kogito-swf-builder-nightly:latest
+    buildStrategyOptions:
       KanikoBuildCacheEnabled: "true"

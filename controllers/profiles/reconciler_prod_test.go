@@ -26,10 +26,8 @@ import (
 	clientruntime "sigs.k8s.io/controller-runtime/pkg/client"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	builderapi "github.com/kiegroup/kogito-serverless-operator/container-builder/api"
-
 	"github.com/kiegroup/kogito-serverless-operator/api"
+	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 
 	"github.com/kiegroup/kogito-serverless-operator/test"
 )
@@ -47,41 +45,41 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.NotNil(t, result.RequeueAfter)
-	assert.True(t, workflow.Status.IsBuildRunning())
+	assert.True(t, workflow.Status.IsBuildRunningOrUnknown())
 	assert.False(t, workflow.Status.IsReady())
 
 	// still building
 	result, err = NewReconciler(client, config, &logger, workflow).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.Equal(t, requeueWhileWaitForBuild, result.RequeueAfter)
-	assert.True(t, workflow.Status.IsBuildRunning())
+	assert.True(t, workflow.Status.IsBuildRunningOrUnknown())
 	assert.False(t, workflow.Status.IsReady())
 
 	// let's finish this build
 	build := &operatorapi.KogitoServerlessBuild{}
 	assert.NoError(t, client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), build))
-	build.Status.Builder.Status.Phase = builderapi.BuildPhaseSucceeded
+	build.Status.BuildPhase = operatorapi.BuildPhaseSucceeded
 	assert.NoError(t, client.Status().Update(context.TODO(), build))
 
 	// last reconciliation cycle waiting for build
 	result, err = NewReconciler(client, config, &logger, workflow).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.Equal(t, requeueWhileWaitForBuild, result.RequeueAfter)
-	assert.False(t, workflow.Status.IsBuildRunning())
+	assert.False(t, workflow.Status.IsBuildRunningOrUnknown())
 	assert.False(t, workflow.Status.IsReady())
 	assert.Equal(t, api.WaitingForBuildReason, workflow.Status.GetTopLevelCondition().Reason)
 
 	// now we create the objects
 	result, err = NewReconciler(client, config, &logger, workflow).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
-	assert.False(t, workflow.Status.IsBuildRunning())
+	assert.False(t, workflow.Status.IsBuildRunningOrUnknown())
 	assert.False(t, workflow.Status.IsReady())
 	assert.Equal(t, api.WaitingForDeploymentReason, workflow.Status.GetTopLevelCondition().Reason)
 
 	// now with the objects created, it should be running
 	result, err = NewReconciler(client, config, &logger, workflow).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
-	assert.False(t, workflow.Status.IsBuildRunning())
+	assert.False(t, workflow.Status.IsBuildRunningOrUnknown())
 	assert.True(t, workflow.Status.IsReady())
 }
 
@@ -100,7 +98,7 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	assert.Greater(t, result.RequeueAfter, int64(0))
 	assert.NoError(t, err)
 	assert.NotNil(t, result)
-	assert.Len(t, objects, 2)
+	assert.Len(t, objects, 3)
 
 	deployment := &v1.Deployment{}
 	err = client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), deployment)
@@ -147,7 +145,7 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 	assert.Greater(t, result.RequeueAfter, int64(0))
 	assert.NoError(t, err)
 	assert.NotNil(t, result)
-	assert.Len(t, objects, 2)
+	assert.Len(t, objects, 3)
 	// then we load a workflow with metadata.generation set to 1
 	workflowChanged := test.GetKogitoServerlessWorkflow("../../test/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
 	client = test.NewKogitoClientBuilder().WithRuntimeObjects(workflowChanged, platform).Build()

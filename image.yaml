@@ -19,10 +19,6 @@
   description: Runtime Image for the Operator
 
   artifacts:
-    - path: /workspace/resources
-      image: operator-builder
-      dest: /usr/local/etc
-      name: serverless-operator
     - path: /workspace/manager
       image: operator-builder
       dest: /usr/local/bin

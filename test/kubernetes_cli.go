@@ -18,9 +18,9 @@ import (
 	"context"
 	"testing"
 
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/schema"
-
+	buildv1 "github.com/openshift/api/build/v1"
+	imgv1 "github.com/openshift/api/image/v1"
+	routev1 "github.com/openshift/api/route/v1"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -30,47 +30,50 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	"github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
 // NewKogitoClientBuilder creates a new fake.ClientBuilder with the right scheme references
 func NewKogitoClientBuilder() *fake.ClientBuilder {
 	s := scheme.Scheme
-	utilruntime.Must(v1alpha08.AddToScheme(s))
+	utilruntime.Must(operatorapi.AddToScheme(s))
 	return fake.NewClientBuilder().WithScheme(s)
 }
 
-// NewKogitoClientBuilderWithAdditionalScheme creates a new fake.ClientBuilder with the right scheme references
-func NewKogitoClientBuilderWithAdditionalScheme(gv schema.GroupVersion, types ...runtime.Object) *fake.ClientBuilder {
+// NewKogitoClientBuilderWithOpenShift creates a new fake client with OpenShift schemas.
+// If your object is not present, just add in the list below.
+func NewKogitoClientBuilderWithOpenShift() *fake.ClientBuilder {
 	s := scheme.Scheme
-	s.AddKnownTypes(gv, types...)
-	utilruntime.Must(v1alpha08.AddToScheme(s))
+	utilruntime.Must(routev1.Install(s))
+	utilruntime.Must(buildv1.Install(s))
+	utilruntime.Must(imgv1.Install(s))
+	utilruntime.Must(operatorapi.AddToScheme(s))
 	return fake.NewClientBuilder().WithScheme(s)
 }
 
-func MustGetDeployment(t *testing.T, client ctrl.WithWatch, workflow *v1alpha08.KogitoServerlessWorkflow) *appsv1.Deployment {
+func MustGetDeployment(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.KogitoServerlessWorkflow) *appsv1.Deployment {
 	deployment := &appsv1.Deployment{}
 	return mustGet(t, client, workflow, deployment).(*appsv1.Deployment)
 }
 
-func MustGetService(t *testing.T, client ctrl.WithWatch, workflow *v1alpha08.KogitoServerlessWorkflow) *v1.Service {
+func MustGetService(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.KogitoServerlessWorkflow) *v1.Service {
 	svc := &v1.Service{}
 	return mustGet(t, client, workflow, svc).(*v1.Service)
 }
 
-func MustGetConfigMap(t *testing.T, client ctrl.WithWatch, workflow *v1alpha08.KogitoServerlessWorkflow) *v1.ConfigMap {
+func MustGetConfigMap(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.KogitoServerlessWorkflow) *v1.ConfigMap {
 	cm := &v1.ConfigMap{}
 	return mustGet(t, client, workflow, cm).(*v1.ConfigMap)
 }
 
-func MustGetWorkflow(t *testing.T, client ctrl.WithWatch, name types.NamespacedName) *v1alpha08.KogitoServerlessWorkflow {
-	workflow := &v1alpha08.KogitoServerlessWorkflow{}
+func MustGetWorkflow(t *testing.T, client ctrl.WithWatch, name types.NamespacedName) *operatorapi.KogitoServerlessWorkflow {
+	workflow := &operatorapi.KogitoServerlessWorkflow{}
 	workflow.Name = name.Name
 	workflow.Namespace = name.Namespace
-	return mustGet(t, client, workflow, workflow).(*v1alpha08.KogitoServerlessWorkflow)
+	return mustGet(t, client, workflow, workflow).(*operatorapi.KogitoServerlessWorkflow)
 }
 
-func mustGet(t *testing.T, client ctrl.WithWatch, workflow *v1alpha08.KogitoServerlessWorkflow, obj ctrl.Object) ctrl.Object {
+func mustGet(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.KogitoServerlessWorkflow, obj ctrl.Object) ctrl.Object {
 	err := client.Get(context.TODO(), ctrl.ObjectKeyFromObject(workflow), obj)
 	assert.NoError(t, err)
 	return obj

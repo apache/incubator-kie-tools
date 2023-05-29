@@ -27,7 +27,7 @@ import (
 func Test_ensureWorkflowPropertiesConfigMapMutator(t *testing.T) {
 	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
 	// can't be new
-	cm, _ := workflowDevPropsConfigMapCreator(workflow)
+	cm, _ := workflowPropsConfigMapCreator(workflow)
 	cm.SetUID("1")
 	cm.SetResourceVersion("1")
 	reflectCm := cm.(*v1.ConfigMap)

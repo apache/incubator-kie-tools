@@ -17,26 +17,16 @@
 package client
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
 	user "github.com/mitchellh/go-homedir"
-	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/schema"
-
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util"
-
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/clientcmd"
-	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
-	clientcmdlatest "k8s.io/client-go/tools/clientcmd/api/latest"
-
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
@@ -53,7 +43,6 @@ type Client interface {
 	kubernetes.Interface
 	GetScheme() *runtime.Scheme
 	GetConfig() *rest.Config
-	GetCurrentNamespace(kubeConfig string) (string, error)
 }
 
 // Injectable identifies objects that can receive a Client.
@@ -82,10 +71,6 @@ func (c *defaultClient) GetScheme() *runtime.Scheme {
 
 func (c *defaultClient) GetConfig() *rest.Config {
 	return c.config
-}
-
-func (c *defaultClient) GetCurrentNamespace(kubeConfig string) (string, error) {
-	return GetCurrentNamespace(kubeConfig)
 }
 
 // NewOutOfClusterClient creates a new k8s client that can be used from outside the cluster.
@@ -197,52 +182,6 @@ func getDefaultKubeConfigFile() (string, error) {
 	}
 
 	return filepath.Join(dir, ".kube", "config"), nil
-}
-
-// GetCurrentNamespace --.
-func GetCurrentNamespace(kubeconfig string) (string, error) {
-	if kubeconfig == "" {
-		kubeContainer, err := shouldUseContainerMode()
-		if err != nil {
-			return "", err
-		}
-		if kubeContainer {
-			return getNamespaceFromKubernetesContainer()
-		}
-	}
-	if kubeconfig == "" {
-		var err error
-		kubeconfig, err = getDefaultKubeConfigFile()
-		if err != nil {
-			logrus.Errorf("Cannot get information about current user: %v", err)
-		}
-	}
-	if kubeconfig == "" {
-		return "default", nil
-	}
-
-	data, err := util.ReadFile(kubeconfig)
-	if err != nil {
-		return "", err
-	}
-	conf := clientcmdapi.NewConfig()
-	if len(data) == 0 {
-		return "", errors.New("kubernetes config file is empty")
-	}
-
-	decoded, _, err := clientcmdlatest.Codec.Decode(data, &schema.GroupVersionKind{Version: clientcmdlatest.Version, Kind: "Config"}, conf)
-	if err != nil {
-		return "", err
-	}
-
-	clientcmdconfig, ok := decoded.(*clientcmdapi.Config)
-	if !ok {
-		return "", fmt.Errorf("type assertion failed: %v", decoded)
-	}
-
-	cc := clientcmd.NewDefaultClientConfig(*clientcmdconfig, &clientcmd.ConfigOverrides{})
-	ns, _, err := cc.Namespace()
-	return ns, err
 }
 
 func shouldUseContainerMode() (bool, error) {

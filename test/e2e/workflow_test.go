@@ -175,32 +175,6 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 		projectDir, _ := utils.GetProjectDir()
 
 		It("should create a basic platform for Minikube", func() {
-			By("creating builder roles")
-			EventuallyWithOffset(1, func() error {
-				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					"resources/builder/builder-service-account.yaml"), "-n", namespace)
-				_, err := utils.Run(cmd)
-				if err != nil {
-					return err
-				}
-
-				cmd = exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					"resources/builder/builder-role.yaml"), "-n", namespace)
-				_, err = utils.Run(cmd)
-				if err != nil {
-					return err
-				}
-
-				cmd = exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					"resources/builder/builder-role-binding.yaml"), "-n", namespace)
-				_, err = utils.Run(cmd)
-				if err != nil {
-					return err
-				}
-
-				return nil
-			}, time.Minute, time.Second).Should(Succeed())
-
 			By("creating an instance of the Kogito Serverless Platform")
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
@@ -243,6 +217,11 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 			By("check the workflow is in running state")
 			EventuallyWithOffset(1, verifyWorkflowIsInRunningState, 5*time.Minute, 30*time.Second).Should(BeTrue())
 
+			cmdLog := exec.Command("kubectl", "logs", "kogito-greeting-builder", "-n", namespace)
+			if responseLog, errLog := utils.Run(cmdLog); errLog == nil {
+				GinkgoWriter.Println(fmt.Sprintf("builder podlog %s", responseLog))
+			}
+
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "delete", "-f", filepath.Join(projectDir,
 					"config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR), "-n", namespace)
@@ -260,10 +239,6 @@ func verifyWorkflowIsInRunningState() bool {
 		return false
 	} else {
 		GinkgoWriter.Println(fmt.Sprintf("Got response %s", response))
-		cmdLog := exec.Command("kubectl", "logs", "kogito-greeting-builder", "-n", namespace)
-		if responseLog, errLog := utils.Run(cmdLog); errLog == nil {
-			GinkgoWriter.Println(fmt.Sprintf("Got PodLog %s", responseLog))
-		}
 
 		if len(strings.TrimSpace(string(response))) > 0 {
 			status, err := strconv.ParseBool(string(response))

@@ -18,10 +18,10 @@ import (
 	"flag"
 	"os"
 
-	"github.com/RHsyseng/operator-utils/pkg/utils/openshift"
-	routev1 "github.com/openshift/api/route/v1"
+	"github.com/kiegroup/kogito-serverless-operator/utils"
 
 	"github.com/kiegroup/kogito-serverless-operator/controllers"
+	ocputil "github.com/kiegroup/kogito-serverless-operator/utils/openshift"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
@@ -79,6 +79,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	utils.SetIsOpenShift(mgr.GetConfig())
+
 	if err = (&controllers.KogitoServerlessWorkflowReconciler{
 		Client:   mgr.GetClient(),
 		Scheme:   mgr.GetScheme(),
@@ -91,6 +93,7 @@ func main() {
 	if err = (&controllers.KogitoServerlessBuildReconciler{
 		Client:   mgr.GetClient(),
 		Scheme:   mgr.GetScheme(),
+		Config:   mgr.GetConfig(),
 		Recorder: mgr.GetEventRecorderFor("build-controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "KogitoServerlessBuild")
@@ -109,15 +112,8 @@ func main() {
 	}
 	//+kubebuilder:scaffold:builder
 
-	// Add Route scheme if we are on OpenShift
-	if isOpenShift, err := openshift.IsOpenShift(mgr.GetConfig()); err != nil {
-		setupLog.Error(err, "Unable to verify if we are or not on OpenShift")
-		os.Exit(1)
-	} else if isOpenShift {
-		if err = routev1.AddToScheme(mgr.GetScheme()); err != nil {
-			setupLog.Error(err, "Unable to add Route crd to the client")
-			os.Exit(1)
-		}
+	if utils.IsOpenShift() {
+		ocputil.MustAddToScheme(mgr.GetScheme())
 	}
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {

@@ -54,18 +54,17 @@ func NewCustomConfig(platform operatorapi.KogitoServerlessPlatform) (map[string]
 }
 
 // GetCommonConfigMap retrieves the config map with the builder common configuration information
-func GetCommonConfigMap(client client.Client, fallbackNS string) (corev1.ConfigMap, error) {
-
+func GetCommonConfigMap(client client.Client, fallbackNS string) (*corev1.ConfigMap, error) {
 	namespace, found := os.LookupEnv(envVarPodNamespaceName)
 	if !found {
 		namespace = fallbackNS
 	}
 
 	if !found && len(namespace) == 0 {
-		return corev1.ConfigMap{}, errors.Errorf("Can't find current context namespace, make sure that %s env is set", envVarPodNamespaceName)
+		return nil, errors.Errorf("Can't find current context namespace, make sure that %s env is set", envVarPodNamespaceName)
 	}
 
-	existingConfigMap := corev1.ConfigMap{
+	existingConfigMap := &corev1.ConfigMap{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ConfigMap",
 			APIVersion: "v1",
@@ -77,10 +76,10 @@ func GetCommonConfigMap(client client.Client, fallbackNS string) (corev1.ConfigM
 		Data: map[string]string{},
 	}
 
-	err := client.Get(context.TODO(), types.NamespacedName{Name: ConfigMapName, Namespace: namespace}, &existingConfigMap)
+	err := client.Get(context.TODO(), types.NamespacedName{Name: ConfigMapName, Namespace: namespace}, existingConfigMap)
 	if err != nil {
 		log.Error(err, "fetching configmap "+ConfigMapName)
-		return corev1.ConfigMap{}, err
+		return nil, err
 	}
 
 	err = isValidBuilderCommonConfigMap(existingConfigMap)
@@ -93,7 +92,7 @@ func GetCommonConfigMap(client client.Client, fallbackNS string) (corev1.ConfigM
 }
 
 // isValidBuilderCommonConfigMap  function that will verify that in the builder config maps there are the required keys, and they aren't empty
-func isValidBuilderCommonConfigMap(configMap corev1.ConfigMap) error {
+func isValidBuilderCommonConfigMap(configMap *corev1.ConfigMap) error {
 
 	// Verifying that the key to hold the extension for the workflow is there and not empty
 	if len(configMap.Data[configKeyDefaultExtension]) == 0 {

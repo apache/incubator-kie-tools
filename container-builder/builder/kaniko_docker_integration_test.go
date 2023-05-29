@@ -57,8 +57,8 @@ func (suite *KanikoDockerTestSuite) TestKanikoBuild() {
 	imageID, error := KanikoBuild(suite.Docker.Connection, config)
 	timeElapsed := time.Since(start)
 	logrus.Infof("The Kaniko build took %s", timeElapsed)
-	assert.Nil(suite.T(), error, "Build failed")
-	assert.NotNil(suite.T(), imageID, error, "Build failed")
+	assert.Nil(suite.T(), error, "ContainerBuild failed")
+	assert.NotNil(suite.T(), imageID, error, "ContainerBuild failed")
 	//@TODO investigate when the code will be in the mono repo
 	//checkImageOnDockerRegistry(suite, imageName, repos, registry)
 }

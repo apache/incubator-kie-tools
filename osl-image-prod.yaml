@@ -42,10 +42,6 @@
       value: osl,kogito,serverless,workflow,operator
 
   artifacts:
-    - path: /workspace/resources
-      image: operator-builder
-      dest: /usr/local/etc
-      name: serverless-operator
     - path: /workspace/manager
       image: operator-builder
       dest: /usr/local/bin

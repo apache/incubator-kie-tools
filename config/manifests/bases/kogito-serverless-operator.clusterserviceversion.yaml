@@ -52,7 +52,7 @@ spec:
   - serverlessworkflow
   links:
   - name: Kogito Serverless Operator
-    url: https://kogito-serverless-operator.domain
+    url: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/index.html
   maturity: alpha
   provider:
     name: kogito-serverlessworkflow-operator

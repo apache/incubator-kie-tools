@@ -20,7 +20,7 @@ import (
 	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
-// NewCreateAction returns a action that creates resources needed by the platform.
+// NewCreateAction returns an action that creates resources needed by the platform.
 func NewCreateAction() Action {
 	return &createAction{}
 }

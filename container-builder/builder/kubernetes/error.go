@@ -1,18 +1,16 @@
-/*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2022 Red Hat, Inc. and/or its affiliates
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package kubernetes
 
@@ -36,11 +34,11 @@ func (action *errorAction) Name() string {
 }
 
 // CanHandle tells whether this action can handle the build.
-func (action *errorAction) CanHandle(build *api.Build) bool {
-	return build.Status.Phase == api.BuildPhaseError
+func (action *errorAction) CanHandle(build *api.ContainerBuild) bool {
+	return build.Status.Phase == api.ContainerBuildPhaseError
 }
 
 // Handle handles the builds.
-func (action *errorAction) Handle(ctx context.Context, build *api.Build) (*api.Build, error) {
+func (action *errorAction) Handle(ctx context.Context, build *api.ContainerBuild) (*api.ContainerBuild, error) {
 	return nil, nil
 }

@@ -12,10 +12,24 @@ spec:
     kind: KogitoServerlessPlatform
     listKind: KogitoServerlessPlatformList
     plural: kogitoserverlessplatforms
+    shortNames:
+    - ksp
+    - kplatform
+    - kplatforms
     singular: kogitoserverlessplatform
   scope: Namespaced
   versions:
-  - name: v1alpha08
+  - additionalPrinterColumns:
+    - jsonPath: .status.cluster
+      name: Cluster
+      type: string
+    - jsonPath: .status.phase
+      name: Phase
+      type: string
+    - jsonPath: .status.phase=='Ready'
+      name: Ready
+      type: string
+    name: v1alpha08
     schema:
       openAPIV3Schema:
         description: KogitoServerlessPlatform is the Schema for the kogitoserverlessplatforms
@@ -38,109 +52,64 @@ spec:
               KogitoServerlessPlatform
             properties:
               build:
-                description: Build specify how to build the Workflow
+                description: BuildTemplate specify how to build the Workflow. It's
+                  used as a template for the KogitoServerlessBuild
                 properties:
-                  strategy:
-                    description: The strategy that should be used to perform the Build.
-                    enum:
-                    - routine
-                    - pod
-                    type: string
-                  tasks:
-                    description: The sequence of Build tasks to be performed as part
-                      of the Build execution.
+                  arguments:
+                    description: Arguments lists the command line arguments to send
+                      to the builder
                     items:
-                      description: Task represents the abstract task. Only one of
-                        the task should be configured to represent the specific task
-                        chosen.
-                      properties:
-                        kaniko:
-                          description: a KanikoTask, for Kaniko strategy
-                          properties:
-                            additionalFlags:
-                              description: AdditionalFlags -- List of additional flags
-                                for  the Kaniko process (see https://github.com/GoogleContainerTools/kaniko/blob/main/README.md#additional-flags)
-                              items:
-                                type: string
-                              type: array
-                            baseImage:
-                              description: base image layer
-                              type: string
-                            cache:
-                              description: use a cache
-                              properties:
-                                enabled:
-                                  description: true if a cache is enabled
-                                  type: boolean
-                                persistentVolumeClaim:
-                                  description: the PVC used to store the cache
-                                  type: string
-                              type: object
-                            contextDir:
-                              description: can be useful to share info with other
-                                tasks
-                              type: string
-                            image:
-                              description: final image name
-                              type: string
-                            name:
-                              description: name of the task
-                              type: string
-                            registry:
-                              description: where to publish the final image
-                              properties:
-                                address:
-                                  description: the URI to access
-                                  type: string
-                                ca:
-                                  description: the configmap which stores the Certificate
-                                    Authority
-                                  type: string
-                                insecure:
-                                  description: if the container registry is insecure
-                                    (ie, http only)
-                                  type: boolean
-                                organization:
-                                  description: the registry organization
-                                  type: string
-                                secret:
-                                  description: the secret where credentials are stored
-                                  type: string
-                              type: object
-                            resources:
-                              description: Resources -- optional compute resource
-                                requirements for the Kaniko container
-                              properties:
-                                limits:
-                                  additionalProperties:
-                                    anyOf:
-                                    - type: integer
-                                    - type: string
-                                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                    x-kubernetes-int-or-string: true
-                                  description: 'Limits describes the maximum amount
-                                    of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                                  type: object
-                                requests:
-                                  additionalProperties:
-                                    anyOf:
-                                    - type: integer
-                                    - type: string
-                                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                    x-kubernetes-int-or-string: true
-                                  description: 'Requests describes the minimum amount
-                                    of compute resources required. If Requests is
-                                    omitted for a container, it defaults to Limits
-                                    if that is explicitly specified, otherwise to
-                                    an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                                  type: object
-                              type: object
-                            verbose:
-                              description: log more information
-                              type: boolean
-                          type: object
-                      type: object
+                      type: string
                     type: array
+                  resources:
+                    description: Resources optional compute resource requirements
+                      for the builder
+                    properties:
+                      claims:
+                        description: "Claims lists the names of resources, defined
+                          in spec.resourceClaims, that are used by this container.
+                          \n This is an alpha field and requires enabling the DynamicResourceAllocation
+                          feature gate. \n This field is immutable. It can only be
+                          set for containers."
+                        items:
+                          description: ResourceClaim references one entry in PodSpec.ResourceClaims.
+                          properties:
+                            name:
+                              description: Name must match the name of one entry in
+                                pod.spec.resourceClaims of the Pod where this field
+                                is used. It makes that resource available inside a
+                                container.
+                              type: string
+                          required:
+                          - name
+                          type: object
+                        type: array
+                        x-kubernetes-list-map-keys:
+                        - name
+                        x-kubernetes-list-type: map
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: 'Limits describes the maximum amount of compute
+                          resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: 'Requests describes the minimum amount of compute
+                          resources required. If Requests is omitted for a container,
+                          it defaults to Limits if that is explicitly specified, otherwise
+                          to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                        type: object
+                    type: object
                   timeout:
                     description: Timeout defines the Build maximum execution duration.
                       The Build deadline is set to the Build start time plus the Timeout
@@ -149,13 +118,6 @@ spec:
                     format: duration
                     type: string
                 type: object
-              cluster:
-                description: Cluster what kind of cluster you're running (ie, plain
-                  Kubernetes or OpenShift)
-                enum:
-                - kubernetes
-                - openshift
-                type: string
               configuration:
                 description: Configuration list of configuration properties to be
                   attached to all the Workflow built from this Platform
@@ -201,39 +163,40 @@ spec:
                         description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
                         type: string
                     type: object
+                    x-kubernetes-map-type: atomic
                 required:
                 - type
                 - value
                 type: object
               devBaseImage:
-                description: DevBaseImage, optional, used for the dev profile only
+                description: DevBaseImage Base image to run the Workflow in dev mode
+                  instead of the operator's default. Optional, used for the dev profile
+                  only
                 type: string
               platform:
                 description: BuildPlatform specify how is the platform where we want
                   to build the Workflow
                 properties:
-                  PublishStrategyOptions:
-                    additionalProperties:
-                      type: string
-                    type: object
                   baseImage:
                     description: a base image that can be used as base layer for all
                       images. It can be useful if you want to provide some custom
                       base image with further utility software
                     type: string
                   buildStrategy:
-                    description: the strategy to adopt for building an Integration
-                      base image
-                    enum:
-                    - routine
-                    - pod
+                    description: BuildStrategy to use to build workflows in the platform.
+                      Usually, the operator elect the strategy based on the platform.
+                      Note that this field might be read only in certain scenarios.
                     type: string
-                  publishStrategy:
-                    description: the strategy to adopt for publishing an Integration
-                      base image
-                    type: string
+                  buildStrategyOptions:
+                    additionalProperties:
+                      type: string
+                    description: 'TODO: add a link to the documentation where the
+                      user can find more info about this field BuildStrategyOptions
+                      additional options to add to the build strategy.'
+                    type: object
                   registry:
-                    description: the image registry used to push/pull built images
+                    description: Registry the registry where to publish the built
+                      image
                     properties:
                       address:
                         description: the URI to access
@@ -261,118 +224,6 @@ spec:
             description: KogitoServerlessPlatformStatus defines the observed state
               of KogitoServerlessPlatform
             properties:
-              build:
-                description: Build specify how to build the Workflow
-                properties:
-                  strategy:
-                    description: The strategy that should be used to perform the Build.
-                    enum:
-                    - routine
-                    - pod
-                    type: string
-                  tasks:
-                    description: The sequence of Build tasks to be performed as part
-                      of the Build execution.
-                    items:
-                      description: Task represents the abstract task. Only one of
-                        the task should be configured to represent the specific task
-                        chosen.
-                      properties:
-                        kaniko:
-                          description: a KanikoTask, for Kaniko strategy
-                          properties:
-                            additionalFlags:
-                              description: AdditionalFlags -- List of additional flags
-                                for  the Kaniko process (see https://github.com/GoogleContainerTools/kaniko/blob/main/README.md#additional-flags)
-                              items:
-                                type: string
-                              type: array
-                            baseImage:
-                              description: base image layer
-                              type: string
-                            cache:
-                              description: use a cache
-                              properties:
-                                enabled:
-                                  description: true if a cache is enabled
-                                  type: boolean
-                                persistentVolumeClaim:
-                                  description: the PVC used to store the cache
-                                  type: string
-                              type: object
-                            contextDir:
-                              description: can be useful to share info with other
-                                tasks
-                              type: string
-                            image:
-                              description: final image name
-                              type: string
-                            name:
-                              description: name of the task
-                              type: string
-                            registry:
-                              description: where to publish the final image
-                              properties:
-                                address:
-                                  description: the URI to access
-                                  type: string
-                                ca:
-                                  description: the configmap which stores the Certificate
-                                    Authority
-                                  type: string
-                                insecure:
-                                  description: if the container registry is insecure
-                                    (ie, http only)
-                                  type: boolean
-                                organization:
-                                  description: the registry organization
-                                  type: string
-                                secret:
-                                  description: the secret where credentials are stored
-                                  type: string
-                              type: object
-                            resources:
-                              description: Resources -- optional compute resource
-                                requirements for the Kaniko container
-                              properties:
-                                limits:
-                                  additionalProperties:
-                                    anyOf:
-                                    - type: integer
-                                    - type: string
-                                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                    x-kubernetes-int-or-string: true
-                                  description: 'Limits describes the maximum amount
-                                    of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                                  type: object
-                                requests:
-                                  additionalProperties:
-                                    anyOf:
-                                    - type: integer
-                                    - type: string
-                                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                    x-kubernetes-int-or-string: true
-                                  description: 'Requests describes the minimum amount
-                                    of compute resources required. If Requests is
-                                    omitted for a container, it defaults to Limits
-                                    if that is explicitly specified, otherwise to
-                                    an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                                  type: object
-                              type: object
-                            verbose:
-                              description: log more information
-                              type: boolean
-                          type: object
-                      type: object
-                    type: array
-                  timeout:
-                    description: Timeout defines the Build maximum execution duration.
-                      The Build deadline is set to the Build start time plus the Timeout
-                      duration. If the Build deadline is exceeded, the Build context
-                      is canceled, and its phase set to BuildPhaseFailed.
-                    format: duration
-                    type: string
-                type: object
               cluster:
                 description: Cluster what kind of cluster you're running (ie, plain
                   Kubernetes or OpenShift)
@@ -414,58 +265,6 @@ spec:
                   - type
                   type: object
                 type: array
-              configuration:
-                description: Configuration list of configuration properties to be
-                  attached to all the Workflow built from this Platform
-                properties:
-                  type:
-                    description: 'Type represents the type of configuration, ie: property,
-                      configmap, secret, ...'
-                    type: string
-                  value:
-                    description: Value a reference to the object for this configuration
-                      (syntax may vary depending on the `Type`)
-                    properties:
-                      apiVersion:
-                        description: API version of the referent.
-                        type: string
-                      fieldPath:
-                        description: 'If referring to a piece of an object instead
-                          of an entire object, this string should contain a valid
-                          JSON/Go field access statement, such as desiredState.manifest.containers[2].
-                          For example, if the object reference is to a container within
-                          a pod, this would take on a value like: "spec.containers{name}"
-                          (where "name" refers to the name of the container that triggered
-                          the event) or if no container name is specified "spec.containers[2]"
-                          (container with index 2 in this pod). This syntax is chosen
-                          only to have some well-defined way of referencing a part
-                          of an object. TODO: this design is not final and this field
-                          is subject to change in the future.'
-                        type: string
-                      kind:
-                        description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-                        type: string
-                      name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                        type: string
-                      namespace:
-                        description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                        type: string
-                      resourceVersion:
-                        description: 'Specific resourceVersion to which this reference
-                          is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
-                        type: string
-                      uid:
-                        description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
-                        type: string
-                    type: object
-                required:
-                - type
-                - value
-                type: object
-              devBaseImage:
-                description: DevBaseImage, optional, used for the dev profile only
-                type: string
               info:
                 additionalProperties:
                   type: string
@@ -480,54 +279,6 @@ spec:
               phase:
                 description: Phase defines in what phase the Platform is found
                 type: string
-              platform:
-                description: BuildPlatform specify how is the platform where we want
-                  to build the Workflow
-                properties:
-                  PublishStrategyOptions:
-                    additionalProperties:
-                      type: string
-                    type: object
-                  baseImage:
-                    description: a base image that can be used as base layer for all
-                      images. It can be useful if you want to provide some custom
-                      base image with further utility software
-                    type: string
-                  buildStrategy:
-                    description: the strategy to adopt for building an Integration
-                      base image
-                    enum:
-                    - routine
-                    - pod
-                    type: string
-                  publishStrategy:
-                    description: the strategy to adopt for publishing an Integration
-                      base image
-                    type: string
-                  registry:
-                    description: the image registry used to push/pull built images
-                    properties:
-                      address:
-                        description: the URI to access
-                        type: string
-                      ca:
-                        description: the configmap which stores the Certificate Authority
-                        type: string
-                      insecure:
-                        description: if the container registry is insecure (ie, http
-                          only)
-                        type: boolean
-                      organization:
-                        description: the registry organization
-                        type: string
-                      secret:
-                        description: the secret where credentials are stored
-                        type: string
-                    type: object
-                  timeout:
-                    description: how much time to wait before time out the build process
-                    type: string
-                type: object
               version:
                 description: Version the Kogito Serverless operator version controlling
                   this Platform

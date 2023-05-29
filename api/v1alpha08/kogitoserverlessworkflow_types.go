@@ -71,16 +71,21 @@ func (s *KogitoServerlessWorkflowStatus) IsWaitingForBuild() bool {
 	return cond.IsFalse() && cond.Reason == api.WaitingForBuildReason
 }
 
-func (s *KogitoServerlessWorkflowStatus) IsBuildRunning() bool {
+func (s *KogitoServerlessWorkflowStatus) IsBuildRunningOrUnknown() bool {
 	cond := s.GetCondition(api.BuiltConditionType)
 	return cond.IsUnknown() || (cond.IsFalse() && cond.Reason == api.BuildIsRunningReason)
+}
+
+func (s *KogitoServerlessWorkflowStatus) IsBuildFailed() bool {
+	cond := s.GetCondition(api.BuiltConditionType)
+	return cond.IsFalse() && cond.Reason == api.BuildFailedReason
 }
 
 // KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows API
 // +kubebuilder:object:root=true
 // +kubebuilder:object:generate=true
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:shortName={"ksw", "workflow"}
+// +kubebuilder:resource:shortName={"ksw", "workflow", "workflows"}
 // +k8s:openapi-gen=true
 // +kubebuilder:printcolumn:name="Profile",type=string,JSONPath=`.metadata.annotations.sw\.kogito\.kie\.org\/profile`
 // +kubebuilder:printcolumn:name="Version",type=string,JSONPath=`.metadata.annotations.sw\.kogito\.kie\.org\/version`

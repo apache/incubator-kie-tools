@@ -23,7 +23,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
-	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
 func NewWarmAction(reader ctrl.Reader) Action {
@@ -41,11 +41,11 @@ func (action *warmAction) Name() string {
 	return "warm"
 }
 
-func (action *warmAction) CanHandle(platform *v08.KogitoServerlessPlatform) bool {
-	return platform.Status.Phase == v08.PlatformPhaseWarming
+func (action *warmAction) CanHandle(platform *operatorapi.KogitoServerlessPlatform) bool {
+	return platform.Status.Phase == operatorapi.PlatformPhaseWarming
 }
 
-func (action *warmAction) Handle(ctx context.Context, platform *v08.KogitoServerlessPlatform) (*v08.KogitoServerlessPlatform, error) {
+func (action *warmAction) Handle(ctx context.Context, platform *operatorapi.KogitoServerlessPlatform) (*operatorapi.KogitoServerlessPlatform, error) {
 	// Check Kaniko warmer pod status
 	pod := corev1.Pod{
 		TypeMeta: metav1.TypeMeta{
@@ -66,7 +66,7 @@ func (action *warmAction) Handle(ctx context.Context, platform *v08.KogitoServer
 	switch pod.Status.Phase {
 	case corev1.PodSucceeded:
 		action.Logger.Info("Kaniko cache successfully warmed up")
-		platform.Status.Phase = v08.PlatformPhaseCreating
+		platform.Status.Phase = operatorapi.PlatformPhaseCreating
 		return platform, nil
 	case corev1.PodFailed:
 		return nil, errors.New("failed to warm up Kaniko cache")

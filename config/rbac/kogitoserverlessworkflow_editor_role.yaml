@@ -4,21 +4,21 @@ kind: ClusterRole
 metadata:
   name: kogitoserverlessworkflow-editor-role
 rules:
-- apiGroups:
-  - sw.kogito.kie.org
-  resources:
-  - kogitoserverlessworkflows
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - sw.kogito.kie.org
-  resources:
-  - kogitoserverlessworkflows/status
-  verbs:
-  - get
+  - apiGroups:
+      - sw.kogito.kie.org
+    resources:
+      - kogitoserverlessworkflows
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - sw.kogito.kie.org
+    resources:
+      - kogitoserverlessworkflows/status
+    verbs:
+      - get

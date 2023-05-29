@@ -14,10 +14,24 @@
 
 package kubernetes
 
-import ctrl "sigs.k8s.io/controller-runtime/pkg/client"
+import (
+	v1 "k8s.io/api/core/v1"
+	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
+)
 
 // IsObjectNew verifies if the given object hasn't been created in the cluster
 func IsObjectNew(object ctrl.Object) bool {
 	// UID should be enough, but we check for resourceVersion because the Fake client won't set UIDs, failing our tests
 	return len(object.GetUID()) == 0 && len(object.GetResourceVersion()) == 0
+}
+
+// ToTypedLocalReference ...
+func ToTypedLocalReference(object ctrl.Object) *v1.TypedLocalObjectReference {
+	apiGroup := object.GetObjectKind().GroupVersionKind().GroupVersion().String()
+	return &v1.TypedLocalObjectReference{
+		APIGroup: &apiGroup,
+		Kind:     object.GetObjectKind().GroupVersionKind().Kind,
+		Name:     object.GetName(),
+	}
+
 }

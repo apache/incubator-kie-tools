@@ -24,11 +24,9 @@ import (
 
 	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/builder"
 )
 
 const (
@@ -61,10 +59,10 @@ func (action *initializeAction) Handle(ctx context.Context, platform *operatorap
 	if duplicate {
 		// another platform already present in the namespace
 		if platform.Status.Phase != operatorapi.PlatformPhaseDuplicate {
-			platform := platform.DeepCopy()
-			platform.Status.Phase = operatorapi.PlatformPhaseDuplicate
+			plat := platform.DeepCopy()
+			plat.Status.Phase = operatorapi.PlatformPhaseDuplicate
 
-			return platform, nil
+			return plat, nil
 		}
 
 		return nil, nil
@@ -74,9 +72,9 @@ func (action *initializeAction) Handle(ctx context.Context, platform *operatorap
 		return nil, err
 	}
 	// nolint: staticcheck
-	if platform.Status.KogitoServerlessPlatformSpec.BuildPlatform.PublishStrategy == api.PlatformBuildPublishStrategyKaniko {
+	if platform.Spec.BuildPlatform.BuildStrategy == operatorapi.OperatorBuildStrategy {
 		//If KanikoCache is enabled
-		if platform.Status.KogitoServerlessPlatformSpec.BuildPlatform.IsOptionEnabled(builder.KanikoBuildCacheEnabled) {
+		if IsKanikoCacheEnabled(platform) {
 			// Create the persistent volume claim used by the Kaniko cache
 			action.Logger.Info("Create persistent volume claim")
 			err := createPersistentVolumeClaim(ctx, action.client, platform)
@@ -111,7 +109,7 @@ func createPersistentVolumeClaim(ctx context.Context, client client.Client, plat
 	}
 	// nolint: staticcheck
 	pvcName := defaultKanikoCachePVCName
-	if persistentVolumeClaim, found := platform.Status.BuildPlatform.PublishStrategyOptions[builder.KanikoPVCName]; found {
+	if persistentVolumeClaim, found := platform.Spec.BuildPlatform.BuildStrategyOptions[kanikoPVCName]; found {
 		pvcName = persistentVolumeClaim
 	}
 

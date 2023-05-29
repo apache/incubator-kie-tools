@@ -22,6 +22,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 
+	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+
 	"github.com/kiegroup/kogito-serverless-operator/utils"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
@@ -97,16 +99,16 @@ func Test_newDevProfile(t *testing.T) {
 
 	// check if the objects have been created
 	deployment := test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, getDefaultKogitoServerlessWorkflowDevImageTag(), deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, workflowdef.GetDefaultWorkflowDevModeImageTag(), deployment.Spec.Template.Spec.Containers[0].Image)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].LivenessProbe)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].ReadinessProbe)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].StartupProbe)
 
 	defCM := test.MustGetConfigMap(t, client, workflow)
-	assert.NotEmpty(t, defCM.Data[workflow.Name+kogitoWorkflowJSONFileExt])
+	assert.NotEmpty(t, defCM.Data[workflow.Name+workflowdef.KogitoWorkflowJSONFileExt])
 	assert.Equal(t, configMapWorkflowDefMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
 	assert.Equal(t, "", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].SubPath) //https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically
-	assert.Equal(t, configMountPathMap[WORKFLOW], deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
+	assert.Equal(t, quarkusDevConfigMountPath+"/workflows", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
 
 	propCM := &v1.ConfigMap{}
 	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: getWorkflowPropertiesConfigMapName(workflow)}, propCM)
@@ -156,7 +158,7 @@ func Test_newDevProfile(t *testing.T) {
 	assert.NotNil(t, result)
 
 	deployment = test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, getDefaultKogitoServerlessWorkflowDevImageTag(), deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, workflowdef.GetDefaultWorkflowDevModeImageTag(), deployment.Spec.Template.Spec.Containers[0].Image)
 }
 
 func Test_devProfileImageDefaultsNoPlatform(t *testing.T) {
@@ -172,7 +174,7 @@ func Test_devProfileImageDefaultsNoPlatform(t *testing.T) {
 
 	// check if the objects have been created
 	deployment := test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, getDefaultKogitoServerlessWorkflowDevImageTag(), deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, workflowdef.GetDefaultWorkflowDevModeImageTag(), deployment.Spec.Template.Spec.Containers[0].Image)
 }
 
 func Test_devProfileWithImageSnapshotOverrideWithPlatform(t *testing.T) {
@@ -218,7 +220,7 @@ func Test_devProfileWithWPlatformWithoutDevBaseImageAndWithBaseImage(t *testing.
 
 	// check if the objects have been created
 	deployment := test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, getDefaultKogitoServerlessWorkflowDevImageTag(), deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, workflowdef.GetDefaultWorkflowDevModeImageTag(), deployment.Spec.Template.Spec.Containers[0].Image)
 }
 
 func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testing.T) {
@@ -241,7 +243,7 @@ func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testin
 
 	// check if the objects have been created
 	deployment := test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, getDefaultKogitoServerlessWorkflowDevImageTag(), deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, workflowdef.GetDefaultWorkflowDevModeImageTag(), deployment.Spec.Template.Spec.Containers[0].Image)
 }
 
 func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
@@ -290,11 +292,11 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	props := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1]
 	extCamel := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[2]
 	assert.Equal(t, wd.Name, configMapWorkflowDefVolumeName)
-	assert.Equal(t, wd.MountPath, configMountPathMap[WORKFLOW])
+	assert.Equal(t, wd.MountPath, configMapWorkflowDefMountPath)
 	assert.Equal(t, props.Name, configMapWorkflowPropsVolumeName)
 	assert.Equal(t, props.MountPath, quarkusDevConfigMountPath)
 	assert.Equal(t, extCamel.Name, configmapName)
-	assert.Equal(t, extCamel.MountPath, configMountPathMap[CAMEL])
+	assert.Equal(t, extCamel.MountPath, externalResourceTypeMountPathDevMode[workflowdef.ExternalResourceCamel])
 
 	cmData[camelYamlRouteFileName] = yamlRoute
 	errUpdate := client.Update(context.Background(), cmUser)
@@ -316,7 +318,7 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 
 	extCamelRouteOne := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[2]
 	assert.Equal(t, extCamelRouteOne.Name, configmapName)
-	assert.Equal(t, extCamelRouteOne.MountPath, configMountPathMap[CAMEL])
+	assert.Equal(t, extCamelRouteOne.MountPath, externalResourceTypeMountPathDevMode[workflowdef.ExternalResourceCamel])
 
 	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
 	err = client.Update(context.TODO(), workflow)
@@ -347,7 +349,7 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
 	wd = deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0]
 	assert.Equal(t, wd.Name, configMapWorkflowDefVolumeName)
-	assert.Equal(t, wd.MountPath, configMountPathMap[WORKFLOW])
+	assert.Equal(t, wd.MountPath, configMapWorkflowDefMountPath)
 }
 
 func createConfigMapBase(namespace string, name string, cmData map[string]string) clientruntime.Object {

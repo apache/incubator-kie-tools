@@ -20,6 +20,12 @@ rules:
 - apiGroups:
   - sw.kogito.kie.org
   resources:
+  - kogitoserverlessbuilds/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - sw.kogito.kie.org
+  resources:
   - kogitoserverlessbuilds/status
   verbs:
   - get
@@ -77,11 +83,3 @@ rules:
   - get
   - patch
   - update
-- apiGroups:
-  - sw.kogito.kie.org
-  resources:
-  - pods
-  verbs:
-  - get
-  - list
-  - watch

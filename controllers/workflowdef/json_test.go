@@ -1,4 +1,4 @@
-// Copyright 2022 Red Hat, Inc. and/or its affiliates
+// Copyright 2023 Red Hat, Inc. and/or its affiliates
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package utils
+package workflowdef
 
 import (
 	"context"
 	"testing"
 
 	"github.com/serverlessworkflow/sdk-go/v2/model"
-
 	"github.com/stretchr/testify/assert"
 
 	"github.com/kiegroup/kogito-serverless-operator/test"
@@ -28,7 +27,7 @@ import (
 func TestKogitoServerlessWorkflowConverter(t *testing.T) {
 	t.Run("verify that when KogitoServerlessWorkflow CR is nil an error is returned", func(t *testing.T) {
 		// Create a KogitoServerlessWorkflow object with metadata and spec.
-		ksw := test.GetKogitoServerlessWorkflow("../config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml", t.Name())
+		ksw := test.GetKogitoServerlessWorkflow("../../config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml", t.Name())
 		out, err := ToCNCFWorkflow(context.TODO(), ksw)
 		assert.NoError(t, err)
 		assert.True(t, out != nil)

@@ -43,12 +43,6 @@ func NewKogitoServerlessPlatform(namespace string, name string) KogitoServerless
 	}
 }
 
-// ResyncStatusFullConfig copies the spec configuration into the status field.
-func (in *KogitoServerlessPlatform) ResyncStatusFullConfig() {
-	cl := in.Spec.DeepCopy()
-	in.Status.KogitoServerlessPlatformSpec = *cl
-}
-
 // GetCondition returns the condition with the provided type.
 func (in *KogitoServerlessPlatformStatus) GetCondition(condType PlatformConditionType) *PlatformCondition {
 	for i := range in.Conditions {

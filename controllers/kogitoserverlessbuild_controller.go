@@ -19,38 +19,39 @@ import (
 	"fmt"
 	"time"
 
-	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-
-	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
-
-	"github.com/go-logr/logr"
+	buildv1 "github.com/openshift/api/build/v1"
+	imgv1 "github.com/openshift/api/image/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
-	clientr "github.com/kiegroup/kogito-serverless-operator/container-builder/client"
+	"github.com/kiegroup/kogito-serverless-operator/utils"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/controllers/builder"
-	"github.com/kiegroup/kogito-serverless-operator/utils"
 )
 
 // KogitoServerlessBuildReconciler reconciles a KogitoServerlessBuild object
 type KogitoServerlessBuildReconciler struct {
 	client.Client
-	Scheme          *runtime.Scheme
-	Recorder        record.EventRecorder
-	commonBuildConf corev1.ConfigMap
+	Scheme   *runtime.Scheme
+	Recorder record.EventRecorder
+	Config   *rest.Config
 }
+
+const (
+	requeueAfterForNewBuild     = 10 * time.Second
+	requeueAfterForBuildRunning = 30 * time.Second
+)
 
 // +kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessbuilds,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessbuilds/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessbuilds/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -68,83 +69,58 @@ func (r *KogitoServerlessBuildReconciler) Reconcile(ctx context.Context, req ctr
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil
 		}
-		log.Error(err, "Failed to get KogitoServerlessWorkflow")
+		log.Error(err, "Failed to get the KogitoServerlessBuild")
 		return ctrl.Result{}, err
 	}
 
 	phase := build.Status.BuildPhase
-	if r.commonBuildConf.Data == nil {
-		r.commonBuildConf, err = builder.GetCommonConfigMap(r.Client, build.Namespace)
-	}
 
 	if err != nil {
 		return ctrl.Result{}, err
 	}
-	// Fetch the Platform build with the information we need for the build
-	pl, err := platform.GetActivePlatform(ctx, r.Client, req.Namespace)
+	buildManager, err := builder.NewBuildManager(ctx, r.Client, r.Config, build.Name, build.Namespace)
 	if err != nil {
-		if errors.IsNotFound(err) {
-			// Request object not found, could have been deleted after reconcile request.
-			// Owned objects are automatically garbage collected. For additional cleanup
-			// logic use finalizers.
-			// Return and don't requeue
-			return reconcile.Result{}, nil
-		}
-		// Error reading the object - requeue the request.
-		log.Error(err, fmt.Sprintf("Error retrieving the active platfor. Workflow %s build cannot be performed!", build.Spec.WorkflowId))
-		return reconcile.Result{RequeueAfter: 60 * time.Second}, err
+		log.Error(err, "Failed to get create a build manager to handle the workflow build")
+		return ctrl.Result{}, err
 	}
 
-	customConfig, err := builder.NewCustomConfig(*pl)
-	if err != nil {
-		log.Error(err, fmt.Sprintf("Error retrieving the custom configuration from the platform %s in namespace %s. Workflow %s build cannot be performed", pl.Name, pl.Namespace, build.Spec.WorkflowId))
-		return reconcile.Result{RequeueAfter: 60 * time.Second}, err
-	}
-
-	builder := builder.NewBuilderWithConfig(ctx, r.commonBuildConf, customConfig)
-
-	if phase == api.BuildPhaseNone {
-		workflow, imageTag, err := r.retrieveWorkflowFromCR(build.Spec.WorkflowId, ctx, req)
-		if err == nil {
-			buildStatus, err := builder.ScheduleNewKanikoBuildWithContainerFile(build.Spec.WorkflowId, imageTag, workflow, pl.Spec.Build)
-			if err == nil {
-				manageStatusUpdate(ctx, buildStatus, build, r, log)
-				return ctrl.Result{RequeueAfter: 5 * time.Second}, nil
-			}
+	if phase == operatorapi.BuildPhaseNone {
+		if err := buildManager.Schedule(build); err != nil {
+			return ctrl.Result{}, err
 		}
-	} else if phase != api.BuildPhaseSucceeded && phase != api.BuildPhaseError && phase != api.BuildPhaseFailed {
-		cli, _ := clientr.NewClient(true)
-		buildStatus, err := builder.ReconcileBuild(&build.Status.Builder, cli)
-		if err == nil {
-			manageStatusUpdate(ctx, buildStatus, build, r, log)
-			return ctrl.Result{RequeueAfter: 5 * time.Second}, nil
+		r.manageStatusUpdate(ctx, build)
+		return ctrl.Result{RequeueAfter: requeueAfterForNewBuild}, nil
+		// TODO: this smells, why not just else? review in the future: https://issues.redhat.com/browse/KOGITO-8785
+	} else if phase != operatorapi.BuildPhaseSucceeded && phase != operatorapi.BuildPhaseError && phase != operatorapi.BuildPhaseFailed {
+		beforeReconcilePhase := build.Status.BuildPhase
+		if err = buildManager.Reconcile(build); err != nil {
+			return ctrl.Result{}, err
 		}
+		if beforeReconcilePhase != build.Status.BuildPhase {
+			r.manageStatusUpdate(ctx, build)
+		}
+		return ctrl.Result{RequeueAfter: requeueAfterForBuildRunning}, nil
 	}
 
 	return ctrl.Result{}, nil
 }
 
-func (r *KogitoServerlessBuildReconciler) retrieveWorkflowFromCR(workflowId string, ctx context.Context, req ctrl.Request) ([]byte, string, error) {
-	instance := &operatorapi.KogitoServerlessWorkflow{}
-	err := r.Client.Get(ctx, types.NamespacedName{Name: workflowId, Namespace: req.Namespace}, instance)
-	workflowBytes, err := utils.GetJSONWorkflow(instance, ctx)
-	imageTag := utils.GetWorkflowImageTag(instance)
-	return workflowBytes, imageTag, err
-}
-
-func manageStatusUpdate(ctx context.Context, build *api.Build, instance *operatorapi.KogitoServerlessBuild, r *KogitoServerlessBuildReconciler, log logr.Logger) {
-	if build.Status.Phase != instance.Status.BuildPhase {
-		instance.Status.Builder = *build
-		instance.Status.BuildPhase = build.Status.Phase
-		err := r.Status().Update(ctx, instance)
-		if err == nil {
-			r.Recorder.Event(instance, corev1.EventTypeNormal, "Updated", fmt.Sprintf("Updated buildphase to  %s", instance.Status.BuildPhase))
-		}
+func (r *KogitoServerlessBuildReconciler) manageStatusUpdate(ctx context.Context, instance *operatorapi.KogitoServerlessBuild) {
+	err := r.Status().Update(ctx, instance)
+	if err == nil {
+		r.Recorder.Event(instance, corev1.EventTypeNormal, "Updated", fmt.Sprintf("Updated buildphase to  %s", instance.Status.BuildPhase))
 	}
 }
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *KogitoServerlessBuildReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	if utils.IsOpenShift() {
+		return ctrl.NewControllerManagedBy(mgr).
+			For(&operatorapi.KogitoServerlessBuild{}).
+			Owns(&buildv1.BuildConfig{}).
+			Owns(&imgv1.ImageStream{}).
+			Complete(r)
+	}
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&operatorapi.KogitoServerlessBuild{}).
 		Complete(r)

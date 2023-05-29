@@ -18,9 +18,11 @@ import (
 	"bytes"
 	"os"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
-
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/yaml"
+
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
@@ -35,7 +37,12 @@ const (
 	KogitoServerlessPlatformYamlCR                                  = "sw.kogito_v1alpha08_kogitoserverlessplatform.yaml"
 	KogitoServerlessPlatformWithBaseImageYamlCR                     = "sw.kogito_v1alpha08_kogitoserverlessplatformWithBaseImage.yaml"
 	KogitoServerlessPlatformWithDevBaseImageYamlCR                  = "sw.kogito_v1alpha08_kogitoserverlessplatformWithDevBaseImage.yaml"
+	kogitoServerlessOperatorBuilderConfig                           = "kogito-serverless-operator-builder-config_v1_configmap.yaml"
+
+	manifestsPath = "bundle/manifests/"
 )
+
+// TODO: remove the path parameter from every method
 
 func GetKogitoServerlessWorkflow(path string, namespace string) *operatorapi.KogitoServerlessWorkflow {
 	ksw := &operatorapi.KogitoServerlessWorkflow{}
@@ -78,4 +85,37 @@ func GetKogitoServerlessPlatformInReadyPhase(path string, namespace string) *ope
 	ksp.Status.Phase = operatorapi.PlatformPhaseReady
 	ksp.Namespace = namespace
 	return ksp
+}
+
+func GetNewEmptyKogitoServerlessBuild(name, namespace string) *operatorapi.KogitoServerlessBuild {
+	return &operatorapi.KogitoServerlessBuild{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		Spec: operatorapi.KogitoServerlessBuildSpec{
+			BuildTemplate: operatorapi.BuildTemplate{
+				Resources: corev1.ResourceRequirements{},
+				Arguments: []string{},
+			},
+		},
+		Status: operatorapi.KogitoServerlessBuildStatus{},
+	}
+
+}
+
+func GetKogitoServerlessOperatorBuilderConfig(path, namespace string) *corev1.ConfigMap {
+	cm := &corev1.ConfigMap{}
+	yamlFile, err := os.ReadFile(path + manifestsPath + kogitoServerlessOperatorBuilderConfig)
+	if err != nil {
+		log.Errorf(err, "yamlFile.Get err   #%v ", err)
+		panic(err)
+	}
+	err = yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 100).Decode(cm)
+	if err != nil {
+		log.Errorf(err, "Unmarshal: #%v", err)
+		panic(err)
+	}
+	cm.Namespace = namespace
+	return cm
 }

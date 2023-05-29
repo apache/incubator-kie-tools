@@ -17,4 +17,5 @@ if ! hash addlicense 2>/dev/null; then
   go install github.com/google/addlicense@latest
 fi
 
-addlicense -c "Red Hat, Inc. and/or its affiliates" -l=apache -ignore test/samples/*.yaml -skip **/Dockerfile hack api builder controllers install platform resources utils test
+# shellcheck disable=SC2035
+addlicense -c "Red Hat, Inc. and/or its affiliates" -l=apache -ignore=test/samples/*.yaml -ignore=container-builder/examples/**/*.yaml *Dockerfile hack api controllers utils test container-builder

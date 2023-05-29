@@ -27,8 +27,18 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/defaults"
 
 	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/builder"
 )
+
+// kanikoCacheDir is the cache directory for Kaniko builds (mounted into the Kaniko pod).
+const kanikoCacheDir = "/kaniko/cache"
+const kanikoPVCName = "KanikoPersistentVolumeClaim"
+const kanikoWarmerImage = "KanikoWarmerImage"
+const kanikoBuildCacheEnabled = "KanikoBuildCacheEnabled"
+const kanikoDefaultWarmerImageName = "gcr.io/kaniko-project/warmer"
+
+func IsKanikoCacheEnabled(platform *v08.KogitoServerlessPlatform) bool {
+	return platform.Spec.BuildPlatform.IsOptionEnabled(kanikoBuildCacheEnabled)
+}
 
 func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platform *v08.KogitoServerlessPlatform) error {
 	// The pod will be scheduled to nodes that are selected by the persistent volume
@@ -39,15 +49,15 @@ func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platf
 	// - https://kubernetes.io/docs/concepts/storage/volumes/#local
 	// nolint: staticcheck
 	pvcName := defaultKanikoCachePVCName
-	if persistentVolumeClaim, found := platform.Status.BuildPlatform.PublishStrategyOptions[builder.KanikoPVCName]; found {
+	if persistentVolumeClaim, found := platform.Spec.BuildPlatform.BuildStrategyOptions[kanikoPVCName]; found {
 		pvcName = persistentVolumeClaim
 	}
 
 	var warmerImage string
-	if image, found := platform.Status.BuildPlatform.PublishStrategyOptions[builder.KanikoWarmerImage]; found {
+	if image, found := platform.Spec.BuildPlatform.BuildStrategyOptions[kanikoWarmerImage]; found {
 		warmerImage = image
 	} else {
-		warmerImage = fmt.Sprintf("%s:v%s", builder.KanikoDefaultWarmerImageName, defaults.KanikoVersion)
+		warmerImage = fmt.Sprintf("%s:v%s", kanikoDefaultWarmerImageName, defaults.KanikoVersion)
 	}
 
 	pod := corev1.Pod{
@@ -69,13 +79,13 @@ func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platf
 					Image: warmerImage,
 					Args: []string{
 						"--force",
-						"--cache-dir=" + builder.KanikoCacheDir,
-						"--image=" + platform.Status.BuildPlatform.BaseImage,
+						"--cache-dir=" + kanikoCacheDir,
+						"--image=" + platform.Spec.BuildPlatform.BaseImage,
 					},
 					VolumeMounts: []corev1.VolumeMount{
 						{
 							Name:      "kaniko-cache",
-							MountPath: builder.KanikoCacheDir,
+							MountPath: kanikoCacheDir,
 						},
 					},
 					/* TODO: enable this test once we apply security enforcement: https://issues.redhat.com/browse/KOGITO-8799
@@ -89,11 +99,11 @@ func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platf
 					Image:           "busybox",
 					ImagePullPolicy: corev1.PullIfNotPresent,
 					Command:         []string{"/bin/sh", "-c"},
-					Args:            []string{"mkdir -p " + builder.KanikoCacheDir + "&& chmod -R a+rwx " + builder.KanikoCacheDir},
+					Args:            []string{"mkdir -p " + kanikoCacheDir + "&& chmod -R a+rwx " + kanikoCacheDir},
 					VolumeMounts: []corev1.VolumeMount{
 						{
 							Name:      "kaniko-cache",
-							MountPath: builder.KanikoCacheDir,
+							MountPath: kanikoCacheDir,
 						},
 					},
 					/* TODO: enable this test once we apply security enforcement: https://issues.redhat.com/browse/KOGITO-8799

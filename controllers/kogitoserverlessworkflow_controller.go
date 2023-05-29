@@ -16,8 +16,11 @@ package controllers
 
 import (
 	"context"
+	errors2 "errors"
 	"fmt"
 
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/rest"
 
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -35,12 +38,10 @@ import (
 
 	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles"
 
-	builderapi "github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
-	"github.com/kiegroup/kogito-serverless-operator/utils"
 )
 
 // KogitoServerlessWorkflowReconciler reconciles a KogitoServerlessWorkflow object
@@ -54,7 +55,6 @@ type KogitoServerlessWorkflowReconciler struct {
 //+kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessworkflows,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessworkflows/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessworkflows/finalizers,verbs=update
-//+kubebuilder:rbac:groups=sw.kogito.kie.org,resources=pods,verbs=get;watch;list
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -95,49 +95,6 @@ func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req 
 	return profiles.NewReconciler(r.Client, r.Config, &logger, workflow).Reconcile(ctx, workflow)
 }
 
-func buildEnqueueRequestsFromMapFunc(c client.Client, build *operatorapi.KogitoServerlessBuild) []reconcile.Request {
-	var requests []reconcile.Request
-	if build.Status.BuildPhase != builderapi.BuildPhaseSucceeded && build.Status.BuildPhase != builderapi.BuildPhaseError {
-		return requests
-	}
-
-	list := &operatorapi.KogitoServerlessWorkflowList{}
-	// Do global search in case of global operator (it may be using a global platform)
-	var opts []client.ListOption
-	if !platform.IsCurrentOperatorGlobal() {
-		opts = append(opts, client.InNamespace(build.Namespace))
-	}
-	if err := c.List(context.Background(), list, opts...); err != nil {
-		log.Error(err, "Failed to retrieve workflow list")
-		return requests
-	}
-
-	for i := range list.Items {
-		workflow := &list.Items[i]
-
-		match, err := utils.SameOrMatch(build, workflow)
-		if err != nil {
-			log.Errorf(err, "Error matching workflow %q with build %q", workflow.Name, build.Name)
-			continue
-		}
-		if !match {
-			continue
-		}
-
-		if workflow.Status.GetCondition(api.BuiltConditionType).IsTrue() || workflow.Status.GetTopLevelCondition().IsTrue() {
-			log.Infof("Build %s ready, notify workflow: %s", build.Name, workflow.Name)
-			requests = append(requests, reconcile.Request{
-				NamespacedName: types.NamespacedName{
-					Namespace: workflow.Namespace,
-					Name:      workflow.Name,
-				},
-			})
-		}
-	}
-
-	return requests
-}
-
 func platformEnqueueRequestsFromMapFunc(c client.Client, p *operatorapi.KogitoServerlessPlatform) []reconcile.Request {
 	var requests []reconcile.Request
 
@@ -175,14 +132,10 @@ func platformEnqueueRequestsFromMapFunc(c client.Client, p *operatorapi.KogitoSe
 func (r *KogitoServerlessWorkflowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&operatorapi.KogitoServerlessWorkflow{}).
-		Watches(&source.Kind{Type: &operatorapi.KogitoServerlessBuild{}}, handler.EnqueueRequestsFromMapFunc(func(c client.Object) []reconcile.Request {
-			build, ok := c.(*operatorapi.KogitoServerlessBuild)
-			if !ok {
-				log.Error(fmt.Errorf("type assertion failed: %v", c), "Failed to retrieve workflow list")
-				return []reconcile.Request{}
-			}
-			return buildEnqueueRequestsFromMapFunc(mgr.GetClient(), build)
-		})).
+		Owns(&appsv1.Deployment{}).
+		Owns(&corev1.Service{}).
+		Owns(&corev1.ConfigMap{}).
+		Owns(&operatorapi.KogitoServerlessBuild{}).
 		Watches(&source.Kind{Type: &operatorapi.KogitoServerlessPlatform{}}, handler.EnqueueRequestsFromMapFunc(func(a client.Object) []reconcile.Request {
 			platform, ok := a.(*operatorapi.KogitoServerlessPlatform)
 			if !ok {
@@ -192,4 +145,15 @@ func (r *KogitoServerlessWorkflowReconciler) SetupWithManager(mgr ctrl.Manager) 
 			return platformEnqueueRequestsFromMapFunc(mgr.GetClient(), platform)
 		})).
 		Complete(r)
+}
+
+// sameOrMatch return true if the build it is related to the workflow, false otherwise
+func sameOrMatch(build *operatorapi.KogitoServerlessBuild, workflow *operatorapi.KogitoServerlessWorkflow) (bool, error) {
+	if build.Name == workflow.Name {
+		if build.Namespace == workflow.Namespace {
+			return true, nil
+		}
+		return false, errors2.New("build & Workflow namespaces are not matching")
+	}
+	return false, errors2.New("build & Workflow names are not matching")
 }

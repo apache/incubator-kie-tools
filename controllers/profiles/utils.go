@@ -42,7 +42,7 @@ func rolloutDeploymentIfCMChangedMutateVisitor(cmOperationResult controllerutil.
 	}
 }
 
-// Function to return the first Port in an array of ServicePort
+// findNodePortFromPorts returns the first Port in an array of ServicePort
 func findNodePortFromPorts(ports []v1.ServicePort) int {
 	if ports != nil && len(ports) > 0 {
 		for _, p := range ports {
@@ -55,7 +55,7 @@ func findNodePortFromPorts(ports []v1.ServicePort) int {
 	return 0
 }
 
-// Function to detect if the workflow is using the Dev profile or not
+// IsDevProfile detects if the workflow is using the Dev profile or not
 func IsDevProfile(workflow *operatorapi.KogitoServerlessWorkflow) bool {
 	profile := workflow.Annotations[metadata.Profile]
 	if len(profile) == 0 {

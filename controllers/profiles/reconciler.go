@@ -78,9 +78,9 @@ func (s stateSupport) performStatusUpdate(ctx context.Context, workflow *operato
 	return true, err
 }
 
-// PostReconcile function to perform all the other operations required after the reconcile - placeholder for null pattern usages
+// PostReconcile function to perform all the other operations required after the reconciliation - placeholder for null pattern usages
 func (s stateSupport) PostReconcile(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) error {
-	//By default we don't want to perform anything after the reconcile and so we will simply return no error
+	//By default, we don't want to perform anything after the reconciliation, and so we will simply return no error
 	return nil
 }
 
@@ -145,6 +145,9 @@ func (r *reconciliationStateMachine) do(ctx context.Context, workflow *operatora
 		if h.CanReconcile(workflow) {
 			r.logger.Info("Found a condition to reconcile.", "Conditions", workflow.Status.Conditions)
 			result, objs, err := h.Do(ctx, workflow)
+			if err != nil {
+				return result, objs, err
+			}
 			if err = h.PostReconcile(ctx, workflow); err != nil {
 				r.logger.Error(err, "Error in Post Reconcile actions.", "Workflow", workflow.Name, "Conditions", workflow.Status.Conditions)
 			}

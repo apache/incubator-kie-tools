@@ -1,3 +1,17 @@
+// Copyright 2023 Red Hat, Inc. and/or its affiliates
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package kubernetes
 
 import (
@@ -16,10 +30,10 @@ type BuilderProperty string
 
 const KanikoCache BuilderProperty = "kaniko-cache"
 
-type BuilderInfo struct {
+type ContainerBuilderInfo struct {
 	FinalImageName  string
 	BuildUniqueName string
-	Platform        api.PlatformBuild
+	Platform        api.PlatformContainerBuild
 }
 
 type resource struct {
@@ -27,16 +41,16 @@ type resource struct {
 	Content []byte
 }
 
-type buildContext struct {
+type containerBuildContext struct {
 	client.Client
-	C         context.Context
-	Build     *api.Build
-	BaseImage string
+	C              context.Context
+	ContainerBuild *api.ContainerBuild
+	BaseImage      string
 }
 
 type builder struct {
 	L       log.Logger
-	Context buildContext
+	Context containerBuildContext
 }
 
 type scheduler struct {
@@ -46,7 +60,7 @@ type scheduler struct {
 }
 
 var _ Scheduler = &scheduler{}
-var _ Builder = &builder{}
+var _ ContainerBuilder = &builder{}
 
 // available schedulers, add them in priority order
 var schedulers = map[string]schedulerHandler{
@@ -64,33 +78,33 @@ type Scheduler interface {
 	WithAdditionalArgs(args []string) Scheduler
 	// WithProperty specialized property known by inner implementations for additional properties to configure the underlying builder
 	WithProperty(property BuilderProperty, object interface{}) Scheduler
-	Schedule() (*api.Build, error)
+	Schedule() (*api.ContainerBuild, error)
 }
 
-type Builder interface {
-	WithClient(client client.Client) Builder
-	CancelBuild() (*api.Build, error)
-	Reconcile() (*api.Build, error)
+type ContainerBuilder interface {
+	WithClient(client client.Client) ContainerBuilder
+	CancelBuild() (*api.ContainerBuild, error)
+	Reconcile() (*api.ContainerBuild, error)
 }
 
 type schedulerHandler interface {
-	CreateScheduler(info BuilderInfo, buildCtx buildContext) Scheduler
-	CanHandle(info BuilderInfo) bool
+	CreateScheduler(info ContainerBuilderInfo, buildCtx containerBuildContext) Scheduler
+	CanHandle(info ContainerBuilderInfo) bool
 }
 
-func FromBuild(build *api.Build) Builder {
+func FromBuild(build *api.ContainerBuild) ContainerBuilder {
 	return &builder{
 		L: log.WithName(util.ComponentName),
-		Context: buildContext{
-			Build: build,
-			C:     context.TODO(),
+		Context: containerBuildContext{
+			ContainerBuild: build,
+			C:              context.TODO(),
 		},
 	}
 }
 
-// NewBuild is the API entry for the Builder. Create a new Build instance based on PlatformBuild.
-func NewBuild(info BuilderInfo) Scheduler {
-	ctx := buildContext{
+// NewBuild is the API entry for the ContainerBuilder. Create a new ContainerBuild instance based on PlatformContainerBuild.
+func NewBuild(info ContainerBuilderInfo) Scheduler {
+	ctx := containerBuildContext{
 		BaseImage: info.Platform.Spec.BaseImage,
 		C:         context.TODO(),
 	}
@@ -100,7 +114,7 @@ func NewBuild(info BuilderInfo) Scheduler {
 			return v.CreateScheduler(info, ctx)
 		}
 	}
-	panic(fmt.Errorf("BuildStrategy %s with PublishStrategy %s is not supported", info.Platform.Spec.BuildStrategy, info.Platform.Spec.PublishStrategy))
+	panic(fmt.Errorf("ContainerBuildStrategy %s with PublishStrategy %s is not supported", info.Platform.Spec.BuildStrategy, info.Platform.Spec.PublishStrategy))
 }
 
 func (s *scheduler) WithClient(client client.Client) Scheduler {
@@ -129,7 +143,7 @@ func (s *scheduler) WithProperty(property BuilderProperty, object interface{}) S
 }
 
 // Schedule schedules a new build in the platform
-func (s *scheduler) Schedule() (*api.Build, error) {
+func (s *scheduler) Schedule() (*api.ContainerBuild, error) {
 	// TODO: create a handler to mount the resources according to the platform/context options (for now we only have CM, PoC level)
 	if err := mountResourcesWithConfigMap(&s.builder.Context, &s.Resources); err != nil {
 		return nil, err
@@ -137,17 +151,17 @@ func (s *scheduler) Schedule() (*api.Build, error) {
 	return s.builder.Reconcile()
 }
 
-func (b *builder) WithClient(client client.Client) Builder {
+func (b *builder) WithClient(client client.Client) ContainerBuilder {
 	b.Context.Client = client
 	return b
 }
 
 // Reconcile idempotent build flow control.
-// Can be called many times to check/update the current status of the build instance, indexed by the Platform and Build Name.
-func (b *builder) Reconcile() (*api.Build, error) {
+// Can be called many times to check/update the current status of the build instance, indexed by the Platform and ContainerBuild Name.
+func (b *builder) Reconcile() (*api.ContainerBuild, error) {
 	var actions []Action
-	switch b.Context.Build.Spec.Strategy {
-	case api.BuildStrategyPod:
+	switch b.Context.ContainerBuild.Spec.Strategy {
+	case api.ContainerBuildStrategyPod:
 		// build the action flow:
 		actions = []Action{
 			newInitializePodAction(),
@@ -157,7 +171,7 @@ func (b *builder) Reconcile() (*api.Build, error) {
 		}
 	}
 
-	target := b.Context.Build.DeepCopy()
+	target := b.Context.ContainerBuild.DeepCopy()
 
 	for _, a := range actions {
 		a.InjectLogger(b.L)
@@ -189,7 +203,7 @@ func (b *builder) Reconcile() (*api.Build, error) {
 	return target, nil
 }
 
-func (b *builder) CancelBuild() (*api.Build, error) {
+func (b *builder) CancelBuild() (*api.ContainerBuild, error) {
 	//TODO implement me
 	panic("implement me")
 }

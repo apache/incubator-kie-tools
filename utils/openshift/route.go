@@ -18,15 +18,16 @@ import (
 	v1 "github.com/openshift/api/route/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
-func RouteForWorkflow(workflow *operatorapi.KogitoServerlessWorkflow, labels map[string]string) (*v1.Route, error) {
+func RouteForWorkflow(workflow *operatorapi.KogitoServerlessWorkflow) (*v1.Route, error) {
 	route := &v1.Route{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      workflow.Name,
 			Namespace: workflow.Namespace,
-			Labels:    labels,
 		},
 		Spec: v1.RouteSpec{
 			To: v1.RouteTargetReference{
@@ -35,5 +36,6 @@ func RouteForWorkflow(workflow *operatorapi.KogitoServerlessWorkflow, labels map
 			},
 		},
 	}
+	workflowdef.SetDefaultLabels(workflow, route)
 	return route, nil
 }
