@@ -649,7 +649,7 @@ export function KieSandboxExtendedServicesModal() {
       isOpen={extendedServices.isModalOpen}
       onClose={onClose}
       variant={modalVariant}
-      aria-label={"Steps to enable the Kie Sandbox Extended Services"}
+      aria-label={"Steps to enable the KIE Sandbox Extended Services"}
       title={modalTitle}
       description={modalPage === ModalPage.WIZARD && <p>{i18n.dmnRunner.modal.wizard.description}</p>}
       footer={

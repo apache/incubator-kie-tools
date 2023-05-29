@@ -49,6 +49,7 @@ export const AboutButton: React.FunctionComponent = () => {
   return (
     <React.Fragment>
       <Button
+        style={{ marginTop: "2px" }}
         variant={ButtonVariant.plain}
         onClick={handleModalToggle}
         className={"kie-tools--masthead-hoverable-dark"}
@@ -60,18 +61,9 @@ export const AboutButton: React.FunctionComponent = () => {
           <MastheadBrand style={{ textDecoration: "none" }}>
             <Flex alignItems={{ default: "alignItemsCenter" }}>
               <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                <Brand
-                  src={routes.static.images.kieHorizontalLogoDefault.path({})}
-                  alt={"Logo"}
-                  heights={{ default: "80px" }}
-                >
-                  <source srcSet={routes.static.images.kieHorizontalLogoDefault.path({})} />
+                <Brand src={routes.static.images.appLogoDefault.path({})} alt={"Logo"} heights={{ default: "80px" }}>
+                  <source srcSet={routes.static.images.appLogoDefault.path({})} />
                 </Brand>
-              </FlexItem>
-              <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                <TextContent>
-                  <Text component={TextVariants.h2}>Sandbox</Text>
-                </TextContent>
               </FlexItem>
             </Flex>
           </MastheadBrand>

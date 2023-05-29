@@ -47,22 +47,9 @@ export function OnlineEditorPage(props: { children?: React.ReactNode; onKeyDown?
                   onClick={() => history.push({ pathname: routes.home.path({}) })}
                   style={{ textDecoration: "none" }}
                 >
-                  <Flex alignItems={{ default: "alignItemsCenter" }}>
-                    <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                      <Brand
-                        src={routes.static.images.kieHorizontalLogoReverse.path({})}
-                        alt={"Logo"}
-                        heights={{ default: "38px" }}
-                      >
-                        <source srcSet={routes.static.images.kieHorizontalLogoReverse.path({})} />
-                      </Brand>
-                    </FlexItem>
-                    <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                      <TextContent>
-                        <Text component={TextVariants.h3}>Sandbox</Text>
-                      </TextContent>
-                    </FlexItem>
-                  </Flex>
+                  <Brand src={routes.static.images.appLogoReverse.path({})} alt={"Logo"} heights={{ default: "38px" }}>
+                    <source srcSet={routes.static.images.appLogoReverse.path({})} />
+                  </Brand>
                 </MastheadBrand>
                 <AboutButton />
               </Flex>
