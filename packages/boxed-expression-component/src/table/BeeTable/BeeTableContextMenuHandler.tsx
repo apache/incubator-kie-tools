@@ -283,6 +283,13 @@ export function BeeTableContextMenuHandler({
         contextMenuContainerDiv.current.style.top = yPos - offset + "px";
         contextMenuContainerDiv.current.style.left = xPos + 2 + "px";
       }
+
+      const contextMenuWidth = bounds.width;
+      const availableWidth = document.documentElement.clientWidth;
+      if (contextMenuWidth <= availableWidth && contextMenuWidth + xPos > availableWidth) {
+        const offset = contextMenuWidth + xPos - availableWidth;
+        contextMenuContainerDiv.current.style.left = xPos - offset - 2 + "px";
+      }
     }
   });
 
