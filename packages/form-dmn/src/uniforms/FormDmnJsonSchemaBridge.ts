@@ -32,6 +32,18 @@ export class FormDmnJsonSchemaBridge extends FormJsonSchemaBridge {
     this.i18n = i18n;
   }
 
+  public getProps(name: string, props: Record<string, any>) {
+    const superProps = super.getProps(name, props);
+
+    if (!superProps.padding && !superProps.properties) {
+      superProps.style = { padding: "5px" };
+    } else if (!superProps.padding && superProps.properties) {
+      superProps.style = { margin: "5px" };
+    }
+
+    return superProps;
+  }
+
   public getType(name: string) {
     const { format: fieldFormat, type } = super.getField(name) as DmnInputFieldProperties;
     // TODO: Luiz - create custom components
