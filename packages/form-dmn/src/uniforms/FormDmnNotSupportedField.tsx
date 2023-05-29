@@ -24,20 +24,18 @@ export type FormDmnNotSupportedField = HTMLFieldProps<object, HTMLDivElement, { 
 function FormDmnNotSupportedField({ recursionRef, ...props }: FormDmnNotSupportedField) {
   return wrapField(
     props as any,
-    <Card isCompact={true}>
-      <CardBody>
-        <div style={{ display: "flex" }} {...filterDOMProps(props)}>
-          <div
-            aria-label="field type not supported"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            Recursive structures <br /> are not supported yet
-          </div>
+    <Card isCompact={true} {...filterDOMProps(props)}>
+      <CardBody style={{ backgroundColor: "rgb(240,240,240)" }}>
+        <div
+          aria-label="field type not supported"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          Recursive structures <br /> are not supported yet
         </div>
       </CardBody>
     </Card>
