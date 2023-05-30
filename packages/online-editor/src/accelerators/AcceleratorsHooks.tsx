@@ -60,6 +60,7 @@ export function useAvailableAccelerators() {
 }
 
 export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
+  const { env } = useEnv();
   const workspaces = useWorkspaces();
   const history = useHistory();
   const routes = useRoutes();
@@ -165,7 +166,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         // Commit moved files to moved files branch (this commit will never be pushed, as this branch will be deleted)
         await workspaces.commit({
           workspaceId,
-          commitMessage: `KIE Sandbox: Backup files before applying ${accelerator.name} Accelerator`,
+          commitMessage: `${env.KIE_SANDBOX_APP_NAME}: Backup files before applying ${accelerator.name} Accelerator`,
           targetBranch: BACKUP_BRANCH_NAME,
         });
 
@@ -216,7 +217,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         // Commit moved files to moved files branch (this commit will never be pushed, as this branch will be deleted)
         await workspaces.commit({
           workspaceId,
-          commitMessage: `KIE Sandbox: Moving files to apply ${accelerator.name} Accelerator.`,
+          commitMessage: `${env.KIE_SANDBOX_APP_NAME}: Moving files to apply ${accelerator.name} Accelerator.`,
           targetBranch: MOVED_FILES_BRANCH_NAME,
         });
 
@@ -284,7 +285,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
 
         // Add Accelerator YAML config
         const content = `# This file was automatically created by ${
-          i18n.names.businessModeler.online
+          env.KIE_SANDBOX_APP_NAME
         }. Please don't modify it.\n${yaml.dump({ ...accelerator, appliedAt: new Date().toISOString() })}`;
         configFile = await workspaces.addFile({
           workspaceId,
@@ -303,7 +304,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         await workspaces.createSavePoint({
           workspaceId,
           gitConfig,
-          commitMessage: i18n.accelerators.commitMessage(accelerator.name),
+          commitMessage: i18n.accelerators.commitMessage(env.KIE_SANDBOX_APP_NAME, accelerator.name),
           forceHasChanges: true,
         });
 
@@ -367,10 +368,10 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
       applyAcceleratorFailAlert,
       applyAcceleratorSuccessAlert,
       attemptToDeleteTemporaryBranches,
+      env.KIE_SANDBOX_APP_NAME,
       gitConfig,
       history,
       i18n.accelerators,
-      i18n.names.businessModeler.online,
       routes.workspaceWithFilePath,
       workspace.descriptor.workspaceId,
       workspaces,

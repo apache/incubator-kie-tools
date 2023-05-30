@@ -22,7 +22,7 @@ import { useHistory } from "react-router";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { SettingsButton } from "../settings/SettingsButton";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
+import { ExtendedServicesIcon } from "../extendedServices/ExtendedServicesIcon";
 import { DevDeploymentsDropdown } from "../devDeployments/DevDeploymentsDropdown";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AccountsIcon } from "../accounts/AccountsIcon";
@@ -64,7 +64,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode; onKeyDown?
                   </ToolbarItem>
                   <ToolbarItem variant="separator" />
                   <ToolbarItem>
-                    <KieSandboxExtendedServicesIcon />
+                    <ExtendedServicesIcon />
                   </ToolbarItem>
                   <ToolbarItem>
                     <SettingsButton />

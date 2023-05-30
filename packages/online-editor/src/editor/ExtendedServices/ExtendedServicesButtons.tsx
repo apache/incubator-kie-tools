@@ -27,12 +27,9 @@ import { useOnlineI18n } from "../../i18n";
 import { useDevDeployments } from "../../devDeployments/DevDeploymentsContext";
 import { useDevDeploymentsDeployDropdownItems } from "../../devDeployments/DevDeploymentsDeployDropdownItems";
 import { useDmnRunnerDispatch, useDmnRunnerState } from "../../dmnRunner/DmnRunnerContext";
-import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
-import {
-  DependentFeature,
-  useExtendedServices,
-} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { FeatureDependentOnExtendedServices } from "../../extendedServices/FeatureDependentOnExtendedServices";
+import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { DmnRunnerMode } from "../../dmnRunner/DmnRunnerStatus";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
@@ -51,7 +48,7 @@ interface Props {
   workspaceFile: WorkspaceFile;
 }
 
-export function KieSandboxExtendedServicesButtons(props: Props) {
+export function ExtendedServicesButtons(props: Props) {
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
   const devDeployments = useDevDeployments();
@@ -65,7 +62,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const uploadDmnRunnerInputsRef = useRef<HTMLInputElement>(null);
 
   const toggleDmnRunnerDrawer = useCallback(() => {
-    if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+    if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
       if (mode === DmnRunnerMode.TABLE) {
         onTogglePanel(PanelId.DMN_RUNNER_TABLE);
         return;
@@ -79,7 +76,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
 
   const toggleDevDeploymentsDropdown = useCallback(
     (isOpen: boolean) => {
-      if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+      if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
         devDeployments.setDeployDropdownOpen(isOpen);
         return;
       }
@@ -90,7 +87,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   );
 
   const isExtendedServicesRunning = useMemo(() => {
-    return extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING;
+    return extendedServices.status === ExtendedServicesStatus.RUNNING;
   }, [extendedServices.status]);
 
   const [runModeOpen, setRunModeOpen] = useState<boolean>(false);
@@ -118,7 +115,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
 
   return (
     <>
-      <FeatureDependentOnKieSandboxExtendedServices isLight={true} position="top">
+      <FeatureDependentOnExtendedServices isLight={true} position="top">
         <Dropdown
           className={isExtendedServicesRunning ? "pf-m-active" : ""}
           onSelect={() => devDeployments.setDeployDropdownOpen(false)}
@@ -135,9 +132,9 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
           position={DropdownPosition.right}
           dropdownItems={devDeploymentsDropdownItems}
         />
-      </FeatureDependentOnKieSandboxExtendedServices>
+      </FeatureDependentOnExtendedServices>
       {"  "}
-      <FeatureDependentOnKieSandboxExtendedServices isLight={true} position="top">
+      <FeatureDependentOnExtendedServices isLight={true} position="top">
         <Dropdown
           onSelect={() => setRunModeOpen(!runModeOpen)}
           toggle={
@@ -166,7 +163,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               component={"button"}
               icon={<ListIcon />}
               onClick={() => {
-                if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+                if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
                   setDmnRunnerMode(DmnRunnerMode.FORM);
                   setDmnRunnerContextProviderState({
                     type: DmnRunnerProviderActionType.DEFAULT,
@@ -182,7 +179,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               component={"button"}
               icon={<TableIcon />}
               onClick={() => {
-                if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+                if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
                   setDmnRunnerMode(DmnRunnerMode.TABLE);
                   onOpenPanel(PanelId.DMN_RUNNER_TABLE);
                   setDmnRunnerContextProviderState({
@@ -231,7 +228,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
             </React.Fragment>,
           ]}
         />
-      </FeatureDependentOnKieSandboxExtendedServices>
+      </FeatureDependentOnExtendedServices>
       <a ref={downloadDmnRunnerInputsRef} />
       <input
         ref={uploadDmnRunnerInputsRef}

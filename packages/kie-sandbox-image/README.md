@@ -56,13 +56,14 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
    |                            Name                             |                                                          Description                                                          |                               Default                               |
    | :---------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
-   |             `KIE_SANDBOX_EXTENDED_SERVICES_URL`             |                                   The URL that points to the KIE Sandbox Extended Services.                                   | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |             `KIE_SANDBOX_EXTENDED_SERVICES_URL`             |                                         The URL that points to the Extended Services.                                         | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |              `KIE_SANDBOX_GIT_CORS_PROXY_URL`               |                         The URL that points to the Git CORS proxy for interacting with Git providers.                         | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |         `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE`         |                           Require users to type a custom commit message when creating a new commit.                           | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    | `KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL` |                                           Service URL to validate commit messages.                                            | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |                `KIE_SANDBOX_AUTH_PROVIDERS`                 |     Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more.      | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |                 `KIE_SANDBOX_ACCELERATORS`                  |  Accelerators configuration. Used to add a template to a set of Decisions and Workflows, making it buildable and deployable.  | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |                    `KIE_SANDBOX_EDITORS`                    | Editors configuration. Allows the enabling/disabling of specific editors and removes the disabled editors from the home page. | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                   `KIE_SANDBOX_APP_NAME`                    |                                    Allows KIE Sandbox to be referred by a different name.                                     | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
 
    ### Examples
 
@@ -290,7 +291,13 @@ Here's an example of what it should look like:
         description: "PMML files are used to generate scorecards",
       },
     }
-
-
-
 ```
+
+## Custom branding
+
+KIE Sandbox can be customized to show your own logo and/or branding by extending this image and overriding environment variables and files.
+
+- **Header logo:** Override `/var/www/html/static/images/app_logo_rgb_fullcolor_reverse.svg`. Fixed height of `38px`.
+- **Colored logo:** Override `/var/www/html/static/images/app_logo_rgb_fullcolor_default.svg`. Fixed height of `80px`.
+- **Favicon:** Override `/var/www/html/static/favicon.svg`
+- **App name:** Use the `KIE_SANDBOX_APP_NAME` environment variable.

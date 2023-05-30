@@ -28,8 +28,8 @@ import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsTabs } from "../SettingsModalBody";
 import {
@@ -43,11 +43,11 @@ export function ServiceRegistrySettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.serviceRegistry.config);
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const extendedServices = useExtendedServices();
 
   const isExtendedServicesRunning = useMemo(
-    () => kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
-    [kieSandboxExtendedServices.status]
+    () => extendedServices.status === ExtendedServicesStatus.RUNNING,
+    [extendedServices.status]
   );
 
   const isStoredConfigValid = useMemo(
@@ -121,9 +121,7 @@ export function ServiceRegistrySettingsTab() {
                     title={
                       <Text>
                         Connect to{" "}
-                        <a onClick={() => settingsDispatch.open(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES)}>
-                          KIE Sandbox Extended Services
-                        </a>{" "}
+                        <a onClick={() => settingsDispatch.open(SettingsTabs.EXTENDED_SERVICES)}>Extended Services</a>{" "}
                         before configuring your Service Registry instance
                       </Text>
                     }

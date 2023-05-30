@@ -39,7 +39,7 @@ export const AboutButton: React.FunctionComponent = () => {
   const kogitoVersion = process.env.WEBPACK_REPLACE__kogitoRuntimeVersion;
   const quarkusVersion = process.env.WEBPACK_REPLACE__quarkusPlatformVersion;
   const dmnImage = process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl;
-  const extendedVersion = process.env.WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion;
+  const extendedVersion = process.env.WEBPACK_REPLACE__extendedServicesCompatibleVersion;
   const commitSha = process.env.WEBPACK_REPLACE__commitHash;
 
   const handleModalToggle = useCallback(() => {

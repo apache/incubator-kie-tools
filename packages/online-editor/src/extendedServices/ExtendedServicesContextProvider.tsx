@@ -17,17 +17,17 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../cookies";
-import { KieSandboxExtendedServicesBridge } from "./KieSandboxExtendedServicesBridge";
-import { DependentFeature, KieSandboxExtendedServicesContext } from "./KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
+import { ExtendedServicesBridge } from "./ExtendedServicesBridge";
+import { DependentFeature, ExtendedServicesContext } from "./ExtendedServicesContext";
+import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 import {
   ExtendedServicesConfig,
-  KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME,
-  KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME,
+  EXTENDED_SERVICES_HOST_COOKIE_NAME,
+  EXTENDED_SERVICES_PORT_COOKIE_NAME,
 } from "../settings/SettingsContext";
-import { KieSandboxExtendedServicesModal } from "./KieSandboxExtendedServicesModal";
+import { ExtendedServicesModal } from "./ExtendedServicesModal";
 import { useEnv } from "../env/hooks/EnvContext";
-import { KieSandboxExtendedServicesClient } from "./KieSandboxExtendedServicesClient";
+import { ExtendedServicesClient } from "./ExtendedServicesClient";
 
 interface Props {
   children: React.ReactNode;
@@ -35,9 +35,9 @@ interface Props {
 
 const KIE_SANDBOX_EXTENDED_SERVICES_POLLING_TIME = 1000;
 
-export function KieSandboxExtendedServicesContextProvider(props: Props) {
+export function ExtendedServicesContextProvider(props: Props) {
   const env = useEnv();
-  const [status, setStatus] = useState(KieSandboxExtendedServicesStatus.AVAILABLE);
+  const [status, setStatus] = useState(ExtendedServicesStatus.AVAILABLE);
   const [isModalOpen, setModalOpen] = useState(false);
   const [installTriggeredBy, setInstallTriggeredBy] = useState<DependentFeature | undefined>(undefined);
   const [outdated, setOutdated] = useState(false);
@@ -54,16 +54,13 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
   }, [env.env.KIE_SANDBOX_EXTENDED_SERVICES_URL]);
 
   const [config, setConfig] = useState(new ExtendedServicesConfig(host, port));
-  const bridge = useMemo(() => new KieSandboxExtendedServicesBridge(config.url.ping), [config]);
-  const version = useMemo(
-    () => process.env.WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion ?? "0.0.0",
-    []
-  );
+  const bridge = useMemo(() => new ExtendedServicesBridge(config.url.ping), [config]);
+  const version = useMemo(() => process.env.WEBPACK_REPLACE__extendedServicesCompatibleVersion ?? "0.0.0", []);
 
   const saveNewConfig = useCallback((newConfig: ExtendedServicesConfig) => {
     setConfig(newConfig);
-    setCookie(KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME, newConfig.host);
-    setCookie(KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME, newConfig.port);
+    setCookie(EXTENDED_SERVICES_HOST_COOKIE_NAME, newConfig.host);
+    setCookie(EXTENDED_SERVICES_PORT_COOKIE_NAME, newConfig.port);
   }, []);
 
   useEffect(() => {
@@ -72,13 +69,13 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
       const envHost = `${envUrl.protocol}//${envUrl.hostname}`;
       const envPort = envUrl.port;
 
-      const host = getCookie(KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envHost;
-      const port = getCookie(KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envPort;
+      const host = getCookie(EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envHost;
+      const port = getCookie(EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envPort;
 
       const newConfig = new ExtendedServicesConfig(host, port);
       setConfig(newConfig);
 
-      new KieSandboxExtendedServicesBridge(newConfig.url.ping).check().then((checked) => {
+      new ExtendedServicesBridge(newConfig.url.ping).check().then((checked) => {
         if (checked) {
           saveNewConfig(newConfig);
         }
@@ -89,11 +86,11 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
   }, [env.env.KIE_SANDBOX_EXTENDED_SERVICES_URL, saveNewConfig]);
 
   useEffect(() => {
-    // Pooling to detect either if KieSandboxExtendedServices is running or has stopped
-    if (status === KieSandboxExtendedServicesStatus.RUNNING) {
+    // Pooling to detect either if ExtendedServices is running or has stopped
+    if (status === ExtendedServicesStatus.RUNNING) {
       const detectCrashesOrStops: number | undefined = window.setInterval(() => {
         bridge.check().catch(() => {
-          setStatus(KieSandboxExtendedServicesStatus.STOPPED);
+          setStatus(ExtendedServicesStatus.STOPPED);
           setModalOpen(true);
           window.clearInterval(detectCrashesOrStops);
         });
@@ -102,17 +99,17 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
       return () => window.clearInterval(detectCrashesOrStops);
     }
 
-    const detectKieSandboxExtendedServices: number | undefined = window.setInterval(() => {
-      // Check the running version of the KieSandboxExtendedServices, cancel polling if up-to-date.
+    const detectExtendedServices: number | undefined = window.setInterval(() => {
+      // Check the running version of the ExtendedServices, cancel polling if up-to-date.
       bridge
         .ping()
         .then((response) => {
           if (response.version !== version) {
             setOutdated(true);
           } else if (response.started) {
-            window.clearInterval(detectKieSandboxExtendedServices);
+            window.clearInterval(detectExtendedServices);
             setOutdated(false);
-            setStatus(KieSandboxExtendedServicesStatus.RUNNING);
+            setStatus(ExtendedServicesStatus.RUNNING);
           }
         })
         .catch((err) => {
@@ -120,10 +117,10 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
         });
     }, KIE_SANDBOX_EXTENDED_SERVICES_POLLING_TIME);
 
-    return () => window.clearInterval(detectKieSandboxExtendedServices);
+    return () => window.clearInterval(detectExtendedServices);
   }, [status, bridge, version]);
 
-  const client = useMemo(() => new KieSandboxExtendedServicesClient(config.url.jitExecutor), [config]);
+  const client = useMemo(() => new ExtendedServicesClient(config.url.jitExecutor), [config]);
 
   const value = useMemo(
     () => ({
@@ -143,9 +140,9 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
   );
 
   return (
-    <KieSandboxExtendedServicesContext.Provider value={value}>
+    <ExtendedServicesContext.Provider value={value}>
       {props.children}
-      <KieSandboxExtendedServicesModal />
-    </KieSandboxExtendedServicesContext.Provider>
+      <ExtendedServicesModal />
+    </ExtendedServicesContext.Provider>
   );
 }

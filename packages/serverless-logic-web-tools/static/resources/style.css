@@ -253,17 +253,17 @@
   max-height: calc(100vh - 171px);
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-footer {
+.kogito--editor__extended-services-modal-footer {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-footer-alert {
+.kogito--editor__extended-services-modal-footer-alert {
   width: 100%;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-footer-alert-success {
+.kogito--editor__extended-services-modal-footer-alert-success {
   display: flex;
   justify-content: space-between;
 }
@@ -297,7 +297,7 @@
   animation: staticAnimation 10s infinite;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-initial {
+.kogito--editor__extended-services-modal-initial {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -306,28 +306,28 @@
   margin-left: 20px;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-initial-center {
+.kogito--editor__extended-services-modal-initial-center {
   margin: 0 auto;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-initial img {
+.kogito--editor__extended-services-modal-initial img {
   border: 1px solid #eee;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-initial-content {
+.kogito--editor__extended-services-modal-initial-content {
   display: flex;
   flex-direction: row;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-initial-title {
+.kogito--editor__extended-services-modal-initial-title {
   margin: 20px 20px 0px;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-initial-margin {
+.kogito--editor__extended-services-modal-initial-margin {
   margin: 10px;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-use {
+.kogito--editor__extended-services-modal-use {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -335,22 +335,22 @@
   flex-direction: column;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-use-title {
+.kogito--editor__extended-services-modal-use-title {
   margin: 20px;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-use-main-content {
+.kogito--editor__extended-services-modal-use-main-content {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-use-text-align {
+.kogito--editor__extended-services-modal-use-text-align {
   text-align: center;
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-use-margin {
+.kogito--editor__extended-services-modal-use-margin {
   margin: 10px;
 }
 
@@ -432,15 +432,15 @@
   }
 }
 
-.kogito--editor__kie-sandbox-extended-services-dropdown-icon-outdated {
+.kogito--editor__extended-services-dropdown-icon-outdated {
   color: var(--pf-global--warning-color--100);
 }
 
-.kogito--editor__kie-sandbox-extended-services-dropdown-icon-outdated:focus {
+.kogito--editor__extended-services-dropdown-icon-outdated:focus {
   outline: none;
 }
 
-.kogito--editor__kie-sandbox-extended-services-dropdown-icon-connected {
+.kogito--editor__extended-services-dropdown-icon-connected {
   color: var(--pf-global--palette--green-300);
 }
 

@@ -28,15 +28,15 @@ import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { ExtendedServicesConfig, useSettings, useSettingsDispatch } from "../SettingsContext";
 
-export function KieSandboxExtendedServicesSettingsTab() {
+export function ExtendedServicesSettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
-  const [config, setConfig] = useState(settings.kieSandboxExtendedServices.config);
+  const extendedServices = useExtendedServices();
+  const [config, setConfig] = useState(settings.extendedServices.config);
 
   const isCurrentConfigValid = useMemo(
     () => config.host.trim().length > 0 && config.buildUrl().trim().length > 0,
@@ -56,24 +56,24 @@ export function KieSandboxExtendedServicesSettingsTab() {
   );
 
   const onConnect = useCallback(() => {
-    settingsDispatch.kieSandboxExtendedServices.setConfig(config);
-  }, [settingsDispatch.kieSandboxExtendedServices, config]);
+    settingsDispatch.extendedServices.setConfig(config);
+  }, [settingsDispatch.extendedServices, config]);
 
   const onReset = useCallback(() => {
     const emptyConfig = new ExtendedServicesConfig("", "");
     setConfig(emptyConfig);
-    settingsDispatch.kieSandboxExtendedServices.setConfig(emptyConfig);
-  }, [settingsDispatch.kieSandboxExtendedServices]);
+    settingsDispatch.extendedServices.setConfig(emptyConfig);
+  }, [settingsDispatch.extendedServices]);
 
   return (
     <>
       <Page>
         <PageSection>
-          {kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING ? (
+          {extendedServices.status === ExtendedServicesStatus.RUNNING ? (
             <EmptyState>
               <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
               <TextContent>
-                <Text component={"h2"}>{"You are connect to the KIE Sandbox Extended Services."}</Text>
+                <Text component={"h2"}>{"You are connect to the Extended Services."}</Text>
               </TextContent>
               <EmptyStateBody>
                 <TextContent>
@@ -98,11 +98,11 @@ export function KieSandboxExtendedServicesSettingsTab() {
                     variant="danger"
                     title={
                       <Text>
-                        You are not connected to KIE Sandbox Extended Services.{" "}
+                        You are not connected to Extended Services.{" "}
                         <a
                           onClick={() => {
-                            kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
-                            kieSandboxExtendedServices.setModalOpen(true);
+                            extendedServices.setInstallTriggeredBy(undefined);
+                            extendedServices.setModalOpen(true);
                           }}
                         >
                           Click to setup
@@ -114,7 +114,7 @@ export function KieSandboxExtendedServicesSettingsTab() {
                   />
                 </FormAlert>
                 <TextContent>
-                  <Text component={TextVariants.h3}>KIE Sandbox Extended Services</Text>
+                  <Text component={TextVariants.h3}>Extended Services</Text>
                 </TextContent>
                 <TextContent>
                   <Text component={TextVariants.small}>
@@ -126,7 +126,7 @@ export function KieSandboxExtendedServicesSettingsTab() {
                 <FormGroup
                   label={"Host"}
                   labelIcon={
-                    <Popover bodyContent={"The host associated with the KIE Sandbox Extended Services URL instance."}>
+                    <Popover bodyContent={"The host associated with the Extended Services URL instance."}>
                       <button
                         type="button"
                         aria-label="More info for host field"
@@ -165,9 +165,7 @@ export function KieSandboxExtendedServicesSettingsTab() {
                 <FormGroup
                   label={"Port"}
                   labelIcon={
-                    <Popover
-                      bodyContent={"The port number associated with the KIE Sandbox Extended Services URL instance."}
-                    >
+                    <Popover bodyContent={"The port number associated with the Extended Services URL instance."}>
                       <button
                         type="button"
                         aria-label="More info for port field"
@@ -206,7 +204,7 @@ export function KieSandboxExtendedServicesSettingsTab() {
                 <ActionGroup>
                   <Button
                     isDisabled={!isCurrentConfigValid}
-                    id="kie-sandbox-extended-services-config-connect-button"
+                    id="extended-services-config-connect-button"
                     key="connect"
                     variant="primary"
                     onClick={onConnect}

@@ -21,37 +21,34 @@ import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { useDevDeploymentsDeployDropdownItems } from "../../devDeployments/DevDeploymentsDeployDropdownItems";
 import { useDmnRunnerState, useDmnRunnerDispatch } from "../../dmnRunner/DmnRunnerContext";
-import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
-import {
-  DependentFeature,
-  useExtendedServices,
-} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
+import { FeatureDependentOnExtendedServices } from "../../extendedServices/FeatureDependentOnExtendedServices";
+import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
+import { ExtendedServicesIcon } from "../../extendedServices/ExtendedServicesIcon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { DmnRunnerProviderActionType } from "../../dmnRunner/DmnRunnerTypes";
 
-export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace | undefined }) {
+export function ExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace | undefined }) {
   const { i18n } = useOnlineI18n();
   const extendedServices = useExtendedServices();
   const dmnRunnerState = useDmnRunnerState();
   const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
   const { setDmnRunnerContextProviderState } = useDmnRunnerDispatch();
 
-  const isKieSandboxExtendedServicesRunning = useMemo(
-    () => extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
+  const isExtendedServicesRunning = useMemo(
+    () => extendedServices.status === ExtendedServicesStatus.RUNNING,
     [extendedServices.status]
   );
 
   const onToggleDmnRunner = useCallback(() => {
-    if (isKieSandboxExtendedServicesRunning) {
+    if (isExtendedServicesRunning) {
       setDmnRunnerContextProviderState({ type: DmnRunnerProviderActionType.TOGGLE_EXPANDED });
       return;
     }
     extendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     extendedServices.setModalOpen(true);
-  }, [setDmnRunnerContextProviderState, isKieSandboxExtendedServicesRunning, extendedServices]);
+  }, [setDmnRunnerContextProviderState, isExtendedServicesRunning, extendedServices]);
 
   return (
     <>
@@ -60,21 +57,21 @@ export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: Acti
         label={
           <>
             {"Run"}
-            <KieSandboxExtendedServicesIcon />
+            <ExtendedServicesIcon />
           </>
         }
       >
-        <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
+        <FeatureDependentOnExtendedServices isLight={false} position="left">
           <DropdownItem
             id="dmn-runner-kebab-toggle"
-            key={"kie-sandbox-extended-services-dropdown-dmn-runner-toggle"}
+            key={"extended-services-dropdown-dmn-runner-toggle"}
             component={"button"}
             onClick={onToggleDmnRunner}
             ouiaId="toggle-dmn-runner-dropdown-button"
           >
             <Text>{dmnRunnerState.isExpanded ? i18n.terms.close : i18n.terms.open}</Text>
           </DropdownItem>
-        </FeatureDependentOnKieSandboxExtendedServices>
+        </FeatureDependentOnExtendedServices>
       </DropdownGroup>
       <Divider key={"divider-kie-extended-service-dropdown-items"} />
       <DropdownGroup
@@ -82,7 +79,7 @@ export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: Acti
         label={
           <>
             {"Deploy"}
-            <KieSandboxExtendedServicesIcon />
+            <ExtendedServicesIcon />
           </>
         }
       >

@@ -38,8 +38,8 @@ import { useOnlineI18n } from "../i18n";
 import { I18nHtml, I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { SelectOs } from "../os/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
-import { DependentFeature, useExtendedServices } from "./KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
+import { DependentFeature, useExtendedServices } from "./ExtendedServicesContext";
+import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
 
@@ -51,7 +51,7 @@ enum ModalPage {
 const UBUNTU_APP_INDICATOR_LIB = "apt install libappindicator3-dev";
 const FEDORA_APP_INDICATOR_LIB = "dnf install libappindicator-gtk3";
 
-export function KieSandboxExtendedServicesModal() {
+export function ExtendedServicesModal() {
   const { i18n } = useOnlineI18n();
   const routes = useRoutes();
   const [operatingSystem, setOperatingSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
@@ -62,7 +62,7 @@ export function KieSandboxExtendedServicesModal() {
     () => `kie_sandbox_extended_services_macos_${extendedServices.version}.dmg`,
     [extendedServices.version]
   );
-  const KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP = useMemo(() => "KIE Sandbox Extended Services.app", []);
+  const KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP = useMemo(() => "Extended Services.app", []);
   const KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE = useMemo(
     () => `kie_sandbox_extended_services_windows_${extendedServices.version}.exe`,
     [extendedServices.version]
@@ -73,15 +73,15 @@ export function KieSandboxExtendedServicesModal() {
   );
   const KIE_SANDBOX_EXTENDED_SERVICES_BINARIES = useMemo(() => "kie_sandbox_extended_services", []);
 
-  const downloadKieSandboxExtendedServicesUrl = useMemo(() => {
+  const downloadExtendedServicesUrl = useMemo(() => {
     switch (operatingSystem) {
       case OperatingSystem.MACOS:
-        return process.env.WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl;
+        return process.env.WEBPACK_REPLACE__extendedServicesMacOsDownloadUrl;
       case OperatingSystem.WINDOWS:
-        return process.env.WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl;
+        return process.env.WEBPACK_REPLACE__extendedServicesWindowsDownloadUrl;
       case OperatingSystem.LINUX:
       default:
-        return process.env.WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl;
+        return process.env.WEBPACK_REPLACE__extendedServicesLinuxDownloadUrl;
     }
   }, [operatingSystem]);
 
@@ -108,9 +108,9 @@ export function KieSandboxExtendedServicesModal() {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <Text
-                      id="kie-sandbox-extended-services-modal-download-macos"
+                      id="extended-services-modal-download-macos"
                       component={TextVariants.a}
-                      href={downloadKieSandboxExtendedServicesUrl}
+                      href={downloadExtendedServicesUrl}
                     >
                       {i18n.terms.download}
                     </Text>
@@ -149,7 +149,7 @@ export function KieSandboxExtendedServicesModal() {
         name: i18n.terms.start,
         component: (
           <>
-            {extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ? (
+            {extendedServices.status === ExtendedServicesStatus.STOPPED ? (
               <>
                 <Alert
                   variant={AlertVariant.warning}
@@ -171,7 +171,7 @@ export function KieSandboxExtendedServicesModal() {
                     <TextContent>
                       <Text component={TextVariants.p}>
                         <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.macos.start.stopped.launchKieSandboxExtendedServices}
+                          {i18n.dmnRunner.modal.wizard.macos.start.stopped.launchExtendedServices}
                         </I18nWrapped>
                       </Text>
                     </TextContent>
@@ -230,7 +230,7 @@ export function KieSandboxExtendedServicesModal() {
                     <TextContent>
                       <Text component={TextVariants.p}>
                         <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.macos.start.launchKieSandboxExtendedServices}
+                          {i18n.dmnRunner.modal.wizard.macos.start.launchExtendedServices}
                         </I18nWrapped>
                       </Text>
                     </TextContent>
@@ -244,7 +244,7 @@ export function KieSandboxExtendedServicesModal() {
                   toggleTextExpanded={i18n.dmnRunner.modal.wizard.macos.start.advanced.title}
                   toggleTextCollapsed={i18n.dmnRunner.modal.wizard.macos.start.advanced.title}
                 >
-                  <KieSandboxExtendedServicesPortForm />
+                  <ExtendedServicesPortForm />
                   <br />
                   <TextContent>
                     <Text component={TextVariants.p}>
@@ -271,7 +271,7 @@ export function KieSandboxExtendedServicesModal() {
       extendedServices.outdated,
       extendedServices.status,
       extendedServices.config.port,
-      downloadKieSandboxExtendedServicesUrl,
+      downloadExtendedServicesUrl,
       KIE_SANDBOX_EXTENDED_SERVICES_MACOS_DMG,
       KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP,
     ]
@@ -300,9 +300,9 @@ export function KieSandboxExtendedServicesModal() {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <Text
-                      id="kie-sandbox-extended-services-modal-download-windows"
+                      id="extended-services-modal-download-windows"
                       component={TextVariants.a}
-                      href={downloadKieSandboxExtendedServicesUrl}
+                      href={downloadExtendedServicesUrl}
                     >
                       {i18n.terms.download}
                     </Text>
@@ -325,7 +325,7 @@ export function KieSandboxExtendedServicesModal() {
         name: i18n.terms.start,
         component: (
           <>
-            {extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ? (
+            {extendedServices.status === ExtendedServicesStatus.STOPPED ? (
               <>
                 <Alert
                   variant={AlertVariant.warning}
@@ -347,7 +347,7 @@ export function KieSandboxExtendedServicesModal() {
                     <TextContent>
                       <Text component={TextVariants.p}>
                         <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.windows.start.stopped.launchKieSandboxExtendedServices}
+                          {i18n.dmnRunner.modal.wizard.windows.start.stopped.launchExtendedServices}
                         </I18nWrapped>
                       </Text>
                     </TextContent>
@@ -390,7 +390,7 @@ export function KieSandboxExtendedServicesModal() {
                     <TextContent>
                       <Text component={TextVariants.p}>
                         <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.windows.start.launchKieSandboxExtendedServices}
+                          {i18n.dmnRunner.modal.wizard.windows.start.launchExtendedServices}
                         </I18nWrapped>
                       </Text>
                     </TextContent>
@@ -404,7 +404,7 @@ export function KieSandboxExtendedServicesModal() {
                   toggleTextExpanded={i18n.dmnRunner.modal.wizard.windows.start.advanced.title}
                   toggleTextCollapsed={i18n.dmnRunner.modal.wizard.windows.start.advanced.title}
                 >
-                  <KieSandboxExtendedServicesPortForm />
+                  <ExtendedServicesPortForm />
                   <br />
                   <TextContent>
                     <Text component={TextVariants.p}>
@@ -432,7 +432,7 @@ export function KieSandboxExtendedServicesModal() {
       extendedServices.status,
       extendedServices.version,
       extendedServices.config.port,
-      downloadKieSandboxExtendedServicesUrl,
+      downloadExtendedServicesUrl,
       KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE,
     ]
   );
@@ -460,9 +460,9 @@ export function KieSandboxExtendedServicesModal() {
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <Text
-                      id="kie-sandbox-extended-services-modal-download-linux"
+                      id="extended-services-modal-download-linux"
                       component={TextVariants.a}
-                      href={downloadKieSandboxExtendedServicesUrl}
+                      href={downloadExtendedServicesUrl}
                     >
                       {i18n.terms.download}
                     </Text>{" "}
@@ -514,7 +514,7 @@ export function KieSandboxExtendedServicesModal() {
         name: i18n.terms.start,
         component: (
           <>
-            {extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED && (
+            {extendedServices.status === ExtendedServicesStatus.STOPPED && (
               <div>
                 <Alert
                   variant={AlertVariant.warning}
@@ -558,7 +558,7 @@ export function KieSandboxExtendedServicesModal() {
                 toggleTextExpanded={i18n.dmnRunner.modal.wizard.linux.start.advanced.title}
                 toggleTextCollapsed={i18n.dmnRunner.modal.wizard.linux.start.advanced.title}
               >
-                <KieSandboxExtendedServicesPortForm />
+                <ExtendedServicesPortForm />
                 <br />
                 <TextContent>
                   <Text component={TextVariants.p}>
@@ -585,7 +585,7 @@ export function KieSandboxExtendedServicesModal() {
       extendedServices.outdated,
       extendedServices.status,
       extendedServices.config.port,
-      downloadKieSandboxExtendedServicesUrl,
+      downloadExtendedServicesUrl,
       KIE_SANDBOX_EXTENDED_SERVICES_LINUX_TAG_GZ,
       KIE_SANDBOX_EXTENDED_SERVICES_BINARIES,
     ]
@@ -604,11 +604,11 @@ export function KieSandboxExtendedServicesModal() {
   }, [operatingSystem, macOsWizardSteps, windowsWizardSteps, linuxWizardSteps]);
 
   useEffect(() => {
-    if (extendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING) {
+    if (extendedServices.status === ExtendedServicesStatus.NOT_RUNNING) {
       setModalPage(ModalPage.INITIAL);
-    } else if (extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED) {
+    } else if (extendedServices.status === ExtendedServicesStatus.STOPPED) {
       setModalPage(ModalPage.WIZARD);
-    } else if (extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+    } else if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
       extendedServices.setModalOpen(false);
     }
 
@@ -620,8 +620,8 @@ export function KieSandboxExtendedServicesModal() {
   const onClose = useCallback(() => {
     setModalPage(ModalPage.INITIAL);
     extendedServices.setModalOpen(false);
-    if (extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED || extendedServices.outdated) {
-      extendedServices.setStatus(KieSandboxExtendedServicesStatus.NOT_RUNNING);
+    if (extendedServices.status === ExtendedServicesStatus.STOPPED || extendedServices.outdated) {
+      extendedServices.setStatus(ExtendedServicesStatus.NOT_RUNNING);
     }
   }, [extendedServices]);
 
@@ -645,29 +645,29 @@ export function KieSandboxExtendedServicesModal() {
 
   return (
     <Modal
-      ouiaId="kie-sandbox-extended-services-modal"
+      ouiaId="extended-services-modal"
       isOpen={extendedServices.isModalOpen}
       onClose={onClose}
       variant={modalVariant}
-      aria-label={"Steps to enable the KIE Sandbox Extended Services"}
+      aria-label={"Steps to enable Extended Services"}
       title={modalTitle}
       description={modalPage === ModalPage.WIZARD && <p>{i18n.dmnRunner.modal.wizard.description}</p>}
       footer={
         <>
           {modalPage === ModalPage.INITIAL && (
             <Button
-              className="pf-u-mt-xl kogito--editor__kie-sandbox-extended-services-modal-initial-center"
+              className="pf-u-mt-xl kogito--editor__extended-services-modal-initial-center"
               onClick={() => setModalPage(ModalPage.WIZARD)}
             >
               {i18n.terms.setup}
             </Button>
           )}
           {modalPage === ModalPage.WIZARD && (
-            <div className={"kogito--editor__kie-sandbox-extended-services-modal-footer"}>
+            <div className={"kogito--editor__extended-services-modal-footer"}>
               <Alert
                 variant={"default"}
                 isInline={true}
-                className={"kogito--editor__kie-sandbox-extended-services-modal-footer-alert"}
+                className={"kogito--editor__extended-services-modal-footer-alert"}
                 title={
                   <AnimatedTripleDotLabel label={i18n.dmnRunner.modal.wizard.footerWaitingToConnect} interval={750} />
                 }
@@ -678,8 +678,8 @@ export function KieSandboxExtendedServicesModal() {
       }
     >
       {modalPage === ModalPage.INITIAL && (
-        <div className={"kogito--editor__kie-sandbox-extended-services-modal-initial"}>
-          <div className={"kogito--editor__kie-sandbox-extended-services-modal-initial-title"}>
+        <div className={"kogito--editor__extended-services-modal-initial"}>
+          <div className={"kogito--editor__extended-services-modal-initial-title"}>
             <TextContent>
               <Text component={TextVariants.h1}>
                 {extendedServices.installTriggeredBy === DependentFeature.DEV_DEPLOYMENTS
@@ -690,7 +690,7 @@ export function KieSandboxExtendedServicesModal() {
           </div>
           <div>
             <TextContent className="pf-u-mt-sm pf-u-mb-md">
-              <Text component={TextVariants.p}>{i18n.kieSandboxExtendedServices.modal.initial.subHeader}</Text>
+              <Text component={TextVariants.p}>{i18n.extendedServices.modal.initial.subHeader}</Text>
             </TextContent>
           </div>
           <br />
@@ -761,13 +761,7 @@ export function KieSandboxExtendedServicesModal() {
           <Wizard
             steps={wizardSteps}
             height={400}
-            footer={
-              <KieSandboxExtendedServicesWizardFooter
-                onClose={onClose}
-                steps={wizardSteps}
-                setModalPage={setModalPage}
-              />
-            }
+            footer={<ExtendedServicesWizardFooter onClose={onClose} steps={wizardSteps} setModalPage={setModalPage} />}
           />
         </div>
       )}
@@ -781,13 +775,13 @@ interface WizardImperativeControlProps {
   setModalPage: React.Dispatch<ModalPage>;
 }
 
-function KieSandboxExtendedServicesWizardFooter(props: WizardImperativeControlProps) {
+function ExtendedServicesWizardFooter(props: WizardImperativeControlProps) {
   const wizardContext = useContext(WizardContext);
   const { status } = useExtendedServices();
   const { i18n } = useOnlineI18n();
 
   useEffect(() => {
-    if (status === KieSandboxExtendedServicesStatus.STOPPED) {
+    if (status === ExtendedServicesStatus.STOPPED) {
       wizardContext.goToStepByName(props.steps[1].name);
     }
   }, [status, props.steps, wizardContext]);
@@ -819,7 +813,7 @@ function KieSandboxExtendedServicesWizardFooter(props: WizardImperativeControlPr
   );
 }
 
-function KieSandboxExtendedServicesPortForm() {
+function ExtendedServicesPortForm() {
   const { config, saveNewConfig } = useExtendedServices();
   const { i18n } = useOnlineI18n();
 
@@ -837,7 +831,7 @@ function KieSandboxExtendedServicesPortForm() {
       <br />
       <Form isHorizontal={true}>
         <FormGroup
-          fieldId={"kie-sandbox-extended-services-port"}
+          fieldId={"extended-services-port"}
           label={i18n.dmnRunner.modal.wizard.advancedSettings.label}
           validated={
             config.port === "" || parseInt(config.port, 10) < 0 || parseInt(config.port, 10) > 65353

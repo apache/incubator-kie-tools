@@ -51,11 +51,11 @@ export default async (env: any, argv: any) => {
     dashbuilderViewerImageTag,
   ] = getDashbuilderViewerImageArgs();
   const [
-    kieSandboxExtendedServices_linuxDownloadUrl,
-    kieSandboxExtendedServices_macOsDownloadUrl,
-    kieSandboxExtendedServices_windowsDownloadUrl,
-    kieSandboxExtendedServices_compatibleVersion,
-  ] = getKieSandboxExtendedServicesArgs();
+    extendedServices_linuxDownloadUrl,
+    extendedServices_macOsDownloadUrl,
+    extendedServices_windowsDownloadUrl,
+    extendedServices_compatibleVersion,
+  ] = getextendedServicesArgs();
 
   return [
     merge(common(env), {
@@ -111,11 +111,10 @@ export default async (env: any, argv: any) => {
             WEBPACK_REPLACE__baseBuilderImageFullUrl: `${baseBuilderImageRegistry}/${baseBuilderImageAccount}/${baseBuilderImageName}:${baseBuilderImageTag}`,
             WEBPACK_REPLACE__devModeImageFullUrl: `${swfDevModeImageRegistry}/${swfDevModeImageAccount}/${swfDevModeImageName}:${swfDevModeImageTag}`,
             WEBPACK_REPLACE__dashbuilderViewerImageFullUrl: `${dashbuilderViewerImageRegistry}/${dashbuilderViewerImageAccount}/${dashbuilderViewerImageName}:${dashbuilderViewerImageTag}`,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl:
-              kieSandboxExtendedServices_windowsDownloadUrl,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
+            WEBPACK_REPLACE__extendedServicesLinuxDownloadUrl: extendedServices_linuxDownloadUrl,
+            WEBPACK_REPLACE__extendedServicesMacOsDownloadUrl: extendedServices_macOsDownloadUrl,
+            WEBPACK_REPLACE__extendedServicesWindowsDownloadUrl: extendedServices_windowsDownloadUrl,
+            WEBPACK_REPLACE__extendedServicesCompatibleVersion: extendedServices_compatibleVersion,
             WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicWebTools.gitCorsProxyUrl,
             WEBPACK_REPLACE__samplesRepositoryRef: buildEnv.serverlessLogicWebTools.samplesRepositoryRef,
           }),
@@ -313,16 +312,16 @@ function getBuildInfo() {
   return buildInfo;
 }
 
-function getKieSandboxExtendedServicesArgs() {
-  const linuxDownloadUrl = buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.downloadUrl.linux;
-  const macOsDownloadUrl = buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.downloadUrl.macOs;
-  const windowsDownloadUrl = buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.downloadUrl.windows;
-  const compatibleVersion = buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.compatibleVersion;
+function getextendedServicesArgs() {
+  const linuxDownloadUrl = buildEnv.serverlessLogicWebTools.extendedServices.downloadUrl.linux;
+  const macOsDownloadUrl = buildEnv.serverlessLogicWebTools.extendedServices.downloadUrl.macOs;
+  const windowsDownloadUrl = buildEnv.serverlessLogicWebTools.extendedServices.downloadUrl.windows;
+  const compatibleVersion = buildEnv.serverlessLogicWebTools.extendedServices.compatibleVersion;
 
-  console.info("KIE Sandbox Extended Services :: Linux download URL: " + linuxDownloadUrl);
-  console.info("KIE Sandbox Extended Services :: macOS download URL: " + macOsDownloadUrl);
-  console.info("KIE Sandbox Extended Services :: Windows download URL: " + windowsDownloadUrl);
-  console.info("KIE Sandbox Extended Services :: Compatible version: " + compatibleVersion);
+  console.info("Extended Services :: Linux download URL: " + linuxDownloadUrl);
+  console.info("Extended Services :: macOS download URL: " + macOsDownloadUrl);
+  console.info("Extended Services :: Windows download URL: " + windowsDownloadUrl);
+  console.info("Extended Services :: Compatible version: " + compatibleVersion);
 
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
 }

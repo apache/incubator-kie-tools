@@ -28,9 +28,9 @@ import {
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { InputRow, extractDifferences } from "@kie-tools/form-dmn";
 import {
   DecisionResult,
@@ -147,7 +147,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     dmnRunnerPersistenceJsonDispatcher,
   } = useDmnRunnerPersistenceDispatch();
   useDmnRunnerPersistence(props.workspaceFile.workspaceId, props.workspaceFile.relativePath);
-  const prevKieSandboxExtendedServicesStatus = usePrevious(extendedServices.status);
+  const prevExtendedServicesStatus = usePrevious(extendedServices.status);
   const { panel, setNotifications, addToggleItem, removeToggleItem, onOpenPanel, onTogglePanel } =
     useEditorDockContext();
 
@@ -183,12 +183,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
 
     if (
-      extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
-      extendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING
+      extendedServices.status === ExtendedServicesStatus.STOPPED ||
+      extendedServices.status === ExtendedServicesStatus.NOT_RUNNING
     ) {
       setDmnRunnerContextProviderState({ type: DmnRunnerProviderActionType.DEFAULT, newState: { isExpanded: false } });
     }
-  }, [prevKieSandboxExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
+  }, [prevExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
   const extendedServicesModelPayload = useCallback(
     async (formInputs?: InputRow) => {
@@ -221,10 +221,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (
-          props.workspaceFile.extension !== "dmn" ||
-          extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
-        ) {
+        if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
           return;
         }
 
@@ -311,10 +308,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
   // Set execution tab on Problems panel;
   useEffect(() => {
-    if (
-      props.workspaceFile.extension !== "dmn" ||
-      extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
-    ) {
+    if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
       return;
     }
 
@@ -590,10 +584,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (
-          props.workspaceFile.extension !== "dmn" ||
-          extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
-        ) {
+        if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
           setDmnRunnerContextProviderState({
             type: DmnRunnerProviderActionType.DEFAULT,
             newState: { isExpanded: false },

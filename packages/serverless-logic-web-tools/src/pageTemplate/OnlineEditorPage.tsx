@@ -21,7 +21,7 @@ import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/compon
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useHistory } from "react-router";
-import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
+import { ExtendedServicesIcon } from "../extendedServices/ExtendedServicesIcon";
 import { useRoutes } from "../navigation/Hooks";
 import { OpenshiftDeploymentsDropdown } from "../openshift/dropdown/OpenshiftDeploymentsDropdown";
 import { SettingsButton } from "../settings/SettingsButton";
@@ -68,7 +68,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
               </FlexItem>
               <FlexItem>
                 <PageHeaderToolsItem>
-                  <KieSandboxExtendedServicesIcon />
+                  <ExtendedServicesIcon />
                 </PageHeaderToolsItem>
               </FlexItem>
               {!isChromiumBased && (
@@ -81,8 +81,8 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                 >
                   <ExclamationIcon
                     data-testid="not-chromium-icon"
-                    className="kogito--editor__kie-sandbox-extended-services-dropdown-icon-outdated static-opacity"
-                    id="kie-sandbox-extended-services-not-chromium-icon"
+                    className="kogito--editor__extended-services-dropdown-icon-outdated static-opacity"
+                    id="extended-services-not-chromium-icon"
                     style={{ cursor: "pointer" }}
                   />
                 </Tooltip>
