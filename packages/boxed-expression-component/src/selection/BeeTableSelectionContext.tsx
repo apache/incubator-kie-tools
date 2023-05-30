@@ -909,7 +909,7 @@ export function useBeeTableSelectableCellRef(
 
   const [status, setStatus] = useState<BeeTableCellStatus>(NEUTRAL_CELL_STATUS);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const ref = registerSelectableCellRef?.(rowIndex, columnIndex, {
       setStatus,
       setValue,
