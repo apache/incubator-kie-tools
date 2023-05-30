@@ -579,9 +579,6 @@ interface OnlineDictionary extends ReferenceDictionary {
       confirmButtonText: string;
     };
   };
-  newWorkspaceFromUrlPage: {
-    error: string;
-  };
 }
 
 export interface OnlineI18n extends OnlineDictionary, CommonI18n {}

@@ -42,7 +42,7 @@ import { fetchSingleFileContent } from "./fetchSingleFileContent";
 import { useGitHubClient } from "../github/Hooks";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
-import { useAuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
+import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
@@ -51,14 +51,12 @@ import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
 import { useBitbucketClient } from "../bitbucket/Hooks";
-import { useOnlineI18n } from "../i18n";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
   const routes = useRoutes();
   const history = useHistory();
   const accountsDispatch = useAccountsDispatch();
-  const { i18n } = useOnlineI18n();
 
   const [importingError, setImportingError] = useState("");
 
@@ -379,13 +377,13 @@ export function NewWorkspaceFromUrlPage() {
   ]);
 
   useEffect(() => {
-    if (!queryParamUrl) {
+    if (!queryParamUrl || (importingError && queryParamBranch === undefined)) {
       history.replace({
         pathname: routes.import.path({}),
         search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
       });
     }
-  }, [history, queryParamUrl, queryParams, routes.import]);
+  }, [history, importingError, queryParamBranch, queryParamUrl, queryParams, routes.import]);
 
   useEffect(() => {
     if ((!queryParamBranch || !queryParamAuthSessionId) && selectedGitRefName) {
@@ -423,7 +421,7 @@ export function NewWorkspaceFromUrlPage() {
         <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
           {importingError && (
             <EditorPageErrorPage
-              title={i18n.newWorkspaceFromUrlPage.error}
+              title={`Can't import`}
               path={importableUrl.url?.toString() ?? ""}
               errors={[importingError]}
             />

@@ -25,8 +25,6 @@ import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { useQueryParams } from "../queryParams/QueryParamsContext";
-import { QueryParams } from "../navigation/Routes";
 
 export interface Props {
   errors: string[];
@@ -38,7 +36,6 @@ export function EditorPageErrorPage(props: Props) {
   const routes = useRoutes();
   const history = useHistory();
   const [showDetails, setShowDetails] = useState(false);
-  const queryParams = useQueryParams();
 
   const returnHome = useCallback(() => {
     history.push({ pathname: routes.home.path({}) });
@@ -54,18 +51,6 @@ export function EditorPageErrorPage(props: Props) {
         <EmptyStateIcon icon={ExclamationTriangleIcon} />
         <TextContent>
           <Text component={"h2"}>{props.title}</Text>
-          <Button
-            variant={ButtonVariant.link}
-            isLarge={true}
-            onClick={() =>
-              history.replace({
-                pathname: routes.import.path({}),
-                search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
-              })
-            }
-          >
-            Authenticate and Reimport
-          </Button>
         </TextContent>
         <EmptyStateBody>
           <PageSection>
