@@ -157,23 +157,26 @@ export function UnitablesBeeTable({
           return DEFAULT_COLUMN_MIN_WIDTH;
         }
         return listInput.reduce((length, _, index) => {
-          return (
-            LIST_IDX_WIDTH +
-            Object.entries(field.items.properties).reduce(
-              (length, [fieldKey, fieldProperty]: [string, Record<string, any>]) => {
-                if (fieldProperty.type === "array") {
-                  return (
-                    length +
-                    LIST_ADD_WIDTH +
-                    recursiveCalculateListFieldWidth(`${columnName}.${index}.${fieldKey}`, row)
-                  );
-                }
-                return length + bridge.getFieldDataType(fieldProperty).width;
-              },
-              length
-            ) +
-            NESTED_LIST_DEL_WIDTH
-          );
+          if (field.items.properties) {
+            return (
+              LIST_IDX_WIDTH +
+              Object.entries(field.items.properties).reduce(
+                (length, [fieldKey, fieldProperty]: [string, Record<string, any>]) => {
+                  if (fieldProperty.type === "array") {
+                    return (
+                      length +
+                      LIST_ADD_WIDTH +
+                      recursiveCalculateListFieldWidth(`${columnName}.${index}.${fieldKey}`, row)
+                    );
+                  }
+                  return length + bridge.getFieldDataType(fieldProperty).width;
+                },
+                length
+              ) +
+              NESTED_LIST_DEL_WIDTH
+            );
+          }
+          return LIST_IDX_WIDTH + length + bridge.getFieldDataType(field.items).width + NESTED_LIST_DEL_WIDTH;
         }, 0);
       }
       if (listInput === undefined) {
