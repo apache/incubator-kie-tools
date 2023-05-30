@@ -30,8 +30,8 @@ var defaultDevApplicationProperties = "quarkus.http.port=" + defaultHTTPWorkflow
 	// We disable the Knative health checks to not block the dev pod to run if Knative objects are not available
 	// See: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/eventing/consume-produce-events-with-knative-eventing.html#ref-knative-eventing-add-on-source-configuration
 	"org.kie.kogito.addons.knative.eventing.health-enabled=false\n" +
-	"quarkus.devservices.enabled=false=false\n" +
-	"quarkus.kogito.devservices.enabled=false=false\n"
+	"quarkus.devservices.enabled=false\n" +
+	"quarkus.kogito.devservices.enabled=false\n"
 
 // devServiceCreator is an objectCreator for a basic Service for a workflow using dev profile
 // aiming a vanilla Kubernetes Deployment.
