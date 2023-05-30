@@ -140,9 +140,10 @@ pipeline {
                     String[] versionSplit = getOperatorVersion().split("\\.")
                     String majorMinor = "${versionSplit[0]}.${versionSplit[1]}"
                     def platformCR = readYaml(file: platformCRFile)
-                    platformCR.spec.devBaseImage = "quay.io/kogito-swf-devmode-nightly:${majorMinor}"
-                    platformCR.spec.platform.baseImage = "quay.io/kogito-swf-builder-nightly:${majorMinor}"
+                    platformCR.spec.devBaseImage = "quay.io/kiegroup/kogito-swf-devmode-nightly:${majorMinor}"
+                    platformCR.spec.platform.baseImage = "quay.io/kiegroup/kogito-swf-builder-nightly:${majorMinor}"
                     writeYaml(file: platformCRFile, data: platformCR, overwrite: true)
+                    sh "cat ${platformCRFile}"
                 }
             }
         }
