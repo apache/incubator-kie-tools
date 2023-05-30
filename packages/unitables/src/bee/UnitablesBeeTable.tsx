@@ -166,10 +166,11 @@ export function UnitablesBeeTable({
                     return (
                       length +
                       LIST_ADD_WIDTH +
-                      recursiveCalculateListFieldWidth(`${columnName}.${index}.${fieldKey}`, row)
+                      recursiveCalculateListFieldWidth(`${columnName}.${index}.${fieldKey}`, row) +
+                      1 // border for each element;
                     );
                   }
-                  return length + bridge.getFieldDataType(fieldProperty).width;
+                  return length + bridge.getFieldDataType(fieldProperty).width + 1;
                 },
                 length
               ) +
