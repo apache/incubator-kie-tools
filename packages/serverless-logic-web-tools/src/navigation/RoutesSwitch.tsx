@@ -32,20 +32,7 @@ export function RoutesSwitch() {
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const [isNavOpen, setIsNavOpen] = useState(true);
 
-  const renderPage = (routeProps: {
-    location: {
-      pathname:
-        | string
-        | number
-        | boolean
-        | {}
-        | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-        | React.ReactNodeArray
-        | React.ReactPortal
-        | null
-        | undefined;
-    };
-  }) => {
+  const renderPage = () => {
     return (
       <OnlineEditorPage pageContainerRef={pageContainerRef} isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen}>
         {!isRouteInSettingsSection ? (
