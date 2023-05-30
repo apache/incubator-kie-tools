@@ -73,7 +73,7 @@ public enum DisplayerType {
      * Meter Chart
      */
     METERCHART(),
-    
+
     /**
      * Scatter Chart
      */
@@ -102,7 +102,12 @@ public enum DisplayerType {
     /**
      * External Component Displayer
      */
-    EXTERNAL_COMPONENT();
+    EXTERNAL_COMPONENT(),
+
+    /**
+     * Timeseries displayer
+     */
+    TIMESERIES();
 
     DisplayerType(DisplayerSubType... subtypes) {
         for (DisplayerSubType displayerSubType : subtypes) {

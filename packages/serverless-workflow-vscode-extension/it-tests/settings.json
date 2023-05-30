@@ -10,5 +10,14 @@
   "explorer.compactFolders": false,
   "security.workspace.trust.enabled": false,
   "kogito.swf.automaticallyOpenDiagramEditorAlongsideTextEditor": "Open automatically",
-  "kogito.swf.enableKogitoServerlessWorkflowVisualizationPreview": true
+  "kogito.swf.enableKogitoServerlessWorkflowVisualizationPreview": true,
+  "extensions.ignoreRecommendations": true,
+  "extensions.autoCheckUpdates": false,
+  "extensions.showRecommendationsOnlyOnDemand": true,
+  "git.enabled": false,
+  "git.autoRepositoryDetection": false,
+  "git.detectSubmodules": false,
+  "git.repositoryScanMaxDepth": 0,
+  "telemetry.enableTelemetry": false,
+  "update.mode": "none"
 }

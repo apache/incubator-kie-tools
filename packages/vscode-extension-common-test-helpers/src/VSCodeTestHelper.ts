@@ -37,7 +37,14 @@ import {
   WebView,
   Workbench,
 } from "vscode-extension-tester";
-import { webViewReady, activeFrame, envelopeApp, kogitoLoadingSpinner, inputBox } from "./CommonLocators";
+import {
+  webViewReady,
+  activeFrame,
+  envelopeApp,
+  kogitoLoadingSpinner,
+  inputBox,
+  explorerFolder,
+} from "./CommonLocators";
 import { isKieEditorWithDualView, isKieEditorWithSingleView, isDashbuilderEditor } from "./KieFileExtensions";
 
 /**
@@ -182,6 +189,7 @@ export class VSCodeTestHelper {
     } else {
       const pathPieces = fileParentPath.split("/");
       await this.workspaceSectionView.openItem(...pathPieces);
+      await this.waitUntilFolderStructureIsExpanded(pathPieces[0]);
       const fileItem = await this.workspaceSectionView.findItem(fileName);
       if (fileItem != undefined) {
         await fileItem.click();
@@ -197,6 +205,24 @@ export class VSCodeTestHelper {
     const consoleHelper = await webDriver.findElement(webViewReady());
     await consoleHelper.sendKeys(Key.ENTER);
   }
+
+  /**
+   * Waits until folder structure in explorer is loaded and expanded.
+   *
+   * @param topLevelFolderName the name of the top level folder in the explorer
+   */
+  private waitUntilFolderStructureIsExpanded = async (topLevelFolderName: string): Promise<void> => {
+    await this.driver.wait(
+      async () => {
+        const currentValue = await this.driver
+          .findElement(explorerFolder(topLevelFolderName))
+          .getAttribute("aria-expanded");
+        return currentValue === "true";
+      },
+      25000,
+      "Folder structure didn't expand in time. Please investigate."
+    );
+  };
 
   /**
    * Renames file in SideBarView.

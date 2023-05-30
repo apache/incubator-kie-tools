@@ -63,6 +63,7 @@ import { Position } from "monaco-editor";
 import { ServerlessWorkflowCombinedEditorChannelApi, SwfFeatureToggle, SwfPreviewOptions } from "../api";
 import { useSwfDiagramEditorChannelApi } from "./hooks/useSwfDiagramEditorChannelApi";
 import { useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
+import { colorNodes } from "./helpers/ColorNodes";
 
 interface Props {
   locale: string;
@@ -74,6 +75,7 @@ interface Props {
 
 export type ServerlessWorkflowCombinedEditorRef = {
   setContent(path: string, content: string): Promise<void>;
+  colorNodes(nodeNames: string[], color: string, colorConnectedEnds: boolean): void;
 };
 
 interface File {
@@ -245,6 +247,9 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           textEditor?.setTheme(theme);
           diagramEditor?.setTheme(theme);
         },
+        colorNodes: (nodeNames: string[], color: string, colorConnectedEnds: boolean) => {
+          colorNodes(nodeNames, color, colorConnectedEnds);
+        },
       };
     },
     [diagramEditor, file, props.isReadOnly, textEditor]
@@ -395,6 +400,21 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     );
   };
 
+  window.editor = useMemo(
+    () =>
+      new SwfStunnerEditor(
+        diagramEditor?.getEnvelopeServer()
+          .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>
+      ),
+    [diagramEditor]
+  );
+
+  useEffect(() => {
+    if (isCombinedEditorReady) {
+      editorEnvelopeCtx.channelApi.notifications.kogitoSwfCombinedEditor_combinedEditorReady.send();
+    }
+  }, [isCombinedEditorReady]);
+
   useSubscription(
     editorEnvelopeCtx.channelApi.notifications.kogitoSwfCombinedEditor_moveCursorToPosition,
     useCallback(
@@ -406,15 +426,6 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
       },
       [textEditor]
     )
-  );
-
-  window.editor = useMemo(
-    () =>
-      new SwfStunnerEditor(
-        diagramEditor?.getEnvelopeServer()
-          .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>
-      ),
-    [diagramEditor]
   );
 
   return (

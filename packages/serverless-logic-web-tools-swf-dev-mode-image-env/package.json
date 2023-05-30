@@ -1,0 +1,18 @@
+{
+  "private": true,
+  "name": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*"
+  }
+}

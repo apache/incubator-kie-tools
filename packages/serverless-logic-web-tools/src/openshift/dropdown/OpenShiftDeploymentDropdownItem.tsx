@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useMemo } from "react";
+import * as React from "react";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
@@ -22,17 +22,33 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
+import { useMemo, useCallback, useState } from "react";
 import { WebToolsOpenShiftDeployedModel } from "../deploy/types";
 import { basename } from "path";
+import { DEV_MODE_FEATURE_NAME, buildEndpoints } from "../swfDevMode/DevModeConstants";
+import { useDevModeDispatch } from "../swfDevMode/DevModeContext";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";
 import { DeploymentState } from "@kie-tools-core/kubernetes-bridge/dist/resources";
+import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 
 interface Props {
   id: number;
   deployment: WebToolsOpenShiftDeployedModel;
+  refreshDeployments: (canceled: Holder<boolean>) => void;
 }
 
 export function OpenShiftDeploymentDropdownItem(props: Props) {
+  const { refreshDeployments } = { ...props };
+  const devModeDispatch = useDevModeDispatch();
+  const [isRestoring, setRestoring] = useState(false);
+
   const deploymentName = useMemo(() => {
+    if (props.deployment.devMode) {
+      return DEV_MODE_FEATURE_NAME;
+    }
+
     const maxSize = 35;
 
     const workspaceName = props.deployment.workspaceName;
@@ -44,7 +60,26 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
     const extension = extractExtension(workspaceName);
     const name = extension ? basename(workspaceName, `.${extension}`) : workspaceName;
     return `${name.substring(0, maxSize - extension.length)}...${extension}`;
-  }, [props.deployment.workspaceName]);
+  }, [props.deployment]);
+
+  const onDeploymentClicked = useCallback(() => {
+    const endpoints = buildEndpoints(props.deployment.routeUrl);
+    window.open(props.deployment.devMode ? endpoints.swfDevUi : endpoints.base, "_blank");
+  }, [props.deployment.devMode, props.deployment.routeUrl]);
+
+  const onRestoreClicked = useCallback(async () => {
+    if (isRestoring) {
+      return;
+    }
+
+    setRestoring(true);
+    await devModeDispatch.restart();
+
+    window.setTimeout(() => {
+      setRestoring(false);
+      refreshDeployments(new Holder(false));
+    }, 2000);
+  }, [devModeDispatch, isRestoring, refreshDeployments]);
 
   const stateIcon = useMemo(() => {
     if (props.deployment.state === DeploymentState.UP) {
@@ -104,15 +139,33 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
   }, [props.deployment.state, props.id]);
 
   return (
-    <DropdownItem
-      id="openshift-deployment-item-button"
-      key={`openshift-dropdown-item-${props.id}`}
-      isDisabled={props.deployment.state === DeploymentState.ERROR}
-      onClick={() => window.open(props.deployment.routeUrl, "_blank")}
-      description={`Created at ${props.deployment.creationTimestamp.toLocaleString()}`}
-      icon={stateIcon}
-    >
-      {deploymentName}
-    </DropdownItem>
+    <Flex>
+      <FlexItem grow={{ default: "grow" }} style={{ margin: "0" }}>
+        <DropdownItem
+          id="openshift-deployment-item-button"
+          key={`openshift-dropdown-item-${props.id}`}
+          isDisabled={props.deployment.state === DeploymentState.ERROR}
+          onClick={onDeploymentClicked}
+          description={`Created at ${props.deployment.creationTimestamp.toLocaleString()}`}
+          icon={stateIcon}
+        >
+          {deploymentName}
+        </DropdownItem>
+      </FlexItem>
+      {props.deployment.devMode && (
+        <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
+          <Tooltip content={"Restore its original state"}>
+            <Button
+              className="kogito--editor__openshift-deployments-dropdown-item-action"
+              style={{ color: "var(--pf-global--palette--black-500)" }}
+              variant={ButtonVariant.plain}
+              onClick={onRestoreClicked}
+              icon={<HistoryIcon />}
+              isLoading={isRestoring}
+            />
+          </Tooltip>
+        </FlexItem>
+      )}
+    </Flex>
   );
 }

@@ -19,7 +19,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
 import { SampleCard } from "./SampleCard";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { Sample, SampleCategory } from "./sampleApi";
+import { Sample, SampleCategory } from "./SampleApi";
 import { SampleCardSkeleton } from "./SampleCardSkeleton";
 import { SamplesLoadError } from "./SamplesLoadError";
 import { useSampleDispatch } from "./hooks/SampleContext";
@@ -137,7 +137,7 @@ export function Showcase() {
           </TextContent>
           <br />
           <Flex flexWrap={{ default: "wrap" }}>
-            <FlexItem style={{ marginRight: 0 }}>
+            <FlexItem style={{ marginRight: "1px" }}>
               <SearchInput
                 value={""}
                 type={"search"}

@@ -15,3 +15,8 @@
  */
 
 export const APP_NAME = "Serverless Logic Web Tools";
+
+export const APP_GIT_USER = {
+  name: APP_NAME,
+  email: "",
+};
