@@ -27,7 +27,6 @@ import { useRoutes } from "../navigation/Hooks";
 import { QueryParams } from "../navigation/Routes";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
-import { useSettingsDispatch } from "../settings/SettingsContext";
 import {
   ImportableUrl,
   isPotentiallyGit,
