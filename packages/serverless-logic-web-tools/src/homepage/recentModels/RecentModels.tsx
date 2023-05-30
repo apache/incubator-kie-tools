@@ -98,6 +98,11 @@ export function RecentModels() {
     }, [])
   );
 
+  const onWorkspaceDelete = useCallback(() => {
+    setSelectedWorkspaceIds([]);
+    setPage(1);
+  }, []);
+
   const onConfirmDeleteModalDelete = useCallback(
     async (workspaceDescriptors: WorkspaceDescriptor[]) => {
       const modelsWord = selectedWorkspaceIds.length > 1 ? "Models" : "Model";
@@ -117,6 +122,7 @@ export function RecentModels() {
         })
         .finally(() => {
           setSelectedWorkspaceIds([]);
+          setPage(1);
         });
     },
     [selectedWorkspaceIds, workspaces, deleteErrorAlert, deleteSuccessAlert]
@@ -135,6 +141,7 @@ export function RecentModels() {
 
   const onClearFilters = useCallback(() => {
     setSearchValue("");
+    setPage(1);
   }, []);
 
   const isWsFolder = useCallback(
@@ -157,6 +164,10 @@ export function RecentModels() {
     },
     [isWsFolder, selectedWorkspaceIds, workspaces]
   );
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchValue]);
 
   useEffect(() => {
     Promise.all([
@@ -218,6 +229,7 @@ export function RecentModels() {
                         searchValue={searchValue}
                         selectedWorkspaceIds={selectedWorkspaceIds}
                         workspaceDescriptors={workspaceDescriptors}
+                        onWsDelete={onWorkspaceDelete}
                       />
                       <TablePagination
                         itemCount={itemCount}

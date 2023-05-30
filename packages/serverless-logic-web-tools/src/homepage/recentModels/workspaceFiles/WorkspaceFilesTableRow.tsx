@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { BanIcon, CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { ActionsColumn, Td, Tr } from "@patternfly/react-table/dist/esm";
@@ -40,6 +40,11 @@ export type WorkspaceFilesTableRowProps = {
   onToggle: (selected: boolean) => void;
   rowIndex: TdSelectType["rowIndex"];
   rowData: WorkspaceFilesTableRowData;
+
+  /**
+   * event fired when an element is deleted
+   */
+  onDelete: (file: WorkspaceFile) => void;
 };
 
 export function WorkspaceFilesTableRow(props: WorkspaceFilesTableRowProps) {
@@ -60,11 +65,13 @@ export function WorkspaceFilesTableRow(props: WorkspaceFilesTableRowProps) {
 
   const onDelete = useCallback(async () => {
     if (totalFilesCount > 1) {
-      return await workspaces.deleteFile({ file: fileDescriptor });
+      await workspaces.deleteFile({ file: fileDescriptor });
+    } else {
+      workspaces.deleteWorkspace({ workspaceId: fileDescriptor.workspaceId });
+      history.push({ pathname: routes.recentModels.path({}) });
     }
-    workspaces.deleteWorkspace({ workspaceId: fileDescriptor.workspaceId });
-    history.push({ pathname: routes.recentModels.path({}) });
-  }, [fileDescriptor, history, workspaces, totalFilesCount]);
+    props.onDelete(fileDescriptor);
+  }, [fileDescriptor, history, workspaces, totalFilesCount, props]);
 
   return (
     <Tr key={name}>

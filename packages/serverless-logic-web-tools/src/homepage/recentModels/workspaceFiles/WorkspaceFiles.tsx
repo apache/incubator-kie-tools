@@ -96,6 +96,11 @@ export function WorkspaceFiles(props: Props) {
     }, [])
   );
 
+  const onFileDelete = useCallback(() => {
+    setSelectedWorkspaceFiles([]);
+    setPage(1);
+  }, []);
+
   const onConfirmDeleteModalDelete = useCallback(
     async (totalFilesCount: number) => {
       setIsConfirmDeleteModalOpen(false);
@@ -117,6 +122,7 @@ export function WorkspaceFiles(props: Props) {
         })
         .finally(() => {
           setSelectedWorkspaceFiles([]);
+          setPage(1);
         });
     },
     [
@@ -144,6 +150,10 @@ export function WorkspaceFiles(props: Props) {
   const handleViewRoCheckboxChange = useCallback((checked: boolean) => {
     setIsViewRoFilesChecked(checked);
   }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchValue]);
 
   useEffect(() => {
     setSelectedWorkspaceFiles([]);
@@ -258,6 +268,7 @@ export function WorkspaceFiles(props: Props) {
                         selectedWorkspaceFiles={selectedWorkspaceFiles}
                         totalFilesCount={allFilesCount}
                         workspaceFiles={files}
+                        onFileDelete={onFileDelete}
                       />
 
                       <TablePagination

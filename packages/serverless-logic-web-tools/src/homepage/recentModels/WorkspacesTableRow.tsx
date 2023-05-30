@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
@@ -34,6 +34,7 @@ import { FileLabel } from "../../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 import { columnNames, WorkspacesTableRowData } from "./WorkspacesTable";
 import "../../table/Table.css";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
 export const workspacesTableRowErrorContent = "Error obtaining workspace information";
 
@@ -45,10 +46,15 @@ export type WorkspacesTableRowProps = {
    * event fired when the Checkbox is toggled
    */
   onToggle: (selected: boolean) => void;
+
+  /**
+   * event fired when an element is deleted
+   */
+  onDelete: (workspaceId: WorkspaceDescriptor["workspaceId"]) => void;
 };
 
 export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
-  const { isSelected, rowIndex } = props;
+  const { isSelected, rowIndex, onDelete } = props;
   const { descriptor, editableFiles, totalFiles, name, isWsFolder, workspaceId, createdDateISO, lastUpdatedDateISO } =
     props.rowData;
   const workspaces = useWorkspaces();
@@ -64,6 +70,11 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
         : routes.workspaceWithFiles.path({ workspaceId }),
     [editableFiles, isWsFolder, workspaceId]
   );
+
+  const deleteWorkspace = useCallback(() => {
+    workspaces.deleteWorkspace({ workspaceId });
+    onDelete(workspaceId);
+  }, [workspaceId, onDelete, workspaces]);
 
   return (
     <Tr key={name}>
@@ -103,7 +114,7 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
           items={[
             {
               title: "Delete",
-              onClick: () => workspaces.deleteWorkspace({ workspaceId }),
+              onClick: deleteWorkspace,
             },
           ]}
         />

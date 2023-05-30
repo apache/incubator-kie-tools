@@ -43,6 +43,11 @@ export type WorkspaceFilesTableProps = Pick<TablePaginationProps, "page" | "perP
    */
   totalFilesCount: number;
   workspaceFiles: WorkspaceFile[];
+
+  /**
+   * event fired when an element is deleted
+   */
+  onFileDelete: (file: WorkspaceFile) => void;
 };
 
 export type WorkspaceFilesTableRowData = Pick<WorkspaceFile, "extension"> & {
@@ -144,6 +149,7 @@ export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
               onToggle={(checked) => props.onFileToggle(rowData.fileDescriptor, checked)}
               rowData={rowData}
               rowIndex={rowIndex}
+              onDelete={props.onFileDelete}
             />
           ))}
         </Tbody>
