@@ -24,12 +24,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type CreateCmdConfig struct {
-	ProjectName         string
-	Extensions          string // List of extensions separated by "," to be added to the Quarkus project
-	DependenciesVersion metadata.DependenciesVersion
-}
-
 func NewCreateCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "create",
@@ -91,7 +85,7 @@ func runCreate() error {
 	}
 
 	fmt.Println("🔨 Creating a Quarkus Kogito Serverless Workflow project...")
-	if err = runCreateProject(cfg); err != nil {
+	if err = CreateQuarkusProject(cfg); err != nil {
 		fmt.Println("❌  Error creating quarkus project", err)
 		return err
 	}
@@ -103,7 +97,7 @@ func runCreate() error {
 	return nil
 }
 
-func runCreateProject(cfg CreateCmdConfig) (err error) {
+func runCreateProject(cfg CreateQuarkusProjectConfig) (err error) {
 	if err = common.CheckProjectName(cfg.ProjectName); err != nil {
 		return err
 	}
@@ -132,11 +126,11 @@ func runCreateProject(cfg CreateCmdConfig) (err error) {
 	return
 }
 
-func runCreateCmdConfig() (cfg CreateCmdConfig, err error) {
+func runCreateCmdConfig() (cfg CreateQuarkusProjectConfig, err error) {
 	quarkusPlatformGroupId := viper.GetString("quarkus-platform-group-id")
 	quarkusVersion := viper.GetString("quarkus-version")
 
-	cfg = CreateCmdConfig{
+	cfg = CreateQuarkusProjectConfig{
 		ProjectName: viper.GetString("name"),
 		Extensions: fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s",
 			metadata.KogitoQuarkusServerlessWorkflowExtension,

@@ -40,7 +40,7 @@ func NewConvertCommand() *cobra.Command {
 	{{.Name}} quarkus convert
 		`,
 		SuggestFor: []string{"convert-to-quarkus"},
-		PreRunE:    common.BindEnv("name", "extension", "quarkus-platform-group-id", "quarkus-version"),
+		PreRunE:    common.BindEnv("extension", "quarkus-platform-group-id", "quarkus-version"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -49,7 +49,6 @@ func NewConvertCommand() *cobra.Command {
 
 	quarkusDependencies := metadata.ResolveQuarkusDependencies()
 
-	cmd.Flags().StringP("name", "n", "", "Project name created in the current directory.")
 	cmd.Flags().StringP("extension", "e", "", "On Quarkus projects, setup project custom Maven extensions, separated with a comma.")
 	cmd.Flags().StringP("quarkus-platform-group-id", "G", quarkusDependencies.QuarkusPlatformGroupId, "On Quarkus projects, setup project group id.")
 	cmd.Flags().StringP("quarkus-version", "V", quarkusDependencies.QuarkusVersion, "On Quarkus projects, setup the project version.")
@@ -74,7 +73,6 @@ func loadConvertCmdConfig() (cfg CreateQuarkusProjectConfig, err error) {
 	quarkusVersion := viper.GetString("quarkus-version")
 
 	cfg = CreateQuarkusProjectConfig{
-		ProjectName: viper.GetString("name"),
 		Extensions: fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s",
 			metadata.KogitoQuarkusServerlessWorkflowExtension,
 			metadata.KogitoAddonsQuarkusKnativeEventingExtension,
