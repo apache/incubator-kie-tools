@@ -26,8 +26,8 @@ import { QueryParams } from "../../navigation/Routes";
 import { useQueryParam } from "../../queryParams/QueryParamsContext";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
-import { KIE_SAMPLES_REPO } from "../../home/sample/SampleApi";
-import { useSampleDispatch } from "../../home/sample/hooks/SampleContext";
+import { KIE_SAMPLES_REPO } from "../../samples/SampleApi";
+import { useSampleDispatch } from "../../samples/hooks/SampleContext";
 
 export function NewWorkspaceFromSample() {
   const sampleDispatch = useSampleDispatch();

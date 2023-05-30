@@ -25,7 +25,7 @@ import { RoutesSwitch } from "./navigation/RoutesSwitch";
 import { OpenShiftContextProvider } from "./openshift/OpenShiftContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { VirtualServiceRegistryContextProvider } from "./virtualServiceRegistry/VirtualServiceRegistryContextProvider";
-import { SampleContextProvider } from "./home/sample/hooks/SampleContext";
+import { SampleContextProvider } from "./samples/hooks/SampleContext";
 import { DevModeContextProvider } from "./openshift/swfDevMode/DevModeContext";
 import { GlobalAlertsContextProvider } from "./alerts/GlobalAlertsContext";
 import { EditorContextProvider } from "./editor/hooks/EditorContext";

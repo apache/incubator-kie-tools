@@ -19,7 +19,7 @@ import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCach
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
 import * as React from "react";
 import { useContext, useMemo, useCallback, useState } from "react";
-import { useSettingsDispatch } from "../../../settings/SettingsContext";
+import { useSettingsDispatch } from "../../settings/SettingsContext";
 import {
   fetchSampleCover,
   fetchSampleDefinitions,
@@ -36,7 +36,7 @@ import {
   resolveSampleFsMountPoint,
   SAMPLE_COVERS_CACHE_FILE_PATH,
 } from "../SampleConstants";
-import { useEnv } from "../../../env/EnvContext";
+import { useEnv } from "../../env/EnvContext";
 
 export interface SampleDispatchContextType {
   getSamples(args: { categoryFilter?: SampleCategory; searchFilter?: string }): Promise<Sample[]>;

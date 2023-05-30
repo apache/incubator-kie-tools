@@ -26,7 +26,7 @@ import { FileIcon, FolderIcon, MonitoringIcon, SearchPlusIcon } from "@patternfl
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useRoutes } from "../../navigation/Hooks";
+import { useRoutes } from "../navigation/Hooks";
 
 const tagMap: Record<SampleCategory, { label: string; icon: React.ComponentClass; color: LabelProps["color"] }> = {
   ["serverless-workflow"]: {
