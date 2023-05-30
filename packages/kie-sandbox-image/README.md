@@ -297,7 +297,7 @@ Here's an example of what it should look like:
 
 KIE Sandbox can be customized to show your own logo and/or branding by extending this image and overriding environment variables and files.
 
-- **Header logo:** Override `/var/www/html/static/images/app_logo_rgb_fullcolor_reverse.svg`. Fixed height of `38px`.
-- **Colored logo:** Override `/var/www/html/static/images/app_logo_rgb_fullcolor_default.svg`. Fixed height of `80px`.
-- **Favicon:** Override `/var/www/html/static/favicon.svg`
+- **Header logo:** Override `/var/www/html/images/app_logo_rgb_fullcolor_reverse.svg`. Fixed height of `38px`.
+- **Colored logo:** Override `/var/www/html/images/app_logo_rgb_fullcolor_default.svg`. Fixed height of `80px`.
+- **Favicon:** Override `/var/www/html/favicon.svg`
 - **App name:** Use the `KIE_SANDBOX_APP_NAME` environment variable.
