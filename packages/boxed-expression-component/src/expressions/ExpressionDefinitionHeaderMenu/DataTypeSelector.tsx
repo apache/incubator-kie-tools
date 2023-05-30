@@ -127,9 +127,10 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
     [onToggle]
   );
 
+  const boundingClientRect = selectContainerRef.current?.getBoundingClientRect();
   const selectMenuHeight = useMemo(() => {
-    if (selectContainerRef.current) {
-      const yPos = selectContainerRef.current.getBoundingClientRect().top;
+    if (boundingClientRect) {
+      const yPos = boundingClientRect.top;
       const availableHeight = document.documentElement.clientHeight;
       if (
         DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT <= availableHeight &&
@@ -140,7 +141,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
       }
     }
     return DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT;
-  }, [selectContainerRef, selectContainerRef.current, selectContainerRef.current?.getBoundingClientRect().top]);
+  }, [selectContainerRef, boundingClientRect?.top]);
   return (
     <div ref={selectContainerRef} onKeyDown={onKeyDown}>
       <Select
