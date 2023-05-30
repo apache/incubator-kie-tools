@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package root
 
 import (
 	"fmt"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
@@ -38,14 +39,15 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	}
 
 	viper.AutomaticEnv()           // read in environment variables for WORKFLOW_<flag>
-	viper.SetEnvPrefix("workflow") // ensure thay all have the prefix
+	viper.SetEnvPrefix("workflow") // ensure that all have the prefix
 
 	cmd.Version = cfg.Version
 	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
 
-	cmd.AddCommand(command.NewBuildCommand())
 	cmd.AddCommand(command.NewCreateCommand())
+	cmd.AddCommand(command.NewRunCommand())
 	cmd.AddCommand(command.NewDeployCommand())
+	cmd.AddCommand(quarkus.NewQuarkusCommand())
 	cmd.AddCommand(command.NewVersionCommand(cfg.Version))
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {

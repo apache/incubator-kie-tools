@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 
-package command
+package quarkus
 
 import (
-	"testing"
-
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/spf13/afero"
+	"github.com/spf13/cobra"
 )
 
-func TestCreateWrokflow(t *testing.T) {
-	var err error
-	filePath := "new-workflow.sw.json"
-	common.FS = afero.NewMemMapFs()
-
-	err = CreateWorkflow(filePath)
-	defer common.FS.Remove(filePath)
-	if err != nil {
-		t.Errorf("Error when creating workflow: %#v", err)
+func NewQuarkusCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:        "quarkus",
+		Short:      "Manage Kogito Serverless Workflow built in Quarkus projects",
+		Long:       `Manage Kogito Serverless Workflow built in Quarkus projects`,
+		SuggestFor: []string{"quaks", "qarkus"},
 	}
 
-	_, err = common.FS.Stat(filePath)
-	if err != nil {
-		t.Errorf("Error when opening workflow file: %#v", err)
-	}
+	cmd.AddCommand(NewCreateCommand())
+	cmd.AddCommand(NewBuildCommand())
+	cmd.AddCommand(NewRunCommand())
+	cmd.AddCommand(NewDeployCommand())
+	cmd.AddCommand(NewConvertCommand())
+
+	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
+	return cmd
 }

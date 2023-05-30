@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package command
+package quarkus
 
 import (
 	"fmt"
-	"regexp"
-	"strconv"
-	"strings"
-	"time"
-
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 type BuildCmdConfig struct {
-	// Image options
 	Image      string // full image name
 	Registry   string // image registry (overrides image name)
 	Repository string // image repository (overrides image name)
@@ -53,7 +50,7 @@ func NewBuildCommand() *cobra.Command {
 	Builds a Kogito Serverless Workflow project in the current directory 
 	resulting in a container image.  
 	By default the resultant container image will have the project name. It can be 
-	overriten with the --image or with others image options, see help for more information.
+	overridden with the --image or with others image options, see help for more information.
 
 	During the build, a knative.yml file will be generated on the ./target/kubernetes folder.
 	If your workflow uses eventing, an additional kogito.yml is also generated.
@@ -92,7 +89,7 @@ func NewBuildCommand() *cobra.Command {
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		_, err := runBuild(cmd, args)
+		_, err := runBuild(cmd)
 		return err
 	}
 
@@ -112,8 +109,8 @@ func NewBuildCommand() *cobra.Command {
 	return cmd
 }
 
-func runBuild(cmd *cobra.Command, args []string) (out string, err error) {
-	start := time.Now()
+func runBuild(cmd *cobra.Command) (out string, err error) {
+	fmt.Println("🔨 Building your Quarkus Kogito Serverless Workflow project...")
 
 	cfg, err := runBuildCmdConfig(cmd)
 	if err != nil {
@@ -147,8 +144,8 @@ func runBuild(cmd *cobra.Command, args []string) (out string, err error) {
 		return
 	}
 
-	finish := time.Since(start)
-	fmt.Printf("🚀 Build took: %s \n", finish)
+	fmt.Println("✅ Quarkus Kogito Serverless Workflow project successfully built")
+
 	return
 }
 
@@ -192,13 +189,13 @@ func runAddExtension(cfg BuildCmdConfig) error {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
 		if err := common.RunExtensionCommand(
 			"quarkus:remove-extension",
-			metadata.QUARKUS_CONTAINER_IMAGE_DOCKER,
+			metadata.QuarkusContainerImageDocker,
 		); err != nil {
 			return err
 		}
 		if err := common.RunExtensionCommand(
 			"quarkus:add-extension",
-			metadata.QUARKUS_CONTAINER_IMAGE_JIB,
+			metadata.QuarkusContainerImageJib,
 		); err != nil {
 			return err
 		}
@@ -206,13 +203,13 @@ func runAddExtension(cfg BuildCmdConfig) error {
 		fmt.Printf(" - Adding Quarkus Docker extension\n")
 		if err := common.RunExtensionCommand(
 			"quarkus:remove-extension",
-			metadata.QUARKUS_CONTAINER_IMAGE_JIB,
+			metadata.QuarkusContainerImageJib,
 		); err != nil {
 			return err
 		}
 		if err := common.RunExtensionCommand(
 			"quarkus:add-extension",
-			metadata.QUARKUS_CONTAINER_IMAGE_DOCKER,
+			metadata.QuarkusContainerImageDocker,
 		); err != nil {
 			return err
 		}
@@ -312,7 +309,7 @@ func getImageConfig(cfg BuildCmdConfig) (string, string, string, string) {
 		name = imageArray[2]
 	}
 
-	var tag = metadata.DEFAULT_TAG
+	var tag = metadata.DefaultTag
 	if len(cfg.Tag) > 0 {
 		tag = cfg.Tag
 	} else if len(imageTagArray) > 1 && len(imageTagArray[1]) > 0 {
