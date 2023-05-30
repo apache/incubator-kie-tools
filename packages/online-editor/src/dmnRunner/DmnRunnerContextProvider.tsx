@@ -535,8 +535,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
   const dereferenceExtendedServicesJsonSchema = useCallback(
     (jsonSchema: ExtendedServicesDmnJsonSchema): ExtendedServicesDmnJsonSchema => {
-      const inputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.InputSet?.properties);
-      const outputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.OutputSet?.properties);
+      const inputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.InputSet?.properties ?? {});
+      const outputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.OutputSet?.properties ?? {});
       return {
         $ref: "#/definitions/InputSet",
         definitions: {
