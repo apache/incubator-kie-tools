@@ -31,7 +31,6 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
     private static final BaseNumberYAMLSerializer.IntegerYAMLSerializer integerYAMLSerializer = new BaseNumberYAMLSerializer.IntegerYAMLSerializer();
     private static final BaseNumberYAMLSerializer.LongYAMLSerializer longYAMLSerializer = new BaseNumberYAMLSerializer.LongYAMLSerializer();
     private static final BaseNumberYAMLSerializer.FloatYAMLSerializer floatYAMLSerializer = new BaseNumberYAMLSerializer.FloatYAMLSerializer();
-    private static final BaseNumberYAMLSerializer.DoubleYAMLSerializer doubleYAMLSerializer = new BaseNumberYAMLSerializer.DoubleYAMLSerializer();
 
     @Override
     public ValueHolder deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
@@ -57,7 +56,7 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
         yamlMapping.keys().forEach(key -> {
             YamlNode yamlNode = yamlMapping.getNode(key);
             if (yamlNode.type() == NodeType.SCALAR) {
-                String value = yamlNode.<String>asScalar().value();
+                Object value = yamlNode.asScalar().value();
                 if (value != null) {
                     Reflect.set(obj, key, value);
                 }
@@ -121,7 +120,7 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
                 } else if (jsonValue instanceof Integer) {
                     integerYAMLSerializer.serialize(writer, key, (Integer) jsonValue, ctx);
                 } else if (jsonValue instanceof Double) {
-                    doubleYAMLSerializer.serialize(writer, key, (Double) jsonValue, ctx);
+                    writer.addScalarNode(key, (Double) jsonValue);
                 } else if (jsonValue instanceof Float) {
                     floatYAMLSerializer.serialize(writer, key, (Float) jsonValue, ctx);
                 } else if (jsonValue instanceof Long) {
@@ -137,7 +136,7 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
                         } else if (value instanceof Integer) {
                             integerYAMLSerializer.serialize(yamlSequenceWriter, (Integer) value, ctx);
                         } else if (value instanceof Double) {
-                            doubleYAMLSerializer.serialize(yamlSequenceWriter, (Double) value, ctx);
+                            yamlSequenceWriter.addScalarNode((Double) value);
                         } else if (value instanceof Float) {
                             floatYAMLSerializer.serialize(yamlSequenceWriter, (Float) value, ctx);
                         } else if (value instanceof Long) {
@@ -145,7 +144,7 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
                         } else if (value instanceof Boolean) {
                             booleanYAMLSerializer.serialize(yamlSequenceWriter, (Boolean) value, ctx);
                         } else if (value instanceof Object) {
-                            YamlMapping innerWrite = writer.addMappingNode(key);
+                            YamlMapping innerWrite = yamlSequenceWriter.addMappingNode();
                             writeObjectProps(innerWrite, value, ctx);
                         }
                     }
