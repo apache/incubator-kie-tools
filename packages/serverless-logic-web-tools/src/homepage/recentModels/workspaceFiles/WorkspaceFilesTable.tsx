@@ -15,7 +15,6 @@
  */
 import * as React from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import "@patternfly/react-core/dist/styles/base.css";
 import {
   TableComposable,
   Tbody,

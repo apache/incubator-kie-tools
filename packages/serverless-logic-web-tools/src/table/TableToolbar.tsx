@@ -22,7 +22,6 @@ import {
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
-import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { TablePagination, TablePaginationProps } from "./TablePagination";

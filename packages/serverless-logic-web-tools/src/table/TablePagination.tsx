@@ -20,7 +20,6 @@ import {
   PaginationProps,
   PerPageOptions,
 } from "@patternfly/react-core/dist/js/components/Pagination";
-import "@patternfly/react-core/dist/styles/base.css";
 import { useCallback } from "react";
 
 export const defaultPerPageOptions: PerPageOptions[] = [5, 10, 20, 50, 100].map((n) => ({
