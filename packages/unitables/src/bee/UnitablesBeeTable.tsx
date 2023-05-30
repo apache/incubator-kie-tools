@@ -602,6 +602,7 @@ function UnitablesBeeTableCell({
       // Normal editing;
       if (isEditModeTriggeringKey(e)) {
         e.stopPropagation();
+        setEditingCell(true);
 
         // If the target is an input node it is already editing the cell;
         if (
@@ -641,8 +642,6 @@ function UnitablesBeeTableCell({
           }
         }
       }
-
-      setEditingCell(true);
 
       if (isEditing) {
         e.stopPropagation();
