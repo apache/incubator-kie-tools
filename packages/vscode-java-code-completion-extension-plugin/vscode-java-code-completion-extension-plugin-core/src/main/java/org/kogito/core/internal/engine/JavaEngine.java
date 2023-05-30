@@ -81,7 +81,7 @@ public class JavaEngine {
 
         String content = this.evaluate(Templates.TEMPLATE_ACCESSORS, item);
 
-        return new BuildInformation(filePath, getContent(filePath), content, 5, getFirstCharInLinePosition(content, 5) + 2);
+        return new BuildInformation(filePath, getContent(filePath), content, 5, getFirstCharInLinePosition(content, 5));
     }
 
     protected int getFirstCharInLinePosition(String content, int lineNumber) {
@@ -95,7 +95,8 @@ public class JavaEngine {
                 break;
             }
         }
-        return index;
+        JavaLanguageServerPlugin.logInfo("INDEX:" + index + 1 + " and character is:" + line.charAt(index + 1));
+        return index + 1;
     }
 
     protected int getEndOfLinePosition(String content, int lineNumber) {

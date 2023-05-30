@@ -18,7 +18,7 @@ package org.kogito.core.internal.handlers;
 
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 import org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer;
-import org.eclipse.lsp4j.DidChangeTextDocumentParams;
+import org.eclipse.lsp4j.DidCloseTextDocumentParams;
 import org.eclipse.lsp4j.DidOpenTextDocumentParams;
 
 import org.eclipse.lsp4j.Hover;
@@ -33,8 +33,6 @@ import org.kogito.core.internal.engine.ActivationChecker;
 import org.kogito.core.internal.engine.BuildInformation;
 
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class HoverHandler {
@@ -51,24 +49,16 @@ public class HoverHandler {
 
         String uri = buildInformation.getPath().toUri().toASCIIString();
 
+        JavaLanguageServerPlugin.logInfo("Opening URI:" + uri);
+
         DidOpenTextDocumentParams didOpenTextDocumentParams = new DidOpenTextDocumentParams();
         TextDocumentItem textDocumentItem = new TextDocumentItem();
         textDocumentItem.setLanguageId("java");
-        textDocumentItem.setText(buildInformation.getOriginalText());
+        textDocumentItem.setText(buildInformation.getText());
         textDocumentItem.setUri(uri);
         textDocumentItem.setVersion(1);
         didOpenTextDocumentParams.setTextDocument(textDocumentItem);
         languageServer.didOpen(didOpenTextDocumentParams);
-
-        DidChangeTextDocumentParams didChangeTextDocumentParams = new DidChangeTextDocumentParams();
-        TextDocumentContentChangeEvent textDocumentContentChangeEvent = new TextDocumentContentChangeEvent();
-        textDocumentContentChangeEvent.setText(buildInformation.getText());
-        VersionedTextDocumentIdentifier versionedTextDocumentIdentifier = new VersionedTextDocumentIdentifier();
-        versionedTextDocumentIdentifier.setUri(uri);
-        versionedTextDocumentIdentifier.setVersion(2);
-        didChangeTextDocumentParams.setTextDocument(versionedTextDocumentIdentifier);
-        didChangeTextDocumentParams.setContentChanges(Collections.singletonList(textDocumentContentChangeEvent));
-        languageServer.didChange(didChangeTextDocumentParams);
 
         Position pos = new Position();
         pos.setLine(buildInformation.getLine());
@@ -82,12 +72,17 @@ public class HoverHandler {
         hoverParams.setPosition(pos);
 
         CompletableFuture<Hover> javaCompletion = languageServer.hover(hoverParams);
-
         try {
             return javaCompletion.get();
         } catch (Exception e) {
             JavaLanguageServerPlugin.logException("Problem with " + identifier, e);
             return null;
+        } finally {
+            JavaLanguageServerPlugin.logInfo("Closing URI:" + uri);
+
+            DidCloseTextDocumentParams didCloseTextDocumentParams = new DidCloseTextDocumentParams();
+            didCloseTextDocumentParams.setTextDocument(textDocumentIdentifier);
+            languageServer.didClose(didCloseTextDocumentParams);
         }
     }
 

@@ -30,6 +30,7 @@ import org.eclipse.lsp4j.CompletionList;
 import org.eclipse.lsp4j.CompletionParams;
 import org.eclipse.lsp4j.CompletionTriggerKind;
 import org.eclipse.lsp4j.DidChangeTextDocumentParams;
+import org.eclipse.lsp4j.DidCloseTextDocumentParams;
 import org.eclipse.lsp4j.DidOpenTextDocumentParams;
 import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.TextDocumentContentChangeEvent;
@@ -114,6 +115,10 @@ public class AutocompleteHandler {
         } catch (Exception e) {
             JavaLanguageServerPlugin.logException("Problem with " + identifier, e);
             return Collections.emptyList();
+        } finally {
+            DidCloseTextDocumentParams didCloseTextDocumentParams = new DidCloseTextDocumentParams();
+            didCloseTextDocumentParams.setTextDocument(textDocumentIdentifier);
+            languageServer.didClose(didCloseTextDocumentParams);
         }
     }
 
