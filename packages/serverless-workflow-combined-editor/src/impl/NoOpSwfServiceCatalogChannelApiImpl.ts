@@ -45,6 +45,11 @@ export class NoOpSwfServiceCatalogChannelApiImpl implements SwfServiceCatalogCha
     documentUri: string;
   }): void {}
 
+  public kogitoSwfServiceCatalog_importEventFromCompletionItem(args: {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  }): void {}
+
   public kogitoSwfServiceCatalog_logInServiceRegistries(): void {}
 
   public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {}

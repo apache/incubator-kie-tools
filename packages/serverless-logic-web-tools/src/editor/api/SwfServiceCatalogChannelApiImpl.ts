@@ -42,6 +42,13 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
     // No-op
   }
 
+  public kogitoSwfServiceCatalog_importEventFromCompletionItem(_args: {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  }): void {
+    // No-op
+  }
+
   public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
     return { defaultValue: { registries: [] } };
   }
