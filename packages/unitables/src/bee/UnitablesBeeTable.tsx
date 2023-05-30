@@ -619,19 +619,19 @@ function UnitablesBeeTableCell({
         }
 
         if (fieldCharacteristics?.isList) {
-          e.preventDefault();
-
           if (
             e.code.toLowerCase() === "space" &&
             (e.target as HTMLElement)?.tagName?.toLowerCase() === "input" &&
             (e.target as HTMLInputElement)?.type === "checkbox"
           ) {
+            e.preventDefault();
             (e.target as HTMLInputElement).click();
             submitRow();
             return;
           }
 
           if (e.code.toLowerCase() === "space" && (e.target as HTMLElement)?.tagName?.toLowerCase() === "button") {
+            e.preventDefault();
             if ((e.target as HTMLButtonElement).id.match(/^uniforms-/g)) {
               return;
             }
