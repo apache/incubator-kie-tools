@@ -25,8 +25,8 @@ import {
 } from "@patternfly/react-table/dist/js/components/TableComposable";
 import { useCallback, useMemo, useState } from "react";
 import { isEditable } from "../../../extension";
-import { TablePaginationProps } from "../../../table/TablePagination";
 import { WorkspaceFilesTableRow } from "./WorkspaceFilesTableRow";
+import { TablePaginationProps, TableRowEmptyState } from "../../../table";
 
 export const columnNames = {
   name: "Name",
@@ -35,6 +35,7 @@ export const columnNames = {
 };
 
 export type WorkspaceFilesTableProps = Pick<TablePaginationProps, "page" | "perPage"> & {
+  onClearFilters: () => void;
   onFileToggle: (workspaceFile: WorkspaceFile, checked: boolean) => void;
   searchValue: string;
   selectedWorkspaceFiles: WorkspaceFile[];
@@ -57,7 +58,7 @@ export type WorkspaceFilesTableRowData = Pick<WorkspaceFile, "extension"> & {
 };
 
 export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
-  const { workspaceFiles, selectedWorkspaceFiles, searchValue, page, perPage, totalFilesCount } = props;
+  const { workspaceFiles, selectedWorkspaceFiles, searchValue, page, perPage, totalFilesCount, onClearFilters } = props;
   const [activeSortIndex, setActiveSortIndex] = useState<number>(0);
   const [activeSortDirection, setActiveSortDirection] = useState<"asc" | "desc">("desc");
 
@@ -141,17 +142,25 @@ export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
           </Tr>
         </Thead>
         <Tbody>
-          {visibleTableData.map((rowData, rowIndex) => (
-            <WorkspaceFilesTableRow
-              totalFilesCount={totalFilesCount}
-              isSelected={isFileCheckboxChecked(rowData)}
-              key={rowIndex}
-              onToggle={(checked) => props.onFileToggle(rowData.fileDescriptor, checked)}
-              rowData={rowData}
-              rowIndex={rowIndex}
-              onDelete={props.onFileDelete}
+          {!visibleTableData.length ? (
+            <TableRowEmptyState
+              colSpan={Object.keys(columnNames).length + 2}
+              elementsName="files"
+              onClearFilters={onClearFilters}
             />
-          ))}
+          ) : (
+            visibleTableData.map((rowData, rowIndex) => (
+              <WorkspaceFilesTableRow
+                totalFilesCount={totalFilesCount}
+                isSelected={isFileCheckboxChecked(rowData)}
+                key={rowIndex}
+                onToggle={(checked) => props.onFileToggle(rowData.fileDescriptor, checked)}
+                rowData={rowData}
+                rowIndex={rowIndex}
+                onDelete={props.onFileDelete}
+              />
+            ))
+          )}
         </Tbody>
       </TableComposable>
     </>

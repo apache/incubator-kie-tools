@@ -33,10 +33,9 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { splitFiles } from "../../extension";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
-import { TablePaginationProps } from "../../table/TablePagination";
+import { TablePaginationProps, TableRowEmptyState } from "../../table";
 import {
   WorkspacesTableRow,
-  WorkspacesTableRowEmptyState,
   WorkspacesTableRowError,
   workspacesTableRowErrorContent,
   WorkspacesTableRowLoading,
@@ -193,7 +192,11 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
             rejected={() => <>ERROR</>}
             resolved={() =>
               !visibleTableData.length ? (
-                <WorkspacesTableRowEmptyState onClearFilters={onClearFilters} />
+                <TableRowEmptyState
+                  colSpan={Object.keys(columnNames).length + 2}
+                  elementsName="modules"
+                  onClearFilters={onClearFilters}
+                />
               ) : (
                 visibleTableData.map((rowData, rowIndex) => (
                   <ErrorBoundary key={rowData.workspaceId} error={<WorkspacesTableRowError rowData={rowData} />}>

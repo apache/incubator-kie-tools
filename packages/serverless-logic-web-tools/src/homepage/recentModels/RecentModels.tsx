@@ -31,9 +31,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { splitFiles } from "../../extension";
 import { setPageTitle } from "../../PageTitle";
-import { ConfirmDeleteModal } from "../../table/ConfirmDeleteModal";
-import { defaultPerPageOptions, TablePagination } from "../../table/TablePagination";
-import { TableToolbar } from "../../table/TableToolbar";
+import { ConfirmDeleteModal, defaultPerPageOptions, TablePagination, TableToolbar } from "../../table";
 import { WorkspacesTable } from "./WorkspacesTable";
 
 const PAGE_TITLE = "Recent models";

@@ -15,7 +15,6 @@
  */
 
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
@@ -37,9 +36,7 @@ import { NewFileDropdownMenu } from "../../../editor/NewFileDropdownMenu";
 import { splitFiles } from "../../../extension";
 import { routes } from "../../../navigation/Routes";
 import { setPageTitle } from "../../../PageTitle";
-import { ConfirmDeleteModal } from "../../../table/ConfirmDeleteModal";
-import { defaultPerPageOptions, TablePagination } from "../../../table/TablePagination";
-import { TableToolbar } from "../../../table/TableToolbar";
+import { ConfirmDeleteModal, defaultPerPageOptions, TablePagination, TableToolbar } from "../../../table";
 import { WorkspaceFilesTable } from "./WorkspaceFilesTable";
 
 export interface Props {
@@ -145,6 +142,11 @@ export function WorkspaceFiles(props: Props) {
 
   const onToggleAllElements = useCallback((checked: boolean, files: WorkspaceFile[]) => {
     setSelectedWorkspaceFiles(checked ? files : []);
+  }, []);
+
+  const onClearFilters = useCallback(() => {
+    setSearchValue("");
+    setPage(1);
   }, []);
 
   const handleViewRoCheckboxChange = useCallback((checked: boolean) => {
@@ -268,6 +270,7 @@ export function WorkspaceFiles(props: Props) {
                         selectedWorkspaceFiles={selectedWorkspaceFiles}
                         totalFilesCount={allFilesCount}
                         workspaceFiles={files}
+                        onClearFilters={onClearFilters}
                         onFileDelete={onFileDelete}
                       />
 

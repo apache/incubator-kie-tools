@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from "react";
-import { useMemo, useCallback } from "react";
+import React from "react";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import { ExclamationTriangleIcon, OutlinedQuestionCircleIcon, SearchIcon } from "@patternfly/react-icons/dist/js/icons";
+import { ExclamationTriangleIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { ActionsColumn, Td, Tr } from "@patternfly/react-table/dist/esm";
 import { TdSelectType } from "@patternfly/react-table/dist/esm/components/Table/base";
+import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { RelativeDate } from "../../dates/RelativeDate";
 import { routes } from "../../navigation/Routes";
+import "../../table/Table.css";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 import { columnNames, WorkspacesTableRowData } from "./WorkspacesTable";
-import "../../table/Table.css";
-import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 
 export const workspacesTableRowErrorContent = "Error obtaining workspace information";
 
@@ -165,27 +161,6 @@ export function WorkspacesTableRowError(props: { rowData: WorkspacesTableRowData
         </Td>
       </Tr>
     </>
-  );
-}
-
-export function WorkspacesTableRowEmptyState(props: { onClearFilters: () => void }) {
-  return (
-    <Tr>
-      <Td colSpan={Object.keys(columnNames).length + 2}>
-        <Bullseye>
-          <EmptyState variant="small">
-            <EmptyStateIcon icon={SearchIcon} />
-            <Title headingLevel="h2" size="lg">
-              No matching modules found
-            </Title>
-            <EmptyStateBody>This filter criteria matches no groups. Try changing your filter settings.</EmptyStateBody>
-            <Button variant="link" onClick={props.onClearFilters}>
-              Clear all filters
-            </Button>
-          </EmptyState>
-        </Bullseye>
-      </Td>
-    </Tr>
   );
 }
 

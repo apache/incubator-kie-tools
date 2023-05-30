@@ -25,12 +25,12 @@ import { useCallback, useEffect, useState } from "react";
 import { APP_NAME } from "../../AppConstants";
 import { routes } from "../../navigation/Routes";
 import { setPageTitle } from "../../PageTitle";
-import { ConfirmDeleteModal } from "../../table/ConfirmDeleteModal";
 import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
 import { deleteAllCookies } from "../../cookies";
 import { isBrowserChromiumBased } from "../../workspace/startupBlockers/SupportedBrowsers";
 import { useHistory } from "react-router";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
+import { ConfirmDeleteModal } from "../../table";
 
 const PAGE_TITLE = "Storage";
 /**
