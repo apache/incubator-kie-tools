@@ -40,7 +40,6 @@ import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Annotation;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Cell;
-import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Clause;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ClauseUnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Column;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextEntryProps;
@@ -57,6 +56,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.I
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.JavaFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ListProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.LiteralProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.OutputClauseProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PmmlFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
@@ -279,21 +279,29 @@ public class ExpressionPropsFiller {
                 .toArray(InputClauseProps[]::new);
     }
 
-    private static Clause[] outputConvertForDecisionTableProps(final DecisionTable decisionTableExpression, final String expressionName, final String expressionDataType) {
+    private static OutputClauseProps[] outputConvertForDecisionTableProps(final DecisionTable decisionTableExpression, final String expressionName, final String expressionDataType) {
         return IntStream.range(0, decisionTableExpression.getOutput().size())
                 .mapToObj(index -> {
                     final OutputClause outputClause = decisionTableExpression.getOutput().get(index);
                     final String id = outputClause.getId().getValue();
                     final String name = outputClause.getName();
                     final String dataType = outputClause.getTypeRef().getLocalPart();
+                    final ExpressionProps defaultOutputValue =
+                            (outputClause.getDefaultOutputEntry() != null && outputClause.getDefaultOutputEntry().getText() != null) ?
+                                    new LiteralProps(outputClause.getDefaultOutputEntry().getDomainObjectUUID(),
+                                                     null,
+                                                     UNDEFINED.getText(),
+                                                     outputClause.getDefaultOutputEntry().getText().getValue(),
+                                                     null) :
+                                    null;
                     final Double width = decisionTableExpression.getComponentWidths().get(decisionTableExpression.getInput().size() + index + 1);
                     // When output clause is empty, then we should use expression name and dataType for it
                     if (name == null) {
-                        return new Clause(id, expressionName, expressionDataType, width, convertToClauseUnaryTests(outputClause.getOutputValues()));
+                        return new OutputClauseProps(id, expressionName, expressionDataType, width, convertToClauseUnaryTests(outputClause.getOutputValues()), defaultOutputValue);
                     }
-                    return new Clause(id, name, dataType, width, convertToClauseUnaryTests(outputClause.getOutputValues()));
+                    return new OutputClauseProps(id, name, dataType, width, convertToClauseUnaryTests(outputClause.getOutputValues()), defaultOutputValue);
                 })
-                .toArray(Clause[]::new);
+                .toArray(OutputClauseProps[]::new);
     }
 
     public static ClauseUnaryTests convertToClauseUnaryTests(IsUnaryTests isUnaryTests) {

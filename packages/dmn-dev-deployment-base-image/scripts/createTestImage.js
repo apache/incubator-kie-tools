@@ -217,9 +217,9 @@ function buildArchImage(tag, file, context, buildArg, arch) {
   createAndUseDockerBuilder();
   console.log(buildArg);
   execSync(
-    `docker buildx build --platform ${platform} --load -t ${tag} ${buildArg.map(
-      (arg) => `--build-arg ${arg} `
-    )} ${context} -f ${file}`,
+    `docker buildx build --platform ${platform} --load -t ${tag} ${buildArg
+      .map((arg) => `--build-arg ${arg} `)
+      .join(" ")} ${context} -f ${file}`,
     { stdio: "inherit" }
   );
 }

@@ -994,7 +994,6 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
         if (expression != null && !expression.trim().isEmpty()) {
             return getEvaluator().evalExpression(value, expression);
         }
-
         return value;
     }
 

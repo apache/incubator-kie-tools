@@ -21,7 +21,7 @@ import jsinterop.annotations.JsType;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.LITERAL_EXPRESSION;
 
 @JsType
-public class LiteralProps extends ExpressionProps{
+public class LiteralProps extends ExpressionProps {
     public final String content;
     public final Double width;
 
