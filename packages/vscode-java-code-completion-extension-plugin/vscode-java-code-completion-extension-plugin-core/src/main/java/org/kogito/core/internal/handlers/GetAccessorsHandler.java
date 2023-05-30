@@ -35,8 +35,6 @@ import org.kogito.core.internal.api.GetPublicResult;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
 
-import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_REQUEST_ID;
-import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_PROPOSAL_ID;
 
 public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
@@ -140,100 +138,8 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
                 item.getLabel() + item.getLabelDetails().getDetail() :
                 item.getLabel());
         /* Retrieving the class type SIMPLE NAME */
-        String type = item.getLabelDetails().getDescription();
-        /* Retrieving the class type FQCN */
-        /* The API we used to retrieve the FQNC are no more available. To enable the Project
-         * compilation, the following block is temporary commented. The impact on the feature, is
-         * that the Fecthing feature will no work properly, until we found an alternative solution
-         * https://github.com/kiegroup/kie-issues/issues/114
-         */
-        /*
-        Map<String,String> data = (Map<String, String>) item.getData();
-        for (Map.Entry<String, String> entry : data.entrySet()) {
-            JavaLanguageServerPlugin.logInfo("ENTRY: " + entry.getKey() + " " + entry.getValue());
-        }
-        /*
-        if (data != null && data.containsKey(DATA_FIELD_REQUEST_ID) && data.containsKey(DATA_FIELD_PROPOSAL_ID)) {
-            CompletionResponse completionResponse = CompletionResponses.get(Long.getLong(data.get(DATA_FIELD_REQUEST_ID)));
-            CompletionProposal proposal = completionResponse.getProposals().get(Integer.getInteger(data.get(DATA_FIELD_PROPOSAL_ID)));
-            /* The `DeclarationSignature` format is: `method()Ljava.lang.String;`
-            String fqcnType = String.valueOf(proposal.getDeclarationSignature());
-            JavaLanguageServerPlugin.logInfo("FQCN: " + fqcnType);
-
-            if (fqcnType != null && fqcnType.contains(")L")) {
-                type = fqcnType.split("\\)L")[1];
-                type = type.replaceAll(";$", "");
-            }
-        }*/
-        result.setType(type);
+        result.setType(item.getLabelDetails().getDescription());
 
         return result;
     }
-
-
-
-    /*
-            List<GetPublicResult> publicResults = this.transformCompletionItemsToResult(parameters.getFqcn(), items);
-
-        JavaLanguageServerPlugin.logInfo("Public results found " + publicResults.size());
-
-
-        for (GetPublicResult publicResult : publicResults) {
-            if (publicResult.getType().equalsIgnoreCase("void")) {
-                break;
-            }
-
-            BuildInformation buildInformation2 = javaEngine.buildVarTypePublicContent(this.autocompleteHandler.getActivatorPath(),
-                    publicResult.getFqcn(),
-                    publicResult.getAccessor());
-
-            List<CompletionItem> completionItems = this.autocompleteHandler.handle("GetAccessorsHandler", buildInformation2);
-            JavaLanguageServerPlugin.logInfo("Item found for " + publicResult.getAccessor() + ": " + items.size());
-            JavaLanguageServerPlugin.logInfo("Current type " + publicResult.getType());
-
-
-            for (CompletionItem completionItem : completionItems) {
-                JavaLanguageServerPlugin.logInfo("===============================================");
-
-                if (completionItem.getLabelDetails() != null) {
-                    JavaLanguageServerPlugin.logInfo("Label Details - Description *: " + completionItem.getLabelDetails().getDescription());
-                    JavaLanguageServerPlugin.logInfo("Label Details - Detail: " + completionItem.getLabelDetails().getDetail());
-                }
-                /* Retrieving the class type FQCN */
-                /*Map<String,String> data = (Map<String, String>) completionItem.getData();
-                for (Map.Entry<String, String> entry : data.entrySet()) {
-                    JavaLanguageServerPlugin.logInfo("ENTRY: " + entry.getKey() + " " + entry.getValue());
-                }
-                JavaLanguageServerPlugin.logInfo("TextEditText: " + completionItem.getTextEditText());
-                JavaLanguageServerPlugin.logInfo("SortText: " + completionItem.getSortText());
-                JavaLanguageServerPlugin.logInfo("InsertText: " + completionItem.getInsertText());
-                JavaLanguageServerPlugin.logInfo("FilterText: " + completionItem.getFilterText());
-                /*
-                if (completionItem.getTags() != null && completionItem.getTags().size() > 0) {
-                    for (CompletionItemTag entry : completionItem.getTags()) {
-                        JavaLanguageServerPlugin.logInfo("TAG: " + entry);
-                    }
-                }
-                //JavaLanguageServerPlugin.logInfo("Label: " + completionItem.getLabel());
-                /*
-                Either<String, MarkupContent> documentation = completionItem.getDocumentation();
-                if (documentation != null) {
-                    if (documentation.isLeft()) {
-                        JavaLanguageServerPlugin.logInfo("DOCUMENTATION: " + documentation.getLeft());
-                    } else if (documentation.isRight()) {
-                        JavaLanguageServerPlugin.logInfo("DOCUMENTATION: " + documentation.getRight().getValue());
-                    }
-                }
-
-                if (completionItem.getAdditionalTextEdits() != null && completionItem.getAdditionalTextEdits().size() > 0) {
-                    for (TextEdit entry : completionItem.getAdditionalTextEdits()) {
-                        JavaLanguageServerPlugin.logInfo("TAG: " + entry.getNewText());
-                    }
-                }
-}
-        }
-
-
-                return publicResults;
-     */
 }

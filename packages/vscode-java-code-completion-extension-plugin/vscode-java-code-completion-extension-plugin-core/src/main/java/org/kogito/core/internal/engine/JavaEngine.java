@@ -19,10 +19,8 @@ package org.kogito.core.internal.engine;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -83,8 +81,7 @@ public class JavaEngine {
 
         String content = this.evaluate(Templates.TEMPLATE_ACCESSORS, item);
 
-        // That should position on target, first char in line + 1
-        return new BuildInformation(filePath, getContent(filePath), content, 5, getEndOfLinePosition(content, 5) - 2);
+        return new BuildInformation(filePath, getContent(filePath), content, 5, getFirstCharInLinePosition(content, 5) + 2);
     }
 
     protected int getFirstCharInLinePosition(String content, int lineNumber) {

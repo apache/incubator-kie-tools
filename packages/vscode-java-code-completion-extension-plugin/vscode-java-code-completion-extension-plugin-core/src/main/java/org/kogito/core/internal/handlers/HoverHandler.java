@@ -33,7 +33,6 @@ import org.kogito.core.internal.engine.ActivationChecker;
 import org.kogito.core.internal.engine.BuildInformation;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
