@@ -14,44 +14,23 @@
  * limitations under the License.
  */
 
-import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import { Validator } from "@kie-tools/form/dist/Validator";
 import { DmnFormI18n } from "./i18n";
-import {
-  DAYS_AND_TIME_DURATION_FORMAT,
-  DAYS_AND_TIME_DURATION_REGEXP,
-  YEARS_AND_MONTHS_DURATION_FORMAT,
-  YEARS_AND_MONTHS_DURATION_REGEXP,
-} from "@kie-tools/dmn-runner/dist/constants";
+import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/constants";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
+import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 
 export class DmnValidator extends Validator {
-  private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
+  private dmnRunnerAjv = new DmnRunnerAjv();
 
   constructor(i18n: DmnFormI18n) {
     super(i18n);
-    this.setupValidator();
-    this.i18n = i18n;
-  }
-
-  // Add meta schema v4 and period format
-  private setupValidator() {
-    this.ajv.addMetaSchema(metaSchemaDraft04);
-    this.ajv.addFormat(DAYS_AND_TIME_DURATION_FORMAT, {
-      type: "string",
-      validate: (data: string) => !!data.match(DAYS_AND_TIME_DURATION_REGEXP),
-    });
-
-    this.ajv.addFormat(YEARS_AND_MONTHS_DURATION_FORMAT, {
-      type: "string",
-      validate: (data: string) => !!data.match(YEARS_AND_MONTHS_DURATION_REGEXP),
-    });
   }
 
   // Override to add period validation
   public createValidator(jsonSchema: any) {
-    const validator = this.ajv.compile(jsonSchema);
+    const validator = this.dmnRunnerAjv.getAjv().compile(jsonSchema);
 
     return (model: any) => {
       // AJV doesn't handle dates objects. This transformation converts Dates to their UTC format.
@@ -78,8 +57,7 @@ export class DmnValidator extends Validator {
   }
 
   public getBridge(formSchema: ExtendedServicesDmnJsonSchema): DmnFormJsonSchemaBridge {
-    const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
-    const validator = this.createValidator(formDraft4);
-    return new DmnFormJsonSchemaBridge(formDraft4, validator, this.i18n as DmnFormI18n);
+    const validator = this.createValidator(formSchema);
+    return new DmnFormJsonSchemaBridge(formSchema, validator, this.i18n as DmnFormI18n);
   }
 }

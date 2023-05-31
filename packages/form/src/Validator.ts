@@ -21,7 +21,7 @@ import { FormI18n } from "./i18n";
 export class Validator {
   constructor(public i18n: FormI18n) {}
 
-  protected readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
+  protected readonly ajv = new Ajv({ allErrors: true, useDefaults: true, strictTypes: true });
 
   public createValidator(formSchema: object) {
     const validator = this.ajv.compile(formSchema);
