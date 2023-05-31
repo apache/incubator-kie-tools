@@ -161,6 +161,14 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
             type: field.type,
           };
         }
+        switch (field["format"]) {
+          case "date":
+            return { dataType: DmnBuiltInDataType.Date, width: DEFAULT_DATE_CELL_WIDTH, type: field.type, };
+          case "time":
+            return { dataType: DmnBuiltInDataType.Time, width: DEFAULT_TIME_CELL_WIDTH, type: field.type, };
+          case "date-time":
+            return { dataType: DmnBuiltInDataType.DateTime, width: DEFAULT_DATE_TIME_CELL_WDITH, type: field.type, };
+        }
         return {
           dataType: (type as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
           width: DEFAULT_COLUMN_MIN_WIDTH,
