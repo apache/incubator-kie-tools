@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,7 +103,7 @@ export function Overview(props: { isNavOpen: boolean }) {
             </Text>
             <Text component={TextVariants.p}>
               The Serverless Logic Web Tools is a web application that enables you to create and synchronize your
-              Serverless Workflow, Decision files, and Dashbuilder files in a single interface. Also, the Serverless
+              Serverless Workflow, Serverless Decision, and Dashbuilder files in a single interface. Also, the Serverless
               Logic Web Tools application provides the integrations that are needed to deploy and test the Serverless
               Workflow models in development mode.
             </Text>
@@ -200,9 +200,9 @@ export function Overview(props: { isNavOpen: boolean }) {
           </GridItem>
           <GridItem md={5}>
             <TextContent>
-              <Text className="pf-u-color-200 pf-u-ml-md">In this video, you&apos;ll learn how to:</Text>
+              <Text className="pf-u-color-200 pf-u-ml-md">In this video, you will learn how to:</Text>
               <List className="app-services-ui--icon-list">
-                <ListItem>Create a Serverless Workflow, a Dashboard or a Decision.</ListItem>
+                <ListItem>Create a Serverless Workflow, a Dashboard or a Serverless Decision.</ListItem>
                 <ListItem>Import a project into Serveless Logic Web Tools.</ListItem>
                 <ListItem>Deploy and run your project into an OpenShift instance.</ListItem>
               </List>
