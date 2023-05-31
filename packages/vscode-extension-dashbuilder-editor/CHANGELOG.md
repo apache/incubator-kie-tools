@@ -1,3 +1,8 @@
+# 0.29.0 (alpha)
+
+- [KOGITO-9175](https://issues.redhat.com/browse/KOGITO-9175) - Support types for Dashbuilder external datasets
+- [KOGITO-9186](https://issues.redhat.com/browse/KOGITO-9186) - Handle NaN values in Dashbuilder metrics dataset
+
 # 0.28.0 (alpha)
 
 - [KOGITO-8543](https://issues.redhat.com/browse/KOGITO-8543) - Support Samples Dashboard Repository by @jesuino in https://github.com/kiegroup/kie-tools/pull/1445
