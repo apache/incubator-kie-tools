@@ -28,8 +28,6 @@ import org.kogito.core.internal.api.GetPublicResult;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
 
-//import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_SIGNATURE;
-
 public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
     private final JavaEngine javaEngine;
@@ -84,7 +82,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         String type = item.getLabelDetails().getDescription();
         /* Retrieving the class type FQCN */
         /* The API we used to retrieve the FQNC are no more available. To enable the Project
-         * compilation, the following block is temporary commented. The impact on the feature, is
+         * compilation, the following block is a temporary commented. The impact on the feature, is
          * that the Fecthing feature will no work properly, until we found an alternative solution
          * https://github.com/kiegroup/kie-issues/issues/114
          */
