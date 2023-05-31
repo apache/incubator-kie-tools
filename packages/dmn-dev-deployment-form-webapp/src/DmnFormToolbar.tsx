@@ -145,19 +145,12 @@ export function DmnFormToolbar(props: Props) {
       logo={
         <Flex alignItems={{ default: "alignItemsCenter" }}>
           <FlexItem style={{ display: "flex", alignItems: "center" }}>
-            <Brand
-              src={routes.static.images.kieHorizontalLogoReverse.path({})}
-              alt={"Logo"}
-              heights={{ default: "38px" }}
-            >
-              <source srcSet={routes.static.images.kieHorizontalLogoReverse.path({})} />
+            <Brand src={routes.static.images.appLogoReverse.path({})} alt={"Logo"} heights={{ default: "38px" }}>
+              <source srcSet={routes.static.images.appLogoReverse.path({})} />
             </Brand>
           </FlexItem>
           <FlexItem style={{ display: "flex", alignItems: "center" }}>
             <TextContent>
-              <Text component={TextVariants.h3} style={{ display: "inline" }}>
-                Sandbox
-              </Text>
               &nbsp;&nbsp;
               <Text component={TextVariants.small} style={{ display: "inline" }}>
                 <i>Dev deployments</i>
