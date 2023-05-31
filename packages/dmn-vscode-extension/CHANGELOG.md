@@ -9,6 +9,7 @@
 - [kie-issues#210](https://github.com/kiegroup/kie-issues/issues/210) - Keyboard shortcuts stop working after blurring out of some components on the BeeTable
 - [kie-issues#114](https://github.com/kiegroup/kie-issues/issues/114) - Part 2: Temporary comment code no more supported by API
 - [kie-issues#278](https://github.com/kiegroup/kie-issues/issues/278) - Duplicate row should not copy the inputEntry id of that row
+- [kie-issues#214](https://github.com/kiegroup/kie-issues/issues/214) - Saving a file using keyboard shortcuts (Ctrl + S) on VS Code is not working if DMN Editor's Boxed Expression Editor is focused
 
 # 0.28.1 (alpha)
 
