@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 import elemental2.core.JsString;
 import elemental2.core.Uint8Array;
+import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
 import jsinterop.base.JsArrayLike;
 import org.snakeyaml.engine.v2.GwtIncompatible;
@@ -455,7 +456,7 @@ public class StandardRepresenter extends BaseRepresenter {
         sb.append(JsString.fromCharCode(bytes.getAt(i).intValue()));
       }
 
-      return JsWindow.btoa(sb.toString());
+      return DomGlobal.btoa(sb.toString());
     }
   }
 }
