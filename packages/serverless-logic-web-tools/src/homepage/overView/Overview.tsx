@@ -191,7 +191,7 @@ export function Overview(props: { isNavOpen: boolean }) {
               <iframe
                 width="560"
                 height="315"
-                src="https://www.youtube.com/embed/t3ahWJjiGoU"
+                src="https://www.youtube.com/embed/W1mjNTfDQxA"
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
@@ -203,8 +203,13 @@ export function Overview(props: { isNavOpen: boolean }) {
               <Text className="pf-u-color-200 pf-u-ml-md">In this video, you&apos;ll learn how to:</Text>
               <List className="app-services-ui--icon-list">
                 <ListItem>Create a Serverless Workflow, a Dashboard or a Decision.</ListItem>
-                <ListItem>Import a project into Serveless Logic Web Tools.</ListItem>
-                <ListItem>Deploy and run your project into an OpenShift instance.</ListItem>
+                <ListItem>Utilize Code Completions to complete the code.</ListItem>
+                <ListItem>Validate the code and utilize the Validation Panel to correct the errors.</ListItem>
+                <ListItem>
+                  Navigate through the Recent Models section and reopen the model we previously created.
+                </ListItem>
+                <ListItem>Browse the Samples Catalog and create a new model based on a sample.</ListItem>
+                <ListItem>Utilize the diagram and the editor to select the state nodes.</ListItem>
               </List>
             </TextContent>
           </GridItem>
