@@ -24,7 +24,7 @@ import {
   SearchType,
 } from "@kie-tools-core/workspace/dist/api";
 
-import * as minimatch from "minimatch";
+import { minimatch } from "minimatch";
 import * as vscode from "vscode";
 
 /**

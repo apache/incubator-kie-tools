@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { IMinimatch, Minimatch } from "minimatch";
+import { Minimatch } from "minimatch";
 
 export enum EnvelopeContentType {
   PATH,
@@ -32,7 +32,7 @@ export type EnvelopeContent =
     };
 
 export class EnvelopeMapping {
-  public matcher: IMinimatch;
+  public matcher: Minimatch;
 
   constructor(
     private readonly args: {

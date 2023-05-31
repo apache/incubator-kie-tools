@@ -43,7 +43,7 @@
     "@kie-tools/kie-bc-editors": "workspace:*",
     "@kie-tools/pmml-editor": "workspace:*",
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
-    "minimatch": "^3.0.4",
+    "minimatch": "^9.0.1",
     "monaco-editor": "^0.33.0"
   },
   "devDependencies": {
@@ -60,8 +60,7 @@
     "@types/fs-extra": "^11.0.1",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
-    "@types/minimatch": "^3.0.4",
-    "@types/mocha": "^8.2.2",
+    "@types/mocha": "^10.0.1",
     "@types/vscode": "^1.66.0",
     "@vscode/test-electron": "^2.3.2",
     "@vscode/test-web": "^0.0.30",
@@ -73,7 +72,7 @@
     "jest": "^26.6.3",
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",
-    "mocha": "^9.2.0",
+    "mocha": "^10.2.0",
     "mocha-jenkins-reporter": "^0.4.5",
     "mocha-junit-reporter": "^2.0.2",
     "mocha-multi-reporters": "^1.5.1",
