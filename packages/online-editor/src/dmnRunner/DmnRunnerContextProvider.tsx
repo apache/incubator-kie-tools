@@ -548,6 +548,30 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     []
   );
 
+  const recursivilyEraseItems = useCallback(
+    <T extends Record<string, any>>(inputs: T, paths: string[], path?: string, pathIndex?: number) => {
+      const currentPathIndex = pathIndex ?? 0;
+      const currentPath = path ?? paths[currentPathIndex];
+      const item = getObjectValueByPath(inputs, currentPath) as Array<Record<string, any>> | undefined;
+      item?.forEach((_, index) => {
+        // last element;
+        if (currentPathIndex === paths.length - 1) {
+          unsetObjectValueByPath(inputs, currentPath);
+        } else {
+          // Check if next path element contains ".items"
+          const nextElement = paths[currentPathIndex + 1].includes(".items")
+            ? paths[currentPathIndex + 1].split(".items").join("")
+            : paths[currentPathIndex + 1];
+
+          // Increments currentPathIndex, and add index
+          const newPath = `${paths[currentPathIndex]}.${index}.${nextElement}`;
+          recursivilyEraseItems(inputs, paths, newPath, currentPathIndex + 1);
+        }
+      });
+    },
+    []
+  );
+
   // Unset changed and/or removed types
   // Set to undefined changed formats;
   const handleJsonSchemaDifferences = useCallback(
@@ -576,6 +600,18 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           return handleJsonSchemaDifferences(inputs, propertyValue, fullKey);
         }
 
+        if (propertyKey === "items" || propertyValue.items) {
+          const itemsInTheMiddleOfPath = fullKey.split(".items.");
+          // Without any .items.
+          if (itemsInTheMiddleOfPath.length === 1) {
+            const itemsInTheEndOfPath = fullKey.split(".items").join("");
+            unsetObjectValueByPath(inputs, itemsInTheEndOfPath);
+          } else {
+            recursivilyEraseItems(inputs, itemsInTheMiddleOfPath);
+          }
+          return inputs;
+        }
+
         if (!propertyValue || propertyValue?.type || propertyValue?.["x-dmn-type"]) {
           unsetObjectValueByPath(inputs, fullKey);
           return inputs;
@@ -589,7 +625,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         return inputs;
       }, inputs);
     },
-    []
+    [recursivilyEraseItems]
   );
 
   // Responsible to set the JSON schema based on the DMN model;

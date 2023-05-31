@@ -151,8 +151,9 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
         };
       default:
         if (field.type === "array") {
+          const itemsType = this.getFieldDataType(field.items);
           return {
-            dataType: type as DmnBuiltInDataType,
+            dataType: `List<${itemsType.dataType}>` as DmnBuiltInDataType,
             width: DEFAULT_COLUMN_MIN_WIDTH,
             type: field.type,
           };
