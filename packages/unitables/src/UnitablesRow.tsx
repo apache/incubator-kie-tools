@@ -41,6 +41,7 @@ export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<
 
     const onSubmit = useCallback(
       (rowInput: Record<string, any>) => {
+        console.debug("DMN RUNNER TABLE: submit row: ", rowIndex);
         onSubmitRow(rowInput, rowIndex, {});
       },
       [onSubmitRow, rowIndex]

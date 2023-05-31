@@ -695,9 +695,9 @@ function UnitablesBeeTableCell({
           if (selectFieldUl && !selectFieldUl?.contains(e.relatedTarget as HTMLButtonElement)) {
             (cellRef.current?.querySelector(`[id="${selectFieldUl?.id}"]`) as HTMLDivElement)?.click();
             setIsSelectFieldOpen(false);
-            submitRow();
           }
         }
+        submitRow();
         return;
       }
 
