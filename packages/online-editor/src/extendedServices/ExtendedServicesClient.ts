@@ -21,7 +21,7 @@ import {
   ExtendedServicesModelPayload,
 } from "@kie-tools/extended-services-api";
 
-export class KieSandboxExtendedServicesClient {
+export class ExtendedServicesClient {
   private readonly DMN_JIT_EXECUTOR_VALIDATE_URL: string;
   private readonly DMN_JIT_EXECUTOR_DMN_RESULT_URL: string;
   private readonly DMN_JIT_EXECUTOR_FORM_SCHEMA_URL: string;

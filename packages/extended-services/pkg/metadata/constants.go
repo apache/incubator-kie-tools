@@ -17,8 +17,8 @@
 package metadata
 
 const NAME = "Kogito"
-const APPNAME = "KIE Sandbox Extended Services"
-const SERVER_STATUS = "KIE Sandbox Extended Services Status"
+const APPNAME = "Extended Services"
+const SERVER_STATUS = "Extended Services Status"
 const SERVER_STATUS_ON = SERVER_STATUS + ": ON"
 const SERVER_STATUS_OFF = SERVER_STATUS + ": OFF"
 const START = "Start"
@@ -31,5 +31,5 @@ const RESTART = "Restart"
 const QUIT = "Quit"
 const VERSION = "Version"
 const NOT_STARTED = "Not Started"
-const OPEN_KIE_SANDBOX = "Open Business KIE Sandbox"
+const OPEN_KIE_SANDBOX = "Open in browser"
 const INFORMATION_PORTS = "Ports"

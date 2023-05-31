@@ -83,8 +83,8 @@ import {
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { FileSwitcher } from "./FileSwitcher";
-import { KieSandboxExtendedServicesButtons } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesButtons";
-import { KieSandboxExtendedServicesDropdownGroup } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
+import { ExtendedServicesButtons } from "./ExtendedServices/ExtendedServicesButtons";
+import { ExtendedServicesDropdownGroup } from "./ExtendedServices/ExtendedServicesDropdownGroup";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
@@ -1522,7 +1522,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     </ToolbarItem>
                     {canBeDeployed && (
                       <ToolbarItem visibility={hideWhenSmall}>
-                        <KieSandboxExtendedServicesButtons workspace={workspace} workspaceFile={props.workspaceFile} />
+                        <ExtendedServicesButtons workspace={workspace} workspaceFile={props.workspaceFile} />
                       </ToolbarItem>
                     )}
                     {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST && (
@@ -1692,10 +1692,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             ? []
                             : [
                                 <Divider key={"divider-2"} />,
-                                <KieSandboxExtendedServicesDropdownGroup
+                                <ExtendedServicesDropdownGroup
                                   workspace={workspace}
                                   workspaceFile={props.workspaceFile}
-                                  key="kie-sandbox-extended-services-group"
+                                  key="extended-services-group"
                                 />,
                               ]),
                         ]}

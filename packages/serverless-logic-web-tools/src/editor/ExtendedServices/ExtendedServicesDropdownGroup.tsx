@@ -16,7 +16,7 @@
 
 import { DropdownGroup } from "@patternfly/react-core/dist/js/components/Dropdown";
 import * as React from "react";
-import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
+import { ExtendedServicesIcon } from "../../extendedServices/ExtendedServicesIcon";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useDeployDropdownItems } from "../hooks/useDeployDropdownItems";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
@@ -26,7 +26,7 @@ interface Props {
   workspaceFile: WorkspaceFile;
 }
 
-export function KieSandboxExtendedServicesDropdownGroup(props: Props) {
+export function ExtendedServicesDropdownGroup(props: Props) {
   const deployDropdownItems = useDeployDropdownItems({
     workspace: props.workspace,
     workspaceFile: props.workspaceFile,
@@ -39,7 +39,7 @@ export function KieSandboxExtendedServicesDropdownGroup(props: Props) {
         label={
           <>
             {"Try on OpenShift"}
-            <KieSandboxExtendedServicesIcon />
+            <ExtendedServicesIcon />
           </>
         }
       >

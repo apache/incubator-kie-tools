@@ -21,13 +21,13 @@ import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { OpenShiftSettingsTab } from "./openshift/OpenShiftSettingsTab";
 import { ServiceAccountSettingsTab } from "./serviceAccount/ServiceAccountSettingsTab";
 import { ServiceRegistrySettingsTab } from "./serviceRegistry/ServiceRegistrySettingsTab";
-import { KieSandboxExtendedServicesSettingsTab } from "./extendedServices/KieSandboxExtendedServicesSettingsTab";
+import { ExtendedServicesSettingsTab } from "./extendedServices/ExtendedServicesSettingsTab";
 import { FeaturePreviewSettingsTab } from "./featurePreview/FeaturePreviewSettingsTab";
 
 export enum SettingsTabs {
   GITHUB = "github",
   OPENSHIFT = "openshift",
-  KIE_SANDBOX_EXTENDED_SERVICES = "kie-sandbox-extended-services",
+  EXTENDED_SERVICES = "extendedServices",
   SERVICE_ACCOUNT = "serviceAccount",
   SERVICE_REGISTRY = "serviceRegistry",
   FEATURE_PREVIEW = "featurePreview",
@@ -53,10 +53,10 @@ export function SettingsModalBody() {
       </Tab>
       <Tab
         className="kie-tools--settings-tab"
-        eventKey={SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES}
-        title={<TabTitleText>KIE Sandbox Extended Services</TabTitleText>}
+        eventKey={SettingsTabs.EXTENDED_SERVICES}
+        title={<TabTitleText>Extended Services</TabTitleText>}
       >
-        <KieSandboxExtendedServicesSettingsTab />
+        <ExtendedServicesSettingsTab />
       </Tab>
       <Tab
         className="kie-tools--settings-tab"

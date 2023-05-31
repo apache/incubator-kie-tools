@@ -36,19 +36,19 @@ module.exports = composeEnv(
         default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
         description: "Build information to be shown at the bottom of Home page.",
       },
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: {
+      ONLINE_EDITOR__extendedServicesDownloadUrlLinux: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_linux_${extendedServicesEnv.env.extendedServices.version}.tar.gz`,
         description: "Download URL for Extended Services for Linux.",
       },
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: {
+      ONLINE_EDITOR__extendedServicesDownloadUrlMacOs: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_macos_${extendedServicesEnv.env.extendedServices.version}.dmg`,
         description: "Download URL for Extended Services for macOS.",
       },
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: {
+      ONLINE_EDITOR__extendedServicesDownloadUrlWindows: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_windows_${extendedServicesEnv.env.extendedServices.version}.exe`,
         description: "Download URL for Extended Services for Windows.",
       },
-      ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: {
+      ONLINE_EDITOR__extendedServicesCompatibleVersion: {
         default: extendedServicesEnv.env.extendedServices.version,
         description:
           "Version Extended Services compatile with KIE Sandbox. Exact match only. No version ranges are supported.",
@@ -77,6 +77,10 @@ module.exports = composeEnv(
         default: "",
         description: "Service URL to validate commit messages.",
       },
+      ONLINE_EDITOR__appName: {
+        default: "KIE Sandbox",
+        description: "The name used to refer to a particular KIE Sandbox distribution.",
+      },
       DMN_DEV_DEPLOYMENT__baseImageTag: {
         default: "daily-dev",
         description: "Image tag to be used by DMN Dev deployments when deploying DMN models.",
@@ -99,14 +103,15 @@ module.exports = composeEnv(
           },
           gtmId: getOrDefault(this.vars.ONLINE_EDITOR__gtmId),
           buildInfo: getOrDefault(this.vars.ONLINE_EDITOR__buildInfo),
-          kieSandboxExtendedServices: {
-            compatibleVersion: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion),
+          extendedServices: {
+            compatibleVersion: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesCompatibleVersion),
             downloadUrl: {
-              linux: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux),
-              macOs: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs),
-              windows: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows),
+              linux: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesDownloadUrlLinux),
+              macOs: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesDownloadUrlMacOs),
+              windows: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesDownloadUrlWindows),
             },
           },
+          appName: getOrDefault(this.vars.ONLINE_EDITOR__appName),
           extendedServicesUrl: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesUrl),
           gitCorsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__gitCorsProxyUrl),
           requireCustomCommitMessage: getOrDefault(this.vars.ONLINE_EDITOR__requireCustomCommitMessage),

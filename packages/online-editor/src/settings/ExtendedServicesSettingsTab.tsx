@@ -23,20 +23,20 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { ExtendedServicesConfig, useSettings, useSettingsDispatch } from "./SettingsContext";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 
-export function KieSandboxExtendedServicesSettingsTab() {
+export function ExtendedServicesSettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const extendedServices = useExtendedServices();
-  const [host, setHost] = useState(settings.kieSandboxExtendedServices.config.host);
-  const [port, setPort] = useState(settings.kieSandboxExtendedServices.config.port);
+  const [host, setHost] = useState(settings.extendedServices.config.host);
+  const [port, setPort] = useState(settings.extendedServices.config.port);
 
   const onSubmit = useCallback(
     (e: any) => {
       e.preventDefault();
-      settingsDispatch.kieSandboxExtendedServices.setConfig(new ExtendedServicesConfig(host, port));
+      settingsDispatch.extendedServices.setConfig(new ExtendedServicesConfig(host, port));
     },
     [settingsDispatch, host, port]
   );
@@ -48,18 +48,18 @@ export function KieSandboxExtendedServicesSettingsTab() {
           <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
             <Form onSubmit={onSubmit}>
               <FormAlert>
-                {extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING && (
+                {extendedServices.status === ExtendedServicesStatus.RUNNING && (
                   <Alert
                     variant="success"
-                    title={"You are connected to KIE Sandbox Extended Services"}
+                    title={"You are connected to Extended Services"}
                     aria-live="polite"
                     isInline
                   />
                 )}
-                {extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
+                {extendedServices.status !== ExtendedServicesStatus.RUNNING && (
                   <Alert
                     variant="danger"
-                    title={"You are not connected to KIE Sandbox Extended Services"}
+                    title={"You are not connected to Extended Services"}
                     aria-live="polite"
                     isInline
                   />

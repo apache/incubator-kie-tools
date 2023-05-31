@@ -49,6 +49,7 @@ import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/work
 import { useGlobalAlert } from "../../alerts";
 import { useBitbucketClient } from "../../bitbucket/Hooks";
 import { isEditable } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
+import { useEnv } from "../../env/hooks/EnvContext";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 
@@ -57,6 +58,7 @@ export function NewFileDropdownMenu(props: {
   workspaceDescriptor: WorkspaceDescriptor;
   onAddFile: (file?: WorkspaceFile) => Promise<void>;
 }) {
+  const { env } = useEnv();
   const uploadFileInputRef = useRef<HTMLInputElement>(null);
 
   const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
@@ -169,7 +171,9 @@ export function NewFileDropdownMenu(props: {
       await workspaces.createSavePoint({
         workspaceId: props.workspaceDescriptor.workspaceId,
         gitConfig,
-        commitMessage: `KIE Sandbox: Added files${uploadedFiles.map((file) => `\n- ${file.relativePath}`)}`,
+        commitMessage: `${env.KIE_SANDBOX_APP_NAME}: Added files${uploadedFiles.map(
+          (file) => `\n- ${file.relativePath}`
+        )}`,
         forceHasChanges: true,
       });
 
@@ -178,7 +182,7 @@ export function NewFileDropdownMenu(props: {
       await props.onAddFile(fileToGoTo);
       successfullyUploadedAlert.show({ qtt: uploadedFiles.length });
     },
-    [editorEnvelopeLocator, workspaces, props, successfullyUploadedAlert, gitConfig]
+    [workspaces, props, gitConfig, env.KIE_SANDBOX_APP_NAME, successfullyUploadedAlert, editorEnvelopeLocator]
   );
 
   const [url, setUrl] = useState("");

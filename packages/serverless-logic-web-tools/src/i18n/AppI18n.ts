@@ -87,7 +87,7 @@ interface AppDictionary extends ReferenceDictionary {
       note: string;
     };
   };
-  kieSandboxExtendedServices: {
+  extendedServices: {
     modal: {
       wizard: {
         title: string;
@@ -109,7 +109,7 @@ interface AppDictionary extends ReferenceDictionary {
           start: {
             stopped: {
               startInstruction: string;
-              launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+              launchExtendedServices: Array<string | Wrapped<"file">>;
             };
             firstTime: {
               title: string;
@@ -119,7 +119,7 @@ interface AppDictionary extends ReferenceDictionary {
               openInstruction: Array<string | Wrapped<"file" | "again">>;
             };
             alreadyRanBefore: string;
-            launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+            launchExtendedServices: Array<string | Wrapped<"file">>;
             advanced: {
               title: string;
               runFollowingCommand: string;
@@ -134,7 +134,7 @@ interface AppDictionary extends ReferenceDictionary {
           start: {
             stopped: {
               startInstruction: string;
-              launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+              launchExtendedServices: Array<string | Wrapped<"file">>;
             };
             firstTime: {
               title: string;
@@ -142,7 +142,7 @@ interface AppDictionary extends ReferenceDictionary {
               runAnyway: string;
             };
             alreadyRanBefore: string;
-            launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+            launchExtendedServices: Array<string | Wrapped<"file">>;
             advanced: {
               title: string;
               runFollowingCommand: string;
