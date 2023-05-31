@@ -8,7 +8,7 @@ BUILD_FAILED_IMAGES = []
 
 pipeline {
     agent {
-        label 'kogito-image-slave && !built-in'
+        label 'kie-rhel8 && docker && kie-mem24g && !built-in'
     }
     tools {
         maven env.BUILD_MAVEN_TOOL
@@ -19,6 +19,10 @@ pipeline {
     }
     environment {
         CI = true
+
+        // Linked to node label
+        CONTAINER_ENGINE='docker'
+        CONTAINER_ENGINE_TLS_OPTIONS=''
     }
     stages {
         stage('Initialization') {
@@ -179,6 +183,10 @@ void testImage(String imageName) {
 String getMakeBuildImageArgs() {
     List args = [ "cekit_option='--work-dir .'" ]
     args.add("KOGITO_APPS_TARGET_BRANCH=${changeTarget}")
+    args.add("BUILD_ENGINE=${CONTAINER_ENGINE}")
+    if (env.CONTAINER_ENGINE_TLS_OPTIONS) {
+        args.add("BUILD_ENGINE_TLS_OPTIONS=${CONTAINER_ENGINE_TLS_OPTIONS}")   
+    }
     return args.join(' ')
 }
 
@@ -222,5 +230,8 @@ boolean isProdCI() {
 }
 
 void runPythonCommand(String cmd, boolean stdout = false) {
-    return sh(script: "source ~/virtenvs/cekit/bin/activate && ${cmd}", returnStdout: stdout)
+    return sh(returnStdout: stdout, script: """
+source ~/virtenvs/cekit/bin/activate 
+${cmd}
+""")
 }

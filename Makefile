@@ -3,6 +3,7 @@ SHORTENED_LATEST_VERSION := $(shell echo $(IMAGE_VERSION) | awk -F. '{print $$1"
 KOGITO_APPS_TARGET_BRANCH ?= main
 KOGITO_APPS_TARGET_URI ?= https://github.com/kiegroup/kogito-apps.git
 BUILD_ENGINE ?= docker
+BUILD_ENGINE_TLS_OPTIONS ?= ''
 .DEFAULT_GOAL := build
 CEKIT_CMD := cekit -v ${cekit_option}
 NATIVE := true
@@ -85,11 +86,11 @@ _push:
 .PHONY: push-image
 image_name=
 push-image:
-	${BUILD_ENGINE} push quay.io/kiegroup/${image_name}:${IMAGE_VERSION}
-	${BUILD_ENGINE} push quay.io/kiegroup/${image_name}:latest
+	${BUILD_ENGINE} ${BUILD_ENGINE_TLS_OPTIONS} push quay.io/kiegroup/${image_name}:${IMAGE_VERSION}
+	${BUILD_ENGINE} ${BUILD_ENGINE_TLS_OPTIONS} push quay.io/kiegroup/${image_name}:latest
 ifneq ($(findstring rc,$(IMAGE_VERSION)), rc)
 	@echo "${SHORTENED_LATEST_VERSION} will be pushed"
-	${BUILD_ENGINE} push quay.io/kiegroup/${image_name}:${SHORTENED_LATEST_VERSION}
+	${BUILD_ENGINE} ${BUILD_ENGINE_TLS_OPTIONS} push quay.io/kiegroup/${image_name}:${SHORTENED_LATEST_VERSION}
 endif
 
 

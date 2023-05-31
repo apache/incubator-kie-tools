@@ -10,7 +10,7 @@ TEST_FAILED_IMAGES = []
 
 pipeline {
     agent {
-        label 'kogito-image-slave && !built-in'
+        label 'kie-rhel8 && docker && kie-mem24g && !built-in'
     }
 
     // Needed for local build
@@ -33,6 +33,10 @@ pipeline {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         JAVA_HOME = "${GRAALVM_HOME}"
+
+        // Linked to node label
+        CONTAINER_ENGINE='docker'
+        CONTAINER_TLS_OPTIONS=''
 
         OPENSHIFT_API = credentials('OPENSHIFT_API')
         OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
@@ -400,6 +404,10 @@ String getMakeBuildImageArgs() {
     if (getKogitoAppsUri()) {
         args.add("KOGITO_APPS_TARGET_URI=${getKogitoAppsUri()}")
     }
+    args.add("BUILD_ENGINE=${CONTAINER_ENGINE}")
+    if (env.CONTAINER_ENGINE_TLS_OPTIONS) {
+        args.add("BUILD_ENGINE_TLS_OPTIONS=${CONTAINER_ENGINE_TLS_OPTIONS}")   
+    }
     return args.join(' ')
 }
 
@@ -673,5 +681,8 @@ boolean isThereAnyChanges() {
 }
 
 void runPythonCommand(String cmd, boolean stdout = false) {
-    return sh(script: "source ~/virtenvs/cekit/bin/activate && ${cmd}", returnStdout: stdout)
+    return sh(returnStdout: stdout, script: """
+source ~/virtenvs/cekit/bin/activate 
+${cmd}
+""")
 }

@@ -2,7 +2,7 @@
 
 pipeline {
     agent {
-        label 'kie-rhel7 && !built-in'
+        label 'rhel8 && podman && !built-in'
     }
 
     options {

@@ -24,8 +24,8 @@ base_dir=`dirname $(${realPath} -s $0)`
 echo $base_dir
 . ${base_dir}/../../scripts/setup-maven.sh "$(mktemp)"
 
-CONTAINER_ENGINE="docker"
-MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS="-Dquarkus.native.container-build=true -Dquarkus.native.container-runtime=${CONTAINER_ENGINE}"
+CONTAINER_ENGINE=${CONTAINER_ENGINE:-"docker"}
+MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS=${MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS:-"-Dquarkus.native.container-build=true -Dquarkus.native.container-runtime=${CONTAINER_ENGINE}"}
 
 NATIVE_BUILD=$1
 if [ -z $NATIVE_BUILD ]; then

@@ -20,6 +20,10 @@ pipeline {
 
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
+        // Linked to node label
+        CONTAINER_ENGINE='podman'
+        CONTAINER_TLS_OPTIONS='--tls-verify-false'
+
         OPENSHIFT_API = credentials('OPENSHIFT_API')
         OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
         OPENSHIFT_CREDS_KEY = 'OPENSHIFT_CREDS'

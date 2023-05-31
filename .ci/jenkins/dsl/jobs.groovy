@@ -104,8 +104,6 @@ void setupDeployJob(JobType jobType, String envName = '') {
         REPO_NAME: 'kogito-images',
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
-        CONTAINER_ENGINE: 'docker',
-        CONTAINER_TLS_OPTIONS: '',
         MAX_REGISTRY_RETRIES: 3,
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -176,8 +174,6 @@ void setupPromoteJob(JobType jobType) {
         REPO_NAME: 'kogito-images',
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
-        CONTAINER_ENGINE: 'podman',
-        CONTAINER_TLS_OPTIONS: '--tls-verify=false',
         MAX_REGISTRY_RETRIES: 3,
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
