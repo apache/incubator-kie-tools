@@ -24,17 +24,18 @@ import { ConnectedIcon } from "@patternfly/react-icons/dist/js/icons/connected-i
 import { DisconnectedIcon } from "@patternfly/react-icons/dist/js/icons/disconnected-icon";
 import { useExtendedServices } from "./ExtendedServicesContext";
 import { useSettingsDispatch } from "../settings/SettingsContext";
-import { SettingsTabs } from "../settings/SettingsModalBody";
 import { useAppI18n } from "../i18n";
+import { routes } from "../navigation/Routes";
+import { useHistory } from "react-router";
 
 export function ExtendedServicesIcon() {
   const extendedServices = useExtendedServices();
   const { i18n } = useAppI18n();
-  const settingsDispatch = useSettingsDispatch();
+  const history = useHistory();
 
   const toggleExtendedServices = useCallback(() => {
     if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
-      settingsDispatch.open(SettingsTabs.EXTENDED_SERVICES);
+      history.push(routes.settings.extended_services.path({}));
     }
 
     if (!extendedServices.outdated) {
@@ -42,7 +43,7 @@ export function ExtendedServicesIcon() {
     }
     extendedServices.setInstallTriggeredBy(undefined);
     extendedServices.setModalOpen(true);
-  }, [extendedServices, settingsDispatch]);
+  }, [extendedServices, history]);
 
   const dropdownToggleIcon = useMemo(
     () => (

@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { deleteAllIndexedDBs } from "../support/e2e";
+
 describe("Serverless Logic Web Tools - Recent model test", () => {
   beforeEach(() => {
+    deleteAllIndexedDBs();
     cy.visit("/");
   });
 
@@ -39,8 +42,10 @@ describe("Serverless Logic Web Tools - Recent model test", () => {
 
     // open again from main page
     cy.ouia({ ouiaId: "app-title" }).click();
-    cy.ouia({ ouiaId: "recent-models-section" })
-      .find("article h3")
+    cy.goToSidebarLink({ ouiaId: "recent-models-nav" });
+
+    cy.ouia({ ouiaId: "OUIA-Generated-TableRow-2" })
+      .find("[data-label='Name'] > a")
       .eq(0)
       .should(($item) => expect($item.text().trim()).equal("testJsonFile"))
       .click();
@@ -56,20 +61,8 @@ describe("Serverless Logic Web Tools - Recent model test", () => {
     cy.ouia({ ouiaId: "kebab-sm" }).click();
     cy.ouia({ ouiaId: "delete-file-button" }).click();
 
-    // check the file is deleted (recent section is emtpy or the first item is not the file)
-    // cypress currently does not allow to clean browser db
-    cy.ouia({ ouiaId: "recent-models-section-body" })
-      .children()
-      .then(($div) => {
-        if ($div.hasClass("pf-l-bullseye")) {
-          cy.ouia({ ouiaId: "empty-recent-models-title" }).should("have.text", "Nothing here");
-        } else {
-          cy.ouia({ ouiaId: "recent-models-section" })
-            .find("article h3")
-            .eq(0)
-            .should(($item) => expect($item.text().trim()).not.equal("testJsonFile"))
-            .click();
-        }
-      });
+    // check the file is deleted (recent section is emtpy)
+    cy.goToSidebarLink({ ouiaId: "recent-models-nav" });
+    cy.get(".pf-l-bullseye").should("contain.text", "Nothing here");
   });
 });

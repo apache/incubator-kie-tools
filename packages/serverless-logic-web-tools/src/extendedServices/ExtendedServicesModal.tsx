@@ -765,7 +765,7 @@ function ExtendedServicesWizardFooter(props: WizardImperativeControlProps) {
     if (status === ExtendedServicesStatus.STOPPED) {
       wizardContext.goToStepByName(props.steps[1].name);
     }
-  }, [status, props.setModalPage]);
+  }, [status, props.setModalPage, props.steps, wizardContext]);
 
   return (
     <WizardFooter>

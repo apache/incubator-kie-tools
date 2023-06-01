@@ -15,6 +15,7 @@
  */
 
 const IS_HASH_ROUTER = true;
+const SETTINGS_ROUTE = "/settings";
 
 export enum QueryParams {
   SETTINGS = "settings",
@@ -24,6 +25,7 @@ export enum QueryParams {
   REMOVE_REMOTE = "removeRemote",
   RENAME_WORKSPACE = "renameWorkspace",
   SAMPLE_ID = "sampleId",
+  SAMPLES_CATEGORY = "category",
 }
 
 export enum PathParams {
@@ -130,6 +132,24 @@ export const routes = {
     ({ workspaceId, fileRelativePath, extension }) =>
       `/${workspaceId}/file/${fileRelativePath}${extension ? "." + extension : ""}`
   ),
+
+  workspaceWithFiles: new Route<{
+    pathParams: PathParams.WORKSPACE_ID;
+  }>(({ workspaceId }) => `/${workspaceId}/files`),
+
+  recentModels: new Route<{}>(() => `/recent-models`),
+  sampleCatalog: new Route<{}>(() => `/sample-catalog`),
+
+  settings: {
+    home: new Route<{}>(() => SETTINGS_ROUTE),
+    github: new Route<{}>(() => `${SETTINGS_ROUTE}/github`),
+    openshift: new Route<{}>(() => `${SETTINGS_ROUTE}/openshift`),
+    extended_services: new Route<{}>(() => `${SETTINGS_ROUTE}/extended-services`),
+    service_account: new Route<{}>(() => `${SETTINGS_ROUTE}/service-account`),
+    service_registry: new Route<{}>(() => `${SETTINGS_ROUTE}/service-registry`),
+    feature_preview: new Route<{}>(() => `${SETTINGS_ROUTE}/feature-preview`),
+    storage: new Route<{}>(() => `${SETTINGS_ROUTE}/storage`),
+  },
 
   static: {
     sample: new Route<{ pathParams: "type" | "name" }>(({ type, name }) => `samples/${name}/${name}.${type}`),

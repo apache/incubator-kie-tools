@@ -70,7 +70,6 @@ import {
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useGitHubAuthInfo } from "../settings/github/Hooks";
 import { AuthStatus, GithubScopes, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import { SettingsTabs } from "../settings/SettingsModalBody";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
@@ -94,6 +93,8 @@ import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocat
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { useEnv } from "../env/EnvContext";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
+import { Link } from "react-router-dom";
+import { routes } from "../navigation/Routes";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -721,10 +722,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
               {!canPushToGitRepository && (
                 <>
                   <Divider />
-                  <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
-                    <Button isInline={true} variant={ButtonVariant.link}>
-                      Configure GitHub token...
-                    </Button>
+                  <DropdownItem>
+                    <Link to={routes.settings.github.path({})}>
+                      <Button isInline={true} variant={ButtonVariant.link}>
+                        Configure GitHub token...
+                      </Button>
+                    </Link>
                   </DropdownItem>
                 </>
               )}
@@ -742,7 +745,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       downloadWorkspaceZip,
       i18n,
       canCreateGitRepository,
-      settingsDispatch,
+      routes,
     ]
   );
 
@@ -1058,7 +1061,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 )}
 
                 {!canPushToGitRepository && (
-                  <AlertActionLink onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+                  <AlertActionLink onClick={() => history.push(routes.settings.github.path({}))}>
                     {`Configure GitHub token...`}
                   </AlertActionLink>
                 )}
@@ -1074,7 +1077,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           </Alert>
         );
       },
-      [canPushToGitRepository, pushNewBranch, settingsDispatch, workspacePromise]
+      [canPushToGitRepository, pushNewBranch, workspacePromise, history, routes]
     )
   );
 
@@ -1293,7 +1296,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   <Button
                     className={"kie-tools--masthead-hoverable"}
                     variant={ButtonVariant.plain}
-                    onClick={() => history.push({ pathname: routes.home.path({}) })}
+                    onClick={() => history.push({ pathname: routes.workspaceWithFiles.path(props.workspaceFile) })}
                   >
                     <AngleLeftIcon />
                   </Button>
@@ -1492,7 +1495,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         toggle={
                           <DropdownToggle
                             onToggle={setNewFileDropdownMenuOpen}
-                            isPrimary={true}
+                            toggleVariant="primary"
                             toggleIndicator={CaretDownIcon}
                           >
                             <PlusIcon />
@@ -1582,7 +1585,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   {!canPushToGitRepository && (
                                     <>
                                       <Divider />
-                                      <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+                                      <DropdownItem onClick={() => history.push(routes.settings.github.path({}))}>
                                         <Button isInline={true} variant={ButtonVariant.link}>
                                           Configure GitHub token...
                                         </Button>
@@ -1640,7 +1643,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   {!canPushToGitRepository && (
                                     <>
                                       <Divider />
-                                      <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+                                      <DropdownItem onClick={() => history.push(routes.settings.github.path({}))}>
                                         <Button isInline={true} variant={ButtonVariant.link}>
                                           Configure GitHub token...
                                         </Button>
@@ -1732,7 +1735,7 @@ export function PushToGitHubAlertActionLinks(props: {
   kind?: WorkspaceKind;
   remoteRef?: string;
 }) {
-  const settingsDispatch = useSettingsDispatch();
+  const history = useHistory();
 
   if (props.kind === WorkspaceKind.GIT && !props.remoteRef) {
     throw new Error("Should specify remoteRef for GIT workspaces");
@@ -1741,7 +1744,7 @@ export function PushToGitHubAlertActionLinks(props: {
   return (
     <>
       {!props.canPush && (
-        <AlertActionLink onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+        <AlertActionLink onClick={() => history.push(routes.settings.github.path({}))}>
           {`Configure GitHub token...`}
         </AlertActionLink>
       )}

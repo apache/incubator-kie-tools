@@ -18,7 +18,6 @@ import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { FileLabel } from "../workspace/components/FileLabel";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
   DrilldownMenu,
@@ -39,6 +38,7 @@ import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/E
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 import { useGlobalAlert } from "../alerts/GlobalAlertsContext";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 
@@ -53,6 +53,8 @@ export function NewFileDropdownMenu(props: {
   const [drilldownPath, setDrilldownPath] = useState<string[]>([]);
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
   const [activeMenu, setActiveMenu] = useState(ROOT_MENU_ID);
+  const [url, setUrl] = useState("");
+  const [isUrlValid, setIsUrlValid] = useState(ValidatedOptions.default);
 
   const drillIn = useCallback((_event, fromMenuId, toMenuId, pathId) => {
     setMenuDrilledIn((prev) => [...prev, fromMenuId]);
@@ -204,7 +206,32 @@ export function NewFileDropdownMenu(props: {
     [workspaces, props, successfullyUploadedAlert]
   );
 
-  const [url, setUrl] = useState("");
+  const NewJsonYamlDrilldownMenuItem = useCallback(
+    (args: { prefixId: string; description: string; fileTypes: { json: FileTypes; yaml: FileTypes } }) => (
+      <MenuItem
+        itemId={`${args.prefixId}ItemId`}
+        description={args.description}
+        direction={"down"}
+        drilldownMenu={
+          <DrilldownMenu id={`${args.prefixId}File`}>
+            <MenuItem direction="up">Back</MenuItem>
+            <Divider />
+            <MenuItem onClick={() => addEmptyFile(args.fileTypes.json)} itemId={`${args.prefixId}Json`}>
+              JSON
+            </MenuItem>
+            <MenuItem onClick={() => addEmptyFile(args.fileTypes.yaml)} itemId={`${args.prefixId}Yaml`}>
+              YAML
+            </MenuItem>
+          </DrilldownMenu>
+        }
+      >
+        <b>
+          <FileLabel style={{ marginBottom: "4px" }} extension={args.fileTypes.json} />
+        </b>
+      </MenuItem>
+    ),
+    [addEmptyFile]
+  );
 
   return (
     <Menu
@@ -220,28 +247,20 @@ export function NewFileDropdownMenu(props: {
     >
       <MenuContent menuHeight={`${menuHeights[activeMenu]}px`}>
         <MenuList style={{ padding: 0 }}>
-          <MenuItem
-            itemId={"newSwfItemId"}
-            onClick={() => addEmptyFile(FileTypes.SW_JSON)}
-            description="Serverless Workflow files are used to define orchestration logic for services."
-          >
-            <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.SW_JSON} />
-            </b>
-          </MenuItem>
-          <MenuItem
-            itemId={"newSdItemId"}
-            onClick={() => addEmptyFile(FileTypes.YARD_YAML)}
-            description="Serverless Decision files are used to define decision logic for services."
-          >
-            <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.YARD_YAML} />
-            </b>
-          </MenuItem>
+          <NewJsonYamlDrilldownMenuItem
+            prefixId="newSwf"
+            description="Define orchestration logic for services."
+            fileTypes={{ json: FileTypes.SW_JSON, yaml: FileTypes.SW_YAML }}
+          />
+          <NewJsonYamlDrilldownMenuItem
+            prefixId="newSd"
+            description="Define decision logic for services."
+            fileTypes={{ json: FileTypes.YARD_JSON, yaml: FileTypes.YARD_YAML }}
+          />
           <MenuItem
             itemId={"newDashboardItemId"}
             onClick={() => addEmptyFile(FileTypes.DASH_YAML)}
-            description="Dashboard files are used to define data visualization from data extracted from applications."
+            description="Define data visualization from data extracted from applications."
           >
             <b>
               <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.DASH_YAML} />
@@ -265,6 +284,7 @@ export function NewFileDropdownMenu(props: {
                       setUrl(url);
                       setImportingError(undefined);
                     }}
+                    onValidate={setIsUrlValid}
                     onSubmit={() => importFromUrl(url)}
                   />
                 </MenuInput>
@@ -273,6 +293,7 @@ export function NewFileDropdownMenu(props: {
                     variant={url.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
                     isLoading={isImporting}
                     onClick={() => importFromUrl(url)}
+                    isDisabled={isUrlValid !== ValidatedOptions.success}
                   >
                     Import
                   </Button>
