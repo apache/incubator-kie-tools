@@ -15,7 +15,6 @@
  */
 
 import Ajv from "ajv";
-import ajvErrors from "ajv-errors";
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import {
   DAYS_AND_TIME_DURATION_FORMAT,
@@ -38,7 +37,6 @@ export class DmnRunnerAjv {
       removeAdditional: "all",
       verbose: true,
     });
-    // ajvErrors(this.ajv as any);
     this.ajv.addMetaSchema(metaSchemaDraft04);
     this.ajv.addKeyword(X_DMN_TYPE, {});
     this.ajv.addKeyword(X_DMN_ALLOWED_VALUES, {});

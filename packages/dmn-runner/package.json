@@ -41,7 +41,6 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@types/ajv-errors": "^1.0.1",
     "@types/jest": "^26.0.23",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",

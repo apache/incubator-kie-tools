@@ -4,9 +4,9 @@
     "outDir": "dist",
     "jsx": "react",
     "resolveJsonModule": true,
+    "esModuleInterop": true,
     "target": "es6",
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true
+    "moduleResolution": "node"
   },
   "include": ["src"]
 }

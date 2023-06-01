@@ -3091,9 +3091,6 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
-      "@types/ajv-errors":
-        specifier: ^1.0.1
-        version: 1.0.3
       "@types/jest":
         specifier: ^26.0.23
         version: 26.0.23
@@ -5276,9 +5273,6 @@ importers:
       "@patternfly/react-tokens":
         specifier: ^4.94.6
         version: 4.94.6
-      ajv:
-        specifier: ^6.12.6
-        version: 6.12.6
       bowser:
         specifier: ^2.10.0
         version: 2.11.0
@@ -16483,13 +16477,6 @@ packages:
   /@tsconfig/node16@1.0.3:
     resolution:
       { integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ== }
-    dev: true
-
-  /@types/ajv-errors@1.0.3:
-    resolution:
-      { integrity: sha512-lXvAtvKL4Fiyxog+Czma/APGjRFbAGUiMpsD2EQUDCMwW0m4UUEwj+FJAuRNKgBZD68mRIO3GtR2aOHV3ADVDQ== }
-    dependencies:
-      ajv: 8.11.0
     dev: true
 
   /@types/archiver@5.3.1:
