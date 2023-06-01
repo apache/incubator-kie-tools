@@ -28,4 +28,5 @@ source "${script_dir_path}"/configure-jvm-mvn.sh
   -s "${MAVEN_SETTINGS_PATH}" \
   -DskipTests \
   -Dquarkus.http.host=0.0.0.0 \
+  -Dquarkus.test.continuous-testing=${QUARKUS_CONTINUOUS_TESTING:-disabled} \
   clean compile quarkus:dev

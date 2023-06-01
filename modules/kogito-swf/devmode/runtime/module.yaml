@@ -13,6 +13,9 @@ envs:
   - name: QUARKUS_KUBERNETES_CLIENT_DEVSERVICES_ENABLED
     description: Whether to enable Kogito Devservices or not. Default to "false" since Kubernetes objects are managed by the Kogito Serverless Operator.
     value: "false"
+  - name: QUARKUS_CONTINUOUS_TESTING
+    description: Whether to enable Quarkus continous testing on DevMode or not. Default to "disabled".
+    value: "disabled"
 
 artifacts:
   - image: builder
