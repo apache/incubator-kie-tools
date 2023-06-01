@@ -278,7 +278,7 @@ export function ExtendedServicesSettings(props: SettingsPageProps) {
               <ActionGroup>
                 <Button
                   isDisabled={!isCurrentConfigValid}
-                  id="kie-sandbox-extended-services-config-connect-button"
+                  id="extended-services-config-connect-button"
                   key="connect"
                   variant="primary"
                   onClick={onConnect}

@@ -420,7 +420,7 @@ export function ExtendedServicesModal() {
                   <br />
                   <TextContent>
                     <Text component={TextVariants.p} className={"kogito--code"}>
-                      &quot;kie-sandbox-extended-services_windows_{extendedServices.version}.exe&quot; -p{" "}
+                      &quot;extended-services_windows_{extendedServices.version}.exe&quot; -p{" "}
                       {extendedServices.config.port}
                     </Text>
                   </TextContent>
@@ -576,7 +576,7 @@ export function ExtendedServicesModal() {
                 <br />
                 <TextContent>
                   <Text component={TextVariants.p} className={"kogito--code"}>
-                    ./kie-sandbox-extended-services -p {extendedServices.config.port}
+                    ./extended-services -p {extendedServices.config.port}
                   </Text>
                 </TextContent>
                 <br />
