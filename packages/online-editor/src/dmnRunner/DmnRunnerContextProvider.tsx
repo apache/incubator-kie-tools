@@ -493,7 +493,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                 const validation = validate(input);
                 if (!validation && validate.errors) {
                   validate.errors.forEach((error) => {
-                    const path = error.instancePath.split("/").slice(1).join(".");
+                    const path = error.dataPath
+                      .replace(/\[(\d+)\]/g, ".$1")
+                      .split(".")
+                      .slice(1)
+                      .slice(0, -1)
+                      .join(".");
                     unsetObjectValueByPath(input, path);
                   });
                 }
