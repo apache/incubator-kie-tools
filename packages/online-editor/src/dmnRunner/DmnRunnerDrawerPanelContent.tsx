@@ -62,7 +62,7 @@ export function DmnRunnerDrawerPanelContent() {
   const [rowSelectionIsOpen, openRowSelection] = useState<boolean>(false);
 
   const { i18n, locale } = useOnlineI18n();
-  const { currentInputIndex, extendedServicesError, inputs, jsonSchema, results, resultsDifference } =
+  const { currentInputIndex, dmnRunnerKey, extendedServicesError, inputs, jsonSchema, results, resultsDifference } =
     useDmnRunnerState();
   const { setDmnRunnerContextProviderState, onRowAdded, setDmnRunnerInputs, setDmnRunnerMode } = useDmnRunnerDispatch();
   const { notificationsPanel, onOpenPanel } = useEditorDockContext();
@@ -261,7 +261,7 @@ export function DmnRunnerDrawerPanelContent() {
                     />
                   )}
                 </PageSection>
-                <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
+                <div key={dmnRunnerKey} className={"kogito--editor__dmn-runner-drawer-content-body"}>
                   <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                     <DmnForm
                       // force a re-render when the row is changed;

@@ -114,12 +114,7 @@ export const Unitables = ({
   }, [searchRecursively]);
 
   useLayoutEffect(() => {
-    // Required for normal editing;
     updateStyles();
-    // Required for lazy load components such as ListField
-    setTimeout(() => {
-      updateStyles();
-    }, 0);
   }, [isBeeTableChange, jsonSchemaBridge, formsDivRendered, rows, containerRef, updateStyles]);
   // Set in-cell input heights (end)
 

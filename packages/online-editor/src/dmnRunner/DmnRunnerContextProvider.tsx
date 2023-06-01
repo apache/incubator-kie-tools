@@ -122,6 +122,9 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
 
 export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   const { i18n } = useOnlineI18n();
+  // Calling forceDmnRunnerReRender will cause a update in the dmnRunnerKey
+  // dmnRunnerKey should be placed in the Unitables and DmnForm;
+  const [dmnRunnerKey, forceDmnRunnerReRender] = useReducer((x) => x + 1, 0);
 
   // States that can be changed down in the tree with dmnRunnerDispatcher;
   const [{ currentInputIndex, isExpanded }, setDmnRunnerContextProviderState] = useReducer(
@@ -520,6 +523,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             shouldUpdateFs: false,
             cancellationToken,
           });
+          forceDmnRunnerReRender();
           return;
         }
 
@@ -829,6 +833,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       canBeVisualized,
       configs: dmnRunnerConfigInputs,
       currentInputIndex,
+      dmnRunnerKey,
       dmnRunnerPersistenceJson,
       extendedServicesError,
       inputs: dmnRunnerInputs,
@@ -844,6 +849,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       currentInputIndex,
       dmnRunnerConfigInputs,
       dmnRunnerInputs,
+      dmnRunnerKey,
       dmnRunnerMode,
       dmnRunnerPersistenceJson,
       extendedServicesError,
