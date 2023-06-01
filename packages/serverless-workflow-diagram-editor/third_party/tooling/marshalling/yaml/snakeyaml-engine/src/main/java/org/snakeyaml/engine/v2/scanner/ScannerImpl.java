@@ -23,8 +23,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import elemental2.core.Global;
-import org.snakeyaml.engine.v2.GwtIncompatible;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.comments.CommentType;
 import org.snakeyaml.engine.v2.common.Anchor;
@@ -130,7 +128,6 @@ public final class ScannerImpl implements Scanner {
   // The current indentation level.
   private int indent = -1;
 
-  private final IsDigit isDigit = new IsDigit();
   /**
    *
    *
@@ -1279,7 +1276,7 @@ public final class ScannerImpl implements Scanner {
   private Integer scanYamlDirectiveNumber(Optional<Mark> startMark) {
     // See the specification for details.
     int c = reader.peek();
-    if (!isDigit.isDigit((char) c)) {
+    if (!Character.isDigit((char) c)) {
       final String s = String.valueOf(Character.toChars(c));
       throw new ScannerException(
           DIRECTIVE_PREFIX,
@@ -1288,7 +1285,7 @@ public final class ScannerImpl implements Scanner {
           reader.getMark());
     }
     int length = 0;
-    while (isDigit.isDigit((char) reader.peek(length))) {
+    while (Character.isDigit((char) reader.peek(length))) {
       length++;
     }
     return Integer.parseInt(reader.prefixForward(length));
@@ -1640,7 +1637,7 @@ public final class ScannerImpl implements Scanner {
       indicator = c;
       reader.forward();
       c = reader.peek();
-      if (isDigit.isDigit((char) c)) {
+      if (Character.isDigit((char) c)) {
         int incr = Integer.parseInt(String.valueOf(Character.toChars(c)));
         if (incr == 0) {
           throw new ScannerException(
@@ -1652,7 +1649,7 @@ public final class ScannerImpl implements Scanner {
         increment = Optional.of(incr);
         reader.forward();
       }
-    } else if (isDigit.isDigit((char) c)) {
+    } else if (Character.isDigit((char) c)) {
       int incr = Integer.parseInt(String.valueOf(Character.toChars(c)));
       if (incr == 0) {
         throw new ScannerException(
@@ -2348,18 +2345,4 @@ public final class ScannerImpl implements Scanner {
     }
   }
 
-  private static class IsDigit extends GWTIsDigit {
-
-    @GwtIncompatible
-    protected boolean isDigit(Character c) {
-      return Character.isDigit(c);
-    }
-  }
-
-  private static class GWTIsDigit {
-
-    protected boolean isDigit(Character c) {
-      return Global.isNaN(Global.parseInt(c, 10)) && Global.isFinite(c);
-    }
-  }
 }
