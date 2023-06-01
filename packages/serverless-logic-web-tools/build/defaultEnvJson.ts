@@ -24,6 +24,6 @@ const buildEnv: any = env; // build-env is not typed
 
 export const defaultEnvJson: EnvJson = {
   SERVERLESS_LOGIC_WEB_TOOLS_VERSION: buildEnv.root.version,
-  KIE_SANDBOX_EXTENDED_SERVICES_URL: buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.url,
+  KIE_SANDBOX_EXTENDED_SERVICES_URL: buildEnv.serverlessLogicWebTools.extendedServices.url,
   SERVERLESS_LOGIC_WEB_TOOLS_GIT_CORS_PROXY_URL: buildEnv.serverlessLogicWebTools.gitCorsProxyUrl,
 };

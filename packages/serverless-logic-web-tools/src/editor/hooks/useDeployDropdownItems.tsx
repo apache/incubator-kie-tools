@@ -28,12 +28,9 @@ import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import * as React from "react";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { useAppI18n } from "../../i18n";
-import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
-import {
-  DependentFeature,
-  useKieSandboxExtendedServices,
-} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { FeatureDependentExtendedServices } from "../../extendedServices/FeatureDependentOnExtendedServices";
+import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings } from "../../settings/SettingsContext";
@@ -64,7 +61,7 @@ export function useDeployDropdownItems(props: Props) {
   const devMode = useDevMode();
   const devModeDispatch = useDevModeDispatch();
   const settings = useSettings();
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const extendedServices = useExtendedServices();
   const openshift = useOpenShift();
   const [canContentBeDeployed, setCanContentBeDeployed] = useState(true);
   const { needsDependencyDeployment } = useVirtualServiceRegistryDependencies({
@@ -197,9 +194,9 @@ export function useDeployDropdownItems(props: Props) {
     }, [])
   );
 
-  const isKieSandboxExtendedServicesRunning = useMemo(
-    () => kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
-    [kieSandboxExtendedServices.status]
+  const isExtendedServicesRunning = useMemo(
+    () => extendedServices.status === ExtendedServicesStatus.RUNNING,
+    [extendedServices.status]
   );
 
   const isOpenShiftConnected = useMemo(
@@ -217,16 +214,16 @@ export function useDeployDropdownItems(props: Props) {
   }, [history]);
 
   const onDeploy = useCallback(() => {
-    if (isKieSandboxExtendedServicesRunning) {
+    if (isExtendedServicesRunning) {
       openshift.setConfirmDeployModalOpen(true);
       return;
     }
-    kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
-    kieSandboxExtendedServices.setModalOpen(true);
-  }, [isKieSandboxExtendedServicesRunning, kieSandboxExtendedServices, openshift]);
+    extendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
+    extendedServices.setModalOpen(true);
+  }, [isExtendedServicesRunning, extendedServices, openshift]);
 
   const onUploadDevMode = useCallback(async () => {
-    if (isKieSandboxExtendedServicesRunning) {
+    if (isExtendedServicesRunning) {
       devModeUploadingAlert.show();
       const result = await devModeDispatch.upload({
         targetSwfFile: props.workspaceFile,
@@ -258,11 +255,11 @@ export function useDeployDropdownItems(props: Props) {
         uploadToDevModeErrorAlert.show({ messages: result.messages });
       }
     } else {
-      kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
-      kieSandboxExtendedServices.setModalOpen(true);
+      extendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
+      extendedServices.setModalOpen(true);
     }
   }, [
-    isKieSandboxExtendedServicesRunning,
+    isExtendedServicesRunning,
     devModeUploadingAlert,
     devModeDispatch,
     props.workspaceFile,
@@ -271,7 +268,7 @@ export function useDeployDropdownItems(props: Props) {
     devModeReadyAlert,
     devMode.endpoints,
     uploadToDevModeErrorAlert,
-    kieSandboxExtendedServices,
+    extendedServices,
     uploadToDevModeTimeoutErrorAlert,
   ]);
 
@@ -279,7 +276,7 @@ export function useDeployDropdownItems(props: Props) {
     return [
       <React.Fragment key={"deploy-dropdown-items"}>
         {props.workspace && (
-          <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
+          <FeatureDependentExtendedServices isLight={false} position="left">
             {isUploadToDevModeEnabled && (
               <DropdownItem
                 icon={<UploadIcon />}
@@ -287,7 +284,7 @@ export function useDeployDropdownItems(props: Props) {
                 key={`dropdown-upload-dev-mode`}
                 component={"button"}
                 onClick={onUploadDevMode}
-                isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
+                isDisabled={isExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
                 ouiaId={"upload-to-openshift-dev-mode-dropdown-button"}
               >
                 {props.workspace.files.length > 1 && (
@@ -317,7 +314,7 @@ export function useDeployDropdownItems(props: Props) {
               key={`dropdown-deploy`}
               component={"button"}
               onClick={onDeploy}
-              isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
+              isDisabled={isExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
               ouiaId={"deploy-to-openshift-dropdown-button"}
             >
               {props.workspace.files.length > 1 && (
@@ -377,9 +374,9 @@ export function useDeployDropdownItems(props: Props) {
                 </Tooltip>
               </>
             )}
-          </FeatureDependentOnKieSandboxExtendedServices>
+          </FeatureDependentExtendedServices>
         )}
-        {!isOpenShiftConnected && isKieSandboxExtendedServicesRunning && (
+        {!isOpenShiftConnected && isExtendedServicesRunning && (
           <>
             <Divider />
             <DropdownItem
@@ -399,7 +396,7 @@ export function useDeployDropdownItems(props: Props) {
   }, [
     props.workspace,
     onDeploy,
-    isKieSandboxExtendedServicesRunning,
+    isExtendedServicesRunning,
     isOpenShiftConnected,
     canContentBeDeployed,
     isUploadToDevModeEnabled,

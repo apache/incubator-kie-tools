@@ -17,12 +17,9 @@
 import React, { useMemo, useState } from "react";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
-import {
-  DependentFeature,
-  useExtendedServices,
-} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
 import { ConnectToKubernetesSimple } from "./ConnectToKubernetesSimple";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
@@ -48,7 +45,7 @@ export function ConnectToKubernetesSection() {
   const [mode, setMode] = useState(KubernetesSettingsTabMode.SIMPLE);
   const [newAuthSession, setNewAuthSession] = useState<KubernetesAuthSession>();
   const [status, setStatus] = useState(
-    extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
+    extendedServices.status === ExtendedServicesStatus.RUNNING
       ? KubernetesInstanceStatus.DISCONNECTED
       : KubernetesInstanceStatus.UNAVAILABLE
   );
@@ -96,7 +93,7 @@ export function ConnectToKubernetesSection() {
                   whiteSpace: "break-spaces",
                 }}
               >
-                {`Please setup KIE Sandbox Extended Services to be able to connect to Kubernetes.`}
+                {`Please setup Extended Services to be able to connect to Kubernetes.`}
               </Title>
               <br />
               <Button

@@ -89,36 +89,36 @@ export const en: AppI18n = {
       note: `You should provide a token with the ${"'gist'".bold()} permission.`,
     },
   },
-  kieSandboxExtendedServices: {
+  extendedServices: {
     modal: {
       wizard: {
-        title: `${en_common.names.kieSandboxExtendedServices} ${en_common.terms.setup}`,
-        description: `Choose your ${en_common.terms.os.full} and follow the instructions to install and start the ${en_common.names.kieSandboxExtendedServices}.`,
+        title: `${en_common.names.extendedServices} ${en_common.terms.setup}`,
+        description: `Choose your ${en_common.terms.os.full} and follow the instructions to install and start the ${en_common.names.extendedServices}.`,
         outdatedAlert: {
-          title: `${en_common.names.kieSandboxExtendedServices} is outdated!`,
-          message: `It looks like you're using an incompatible version of the ${en_common.names.kieSandboxExtendedServices}. Follow the instructions below to update.`,
+          title: `${en_common.names.extendedServices} is outdated!`,
+          message: `It looks like you're using an incompatible version of the ${en_common.names.extendedServices}. Follow the instructions below to update.`,
         },
         stoppedAlert: {
-          title: `${en_common.names.kieSandboxExtendedServices} has stopped!`,
-          message: `It looks like the ${en_common.names.kieSandboxExtendedServices} has suddenly stopped, please follow these instructions to start it again.`,
+          title: `${en_common.names.extendedServices} has stopped!`,
+          message: `It looks like the ${en_common.names.extendedServices} has suddenly stopped, please follow these instructions to start it again.`,
         },
         macos: {
           install: {
-            download: ` ${en_common.names.kieSandboxExtendedServices}.`,
+            download: ` ${en_common.names.extendedServices}.`,
             openFile: ["Open the ", wrapped("file"), " file."],
             dragFileToApplicationsFolder: ["Drag ", wrapped("file"), " to the ", wrapped("folder"), " folder."],
           },
           start: {
             stopped: {
-              startInstruction: `If you see the ${en_common.names.kieSandboxExtendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
-              launchKieSandboxExtendedServices: [
-                `If not, start the ${en_common.names.kieSandboxExtendedServices} app by launching `,
+              startInstruction: `If you see the ${en_common.names.extendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
+              launchExtendedServices: [
+                `If not, start the ${en_common.names.extendedServices} app by launching `,
                 wrapped("file"),
                 ".",
               ],
             },
             firstTime: {
-              title: `If you just installed ${en_common.names.kieSandboxExtendedServices}:`,
+              title: `If you just installed ${en_common.names.extendedServices}:`,
               openApplicationsFolder: ["Open the ", wrapped("folder"), " folder."],
               again: "again",
               openAndCancel: [
@@ -134,50 +134,50 @@ export const en: AppI18n = {
                 ` and then select "${en_common.terms.open}".`,
               ],
             },
-            alreadyRanBefore: `If you already installed and ran the ${en_common.names.kieSandboxExtendedServices} before:`,
-            launchKieSandboxExtendedServices: ["Launch the ", wrapped("file")],
+            alreadyRanBefore: `If you already installed and ran the ${en_common.names.extendedServices} before:`,
+            launchExtendedServices: ["Launch the ", wrapped("file")],
             advanced: {
               title: "Advanced Settings",
-              runFollowingCommand: `Run the following command on a Terminal tab to start ${en_common.names.kieSandboxExtendedServices} on a different port:`,
+              runFollowingCommand: `Run the following command on a Terminal tab to start ${en_common.names.extendedServices} on a different port:`,
             },
           },
         },
         windows: {
           install: {
-            keepDownload: ` ${en_common.names.kieSandboxExtendedServices}. Note that you'll probably have to right-click the download and choose "Keep"`,
+            keepDownload: ` ${en_common.names.extendedServices}. Note that you'll probably have to right-click the download and choose "Keep"`,
             moveTheFile: ["Move the ", wrapped("file"), " file to your preferred folder."],
           },
           start: {
             stopped: {
-              startInstruction: `If you see the ${en_common.names.kieSandboxExtendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
-              launchKieSandboxExtendedServices: [
-                `If not, start the ${en_common.names.kieSandboxExtendedServices} by opening the `,
+              startInstruction: `If you see the ${en_common.names.extendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
+              launchExtendedServices: [
+                `If not, start the ${en_common.names.extendedServices} by opening the `,
                 wrapped("file"),
                 "file.",
               ],
             },
             firstTime: {
-              title: `If you just installed ${en_common.names.kieSandboxExtendedServices}:`,
+              title: `If you just installed ${en_common.names.extendedServices}:`,
               openFolder: ["Open folder where you placed the ", wrapped("file"), " file."],
               runAnyway: `Double-click it and select "More info" then click on the "Run anyway" button.`,
             },
-            alreadyRanBefore: `If you already installed and ran the ${en_common.names.kieSandboxExtendedServices} before:`,
-            launchKieSandboxExtendedServices: ["Open the ", wrapped("file"), " file."],
+            alreadyRanBefore: `If you already installed and ran the ${en_common.names.extendedServices} before:`,
+            launchExtendedServices: ["Open the ", wrapped("file"), " file."],
             advanced: {
               title: "Advanced Settings",
-              runFollowingCommand: `Run the following command on the Command prompt to start ${en_common.names.kieSandboxExtendedServices} on a different port:`,
+              runFollowingCommand: `Run the following command on the Command prompt to start ${en_common.names.extendedServices} on a different port:`,
             },
           },
         },
         linux: {
           install: {
-            download: ` ${en_common.names.kieSandboxExtendedServices}.`,
+            download: ` ${en_common.names.extendedServices}.`,
             installAppIndicator: "Install the AppIndicator lib for your system:",
             ubuntuDependency: [`${en_common.names.ubuntu}: `, wrapped("package")],
             fedoraDependency: [`${en_common.names.fedora}: `, wrapped("package")],
             extractContent: ["Extract the contents of ", wrapped("file"), " to your location of choice."],
             binaryExplanation: [
-              `The ${en_common.names.kieSandboxExtendedServices} binary, `,
+              `The ${en_common.names.extendedServices} binary, `,
               wrapped("file"),
               ", is a single binary file, which means you can add it to your PATH or even configure it to execute when your computer starts.",
             ],
@@ -196,12 +196,12 @@ export const en: AppI18n = {
             },
           },
         },
-        footerWaitingToConnect: `Waiting to connect to ${en_common.names.kieSandboxExtendedServices}`,
+        footerWaitingToConnect: `Waiting to connect to ${en_common.names.extendedServices}`,
         advancedSettings: {
           title: [
-            `The default ${en_common.names.kieSandboxExtendedServices} port is `,
+            `The default ${en_common.names.extendedServices} port is `,
             wrapped("port"),
-            `. If you're already using this port for another application, you can change the port used to connect with the ${en_common.names.kieSandboxExtendedServices}.`,
+            `. If you're already using this port for another application, you can change the port used to connect with the ${en_common.names.extendedServices}.`,
           ],
           label: "Port",
           helperTextInvalid: "Invalid port. Valid ports: 0 <= port <= 65353",
@@ -209,7 +209,7 @@ export const en: AppI18n = {
       },
       use: {
         title: "All set! 🎉",
-        connected: `You're connected to the ${en_common.names.kieSandboxExtendedServices}.`,
+        connected: `You're connected to the ${en_common.names.extendedServices}.`,
         backToSandbox: "Back to Sandbox",
       },
     },
@@ -217,16 +217,16 @@ export const en: AppI18n = {
       available: `This is only available in ${en_common.names.chrome} at the moment`,
     },
     dropdown: {
-      label: `${en_common.names.kieSandboxExtendedServices}`,
-      setup: `${en_common.terms.setup} ${en_common.names.kieSandboxExtendedServices}`,
-      open: `${en_common.terms.open} ${en_common.names.kieSandboxExtendedServices} panel`,
-      close: `${en_common.terms.close} ${en_common.names.kieSandboxExtendedServices} panel`,
+      label: `${en_common.names.extendedServices}`,
+      setup: `${en_common.terms.setup} ${en_common.names.extendedServices}`,
+      open: `${en_common.terms.open} ${en_common.names.extendedServices} panel`,
+      close: `${en_common.terms.close} ${en_common.names.extendedServices} panel`,
       shortConnected: (port: string) => `Connected to port ${port}`,
       tooltip: {
-        connected: `${en_common.names.kieSandboxExtendedServices} is connected.`,
-        install: `Setup ${en_common.names.kieSandboxExtendedServices} to use this feature. Click to install.`,
-        outdated: `${en_common.names.kieSandboxExtendedServices} is outdated. Click to update.`,
-        disconnected: `${en_common.names.kieSandboxExtendedServices} is disconnected.`,
+        connected: `${en_common.names.extendedServices} is connected.`,
+        install: `Setup ${en_common.names.extendedServices} to use this feature. Click to install.`,
+        outdated: `${en_common.names.extendedServices} is outdated. Click to update.`,
+        disconnected: `${en_common.names.extendedServices} is disconnected.`,
       },
     },
   },

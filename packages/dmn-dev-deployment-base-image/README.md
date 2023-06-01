@@ -75,3 +75,10 @@ After that you can start deploying to your local Kubernetes clusters or your Ope
 ### Create an image from the Containerfile and context path:
 
 - `pnpm create-test-image build-only -t quay.io/my-user/my-image-name:latest -f my/context/path/Containerfile -c my/context/path`
+
+## Custom branding
+
+The DMN Dev deployment base image can be customized to show your own logo by extending this image and overriding files.
+
+- **Header logo:** Override `/tmp/kogito/dmn-dev-deployment-quarkus-app/src/main/resources/META-INF/resources/images/app_logo_rgb_fullcolor_reverse.svg`. Fixed height of `38px`.
+- **Favicon:** Override `/tmp/kogito/dmn-dev-deployment-quarkus-app/src/main/resources/META-INF/resources/favicon.svg`

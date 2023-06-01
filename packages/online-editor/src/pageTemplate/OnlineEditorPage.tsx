@@ -22,7 +22,7 @@ import { useHistory } from "react-router";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { SettingsButton } from "../settings/SettingsButton";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
+import { ExtendedServicesIcon } from "../extendedServices/ExtendedServicesIcon";
 import { DevDeploymentsDropdown } from "../devDeployments/DevDeploymentsDropdown";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AccountsIcon } from "../accounts/AccountsIcon";
@@ -47,22 +47,9 @@ export function OnlineEditorPage(props: { children?: React.ReactNode; onKeyDown?
                   onClick={() => history.push({ pathname: routes.home.path({}) })}
                   style={{ textDecoration: "none" }}
                 >
-                  <Flex alignItems={{ default: "alignItemsCenter" }}>
-                    <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                      <Brand
-                        src={routes.static.images.kieHorizontalLogoReverse.path({})}
-                        alt={"Logo"}
-                        heights={{ default: "38px" }}
-                      >
-                        <source srcSet={routes.static.images.kieHorizontalLogoReverse.path({})} />
-                      </Brand>
-                    </FlexItem>
-                    <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                      <TextContent>
-                        <Text component={TextVariants.h3}>Sandbox</Text>
-                      </TextContent>
-                    </FlexItem>
-                  </Flex>
+                  <Brand src={routes.static.images.appLogoReverse.path({})} alt={"Logo"} heights={{ default: "38px" }}>
+                    <source srcSet={routes.static.images.appLogoReverse.path({})} />
+                  </Brand>
                 </MastheadBrand>
                 <AboutButton />
               </Flex>
@@ -77,7 +64,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode; onKeyDown?
                   </ToolbarItem>
                   <ToolbarItem variant="separator" />
                   <ToolbarItem>
-                    <KieSandboxExtendedServicesIcon />
+                    <ExtendedServicesIcon />
                   </ToolbarItem>
                   <ToolbarItem>
                     <SettingsButton />

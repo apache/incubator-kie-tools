@@ -17,12 +17,9 @@
 import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
-import {
-  DependentFeature,
-  useKieSandboxExtendedServices,
-} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { FeatureDependentExtendedServices } from "../../extendedServices/FeatureDependentOnExtendedServices";
+import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings } from "../../settings/SettingsContext";
@@ -35,8 +32,8 @@ interface Props {
   workspaceFile: WorkspaceFile;
 }
 
-export function KieSandboxExtendedServicesButtons(props: Props) {
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+export function ExtendedServicesButtons(props: Props) {
+  const extendedServices = useExtendedServices();
   const deployDropdownItems = useDeployDropdownItems({
     workspace: props.workspace,
     workspaceFile: props.workspaceFile,
@@ -46,26 +43,26 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
 
   const toggleDeployDropdown = useCallback(
     (isOpen: boolean) => {
-      if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+      if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
         openshift.setDeployDropdownOpen(isOpen);
         return;
       }
-      kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
-      kieSandboxExtendedServices.setModalOpen(true);
+      extendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
+      extendedServices.setModalOpen(true);
     },
-    [kieSandboxExtendedServices, openshift]
+    [extendedServices, openshift]
   );
 
   const isOpenShiftEnabled = useMemo(() => {
     return (
-      kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING &&
+      extendedServices.status === ExtendedServicesStatus.RUNNING &&
       settings.openshift.status === OpenShiftInstanceStatus.CONNECTED
     );
-  }, [kieSandboxExtendedServices.status, settings.openshift.status]);
+  }, [extendedServices.status, settings.openshift.status]);
 
   return (
     <>
-      <FeatureDependentOnKieSandboxExtendedServices isLight={true} position="top">
+      <FeatureDependentExtendedServices isLight={true} position="top">
         <Dropdown
           className={isOpenShiftEnabled ? "pf-m-active" : ""}
           onSelect={() => openshift.setDeployDropdownOpen(false)}
@@ -78,7 +75,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
           position={DropdownPosition.right}
           dropdownItems={deployDropdownItems}
         />
-      </FeatureDependentOnKieSandboxExtendedServices>
+      </FeatureDependentExtendedServices>
     </>
   );
 }

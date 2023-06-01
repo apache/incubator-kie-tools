@@ -25,8 +25,8 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
-import { DependentFeature, useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { DependentFeature, useExtendedServices } from "../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import CaretDownIcon from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
@@ -219,12 +219,10 @@ export function DevDeploymentsDropdown() {
             className={"kie-tools--masthead-hoverable-dark"}
           >
             <PficonSatelliteIcon
-              color={extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING ? "gray" : undefined}
+              color={extendedServices.status !== ExtendedServicesStatus.RUNNING ? "gray" : undefined}
             />
             &nbsp;&nbsp; Dev deployments &nbsp;&nbsp;
-            <CaretDownIcon
-              color={extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING ? "gray" : undefined}
-            />
+            <CaretDownIcon color={extendedServices.status !== ExtendedServicesStatus.RUNNING ? "gray" : undefined} />
           </ResponsiveDropdownToggle>
         }
         isOpen={devDeployments.isDeploymentsDropdownOpen}
@@ -232,7 +230,7 @@ export function DevDeploymentsDropdown() {
         className="kogito--editor__dev-deployments-dropdown"
         title="Dev deployments"
         dropdownItems={
-          extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
+          extendedServices.status !== ExtendedServicesStatus.RUNNING
             ? [
                 <DropdownItem
                   key="setup-extended-services"
@@ -256,7 +254,7 @@ export function DevDeploymentsDropdown() {
                           whiteSpace: "break-spaces",
                         }}
                       >
-                        {`Please setup KIE Sandbox Extended Services to be able to see your Dev deployments`}
+                        {`Please setup Extended Services to be able to see your Dev deployments`}
                       </Title>
                       <br />
                       <Button variant={ButtonVariant.link}>Setup...</Button>

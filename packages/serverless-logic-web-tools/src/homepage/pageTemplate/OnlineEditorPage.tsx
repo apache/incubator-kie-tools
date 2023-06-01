@@ -33,7 +33,7 @@ import { BarsIcon, ExclamationIcon } from "@patternfly/react-icons/dist/js/icons
 import { useMemo, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router";
 import { useLocation } from "react-router-dom";
-import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
+import { ExtendedServicesIcon } from "../../extendedServices/ExtendedServicesIcon";
 import { useRoutes } from "../../navigation/Hooks";
 import { SettingsPageNav } from "../../settings/uiNav/SettingsPageNav";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
@@ -87,7 +87,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
             <SettingsButton />
           </ToolbarItem>
           <ToolbarItem>
-            <KieSandboxExtendedServicesIcon />
+            <ExtendedServicesIcon />
           </ToolbarItem>
           {!isChromiumBased && (
             <ToolbarItem>
@@ -100,8 +100,8 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
               >
                 <ExclamationIcon
                   data-testid="not-chromium-icon"
-                  className="kogito--editor__kie-sandbox-extended-services-dropdown-icon-outdated static-opacity"
-                  id="kie-sandbox-extended-services-not-chromium-icon"
+                  className="kogito--editor__extended-services-dropdown-icon-outdated static-opacity"
+                  id="extended-services-not-chromium-icon"
                   style={{ cursor: "pointer" }}
                 />
               </Tooltip>

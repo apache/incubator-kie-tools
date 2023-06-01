@@ -17,27 +17,30 @@
 import * as React from "react";
 import { useContext } from "react";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
-import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
+import { ExtendedServicesClient } from "./ExtendedServicesClient";
+import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 
 export enum DependentFeature {
-  OPENSHIFT = "OPENSHIFT",
+  DMN_RUNNER = "DMN_RUNNER",
+  DEV_DEPLOYMENTS = "DMN_DEV_SANDBOX",
 }
 
-export interface KieSandboxExtendedServicesContextType {
-  status: KieSandboxExtendedServicesStatus;
-  setStatus: React.Dispatch<KieSandboxExtendedServicesStatus>;
+export interface ExtendedServicesContextType {
+  status: ExtendedServicesStatus;
+  setStatus: React.Dispatch<ExtendedServicesStatus>;
   config: ExtendedServicesConfig;
   saveNewConfig: React.Dispatch<ExtendedServicesConfig>;
+  client: ExtendedServicesClient;
   version: string;
   outdated: boolean;
   isModalOpen: boolean;
   setModalOpen: React.Dispatch<boolean>;
   installTriggeredBy?: DependentFeature;
-  setInstallTriggeredBy: React.Dispatch<React.SetStateAction<DependentFeature | undefined>>;
+  setInstallTriggeredBy: React.Dispatch<React.SetStateAction<DependentFeature>>;
 }
 
-export const KieSandboxExtendedServicesContext = React.createContext<KieSandboxExtendedServicesContextType>({} as any);
+export const ExtendedServicesContext = React.createContext<ExtendedServicesContextType>({} as any);
 
-export function useKieSandboxExtendedServices() {
-  return useContext(KieSandboxExtendedServicesContext);
+export function useExtendedServices() {
+  return useContext(ExtendedServicesContext);
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export enum KieSandboxExtendedServicesStatus {
+export enum ExtendedServicesStatus {
   AVAILABLE = "AVAILABLE",
   RUNNING = "RUNNING",
   NOT_RUNNING = "NOT_RUNNING",

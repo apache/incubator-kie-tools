@@ -27,4 +27,5 @@ export interface EnvJson {
   KIE_SANDBOX_AUTH_PROVIDERS: AuthProvider[];
   KIE_SANDBOX_ACCELERATORS: AcceleratorConfig[];
   KIE_SANDBOX_EDITORS: EditorConfig[];
+  KIE_SANDBOX_APP_NAME: string;
 }

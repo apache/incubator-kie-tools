@@ -37,9 +37,9 @@ export function SettingsPageNav(props: { pathname: string }) {
           <NavItem
             itemId={0}
             key={`Settings-kie_sandbox_extended_services-nav`}
-            isActive={props.pathname === routes.settings.kie_sandbox_extended_services.path({})}
+            isActive={props.pathname === routes.settings.extended_services.path({})}
           >
-            <Link to={routes.settings.kie_sandbox_extended_services.path({})}>KIE Sandbox Extended Services</Link>
+            <Link to={routes.settings.extended_services.path({})}>Extended Services</Link>
           </NavItem>
           <NavItem
             itemId={0}

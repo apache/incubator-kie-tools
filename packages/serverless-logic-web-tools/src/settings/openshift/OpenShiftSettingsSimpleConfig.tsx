@@ -35,8 +35,8 @@ import {
   KubernetesConnectionStatus,
 } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
-import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { DEV_MODE_FEATURE_NAME } from "../../openshift/swfDevMode/DevModeConstants";
 import { routes } from "../../navigation/Routes";
@@ -57,7 +57,7 @@ export function OpenShiftSettingsSimpleConfig() {
   const [config, setConfig] = useState(settings.openshift.config);
   const [isConfigValidated, setConfigValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const extendedServices = useExtendedServices();
   const [isDevModeConfigEnabled, setDevModeConfigEnabled] = useState(settings.openshift.isDevModeEnabled);
   const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
 
@@ -150,15 +150,14 @@ export function OpenShiftSettingsSimpleConfig() {
   return (
     <>
       <Form>
-        {kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
+        {extendedServices.status !== ExtendedServicesStatus.RUNNING && (
           <FormAlert>
             <Alert
               variant="danger"
               title={
                 <Text>
-                  Connect to{" "}
-                  <Link to={routes.settings.kie_sandbox_extended_services.path({})}>KIE Sandbox Extended Services</Link>{" "}
-                  before configuring your OpenShift instance
+                  Connect to <Link to={routes.settings.extended_services.path({})}>Extended Services</Link> before
+                  configuring your OpenShift instance
                 </Text>
               }
               aria-live="polite"
@@ -371,7 +370,7 @@ export function OpenShiftSettingsSimpleConfig() {
             onClick={onConnect}
             data-testid="save-config-button"
             isLoading={isConnecting}
-            isDisabled={kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING}
+            isDisabled={extendedServices.status !== ExtendedServicesStatus.RUNNING}
             spinnerAriaValueText={isConnecting ? "Loading" : undefined}
           >
             {isConnecting ? "Connecting" : "Connect"}

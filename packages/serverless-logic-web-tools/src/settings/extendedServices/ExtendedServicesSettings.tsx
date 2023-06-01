@@ -32,20 +32,20 @@ import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
-import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { setPageTitle } from "../../PageTitle";
 import { QuickStartIds } from "../../quickstarts-data";
-import { ExtendedServicesConfig, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
+import { ExtendedServicesConfig, useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsPageProps } from "../types";
 
-const PAGE_TITLE = "KIE Sandbox Extended Services";
+const PAGE_TITLE = "Extended Services";
 
-export function KieSandboxExtendedServicesSettings(props: SettingsPageProps) {
+export function ExtendedServicesSettings(props: SettingsPageProps) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
-  const [config, setConfig] = useState(settings.kieSandboxExtendedServices.config);
+  const extendedServices = useExtendedServices();
+  const [config, setConfig] = useState(settings.extendedServices.config);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
 
@@ -67,14 +67,14 @@ export function KieSandboxExtendedServicesSettings(props: SettingsPageProps) {
   );
 
   const onConnect = useCallback(() => {
-    settingsDispatch.kieSandboxExtendedServices.setConfig(config);
-  }, [settingsDispatch.kieSandboxExtendedServices, config]);
+    settingsDispatch.extendedServices.setConfig(config);
+  }, [settingsDispatch.extendedServices, config]);
 
   const onReset = useCallback(() => {
     const emptyConfig = new ExtendedServicesConfig("", "");
     setConfig(emptyConfig);
-    settingsDispatch.kieSandboxExtendedServices.setConfig(emptyConfig);
-  }, [settingsDispatch.kieSandboxExtendedServices]);
+    settingsDispatch.extendedServices.setConfig(emptyConfig);
+  }, [settingsDispatch.extendedServices]);
 
   const handleModalToggle = useCallback(() => {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
@@ -99,11 +99,11 @@ export function KieSandboxExtendedServicesSettings(props: SettingsPageProps) {
 
       <PageSection isFilled>
         <PageSection variant={"light"}>
-          {kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING ? (
+          {extendedServices.status === ExtendedServicesStatus.RUNNING ? (
             <EmptyState>
               <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
               <TextContent>
-                <Text component={"h2"}>You are connect to the KIE Sandbox Extended Services.</Text>
+                <Text component={"h2"}>You are connect to Extended Services.</Text>
               </TextContent>
               <EmptyStateBody>
                 Deploying models is <b>enabled</b>.
@@ -122,14 +122,14 @@ export function KieSandboxExtendedServicesSettings(props: SettingsPageProps) {
               <EmptyState>
                 <EmptyStateIcon icon={AddCircleOIcon} />
                 <TextContent>
-                  <Text component={"h2"}>You are not connected to KIE Sandbox Extended Services.</Text>
+                  <Text component={"h2"}>You are not connected to Extended Services.</Text>
                 </TextContent>
                 <EmptyStateBody>
-                  You currently have no KIE Sandbox Extended Services connections.{" "}
+                  You currently have no Extended Services connections.{" "}
                   <a
                     onClick={() => {
-                      kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
-                      kieSandboxExtendedServices.setModalOpen(true);
+                      extendedServices.setInstallTriggeredBy(undefined);
+                      extendedServices.setModalOpen(true);
                     }}
                   >
                     Click to setup
@@ -154,9 +154,7 @@ export function KieSandboxExtendedServicesSettings(props: SettingsPageProps) {
         <Modal
           title="Add connection"
           isOpen={
-            isModalOpen &&
-            kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING &&
-            !kieSandboxExtendedServices.isModalOpen
+            isModalOpen && extendedServices.status !== ExtendedServicesStatus.RUNNING && !extendedServices.isModalOpen
           }
           onClose={handleModalToggle}
           variant={ModalVariant.large}
@@ -168,11 +166,11 @@ export function KieSandboxExtendedServicesSettings(props: SettingsPageProps) {
                 variant="danger"
                 title={
                   <Text>
-                    You are not connected to KIE Sandbox Extended Services.{" "}
+                    You are not connected to Extended Services.{" "}
                     <a
                       onClick={() => {
-                        kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
-                        kieSandboxExtendedServices.setModalOpen(true);
+                        extendedServices.setInstallTriggeredBy(undefined);
+                        extendedServices.setModalOpen(true);
                       }}
                     >
                       Click to setup
@@ -187,7 +185,7 @@ export function KieSandboxExtendedServicesSettings(props: SettingsPageProps) {
               <FormGroup
                 label={"Host"}
                 labelIcon={
-                  <Popover bodyContent={"The host associated with the KIE Sandbox Extended Services URL instance."}>
+                  <Popover bodyContent={"The host associated with the Extended Services URL instance."}>
                     <button
                       type="button"
                       aria-label="More info for host field"
@@ -226,9 +224,7 @@ export function KieSandboxExtendedServicesSettings(props: SettingsPageProps) {
               <FormGroup
                 label={"Port"}
                 labelIcon={
-                  <Popover
-                    bodyContent={"The port number associated with the KIE Sandbox Extended Services URL instance."}
-                  >
+                  <Popover bodyContent={"The port number associated with the Extended Services URL instance."}>
                     <button
                       type="button"
                       aria-label="More info for port field"
@@ -288,9 +284,6 @@ export function KieSandboxExtendedServicesSettings(props: SettingsPageProps) {
                   onClick={onConnect}
                   data-testid="connect-config-button"
                 >
-                  Connect
-                </Button>
-                <Button key="cancel" variant="link" onClick={handleModalToggle} data-testid="connect-cancel-button">
                   Connect
                 </Button>
               </ActionGroup>

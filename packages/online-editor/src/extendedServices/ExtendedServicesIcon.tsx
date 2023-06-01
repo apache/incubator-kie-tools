@@ -14,82 +14,79 @@
  * limitations under the License.
  */
 
-import * as React from "react";
 import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
+import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 import { ConnectedIcon } from "@patternfly/react-icons/dist/js/icons/connected-icon";
 import { DisconnectedIcon } from "@patternfly/react-icons/dist/js/icons/disconnected-icon";
-import { useKieSandboxExtendedServices } from "./KieSandboxExtendedServicesContext";
-import { useAppI18n } from "../i18n";
-import { routes } from "../navigation/Routes";
-import { useHistory } from "react-router";
+import { useExtendedServices } from "./ExtendedServicesContext";
+import { useOnlineI18n } from "../i18n";
+import { useSettingsDispatch } from "../settings/SettingsContext";
+import { SettingsTabs } from "../settings/SettingsModalBody";
 
-export function KieSandboxExtendedServicesIcon() {
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
-  const { i18n } = useAppI18n();
-  const history = useHistory();
+export function ExtendedServicesIcon() {
+  const extendedServices = useExtendedServices();
+  const { i18n } = useOnlineI18n();
+  const settingsDispatch = useSettingsDispatch();
 
-  const toggleKieSandboxExtendedServices = useCallback(() => {
-    if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
-      history.push(routes.settings.kie_sandbox_extended_services.path({}));
-    }
+  const toggleExtendedServices = useCallback(() => {
+    settingsDispatch.open(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES);
 
-    if (!kieSandboxExtendedServices.outdated) {
+    if (!extendedServices.outdated) {
       return;
     }
-    kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
-    kieSandboxExtendedServices.setModalOpen(true);
-  }, [kieSandboxExtendedServices, history]);
+    extendedServices.setModalOpen(true);
+  }, [settingsDispatch, extendedServices]);
 
   const dropdownToggleIcon = useMemo(
     () => (
       <>
-        {kieSandboxExtendedServices.outdated && (
+        {extendedServices.outdated && (
           <Tooltip
             className="kogito--editor__light-tooltip"
             key={"outdated"}
-            content={i18n.kieSandboxExtendedServices.dropdown.tooltip.outdated}
+            content={i18n.extendedServices.dropdown.tooltip.outdated}
             flipBehavior={["left"]}
             distance={20}
           >
             <ExclamationTriangleIcon
               data-testid="outdated-icon"
-              className="kogito--editor__kie-sandbox-extended-services-dropdown-icon-outdated static-opacity"
-              id="kie-sandbox-extended-services-outdated-icon"
+              className="kogito--editor__extended-services-dropdown-icon-outdated static-opacity"
+              id="extended-services-outdated-icon"
             />
           </Tooltip>
         )}
-        {!kieSandboxExtendedServices.outdated && (
+        {!extendedServices.outdated && (
           <>
-            {kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING ? (
+            {extendedServices.status === ExtendedServicesStatus.RUNNING ? (
               <Tooltip
                 className="kogito--editor__light-tooltip"
                 key={"connected"}
-                content={i18n.kieSandboxExtendedServices.dropdown.tooltip.connected}
+                content={i18n.extendedServices.dropdown.tooltip.connected}
                 flipBehavior={["left"]}
                 distance={20}
               >
                 <ConnectedIcon
                   data-testid="connected-icon"
-                  className="kogito--editor__kie-sandbox-extended-services-dropdown-icon-connected blink-opacity"
-                  id="kie-sandbox-extended-services-connected-icon"
+                  className="kogito--editor__extended-services-dropdown-icon-connected blink-opacity"
+                  id="extended-services-connected-icon"
                 />
               </Tooltip>
             ) : (
               <Tooltip
                 className="kogito--editor__light-tooltip"
                 key={"disconnected"}
-                content={i18n.kieSandboxExtendedServices.dropdown.tooltip.disconnected}
+                content={i18n.extendedServices.dropdown.tooltip.disconnected}
                 flipBehavior={["left"]}
                 distance={20}
               >
                 <DisconnectedIcon
                   data-testid="disconnected-icon"
                   className="static-opacity"
-                  id="kie-sandbox-extended-services-disconnected-icon"
+                  id="extended-services-disconnected-icon"
                 />
               </Tooltip>
             )}
@@ -97,18 +94,18 @@ export function KieSandboxExtendedServicesIcon() {
         )}
       </>
     ),
-    [i18n, kieSandboxExtendedServices.outdated, kieSandboxExtendedServices.status]
+    [i18n, extendedServices.outdated, extendedServices.status]
   );
 
   return (
     <Dropdown
       toggle={
         <DropdownToggle
-          id="kie-sandbox-extended-services-button"
+          id="extended-services-button"
           toggleIndicator={null}
-          onToggle={toggleKieSandboxExtendedServices}
+          onToggle={toggleExtendedServices}
           className="kie-tools--masthead-hoverable-dark"
-          data-testid="kie-sandbox-extended-services-button"
+          data-testid="extended-services-button"
         >
           {dropdownToggleIcon}
         </DropdownToggle>

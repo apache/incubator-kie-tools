@@ -44,25 +44,25 @@ module.exports = composeEnv(
         default: undefined,
         description: "Google Tag Manager ID for Analytics",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux: {
+      SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlLinux: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
-        description: "Download URL for getting KIE Sandbox Extended Services (Linux)",
+        description: "Download URL for getting Extended Services (Linux)",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs: {
+      SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlMacOs: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
-        description: "Download URL for getting KIE Sandbox Extended Services (macOS)",
+        description: "Download URL for getting Extended Services (macOS)",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlWindows: {
+      SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlWindows: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
-        description: "Download URL for getting KIE Sandbox Extended Services (Windows)",
+        description: "Download URL for getting Extended Services (Windows)",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesUrl: {
+      SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesUrl: {
         default: `http://localhost:${extendedServicesEnv.env.extendedServices.port}`,
-        description: "Base URL to access KIE Sandbox Extended Services",
+        description: "Base URL to access Extended Services",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion: {
+      SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesCompatibleVersion: {
         default: version,
-        description: "Compatible version to run KIE Sandbox Extended Services",
+        description: "Compatible version to run Extended Services",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag: {
         default: "latest",
@@ -113,15 +113,13 @@ module.exports = composeEnv(
           swfDevModeImage: {
             tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag),
           },
-          kieSandboxExtendedServices: {
-            url: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesUrl),
-            compatibleVersion: getOrDefault(
-              this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion
-            ),
+          extendedServices: {
+            url: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesUrl),
+            compatibleVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesCompatibleVersion),
             downloadUrl: {
-              linux: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux),
-              macOs: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs),
-              windows: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlWindows),
+              linux: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlLinux),
+              macOs: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlMacOs),
+              windows: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlWindows),
             },
           },
           gitCorsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl),

@@ -27,8 +27,8 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import { useCallback, useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
-import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { routes } from "../../navigation/Routes";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { setPageTitle } from "../../PageTitle";
@@ -44,7 +44,7 @@ export function OpenShiftSettings(props: SettingsPageProps) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
+  const extendedServices = useExtendedServices();
 
   const handleModalToggle = useCallback(() => {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
@@ -84,22 +84,21 @@ export function OpenShiftSettings(props: SettingsPageProps) {
       </PageSection>
 
       <PageSection>
-        {kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
+        {extendedServices.status !== ExtendedServicesStatus.RUNNING && (
           <>
             <Alert
               variant="danger"
               title={
                 <Text>
-                  Connect to{" "}
-                  <Link to={routes.settings.kie_sandbox_extended_services.path({})}>KIE Sandbox Extended Services</Link>{" "}
-                  before configuring your OpenShift instance
+                  Connect to <Link to={routes.settings.extended_services.path({})}>Extended Services</Link> before
+                  configuring your OpenShift instance
                 </Text>
               }
               aria-live="polite"
               isInline
             >
-              KIE Sandbox Extended Services is necessary for proxying Serverless Logic Web Tools requests to OpenShift,
-              thus making it possible to deploy models.
+              Extended Services is necessary for proxying Serverless Logic Web Tools requests to OpenShift, thus making
+              it possible to deploy models.
             </Alert>
             <br />
           </>
@@ -154,7 +153,7 @@ export function OpenShiftSettings(props: SettingsPageProps) {
           title="Add connection"
           isOpen={
             isModalOpen &&
-            kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.STOPPED &&
+            extendedServices.status !== ExtendedServicesStatus.STOPPED &&
             (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED ||
               settings.openshift.status === OpenShiftInstanceStatus.EXPIRED)
           }

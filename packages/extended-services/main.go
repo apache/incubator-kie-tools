@@ -30,7 +30,7 @@ import (
 var jitexecutor []byte
 
 func main() {
-	port := flag.String("p", metadata.Port, "KIE Sandbox Extended Services Port")
+	port := flag.String("p", metadata.Port, "Extended Services Port")
 	flag.Parse()
 
 	server := pkg.NewProxy(*port, jitexecutor)
