@@ -50,7 +50,6 @@ import { UnitablesInputsConfigs } from "@kie-tools/unitables/dist/UnitablesTypes
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useOnlineI18n } from "../i18n";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { diff } from "deep-object-diff";
 import { useCompanionFsFileSyncedWithWorkspaceFile } from "../companionFs/CompanionFsHooks";
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { DmnRunnerPersistenceReducerActionType } from "../dmnRunnerPersistence/DmnRunnerPersistenceTypes";
@@ -69,9 +68,7 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import getObjectValueByPath from "lodash/get";
-import setObjectValueByPath from "lodash/set";
 import unsetObjectValueByPath from "lodash/unset";
-import { dereferenceProperties } from "../jsonSchema/dereference";
 
 const JSON_SCHEMA_INPUT_SET_PATH = "definitions.InputSet.properties";
 
@@ -553,99 +550,29 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     )
   );
 
-  const dereferenceExtendedServicesJsonSchema = useCallback(
-    (jsonSchema: ExtendedServicesDmnJsonSchema): ExtendedServicesDmnJsonSchema => {
-      const inputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.InputSet?.properties ?? {});
-      const outputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.OutputSet?.properties ?? {});
-      return {
-        $ref: "#/definitions/InputSet",
-        definitions: {
-          InputSet: { properties: inputSet, type: "object" },
-          OutputSet: { properties: outputSet, type: "object" },
-        },
-      };
-    },
-    []
-  );
-
-  const recursivilyEraseItems = useCallback(
-    <T extends Record<string, any>>(inputs: T, paths: string[], path?: string, pathIndex?: number) => {
-      const currentPathIndex = pathIndex ?? 0;
-      const currentPath = path ?? paths[currentPathIndex];
-      const item = getObjectValueByPath(inputs, currentPath) as Array<Record<string, any>> | undefined;
-      item?.forEach((_, index) => {
-        // last element;
-        if (currentPathIndex === paths.length - 1) {
-          unsetObjectValueByPath(inputs, currentPath);
-        } else {
-          // Check if next path element contains ".items"
-          const nextElement = paths[currentPathIndex + 1].includes(".items")
-            ? paths[currentPathIndex + 1].split(".items").join("")
-            : paths[currentPathIndex + 1];
-
-          // Increments currentPathIndex, and add index
-          const newPath = `${paths[currentPathIndex]}.${index}.${nextElement}`;
-          recursivilyEraseItems(inputs, paths, newPath, currentPathIndex + 1);
-        }
-      });
-    },
-    []
-  );
-
-  // Unset changed and/or removed types
-  // Set to undefined changed formats;
-  const handleJsonSchemaDifferences = useCallback(
-    <T extends Record<string, any>>(inputs: T, propertiesDifference: Record<string, any>, parentKey?: string): T => {
-      const checkIfPropertyExistsOrIsUndefined = <T extends Record<string, any>>(value: T, property: keyof T) => {
-        return (
-          !Object.prototype.hasOwnProperty.call(value, property) ||
-          (Object.prototype.hasOwnProperty.call(value, property) && value[property] === undefined)
-        );
-      };
-
-      return Object.entries(propertiesDifference).reduce((inputs, [propertyKey, propertyValue]: [string, any]) => {
-        if (propertyKey === "properties" && propertyValue !== undefined) {
-          return handleJsonSchemaDifferences(inputs, propertyValue, parentKey);
-        }
-
-        const fullKey = parentKey ? `${parentKey}.${propertyKey}` : propertyKey;
-        if (
-          propertyValue !== null &&
-          typeof propertyValue === "object" &&
-          checkIfPropertyExistsOrIsUndefined(propertyValue, "type") &&
-          checkIfPropertyExistsOrIsUndefined(propertyValue, "format") &&
-          checkIfPropertyExistsOrIsUndefined(propertyValue, "x-dmn-type")
-        ) {
-          // not leaf;
-          return handleJsonSchemaDifferences(inputs, propertyValue, fullKey);
-        }
-
-        if (propertyKey === "items" || propertyValue?.items) {
-          const itemsInTheMiddleOfPath = fullKey.split(".items.");
-          // Without any .items.
-          if (itemsInTheMiddleOfPath.length === 1) {
-            const itemsInTheEndOfPath = fullKey.split(".items").join("");
-            unsetObjectValueByPath(inputs, itemsInTheEndOfPath);
-          } else {
-            recursivilyEraseItems(inputs, itemsInTheMiddleOfPath);
+  const removeChangedPropertiesAndAdditionalProperties = useCallback(
+    <T extends ((obj: Record<string, any>) => boolean) & { errors: [{ keyword: string; dataPath: string }] }>(
+      validator: T,
+      toValidate: Record<string, any>
+    ) => {
+      const validation = validator(toValidate);
+      if (!validation && validator.errors) {
+        validator.errors.forEach((error) => {
+          if (error.keyword === "required") {
+            return;
           }
-          return inputs;
-        }
 
-        if (!propertyValue || propertyValue?.type || propertyValue?.["x-dmn-type"]) {
-          unsetObjectValueByPath(inputs, fullKey);
-          return inputs;
-        }
+          const pathList = error.dataPath
+            .replace(/\['([^']+)'\]/g, "$1")
+            .replace(/\[(\d+)\]/g, ".$1")
+            .split(".");
 
-        if (propertyValue?.format) {
-          setObjectValueByPath(inputs, fullKey, undefined);
-          return inputs;
-        }
-
-        return inputs;
-      }, inputs);
+          const path = pathList.length === 1 ? pathList.join(".") : pathList.slice(0, -1).join(".");
+          unsetObjectValueByPath(toValidate, path);
+        });
+      }
     },
-    [recursivilyEraseItems]
+    []
   );
 
   // Responsible to set the JSON schema based on the DMN model;
@@ -674,28 +601,32 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               }
 
               setJsonSchema((previousJsonSchema) => {
-                const derefereredJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
+                // const derefereredJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
                 // On the first render the previous will be undefined;
                 if (!previousJsonSchema) {
-                  return derefereredJsonSchema;
+                  return jsonSchema;
                 }
 
-                const propertiesDifference = diff(
-                  getObjectValueByPath(previousJsonSchema, JSON_SCHEMA_INPUT_SET_PATH) ?? {},
-                  getObjectValueByPath(derefereredJsonSchema, JSON_SCHEMA_INPUT_SET_PATH) ?? {}
-                );
+                const validateInputs = dmnRunnerAjv.compile(jsonSchema);
 
                 // Add default values and delete changed data types;
                 setDmnRunnerPersistenceJson({
-                  newConfigInputs: (previousConfigInputs) =>
-                    handleJsonSchemaDifferences(cloneDeep(previousConfigInputs), propertiesDifference),
-                  newInputsRow: (previousInputs) =>
-                    cloneDeep(previousInputs).map((inputs) =>
-                      handleJsonSchemaDifferences(inputs, propertiesDifference)
-                    ),
+                  newConfigInputs: (previousConfigInputs) => {
+                    const newConfigInputs = cloneDeep(previousConfigInputs);
+                    removeChangedPropertiesAndAdditionalProperties(validateInputs as any, newConfigInputs);
+                    return newConfigInputs;
+                  },
+                  newInputsRow: (previousInputs) => {
+                    return cloneDeep(previousInputs).map((input) => {
+                      const id = input.id;
+                      removeChangedPropertiesAndAdditionalProperties(validateInputs as any, input);
+                      input.id = id;
+                      return input;
+                    });
+                  },
                   cancellationToken: canceled,
                 });
-                return derefereredJsonSchema;
+                return jsonSchema;
               });
             });
           })
@@ -705,12 +636,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           });
       },
       [
-        dereferenceExtendedServicesJsonSchema,
+        dmnRunnerAjv,
         extendedServices.client,
         extendedServices.status,
         extendedServicesModelPayload,
-        handleJsonSchemaDifferences,
         props.workspaceFile.extension,
+        removeChangedPropertiesAndAdditionalProperties,
         setDmnRunnerPersistenceJson,
       ]
     )
