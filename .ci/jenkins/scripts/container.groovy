@@ -1,11 +1,11 @@
 containerOpenshift = null
 
 containerEngine = 'docker'
-containerTlsOptions = ''
+containerEngineTlsOptions = ''
 
 void pullImage(String image) {
     retry(env.MAX_REGISTRY_RETRIES ?: 1) {
-        sh "${containerEngine} pull ${containerTlsOptions} ${image}"
+        sh "${containerEngine} pull ${containerEngineTlsOptions} ${image}"
     }
 }
 
@@ -15,20 +15,20 @@ void tagImage(String oldImage, String newImage) {
 
 void pushImage(String image) {
     retry(env.MAX_REGISTRY_RETRIES ?: 1) {
-        sh "${containerEngine} push ${containerTlsOptions} ${image}"
+        sh "${containerEngine} push ${containerEngineTlsOptions} ${image}"
     }
 }
 
 void loginContainerRegistry(String registry, String credsId) {
     withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
-        sh "${containerEngine} login ${containerTlsOptions} -u ${REGISTRY_USER} -p ${REGISTRY_PWD} ${registry}"
+        sh "${containerEngine} login ${containerEngineTlsOptions} -u ${REGISTRY_USER} -p ${REGISTRY_PWD} ${registry}"
     }
 }
 
 void loginOpenshiftRegistry() {
     containerOpenshift.loginOpenshift()
     // username can be anything. See https://docs.openshift.com/container-platform/4.4/registry/accessing-the-registry.html#registry-accessing-directly_accessing-the-registry
-    sh "set +x && ${containerEngine} login ${containerTlsOptions} -u anything -p \$(oc whoami -t) ${containerOpenshift.getOpenshiftRegistry()}"
+    sh "set +x && ${containerEngine} login ${containerEngineTlsOptions} -u anything -p \$(oc whoami -t) ${containerOpenshift.getOpenshiftRegistry()}"
 }
 
 return this

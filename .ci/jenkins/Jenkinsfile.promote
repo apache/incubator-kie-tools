@@ -6,7 +6,7 @@ helper = null
 
 pipeline {
     agent {
-        label 'kie-rhel8 && !built-in'
+        label 'kie-rhel8 && podman && !built-in'
     }
 
     options {
@@ -14,14 +14,12 @@ pipeline {
         timestamps()
     }
 
-    // parameters {
-    // For parameters, check into ./dsl/jobs.groovy file
-    // }
-
     environment {
-        // Static env is defined into ./dsl/jobs.groovy file
-
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
+        // Linked to node label
+        CONTAINER_ENGINE='podman'
+        CONTAINER_ENGINE_TLS_OPTIONS='--tls-verify=false'
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
         GITHUB_REPO = "${REPO_NAME}" // for github-release cli

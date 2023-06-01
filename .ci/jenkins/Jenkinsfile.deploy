@@ -6,7 +6,7 @@ commitDone = false
 
 pipeline {
     agent {
-        label 'kie-rhel8 && kie-mem16g && !built-in'
+        label 'kie-rhel8 && podman && kie-mem16g && !built-in'
     }
 
     options {
@@ -21,6 +21,10 @@ pipeline {
     environment {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
         
+        // Linked to node label
+        CONTAINER_ENGINE='podman'
+        CONTAINER_ENGINE_TLS_OPTIONS='--tls-verify=false'
+
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
     }
 

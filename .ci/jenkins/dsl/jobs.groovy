@@ -64,8 +64,6 @@ void setupDeployJob(JobType jobType) {
         GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
 
         OPERATOR_IMAGE_NAME: 'kogito-serverless-operator',
-        CONTAINER_ENGINE: 'podman',
-        CONTAINER_TLS_OPTIONS: '--tls-verify=false',
         MAX_REGISTRY_RETRIES: 3,
         OPENSHIFT_API_KEY: 'OPENSHIFT_API',
         OPENSHIFT_CREDS_KEY: 'OPENSHIFT_CREDS',
@@ -101,9 +99,6 @@ void setupPromoteJob(JobType jobType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-serverless-operator-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Serverless Cloud Operator Promote')
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-
-        CONTAINER_ENGINE: 'podman',
-        CONTAINER_TLS_OPTIONS: '--tls-verify=false',
         MAX_REGISTRY_RETRIES: 3,
         PROPERTIES_FILE_NAME: 'deployment.properties',
 

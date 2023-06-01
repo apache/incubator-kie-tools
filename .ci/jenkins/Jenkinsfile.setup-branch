@@ -5,7 +5,7 @@ testsFailed = false
 
 pipeline {
     agent {
-        label 'kie-rhel8 && !built-in'
+        label 'rhel8 && !built-in'
     }
 
     tools {
