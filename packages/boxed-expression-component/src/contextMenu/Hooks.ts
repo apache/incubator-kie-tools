@@ -20,8 +20,8 @@ import { useBoxedExpressionEditor } from "../expressions/BoxedExpressionEditor/B
 import { NavigationKeysUtils } from "../keysUtils";
 
 export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<HTMLDivElement | null>): {
-  xPos: string;
-  yPos: string;
+  xPos: number;
+  yPos: number;
   isOpen: boolean;
 } {
   const { setCurrentlyOpenContextMenu, currentlyOpenContextMenu, editorRef, scrollableParentRef } =
@@ -29,7 +29,6 @@ export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<H
 
   const [scroll, setScroll] = useState({ x: 0, y: 0 });
 
-  // FIXME: Need to calculate the context menu length for it to not be hidden by the borders of the screen (https://github.com/kiegroup/kie-issues/issues/168).
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const [isOpen, setOpen] = useState(false);
@@ -127,8 +126,8 @@ export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<H
   }, [domEventTargetRef, hide, currentlyOpenContextMenu, isOpen, show]);
 
   return {
-    xPos: `${position.x - scroll.x + 1}px`, // Leave some margin for clicking without moving the mouse.
-    yPos: `${position.y - scroll.y + 1}px`, // Leave some margin for clicking without moving the mouse.
+    xPos: position.x - scroll.x + 1, // Leave some margin for clicking without moving the mouse.
+    yPos: position.y - scroll.y + 1, // Leave some margin for clicking without moving the mouse.
     isOpen,
   };
 }

@@ -20,8 +20,8 @@ import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import BlueprintIcon from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
 import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
-import { BeeTableOperation, BeeTableOperationConfig, BeeTableOperationGroup } from "../../api";
+import { useCallback, useLayoutEffect, useMemo } from "react";
+import { BeeTableOperation, BeeTableOperationConfig } from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu/Hooks";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
@@ -262,19 +262,46 @@ export function BeeTableContextMenuHandler({
     ]
   );
 
+  const contextMenuContainerDiv = React.createRef<HTMLDivElement>();
+
   const { xPos, yPos, isOpen } = useCustomContextMenuHandler(tableRef);
 
   const style = useMemo(() => {
     return {
-      top: yPos,
-      left: xPos,
+      top: yPos + "px",
+      left: xPos + "px",
     };
   }, [xPos, yPos]);
+
+  useLayoutEffect(() => {
+    if (contextMenuContainerDiv.current) {
+      const bounds = contextMenuContainerDiv.current.getBoundingClientRect();
+      const contextMenuHeight = bounds.height;
+      const availableHeight = document.documentElement.clientHeight;
+      if (contextMenuHeight <= availableHeight && contextMenuHeight + yPos > availableHeight) {
+        const offset = contextMenuHeight + yPos - availableHeight;
+        contextMenuContainerDiv.current.style.top = yPos - offset + "px";
+        contextMenuContainerDiv.current.style.left = xPos + 2 + "px";
+      }
+
+      const contextMenuWidth = bounds.width;
+      const availableWidth = document.documentElement.clientWidth;
+      if (contextMenuWidth <= availableWidth && contextMenuWidth + xPos > availableWidth) {
+        const offset = contextMenuWidth + xPos - availableWidth;
+        contextMenuContainerDiv.current.style.left = xPos - offset - 2 + "px";
+      }
+    }
+  });
 
   return (
     <>
       {isOpen && (
-        <div className="context-menu-container" style={style} onMouseDown={(e) => e.stopPropagation()}>
+        <div
+          className="context-menu-container"
+          style={style}
+          onMouseDown={(e) => e.stopPropagation()}
+          ref={contextMenuContainerDiv}
+        >
           <Menu
             ouiaId="expression-table-context-menu"
             className="table-context-menu"
