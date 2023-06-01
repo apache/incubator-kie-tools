@@ -39,6 +39,7 @@ import {
   ExtendedServicesModelPayload,
   DmnInputFieldProperties,
 } from "@kie-tools/extended-services-api";
+import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
@@ -72,7 +73,7 @@ import setObjectValueByPath from "lodash/set";
 import unsetObjectValueByPath from "lodash/unset";
 import { dereferenceProperties } from "../jsonSchema/dereference";
 
-const JSON_SCHEMA_PROPERTIES_PATH = "definitions.InputSet.properties";
+const JSON_SCHEMA_INPUT_SET_PATH = "definitions.InputSet.properties";
 
 interface Props {
   isEditorReady?: boolean;
@@ -158,6 +159,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [dmnRunnerPersistenceJson?.configs?.inputs]
   );
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
+  const ajv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
 
   useLayoutEffect(() => {
     if (props.isEditorReady) {
@@ -427,7 +429,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [setDmnRunnerPersistenceJson]
   );
 
-  const getFieldDefaultValue = useCallback((dmnField: DmnInputFieldProperties) => {
+  const getFieldDefaultValue = useCallback((dmnField: DmnInputFieldProperties):
+    | string
+    | boolean
+    | []
+    | object
+    | undefined => {
     if (dmnField?.type === "string") {
       return "";
     }
@@ -448,7 +455,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
   const getDefaultValues = useCallback(
     (jsonSchema: ExtendedServicesDmnJsonSchema) => {
-      return Object.entries(getObjectValueByPath(jsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {})?.reduce(
+      return Object.entries(getObjectValueByPath(jsonSchema, JSON_SCHEMA_INPUT_SET_PATH) ?? {})?.reduce(
         (acc, [key, field]: [string, Record<string, string>]) => {
           acc[key] = getFieldDefaultValue(field);
           return acc;
@@ -478,18 +485,22 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           );
 
           // Remove incompatible values and add default values;
-          const jsonSchemaProperties = getObjectValueByPath(jsonSchema, JSON_SCHEMA_PROPERTIES_PATH);
+          const jsonSchemaProperties = getObjectValueByPath(jsonSchema, JSON_SCHEMA_INPUT_SET_PATH);
           if (jsonSchemaProperties) {
-            Object.entries(jsonSchemaProperties).forEach(
-              ([propertyName, dmnField]: [string, DmnInputFieldProperties]) => {
-                dmnRunnerPersistenceJson.inputs.forEach((input) => {
-                  // if the input has the property name, its value should match the property attribute type/format;
-                  if (input[propertyName] && typeof input[propertyName] !== (dmnField.type ?? "string")) {
-                    input[propertyName] = getFieldDefaultValue(dmnField);
-                  }
-                });
-              }
-            );
+            try {
+              const validate = ajv.compile(jsonSchema);
+              dmnRunnerPersistenceJson.inputs.forEach((input) => {
+                const validation = validate(input);
+                if (!validation && validate.errors) {
+                  validate.errors.forEach((error) => {
+                    const path = error.instancePath.split("/").slice(1).join(".");
+                    unsetObjectValueByPath(input, path);
+                  });
+                }
+              });
+            } catch (error) {
+              console.debug("DMN RUNNER AJV:", error);
+            }
           }
 
           setDmnRunnerPersistenceJson({
@@ -529,7 +540,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         }
         return;
       },
-      [dmnRunnerPersistenceService, getFieldDefaultValue, getDefaultValues, jsonSchema, setDmnRunnerPersistenceJson]
+      [ajv, dmnRunnerPersistenceService, getDefaultValues, jsonSchema, setDmnRunnerPersistenceJson]
     )
   );
 
@@ -600,7 +611,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           return handleJsonSchemaDifferences(inputs, propertyValue, fullKey);
         }
 
-        if (propertyKey === "items" || propertyValue.items) {
+        if (propertyKey === "items" || propertyValue?.items) {
           const itemsInTheMiddleOfPath = fullKey.split(".items.");
           // Without any .items.
           if (itemsInTheMiddleOfPath.length === 1) {
@@ -654,15 +665,15 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               }
 
               setJsonSchema((previousJsonSchema) => {
-                const derefererJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
+                const derefereredJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
                 // On the first render the previous will be undefined;
                 if (!previousJsonSchema) {
-                  return derefererJsonSchema;
+                  return derefereredJsonSchema;
                 }
 
                 const propertiesDifference = diff(
-                  getObjectValueByPath(previousJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {},
-                  getObjectValueByPath(derefererJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {}
+                  getObjectValueByPath(previousJsonSchema, JSON_SCHEMA_INPUT_SET_PATH) ?? {},
+                  getObjectValueByPath(derefereredJsonSchema, JSON_SCHEMA_INPUT_SET_PATH) ?? {}
                 );
 
                 // Add default values and delete changed data types;
@@ -675,7 +686,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                     ),
                   cancellationToken: canceled,
                 });
-                return derefererJsonSchema;
+                return derefereredJsonSchema;
               });
             });
           })

@@ -18,6 +18,8 @@ import { get as getObjectValueByPath, set as setObjectValueByPath } from "lodash
 
 interface RefProperty {
   $ref?: string;
+  items?: Record<string, any>;
+  type?: string;
 }
 
 function getItemsFullKey(fieldKey: string) {
@@ -66,6 +68,8 @@ export function dereferenceProperties<
 
   if (properties !== null && typeof properties === "object" && properties.$ref && dereferencedJsonSchema && parentKey) {
     const referenceField = getObjectValueByPath(jsonSchema, refPathToObjectPath(properties.$ref));
+
+    addMissingPropertyToField(referenceField);
     setObjectValueByPath(dereferencedJsonSchema, parentKey, referenceField);
     if (referenceField.properties) {
       return dereferenceProperties(
@@ -93,6 +97,7 @@ export function dereferenceProperties<
         referenceField = getObjectValueByPath(jsonSchema, refPathToObjectPath(referenceField.$ref));
       }
 
+      addMissingPropertyToField(referenceField);
       setObjectValueByPath(dereferencedJsonSchema, getFullKey(fieldKey, parentKey), referenceField);
       if (referenceField.properties) {
         dereferenceProperties(
@@ -111,8 +116,15 @@ export function dereferenceProperties<
         );
       }
     } else {
+      addMissingPropertyToField(jsonSchemaField);
       setObjectValueByPath(dereferencedJsonSchema, getFullKey(fieldKey, parentKey), jsonSchemaField);
     }
     return dereferencedJsonSchema;
   }, dereferencedJsonSchema ?? ({} as Record<string, any>));
+}
+
+function addMissingPropertyToField(field: Record<string, any>) {
+  if (field.items && !field.properties && !field.items.type && !field.items.$ref) {
+    field.maxItems = 0;
+  }
 }

@@ -5234,6 +5234,9 @@ importers:
       "@kie-tools/dmn-language-service":
         specifier: workspace:*
         version: link:../dmn-language-service
+      "@kie-tools/dmn-runner":
+        specifier: workspace:*
+        version: link:../dmn-runner
       "@kie-tools/emscripten-fs":
         specifier: ^0.0.2
         version: 0.0.2
