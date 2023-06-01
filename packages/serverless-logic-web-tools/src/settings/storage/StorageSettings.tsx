@@ -15,7 +15,6 @@
  */
 
 import React from "react";
-import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { Alert, AlertActionCloseButton, Button } from "@patternfly/react-core/dist/js";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Form } from "@patternfly/react-core/dist/js/components/Form";
@@ -42,9 +41,9 @@ const DELETE_ALERT_DELAY = 5;
  * Delete all indexed DBs
  */
 const deleteAllIndexedDBs = async () => {
-  Promise.all(
-    (await indexedDB.databases()).filter((db) => db.name).map(async (db) => indexedDB.deleteDatabase(db.name!))
-  );
+  (await window.indexedDB.databases())
+    .filter((db) => db.name)
+    .forEach((db) => window.indexedDB.deleteDatabase(db.name!));
 };
 
 function Timer(props: { delay: number }) {
