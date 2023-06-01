@@ -15,7 +15,7 @@
  */
 
 const DeployDefaults = {
-  ENV: 'MAVEN_OPTS="-Xmx352m -Xms128m" JAVA_OPTS="-Xmx352m -Xms128m"',
+  ENV: 'MAVEN_OPTS="-Xmx512m -Xms128m" JAVA_OPTS="-Xmx512m -Xms128m"',
 };
 
 // Refers to `serverless-logic-web-tools-swf-builder-image`

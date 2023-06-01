@@ -20,6 +20,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -42,7 +44,7 @@ func checkJava() error {
 	version, err := javaCheck.CombinedOutput()
 	if err != nil {
 		fmt.Println("ERROR: Java not found")
-		fmt.Printf("At least Java %.2d is required to use this command\n", metadata.JAVA_VERSION)
+		fmt.Printf("At least Java %.2d is required to use this command\n", metadata.JavaVersion)
 		return err
 	}
 	userJavaVersion, err := parseJavaVersion(string(version))
@@ -50,8 +52,8 @@ func checkJava() error {
 		return fmt.Errorf("error while parsing Java version: %w", err)
 	}
 
-	if userJavaVersion < metadata.JAVA_VERSION {
-		fmt.Printf("ERROR: Please make sure you are using Java version %.2d or later", metadata.JAVA_VERSION)
+	if userJavaVersion < metadata.JavaVersion {
+		fmt.Printf("ERROR: Please make sure you are using Java version %.2d or later", metadata.JavaVersion)
 		fmt.Println("Installation stopped. Please upgrade Java and run again")
 		os.Exit(1)
 	} else {
@@ -65,7 +67,7 @@ func checkMaven() error {
 	version, err := mavenCheck.CombinedOutput()
 	if err != nil {
 		fmt.Println("ERROR: Maven not found")
-		fmt.Printf("At least Maven %.2d.%.2d.1 is required to use this command\n", metadata.MAVEN_MAJOR_VERSION, metadata.MAVEN_MINOR_VERSION)
+		fmt.Printf("At least Maven %.2d.%.2d.1 is required to use this command\n", metadata.MavenMajorVersion, metadata.MavenMinorVersion)
 		return err
 	}
 	major, minor, err := parseMavenVersion(string(version))
@@ -73,7 +75,7 @@ func checkMaven() error {
 		return fmt.Errorf("error while parsing Maven version: %w", err)
 	}
 
-	if major < metadata.MAVEN_MAJOR_VERSION && minor < metadata.MAVEN_MINOR_VERSION {
+	if major < metadata.MavenMajorVersion && minor < metadata.MavenMinorVersion {
 		fmt.Printf("ERROR: Please make sure you are using Maven version %d.%d.1 or later", major, minor)
 		fmt.Println("Installation stopped. Please upgrade Maven and run again")
 		os.Exit(1)
@@ -159,4 +161,44 @@ func CheckIfDirExists(dirName string) (bool, error) {
 		return false, nil
 	}
 	return false, err
+}
+
+func IsQuarkusSWFProject() bool {
+	if fileExists("pom.xml") {
+		return true
+	}
+	return false
+}
+
+func IsSWFProject() bool {
+	if anyFileExists("*.sw.*") {
+		return true
+	}
+	return false
+}
+
+func fileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	return !os.IsNotExist(err)
+}
+
+func anyFileExists(extension string) bool {
+	matches, err := filepath.Glob(extension)
+	if err != nil {
+		return false
+	}
+
+	if len(matches) > 0 {
+		return true
+	}
+	return false
+}
+
+func CheckProjectName(name string) (err error) {
+	matched, err := regexp.MatchString(`^([_\-\.a-zA-Z0-9]+)$`, name)
+	if !matched {
+		fmt.Printf("The project name (\"%s\") contains invalid characters. Valid characters are alphanumeric (A-Za-z), underscore, dash and dot.", name)
+		err = fmt.Errorf("invalid project name")
+	}
+	return
 }

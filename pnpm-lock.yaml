@@ -6086,7 +6086,7 @@ importers:
         version: 6.0.3
       client-zip:
         specifier: ^2.3.1
-        version: 2.3.1
+        version: 2.4.3
       dexie:
         specifier: ^3.2.2
         version: 3.2.2
@@ -9328,7 +9328,7 @@ importers:
         version: link:../kie-sandbox-fs
       client-zip:
         specifier: ^2.3.1
-        version: 2.3.1
+        version: 2.4.3
       isomorphic-git:
         specifier: ^1.11.1
         version: 1.11.1
@@ -19774,9 +19774,9 @@ packages:
       { integrity: sha512-FxqpkPPwu1HjuN93Omfm4h8uIanXofW0RxVEW3k5RKx+mJJYSthzNhp32Kzxxy3YAEZ/Dc/EWN1vZRY0+kOhbw== }
     engines: { node: ">= 10" }
 
-  /client-zip@2.3.1:
+  /client-zip@2.4.3:
     resolution:
-      { integrity: sha512-iRSvLjnKWXln/Q3m4thNe7IQWHBZg1fYjnuFXjLOgXg7GQYTFdVfHJ3n1J7qpgFpGbfXYt8pfngfIl/FVDYPqg== }
+      { integrity: sha512-PRJsVv+Q742auicTQD47IgatSCRdZ7e09sQoQ+jXH/fz4nXF69cVxCeiTS+kV9xx+4iTSO8JbD5iwsqkIkNDZw== }
     dev: false
 
   /clipanion@3.2.0-rc.11:

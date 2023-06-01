@@ -305,6 +305,129 @@ functions:
         },
       } as CodeLens);
     });
+
+    test("login to service registries with events", async () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
+        jqCompletions: defaultJqCompletionsConfig,
+      });
+
+      const { content } = trim(`
+---
+events:
+  - name: 'wait'
+    source: ''
+    type: ''
+    kind: consumed
+    metadata:
+      reference: 'specs/test (1).yaml#wait' `);
+
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+
+      expect(codeLenses).toHaveLength(2);
+      expect(codeLenses[1]).toStrictEqual({
+        range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
+        command: {
+          command: "swf.ls.commands.LogInServiceRegistries",
+          title: "↪ Log in Service Registries...",
+          arguments: [{ position: { character: 2, line: 2 } }],
+        },
+      });
+      expect(codeLenses[0]).toStrictEqual({
+        range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
+        command: {
+          title: "+ Add event...",
+          command: "editor.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 2, line: 2 } }],
+        },
+      } as CodeLens);
+    });
+
+    test("setup service registries with events", async () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: {
+          ...defaultConfig,
+          shouldConfigureServiceRegistries: () => true,
+        },
+        jqCompletions: defaultJqCompletionsConfig,
+      });
+
+      const { content } = trim(`
+---
+events:
+  - name: 'wait'
+    source: ''
+    type: ''
+    kind: consumed
+    metadata:
+      reference: 'specs/test (1).yaml#wait' `);
+
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+
+      expect(codeLenses).toHaveLength(2);
+      expect(codeLenses[1]).toStrictEqual({
+        range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
+        command: {
+          command: "swf.ls.commands.OpenServiceRegistriesConfig",
+          title: "↪ Setup Service Registries...",
+          arguments: [{ position: { character: 2, line: 2 } }],
+        },
+      });
+      expect(codeLenses[0]).toStrictEqual({
+        range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
+        command: {
+          title: "+ Add event...",
+          command: "editor.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 2, line: 2 } }],
+        },
+      } as CodeLens);
+    });
+
+    test("refresh service registries with events", async () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: {
+          ...defaultConfig,
+          canRefreshServices: () => true,
+        },
+        jqCompletions: defaultJqCompletionsConfig,
+      });
+
+      const { content } = trim(`
+---
+events:
+  - name: 'wait'
+    source: ''
+    type: ''
+    kind: consumed
+    metadata:
+      reference: 'specs/test (1).yaml#wait' `);
+
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
+
+      expect(codeLenses).toHaveLength(2);
+      expect(codeLenses[1]).toStrictEqual({
+        range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
+        command: {
+          command: "swf.ls.commands.RefreshServiceRegistries",
+          title: "↺ Refresh Service Registries...",
+          arguments: [{ position: { character: 2, line: 2 } }],
+        },
+      });
+      expect(codeLenses[0]).toStrictEqual({
+        range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
+        command: {
+          title: "+ Add event...",
+          command: "editor.ls.commands.OpenCompletionItems",
+          arguments: [{ newCursorPosition: { character: 2, line: 2 } }],
+        },
+      } as CodeLens);
+    });
   });
 
   describe("code completion", () => {

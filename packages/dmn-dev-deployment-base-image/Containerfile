@@ -20,13 +20,13 @@ ARG ROOT_PATH
 
 USER 1000
 
-RUN mkdir /tmp/kogito/
+RUN mkdir -p -m 777 /tmp/kogito
 
-COPY --chown=1000:1000 --chmod=775 dist-dev/dmn-dev-deployment-quarkus-app /tmp/kogito/dmn-dev-deployment-quarkus-app/
-COPY --chown=1000:1000 --chmod=775 dist-dev/dmn-dev-deployment-form-webapp/ /tmp/kogito/dmn-dev-deployment-quarkus-app/src/main/resources/META-INF/resources/
+COPY --chown=1000:1000 --chmod=777 dist-dev/dmn-dev-deployment-quarkus-app /tmp/kogito/dmn-dev-deployment-quarkus-app/
+COPY --chown=1000:1000 --chmod=777 dist-dev/dmn-dev-deployment-form-webapp/ /tmp/kogito/dmn-dev-deployment-quarkus-app/src/main/resources/META-INF/resources/
 
 WORKDIR /tmp/kogito/dmn-dev-deployment-quarkus-app/
 
 RUN ./mvnw clean package -B -ntp -Dmaven.test.skip -Dmaven.repo.local=/tmp/kogito/.m2/repository -DQUARKUS_PLATFORM_VERSION=${QUARKUS_PLATFORM_VERSION} -DKOGITO_RUNTIME_VERSION=${KOGITO_RUNTIME_VERSION} -Dquarkus.http.root-path=${ROOT_PATH} \
-    && chmod -R 775 /tmp/kogito/
+    && chmod -R 777 /tmp/kogito/
 ENTRYPOINT ./mvnw quarkus:dev -Ddebug=false -Dmaven.repo.local=/tmp/kogito/.m2/repository -DQUARKUS_PLATFORM_VERSION=${QUARKUS_PLATFORM_VERSION} -DKOGITO_RUNTIME_VERSION=${KOGITO_RUNTIME_VERSION} -Dquarkus.http.root-path=${ROOT_PATH}

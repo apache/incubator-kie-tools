@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,25 @@
 
 package common
 
-import "os/exec"
+import (
+	"testing"
 
-var ExecCommand = exec.Command // Make it a global var, so it can be override in tests
+	"github.com/spf13/afero"
+)
+
+func TestCreateWrokflow(t *testing.T) {
+	var err error
+	filePath := "new-workflow.sw.json"
+	FS = afero.NewMemMapFs()
+
+	err = CreateWorkflow(filePath)
+	defer FS.Remove(filePath)
+	if err != nil {
+		t.Errorf("Error when creating workflow: %#v", err)
+	}
+
+	_, err = FS.Stat(filePath)
+	if err != nil {
+		t.Errorf("Error when opening workflow file: %#v", err)
+	}
+}
