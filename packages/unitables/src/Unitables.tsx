@@ -105,12 +105,14 @@ export const Unitables = ({
   }, []);
 
   useLayoutEffect(() => {
-    const tbody = containerRef.current?.getElementsByTagName("tbody")[0];
-    const inputsCells = Array.from(tbody?.getElementsByTagName("td") ?? []);
-    inputsCells.shift();
-    inputsCells.forEach((inputCell) => {
-      searchRecursively(inputCell.childNodes[0]);
-    });
+    setTimeout(() => {
+      const tbody = containerRef.current?.getElementsByTagName("tbody")[0];
+      const inputsCells = Array.from(tbody?.getElementsByTagName("td") ?? []);
+      inputsCells.shift();
+      inputsCells.forEach((inputCell) => {
+        searchRecursively(inputCell.childNodes[0]);
+      });
+    }, 0);
   }, [isBeeTableChange, jsonSchemaBridge, formsDivRendered, rows, containerRef, searchRecursively]);
   // Set in-cell input heights (end)
 
