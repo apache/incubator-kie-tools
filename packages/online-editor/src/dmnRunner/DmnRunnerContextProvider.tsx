@@ -485,23 +485,26 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           );
 
           // Remove incompatible values and add default values;
-          const jsonSchemaProperties = getObjectValueByPath(jsonSchema, JSON_SCHEMA_INPUT_SET_PATH);
+          const jsonSchemaProperties = getObjectValueByPath(jsonSchema, "definitions.InputSet");
           if (jsonSchemaProperties) {
             try {
-              const validate = ajv.compile(jsonSchema);
+              const validate = ajv.compile(jsonSchemaProperties);
               dmnRunnerPersistenceJson.inputs.forEach((input) => {
+                // save id;
+                const id = input.id;
                 const validation = validate(input);
                 if (!validation && validate.errors) {
                   validate.errors.forEach((error) => {
-                    const path = error.dataPath
+                    const pathList = error.dataPath
                       .replace(/\[(\d+)\]/g, ".$1")
                       .split(".")
-                      .slice(1)
-                      .slice(0, -1)
-                      .join(".");
+                      .slice(1);
+
+                    const path = pathList.length === 1 ? pathList.join(".") : pathList.slice(0, -1).join(".");
                     unsetObjectValueByPath(input, path);
                   });
                 }
+                input.id = id;
               });
             } catch (error) {
               console.debug("DMN RUNNER AJV:", error);

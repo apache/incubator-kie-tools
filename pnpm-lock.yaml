@@ -3091,6 +3091,9 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@types/ajv-errors":
+        specifier: ^1.0.1
+        version: 1.0.3
       "@types/jest":
         specifier: ^26.0.23
         version: 26.0.23
@@ -3823,12 +3826,6 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
-      ajv:
-        specifier: ^6.12.6
-        version: 6.12.6
-      ajv-errors:
-        specifier: ^1.0.1
-        version: 1.0.1(ajv@6.12.6)
       deep-object-diff:
         specifier: ^1.1.0
         version: 1.1.0
@@ -8251,12 +8248,6 @@ importers:
       "@types/react-table":
         specifier: ^7.0.25
         version: 7.7.7
-      ajv:
-        specifier: ^6.12.6
-        version: 6.12.6
-      ajv-errors:
-        specifier: ^1.0.1
-        version: 1.0.1(ajv@6.12.6)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -16492,6 +16483,13 @@ packages:
   /@tsconfig/node16@1.0.3:
     resolution:
       { integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ== }
+    dev: true
+
+  /@types/ajv-errors@1.0.3:
+    resolution:
+      { integrity: sha512-lXvAtvKL4Fiyxog+Czma/APGjRFbAGUiMpsD2EQUDCMwW0m4UUEwj+FJAuRNKgBZD68mRIO3GtR2aOHV3ADVDQ== }
+    dependencies:
+      ajv: 8.11.0
     dev: true
 
   /@types/archiver@5.3.1:
