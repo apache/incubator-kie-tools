@@ -130,7 +130,6 @@ jobs:
       ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: "kie-tools"
       ONLINE_EDITOR__dmnDevDeploymentBaseImageName: "dmn-dev-deployment-base-image"
       ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: "${{ inputs.tag }}"
-      ONLINE_EDITOR__devDeploymentKieSandboxUrl: "https://kiegroup.github.io/kogito-online"
       DMN_DEV_DEPLOYMENT_FORM_WEBAPP__gtmId: "GTM-PMJ42HB"
 
     if: ${{ needs.extract_runners.outputs.dmn_dev_deployment_base_image == 'true' }}
@@ -193,7 +192,6 @@ jobs:
       ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: "kie-tools"
       ONLINE_EDITOR__dmnDevDeploymentBaseImageName: "dmn-dev-deployment-base-image"
       ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: "${{ inputs.tag }}"
-      ONLINE_EDITOR__devDeploymentKieSandboxUrl: "https://kiegroup.github.io/kogito-online"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
 
     outputs:
@@ -393,7 +391,6 @@ jobs:
       ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: "kie-tools"
       ONLINE_EDITOR__dmnDevDeploymentBaseImageName: "dmn-dev-deployment-base-image"
       ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: "${{ inputs.tag }}"
-      ONLINE_EDITOR__devDeploymentKieSandboxUrl: "https://kiegroup.github.io/kogito-online"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
       ONLINE_EDITOR__gitCorsProxyUrl: "https://git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
       DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry: "quay.io"

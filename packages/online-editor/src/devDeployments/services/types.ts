@@ -26,7 +26,7 @@ export interface DeployArgs {
   targetFilePath: string;
   workspaceName: string;
   workspaceZipBlob: Blob;
-  kieSandboxUrl: (baseUrl: string) => string;
+  containerImageUrl: string;
 }
 
 export type ResourceArgs = {

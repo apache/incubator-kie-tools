@@ -24,7 +24,6 @@ jobs:
       ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: "kie-tools"
       ONLINE_EDITOR__dmnDevDeploymentBaseImageName: "dmn-dev-deployment-base-image"
       ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: "daily-dev"
-      ONLINE_EDITOR__devDeploymentKieSandboxUrl: "https://kiegroup.github.io/kogito-online/dev"
       ONLINE_EDITOR__gitCorsProxyUrl: "https://daily-dev-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
       EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online/dev"
 

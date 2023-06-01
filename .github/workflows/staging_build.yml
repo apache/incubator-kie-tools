@@ -176,7 +176,6 @@ jobs:
           ONLINE_EDITOR__gtmId: ""
           ONLINE_EDITOR__gitCorsProxyUrl: "https://staging-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
           DMN_DEV_DEPLOYMENT_FORM_WEBAPP__gtmId: ""
-          ONLINE_EDITOR__devDeploymentKieSandboxUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
           EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
           SERVERLESS_LOGIC_WEB_TOOLS__version: "${{ inputs.tag }}-prerelease"
           SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef: "${{ inputs.tag }}"

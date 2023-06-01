@@ -99,10 +99,6 @@ module.exports = composeEnv(
         default: "Always",
         description: "The image pull policy. Can be 'Always', 'IfNotPresent', or 'Never'.",
       },
-      ONLINE_EDITOR__devDeploymentKieSandboxUrl: {
-        default: `https://localhost:${devPort}`,
-        description: "URL that DMN Dev deployments will use to open KIE Sandbox.",
-      },
     }),
     get env() {
       return {
@@ -130,7 +126,6 @@ module.exports = composeEnv(
           ),
         },
         devDeployments: {
-          kieSandboxUrl: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKieSandboxUrl),
           dmn: {
             imagePullPolicy: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImagePullPolicy),
             baseImage: {

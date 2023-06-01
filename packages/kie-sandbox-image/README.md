@@ -58,6 +58,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    | :---------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
    |             `KIE_SANDBOX_EXTENDED_SERVICES_URL`             |                                         The URL that points to the Extended Services.                                         | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |              `KIE_SANDBOX_GIT_CORS_PROXY_URL`               |                         The URL that points to the Git CORS proxy for interacting with Git providers.                         | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |       `KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL`       |                            The URL that points to base image that is used on DMN Dev deployments.                             | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |         `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE`         |                           Require users to type a custom commit message when creating a new commit.                           | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    | `KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL` |                                           Service URL to validate commit messages.                                            | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |                `KIE_SANDBOX_AUTH_PROVIDERS`                 |     Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more.      | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
@@ -120,11 +121,13 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
    ENV KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value>
    ENV KIE_SANDBOX_GIT_CORS_PROXY_URL=<my_value>
+   ENV KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL=<my_value>
    ENV KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE=<my_value>
    ENV KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL=<my_value>
    ENV KIE_SANDBOX_AUTH_PROVIDERS=<my_value>
    ENV KIE_SANDBOX_ACCELERATORS=<my_value>
    ENV KIE_SANDBOX_EDITORS=<my_value>
+   ENV KIE_SANDBOX_APP_NAME=<my_value>
    ```
 
 3. Create the application from the image in OpenShift and set the deployment environment variable right from the OpenShift UI.
@@ -301,3 +304,11 @@ KIE Sandbox can be customized to show your own logo and/or branding by extending
 - **Colored logo:** Override `/var/www/html/images/app_logo_rgb_fullcolor_default.svg`. Fixed height of `80px`.
 - **Favicon:** Override `/var/www/html/favicon.svg`
 - **App name:** Use the `KIE_SANDBOX_APP_NAME` environment variable.
+
+## Custom base image for DMN Dev deployments
+
+KIE Sandbox allows for the base image used on DMN Dev deplouyments to be customized. For example:
+
+```docker
+ENV KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL="quay.io/kie-tools/dmn-dev-deployment-base-image:latest"
+```
