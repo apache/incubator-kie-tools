@@ -3060,6 +3060,9 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      ajv:
+        specifier: ^6.12.6
+        version: 6.12.6
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -3820,12 +3823,6 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
-      ajv:
-        specifier: ^6.12.6
-        version: 6.12.6
-      ajv-errors:
-        specifier: ^1.0.1
-        version: 1.0.1(ajv@6.12.6)
       deep-object-diff:
         specifier: ^1.1.0
         version: 1.1.0
@@ -5231,6 +5228,9 @@ importers:
       "@kie-tools/dmn-language-service":
         specifier: workspace:*
         version: link:../dmn-language-service
+      "@kie-tools/dmn-runner":
+        specifier: workspace:*
+        version: link:../dmn-runner
       "@kie-tools/emscripten-fs":
         specifier: ^0.0.2
         version: 0.0.2
@@ -5279,9 +5279,6 @@ importers:
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
-      deep-object-diff:
-        specifier: ^1.1.0
-        version: 1.1.0
       history:
         specifier: ^4.9.0
         version: 4.10.1
@@ -8251,12 +8248,6 @@ importers:
       "@types/react-table":
         specifier: ^7.0.25
         version: 7.7.7
-      ajv:
-        specifier: ^6.12.6
-        version: 6.12.6
-      ajv-errors:
-        specifier: ^1.0.1
-        version: 1.0.1(ajv@6.12.6)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
