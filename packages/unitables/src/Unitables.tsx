@@ -88,11 +88,11 @@ export const Unitables = ({
   const inputUid = useMemo(() => nextId(), []);
 
   // Set in-cell input heights (begin)
-  const searchRecursively = useCallback((child: any) => {
+  const searchRecursively = useCallback((child: HTMLElement) => {
     if (!child) {
       return;
     }
-    if (child.tagName === "svg") {
+    if (child.tagName === "svg" || child.tagName === "path") {
       return;
     }
     if (child.style) {
@@ -104,16 +104,23 @@ export const Unitables = ({
     child.childNodes.forEach(searchRecursively);
   }, []);
 
+  const updateStyles = useCallback(() => {
+    const tbody = containerRef.current?.getElementsByTagName("tbody")[0];
+    const inputsCells = Array.from(tbody?.getElementsByTagName("td") ?? []);
+    inputsCells.shift();
+    inputsCells.forEach((inputCell) => {
+      searchRecursively(inputCell.childNodes[0] as HTMLElement);
+    });
+  }, [searchRecursively]);
+
   useLayoutEffect(() => {
+    // Required for normal editing;
+    updateStyles();
+    // Required for lazy load components such as ListField
     setTimeout(() => {
-      const tbody = containerRef.current?.getElementsByTagName("tbody")[0];
-      const inputsCells = Array.from(tbody?.getElementsByTagName("td") ?? []);
-      inputsCells.shift();
-      inputsCells.forEach((inputCell) => {
-        searchRecursively(inputCell.childNodes[0]);
-      });
+      updateStyles();
     }, 0);
-  }, [isBeeTableChange, jsonSchemaBridge, formsDivRendered, rows, containerRef, searchRecursively]);
+  }, [isBeeTableChange, jsonSchemaBridge, formsDivRendered, rows, containerRef, updateStyles]);
   // Set in-cell input heights (end)
 
   const onSubmitRow = useCallback(
