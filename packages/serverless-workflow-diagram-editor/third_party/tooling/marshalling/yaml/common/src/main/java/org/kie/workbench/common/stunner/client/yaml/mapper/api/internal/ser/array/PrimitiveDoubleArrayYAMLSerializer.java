@@ -51,9 +51,9 @@ public class PrimitiveDoubleArrayYAMLSerializer extends BasicArrayYAMLSerializer
       return;
     }
 
-    YamlSequence YamlSequence = writer.addSequenceNode(propertyName);
+    YamlSequence yamlSequence = writer.addSequenceNode(propertyName);
     for (double value : values) {
-      serializer.serialize(YamlSequence, value, ctx);
+      serializer.serialize(yamlSequence, value, ctx);
     }
   }
 

@@ -49,9 +49,9 @@ public class PrimitiveFloatArrayYAMLSerializer extends BasicArrayYAMLSerializer<
       writer.addScalarNode(propertyName, null);
       return;
     }
-    YamlSequence YamlSequence = writer.addSequenceNode(propertyName);
+    YamlSequence yamlSequence = writer.addSequenceNode(propertyName);
     for (float value : values) {
-      serializer.serialize(YamlSequence, value, ctx);
+      serializer.serialize(yamlSequence, value, ctx);
     }
   }
 
