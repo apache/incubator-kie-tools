@@ -104,7 +104,7 @@ func newDevProfileReconciler(client client.Client, config *rest.Config, logger *
 
 func newDevelopmentObjectEnsurers(support *stateSupport) *devProfileObjectEnsurers {
 	return &devProfileObjectEnsurers{
-		deployment:          newDefaultObjectEnsurer(support.client, support.logger, defaultDeploymentCreator),
+		deployment:          newDefaultObjectEnsurer(support.client, support.logger, devDeploymentCreator),
 		service:             newDefaultObjectEnsurer(support.client, support.logger, devServiceCreator),
 		network:             newDummyObjectEnsurer(),
 		definitionConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowDefConfigMapCreator),
@@ -114,7 +114,7 @@ func newDevelopmentObjectEnsurers(support *stateSupport) *devProfileObjectEnsure
 
 func newDevelopmentObjectEnsurersForOpenShift(support *stateSupport) *devProfileObjectEnsurers {
 	return &devProfileObjectEnsurers{
-		deployment:          newDefaultObjectEnsurer(support.client, support.logger, defaultDeploymentCreator),
+		deployment:          newDefaultObjectEnsurer(support.client, support.logger, devDeploymentCreator),
 		service:             newDefaultObjectEnsurer(support.client, support.logger, defaultServiceCreator),
 		network:             newDefaultObjectEnsurer(support.client, support.logger, defaultNetworkCreator),
 		definitionConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowDefConfigMapCreator),

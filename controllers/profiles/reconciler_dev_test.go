@@ -39,6 +39,33 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/test"
 )
 
+func Test_OverrideStartupProbe(t *testing.T) {
+	logger := ctrllog.FromContext(context.TODO())
+	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
+
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
+
+	config := &rest.Config{}
+	devReconciler := newDevProfileReconciler(client, config, &logger)
+
+	result, err := devReconciler.Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	// get the deployment, change the probe and reconcile it again
+	newThreshold := int32(5) //yes we have to force the type for the assertion below
+	deployment := test.MustGetDeployment(t, client, workflow)
+	assert.Equal(t, int32(healthFailureThresholdDevMode), deployment.Spec.Template.Spec.Containers[0].StartupProbe.FailureThreshold)
+	deployment.Spec.Template.Spec.Containers[0].StartupProbe.FailureThreshold = newThreshold
+	assert.NoError(t, client.Update(context.TODO(), deployment))
+	// reconcile and fetch from the cluster
+	result, err = devReconciler.Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+	deployment = test.MustGetDeployment(t, client, workflow)
+	assert.Equal(t, newThreshold, deployment.Spec.Template.Spec.Containers[0].StartupProbe.FailureThreshold)
+}
+
 func Test_recoverFromFailureNoDeployment(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
 	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())

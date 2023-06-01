@@ -15,6 +15,7 @@
 package profiles
 
 import (
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -23,6 +24,11 @@ import (
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+)
+
+const (
+	// healthFailureThresholdDevMode exclusive threshold for devmode given that it might take longer than the immutable image to start/live/respond.
+	healthFailureThresholdDevMode = 50
 )
 
 var defaultDevApplicationProperties = "quarkus.http.port=" + defaultHTTPWorkflowPortStr + "\n" +
@@ -45,6 +51,18 @@ func devServiceCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.O
 		service.Spec.Type = corev1.ServiceTypeNodePort
 	}
 	return service, nil
+}
+
+func devDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+	obj, err := defaultDeploymentCreator(workflow)
+	if err != nil {
+		return nil, err
+	}
+	deployment := obj.(*appsv1.Deployment)
+	deployment.Spec.Template.Spec.Containers[0].StartupProbe.FailureThreshold = healthFailureThresholdDevMode
+	deployment.Spec.Template.Spec.Containers[0].LivenessProbe.FailureThreshold = healthFailureThresholdDevMode
+	deployment.Spec.Template.Spec.Containers[0].ReadinessProbe.FailureThreshold = healthFailureThresholdDevMode
+	return deployment, nil
 }
 
 // workflowDefConfigMapCreator creates a new ConfigMap that holds the definition of a workflow specification.
