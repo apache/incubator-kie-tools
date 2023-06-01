@@ -58,7 +58,7 @@ export function NewWorkspaceFromUrlPage() {
   const accountsDispatch = useAccountsDispatch();
 
   const [importingError, setImportingError] = useState("");
-  const [validAuthTokenPresent, setValidAuthTokenPresent] = useState("");
+  const [validAuthTokenPresent, setValidAuthTokenPresent] = useState(true);
 
   const queryParams = useQueryParams();
 
@@ -263,7 +263,7 @@ export function NewWorkspaceFromUrlPage() {
       }
 
       if (!queryParamBranch && (!authSession || queryParamAuthSessionId === AUTH_SESSION_NONE.id)) {
-        setValidAuthTokenPresent("false");
+        setValidAuthTokenPresent(false);
         return;
       }
 
@@ -382,7 +382,7 @@ export function NewWorkspaceFromUrlPage() {
   ]);
 
   useEffect(() => {
-    if (!queryParamUrl || validAuthTokenPresent === "false") {
+    if (!queryParamUrl || validAuthTokenPresent === false) {
       history.replace({
         pathname: routes.import.path({}),
         search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
@@ -404,7 +404,7 @@ export function NewWorkspaceFromUrlPage() {
       return;
     }
 
-    setValidAuthTokenPresent("");
+    setValidAuthTokenPresent(true);
     setImportingError("");
     doImport();
   }, [
