@@ -49,9 +49,9 @@ public class PrimitiveBooleanArrayYAMLSerializer extends BasicArrayYAMLSerialize
       writer.addScalarNode(propertyName, null);
       return;
     }
-    YamlSequence YamlSequence = writer.addSequenceNode(propertyName);
+    YamlSequence yamlSequence = writer.addSequenceNode(propertyName);
     for (boolean value : values) {
-      serializer.serialize(YamlSequence, value, ctx);
+      serializer.serialize(yamlSequence, value, ctx);
     }
   }
 

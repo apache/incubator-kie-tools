@@ -49,9 +49,9 @@ public class PrimitiveCharacterArrayYAMLSerializer extends BasicArrayYAMLSeriali
       writer.addScalarNode(propertyName, null);
       return;
     }
-    YamlSequence YamlSequence = writer.addSequenceNode(propertyName);
+    YamlSequence yamlSequence = writer.addSequenceNode(propertyName);
     for (char value : values) {
-      serializer.serialize(YamlSequence, value, ctx);
+      serializer.serialize(yamlSequence, value, ctx);
     }
   }
 

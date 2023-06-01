@@ -50,9 +50,9 @@ public class PrimitiveIntegerArrayYAMLSerializer extends BasicArrayYAMLSerialize
       return;
     }
 
-    YamlSequence YamlSequence = writer.addSequenceNode(propertyName);
+    YamlSequence yamlSequence = writer.addSequenceNode(propertyName);
     for (int value : values) {
-      serializer.serialize(YamlSequence, value, ctx);
+      serializer.serialize(yamlSequence, value, ctx);
     }
   }
 
