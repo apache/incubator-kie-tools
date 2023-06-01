@@ -23,6 +23,7 @@ import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 
 export class DmnValidator extends Validator {
   private dmnRunnerAjv = new DmnRunnerAjv();
+  private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
 
   constructor(i18n: DmnFormI18n) {
     super(i18n);
@@ -57,7 +58,8 @@ export class DmnValidator extends Validator {
   }
 
   public getBridge(formSchema: ExtendedServicesDmnJsonSchema): DmnFormJsonSchemaBridge {
-    const validator = this.createValidator(formSchema);
-    return new DmnFormJsonSchemaBridge(formSchema, validator, this.i18n as DmnFormI18n);
+    const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
+    const validator = this.createValidator(formDraft4);
+    return new DmnFormJsonSchemaBridge(formDraft4, validator, this.i18n as DmnFormI18n);
   }
 }

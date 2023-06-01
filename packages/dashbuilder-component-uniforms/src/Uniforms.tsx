@@ -15,7 +15,7 @@
  */
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 import { AutoForm } from "@kie-tools/uniforms-patternfly/dist/esm";
-import Ajv from "ajv";
+import * as Ajv from "ajv";
 import * as React from "react";
 import { useCallback } from "react";
 

@@ -470,8 +470,8 @@ importers:
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       ajv:
-        specifier: ^8.12.0
-        version: 8.12.0
+        specifier: ^6.12.6
+        version: 6.12.6
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -2116,8 +2116,8 @@ importers:
         specifier: ^4.112.39
         version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
       ajv:
-        specifier: ^8.12.0
-        version: 8.12.0
+        specifier: ^6.12.6
+        version: 6.12.6
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -3061,8 +3061,8 @@ importers:
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       ajv:
-        specifier: ^8.12.0
-        version: 8.12.0
+        specifier: ^6.12.6
+        version: 6.12.6
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -3709,11 +3709,11 @@ importers:
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       ajv:
-        specifier: ^8.12.0
-        version: 8.12.0
+        specifier: ^6.12.6
+        version: 6.12.6
       ajv-errors:
         specifier: ^1.0.1
-        version: 1.0.1(ajv@8.12.0)
+        version: 1.0.1(ajv@6.12.6)
       deep-object-diff:
         specifier: ^1.1.0
         version: 1.1.0
@@ -3824,11 +3824,11 @@ importers:
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       ajv:
-        specifier: ^8.12.0
-        version: 8.12.0
+        specifier: ^6.12.6
+        version: 6.12.6
       ajv-errors:
         specifier: ^1.0.1
-        version: 1.0.1(ajv@8.12.0)
+        version: 1.0.1(ajv@6.12.6)
       deep-object-diff:
         specifier: ^1.1.0
         version: 1.1.0
@@ -5280,8 +5280,8 @@ importers:
         specifier: ^4.94.6
         version: 4.94.6
       ajv:
-        specifier: ^8.12.0
-        version: 8.12.0
+        specifier: ^6.12.6
+        version: 6.12.6
       bowser:
         specifier: ^2.10.0
         version: 2.11.0
@@ -8125,11 +8125,11 @@ importers:
         specifier: ^7.0.25
         version: 7.7.7
       ajv:
-        specifier: ^8.12.0
-        version: 8.12.0
+        specifier: ^6.12.6
+        version: 6.12.6
       ajv-errors:
         specifier: ^1.0.1
-        version: 1.0.1(ajv@8.12.0)
+        version: 1.0.1(ajv@6.12.6)
       deep-object-diff:
         specifier: ^1.1.0
         version: 1.1.0
@@ -8252,11 +8252,11 @@ importers:
         specifier: ^7.0.25
         version: 7.7.7
       ajv:
-        specifier: ^8.12.0
-        version: 8.12.0
+        specifier: ^6.12.6
+        version: 6.12.6
       ajv-errors:
         specifier: ^1.0.1
-        version: 1.0.1(ajv@8.12.0)
+        version: 1.0.1(ajv@6.12.6)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -18123,13 +18123,13 @@ packages:
       indent-string: 4.0.0
     dev: true
 
-  /ajv-errors@1.0.1(ajv@8.12.0):
+  /ajv-errors@1.0.1(ajv@6.12.6):
     resolution:
       { integrity: sha512-DCRfO/4nQ+89p/RK43i8Ezd41EqdGIU4ld7nGF8OQ14oc/we5rEntLCUa7+jrn3nn83BosfwZA0wb4pon2o8iQ== }
     peerDependencies:
       ajv: ">=5.0.0"
     dependencies:
-      ajv: 8.12.0
+      ajv: 6.12.6
     dev: false
 
   /ajv-formats@2.1.1:
@@ -18168,7 +18168,6 @@ packages:
       fast-json-stable-stringify: 2.1.0
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
-    dev: true
 
   /ajv@8.11.0:
     resolution:
@@ -23243,7 +23242,6 @@ packages:
   /fast-json-stable-stringify@2.1.0:
     resolution:
       { integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw== }
-    dev: true
 
   /fast-levenshtein@2.0.6:
     resolution:
@@ -26305,7 +26303,6 @@ packages:
   /json-schema-traverse@0.4.1:
     resolution:
       { integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg== }
-    dev: true
 
   /json-schema-traverse@1.0.0:
     resolution:

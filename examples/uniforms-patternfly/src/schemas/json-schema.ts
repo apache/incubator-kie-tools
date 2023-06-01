@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import Ajv from "ajv";
+import * as Ajv from "ajv";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 
-const ajv = new Ajv({ allErrors: true });
+const ajv = new Ajv({ allErrors: true, useDefaults: true });
 
 function createValidator(schema: any) {
   const validator = ajv.compile(schema);
