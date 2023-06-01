@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as Ajv from "ajv";
+import Ajv from "ajv";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 
 const ajv = new Ajv({ allErrors: true, useDefaults: true });

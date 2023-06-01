@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as Ajv from "ajv";
+import Ajv from "ajv";
 import { UnitablesJsonSchemaBridge } from "./uniforms";
 import { UnitablesI18n } from "./i18n";
 

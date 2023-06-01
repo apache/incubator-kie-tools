@@ -15,6 +15,7 @@
  */
 
 import Ajv from "ajv";
+import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import {
   DAYS_AND_TIME_DURATION_FORMAT,
   DAYS_AND_TIME_DURATION_REGEXP,
@@ -29,16 +30,11 @@ export class DmnRunnerAjv {
   private ajv;
 
   constructor() {
-    this.ajv = new Ajv({ allErrors: true, useDefaults: true, strictTypes: true });
-    this.ajv.addKeyword({
-      keyword: X_DMN_TYPE,
-    });
-    this.ajv.addKeyword({
-      keyword: X_DMN_ALLOWED_VALUES,
-    });
-    this.ajv.addKeyword({
-      keyword: X_DMN_DESCRIPTIONS,
-    });
+    this.ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
+    this.ajv.addMetaSchema(metaSchemaDraft04);
+    this.ajv.addKeyword(X_DMN_TYPE, {});
+    this.ajv.addKeyword(X_DMN_ALLOWED_VALUES, {});
+    this.ajv.addKeyword(X_DMN_DESCRIPTIONS, {});
     this.ajv.addFormat(DAYS_AND_TIME_DURATION_FORMAT, {
       type: "string",
       validate: (data: string) => !!data.match(DAYS_AND_TIME_DURATION_REGEXP),
