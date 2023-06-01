@@ -28,9 +28,9 @@ import {
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { InputRow, extractDifferences } from "@kie-tools/form-dmn";
 import {
   DecisionResult,
@@ -39,6 +39,7 @@ import {
   ExtendedServicesModelPayload,
   DmnInputFieldProperties,
 } from "@kie-tools/extended-services-api";
+import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
@@ -49,7 +50,6 @@ import { UnitablesInputsConfigs } from "@kie-tools/unitables/dist/UnitablesTypes
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useOnlineI18n } from "../i18n";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { diff } from "deep-object-diff";
 import { useCompanionFsFileSyncedWithWorkspaceFile } from "../companionFs/CompanionFsHooks";
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { DmnRunnerPersistenceReducerActionType } from "../dmnRunnerPersistence/DmnRunnerPersistenceTypes";
@@ -68,11 +68,9 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import getObjectValueByPath from "lodash/get";
-import setObjectValueByPath from "lodash/set";
 import unsetObjectValueByPath from "lodash/unset";
-import { dereferenceProperties } from "../jsonSchema/dereference";
 
-const JSON_SCHEMA_PROPERTIES_PATH = "definitions.InputSet.properties";
+const JSON_SCHEMA_INPUT_SET_PATH = "definitions.InputSet.properties";
 
 interface Props {
   isEditorReady?: boolean;
@@ -121,6 +119,9 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
 
 export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   const { i18n } = useOnlineI18n();
+  // Calling forceDmnRunnerReRender will cause a update in the dmnRunnerKey
+  // dmnRunnerKey should be placed in the Unitables and DmnForm;
+  const [dmnRunnerKey, forceDmnRunnerReRender] = useReducer((x) => x + 1, 0);
 
   // States that can be changed down in the tree with dmnRunnerDispatcher;
   const [{ currentInputIndex, isExpanded }, setDmnRunnerContextProviderState] = useReducer(
@@ -147,7 +148,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     dmnRunnerPersistenceJsonDispatcher,
   } = useDmnRunnerPersistenceDispatch();
   useDmnRunnerPersistence(props.workspaceFile.workspaceId, props.workspaceFile.relativePath);
-  const prevKieSandboxExtendedServicesStatus = usePrevious(extendedServices.status);
+  const prevExtendedServicesStatus = usePrevious(extendedServices.status);
   const { panel, setNotifications, addToggleItem, removeToggleItem, onOpenPanel, onTogglePanel } =
     useEditorDockContext();
 
@@ -158,6 +159,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [dmnRunnerPersistenceJson?.configs?.inputs]
   );
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
+  const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
 
   useLayoutEffect(() => {
     if (props.isEditorReady) {
@@ -183,12 +185,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
 
     if (
-      extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
-      extendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING
+      extendedServices.status === ExtendedServicesStatus.STOPPED ||
+      extendedServices.status === ExtendedServicesStatus.NOT_RUNNING
     ) {
       setDmnRunnerContextProviderState({ type: DmnRunnerProviderActionType.DEFAULT, newState: { isExpanded: false } });
     }
-  }, [prevKieSandboxExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
+  }, [prevExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
   const extendedServicesModelPayload = useCallback(
     async (formInputs?: InputRow) => {
@@ -221,10 +223,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (
-          props.workspaceFile.extension !== "dmn" ||
-          extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
-        ) {
+        if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
           return;
         }
 
@@ -311,10 +310,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
   // Set execution tab on Problems panel;
   useEffect(() => {
-    if (
-      props.workspaceFile.extension !== "dmn" ||
-      extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
-    ) {
+    if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
       return;
     }
 
@@ -427,7 +423,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [setDmnRunnerPersistenceJson]
   );
 
-  const getFieldDefaultValue = useCallback((dmnField: DmnInputFieldProperties) => {
+  const getFieldDefaultValue = useCallback((dmnField: DmnInputFieldProperties):
+    | string
+    | boolean
+    | []
+    | object
+    | undefined => {
     if (dmnField?.type === "string") {
       return "";
     }
@@ -448,7 +449,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
   const getDefaultValues = useCallback(
     (jsonSchema: ExtendedServicesDmnJsonSchema) => {
-      return Object.entries(getObjectValueByPath(jsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {})?.reduce(
+      return Object.entries(getObjectValueByPath(jsonSchema, JSON_SCHEMA_INPUT_SET_PATH) ?? {})?.reduce(
         (acc, [key, field]: [string, Record<string, string>]) => {
           acc[key] = getFieldDefaultValue(field);
           return acc;
@@ -478,18 +479,27 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           );
 
           // Remove incompatible values and add default values;
-          const jsonSchemaProperties = getObjectValueByPath(jsonSchema, JSON_SCHEMA_PROPERTIES_PATH);
-          if (jsonSchemaProperties) {
-            Object.entries(jsonSchemaProperties).forEach(
-              ([propertyName, dmnField]: [string, DmnInputFieldProperties]) => {
-                dmnRunnerPersistenceJson.inputs.forEach((input) => {
-                  // if the input has the property name, its value should match the property attribute type/format;
-                  if (input[propertyName] && typeof input[propertyName] !== (dmnField.type ?? "string")) {
-                    input[propertyName] = getFieldDefaultValue(dmnField);
-                  }
+          try {
+            const validate = dmnRunnerAjv.compile(jsonSchema);
+            dmnRunnerPersistenceJson.inputs.forEach((input) => {
+              // save id;
+              const id = input.id;
+              const validation = validate(input);
+              if (!validation && validate.errors) {
+                validate.errors.forEach((error) => {
+                  const pathList = error.dataPath
+                    .replace(/\[(\d+)\]/g, ".$1")
+                    .split(".")
+                    .slice(1);
+
+                  const path = pathList.length === 1 ? pathList.join(".") : pathList.slice(0, -1).join(".");
+                  unsetObjectValueByPath(input, path);
                 });
               }
-            );
+              input.id = id;
+            });
+          } catch (error) {
+            console.debug("DMN RUNNER AJV:", error);
           }
 
           setDmnRunnerPersistenceJson({
@@ -501,6 +511,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             shouldUpdateFs: false,
             cancellationToken,
           });
+          forceDmnRunnerReRender();
           return;
         }
 
@@ -529,82 +540,31 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         }
         return;
       },
-      [dmnRunnerPersistenceService, getFieldDefaultValue, getDefaultValues, jsonSchema, setDmnRunnerPersistenceJson]
+      [dmnRunnerAjv, dmnRunnerPersistenceService, getDefaultValues, jsonSchema, setDmnRunnerPersistenceJson]
     )
   );
 
-  const dereferenceExtendedServicesJsonSchema = useCallback(
-    (jsonSchema: ExtendedServicesDmnJsonSchema): ExtendedServicesDmnJsonSchema => {
-      const inputSet = dereferenceProperties(
-        jsonSchema,
-        jsonSchema.definitions?.InputSet?.properties,
-        "definitions.InputSet.properties"
-      );
-      const outputSet = dereferenceProperties(
-        jsonSchema,
-        jsonSchema.definitions?.OutputSet?.properties,
-        "definitions.OutputSet.properties"
-      );
+  const removeChangedPropertiesAndAdditionalProperties = useCallback(
+    <T extends ((obj: Record<string, any>) => boolean) & { errors: [{ keyword: string; dataPath: string }] }>(
+      validator: T,
+      toValidate: Record<string, any>
+    ) => {
+      const validation = validator(toValidate);
+      if (!validation && validator.errors) {
+        validator.errors.forEach((error) => {
+          if (error.keyword === "required") {
+            return;
+          }
 
-      return {
-        $ref: "#/definitions/InputSet",
-        definitions: {
-          InputSet: {
-            ...jsonSchema.definitions?.InputSet,
-            properties: inputSet.definitions.InputSet.properties,
-            type: "object",
-          },
-          OutputSet: {
-            ...jsonSchema.definitions?.OutputSet,
-            properties: outputSet.definitions.OutputSet.properties,
-            type: "object",
-          },
-        },
-      };
-    },
-    []
-  );
+          const pathList = error.dataPath
+            .replace(/\['([^']+)'\]/g, "$1")
+            .replace(/\[(\d+)\]/g, ".$1")
+            .split(".");
 
-  // Unset changed and/or removed types
-  // Set to undefined changed formats;
-  const handleJsonSchemaDifferences = useCallback(
-    <T extends Record<string, any>>(inputs: T, propertiesDifference: Record<string, any>, parentKey?: string): T => {
-      const checkIfPropertyExistsOrIsUndefined = <T extends Record<string, any>>(value: T, property: keyof T) => {
-        return (
-          !Object.prototype.hasOwnProperty.call(value, property) ||
-          (Object.prototype.hasOwnProperty.call(value, property) && value[property] === undefined)
-        );
-      };
-
-      return Object.entries(propertiesDifference).reduce((inputs, [propertyKey, propertyValue]: [string, any]) => {
-        if (propertyKey === "properties" && propertyValue !== undefined) {
-          return handleJsonSchemaDifferences(inputs, propertyValue, parentKey);
-        }
-
-        const fullKey = parentKey ? `${parentKey}.${propertyKey}` : propertyKey;
-        if (
-          propertyValue !== null &&
-          typeof propertyValue === "object" &&
-          checkIfPropertyExistsOrIsUndefined(propertyValue, "type") &&
-          checkIfPropertyExistsOrIsUndefined(propertyValue, "format") &&
-          checkIfPropertyExistsOrIsUndefined(propertyValue, "x-dmn-type")
-        ) {
-          // not leaf;
-          return handleJsonSchemaDifferences(inputs, propertyValue, fullKey);
-        }
-
-        if (!propertyValue || propertyValue?.type || propertyValue?.["x-dmn-type"]) {
-          unsetObjectValueByPath(inputs, fullKey);
-          return inputs;
-        }
-
-        if (propertyValue?.format) {
-          setObjectValueByPath(inputs, fullKey, undefined);
-          return inputs;
-        }
-
-        return inputs;
-      }, inputs);
+          const path = pathList.length === 1 ? pathList.join(".") : pathList.slice(0, -1).join(".");
+          unsetObjectValueByPath(toValidate, path);
+        });
+      }
     },
     []
   );
@@ -613,10 +573,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (
-          props.workspaceFile.extension !== "dmn" ||
-          extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
-        ) {
+        if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
           setDmnRunnerContextProviderState({
             type: DmnRunnerProviderActionType.DEFAULT,
             newState: { isExpanded: false },
@@ -635,29 +592,32 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               }
 
               setJsonSchema((previousJsonSchema) => {
-                const derefererJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
-
+                // const derefereredJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
                 // On the first render the previous will be undefined;
                 if (!previousJsonSchema) {
-                  return derefererJsonSchema;
+                  return jsonSchema;
                 }
 
-                const propertiesDifference = diff(
-                  getObjectValueByPath(previousJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {},
-                  getObjectValueByPath(derefererJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {}
-                );
+                const validateInputs = dmnRunnerAjv.compile(jsonSchema);
 
                 // Add default values and delete changed data types;
                 setDmnRunnerPersistenceJson({
-                  newConfigInputs: (previousConfigInputs) =>
-                    handleJsonSchemaDifferences(cloneDeep(previousConfigInputs), propertiesDifference),
-                  newInputsRow: (previousInputs) =>
-                    cloneDeep(previousInputs).map((inputs) =>
-                      handleJsonSchemaDifferences(inputs, propertiesDifference)
-                    ),
+                  newConfigInputs: (previousConfigInputs) => {
+                    const newConfigInputs = cloneDeep(previousConfigInputs);
+                    removeChangedPropertiesAndAdditionalProperties(validateInputs as any, newConfigInputs);
+                    return newConfigInputs;
+                  },
+                  newInputsRow: (previousInputs) => {
+                    return cloneDeep(previousInputs).map((input) => {
+                      const id = input.id;
+                      removeChangedPropertiesAndAdditionalProperties(validateInputs as any, input);
+                      input.id = id;
+                      return input;
+                    });
+                  },
                   cancellationToken: canceled,
                 });
-                return derefererJsonSchema;
+                return jsonSchema;
               });
             });
           })
@@ -667,12 +627,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           });
       },
       [
-        dereferenceExtendedServicesJsonSchema,
+        dmnRunnerAjv,
         extendedServices.client,
         extendedServices.status,
         extendedServicesModelPayload,
-        handleJsonSchemaDifferences,
         props.workspaceFile.extension,
+        removeChangedPropertiesAndAdditionalProperties,
         setDmnRunnerPersistenceJson,
       ]
     )
@@ -792,6 +752,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       canBeVisualized,
       configs: dmnRunnerConfigInputs,
       currentInputIndex,
+      dmnRunnerKey,
       dmnRunnerPersistenceJson,
       extendedServicesError,
       inputs: dmnRunnerInputs,
@@ -807,6 +768,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       currentInputIndex,
       dmnRunnerConfigInputs,
       dmnRunnerInputs,
+      dmnRunnerKey,
       dmnRunnerMode,
       dmnRunnerPersistenceJson,
       extendedServicesError,

@@ -24,6 +24,7 @@ import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - expression tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "expression");
+  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
 
   let testHelper: VSCodeTestHelper;
 
@@ -40,6 +41,7 @@ describe("Serverless workflow editor - expression tests", () => {
 
   afterEach(async function () {
     this.timeout(15000);
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });

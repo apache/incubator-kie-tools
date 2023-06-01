@@ -17,6 +17,7 @@
 import { useMemo } from "react";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
+import { useEnv } from "../env/hooks/EnvContext";
 
 export enum AuthOptionsType {
   UNDEFINED = "UNDEFINED",
@@ -34,6 +35,7 @@ const undefinedAuthOptions = {
 export type AuthOptions = BasicAuthOptions | typeof undefinedAuthOptions;
 
 export interface Options {
+  appName: string;
   username?: string;
   domain?: string;
   auth?: AuthOptions;
@@ -77,6 +79,7 @@ type CreateSnippetArgsType = {
 };
 
 export interface BitbucketClientApi {
+  appName: string;
   domain?: string;
   auth?: AuthOptions;
   headers?: Record<string, string>;
@@ -90,7 +93,8 @@ export interface BitbucketClientApi {
   listWorkspaces(): Promise<Response>;
 }
 export class BitbucketClient implements BitbucketClientApi {
-  constructor(options: Options = {}) {
+  constructor(options: Options) {
+    this.appName = options.appName;
     this.domain = options?.domain ?? "bitbucket.org";
     this.headers = options?.headers ?? {
       "Content-Type": "application/json",
@@ -99,6 +103,7 @@ export class BitbucketClient implements BitbucketClientApi {
     this.auth = options?.auth ?? undefinedAuthOptions;
     this.username = options.username ?? (options?.auth as BasicAuthOptions)?.username;
   }
+  appName: string;
   auth: AuthOptions;
   domain: string;
   headers: Record<string, string>;
@@ -157,7 +162,7 @@ export class BitbucketClient implements BitbucketClientApi {
   pushEmptyCommit = (args: PushEmptyCommitArgsType) => {
     const formData: FormData = new FormData();
     formData.append("branch", args.branch);
-    formData.append("message", "KIE Sandbox Initial Push");
+    formData.append("message", `${this.appName} Initial Push`);
     return this.request({
       urlContext: `/repositories/${args.workspace}/${args.repository}/src`,
       method: "post",
@@ -207,18 +212,20 @@ export class BitbucketClient implements BitbucketClientApi {
 
 export function useBitbucketClient(authSession: AuthSession | undefined): BitbucketClientApi {
   const authProviders = useAuthProviders();
+  const { env } = useEnv();
 
   return useMemo(() => {
     if (authSession?.type !== "git") {
-      return new BitbucketClient();
+      return new BitbucketClient({ appName: env.KIE_SANDBOX_APP_NAME });
     }
 
     const authProvider = authProviders.find((a) => a.id === authSession.authProviderId);
     if (authProvider?.type !== "bitbucket") {
-      return new BitbucketClient();
+      return new BitbucketClient({ appName: env.KIE_SANDBOX_APP_NAME });
     }
 
     return new BitbucketClient({
+      appName: env.KIE_SANDBOX_APP_NAME,
       domain: authProvider.domain,
       auth: {
         type: AuthOptionsType.BASIC,
@@ -226,5 +233,5 @@ export function useBitbucketClient(authSession: AuthSession | undefined): Bitbuc
         password: authSession.token,
       },
     });
-  }, [authProviders, authSession]);
+  }, [authProviders, authSession, env.KIE_SANDBOX_APP_NAME]);
 }

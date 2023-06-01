@@ -24,11 +24,10 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { QueryParams } from "../../navigation/Routes";
 import { useQueryParam } from "../../queryParams/QueryParamsContext";
-import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
-import { KIE_SAMPLES_REPO } from "../../home/sample/sampleApi";
-import { useSampleDispatch } from "../../home/sample/hooks/SampleContext";
+import { KIE_SAMPLES_REPO } from "../../samples/SampleApi";
+import { useSampleDispatch } from "../../samples/hooks/SampleContext";
 
 export function NewWorkspaceFromSample() {
   const sampleDispatch = useSampleDispatch();
@@ -42,7 +41,7 @@ export function NewWorkspaceFromSample() {
   useEffect(() => {
     sampleDispatch
       .getSampleFiles(sampleId)
-      .then((sampleFiles) => workspaces.createWorkspaceFromLocal({ localFiles: sampleFiles }))
+      .then((sampleFiles) => workspaces.createWorkspaceFromLocal({ preferredName: sampleId, localFiles: sampleFiles }))
       .then(({ workspace, suggestedFirstFile }) => {
         if (!suggestedFirstFile) {
           return;
@@ -62,22 +61,20 @@ export function NewWorkspaceFromSample() {
 
   return (
     <>
-      <OnlineEditorPage>
-        {openingError && <EditorPageErrorPage path={`${KIE_SAMPLES_REPO.path}/${sampleId}`} errors={[openingError]} />}
-        {!openingError && (
-          <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
-            <Bullseye>
-              <TextContent>
-                <Bullseye>
-                  <Spinner />
-                </Bullseye>
-                <br />
-                <Text component={TextVariants.p}>{`Loading sample...`}</Text>
-              </TextContent>
-            </Bullseye>
-          </PageSection>
-        )}
-      </OnlineEditorPage>
+      {openingError && <EditorPageErrorPage path={`${KIE_SAMPLES_REPO.path}/${sampleId}`} errors={[openingError]} />}
+      {!openingError && (
+        <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
+          <Bullseye>
+            <TextContent>
+              <Bullseye>
+                <Spinner />
+              </Bullseye>
+              <br />
+              <Text component={TextVariants.p}>{`Loading sample...`}</Text>
+            </TextContent>
+          </Bullseye>
+        </PageSection>
+      )}
     </>
   );
 }

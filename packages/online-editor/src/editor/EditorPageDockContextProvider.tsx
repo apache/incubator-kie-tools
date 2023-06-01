@@ -25,8 +25,8 @@ import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/
 import { useOnlineI18n } from "../i18n";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { WorkspaceFile, WorkspacesContextType } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import { useFileValidation } from "./Validation";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { DmnRunnerTable } from "../dmnRunner/DmnRunnerTable";
@@ -126,7 +126,7 @@ export function EditorPageDockContextProvider({
       (workspaceFile.extension.toLowerCase() === "dmn" ||
         workspaceFile.extension.toLowerCase() === "bpmn" ||
         workspaceFile.extension.toLowerCase() === "bpmn2") &&
-      extendedServicesStatus !== KieSandboxExtendedServicesStatus.RUNNING
+      extendedServicesStatus !== ExtendedServicesStatus.RUNNING
     );
   }, [extendedServicesStatus, workspaceFile.extension]);
 
@@ -135,17 +135,17 @@ export function EditorPageDockContextProvider({
       (workspaceFile.extension.toLowerCase() === "dmn" ||
         workspaceFile.extension.toLowerCase() === "bpmn" ||
         workspaceFile.extension.toLowerCase() === "bpmn2") &&
-      extendedServicesStatus !== KieSandboxExtendedServicesStatus.RUNNING
+      extendedServicesStatus !== ExtendedServicesStatus.RUNNING
     ) {
-      return "In order to have access to Problems tab you need to use the KIE Sandbox Extended Services";
+      return "In order to have access to Problems tab you need to use the Extended Services";
     }
     return "";
   }, [extendedServicesStatus, workspaceFile.extension]);
 
   useEffect(() => {
     if (
-      (extendedServicesStatus === KieSandboxExtendedServicesStatus.STOPPED ||
-        extendedServicesStatus === KieSandboxExtendedServicesStatus.NOT_RUNNING) &&
+      (extendedServicesStatus === ExtendedServicesStatus.STOPPED ||
+        extendedServicesStatus === ExtendedServicesStatus.NOT_RUNNING) &&
       panel === PanelId.DMN_RUNNER_TABLE
     ) {
       setPanel(PanelId.NONE);

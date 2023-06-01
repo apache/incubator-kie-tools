@@ -1,3 +1,20 @@
+# 0.29.0 (alpha)
+
+- [KOGITO-9175](https://issues.redhat.com/browse/KOGITO-9175) - Support types for Dashbuilder external datasets
+- [KOGITO-9186](https://issues.redhat.com/browse/KOGITO-9186) - Handle NaN values in Dashbuilder metrics dataset
+- [kie-issues#113](https://github.com/kiegroup/kie-issues/issues/113) - Remove unnecessary rendering calls to DMN Editor's Boxed Expression Editor
+- [kie-issues#163](https://github.com/kiegroup/kie-issues/issues/163) - In DMN Editor's Boxed Expression Editor, long names are not being truncated in DecisionTable sub-headers and in the name of root expressions
+- [kie-issues#255](https://github.com/kiegroup/kie-issues/issues/255) - A Not-collect Hit Policy should clear aggregation type
+- [kie-issues#250](https://github.com/kiegroup/kie-issues/issues/250) - Width changes are not correctly persisted
+- [kie-issues#258](https://github.com/kiegroup/kie-issues/issues/258) - Use data type current value when opening DMN constraint modal
+- [kie-issues#222](https://github.com/kiegroup/kie-issues/issues/222) - When editing a BeeTable cell with selected text, the selection is lost when mouse hovers in or out of it
+- [kie-issues#210](https://github.com/kiegroup/kie-issues/issues/210) - Keyboard shortcuts stop working after blurring out of some components on the BeeTable
+- [kie-issues#114](https://github.com/kiegroup/kie-issues/issues/114) - Part 2: Temporary comment code no more supported by API
+- [kie-issues#278](https://github.com/kiegroup/kie-issues/issues/278) - Duplicate row should not copy the inputEntry id of that row
+- [KOGITO-8986](https://issues.redhat.com/browse/KOGITO-8986) - SWF Viewer - missing icon for parameters for Switch state
+- [KOGITO-8288](https://issues.redhat.com/browse/KOGITO-8288) - SWF Editor - Issues on state selection & tooltip overlapping toolbox
+- [KOGITO-8988](https://issues.redhat.com/browse/KOGITO-8988) - SWF Viewer - add icons for ForEch state
+
 # 0.28.2 (alpha)
 
 - [KOGITO-9108](https://issues.redhat.com/browse/KOGITO-9108) - Rename the new Serverless Workflow VS Code extension to `swf-vscode-extension`

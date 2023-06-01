@@ -26,9 +26,9 @@ import org.dashbuilder.renderer.echarts.client.js.EChartsTypeFactory;
 @Dependent
 public class EChartsBubbleChartDisplayer extends EChartsXYDisplayer {
 
-    private static int VALUE_INDEX = 1;
-    private static int RADIUS_INDEX = 2;
-    private static int LABEL_INDEX = 3;
+    private static final int VALUE_INDEX = 1;
+    private static final int RADIUS_INDEX = 2;
+    private static final int LABEL_INDEX = 3;
 
     @Inject
     public EChartsBubbleChartDisplayer(EChartsDisplayerView<?> view, EChartsTypeFactory echartsFactory) {

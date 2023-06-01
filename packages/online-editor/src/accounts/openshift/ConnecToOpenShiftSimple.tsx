@@ -27,8 +27,8 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useOnlineI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
-import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
@@ -118,12 +118,12 @@ export function ConnecToOpenShiftSimple(props: {
 
   return (
     <>
-      {extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
+      {extendedServices.status !== ExtendedServicesStatus.RUNNING && (
         <>
           <FormAlert>
             <Alert
               variant="danger"
-              title={"Connect to KIE Sandbox Extended Services before configuring your OpenShift instance"}
+              title={"Connect to Extended Services before configuring your OpenShift instance"}
               aria-live="polite"
               isInline
             />
@@ -167,7 +167,7 @@ export function ConnecToOpenShiftSimple(props: {
         key="use-wizard"
         className="pf-u-p-0"
         variant="link"
-        isDisabled={extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING}
+        isDisabled={extendedServices.status !== ExtendedServicesStatus.RUNNING}
         onClick={() => props.setMode(OpenShiftSettingsTabMode.WIZARD)}
         data-testid="use-wizard-button"
         isLoading={isConnecting}

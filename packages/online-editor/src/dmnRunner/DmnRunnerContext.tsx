@@ -27,6 +27,7 @@ export interface DmnRunnerContextType {
   configs: UnitablesInputsConfigs;
   currentInputIndex: number;
   extendedServicesError: boolean;
+  dmnRunnerKey: number;
   dmnRunnerPersistenceJson: DmnRunnerPersistenceJson;
   inputs: Array<InputRow>;
   isExpanded: boolean;

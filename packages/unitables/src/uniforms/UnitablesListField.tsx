@@ -44,7 +44,7 @@ function UnitablesListField({
   itemProps,
   ...props
 }: UnitablesListFieldProps) {
-  const hasValue = useMemo(() => props.value && props.value.length > 0, [props.value]);
+  const hasValue = useMemo(() => props.value && Array.isArray(props.value) && props.value.length > 0, [props.value]);
 
   return wrapField(
     props as any,

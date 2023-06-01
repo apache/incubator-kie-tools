@@ -1,233 +1,263 @@
 properties:
   # serverLocation (must end with /)
   serverLocation: /
-  # SWF Charts size
-  swfChartsWidth: 500
-  swfChartsHeight: 350
 
   # Data update in seconds (use -1 for no update)
   dataUpdate: 5
 
   # Style for Index Page Title
   indexTitleStyle: >-
-    font-size: xx-large; padding: 10px; background-color: blue; color: white; font-weight: bold; opacity: 0.7
-
+    font-size: xx-large; padding: 10px; background-color: rgb(10, 64, 128); color: white; margin-bottom: 20px; font-weight: bold; opacity: 0.7
+global:
+  settings:
+    html:
+      html: >-
+        <div id="${this}" class="card-pf card-pf-aggregate-status" style="background-color: ${bgColor}; width: 90%; height: 80px;margin: 30px; margin-bottom: 20px; border-radius: 10px">
+          <h2 style="font-weight: 600; font-size: large" id="${this}Value">${value} <span id="${this}Suffix" class=""></span></h2>
+          <p style="font-weight: 400" id="${this}Title"><em id="${this}Icon" class=""></em> ${title}</p>
+        </div>
+    refresh:
+      interval: ${dataUpdate}
+    chart:
+      resizable: true
+      grid:
+        y: false
+    axis:
+      y:
+        labels_show: false
+    extraConfiguration: >-
+      {
+        "series": [                              
+          {
+              "label": {                        
+                  "fontSize": "20",
+                  "formatter": "{@value} {b}"
+              }
+          }
+          
+        ]
+      }
+    columns:
+      - id: workflow
+        expression: >-
+          value.indexOf("process_id") !== -1 ?
+            value.split("process_id")[1].split("version")[0].replace("=\"", "").replace("\",", "")
+            : value
 datasets:
   - uuid: metrics
     url: ${serverLocation}q/metrics
-    expression: >-
-      $map($, function($l) { [$l[0], $contains($l[1], "process_id") ? $replace($match($l[1], /process_id=".*?"/).match, "process_id", "workflow") : $l[1] , $l[2]]})
-    cacheEnabled: "true"
-    refreshTime: "2second"
-    columns:
-      - id: metric
-        type: label
-      - id: labels
-        type: label
-      - id: value
-        type: number
+    cacheEnabled: true
+    refreshTime: "${dataUpdate}second"
 pages:
   - rows:
       - columns:
           - components:
               - html: >-
-                  <p style="${indexTitleStyle}">Kogito Serverless Workflow </p> <hr />
+                  <p style="${indexTitleStyle}">Kogito Serverless Workflow </p>
       - columns:
-          - span: "4"
+          - span: 3
             components:
               - settings:
-                  component: echarts
-                  filter:
-                    enabled: "true"
-                    listening: "true"
-                  external:
-                    width: ${swfChartsWidth}px
-                    height: ${swfChartsHeight}px
-                  echarts:
-                    series:
-                      type: "bar"
-                    title:
-                      text: Started
-                  refresh:
-                    interval: "${dataUpdate}"
-                  dataSetLookup:
+                  type: METRIC
+                  general:
+                    title: "Artifact Id"
+                  columns:
+                    - id: labels
+                      expression: >-
+                        value.split("artifactId=\"")[1].split("\",process_id")[0]
+                  lookup:
                     uuid: metrics
-                    sort:
-                      - column: value
-                        sortOrder: DESCENDING
                     filter:
-                      - column: metric
+                      - column: Metric
+                        function: EQUALS_TO
+                        args:
+                          - "kogito_process_instance_started_total"
+                    group:
+                      - functions:
+                          - source: labels
+              - settings:
+                  type: METRIC
+                  general:
+                    title: "Workflow"
+                  columns:
+                    - id: labels
+                      expression: >-
+                        value.split("process_id=\"")[1].split("\",version")[0]
+                  lookup:
+                    uuid: metrics
+                    filter:
+                      - column: Metric
+                        function: EQUALS_TO
+                        args:
+                          - "kogito_process_instance_started_total"
+                    group:
+                      - functions:
+                          - source: labels
+              - settings:
+                  type: METRIC
+                  general:
+                    title: "Version"
+                  columns:
+                    - id: labels
+                      expression: >-
+                        value.split("version=\"")[1].split("\",")[0]
+                  lookup:
+                    uuid: metrics
+                    filter:
+                      - column: Metric
+                        function: EQUALS_TO
+                        args:
+                          - "kogito_process_instance_started_total"
+                    group:
+                      - functions:
+                          - source: labels
+              - settings:
+                  type: METRIC
+                  general:
+                    title: "Last Update"
+                  columns:
+                    - id: labels
+                      expression: >-
+                        new Date().toLocaleString()
+                  lookup:
+                    uuid: metrics
+                    filter:
+                      - column: Metric
                         function: EQUALS_TO
                         args:
                           - "kogito_process_instance_started_total"
                     group:
                       - columnGroup:
-                          source: labels
-                        groupFunctions:
+                          source: metric
+                        functions:
                           - source: labels
-                          - source: value
-          - span: "4"
+
+          - span: 6
+            properties:
+              margin-top: 45px
             components:
               - settings:
-                  component: echarts
-                  filter:
-                    enabled: "true"
-                    listening: "true"
-                  external:
-                    width: ${swfChartsWidth}px
-                    height: ${swfChartsHeight}px
-                  echarts:
-                    series:
-                      type: "bar"
-                    title:
-                      text: Running
-                    option: ${chartConfiguration}
-                  refresh:
-                    interval: "${dataUpdate}"
-                  dataSetLookup:
+                  type: PIECHART
+                  chart:
+                    height: 400
+                  general:
+                    title: "Workflows by State"
+                  columns:
+                    - id: State
+                      expression: value.replace("kogito_process_instance_", "").replace("_total", "")
+                  lookup:
                     uuid: metrics
                     sort:
-                      - column: value
-                        sortOrder: DESCENDING
+                      - column: metric
+                        order: ASCENDING
                     filter:
                       - column: metric
-                        function: EQUALS_TO
+                        function: IN
                         args:
+                          - "kogito_process_instance_started_total"
+                          - "kogito_process_instance_completed_total"
                           - "kogito_process_instance_running_total"
                     group:
                       - columnGroup:
-                          source: labels
-                        groupFunctions:
-                          - source: labels
+                          source: metric
+                        functions:
+                          - source: metric
+                            column: State
                           - source: value
-      - columns:
-          - span: "4"
+          - span: 3
             components:
               - settings:
-                  component: echarts
-                  filter:
-                    enabled: "true"
-                    listening: "true"
-                  external:
-                    width: ${swfChartsWidth}px
-                    height: ${swfChartsHeight}px
-                  echarts:
-                    series:
-                      type: "bar"
-                    title:
-                      text: Completed
-                    option: ${chartConfiguration}
-                  refresh:
-                    interval: "${dataUpdate}"
-                  dataSetLookup:
+                  type: METRIC
+                  general:
+                    title: "CPU Usage"
+                  html:
+                    javascript: >-
+                      document.getElementById(${this}.id + "Icon").className = "pficon pficon-cpu";
+                      document.getElementById(${this}.id + "Suffix").innerHTML = "%";
+                  columns:
+                    - id: CPU
+                      expression: value * 100
+                      pattern: "#"
+                  lookup:
                     uuid: metrics
-                    sort:
-                      - column: value
-                        sortOrder: DESCENDING
                     filter:
-                      - column: metric
+                      - column: Metric
                         function: EQUALS_TO
                         args:
-                          - "kogito_process_instance_completed_total"
+                          - "system_cpu_usage"
                     group:
-                      - columnGroup:
-                          source: labels
-                        groupFunctions:
-                          - source: labels
-                          - source: value
-          - span: "4"
-            components:
+                      - functions:
+                          - source: Value
+                            function: MAX
+                            column: CPU
               - settings:
-                  component: echarts
-                  filter:
-                    enabled: "true"
-                    listening: "true"
-                  external:
-                    width: ${swfChartsWidth}px
-                    height: ${swfChartsHeight}px
-                  echarts:
-                    series:
-                      type: "bar"
-                    title:
-                      text: Total Duration
-                    option: ${chartConfiguration}
-                  refresh:
-                    interval: "${dataUpdate}"
-                  dataSetLookup:
+                  type: METRIC
+                  general:
+                    title: Used Memory
+                  html:
+                    javascript: >-
+                      document.getElementById(${this}.id + "Icon").className = "pficon pficon-server";
+                      document.getElementById(${this}.id + "Suffix").innerHTML = "mB";
+
+                  columns:
+                    - id: Total
+                      expression: >-
+                        value / 1000_000
+                  lookup:
                     uuid: metrics
-                    sort:
-                      - column: value
-                        sortOrder: DESCENDING
                     filter:
-                      - column: metric
+                      - column: Metric
+                        function: EQUALS_TO
+                        args:
+                          - "jvm_memory_used_bytes"
+                    group:
+                      - functions:
+                          - source: Value
+                            function: SUM
+                            column: Total
+              - settings:
+                  type: METRIC
+                  general:
+                    visible: true
+                    title: Uptime
+                  html:
+                    javascript: >-
+                      document.getElementById(${this}.id + "Icon").className = "fa fa-clock-o";
+                      document.getElementById(${this}.id + "Suffix").innerHTML = "min";
+                  columns:
+                    - id: UPTIME
+                      pattern: "#"
+                      expression: value / 60
+                  lookup:
+                    uuid: metrics
+                    filter:
+                      - column: Metric
+                        function: EQUALS_TO
+                        args:
+                          - "process_uptime_seconds"
+                    group:
+                      - functions:
+                          - source: Value
+                            function: MAX
+                            column: UPTIME
+              - settings:
+                  type: METRIC
+                  general:
+                    title: "Workflows Duration"
+                  html:
+                    javascript: >-
+                      document.getElementById(${this}.id + "Icon").className = "fa fa-th";
+                      document.getElementById(${this}.id + "Suffix").innerHTML = "s";
+                  lookup:
+                    uuid: metrics
+                    filter:
+                      - column: Metric
                         function: EQUALS_TO
                         args:
                           - "kogito_process_instance_duration_seconds_sum"
                     group:
                       - columnGroup:
-                          source: labels
-                        groupFunctions:
-                          - source: labels
-                          - source: value
-      - columns:
-          - span: "3"
-            components:
-              - properties:
-                  width: 150px
-                  float: left
-                settings:
-                  type: SELECTOR
-                  general:
-                    visible: "true"
-                    text: "Filter"
-                  filter:
-                    enabled: "true"
-                    notification: "true"
-                  refresh:
-                    interval: "${dataUpdate}"
-                  dataSetLookup:
-                    uuid: metrics
-                    filter:
-                      - column: metric
-                        function: EQUALS_TO
-                        args:
-                          - "kogito_process_instance_started_total"
-                    group:
-                      - columnGroup:
-                          source: labels
-                        groupFunctions:
-                          - source: labels
-                            column: Workflow
-          - span: "9"
-            components:
-              - properties:
-                  float: right
-                  text-align: right
-                settings:
-                  type: METRIC
-                  html:
-                    html: >-
-                      <p style="font-size: smallest; margin-right: 5px">
-                        <em><strong>Last Update:</strong> <em id="${this}""></em>
-                        <em ><strong>Uptime</strong> ${value}s </em>   
-                       </p>
-                    javascript: >-
-                      ${this}.textContent = new Date().toLocaleString()
-                  general:
-                    visible: "true"
-                    title: Uptime
-                  refresh:
-                    interval: "${dataUpdate}"
-                  columns:
-                    - id: value
-                      pattern: "#"
-                  dataSetLookup:
-                    uuid: metrics
-                    filter:
-                      - column: metric
-                        function: EQUALS_TO
-                        args:
-                          - "process_uptime_seconds"
-                    group:
-                      - groupFunctions:
-                          - source: value
+                          source: metric
+                        functions:
+                          - source: Value
+                            function: AVERAGE

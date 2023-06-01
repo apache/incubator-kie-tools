@@ -3060,6 +3060,9 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      ajv:
+        specifier: ^6.12.6
+        version: 6.12.6
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -3820,12 +3823,6 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
-      ajv:
-        specifier: ^6.12.6
-        version: 6.12.6
-      ajv-errors:
-        specifier: ^1.0.1
-        version: 1.0.1(ajv@6.12.6)
       deep-object-diff:
         specifier: ^1.1.0
         version: 1.1.0
@@ -5231,6 +5228,9 @@ importers:
       "@kie-tools/dmn-language-service":
         specifier: workspace:*
         version: link:../dmn-language-service
+      "@kie-tools/dmn-runner":
+        specifier: workspace:*
+        version: link:../dmn-runner
       "@kie-tools/emscripten-fs":
         specifier: ^0.0.2
         version: 0.0.2
@@ -5279,9 +5279,6 @@ importers:
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
-      deep-object-diff:
-        specifier: ^1.1.0
-        version: 1.1.0
       history:
         specifier: ^4.9.0
         version: 4.10.1
@@ -6057,12 +6054,18 @@ importers:
       "@octokit/rest":
         specifier: ^18.5.3
         version: 18.5.3
+      "@patternfly/quickstarts":
+        specifier: ^2.3.2
+        version: 2.4.0(@patternfly/react-core@4.276.6)(react-dom@17.0.2)(react@17.0.2)(showdown@2.1.0)
       "@patternfly/react-core":
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-table":
+        specifier: ^4.112.39
+        version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-tokens":
         specifier: ^4.94.6
         version: 4.94.6
@@ -6078,6 +6081,9 @@ importers:
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
+      client-zip:
+        specifier: ^2.3.1
+        version: 2.4.3
       dexie:
         specifier: ^3.2.2
         version: 3.2.2
@@ -6087,9 +6093,9 @@ importers:
       history:
         specifier: ^4.9.0
         version: 4.10.1
-      jszip:
-        specifier: ^3.7.1
-        version: 3.10.1
+      kubernetes-models:
+        specifier: ^4.1.0
+        version: 4.1.0
       moment:
         specifier: ^2.29.4
         version: 2.29.4
@@ -6117,6 +6123,15 @@ importers:
       react-router-dom:
         specifier: ^5.2.1
         version: 5.3.0(react@17.0.2)
+      short-unique-id:
+        specifier: ^4.4.4
+        version: 4.4.4
+      showdown:
+        specifier: ^2.1.0
+        version: 2.1.0
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
       vscode-languageserver-types:
         specifier: ^3.16.0
         version: 3.17.2
@@ -6145,6 +6160,9 @@ importers:
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
+      "@kie-tools/extended-services":
+        specifier: workspace:*
+        version: link:../extended-services
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -6154,6 +6172,9 @@ importers:
       "@kie-tools/serverless-logic-web-tools-swf-builder-image-env":
         specifier: workspace:*
         version: link:../serverless-logic-web-tools-swf-builder-image-env
+      "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env":
+        specifier: workspace:*
+        version: link:../serverless-logic-web-tools-swf-dev-mode-image-env
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
@@ -6187,6 +6208,9 @@ importers:
       "@types/react-router-dom":
         specifier: ^5.1.7
         version: 5.1.7
+      "@types/uuid":
+        specifier: ^8.3.0
+        version: 8.3.0
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.70.0)
@@ -6210,7 +6234,7 @@ importers:
         version: 5.3.2(webpack@5.70.0)
       jest:
         specifier: ^26.6.3
-        version: 26.6.3
+        version: 26.6.3(ts-node@10.9.1)
       jest-junit:
         specifier: ^14.0.0
         version: 14.0.0
@@ -6235,6 +6259,9 @@ importers:
       ts-jest:
         specifier: ^26.5.6
         version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.1(typescript@4.8.4)
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
@@ -6301,6 +6328,18 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+
+  packages/serverless-logic-web-tools-swf-deployment-quarkus-app:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   packages/serverless-logic-web-tools-swf-deployment-webapp:
     dependencies:
@@ -6411,11 +6450,38 @@ importers:
         specifier: ^5.8.0
         version: 5.8.0
 
+  packages/serverless-logic-web-tools-swf-dev-mode-image:
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app":
+        specifier: workspace:*
+        version: link:../serverless-logic-web-tools-swf-deployment-quarkus-app
+      "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env":
+        specifier: workspace:*
+        version: link:../serverless-logic-web-tools-swf-dev-mode-image-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/serverless-logic-web-tools-swf-dev-mode-image-env:
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+
   packages/serverless-workflow-combined-editor:
     dependencies:
       "@kie-tools-core/editor":
         specifier: workspace:*
         version: link:../editor
+      "@kie-tools-core/envelope":
+        specifier: workspace:*
+        version: link:../envelope
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
@@ -8182,12 +8248,6 @@ importers:
       "@types/react-table":
         specifier: ^7.0.25
         version: 7.7.7
-      ajv:
-        specifier: ^6.12.6
-        version: 6.12.6
-      ajv-errors:
-        specifier: ^1.0.1
-        version: 1.0.1(ajv@6.12.6)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -9259,7 +9319,7 @@ importers:
         version: link:../kie-sandbox-fs
       client-zip:
         specifier: ^2.3.1
-        version: 2.3.1
+        version: 2.4.3
       isomorphic-git:
         specifier: ^1.11.1
         version: 1.11.1
@@ -14877,6 +14937,43 @@ packages:
     engines: { node: ">=8.0" }
     dev: true
 
+  /@patternfly/patternfly@4.224.2:
+    resolution:
+      { integrity: sha512-HGNV26uyHSIECuhjPg/WGn0mXbAotcs6ODfhAOkfYjIgGylddgiwElxUe1rpEHV5mQJJ2rMn4OdeJIIpzRX61g== }
+    dev: false
+
+  /@patternfly/quickstarts@2.4.0(@patternfly/react-core@4.276.6)(react-dom@17.0.2)(react@17.0.2)(showdown@2.1.0):
+    resolution:
+      { integrity: sha512-dlGtAX8iQarFvmflEvZ7rHaJb1aaBrcqkbzwx0wy2QLL/BID7Y+UQ9ht7k+TBNfnxhPOljM2YTp0rugG5S9q4g== }
+    peerDependencies:
+      "@patternfly/react-core": ">=4.115.2"
+      react: ">=16.8.0"
+      react-dom: ">=16.8.0"
+      showdown: ">=1.8.6"
+    dependencies:
+      "@patternfly/react-catalog-view-extension": 4.96.0(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-core": 4.276.6(react-dom@17.0.2)(react@17.0.2)
+      dompurify: 2.4.0
+      history: 5.3.0
+      react: 17.0.2
+      react-dom: 17.0.2(react@17.0.2)
+      showdown: 2.1.0
+    dev: false
+
+  /@patternfly/react-catalog-view-extension@4.96.0(react-dom@17.0.2)(react@17.0.2):
+    resolution:
+      { integrity: sha512-ZMPvaE6KOjbLioCdi1wPtxughsce4+sPq6Us5s4JKu2xgn+e83NcfSD3pAcS5e+M8K3SWwdXd3ycgkD8F+Obvg== }
+    peerDependencies:
+      react: ^16.8 || ^17 || ^18
+      react-dom: ^16.8 || ^17 || ^18
+    dependencies:
+      "@patternfly/patternfly": 4.224.2
+      "@patternfly/react-core": 4.276.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-styles": 4.92.6
+      react: 17.0.2
+      react-dom: 17.0.2(react@17.0.2)
+    dev: false
+
   /@patternfly/react-charts@6.94.18(react-dom@17.0.2)(react@17.0.2):
     resolution:
       { integrity: sha512-56WxnZYC3blRX41mW67JaPxJ3YhXViLvwGpEsZrYCccla/rTV8JgKK0gjHnqtzPQiVBfpn+3ewOyNCOR5uRoSw== }
@@ -19668,9 +19765,9 @@ packages:
       { integrity: sha512-FxqpkPPwu1HjuN93Omfm4h8uIanXofW0RxVEW3k5RKx+mJJYSthzNhp32Kzxxy3YAEZ/Dc/EWN1vZRY0+kOhbw== }
     engines: { node: ">= 10" }
 
-  /client-zip@2.3.1:
+  /client-zip@2.4.3:
     resolution:
-      { integrity: sha512-iRSvLjnKWXln/Q3m4thNe7IQWHBZg1fYjnuFXjLOgXg7GQYTFdVfHJ3n1J7qpgFpGbfXYt8pfngfIl/FVDYPqg== }
+      { integrity: sha512-PRJsVv+Q742auicTQD47IgatSCRdZ7e09sQoQ+jXH/fz4nXF69cVxCeiTS+kV9xx+4iTSO8JbD5iwsqkIkNDZw== }
     dev: false
 
   /clipanion@3.2.0-rc.11:
@@ -19881,7 +19978,6 @@ packages:
     resolution:
       { integrity: sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw== }
     engines: { node: ^12.20.0 || >=14 }
-    dev: true
 
   /common-tags@1.8.0:
     resolution:
@@ -24192,6 +24288,13 @@ packages:
       tiny-invariant: 1.1.0
       tiny-warning: 1.0.3
       value-equal: 1.0.1
+
+  /history@5.3.0:
+    resolution:
+      { integrity: sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ== }
+    dependencies:
+      "@babel/runtime": 7.16.7
+    dev: false
 
   /hoist-non-react-statics@3.3.2:
     resolution:
@@ -31656,6 +31759,20 @@ packages:
       { integrity: sha512-vFwSUfQvqybiICwZY5+DAWIPLKsWO31Q91JSKl3UYv+K5c2QRPzn0qzec6QPu1Qc9eHYItiP3NdJqNVqetYAww== }
     dev: true
     optional: true
+
+  /short-unique-id@4.4.4:
+    resolution:
+      { integrity: sha512-oLF1NCmtbiTWl2SqdXZQbo5KM1b7axdp0RgQLq8qCBBLoq+o3A5wmLrNM6bZIh54/a8BJ3l69kTXuxwZ+XCYuw== }
+    hasBin: true
+    dev: false
+
+  /showdown@2.1.0:
+    resolution:
+      { integrity: sha512-/6NVYu4U819R2pUIk79n67SYgJHWCce0a5xTP979WbNp0FL9MN1I1QK662IDU1b6JzKTvmhgI7T7JYIxBi3kMQ== }
+    hasBin: true
+    dependencies:
+      commander: 9.4.1
+    dev: false
 
   /side-channel@1.0.4:
     resolution:

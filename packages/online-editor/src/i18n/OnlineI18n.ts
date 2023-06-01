@@ -71,7 +71,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     embed: string;
   };
   accelerators: {
-    commitMessage: (acceleratorName: string) => string;
+    commitMessage: (appName: string, acceleratorName: string) => string;
     loadingAlert: (acceleratorName: string) => string;
     successAlert: (acceleratorName: string) => string;
     failAlert: (acceleratorName: string) => string;
@@ -334,7 +334,6 @@ interface OnlineDictionary extends ReferenceDictionary {
       description: string;
     };
     dropdown: {
-      getHub: string;
       onlineForum: string;
     };
     bpmnCard: {
@@ -402,7 +401,7 @@ interface OnlineDictionary extends ReferenceDictionary {
           start: {
             stopped: {
               startInstruction: string;
-              launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+              launchExtendedServices: Array<string | Wrapped<"file">>;
             };
             firstTime: {
               title: string;
@@ -412,7 +411,7 @@ interface OnlineDictionary extends ReferenceDictionary {
               openInstruction: Array<string | Wrapped<"file" | "again">>;
             };
             alreadyRanBefore: string;
-            launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+            launchExtendedServices: Array<string | Wrapped<"file">>;
             advanced: {
               title: string;
               runFollowingCommand: string;
@@ -427,7 +426,7 @@ interface OnlineDictionary extends ReferenceDictionary {
           start: {
             stopped: {
               startInstruction: string;
-              launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+              launchExtendedServices: Array<string | Wrapped<"file">>;
             };
             firstTime: {
               title: string;
@@ -435,7 +434,7 @@ interface OnlineDictionary extends ReferenceDictionary {
               runAnyway: string;
             };
             alreadyRanBefore: string;
-            launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+            launchExtendedServices: Array<string | Wrapped<"file">>;
             advanced: {
               title: string;
               runFollowingCommand: string;
@@ -486,7 +485,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       expandAll: string;
     };
   };
-  kieSandboxExtendedServices: {
+  extendedServices: {
     dropdown: {
       shortConnected: (port: string) => string;
       tooltip: {

@@ -14,51 +14,23 @@
  * limitations under the License.
  */
 
-import Ajv from "ajv";
-import metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { DmnUnitablesI18n } from "./i18n";
-import {
-  DAYS_AND_TIME_DURATION_FORMAT,
-  DAYS_AND_TIME_DURATION_REGEXP,
-  YEARS_AND_MONTHS_DURATION_FORMAT,
-  YEARS_AND_MONTHS_DURATION_REGEXP,
-} from "@kie-tools/dmn-runner/dist/constants";
+import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/constants";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { UnitablesValidator } from "@kie-tools/unitables/dist/UnitablesValidator";
-import { get as getObjectValueByPath } from "lodash";
+import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 
 export class DmnUnitablesValidator extends UnitablesValidator {
-  protected readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
+  protected readonly dmnRunnerAjv = new DmnRunnerAjv();
   private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
 
   constructor(i18n: DmnUnitablesI18n) {
     super(i18n);
-    this.setupValidator();
-  }
-
-  private setupValidator() {
-    this.ajv.addMetaSchema(metaSchemaDraft04);
-    this.ajv.addFormat(DAYS_AND_TIME_DURATION_FORMAT, {
-      type: "string",
-      validate: (data: string) => !!data.match(DAYS_AND_TIME_DURATION_REGEXP),
-    });
-
-    this.ajv.addFormat(YEARS_AND_MONTHS_DURATION_FORMAT, {
-      type: "string",
-      validate: (data: string) => !!data.match(YEARS_AND_MONTHS_DURATION_REGEXP),
-    });
-
-    this.ajv.addKeyword("recursionRef", {
-      compile: (schema: any, _) => (data) => {
-        const dataPath = data.split("/").splice(1).join(".");
-        return !!getObjectValueByPath(schema, dataPath);
-      },
-    });
   }
 
   public createValidator(jsonSchema: any) {
-    const validator = this.ajv.compile(jsonSchema);
+    const validator = this.dmnRunnerAjv.getAjv().compile(jsonSchema);
 
     return (model: any) => {
       // AJV doesn't handle dates objects. This transformation converts Dates to their UTC format.

@@ -17,7 +17,6 @@
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import JSZip from "jszip";
 import { DEFAULT_DOCKER_IGNORE_CONTENT, PROJECT_FILES } from "../../project";
 import { OpenShiftPipeline } from "../OpenShiftPipeline";
 import { DeploymentStrategyArgs } from "./types";
@@ -57,21 +56,5 @@ export abstract class DeploymentStrategy {
     return filesToBeDeployed.length > 1 && this.args.workspace.name !== NEW_WORKSPACE_DEFAULT_NAME
       ? this.args.workspace.name
       : this.args.targetFile.name;
-  }
-
-  protected async createZipBlob(files: WorkspaceFile[]): Promise<Blob> {
-    const filesToZip = await Promise.all(
-      files.map(async (file) => ({
-        relativePath: file.relativePath,
-        content: await file.getFileContentsAsString(),
-      }))
-    );
-
-    const zip = new JSZip();
-    for (const file of filesToZip) {
-      zip.file(file.relativePath, file.content);
-    }
-
-    return zip.generateAsync({ type: "blob" });
   }
 }

@@ -18,7 +18,6 @@ package command
 
 import (
 	"fmt"
-
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/spf13/cobra"

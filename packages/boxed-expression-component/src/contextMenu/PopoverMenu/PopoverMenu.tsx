@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useState, useImperativeHandle, useMemo, useEffect } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Popover, PopoverPosition, PopoverProps } from "@patternfly/react-core/dist/js/components/Popover";
 import "./PopoverMenu.css";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
@@ -63,6 +63,10 @@ export interface PopoverMenuRef {
    */
   setIsVisible: (isVisible: boolean) => void;
 }
+
+const POPUP_DROP_DOWN_RESERVED_HEIGHT = 200;
+
+const POPUP_DEFAULT_HEIGHT = 200;
 
 export const PopoverMenu = React.forwardRef(
   (
@@ -122,6 +126,25 @@ export const PopoverMenu = React.forwardRef(
       })
     );
 
+    const appendElement = useMemo(() => {
+      if (appendTo instanceof HTMLElement) {
+        return appendTo;
+      } else if (appendTo) {
+        return appendTo();
+      }
+    }, [appendTo]);
+
+    const popupPosition = useMemo(() => {
+      if (appendElement) {
+        const yPos = appendElement?.getBoundingClientRect().top ?? 0;
+        const availableHeight = document.documentElement.clientHeight;
+        if (POPUP_DEFAULT_HEIGHT + yPos + POPUP_DROP_DOWN_RESERVED_HEIGHT > availableHeight) {
+          return PopoverPosition.right;
+        }
+      }
+      return PopoverPosition.bottom;
+    }, [appendElement]);
+
     return (
       <Popover
         id={"menu-selector"}
@@ -129,7 +152,7 @@ export const PopoverMenu = React.forwardRef(
         className={`popover-menu-selector ${className ?? ""}`}
         hasAutoWidth={hasAutoWidth}
         minWidth={minWidth}
-        position={position ?? PopoverPosition.bottom}
+        position={popupPosition}
         distance={distance ?? 0}
         reference={arrowPlacement}
         appendTo={appendTo}

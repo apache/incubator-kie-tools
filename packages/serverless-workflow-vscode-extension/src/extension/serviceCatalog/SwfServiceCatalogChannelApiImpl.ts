@@ -49,6 +49,13 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
     this.args.swfServiceCatalogSupportActions.importFunctionFromCompletionItem(args);
   }
 
+  public kogitoSwfServiceCatalog_importEventFromCompletionItem(args: {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  }): void {
+    this.args.swfServiceCatalogSupportActions.importEventFromCompletionItem(args);
+  }
+
   public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
     vscode.commands.executeCommand(COMMAND_IDS.serviceRegistriesLogin);
   }

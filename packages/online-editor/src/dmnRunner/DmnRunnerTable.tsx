@@ -42,7 +42,7 @@ export function DmnRunnerTable() {
 
   // CUSTOM HOOKs
   const { i18n } = useOnlineI18n();
-  const { configs, inputs, extendedServicesError, jsonSchema, results } = useDmnRunnerState();
+  const { configs, inputs, extendedServicesError, jsonSchema, results, dmnRunnerKey } = useDmnRunnerState();
   const {
     setDmnRunnerContextProviderState,
     onRowAdded,
@@ -144,6 +144,7 @@ export function DmnRunnerTable() {
                 <div
                   ref={(ref) => setInputsContainerRef(ref)}
                   style={{ display: "inline-block", width: "fit-content" }}
+                  key={dmnRunnerKey}
                 >
                   <UnitablesWrapper
                     scrollableParentRef={inputsScrollableElementRef.current}

@@ -18,14 +18,11 @@ import React, { useMemo, useState } from "react";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
-import {
-  DependentFeature,
-  useExtendedServices,
-} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
 import { ConnecToOpenShiftSimple } from "./ConnecToOpenShiftSimple";
 import { ConnectToDeveloperSandboxForRedHatOpenShiftWizard } from "./ConnectToDeveloperSandboxForRedHatOpenShiftWizard";
 import { EMPTY_KUBERNETES_CONNECTION } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
@@ -48,7 +45,7 @@ export function ConnectToOpenShiftSection() {
   const [mode, setMode] = useState(OpenShiftSettingsTabMode.SIMPLE);
   const [newAuthSession, setNewAuthSession] = useState<OpenShiftAuthSession>();
   const [status, setStatus] = useState(
-    extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
+    extendedServices.status === ExtendedServicesStatus.RUNNING
       ? OpenShiftInstanceStatus.DISCONNECTED
       : OpenShiftInstanceStatus.UNAVAILABLE
   );
@@ -97,7 +94,7 @@ export function ConnectToOpenShiftSection() {
                   whiteSpace: "break-spaces",
                 }}
               >
-                {`Please setup KIE Sandbox Extended Services to be able to connect to OpenShift.`}
+                {`Please setup Extended Services to be able to connect to OpenShift.`}
               </Title>
               <br />
               <Button

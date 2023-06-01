@@ -157,23 +157,27 @@ export function UnitablesBeeTable({
           return DEFAULT_COLUMN_MIN_WIDTH;
         }
         return listInput.reduce((length, _, index) => {
-          return (
-            LIST_IDX_WIDTH +
-            Object.entries(field.items.properties).reduce(
-              (length, [fieldKey, fieldProperty]: [string, Record<string, any>]) => {
-                if (fieldProperty.type === "array") {
-                  return (
-                    length +
-                    LIST_ADD_WIDTH +
-                    recursiveCalculateListFieldWidth(`${columnName}.${index}.${fieldKey}`, row)
-                  );
-                }
-                return length + bridge.getFieldDataType(fieldProperty).width;
-              },
-              length
-            ) +
-            NESTED_LIST_DEL_WIDTH
-          );
+          if (field.items.properties) {
+            return (
+              LIST_IDX_WIDTH +
+              Object.entries(field.items.properties).reduce(
+                (length, [fieldKey, fieldProperty]: [string, Record<string, any>]) => {
+                  if (fieldProperty.type === "array") {
+                    return (
+                      length +
+                      LIST_ADD_WIDTH +
+                      recursiveCalculateListFieldWidth(`${columnName}.${index}.${fieldKey}`, row) +
+                      1 // border for each element;
+                    );
+                  }
+                  return length + bridge.getFieldDataType(fieldProperty).width + 1;
+                },
+                length
+              ) +
+              NESTED_LIST_DEL_WIDTH
+            );
+          }
+          return LIST_IDX_WIDTH + length + bridge.getFieldDataType(field.items).width + NESTED_LIST_DEL_WIDTH;
         }, 0);
       }
       if (listInput === undefined) {
@@ -598,6 +602,7 @@ function UnitablesBeeTableCell({
       // Normal editing;
       if (isEditModeTriggeringKey(e)) {
         e.stopPropagation();
+        setEditingCell(true);
 
         // If the target is an input node it is already editing the cell;
         if (
@@ -616,19 +621,19 @@ function UnitablesBeeTableCell({
         }
 
         if (fieldCharacteristics?.isList) {
-          e.preventDefault();
-
           if (
             e.code.toLowerCase() === "space" &&
             (e.target as HTMLElement)?.tagName?.toLowerCase() === "input" &&
             (e.target as HTMLInputElement)?.type === "checkbox"
           ) {
+            e.preventDefault();
             (e.target as HTMLInputElement).click();
             submitRow();
             return;
           }
 
           if (e.code.toLowerCase() === "space" && (e.target as HTMLElement)?.tagName?.toLowerCase() === "button") {
+            e.preventDefault();
             if ((e.target as HTMLButtonElement).id.match(/^uniforms-/g)) {
               return;
             }
@@ -692,9 +697,9 @@ function UnitablesBeeTableCell({
           if (selectFieldUl && !selectFieldUl?.contains(e.relatedTarget as HTMLButtonElement)) {
             (cellRef.current?.querySelector(`[id="${selectFieldUl?.id}"]`) as HTMLDivElement)?.click();
             setIsSelectFieldOpen(false);
-            submitRow();
           }
         }
+        submitRow();
         return;
       }
 

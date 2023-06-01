@@ -40,11 +40,11 @@ const buildEnv: any = env; // build-env is not typed
 export default async (env: any, argv: any) => {
   const buildInfo = getBuildInfo();
   const [
-    kieSandboxExtendedServices_linuxDownloadUrl,
-    kieSandboxExtendedServices_macOsDownloadUrl,
-    kieSandboxExtendedServices_windowsDownloadUrl,
-    kieSandboxExtendedServices_compatibleVersion,
-  ] = getKieSandboxExtendedServicesArgs();
+    extendedServices_linuxDownloadUrl,
+    extendedServices_macOsDownloadUrl,
+    extendedServices_windowsDownloadUrl,
+    extendedServices_compatibleVersion,
+  ] = getExtendedServicesArgs();
   const [dmnDevDeployment_baseImageFullUrl, dmnDevDeployment_imagePullPolicy, devDeployments_onlineEditorUrl] =
     getDevDeploymentsArgs();
   const gtmResource = getGtmResource();
@@ -100,11 +100,10 @@ export default async (env: any, argv: any) => {
           new EnvironmentPlugin({
             WEBPACK_REPLACE__commitHash: lastCommitHash,
             WEBPACK_REPLACE__buildInfo: buildInfo,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl:
-              kieSandboxExtendedServices_windowsDownloadUrl,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
+            WEBPACK_REPLACE__extendedServicesLinuxDownloadUrl: extendedServices_linuxDownloadUrl,
+            WEBPACK_REPLACE__extendedServicesMacOsDownloadUrl: extendedServices_macOsDownloadUrl,
+            WEBPACK_REPLACE__extendedServicesWindowsDownloadUrl: extendedServices_windowsDownloadUrl,
+            WEBPACK_REPLACE__extendedServicesCompatibleVersion: extendedServices_compatibleVersion,
             WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl: dmnDevDeployment_baseImageFullUrl,
             WEBPACK_REPLACE__dmnDevDeployment_imagePullPolicy: dmnDevDeployment_imagePullPolicy,
             WEBPACK_REPLACE__devDeployments_onlineEditorUrl: devDeployments_onlineEditorUrl,
@@ -214,16 +213,16 @@ function getBuildInfo() {
   return buildInfo;
 }
 
-function getKieSandboxExtendedServicesArgs() {
-  const linuxDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.linux;
-  const macOsDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.macOs;
-  const windowsDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.windows;
-  const compatibleVersion = buildEnv.onlineEditor.kieSandboxExtendedServices.compatibleVersion;
+function getExtendedServicesArgs() {
+  const linuxDownloadUrl = buildEnv.onlineEditor.extendedServices.downloadUrl.linux;
+  const macOsDownloadUrl = buildEnv.onlineEditor.extendedServices.downloadUrl.macOs;
+  const windowsDownloadUrl = buildEnv.onlineEditor.extendedServices.downloadUrl.windows;
+  const compatibleVersion = buildEnv.onlineEditor.extendedServices.compatibleVersion;
 
-  console.info("KIE Sandbox Extended Services :: Linux download URL: " + linuxDownloadUrl);
-  console.info("KIE Sandbox Extended Services :: macOS download URL: " + macOsDownloadUrl);
-  console.info("KIE Sandbox Extended Services :: Windows download URL: " + windowsDownloadUrl);
-  console.info("KIE Sandbox Extended Services :: Compatible version: " + compatibleVersion);
+  console.info("Extended Services :: Linux download URL: " + linuxDownloadUrl);
+  console.info("Extended Services :: macOS download URL: " + macOsDownloadUrl);
+  console.info("Extended Services :: Windows download URL: " + windowsDownloadUrl);
+  console.info("Extended Services :: Compatible version: " + compatibleVersion);
 
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
 }

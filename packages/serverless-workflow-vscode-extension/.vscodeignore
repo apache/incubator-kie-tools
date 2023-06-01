@@ -1,0 +1,16 @@
+.vscode/**
+.vscode-test/**
+out/test/**
+src/**
+test/**
+.gitignore
+vsc-extension-quickstart.md
+**/tsconfig.json
+**/*.map
+**/*.ts
+**/*.log
+files-for-extension-testing
+test-resources/**
+test-resource
+it-tests/**
+it-tests-tmp/**

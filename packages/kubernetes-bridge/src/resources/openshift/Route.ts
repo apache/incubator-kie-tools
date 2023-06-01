@@ -130,3 +130,17 @@ export class DeleteRoute extends ResourceFetch {
     return `/apis/${OpenshiftApiVersions.ROUTE}/namespaces/${this.args.namespace}/routes/${this.args.resourceName}`;
   }
 }
+
+export class GetRoute extends ResourceFetch {
+  constructor(protected args: UniqueResourceFetchArgs) {
+    super(args);
+  }
+
+  public method(): HttpMethod {
+    return HttpMethod.GET;
+  }
+
+  public endpoint(): string {
+    return `/apis/${OpenshiftApiVersions.ROUTE}/namespaces/${this.args.namespace}/routes/${this.args.resourceName}`;
+  }
+}

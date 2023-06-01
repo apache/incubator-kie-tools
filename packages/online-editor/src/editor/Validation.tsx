@@ -20,8 +20,8 @@ import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/E
 import { useEffect } from "react";
 import { useOnlineI18n } from "../i18n";
 import { ExtendedServicesModelPayload } from "@kie-tools/extended-services-api";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import { DmnLanguageService, DmnLanguageServiceImportedModel } from "@kie-tools/dmn-language-service";
 import { WorkspacesContextType } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
@@ -46,7 +46,7 @@ export function useFileValidation(
       return;
     }
 
-    if (extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
+    if (extendedServices.status !== ExtendedServicesStatus.RUNNING) {
       setNotifications(i18n.terms.validation, "", []);
       return;
     }
@@ -86,7 +86,7 @@ export function useFileValidation(
       return;
     }
 
-    if (extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
+    if (extendedServices.status !== ExtendedServicesStatus.RUNNING) {
       setNotifications(i18n.terms.validation, "", []);
       return;
     }

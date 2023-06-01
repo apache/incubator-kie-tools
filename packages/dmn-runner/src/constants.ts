@@ -20,3 +20,7 @@ export const DAYS_AND_TIME_DURATION_REGEXP =
 
 export const YEARS_AND_MONTHS_DURATION_FORMAT = "years and months duration";
 export const YEARS_AND_MONTHS_DURATION_REGEXP = /^(-|\+)?P(?:([-+]?[0-9]*)Y)?(?:([-+]?[0-9]*)M)?$/;
+
+export const X_DMN_DESCRIPTIONS = "x-dmn-descriptions";
+export const X_DMN_ALLOWED_VALUES = "x-dmn-allowed-values";
+export const X_DMN_TYPE = "x-dmn-type";

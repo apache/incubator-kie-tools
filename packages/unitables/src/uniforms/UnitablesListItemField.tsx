@@ -42,8 +42,8 @@ function UnitablesListItemField(props: React.PropsWithChildren<UnitablesListItem
         ...props.style,
       }}
     >
-      <div style={{ width: "100%" }}>
-        {props.children ?? <AutoField label={null} name={""} placeholder={`<${props.name}>`} />}
+      <div style={{ width: "100%", borderRight: "1px solid var(--pf-global--palette--black-300)" }}>
+        {props.children ?? <AutoField label={null} name={""} />}
       </div>
       <div>
         <ListDelField name={""} style={{ minWidth: "60px", maxWidth: "60px" }} />

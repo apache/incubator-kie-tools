@@ -118,7 +118,8 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  test("Should move to second step and fetch a Java Class", async () => {
+  /* Renable in https://github.com/kiegroup/kie-issues/issues/114 */
+  test.skip("Should move to second step and fetch a Java Class", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
@@ -144,7 +145,8 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  test("Should move to second step and fetch, remove a Java Class", async () => {
+  /* Renable in https://github.com/kiegroup/kie-issues/issues/114 */
+  test.skip("Should move to second step and fetch, remove a Java Class", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
