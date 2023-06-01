@@ -124,9 +124,9 @@ export function DevDeploymentsContextProvider(props: Props) {
           targetFilePath: workspaceFile.relativePath,
           workspaceName,
           workspaceZipBlob: zipBlob,
-          onlineEditorUrl: (baseUrl) =>
+          kieSandboxUrl: (baseUrl) =>
             routes.import.url({
-              base: process.env.WEBPACK_REPLACE__devDeployments_onlineEditorUrl,
+              base: process.env.WEBPACK_REPLACE__devDeployments_kieSandboxUrl,
               pathParams: {},
               queryParams: { url: `${baseUrl}/${workspaceFile.relativePath}` },
             }),

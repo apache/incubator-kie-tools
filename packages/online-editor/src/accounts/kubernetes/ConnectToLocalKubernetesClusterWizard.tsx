@@ -293,7 +293,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                 <CommandCopyBlock
                   command={clusterConfigCommands.createCluster(
                     routes.static.kubernetes.kindClusterConfig.url({
-                      base: process.env.WEBPACK_REPLACE__devDeployments_onlineEditorUrl,
+                      base: process.env.WEBPACK_REPLACE__devDeployments_kieSandboxUrl,
                       static: true,
                       pathParams: {},
                     })
@@ -317,7 +317,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                 <CommandCopyBlock
                   command={clusterConfigCommands.applyDeploymentResources(
                     routes.static.kubernetes.kieSandboxDevDeploymentsResources.url({
-                      base: process.env.WEBPACK_REPLACE__devDeployments_onlineEditorUrl,
+                      base: process.env.WEBPACK_REPLACE__devDeployments_kieSandboxUrl,
                       static: true,
                       pathParams: {},
                     })

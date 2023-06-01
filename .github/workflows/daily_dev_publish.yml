@@ -16,14 +16,17 @@ jobs:
     env:
       KIE_SANDBOX_EXTENDED_SERVICES_VERSION: "0.0.0"
       KIE_TOOLS_BUILD__buildContainerImages: "true"
-      DMN_DEV_DEPLOYMENT__baseImageRegistry: "quay.io"
-      DMN_DEV_DEPLOYMENT__baseImageAccount: "kie-tools"
-      DMN_DEV_DEPLOYMENT__baseImageName: "dmn-dev-deployment-base-image"
-      DMN_DEV_DEPLOYMENT__baseImageTag: "daily-dev"
-      DMN_DEV_DEPLOYMENT__baseImageBuildTags: "daily-dev"
-      DMN_DEV_DEPLOYMENT__onlineEditorUrl: "https://kiegroup.github.io/kogito-online/dev"
-      EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online/dev"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry: "quay.io"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__account: "kie-tools"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__name: "dmn-dev-deployment-base-image"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags: "daily-dev"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry: "quay.io"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: "kie-tools"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageName: "dmn-dev-deployment-base-image"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: "daily-dev"
+      ONLINE_EDITOR__devDeploymentKieSandboxUrl: "https://kiegroup.github.io/kogito-online/dev"
       ONLINE_EDITOR__gitCorsProxyUrl: "https://daily-dev-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
+      EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online/dev"
 
       KIE_SANDBOX__imageRegistry: "quay.io"
       KIE_SANDBOX__imageAccount: "kie-tools"
@@ -130,10 +133,10 @@ jobs:
         if: runner.os == 'Linux'
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.DMN_DEV_DEPLOYMENT__baseImageName }}"
-          tags: "${{ env.DMN_DEV_DEPLOYMENT__baseImageBuildTags }}"
-          registry: "${{ env.DMN_DEV_DEPLOYMENT__baseImageRegistry }}/${{ env.DMN_DEV_DEPLOYMENT__baseImageAccount }}"
-          username: "${{ env.DMN_DEV_DEPLOYMENT__baseImageAccount }}"
+          image: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name }}"
+          tags: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags }}"
+          registry: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry }}/${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
+          username: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
           password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
       - name: "Push kie-sandbox-extended-services-image to quay.io (Ubuntu only)"

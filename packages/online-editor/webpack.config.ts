@@ -45,7 +45,7 @@ export default async (env: any, argv: any) => {
     extendedServices_windowsDownloadUrl,
     extendedServices_compatibleVersion,
   ] = getExtendedServicesArgs();
-  const [dmnDevDeployment_baseImageFullUrl, dmnDevDeployment_imagePullPolicy, devDeployments_onlineEditorUrl] =
+  const [dmnDevDeployment_baseImageFullUrl, dmnDevDeployment_imagePullPolicy, devDeployments_kieSandboxUrl] =
     getDevDeploymentsArgs();
   const gtmResource = getGtmResource();
 
@@ -106,7 +106,7 @@ export default async (env: any, argv: any) => {
             WEBPACK_REPLACE__extendedServicesCompatibleVersion: extendedServices_compatibleVersion,
             WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl: dmnDevDeployment_baseImageFullUrl,
             WEBPACK_REPLACE__dmnDevDeployment_imagePullPolicy: dmnDevDeployment_imagePullPolicy,
-            WEBPACK_REPLACE__devDeployments_onlineEditorUrl: devDeployments_onlineEditorUrl,
+            WEBPACK_REPLACE__devDeployments_kieSandboxUrl: devDeployments_kieSandboxUrl,
             WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
             WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
           }),
@@ -228,23 +228,23 @@ function getExtendedServicesArgs() {
 }
 
 function getDevDeploymentsArgs() {
-  const baseImageRegistry = buildEnv.dmnDevDeploymentBaseImageEnv.registry;
-  const baseImageAccount = buildEnv.dmnDevDeploymentBaseImageEnv.account;
-  const baseImageName = buildEnv.dmnDevDeploymentBaseImageEnv.name;
+  const baseImageRegistry = buildEnv.devDeployments.dmn.baseImage.registry;
+  const baseImageAccount = buildEnv.devDeployments.dmn.baseImage.account;
+  const baseImageName = buildEnv.devDeployments.dmn.baseImage.name;
   const baseImageTag = buildEnv.devDeployments.dmn.baseImage.tag;
   const baseImageFullUrl = `${
     baseImageRegistry && baseImageAccount ? `${baseImageRegistry}/${baseImageAccount}/` : ""
   }${baseImageName}:${baseImageTag}`;
-  const imagePullPolicy = buildEnv.devDeployments.dmn.imagePullPolicy;
-  const onlineEditorUrl = buildEnv.devDeployments.onlineEditorUrl;
+  const baseImagePullPolicy = buildEnv.devDeployments.dmn.imagePullPolicy;
+  const kieSandboxUrl = buildEnv.devDeployments.kieSandboxUrl;
 
   console.info("DMN Dev deployment :: Base Image Registry: " + baseImageRegistry);
   console.info("DMN Dev deployment :: Base Image Account: " + baseImageAccount);
   console.info("DMN Dev deployment :: Base Image Name: " + baseImageName);
   console.info("DMN Dev deployment :: Base Image Tag: " + baseImageTag);
   console.info("DMN Dev deployment :: Base Image Full URL: " + baseImageFullUrl);
-  console.info("DMN Dev deployment :: Image pull policy: " + imagePullPolicy);
-  console.info("Dev deployments :: Online Editor Url: " + onlineEditorUrl);
+  console.info("DMN Dev deployment :: Image pull policy: " + baseImagePullPolicy);
+  console.info("Dev deployments :: KIE Sandbox URL: " + kieSandboxUrl);
 
-  return [baseImageFullUrl, imagePullPolicy, onlineEditorUrl];
+  return [baseImageFullUrl, baseImagePullPolicy, kieSandboxUrl];
 }

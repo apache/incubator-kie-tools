@@ -19,14 +19,12 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 const buildEnv = require("@kie-tools/root-env/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
 const gitCorsProxyImageEnv = require("@kie-tools/git-cors-proxy-image/env");
-const dmnDevDeploymentBaseImageEnv = require("@kie-tools/dmn-dev-deployment-base-image-env/env");
 const devPort = 9001;
 
 module.exports = composeEnv(
   [
     // dependencies
     buildEnv,
-    dmnDevDeploymentBaseImageEnv,
     extendedServicesEnv,
     gitCorsProxyImageEnv,
   ],
@@ -81,15 +79,27 @@ module.exports = composeEnv(
         default: "KIE Sandbox",
         description: "The name used to refer to a particular KIE Sandbox distribution.",
       },
-      DMN_DEV_DEPLOYMENT__baseImageTag: {
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry: {
+        default: "quay.io",
+        description: "Image registry to be used by DMN Dev deployments when deploying DMN models.",
+      },
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: {
+        default: "kie-tools",
+        description: "Image account to be used by DMN Dev deployments when deploying DMN models.",
+      },
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageName: {
+        default: "dmn-dev-deployment-base-image",
+        description: "Image name to be used by DMN Dev deployments when deploying DMN models.",
+      },
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: {
         default: "daily-dev",
         description: "Image tag to be used by DMN Dev deployments when deploying DMN models.",
       },
-      DMN_DEV_DEPLOYMENT__imagePullPolicy: {
+      ONLINE_EDITOR__dmnDevDeploymentBaseImagePullPolicy: {
         default: "Always",
         description: "The image pull policy. Can be 'Always', 'IfNotPresent', or 'Never'.",
       },
-      DMN_DEV_DEPLOYMENT__onlineEditorUrl: {
+      ONLINE_EDITOR__devDeploymentKieSandboxUrl: {
         default: `https://localhost:${devPort}`,
         description: "URL that DMN Dev deployments will use to open KIE Sandbox.",
       },
@@ -120,12 +130,15 @@ module.exports = composeEnv(
           ),
         },
         devDeployments: {
-          onlineEditorUrl: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__onlineEditorUrl),
+          kieSandboxUrl: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKieSandboxUrl),
           dmn: {
+            imagePullPolicy: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImagePullPolicy),
             baseImage: {
-              tag: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__baseImageTag),
+              tag: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImageTag),
+              registry: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry),
+              account: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount),
+              name: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImageName),
             },
-            imagePullPolicy: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__imagePullPolicy),
           },
         },
       };
