@@ -58,6 +58,7 @@ export function NewWorkspaceFromUrlPage() {
   const accountsDispatch = useAccountsDispatch();
 
   const [importingError, setImportingError] = useState("");
+  const [validAuthTokenPresent, setValidAuthTokenPresent] = useState("");
 
   const queryParams = useQueryParams();
 
@@ -261,6 +262,11 @@ export function NewWorkspaceFromUrlPage() {
         return;
       }
 
+      if (!queryParamBranch && (!authSession || queryParamAuthSessionId === AUTH_SESSION_NONE.id)) {
+        setValidAuthTokenPresent("false");
+        return;
+      }
+
       if (clonableUrl.type === UrlType.INVALID || clonableUrl.type === UrlType.NOT_SUPPORTED) {
         setImportingError(clonableUrl.error);
         return;
@@ -376,13 +382,13 @@ export function NewWorkspaceFromUrlPage() {
   ]);
 
   useEffect(() => {
-    if (!queryParamUrl || (importingError && queryParamBranch === undefined)) {
+    if (!queryParamUrl || validAuthTokenPresent === "false") {
       history.replace({
         pathname: routes.import.path({}),
         search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
       });
     }
-  }, [history, importingError, queryParamBranch, queryParamUrl, queryParams, routes.import]);
+  }, [history, queryParamUrl, queryParams, routes.import, validAuthTokenPresent]);
 
   useEffect(() => {
     if ((!queryParamBranch || !queryParamAuthSessionId) && selectedGitRefName) {
@@ -398,6 +404,7 @@ export function NewWorkspaceFromUrlPage() {
       return;
     }
 
+    setValidAuthTokenPresent("");
     setImportingError("");
     doImport();
   }, [
