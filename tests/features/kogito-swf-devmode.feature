@@ -127,3 +127,17 @@ Feature: Serverless Workflow devmode images
       | request_method       | GET                                                                              |
       | wait                 | 480                                                                              |
       | expected_status_code | 200                                                                              |
+
+  Scenario: Verify if container starts in devmode with service discovery property
+    When container is started with env
+      | variable          | value                                                                              |
+      | SCRIPT_DEBUG      | true                                                                               |
+      | MAVEN_ARGS_APPEND | -Dkogito.dataindex.ws.url=knative:services.v1.serving.knative.dev/namespace1/test2 |
+    Then check that page is served
+      | property             | value             |
+      | port                 | 8080              |
+      | path                 | /q/health/ready   |
+      | wait                 | 480               |
+      | request_method       | GET               |
+      | expected_status_code | 200               |
+    And container log should contain Service Discovery has failed on property [kogito.dataindex.ws.url
