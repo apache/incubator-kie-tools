@@ -1,3 +1,7 @@
+# 0.29.0 (alpha)
+
+- _(No new features)_
+
 # 0.28.1 (alpha)
 
 - [KOGITO-9105](https://issues.redhat.com/browse/KOGITO-9105) - Add KIE prefix to `displayName` of new VS Code extensions

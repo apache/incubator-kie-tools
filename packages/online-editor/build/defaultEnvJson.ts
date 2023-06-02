@@ -32,6 +32,7 @@ export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE: buildEnv.onlineEditor.requireCustomCommitMessage,
   KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL:
     buildEnv.onlineEditor.customCommitMessageValidationServiceUrl,
+  KIE_SANDBOX_APP_NAME: buildEnv.onlineEditor.appName,
   KIE_SANDBOX_AUTH_PROVIDERS: [
     {
       id: "github_dot_com",
@@ -97,7 +98,6 @@ export const defaultEnvJson: EnvJson = {
     {
       extension: FileTypes.BPMN,
       filePathGlob: GLOB_PATTERN.bpmn,
-      itemId: "newBpmnItemId",
       editor: {
         resourcesPathPrefix: "gwt-editors/bpmn",
         path: "bpmn-envelope.html",
@@ -110,7 +110,6 @@ export const defaultEnvJson: EnvJson = {
     {
       extension: FileTypes.DMN,
       filePathGlob: GLOB_PATTERN.dmn,
-      itemId: "newDmnItemId",
       editor: {
         resourcesPathPrefix: "gwt-editors/dmn",
         path: "dmn-envelope.html",
@@ -123,7 +122,6 @@ export const defaultEnvJson: EnvJson = {
     {
       extension: FileTypes.PMML,
       filePathGlob: GLOB_PATTERN.pmml,
-      itemId: "newPmmlItemId",
       editor: {
         resourcesPathPrefix: "",
         path: "pmml-envelope.html",

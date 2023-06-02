@@ -123,6 +123,8 @@ public interface ECharts {
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     public class AreaStyle {
 
+        @JsProperty
+        public native void setOpacity(Double opacity);
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -331,6 +333,12 @@ public interface ECharts {
         @JsProperty
         public native void setData(Object[] data);
 
+        @JsProperty
+        public native void setData(String[][] data);
+
+        @JsProperty
+        public native void setSymbol(String syumbol);
+
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -460,6 +468,9 @@ public interface ECharts {
         @JsProperty
         public native void setValueFormatter(ValueFormatterCallback callback);
 
+        @JsProperty
+        public native void setTrigger(String trigger);
+
     }
 
     @JsFunction
@@ -588,6 +599,7 @@ public interface ECharts {
     }
 
     public enum XAxisType {
+        time,
         category,
         value;
     }
@@ -597,15 +609,14 @@ public interface ECharts {
         svg,
         canvas;
 
-        public static Renderer DEFAULT_RENDERER = canvas;
+        public static final Renderer DEFAULT_RENDERER = canvas;
 
         public static Renderer byName(String echartsRenderer) {
             if (echartsRenderer == null) {
                 return DEFAULT_RENDERER;
             }
             return Arrays.stream(Renderer.values())
-                    .filter(r -> r.name().toLowerCase().equals(echartsRenderer
-                            .toLowerCase()))
+                    .filter(r -> r.name().equalsIgnoreCase(echartsRenderer))
                     .findAny().orElse(DEFAULT_RENDERER);
         }
     }

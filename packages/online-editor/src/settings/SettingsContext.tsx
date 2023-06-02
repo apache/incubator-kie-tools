@@ -22,10 +22,10 @@ import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
 import { useHistory } from "react-router";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { QueryParams } from "../navigation/Routes";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 
-export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
-export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
+export const EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
+export const EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
 
 export class ExtendedServicesConfig {
   constructor(public readonly host: string, public readonly port: string) {}
@@ -49,7 +49,7 @@ export class ExtendedServicesConfig {
 export interface SettingsContextType {
   isOpen: boolean;
   activeTab: SettingsTabs;
-  kieSandboxExtendedServices: {
+  extendedServices: {
     config: ExtendedServicesConfig;
   };
 }
@@ -57,7 +57,7 @@ export interface SettingsContextType {
 export interface SettingsDispatchContextType {
   open: (activeTab?: SettingsTabs) => void;
   close: () => void;
-  kieSandboxExtendedServices: {
+  extendedServices: {
     setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;
   };
 }
@@ -97,7 +97,7 @@ export function SettingsContextProvider(props: any) {
     return {
       open,
       close,
-      kieSandboxExtendedServices: {
+      extendedServices: {
         setConfig: extendedServices.saveNewConfig,
       },
     };
@@ -107,7 +107,7 @@ export function SettingsContextProvider(props: any) {
     return {
       isOpen,
       activeTab,
-      kieSandboxExtendedServices: {
+      extendedServices: {
         config: extendedServices.config,
       },
     };

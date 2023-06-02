@@ -1,6 +1,6 @@
 # kie-sandbox-extended-services-image
 
-This package contains the `Containerfile` and scripts to build a container image for the KIE Sandbox Extended Services.
+This package contains the `Containerfile` and scripts to build a container image for the Extended Services.
 
 ## Additional requirements
 

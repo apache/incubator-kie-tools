@@ -36,7 +36,7 @@ function ListAddField({ disabled = false, name, value, ...props }: ListAddFieldP
   const parentName = joinName(nameParts.slice(0, -1));
   const parent = useField<{ maxCount?: number }, unknown[]>(parentName, {}, { absoluteName: true })[0];
 
-  const limitNotReached = !disabled && !(parent.maxCount! <= parent.value!.length);
+  const limitNotReached = !disabled && !(parent.maxCount! <= (parent.value?.length ?? -1));
 
   return (
     <Button
@@ -45,7 +45,7 @@ function ListAddField({ disabled = false, name, value, ...props }: ListAddFieldP
       style={{ paddingLeft: "0", paddingRight: "0" }}
       disabled={!limitNotReached}
       onClick={() => {
-        !disabled && limitNotReached && parent.onChange(parent.value!.concat([cloneDeep(value)]));
+        !disabled && limitNotReached && parent.onChange((parent.value ?? []).concat([cloneDeep(value)]));
       }}
       {...filterDOMProps(props)}
     >

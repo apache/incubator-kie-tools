@@ -17,7 +17,6 @@
 export type EditorConfig = {
   extension: string;
   filePathGlob: string;
-  itemId: string;
   editor: {
     resourcesPathPrefix: string;
     path: string;

@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
-import org.dashbuilder.renderer.echarts.client.js.ECharts;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Series;
 import org.dashbuilder.renderer.echarts.client.js.EChartsTypeFactory;
 
@@ -37,41 +36,42 @@ public class EChartsXYChartDisplayer extends EChartsXYDisplayer {
     @Override
     protected Series[] buildSeries() {
         var nColumns = dataSet.getColumns().size();
-        var allSeries = new ECharts.Series[nColumns - 1];
         if (nColumns > 0) {
-            var catColumn = displayerSettings.getColumnSettings(dataSet.getColumnByIndex(0)).getColumnName();
-            for (int i = 1; i < nColumns; i++) {
-                var series = echartsFactory.newSeries();
-                var encode = echartsFactory.newEncode();
-                var column = dataSet.getColumnByIndex(i);
-                var settings = displayerSettings.getColumnSettings(column);
-                var seriesColumn = settings.getColumnName();
+            return new Series[0];
+        }
+        var allSeries = new Series[nColumns - 1];
+        var catColumn = displayerSettings.getColumnSettings(dataSet.getColumnByIndex(0)).getColumnName();
+        for (int i = 1; i < nColumns; i++) {
+            var series = echartsFactory.newSeries();
+            var encode = echartsFactory.newEncode();
+            var column = dataSet.getColumnByIndex(i);
+            var settings = displayerSettings.getColumnSettings(column);
+            var seriesColumn = settings.getColumnName();
 
-                if (displayerSettings.getType() == DisplayerType.AREACHART) {
-                    series.setAreaStyle(echartsFactory.newAreaStyle());
-                }
-
-                if (displayerSettings.getSubtype() == DisplayerSubType.SMOOTH) {
-                    series.setSmooth(true);
-                }
-                if (isBar) {
-                    encode.setX(seriesColumn);
-                    encode.setY(catColumn);
-                } else {
-                    encode.setX(catColumn);
-                    encode.setY(seriesColumn);
-                }
-
-                if (isStack) {
-                    series.setStack(catColumn);
-                }
-
-                series.setName(seriesColumn);
-                series.setEncode(encode);
-                series.setType(this.echartsType);
-
-                allSeries[i - 1] = series;
+            if (displayerSettings.getType() == DisplayerType.AREACHART) {
+                series.setAreaStyle(echartsFactory.newAreaStyle());
             }
+
+            if (displayerSettings.getSubtype() == DisplayerSubType.SMOOTH) {
+                series.setSmooth(true);
+            }
+            if (isBar) {
+                encode.setX(seriesColumn);
+                encode.setY(catColumn);
+            } else {
+                encode.setX(catColumn);
+                encode.setY(seriesColumn);
+            }
+
+            if (isStack) {
+                series.setStack(catColumn);
+            }
+
+            series.setName(seriesColumn);
+            series.setEncode(encode);
+            series.setType(this.echartsType);
+
+            allSeries[i - 1] = series;
         }
         return allSeries;
     }

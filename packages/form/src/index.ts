@@ -16,7 +16,6 @@
 
 export * from "./FormBase";
 export * from "./FormComponent";
-export * from "./ErrorBoundary";
 export * from "./FormHook";
 export * from "./i18n";
 export * from "./uniforms/FormJsonSchemaBridge";

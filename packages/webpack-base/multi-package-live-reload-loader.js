@@ -20,6 +20,7 @@ const generate = require("@babel/generator").default;
 
 module.exports = function webpackLoader(content, map, meta) {
   const transformations = [
+    { from: /@kie-tools\/uniforms-patternfly\/dist\/(esm|cjs)/g, to: `@kie-tools/uniforms-patternfly/src` },
     { from: /@kie-tools-core\/(.*)\/dist/g, to: `@kie-tools-core/$1/src` },
     { from: /@kie-tools\/(.*)\/dist/g, to: `@kie-tools/$1/src` },
     { from: /@kie-tools-examples\/(.*)\/dist/g, to: `@kie-tools-examples/$1/src` },

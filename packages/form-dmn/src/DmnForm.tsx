@@ -18,8 +18,8 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DmnValidator } from "./DmnValidator";
 import { dmnFormI18n } from "./i18n";
-import { FormComponent, FormProps } from "@kie-tools/form";
-import { DmnAutoFieldProvider } from "./uniforms/DmnAutoFieldProvider";
+import { FormComponent, FormProps } from "@kie-tools/form/dist/FormComponent";
+import { DmnAutoFieldProvider, defaultDmnRunnerAutoFieldValue } from "@kie-tools/dmn-runner/dist/uniforms";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 
 export type InputRow = Record<string, any>;
@@ -40,7 +40,7 @@ export function DmnForm(props: FormProps<InputRow, ExtendedServicesDmnJsonSchema
       entryPath={"definitions.InputSet"}
       propertiesEntryPath={"definitions.InputSet.properties"}
     >
-      <DmnAutoFieldProvider />
+      <DmnAutoFieldProvider value={defaultDmnRunnerAutoFieldValue} />
     </FormComponent>
   );
 }

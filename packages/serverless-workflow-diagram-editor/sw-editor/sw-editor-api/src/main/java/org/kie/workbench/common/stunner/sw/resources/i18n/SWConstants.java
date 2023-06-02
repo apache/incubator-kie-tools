@@ -96,4 +96,13 @@ public interface SWConstants {
     String EVENT_CONDITION_TRANSITION_NAME = "Condition.eventname";
     @TranslationKey(defaultValue = "")
     String EVENT_CONDITION_TRANSITION_VALUE = "Condition.eventvalue";
+
+    @TranslationKey(defaultValue = "")
+    String INPUT_COLLECTION = "Input.collection";
+    @TranslationKey(defaultValue = "")
+    String OUTPUT_COLLECTION = "Output.collection";
+    @TranslationKey(defaultValue = "")
+    String ITERATION_PARAMETER = "Iteration.parameter";
+    @TranslationKey(defaultValue = "")
+    String FOR_EACH_BATCH_SIZE = "Foreach.batchsize";
 }

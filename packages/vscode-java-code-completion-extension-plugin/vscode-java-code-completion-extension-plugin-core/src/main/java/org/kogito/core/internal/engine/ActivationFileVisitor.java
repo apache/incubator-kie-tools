@@ -24,16 +24,12 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 import org.kogito.core.internal.util.WorkspaceUtil;
 
 public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
-
-    protected static final String IMPORT_ACTIVATOR = "import org.kie.api.project.KieActivator;";
-    protected static final String ANNOTATION_ACTIVATOR = "@KieActivator";
-    protected static final String JAVA_EXTENSION = ".java";
+    protected static final String JAVA_ACTIVATOR_CLASS = "ACTIVATOR.JAVA";
 
     private Path activatorPath;
 
@@ -48,20 +44,10 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
         String filePath = file.toString();
-        if (!filePath.endsWith(JAVA_EXTENSION)) {
-            return FileVisitResult.CONTINUE;
-        }
 
-        JavaLanguageServerPlugin.logInfo("Java file found: " + filePath);
-        long linesThatMatch;
-
-        try (Stream<String> linesStream = Files.lines(file)) {
-            linesThatMatch = linesStream.filter(this::containsActivator).count();
-        }
-
-        if (linesThatMatch >= 2) {
+        if (filePath.toUpperCase().endsWith(JAVA_ACTIVATOR_CLASS)) {
             JavaLanguageServerPlugin.logInfo("Activator found: " + filePath);
             this.activatorPath = file;
             return FileVisitResult.TERMINATE;
@@ -69,9 +55,4 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
             return FileVisitResult.CONTINUE;
         }
     }
-
-    private boolean containsActivator(String line) {
-        return line.contains(IMPORT_ACTIVATOR) || line.contains(ANNOTATION_ACTIVATOR);
-    }
-
 }

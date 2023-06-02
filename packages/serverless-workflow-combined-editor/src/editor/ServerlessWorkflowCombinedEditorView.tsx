@@ -25,9 +25,11 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 import { ServerlessWorkflowCombinedEditor } from "./ServerlessWorkflowCombinedEditor";
-
-export class ServerlessWorkflowCombinedEditorView implements Editor {
-  private readonly editorRef: React.RefObject<EditorApi>;
+export interface ServerlessWorkflowCombinedEditorApi extends Editor {
+  colorNodes(nodeNames: string[], color: string, colorConnectedEnds: boolean): void;
+}
+export class ServerlessWorkflowCombinedEditorView implements ServerlessWorkflowCombinedEditorApi {
+  private readonly editorRef: React.RefObject<ServerlessWorkflowCombinedEditorApi>;
   public af_isReact = true;
   public af_componentId: "serverless-workflow-combined-editor";
   public af_componentTitle: "Serverless Workflow Combined Editor";
@@ -36,7 +38,7 @@ export class ServerlessWorkflowCombinedEditorView implements Editor {
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowCombinedEditorChannelApi>,
     private readonly initArgs: EditorInitArgs
   ) {
-    this.editorRef = React.createRef<EditorApi>();
+    this.editorRef = React.createRef<ServerlessWorkflowCombinedEditorApi>();
   }
 
   public setContent(path: string, content: string): Promise<void> {
@@ -78,5 +80,9 @@ export class ServerlessWorkflowCombinedEditorView implements Editor {
 
   public async setTheme(theme: EditorTheme) {
     return this.editorRef.current!.setTheme(theme);
+  }
+
+  public colorNodes(nodeNames: string[], color: string, colorConnectedEnds: boolean): void {
+    return this.editorRef.current!.colorNodes(nodeNames, color, colorConnectedEnds);
   }
 }

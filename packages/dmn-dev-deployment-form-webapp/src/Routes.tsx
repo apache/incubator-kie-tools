@@ -124,7 +124,7 @@ export const routes = {
 
   static: {
     images: {
-      kieHorizontalLogoReverse: new Route<{}>(() => `./images/kie_horizontal_rgb_fullcolor_reverse.svg`),
+      appLogoReverse: new Route<{}>(() => `./images/app_logo_rgb_fullcolor_reverse.svg`),
     },
   },
 };

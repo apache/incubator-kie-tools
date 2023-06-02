@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "name": "@kie-tools/kie-sandbox-distribution",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "docker:build": "pnpm docker:create-env-file && run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose build\" --else \"echo Docker not found, skipping image stop.\"",
+    "docker:create-env-file": "rimraf .env && pnpm build-env --print-env-file:self > .env",
+    "docker:start": "pnpm docker:create-env-file && run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose up\" --else \"echo Docker not found, skipping image build.\"",
+    "docker:stop": "pnpm docker:create-env-file && run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose down\" --else \"echo Docker not found, skipping image stop.\"",
+    "postinstall": "pnpm docker:create-env-file"
+  },
+  "dependencies": {
+    "@kie-tools/git-cors-proxy-image": "workspace:*",
+    "@kie-tools/kie-sandbox-extended-services-image": "workspace:*",
+    "@kie-tools/kie-sandbox-image": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "rimraf": "^3.0.2"
+  }
+}

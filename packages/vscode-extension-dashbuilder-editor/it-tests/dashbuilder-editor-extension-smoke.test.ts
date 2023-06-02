@@ -17,7 +17,7 @@
 import * as path from "path";
 import { expect } from "chai";
 import { By, VSBrowser, WebDriver } from "vscode-extension-tester";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import DashbuilderEditorTestHelper from "./helpers/dashbuilder/DashbuilderEditorTestHelper";
 
 // TODO Fix tests and re-enable them
@@ -32,7 +32,7 @@ describe.skip("Dashbuilder editor - smoke integration tests", () => {
   before(async function () {
     this.timeout(60000);
     testHelper = new VSCodeTestHelper();
-    await testHelper.openFolder(TEST_PROJECT_FOLDER, "smoke-test");
+    await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -307,7 +307,7 @@ export class EnvelopeBusMessageManager<
       }
 
       if (!(response instanceof Promise)) {
-        throw new Error(`Cannot make a request to '${request.type}' because it does not return a Promise`);
+        throw new Error(`Cannot make a request to '${String(request.type)}' because it does not return a Promise`);
       }
 
       response

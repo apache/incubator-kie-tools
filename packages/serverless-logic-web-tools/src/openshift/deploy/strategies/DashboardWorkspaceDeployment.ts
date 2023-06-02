@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { zipFiles } from "../../../zip";
 import { GLOB_PATTERN } from "../../../extension";
 import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
@@ -44,7 +45,7 @@ export class DashboardWorkspaceDeployment extends DeploymentStrategy {
 
     filesToBeDeployed.push(dockerfileFile, dockerIgnoreFile, this.args.targetFile, appDataFile);
 
-    const workspaceZipBlob = await this.createZipBlob(filesToBeDeployed);
+    const workspaceZipBlob = await zipFiles(filesToBeDeployed);
 
     return new KnativeBuilderPipeline({
       workspaceName: this.resolveWorkspaceName(filesToBeDeployed),

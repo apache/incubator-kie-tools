@@ -119,6 +119,13 @@ export class ServerlessWorkflowTextEditorChannelApiImpl implements ServerlessWor
     this.channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args);
   }
 
+  public kogitoSwfServiceCatalog_importEventFromCompletionItem(args: {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  }): void {
+    this.channelApi.notifications.kogitoSwfServiceCatalog_importEventFromCompletionItem.send(args);
+  }
+
   public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
     this.channelApi.notifications.kogitoSwfServiceCatalog_logInServiceRegistries.send();
   }

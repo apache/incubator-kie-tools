@@ -32,3 +32,12 @@ export function setCookie(name: string, value: string) {
 }
 
 export const makeCookieName = (group: string, name: string) => `KIE-TOOLS__serverless-logic-sandbox__${group}--${name}`;
+
+/**
+ * Delete all cookies
+ */
+export const deleteAllCookies = () => {
+  document.cookie.split(";").forEach(function (c) {
+    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+  });
+};

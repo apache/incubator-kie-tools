@@ -28,8 +28,6 @@ import org.kogito.core.internal.api.GetPublicResult;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
 
-import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_SIGNATURE;
-
 public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
     private final JavaEngine javaEngine;
@@ -83,18 +81,24 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         /* Retrieving the class type SIMPLE NAME */
         String type = item.getLabelDetails().getDescription();
         /* Retrieving the class type FQCN */
+        /* The API we used to retrieve the FQNC are no more available. To enable the Project
+         * compilation, the following block is a temporary commented. The impact on the feature, is
+         * that the Fecthing feature will no work properly, until we found an alternative solution
+         * https://github.com/kiegroup/kie-issues/issues/114
+         */
+        /*
         Map<String,String> data = (Map<String, String>) item.getData();
         for (Map.Entry<String, String> entry : data.entrySet()) {
             JavaLanguageServerPlugin.logInfo("ENTRY: " + entry.getKey() + " " + entry.getValue());
         }
         if (data != null && data.containsKey(DATA_FIELD_SIGNATURE)) {
             String fqcnType = data.get(DATA_FIELD_SIGNATURE);
-            /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */
+            /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */ /*
             if (fqcnType != null && fqcnType.contains(")L")) {
                 type = fqcnType.split("\\)L")[1];
                 type = type.replaceAll(";$", "");
             }
-        }
+        } */
         result.setType(type);
 
         return result;

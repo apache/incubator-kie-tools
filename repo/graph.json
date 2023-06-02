@@ -88,8 +88,9 @@
       { "id": "@kie-tools/dmn-dev-deployment-quarkus-app" },
       { "id": "@kie-tools/dmn-dev-deployment-base-image-env" },
       { "id": "@kie-tools/form-dmn" },
-      { "id": "@kie-tools/extended-services-api" },
       { "id": "@kie-tools/form" },
+      { "id": "@kie-tools/dmn-runner" },
+      { "id": "@kie-tools/extended-services-api" },
       { "id": "dmn-vscode-extension" },
       { "id": "@kie-tools/extended-services" },
       { "id": "@kie-tools/form-generation-tool" },
@@ -100,6 +101,8 @@
       { "id": "@kie-tools/import-java-classes-component" },
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
+      { "id": "@kie-tools/vscode-extension-common-test-helpers" },
+      { "id": "@kie-tools/kie-sandbox-distribution" },
       { "id": "@kie-tools/kie-sandbox-extended-services-image" },
       { "id": "@kie-tools/kie-sandbox-image" },
       { "id": "@kie-tools/online-editor" },
@@ -112,18 +115,20 @@
       { "id": "@kie-tools/text-editor" },
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image-env" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" },
+      { "id": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" },
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp" },
+      { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" },
+      { "id": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
-      { "id": "serverless-workflow-vscode-extension" },
+      { "id": "swf-vscode-extension" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
-      { "id": "vscode-extension-serverless-workflow-editor" },
       { "id": "@kie-tools/yard-editor" },
       { "id": "yard-vscode-extension" }
     ],
@@ -590,13 +595,13 @@
       },
       { "source": "@kie-tools/dmn-dev-deployment-quarkus-app", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/dmn-dev-deployment-base-image-env", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/form-dmn", "target": "@kie-tools/extended-services-api", "weight": 1 },
       { "source": "@kie-tools/form-dmn", "target": "@kie-tools/form", "weight": 1 },
-      { "source": "@kie-tools/extended-services-api", "target": "@kie-tools-core/notifications", "weight": 1 },
-      { "source": "@kie-tools/form", "target": "@kie-tools-core/notifications", "weight": 1 },
+      { "source": "@kie-tools/form", "target": "@kie-tools/dmn-runner", "weight": 1 },
       { "source": "@kie-tools/form", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
-      { "source": "@kie-tools/form", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
       { "source": "@kie-tools/form", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/dmn-runner", "target": "@kie-tools/extended-services-api", "weight": 1 },
+      { "source": "@kie-tools/dmn-runner", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
+      { "source": "@kie-tools/extended-services-api", "target": "@kie-tools-core/notifications", "weight": 1 },
       { "source": "dmn-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "dmn-vscode-extension", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       {
@@ -638,10 +643,22 @@
         "weight": 1
       },
       { "source": "kie-editors-dev-vscode-extension", "target": "@kie-tools/stunner-editors", "weight": 1 },
+      {
+        "source": "kie-editors-dev-vscode-extension",
+        "target": "@kie-tools/vscode-extension-common-test-helpers",
+        "weight": 1
+      },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/monaco-editor", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools/pmml-editor-marshaller", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/vscode-extension-common-test-helpers", "target": "@kie-tools/tsconfig", "weight": 1 },
+      {
+        "source": "@kie-tools/kie-sandbox-distribution",
+        "target": "@kie-tools/kie-sandbox-extended-services-image",
+        "weight": 1
+      },
+      { "source": "@kie-tools/kie-sandbox-distribution", "target": "@kie-tools/kie-sandbox-image", "weight": 1 },
       {
         "source": "@kie-tools/kie-sandbox-extended-services-image",
         "target": "@kie-tools/extended-services",
@@ -651,6 +668,7 @@
       { "source": "@kie-tools/kie-sandbox-image", "target": "@kie-tools/online-editor", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/kubernetes-bridge", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
+      { "source": "@kie-tools/online-editor", "target": "@kie-tools/form-dmn", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/pmml-editor", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/unitables-dmn", "weight": 1 },
@@ -661,13 +679,11 @@
       { "source": "@kie-tools-core/kubernetes-bridge", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/kubernetes-bridge", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/kubernetes-bridge", "target": "@kie-tools/tsconfig", "weight": 1 },
-      { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/form-dmn", "weight": 1 },
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/unitables", "weight": 1 },
       { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools-core/react-hooks", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
-      { "source": "@kie-tools/unitables", "target": "@kie-tools/extended-services-api", "weight": 1 },
-      { "source": "@kie-tools/unitables", "target": "@kie-tools/form", "weight": 1 },
+      { "source": "@kie-tools/unitables", "target": "@kie-tools/dmn-runner", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools/pmml-editor", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/kubernetes-bridge", "weight": 1 },
@@ -685,6 +701,7 @@
         "target": "@kie-tools/dashbuilder-viewer-image-env",
         "weight": 1
       },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/extended-services", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
@@ -695,6 +712,11 @@
         "target": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
         "weight": 1
       },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools",
+        "target": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env",
+        "weight": 1
+      },
       { "source": "@kie-tools/text-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
@@ -703,6 +725,11 @@
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env",
         "target": "@kie-tools/root-env",
         "weight": 1
       },
@@ -742,6 +769,26 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
+        "target": "@kie-tools/maven-config-setup-helper",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
+        "target": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
+        "target": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/serverless-workflow-diagram-editor",
         "target": "@kie-tools/maven-config-setup-helper",
         "weight": 1
@@ -767,27 +814,20 @@
         "target": "@kie-tools-core/envelope-bus",
         "weight": 1
       },
-      { "source": "serverless-workflow-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
+      { "source": "swf-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       {
-        "source": "serverless-workflow-vscode-extension",
+        "source": "swf-vscode-extension",
         "target": "@kie-tools/serverless-workflow-diagram-editor-envelope",
         "weight": 1
       },
+      { "source": "swf-vscode-extension", "target": "@kie-tools/serverless-workflow-language-service", "weight": 1 },
+      { "source": "swf-vscode-extension", "target": "@kie-tools/serverless-workflow-mermaid-viewer", "weight": 1 },
       {
-        "source": "serverless-workflow-vscode-extension",
-        "target": "@kie-tools/serverless-workflow-language-service",
-        "weight": 1
-      },
-      {
-        "source": "serverless-workflow-vscode-extension",
-        "target": "@kie-tools/serverless-workflow-mermaid-viewer",
-        "weight": 1
-      },
-      {
-        "source": "serverless-workflow-vscode-extension",
+        "source": "swf-vscode-extension",
         "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
         "weight": 1
       },
+      { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       {
         "source": "vscode-extension-dashbuilder-editor",
@@ -795,41 +835,22 @@
         "weight": 1
       },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools/dashbuilder-viewer", "weight": 1 },
+      {
+        "source": "vscode-extension-dashbuilder-editor",
+        "target": "@kie-tools/vscode-extension-common-test-helpers",
+        "weight": 1
+      },
       { "source": "vscode-extension-kie-ba-bundle", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "vscode-extension-kie-ba-bundle", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "vscode-extension-kie-ba-bundle", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/tsconfig", "weight": 1 },
-      {
-        "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools-core/vscode-extension",
-        "weight": 1
-      },
-      {
-        "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools/serverless-workflow-diagram-editor-envelope",
-        "weight": 1
-      },
-      {
-        "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools/serverless-workflow-language-service",
-        "weight": 1
-      },
-      {
-        "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools/serverless-workflow-mermaid-viewer",
-        "weight": 1
-      },
-      {
-        "source": "vscode-extension-serverless-workflow-editor",
-        "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
-        "weight": 1
-      },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
-      { "source": "yard-vscode-extension", "target": "@kie-tools/yard-editor", "weight": 1 }
+      { "source": "yard-vscode-extension", "target": "@kie-tools/yard-editor", "weight": 1 },
+      { "source": "yard-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 }
     ]
   },
   "serializedPackagesLocationByName": [
@@ -876,6 +897,7 @@
     ["@kie-tools/dmn-dev-deployment-form-webapp", "packages/dmn-dev-deployment-form-webapp"],
     ["@kie-tools/dmn-dev-deployment-quarkus-app", "packages/dmn-dev-deployment-quarkus-app"],
     ["@kie-tools/dmn-language-service", "packages/dmn-language-service"],
+    ["@kie-tools/dmn-runner", "packages/dmn-runner"],
     ["dmn-vscode-extension", "packages/dmn-vscode-extension"],
     ["@kie-tools-core/editor", "packages/editor"],
     ["@kie-tools-core/envelope", "packages/envelope"],
@@ -897,6 +919,7 @@
     ["@kie-tools/kie-bc-editors", "packages/kie-bc-editors"],
     ["kie-editors-dev-vscode-extension", "packages/kie-editors-dev-vscode-extension"],
     ["@kie-tools/kie-editors-standalone", "packages/kie-editors-standalone"],
+    ["@kie-tools/kie-sandbox-distribution", "packages/kie-sandbox-distribution"],
     ["@kie-tools/kie-sandbox-extended-services-image", "packages/kie-sandbox-extended-services-image"],
     ["@kie-tools/kie-sandbox-fs", "packages/kie-sandbox-fs"],
     ["@kie-tools/kie-sandbox-image", "packages/kie-sandbox-image"],
@@ -931,8 +954,20 @@
       "packages/serverless-logic-web-tools-swf-builder-image-env"
     ],
     [
+      "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
+      "packages/serverless-logic-web-tools-swf-deployment-quarkus-app"
+    ],
+    [
       "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
       "packages/serverless-logic-web-tools-swf-deployment-webapp"
+    ],
+    [
+      "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
+      "packages/serverless-logic-web-tools-swf-dev-mode-image"
+    ],
+    [
+      "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env",
+      "packages/serverless-logic-web-tools-swf-dev-mode-image-env"
     ],
     ["@kie-tools/serverless-workflow-combined-editor", "packages/serverless-workflow-combined-editor"],
     ["@kie-tools/serverless-workflow-diagram-editor", "packages/serverless-workflow-diagram-editor"],
@@ -944,7 +979,7 @@
     ["@kie-tools/serverless-workflow-service-catalog", "packages/serverless-workflow-service-catalog"],
     ["@kie-tools/serverless-workflow-standalone-editor", "packages/serverless-workflow-standalone-editor"],
     ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],
-    ["serverless-workflow-vscode-extension", "packages/serverless-workflow-vscode-extension"],
+    ["swf-vscode-extension", "packages/serverless-workflow-vscode-extension"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
     ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],
     ["@kie-tools/text-editor", "packages/text-editor"],
@@ -955,10 +990,10 @@
     ["@kie-tools/unitables", "packages/unitables"],
     ["@kie-tools/unitables-dmn", "packages/unitables-dmn"],
     ["@kie-tools-core/vscode-extension", "packages/vscode-extension"],
+    ["@kie-tools/vscode-extension-common-test-helpers", "packages/vscode-extension-common-test-helpers"],
     ["vscode-extension-dashbuilder-editor", "packages/vscode-extension-dashbuilder-editor"],
     ["vscode-extension-kie-ba-bundle", "packages/vscode-extension-kie-ba-bundle"],
     ["vscode-extension-kogito-bundle", "packages/vscode-extension-kogito-bundle"],
-    ["vscode-extension-serverless-workflow-editor", "packages/vscode-extension-serverless-workflow-editor"],
     ["@kie-tools-core/vscode-java-code-completion", "packages/vscode-java-code-completion"],
     [
       "@kie-tools/vscode-java-code-completion-extension-plugin",

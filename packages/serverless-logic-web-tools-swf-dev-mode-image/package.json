@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "name": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "echo Nothing to do",
+    "build:prod": "pnpm cleanup && run-script-os",
+    "build:prod:darwin": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy:assets\" \"pnpm image:docker:build\"",
+    "build:prod:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy:assets\" \"pnpm image:podman:build\"",
+    "build:prod:win32": "echo \"Build not supported on Windows\"",
+    "cleanup": "rimraf dist-dev && mkdir dist-dev",
+    "copy:assets": "pnpm copy:serverless-logic-web-tools-swf-deployment-quarkus-app",
+    "copy:serverless-logic-web-tools-swf-deployment-quarkus-app": "cp -R ../serverless-logic-web-tools-swf-deployment-quarkus-app ./dist-dev/serverless-logic-web-tools-swf-deployment-quarkus-app",
+    "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build --ulimit nofile=5000:5000 $(echo $(build-env swfDevModeImage.buildTags) | xargs printf -- \"-t $(build-env swfDevModeImageEnv.registry)/$(build-env swfDevModeImageEnv.account)/$(build-env swfDevModeImageEnv.name):%s\n\" | xargs echo) --build-arg KOGITO_VERSION=$(build-env swfDevModeImage.kogitoVersion) .\" --else \"echo Docker not found, skipping image build.\"",
+    "image:podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env swfDevModeImage.buildTags) | xargs printf -- \"-t $(build-env swfDevModeImageEnv.registry)/$(build-env swfDevModeImageEnv.account)/$(build-env swfDevModeImageEnv.name):%s\n\" | xargs echo) --build-arg KOGITO_VERSION=$(build-env swfDevModeImage.kogitoVersion) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app": "workspace:*",
+    "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env": "workspace:*",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  }
+}
