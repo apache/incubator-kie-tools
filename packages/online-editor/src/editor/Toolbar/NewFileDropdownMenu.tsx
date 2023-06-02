@@ -271,10 +271,16 @@ export function NewFileDropdownMenu(props: {
     [routes]
   );
 
-  const importableUrlSamples = editorsConfig.map((config) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useImportableUrl(sampleUrl(config.extension));
-  });
+  // TODO: Implement a better solution to dynamically create this array, based on the number of editors enabled in the editorsConfig.
+  // This solution was devised as a temporary fix in response to allowing users to enable/disable the PMML editor. See kie-issues#311 for more details.
+
+  const importableUrlSamples = new Map([
+    [editorsConfig[0]?.extension, useImportableUrl(sampleUrl(editorsConfig[0]?.extension))],
+    [editorsConfig[1]?.extension, useImportableUrl(sampleUrl(editorsConfig[1]?.extension))],
+    [editorsConfig[2]?.extension, useImportableUrl(sampleUrl(editorsConfig[2]?.extension))],
+    [editorsConfig[3]?.extension, useImportableUrl(sampleUrl(editorsConfig[3]?.extension))],
+    [editorsConfig[4]?.extension, useImportableUrl(sampleUrl(editorsConfig[4]?.extension))],
+  ]);
 
   return (
     <Menu
@@ -320,7 +326,7 @@ export function NewFileDropdownMenu(props: {
                   return (
                     <MenuGroup label={" "} key={index}>
                       <MenuItem
-                        onClick={() => importFromUrl(importableUrlSamples[index])}
+                        onClick={() => importFromUrl(importableUrlSamples.get(config.extension)!)}
                         description={config.card.description}
                       >
                         <Flex>
