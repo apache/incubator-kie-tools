@@ -181,7 +181,7 @@ export function NewWorkspaceFromUrlPage() {
       authSessionStatus,
       urlDomain,
     });
-    setAuthSessionId(compatible[0]!.id);
+    setAuthSessionId(compatible[0].id);
   }, [authProviders, authSessionStatus, authSessions, importableUrl, setAuthSessionId]);
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
