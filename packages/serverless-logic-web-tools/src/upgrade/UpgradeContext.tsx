@@ -17,7 +17,7 @@
 import Dexie from "dexie";
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { SAMPLES_FS_MOUNT_POINT_PREFIX } from "../home/sample/SampleConstants";
+import { SAMPLES_FS_MOUNT_POINT_PREFIX } from "../samples/SampleConstants";
 import { useEnv } from "../env/EnvContext";
 
 export const UpgradeContext = React.createContext<{}>({} as any);

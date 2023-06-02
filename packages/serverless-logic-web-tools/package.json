@@ -51,8 +51,10 @@
     "@kie-tools/text-editor": "workspace:*",
     "@octokit/plugin-rest-endpoint-methods": "^5.0.1",
     "@octokit/rest": "^18.5.3",
+    "@patternfly/quickstarts": "^2.3.2",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
+    "@patternfly/react-table": "^4.112.39",
     "@patternfly/react-tokens": "^4.94.6",
     "@rhoas/registry-instance-sdk": "^0.34.1",
     "axios": "^0.27.2",
@@ -73,6 +75,7 @@
     "react-router": "^5.2.1",
     "react-router-dom": "^5.2.1",
     "short-unique-id": "^4.4.4",
+    "showdown": "^2.1.0",
     "uuid": "^8.3.2",
     "vscode-languageserver-types": "^3.16.0",
     "yaml": "^2.0.1"

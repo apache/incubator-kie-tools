@@ -33,8 +33,7 @@ import { DependentFeature, useExtendedServices } from "../../extendedServices/Ex
 import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
-import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
-import { SettingsTabs } from "../../settings/SettingsModalBody";
+import { useSettings } from "../../settings/SettingsContext";
 import { useVirtualServiceRegistryDependencies } from "../../virtualServiceRegistry/hooks/useVirtualServiceRegistryDependencies";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
@@ -45,6 +44,8 @@ import { useEnv } from "../../env/EnvContext";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { useEditor } from "../hooks/EditorContext";
 import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { useHistory } from "react-router";
+import { routes } from "../../navigation/Routes";
 
 const FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME = 2000;
 
@@ -60,13 +61,13 @@ export function useDeployDropdownItems(props: Props) {
   const devMode = useDevMode();
   const devModeDispatch = useDevModeDispatch();
   const settings = useSettings();
-  const settingsDispatch = useSettingsDispatch();
   const extendedServices = useExtendedServices();
   const openshift = useOpenShift();
   const [canContentBeDeployed, setCanContentBeDeployed] = useState(true);
   const { needsDependencyDeployment } = useVirtualServiceRegistryDependencies({
     workspace: props.workspace,
   });
+  const history = useHistory();
 
   useEffect(() => {
     props.workspaceFile.getFileContentsAsString().then((content) => {
@@ -209,8 +210,8 @@ export function useDeployDropdownItems(props: Props) {
   );
 
   const onSetup = useCallback(() => {
-    settingsDispatch.open(SettingsTabs.OPENSHIFT);
-  }, [settingsDispatch]);
+    history.push(routes.settings.openshift.path({}));
+  }, [history]);
 
   const onDeploy = useCallback(() => {
     if (isExtendedServicesRunning) {

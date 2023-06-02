@@ -126,7 +126,7 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
           uri: args.deployArgs.targetFilePath,
           baseUrl: args.routeUrl,
           workspaceName: args.deployArgs.workspaceName,
-          containerImageUrl: process.env.WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl!,
+          containerImageUrl: args.deployArgs.containerImageUrl,
           envVars: [
             {
               name: "BASE_URL",

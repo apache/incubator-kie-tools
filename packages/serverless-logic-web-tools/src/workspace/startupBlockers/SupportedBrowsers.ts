@@ -52,6 +52,14 @@ export const mapSupportedVersionsToBowser = (...features: MinVersionForFeature[]
   );
 };
 
+/**
+ * Checks if the browser is Chromium based
+ */
+export const isBrowserChromiumBased = (): boolean => {
+  const agent = window.navigator.userAgent.toLowerCase();
+  return agent.indexOf("edg") > -1 || agent.indexOf("chrome") > -1;
+};
+
 export const SUPPORTED_BROWSERS = mapSupportedVersionsToBowser(SharedWebWorkersFeature, BroadcastChannelFeature);
 
 const IS_SUPPORTED = Bowser.getParser(window.navigator.userAgent).satisfies(SUPPORTED_BROWSERS);

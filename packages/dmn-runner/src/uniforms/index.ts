@@ -15,4 +15,4 @@
  */
 
 export * from "./DmnAutoFieldProvider";
-export * from "./DmnFeelContextField";
+export * from "./DmnAutoFieldValue";

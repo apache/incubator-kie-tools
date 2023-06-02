@@ -2849,9 +2849,6 @@ importers:
         specifier: workspace:*
         version: link:../dmn-dev-deployment-quarkus-app
     devDependencies:
-      "@kie-tools/dmn-dev-deployment-base-image-env":
-        specifier: workspace:*
-        version: link:../dmn-dev-deployment-base-image-env
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -2864,12 +2861,6 @@ importers:
       yargs:
         specifier: ^17.0.1
         version: 17.3.1
-
-  packages/dmn-dev-deployment-base-image-env:
-    devDependencies:
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
 
   packages/dmn-dev-deployment-form-webapp:
     dependencies:
@@ -3060,6 +3051,9 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      ajv:
+        specifier: ^6.12.6
+        version: 6.12.6
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -3820,12 +3814,6 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
-      ajv:
-        specifier: ^6.12.6
-        version: 6.12.6
-      ajv-errors:
-        specifier: ^1.0.1
-        version: 1.0.1(ajv@6.12.6)
       deep-object-diff:
         specifier: ^1.1.0
         version: 1.1.0
@@ -5231,6 +5219,9 @@ importers:
       "@kie-tools/dmn-language-service":
         specifier: workspace:*
         version: link:../dmn-language-service
+      "@kie-tools/dmn-runner":
+        specifier: workspace:*
+        version: link:../dmn-runner
       "@kie-tools/emscripten-fs":
         specifier: ^0.0.2
         version: 0.0.2
@@ -5279,9 +5270,6 @@ importers:
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
-      deep-object-diff:
-        specifier: ^1.1.0
-        version: 1.1.0
       history:
         specifier: ^4.9.0
         version: 4.10.1
@@ -5334,9 +5322,6 @@ importers:
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
         version: link:../webpack-base
-      "@kie-tools/dmn-dev-deployment-base-image-env":
-        specifier: workspace:*
-        version: link:../dmn-dev-deployment-base-image-env
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
@@ -6057,12 +6042,18 @@ importers:
       "@octokit/rest":
         specifier: ^18.5.3
         version: 18.5.3
+      "@patternfly/quickstarts":
+        specifier: ^2.3.2
+        version: 2.4.0(@patternfly/react-core@4.276.6)(react-dom@17.0.2)(react@17.0.2)(showdown@2.1.0)
       "@patternfly/react-core":
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-table":
+        specifier: ^4.112.39
+        version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
       "@patternfly/react-tokens":
         specifier: ^4.94.6
         version: 4.94.6
@@ -6123,6 +6114,9 @@ importers:
       short-unique-id:
         specifier: ^4.4.4
         version: 4.4.4
+      showdown:
+        specifier: ^2.1.0
+        version: 2.1.0
       uuid:
         specifier: ^8.3.2
         version: 8.3.2
@@ -8242,12 +8236,6 @@ importers:
       "@types/react-table":
         specifier: ^7.0.25
         version: 7.7.7
-      ajv:
-        specifier: ^6.12.6
-        version: 6.12.6
-      ajv-errors:
-        specifier: ^1.0.1
-        version: 1.0.1(ajv@6.12.6)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -14937,6 +14925,43 @@ packages:
     engines: { node: ">=8.0" }
     dev: true
 
+  /@patternfly/patternfly@4.224.2:
+    resolution:
+      { integrity: sha512-HGNV26uyHSIECuhjPg/WGn0mXbAotcs6ODfhAOkfYjIgGylddgiwElxUe1rpEHV5mQJJ2rMn4OdeJIIpzRX61g== }
+    dev: false
+
+  /@patternfly/quickstarts@2.4.0(@patternfly/react-core@4.276.6)(react-dom@17.0.2)(react@17.0.2)(showdown@2.1.0):
+    resolution:
+      { integrity: sha512-dlGtAX8iQarFvmflEvZ7rHaJb1aaBrcqkbzwx0wy2QLL/BID7Y+UQ9ht7k+TBNfnxhPOljM2YTp0rugG5S9q4g== }
+    peerDependencies:
+      "@patternfly/react-core": ">=4.115.2"
+      react: ">=16.8.0"
+      react-dom: ">=16.8.0"
+      showdown: ">=1.8.6"
+    dependencies:
+      "@patternfly/react-catalog-view-extension": 4.96.0(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-core": 4.276.6(react-dom@17.0.2)(react@17.0.2)
+      dompurify: 2.4.0
+      history: 5.3.0
+      react: 17.0.2
+      react-dom: 17.0.2(react@17.0.2)
+      showdown: 2.1.0
+    dev: false
+
+  /@patternfly/react-catalog-view-extension@4.96.0(react-dom@17.0.2)(react@17.0.2):
+    resolution:
+      { integrity: sha512-ZMPvaE6KOjbLioCdi1wPtxughsce4+sPq6Us5s4JKu2xgn+e83NcfSD3pAcS5e+M8K3SWwdXd3ycgkD8F+Obvg== }
+    peerDependencies:
+      react: ^16.8 || ^17 || ^18
+      react-dom: ^16.8 || ^17 || ^18
+    dependencies:
+      "@patternfly/patternfly": 4.224.2
+      "@patternfly/react-core": 4.276.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-styles": 4.92.6
+      react: 17.0.2
+      react-dom: 17.0.2(react@17.0.2)
+    dev: false
+
   /@patternfly/react-charts@6.94.18(react-dom@17.0.2)(react@17.0.2):
     resolution:
       { integrity: sha512-56WxnZYC3blRX41mW67JaPxJ3YhXViLvwGpEsZrYCccla/rTV8JgKK0gjHnqtzPQiVBfpn+3ewOyNCOR5uRoSw== }
@@ -19941,7 +19966,6 @@ packages:
     resolution:
       { integrity: sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw== }
     engines: { node: ^12.20.0 || >=14 }
-    dev: true
 
   /common-tags@1.8.0:
     resolution:
@@ -24252,6 +24276,13 @@ packages:
       tiny-invariant: 1.1.0
       tiny-warning: 1.0.3
       value-equal: 1.0.1
+
+  /history@5.3.0:
+    resolution:
+      { integrity: sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ== }
+    dependencies:
+      "@babel/runtime": 7.16.7
+    dev: false
 
   /hoist-non-react-statics@3.3.2:
     resolution:
@@ -31729,6 +31760,14 @@ packages:
     resolution:
       { integrity: sha512-oLF1NCmtbiTWl2SqdXZQbo5KM1b7axdp0RgQLq8qCBBLoq+o3A5wmLrNM6bZIh54/a8BJ3l69kTXuxwZ+XCYuw== }
     hasBin: true
+    dev: false
+
+  /showdown@2.1.0:
+    resolution:
+      { integrity: sha512-/6NVYu4U819R2pUIk79n67SYgJHWCce0a5xTP979WbNp0FL9MN1I1QK662IDU1b6JzKTvmhgI7T7JYIxBi3kMQ== }
+    hasBin: true
+    dependencies:
+      commander: 9.4.1
     dev: false
 
   /side-channel@1.0.4:

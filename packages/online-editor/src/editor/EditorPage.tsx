@@ -64,7 +64,7 @@ export interface Props {
 let saveVersion = 1;
 let refreshVersion = 0;
 
-const KIE_ISSUES_LINK = "https://github.com/kiegroup/kie-issues/issues";
+const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
 export function EditorPage(props: Props) {
   const { env } = useEnv();
@@ -364,9 +364,9 @@ export function EditorPage(props: Props) {
             <TextContent>
               <I18nWrapped
                 components={{
-                  issues: (
-                    <a href={KIE_ISSUES_LINK} target={"_blank"}>
-                      {KIE_ISSUES_LINK}
+                  jira: (
+                    <a href={KOGITO_JIRA_LINK} target={"_blank"}>
+                      {KOGITO_JIRA_LINK}
                     </a>
                   ),
                 }}
