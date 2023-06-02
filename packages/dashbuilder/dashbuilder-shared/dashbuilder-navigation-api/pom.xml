@@ -37,11 +37,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>

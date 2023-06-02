@@ -1,3 +1,13 @@
+# 0.29.0 (alpha)
+
+- [KOGITO-8986](https://issues.redhat.com/browse/KOGITO-8986) - SWF Viewer - missing icon for parameters for Switch state
+- [KOGITO-8288](https://issues.redhat.com/browse/KOGITO-8288) - SWF Editor - Issues on state selection & tooltip overlapping toolbox
+- [KOGITO-8988](https://issues.redhat.com/browse/KOGITO-8988) - SWF Viewer - add icons for ForEch state
+
+# 0.28.2 (alpha)
+
+- [KOGITO-9108](https://issues.redhat.com/browse/KOGITO-9108) - Rename the new Serverless Workflow VS Code extension to `swf-vscode-extension`
+
 # 0.28.1 (alpha)
 
 - [KOGITO-9105](https://issues.redhat.com/browse/KOGITO-9105) - Add KIE prefix to `displayName` of new VS Code extensions

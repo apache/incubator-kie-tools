@@ -18,7 +18,7 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    DMN_DEV_DEPLOYMENT__gtmId: {
+    DMN_DEV_DEPLOYMENT_FORM_WEBAPP__gtmId: {
       default: undefined,
       description: "",
     },
@@ -26,7 +26,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   get env() {
     return {
       dmnDevDeploymentFormWebapp: {
-        gtmId: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__gtmId),
+        gtmId: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT_FORM_WEBAPP__gtmId),
         dev: {
           port: 9008,
         },

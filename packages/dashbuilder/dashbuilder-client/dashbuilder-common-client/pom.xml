@@ -34,16 +34,6 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-dataset-api</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-json</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
@@ -65,16 +55,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
-      <artifactId>gwtbootstrap3</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
-      <artifactId>gwtbootstrap3-extras</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
@@ -82,24 +62,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-client-api</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-commons</artifactId>
-    </dependency>
-
-    <!-- Test dependencies -->
-    <dependency>
-      <groupId>com.google.gwt.gwtmockito</groupId>
-      <artifactId>gwtmockito</artifactId>
-      <scope>test</scope>      
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-testing-utils</artifactId>
-      <scope>test</scope>
     </dependency>
     
   </dependencies>

@@ -412,16 +412,6 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                                 >
                                   (Any)
                                 </span>
-                                <button
-                                  aria-disabled="false"
-                                  class="pf-c-button pf-m-primary pf-m-small fetch-button"
-                                  data-ouia-component-id="OUIA-Generated-Button-primary-6"
-                                  data-ouia-component-type="PF4/Button"
-                                  data-ouia-safe="true"
-                                  type="button"
-                                >
-                                  Fetch "Test" class
-                                </button>
                               </div>
                             </td>
                           </tr>
@@ -1067,7 +1057,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
     <button
       aria-disabled="false"
       class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-13"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-8"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
@@ -1084,21 +1074,21 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
         class="pf-l-bullseye"
       >
         <div
-          aria-describedby="pf-modal-part-9"
-          aria-labelledby="pf-modal-part-8"
+          aria-describedby="pf-modal-part-7"
+          aria-labelledby="pf-modal-part-6"
           aria-modal="true"
           class="pf-c-modal-box pf-m-lg"
-          data-ouia-component-id="OUIA-Generated-Modal-large-8"
+          data-ouia-component-id="OUIA-Generated-Modal-large-6"
           data-ouia-component-type="PF4/ModalContent"
           data-ouia-safe="true"
-          id="pf-modal-part-7"
+          id="pf-modal-part-5"
           role="dialog"
         >
           <button
             aria-disabled="false"
             aria-label="Close"
             class="pf-c-button pf-m-plain"
-            data-ouia-component-id="OUIA-Generated-Modal-large-8-ModalBoxCloseButton"
+            data-ouia-component-id="OUIA-Generated-Modal-large-6-ModalBoxCloseButton"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             type="button"
@@ -1122,7 +1112,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
           >
             <h1
               class="pf-c-modal-box__title"
-              id="pf-modal-part-8"
+              id="pf-modal-part-6"
             >
               
               <span
@@ -1133,7 +1123,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
             </h1>
             <div
               class="pf-c-modal-box__description"
-              id="pf-modal-part-9"
+              id="pf-modal-part-7"
             >
               It converts your Java assets to DMN types. This is a one-time import action: if the Java class gets updated, you will need to reimport it.
             </div>
@@ -1191,7 +1181,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                 >
                   <nav
                     class="pf-c-wizard__nav"
-                    data-ouia-component-id="OUIA-Generated-WizardNav-8"
+                    data-ouia-component-id="OUIA-Generated-WizardNav-6"
                     data-ouia-component-type="PF4/WizardNav"
                     data-ouia-safe="true"
                   >
@@ -1204,7 +1194,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                         <button
                           aria-current="false"
                           class="pf-c-wizard__nav-link"
-                          data-ouia-component-id="OUIA-Generated-WizardNavItem-22"
+                          data-ouia-component-id="OUIA-Generated-WizardNavItem-16"
                           data-ouia-component-type="PF4/WizardNavItem"
                           data-ouia-safe="true"
                         >
@@ -1217,7 +1207,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                         <button
                           aria-current="false"
                           class="pf-c-wizard__nav-link"
-                          data-ouia-component-id="OUIA-Generated-WizardNavItem-23"
+                          data-ouia-component-id="OUIA-Generated-WizardNavItem-17"
                           data-ouia-component-type="PF4/WizardNavItem"
                           data-ouia-safe="true"
                         >
@@ -1230,7 +1220,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                         <button
                           aria-current="step"
                           class="pf-c-wizard__nav-link pf-m-current"
-                          data-ouia-component-id="OUIA-Generated-WizardNavItem-24"
+                          data-ouia-component-id="OUIA-Generated-WizardNavItem-18"
                           data-ouia-component-type="PF4/WizardNavItem"
                           data-ouia-safe="true"
                         >
@@ -1251,7 +1241,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                         <table
                           aria-label="field-table"
                           class="pf-c-table pf-m-grid-md"
-                          data-ouia-component-id="OUIA-Generated-Table-8"
+                          data-ouia-component-id="OUIA-Generated-Table-3"
                           data-ouia-component-type="PF4/Table"
                           data-ouia-safe="true"
                           role="grid"
@@ -1262,7 +1252,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                           >
                             <tr
                               class=""
-                              data-ouia-component-id="OUIA-Generated-TableRow-52"
+                              data-ouia-component-id="OUIA-Generated-TableRow-15"
                               data-ouia-component-type="PF4/TableRow"
                               data-ouia-safe="true"
                             >
@@ -1275,7 +1265,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                                   aria-label="Details"
                                   aria-labelledby="simple-node0 expand-toggle0"
                                   class="pf-c-button pf-m-plain pf-m-expanded"
-                                  data-ouia-component-id="OUIA-Generated-Button-plain-29"
+                                  data-ouia-component-id="OUIA-Generated-Button-plain-15"
                                   data-ouia-component-type="PF4/Button"
                                   data-ouia-safe="true"
                                   id="expand-toggle0"
@@ -1317,7 +1307,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                             </tr>
                             <tr
                               class="pf-c-table__expandable-row pf-m-expanded"
-                              data-ouia-component-id="OUIA-Generated-TableRow-53"
+                              data-ouia-component-id="OUIA-Generated-TableRow-16"
                               data-ouia-component-type="PF4/TableRow"
                               data-ouia-safe="true"
                             >
@@ -1343,7 +1333,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                             </tr>
                             <tr
                               class="pf-c-table__expandable-row pf-m-expanded"
-                              data-ouia-component-id="OUIA-Generated-TableRow-54"
+                              data-ouia-component-id="OUIA-Generated-TableRow-17"
                               data-ouia-component-type="PF4/TableRow"
                               data-ouia-safe="true"
                             >
@@ -1374,7 +1364,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                           >
                             <tr
                               class=""
-                              data-ouia-component-id="OUIA-Generated-TableRow-55"
+                              data-ouia-component-id="OUIA-Generated-TableRow-18"
                               data-ouia-component-type="PF4/TableRow"
                               data-ouia-safe="true"
                             >
@@ -1387,7 +1377,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                                   aria-label="Details"
                                   aria-labelledby="simple-node1 expand-toggle1"
                                   class="pf-c-button pf-m-plain pf-m-expanded"
-                                  data-ouia-component-id="OUIA-Generated-Button-plain-30"
+                                  data-ouia-component-id="OUIA-Generated-Button-plain-16"
                                   data-ouia-component-type="PF4/Button"
                                   data-ouia-safe="true"
                                   id="expand-toggle1"
@@ -1429,7 +1419,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                             </tr>
                             <tr
                               class="pf-c-table__expandable-row pf-m-expanded"
-                              data-ouia-component-id="OUIA-Generated-TableRow-56"
+                              data-ouia-component-id="OUIA-Generated-TableRow-19"
                               data-ouia-component-type="PF4/TableRow"
                               data-ouia-safe="true"
                             >
@@ -1455,7 +1445,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                             </tr>
                             <tr
                               class="pf-c-table__expandable-row pf-m-expanded"
-                              data-ouia-component-id="OUIA-Generated-TableRow-57"
+                              data-ouia-component-id="OUIA-Generated-TableRow-20"
                               data-ouia-component-type="PF4/TableRow"
                               data-ouia-safe="true"
                             >
@@ -1481,7 +1471,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                             </tr>
                             <tr
                               class="pf-c-table__expandable-row pf-m-expanded"
-                              data-ouia-component-id="OUIA-Generated-TableRow-58"
+                              data-ouia-component-id="OUIA-Generated-TableRow-21"
                               data-ouia-component-type="PF4/TableRow"
                               data-ouia-safe="true"
                             >
@@ -1517,7 +1507,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="OUIA-Generated-Button-primary-12"
+                    data-ouia-component-id="OUIA-Generated-Button-primary-6"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     type="submit"
@@ -1527,7 +1517,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-secondary"
-                    data-ouia-component-id="OUIA-Generated-Button-secondary-14"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-9"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     type="button"
@@ -1540,7 +1530,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                     <button
                       aria-disabled="false"
                       class="pf-c-button pf-m-link"
-                      data-ouia-component-id="OUIA-Generated-Button-link-8"
+                      data-ouia-component-id="OUIA-Generated-Button-link-6"
                       data-ouia-component-type="PF4/Button"
                       data-ouia-safe="true"
                       type="button"

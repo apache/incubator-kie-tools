@@ -62,7 +62,10 @@ const TableJavaClassItem = ({
   const [isExpanded, setExpanded] = useState(true);
 
   const isFetchable = useCallback((field: JavaField) => {
-    return field.dmnTypeRef === DMNSimpleType.ANY && !JAVA_TO_DMN_MAP.has(getJavaClassSimpleName(field.type));
+    /* Temporary disable isFetchable, because we need FQCN of the Classes, no longer avaialble */
+    /* https://github.com/kiegroup/kie-issues/issues/114 */
+    return false;
+    //return field.dmnTypeRef === DMNSimpleType.ANY && !JAVA_TO_DMN_MAP.has(getJavaClassSimpleName(field.type));
   }, []);
 
   const parentRow = (

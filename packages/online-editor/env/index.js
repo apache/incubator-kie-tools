@@ -19,14 +19,12 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 const buildEnv = require("@kie-tools/root-env/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
 const gitCorsProxyImageEnv = require("@kie-tools/git-cors-proxy-image/env");
-const dmnDevDeploymentBaseImageEnv = require("@kie-tools/dmn-dev-deployment-base-image-env/env");
 const devPort = 9001;
 
 module.exports = composeEnv(
   [
     // dependencies
     buildEnv,
-    dmnDevDeploymentBaseImageEnv,
     extendedServicesEnv,
     gitCorsProxyImageEnv,
   ],
@@ -36,19 +34,19 @@ module.exports = composeEnv(
         default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
         description: "Build information to be shown at the bottom of Home page.",
       },
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: {
+      ONLINE_EDITOR__extendedServicesDownloadUrlLinux: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_linux_${extendedServicesEnv.env.extendedServices.version}.tar.gz`,
         description: "Download URL for Extended Services for Linux.",
       },
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: {
+      ONLINE_EDITOR__extendedServicesDownloadUrlMacOs: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_macos_${extendedServicesEnv.env.extendedServices.version}.dmg`,
         description: "Download URL for Extended Services for macOS.",
       },
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: {
+      ONLINE_EDITOR__extendedServicesDownloadUrlWindows: {
         default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_windows_${extendedServicesEnv.env.extendedServices.version}.exe`,
         description: "Download URL for Extended Services for Windows.",
       },
-      ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: {
+      ONLINE_EDITOR__extendedServicesCompatibleVersion: {
         default: extendedServicesEnv.env.extendedServices.version,
         description:
           "Version Extended Services compatile with KIE Sandbox. Exact match only. No version ranges are supported.",
@@ -77,17 +75,29 @@ module.exports = composeEnv(
         default: "",
         description: "Service URL to validate commit messages.",
       },
-      DMN_DEV_DEPLOYMENT__baseImageTag: {
+      ONLINE_EDITOR__appName: {
+        default: "KIE Sandbox",
+        description: "The name used to refer to a particular KIE Sandbox distribution.",
+      },
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry: {
+        default: "quay.io",
+        description: "Image registry to be used by DMN Dev deployments when deploying DMN models.",
+      },
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: {
+        default: "kie-tools",
+        description: "Image account to be used by DMN Dev deployments when deploying DMN models.",
+      },
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageName: {
+        default: "dmn-dev-deployment-base-image",
+        description: "Image name to be used by DMN Dev deployments when deploying DMN models.",
+      },
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: {
         default: "daily-dev",
         description: "Image tag to be used by DMN Dev deployments when deploying DMN models.",
       },
-      DMN_DEV_DEPLOYMENT__imagePullPolicy: {
+      ONLINE_EDITOR__dmnDevDeploymentBaseImagePullPolicy: {
         default: "Always",
         description: "The image pull policy. Can be 'Always', 'IfNotPresent', or 'Never'.",
-      },
-      DMN_DEV_DEPLOYMENT__onlineEditorUrl: {
-        default: `https://localhost:${devPort}`,
-        description: "URL that DMN Dev deployments will use to open KIE Sandbox.",
       },
     }),
     get env() {
@@ -99,14 +109,15 @@ module.exports = composeEnv(
           },
           gtmId: getOrDefault(this.vars.ONLINE_EDITOR__gtmId),
           buildInfo: getOrDefault(this.vars.ONLINE_EDITOR__buildInfo),
-          kieSandboxExtendedServices: {
-            compatibleVersion: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion),
+          extendedServices: {
+            compatibleVersion: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesCompatibleVersion),
             downloadUrl: {
-              linux: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux),
-              macOs: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs),
-              windows: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows),
+              linux: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesDownloadUrlLinux),
+              macOs: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesDownloadUrlMacOs),
+              windows: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesDownloadUrlWindows),
             },
           },
+          appName: getOrDefault(this.vars.ONLINE_EDITOR__appName),
           extendedServicesUrl: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesUrl),
           gitCorsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__gitCorsProxyUrl),
           requireCustomCommitMessage: getOrDefault(this.vars.ONLINE_EDITOR__requireCustomCommitMessage),
@@ -115,12 +126,14 @@ module.exports = composeEnv(
           ),
         },
         devDeployments: {
-          onlineEditorUrl: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__onlineEditorUrl),
           dmn: {
+            imagePullPolicy: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImagePullPolicy),
             baseImage: {
-              tag: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__baseImageTag),
+              tag: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImageTag),
+              registry: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry),
+              account: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount),
+              name: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImageName),
             },
-            imagePullPolicy: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__imagePullPolicy),
           },
         },
       };

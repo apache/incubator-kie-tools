@@ -22,7 +22,7 @@ import { EditorEnvelopeLocatorContextProvider } from "./envelopeLocator/hooks/Ed
 import { EditorPage } from "./editor/EditorPage";
 import { OnlineI18nContextProvider } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
-import { KieSandboxExtendedServicesContextProvider } from "./kieSandboxExtendedServices/KieSandboxExtendedServicesContextProvider";
+import { ExtendedServicesContextProvider } from "./extendedServices/ExtendedServicesContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { HomePage } from "./home/HomePage";
 import { NewWorkspaceWithEmptyFilePage } from "./importFromUrl/NewWorkspaceWithEmptyFilePage";
@@ -45,7 +45,7 @@ export function App() {
         [OnlineI18nContextProvider, {}],
         [EnvContextProvider, {}],
         [EditorEnvelopeLocatorContextProvider, {}],
-        [KieSandboxExtendedServicesContextProvider, {}],
+        [ExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [AuthSessionsContextProvider, {}],
         [AccountsContextProvider, {}],

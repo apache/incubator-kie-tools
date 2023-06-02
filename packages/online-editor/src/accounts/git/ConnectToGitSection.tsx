@@ -43,6 +43,7 @@ import {
 } from "../../authProviders/AuthProvidersApi";
 import { switchExpression } from "../../switchExpression/switchExpression";
 import { AuthOptionsType, BitbucketClient } from "../../bitbucket/Hooks";
+import { useEnv } from "../../env/hooks/EnvContext";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const BITBUCKET_OAUTH_TOKEN_SIZE = 40;
@@ -71,6 +72,7 @@ export type AuthenticatedUserResponse = {
 export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
   const { i18n } = useOnlineI18n();
   const accounts = useAccounts();
+  const { env } = useEnv();
   const accountsDispatch = useAccountsDispatch();
   const { authSessions } = useAuthSessions();
   const authSessionsDispatch = useAuthSessionsDispatch();
@@ -108,7 +110,8 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
         delay(600)
           .then(
             switchExpression<SupportedGitAuthProviders, () => Promise<AuthenticatedUserResponse>>(authProviderType, {
-              bitbucket: () => fetchAuthenticatedBitbucketUser(usernameInput, tokenInput, props.authProvider.domain),
+              bitbucket: () =>
+                fetchAuthenticatedBitbucketUser(env.KIE_SANDBOX_APP_NAME, tokenInput, props.authProvider.domain),
               github: () => fetchAuthenticatedGitHubUser(tokenInput, props.authProvider.domain),
             })
           )
@@ -162,7 +165,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
         setNewAuthSession,
         authSessions,
         i18n.connectToGitModal.auth.error,
-        usernameInput,
+        env.KIE_SANDBOX_APP_NAME,
         authSessionsDispatch,
       ]
     )
@@ -390,11 +393,13 @@ export const fetchAuthenticatedGitHubUser = async (githubToken: string, domain?:
   };
 };
 export const fetchAuthenticatedBitbucketUser = async (
+  appName: string,
   bitbucketUsername: string,
   bitbucketToken: string,
   domain?: string
 ) => {
   const bitbucket = new BitbucketClient({
+    appName,
     domain,
     auth: {
       type: AuthOptionsType.BASIC,

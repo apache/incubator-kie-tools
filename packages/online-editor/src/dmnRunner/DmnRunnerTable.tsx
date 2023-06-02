@@ -20,9 +20,6 @@ import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { useOnlineI18n } from "../i18n";
 import { UnitablesWrapper } from "@kie-tools/unitables/dist/UnitablesWrapper";
 import { DmnRunnerOutputsTable } from "@kie-tools/unitables-dmn/dist/DmnRunnerOutputsTable";
@@ -45,7 +42,7 @@ export function DmnRunnerTable() {
 
   // CUSTOM HOOKs
   const { i18n } = useOnlineI18n();
-  const { configs, inputs, extendedServicesError, jsonSchema, results } = useDmnRunnerState();
+  const { configs, inputs, extendedServicesError, jsonSchema, results, dmnRunnerKey } = useDmnRunnerState();
   const {
     setDmnRunnerContextProviderState,
     onRowAdded,
@@ -64,10 +61,13 @@ export function DmnRunnerTable() {
 
   // MEMOs
   const rowCount = useMemo(() => inputs?.length ?? 1, [inputs?.length]);
-  const jsonSchemaBridge = useMemo(
-    () => new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(jsonSchema ?? {}),
-    [i18n, jsonSchema]
-  );
+  const jsonSchemaBridge = useMemo(() => {
+    try {
+      return new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(cloneDeep(jsonSchema) ?? {});
+    } catch (err) {
+      throw Error(`getBridge ${err}`);
+    }
+  }, [i18n, jsonSchema]);
 
   useEffect(() => {
     setDmnRunnerTableError(false);
@@ -141,7 +141,11 @@ export function DmnRunnerTable() {
                 }
               >
                 {/* DMN Runner Inputs */}
-                <div ref={(ref) => setInputsContainerRef(ref)}>
+                <div
+                  ref={(ref) => setInputsContainerRef(ref)}
+                  style={{ display: "inline-block", width: "fit-content" }}
+                  key={dmnRunnerKey}
+                >
                   <UnitablesWrapper
                     scrollableParentRef={inputsScrollableElementRef.current}
                     i18n={i18n.dmnRunner.table}
@@ -165,22 +169,6 @@ export function DmnRunnerTable() {
         </div>
       )}
     </>
-  );
-}
-
-function DmnRunnerTableError() {
-  return (
-    <div>
-      <EmptyState>
-        <EmptyStateIcon icon={ExclamationIcon} />
-        <TextContent>
-          <Text component={"h2"}>Error</Text>
-        </TextContent>
-        <EmptyStateBody>
-          <p>An error has happened on the DMN Runner Table</p>
-        </EmptyStateBody>
-      </EmptyState>
-    </div>
   );
 }
 
@@ -220,6 +208,34 @@ function useAnchoredUnitablesDrawerPanel(args: {
   const [scrollbarWidth, setScrollbarWidth] = useState(0); // Default size on Chrome.
   const [drawerPanelMinSize, setDrawerPanelMinSize] = useState<string>();
   const [drawerPanelDefaultSize, setDrawerPanelDefaultSize] = useState<string>();
+
+  useEffect(() => {
+    if (!args.inputsContainerRef) {
+      return;
+    }
+
+    const resizerObserver = new ResizeObserver(() => {
+      if (!args.inputsContainerRef) {
+        return;
+      }
+
+      const children = Object.values(args.inputsContainerRef.childNodes?.[0]?.childNodes);
+      const newWidth = children?.reduce((acc, child: HTMLElement) => acc + child.offsetWidth, 1) ?? 0;
+      const newDefaultSize = `calc(100vw - ${newWidth + scrollbarWidth}px)`;
+
+      setDrawerPanelDefaultSize((prev) => {
+        // This is a nasty trick to force refreshing even when the value is the same.
+        // Alternate with a space at the end of the state.
+        return prev?.endsWith(" ") ? newDefaultSize : newDefaultSize + " ";
+      });
+    });
+
+    resizerObserver.observe(args.inputsContainerRef);
+
+    return () => {
+      resizerObserver.disconnect();
+    };
+  }, [args.inputsContainerRef, scrollbarWidth]);
 
   const refreshDrawerPanelDefaultSize = useCallback(() => {
     if (!args.inputsContainerRef) {

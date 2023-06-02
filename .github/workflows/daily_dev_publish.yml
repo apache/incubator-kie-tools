@@ -16,14 +16,16 @@ jobs:
     env:
       KIE_SANDBOX_EXTENDED_SERVICES_VERSION: "0.0.0"
       KIE_TOOLS_BUILD__buildContainerImages: "true"
-      DMN_DEV_DEPLOYMENT__baseImageRegistry: "quay.io"
-      DMN_DEV_DEPLOYMENT__baseImageAccount: "kie-tools"
-      DMN_DEV_DEPLOYMENT__baseImageName: "dmn-dev-deployment-base-image"
-      DMN_DEV_DEPLOYMENT__baseImageTag: "daily-dev"
-      DMN_DEV_DEPLOYMENT__baseImageBuildTags: "daily-dev"
-      DMN_DEV_DEPLOYMENT__onlineEditorUrl: "https://kiegroup.github.io/kogito-online/dev"
-      EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online/dev"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry: "quay.io"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__account: "kie-tools"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__name: "dmn-dev-deployment-base-image"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags: "daily-dev"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry: "quay.io"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: "kie-tools"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageName: "dmn-dev-deployment-base-image"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: "daily-dev"
       ONLINE_EDITOR__gitCorsProxyUrl: "https://daily-dev-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
+      EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online/dev"
 
       KIE_SANDBOX__imageRegistry: "quay.io"
       KIE_SANDBOX__imageAccount: "kie-tools"
@@ -60,6 +62,11 @@ jobs:
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName: "serverless-logic-web-tools-base-builder-image"
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag: "daily-dev"
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags: "daily-dev"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName: "serverless-logic-web-tools-swf-dev-mode-image"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag: "daily-dev"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags: "daily-dev"
       SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl: "https://daily-dev-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
 
     steps:
@@ -106,16 +113,16 @@ jobs:
           CHROME_EXTENSION__routerRelativePath: "kogito-online/dev/editors/"
           SWF_CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
           SWF_CHROME_EXTENSION__routerRelativePath: "kogito-online/dev/editors/"
-          ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_linux_${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}.tar.gz"
-          ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_macos_${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}.dmg"
-          ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_windows_${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}.exe"
-          ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}"
+          ONLINE_EDITOR__extendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_linux_${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}.tar.gz"
+          ONLINE_EDITOR__extendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_macos_${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}.dmg"
+          ONLINE_EDITOR__extendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_windows_${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}.exe"
+          ONLINE_EDITOR__extendedServicesCompatibleVersion: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}"
           ONLINE_EDITOR__buildInfo: "${{ steps.version.outputs.version }} (daily-dev) @ ${{ github.sha }}"
           DISPLAY: ":99.0"
-          SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}/kie_sandbox_extended_services_linux_${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}.tar.gz"
-          SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}/kie_sandbox_extended_services_macos_${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}.dmg"
-          SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}/kie_sandbox_extended_services_windows_${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}.exe"
-          SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}"
+          SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}/kie_sandbox_extended_services_linux_${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}.tar.gz"
+          SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}/kie_sandbox_extended_services_macos_${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}.dmg"
+          SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}/kie_sandbox_extended_services_windows_${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}.exe"
+          SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesCompatibleVersion: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}"
           SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: "${{ steps.version.outputs.version }} (daily-dev) @ ${{ github.sha }}"
         run: |
           cd kie-tools
@@ -125,10 +132,10 @@ jobs:
         if: runner.os == 'Linux'
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.DMN_DEV_DEPLOYMENT__baseImageName }}"
-          tags: "${{ env.DMN_DEV_DEPLOYMENT__baseImageBuildTags }}"
-          registry: "${{ env.DMN_DEV_DEPLOYMENT__baseImageRegistry }}/${{ env.DMN_DEV_DEPLOYMENT__baseImageAccount }}"
-          username: "${{ env.DMN_DEV_DEPLOYMENT__baseImageAccount }}"
+          image: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name }}"
+          tags: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags }}"
+          registry: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry }}/${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
+          username: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
           password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
       - name: "Push kie-sandbox-extended-services-image to quay.io (Ubuntu only)"
@@ -179,6 +186,16 @@ jobs:
           tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags }}"
           registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount }}"
           username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount }}"
+          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
+
+      - name: "Push serverless-logic-web-tools-swf-dev-mode-image to quay.io (Ubuntu only)"
+        if: runner.os == 'Linux'
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
           password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
       - name: "Push dashbuilder-viewer-image to quay.io (Ubuntu only)"
@@ -239,13 +256,6 @@ jobs:
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_envvars_file_path: ./deployment.env
           deployment_icon: "js"
-
-      - name: "Upload Serverless Workflow VS Code Extension - Red Hat (Ubuntu only)"
-        if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v3
-        with:
-          name: vscode-extension-serverless-workflow-editor
-          path: kie-tools/packages/vscode-extension-serverless-workflow-editor/dist/vscode_extension_serverless_workflow_editor_${{ steps.version.outputs.version }}.vsix
 
       - name: "Upload Serverless Workflow VS Code Extension - KIE (Ubuntu only)"
         if: runner.os == 'Linux'

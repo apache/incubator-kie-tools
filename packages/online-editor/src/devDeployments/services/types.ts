@@ -26,7 +26,7 @@ export interface DeployArgs {
   targetFilePath: string;
   workspaceName: string;
   workspaceZipBlob: Blob;
-  onlineEditorUrl: (baseUrl: string) => string;
+  containerImageUrl: string;
 }
 
 export type ResourceArgs = {

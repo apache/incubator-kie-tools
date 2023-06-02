@@ -28,6 +28,7 @@ import { jqBuiltInFunctions } from "@kie-tools/serverless-workflow-jq-expression
 import {
   SwfCatalogSourceType,
   SwfServiceCatalogFunction,
+  SwfServiceCatalogEvent,
   SwfServiceCatalogService,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
@@ -49,8 +50,10 @@ import { SwfLanguageServiceConfig } from "./SwfLanguageService";
 import { JqCompletions } from "./types";
 
 type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
+type SwfCompletionItemServiceCatalogEvent = SwfServiceCatalogEvent;
 export type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "functions"> & {
   functions: SwfCompletionItemServiceCatalogFunction[];
+  events: SwfCompletionItemServiceCatalogEvent[];
 };
 
 export type SwfLanguageServiceCodeCompletionFunctionsArgs = EditorLanguageServiceCodeCompletionFunctionsArgs & {
@@ -351,15 +354,74 @@ export const SwfLanguageServiceCodeCompletion: EditorLanguageServiceCodeCompleti
   getEventsCompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {
     const kind = CompletionItemKind.Interface;
 
-    return Promise.resolve([
-      createCompletionItem({
-        ...args,
-        completion: eventCompletion,
-        kind,
-        label: "New event",
-        detail: "Add a new event",
-      }),
-    ]);
+    const existingEventNames = swfModelQueries.getEvents(args.rootNode).map((f) => f.name);
+
+    const specsDir = await args.langServiceConfig.getSpecsDirPosixPaths(args.document);
+
+    const result = args.swfCompletionItemServiceCatalogServices.flatMap((swfServiceCatalogService) => {
+      const dirRelativePosixPath = specsDir.specsDirRelativePosixPath;
+
+      return swfServiceCatalogService.events
+        .filter(
+          (swfServiceCatalogEvent: any) =>
+            swfServiceCatalogEvent.name && !existingEventNames.includes(swfServiceCatalogEvent.name)
+        )
+        .map((swfServiceCatalogEvent: any) => {
+          const swfEvent = {
+            name: `$\{1:${swfServiceCatalogEvent.name}}`,
+            source: swfServiceCatalogEvent.eventSource,
+            type: swfServiceCatalogEvent.eventType,
+            kind: swfServiceCatalogEvent.kind,
+            metadata: swfServiceCatalogEvent.metadata,
+          };
+
+          const command: SwfLanguageServiceCommandExecution<"swf.ls.commands.ImportEventFromCompletionItem"> = {
+            name: "swf.ls.commands.ImportEventFromCompletionItem",
+            args: {
+              containingService: swfServiceCatalogService,
+              documentUri: args.document.uri,
+            },
+          };
+
+          const kind =
+            swfServiceCatalogEvent.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
+              ? CompletionItemKind.Interface
+              : CompletionItemKind.Reference;
+
+          const label = args.codeCompletionStrategy.formatLabel(
+            toCompletionItemLabelPrefix(swfServiceCatalogEvent, dirRelativePosixPath),
+            kind
+          );
+
+          return createCompletionItem({
+            ...args,
+            completion: swfEvent,
+            kind,
+            label,
+            detail:
+              swfServiceCatalogService.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
+                ? swfServiceCatalogService.source.url
+                : swfServiceCatalogEvent.operation,
+            extraOptions: {
+              command: {
+                command: command.name,
+                title: "Import event from completion item",
+                arguments: [command.args],
+              },
+            },
+          });
+        });
+    });
+
+    const genericEventCompletion = createCompletionItem({
+      ...args,
+      completion: eventCompletion,
+      kind,
+      label: "New event",
+      detail: "Add a new event",
+    });
+
+    return Promise.resolve([...result, genericEventCompletion]);
   },
 
   getStatesCompletions: async (args: SwfLanguageServiceCodeCompletionFunctionsArgs): Promise<CompletionItem[]> => {

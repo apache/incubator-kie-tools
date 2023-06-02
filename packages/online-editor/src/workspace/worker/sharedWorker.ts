@@ -37,12 +37,19 @@ async function fetchEditorsConfig(): Promise<EditorConfig[]> {
   return env.KIE_SANDBOX_EDITORS;
 }
 
+async function fetchAppName(): Promise<string> {
+  const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
+  const env = (await (await fetch(envFilePath)).json()) as EnvJson;
+  return env.KIE_SANDBOX_APP_NAME;
+}
+
 const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProxyUrl() });
 
 declare let onconnect: any;
 
 // eslint-disable-next-line prefer-const
 onconnect = async (e: MessageEvent) => {
+  const appName = await fetchAppName();
   const editorsConfig = await fetchEditorsConfig();
   const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({
     targetOrigin: "",
@@ -53,7 +60,7 @@ onconnect = async (e: MessageEvent) => {
   setupWorkerConnection({
     fsFlushManager: workspaceServices.fsFlushManager,
     apiImpl: new WorkspacesWorkerApiImpl({
-      appName: "KIE Sandbox",
+      appName,
       services: workspaceServices,
       fileFilter: {
         isModel: (path) => editorEnvelopeLocator.hasMappingFor(path),

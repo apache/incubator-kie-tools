@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ require("./extension-editors-smoke.test");
 import { SideBarView, WebView } from "vscode-extension-tester";
 import * as path from "path";
 import { EditorTabs } from "./helpers/dmn/EditorTabs";
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import DmnEditorTestHelper from "./helpers/dmn/DmnEditorTestHelper";
 import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
 
@@ -62,9 +62,10 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
 
   it("Include reusable-model in DMN Editor", async function () {
     this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN);
+    webview = editorWebviews[0];
     const dmnEditorTester = new DmnEditorTestHelper(webview);
+    await dmnEditorTester.switchToEditorFrame();
 
     await dmnEditorTester.switchEditorTab(EditorTabs.IncludedModels);
     await dmnEditorTester.includeModel(REUSABLE_DMN, "reusable-model");
@@ -74,14 +75,15 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
 
     await dmnEditorTester.switchEditorTab(EditorTabs.Editor);
 
-    await webview.switchBack();
+    await dmnEditorTester.switchBack();
   });
 
   it("Undo command in DMN Editor", async function () {
     this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN);
+    webview = editorWebviews[0];
     const dmnEditorTester = new DmnEditorTestHelper(webview);
+    await dmnEditorTester.switchToEditorFrame();
 
     const decisionNavigator = await dmnEditorTester.openDecisionNavigator();
     await decisionNavigator.selectDiagramNode("?DemoDecision1");
@@ -93,25 +95,26 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
     await navigatorPanel.assertDiagramNodeIsPresent("Updated Name 1");
     await navigatorPanel.assertDiagramNodeIsPresent("?DecisionFinal1");
 
-    await webview.switchBack();
+    await dmnEditorTester.switchBack();
 
     // changeProperty() is implemented as clear() and sendKeys(), that is why we need two undo operations
     await testHelper.executeCommandFromPrompt("Undo");
     await testHelper.executeCommandFromPrompt("Undo");
 
-    await testHelper.switchWebviewToFrame(webview);
+    await dmnEditorTester.switchToEditorFrame();
 
     await navigatorPanel.assertDiagramNodeIsPresent("?DemoDecision1");
     await navigatorPanel.assertDiagramNodeIsPresent("?DecisionFinal1");
 
-    await webview.switchBack();
+    await dmnEditorTester.switchBack();
   });
 
   it("Check new DMN Expression Editor", async function () {
     this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar(DEMO_EXPRESSION_DMN);
-    await testHelper.switchWebviewToFrame(webview);
+    const editorWebviews = await testHelper.openFileFromSidebar(DEMO_EXPRESSION_DMN);
+    webview = editorWebviews[0];
     const dmnEditorTester = new DmnEditorTestHelper(webview);
+    await dmnEditorTester.switchToEditorFrame();
 
     const decisionNavigator = await dmnEditorTester.openDecisionNavigator();
 
@@ -127,6 +130,6 @@ describe("KIE Editors Integration Test Suite - DMN Editor", () => {
     const decisionTableEditor = await dmnEditorTester.getExpressionEditor();
     await decisionTableEditor.assertExpressionDetails("decision table demo", "string");
 
-    await webview.switchBack();
+    await dmnEditorTester.switchBack();
   });
 });

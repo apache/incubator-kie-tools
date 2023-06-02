@@ -1,0 +1,53 @@
+{
+  "name": "@kie-tools/dmn-runner",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json && pnpm test",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+  },
+  "dependencies": {
+    "@kie-tools/extended-services-api": "workspace:*",
+    "@kie-tools/uniforms-patternfly": "workspace:*",
+    "@patternfly/react-core": "^4.276.6",
+    "@patternfly/react-icons": "^4.93.6",
+    "ajv": "^6.12.6",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "uniforms": "^3.10.2",
+    "uniforms-bridge-json-schema": "^3.10.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/jest": "^26.0.23",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
+    "jest": "^26.6.3",
+    "jest-junit": "^14.0.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.6.2"
+  }
+}

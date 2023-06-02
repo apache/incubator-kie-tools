@@ -24,17 +24,17 @@ import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 
-const KIE_ISSUES_LINK = "https://github.com/kiegroup/kie-issues/issues";
+const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
 export function DmnRunnerErrorBoundary({ children }: React.PropsWithChildren<{}>) {
   const [_, setDmnRunnerError] = useState<boolean>(false);
-  const errorBoundaryRef = useRef<ErrorBoundary>(null);
-  const { jsonSchema } = useDmnRunnerState();
+  const [errorBoundaryRef, setErrorBoundaryRef] = useState<ErrorBoundary | null>(null);
+  const { mode, isExpanded, jsonSchema } = useDmnRunnerState();
   const { i18n } = useOnlineI18n();
 
   useEffect(() => {
-    errorBoundaryRef.current?.reset();
-  }, [jsonSchema]);
+    errorBoundaryRef?.reset();
+  }, [errorBoundaryRef, jsonSchema, isExpanded, mode]);
 
   const errorMessage = useMemo(
     () => (
@@ -50,9 +50,9 @@ export function DmnRunnerErrorBoundary({ children }: React.PropsWithChildren<{}>
             <TextContent>
               <I18nWrapped
                 components={{
-                  issues: (
-                    <a href={KIE_ISSUES_LINK} target={"_blank"}>
-                      {KIE_ISSUES_LINK}
+                  jira: (
+                    <a href={KOGITO_JIRA_LINK} target={"_blank"}>
+                      {KOGITO_JIRA_LINK}
                     </a>
                   ),
                 }}
@@ -69,7 +69,7 @@ export function DmnRunnerErrorBoundary({ children }: React.PropsWithChildren<{}>
 
   return (
     <>
-      <ErrorBoundary ref={errorBoundaryRef} error={errorMessage} setHasError={setDmnRunnerError}>
+      <ErrorBoundary ref={setErrorBoundaryRef} error={errorMessage} setHasError={setDmnRunnerError}>
         {children}
       </ErrorBoundary>
     </>

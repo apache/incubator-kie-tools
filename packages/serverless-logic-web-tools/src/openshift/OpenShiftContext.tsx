@@ -18,14 +18,12 @@ import * as React from "react";
 import { useContext } from "react";
 import {
   InitDeployArgs,
-  WebToolsOpenShiftDeployedModel,
   InitSwfDeployArgs,
   CompletedDeployOperation,
+  WebToolsOpenShiftDeployedModel,
 } from "./deploy/types";
 
 export interface OpenShiftContextType {
-  deployments: WebToolsOpenShiftDeployedModel[];
-
   isDeployDropdownOpen: boolean;
   setDeployDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -37,6 +35,8 @@ export interface OpenShiftContextType {
 
   deploy(args: InitDeployArgs): Promise<CompletedDeployOperation>;
   deploySwf(args: InitSwfDeployArgs): Promise<CompletedDeployOperation>;
+
+  loadDeployments(): Promise<WebToolsOpenShiftDeployedModel[]>;
 }
 
 export const OpenShiftContext = React.createContext<OpenShiftContextType>({} as any);

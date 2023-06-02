@@ -40,7 +40,6 @@ import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Annotation;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Cell;
-import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Clause;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ClauseUnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Column;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextEntryProps;
@@ -56,6 +55,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.I
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.JavaFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ListProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.LiteralProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.OutputClauseProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PmmlFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
@@ -73,6 +73,8 @@ public class ExpressionModelFillerTest {
     private static final String ENTRY_EXPRESSION_CONTENT = "content";
     private static final Double ENTRY_INFO_WIDTH = 200d;
     private static final Double ENTRY_EXPRESSION_WIDTH = 350d;
+
+    private static final Double EMPTY_EXPRESSION_WIDTH = 190d;
     private static final Double PARAMETERS_WIDTH = 450d;
     private static final String PARAM_ID = "param-id";
     private static final String PARAM_NAME = "p-1";
@@ -246,7 +248,7 @@ public class ExpressionModelFillerTest {
 
         assertThat(functionExpression).isNotNull();
         assertFormalParameters(functionExpression);
-        assertParameterWidth(functionExpression);
+        assertParameterWidth(functionExpression, null);
         assertNestedContextEntries(functionExpression, documentName, modelName);
     }
 
@@ -261,7 +263,7 @@ public class ExpressionModelFillerTest {
 
         assertThat(functionExpression).isNotNull();
         assertFormalParameters(functionExpression);
-        assertParameterWidth(functionExpression);
+        assertParameterWidth(functionExpression, PARAMETERS_WIDTH);
         assertNestedContextEntries(functionExpression, className, methodName);
     }
 
@@ -276,7 +278,7 @@ public class ExpressionModelFillerTest {
 
         assertThat(functionExpression).isNotNull();
         assertFormalParameters(functionExpression);
-        assertParameterWidth(functionExpression);
+        assertParameterWidth(functionExpression, EMPTY_EXPRESSION_WIDTH);
         assertThat(functionExpression.getExpression())
                 .isNotNull()
                 .isExactlyInstanceOf(LiteralExpression.class);
@@ -316,7 +318,10 @@ public class ExpressionModelFillerTest {
         final String outputClauseUnaryTestsText = "";
         final String outputClauseUnaryTestsConstraintType = "none";
         final ClauseUnaryTests outputClauseUnaryTest = new ClauseUnaryTests(outputClauseUnaryTestsId, outputClauseUnaryTestsText, outputClauseUnaryTestsConstraintType);
-        final Clause[] output = new Clause[]{new Clause(outputId, outputColumn, outputDataType, outputWidth, outputClauseUnaryTest), new Clause(outputId2, outputColumn2, outputDataType2, outputWidth2, null)};
+        final String defaultOutputValueId = "dovID";
+        final String defaultOutputValueContent = "Default-Test";
+        final LiteralProps defaultOutputValue = new LiteralProps(defaultOutputValueId, null, BuiltInType.UNDEFINED.asQName().getLocalPart(), defaultOutputValueContent, null);
+        final OutputClauseProps[] output = new OutputClauseProps[]{new OutputClauseProps(outputId, outputColumn, outputDataType, outputWidth, outputClauseUnaryTest, defaultOutputValue), new OutputClauseProps(outputId2, outputColumn2, outputDataType2, outputWidth2, null, null)};
         final String inputValue = "input value";
         final String outputValue = "output value";
         final String annotationValue = "annotation value";
@@ -363,6 +368,8 @@ public class ExpressionModelFillerTest {
                     assertThat(outputRef).extracting(OutputClause::getOutputValues).extracting(outputClauseUnaryTests -> outputClauseUnaryTests.getId().getValue()).isEqualTo(outputClauseUnaryTestsId);
                     assertThat(outputRef).extracting(OutputClause::getOutputValues).extracting(outputClauseUnaryTests -> outputClauseUnaryTests.getText().getValue()).isEqualTo(outputClauseUnaryTestsText);
                     assertThat(outputRef).extracting(OutputClause::getOutputValues).extracting(outputClauseUnaryTests -> outputClauseUnaryTests.getConstraintType().value()).isEqualTo(outputClauseUnaryTestsConstraintType);
+                    assertThat(outputRef).extracting(OutputClause::getDefaultOutputEntry).extracting(defaultOutputEntry -> defaultOutputEntry.getId().getValue()).isEqualTo(defaultOutputValueId);
+                    assertThat(outputRef).extracting(OutputClause::getDefaultOutputEntry).extracting(defaultOutputEntry -> defaultOutputEntry.getText().getValue()).isEqualTo(defaultOutputValueContent);
                 });
         assertThat(decisionTableExpression.getOutput().get(1))
                 .satisfies(outputRef -> {
@@ -396,7 +403,7 @@ public class ExpressionModelFillerTest {
                 .isNotNull()
                 .hasSize(3);
         assertThat(componentWidths).element(1).isEqualTo(ENTRY_INFO_WIDTH);
-        assertThat(componentWidths).element(2).isEqualTo(ENTRY_EXPRESSION_WIDTH);
+        assertThat(componentWidths).element(2).isEqualTo(EMPTY_EXPRESSION_WIDTH);
     }
 
     private Consumer<List> checkRelationRow(final Cell firstCell, final Cell secondCell) {
@@ -428,11 +435,11 @@ public class ExpressionModelFillerTest {
                 });
     }
 
-    private void assertParameterWidth(FunctionDefinition functionExpression) {
+    private void assertParameterWidth(FunctionDefinition functionExpression, Double expectedWidth) {
         assertThat(functionExpression.getComponentWidths())
                 .isNotNull()
                 .hasSize(2)
-                .element(1).isEqualTo(PARAMETERS_WIDTH);
+                .element(1).isEqualTo(expectedWidth);
     }
 
     private void assertNestedContextEntries(FunctionDefinition functionExpression, String documentName, String modelName) {

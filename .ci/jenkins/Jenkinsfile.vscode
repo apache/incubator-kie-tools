@@ -13,7 +13,6 @@ node('rhel8') {
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/dmn_vscode_extension_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/pmml_vscode_extension_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/serverless_workflow_vscode_extension_$VERSION.vsix"'
-        sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_serverless_workflow_editor_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_dashbuilder_editor_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_kogito_bundle_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_kie_ba_bundle_$VERSION.vsix"'
@@ -34,7 +33,6 @@ node('rhel8') {
         def vsix_dmn_vscode_extension = findFiles(glob: '**dmn_vscode_extension*.vsix')
         def vsix_pmml_vscode_extension = findFiles(glob: '**pmml_vscode_extension*.vsix')
         def vsix_serverless_workflow_vscode_extension = findFiles(glob: '**serverless_workflow_vscode_extension*.vsix')
-        def vsix_vscode_extension_serverless_workflow_editor = findFiles(glob: '**vscode_extension_serverless_workflow_editor*.vsix')
         def vsix_vscode_extension_dashbuilder_editor = findFiles(glob: '**vscode_extension_dashbuilder_editor*.vsix')
         def vsix_vscode_extension_kogito_bundle = findFiles(glob: '**vscode_extension_kogito_bundle*.vsix')
         def vsix_vscode_extension_kie_ba_bundle = findFiles(glob: '**vscode_extension_kie_ba_bundle*.vsix')
@@ -43,7 +41,6 @@ node('rhel8') {
             stage('Publish to VS Code Marketplace') {
                 sh 'npm install -g @vscode/vsce'
                 withCredentials([[$class: 'StringBinding', credentialsId: 'vscode_java_marketplace', variable: 'TOKEN']]) {
-                    sh 'vsce publish -p ${TOKEN} --packagePath' + " ${vsix_vscode_extension_serverless_workflow_editor[0].path}"
                     sh 'vsce publish -p ${TOKEN} --packagePath' + " ${vsix_vscode_extension_dashbuilder_editor[0].path}"
                 }
                 withCredentials([[$class: 'StringBinding', credentialsId: 'kie-vscode-token', variable: 'KIE_TOKEN']]) {
@@ -61,7 +58,6 @@ node('rhel8') {
             stage('Publish to Open-vsx Marketplace') {
                 sh "npm install -g ovsx"
                 withCredentials([[$class: 'StringBinding', credentialsId: 'open-vsx-access-token', variable: 'OVSX_TOKEN']]) {
-                    sh 'ovsx publish -p ${OVSX_TOKEN}' + " ${vsix_vscode_extension_serverless_workflow_editor[0].path}"
                     sh 'ovsx publish -p ${OVSX_TOKEN}' + " ${vsix_vscode_extension_dashbuilder_editor[0].path}"
                 }
                 withCredentials([[$class: 'StringBinding', credentialsId: 'kie-openvsx-token', variable: 'KIE_OVSX_TOKEN']]) {

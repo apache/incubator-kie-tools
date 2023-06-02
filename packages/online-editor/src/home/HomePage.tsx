@@ -90,6 +90,7 @@ import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { listDeletedFiles } from "../workspace/components/WorkspaceStatusIndicator";
 import { useEditorsConfig } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { useEnv } from "../env/hooks/EnvContext";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -98,6 +99,7 @@ export function HomePage() {
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
   const queryParams = useQueryParams();
   const editorsConfig = useEditorsConfig();
+  const { env } = useEnv();
 
   const closeExpandedWorkspace = useCallback(() => {
     history.replace({
@@ -123,8 +125,8 @@ export function HomePage() {
   );
 
   useEffect(() => {
-    document.title = "KIE Sandbox :: Home";
-  }, []);
+    document.title = `${env.KIE_SANDBOX_APP_NAME} :: Home`;
+  }, [env.KIE_SANDBOX_APP_NAME]);
 
   return (
     <OnlineEditorPage>

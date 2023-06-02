@@ -36,7 +36,7 @@
     <tycho.scmUrl>scm:git:https://github.com/kiegroup/kie-tools.git</tycho.scmUrl>
     <tycho.generateSourceReferences>true</tycho.generateSourceReferences>
     <!-- Using a SNAPSHOT version because of https://github.com/eclipse/eclipse.jdt.ls/issues/1970 -->
-    <jdt.ls.version>1.23.0-SNAPSHOT</jdt.ls.version>
+    <jdt.ls.version>1.24.0-SNAPSHOT</jdt.ls.version>
     <tycho.test.platformArgs />
     <tycho.test.jvmArgs>-Xmx512m ${tycho.test.platformArgs}</tycho.test.jvmArgs>
 

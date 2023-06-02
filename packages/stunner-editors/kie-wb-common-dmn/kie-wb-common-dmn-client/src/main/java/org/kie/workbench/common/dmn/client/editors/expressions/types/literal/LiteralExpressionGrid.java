@@ -64,7 +64,7 @@ import static org.kie.workbench.common.dmn.client.editors.expressions.util.Rende
 public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralExpression, DMNGridData, LiteralExpressionUIModelMapper> implements HasListSelectorControl {
 
     /** MUST BE SYNCHRONIZED WITH WidthConstants.ts */
-    static final double LITERAL_EXPRESSION_DEFAULT_WIDTH = 190d;
+    public static final double LITERAL_EXPRESSION_DEFAULT_WIDTH = 190d;
 
     private final ValueAndDataTypePopoverView.Presenter headerEditor;
 

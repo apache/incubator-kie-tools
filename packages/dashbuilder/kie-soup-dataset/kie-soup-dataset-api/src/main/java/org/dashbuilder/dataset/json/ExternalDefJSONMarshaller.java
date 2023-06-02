@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
+import org.dashbuilder.dataset.def.ExternalServiceType;
 import org.dashbuilder.json.Json;
 import org.dashbuilder.json.JsonObject;
 
@@ -34,6 +35,7 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
     public static final String CONTENT = "content";
     public static final String HEADERS = "headers";
     public static final String ACCUMULATE = "accumulate";
+    public static final String TYPE = "type";
 
     @Override
     public void fromJson(ExternalDataSetDef def, JsonObject json) {
@@ -43,7 +45,8 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         var expression = json.getString(EXPRESSION);
         var headers = json.getObject(HEADERS);
         var accumulate = json.getBoolean(ACCUMULATE);
-        
+        var type = json.getString(TYPE);
+
         if (isBlank(url) && isBlank(content)) {
             throw new IllegalArgumentException("External Data Sets must have \"url\" or \"content\" field");
         }
@@ -54,8 +57,8 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
 
         if (!isBlank(content)) {
             def.setContent(content);
-        }       
-        
+        }
+
         if (!isBlank(expression)) {
             def.setExpression(expression);
         }
@@ -63,6 +66,11 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         if (headers != null) {
             var headersMap = getHeaders(headers);
             def.setHeaders(headersMap);
+        }
+
+        if (!isBlank(type)) {
+            var serviceType = ExternalServiceType.byName(type);
+            def.setType(serviceType);
         }
 
         def.setDynamic(dynamic);
@@ -76,6 +84,10 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         json.put(EXPRESSION, def.getExpression());
         json.put(CONTENT, def.getContent());
         json.put(ACCUMULATE, def.isAccumulate());
+
+        if (def.getType() != null) {
+            json.put(TYPE, def.getType().name());
+        }
 
         if (def.getHeaders() != null) {
             var headers = Json.createObject();
