@@ -20,6 +20,7 @@ import (
 
 	openshiftv1 "github.com/openshift/api/route/v1"
 	"knative.dev/pkg/apis"
+	duckv1 "knative.dev/pkg/apis/duck/v1"
 
 	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
 
@@ -28,6 +29,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 )
 
 func defaultDevStatusEnricher(ctx context.Context, c client.Client, workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
@@ -36,10 +38,12 @@ func defaultDevStatusEnricher(ctx context.Context, c client.Client, workflow *op
 	// - Address the service can be reached
 	// - Node port used
 	service := &v1.Service{}
+
 	err := c.Get(ctx, types.NamespacedName{Namespace: workflow.Namespace, Name: workflow.Name}, service)
 	if err != nil {
 		return nil, err
 	}
+
 	//If the service has got a Port that is a nodePort we have to use it to create the workflow's NodePort Endpoint
 	if service.Spec.Ports != nil && len(service.Spec.Ports) > 0 {
 		if port := findNodePortFromPorts(service.Spec.Ports); port > 0 {
@@ -66,6 +70,14 @@ func defaultDevStatusEnricher(ctx context.Context, c client.Client, workflow *op
 			}
 			workflow.Status.Endpoint = url
 		}
+
+		address, err := kubernetes.RetrieveServiceURL(service)
+		if err != nil {
+			return nil, err
+		}
+		workflow.Status.Address = duckv1.Addressable{
+			URL: address,
+		}
 	}
 
 	return workflow, nil
@@ -84,8 +96,15 @@ func devStatusEnricherForOpenShift(ctx context.Context, client client.Client, wo
 	} else {
 		url = apis.HTTP(route.Spec.Host)
 	}
+	url.Path = workflow.Name
 
 	workflow.Status.Endpoint = url
 
+	if err != nil {
+		return nil, err
+	}
+	workflow.Status.Address = duckv1.Addressable{
+		URL: url,
+	}
 	return workflow, nil
 }

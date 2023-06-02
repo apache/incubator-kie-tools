@@ -4,7 +4,4 @@ metadata:
   name: kogito-workflow-platform
 spec:
   platform:
-
-    baseImage: quay.io/kiegroup/kogito-swf-builder-nightly:latest
-    buildStrategyOptions:
-      KanikoBuildCacheEnabled: "true"
+    buildStrategy: operator

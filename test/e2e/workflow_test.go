@@ -16,6 +16,7 @@ package e2e
 
 import (
 	"fmt"
+	"net/url"
 	"os/exec"
 	"path/filepath"
 	"strconv"
@@ -169,6 +170,9 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 		By("removing manager namespace")
 		cmd := exec.Command("make", "undeploy")
 		_, _ = utils.Run(cmd)
+		By("uninstalling CRDs")
+		cmd = exec.Command("make", "uninstall")
+		_, _ = utils.Run(cmd)
 	})
 
 	Describe("ensure that Operator and Operand(s) can run in restricted namespaces", func() {
@@ -178,7 +182,7 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 			By("creating an instance of the Kogito Serverless Platform")
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					"config/samples/"+test.KogitoServerlessPlatformWithCacheMinikubeYamlCR), "-n", namespace)
+					"config/samples/"+test.KogitoServerlessPlatformMinikubeYamlCR), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -222,6 +226,9 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 				GinkgoWriter.Println(fmt.Sprintf("builder podlog %s", responseLog))
 			}
 
+			By("check that the workflow is addressable")
+			EventuallyWithOffset(1, verifyWorkflowIsAddressable, 5*time.Minute, 30*time.Second).Should(BeTrue())
+
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "delete", "-f", filepath.Join(projectDir,
 					"config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR), "-n", namespace)
@@ -247,6 +254,26 @@ func verifyWorkflowIsInRunningState() bool {
 				return false
 			}
 			return status
+		}
+		return false
+	}
+}
+
+func verifyWorkflowIsAddressable() bool {
+	cmd := exec.Command("kubectl", "get", "workflow", "greeting", "-n", namespace, "-o", "jsonpath={.status.address.url}")
+	if response, err := utils.Run(cmd); err != nil {
+		GinkgoWriter.Println(fmt.Errorf("failed to check if greeting workflow is running: %v", err))
+		return false
+	} else {
+		GinkgoWriter.Println(fmt.Sprintf("Got response %s", response))
+		if len(strings.TrimSpace(string(response))) > 0 {
+			_, err := url.ParseRequestURI(string(response))
+			if err != nil {
+				GinkgoWriter.Println(fmt.Errorf("failed to parse result %v", err))
+				return false
+			}
+			// The response is a valid URL so the test is passed
+			return true
 		}
 		return false
 	}

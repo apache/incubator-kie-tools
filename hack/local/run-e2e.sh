@@ -20,7 +20,7 @@ echo "Using minikube profile ${MINIKUBE_PROFILE}"
 
 export OPERATOR_IMAGE_NAME=localhost/kogito-serverless-operator:0.0.1
 eval "$(minikube -p "${MINIKUBE_PROFILE}" docker-env)"
-if ! make container-build BUILDER=docker IMG="${OPERATOR_IMAGE_NAME}"; then
+if ! make docker-build IMG="${OPERATOR_IMAGE_NAME}"; then
   echo "Failure: Failed to build image, exiting " >&2
   exit 1
 fi
