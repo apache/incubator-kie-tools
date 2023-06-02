@@ -49,6 +49,7 @@ import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/work
 import { useGlobalAlert } from "../../alerts";
 import { useBitbucketClient } from "../../bitbucket/Hooks";
 import { isEditable } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
+import { useEditorsConfig } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 
@@ -58,6 +59,7 @@ export function NewFileDropdownMenu(props: {
   onAddFile: (file?: WorkspaceFile) => Promise<void>;
 }) {
   const uploadFileInputRef = useRef<HTMLInputElement>(null);
+  const editorsConfig = useEditorsConfig();
 
   const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
   const [drilldownPath, setDrilldownPath] = useState<string[]>([]);
@@ -91,7 +93,7 @@ export function NewFileDropdownMenu(props: {
   const { gitConfig } = useAuthSession(props.workspaceDescriptor.gitAuthSessionId);
 
   const addEmptyFile = useCallback(
-    async (extension: SupportedFileExtensions) => {
+    async (extension: string) => {
       const file = await workspaces.addEmptyFile({
         workspaceId: props.workspaceDescriptor.workspaceId,
         destinationDirRelativePath: props.destinationDirPath,
@@ -260,14 +262,15 @@ export function NewFileDropdownMenu(props: {
   );
 
   const sampleUrl = useCallback(
-    (extension: SupportedFileExtensions) =>
+    (extension: string) =>
       `${window.location.origin}${window.location.pathname}${routes.static.sample.path({ type: extension })}`,
     [routes]
   );
 
-  const importableUrlBpmnSample = useImportableUrl(sampleUrl("bpmn"));
-  const importableUrlDmnSample = useImportableUrl(sampleUrl("dmn"));
-  const importableUrlPmmlSample = useImportableUrl(sampleUrl("pmml"));
+  const importableUrlSamples = editorsConfig.map((config) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useImportableUrl(sampleUrl(config.extension));
+  });
 
   return (
     <Menu
@@ -284,33 +287,21 @@ export function NewFileDropdownMenu(props: {
     >
       <MenuContent menuHeight={`${menuHeights[activeMenu]}px`}>
         <MenuList style={{ padding: 0 }}>
-          <MenuItem
-            itemId={"newBpmnItemId"}
-            onClick={() => addEmptyFile("bpmn")}
-            description="BPMN files are used to generate business workflows."
-          >
-            <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={"bpmn"} />
-            </b>
-          </MenuItem>
-          <MenuItem
-            itemId={"newDmnItemId"}
-            onClick={() => addEmptyFile("dmn")}
-            description="DMN files are used to generate decision models"
-          >
-            <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={"dmn"} />
-            </b>
-          </MenuItem>
-          <MenuItem
-            itemId={"newPmmlItemId"}
-            onClick={() => addEmptyFile("pmml")}
-            description="PMML files are used to generate scorecards"
-          >
-            <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={"pmml"} />
-            </b>
-          </MenuItem>
+          {editorsConfig.map((config, index) => {
+            return (
+              <MenuItem
+                key={index}
+                itemId={config.itemId}
+                onClick={() => addEmptyFile(config.extension)}
+                description={config.card.description}
+              >
+                <b>
+                  <FileLabel style={{ marginBottom: "4px" }} extension={config.extension} />
+                </b>
+              </MenuItem>
+            );
+          })}
+
           <Divider />
           <MenuItem
             description={"Try sample models"}
@@ -320,45 +311,24 @@ export function NewFileDropdownMenu(props: {
               <DrilldownMenu id={"samplesMenu"}>
                 <MenuItem direction="up">Back</MenuItem>
                 <Divider />
-                <MenuGroup label={" "}>
-                  <MenuItem
-                    onClick={() => importFromUrl(importableUrlBpmnSample)}
-                    description="BPMN files are used to generate business workflows."
-                  >
-                    <Flex>
-                      <FlexItem>Sample</FlexItem>
-                      <FlexItem>
-                        <FileLabel extension={"bpmn"} />
-                      </FlexItem>
-                    </Flex>
-                  </MenuItem>
-                </MenuGroup>
-                <MenuGroup label={" "}>
-                  <MenuItem
-                    onClick={() => importFromUrl(importableUrlDmnSample)}
-                    description="DMN files are used to generate decision models"
-                  >
-                    <Flex>
-                      <FlexItem>Sample</FlexItem>
-                      <FlexItem>
-                        <FileLabel extension={"dmn"} />
-                      </FlexItem>
-                    </Flex>
-                  </MenuItem>
-                </MenuGroup>
-                <MenuGroup label={" "}>
-                  <MenuItem
-                    onClick={() => importFromUrl(importableUrlPmmlSample)}
-                    description="PMML files are used to generate scorecards"
-                  >
-                    <Flex>
-                      <FlexItem>Sample</FlexItem>
-                      <FlexItem>
-                        <FileLabel extension={"pmml"} />
-                      </FlexItem>
-                    </Flex>
-                  </MenuItem>
-                </MenuGroup>
+
+                {editorsConfig.map((config, index) => {
+                  return (
+                    <MenuGroup label={" "} key={index}>
+                      <MenuItem
+                        onClick={() => importFromUrl(importableUrlSamples[index])}
+                        description={config.card.description}
+                      >
+                        <Flex>
+                          <FlexItem>Sample</FlexItem>
+                          <FlexItem>
+                            <FileLabel extension={config.extension} />
+                          </FlexItem>
+                        </Flex>
+                      </MenuItem>
+                    </MenuGroup>
+                  );
+                })}
               </DrilldownMenu>
             }
           >
