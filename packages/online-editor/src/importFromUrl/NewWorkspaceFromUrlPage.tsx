@@ -29,6 +29,7 @@ import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
 import {
   ImportableUrl,
+  isCertainlyGit,
   isPotentiallyGit,
   isSingleFile,
   UrlType,
@@ -262,7 +263,11 @@ export function NewWorkspaceFromUrlPage() {
         return;
       }
 
-      if (!queryParamBranch && (!authSession || queryParamAuthSessionId === AUTH_SESSION_NONE.id)) {
+      if (
+        !queryParamBranch &&
+        isCertainlyGit(importableUrl.type) &&
+        (!authSession || queryParamAuthSessionId === AUTH_SESSION_NONE.id)
+      ) {
         setValidAuthTokenPresent(false);
         return;
       }
