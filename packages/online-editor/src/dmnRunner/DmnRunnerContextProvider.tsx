@@ -40,6 +40,7 @@ import {
   DmnInputFieldProperties,
 } from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
+import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
@@ -591,14 +592,18 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                 return;
               }
 
+              const jsonSchemaDraft4 = {
+                $schema: SCHEMA_DRAFT4,
+                ...jsonSchema,
+              };
+
               setJsonSchema((previousJsonSchema) => {
-                // const derefereredJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
                 // On the first render the previous will be undefined;
                 if (!previousJsonSchema) {
-                  return jsonSchema;
+                  return jsonSchemaDraft4;
                 }
 
-                const validateInputs = dmnRunnerAjv.compile(jsonSchema);
+                const validateInputs = dmnRunnerAjv.compile(jsonSchemaDraft4);
 
                 // Add default values and delete changed data types;
                 setDmnRunnerPersistenceJson({
@@ -617,7 +622,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                   },
                   cancellationToken: canceled,
                 });
-                return jsonSchema;
+                return jsonSchemaDraft4;
               });
             });
           })
