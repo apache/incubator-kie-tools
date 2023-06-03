@@ -74,8 +74,11 @@ export function EditorPage(props: Props) {
   });
 
   useEffect(() => {
-    setPageTitle([props.fileRelativePath]);
-  }, [props.fileRelativePath]);
+    if (!workspaceFilePromise.data) {
+      return;
+    }
+    setPageTitle([workspaceFilePromise.data.workspaceFile.name]);
+  }, [workspaceFilePromise.data]);
 
   // keep the page in sync with the name of `workspaceFilePromise`, even if changes
   useEffect(() => {
