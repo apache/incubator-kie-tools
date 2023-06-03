@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+const { ProvidePlugin } = require("webpack");
 const path = require("path");
 const webpackBaseEnv = require("./env");
 
@@ -111,6 +112,7 @@ module.exports = (env) => {
       maxAssetSize: 30000000,
       maxEntrypointSize: 30000000,
     },
+    plugins: [new ProvidePlugin({ process: "process/browser", Buffer: ["buffer", "Buffer"] })],
     resolve: {
       // Required for github.dev and `minimatch`, as Webpack 5 doesn't add polyfills automatically anymore.
       fallback: {
@@ -120,6 +122,12 @@ module.exports = (env) => {
         child_process: false,
         net: false,
         buffer: require.resolve("buffer/"),
+        util: require.resolve("util/"),
+        url: false,
+        crypto: false,
+        zlib: false,
+        http: false,
+        https: false,
       },
       extensions: [".tsx", ".ts", ".js", ".jsx"],
       modules: ["node_modules"],

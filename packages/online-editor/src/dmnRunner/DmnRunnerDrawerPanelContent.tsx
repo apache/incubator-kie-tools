@@ -263,7 +263,7 @@ export function DmnRunnerDrawerPanelContent() {
                 </PageSection>
                 <div key={dmnRunnerKey} className={"kogito--editor__dmn-runner-drawer-content-body"}>
                   <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
-                    <DmnForm
+                    {/* <DmnForm
                       // force a re-render when the row is changed;
                       key={formInputs?.id}
                       formInputs={formInputs}
@@ -281,7 +281,7 @@ export function DmnRunnerDrawerPanelContent() {
                       locale={locale}
                       notificationsPanel={true}
                       openValidationTab={openValidationTab}
-                    />
+                    /> */}
                   </PageSection>
                 </div>
               </Page>

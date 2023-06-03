@@ -69,6 +69,8 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import getObjectValueByPath from "lodash/get";
 import unsetObjectValueByPath from "lodash/unset";
+import { resolveRefs, UnresolvedRefDetails, findRefs, findRefsAt, getRefDetails, pathFromPtr } from "json-refs";
+import setObjectValueByPath from "lodash/set";
 
 const JSON_SCHEMA_INPUT_SET_PATH = "definitions.InputSet.properties";
 
@@ -569,6 +571,46 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     []
   );
 
+  const resolveReferencesAndCheckForRecursive = useCallback(
+    async (jsonSchema: ExtendedServicesDmnJsonSchema, canceled: Holder<boolean>) => {
+      try {
+        const jsonSchemaCopy = cloneDeep(jsonSchema);
+        const $ref = getObjectValueByPath(jsonSchemaCopy, "$ref");
+        unsetObjectValueByPath(jsonSchemaCopy, "$ref");
+
+        const { refs, resolved } = await resolveRefs(jsonSchemaCopy as any);
+        if (canceled.get()) {
+          return;
+        }
+
+        let reResolve = false;
+        Object.entries(refs).forEach(([ptr, properties]) => {
+          if (properties?.circular) {
+            const path = pathFromPtr(ptr);
+            setObjectValueByPath(resolved, path.join("."), { keyword: "recursive" });
+            reResolve = true;
+          }
+        });
+
+        if (reResolve) {
+          const { resolved: reResolved } = await resolveRefs(resolved);
+          if (canceled.get()) {
+            return;
+          }
+
+          setObjectValueByPath(reResolved, "$ref", $ref);
+          return reResolved;
+        }
+        setObjectValueByPath(resolved, "$ref", $ref);
+        return resolved;
+      } catch (err) {
+        console.log(err);
+        return;
+      }
+    },
+    []
+  );
+
   // Responsible to set the JSON schema based on the DMN model;
   useCancelableEffect(
     useCallback(
@@ -591,34 +633,45 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                 return;
               }
 
-              setJsonSchema((previousJsonSchema) => {
-                // const derefereredJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
-                // On the first render the previous will be undefined;
-                if (!previousJsonSchema) {
-                  return jsonSchema;
-                }
+              resolveReferencesAndCheckForRecursive(jsonSchema, canceled)
+                .then((resolvedSchema) => {
+                  if (canceled.get() || !resolvedSchema) {
+                    return;
+                  }
 
-                const validateInputs = dmnRunnerAjv.compile(jsonSchema);
+                  const validateInputs = dmnRunnerAjv.compile(resolvedSchema);
 
-                // Add default values and delete changed data types;
-                setDmnRunnerPersistenceJson({
-                  newConfigInputs: (previousConfigInputs) => {
-                    const newConfigInputs = cloneDeep(previousConfigInputs);
-                    removeChangedPropertiesAndAdditionalProperties(validateInputs as any, newConfigInputs);
-                    return newConfigInputs;
-                  },
-                  newInputsRow: (previousInputs) => {
-                    return cloneDeep(previousInputs).map((input) => {
-                      const id = input.id;
-                      removeChangedPropertiesAndAdditionalProperties(validateInputs as any, input);
-                      input.id = id;
-                      return input;
-                    });
-                  },
-                  cancellationToken: canceled,
+                  // Add default values and delete changed data types;
+                  setDmnRunnerPersistenceJson({
+                    newConfigInputs: (previousConfigInputs) => {
+                      const newConfigInputs = cloneDeep(previousConfigInputs);
+                      removeChangedPropertiesAndAdditionalProperties(validateInputs as any, newConfigInputs);
+                      return newConfigInputs;
+                    },
+                    newInputsRow: (previousInputs) => {
+                      return cloneDeep(previousInputs).map((input) => {
+                        const id = input.id;
+                        removeChangedPropertiesAndAdditionalProperties(validateInputs as any, input);
+                        input.id = id;
+                        return input;
+                      });
+                    },
+                    cancellationToken: canceled,
+                  });
+
+                  if (canceled.get()) {
+                    return;
+                  }
+
+                  setJsonSchema(resolvedSchema);
+                })
+                .catch((err) => {
+                  if (canceled.get()) {
+                    return;
+                  }
+                  console.log(err);
+                  setJsonSchema(jsonSchema);
                 });
-                return jsonSchema;
-              });
             });
           })
           .catch((err) => {
@@ -633,6 +686,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServicesModelPayload,
         props.workspaceFile.extension,
         removeChangedPropertiesAndAdditionalProperties,
+        resolveReferencesAndCheckForRecursive,
         setDmnRunnerPersistenceJson,
       ]
     )
