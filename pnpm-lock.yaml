@@ -3967,8 +3967,8 @@ importers:
         specifier: ^3.5.0
         version: 3.5.0(jest@26.6.3)
       pkg:
-        specifier: ^5.5.2
-        version: 5.5.2
+        specifier: ^5.8.1
+        version: 5.8.1
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -10859,15 +10859,6 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@babel/parser@7.16.2:
-    resolution:
-      { integrity: sha512-RUVpT0G2h6rOZwqLDTrKk7ksNv7YpAilTnYe1/Q+eDjxEceRMKVWbCsX7t8h6C1qCFi/1Y8WZjcEPBAFG27GPw== }
-    engines: { node: ">=6.0.0" }
-    hasBin: true
-    dependencies:
-      "@babel/types": 7.21.5
-    dev: true
-
   /@babel/parser@7.17.9:
     resolution:
       { integrity: sha512-vqUSBLP8dQHFPdPi9bc5GK9vRkYHJ49fsZdtoJ8EQ8ibpwk5rPKfvNIwChB0KVXcIjcepEBBd2VHC5r9Gy8ueg== }
@@ -13836,15 +13827,6 @@ packages:
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /@babel/types@7.16.0:
-    resolution:
-      { integrity: sha512-PJgg/k3SdLsGb3hhisFvtLOw5ts113klrpLuIPtCJIU+BB24fqq6lf8RWqKJEjzqXR9AEH1rIb5XTqwBHB+kQg== }
-    engines: { node: ">=6.9.0" }
-    dependencies:
-      "@babel/helper-validator-identifier": 7.19.1
-      to-fast-properties: 2.0.0
     dev: true
 
   /@babel/types@7.17.0:
@@ -18350,6 +18332,7 @@ packages:
     resolution:
       { integrity: sha512-Y9J6ZjXtoYh8RnXVCMOU/ttDmk1aBjunq9vO0ta5x85WDQiQfUF9sIPBITdbiiIVcBo03Hi3jMxigBtsddlXRw== }
     dev: true
+    optional: true
 
   /aproba@2.0.0:
     resolution:
@@ -18404,6 +18387,7 @@ packages:
       delegates: 1.0.0
       readable-stream: 2.3.7
     dev: true
+    optional: true
 
   /are-we-there-yet@2.0.0:
     resolution:
@@ -19885,6 +19869,7 @@ packages:
       { integrity: sha512-RpAVKQA5T63xEj6/giIbUEtZwJ4UFIc3ZtvEkiaUERylqe8xb5IvqcgOurZLahv93CLKfxcw5YI+DZcUBRyLXA== }
     engines: { node: ">=0.10.0" }
     dev: true
+    optional: true
 
   /collect-v8-coverage@1.0.1:
     resolution:
@@ -21502,6 +21487,7 @@ packages:
     dependencies:
       mimic-response: 2.1.0
     dev: true
+    optional: true
 
   /decompress-response@6.0.0:
     resolution:
@@ -21780,6 +21766,7 @@ packages:
     engines: { node: ">=0.10" }
     hasBin: true
     dev: true
+    optional: true
 
   /detect-libc@2.0.1:
     resolution:
@@ -23811,6 +23798,7 @@ packages:
       strip-ansi: 3.0.1
       wide-align: 1.1.5
     dev: true
+    optional: true
 
   /gauge@4.0.0:
     resolution:
@@ -25168,6 +25156,7 @@ packages:
     dependencies:
       number-is-nan: 1.0.1
     dev: true
+    optional: true
 
   /is-fullwidth-code-point@3.0.0:
     resolution:
@@ -27532,6 +27521,7 @@ packages:
       { integrity: sha512-wXqjST+SLt7R009ySCglWBCFpjUygmCIfD790/kVbiGmUgfYGuB14PiTd5DwVxSV4NcYHjzMkoj5LjQZwTQLEA== }
     engines: { node: ">=8" }
     dev: true
+    optional: true
 
   /mimic-response@3.1.0:
     resolution:
@@ -28153,6 +28143,7 @@ packages:
     dependencies:
       semver: 5.7.1
     dev: true
+    optional: true
 
   /node-abi@3.43.0:
     resolution:
@@ -28508,6 +28499,7 @@ packages:
       gauge: 2.7.4
       set-blocking: 2.0.0
     dev: true
+    optional: true
 
   /npmlog@6.0.0:
     resolution:
@@ -28532,6 +28524,7 @@ packages:
       { integrity: sha512-4jbtZXNAsfZbAHiiqjLPBiCl16dES1zI4Hpzzxw61Tk+loF+sBDBKx1ICKKKwIqQ7M0mFn1TmkN7euSncWgHiQ== }
     engines: { node: ">=0.10.0" }
     dev: true
+    optional: true
 
   /numeral@2.0.6:
     resolution:
@@ -29302,24 +29295,6 @@ packages:
       find-up: 4.1.0
     dev: true
 
-  /pkg-fetch@3.2.6:
-    resolution:
-      { integrity: sha512-Q8fx6SIT022g0cdSE4Axv/xpfHeltspo2gg1KsWRinLQZOTRRAtOOaEFghA1F3jJ8FVsh8hGrL/Pb6Ea5XHIFw== }
-    hasBin: true
-    dependencies:
-      chalk: 4.1.2
-      fs-extra: 9.1.0
-      https-proxy-agent: 5.0.1
-      node-fetch: 2.6.7
-      progress: 2.0.3
-      semver: 7.3.8
-      tar-fs: 2.1.1
-      yargs: 16.2.0
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: true
-
   /pkg-fetch@3.4.2:
     resolution:
       { integrity: sha512-0+uijmzYcnhC0hStDjm/cl2VYdrmVVBpe7Q8k9YBojxmR5tG8mvR9/nooQq3QSXiQqORDVOTY3XqMEqJVIzkHA== }
@@ -29333,36 +29308,6 @@ packages:
       semver: 7.3.8
       tar-fs: 2.1.1
       yargs: 16.2.0
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: true
-
-  /pkg@5.5.2:
-    resolution:
-      { integrity: sha512-pD0UB2ud01C6pVv2wpGsTYJrXI/bnvGRYvMLd44wFzA1p+A2jrlTGFPAYa7YEYzmitXhx23PqalaG1eUEnSwcA== }
-    hasBin: true
-    peerDependencies:
-      node-notifier: ">=9.0.1"
-    peerDependenciesMeta:
-      node-notifier:
-        optional: true
-    dependencies:
-      "@babel/parser": 7.16.2
-      "@babel/types": 7.16.0
-      chalk: 4.1.2
-      escodegen: 2.0.0
-      fs-extra: 9.1.0
-      globby: 11.0.4
-      into-stream: 6.0.0
-      minimist: 1.2.6
-      multistream: 4.1.0
-      pkg-fetch: 3.2.6
-      prebuild-install: 6.1.4
-      progress: 2.0.3
-      resolve: 1.21.0
-      stream-meter: 1.0.4
-      tslib: 2.3.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -30009,6 +29954,7 @@ packages:
       tar-fs: 2.1.1
       tunnel-agent: 0.6.0
     dev: true
+    optional: true
 
   /prebuild-install@7.1.1:
     resolution:
@@ -31232,16 +31178,6 @@ packages:
     deprecated: https://github.com/lydell/resolve-url#deprecated
     dev: true
 
-  /resolve@1.21.0:
-    resolution:
-      { integrity: sha512-3wCbTpk5WJlyE4mSOtDLhqQmGFi0/TD9VPwmiolnk8U0wRgMEktqCXd3vy5buTO3tljvalNvKrjHEfrd2WpEKA== }
-    hasBin: true
-    dependencies:
-      is-core-module: 2.12.0
-      path-parse: 1.0.7
-      supports-preserve-symlinks-flag: 1.0.0
-    dev: true
-
   /resolve@1.22.1:
     resolution:
       { integrity: sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw== }
@@ -31927,6 +31863,7 @@ packages:
       once: 1.4.0
       simple-concat: 1.0.1
     dev: true
+    optional: true
 
   /simple-get@4.0.1:
     resolution:
@@ -32506,6 +32443,7 @@ packages:
       is-fullwidth-code-point: 1.0.0
       strip-ansi: 3.0.1
     dev: true
+    optional: true
 
   /string-width@4.2.3:
     resolution:
