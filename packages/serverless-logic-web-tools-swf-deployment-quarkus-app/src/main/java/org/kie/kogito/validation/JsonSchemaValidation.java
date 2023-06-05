@@ -16,9 +16,12 @@
 
 package org.kie.kogito.validation;
 
+import java.io.FileInputStream;
 import java.nio.file.Path;
 
-import com.networknt.schema.JsonSchemaFactory;
+import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.kie.kogito.api.FileValidation;
 import org.kie.kogito.model.FileValidationResult;
 
@@ -26,9 +29,11 @@ public class JsonSchemaValidation implements FileValidation {
 
     @Override
     public FileValidationResult validate(final Path path) {
-        final JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance();
+
         try {
-            schemaFactory.getSchema(path.toFile().toURI());
+            FileInputStream schemaStream = new FileInputStream(path.toFile());
+            JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream));
+            SchemaLoader.load(rawSchema);
             return FileValidationResult.createValidResult(path);
         } catch (Exception e) {
             return FileValidationResult.createInvalidResult(path, "Cannot validate JSON file as JSON Schema");

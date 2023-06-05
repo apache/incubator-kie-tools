@@ -33,6 +33,13 @@ public class PropertiesValidation implements FileValidation {
             try (var inputStream = Files.newInputStream(path)) {
                 properties.load(inputStream);
             }
+            for (String key : properties.stringPropertyNames()) {
+                final String value = properties.getProperty(key);
+
+                if (key.isEmpty() || value.isEmpty()) {
+                    return FileValidationResult.createInvalidResult(path, "Key or value cannot be empty");
+                }
+            }
             return FileValidationResult.createValidResult(path);
         } catch (IOException e) {
             return FileValidationResult.createInvalidResult(path, e.getMessage());
