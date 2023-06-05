@@ -19,9 +19,13 @@ import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms/esm";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
 
-export type FormDmnNotSupportedField = HTMLFieldProps<object, HTMLDivElement, { recursionRef: string }>;
+export type FormDmnNotSupportedField = HTMLFieldProps<
+  object,
+  HTMLDivElement,
+  { recursion: boolean; recursionRef: string }
+>;
 
-function FormDmnNotSupportedField({ recursionRef, ...props }: FormDmnNotSupportedField) {
+function FormDmnNotSupportedField({ recursion, recursionRef, ...props }: FormDmnNotSupportedField) {
   return wrapField(
     props as any,
     <Card isCompact={true} {...filterDOMProps(props)}>

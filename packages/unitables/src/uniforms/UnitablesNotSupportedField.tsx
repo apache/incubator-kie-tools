@@ -16,13 +16,19 @@
 
 import * as React from "react";
 import { HTMLFieldProps } from "uniforms";
-import { connectField } from "uniforms/esm";
+import { connectField, filterDOMProps } from "uniforms/esm";
+import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
 
-export type UnitablesNotSupportedFieldProps = HTMLFieldProps<object, HTMLDivElement>;
+export type UnitablesNotSupportedFieldProps = HTMLFieldProps<
+  object,
+  HTMLDivElement,
+  { recursion: boolean; recursionRef: string }
+>;
 
-function UnitablesNotSupportedField(props: UnitablesNotSupportedFieldProps) {
-  return (
-    <div style={{ display: "flex" }}>
+function UnitablesNotSupportedField({ recursion, recursionRef, ...props }: UnitablesNotSupportedFieldProps) {
+  return wrapField(
+    props as any,
+    <div style={{ display: "flex" }} {...filterDOMProps(props)}>
       <div
         aria-label="field type not supported"
         style={{

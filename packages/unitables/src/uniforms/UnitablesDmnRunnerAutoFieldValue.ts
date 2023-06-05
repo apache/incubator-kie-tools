@@ -31,7 +31,7 @@ export function unitablesDmnRunnerAutoFieldValue(
   if (props.field?.type === "object") {
     return UnitablesNestField;
   }
-  if (props.field?.keyword === RECURSION_KEYWORD) {
+  if (props.field?.[`${RECURSION_KEYWORD}`]) {
     return UnitablesNotSupportedField;
   }
   return defaultDmnRunnerAutoFieldValue(props, uniforms);

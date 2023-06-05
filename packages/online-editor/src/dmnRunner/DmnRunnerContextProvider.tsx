@@ -72,7 +72,7 @@ import getObjectValueByPath from "lodash/get";
 import unsetObjectValueByPath from "lodash/unset";
 import { resolveRefs, pathFromPtr } from "json-refs";
 import setObjectValueByPath from "lodash/set";
-import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
+import { RECURSION_KEYWORD, RECURSION_REF_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
 
 const JSON_SCHEMA_INPUT_SET_PATH = "definitions.InputSet.properties";
 
@@ -591,8 +591,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             const path = pathFromPtr(ptr);
             const recursiveRefPath = pathFromPtr(properties.def.$ref);
             setObjectValueByPath(resolved, path.join("."), {
-              keyword: RECURSION_KEYWORD,
-              $recursiveRef: properties.def.$ref,
+              [`${RECURSION_KEYWORD}`]: true,
+              [`${RECURSION_REF_KEYWORD}`]: properties.def.$ref,
               "x-dmn-type": recursiveRefPath[recursiveRefPath.length - 1],
             });
             reResolve = true;

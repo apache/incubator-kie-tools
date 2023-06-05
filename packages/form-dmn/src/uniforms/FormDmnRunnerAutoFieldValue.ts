@@ -23,7 +23,7 @@ export function formDmnRunnerAutoFieldValue(
   props: GuaranteedProps<unknown>,
   uniforms: Context<Record<string, unknown>>
 ) {
-  if (props.field?.keyword === RECURSION_KEYWORD) {
+  if (props.field?.[`${RECURSION_KEYWORD}`]) {
     return FormDmnNotSupportedField;
   }
   return defaultDmnRunnerAutoFieldValue(props, uniforms);
