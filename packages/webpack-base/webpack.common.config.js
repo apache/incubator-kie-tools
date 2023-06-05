@@ -122,7 +122,6 @@ module.exports = (env) => {
         child_process: false,
         net: false,
         buffer: require.resolve("buffer/"),
-        util: require.resolve("util/"),
       },
       extensions: [".tsx", ".ts", ".js", ".jsx"],
       modules: ["node_modules"],
