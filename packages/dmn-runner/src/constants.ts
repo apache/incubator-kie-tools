@@ -24,3 +24,5 @@ export const YEARS_AND_MONTHS_DURATION_REGEXP = /^(-|\+)?P(?:([-+]?[0-9]*)Y)?(?:
 export const X_DMN_DESCRIPTIONS = "x-dmn-descriptions";
 export const X_DMN_ALLOWED_VALUES = "x-dmn-allowed-values";
 export const X_DMN_TYPE = "x-dmn-type";
+
+export const SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";

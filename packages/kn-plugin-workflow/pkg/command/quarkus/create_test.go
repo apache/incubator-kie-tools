@@ -29,13 +29,13 @@ import (
 )
 
 type testCreate struct {
-	input           CreateQuarkusProjectConfig
+	input           CreateCmdConfig
 	existingProject bool
 }
 
 var testRunCreateSuccess = []testCreate{
-	{input: CreateQuarkusProjectConfig{ProjectName: "new-project", Extensions: ""}},
-	{input: CreateQuarkusProjectConfig{
+	{input: CreateCmdConfig{ProjectName: "new-project", Extensions: ""}},
+	{input: CreateCmdConfig{
 		ProjectName: "second-project",
 		Extensions:  "extension-name",
 		DependenciesVersion: metadata.DependenciesVersion{
@@ -45,8 +45,8 @@ var testRunCreateSuccess = []testCreate{
 	}},
 }
 var testRunCreateFail = []testCreate{
-	{input: CreateQuarkusProjectConfig{ProjectName: "test-data"}, existingProject: true},
-	{input: CreateQuarkusProjectConfig{ProjectName: "wrong*project/name"}},
+	{input: CreateCmdConfig{ProjectName: "test-data"}, existingProject: true},
+	{input: CreateCmdConfig{ProjectName: "wrong*project/name"}},
 }
 
 func fakeRunCreate(testIndex int) func(command string, args ...string) *exec.Cmd {

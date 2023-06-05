@@ -40,6 +40,7 @@ import {
   DmnInputFieldProperties,
 } from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
+import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
@@ -633,37 +634,44 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                 return;
               }
 
-              resolveReferencesAndCheckForRecursive(jsonSchema, canceled)
+              const jsonSchemaDraft4 = {
+                $schema: SCHEMA_DRAFT4,
+                ...jsonSchema,
+              };
+
+              resolveReferencesAndCheckForRecursive(jsonSchemaDraft4, canceled)
                 .then((resolvedSchema) => {
                   if (canceled.get() || !resolvedSchema) {
                     return;
                   }
 
-                  const validateInputs = dmnRunnerAjv.compile(resolvedSchema);
+                  setJsonSchema((previousJsonSchema) => {
+                    // On the first render the previous will be undefined;
+                    if (!previousJsonSchema) {
+                      return jsonSchemaDraft4;
+                    }
 
-                  // Add default values and delete changed data types;
-                  setDmnRunnerPersistenceJson({
-                    newConfigInputs: (previousConfigInputs) => {
-                      const newConfigInputs = cloneDeep(previousConfigInputs);
-                      removeChangedPropertiesAndAdditionalProperties(validateInputs as any, newConfigInputs);
-                      return newConfigInputs;
-                    },
-                    newInputsRow: (previousInputs) => {
-                      return cloneDeep(previousInputs).map((input) => {
-                        const id = input.id;
-                        removeChangedPropertiesAndAdditionalProperties(validateInputs as any, input);
-                        input.id = id;
-                        return input;
-                      });
-                    },
-                    cancellationToken: canceled,
+                    const validateInputs = dmnRunnerAjv.compile(resolvedSchema);
+
+                    // Add default values and delete changed data types;
+                    setDmnRunnerPersistenceJson({
+                      newConfigInputs: (previousConfigInputs) => {
+                        const newConfigInputs = cloneDeep(previousConfigInputs);
+                        removeChangedPropertiesAndAdditionalProperties(validateInputs as any, newConfigInputs);
+                        return newConfigInputs;
+                      },
+                      newInputsRow: (previousInputs) => {
+                        return cloneDeep(previousInputs).map((input) => {
+                          const id = input.id;
+                          removeChangedPropertiesAndAdditionalProperties(validateInputs as any, input);
+                          input.id = id;
+                          return input;
+                        });
+                      },
+                      cancellationToken: canceled,
+                    });
+                    return resolvedSchema;
                   });
-
-                  if (canceled.get()) {
-                    return;
-                  }
-
-                  setJsonSchema(resolvedSchema);
                 })
                 .catch((err) => {
                   if (canceled.get()) {

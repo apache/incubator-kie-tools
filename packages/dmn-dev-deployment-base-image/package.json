@@ -30,14 +30,13 @@
     "image:args": "echo \"--build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/\"",
     "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build $(pnpm image:tag | tail -1) $(pnpm image:args | tail -1) . -f Containerfile\" --else \"echo Docker not found, skipping image build.\"",
     "image:podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(pnpm image:tag | tail -1) $(pnpm image:args | tail -1) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",
-    "image:tag": "echo $(build-env dmnDevDeploymentBaseImageEnv.tags) | xargs printf -- \"-t $(build-env dmnDevDeploymentBaseImageEnv.registry)/$(build-env dmnDevDeploymentBaseImageEnv.account)/$(build-env dmnDevDeploymentBaseImageEnv.name):%s\n\" | xargs echo"
+    "image:tag": "echo $(build-env dmnDevDeploymentBaseImage.tags) | xargs printf -- \"-t $(build-env dmnDevDeploymentBaseImage.registry)/$(build-env dmnDevDeploymentBaseImage.account)/$(build-env dmnDevDeploymentBaseImage.name):%s\n\" | xargs echo"
   },
   "dependencies": {
     "@kie-tools/dmn-dev-deployment-form-webapp": "workspace:*",
     "@kie-tools/dmn-dev-deployment-quarkus-app": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools/dmn-dev-deployment-base-image-env": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",

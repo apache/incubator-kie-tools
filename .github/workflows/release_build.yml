@@ -122,13 +122,15 @@ jobs:
 
   dmn_dev_deployment_base_image:
     env:
-      DMN_DEV_DEPLOYMENT__baseImageRegistry: "quay.io"
-      DMN_DEV_DEPLOYMENT__baseImageAccount: "kie-tools"
-      DMN_DEV_DEPLOYMENT__baseImageName: "dmn-dev-deployment-base-image"
-      DMN_DEV_DEPLOYMENT__baseImageTag: "${{ inputs.tag }}"
-      DMN_DEV_DEPLOYMENT__baseImageBuildTags: "latest ${{ inputs.tag }}"
-      DMN_DEV_DEPLOYMENT__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
-      DMN_DEV_DEPLOYMENT__gtmId: "GTM-PMJ42HB"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry: "quay.io"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__account: "kie-tools"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__name: "dmn-dev-deployment-base-image"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags: "latest ${{ inputs.tag }}"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry: "quay.io"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: "kie-tools"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageName: "dmn-dev-deployment-base-image"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: "${{ inputs.tag }}"
+      DMN_DEV_DEPLOYMENT_FORM_WEBAPP__gtmId: "GTM-PMJ42HB"
 
     if: ${{ needs.extract_runners.outputs.dmn_dev_deployment_base_image == 'true' }}
     runs-on: ubuntu-latest
@@ -168,10 +170,10 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.DMN_DEV_DEPLOYMENT__baseImageName }}"
-          tags: "${{ env.DMN_DEV_DEPLOYMENT__baseImageBuildTags }}"
-          registry: "${{ env.DMN_DEV_DEPLOYMENT__baseImageRegistry }}/${{ env.DMN_DEV_DEPLOYMENT__baseImageAccount }}"
-          username: "${{ env.DMN_DEV_DEPLOYMENT__baseImageAccount }}"
+          image: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name }}"
+          tags: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags }}"
+          registry: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry }}/${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
+          username: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
           password: "${{ secrets.quay_registry_password }}"
 
   kie_sandbox_image:
@@ -186,12 +188,11 @@ jobs:
       ONLINE_EDITOR__extendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
       ONLINE_EDITOR__extendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
       ONLINE_EDITOR__extendedServicesCompatibleVersion: "${{ inputs.tag }}"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry: "quay.io"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: "kie-tools"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageName: "dmn-dev-deployment-base-image"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: "${{ inputs.tag }}"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
-      DMN_DEV_DEPLOYMENT__baseImageRegistry: "quay.io"
-      DMN_DEV_DEPLOYMENT__baseImageAccount: "kie-tools"
-      DMN_DEV_DEPLOYMENT__baseImageName: "dmn-dev-deployment-base-image"
-      DMN_DEV_DEPLOYMENT__baseImageTag: "${{ inputs.tag }}"
-      DMN_DEV_DEPLOYMENT__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
 
     outputs:
       kie_sandbox_url: ${{ steps.deploy_kie_sandbox_image.outputs.route_url }}
@@ -386,15 +387,17 @@ jobs:
       ONLINE_EDITOR__extendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
       ONLINE_EDITOR__extendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
       ONLINE_EDITOR__extendedServicesCompatibleVersion: "${{ inputs.tag }}"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry: "quay.io"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: "kie-tools"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageName: "dmn-dev-deployment-base-image"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: "${{ inputs.tag }}"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
       ONLINE_EDITOR__gitCorsProxyUrl: "https://git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
-      DMN_DEV_DEPLOYMENT__baseImageRegistry: "quay.io"
-      DMN_DEV_DEPLOYMENT__baseImageAccount: "kie-tools"
-      DMN_DEV_DEPLOYMENT__baseImageName: "dmn-dev-deployment-base-image"
-      DMN_DEV_DEPLOYMENT__baseImageTag: "${{ inputs.tag }}"
-      DMN_DEV_DEPLOYMENT__baseImageBuildTags: "latest ${{ inputs.tag }}"
-      DMN_DEV_DEPLOYMENT__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
-      DMN_DEV_DEPLOYMENT__gtmId: "GTM-PMJ42HB"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry: "quay.io"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__account: "kie-tools"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__name: "dmn-dev-deployment-base-image"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags: "latest ${{ inputs.tag }}"
+      DMN_DEV_DEPLOYMENT_FORM_WEBAPP__gtmId: "GTM-PMJ42HB"
 
     if: ${{ always() && needs.extract_runners.outputs.online_editor == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.dmn_dev_deployment_base_image.result == 'success' || needs.dmn_dev_deployment_base_image.result == 'skipped') }}
     runs-on: ubuntu-latest

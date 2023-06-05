@@ -2849,9 +2849,6 @@ importers:
         specifier: workspace:*
         version: link:../dmn-dev-deployment-quarkus-app
     devDependencies:
-      "@kie-tools/dmn-dev-deployment-base-image-env":
-        specifier: workspace:*
-        version: link:../dmn-dev-deployment-base-image-env
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -2864,12 +2861,6 @@ importers:
       yargs:
         specifier: ^17.0.1
         version: 17.3.1
-
-  packages/dmn-dev-deployment-base-image-env:
-    devDependencies:
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
 
   packages/dmn-dev-deployment-form-webapp:
     dependencies:
@@ -5334,9 +5325,6 @@ importers:
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
         version: link:../webpack-base
-      "@kie-tools/dmn-dev-deployment-base-image-env":
-        specifier: workspace:*
-        version: link:../dmn-dev-deployment-base-image-env
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
