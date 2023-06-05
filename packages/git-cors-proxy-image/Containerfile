@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM registry.access.redhat.com/ubi9/nodejs-16-minimal
+FROM registry.access.redhat.com/ubi9/nodejs-18-minimal:1-51
 
 USER root
 

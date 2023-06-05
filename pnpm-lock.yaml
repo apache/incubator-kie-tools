@@ -4153,8 +4153,8 @@ importers:
         specifier: ^1.4.1
         version: 1.4.1
       pkg:
-        specifier: ^5.5.2
-        version: 5.5.2
+        specifier: ^5.8.1
+        version: 5.8.1
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -10294,6 +10294,16 @@ packages:
       jsesc: 2.5.2
     dev: true
 
+  /@babel/generator@7.18.2:
+    resolution:
+      { integrity: sha512-W1lG5vUwFvfMd8HVXqdfbuG7RuaSrTCCD8cl8fP8wOivdbtbIg2Db3IWUcgvfxKbbn6ZBGYRW/Zk1MIwK49mgw== }
+    engines: { node: ">=6.9.0" }
+    dependencies:
+      "@babel/types": 7.21.5
+      "@jridgewell/gen-mapping": 0.3.3
+      jsesc: 2.5.2
+    dev: true
+
   /@babel/generator@7.21.5:
     resolution:
       { integrity: sha512-SrKK/sRv8GesIW1bDagf9cCG38IOMYZusoe1dfg0D8aiUe3Amvoj1QtjTPAWcfrZFvIwlleLb0gxzQidL9w14w== }
@@ -10861,6 +10871,15 @@ packages:
   /@babel/parser@7.17.9:
     resolution:
       { integrity: sha512-vqUSBLP8dQHFPdPi9bc5GK9vRkYHJ49fsZdtoJ8EQ8ibpwk5rPKfvNIwChB0KVXcIjcepEBBd2VHC5r9Gy8ueg== }
+    engines: { node: ">=6.0.0" }
+    hasBin: true
+    dependencies:
+      "@babel/types": 7.21.5
+    dev: true
+
+  /@babel/parser@7.18.4:
+    resolution:
+      { integrity: sha512-FDge0dFazETFcxGw/EXzOkN8uJp0PC7Qbm+Pe9T+av2zlBpOgunFHkQPPn+eRuClU73JF+98D531UgayY89tow== }
     engines: { node: ">=6.0.0" }
     hasBin: true
     dependencies:
@@ -13837,6 +13856,16 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
+  /@babel/types@7.19.0:
+    resolution:
+      { integrity: sha512-YuGopBq3ke25BVSiS6fgF49Ul9gH1x70Bcr6bqRLjWCkcX8Hre1/5+z+IiWOIerRMSSEfGZVB9z9kyq7wVs9YA== }
+    engines: { node: ">=6.9.0" }
+    dependencies:
+      "@babel/helper-string-parser": 7.21.5
+      "@babel/helper-validator-identifier": 7.19.1
+      to-fast-properties: 2.0.0
+    dev: true
+
   /@babel/types@7.21.5:
     resolution:
       { integrity: sha512-m4AfNvVF2mVC/F7fDEdH2El3HzUg9It/XsCxZiOTTA3m3qYfcSVSbTfM6Q9xG+hYDniZssYhlXKKUMD5m8tF4Q== }
@@ -14492,7 +14521,7 @@ packages:
     dependencies:
       "@jridgewell/set-array": 1.1.2
       "@jridgewell/sourcemap-codec": 1.4.14
-      "@jridgewell/trace-mapping": 0.3.9
+      "@jridgewell/trace-mapping": 0.3.18
     dev: true
 
   /@jridgewell/resolve-uri@3.0.5:
@@ -24013,6 +24042,19 @@ packages:
       slash: 3.0.0
     dev: true
 
+  /globby@11.1.0:
+    resolution:
+      { integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g== }
+    engines: { node: ">=10" }
+    dependencies:
+      array-union: 2.1.0
+      dir-glob: 3.0.1
+      fast-glob: 3.2.11
+      ignore: 5.2.0
+      merge2: 1.4.1
+      slash: 3.0.0
+    dev: true
+
   /globby@13.1.2:
     resolution:
       { integrity: sha512-LKSDZXToac40u8Q1PQtZihbNdTYSNMuWe+K5l+oa6KgDzSvVrHXlJy40hUP522RjAIoNLJYBJi7ow+rbFpIhHQ== }
@@ -25034,6 +25076,13 @@ packages:
   /is-core-module@2.8.1:
     resolution:
       { integrity: sha512-SdNCUs284hr40hFTFP6l0IfZ/RSrMXF3qgoRHd3/79unUTvrFO/JoXwkGm+5J/Oe3E/b5GsnG330uUNgRpu1PA== }
+    dependencies:
+      has: 1.0.3
+    dev: true
+
+  /is-core-module@2.9.0:
+    resolution:
+      { integrity: sha512-+5FPy5PnwmO3lvfMb0AsoPaBG+5KHUI0wYFXOtYPnVVVspTFUuMZNfNaNVRt3FZadstu2c8x23vykRW/NBoU6A== }
     dependencies:
       has: 1.0.3
     dev: true
@@ -28105,6 +28154,14 @@ packages:
       semver: 5.7.1
     dev: true
 
+  /node-abi@3.43.0:
+    resolution:
+      { integrity: sha512-QB0MMv+tn9Ur2DtJrc8y09n0n6sw88CyDniWSX2cHW10goQXYPK9ZpFJOktDS4ron501edPX6h9i7Pg+RnH5nQ== }
+    engines: { node: ">=10" }
+    dependencies:
+      semver: 7.3.8
+    dev: true
+
   /node-addon-api@3.2.1:
     resolution:
       { integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A== }
@@ -29263,6 +29320,24 @@ packages:
       - supports-color
     dev: true
 
+  /pkg-fetch@3.4.2:
+    resolution:
+      { integrity: sha512-0+uijmzYcnhC0hStDjm/cl2VYdrmVVBpe7Q8k9YBojxmR5tG8mvR9/nooQq3QSXiQqORDVOTY3XqMEqJVIzkHA== }
+    hasBin: true
+    dependencies:
+      chalk: 4.1.2
+      fs-extra: 9.1.0
+      https-proxy-agent: 5.0.1
+      node-fetch: 2.6.7
+      progress: 2.0.3
+      semver: 7.3.8
+      tar-fs: 2.1.1
+      yargs: 16.2.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: true
+
   /pkg@5.5.2:
     resolution:
       { integrity: sha512-pD0UB2ud01C6pVv2wpGsTYJrXI/bnvGRYvMLd44wFzA1p+A2jrlTGFPAYa7YEYzmitXhx23PqalaG1eUEnSwcA== }
@@ -29288,6 +29363,35 @@ packages:
       resolve: 1.21.0
       stream-meter: 1.0.4
       tslib: 2.3.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: true
+
+  /pkg@5.8.1:
+    resolution:
+      { integrity: sha512-CjBWtFStCfIiT4Bde9QpJy0KeH19jCfwZRJqHFDFXfhUklCx8JoFmMj3wgnEYIwGmZVNkhsStPHEOnrtrQhEXA== }
+    hasBin: true
+    peerDependencies:
+      node-notifier: ">=9.0.1"
+    peerDependenciesMeta:
+      node-notifier:
+        optional: true
+    dependencies:
+      "@babel/generator": 7.18.2
+      "@babel/parser": 7.18.4
+      "@babel/types": 7.19.0
+      chalk: 4.1.2
+      fs-extra: 9.1.0
+      globby: 11.1.0
+      into-stream: 6.0.0
+      is-core-module: 2.9.0
+      minimist: 1.2.8
+      multistream: 4.1.0
+      pkg-fetch: 3.4.2
+      prebuild-install: 7.1.1
+      resolve: 1.22.1
+      stream-meter: 1.0.4
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -29902,6 +30006,26 @@ packages:
       pump: 3.0.0
       rc: 1.2.8
       simple-get: 3.1.1
+      tar-fs: 2.1.1
+      tunnel-agent: 0.6.0
+    dev: true
+
+  /prebuild-install@7.1.1:
+    resolution:
+      { integrity: sha512-jAXscXWMcCK8GgCoHOfIr0ODh5ai8mj63L2nWrjuAgXE6tDyYGnx4/8o/rCgU+B4JSyZBKbeZqzhtwtC3ovxjw== }
+    engines: { node: ">=10" }
+    hasBin: true
+    dependencies:
+      detect-libc: 2.0.1
+      expand-template: 2.0.3
+      github-from-package: 0.0.0
+      minimist: 1.2.8
+      mkdirp-classic: 0.5.3
+      napi-build-utils: 1.0.2
+      node-abi: 3.43.0
+      pump: 3.0.0
+      rc: 1.2.8
+      simple-get: 4.0.1
       tar-fs: 2.1.1
       tunnel-agent: 0.6.0
     dev: true
@@ -31811,7 +31935,6 @@ packages:
       decompress-response: 6.0.0
       once: 1.4.0
       simple-concat: 1.0.1
-    dev: false
 
   /sinon@11.1.1:
     resolution:
