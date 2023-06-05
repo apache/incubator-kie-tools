@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 import * as path from "path";
 import { assert } from "chai";
-import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
+import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
@@ -29,7 +29,7 @@ describe("Serverless workflow editor - smoke integration tests", () => {
   before(async function () {
     this.timeout(60000);
     testHelper = new VSCodeTestHelper();
-    await testHelper.openFolder(TEST_PROJECT_FOLDER, "greeting-flow");
+    await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {
@@ -45,7 +45,7 @@ describe("Serverless workflow editor - smoke integration tests", () => {
   });
 
   it("Opens greetings.sw.json and loads two editor groups", async function () {
-    this.timeout(30000);
+    this.timeout(40000);
     const editorWebviews = await testHelper.openFileFromSidebar("greetings.sw.json", "src/main/resources");
 
     const swfEditor = new SwfEditorTestHelper(editorWebviews[1]);

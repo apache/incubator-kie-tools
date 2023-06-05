@@ -14,6 +14,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -52,11 +53,25 @@ public class JsStunnerSession {
 
     public String getNodeName(Node node) {
         Object definition = ((Node<Definition, Edge>) node).getContent().getDefinition();
-        return getName(definition);
+        return getDefinitionName(definition);
     }
 
-    public String getName(Object bean) {
+    public String getDefinitionId(Object bean) {
+        return JsWindow.editor.definitions.getId(bean).value();
+    }
+
+    public String getDefinitionName(Object bean) {
         return JsWindow.editor.definitions.getName(bean);
+    }
+
+    public Object getDefinitionByElementUUID(String uuid) {
+        Element e = getGraphIndex().get(uuid);
+        if (null == e) {
+            return null;
+        }
+        View<?> content = (View<?>) e.getContent();
+        Object definition = content.getDefinition();
+        return definition;
     }
 
     public Edge getEdgeByUUID(String uuid) {
@@ -80,11 +95,9 @@ public class JsStunnerSession {
 
     public Object getSelectedDefinition() {
         Node node = getSelectedNode();
-
         if (null == node) {
             return null;
         }
-
         View<?> content = (View<?>) node.getContent();
         Object definition = content.getDefinition();
         return definition;

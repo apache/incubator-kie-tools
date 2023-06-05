@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 import { expect } from "chai";
 import { By, until, WebElement, WebView } from "vscode-extension-tester";
-import { assertWebElementIsDisplayedEnabled } from "../CommonAsserts";
+import { assertWebElementIsDisplayedEnabled, EditorTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import { expandedDocksBarE, h3ComponentWithText, tabWithTitle } from "../CommonLocators";
 import { EditorTabs } from "./EditorTabs";
 import ExpressionEditorHelper from "./ExpressionEditorHelper";
@@ -28,7 +28,7 @@ import DecisionNavigatorHelper from "./DecisionNavigatorHelper";
  * Make sure you switch to the webview's frame before creating and instance
  * via contructor.
  */
-export default class DmnEditorTestHelper {
+export default class DmnEditorTestHelper extends EditorTestHelper {
   private decisionNavigator: WebElement;
   private diagramExplorer: WebElement;
   private properties: WebElement;
@@ -37,7 +37,9 @@ export default class DmnEditorTestHelper {
    *
    * @param webview WebView where the editor Iframe is located.
    */
-  constructor(private readonly webview: WebView) {}
+  constructor(webview: WebView) {
+    super(webview);
+  }
 
   /**
    * Finds button that open DMN diagram explorer.

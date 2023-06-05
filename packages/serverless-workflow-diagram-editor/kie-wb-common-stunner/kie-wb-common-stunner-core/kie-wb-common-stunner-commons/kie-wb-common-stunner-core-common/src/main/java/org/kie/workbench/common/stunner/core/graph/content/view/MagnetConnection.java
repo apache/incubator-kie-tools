@@ -19,15 +19,14 @@ package org.kie.workbench.common.stunner.core.graph.content.view;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
+import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@Portable
+@JsType
 public class MagnetConnection extends DiscreteConnection {
 
     public static final int MAGNET_CENTER = 0;
@@ -39,8 +38,8 @@ public class MagnetConnection extends DiscreteConnection {
     private Point2D location;
     private Boolean auto;
 
-    private MagnetConnection(final @MapsTo("location") Point2D location,
-                             final @MapsTo("auto") Boolean auto) {
+    private MagnetConnection(Point2D location,
+                             Boolean auto) {
         Objects.requireNonNull(auto, "Parameter named 'auto' should be not null!");
         this.location = location;
         this.auto = auto;

@@ -19,10 +19,9 @@ package common
 import (
 	"bufio"
 	"fmt"
+	"github.com/spf13/cobra"
 	"html/template"
 	"os/exec"
-
-	"github.com/spf13/cobra"
 )
 
 func RunCommand(command *exec.Cmd, commandName string) error {

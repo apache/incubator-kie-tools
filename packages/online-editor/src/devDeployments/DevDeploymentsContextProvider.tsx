@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useRoutes } from "../navigation/Hooks";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { KieSandboxOpenShiftService } from "./services/openshift/KieSandboxOpenShiftService";
 import { ConfirmDeployModalState, DeleteDeployModalState, DevDeploymentsContext } from "./DevDeploymentsContext";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
@@ -26,15 +26,16 @@ import { DevDeploymentsConfirmDeleteModal } from "./DevDeploymentsConfirmDeleteM
 import { KieSandboxKubernetesService } from "./services/KieSandboxKubernetesService";
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
+import { useEnv } from "../env/hooks/EnvContext";
 
 interface Props {
   children: React.ReactNode;
 }
 
 export function DevDeploymentsContextProvider(props: Props) {
-  const routes = useRoutes();
   const extendedServices = useExtendedServices();
   const workspaces = useWorkspaces();
+  const { env } = useEnv();
 
   // Dropdowns
   const [isDeployDropdownOpen, setDeployDropdownOpen] = useState(false);
@@ -124,12 +125,7 @@ export function DevDeploymentsContextProvider(props: Props) {
           targetFilePath: workspaceFile.relativePath,
           workspaceName,
           workspaceZipBlob: zipBlob,
-          onlineEditorUrl: (baseUrl) =>
-            routes.import.url({
-              base: process.env.WEBPACK_REPLACE__devDeployments_onlineEditorUrl,
-              pathParams: {},
-              queryParams: { url: `${baseUrl}/${workspaceFile.relativePath}` },
-            }),
+          containerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
         });
         return true;
       } catch (error) {
@@ -137,7 +133,7 @@ export function DevDeploymentsContextProvider(props: Props) {
         return false;
       }
     },
-    [getService, routes.import, workspaces]
+    [env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL, getService, workspaces]
   );
 
   const value = useMemo(

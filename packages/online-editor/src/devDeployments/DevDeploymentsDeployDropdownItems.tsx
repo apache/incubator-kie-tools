@@ -18,9 +18,9 @@ import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDevDeployments as useDevDeployments } from "./DevDeploymentsContext";
-import { FeatureDependentOnKieSandboxExtendedServices } from "../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
-import { DependentFeature, useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { FeatureDependentOnExtendedServices } from "../extendedServices/FeatureDependentOnExtendedServices";
+import { DependentFeature, useExtendedServices } from "../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../filesList/FileLabel";
@@ -58,7 +58,7 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
   }, [authSessions, suggestedAuthSessionForDeployment]);
 
   const isExtendedServicesRunning = useMemo(
-    () => extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
+    () => extendedServices.status === ExtendedServicesStatus.RUNNING,
     [extendedServices.status]
   );
 
@@ -75,7 +75,7 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
     return [
       <React.Fragment key={"dmn-dev-deployment-dropdown-items"}>
         {workspace && (
-          <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
+          <FeatureDependentOnExtendedServices isLight={false} position="left">
             <div style={{ padding: "8px 16px" }}>
               <AuthSessionSelect
                 position={SelectPosition.right}
@@ -124,7 +124,7 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
                 </Flex>
               )}
             </DropdownItem>
-          </FeatureDependentOnKieSandboxExtendedServices>
+          </FeatureDependentOnExtendedServices>
         )}
       </React.Fragment>,
     ];

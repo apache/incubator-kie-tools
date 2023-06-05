@@ -18,5 +18,4 @@ package common
 
 import "os/exec"
 
-// Make it a global var so it can be overrided in tests
-var ExecCommand = exec.Command
+var ExecCommand = exec.Command // Make it a global var, so it can be override in tests

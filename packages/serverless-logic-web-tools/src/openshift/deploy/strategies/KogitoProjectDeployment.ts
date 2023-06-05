@@ -21,6 +21,7 @@ import { DeploymentStrategy } from "../DeploymentStrategy";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
 import { DeploymentStrategyArgs } from "../types";
 import { KnativeBuilderPipeline } from "../../pipelines/KnativeBuilderPipeline";
+import { zipFiles } from "../../../zip";
 import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 interface CreateKogitoProjectDeploymentArgs {
@@ -43,7 +44,7 @@ export class KogitoProjectDeployment extends DeploymentStrategy {
 
     filesToBeDeployed.push(dockerfileFile, dockerIgnoreFile);
 
-    const workspaceZipBlob = await this.createZipBlob(filesToBeDeployed);
+    const workspaceZipBlob = await zipFiles(filesToBeDeployed);
 
     return new KnativeBuilderPipeline({
       workspaceName: this.resolveWorkspaceName(filesToBeDeployed),

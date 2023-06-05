@@ -49,6 +49,8 @@ import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/work
 import { useGlobalAlert } from "../../alerts";
 import { useBitbucketClient } from "../../bitbucket/Hooks";
 import { isEditable } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
+import { useEditorsConfig } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { useEnv } from "../../env/hooks/EnvContext";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 
@@ -57,7 +59,9 @@ export function NewFileDropdownMenu(props: {
   workspaceDescriptor: WorkspaceDescriptor;
   onAddFile: (file?: WorkspaceFile) => Promise<void>;
 }) {
+  const { env } = useEnv();
   const uploadFileInputRef = useRef<HTMLInputElement>(null);
+  const editorsConfig = useEditorsConfig();
 
   const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
   const [drilldownPath, setDrilldownPath] = useState<string[]>([]);
@@ -91,7 +95,7 @@ export function NewFileDropdownMenu(props: {
   const { gitConfig } = useAuthSession(props.workspaceDescriptor.gitAuthSessionId);
 
   const addEmptyFile = useCallback(
-    async (extension: SupportedFileExtensions) => {
+    async (extension: string) => {
       const file = await workspaces.addEmptyFile({
         workspaceId: props.workspaceDescriptor.workspaceId,
         destinationDirRelativePath: props.destinationDirPath,
@@ -169,7 +173,9 @@ export function NewFileDropdownMenu(props: {
       await workspaces.createSavePoint({
         workspaceId: props.workspaceDescriptor.workspaceId,
         gitConfig,
-        commitMessage: `KIE Sandbox: Added files${uploadedFiles.map((file) => `\n- ${file.relativePath}`)}`,
+        commitMessage: `${env.KIE_SANDBOX_APP_NAME}: Added files${uploadedFiles.map(
+          (file) => `\n- ${file.relativePath}`
+        )}`,
         forceHasChanges: true,
       });
 
@@ -178,7 +184,7 @@ export function NewFileDropdownMenu(props: {
       await props.onAddFile(fileToGoTo);
       successfullyUploadedAlert.show({ qtt: uploadedFiles.length });
     },
-    [editorEnvelopeLocator, workspaces, props, successfullyUploadedAlert, gitConfig]
+    [workspaces, props, gitConfig, env.KIE_SANDBOX_APP_NAME, successfullyUploadedAlert, editorEnvelopeLocator]
   );
 
   const [url, setUrl] = useState("");
@@ -260,14 +266,21 @@ export function NewFileDropdownMenu(props: {
   );
 
   const sampleUrl = useCallback(
-    (extension: SupportedFileExtensions) =>
+    (extension: string) =>
       `${window.location.origin}${window.location.pathname}${routes.static.sample.path({ type: extension })}`,
     [routes]
   );
 
-  const importableUrlBpmnSample = useImportableUrl(sampleUrl("bpmn"));
-  const importableUrlDmnSample = useImportableUrl(sampleUrl("dmn"));
-  const importableUrlPmmlSample = useImportableUrl(sampleUrl("pmml"));
+  // TODO: Implement a better solution to dynamically create this array, based on the number of editors enabled in the editorsConfig.
+  // This solution was devised as a temporary fix in response to allowing users to enable/disable the PMML editor. See kie-issues#311 for more details.
+
+  const importableUrlSamples = new Map([
+    [editorsConfig[0]?.extension, useImportableUrl(sampleUrl(editorsConfig[0]?.extension))],
+    [editorsConfig[1]?.extension, useImportableUrl(sampleUrl(editorsConfig[1]?.extension))],
+    [editorsConfig[2]?.extension, useImportableUrl(sampleUrl(editorsConfig[2]?.extension))],
+    [editorsConfig[3]?.extension, useImportableUrl(sampleUrl(editorsConfig[3]?.extension))],
+    [editorsConfig[4]?.extension, useImportableUrl(sampleUrl(editorsConfig[4]?.extension))],
+  ]);
 
   return (
     <Menu
@@ -284,33 +297,21 @@ export function NewFileDropdownMenu(props: {
     >
       <MenuContent menuHeight={`${menuHeights[activeMenu]}px`}>
         <MenuList style={{ padding: 0 }}>
-          <MenuItem
-            itemId={"newBpmnItemId"}
-            onClick={() => addEmptyFile("bpmn")}
-            description="BPMN files are used to generate business workflows."
-          >
-            <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={"bpmn"} />
-            </b>
-          </MenuItem>
-          <MenuItem
-            itemId={"newDmnItemId"}
-            onClick={() => addEmptyFile("dmn")}
-            description="DMN files are used to generate decision models"
-          >
-            <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={"dmn"} />
-            </b>
-          </MenuItem>
-          <MenuItem
-            itemId={"newPmmlItemId"}
-            onClick={() => addEmptyFile("pmml")}
-            description="PMML files are used to generate scorecards"
-          >
-            <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={"pmml"} />
-            </b>
-          </MenuItem>
+          {editorsConfig.map((config, index) => {
+            return (
+              <MenuItem
+                key={index}
+                itemId={`new${config.extension}ItemId`}
+                onClick={() => addEmptyFile(config.extension)}
+                description={config.card.description}
+              >
+                <b>
+                  <FileLabel style={{ marginBottom: "4px" }} extension={config.extension} />
+                </b>
+              </MenuItem>
+            );
+          })}
+
           <Divider />
           <MenuItem
             description={"Try sample models"}
@@ -320,45 +321,24 @@ export function NewFileDropdownMenu(props: {
               <DrilldownMenu id={"samplesMenu"}>
                 <MenuItem direction="up">Back</MenuItem>
                 <Divider />
-                <MenuGroup label={" "}>
-                  <MenuItem
-                    onClick={() => importFromUrl(importableUrlBpmnSample)}
-                    description="BPMN files are used to generate business workflows."
-                  >
-                    <Flex>
-                      <FlexItem>Sample</FlexItem>
-                      <FlexItem>
-                        <FileLabel extension={"bpmn"} />
-                      </FlexItem>
-                    </Flex>
-                  </MenuItem>
-                </MenuGroup>
-                <MenuGroup label={" "}>
-                  <MenuItem
-                    onClick={() => importFromUrl(importableUrlDmnSample)}
-                    description="DMN files are used to generate decision models"
-                  >
-                    <Flex>
-                      <FlexItem>Sample</FlexItem>
-                      <FlexItem>
-                        <FileLabel extension={"dmn"} />
-                      </FlexItem>
-                    </Flex>
-                  </MenuItem>
-                </MenuGroup>
-                <MenuGroup label={" "}>
-                  <MenuItem
-                    onClick={() => importFromUrl(importableUrlPmmlSample)}
-                    description="PMML files are used to generate scorecards"
-                  >
-                    <Flex>
-                      <FlexItem>Sample</FlexItem>
-                      <FlexItem>
-                        <FileLabel extension={"pmml"} />
-                      </FlexItem>
-                    </Flex>
-                  </MenuItem>
-                </MenuGroup>
+
+                {editorsConfig.map((config, index) => {
+                  return (
+                    <MenuGroup label={" "} key={index}>
+                      <MenuItem
+                        onClick={() => importFromUrl(importableUrlSamples.get(config.extension)!)}
+                        description={config.card.description}
+                      >
+                        <Flex>
+                          <FlexItem>Sample</FlexItem>
+                          <FlexItem>
+                            <FileLabel extension={config.extension} />
+                          </FlexItem>
+                        </Flex>
+                      </MenuItem>
+                    </MenuGroup>
+                  );
+                })}
               </DrilldownMenu>
             }
           >

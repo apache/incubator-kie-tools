@@ -28,7 +28,7 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
     cy.ouia({ ouiaId: "new-yard.yaml-button" }).should("have.text", "YAML");
 
     cy.ouia({ ouiaId: "Dashboard-card" }).find("button").should("have.length", 1);
-    cy.ouia({ ouiaId: "new-dash.yaml-button" }).should("have.text", "New Dashboard");
+    cy.ouia({ ouiaId: "new-dash.yaml-button" }).should("have.text", "YAML");
   });
 
   it("should create a new JSON serverless workflow", () => {

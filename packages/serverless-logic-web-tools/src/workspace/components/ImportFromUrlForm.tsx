@@ -19,19 +19,21 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import * as React from "react";
-import { FormEvent, useCallback, useMemo } from "react";
+import { useEffect, FormEvent, useCallback, useMemo } from "react";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 
 export function ImportFromUrlForm(props: {
-  url?: string;
+  allowedTypes?: UrlType[];
   importingError?: string;
   onChange: (url: string) => void;
   onSubmit: () => void;
+  onValidate?: (isValid: ValidatedOptions) => void;
+  url?: string;
   urlInputRef?: React.RefObject<HTMLInputElement>;
-  allowedTypes?: UrlType[];
 }) {
+  const { onValidate } = props;
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const importableUrl = useImportableUrl({
     isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
@@ -76,6 +78,10 @@ export function ImportFromUrlForm(props: {
 
     return "";
   }, [importableUrl.error, props.importingError]);
+
+  useEffect(() => {
+    onValidate?.(validatedOption);
+  }, [validatedOption, onValidate]);
 
   return (
     <Form onSubmit={onSubmit}>

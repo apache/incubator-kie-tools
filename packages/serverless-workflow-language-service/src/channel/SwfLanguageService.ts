@@ -24,6 +24,7 @@ import {
 import {
   SwfCatalogSourceType,
   SwfServiceCatalogFunction,
+  SwfServiceCatalogEvent,
   SwfServiceCatalogFunctionSource,
   SwfServiceCatalogService,
   SwfServiceCatalogServiceType,
@@ -120,6 +121,14 @@ export class SwfLanguageService implements IEditorLanguageService {
             operation: await this.getSwfCompletionItemServiceCatalogFunctionOperation(service, func, doc),
           }))
         ),
+        events: await Promise.all(
+          service.events?.map(async (event) => ({
+            ...event,
+            metadata: {
+              reference: await this.getSwfCompletionItemServiceCatalogEventReference(service, event, doc),
+            },
+          })) ?? []
+        ),
       }))
     );
 
@@ -207,6 +216,36 @@ export class SwfLanguageService implements IEditorLanguageService {
     this.els.dispose();
   }
 
+  private async createSwfCompletionItemServiceCatalogProperty(
+    containingService: SwfServiceCatalogService,
+    item: SwfServiceCatalogFunction | SwfServiceCatalogEvent,
+    dirRelativePosixPath: string
+  ): Promise<string> {
+    if (item.source.type === SwfCatalogSourceType.LOCAL_FS) {
+      const serviceFileName = posixPath.basename(item.source.serviceFileAbsolutePath);
+      const serviceFileRelativePosixPath = posixPath.join(dirRelativePosixPath, serviceFileName);
+      return `${serviceFileRelativePosixPath}#${item.name}`;
+    } else if (
+      (await this.args.config.shouldReferenceServiceRegistryFunctionsWithUrls()) &&
+      containingService.source.type === SwfCatalogSourceType.SERVICE_REGISTRY &&
+      item.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
+    ) {
+      return `${containingService.source.url}#${item.name}`;
+    } else if (
+      containingService.source.type === SwfCatalogSourceType.SERVICE_REGISTRY &&
+      item.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
+    ) {
+      const serviceFileName = await this.args.serviceCatalog.getServiceFileNameFromSwfServiceCatalogServiceId(
+        containingService.source.registry,
+        containingService.source.id
+      );
+      const serviceFileRelativePosixPath = posixPath.join(dirRelativePosixPath, serviceFileName);
+      return `${serviceFileRelativePosixPath}#${item.name}`;
+    } else {
+      throw new Error("Unknown Service Catalog source type");
+    }
+  }
+
   private async getSwfCompletionItemServiceCatalogFunctionOperation(
     containingService: SwfServiceCatalogService,
     func: SwfServiceCatalogFunction,
@@ -222,30 +261,19 @@ export class SwfLanguageService implements IEditorLanguageService {
     } else {
       dirRelativePosixPath = specsDirRelativePosixPath;
     }
+    return this.createSwfCompletionItemServiceCatalogProperty(containingService, func, dirRelativePosixPath);
+  }
 
-    if (func.source.type === SwfCatalogSourceType.LOCAL_FS) {
-      const serviceFileName = posixPath.basename(func.source.serviceFileAbsolutePath);
-      const serviceFileRelativePosixPath = posixPath.join(dirRelativePosixPath, serviceFileName);
-      return `${serviceFileRelativePosixPath}#${func.name}`;
-    } else if (
-      (await this.args.config.shouldReferenceServiceRegistryFunctionsWithUrls()) &&
-      containingService.source.type === SwfCatalogSourceType.SERVICE_REGISTRY &&
-      func.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
-    ) {
-      return `${containingService.source.url}#${func.name}`;
-    } else if (
-      containingService.source.type === SwfCatalogSourceType.SERVICE_REGISTRY &&
-      func.source.type === SwfCatalogSourceType.SERVICE_REGISTRY
-    ) {
-      const serviceFileName = await this.args.serviceCatalog.getServiceFileNameFromSwfServiceCatalogServiceId(
-        containingService.source.registry,
-        containingService.source.id
-      );
-      const serviceFileRelativePosixPath = posixPath.join(dirRelativePosixPath, serviceFileName);
-      return `${serviceFileRelativePosixPath}#${func.name}`;
-    } else {
-      throw new Error("Unknown Service Catalog function source type");
-    }
+  private async getSwfCompletionItemServiceCatalogEventReference(
+    containingService: SwfServiceCatalogService,
+    event: SwfServiceCatalogEvent,
+    document: TextDocument
+  ): Promise<string> {
+    const { specsDirRelativePosixPath } = await this.args.config.getSpecsDirPosixPaths(document);
+
+    const dirRelativePosixPath = specsDirRelativePosixPath;
+
+    return this.createSwfCompletionItemServiceCatalogProperty(containingService, event, dirRelativePosixPath);
   }
 }
 

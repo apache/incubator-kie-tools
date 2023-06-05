@@ -47,11 +47,25 @@ export function isModel(path: string): boolean {
 }
 
 export function isEditable(path: string): boolean {
-  return isModel(path) || EDIT_NON_MODEL_ALLOW_LIST.includes(basename(path));
+  return isModel(path) || EDIT_NON_MODEL_ALLOW_LIST.includes(basename(path)) || isOfKind("yaml", path);
 }
 
 export function isSupportedByVirtualServiceRegistry(path: string): boolean {
   return isOfKind("sw", path) || isOfKind("spec", path);
+}
+
+export function isApplicationProperties(path: string): boolean {
+  return /.*\/?application\.properties$/i.test(path);
+}
+
+export function isSupportingFileForDevMode(args: { path: string; targetFolder: string }): boolean {
+  const regexStr = args.targetFolder.trim().length > 0 ? `^${args.targetFolder}(/.*)?$` : "^.*$";
+  const isInFolderRegex = new RegExp(regexStr, "i");
+  return (
+    !isOfKind("sw", args.path) &&
+    isInFolderRegex.test(args.path) &&
+    (isOfKind("json", args.path) || isOfKind("yaml", args.path))
+  );
 }
 
 export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];

@@ -44,11 +44,14 @@ jobs:
       OPENSHIFT_NAMESPACE: "kie-sandbox"
       OPENSHIFT_PART_OF: "staging-kie-sandbox-app"
 
-      DMN_DEV_DEPLOYMENT__baseImageRegistry: "quay.io"
-      DMN_DEV_DEPLOYMENT__baseImageAccount: "kie-tools"
-      DMN_DEV_DEPLOYMENT__baseImageName: "dmn-dev-deployment-base-image"
-      DMN_DEV_DEPLOYMENT__baseImageTag: "${{ inputs.tag }}-prerelease"
-      DMN_DEV_DEPLOYMENT__baseImageBuildTags: "${{ inputs.tag }}-prerelease"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry: "quay.io"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__account: "kie-tools"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__name: "dmn-dev-deployment-base-image"
+      DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags: "${{ inputs.tag }}-prerelease"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry: "quay.io"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: "kie-tools"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageName: "dmn-dev-deployment-base-image"
+      ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: "${{ inputs.tag }}-prerelease"
 
       KIE_SANDBOX__imageRegistry: "quay.io"
       KIE_SANDBOX__imageAccount: "kie-tools"
@@ -82,6 +85,11 @@ jobs:
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName: "serverless-logic-web-tools-base-builder-image"
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag: "${{ inputs.tag }}-prerelease"
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags: "${{ inputs.tag }}-prerelease"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName: "serverless-logic-web-tools-swf-dev-mode-image"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag: "${{ inputs.tag }}-prerelease"
+      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags: "${{ inputs.tag }}-prerelease"
 
     strategy:
       matrix:
@@ -161,22 +169,21 @@ jobs:
           SWF_CHROME_EXTENSION__routerRelativePath: "kogito-online-staging/${{ inputs.tag }}-prerelease/swf-chrome-extension"
           SWF_CHROME_EXTENSION__manifestFile: "manifest.prod.json"
           ONLINE_EDITOR__buildInfo: "${{ inputs.tag }} (staging) @ ${{ inputs.commit_sha }}"
-          ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
-          ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
-          ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
-          ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
+          ONLINE_EDITOR__extendedServicesDownloadUrlLinux: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
+          ONLINE_EDITOR__extendedServicesDownloadUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
+          ONLINE_EDITOR__extendedServicesDownloadUrlWindows: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
+          ONLINE_EDITOR__extendedServicesCompatibleVersion: "${{ inputs.tag }}"
           ONLINE_EDITOR__gtmId: ""
           ONLINE_EDITOR__gitCorsProxyUrl: "https://staging-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
-          DMN_DEV_DEPLOYMENT__gtmId: ""
-          DMN_DEV_DEPLOYMENT__onlineEditorUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
+          DMN_DEV_DEPLOYMENT_FORM_WEBAPP__gtmId: ""
           EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
           SERVERLESS_LOGIC_WEB_TOOLS__version: "${{ inputs.tag }}-prerelease"
           SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef: "${{ inputs.tag }}"
           SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: "${{ inputs.tag }} (staging) @ ${{ inputs.commit_sha }}"
-          SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
-          SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
-          SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlWindows: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
-          SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
+          SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlLinux: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
+          SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
+          SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlWindows: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
+          SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesCompatibleVersion: "${{ inputs.tag }}"
           SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl: "https://staging-git-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
         run: |
           pnpm -r build:prod
@@ -185,10 +192,10 @@ jobs:
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.DMN_DEV_DEPLOYMENT__baseImageName }}"
-          tags: "${{ env.DMN_DEV_DEPLOYMENT__baseImageBuildTags }}"
-          registry: "${{ env.DMN_DEV_DEPLOYMENT__baseImageRegistry }}/${{ env.DMN_DEV_DEPLOYMENT__baseImageAccount }}"
-          username: "${{ env.DMN_DEV_DEPLOYMENT__baseImageAccount }}"
+          image: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name }}"
+          tags: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags }}"
+          registry: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry }}/${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
+          username: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Push kie-sandbox-extended-services-image to quay.io (Ubuntu only)"
@@ -288,6 +295,16 @@ jobs:
           tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags }}"
           registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount }}"
           username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+      - name: "STAGING: Push serverless-logic-web-tools-swf-dev-mode-image to quay.io (Ubuntu only)"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Push dashbuilder-viewer-image to quay.io (Ubuntu only)"
@@ -428,17 +445,6 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kie-tools/packages/pmml-vscode-extension/dist/pmml_vscode_extension_${{ inputs.tag }}.vsix
           asset_name: STAGING__pmml_vscode_extension_${{ inputs.tag }}.vsix
-          asset_content_type: application/zip
-
-      - name: "STAGING: Upload VS Code Extension - Serverless Workflow Editor - Red Hat (prod) (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-serverless-workflow-editor/dist/vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
-          asset_name: STAGING__vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "STAGING: Upload VS Code Extension - Serverless Workflow Editor - KIE (prod) (Ubuntu only)"

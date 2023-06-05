@@ -193,7 +193,7 @@ public class ControlPointControlImpl
                 final ControlPoint[] controlPoints = new ControlPoint[size];
                 for (int i = 1; i <= size; i++) {
                     com.ait.lienzo.client.core.types.Point2D point = pointsLocation.get(i);
-                    controlPoints[i - 1] = ControlPoint.build(Point2D.create(point.getX(),
+                    controlPoints[i - 1] = ControlPoint.create(Point2D.create(point.getX(),
                                                                              point.getY()));
                 }
                 control.updateControlPoints(edge,

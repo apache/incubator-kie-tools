@@ -32,6 +32,9 @@ public class MetricsParser implements UnaryOperator<String> {
     private static final char LABEL_OPEN = '{';
     private static final char LABEL_CLOSE = '}';
     private static final String COMMENT = "#";
+    private static final String NAN = "NaN";
+
+    static final String DEFAULT_NAN_VALUE = "-1";
 
     protected JsonArray metricToJsonArray(String line) {
         var array = Json.createArray();
@@ -55,14 +58,14 @@ public class MetricsParser implements UnaryOperator<String> {
                 currentBuffer.append(ch);
             }
         }
-
+        var value = valueBuffer.toString().equals(NAN) ? DEFAULT_NAN_VALUE : valueBuffer.toString();
         if (metricBuffer.length() > 0 &&
             valueBuffer.length() > 0 &&
             !metricBuffer.toString().trim().isEmpty() &&
             !valueBuffer.toString().trim().isEmpty()) {
             array.set(0, metricBuffer.toString());
             array.set(1, labelsBuffer.toString());
-            array.set(2, valueBuffer.toString());
+            array.set(2, value);
         }
         return array;
     }

@@ -54,6 +54,7 @@ import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
+import { useEnv } from "../env/hooks/EnvContext";
 
 export interface Props {
   workspaceId: string;
@@ -63,9 +64,10 @@ export interface Props {
 let saveVersion = 1;
 let refreshVersion = 0;
 
-const KIE_ISSUES_LINK = "https://github.com/kiegroup/kie-issues/issues";
+const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
 export function EditorPage(props: Props) {
+  const { env } = useEnv();
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const history = useHistory();
@@ -83,8 +85,8 @@ export function EditorPage(props: Props) {
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
 
   useEffect(() => {
-    document.title = `KIE Sandbox :: ${props.fileRelativePath}`;
-  }, [props.fileRelativePath]);
+    document.title = `${env.KIE_SANDBOX_APP_NAME} :: ${props.fileRelativePath}`;
+  }, [env.KIE_SANDBOX_APP_NAME, props.fileRelativePath]);
 
   const setContentErrorAlert = useGlobalAlert(
     useCallback(() => {
@@ -362,9 +364,9 @@ export function EditorPage(props: Props) {
             <TextContent>
               <I18nWrapped
                 components={{
-                  issues: (
-                    <a href={KIE_ISSUES_LINK} target={"_blank"}>
-                      {KIE_ISSUES_LINK}
+                  jira: (
+                    <a href={KOGITO_JIRA_LINK} target={"_blank"}>
+                      {KOGITO_JIRA_LINK}
                     </a>
                   ),
                 }}

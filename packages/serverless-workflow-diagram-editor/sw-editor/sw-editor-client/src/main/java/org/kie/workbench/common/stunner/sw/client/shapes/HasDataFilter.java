@@ -25,13 +25,19 @@ import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.DAT
 
 public interface HasDataFilter extends HasTranslation {
 
+    int DEFAULT_MAX_LENGTH_SIZE = 30;
+
     default String getStateDataFilter(StateDataFilter filter) {
         if (filter == null) {
             return getTranslation(DATA_FILTER_IS_NULL);
         }
 
-        return getTranslation(DATA_FILTER_PARAMETER) + ":\r\n" + getTranslation(DATA_FILTER_INPUT) + ": " + truncate(filter.getInput(), 30)
-                + "\r\n" + getTranslation(DATA_FILTER_OUTPUT) + ": " + truncate(filter.getOutput(), 30);
+        return getTranslation(DATA_FILTER_PARAMETER) + ":\r\n" + getTranslation(DATA_FILTER_INPUT) + ": " + truncate(filter.getInput())
+                + "\r\n" + getTranslation(DATA_FILTER_OUTPUT) + ": " + truncate(filter.getOutput());
+    }
+
+    default String truncate(String value) {
+        return truncate(value, DEFAULT_MAX_LENGTH_SIZE);
     }
 
     default String truncate(String value, int size) {

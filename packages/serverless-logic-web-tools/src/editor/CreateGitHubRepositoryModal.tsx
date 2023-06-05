@@ -36,13 +36,13 @@ import {
   GIT_DEFAULT_BRANCH,
   GIT_ORIGIN_REMOTE_NAME,
 } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { dirname, join } from "path";
 import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { isProject } from "../project";
+import { ApplyAcceleratorResult, useAccelerator } from "../accelerator/useAccelerator";
+import { KOGITO_QUARKUS_ACCELERATOR } from "../accelerator/Accelerators";
 
 const getSuggestedRepositoryName = (name: string) =>
   name
@@ -50,13 +50,7 @@ const getSuggestedRepositoryName = (name: string) =>
     .toLocaleLowerCase()
     .replace(/[^._\-\w\d]/g, "");
 
-const KOGITO_QUARKUS_TEMPLATE = {
-  url: "https://github.com/kiegroup/serverless-logic-sandbox-deployment",
-  remoteName: "KOGITO_QUARKUS_SKELETON",
-  branch: "quarkus-accelerator",
-};
-
-const RESOURCES_FOLDER = "/src/main/resources";
+const ACCELERATOR_TO_USE = KOGITO_QUARKUS_ACCELERATOR;
 
 export function CreateGitHubRepositoryModal(props: {
   workspace: ActiveWorkspace;
@@ -71,92 +65,66 @@ export function CreateGitHubRepositoryModal(props: {
   const settingsDispatch = useSettingsDispatch();
   const githubAuthInfo = useGitHubAuthInfo();
 
+  const { applyAccelerator, rollbackApply, canAcceleratorBeUsed, hasConflictsWithAccelerator, cleanUpTempResources } =
+    useAccelerator({
+      workspaceId: props.workspace.descriptor.workspaceId,
+      currentFile: props.currentFile,
+      accelerator: ACCELERATOR_TO_USE,
+    });
+
   const [isPrivate, setPrivate] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const [name, setName] = useState(getSuggestedRepositoryName(props.workspace.descriptor.name));
-  const [shouldUseQuarkusAccelerator, setShouldUseQuarkusAccelerator] = useState(false);
-  const isProjectStructure = useMemo(() => isProject(props.workspace.files), [props.workspace.files]);
+  const [shouldUseAccelerator, setShouldUseAccelerator] = useState(false);
 
   useEffect(() => {
     setName(getSuggestedRepositoryName(props.workspace.descriptor.name));
   }, [props.workspace.descriptor.name]);
 
-  const create = useCallback(async () => {
-    try {
-      if (!githubAuthInfo) {
-        return;
-      }
+  useEffect(() => {
+    if (props.isOpen) {
+      setShouldUseAccelerator(false);
+    }
+  }, [props.isOpen]);
 
-      setError(undefined);
-      setLoading(true);
-      const repo = await settingsDispatch.github.octokit.request("POST /user/repos", {
-        name,
-        private: isPrivate,
-      });
+  const create = useCallback(async () => {
+    let applyAcceleratorResult: ApplyAcceleratorResult | undefined;
+    if (!githubAuthInfo) {
+      return;
+    }
+
+    setError(undefined);
+    setLoading(true);
+
+    try {
+      const repo = await settingsDispatch.github.octokit.repos.createForAuthenticatedUser({ name, private: isPrivate });
 
       if (!repo.data.clone_url) {
-        throw new Error("Repo creation failed.");
+        throw new Error("Repository creation failed");
       }
 
-      const cloneUrl = repo.data.clone_url;
+      if (canAcceleratorBeUsed && shouldUseAccelerator) {
+        applyAcceleratorResult = await applyAccelerator();
 
-      let currentFileAfterMoving: WorkspaceFile | undefined;
-
-      if (!isProjectStructure && shouldUseQuarkusAccelerator) {
-        await workspaces.addRemote({
-          workspaceId: props.workspace.descriptor.workspaceId,
-          url: KOGITO_QUARKUS_TEMPLATE.url,
-          name: KOGITO_QUARKUS_TEMPLATE.remoteName,
-          force: true,
-        });
-
-        await workspaces.fetch({
-          workspaceId: props.workspace.descriptor.workspaceId,
-          remote: KOGITO_QUARKUS_TEMPLATE.remoteName,
-          ref: KOGITO_QUARKUS_TEMPLATE.branch,
-        });
-
-        for (const file of props.workspace.files) {
-          const movedFile = await workspaces.moveFile({
-            file: file,
-            newDirPath: join(RESOURCES_FOLDER, dirname(file.relativePath)),
-          });
-
-          if (file.relativePath === props.currentFile.relativePath) {
-            currentFileAfterMoving = movedFile;
-          }
+        if (!applyAcceleratorResult.success) {
+          throw new Error(applyAcceleratorResult.message);
         }
-
-        if (!currentFileAfterMoving) {
-          throw new Error("Failed to find current file after moving.");
-        }
-
-        await workspaces.checkout({
+      } else {
+        await workspaces.createSavePoint({
           workspaceId: props.workspace.descriptor.workspaceId,
-          ref: KOGITO_QUARKUS_TEMPLATE.branch,
-          remote: KOGITO_QUARKUS_TEMPLATE.remoteName,
-        });
-
-        await workspaces.deleteRemote({
-          workspaceId: props.workspace.descriptor.workspaceId,
-          name: KOGITO_QUARKUS_TEMPLATE.remoteName,
+          gitConfig: {
+            name: githubAuthInfo.name,
+            email: githubAuthInfo.email,
+          },
         });
       }
 
       await workspaces.addRemote({
         workspaceId: props.workspace.descriptor.workspaceId,
-        url: cloneUrl,
+        url: repo.data.clone_url,
         name: GIT_ORIGIN_REMOTE_NAME,
         force: true,
-      });
-
-      await workspaces.createSavePoint({
-        workspaceId: props.workspace.descriptor.workspaceId,
-        gitConfig: {
-          name: githubAuthInfo.name,
-          email: githubAuthInfo.email,
-        },
       });
 
       await workspaces.push({
@@ -170,7 +138,7 @@ export function CreateGitHubRepositoryModal(props: {
 
       await workspaces.initGitOnWorkspace({
         workspaceId: props.workspace.descriptor.workspaceId,
-        remoteUrl: new URL(cloneUrl),
+        remoteUrl: new URL(repo.data.clone_url),
       });
 
       await workspaces.renameWorkspace({
@@ -181,32 +149,54 @@ export function CreateGitHubRepositoryModal(props: {
       props.onClose();
       props.onSuccess({ url: repo.data.html_url });
 
-      if (currentFileAfterMoving) {
+      if (applyAcceleratorResult?.success) {
         history.replace({
           pathname: routes.workspaceWithFilePath.path({
             workspaceId: props.workspace.descriptor.workspaceId,
-            fileRelativePath: currentFileAfterMoving.relativePathWithoutExtension,
-            extension: currentFileAfterMoving.extension,
+            fileRelativePath: applyAcceleratorResult.currentFileAfterMoving.relativePathWithoutExtension,
+            extension: applyAcceleratorResult.currentFileAfterMoving.extension,
           }),
         });
       }
     } catch (err) {
+      if (applyAcceleratorResult?.success) {
+        await rollbackApply({ ...applyAcceleratorResult });
+      }
+
+      history.replace({
+        pathname: routes.workspaceWithFilePath.path({
+          extension: props.currentFile.extension,
+          fileRelativePath: props.currentFile.relativePathWithoutExtension,
+          workspaceId: props.workspace.descriptor.workspaceId,
+        }),
+      });
+
+      console.error(err);
       setError(err);
-      throw err;
     } finally {
       setLoading(false);
+
+      if (applyAcceleratorResult) {
+        await cleanUpTempResources({
+          backupBranchName: applyAcceleratorResult.backupBranchName,
+          tempBranchName: applyAcceleratorResult.tempBranchName,
+        });
+      }
     }
   }, [
     githubAuthInfo,
-    settingsDispatch.github.octokit,
+    canAcceleratorBeUsed,
+    shouldUseAccelerator,
+    settingsDispatch.github.octokit.repos,
     name,
     isPrivate,
     workspaces,
     props,
-    isProjectStructure,
-    shouldUseQuarkusAccelerator,
+    applyAccelerator,
     history,
     routes.workspaceWithFilePath,
+    rollbackApply,
+    cleanUpTempResources,
   ]);
 
   const isNameValid = useMemo(() => {
@@ -308,20 +298,24 @@ export function CreateGitHubRepositoryModal(props: {
           <br />
 
           <Tooltip
-            content={
-              "Quarkus accelerator cannot be used since your workspace already seems to contain a project structure."
-            }
-            trigger={isProjectStructure ? "mouseenter click" : ""}
+            content={`${ACCELERATOR_TO_USE.name} Accelerator cannot be applied to this workspace.`}
+            trigger={!canAcceleratorBeUsed ? "mouseenter click" : ""}
           >
             <Checkbox
-              id="check-use-quarkus-accelerator"
-              label="Use Quarkus Accelerator"
+              id="check-use-accelerator"
+              label={`Use ${ACCELERATOR_TO_USE.name} Accelerator`}
               description={
-                "Create a base Quarkus project in the repository and place workspace files in src/main/resources folder."
+                <>
+                  {`A project structure is created and the workspace files are placed in '${ACCELERATOR_TO_USE.folderToMoveFiles}' folder.`}
+                  <br />
+                  {canAcceleratorBeUsed &&
+                    hasConflictsWithAccelerator &&
+                    `Note that conflicting files will be moved to '${ACCELERATOR_TO_USE.folderToMoveBlockedFiles}' folder.`}
+                </>
               }
-              isChecked={shouldUseQuarkusAccelerator}
-              onChange={(checked) => setShouldUseQuarkusAccelerator(checked)}
-              isDisabled={isProjectStructure}
+              isChecked={shouldUseAccelerator}
+              onChange={(checked) => setShouldUseAccelerator(checked)}
+              isDisabled={!canAcceleratorBeUsed}
             />
           </Tooltip>
         </FormGroup>

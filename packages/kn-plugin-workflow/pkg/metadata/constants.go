@@ -17,20 +17,23 @@
 package metadata
 
 const (
-	QUARKUS_MAVEN_PLUGIN                             = "quarkus-maven-plugin"
-	QUARKUS_KUBERNETES_EXTENSION                     = "quarkus-kubernetes"
-	QUARKUS_RESTEASY_JACKSON_EXTENSION               = "quarkus-resteasy-jackson"
-	QUARKUS_CONTAINER_IMAGE_JIB                      = "quarkus-container-image-jib"
-	QUARKUS_CONTAINER_IMAGE_DOCKER                   = "quarkus-container-image-docker"
-	KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION     = "kogito-quarkus-serverless-workflow"
-	KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION = "kogito-addons-quarkus-knative-eventing"
+	QuarkusMavenPlugin                          = "quarkus-maven-plugin"
+	QuarkusKubernetesExtension                  = "quarkus-kubernetes"
+	QuarkusResteasyJacksonExtension             = "quarkus-resteasy-jackson"
+	QuarkusContainerImageJib                    = "quarkus-container-image-jib"
+	SmallryeHealth                              = "smallrye-health"
+	QuarkusContainerImageDocker                 = "quarkus-container-image-docker"
+	KogitoQuarkusServerlessWorkflowExtension    = "kogito-quarkus-serverless-workflow"
+	KogitoAddonsQuarkusKnativeEventingExtension = "kogito-addons-quarkus-knative-eventing"
+	KogitoQuarkusServerlessWorkflowDevUi        = "kogito-quarkus-serverless-workflow-devui"
+	KogitoAddonsQuarkusSourceFiles              = "kogito-addons-quarkus-source-files"
 
-	// Versions
-	JAVA_VERSION        = 11
-	MAVEN_MAJOR_VERSION = 3
-	MAVEN_MINOR_VERSION = 8
+	JavaVersion       = 11
+	MavenMajorVersion = 3
+	MavenMinorVersion = 8
 
-	// Default values
-	DEFAULT_TAG      = "latest"
-	WORKFLOW_SW_JSON = "workflow.sw.json"
+	DefaultTag     = "latest"
+	WorkflowSwJson = "workflow.sw.json"
+
+	KogitoImage = "quay.io/kiegroup/kogito-swf-devmode-nightly:latest"
 )

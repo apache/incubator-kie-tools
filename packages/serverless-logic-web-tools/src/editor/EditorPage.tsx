@@ -23,13 +23,11 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { isEditable } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
-import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
@@ -43,6 +41,8 @@ import { EditorToolbar } from "./EditorToolbar";
 import { APP_NAME } from "../AppConstants";
 import { WebToolsEmbeddedEditor, WebToolsEmbeddedEditorRef } from "./WebToolsEmbeddedEditor";
 import { useEditorNotifications } from "./hooks/useEditorNotifications";
+import { useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
+import { setPageTitle } from "../PageTitle";
 
 export interface Props {
   workspaceId: string;
@@ -59,13 +59,13 @@ export function EditorPage(props: Props) {
   const workspaces = useWorkspaces();
   const { i18n, locale } = useAppI18n();
   const [webToolsEditor, webToolsEditorRef] = useController<WebToolsEmbeddedEditorRef>();
-  const [alerts, alertsRef] = useController<AlertsController>();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const lastContent = useRef<string>();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
   const isEditorReady = useMemo(() => webToolsEditor?.editor?.isReady, [webToolsEditor]);
   const queryParams = useQueryParams();
+  const alertsDispatch = useGlobalAlertsDispatchContext();
 
   const notifications = useEditorNotifications({
     webToolsEditor,
@@ -74,7 +74,7 @@ export function EditorPage(props: Props) {
   });
 
   useEffect(() => {
-    document.title = `${APP_NAME} :: ${props.fileRelativePath}`;
+    setPageTitle([props.fileRelativePath]);
   }, [props.fileRelativePath]);
 
   // keep the page in sync with the name of `workspaceFilePromise`, even if changes
@@ -201,8 +201,8 @@ export function EditorPage(props: Props) {
   // end (AUTO-SAVE)
 
   useEffect(() => {
-    alerts?.closeAll();
-  }, [alerts]);
+    alertsDispatch.closeAll();
+  }, [alertsDispatch]);
 
   useEffect(() => {
     editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
@@ -218,52 +218,44 @@ export function EditorPage(props: Props) {
   );
 
   return (
-    <OnlineEditorPage>
-      <PromiseStateWrapper
-        promise={workspaceFilePromise}
-        pending={<LoadingSpinner />}
-        rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
-        resolved={(file) => (
-          <>
-            <Page>
-              <EditorToolbar
-                workspaceFile={file.workspaceFile}
-                editor={webToolsEditor?.editor}
-                alerts={alerts}
-                alertsRef={alertsRef}
-                editorPageDock={editorPageDock}
-              />
-              <Divider />
-              <EditorPageDockDrawer
-                ref={editorPageDockRef}
-                isEditorReady={isEditorReady}
-                workspaceFile={file.workspaceFile}
-                onNotificationClick={onNotificationClick}
-                isDisabled={!webToolsEditor?.notificationHandler.isSupported}
-              >
-                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor Section">
-                  <div style={{ height: "100%" }}>
-                    {!isEditorReady && <LoadingSpinner />}
-                    <div style={{ display: isEditorReady ? "inline" : "none" }}>
-                      {embeddedEditorFile && (
-                        <WebToolsEmbeddedEditor
-                          uniqueFileId={uniqueFileId}
-                          ref={webToolsEditorRef}
-                          file={embeddedEditorFile}
-                          workspaceFile={file.workspaceFile}
-                          editorEnvelopeLocator={editorEnvelopeLocator}
-                          channelType={ChannelType.ONLINE_MULTI_FILE}
-                          locale={locale}
-                        />
-                      )}
-                    </div>
+    <PromiseStateWrapper
+      promise={workspaceFilePromise}
+      pending={<LoadingSpinner />}
+      rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
+      resolved={(file) => (
+        <>
+          <Page>
+            <EditorToolbar workspaceFile={file.workspaceFile} editor={webToolsEditor?.editor} />
+            <Divider />
+            <EditorPageDockDrawer
+              ref={editorPageDockRef}
+              isEditorReady={isEditorReady}
+              workspaceFile={file.workspaceFile}
+              onNotificationClick={onNotificationClick}
+              isDisabled={!webToolsEditor?.notificationHandler.isSupported}
+            >
+              <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor Section">
+                <div style={{ height: "100%" }}>
+                  {!isEditorReady && <LoadingSpinner />}
+                  <div style={{ display: isEditorReady ? "inline" : "none" }}>
+                    {embeddedEditorFile && (
+                      <WebToolsEmbeddedEditor
+                        uniqueFileId={uniqueFileId}
+                        ref={webToolsEditorRef}
+                        file={embeddedEditorFile}
+                        workspaceFile={file.workspaceFile}
+                        editorEnvelopeLocator={editorEnvelopeLocator}
+                        channelType={ChannelType.ONLINE_MULTI_FILE}
+                        locale={locale}
+                      />
+                    )}
                   </div>
-                </PageSection>
-              </EditorPageDockDrawer>
-            </Page>
-          </>
-        )}
-      />
-    </OnlineEditorPage>
+                </div>
+              </PageSection>
+            </EditorPageDockDrawer>
+          </Page>
+        </>
+      )}
+    />
   );
 }

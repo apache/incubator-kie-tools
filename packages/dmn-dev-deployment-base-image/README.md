@@ -12,11 +12,11 @@ Go to the `online-editor` package and run the following command:
 
 ### If testing with OpenShift:
 
-- `DMN_DEV_DEPLOYMENT__baseImageRegistry="" DMN_DEV_DEPLOYMENT__baseImageAccount="" DMN_DEV_DEPLOYMENT__imagePullPolicy="IfNotPresent" pnpm start`
+- `DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry="" DMN_DEV_DEPLOYMENT_BASE_IMAGE__account="" ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry="" ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount="" ONLINE_EDITOR__dmnDevDeploymentBaseImagePullPolicy="IfNotPresent" pnpm start`
 
 ### If testing with Kind or Minikube:
 
-- `DMN_DEV_DEPLOYMENT__imagePullPolicy="IfNotPresent" pnpm start`
+- `ONLINE_EDITOR__dmnDevDeploymentBaseImagePullPolicy="IfNotPresent" pnpm start`
 
 After that you can start deploying to your local Kubernetes clusters or your OpenShift Dev Sandbox.
 
@@ -75,3 +75,10 @@ After that you can start deploying to your local Kubernetes clusters or your Ope
 ### Create an image from the Containerfile and context path:
 
 - `pnpm create-test-image build-only -t quay.io/my-user/my-image-name:latest -f my/context/path/Containerfile -c my/context/path`
+
+## Custom branding
+
+The DMN Dev deployment base image can be customized to show your own logo by extending this image and overriding files.
+
+- **Header logo:** Override `/tmp/kogito/dmn-dev-deployment-quarkus-app/src/main/resources/META-INF/resources/images/app_logo_rgb_fullcolor_reverse.svg`. Fixed height of `38px`.
+- **Favicon:** Override `/tmp/kogito/dmn-dev-deployment-quarkus-app/src/main/resources/META-INF/resources/favicon.svg`

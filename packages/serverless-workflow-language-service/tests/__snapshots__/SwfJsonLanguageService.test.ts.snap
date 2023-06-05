@@ -21208,7 +21208,9 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique event name}\\",
   \\"source\\": \\"\${2:CloudEvent source}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:CloudEvent type}\\",
+  \\"kind\\": \\"\${4:Eventdef kind}\\",
+  \\"metadata\\": \\"\${5:Eventdef metdata}\\"
 },",
       "range": Object {
         "end": Object {
@@ -21240,7 +21242,9 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique event name}\\",
   \\"source\\": \\"\${2:CloudEvent source}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:CloudEvent type}\\",
+  \\"kind\\": \\"\${4:Eventdef kind}\\",
+  \\"metadata\\": \\"\${5:Eventdef metdata}\\"
 }",
       "range": Object {
         "end": Object {
@@ -21272,7 +21276,9 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique event name}\\",
   \\"source\\": \\"\${2:CloudEvent source}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:CloudEvent type}\\",
+  \\"kind\\": \\"\${4:Eventdef kind}\\",
+  \\"metadata\\": \\"\${5:Eventdef metdata}\\"
 }",
       "range": Object {
         "end": Object {
@@ -21304,7 +21310,9 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique event name}\\",
   \\"source\\": \\"\${2:CloudEvent source}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:CloudEvent type}\\",
+  \\"kind\\": \\"\${4:Eventdef kind}\\",
+  \\"metadata\\": \\"\${5:Eventdef metdata}\\"
 },",
       "range": Object {
         "end": Object {
@@ -21336,7 +21344,9 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique event name}\\",
   \\"source\\": \\"\${2:CloudEvent source}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:CloudEvent type}\\",
+  \\"kind\\": \\"\${4:Eventdef kind}\\",
+  \\"metadata\\": \\"\${5:Eventdef metdata}\\"
 }",
       "range": Object {
         "end": Object {
@@ -21624,6 +21634,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {
@@ -21715,6 +21726,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {
@@ -21806,6 +21818,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {
@@ -21897,6 +21910,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {
@@ -21988,6 +22002,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {

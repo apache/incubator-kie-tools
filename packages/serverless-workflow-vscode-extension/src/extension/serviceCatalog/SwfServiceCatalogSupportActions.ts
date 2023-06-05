@@ -71,4 +71,31 @@ export class SwfServiceCatalogSupportActions {
       `Wrote ${serviceFileAbsolutePosixPath} and ${routesServiceFileAbsolutePosixPath}.`
     );
   }
+
+  public importEventFromCompletionItem(args: {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  }): void {
+    if (args.containingService.source.type === SwfCatalogSourceType.LOCAL_FS) {
+      return;
+    }
+
+    const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(
+      args.containingService.source.registry,
+      args.containingService.source.id
+    );
+
+    const specsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath({
+      baseFileAbsolutePosixPath: vscode.Uri.parse(args.documentUri).path,
+    });
+
+    const serviceFileAbsolutePosixPath = posixPath.join(specsDirAbsolutePosixPath, serviceFileName);
+
+    vscode.workspace.fs.writeFile(
+      vscode.Uri.parse(serviceFileAbsolutePosixPath),
+      encoder.encode(args.containingService.rawContent)
+    );
+
+    vscode.window.showInformationMessage(`Wrote ${serviceFileAbsolutePosixPath}`);
+  }
 }

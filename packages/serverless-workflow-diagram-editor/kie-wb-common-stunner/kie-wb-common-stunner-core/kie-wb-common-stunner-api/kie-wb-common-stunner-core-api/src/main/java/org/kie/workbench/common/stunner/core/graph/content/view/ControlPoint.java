@@ -18,16 +18,15 @@ package org.kie.workbench.common.stunner.core.graph.content.view;
 
 import java.util.Objects;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@Portable
+@JsType
 public class ControlPoint {
 
     private Point2D location;
 
-    public static ControlPoint build(final Point2D location) {
+    public static ControlPoint create(final Point2D location) {
         return new ControlPoint(location);
     }
 
@@ -36,7 +35,7 @@ public class ControlPoint {
         return new ControlPoint(Point2D.create(x, y));
     }
 
-    public ControlPoint(final @MapsTo("location") Point2D location) {
+    public ControlPoint(Point2D location) {
         this.location = location;
     }
 

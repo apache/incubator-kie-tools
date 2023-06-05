@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-APP="target/KIE Sandbox Extended Services.app"
+APP="target/Extended Services.app"
 CONTENTS=$APP/Contents
 MACOS=$CONTENTS/MacOs
 RESOURCES=$CONTENTS/Resources

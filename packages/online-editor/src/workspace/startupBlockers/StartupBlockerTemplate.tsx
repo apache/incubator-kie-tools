@@ -34,17 +34,12 @@ export function StartupBlockerTemplate(props: { children?: React.ReactNode }) {
                 <Flex alignItems={{ default: "alignItemsCenter" }}>
                   <FlexItem style={{ display: "flex", alignItems: "center" }}>
                     <Brand
-                      src={routes.static.images.kieHorizontalLogoReverse.path({})}
+                      src={routes.static.images.appLogoReverse.path({})}
                       alt={"Logo"}
                       heights={{ default: "38px" }}
                     >
-                      <source srcSet={routes.static.images.kieHorizontalLogoReverse.path({})} />
+                      <source srcSet={routes.static.images.appLogoReverse.path({})} />
                     </Brand>
-                  </FlexItem>
-                  <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                    <TextContent>
-                      <Text component={TextVariants.h3}>Sandbox</Text>
-                    </TextContent>
                   </FlexItem>
                 </Flex>
               </MastheadBrand>

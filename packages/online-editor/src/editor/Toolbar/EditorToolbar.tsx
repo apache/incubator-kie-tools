@@ -30,7 +30,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { SaveIcon } from "@patternfly/react-icons/dist/js/icons/save-icon";
 import { useOnlineI18n } from "../../i18n";
-import { KieSandboxExtendedServicesButtons } from "../KieSandboxExtendedServices/KieSandboxExtendedServicesButtons";
+import { ExtendedServicesButtons } from "../ExtendedServices/ExtendedServicesButtons";
 import { useRoutes } from "../../navigation/Hooks";
 import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { useHistory } from "react-router";
@@ -47,7 +47,7 @@ import {
 } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import { FileSwitcher } from "./FileSwitcher";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { KieSandboxExtendedServicesDropdownGroup } from "../KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
+import { ExtendedServicesDropdownGroup } from "../ExtendedServices/ExtendedServicesDropdownGroup";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
@@ -347,10 +347,7 @@ export function EditorToolbarWithWorkspace(
                   <ToolbarItem visibility={hideWhenSmall}>
                     {props.workspaceFile.extension === "dmn" && (
                       <ToolbarGroup>
-                        <KieSandboxExtendedServicesButtons
-                          workspace={props.workspace}
-                          workspaceFile={props.workspaceFile}
-                        />
+                        <ExtendedServicesButtons workspace={props.workspace} workspaceFile={props.workspaceFile} />
                       </ToolbarGroup>
                     )}
                   </ToolbarItem>
@@ -397,9 +394,9 @@ export function EditorToolbarWithWorkspace(
                           ? []
                           : [
                               <Divider key={"divider-2"} />,
-                              <KieSandboxExtendedServicesDropdownGroup
+                              <ExtendedServicesDropdownGroup
                                 workspace={props.workspace}
-                                key="kie-sandbox-extended-services-group"
+                                key="extended-services-group"
                               />,
                             ]),
                       ]}
@@ -424,7 +421,11 @@ export function EditorToolbar(props: Props) {
   }
 
   return (
-    <EditorToolbarContextProvider {...props} workspace={workspacePromise.data}>
+    <EditorToolbarContextProvider
+      {...props}
+      workspace={workspacePromise.data}
+      workspaceGitStatusPromise={workspaceGitStatusPromise}
+    >
       <EditorToolbarWithWorkspace
         {...props}
         workspace={workspacePromise.data}

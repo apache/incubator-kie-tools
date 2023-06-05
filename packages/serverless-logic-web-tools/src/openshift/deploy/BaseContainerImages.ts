@@ -15,19 +15,19 @@
  */
 
 const DeployDefaults = {
-  ENV: 'MAVEN_OPTS="-Xmx352m -Xms128m" JAVA_OPTS="-Xmx352m -Xms128m"',
+  ENV: 'MAVEN_OPTS="-Xmx512m -Xms128m" JAVA_OPTS="-Xmx512m -Xms128m"',
 };
 
 // Refers to `serverless-logic-web-tools-swf-builder-image`
 export const SwfBuilder = {
-  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__swfBuilderImageFullUrl,
+  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__swfBuilderImageFullUrl!,
   ENV: DeployDefaults.ENV,
   PROJECT_FOLDER: `/home/kogito/serverless-workflow-project`,
 };
 
 // Refers to `serverless-logic-web-tools-base-builder-image`
 export const BaseBuilder = {
-  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__baseBuilderImageFullUrl,
+  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__baseBuilderImageFullUrl!,
   ENV: DeployDefaults.ENV,
   PROJECT_FOLDER: `/home/kogito/serverless-workflow-project`,
   KUBECTL_PATH: "/home/kogito/kubectl",
@@ -35,7 +35,12 @@ export const BaseBuilder = {
 
 // Refers to `dashbuilder-viewer-image`
 export const DashbuilderViewer = {
-  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__dashbuilderViewerImageFullUrl,
+  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__dashbuilderViewerImageFullUrl!,
   HTTPD_OUT: "/var/www/html",
   APP_DATA_FILE: "dashbuilder-viewer-deployment-webapp-data.json",
+};
+
+// Refers to `serverless-logic-web-tools-swf-dev-mode-image`
+export const SwfDevMode = {
+  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__devModeImageFullUrl!,
 };

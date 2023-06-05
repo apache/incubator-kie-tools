@@ -18,17 +18,17 @@ import * as React from "react";
 import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
 import { UnitablesI18n } from "../i18n";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { joinName } from "uniforms";
-import { UNITABLES_COLUMN_MIN_WIDTH } from "../bee";
 import { UnitablesColumnType } from "../UnitablesTypes";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+
+export const DEFAULT_COLUMN_MIN_WIDTH = 150;
+const DEFAULT_DATE_TIME_CELL_WDITH = 210;
+const DEFAULT_DATE_CELL_WIDTH = 170;
+const DEFAULT_TIME_CELL_WIDTH = 150;
 
 export const FORMS_ID = "unitables-forms";
 export const AUTO_ROW_ID = "unitables-row";
-
-const DEFAULT_DATE_TIME_CELL_WDITH = 188;
-const DEFAULT_DATE_CELL_WIDTH = 170;
-const DEFAULT_TIME_CELL_WIDTH = 150;
 
 export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   constructor(
@@ -42,7 +42,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   public getProps(name: string, props: Record<string, any> = {}) {
     const finalProps = super.getProps(name, props);
     finalProps.label = "";
-    finalProps.style = { height: "100%" };
+    finalProps.style = { ...finalProps.style, height: "100%" };
     if (finalProps.required) {
       finalProps.required = false;
     }
@@ -58,10 +58,14 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     } else if (!field.type) {
       field.type = "string";
     }
+    if (field.type === "string" || field.type === "number") {
+      field.style = { width: "100%" };
+    }
+    field.style = { ...field.style, minWidth: this.getFieldDataType(field).width };
     return field;
   }
 
-  public getFieldDataType(field: Record<string, any>) {
+  public getFieldDataType(field: Record<string, any>): { dataType: DmnBuiltInDataType; width: number; type: string } {
     const xDmnType: string | undefined = field["x-dmn-type"]; // FIXME: Please address this as part of https://github.com/kiegroup/kie-issues/issues/166
 
     let type: string | undefined;
@@ -80,31 +84,84 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
 
     switch (type) {
       case "<Undefined>":
-        return { dataType: DmnBuiltInDataType.Undefined, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Undefined,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "Any":
-        return { dataType: DmnBuiltInDataType.Any, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Any,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "boolean":
-        return { dataType: DmnBuiltInDataType.Boolean, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Boolean,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "context":
-        return { dataType: DmnBuiltInDataType.Context, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Context,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "date":
-        return { dataType: DmnBuiltInDataType.Date, width: DEFAULT_DATE_CELL_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Date,
+          width: DEFAULT_DATE_CELL_WIDTH,
+          type: field.type,
+        };
       case "date and time":
-        return { dataType: DmnBuiltInDataType.DateTime, width: DEFAULT_DATE_TIME_CELL_WDITH };
+        return {
+          dataType: DmnBuiltInDataType.DateTime,
+          width: DEFAULT_DATE_TIME_CELL_WDITH,
+          type: field.type,
+        };
       case "days and time duration":
-        return { dataType: DmnBuiltInDataType.DateTimeDuration, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.DateTimeDuration,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "number":
-        return { dataType: DmnBuiltInDataType.Number, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Number,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "string":
-        return { dataType: DmnBuiltInDataType.String, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.String,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "time":
-        return { dataType: DmnBuiltInDataType.Time, width: DEFAULT_TIME_CELL_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Time,
+          width: DEFAULT_TIME_CELL_WIDTH,
+          type: field.type,
+        };
       case "years and months duration":
-        return { dataType: DmnBuiltInDataType.YearsMonthsDuration, width: UNITABLES_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.YearsMonthsDuration,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       default:
+        if (field.type === "array") {
+          const itemsType = this.getFieldDataType(field.items);
+          return {
+            dataType: `List<${itemsType.dataType}>` as DmnBuiltInDataType,
+            width: DEFAULT_COLUMN_MIN_WIDTH,
+            type: field.type,
+          };
+        }
         return {
           dataType: (type as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
-          width: UNITABLES_COLUMN_MIN_WIDTH,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
         };
     }
   }

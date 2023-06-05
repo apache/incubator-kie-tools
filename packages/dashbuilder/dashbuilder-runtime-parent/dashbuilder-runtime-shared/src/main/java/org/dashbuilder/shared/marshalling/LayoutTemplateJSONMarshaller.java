@@ -27,6 +27,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
@@ -68,7 +69,8 @@ public class LayoutTemplateJSONMarshaller {
     // default values
     static final String DEFAULT_HEIGHT = "1";
     static final String DEFAULT_SPAN = "12";
-    static final String DEFAULT_DRAG_TYPE = "org.dashbuilder.client.editor.DisplayerDragComponent";
+    static final String DISPLAYER_DRAG_TYPE = "org.dashbuilder.client.editor.DisplayerDragComponent";
+    static final String DEFAULT_DRAG_TYPE = DISPLAYER_DRAG_TYPE;
 
     // Drag types constants
     static final String HTML_DRAG_TYPE =
@@ -79,6 +81,16 @@ public class LayoutTemplateJSONMarshaller {
     static final String SCREEN_DRAG_TYPE = "org.dashbuilder.client.navigation.widget.ScreenLayoutDragComponent";
     static final String SCREEN = "SCREEN";
     static final String SCREEN_NAME_PROP = "Screen Name";
+
+    static final String DIV_DRAG_TYPE =
+            "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivDragComponent";
+    static final String DIV = "DIV";
+    static final String DIV_ID_PROP = "divId";
+
+    static final String MARKDOWN_DRAG_TYPE =
+            "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.MarkdownLayoutDragComponent";
+    static final String MARKDOWN = "MARKDOWN";
+    static final String MARKDOWN_CODE_PROP = "MARKDOWN_CODE";
 
     // to make the json more user friendly
     // replacement for Drag type
@@ -92,14 +104,16 @@ public class LayoutTemplateJSONMarshaller {
         TYPES_DRAG = new HashMap<>();
         TYPES_DRAG.put(HTML, HTML_DRAG_TYPE);
         TYPES_DRAG.put(SCREEN, SCREEN_DRAG_TYPE);
-        TYPES_DRAG.put("Displayer", "org.dashbuilder.client.editor.DisplayerDragComponent");
+        TYPES_DRAG.put(DIV, DIV_DRAG_TYPE);
+
+        TYPES_DRAG.put("Displayer", DISPLAYER_DRAG_TYPE);
         TYPES_DRAG.put("External", "org.dashbuilder.client.editor.external.ExternalDragComponent");
+
         TYPES_DRAG.put("TABS", "org.dashbuilder.client.navigation.layout.editor.NavTabListDragComponent");
         TYPES_DRAG.put("CAROUSEL", "org.dashbuilder.client.navigation.layout.editor.NavCarouselDragComponent");
         TYPES_DRAG.put("TILES", "org.dashbuilder.client.navigation.layout.editor.NavTilesDragComponent");
         TYPES_DRAG.put("TREE", "org.dashbuilder.client.navigation.layout.editor.NavTreeDragComponent");
         TYPES_DRAG.put("MENU", "org.dashbuilder.client.navigation.layout.editor.NavMenuBarDragComponent");
-        TYPES_DRAG.put("DIV", "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivDragComponent");
         instance = new LayoutTemplateJSONMarshaller();
     }
 
@@ -356,21 +370,14 @@ public class LayoutTemplateJSONMarshaller {
      * Shortcut to easily use some components
      */
     protected Optional<LayoutComponent> findComponentByShortcut(JsonObject object) {
-        // check HTML shortcut
-        var html = object.getString(Arrays.asList(HTML, HTML.toLowerCase()));
-        if (html != null) {
-            var layoutComponent = new LayoutComponent(HTML_DRAG_TYPE);
-            layoutComponent.getProperties().put(HTML_CODE_PROP, html);
-            return Optional.of(layoutComponent);
-        }
-        // check screen shortcut
-        var screen = object.getString(Arrays.asList(SCREEN, SCREEN.toLowerCase()));
-        if (screen != null) {
-            var layoutComponent = new LayoutComponent(SCREEN_DRAG_TYPE);
-            layoutComponent.getProperties().put(SCREEN_NAME_PROP, screen);
-            return Optional.of(layoutComponent);
-        }
-        return Optional.empty();
+        return Stream.of(
+                elementShortcut(object, HTML, HTML_CODE_PROP, HTML_DRAG_TYPE),
+                elementShortcut(object, SCREEN, SCREEN_NAME_PROP, SCREEN_DRAG_TYPE),
+                elementShortcut(object, DIV, DIV_ID_PROP, DIV_DRAG_TYPE),
+                elementShortcut(object, MARKDOWN, MARKDOWN_CODE_PROP, MARKDOWN_DRAG_TYPE))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findAny();
     }
 
     private boolean notJsonObject(JsonObject object) {
@@ -416,6 +423,19 @@ public class LayoutTemplateJSONMarshaller {
      */
     public void resetPageCounter() {
         this.pageCounter = 0;
+    }
+
+    Optional<LayoutComponent> elementShortcut(JsonObject object,
+                                              String elementName,
+                                              String elementProperty,
+                                              String elementDragType) {
+        var element = object.getString(Arrays.asList(elementName, elementName.toLowerCase()));
+        if (element != null) {
+            var layoutComponent = new LayoutComponent(elementDragType);
+            layoutComponent.getProperties().put(elementProperty, element);
+            return Optional.of(layoutComponent);
+        }
+        return Optional.empty();
     }
 
 }

@@ -20,7 +20,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { expect } from "chai";
 import { Key, TextEditor } from "vscode-extension-tester";
-import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
+import { VSCodeTestHelper, sleep } from "@kie-tools/vscode-extension-common-test-helpers";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - functions tests", () => {
@@ -32,7 +32,7 @@ describe("Serverless workflow editor - functions tests", () => {
   before(async function () {
     this.timeout(30000);
     testHelper = new VSCodeTestHelper();
-    await testHelper.openFolder(TEST_PROJECT_FOLDER, "functions");
+    await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {
