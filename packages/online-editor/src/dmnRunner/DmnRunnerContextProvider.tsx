@@ -573,7 +573,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     []
   );
 
-  const resolveReferencesAndCheckForRecursive = useCallback(
+  const resolveReferencesAndCheckForRecursion = useCallback(
     async (jsonSchema: ExtendedServicesDmnJsonSchema, canceled: Holder<boolean>) => {
       try {
         const jsonSchemaCopy = cloneDeep(jsonSchema);
@@ -645,7 +645,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                 ...jsonSchema,
               };
 
-              resolveReferencesAndCheckForRecursive(jsonSchemaDraft4, canceled)
+              resolveReferencesAndCheckForRecursion(jsonSchemaDraft4, canceled)
                 .then((resolvedSchema) => {
                   if (canceled.get() || !resolvedSchema) {
                     return;
@@ -685,7 +685,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                     return;
                   }
                   console.log(err);
-                  setJsonSchema(jsonSchema);
+                  setJsonSchema(undefined);
                 });
             });
           })
@@ -701,7 +701,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServicesModelPayload,
         props.workspaceFile.extension,
         removeChangedPropertiesAndAdditionalProperties,
-        resolveReferencesAndCheckForRecursive,
+        resolveReferencesAndCheckForRecursion,
         setDmnRunnerPersistenceJson,
       ]
     )
