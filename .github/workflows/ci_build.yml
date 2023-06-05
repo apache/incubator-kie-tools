@@ -133,7 +133,7 @@ jobs:
           pnpm -F "...[${{ steps.checkout_pr.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
 
       - name: "Check tests result (`main` only)"
-        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         uses: actions/github-script@v6
         env:
           KIE_TOOLS_CI__JUNIT_REPORT_RESULTS_PATTERNS: |-
