@@ -27,7 +27,7 @@ import org.kie.kogito.model.FileValidationResult;
 public class PropertiesValidation implements FileValidation {
 
     @Override
-    public FileValidationResult isValid(final Path path) {
+    public FileValidationResult validate(final Path path) {
         try {
             final Properties properties = new Properties();
             try (var inputStream = Files.newInputStream(path)) {

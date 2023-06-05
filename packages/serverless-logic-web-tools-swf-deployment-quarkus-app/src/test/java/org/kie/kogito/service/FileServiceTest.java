@@ -92,9 +92,9 @@ public class FileServiceTest {
                               Map.entry(tempFolder.resolve("model.sw.yaml"), FileType.SERVERLESS_WORKFLOW),
                               Map.entry(tempFolder.resolve("model.sw.yml"), FileType.SERVERLESS_WORKFLOW),
                               Map.entry(tempFolder.resolve("application.properties"), FileType.APPLICATION_PROPERTIES),
-                              Map.entry(tempFolder.resolve("specs/api.yaml"), FileType.SPEC),
-                              Map.entry(tempFolder.resolve("api.json"), FileType.SPEC),
-                              Map.entry(tempFolder.resolve("api/spec.yml"), FileType.SPEC));
+                              Map.entry(tempFolder.resolve("specs/api.yaml"), FileType.YAML),
+                              Map.entry(tempFolder.resolve("api.json"), FileType.JSON),
+                              Map.entry(tempFolder.resolve("api/spec.yml"), FileType.YAML));
 
         for (var entry : pathFileTypeMap.entrySet()) {
             FileType actualType = fileService.getFileType(entry.getKey());

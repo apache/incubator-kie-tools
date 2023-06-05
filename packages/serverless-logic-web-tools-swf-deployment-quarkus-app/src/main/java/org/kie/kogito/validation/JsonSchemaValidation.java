@@ -14,13 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.api;
+package org.kie.kogito.validation;
 
 import java.nio.file.Path;
 
+import com.networknt.schema.JsonSchemaFactory;
+import org.kie.kogito.api.FileValidation;
 import org.kie.kogito.model.FileValidationResult;
 
-public interface FileValidation {
+public class JsonSchemaValidation implements FileValidation {
 
-    FileValidationResult validate(Path path);
+    @Override
+    public FileValidationResult validate(final Path path) {
+        final JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance();
+        try {
+            schemaFactory.getSchema(path.toFile().toURI());
+            return FileValidationResult.createValidResult(path);
+        } catch (Exception e) {
+            return FileValidationResult.createInvalidResult(path, "Cannot validate JSON file as JSON Schema");
+        }
+    }
 }

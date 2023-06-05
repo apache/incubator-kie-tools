@@ -33,6 +33,7 @@
     <kogito.bom.artifact-id>kogito-bom</kogito.bom.artifact-id>
     <io.swagger.parser.v3-swagger-parser-v3-version>2.1.12</io.swagger.parser.v3-swagger-parser-v3-version>
     <org.apache.commons-commons-compress-version>1.22</org.apache.commons-commons-compress-version>
+    <com.networknt-json-schema-validator>1.0.83</com.networknt-json-schema-validator>
   </properties>
 
    <repositories>
@@ -121,6 +122,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <version>${org.apache.commons-commons-compress-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.networknt</groupId>
+      <artifactId>json-schema-validator</artifactId>
+      <version>${com.networknt-json-schema-validator}</version>
     </dependency>
     <dependency>
       <groupId>io.swagger.parser.v3</groupId>
