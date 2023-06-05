@@ -27,8 +27,8 @@ export function useStorage() {
 
   useCancelableEffect(
     useCallback(({ canceled }) => {
-      const indexedDbBroadcastChannel = new BroadcastChannel(STORAGE_BROADCAST_CHANNEL);
-      indexedDbBroadcastChannel.onmessage = async ({ data }: MessageEvent<StorageBroadcastEvents>) => {
+      const storageBroadcastChannel = new BroadcastChannel(STORAGE_BROADCAST_CHANNEL);
+      storageBroadcastChannel.onmessage = async ({ data }: MessageEvent<StorageBroadcastEvents>) => {
         if (canceled.get()) {
           return;
         }
