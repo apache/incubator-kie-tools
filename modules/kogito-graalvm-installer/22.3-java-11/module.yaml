@@ -1,0 +1,26 @@
+schema_version: 1
+name: org.kie.kogito.graalvm.java11.installer
+version: "22.3"
+
+envs:
+  - name: "JAVA_HOME"
+    value: "/usr/share/graalvm"
+  - name: "GRAALVM_HOME"
+    value: "/usr/share/graalvm"
+  #version without prefix ce
+  - name: "GRAALVM_VERSION"
+    value: "22.3.2"
+  - name: "GRAALVM_JAVA_VERSION"
+    value: "11"
+
+artifacts:
+  - name: graalvm-ce-java11-linux-amd64-22.3.2.tar.gz
+    url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.2/graalvm-ce-java11-linux-amd64-22.3.2.tar.gz
+    md5: 68c9e14932ac6c8606953b88aff89cf4
+  - name: native-image-installable-svm-java11-linux-amd64-22.3.2.jar
+    url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.2/native-image-installable-svm-java11-linux-amd64-22.3.2.jar
+    md5: dae44733baf47ffaadf7ef98959b5653
+
+execute:
+  - script: configure
+

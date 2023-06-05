@@ -1,6 +1,6 @@
 schema_version: 1
-name: org.kie.kogito.openjdk
-version: "11-headless"
+name: org.kie.kogito.openjdk.headless
+version: "11"
 
 labels:
   - name: "com.redhat.component"
@@ -19,6 +19,9 @@ envs:
     value: "openjdk"
   - name: "JAVA_VERSION"
     value: "11"
+
+execute:
+  - script: clean.sh
 
 packages:
   install:
