@@ -156,7 +156,7 @@ export default async (env: any, argv: any) => {
         ignoreWarnings: [
           {
             // The @kubernetes-models sub-packages source maps are not published, so we need to ignore their warnings for now.
-            module: /@kubernetes-models|@jsdevtools/,
+            module: /@kubernetes-models/,
           },
         ],
       }),

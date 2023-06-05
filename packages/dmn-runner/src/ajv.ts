@@ -42,13 +42,7 @@ export class DmnRunnerAjv {
     this.ajv.addKeyword(X_DMN_TYPE_KEYWORD, {});
     this.ajv.addKeyword(X_DMN_ALLOWED_VALUES_KEYWORD, {});
     this.ajv.addKeyword(X_DMN_DESCRIPTIONS_KEYWORD, {});
-    this.ajv.addKeyword(RECURSION_KEYWORD, {
-      compile: (schema, parentSchema) => {
-        return (data) => {
-          return true;
-        };
-      },
-    });
+    this.ajv.addKeyword(RECURSION_KEYWORD, {});
     this.ajv.addFormat(DAYS_AND_TIME_DURATION_FORMAT, {
       type: "string",
       validate: (data: string) => !!data.match(DAYS_AND_TIME_DURATION_REGEXP),

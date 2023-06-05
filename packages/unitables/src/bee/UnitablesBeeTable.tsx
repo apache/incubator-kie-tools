@@ -643,8 +643,6 @@ function UnitablesBeeTableCell({
         }
       }
 
-      setEditingCell(true);
-
       if (isEditing) {
         e.stopPropagation();
       }
