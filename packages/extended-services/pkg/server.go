@@ -71,7 +71,7 @@ func (p *Proxy) Start() {
 	p.RunnerPort = strconv.Itoa(port)
 	p.URL = "http://127.0.0.1:" + p.RunnerPort
 
-	p.cmd = exec.Command(p.jitexecutorPath, "-Dquarkus.http.port="+p.RunnerPort)
+	p.cmd = exec.Command(p.jitexecutorPath, "-Dquarkus.http.port="+p.RunnerPort, "-Dquarkus.http.cors=true", "-Dquarkus.http.cors.origins=/.*/")
 	stdout, _ := p.cmd.StdoutPipe()
 	go func() {
 		scanner := bufio.NewScanner(stdout)

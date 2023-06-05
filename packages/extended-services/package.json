@@ -37,7 +37,7 @@
     "start": "cross-env ENV=dev make start"
   },
   "dependencies": {
-    "@kie-tools/jitexecutor-native": "1.32.0-Final"
+    "@kie-tools/jitexecutor-native": "1.39.0-Final"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
