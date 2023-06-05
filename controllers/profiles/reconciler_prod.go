@@ -18,8 +18,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 	"github.com/kiegroup/kogito-serverless-operator/utils"
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
+	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -91,8 +93,8 @@ func newProdProfileReconciler(client client.Client, config *rest.Config, logger 
 	return reconciler
 }
 
-func (p prodProfile) GetProfile() Profile {
-	return Production
+func (p prodProfile) GetProfile() metadata.ProfileType {
+	return metadata.ProdProfile
 }
 
 type newBuilderReconciliationState struct {
@@ -303,7 +305,7 @@ func mountProdConfigMapsMutateVisitor(propsCM *v1.ConfigMap) mutateVisitor {
 			volumes := make([]v1.Volume, 0)
 			volumeMounts := make([]v1.VolumeMount, 0)
 
-			volumes = append(volumes, kubeutil.VolumeWithItems(configMapWorkflowPropsVolumeName, propsCM.Name, []v1.KeyToPath{{Key: applicationPropertiesFileName, Path: applicationPropertiesFileName}}))
+			volumes = append(volumes, kubeutil.VolumeWithItems(configMapWorkflowPropsVolumeName, propsCM.Name, []v1.KeyToPath{{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName}}))
 
 			volumeMounts = append(volumeMounts, kubeutil.VolumeMount(configMapWorkflowPropsVolumeName, true, quarkusProdConfigMountPath))
 

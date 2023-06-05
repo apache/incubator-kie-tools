@@ -22,6 +22,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 
+	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
+	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
+
 	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
 
 	"github.com/kiegroup/kogito-serverless-operator/utils"
@@ -43,7 +46,7 @@ func Test_OverrideStartupProbe(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
 	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
 
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
 	config := &rest.Config{}
 	devReconciler := newDevProfileReconciler(client, config, &logger)
@@ -72,7 +75,7 @@ func Test_recoverFromFailureNoDeployment(t *testing.T) {
 	workflowID := clientruntime.ObjectKeyFromObject(workflow)
 
 	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, "")
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
 	config := &rest.Config{}
 	reconciler := newDevProfileReconciler(client, config, &logger)
@@ -115,7 +118,7 @@ func Test_newDevProfile(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
 	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
 
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
 	config := &rest.Config{}
 	devReconciler := newDevProfileReconciler(client, config, &logger)
@@ -138,11 +141,11 @@ func Test_newDevProfile(t *testing.T) {
 	assert.Equal(t, quarkusDevConfigMountPath+"/workflows", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
 
 	propCM := &v1.ConfigMap{}
-	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: getWorkflowPropertiesConfigMapName(workflow)}, propCM)
-	assert.NotEmpty(t, propCM.Data[applicationPropertiesFileName])
+	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: workflowproj.GetWorkflowPropertiesConfigMapName(workflow)}, propCM)
+	assert.NotEmpty(t, propCM.Data[workflowproj.ApplicationPropertiesFileName])
 	assert.Equal(t, quarkusDevConfigMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1].MountPath)
 	assert.Equal(t, "", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1].SubPath) //https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically
-	assert.Contains(t, propCM.Data[applicationPropertiesFileName], "quarkus.http.port")
+	assert.Contains(t, propCM.Data[workflowproj.ApplicationPropertiesFileName], "quarkus.http.port")
 
 	service := test.MustGetService(t, client, workflow)
 	assert.Equal(t, int32(defaultHTTPWorkflowPortInt), service.Spec.Ports[0].TargetPort.IntVal)
@@ -172,13 +175,13 @@ func Test_newDevProfile(t *testing.T) {
 	assert.NoError(t, err)
 
 	propCM = &v1.ConfigMap{}
-	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: getWorkflowPropertiesConfigMapName(workflow)}, propCM)
-	assert.NotEmpty(t, propCM.Data[applicationPropertiesFileName])
-	assert.Contains(t, propCM.Data[applicationPropertiesFileName], "quarkus.http.port")
+	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: workflowproj.GetWorkflowPropertiesConfigMapName(workflow)}, propCM)
+	assert.NotEmpty(t, propCM.Data[workflowproj.ApplicationPropertiesFileName])
+	assert.Contains(t, propCM.Data[workflowproj.ApplicationPropertiesFileName], "quarkus.http.port")
 
 	// reconcile
 	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
-	err = client.Update(context.TODO(), workflow)
+	err = client.Status().Update(context.TODO(), workflow)
 	assert.NoError(t, err)
 	result, err = devReconciler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
@@ -191,7 +194,7 @@ func Test_newDevProfile(t *testing.T) {
 func Test_devProfileImageDefaultsNoPlatform(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
 	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 	config := &rest.Config{}
 	devReconciler := newDevProfileReconciler(client, config, &logger)
 
@@ -212,9 +215,7 @@ func Test_devProfileWithImageSnapshotOverrideWithPlatform(t *testing.T) {
 	platform.Status.Phase = operatorapi.PlatformPhaseReady
 	platform.Namespace = workflow.Namespace
 
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
-	errCreatePlatform := client.Create(context.Background(), platform)
-	assert.Nil(t, errCreatePlatform)
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
 	config := &rest.Config{}
 	devReconciler := newDevProfileReconciler(client, config, &logger)
 
@@ -235,9 +236,7 @@ func Test_devProfileWithWPlatformWithoutDevBaseImageAndWithBaseImage(t *testing.
 	platform.Status.Phase = operatorapi.PlatformPhaseReady
 	platform.Namespace = workflow.Namespace
 
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
-	errCreatePlatform := client.Create(context.Background(), platform)
-	assert.Nil(t, errCreatePlatform)
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
 	config := &rest.Config{}
 	devReconciler := newDevProfileReconciler(client, config, &logger)
 
@@ -258,9 +257,7 @@ func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testin
 	platform.Status.Phase = operatorapi.PlatformPhaseReady
 	platform.Namespace = workflow.Namespace
 
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
-	errCreatePlatform := client.Create(context.Background(), platform)
-	assert.Nil(t, errCreatePlatform)
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
 	config := &rest.Config{}
 	devReconciler := newDevProfileReconciler(client, config, &logger)
 
@@ -276,7 +273,7 @@ func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testin
 func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
 	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeWithExternalResourceYamlCR, t.Name())
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).Build()
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 	config := &rest.Config{}
 	devReconciler := newDevProfileReconciler(client, config, &logger)
 	configmapName := "mycamel-configmap"
@@ -323,7 +320,7 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	assert.Equal(t, props.Name, configMapWorkflowPropsVolumeName)
 	assert.Equal(t, props.MountPath, quarkusDevConfigMountPath)
 	assert.Equal(t, extCamel.Name, configmapName)
-	assert.Equal(t, extCamel.MountPath, externalResourceTypeMountPathDevMode[workflowdef.ExternalResourceCamel])
+	assert.Equal(t, extCamel.MountPath, externalResourceTypeMountPathDevMode[metadata.ExtResCamel])
 
 	cmData[camelYamlRouteFileName] = yamlRoute
 	errUpdate := client.Update(context.Background(), cmUser)
@@ -345,7 +342,7 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 
 	extCamelRouteOne := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[2]
 	assert.Equal(t, extCamelRouteOne.Name, configmapName)
-	assert.Equal(t, extCamelRouteOne.MountPath, externalResourceTypeMountPathDevMode[workflowdef.ExternalResourceCamel])
+	assert.Equal(t, extCamelRouteOne.MountPath, externalResourceTypeMountPathDevMode[metadata.ExtResCamel])
 
 	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
 	err = client.Update(context.TODO(), workflow)
@@ -365,7 +362,7 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 
 	// reconcile
 	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
-	err = client.Update(context.TODO(), workflow)
+	err = client.Status().Update(context.TODO(), workflow)
 	assert.NoError(t, err)
 	result, err = devReconciler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)

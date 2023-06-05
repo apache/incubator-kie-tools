@@ -29,6 +29,9 @@ import (
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
+	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
+	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
+
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 
 	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
@@ -60,6 +63,15 @@ var openshiftBuildPhaseMatrix = map[buildv1.BuildPhase]operatorapi.BuildPhase{
 	buildv1.BuildPhaseFailed:    operatorapi.BuildPhaseFailed,
 	buildv1.BuildPhaseError:     operatorapi.BuildPhaseError,
 	buildv1.BuildPhaseCancelled: operatorapi.BuildPhaseInterrupted,
+}
+
+// externalResourceDestinationDir map for special directories within the resource context.
+// In dev mode means within the src/main/resources. In build contexts, the actual context dir.
+var externalResourceDestinationDir = map[metadata.ExtResType]string{
+	metadata.ExtResGeneric:  "",
+	metadata.ExtResCamel:    workflowdef.ExternalResourceCamelMountDir,
+	metadata.ExtResOpenApi:  "",
+	metadata.ExtResAsyncApi: "",
 }
 
 var _ BuildManager = &openshiftBuilderManager{}
@@ -108,8 +120,8 @@ func (o *openshiftBuilderManager) Schedule(build *operatorapi.KogitoServerlessBu
 	if err = o.addExternalResources(bc, workflow); err != nil {
 		return err
 	}
-	workflowdef.SetDefaultLabels(workflow, is)
-	workflowdef.SetDefaultLabels(workflow, bc)
+	workflowproj.SetDefaultLabels(workflow, is)
+	workflowproj.SetDefaultLabels(workflow, bc)
 	if err = controllerutil.SetControllerReference(build, bc, o.buildManagerContext.client.Scheme()); err != nil {
 		return err
 	}
@@ -184,7 +196,7 @@ func (o *openshiftBuilderManager) addExternalResources(config *buildv1.BuildConf
 	for k, v := range externalCMs {
 		configMapSources = append(configMapSources, buildv1.ConfigMapBuildSource{
 			ConfigMap:      *v,
-			DestinationDir: workflowdef.ExternalResourceDestinationDir[k],
+			DestinationDir: externalResourceDestinationDir[k],
 		})
 	}
 	config.Spec.Source.ConfigMaps = configMapSources

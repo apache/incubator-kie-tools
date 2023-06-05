@@ -35,7 +35,7 @@ func TestKogitoServerlessPlatformController(t *testing.T) {
 		ksp := test.GetKogitoServerlessPlatform("../config/samples/sw.kogito_v1alpha08_kogitoserverlessplatform.yaml")
 
 		// Create a fake client to mock API calls.
-		cl := test.NewKogitoClientBuilder().WithRuntimeObjects(ksp).Build()
+		cl := test.NewKogitoClientBuilder().WithRuntimeObjects(ksp).WithStatusSubresource(ksp).Build()
 		// Create a KogitoServerlessPlatformReconciler object with the scheme and fake client.
 		r := &KogitoServerlessPlatformReconciler{cl, cl, cl.Scheme(), &rest.Config{}, &record.FakeRecorder{}}
 

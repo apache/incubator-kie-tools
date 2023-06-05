@@ -23,19 +23,15 @@ import (
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
-type Profile string
-
 const (
-	Development    Profile = "dev"
-	Production     Profile = "prod"
-	defaultProfile         = Production
+	defaultProfile = metadata.ProdProfile
 )
 
 type reconcilerBuilder func(client client.Client, config *rest.Config, logger *logr.Logger) ProfileReconciler
 
-var profileBuilders = map[Profile]reconcilerBuilder{
-	Production:  newProdProfileReconciler,
-	Development: newDevProfileReconciler,
+var profileBuilders = map[metadata.ProfileType]reconcilerBuilder{
+	metadata.ProdProfile: newProdProfileReconciler,
+	metadata.DevProfile:  newDevProfileReconciler,
 }
 
 func profileBuilder(workflow *operatorapi.KogitoServerlessWorkflow) reconcilerBuilder {
@@ -43,8 +39,8 @@ func profileBuilder(workflow *operatorapi.KogitoServerlessWorkflow) reconcilerBu
 	if len(profile) == 0 {
 		return profileBuilders[defaultProfile]
 	}
-	if _, ok := profileBuilders[Profile(profile)]; !ok {
+	if _, ok := profileBuilders[metadata.ProfileType(profile)]; !ok {
 		return profileBuilders[defaultProfile]
 	}
-	return profileBuilders[Profile(profile)]
+	return profileBuilders[metadata.ProfileType(profile)]
 }

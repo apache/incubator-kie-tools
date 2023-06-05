@@ -61,5 +61,5 @@ func IsDevProfile(workflow *operatorapi.KogitoServerlessWorkflow) bool {
 	if len(profile) == 0 {
 		return false
 	}
-	return Profile(profile) == Development
+	return metadata.ProfileType(profile) == metadata.DevProfile
 }

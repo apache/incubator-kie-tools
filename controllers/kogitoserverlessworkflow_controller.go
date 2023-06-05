@@ -16,7 +16,6 @@ package controllers
 
 import (
 	"context"
-	errors2 "errors"
 	"fmt"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -32,7 +31,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-	"sigs.k8s.io/controller-runtime/pkg/source"
 
 	"github.com/kiegroup/kogito-serverless-operator/api"
 
@@ -136,7 +134,7 @@ func (r *KogitoServerlessWorkflowReconciler) SetupWithManager(mgr ctrl.Manager) 
 		Owns(&corev1.Service{}).
 		Owns(&corev1.ConfigMap{}).
 		Owns(&operatorapi.KogitoServerlessBuild{}).
-		Watches(&source.Kind{Type: &operatorapi.KogitoServerlessPlatform{}}, handler.EnqueueRequestsFromMapFunc(func(a client.Object) []reconcile.Request {
+		Watches(&operatorapi.KogitoServerlessPlatform{}, handler.EnqueueRequestsFromMapFunc(func(c context.Context, a client.Object) []reconcile.Request {
 			platform, ok := a.(*operatorapi.KogitoServerlessPlatform)
 			if !ok {
 				log.Error(fmt.Errorf("type assertion failed: %v", a), "Failed to retrieve workflow list")
@@ -145,15 +143,4 @@ func (r *KogitoServerlessWorkflowReconciler) SetupWithManager(mgr ctrl.Manager) 
 			return platformEnqueueRequestsFromMapFunc(mgr.GetClient(), platform)
 		})).
 		Complete(r)
-}
-
-// sameOrMatch return true if the build it is related to the workflow, false otherwise
-func sameOrMatch(build *operatorapi.KogitoServerlessBuild, workflow *operatorapi.KogitoServerlessWorkflow) (bool, error) {
-	if build.Name == workflow.Name {
-		if build.Namespace == workflow.Namespace {
-			return true, nil
-		}
-		return false, errors2.New("build & Workflow namespaces are not matching")
-	}
-	return false, errors2.New("build & Workflow names are not matching")
 }

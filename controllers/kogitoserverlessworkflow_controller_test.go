@@ -42,7 +42,7 @@ func TestKogitoServerlessWorkflowController(t *testing.T) {
 		objs := []runtime.Object{ksw, ksp}
 
 		// Create a fake client to mock API calls.
-		cl := test.NewKogitoClientBuilder().WithRuntimeObjects(objs...).Build()
+		cl := test.NewKogitoClientBuilder().WithRuntimeObjects(objs...).WithStatusSubresource(ksw, ksp).Build()
 		// Create a KogitoServerlessWorkflowReconciler object with the scheme and fake client.
 		r := &KogitoServerlessWorkflowReconciler{Client: cl, Scheme: cl.Scheme()}
 

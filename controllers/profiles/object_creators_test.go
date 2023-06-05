@@ -21,6 +21,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/core/v1"
 
+	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
+
 	"github.com/kiegroup/kogito-serverless-operator/test"
 )
 
@@ -36,18 +38,18 @@ func Test_ensureWorkflowPropertiesConfigMapMutator(t *testing.T) {
 	mutateFn := visitor(cm)
 
 	assert.NoError(t, mutateFn())
-	assert.NotEmpty(t, reflectCm.Data[applicationPropertiesFileName])
+	assert.NotEmpty(t, reflectCm.Data[workflowproj.ApplicationPropertiesFileName])
 
-	props := properties.MustLoadString(reflectCm.Data[applicationPropertiesFileName])
+	props := properties.MustLoadString(reflectCm.Data[workflowproj.ApplicationPropertiesFileName])
 	assert.Equal(t, "8080", props.GetString("quarkus.http.port", ""))
 
 	// we change the properties to something different, we add ours and change the default
-	reflectCm.Data[applicationPropertiesFileName] = "quarkus.http.port=9090\nmy.new.prop=1"
+	reflectCm.Data[workflowproj.ApplicationPropertiesFileName] = "quarkus.http.port=9090\nmy.new.prop=1"
 	visitor(reflectCm)
 	assert.NoError(t, mutateFn())
 
 	// we should preserve the default, and still got ours
-	props = properties.MustLoadString(reflectCm.Data[applicationPropertiesFileName])
+	props = properties.MustLoadString(reflectCm.Data[workflowproj.ApplicationPropertiesFileName])
 	assert.Equal(t, "8080", props.GetString("quarkus.http.port", ""))
 	assert.Equal(t, "0.0.0.0", props.GetString("quarkus.http.host", ""))
 	assert.Equal(t, "1", props.GetString("my.new.prop", ""))

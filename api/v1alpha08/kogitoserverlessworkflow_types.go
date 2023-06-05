@@ -33,8 +33,7 @@ type KogitoServerlessWorkflowSpec struct {
 type KogitoServerlessWorkflowStatus struct {
 	api.Status `json:",inline"`
 	// +optional
-	Address duckv1.Addressable           `json:"address,omitempty"`
-	Applied KogitoServerlessWorkflowSpec `json:"applied,omitempty"`
+	Address duckv1.Addressable `json:"address,omitempty"`
 	// keeps track of how many failure recovers a given workflow had so far
 	RecoverFailureAttempts int       `json:"recoverFailureAttempts,omitempty"`
 	Endpoint               *apis.URL `json:"endpoint,omitempty"`

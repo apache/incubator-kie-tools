@@ -20,6 +20,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
+	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
+
 	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 
@@ -67,11 +69,11 @@ func devDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (clien
 
 // workflowDefConfigMapCreator creates a new ConfigMap that holds the definition of a workflow specification.
 func workflowDefConfigMapCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
-	configMap, err := workflowdef.NewConfigMap(workflow)
+	configMap, err := workflowdef.CreateNewConfigMap(workflow)
 	if err != nil {
 		return nil, err
 	}
-	workflowdef.SetDefaultLabels(workflow, configMap)
+	workflowproj.SetDefaultLabels(workflow, configMap)
 	return configMap, nil
 }
 

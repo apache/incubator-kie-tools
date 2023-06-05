@@ -20,6 +20,8 @@ import (
 
 	"k8s.io/client-go/rest"
 
+	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
+
 	"github.com/go-logr/logr"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -57,7 +59,7 @@ import (
 // While debugging, focus on the ReconciliationState(s), not in the profile implementation since the base algorithm is the same for every profile.
 type ProfileReconciler interface {
 	Reconcile(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, error)
-	GetProfile() Profile
+	GetProfile() metadata.ProfileType
 }
 
 // stateSupport is the shared structure with common accessors used throughout the whole reconciliation profiles
@@ -69,7 +71,6 @@ type stateSupport struct {
 // performStatusUpdate updates the KogitoServerlessWorkflow Status conditions
 func (s stateSupport) performStatusUpdate(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (bool, error) {
 	var err error
-	workflow.Status.Applied = workflow.Spec
 	workflow.Status.ObservedGeneration = workflow.Generation
 	if err = s.client.Status().Update(ctx, workflow); err != nil {
 		s.logger.Error(err, "Failed to update Workflow status")

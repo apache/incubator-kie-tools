@@ -38,3 +38,10 @@ const (
 	// SpecVersion is the current CNCF Serverless Workflow version supported by the operator
 	SpecVersion = "v0.8"
 )
+
+type ProfileType string
+
+const (
+	DevProfile  ProfileType = "dev"
+	ProdProfile ProfileType = "prod"
+)

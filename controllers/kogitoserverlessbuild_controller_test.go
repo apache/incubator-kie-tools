@@ -37,6 +37,7 @@ func TestKogitoServerlessBuildController(t *testing.T) {
 		WithRuntimeObjects(ksb, ksw).
 		WithRuntimeObjects(test.GetKogitoServerlessPlatformInReadyPhase("../config/samples/"+test.KogitoServerlessPlatformWithCacheYamlCR, namespace)).
 		WithRuntimeObjects(test.GetKogitoServerlessOperatorBuilderConfig("../", namespace)).
+		WithStatusSubresource(ksb, ksw).
 		Build()
 
 	r := &KogitoServerlessBuildReconciler{cl, cl.Scheme(), &record.FakeRecorder{}, &rest.Config{}}

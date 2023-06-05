@@ -93,11 +93,11 @@ help: ## Display this help.
 
 .PHONY: manifests
 manifests: generate ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	$(CONTROLLER_GEN) rbac:roleName=manager-role crd:allowDangerousTypes=true webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+	$(CONTROLLER_GEN) rbac:roleName=manager-role crd:allowDangerousTypes=true webhook paths="./api/..." paths="./controllers/..." output:crd:artifacts:config=config/crd/bases
 
 .PHONY: generate
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
-	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
+	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./api/..." paths="./container-builder/api/..."
 
 .PHONY: fmt
 fmt: ## Run go fmt against code.
@@ -110,8 +110,16 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 .PHONY: test
-test: manifests generate envtest vet fmt ## Run tests.
+test: manifests generate envtest vet fmt test-workflowproj ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test $(shell go list ./... | grep -v /test/) -coverprofile cover.out
+
+.PHONY: test-container-builder
+test-container-builder:
+	cd container-builder && make test
+
+.PHONY: test-workflowproj
+test-workflowproj:
+	cd workflowproj && make test
 
 ##@ Build
 

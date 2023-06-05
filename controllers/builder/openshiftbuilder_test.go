@@ -26,7 +26,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/test"
@@ -98,7 +98,7 @@ func Test_openshiftbuilder_externalCMs(t *testing.T) {
 			Namespace: ns,
 		},
 	}
-	workflow.Annotations[workflowdef.GetExternalResourceTypeAnnotation(workflowdef.ExternalResourceOpenApi)] = externalCm.Name
+	workflow.Annotations[metadata.GetExtResTypeAnnotation(metadata.ExtResOpenApi)] = externalCm.Name
 
 	namespacedName := types.NamespacedName{Namespace: workflow.Namespace, Name: workflow.Name}
 	client := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(workflow, platform, config, externalCm).Build()

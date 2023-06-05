@@ -89,6 +89,7 @@ jobs:
         with:
           python-version: '3.10'
 
+      # TODO: cache this installation
       - name: Build operator image
         run: |
           pip install cekit==4.5.0
@@ -104,6 +105,7 @@ jobs:
           kubectl version
           kubectl get pods -A
 
+      # TODO: install the operator-sdk first, then cache the installation
       - name: Run tests
         run: |
           make test-e2e

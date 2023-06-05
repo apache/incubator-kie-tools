@@ -12,10 +12,6 @@ artifacts:
     path: "../../../../controllers"
     dest: /workspace/controllers
 
-  - name: api
-    path: "../../../../api"
-    dest: /workspace/api
-
   - name: version
     path: "../../../../version"
     dest: /workspace/version

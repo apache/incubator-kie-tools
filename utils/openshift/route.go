@@ -18,7 +18,7 @@ import (
 	v1 "github.com/openshift/api/route/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
@@ -36,6 +36,6 @@ func RouteForWorkflow(workflow *operatorapi.KogitoServerlessWorkflow) (*v1.Route
 			},
 		},
 	}
-	workflowdef.SetDefaultLabels(workflow, route)
+	workflowproj.SetDefaultLabels(workflow, route)
 	return route, nil
 }

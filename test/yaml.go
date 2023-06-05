@@ -29,6 +29,7 @@ import (
 
 const (
 	KogitoServerlessWorkflowSampleYamlCR                            = "sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml"
+	KogitoServerlessWorkflowGenerationOneCR                         = "kogitoserverlessworkflow_generation1.yaml"
 	KogitoServerlessWorkflowSampleDevModeYamlCR                     = "sw.kogito_v1alpha08_kogitoserverlessworkflow_devmode.yaml"
 	KogitoServerlessWorkflowSampleDevModeWithExternalResourceYamlCR = "sw.kogito_v1alpha08_kogitoserverlessworkflow_devmodeWithExternalResource.yaml"
 	KogitoServerlessWorkflowProdProfileSampleYamlCR                 = "sw.kogito_v1alpha08_kogitoserverlessworkflow_withExplicitProdProfile.yaml"

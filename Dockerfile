@@ -21,6 +21,8 @@ COPY go.mod go.mod
 COPY go.sum go.sum
 
 # Copy internal dependency
+COPY api/ api/
+COPY workflowproj/ workflowproj/
 COPY container-builder/ container-builder/
 
 # cache deps before building and copying source so that we don't need to re-download as much
@@ -29,7 +31,6 @@ RUN go mod download
 
 # Copy the go source
 COPY main.go main.go
-COPY api/ api/
 COPY controllers/ controllers/
 COPY utils/ utils/
 COPY version/ version/

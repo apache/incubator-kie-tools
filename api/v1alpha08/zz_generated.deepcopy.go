@@ -368,7 +368,6 @@ func (in *KogitoServerlessWorkflowStatus) DeepCopyInto(out *KogitoServerlessWork
 	*out = *in
 	in.Status.DeepCopyInto(&out.Status)
 	in.Address.DeepCopyInto(&out.Address)
-	in.Applied.DeepCopyInto(&out.Applied)
 	if in.Endpoint != nil {
 		in, out := &in.Endpoint, &out.Endpoint
 		*out = new(apis.URL)

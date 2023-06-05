@@ -13,7 +13,17 @@ artifacts:
     dest: /workspace/
 
     # this is a local module, adding in here since the main go.mod refers to it
-  - name: container-builder-module
+  - name: api
+    path: "../../../../api"
+    dest: /workspace/api
+
+  # this is a local module, adding in here since the main go.mod refers to it
+  - name: workflowproj
+    path: "../../../../workflowproj"
+    dest: /workspace/workflowproj
+
+    # this is a local module, adding in here since the main go.mod refers to it
+  - name: container-builder
     path: "../../../../container-builder"
     dest: /workspace/container-builder
 

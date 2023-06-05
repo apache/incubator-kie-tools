@@ -35,10 +35,10 @@ import (
 func Test_reconcilerProdBuildConditions(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
 	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
-	// make sure that the workflow won't trigger a change
-	workflow.Status.Applied = workflow.Spec
 	platform := test.GetKogitoServerlessPlatformInReadyPhase("../../config/samples/"+test.KogitoServerlessPlatformWithCacheYamlCR, t.Name())
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).Build()
+	client := test.NewKogitoClientBuilder().
+		WithRuntimeObjects(workflow, platform).
+		WithStatusSubresource(workflow, platform, &operatorapi.KogitoServerlessBuild{}).Build()
 
 	config := &rest.Config{}
 	result, err := NewReconciler(client, config, &logger, workflow).Reconcile(context.TODO(), workflow)
@@ -86,10 +86,8 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
 	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
-	// make sure that the workflow won't trigger a change
-	workflow.Status.Applied = workflow.Spec
 	platform := test.GetKogitoServerlessPlatformInReadyPhase("../../config/samples/"+test.KogitoServerlessPlatformWithCacheYamlCR, t.Name())
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).Build()
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
 	handler := &deployWorkflowReconciliationState{
 		stateSupport: fakeReconcilerSupport(client),
 		ensurers:     newProdObjectEnsurers(&stateSupport{logger: &logger, client: client}),
@@ -133,10 +131,10 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
 	// we load a workflow with metadata.generation to 0
 	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
-	// make sure that the workflow won't trigger a change
-	workflow.Status.Applied = workflow.Spec
 	platform := test.GetKogitoServerlessPlatformInReadyPhase("../../config/samples/"+test.KogitoServerlessPlatformWithCacheYamlCR, t.Name())
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).Build()
+	client := test.NewKogitoClientBuilder().
+		WithRuntimeObjects(workflow, platform).
+		WithStatusSubresource(workflow, platform, &operatorapi.KogitoServerlessBuild{}).Build()
 	handler := &deployWorkflowReconciliationState{
 		stateSupport: fakeReconcilerSupport(client),
 		ensurers:     newProdObjectEnsurers(&stateSupport{logger: &logger, client: client}),
@@ -147,15 +145,16 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 	assert.NotNil(t, result)
 	assert.Len(t, objects, 3)
 	// then we load a workflow with metadata.generation set to 1
-	workflowChanged := test.GetKogitoServerlessWorkflow("../../test/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
-	client = test.NewKogitoClientBuilder().WithRuntimeObjects(workflowChanged, platform).Build()
+	assert.NoError(t, client.Delete(context.TODO(), workflow))
+	newWorkflow := test.GetKogitoServerlessWorkflow("../../test/samples/"+test.KogitoServerlessWorkflowGenerationOneCR, t.Name())
+	assert.NoError(t, client.Create(context.TODO(), newWorkflow))
 	handler = &deployWorkflowReconciliationState{
 		stateSupport: fakeReconcilerSupport(client),
 		ensurers:     newProdObjectEnsurers(&stateSupport{logger: &logger, client: client}),
 	}
-	result, objects, err = handler.Do(context.TODO(), workflowChanged)
-	assert.Equal(t, result.RequeueAfter, time.Duration(0))
+	result, objects, err = handler.Do(context.TODO(), newWorkflow)
 	assert.NoError(t, err)
+	assert.Equal(t, time.Duration(0), result.RequeueAfter)
 	assert.NotNil(t, result)
 	assert.Len(t, objects, 0)
 }

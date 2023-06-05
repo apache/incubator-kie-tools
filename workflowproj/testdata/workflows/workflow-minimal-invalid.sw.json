@@ -1,0 +1,12 @@
+{
+  "states": [
+    {
+      "name": "HelloWorld",
+      "type": "inject",
+      "data": {
+        "message": "Hello World"
+      },
+      "end": true
+    }
+  ]
+}

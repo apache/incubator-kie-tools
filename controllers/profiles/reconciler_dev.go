@@ -19,8 +19,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
 	"github.com/kiegroup/kogito-serverless-operator/utils"
+	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/util/retry"
@@ -58,19 +60,19 @@ const (
 
 var _ ProfileReconciler = &developmentProfile{}
 
-var externalResourceTypeMountPathDevMode = map[workflowdef.ExternalResourceType]string{
-	workflowdef.ExternalResourceCamel:    quarkusDevConfigMountPath + "/" + workflowdef.ExternalResourceCamelMountDir,
-	workflowdef.ExternalResourceGeneric:  quarkusDevConfigMountPath,
-	workflowdef.ExternalResourceAsyncApi: quarkusDevConfigMountPath,
-	workflowdef.ExternalResourceOpenApi:  quarkusDevConfigMountPath,
+var externalResourceTypeMountPathDevMode = map[metadata.ExtResType]string{
+	metadata.ExtResCamel:    quarkusDevConfigMountPath + "/" + workflowdef.ExternalResourceCamelMountDir,
+	metadata.ExtResGeneric:  quarkusDevConfigMountPath,
+	metadata.ExtResAsyncApi: quarkusDevConfigMountPath,
+	metadata.ExtResOpenApi:  quarkusDevConfigMountPath,
 }
 
 type developmentProfile struct {
 	baseReconciler
 }
 
-func (d developmentProfile) GetProfile() Profile {
-	return Development
+func (d developmentProfile) GetProfile() metadata.ProfileType {
+	return metadata.DevProfile
 }
 
 func newDevProfileReconciler(client client.Client, config *rest.Config, logger *logr.Logger) ProfileReconciler {
@@ -369,7 +371,7 @@ func getDeploymentFailureMessage(deployment *appsv1.Deployment) string {
 }
 
 // mountDevConfigMapsMutateVisitor mounts the required configMaps in the Workflow Dev Deployment
-func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *v1.ConfigMap, resourceConfigMapsRef map[workflowdef.ExternalResourceType]*v1.LocalObjectReference) mutateVisitor {
+func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *v1.ConfigMap, resourceConfigMapsRef map[metadata.ExtResType]*v1.LocalObjectReference) mutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			deployment := object.(*appsv1.Deployment)
@@ -379,7 +381,7 @@ func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *v1.ConfigMap, resourceC
 			volumes = append(volumes,
 				kubeutil.Volume(configMapWorkflowDefVolumeName, flowDefCM.Name),
 				kubeutil.VolumeWithItems(configMapWorkflowPropsVolumeName, propsCM.Name,
-					[]v1.KeyToPath{{Key: applicationPropertiesFileName, Path: applicationPropertiesFileName}}))
+					[]v1.KeyToPath{{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName}}))
 
 			volumeMounts = append(volumeMounts,
 				kubeutil.VolumeMount(configMapWorkflowDefVolumeName, true, configMapWorkflowDefMountPath),

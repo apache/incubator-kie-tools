@@ -23,7 +23,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
@@ -37,9 +37,6 @@ const (
 
 	defaultHTTPServicePort = 80
 
-	applicationPropertiesFileName = "application.properties"
-
-	workflowConfigMapNameSuffix      = "-props"
 	configMapWorkflowPropsVolumeName = "workflow-properties"
 
 	// Quarkus Health Check Probe configuration.
@@ -70,7 +67,7 @@ type objectCreator func(workflow *operatorapi.KogitoServerlessWorkflow) (client.
 // defaultDeploymentCreator is an objectCreator for a base Kubernetes Deployments for profiles that need to deploy the workflow on a vanilla deployment.
 // It serves as a basis for a basic Quarkus Java application, expected to listen on http 8080.
 func defaultDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
-	lbl := workflowdef.GetDefaultLabels(workflow)
+	lbl := workflowproj.GetDefaultLabels(workflow)
 	size := int32(1)
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -169,7 +166,7 @@ func defaultDeploymentMutateVisitor(workflow *operatorapi.KogitoServerlessWorkfl
 // defaultServiceCreator is an objectCreator for a basic Service aiming a vanilla Kubernetes Deployment.
 // It maps the default HTTP port (80) to the target Java application webserver on port 8080.
 func defaultServiceCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
-	lbl := workflowdef.GetDefaultLabels(workflow)
+	lbl := workflowproj.GetDefaultLabels(workflow)
 
 	service := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
@@ -229,21 +226,21 @@ func ensureWorkflowPropertiesConfigMapMutator(workflow *operatorapi.KogitoServer
 			cm := object.(*corev1.ConfigMap)
 			cm.Labels = original.GetLabels()
 
-			_, hasKey := cm.Data[applicationPropertiesFileName]
+			_, hasKey := cm.Data[workflowproj.ApplicationPropertiesFileName]
 			if !hasKey {
 				cm.Data = make(map[string]string, 1)
-				cm.Data[applicationPropertiesFileName] = defaultProperties
+				cm.Data[workflowproj.ApplicationPropertiesFileName] = defaultProperties
 			} else {
-				props, propErr := properties.LoadString(cm.Data[applicationPropertiesFileName])
+				props, propErr := properties.LoadString(cm.Data[workflowproj.ApplicationPropertiesFileName])
 				if propErr != nil {
 					// can't load user's properties, replace with default
-					cm.Data[applicationPropertiesFileName] = defaultProperties
+					cm.Data[workflowproj.ApplicationPropertiesFileName] = defaultProperties
 					return nil
 				}
-				originalProps := properties.MustLoadString(original.(*corev1.ConfigMap).Data[applicationPropertiesFileName])
+				originalProps := properties.MustLoadString(original.(*corev1.ConfigMap).Data[workflowproj.ApplicationPropertiesFileName])
 				// we overwrite with the defaults
 				props.Merge(originalProps)
-				cm.Data[applicationPropertiesFileName] = props.String()
+				cm.Data[workflowproj.ApplicationPropertiesFileName] = props.String()
 			}
 
 			return nil
@@ -257,16 +254,5 @@ func ensureProdWorkflowPropertiesConfigMapMutator(workflow *operatorapi.KogitoSe
 
 // workflowPropsConfigMapCreator creates a ConfigMap to hold the external application properties
 func workflowPropsConfigMapCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
-	return &corev1.ConfigMap{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      getWorkflowPropertiesConfigMapName(workflow),
-			Namespace: workflow.Namespace,
-			Labels:    workflowdef.GetDefaultLabels(workflow),
-		},
-		Data: map[string]string{applicationPropertiesFileName: defaultDevApplicationProperties},
-	}, nil
-}
-
-func getWorkflowPropertiesConfigMapName(workflow *operatorapi.KogitoServerlessWorkflow) string {
-	return workflow.Name + workflowConfigMapNameSuffix
+	return workflowproj.CreateNewAppPropsConfigMap(workflow, defaultDevApplicationProperties), nil
 }
