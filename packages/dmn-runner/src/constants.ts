@@ -21,8 +21,9 @@ export const DAYS_AND_TIME_DURATION_REGEXP =
 export const YEARS_AND_MONTHS_DURATION_FORMAT = "years and months duration";
 export const YEARS_AND_MONTHS_DURATION_REGEXP = /^(-|\+)?P(?:([-+]?[0-9]*)Y)?(?:([-+]?[0-9]*)M)?$/;
 
-export const X_DMN_DESCRIPTIONS = "x-dmn-descriptions";
-export const X_DMN_ALLOWED_VALUES = "x-dmn-allowed-values";
-export const X_DMN_TYPE = "x-dmn-type";
+export const X_DMN_DESCRIPTIONS_KEYWORD = "x-dmn-descriptions";
+export const X_DMN_ALLOWED_VALUES_KEYWORD = "x-dmn-allowed-values";
+export const X_DMN_TYPE_KEYWORD = "x-dmn-type";
+export const RECURSION_KEYWORD = "recursion";
 
 export const SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";

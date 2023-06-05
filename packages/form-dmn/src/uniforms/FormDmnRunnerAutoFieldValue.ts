@@ -15,6 +15,7 @@
  */
 
 import { defaultDmnRunnerAutoFieldValue } from "@kie-tools/dmn-runner/dist/uniforms";
+import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
 import { Context, GuaranteedProps } from "uniforms/esm";
 import FormDmnNotSupportedField from "./FormDmnNotSupportedField";
 
@@ -22,7 +23,7 @@ export function formDmnRunnerAutoFieldValue(
   props: GuaranteedProps<unknown>,
   uniforms: Context<Record<string, unknown>>
 ) {
-  if (props.field?.type === "recursion") {
+  if (props.field?.keyword === RECURSION_KEYWORD) {
     return FormDmnNotSupportedField;
   }
   return defaultDmnRunnerAutoFieldValue(props, uniforms);

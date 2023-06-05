@@ -19,6 +19,7 @@ import { Context, GuaranteedProps } from "uniforms/esm";
 import UnitablesListField from "./UnitablesListField";
 import UnitablesNestField from "./UnitablesNestField";
 import UnitablesNotSupportedField from "./UnitablesNotSupportedField";
+import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
 
 export function unitablesDmnRunnerAutoFieldValue(
   props: GuaranteedProps<unknown>,
@@ -30,7 +31,7 @@ export function unitablesDmnRunnerAutoFieldValue(
   if (props.field?.type === "object") {
     return UnitablesNestField;
   }
-  if (props.field?.type === "recursion") {
+  if (props.field?.keyword === RECURSION_KEYWORD) {
     return UnitablesNotSupportedField;
   }
   return defaultDmnRunnerAutoFieldValue(props, uniforms);

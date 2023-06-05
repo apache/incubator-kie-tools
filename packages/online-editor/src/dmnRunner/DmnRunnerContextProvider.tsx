@@ -70,8 +70,9 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import getObjectValueByPath from "lodash/get";
 import unsetObjectValueByPath from "lodash/unset";
-import { resolveRefs, UnresolvedRefDetails, findRefs, findRefsAt, getRefDetails, pathFromPtr } from "json-refs";
+import { resolveRefs, pathFromPtr } from "json-refs";
 import setObjectValueByPath from "lodash/set";
+import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
 
 const JSON_SCHEMA_INPUT_SET_PATH = "definitions.InputSet.properties";
 
@@ -588,7 +589,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         Object.entries(refs).forEach(([ptr, properties]) => {
           if (properties?.circular) {
             const path = pathFromPtr(ptr);
-            setObjectValueByPath(resolved, path.join("."), { keyword: "recursive" });
+            const recursiveRefPath = pathFromPtr(properties.def.$ref);
+            setObjectValueByPath(resolved, path.join("."), {
+              keyword: RECURSION_KEYWORD,
+              $recursiveRef: properties.def.$ref,
+              "x-dmn-type": recursiveRefPath[recursiveRefPath.length - 1],
+            });
             reResolve = true;
           }
         });
@@ -646,9 +652,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                   }
 
                   setJsonSchema((previousJsonSchema) => {
-                    // On the first render the previous will be undefined;
+                    // Early bailout in the DMN first render;
+                    // This prevents to set the inputs from the previous DMN
                     if (!previousJsonSchema) {
-                      return jsonSchemaDraft4;
+                      return resolvedSchema;
                     }
 
                     const validateInputs = dmnRunnerAjv.compile(resolvedSchema);
