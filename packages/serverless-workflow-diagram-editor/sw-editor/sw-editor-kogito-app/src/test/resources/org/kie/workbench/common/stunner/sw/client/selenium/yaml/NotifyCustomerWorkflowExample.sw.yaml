@@ -1,6 +1,6 @@
 id: notifycustomerworkflow
-version: 1.0
-specVersion: 0.8
+version: "1.0"
+specVersion: "0.8"
 name: Notify Customer
 start: WaitForCustomerEvent
 states:
@@ -27,7 +27,7 @@ states:
         end:
           continueAs:
             workflowId: notifycustomerworkflow
-            version: 1.0
+            version: "1.0"
             data: "${ del(.customerCount) }"
     defaultCondition:
       transition: WaitForCustomerEvent

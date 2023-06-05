@@ -1,6 +1,6 @@
 id: roomreadings
-version: 1.0
-specVersion: 0.8
+version: "1.0"
+specVersion: "0.8"
 name: Room Temp and Humidity Workflow
 start: ConsumeReading
 states:

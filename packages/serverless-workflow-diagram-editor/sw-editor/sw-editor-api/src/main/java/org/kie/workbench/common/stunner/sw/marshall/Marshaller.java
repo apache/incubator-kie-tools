@@ -137,7 +137,6 @@ public class Marshaller {
     @SuppressWarnings("all")
     public Promise<ParseResult> unmarshallGraph(String raw, DocType docType) {
         try {
-            raw = MarshallerUtils.onPreDeserialize(raw, docType);
             Workflow result = docType.equals(DocType.JSON) ? jsonMapper.fromJSON(raw) : yamlMapper.read(raw);
             this.docType = docType;
             workflow = parser.parse(result);

@@ -17,8 +17,8 @@
 package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser;
 
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Default {@link AbstractYAMLSerializer} implementation for {@link Character}.
@@ -33,18 +33,18 @@ public class CharacterYAMLSerializer implements YAMLSerializer<Character> {
   /** {@inheritDoc} */
   @Override
   public void serialize(
-      YAMLWriter writer, String propertyName, Character value, YAMLSerializationContext ctx) {
-    writer.value(propertyName, value.toString());
+      YamlMapping writer, String propertyName, Character value, YAMLSerializationContext ctx) {
+    writer.addScalarNode(propertyName, value.toString());
   }
 
   @Override
-  public void serialize(YAMLSequenceWriter writer, Character value, YAMLSerializationContext ctx) {
+  public void serialize(YamlSequence writer, Character value, YAMLSerializationContext ctx) {
     if (null == value) {
       if (ctx.isSerializeNulls()) {
-        writer.value("~");
+        writer.addScalarNode("~");
       }
     } else {
-      writer.value(String.valueOf(value));
+      writer.addScalarNode(value);
     }
   }
 }

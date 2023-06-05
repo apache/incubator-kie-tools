@@ -1,6 +1,6 @@
 id: eventbasedswitchstate
-version: 1.0
-specVersion: 0.8
+version: "1.0"
+specVersion: "0.8"
 name: Event Based Switch Transitions
 description: Event Based Switch Transitions
 start: CheckVisaStatus

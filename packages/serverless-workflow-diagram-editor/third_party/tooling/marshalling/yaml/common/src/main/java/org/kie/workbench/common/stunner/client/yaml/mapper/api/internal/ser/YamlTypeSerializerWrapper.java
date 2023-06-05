@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser;
 
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.bean.AbstractBeanYAMLSerializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 public class YamlTypeSerializerWrapper<T> extends AbstractBeanYAMLSerializer<T> {
 
@@ -31,17 +31,17 @@ public class YamlTypeSerializerWrapper<T> extends AbstractBeanYAMLSerializer<T> 
 
   @Override
   public void serialize(
-          YAMLWriter writer, String propertyName, T value, YAMLSerializationContext ctx) {
+      YamlMapping writer, String propertyName, T value, YAMLSerializationContext ctx) {
     serializer.serialize(writer, propertyName, value, ctx);
   }
 
   @Override
-  public void serialize(YAMLSequenceWriter writer, T value, YAMLSerializationContext ctx) {
+  public void serialize(YamlSequence writer, T value, YAMLSerializationContext ctx) {
     serializer.serialize(writer, value, ctx);
   }
 
   @Override
-  public Class getSerializedType() {
+  public Class<?> getSerializedType() {
     return serializer.getClass();
   }
 }

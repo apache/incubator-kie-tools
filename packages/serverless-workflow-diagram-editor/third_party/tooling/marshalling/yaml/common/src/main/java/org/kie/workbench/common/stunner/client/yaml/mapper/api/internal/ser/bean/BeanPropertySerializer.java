@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.bea
 
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
 
 /**
  * Serializes a bean's property
@@ -55,12 +55,12 @@ public abstract class BeanPropertySerializer<T, V> extends HasSerializer<V, YAML
    * @param bean bean containing the property to serialize
    * @param ctx context of the serialization process
    */
-  public void serialize(YAMLWriter writer, T bean, YAMLSerializationContext ctx) {
+  public void serialize(YamlMapping writer, T bean, YAMLSerializationContext ctx) {
     getSerializer((V) bean.getClass()).serialize(writer, propertyName, getValue(bean, ctx), ctx);
   }
 
   public void serialize(
-      YAMLWriter writer, String propertyName, T value, YAMLSerializationContext ctx) {
+      YamlMapping writer, String propertyName, T value, YAMLSerializationContext ctx) {
     getSerializer((V) value.getClass()).serialize(writer, propertyName, getValue(value, ctx), ctx);
   }
 

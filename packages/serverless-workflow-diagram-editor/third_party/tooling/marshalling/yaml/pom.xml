@@ -10,6 +10,7 @@
     </parent>
     <packaging>pom</packaging>
     <modules>
+        <module>snakeyaml-engine</module>
         <module>common</module>
         <module>processor</module>
     </modules>

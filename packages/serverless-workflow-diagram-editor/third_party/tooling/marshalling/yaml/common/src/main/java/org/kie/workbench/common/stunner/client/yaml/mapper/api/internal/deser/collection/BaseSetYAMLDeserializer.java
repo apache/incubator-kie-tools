@@ -19,9 +19,9 @@ package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.c
 import java.util.Collection;
 import java.util.Set;
 
-import com.amihaiemil.eoyaml.YamlMapping;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
 
 /**
  * Base {@link YAMLDeserializer} implementation for {@link java.util.Set}.

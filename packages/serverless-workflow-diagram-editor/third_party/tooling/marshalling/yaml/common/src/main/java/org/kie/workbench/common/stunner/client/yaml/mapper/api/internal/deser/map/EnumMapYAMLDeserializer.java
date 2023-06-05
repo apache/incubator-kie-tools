@@ -42,7 +42,7 @@ public final class EnumMapYAMLDeserializer<E extends Enum<E>, V>
    * @param valueDeserializer {@link YAMLDeserializer} used to deserialize the values.
    */
   private EnumMapYAMLDeserializer(
-          EnumYAMLDeserializer<E> keyDeserializer, YAMLDeserializer<V> valueDeserializer) {
+      EnumYAMLDeserializer<E> keyDeserializer, YAMLDeserializer<V> valueDeserializer) {
     super(keyDeserializer, valueDeserializer);
     this.enumClass = keyDeserializer.getEnumClass();
   }
