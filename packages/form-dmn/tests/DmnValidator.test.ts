@@ -17,7 +17,7 @@
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { DmnValidator } from "../src/DmnValidator";
 import { dmnFormI18n } from "../src/i18n";
-import { DmnFormJsonSchemaBridge } from "../src/uniforms";
+import { FormDmnJsonSchemaBridge } from "../src/uniforms";
 
 const schema: ExtendedServicesDmnJsonSchema = {
   definitions: {
@@ -93,6 +93,6 @@ describe("DmnValidator Tests", () => {
   it("get bridge", () => {
     const validator = new DmnValidator(i18n);
     const bridge = validator.getBridge(schema);
-    expect(bridge).toBeInstanceOf(DmnFormJsonSchemaBridge);
+    expect(bridge).toBeInstanceOf(FormDmnJsonSchemaBridge);
   });
 });
