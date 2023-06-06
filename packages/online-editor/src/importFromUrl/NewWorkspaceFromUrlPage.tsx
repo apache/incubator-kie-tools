@@ -20,7 +20,7 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { basename } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { EditorPageErrorPage } from "../editor/EditorPageErrorPage";
 import { useRoutes } from "../navigation/Hooks";
@@ -143,38 +143,6 @@ export function NewWorkspaceFromUrlPage() {
 
   // Startup the page. Only import if those are set.
   useEffect(() => {
-    if (!selectedGitRefName || !queryParamUrl) {
-      return;
-    }
-
-    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
-      authProviders,
-      authSessions,
-      authSessionStatus,
-      urlDomain: new URL(queryParamUrl).hostname,
-    });
-
-    history.replace({
-      pathname: routes.import.path({}),
-      search: queryParams
-        .with(QueryParams.BRANCH, selectedGitRefName)
-        .with(QueryParams.AUTH_SESSION_ID, authSession?.id ?? compatible[0].id)
-        .toString(),
-    });
-  }, [
-    authProviders,
-    authSession?.id,
-    authSessionStatus,
-    authSessions,
-    history,
-    queryParamUrl,
-    queryParams,
-    routes.import,
-    selectedGitRefName,
-    setGitRefName,
-  ]);
-
-  useEffect(() => {
     const urlDomain = importableUrl.url?.hostname;
     const { compatible } = getCompatibleAuthSessionWithUrlDomain({
       authProviders,
@@ -183,7 +151,26 @@ export function NewWorkspaceFromUrlPage() {
       urlDomain,
     });
     setAuthSessionId(compatible[0].id);
-  }, [authProviders, authSessionStatus, authSessions, importableUrl, setAuthSessionId]);
+    history.replace({
+      pathname: routes.import.path({}),
+      search: queryParams
+        .with(QueryParams.BRANCH, selectedGitRefName)
+        .with(QueryParams.AUTH_SESSION_ID, compatible[0].id)
+        .toString(),
+    });
+  }, [
+    authProviders,
+    authSession?.id,
+    authSessionStatus,
+    authSessions,
+    history,
+    importableUrl.url?.hostname,
+    queryParamUrl,
+    queryParams,
+    routes.import,
+    selectedGitRefName,
+    setAuthSessionId,
+  ]);
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
