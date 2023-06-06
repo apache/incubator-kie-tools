@@ -280,6 +280,16 @@ public class YearsMonthsValueConverterTest {
     }
 
     @Test
+    public void testRemovePrefixAndSuffixMissingValue() {
+
+        final String input = " ";
+
+        final String actual = converter.removePrefixAndSuffix(input);
+
+        assertEquals("", actual);
+    }
+
+    @Test
     public void testAddPrefixAndSuffix() {
 
         final String expected = "duration(\"P1Y2M\")";
