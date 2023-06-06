@@ -19,6 +19,7 @@ package common
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/spf13/afero"
 )
 
@@ -38,7 +39,7 @@ type Workflow struct {
 	States      []WorkflowStates `json:"states"`
 }
 
-func getWorkflowTemplate() (workflowJsonByte []byte, err error) {
+func GetWorkflowTemplate() (workflowJsonByte []byte, err error) {
 	workflowStates := WorkflowStates{
 		Name:    "HelloWorld",
 		Type:    "operation",
@@ -63,7 +64,7 @@ func getWorkflowTemplate() (workflowJsonByte []byte, err error) {
 }
 
 func CreateWorkflow(workflowFilePath string) (err error) {
-	workflowFileData, err := getWorkflowTemplate()
+	workflowFileData, err := GetWorkflowTemplate()
 	if err != nil {
 		return err
 	}

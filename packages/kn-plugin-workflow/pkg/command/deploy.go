@@ -18,6 +18,7 @@ package command
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/spf13/cobra"
 )
@@ -53,10 +54,11 @@ func NewDeployCommand() *cobra.Command {
 	return cmd
 }
 
-func runDeploy(cmd *cobra.Command, args []string) error {
+const DeployCommandOutput string = "😮‍💨 the deploy command is not available yet for workflow single file projects.\n" +
+	"Meanwhile, you can deploy your project via \"quarkus build\" and \"quarkus deploy\" commands.\n" +
+	"To convert it to Quarkus, run \"quarkus convert\" command.\n"
 
-	fmt.Println("😮‍💨 the deploy command is not available yet for workflow single file projects.")
-	fmt.Println("Meanwhile, you can deploy your project via \"quarkus build\" and \"quarkus deploy\" commands.")
-	fmt.Println("To convert it to Quarkus, run \"quarkus convert\" command")
+func runDeploy(cmd *cobra.Command, args []string) error {
+	fmt.Print(DeployCommandOutput)
 	return nil
 }
