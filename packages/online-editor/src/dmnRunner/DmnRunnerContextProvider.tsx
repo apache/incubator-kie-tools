@@ -39,7 +39,7 @@ import {
   ExtendedServicesModelPayload,
   DmnInputFieldProperties,
 } from "@kie-tools/extended-services-api";
-import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
+import { DmnRunnerAjv, ValidateFunction } from "@kie-tools/dmn-runner/dist/ajv";
 import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
@@ -464,6 +464,28 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [getFieldDefaultValue]
   );
 
+  const removeChangedPropertiesAndAdditionalProperties = useCallback(
+    <T extends ValidateFunction>(validator: T, toValidate: Record<string, any>) => {
+      const validation = validator(toValidate);
+      if (!validation && validator.errors) {
+        validator.errors.forEach((error) => {
+          if (error.keyword !== "type") {
+            return;
+          }
+
+          const pathList = error.dataPath
+            .replace(/\['([^']+)'\]/g, "$1")
+            .replace(/\[(\d+)\]/g, ".$1")
+            .split(".");
+
+          const path = pathList.length === 1 ? pathList.join(".") : pathList.slice(0, -1).join(".");
+          unsetObjectValueByPath(toValidate, path);
+        });
+      }
+    },
+    []
+  );
+
   // The refreshCallback is called after a CompanionFS event;
   // When another TAB updates the FS, this callback will sync up;
   useCompanionFsFileSyncedWithWorkspaceFile(
@@ -488,18 +510,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             dmnRunnerPersistenceJson.inputs.forEach((input) => {
               // save id;
               const id = input.id;
-              const validation = validate(input);
-              if (!validation && validate.errors) {
-                validate.errors.forEach((error) => {
-                  const pathList = error.dataPath
-                    .replace(/\[(\d+)\]/g, ".$1")
-                    .split(".")
-                    .slice(1);
-
-                  const path = pathList.length === 1 ? pathList.join(".") : pathList.slice(0, -1).join(".");
-                  unsetObjectValueByPath(input, path);
-                });
-              }
+              removeChangedPropertiesAndAdditionalProperties(validate, input);
               input.id = id;
             });
           } catch (error) {
@@ -544,33 +555,15 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         }
         return;
       },
-      [dmnRunnerAjv, dmnRunnerPersistenceService, getDefaultValues, jsonSchema, setDmnRunnerPersistenceJson]
+      [
+        dmnRunnerAjv,
+        dmnRunnerPersistenceService,
+        removeChangedPropertiesAndAdditionalProperties,
+        getDefaultValues,
+        jsonSchema,
+        setDmnRunnerPersistenceJson,
+      ]
     )
-  );
-
-  const removeChangedPropertiesAndAdditionalProperties = useCallback(
-    <T extends ((obj: Record<string, any>) => boolean) & { errors: [{ keyword: string; dataPath: string }] }>(
-      validator: T,
-      toValidate: Record<string, any>
-    ) => {
-      const validation = validator(toValidate);
-      if (!validation && validator.errors) {
-        validator.errors.forEach((error) => {
-          if (error.keyword === "required") {
-            return;
-          }
-
-          const pathList = error.dataPath
-            .replace(/\['([^']+)'\]/g, "$1")
-            .replace(/\[(\d+)\]/g, ".$1")
-            .split(".");
-
-          const path = pathList.length === 1 ? pathList.join(".") : pathList.slice(0, -1).join(".");
-          unsetObjectValueByPath(toValidate, path);
-        });
-      }
-    },
-    []
   );
 
   const resolveReferencesAndCheckForRecursion = useCallback(
@@ -664,13 +657,13 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                     setDmnRunnerPersistenceJson({
                       newConfigInputs: (previousConfigInputs) => {
                         const newConfigInputs = cloneDeep(previousConfigInputs);
-                        removeChangedPropertiesAndAdditionalProperties(validateInputs as any, newConfigInputs);
+                        removeChangedPropertiesAndAdditionalProperties(validateInputs, newConfigInputs);
                         return newConfigInputs;
                       },
                       newInputsRow: (previousInputs) => {
                         return cloneDeep(previousInputs).map((input) => {
                           const id = input.id;
-                          removeChangedPropertiesAndAdditionalProperties(validateInputs as any, input);
+                          removeChangedPropertiesAndAdditionalProperties(validateInputs, input);
                           input.id = id;
                           return input;
                         });

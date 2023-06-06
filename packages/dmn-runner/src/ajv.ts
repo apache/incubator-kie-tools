@@ -16,6 +16,7 @@
 
 import Ajv from "ajv";
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
+export { ValidateFunction } from "ajv";
 import {
   DAYS_AND_TIME_DURATION_FORMAT,
   DAYS_AND_TIME_DURATION_REGEXP,
