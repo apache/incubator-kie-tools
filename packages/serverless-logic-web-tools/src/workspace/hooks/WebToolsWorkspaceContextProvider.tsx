@@ -16,8 +16,11 @@
 
 import * as React from "react";
 import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
+import { useStorage } from "../../settings/storage/useStorage";
 
 export function WebToolsWorkspaceContextProvider(props: React.PropsWithChildren<{}>) {
+  useStorage();
+
   return (
     <WorkspacesContextProvider
       workspacesSharedWorkerScriptUrl={"workspace/worker/sharedWorker.js"}
