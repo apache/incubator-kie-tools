@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from "react";
+import React, { useRef } from "react";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -50,6 +50,8 @@ export type WorkspacesTableRowProps = {
 };
 
 export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
+  const downloadRef = useRef<HTMLAnchorElement>(null);
+  const downloadAllRef = useRef<HTMLAnchorElement>(null);
   const { isSelected, rowIndex, onDelete } = props;
   const { descriptor, editableFiles, totalFiles, name, isWsFolder, workspaceId, createdDateISO, lastUpdatedDateISO } =
     props.rowData;
@@ -67,55 +69,100 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
     [editableFiles, isWsFolder, workspaceId]
   );
 
-  const deleteWorkspace = useCallback(() => {
-    workspaces.deleteWorkspace({ workspaceId });
+  const onDeleteWorkspace = useCallback(async () => {
+    await workspaces.deleteWorkspace({ workspaceId });
     onDelete(workspaceId);
   }, [workspaceId, onDelete, workspaces]);
 
+  const onDownloadWorkspace = useCallback(async () => {
+    if (totalFiles === 0) {
+      return;
+    }
+
+    if (totalFiles === 1) {
+      if (!downloadRef.current) {
+        return;
+      }
+      const file = await workspaces.getFile({
+        workspaceId: workspaceId,
+        relativePath: editableFiles[0].relativePath,
+      });
+      if (!file) {
+        return;
+      }
+      const content = await file.getFileContentsAsString();
+      const fileBlob = new Blob([content], { type: "text/plain" });
+      downloadRef.current.download = `${file.name}`;
+      downloadRef.current.href = URL.createObjectURL(fileBlob);
+      downloadRef.current.click();
+    } else {
+      if (!downloadAllRef.current) {
+        return;
+      }
+
+      const zipBlob = await workspaces.prepareZip({ workspaceId });
+      downloadAllRef.current.download = `${name}.zip`;
+      downloadAllRef.current.href = URL.createObjectURL(zipBlob);
+      downloadAllRef.current.click();
+    }
+  }, [editableFiles, name, totalFiles, workspaceId, workspaces]);
+
   return (
-    <Tr key={name}>
-      <Td
-        select={{
-          rowIndex,
-          onSelect: (_event, checked) => props.onToggle(checked),
-          isSelected,
-        }}
-      />
-      <Td dataLabel={columnNames.name}>
-        {isWsFolder ? (
-          <>
-            <FolderIcon />
-            &nbsp;&nbsp;&nbsp;<Link to={linkTo}>{name}</Link>
-          </>
-        ) : (
-          <>
-            <TaskIcon />
-            &nbsp;&nbsp;&nbsp;<Link to={linkTo}>{name}</Link>
-          </>
-        )}
-      </Td>
-      <Td dataLabel={columnNames.type}>
-        {isWsFolder ? <WorkspaceLabel descriptor={descriptor} /> : <FileLabel extension={editableFiles[0].extension} />}
-      </Td>
-      <Td dataLabel={columnNames.created}>
-        <RelativeDate date={new Date(createdDateISO ?? "")} />
-      </Td>
-      <Td dataLabel={columnNames.lastUpdated}>
-        <RelativeDate date={new Date(lastUpdatedDateISO ?? "")} />
-      </Td>
-      <Td dataLabel={columnNames.editableFiles}>{editableFiles.length}</Td>
-      <Td dataLabel={columnNames.totalFiles}>{totalFiles}</Td>
-      <Td isActionCell>
-        <ActionsColumn
-          items={[
-            {
-              title: "Delete",
-              onClick: deleteWorkspace,
-            },
-          ]}
+    <>
+      <Tr key={name}>
+        <Td
+          select={{
+            rowIndex,
+            onSelect: (_event, checked) => props.onToggle(checked),
+            isSelected,
+          }}
         />
-      </Td>
-    </Tr>
+        <Td dataLabel={columnNames.name}>
+          {isWsFolder ? (
+            <>
+              <FolderIcon />
+              &nbsp;&nbsp;&nbsp;<Link to={linkTo}>{name}</Link>
+            </>
+          ) : (
+            <>
+              <TaskIcon />
+              &nbsp;&nbsp;&nbsp;<Link to={linkTo}>{name}</Link>
+            </>
+          )}
+        </Td>
+        <Td dataLabel={columnNames.type}>
+          {isWsFolder ? (
+            <WorkspaceLabel descriptor={descriptor} />
+          ) : (
+            <FileLabel extension={editableFiles[0].extension} />
+          )}
+        </Td>
+        <Td dataLabel={columnNames.created}>
+          <RelativeDate date={new Date(createdDateISO ?? "")} />
+        </Td>
+        <Td dataLabel={columnNames.lastUpdated}>
+          <RelativeDate date={new Date(lastUpdatedDateISO ?? "")} />
+        </Td>
+        <Td dataLabel={columnNames.editableFiles}>{editableFiles.length}</Td>
+        <Td dataLabel={columnNames.totalFiles}>{totalFiles}</Td>
+        <Td isActionCell>
+          <ActionsColumn
+            items={[
+              {
+                title: "Delete",
+                onClick: onDeleteWorkspace,
+              },
+              {
+                title: "Download",
+                onClick: onDownloadWorkspace,
+              },
+            ]}
+          />
+        </Td>
+      </Tr>
+      <a ref={downloadRef} />
+      <a ref={downloadAllRef} />
+    </>
   );
 }
 
