@@ -23,6 +23,7 @@ export enum QueryParams {
   EXPAND = "expand",
   AUTH_SESSION_ID = "authSessionId",
   CONFIRM = "confirm",
+  NEW_FILE = "newFile",
 }
 
 export enum PathParams {
@@ -134,6 +135,10 @@ export const routes = {
   import: new Route<{
     queryParams: QueryParams.URL | QueryParams.BRANCH | QueryParams.AUTH_SESSION_ID | QueryParams.CONFIRM;
   }>(() => `/import`),
+
+  newFile: new Route<{
+    queryParams: QueryParams.NEW_FILE;
+  }>(() => `/new`),
 
   workspaceWithFilePath: new Route<{
     pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH | PathParams.EXTENSION;

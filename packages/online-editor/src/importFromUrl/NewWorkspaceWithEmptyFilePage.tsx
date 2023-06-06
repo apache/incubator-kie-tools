@@ -25,11 +25,14 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
+import { QueryParams } from "../navigation/Routes";
 
 export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
   const workspaces = useWorkspaces();
   const history = useHistory();
   const routes = useRoutes();
+  const queryParams = useQueryParams();
 
   useEffect(() => {
     workspaces
@@ -51,9 +54,10 @@ export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
             fileRelativePath: file.relativePathWithoutExtension,
             extension: file.extension,
           }),
+          search: queryParams.with(QueryParams.NEW_FILE, "new").toString(),
         });
       });
-  }, [routes, history, props.extension, workspaces]);
+  }, [routes, history, props.extension, workspaces, queryParams]);
 
   return (
     <OnlineEditorPage>

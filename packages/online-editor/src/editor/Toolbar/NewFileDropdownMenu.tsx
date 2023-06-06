@@ -51,6 +51,10 @@ import { useBitbucketClient } from "../../bitbucket/Hooks";
 import { isEditable } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 import { useEditorsConfig } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { useEnv } from "../../env/hooks/EnvContext";
+import { useQueryParams } from "../../queryParams/QueryParamsContext";
+import { QueryParams } from "../../navigation/Routes";
+import { useHistory, generatePath } from "react-router";
+import { BrowserRouter as Router, Link, useLocation, Route } from "react-router-dom";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 
@@ -62,11 +66,17 @@ export function NewFileDropdownMenu(props: {
   const { env } = useEnv();
   const uploadFileInputRef = useRef<HTMLInputElement>(null);
   const editorsConfig = useEditorsConfig();
-
   const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
   const [drilldownPath, setDrilldownPath] = useState<string[]>([]);
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
   const [activeMenu, setActiveMenu] = useState(ROOT_MENU_ID);
+  const queryParams = useQueryParams();
+  const history = useHistory();
+  function useQuery() {
+    const { search } = useLocation();
+
+    return React.useMemo(() => new URLSearchParams(search), [search]);
+  }
 
   const drillIn = useCallback((_event, fromMenuId, toMenuId, pathId) => {
     setMenuDrilledIn((prev) => [...prev, fromMenuId]);
@@ -88,6 +98,7 @@ export function NewFileDropdownMenu(props: {
       return prev;
     });
   }, []);
+  const [url, setUrl] = useState("");
 
   const workspaces = useWorkspaces();
   const routes = useRoutes();
@@ -103,6 +114,7 @@ export function NewFileDropdownMenu(props: {
       });
       await props.onAddFile(file);
     },
+
     [props, workspaces]
   );
 
@@ -187,7 +199,6 @@ export function NewFileDropdownMenu(props: {
     [workspaces, props, gitConfig, env.KIE_SANDBOX_APP_NAME, successfullyUploadedAlert, editorEnvelopeLocator]
   );
 
-  const [url, setUrl] = useState("");
   const [authSessionId, setAuthSessionId] = useState(props.workspaceDescriptor.gitAuthSessionId);
 
   const importableUrl = useImportableUrl(
