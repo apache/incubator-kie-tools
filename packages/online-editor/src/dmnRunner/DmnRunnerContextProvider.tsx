@@ -481,6 +481,9 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
           const path = pathList.length === 1 ? pathList[0] : pathList.slice(0, -1).join(".");
           unsetObjectValueByPath(toValidate, path);
+
+          // This should be done to remove any previous form error
+          forceDmnRunnerReRender();
         });
       }
     },
