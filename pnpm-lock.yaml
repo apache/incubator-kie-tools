@@ -14037,7 +14037,7 @@ packages:
     deprecated: this version had an improper engines field added, update to 1.1.1
     dependencies:
       "@gar/promisify": 1.1.2
-      semver: 7.3.7
+      semver: 7.3.8
     dev: true
 
   /@npmcli/fs@2.1.2:
