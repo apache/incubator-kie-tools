@@ -139,6 +139,7 @@ export default async (env: any, argv: any) => {
             ],
           }),
           new ProvidePlugin({
+            process: "process/browser",
             Buffer: ["buffer", "Buffer"],
           }),
         ],
