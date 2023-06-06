@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  PromiseStateStatus,
-  PromiseStateWrapper,
-  useLivePromiseState,
-} from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import {
@@ -40,6 +36,7 @@ import {
   workspacesTableRowErrorContent,
   WorkspacesTableRowLoading,
 } from "./WorkspacesTableRow";
+import { useActiveWorkspacesPromise } from "./hooks/useActiveWorkspacesPromise";
 
 export const columnNames = {
   name: "Name",
@@ -55,7 +52,7 @@ export type WorkspacesTableProps = Pick<TablePaginationProps, "page" | "perPage"
   onWsToggle: (workspaceId: WorkspaceDescriptor["workspaceId"], checked: boolean) => void;
   searchValue: string;
   selectedWorkspaceIds: WorkspaceDescriptor["workspaceId"][];
-  workspaceDescriptors: WorkspaceDescriptor[];
+  workspaceIds: WorkspaceDescriptor["workspaceId"][];
 
   /**
    * event fired when an element is deleted
@@ -76,44 +73,35 @@ export type WorkspacesTableRowData = Pick<
 };
 
 export function WorkspacesTable(props: WorkspacesTableProps) {
-  const { workspaceDescriptors, selectedWorkspaceIds, onClearFilters, searchValue, page, perPage } = props;
+  const { workspaceIds, selectedWorkspaceIds, onClearFilters, searchValue, page, perPage } = props;
   const [activeSortIndex, setActiveSortIndex] = useState<number>(3);
   const [activeSortDirection, setActiveSortDirection] = useState<"asc" | "desc">("desc");
-  const workspaces = useWorkspaces();
-
-  const [allWorkspacePromises] = useLivePromiseState<WorkspaceFile[][]>(
-    useMemo(
-      () => () => Promise.all(workspaceDescriptors.map((w) => workspaces.getFiles(w))),
-      [workspaceDescriptors, workspaces]
-    )
-  );
+  const allWorkspacesPromise = useActiveWorkspacesPromise(workspaceIds);
 
   const tableData = useMemo<WorkspacesTableRowData[]>(
     () =>
-      allWorkspacePromises.status !== PromiseStateStatus.RESOLVED
-        ? []
-        : workspaceDescriptors.map((workspace, index) => {
-            const allFiles = allWorkspacePromises.data[index];
-            const { editableFiles, readonlyFiles } = splitFiles(allFiles ?? []);
-            const isWsFolder =
-              editableFiles.length > 1 || readonlyFiles.length > 0 || workspace.origin.kind !== WorkspaceKind.LOCAL;
-            const hasErrors = !allFiles[0];
-            const name = getWorkspaceName(workspace, isWsFolder, hasErrors, allFiles);
+      allWorkspacesPromise.data?.map((activeWorkspace) => {
+        const { files: allFiles, descriptor: workspace } = activeWorkspace;
+        const { editableFiles, readonlyFiles } = splitFiles(allFiles ?? []);
+        const isWsFolder =
+          editableFiles.length > 1 || readonlyFiles.length > 0 || workspace.origin.kind !== WorkspaceKind.LOCAL;
+        const hasErrors = !allFiles[0];
+        const name = getWorkspaceName(workspace, isWsFolder, hasErrors, allFiles);
 
-            return {
-              createdDateISO: workspace.createdDateISO,
-              descriptor: workspace,
-              editableFiles: editableFiles,
-              hasErrors,
-              isWsFolder,
-              lastUpdatedDateISO: workspace.lastUpdatedDateISO,
-              name,
-              origin: workspace.origin,
-              totalFiles: editableFiles.length + readonlyFiles.length,
-              workspaceId: workspace.workspaceId,
-            };
-          }),
-    [workspaceDescriptors, allWorkspacePromises.data, allWorkspacePromises.status]
+        return {
+          createdDateISO: workspace.createdDateISO,
+          descriptor: workspace,
+          editableFiles: editableFiles,
+          hasErrors,
+          isWsFolder,
+          lastUpdatedDateISO: workspace.lastUpdatedDateISO,
+          name,
+          origin: workspace.origin,
+          totalFiles: editableFiles.length + readonlyFiles.length,
+          workspaceId: workspace.workspaceId,
+        };
+      }) ?? [],
+    [allWorkspacesPromise]
   );
 
   const filteredTableData = useMemo<WorkspacesTableRowData[]>(() => {
@@ -187,7 +175,7 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
         </Thead>
         <Tbody>
           <PromiseStateWrapper
-            promise={allWorkspacePromises}
+            promise={allWorkspacesPromise}
             pending={<WorkspacesTableRowLoading />}
             rejected={() => <>ERROR</>}
             resolved={() =>

@@ -15,7 +15,6 @@
  */
 
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
@@ -228,7 +227,7 @@ export function RecentModels() {
                         onWsToggle={onWsToggle}
                         searchValue={searchValue}
                         selectedWorkspaceIds={selectedWorkspaceIds}
-                        workspaceDescriptors={workspaceDescriptors}
+                        workspaceIds={workspaceDescriptors.map((d) => d.workspaceId)}
                         onWsDelete={onWorkspaceDelete}
                       />
                       <TablePagination
