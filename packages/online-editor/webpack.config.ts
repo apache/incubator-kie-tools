@@ -139,7 +139,7 @@ export default async (env: any, argv: any) => {
             ],
           }),
           new ProvidePlugin({
-            process: "process/browser",
+            process: require.resolve("process/browser.js"),
             Buffer: ["buffer", "Buffer"],
           }),
         ],
