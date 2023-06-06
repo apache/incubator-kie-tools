@@ -8,7 +8,7 @@ changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem8g && !built-in'
+        label 'rhel8 && !built-in'
     }
     tools {
         maven 'kie-maven-3.6.3'
