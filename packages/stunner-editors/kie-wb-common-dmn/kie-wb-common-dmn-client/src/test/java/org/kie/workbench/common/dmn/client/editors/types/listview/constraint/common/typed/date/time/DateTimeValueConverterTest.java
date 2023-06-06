@@ -130,6 +130,14 @@ public class DateTimeValueConverterTest {
     }
 
     @Test
+    public void testExtractDateMissingValue() {
+
+        final String actual = converter.extractDate("");
+
+        assertEquals("", actual);
+    }
+
+    @Test
     public void testFromDMNString() {
 
         final String input = "some dmn string";

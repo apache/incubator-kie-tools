@@ -95,7 +95,7 @@ public class DateTimeValueConverter {
     }
 
     String extractDate(final String value) {
-        return value.substring(0, DATE_LENGTH);
+        return (StringUtils.isEmpty(value) || value.trim().length() < DATE_LENGTH) ? "" : value.substring(0, DATE_LENGTH);
     }
 
     public String toDisplay(final String rawValue) {
