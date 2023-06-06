@@ -9232,6 +9232,9 @@ importers:
       path-browserify:
         specifier: ^1.0.1
         version: 1.0.1
+      querystring-es3:
+        specifier: ^0.2.1
+        version: 0.2.1
       source-map-loader:
         specifier: ^2.0.2
         version: 2.0.2(webpack@5.70.0)
@@ -30310,6 +30313,12 @@ packages:
     resolution:
       { integrity: sha512-TIRk4aqYLNoJUbd+g2lEdz5kLWIuTMRagAXxl78Q0RiVjAOugHmeKNGdd3cwo/ktpf9aL9epCfFqWDEKysUlLQ== }
     engines: { node: ">=0.6" }
+    dev: true
+
+  /querystring-es3@0.2.1:
+    resolution:
+      { integrity: sha512-773xhDQnZBMFobEiztv8LIl70ch5MSF/jUQVlhwFyBILqq96anmoctVIYz+ZRp0qbCKATTn6ev02M3r7Ga5vqA== }
+    engines: { node: ">=0.4.x" }
     dev: true
 
   /quick-lru@5.1.1:
