@@ -43,7 +43,7 @@
     "@kie-tools/kie-bc-editors": "workspace:*",
     "@kie-tools/pmml-editor": "workspace:*",
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
-    "minimatch": "^3.0.4",
+    "minimatch": "^3.0.5",
     "monaco-editor": "^0.33.0"
   },
   "devDependencies": {
@@ -60,7 +60,7 @@
     "@types/fs-extra": "^11.0.1",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
-    "@types/minimatch": "^3.0.4",
+    "@types/minimatch": "^3.0.5",
     "@types/mocha": "^8.2.2",
     "@types/vscode": "^1.66.0",
     "@vscode/test-electron": "^2.3.2",
