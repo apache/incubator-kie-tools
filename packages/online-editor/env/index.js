@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, getOrDefault, composeEnv, str2bool } = require("@kie-tools-scripts/build-env");
 
 const buildEnv = require("@kie-tools/root-env/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
@@ -68,7 +68,7 @@ module.exports = composeEnv(
         description: "Extended Services URL.",
       },
       ONLINE_EDITOR__requireCustomCommitMessage: {
-        default: false,
+        default: `${false}`,
         description: "Require users to type a custom commit message when creating a new commit.",
       },
       ONLINE_EDITOR__customCommitMessageValidationServiceUrl: {
@@ -120,7 +120,7 @@ module.exports = composeEnv(
           appName: getOrDefault(this.vars.ONLINE_EDITOR__appName),
           extendedServicesUrl: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesUrl),
           gitCorsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__gitCorsProxyUrl),
-          requireCustomCommitMessage: getOrDefault(this.vars.ONLINE_EDITOR__requireCustomCommitMessage),
+          requireCustomCommitMessage: str2bool(getOrDefault(this.vars.ONLINE_EDITOR__requireCustomCommitMessage)),
           customCommitMessageValidationServiceUrl: getOrDefault(
             this.vars.ONLINE_EDITOR__customCommitMessageValidationServiceUrl
           ),
