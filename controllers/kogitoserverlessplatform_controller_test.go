@@ -32,7 +32,7 @@ import (
 func TestKogitoServerlessPlatformController(t *testing.T) {
 	t.Run("verify that a basic reconcile is performed without error", func(t *testing.T) {
 		// Create a KogitoServerlessPlatform object with metadata and spec.
-		ksp := test.GetKogitoServerlessPlatform("../config/samples/sw.kogito_v1alpha08_kogitoserverlessplatform.yaml")
+		ksp := test.GetBasePlatform()
 
 		// Create a fake client to mock API calls.
 		cl := test.NewKogitoClientBuilder().WithRuntimeObjects(ksp).WithStatusSubresource(ksp).Build()

@@ -23,12 +23,12 @@ import (
 )
 
 func Test_workflowIsDevProfile(t *testing.T) {
-	workflowWithDevProfile := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
+	workflowWithDevProfile := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
 	assert.True(t, IsDevProfile(workflowWithDevProfile))
 
-	workflowWithNoProfile := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
+	workflowWithNoProfile := test.GetBaseServerlessWorkflow(t.Name())
 	assert.False(t, IsDevProfile(workflowWithNoProfile))
 
-	workflowWithProdProfile := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowProdProfileSampleYamlCR, t.Name())
+	workflowWithProdProfile := test.GetBaseServerlessWorkflowWithProdProfile(t.Name())
 	assert.False(t, IsDevProfile(workflowWithProdProfile))
 }

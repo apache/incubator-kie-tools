@@ -182,7 +182,7 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 			By("creating an instance of the Kogito Serverless Platform")
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					"config/samples/"+test.KogitoServerlessPlatformMinikubeYamlCR), "-n", namespace)
+					test.GetPlatformMinikubeE2eTest()), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -213,7 +213,7 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 			By("creating an instance of the Kogito Serverless Workflow in DevMode")
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					"config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR), "-n", namespace)
+					test.GetServerlessWorkflowE2eTest()), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -231,7 +231,7 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "delete", "-f", filepath.Join(projectDir,
-					"config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR), "-n", namespace)
+					test.GetServerlessWorkflowE2eTest()), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())

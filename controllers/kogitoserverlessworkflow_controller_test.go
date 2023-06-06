@@ -34,10 +34,10 @@ func TestKogitoServerlessWorkflowController(t *testing.T) {
 	t.Run("verify that a basic reconcile is performed without error", func(t *testing.T) {
 		namespace := t.Name()
 		// Create a KogitoServerlessWorkflow object with metadata and spec.
-		ksw := test.GetKogitoServerlessWorkflow("../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, namespace)
+		ksw := test.GetBaseServerlessWorkflow(namespace)
 		// The Workflow controller needs at least to perform a call for Platforms, so we need to add this kind to the known
 		// ones by the fake client
-		ksp := test.GetKogitoServerlessPlatformInReadyPhase("../config/samples/"+test.KogitoServerlessPlatformWithCacheYamlCR, namespace)
+		ksp := test.GetBasePlatformInReadyPhase(namespace)
 		// Objects to track in the fake Client.
 		objs := []runtime.Object{ksw, ksp}
 

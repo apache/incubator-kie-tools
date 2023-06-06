@@ -35,8 +35,8 @@ import (
 func Test_openshiftBuilderManager_Reconcile(t *testing.T) {
 	// Setup
 	ns := t.Name()
-	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, ns)
-	platform := test.GetKogitoServerlessPlatformInReadyPhase("../../config/samples/"+test.KogitoServerlessPlatformWithCacheYamlCR, ns)
+	workflow := test.GetBaseServerlessWorkflow(ns)
+	platform := test.GetBasePlatformInReadyPhase(t.Name())
 	config := test.GetKogitoServerlessOperatorBuilderConfig("../../", ns)
 	namespacedName := types.NamespacedName{Namespace: workflow.Namespace, Name: workflow.Name}
 	client := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(workflow, platform, config).Build()
@@ -89,8 +89,8 @@ func Test_openshiftBuilderManager_Reconcile(t *testing.T) {
 
 func Test_openshiftbuilder_externalCMs(t *testing.T) {
 	ns := t.Name()
-	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, ns)
-	platform := test.GetKogitoServerlessPlatformInReadyPhase("../../config/samples/"+test.KogitoServerlessPlatformWithCacheYamlCR, ns)
+	workflow := test.GetBaseServerlessWorkflow(ns)
+	platform := test.GetBasePlatformInReadyPhase(t.Name())
 	config := test.GetKogitoServerlessOperatorBuilderConfig("../../", ns)
 	externalCm := &v1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{

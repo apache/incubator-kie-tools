@@ -30,7 +30,7 @@ import (
 func Test_enrichmentStatusOnK8s(t *testing.T) {
 	t.Run("verify that the service URL is returned with the default cluster name on default namespace", func(t *testing.T) {
 
-		workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
+		workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
 		workflow.Namespace = toK8SNamespace(t.Name())
 		service, err := defaultServiceCreator(workflow)
 		client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, service).Build()
@@ -46,7 +46,7 @@ func Test_enrichmentStatusOnK8s(t *testing.T) {
 
 	t.Run("verify that the service URL won't be generated if an invalid namespace is used", func(t *testing.T) {
 
-		workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
+		workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
 		workflow.Namespace = t.Name()
 		service, err := defaultServiceCreator(workflow)
 		client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, service).Build()
@@ -58,7 +58,7 @@ func Test_enrichmentStatusOnK8s(t *testing.T) {
 
 func Test_enrichmentStatusOnOCP(t *testing.T) {
 	t.Run("verify that the service URL is returned with the default cluster name on default namespace", func(t *testing.T) {
-		workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
+		workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
 		workflow.Namespace = toK8SNamespace(t.Name())
 		service, err := defaultServiceCreator(workflow)
 		route := &openshiftv1.Route{}

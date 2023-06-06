@@ -27,7 +27,7 @@ import (
 func TestKogitoServerlessWorkflowConverter(t *testing.T) {
 	t.Run("verify that when KogitoServerlessWorkflow CR is nil an error is returned", func(t *testing.T) {
 		// Create a KogitoServerlessWorkflow object with metadata and spec.
-		ksw := test.GetKogitoServerlessWorkflow("../../config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml", t.Name())
+		ksw := test.GetBaseServerlessWorkflow(t.Name())
 		out, err := ToCNCFWorkflow(context.TODO(), ksw)
 		assert.NoError(t, err)
 		assert.True(t, out != nil)

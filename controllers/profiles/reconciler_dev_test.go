@@ -29,8 +29,6 @@ import (
 
 	"github.com/kiegroup/kogito-serverless-operator/utils"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -44,7 +42,7 @@ import (
 
 func Test_OverrideStartupProbe(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
+	workflow := test.GetBaseServerlessWorkflow(t.Name())
 
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
@@ -71,7 +69,7 @@ func Test_OverrideStartupProbe(t *testing.T) {
 
 func Test_recoverFromFailureNoDeployment(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
+	workflow := test.GetBaseServerlessWorkflow(t.Name())
 	workflowID := clientruntime.ObjectKeyFromObject(workflow)
 
 	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, "")
@@ -116,7 +114,7 @@ func Test_recoverFromFailureNoDeployment(t *testing.T) {
 
 func Test_newDevProfile(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, t.Name())
+	workflow := test.GetBaseServerlessWorkflow(t.Name())
 
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
@@ -193,7 +191,7 @@ func Test_newDevProfile(t *testing.T) {
 
 func Test_devProfileImageDefaultsNoPlatform(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
+	workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 	config := &rest.Config{}
 	devReconciler := newDevProfileReconciler(client, config, &logger)
@@ -209,11 +207,9 @@ func Test_devProfileImageDefaultsNoPlatform(t *testing.T) {
 
 func Test_devProfileWithImageSnapshotOverrideWithPlatform(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
+	workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
 
-	platform := test.GetKogitoServerlessPlatform("../../config/samples/" + test.KogitoServerlessPlatformWithDevBaseImageYamlCR)
-	platform.Status.Phase = operatorapi.PlatformPhaseReady
-	platform.Namespace = workflow.Namespace
+	platform := test.GetBasePlatformWithDevBaseImageInReadyPhase(workflow.Namespace)
 
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
 	config := &rest.Config{}
@@ -230,11 +226,9 @@ func Test_devProfileWithImageSnapshotOverrideWithPlatform(t *testing.T) {
 
 func Test_devProfileWithWPlatformWithoutDevBaseImageAndWithBaseImage(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
+	workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
 
-	platform := test.GetKogitoServerlessPlatform("../../config/samples/" + test.KogitoServerlessPlatformWithBaseImageYamlCR)
-	platform.Status.Phase = operatorapi.PlatformPhaseReady
-	platform.Namespace = workflow.Namespace
+	platform := test.GetBasePlatformWithBaseImageInReadyPhase(workflow.Namespace)
 
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
 	config := &rest.Config{}
@@ -251,11 +245,9 @@ func Test_devProfileWithWPlatformWithoutDevBaseImageAndWithBaseImage(t *testing.
 
 func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeYamlCR, t.Name())
+	workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
 
-	platform := test.GetKogitoServerlessPlatform("../../config/samples/" + test.KogitoServerlessPlatformYamlCR)
-	platform.Status.Phase = operatorapi.PlatformPhaseReady
-	platform.Namespace = workflow.Namespace
+	platform := test.GetBasePlatformInReadyPhase(workflow.Namespace)
 
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
 	config := &rest.Config{}
@@ -272,7 +264,7 @@ func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testin
 
 func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetKogitoServerlessWorkflow("../../config/samples/"+test.KogitoServerlessWorkflowSampleDevModeWithExternalResourceYamlCR, t.Name())
+	workflow := test.GetBaseServerlessWorkflowWithDevProfileAndExternalResource(t.Name())
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 	config := &rest.Config{}
 	devReconciler := newDevProfileReconciler(client, config, &logger)

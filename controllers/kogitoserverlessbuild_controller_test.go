@@ -31,11 +31,12 @@ import (
 
 func TestKogitoServerlessBuildController(t *testing.T) {
 	namespace := t.Name()
-	ksw := test.GetKogitoServerlessWorkflow("../config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR, namespace)
+	ksw := test.GetBaseServerlessWorkflow(namespace)
 	ksb := test.GetNewEmptyKogitoServerlessBuild(ksw.Name, namespace)
+
 	cl := test.NewKogitoClientBuilder().
 		WithRuntimeObjects(ksb, ksw).
-		WithRuntimeObjects(test.GetKogitoServerlessPlatformInReadyPhase("../config/samples/"+test.KogitoServerlessPlatformWithCacheYamlCR, namespace)).
+		WithRuntimeObjects(test.GetBasePlatformInReadyPhase(namespace)).
 		WithRuntimeObjects(test.GetKogitoServerlessOperatorBuilderConfig("../", namespace)).
 		WithStatusSubresource(ksb, ksw).
 		Build()

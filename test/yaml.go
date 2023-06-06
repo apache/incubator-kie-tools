@@ -17,6 +17,10 @@ package test
 import (
 	"bytes"
 	"os"
+	"runtime"
+	"strings"
+
+	"github.com/davecgh/go-spew/spew"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -28,20 +32,17 @@ import (
 )
 
 const (
-	KogitoServerlessWorkflowSampleYamlCR                            = "sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml"
-	KogitoServerlessWorkflowGenerationOneCR                         = "kogitoserverlessworkflow_generation1.yaml"
-	KogitoServerlessWorkflowSampleDevModeYamlCR                     = "sw.kogito_v1alpha08_kogitoserverlessworkflow_devmode.yaml"
-	KogitoServerlessWorkflowSampleDevModeWithExternalResourceYamlCR = "sw.kogito_v1alpha08_kogitoserverlessworkflow_devmodeWithExternalResource.yaml"
-	KogitoServerlessWorkflowProdProfileSampleYamlCR                 = "sw.kogito_v1alpha08_kogitoserverlessworkflow_withExplicitProdProfile.yaml"
-	KogitoServerlessPlatformWithCacheYamlCR                         = "sw.kogito_v1alpha08_kogitoserverlessplatform_withCacheAndCustomization.yaml"
-	KogitoServerlessPlatformMinikubeYamlCR                          = "sw.kogito_v1alpha08_kogitoserverlessplatform_minikube.yaml"
-	KogitoServerlessPlatformWithCacheMinikubeYamlCR                 = "sw.kogito_v1alpha08_kogitoserverlessplatform_withCache_minikube.yaml"
-	KogitoServerlessPlatformYamlCR                                  = "sw.kogito_v1alpha08_kogitoserverlessplatform.yaml"
-	KogitoServerlessPlatformWithBaseImageYamlCR                     = "sw.kogito_v1alpha08_kogitoserverlessplatformWithBaseImage.yaml"
-	KogitoServerlessPlatformWithDevBaseImageYamlCR                  = "sw.kogito_v1alpha08_kogitoserverlessplatformWithDevBaseImage.yaml"
-	kogitoServerlessOperatorBuilderConfig                           = "kogito-serverless-operator-builder-config_v1_configmap.yaml"
+	KogitoServerlessWorkflowSampleYamlCR            = "sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml"
+	kogitoServerlessPlatformYamlCR                  = "sw.kogito_v1alpha08_kogitoserverlessplatform.yaml"
+	kogitoServerlessPlatformWithCacheMinikubeYamlCR = "sw.kogito_v1alpha08_kogitoserverlessplatform_withCache_minikube.yaml"
+	kogitoServerlessWorkflowSampleDevModeYamlCR     = "sw.kogito_v1alpha08_kogitoserverlessworkflow_devmode.yaml"
+	kogitoServerlessOperatorBuilderConfig           = "kogito-serverless-operator-builder-config_v1_configmap.yaml"
 
-	manifestsPath = "bundle/manifests/"
+	configSamplesOneLevelPath = "../config/samples/"
+	configSamplesTwoLevelPath = "../../config/samples/"
+	e2eSamples                = "test/testdata/"
+	manifestsPath             = "bundle/manifests/"
+	repoName                  = "kogito-serverless-operator"
 )
 
 // TODO: remove the path parameter from every method
@@ -60,7 +61,7 @@ func GetKogitoServerlessWorkflow(path string, namespace string) *operatorapi.Kog
 		log.Errorf(err, "Unmarshal: #%v", err)
 		panic(err)
 	}
-	log.Debugf("Successfully read KSW  #%v ", ksw)
+	log.Debugf("Successfully read KSW  #%v ", spew.Sprint(ksw))
 	ksw.Namespace = namespace
 	return ksw
 }
@@ -120,4 +121,93 @@ func GetKogitoServerlessOperatorBuilderConfig(path, namespace string) *corev1.Co
 	}
 	cm.Namespace = namespace
 	return cm
+}
+
+func GetPathForSamples(path string) string {
+	operatorPath := ""
+	duplicatedFolderName := strings.Count(path, repoName)
+	if duplicatedFolderName > 1 {
+		// we are on GH and the path contains two times "kogito-serverless-operator"
+		_, after, _ := strings.Cut(path, repoName)
+		operatorPath = strings.Split(after, repoName)[1]
+	} else {
+		operatorPath = strings.Split(path, repoName)[1]
+	}
+	packages := strings.Count(operatorPath, "/")
+	if strings.Contains(operatorPath, "/test/") || packages == 3 {
+		return configSamplesTwoLevelPath
+	} else {
+		return configSamplesOneLevelPath
+	}
+}
+
+func GetBaseServerlessWorkflow(namespace string) *operatorapi.KogitoServerlessWorkflow {
+	_, file, _, ok := runtime.Caller(1)
+	log.Info("caller:" + file)
+	if ok {
+		return GetKogitoServerlessWorkflow(GetPathForSamples(file)+KogitoServerlessWorkflowSampleYamlCR, namespace)
+	} else {
+		return &operatorapi.KogitoServerlessWorkflow{}
+	}
+}
+
+func GetBaseServerlessWorkflowWithDevProfile(namespace string) *operatorapi.KogitoServerlessWorkflow {
+	workflow := GetBaseServerlessWorkflow(namespace)
+	workflow.Annotations["sw.kogito.kie.org/profile"] = "dev"
+	return workflow
+}
+
+func GetBaseServerlessWorkflowWithDevProfileAndExternalResource(namespace string) *operatorapi.KogitoServerlessWorkflow {
+	workflow := GetBaseServerlessWorkflowWithDevProfile(namespace)
+	workflow.Annotations["sw.kogito.kie.org/resource-camel"] = "mycamel-configmap"
+	return workflow
+}
+
+func GetBaseServerlessWorkflowWithProdProfile(namespace string) *operatorapi.KogitoServerlessWorkflow {
+	workflow := GetBaseServerlessWorkflow(namespace)
+	workflow.Annotations["sw.kogito.kie.org/profile"] = "prod"
+	return workflow
+}
+
+func GetBasePlatformInReadyPhase(namespace string) *operatorapi.KogitoServerlessPlatform {
+	_, file, _, ok := runtime.Caller(1)
+	if ok {
+		return GetKogitoServerlessPlatformInReadyPhase(GetPathForSamples(file)+kogitoServerlessPlatformYamlCR, namespace)
+	} else {
+		return &operatorapi.KogitoServerlessPlatform{}
+	}
+
+}
+
+func GetBasePlatformWithBaseImageInReadyPhase(namespace string) *operatorapi.KogitoServerlessPlatform {
+	platform := GetBasePlatform()
+	platform.Namespace = namespace
+	platform.Status.Phase = operatorapi.PlatformPhaseReady
+	platform.Spec.BuildPlatform.BaseImage = "quay.io/customx/custom-swf-builder:24.8.17"
+	return platform
+}
+
+func GetBasePlatformWithDevBaseImageInReadyPhase(namespace string) *operatorapi.KogitoServerlessPlatform {
+	platform := GetBasePlatform()
+	platform.Namespace = namespace
+	platform.Status.Phase = operatorapi.PlatformPhaseReady
+	platform.Spec.DevBaseImage = "quay.io/customgroup/custom-swf-builder-nightly:42.43.7"
+	return platform
+}
+
+func GetBasePlatform() *operatorapi.KogitoServerlessPlatform {
+	_, file, _, ok := runtime.Caller(1)
+	if ok {
+		return GetKogitoServerlessPlatform(GetPathForSamples(file) + kogitoServerlessPlatformYamlCR)
+	} else {
+		return &operatorapi.KogitoServerlessPlatform{}
+	}
+
+}
+
+func GetPlatformMinikubeE2eTest() string {
+	return e2eSamples + kogitoServerlessPlatformWithCacheMinikubeYamlCR
+}
+func GetServerlessWorkflowE2eTest() string {
+	return e2eSamples + kogitoServerlessWorkflowSampleDevModeYamlCR
 }
