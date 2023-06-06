@@ -25,6 +25,7 @@ import { routes } from "../../../navigation/Routes";
 import "../../../table/Table.css";
 import { FileLabel } from "../../../workspace/components/FileLabel";
 import { columnNames, WorkspaceFilesTableRowData } from "./WorkspaceFilesTable";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 export const workspacesTableRowErrorContent = "Error obtaining workspace information";
 
@@ -97,7 +98,10 @@ export function WorkspaceFilesTableRow(props: WorkspaceFilesTableRowProps) {
         />
         <Td dataLabel={columnNames.name}>
           <TaskIcon />
-          &nbsp;&nbsp;&nbsp;<Link to={linkTo}>{name}</Link>
+          &nbsp;&nbsp;&nbsp;
+          <Tooltip content={fileDescriptor.relativePath}>
+            <Link to={linkTo}>{name}</Link>
+          </Tooltip>
         </Td>
         <Td dataLabel={columnNames.type}>
           <FileLabel extension={extension} />
