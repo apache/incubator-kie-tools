@@ -177,10 +177,19 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     setExtendedServicesError(false);
   }, [jsonSchema]);
 
-  // Reset JSON Schema and PersistenceJson;
+  // Refer to effect responsible for getting decision results
+  const hasJsonSchema = useRef<boolean>(false);
+  // Reset JSON Schema;
   useLayoutEffect(() => {
     setJsonSchema(undefined);
+    hasJsonSchema.current = false;
   }, [props.workspaceFile.relativePath]);
+
+  useLayoutEffect(() => {
+    if (jsonSchema) {
+      hasJsonSchema.current = true;
+    }
+  }, [jsonSchema]);
 
   // Control the isExpaded state based on the extended services status;
   useLayoutEffect(() => {
@@ -220,14 +229,20 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         context: formInputs,
       } as ExtendedServicesModelPayload;
     },
-    [props.workspaceFile, workspaces, props.dmnLanguageService]
+    [props.dmnLanguageService, props.workspaceFile.relativePath, props.workspaceFile.workspaceId, workspaces]
   );
 
-  // Responsible for get decision results;
+  // Responsible for getting decision results
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
         if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
+          return;
+        }
+
+        // extendedServicesModelPayload triggers a re-run in this effect before the jsonSchema values is updated
+        // in the useLayoutEffect, making this effect to be triggered with the previous file dmnRunnerInputs.
+        if (hasJsonSchema.current === false) {
           return;
         }
 
@@ -602,10 +617,15 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             return;
           }
 
-          setObjectValueByPath(reResolved, "$ref", $ref);
+          if ($ref) {
+            setObjectValueByPath(reResolved, "$ref", $ref);
+          }
           return reResolved;
         }
-        setObjectValueByPath(resolved, "$ref", $ref);
+
+        if ($ref) {
+          setObjectValueByPath(resolved, "$ref", $ref);
+        }
         return resolved;
       } catch (err) {
         console.log(err);
