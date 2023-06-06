@@ -387,7 +387,7 @@ export function NewWorkspaceFromUrlPage() {
   ]);
 
   useEffect(() => {
-    if (!queryParamUrl || validAuthTokenPresent === false) {
+    if (!queryParamUrl || !validAuthTokenPresent) {
       history.replace({
         pathname: routes.import.path({}),
         search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
