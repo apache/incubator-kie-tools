@@ -476,9 +476,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           const pathList = error.dataPath
             .replace(/\['([^']+)'\]/g, "$1")
             .replace(/\[(\d+)\]/g, ".$1")
-            .split(".");
+            .split(".")
+            .filter((e) => e !== "");
 
-          const path = pathList.length === 1 ? pathList.join(".") : pathList.slice(0, -1).join(".");
+          const path = pathList.length === 1 ? pathList[0] : pathList.slice(0, -1).join(".");
           unsetObjectValueByPath(toValidate, path);
         });
       }
@@ -665,7 +666,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                           const id = input.id;
                           removeChangedPropertiesAndAdditionalProperties(validateInputs, input);
                           input.id = id;
-                          return input;
+                          return { ...getDefaultValues(resolvedSchema), ...input };
                         });
                       },
                       cancellationToken: canceled,
@@ -692,6 +693,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServices.client,
         extendedServices.status,
         extendedServicesModelPayload,
+        getDefaultValues,
         props.workspaceFile.extension,
         removeChangedPropertiesAndAdditionalProperties,
         resolveReferencesAndCheckForRecursion,
