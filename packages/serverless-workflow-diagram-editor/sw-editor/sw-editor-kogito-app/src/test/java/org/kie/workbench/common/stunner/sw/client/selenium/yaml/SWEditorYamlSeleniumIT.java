@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.impl.Yaml;
 import org.kie.workbench.common.stunner.sw.client.selenium.SWEditorSeleniumBase;
 import org.openqa.selenium.JavascriptExecutor;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SWEditorYamlSeleniumIT extends SWEditorSeleniumBase {
 
@@ -138,6 +138,7 @@ public class SWEditorYamlSeleniumIT extends SWEditorSeleniumBase {
     public void testParallelExecutionExample() throws Exception {
         testExampleYaml("ParallelExecutionExample.sw.yaml");
     }
+
     @Test
     public void testProcessTransactionsExample() throws Exception {
         testExampleYaml("ProcessTransactionsExample.sw.yaml");
@@ -174,15 +175,14 @@ public class SWEditorYamlSeleniumIT extends SWEditorSeleniumBase {
         setContentYaml(yaml);
         waitCanvasPanel();
         final String actual = getContent();
-        assertTrue(checkYamlAreEqual(actual, expected));
+        assertYamlStructureIsTheSame(actual, expected);
     }
-
 
     protected String loadResourceEscapedYaml(final String filename) throws IOException {
         return IOUtils.readLines(this.getClass().getResourceAsStream(filename), StandardCharsets.UTF_8)
                 .stream()
                 .map(s -> s.replace("\"", "\\\""))
-                .map(s ->  "\"" + s)
+                .map(s -> "\"" + s)
                 .collect(Collectors.joining("\\n\" + "));
     }
 
@@ -202,43 +202,39 @@ public class SWEditorYamlSeleniumIT extends SWEditorSeleniumBase {
         }
     }
 
-    private boolean checkYamlAreEqual(String yaml1, String yaml2) {
-        final YamlMapping mapping1 = Yaml.fromString(yaml1);
-        final YamlMapping mapping2 = Yaml.fromString(yaml2);
-        Pair<YamlNode, YamlNode> pair = new Pair<>(mapping1, mapping2);
+    /**
+     * Asserts the yaml structure is the same as the expected one.
+     * The method checks all yaml nodes.
+     *
+     * @param actualYaml   yaml to be checked
+     * @param expectedYaml yaml to be compared with
+     */
+    private void assertYamlStructureIsTheSame(String actualYaml, String expectedYaml) {
+        final YamlMapping actualMapping = Yaml.fromString(actualYaml);
+        final YamlMapping expectedMapping = Yaml.fromString(expectedYaml);
+        Pair<YamlNode, YamlNode> pair = new Pair<>(actualMapping, expectedMapping);
         Queue<Pair<YamlNode, YamlNode>> queue = new LinkedList<>();
         queue.add(pair);
 
         while (!queue.isEmpty()) {
             Pair<YamlNode, YamlNode> current = queue.poll();
-            if (current.key.type() != current.value.type()) {
-                return false;
-            }
+            assertThat(current.key.type()).isEqualTo(current.value.type());
             if (current.key.type() == NodeType.MAPPING) {
-                if (current.key.asMapping().keys().size() != current.value.asMapping().keys().size()) {
-                    return false;
-                }
+                assertThat(current.key.asMapping().keys().size()).isEqualTo(current.value.asMapping().keys().size());
 
                 for (String key : current.key.asMapping().keys()) {
-                    if (current.value.asMapping().getNode(key) == null) {
-                        return false;
-                    }
+                    assertThat(current.value.asMapping().getNode(key)).isNotNull();
                     queue.add(new Pair<>(current.key.asMapping().getNode(key), current.value.asMapping().getNode(key)));
                 }
             } else if (current.key.type() == NodeType.SEQUENCE) {
-                if (current.key.asSequence().size() != current.value.asSequence().size()) {
-                    return false;
-                }
+                assertThat(current.key.asSequence().size()).isEqualTo(current.value.asSequence().size());
 
                 for (int i = 0; i < current.key.asSequence().size(); i++) {
                     queue.add(new Pair<>(current.key.asSequence().node(i), current.value.asSequence().node(i)));
                 }
             } else if (current.key.type() == NodeType.SCALAR) {
-                if (!current.key.asScalar().value().equals(current.value.asScalar().value())) {
-                    return false;
-                }
+                assertThat(current.key.asScalar().value()).isEqualTo(current.value.asScalar().value());
             }
         }
-        return true;
     }
 }
