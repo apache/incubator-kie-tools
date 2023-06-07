@@ -59,10 +59,7 @@ export function NewWorkspaceFromUrlPage() {
   const accountsDispatch = useAccountsDispatch();
 
   const [importingError, setImportingError] = useState("");
-  // const [validAuthTokenPresent, setValidAuthTokenPresent] = useState(true);
-
   const queryParams = useQueryParams();
-
   const queryParamUrl = useQueryParam(QueryParams.URL);
   const queryParamBranch = useQueryParam(QueryParams.BRANCH);
   const queryParamAuthSessionId = useQueryParam(QueryParams.AUTH_SESSION_ID);
@@ -151,9 +148,17 @@ export function NewWorkspaceFromUrlPage() {
       urlDomain,
     });
     setAuthSessionId(compatible[0].id);
+    if (compatible[0].id === AUTH_SESSION_NONE.id && !selectedGitRefName) {
+      history.replace({
+        pathname: routes.import.path({}),
+        search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
+      });
+      return;
+    }
     history.replace({
       pathname: routes.import.path({}),
       search: queryParams
+        .without(QueryParams.CONFIRM)
         .with(QueryParams.BRANCH, selectedGitRefName)
         .with(QueryParams.AUTH_SESSION_ID, compatible[0].id)
         .toString(),
@@ -248,12 +253,7 @@ export function NewWorkspaceFromUrlPage() {
         return;
       }
 
-      if (
-        !queryParamBranch &&
-        isCertainlyGit(importableUrl.type) &&
-        (!authSession || queryParamAuthSessionId === AUTH_SESSION_NONE.id)
-      ) {
-        // setValidAuthTokenPresent(false);
+      if (!queryParamBranch && isCertainlyGit(importableUrl.type) && queryParamAuthSessionId !== AUTH_SESSION_NONE.id) {
         return;
       }
 
@@ -393,8 +393,6 @@ export function NewWorkspaceFromUrlPage() {
       advancedImportModalRef.current?.open();
       return;
     }
-
-    // setValidAuthTokenPresent(true);
     setImportingError("");
     doImport();
   }, [
