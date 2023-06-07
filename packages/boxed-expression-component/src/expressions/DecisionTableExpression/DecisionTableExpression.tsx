@@ -296,19 +296,13 @@ export function DecisionTableExpression(
           switch (groupType) {
             case DecisionTableColumnType.InputClause:
               const newInputEntries = [...newRules[u.rowIndex].inputEntries];
-              newInputEntries[u.columnIndex] = {
-                id: generateUuid(),
-                content: u.value,
-              };
+              newInputEntries[u.columnIndex].content = u.value;
               newRules[u.rowIndex].inputEntries = newInputEntries;
               n.rules = newRules;
               break;
             case DecisionTableColumnType.OutputClause:
               const newOutputEntries = [...newRules[u.rowIndex].outputEntries];
-              newOutputEntries[u.columnIndex - (prev.input?.length ?? 0)] = {
-                id: generateUuid(),
-                content: u.value,
-              };
+              newOutputEntries[u.columnIndex - (prev.input?.length ?? 0)].content = u.value;
               newRules[u.rowIndex].outputEntries = newOutputEntries;
               n.rules = newRules;
               break;
@@ -338,6 +332,10 @@ export function DecisionTableExpression(
           if (u.column.depth === 0 && u.column.groupType === DecisionTableColumnType.OutputClause) {
             n.name = u.name;
             n.dataType = u.dataType;
+            // Single output column is merged with the aggregator column and should have the same datatype
+            if (n.output?.length === 1) {
+              n.output[0].dataType = u.dataType;
+            }
             continue;
           }
 

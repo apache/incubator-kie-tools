@@ -47,7 +47,12 @@ export function isModel(path: string): boolean {
 }
 
 export function isEditable(path: string): boolean {
-  return isModel(path) || EDIT_NON_MODEL_ALLOW_LIST.includes(basename(path)) || isOfKind("yaml", path);
+  return (
+    isModel(path) ||
+    EDIT_NON_MODEL_ALLOW_LIST.includes(basename(path)) ||
+    isOfKind("yaml", path) ||
+    isOfKind("json", path)
+  );
 }
 
 export function isSupportedByVirtualServiceRegistry(path: string): boolean {

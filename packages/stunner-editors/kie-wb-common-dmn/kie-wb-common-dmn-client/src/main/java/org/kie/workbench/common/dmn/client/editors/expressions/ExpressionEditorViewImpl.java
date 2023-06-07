@@ -640,7 +640,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         return modelName -> {
             final EntryInfo[] parametersFromModel = pmmlDocumentMetadataProvider.getPMMLDocumentModelParameterNames(documentName, modelName)
                     .stream()
-                    .map(parameter -> new EntryInfo(new Id().getValue(), parameter, BuiltInType.ANY.getName()))
+                    .map(parameter -> new EntryInfo(new Id().getValue(), parameter, BuiltInType.ANY.getName(), null))
                     .toArray(EntryInfo[]::new);
             return new ModelsFromDocument(modelName, parametersFromModel);
         };

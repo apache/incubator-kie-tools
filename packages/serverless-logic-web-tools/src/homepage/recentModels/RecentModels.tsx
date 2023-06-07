@@ -33,6 +33,8 @@ import { splitFiles } from "../../extension";
 import { setPageTitle } from "../../PageTitle";
 import { ConfirmDeleteModal, defaultPerPageOptions, TablePagination, TableToolbar } from "../../table";
 import { WorkspacesTable } from "./WorkspacesTable";
+import { Link } from "react-router-dom";
+import { routes } from "../../navigation/Routes";
 
 const PAGE_TITLE = "Recent models";
 
@@ -247,7 +249,14 @@ export function RecentModels() {
                         <Title headingLevel="h4" size="lg">
                           {`Nothing here`}
                         </Title>
-                        <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
+                        <EmptyStateBody>
+                          <TextContent>
+                            <Text>
+                              Start by adding a <Link to={routes.home.path({})}>new model</Link> or{" "}
+                              <Link to={routes.sampleCatalog.path({})}>try a sample</Link>
+                            </Text>
+                          </TextContent>
+                        </EmptyStateBody>
                       </EmptyState>
                     </Bullseye>
                   )}

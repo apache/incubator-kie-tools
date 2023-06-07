@@ -162,8 +162,8 @@
     <!-- Properties from APPFORMER parent POM -->
     <version.org.webjars.bower.org.patternfly>3.18.1</version.org.webjars.bower.org.patternfly>
     <version.org.webjars.bower.bootstrap-select>1.10.0</version.org.webjars.bower.bootstrap-select>
-    <version.org.webjars.bower.moment>2.14.1</version.org.webjars.bower.moment>
-    <version.org.webjars.bower.moment-timezone>0.5.17</version.org.webjars.bower.moment-timezone>
+    <version.org.webjars.npm.moment>2.29.4</version.org.webjars.npm.moment>
+    <version.org.webjars.npm.moment-timezone>0.5.43</version.org.webjars.npm.moment-timezone>
     <version.org.webjars.bower.bootstrap-daterangepicker>2.1.25</version.org.webjars.bower.bootstrap-daterangepicker>
     <version.org.webjars.bower.filesaver>1.3.3</version.org.webjars.bower.filesaver>
     <!-- Notice actually there exists a 1.3.3 version for jsPDF, but using this one
@@ -259,6 +259,7 @@
     <version.ch.qos.logback>1.2.11</version.ch.qos.logback>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
     <version.com.google.guava>30.1-jre</version.com.google.guava>
+    <version.gwt.nio>1.1</version.gwt.nio>
     <version.com.google.gwt>2.9.0</version.com.google.gwt>
     <version.com.google.jsinterop.base>1.0.0</version.com.google.jsinterop.base>
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
@@ -417,6 +418,13 @@
         <artifactId>guava-gwt</artifactId>
         <version>${version.com.google.guava}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.treblereel.gwt.nio</groupId>
+        <artifactId>gwt-nio</artifactId>
+        <version>${version.gwt.nio}</version>
+      </dependency>
+
 
       <dependency>
         <groupId>com.google.gwt</groupId>

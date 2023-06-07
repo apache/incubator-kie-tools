@@ -2,10 +2,6 @@ package org.kie.workbench.common.stunner.sw.definition.custom.yaml;
 
 import java.util.List;
 
-import com.amihaiemil.eoyaml.Node;
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
-import com.amihaiemil.eoyaml.YamlSequence;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import elemental2.core.Reflect;
@@ -19,9 +15,10 @@ import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.Base
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.BooleanYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.StringYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.impl.DefaultYAMLSequenceWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.NodeType;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 import org.kie.workbench.common.stunner.sw.definition.ValueHolder;
 
 
@@ -34,11 +31,10 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
     private static final BaseNumberYAMLSerializer.IntegerYAMLSerializer integerYAMLSerializer = new BaseNumberYAMLSerializer.IntegerYAMLSerializer();
     private static final BaseNumberYAMLSerializer.LongYAMLSerializer longYAMLSerializer = new BaseNumberYAMLSerializer.LongYAMLSerializer();
     private static final BaseNumberYAMLSerializer.FloatYAMLSerializer floatYAMLSerializer = new BaseNumberYAMLSerializer.FloatYAMLSerializer();
-    private static final BaseNumberYAMLSerializer.DoubleYAMLSerializer doubleYAMLSerializer = new BaseNumberYAMLSerializer.DoubleYAMLSerializer();
 
     @Override
     public ValueHolder deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
-        YamlNode value = yaml.value(key);
+        YamlNode value = yaml.getNode(key);
         if (value == null) {
             return null;
         }
@@ -47,7 +43,7 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
 
     @Override
     public ValueHolder deserialize(YamlNode node, YAMLDeserializationContext ctx) {
-        if(node != null && node.type() == Node.MAPPING && !node.asMapping().isEmpty()) {
+        if (node != null && node.type() == NodeType.MAPPING && !node.asMapping().isEmpty()) {
             ValueHolder valueHolder = new ValueHolder();
             YamlMapping yamlMapping = node.asMapping();
             writeObject(valueHolder, yamlMapping);
@@ -58,49 +54,45 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
 
     private void writeObject(Object obj, YamlMapping yamlMapping) {
         yamlMapping.keys().forEach(key -> {
-            if(key.type() == Node.SCALAR) {
-                String keyName = key.asScalar().value();
-                YamlNode yamlNode = yamlMapping.value(key);
-                if (yamlNode.type() == Node.SCALAR) {
-                    String value = yamlNode.asScalar().value();
-                    if (value != null) {
-                        Reflect.set(obj, keyName, value);
-                    }
-                } else if (yamlNode.type() == Node.MAPPING) {
-                    ValueHolder inner = new ValueHolder();
-                    Reflect.set(obj, keyName, inner);
-                    writeObject(inner, yamlNode.asMapping());
-                }else if (yamlNode.type() == Node.SEQUENCE) {
-                    YamlSequence sequence = yamlNode.asSequence();
-                    JsArray<Object> array = new JsArray<>();
-                    sequence.values().forEach(yamlNode1 -> {
-                        if (yamlNode1.type() == Node.SCALAR) {
-                            array.push(yamlNode1.asScalar().value());
-                        } else if (yamlNode1.type() == Node.MAPPING) {
-                            ValueHolder inner = new ValueHolder();
-                            array.push(inner);
-                            writeObject(inner, yamlNode1.asMapping());
-                        }
-                    });
-                    Reflect.set(obj, keyName, array);
+            YamlNode yamlNode = yamlMapping.getNode(key);
+            if (yamlNode.type() == NodeType.SCALAR) {
+                Object value = yamlNode.asScalar().value();
+                if (value != null) {
+                    Reflect.set(obj, key, value);
                 }
+            } else if (yamlNode.type() == NodeType.MAPPING) {
+                ValueHolder inner = new ValueHolder();
+                Reflect.set(obj, key, inner);
+                writeObject(inner, yamlNode.asMapping());
+            } else if (yamlNode.type() == NodeType.SEQUENCE) {
+                YamlSequence sequence = yamlNode.asSequence();
+                JsArray<Object> array = new JsArray<>();
+                sequence.values().forEach(yamlNode1 -> {
+                    if (yamlNode1.type() == NodeType.SCALAR) {
+                        array.push(yamlNode1.asScalar().value());
+                    } else if (yamlNode1.type() == NodeType.MAPPING) {
+                        ValueHolder inner = new ValueHolder();
+                        array.push(inner);
+                        writeObject(inner, yamlNode1.asMapping());
+                    }
+                });
+                Reflect.set(obj, key, array);
             } else {
-                throw new UnsupportedOperationException("Unsupported key type " + key.type());
+                throw new UnsupportedOperationException("Unsupported key type " + yamlNode.type());
             }
         });
     }
 
     @Override
-    public void serialize(YAMLWriter writer, String propertyName, ValueHolder value, YAMLSerializationContext ctx) {
+    public void serialize(YamlMapping writer, String propertyName, ValueHolder value, YAMLSerializationContext ctx) {
         if (value == null) {
             return;
         }
-        YAMLWriter innerWrite = ctx.newYAMLWriter();
+        YamlMapping innerWrite = writer.addMappingNode(propertyName);
         writeObjectProps(innerWrite, value, ctx);
-        writer.value(propertyName, innerWrite.getWriter().build());
     }
 
-    private void writeObjectProps(YAMLWriter writer, Object obj, YAMLSerializationContext ctx) {
+    private void writeObjectProps(YamlMapping writer, Object obj, YAMLSerializationContext ctx) {
         if (obj == null) {
             return;
         }
@@ -111,7 +103,7 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
         if (!keys.isEmpty()) {
             for (Reflect.OwnKeysArrayUnionType k : keys) {
                 String key = k.asString();
-                if(key.startsWith("$")) { // skip internal properties
+                if (key.startsWith("$")) { // skip internal properties
                     continue;
                 }
 
@@ -128,7 +120,7 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
                 } else if (jsonValue instanceof Integer) {
                     integerYAMLSerializer.serialize(writer, key, (Integer) jsonValue, ctx);
                 } else if (jsonValue instanceof Double) {
-                    doubleYAMLSerializer.serialize(writer, key, (Double) jsonValue, ctx);
+                    writer.addScalarNode(key, (Double) jsonValue);
                 } else if (jsonValue instanceof Float) {
                     floatYAMLSerializer.serialize(writer, key, (Float) jsonValue, ctx);
                 } else if (jsonValue instanceof Long) {
@@ -136,15 +128,15 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
                 } else if (jsonValue instanceof Boolean) {
                     booleanYAMLSerializer.serialize(writer, key, (Boolean) jsonValue, ctx);
                 } else if (JsArray.isArray(jsonValue)) {
-                    JsArray array = (JsArray) jsonValue;
-                    YAMLSequenceWriter yamlSequenceWriter = new DefaultYAMLSequenceWriter();
-                    for(Object value: array.asList()) {
+                    JsArray<?> array = (JsArray<?>) jsonValue;
+                    YamlSequence yamlSequenceWriter = writer.addSequenceNode(key);
+                    for (Object value : array.asList()) {
                         if (value instanceof String) {
                             stringYAMLSerializer.serialize(yamlSequenceWriter, (String) value, ctx);
                         } else if (value instanceof Integer) {
                             integerYAMLSerializer.serialize(yamlSequenceWriter, (Integer) value, ctx);
                         } else if (value instanceof Double) {
-                            doubleYAMLSerializer.serialize(yamlSequenceWriter, (Double) value, ctx);
+                            yamlSequenceWriter.addScalarNode((Double) value);
                         } else if (value instanceof Float) {
                             floatYAMLSerializer.serialize(yamlSequenceWriter, (Float) value, ctx);
                         } else if (value instanceof Long) {
@@ -152,16 +144,13 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
                         } else if (value instanceof Boolean) {
                             booleanYAMLSerializer.serialize(yamlSequenceWriter, (Boolean) value, ctx);
                         } else if (value instanceof Object) {
-                            YAMLWriter innerWrite = ctx.newYAMLWriter();
+                            YamlMapping innerWrite = yamlSequenceWriter.addMappingNode();
                             writeObjectProps(innerWrite, value, ctx);
-                            yamlSequenceWriter.value(innerWrite.getWriter().build());
                         }
                     }
-                    writer.value(key, yamlSequenceWriter.getWriter());
                 } else if (jsonValue instanceof JsObject) {
-                    YAMLWriter innerWrite = ctx.newYAMLWriter();
+                    YamlMapping innerWrite = writer.addMappingNode(key);
                     writeObjectProps(innerWrite, jsonValue, ctx);
-                    writer.value(key, innerWrite.getWriter().build());
                 } else {
                     throw new UnsupportedOperationException("unknown type " + jsonValue.getClass().getCanonicalName());
                 }
@@ -170,9 +159,8 @@ public class ValueHolderYamlTypeSerializer implements YAMLDeserializer<ValueHold
     }
 
     @Override
-    public void serialize(YAMLSequenceWriter writer, ValueHolder value, YAMLSerializationContext ctx) {
-        YAMLWriter innerWrite = ctx.newYAMLWriter();
+    public void serialize(YamlSequence writer, ValueHolder value, YAMLSerializationContext ctx) {
+        YamlMapping innerWrite = writer.addMappingNode();
         writeObjectProps(innerWrite, value, ctx);
-        writer.value(innerWrite.getWriter().build());
     }
 }

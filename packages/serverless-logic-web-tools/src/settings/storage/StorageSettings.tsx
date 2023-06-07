@@ -25,71 +25,24 @@ import { APP_NAME } from "../../AppConstants";
 import { routes } from "../../navigation/Routes";
 import { setPageTitle } from "../../PageTitle";
 import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
-import { deleteAllCookies } from "../../cookies";
 import { isBrowserChromiumBased } from "../../workspace/startupBlockers/SupportedBrowsers";
 import { useHistory } from "react-router";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { ConfirmDeleteModal } from "../../table";
+import { useStorage } from "./useStorage";
 
 const PAGE_TITLE = "Storage";
-/**
- * delete alert delay in seconds before reloading the app.
- */
-const DELETE_ALERT_DELAY = 5;
-
-/**
- * Delete all indexed DBs
- */
-const deleteAllIndexedDBs = async () => {
-  (await window.indexedDB.databases())
-    .filter((db) => db.name)
-    .forEach((db) => window.indexedDB.deleteDatabase(db.name!));
-};
-
-function Timer(props: { delay: number }) {
-  const [delay, setDelay] = useState(props.delay);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setDelay((prevDelay) => prevDelay - 1);
-    }, 1000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
-  return <>{delay}</>;
-}
 
 export function StorageSettings() {
-  const [isDeleteCookiesChecked, setIsDeleteCookiesChecked] = useState(false);
-  const [isDeleteLocalStorageChecked, setIsDeleteLocalStorageChecked] = useState(false);
-  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const history = useHistory();
+  const { wipeOutStorage } = useStorage();
+  const [isDeleteCookiesChecked, setDeleteCookiesChecked] = useState(false);
+  const [isDeleteLocalStorageChecked, setDeleteLocalStorageChecked] = useState(false);
+  const [isConfirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
 
   const toggleConfirmModal = useCallback(() => {
-    setIsConfirmDeleteModalOpen((isOpen) => !isOpen);
+    setConfirmDeleteModalOpen((isOpen) => !isOpen);
   }, []);
-
-  const deleteSuccessAlert = useGlobalAlert(
-    useCallback(({ close }) => {
-      setTimeout(() => {
-        window.location.href = window.location.origin + window.location.pathname;
-      }, DELETE_ALERT_DELAY * 1000);
-      return (
-        <Alert
-          variant="success"
-          title={
-            <>
-              Data deleted successfully. <br />
-              You will be redirected to the home page in <Timer delay={DELETE_ALERT_DELAY} /> seconds
-            </>
-          }
-        />
-      );
-    }, [])
-  );
 
   const deleteErrorAlert = useGlobalAlert(
     useCallback(({ close }) => {
@@ -107,18 +60,15 @@ export function StorageSettings() {
     toggleConfirmModal();
 
     try {
-      await deleteAllIndexedDBs();
-      if (isDeleteLocalStorageChecked) {
-        localStorage.clear();
-      }
-      if (isDeleteCookiesChecked) {
-        deleteAllCookies();
-      }
-      deleteSuccessAlert.show();
+      await wipeOutStorage({
+        includeCookies: isDeleteCookiesChecked,
+        includeLocalStorage: isDeleteLocalStorageChecked,
+      });
     } catch (e) {
+      console.error(e);
       deleteErrorAlert.show();
     }
-  }, [toggleConfirmModal, deleteSuccessAlert, isDeleteLocalStorageChecked, deleteErrorAlert, isDeleteCookiesChecked]);
+  }, [toggleConfirmModal, wipeOutStorage, isDeleteCookiesChecked, isDeleteLocalStorageChecked, deleteErrorAlert]);
 
   useEffect(() => {
     if (!isBrowserChromiumBased()) {
@@ -163,7 +113,7 @@ export function StorageSettings() {
                   label="Cookies"
                   description={"Delete all cookies."}
                   isChecked={isDeleteCookiesChecked}
-                  onChange={setIsDeleteCookiesChecked}
+                  onChange={setDeleteCookiesChecked}
                 />
                 <br />
                 <Checkbox
@@ -171,7 +121,7 @@ export function StorageSettings() {
                   label="LocalStorage"
                   description={"Delete all localStorage information."}
                   isChecked={isDeleteLocalStorageChecked}
-                  onChange={setIsDeleteLocalStorageChecked}
+                  onChange={setDeleteLocalStorageChecked}
                 />
               </Alert>
             </Form>
@@ -186,7 +136,7 @@ export function StorageSettings() {
           onClose={toggleConfirmModal}
           onDelete={onConfirmDeleteModalDelete}
           elementsTypeName="data"
-          deleteMessage="By deleting this data will permanently erase your stored information."
+          deleteMessage="All stored information will be permanently deleted and you will be redirected to the Overview page."
         />
       </Page>
     </>

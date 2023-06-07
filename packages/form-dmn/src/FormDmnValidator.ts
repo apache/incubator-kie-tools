@@ -20,6 +20,7 @@ import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from 
 import { FormDmnJsonSchemaBridge } from "./uniforms";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
+import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
 
 export class FormDmnValidator extends Validator {
   private dmnRunnerAjv = new DmnRunnerAjv();
@@ -57,7 +58,8 @@ export class FormDmnValidator extends Validator {
   }
 
   public getBridge(formSchema: ExtendedServicesDmnJsonSchema): FormDmnJsonSchemaBridge {
-    const validator = this.createValidator(formSchema);
-    return new FormDmnJsonSchemaBridge(formSchema, validator, this.i18n as DmnFormI18n);
+    const formDraft4 = { ...formSchema, $schema: SCHEMA_DRAFT4 };
+    const validator = this.createValidator(formDraft4);
+    return new FormDmnJsonSchemaBridge(formDraft4, validator, this.i18n as DmnFormI18n);
   }
 }

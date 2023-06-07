@@ -20,8 +20,8 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Base implementation of {@link AbstractYAMLSerializer} for dates.
@@ -44,18 +44,18 @@ public abstract class BaseDateYAMLSerializer<D extends Date> extends AbstractYAM
 
     @Override
     public void serialize(
-        YAMLWriter writer, String propertyName, Date value, YAMLSerializationContext ctx) {
+        YamlMapping writer, String propertyName, Date value, YAMLSerializationContext ctx) {
       if ((ctx.isWriteDatesAsTimestamps())) {
-        writer.value(propertyName, String.valueOf(value.getTime()));
+        writer.addScalarNode(propertyName, String.valueOf(value.getTime()));
       } else {
         String date = value.toString(); // TODO use a better format
-        writer.value(propertyName, date);
+        writer.addScalarNode(propertyName, date);
       }
     }
 
     @Override
-    public void serialize(YAMLSequenceWriter writer, Date value, YAMLSerializationContext ctx) {
-      writer.value(String.valueOf(value.getTime()));
+    public void serialize(YamlSequence writer, Date value, YAMLSerializationContext ctx) {
+      writer.addScalarNode(String.valueOf(value.getTime()));
     }
   }
 
@@ -73,14 +73,16 @@ public abstract class BaseDateYAMLSerializer<D extends Date> extends AbstractYAM
 
     @Override
     public void serialize(
-        YAMLWriter writer, String propertyName, java.sql.Date value, YAMLSerializationContext ctx) {
-      writer.value(propertyName, value.toString());
+        YamlMapping writer,
+        String propertyName,
+        java.sql.Date value,
+        YAMLSerializationContext ctx) {
+      writer.addScalarNode(propertyName, value.toString());
     }
 
     @Override
-    public void serialize(
-        YAMLSequenceWriter writer, java.sql.Date value, YAMLSerializationContext ctx) {
-      writer.value(value.toString());
+    public void serialize(YamlSequence writer, java.sql.Date value, YAMLSerializationContext ctx) {
+      writer.addScalarNode(value.toString());
     }
   }
 
@@ -98,13 +100,13 @@ public abstract class BaseDateYAMLSerializer<D extends Date> extends AbstractYAM
 
     @Override
     public void serialize(
-        YAMLWriter writer, String propertyName, Time value, YAMLSerializationContext ctx) {
-      writer.value(propertyName, value.toString());
+        YamlMapping writer, String propertyName, Time value, YAMLSerializationContext ctx) {
+      writer.addScalarNode(propertyName, value.toString());
     }
 
     @Override
-    public void serialize(YAMLSequenceWriter writer, Time value, YAMLSerializationContext ctx) {
-      writer.value(value.toString());
+    public void serialize(YamlSequence writer, Time value, YAMLSerializationContext ctx) {
+      writer.addScalarNode(value.toString());
     }
   }
 
@@ -122,19 +124,18 @@ public abstract class BaseDateYAMLSerializer<D extends Date> extends AbstractYAM
 
     @Override
     public void serialize(
-        YAMLWriter writer, String propertyName, Timestamp value, YAMLSerializationContext ctx) {
+        YamlMapping writer, String propertyName, Timestamp value, YAMLSerializationContext ctx) {
       if (ctx.isWriteDatesAsTimestamps()) {
-        writer.value(propertyName, String.valueOf(value.getTime()));
+        writer.addScalarNode(propertyName, String.valueOf(value.getTime()));
       } else {
         String date = value.toString(); // TODO use a better format
-        writer.value(propertyName, date);
+        writer.addScalarNode(propertyName, date);
       }
     }
 
     @Override
-    public void serialize(
-        YAMLSequenceWriter writer, Timestamp value, YAMLSerializationContext ctx) {
-      writer.value(String.valueOf(value.getTime()));
+    public void serialize(YamlSequence writer, Timestamp value, YAMLSerializationContext ctx) {
+      writer.addScalarNode(String.valueOf(value.getTime()));
     }
   }
 }

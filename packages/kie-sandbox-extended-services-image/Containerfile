@@ -12,12 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.1
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.2
 
-RUN mkdir -m 775 -p /kie-sandbox /root/.cache /.cache
+RUN microdnf install shadow-utils -y \
+  && groupadd extended-services-user \
+  && useradd --create-home extended-services-user -g extended-services-user \
+  && mkdir -m 775 -p /kie-sandbox /root/.cache /home/extended-services-user/.cache \
+  && chown extended-services-user:extended-services-user /home/extended-services-user/.cache
 
 COPY dist-dev/kie_sandbox_extended_services_headless /kie-sandbox/kie_sandbox_extended_services_headless
 
 EXPOSE 21345
+
+USER extended-services-user
 
 CMD [ "/kie-sandbox/kie_sandbox_extended_services_headless" ]

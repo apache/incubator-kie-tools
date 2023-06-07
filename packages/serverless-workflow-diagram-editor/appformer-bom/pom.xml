@@ -507,8 +507,8 @@
 
 
       <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling</groupId>
-        <artifactId>eo-yaml</artifactId>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.yaml</groupId>
+        <artifactId>snakeyaml-engine</artifactId>
         <version>${project.version}</version>
       </dependency>
 

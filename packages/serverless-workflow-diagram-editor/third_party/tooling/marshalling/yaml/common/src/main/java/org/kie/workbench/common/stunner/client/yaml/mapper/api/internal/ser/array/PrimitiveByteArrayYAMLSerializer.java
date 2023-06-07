@@ -19,8 +19,8 @@ package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.arr
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.AbstractYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.utils.Base64Utils;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Default {@link AbstractYAMLSerializer} implementation for array of byte.
@@ -42,16 +42,16 @@ public class PrimitiveByteArrayYAMLSerializer extends BasicArrayYAMLSerializer<b
   /** {@inheritDoc} */
   @Override
   public void serialize(
-      YAMLWriter writer, String propertyName, byte[] values, YAMLSerializationContext ctx) {
+      YamlMapping writer, String propertyName, byte[] values, YAMLSerializationContext ctx) {
     if (!ctx.isWriteEmptyYAMLArrays() && values.length == 0) {
-      writer.nullValue(propertyName);
+      writer.addScalarNode(propertyName, null);
       return;
     }
-    writer.value(propertyName, Base64Utils.toBase64(values));
+    writer.addScalarNode(propertyName, Base64Utils.toBase64(values));
   }
 
   @Override
-  public void serialize(YAMLSequenceWriter writer, byte[] value, YAMLSerializationContext ctx) {
-    writer.value(Base64Utils.toBase64(value));
+  public void serialize(YamlSequence writer, byte[] value, YAMLSerializationContext ctx) {
+    writer.addScalarNode(Base64Utils.toBase64(value));
   }
 }

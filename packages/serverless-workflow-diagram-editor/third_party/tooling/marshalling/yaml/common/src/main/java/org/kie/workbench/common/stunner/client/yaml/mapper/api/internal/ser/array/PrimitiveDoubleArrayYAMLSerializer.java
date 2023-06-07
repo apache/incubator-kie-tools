@@ -19,9 +19,8 @@ package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.arr
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.AbstractYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.BaseNumberYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.impl.DefaultYAMLSequenceWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Default {@link AbstractYAMLSerializer} implementation for array of double.
@@ -46,21 +45,20 @@ public class PrimitiveDoubleArrayYAMLSerializer extends BasicArrayYAMLSerializer
   /** {@inheritDoc} */
   @Override
   public void serialize(
-      YAMLWriter writer, String propertyName, double[] values, YAMLSerializationContext ctx) {
+      YamlMapping writer, String propertyName, double[] values, YAMLSerializationContext ctx) {
     if (!ctx.isWriteEmptyYAMLArrays() && values.length == 0) {
-      writer.nullValue(propertyName);
+      writer.addScalarNode(propertyName, null);
       return;
     }
 
-    YAMLSequenceWriter yamlSequenceWriter = new DefaultYAMLSequenceWriter();
+    YamlSequence yamlSequence = writer.addSequenceNode(propertyName);
     for (double value : values) {
-      serializer.serialize(yamlSequenceWriter, value, ctx);
+      serializer.serialize(yamlSequence, value, ctx);
     }
-    writer.value(propertyName, yamlSequenceWriter.getWriter());
   }
 
   @Override
-  public void serialize(YAMLSequenceWriter writer, double[] value, YAMLSerializationContext ctx) {
+  public void serialize(YamlSequence writer, double[] value, YAMLSerializationContext ctx) {
     for (double o : value) {
       serializer.serialize(writer, o, ctx);
     }

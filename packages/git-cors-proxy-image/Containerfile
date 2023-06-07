@@ -12,18 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM registry.access.redhat.com/ubi9/nodejs-16-minimal
+FROM registry.access.redhat.com/ubi9/nodejs-18-minimal:1-51
 
-USER root
+USER 1000
 
-COPY dist-dev/git-cors-proxy /tmp/git-cors-proxy
+COPY --chown=1000:1000 --chmod=777 dist-dev/git-cors-proxy /tmp/git-cors-proxy
 
-RUN mkdir /kie-sandbox \
-  && mv /tmp/git-cors-proxy /kie-sandbox \
-  && chgrp -R 0 /kie-sandbox \
-  && chmod -R g=u /kie-sandbox \
-  && npm install --production --silent --prefix /kie-sandbox/git-cors-proxy
+RUN mkdir -p -m 777 $HOME/kie-sandbox \
+  && mv /tmp/git-cors-proxy $HOME/kie-sandbox \
+  && chgrp -R 0 $HOME/kie-sandbox \
+  && chmod -R g=u $HOME/kie-sandbox \
+  && npm install --production --silent --prefix $HOME/kie-sandbox/git-cors-proxy
 
 EXPOSE 8080
 
-CMD [ "/kie-sandbox/git-cors-proxy/bin.js", "start", "-p", "8080" ]
+CMD $HOME/kie-sandbox/git-cors-proxy/bin.js start -p 8080

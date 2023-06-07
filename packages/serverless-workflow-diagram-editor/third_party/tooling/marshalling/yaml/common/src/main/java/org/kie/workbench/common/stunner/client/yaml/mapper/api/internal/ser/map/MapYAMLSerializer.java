@@ -20,8 +20,8 @@ import java.util.Map;
 
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.AbstractYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Default {@link AbstractYAMLSerializer} implementation for {@link Map}.
@@ -79,7 +79,7 @@ public class MapYAMLSerializer<M extends Map<K, V>, K, V> extends AbstractYAMLSe
 
   /** {@inheritDoc} */
   @Override
-  public void doSerialize(YAMLWriter writer, M values, YAMLSerializationContext ctx) {
+  public void doSerialize(YamlMapping writer, M values, YAMLSerializationContext ctx) {
     serializeValues(writer, values, ctx);
   }
 
@@ -92,11 +92,11 @@ public class MapYAMLSerializer<M extends Map<K, V>, K, V> extends AbstractYAMLSe
   /**
    * serializeValues
    *
-   * @param writer a {@link YAMLWriter} object.
+   * @param writer a {@link YamlMapping} object.
    * @param values a M object.
    * @param ctx a {@link YAMLSerializationContext} object.
    */
-  public void serializeValues(YAMLWriter writer, M values, YAMLSerializationContext ctx) {
+  public void serializeValues(YamlMapping writer, M values, YAMLSerializationContext ctx) {
     throw new UnsupportedOperationException();
     /*        if (!values.isEmpty()) {
         Map<K, V> map = values;
@@ -130,7 +130,7 @@ public class MapYAMLSerializer<M extends Map<K, V>, K, V> extends AbstractYAMLSe
   }
 
   @Override
-  public void serialize(YAMLSequenceWriter writer, M value, YAMLSerializationContext ctx) {
+  public void serialize(YamlSequence writer, M value, YAMLSerializationContext ctx) {
     throw new UnsupportedOperationException();
   }
 }

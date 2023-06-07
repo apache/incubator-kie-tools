@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.array;
 
-import com.amihaiemil.eoyaml.YamlMapping;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.StringYAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.utils.Base64Utils;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
 
 /**
  * Default {@link YAMLDeserializer} implementation for array of byte.
@@ -37,7 +37,7 @@ public class PrimitiveByteArrayYAMLDeserializer extends AbstractArrayYAMLDeseria
   @Override
   public byte[] doDeserializeArray(YamlMapping yaml, String key, YAMLDeserializationContext ctx) {
 
-    String result = StringYAMLDeserializer.INSTANCE.deserialize(yaml.value(key), ctx);
+    String result = StringYAMLDeserializer.INSTANCE.deserialize(yaml.getNode(key), ctx);
     if (result != null) {
       return Base64Utils.fromBase64(result);
     }

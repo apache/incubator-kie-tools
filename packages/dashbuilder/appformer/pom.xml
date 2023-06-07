@@ -48,9 +48,9 @@
     <version.org.webjars.bower.org.patternfly>3.18.1</version.org.webjars.bower.org.patternfly>
     <version.org.webjars.bower.google-code-prettify>1.0.4</version.org.webjars.bower.google-code-prettify>
     <version.org.webjars.bower.bootstrap-select>1.10.0</version.org.webjars.bower.bootstrap-select>
-    <version.org.webjars.bower.moment>2.14.1</version.org.webjars.bower.moment>
-    <version.org.webjars.bower.moment-timezone>0.5.17</version.org.webjars.bower.moment-timezone>
     <version.org.webjars.bower.bluebird>3.1.1</version.org.webjars.bower.bluebird>
+    <version.org.webjars.npm.moment>2.29.4</version.org.webjars.npm.moment>
+    <version.org.webjars.npm.moment-timezone>0.5.43</version.org.webjars.npm.moment-timezone>
     <version.org.webjars.npm.react>16.6.0</version.org.webjars.npm.react>
     <version.org.webjars.npm.react-dom>16.6.0</version.org.webjars.npm.react-dom>
     <version.org.webjars.bower.bootstrap-daterangepicker>2.1.25</version.org.webjars.bower.bootstrap-daterangepicker>

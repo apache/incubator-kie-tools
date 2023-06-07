@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.collection;
 
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
 
 /**
  * Default {@link YAMLDeserializer} implementation for {@link java.lang.Iterable}. The
