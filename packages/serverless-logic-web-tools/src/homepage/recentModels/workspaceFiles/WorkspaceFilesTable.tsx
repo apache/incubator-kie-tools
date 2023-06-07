@@ -27,6 +27,7 @@ import { useCallback, useMemo, useState } from "react";
 import { isEditable } from "../../../extension";
 import { WorkspaceFilesTableRow } from "./WorkspaceFilesTableRow";
 import { TablePaginationProps, TableRowEmptyState } from "../../../table";
+import { escapeRegExp } from "../../../../regex";
 
 export const columnNames = {
   name: "Name",
@@ -76,7 +77,7 @@ export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
   );
 
   const filteredTableData = useMemo<WorkspaceFilesTableRowData[]>(() => {
-    const searchRegex = new RegExp(searchValue, "i");
+    const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
     return searchValue ? tableData.filter((e) => e.name.search(searchRegex) >= 0) : tableData;
   }, [searchValue, tableData]);
 

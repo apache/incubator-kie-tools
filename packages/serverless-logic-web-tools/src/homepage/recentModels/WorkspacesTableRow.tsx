@@ -32,8 +32,6 @@ import { FileLabel } from "../../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 import { columnNames, WorkspacesTableRowData } from "./WorkspacesTable";
 
-export const workspacesTableRowErrorContent = "Error obtaining workspace information";
-
 export type WorkspacesTableRowProps = {
   rowIndex: TdSelectType["rowIndex"];
   rowData: WorkspacesTableRowData;
@@ -53,26 +51,37 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const downloadAllRef = useRef<HTMLAnchorElement>(null);
   const { isSelected, rowIndex, onDelete } = props;
-  const { descriptor, editableFiles, totalFiles, name, isWsFolder, workspaceId, createdDateISO, lastUpdatedDateISO } =
-    props.rowData;
+  const { descriptor, editableFiles, totalFiles, isWsFolder } = props.rowData;
   const workspaces = useWorkspaces();
 
-  const linkTo = useMemo(
-    () =>
-      !isWsFolder
-        ? routes.workspaceWithFilePath.path({
-            workspaceId,
-            fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-            extension: editableFiles[0].extension,
-          })
-        : routes.workspaceWithFiles.path({ workspaceId }),
-    [editableFiles, isWsFolder, workspaceId]
-  );
+  const linkTo = useMemo(() => {
+    if (totalFiles === 0) {
+      return;
+    }
+    return !isWsFolder
+      ? routes.workspaceWithFilePath.path({
+          workspaceId: descriptor.workspaceId,
+          fileRelativePath: editableFiles[0].relativePathWithoutExtension,
+          extension: editableFiles[0].extension,
+        })
+      : routes.workspaceWithFiles.path({ workspaceId: descriptor.workspaceId });
+  }, [descriptor.workspaceId, editableFiles, isWsFolder, totalFiles]);
+
+  const label = useMemo(() => {
+    if (totalFiles === 0) {
+      return;
+    }
+    return isWsFolder ? (
+      <WorkspaceLabel descriptor={descriptor} />
+    ) : (
+      <FileLabel extension={editableFiles[0].extension} />
+    );
+  }, [descriptor, editableFiles, isWsFolder, totalFiles]);
 
   const onDeleteWorkspace = useCallback(async () => {
-    await workspaces.deleteWorkspace({ workspaceId });
-    onDelete(workspaceId);
-  }, [workspaceId, onDelete, workspaces]);
+    await workspaces.deleteWorkspace({ workspaceId: descriptor.workspaceId });
+    onDelete(descriptor.workspaceId);
+  }, [workspaces, descriptor.workspaceId, onDelete]);
 
   const onDownloadWorkspace = useCallback(async () => {
     if (totalFiles === 0) {
@@ -84,7 +93,7 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
         return;
       }
       const file = await workspaces.getFile({
-        workspaceId: workspaceId,
+        workspaceId: descriptor.workspaceId,
         relativePath: editableFiles[0].relativePath,
       });
       if (!file) {
@@ -100,16 +109,16 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
         return;
       }
 
-      const zipBlob = await workspaces.prepareZip({ workspaceId });
-      downloadAllRef.current.download = `${name}.zip`;
+      const zipBlob = await workspaces.prepareZip({ workspaceId: descriptor.workspaceId });
+      downloadAllRef.current.download = `${descriptor.name}.zip`;
       downloadAllRef.current.href = URL.createObjectURL(zipBlob);
       downloadAllRef.current.click();
     }
-  }, [editableFiles, name, totalFiles, workspaceId, workspaces]);
+  }, [descriptor, editableFiles, totalFiles, workspaces]);
 
   return (
     <>
-      <Tr key={name}>
+      <Tr key={descriptor.workspaceId}>
         <Td
           select={{
             rowIndex,
@@ -118,30 +127,21 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
           }}
         />
         <Td dataLabel={columnNames.name}>
-          {isWsFolder ? (
+          {linkTo ? (
             <>
-              <FolderIcon />
-              &nbsp;&nbsp;&nbsp;<Link to={linkTo}>{name}</Link>
+              {isWsFolder ? <FolderIcon /> : <TaskIcon />}
+              &nbsp;&nbsp;&nbsp;<Link to={linkTo}>{descriptor.name}</Link>
             </>
           ) : (
-            <>
-              <TaskIcon />
-              &nbsp;&nbsp;&nbsp;<Link to={linkTo}>{name}</Link>
-            </>
+            descriptor.name
           )}
         </Td>
-        <Td dataLabel={columnNames.type}>
-          {isWsFolder ? (
-            <WorkspaceLabel descriptor={descriptor} />
-          ) : (
-            <FileLabel extension={editableFiles[0].extension} />
-          )}
-        </Td>
+        <Td dataLabel={columnNames.type}>{label}</Td>
         <Td dataLabel={columnNames.created}>
-          <RelativeDate date={new Date(createdDateISO ?? "")} />
+          <RelativeDate date={new Date(descriptor.createdDateISO ?? "")} />
         </Td>
         <Td dataLabel={columnNames.lastUpdated}>
-          <RelativeDate date={new Date(lastUpdatedDateISO ?? "")} />
+          <RelativeDate date={new Date(descriptor.lastUpdatedDateISO ?? "")} />
         </Td>
         <Td dataLabel={columnNames.editableFiles}>{editableFiles.length}</Td>
         <Td dataLabel={columnNames.totalFiles}>{totalFiles}</Td>
@@ -176,8 +176,7 @@ export function WorkspacesTableRowError(props: { rowData: WorkspacesTableRowData
         <Td>&nbsp;</Td>
         <Td colSpan={Object.keys(columnNames).length}>
           <ExclamationTriangleIcon />
-          &nbsp;&nbsp;
-          {workspacesTableRowErrorContent}&nbsp;
+          &nbsp;&nbsp;Error obtaining workspace information&nbsp;
           <Popover
             maxWidth="30%"
             bodyContent={
@@ -186,10 +185,10 @@ export function WorkspacesTableRowError(props: { rowData: WorkspacesTableRowData
                 <br />
                 workspace name: <b>{rowData.descriptor.name}</b>
                 <br />
-                workspace id: <b>{rowData.workspaceId}</b>
+                workspace id: <b>{rowData.descriptor.workspaceId}</b>
                 <br />
                 <br />
-                To solve the issue, try deleting the workspace and creating it again.
+                If reloading the page does not resolve the issue, try deleting the workspace and creating it again.
               </>
             }
           >
@@ -201,7 +200,7 @@ export function WorkspacesTableRowError(props: { rowData: WorkspacesTableRowData
             items={[
               {
                 title: "Delete",
-                onClick: () => workspaces.deleteWorkspace({ workspaceId: rowData.workspaceId }),
+                onClick: () => workspaces.deleteWorkspace({ workspaceId: rowData.descriptor.workspaceId }),
               },
             ]}
           />

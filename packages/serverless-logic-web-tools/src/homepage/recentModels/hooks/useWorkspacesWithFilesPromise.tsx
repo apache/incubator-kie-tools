@@ -17,38 +17,60 @@
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
+import { WorkspaceFile, useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { WORKSPACES_BROADCAST_CHANNEL } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspacesBroadcastEvents";
 import { useCallback } from "react";
 
-export function useActiveWorkspacesPromise(workspaceIds: WorkspaceDescriptor["workspaceId"][]) {
+type WorkspaceWithFilesResponse =
+  | {
+      descriptor: WorkspaceDescriptor;
+      files: WorkspaceFile[];
+      success: true;
+    }
+  | (Partial<WorkspaceDescriptor> & {
+      success: false;
+      workspaceId: WorkspaceDescriptor["workspaceId"];
+      errorMessage: string;
+    });
+
+export function useWorkspacesWithFilesPromise(workspaceIds: WorkspaceDescriptor["workspaceId"][]) {
   const workspaces = useWorkspaces();
-  const [activeWorkspacesPromise, setActiveWorkspacesPromise] = usePromiseState<ActiveWorkspace[]>();
+  const [workspaceWithFilesResponsesPromise, setWorkspaceWithFilesResponsesPromise] =
+    usePromiseState<WorkspaceWithFilesResponse[]>();
 
   const refresh = useCallback(
     async (canceled: Holder<boolean>) => {
       try {
-        const activeWorkspaces = await Promise.all(
-          workspaceIds.map(async (workspaceId) => {
-            const descriptor = await workspaces.getWorkspace({ workspaceId });
-            const files = await workspaces.getFiles({ workspaceId });
-            return { descriptor, files };
+        const workspaceWithFilesResponses = await Promise.all(
+          workspaceIds.map<Promise<WorkspaceWithFilesResponse>>(async (workspaceId) => {
+            let descriptor = undefined;
+            try {
+              descriptor = await workspaces.getWorkspace({ workspaceId });
+            } catch (e) {
+              return { success: false, errorMessage: e, workspaceId };
+            }
+
+            try {
+              const files = await workspaces.getFiles({ workspaceId });
+              return { descriptor, files, success: true };
+            } catch (e) {
+              return { success: false, errorMessage: e, ...descriptor };
+            }
           })
         );
         if (canceled.get()) {
           return;
         }
 
-        setActiveWorkspacesPromise({ data: activeWorkspaces });
+        setWorkspaceWithFilesResponsesPromise({ data: workspaceWithFilesResponses });
       } catch (error) {
-        setActiveWorkspacesPromise({ error: "Can't load data from workspaces" });
+        setWorkspaceWithFilesResponsesPromise({ error: "Can't load data from workspaces" });
         console.error(error);
         return;
       }
     },
-    [setActiveWorkspacesPromise, workspaceIds, workspaces]
+    [setWorkspaceWithFilesResponsesPromise, workspaceIds, workspaces]
   );
 
   useCancelableEffect(
@@ -87,5 +109,5 @@ export function useActiveWorkspacesPromise(workspaceIds: WorkspaceDescriptor["wo
     )
   );
 
-  return activeWorkspacesPromise;
+  return workspaceWithFilesResponsesPromise;
 }
