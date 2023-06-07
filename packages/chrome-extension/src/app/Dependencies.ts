@@ -29,7 +29,7 @@ export class Dependencies {
 
   public readonly singleView = {
     iframeContainerTarget: () => {
-      return document.querySelector(".Box-sc-g0xbh4-0.izfgQu") as HTMLElement | null;
+      return document.querySelector(".Box-sc-g0xbh4-0.cluMzC") as HTMLElement | null;
     },
     toolbarContainerTarget: () => {
       return document.querySelector(".Box-sc-g0xbh4-0.izfgQu") as HTMLElement | null;
