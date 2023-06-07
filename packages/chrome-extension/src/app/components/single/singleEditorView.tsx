@@ -21,6 +21,7 @@ import {
   extractOpenFilePath,
   iframeFullscreenContainer,
   removeAllChildren,
+  waitForElementToBeReady,
 } from "../../utils";
 import * as ReactDOM from "react-dom";
 import { Globals, Main } from "../common/Main";
@@ -39,7 +40,9 @@ export interface FileInfo {
   gitRef: string;
 }
 
-export function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileInfo }) {
+export async function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileInfo }) {
+  // wait for the dom element to be ready before rendering
+  await waitForElementToBeReady(".Box-sc-g0xbh4-0.izfgQu");
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
   if (!args.dependencies.singleView.githubTextEditorToReplaceElement()) {
@@ -123,27 +126,27 @@ function cleanup(id: string, dependencies: Dependencies) {
 
 function toolbarContainer(id: string, dependencies: Dependencies) {
   const element = () => document.querySelector(`.${KOGITO_TOOLBAR_CONTAINER_CLASS}.${id}`)!;
-
-  if (!element()) {
-    dependencies.singleView
-      .toolbarContainerTarget()!
-      .insertAdjacentHTML(
-        "beforebegin",
-        `<div class="${KOGITO_TOOLBAR_CONTAINER_CLASS} ${id} view d-flex flex-column flex-items-start flex-md-row"></div>`
-      );
+  if (element) {
+    element()?.remove();
   }
+  dependencies.singleView
+    .toolbarContainerTarget()!
+    .insertAdjacentHTML(
+      "beforebegin",
+      `<div class="${KOGITO_TOOLBAR_CONTAINER_CLASS} ${id} view d-flex flex-column flex-items-start flex-md-row"></div>`
+    );
 
   return element() as HTMLElement;
 }
 
 function iframeContainer(id: string, dependencies: Dependencies) {
   const element = () => document.querySelector(`.${KOGITO_IFRAME_CONTAINER_CLASS}.${id}`)!;
-
-  if (!element()) {
-    dependencies.singleView
-      .iframeContainerTarget()!
-      .insertAdjacentHTML("afterend", `<div class="${KOGITO_IFRAME_CONTAINER_CLASS} ${id} view"></div>`);
+  if (element) {
+    element()?.remove();
   }
+  dependencies.singleView
+    .iframeContainerTarget()!
+    .insertAdjacentHTML("afterend", `<div class="${KOGITO_IFRAME_CONTAINER_CLASS} ${id} view"></div>`);
 
   return element() as HTMLElement;
 }

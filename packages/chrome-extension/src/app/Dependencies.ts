@@ -17,27 +17,25 @@
 export class Dependencies {
   public readonly singleEdit = {
     iframeContainerTarget: () => {
-      return document.querySelector(".file") as HTMLElement | null;
+      return document.querySelector(".Box-sc-g0xbh4-0.cpPHtE") as HTMLElement | null;
     },
     toolbarContainerTarget: () => {
-      return document.querySelector(
-        ".js-breadcrumb-container.d-flex.flex-items-center.flex-wrap.flex-auto"
-      ) as HTMLElement | null;
+      return document.querySelector(".Box-sc-g0xbh4-0.cpPHtE") as HTMLElement | null;
     },
     githubTextEditorToReplaceElement: () => {
-      return document.querySelector(".js-code-editor") as HTMLElement | null;
+      return document.querySelector(".Box-sc-g0xbh4-0.iexDVb") as HTMLElement | null;
     },
   };
 
   public readonly singleView = {
     iframeContainerTarget: () => {
-      return document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null;
+      return document.querySelector(".Box-sc-g0xbh4-0.izfgQu") as HTMLElement | null;
     },
     toolbarContainerTarget: () => {
-      return document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null;
+      return document.querySelector(".Box-sc-g0xbh4-0.izfgQu") as HTMLElement | null;
     },
     githubTextEditorToReplaceElement: () => {
-      return document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement | null;
+      return document.querySelector(".Box-sc-g0xbh4-0.eRkHwF") as HTMLElement | null;
     },
   };
 
@@ -55,7 +53,7 @@ export class Dependencies {
 
   public readonly openRepoInExternalEditor = {
     buttonContainerOnRepoFilesList: () => {
-      return document.querySelector(".file-navigation") as HTMLElement | null;
+      return document.querySelector(".Box-sc-g0xbh4-0.gtBUEp") as HTMLElement | null;
     },
     buttonContainerOnPrs: () => {
       return document.querySelector(".gh-header-actions") as HTMLElement | null;
@@ -70,10 +68,12 @@ export class Dependencies {
       return document.body;
     },
     edit__githubFileNameInput: () => {
-      return document.querySelector(".js-blob-filename") as HTMLInputElement | null;
+      return document.querySelector(
+        "._UnstyledTextInput__UnstyledTextInput-sc-31b2um-0.dFGJZq"
+      ) as HTMLInputElement | null;
     },
     edit__githubTextAreaWithFileContents: () => {
-      return document.querySelector(".file-editor-textarea") as HTMLTextAreaElement | null;
+      return document.querySelector(".js-react-code-editor") as HTMLTextAreaElement | null;
     },
     pr__mutationObserverTarget: () => {
       return document.getElementById("files") as HTMLElement | null;
@@ -100,6 +100,12 @@ export class Dependencies {
         const elements = Array.from(document.querySelectorAll(".gh-header-meta .css-truncate-target"));
         return elements.length > 0 ? (elements as HTMLElement[]) : null;
       },
+    },
+    hideDocumentBody: () => {
+      (document.querySelector("[data-turbo-body]") as HTMLElement).style.display = "none";
+    },
+    showDocumentBody: () => {
+      (document.querySelector("[data-turbo-body]") as HTMLElement).style.display = "unset";
     },
   };
 }
