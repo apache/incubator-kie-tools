@@ -85,7 +85,6 @@ import { switchExpression } from "../../switchExpression/switchExpression";
 import { GitStatusProps } from "../../workspace/components/GitStatusIndicatorActions";
 import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
 import { QueryParams } from "../../navigation/Routes";
-import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { useHistory } from "react-router";
 
 const ROOT_MENU_ID = "rootMenu";
@@ -201,14 +200,11 @@ export function FileSwitcher(props: {
     setMenuHeights({});
   }, [props.workspace, filesMenuMode, activeMenu]);
 
-  useEffect(() => {
-    if (workspaceFileNameRef.current !== null && queryParamNewFile) {
-      workspaceFileNameRef.current.select();
-      history.replace({
-        search: queryParams.without(QueryParams.NEW_FILE).toString(),
-      });
-    }
-  }, [history, queryParamNewFile, queryParams, workspaceFileNameRef]);
+  // useEffect(() => {
+  //   if (workspaceFileNameRef.current !== null && queryParamNewFile) {
+  //     workspaceFileNameRef.current.select();
+  //   }
+  // }, [history, queryParamNewFile, queryParams, workspaceFileNameRef]);
 
   useEffect(() => {
     if (isFilesDropdownOpen) {
