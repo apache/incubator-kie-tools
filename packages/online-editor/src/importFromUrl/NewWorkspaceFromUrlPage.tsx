@@ -148,21 +148,22 @@ export function NewWorkspaceFromUrlPage() {
       urlDomain,
     });
     setAuthSessionId(compatible[0].id);
+
     if (compatible[0].id === AUTH_SESSION_NONE.id && !selectedGitRefName) {
       history.replace({
         pathname: routes.import.path({}),
         search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
       });
-      return;
+    } else {
+      history.replace({
+        pathname: routes.import.path({}),
+        search: queryParams
+          .without(QueryParams.CONFIRM)
+          .with(QueryParams.BRANCH, selectedGitRefName)
+          .with(QueryParams.AUTH_SESSION_ID, compatible[0].id)
+          .toString(),
+      });
     }
-    history.replace({
-      pathname: routes.import.path({}),
-      search: queryParams
-        .without(QueryParams.CONFIRM)
-        .with(QueryParams.BRANCH, selectedGitRefName)
-        .with(QueryParams.AUTH_SESSION_ID, compatible[0].id)
-        .toString(),
-    });
   }, [
     authProviders,
     authSessionStatus,
