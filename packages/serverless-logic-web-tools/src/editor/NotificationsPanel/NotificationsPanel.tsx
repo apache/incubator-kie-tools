@@ -116,9 +116,8 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelRef, Props>
 
   useEffect(() => {
     setActiveTab(props.tabNames[0]);
-  }, []);
+  }, [props.tabNames]);
 
-  // const totalNotificationsSpanRef = useRef<HTMLSpanElement>(null);
   const [expandAll, setExpandAll] = useState<boolean>();
   const onExpandAll = useCallback(() => {
     setExpandAll(true);
@@ -146,7 +145,7 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelRef, Props>
         {[...tabsMap.entries()].map(([tabName, tabRef], index) => (
           <Tab
             className={"kie-tools--problems-tab-content"}
-            key={`tab-${index}`}
+            key={`tab-${tabName}`}
             eventKey={tabName}
             title={
               <TabTitleText>

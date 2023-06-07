@@ -83,6 +83,7 @@ const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
   );
 
   // Keep getFileContents in the dependency list to update the stateControl instance
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const stateControl = useMemo(() => new StateControl(), [file?.getFileContents]);
 
   const channelApiImpl = useMemo(
