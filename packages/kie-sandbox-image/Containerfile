@@ -32,4 +32,6 @@ RUN if [ -f /var/www/html/env.json ]; then chmod a+w /var/www/html/env.json; fi
 
 EXPOSE 8080
 
+USER 1000
+
 ENTRYPOINT [ "/kie-sandbox/entrypoint.sh" ]
