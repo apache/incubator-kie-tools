@@ -208,9 +208,9 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.webjars.bower</groupId>
+                  <groupId>org.webjars.npm</groupId>
                   <artifactId>moment</artifactId>
-                  <version>${version.org.webjars.bower.moment}</version>
+                  <version>${version.org.webjars.npm.moment}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/moment</outputDirectory>
@@ -229,9 +229,9 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.webjars.bower</groupId>
+                  <groupId>org.webjars.npm</groupId>
                   <artifactId>moment-timezone</artifactId>
-                  <version>${version.org.webjars.bower.moment-timezone}</version>
+                  <version>${version.org.webjars.npm.moment-timezone}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/moment-timezone</outputDirectory>
@@ -317,7 +317,7 @@
               <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/moment</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/moment/META-INF/resources/webjars/moment/${version.org.webjars.bower.moment}/min/</directory>
+                  <directory>${project.build.directory}/moment/META-INF/resources/webjars/moment/${version.org.webjars.npm.moment}/min/</directory>
                   <includes>
                     <include>moment-with-locales.min.js</include>
                   </includes>
@@ -335,7 +335,7 @@
               <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/moment-timezone</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/moment-timezone/META-INF/resources/webjars/moment-timezone/${version.org.webjars.bower.moment-timezone}/builds/</directory>
+                  <directory>${project.build.directory}/moment-timezone/META-INF/resources/webjars/moment-timezone/${version.org.webjars.npm.moment-timezone}/builds/</directory>
                   <includes>
                     <include>moment-timezone-with-data-2012-2022.min.js</include>
                   </includes>
