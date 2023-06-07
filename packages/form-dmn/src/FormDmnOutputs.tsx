@@ -43,7 +43,7 @@ const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
 const DATE_REGEX = /\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])T(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\dZ/;
 
-enum DmnFormResultStatus {
+enum FormDmnOutputsStatus {
   EMPTY,
   ERROR,
   VALID,
@@ -53,7 +53,7 @@ type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;
 };
 
-export interface DmnFormResultProps {
+export interface FormDmnOutputsProps {
   results?: DecisionResult[];
   differences?: Array<DeepPartial<DecisionResult>>;
   locale?: string;
@@ -78,8 +78,8 @@ export function extractDifferences(
   );
 }
 
-export function DmnFormResult({ openExecutionTab, ...props }: DmnFormResultProps) {
-  const [formResultStatus, setFormResultStatus] = useState<DmnFormResultStatus>(DmnFormResultStatus.EMPTY);
+export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsProps) {
+  const [formResultStatus, setFormResultStatus] = useState<FormDmnOutputsStatus>(FormDmnOutputsStatus.EMPTY);
   const [formResultError, setFormResultError] = useState<boolean>(false);
   const i18n = useMemo(() => {
     dmnFormI18n.setLocale(props.locale ?? navigator.language);
@@ -316,11 +316,11 @@ export function DmnFormResult({ openExecutionTab, ...props }: DmnFormResultProps
 
   useEffect(() => {
     if (resultsToRender && resultsToRender.length > 0) {
-      setFormResultStatus(DmnFormResultStatus.VALID);
+      setFormResultStatus(FormDmnOutputsStatus.VALID);
     } else if (formResultError) {
-      setFormResultStatus(DmnFormResultStatus.ERROR);
+      setFormResultStatus(FormDmnOutputsStatus.ERROR);
     } else {
-      setFormResultStatus(DmnFormResultStatus.EMPTY);
+      setFormResultStatus(FormDmnOutputsStatus.EMPTY);
     }
   }, [resultsToRender, formResultError]);
 
@@ -331,7 +331,7 @@ export function DmnFormResult({ openExecutionTab, ...props }: DmnFormResultProps
 
   return (
     <>
-      {formResultStatus === DmnFormResultStatus.EMPTY && (
+      {formResultStatus === FormDmnOutputsStatus.EMPTY && (
         <EmptyState>
           <EmptyStateIcon icon={InfoCircleIcon} />
           <TextContent>
@@ -344,8 +344,8 @@ export function DmnFormResult({ openExecutionTab, ...props }: DmnFormResultProps
           </EmptyStateBody>
         </EmptyState>
       )}
-      {formResultStatus === DmnFormResultStatus.ERROR && formResultErrorMessage}
-      {formResultStatus === DmnFormResultStatus.VALID && (
+      {formResultStatus === FormDmnOutputsStatus.ERROR && formResultErrorMessage}
+      {formResultStatus === FormDmnOutputsStatus.VALID && (
         <ErrorBoundary ref={errorBoundaryRef} setHasError={setFormResultError} error={formResultErrorMessage}>
           <div data-testid={"dmn-form-result"}>{resultsToRender}</div>
         </ErrorBoundary>

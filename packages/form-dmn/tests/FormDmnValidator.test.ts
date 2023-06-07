@@ -15,7 +15,7 @@
  */
 
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
-import { DmnValidator } from "../src/DmnValidator";
+import { FormDmnValidator } from "../src/FormDmnValidator";
 import { dmnFormI18n } from "../src/i18n";
 import { FormDmnJsonSchemaBridge } from "../src/uniforms";
 
@@ -40,10 +40,10 @@ const schema: ExtendedServicesDmnJsonSchema = {
 
 const i18n = dmnFormI18n.getCurrent();
 
-describe("DmnValidator Tests", () => {
+describe("FormDmnValidator Tests", () => {
   it("create instance", () => {
-    const dmnValidator = new DmnValidator(i18n);
-    expect(dmnValidator).toBeInstanceOf(DmnValidator);
+    const dmnValidator = new FormDmnValidator(i18n);
+    expect(dmnValidator).toBeInstanceOf(FormDmnValidator);
   });
 
   describe("create validator", () => {
@@ -55,7 +55,7 @@ describe("DmnValidator Tests", () => {
         yearsAndMonthsDuration: "P1Y",
       };
 
-      const validator = new DmnValidator(i18n);
+      const validator = new FormDmnValidator(i18n);
       const validate = validator.createValidator(schema.definitions?.InputSet);
       const errors = validate(model);
       expect(errors).toBeNull();
@@ -68,7 +68,7 @@ describe("DmnValidator Tests", () => {
         daysAndTimeDuration: "P1H",
       };
 
-      const validator = new DmnValidator(i18n);
+      const validator = new FormDmnValidator(i18n);
       const validate = validator.createValidator(schema.definitions?.InputSet);
       const errors = validate(model);
       expect(errors?.details[0].keyword).toEqual("format");
@@ -82,7 +82,7 @@ describe("DmnValidator Tests", () => {
         yearsAndMonthsDuration: "1M",
       };
 
-      const validator = new DmnValidator(i18n);
+      const validator = new FormDmnValidator(i18n);
       const validate = validator.createValidator(schema.definitions?.InputSet);
       const errors = validate(model);
       expect(errors?.details[0].keyword).toEqual("format");
@@ -91,7 +91,7 @@ describe("DmnValidator Tests", () => {
   });
 
   it("get bridge", () => {
-    const validator = new DmnValidator(i18n);
+    const validator = new FormDmnValidator(i18n);
     const bridge = validator.getBridge(schema);
     expect(bridge).toBeInstanceOf(FormDmnJsonSchemaBridge);
   });

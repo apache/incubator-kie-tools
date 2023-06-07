@@ -21,9 +21,8 @@ import { FormDmnJsonSchemaBridge } from "./uniforms";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 
-export class DmnValidator extends Validator {
+export class FormDmnValidator extends Validator {
   private dmnRunnerAjv = new DmnRunnerAjv();
-  private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
 
   constructor(i18n: DmnFormI18n) {
     super(i18n);

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DmnForm tests should create a text field and a label 1`] = `
+exports[`FormDmn tests should create a text field and a label 1`] = `
 <span
   class="pf-c-form__label-text"
 >
@@ -8,7 +8,7 @@ exports[`DmnForm tests should create a text field and a label 1`] = `
 </span>
 `;
 
-exports[`DmnForm tests should have placeholder 1`] = `
+exports[`FormDmn tests should have placeholder 1`] = `
 <span
   class="pf-c-select__toggle-text"
 >
@@ -16,7 +16,7 @@ exports[`DmnForm tests should have placeholder 1`] = `
 </span>
 `;
 
-exports[`DmnForm tests should remove require parameter 1`] = `
+exports[`FormDmn tests should remove require parameter 1`] = `
 <div>
   <div
     data-testid="form-base"
@@ -74,7 +74,7 @@ exports[`DmnForm tests should remove require parameter 1`] = `
 </div>
 `;
 
-exports[`DmnForm tests should render the DMN Form 1`] = `
+exports[`FormDmn tests should render the DMN Form 1`] = `
 <div
   data-testid="form-base"
 >
@@ -253,7 +253,7 @@ exports[`DmnForm tests should render the DMN Form 1`] = `
 </div>
 `;
 
-exports[`DmnForm tests should submit the formInputs 1`] = `
+exports[`FormDmn tests should submit the formInputs 1`] = `
 <div
   data-testid="form-base"
 >
@@ -432,7 +432,7 @@ exports[`DmnForm tests should submit the formInputs 1`] = `
 </div>
 `;
 
-exports[`DmnForm tests should validate the formInputs - invalid 1`] = `
+exports[`FormDmn tests should validate the formInputs - invalid 1`] = `
 <div
   data-testid="form-base"
 >
@@ -617,7 +617,7 @@ exports[`DmnForm tests should validate the formInputs - invalid 1`] = `
 </div>
 `;
 
-exports[`DmnForm tests should validate the formInputs - success 1`] = `
+exports[`FormDmn tests should validate the formInputs - success 1`] = `
 <div
   data-testid="form-base"
 >
@@ -796,7 +796,7 @@ exports[`DmnForm tests should validate the formInputs - success 1`] = `
 </div>
 `;
 
-exports[`DmnForm tests shouldn't submit the formInputs 1`] = `
+exports[`FormDmn tests shouldn't submit the formInputs 1`] = `
 <div
   data-testid="form-base"
 >
