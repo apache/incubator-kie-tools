@@ -17,6 +17,8 @@ package platform
 import (
 	"context"
 
+	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
+
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 	"github.com/kiegroup/kogito-serverless-operator/utils"
@@ -26,14 +28,13 @@ import (
 
 func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.KogitoServerlessPlatform, verbose bool) error {
 	// update missing fields in the resource
-	if p.Status.Cluster == "" {
-		if utils.IsOpenShift() {
-			p.Status.Cluster = operatorapi.PlatformClusterOpenShift
-			p.Spec.BuildPlatform.BuildStrategy = operatorapi.PlatformBuildStrategy
-		} else {
-			p.Status.Cluster = operatorapi.PlatformClusterKubernetes
-			p.Spec.BuildPlatform.BuildStrategy = operatorapi.OperatorBuildStrategy
-		}
+	if p.Status.Cluster == "" || utils.IsOpenShift() {
+		p.Status.Cluster = operatorapi.PlatformClusterOpenShift
+		p.Spec.BuildPlatform.BuildStrategy = operatorapi.PlatformBuildStrategy
+	}
+	if p.Status.Cluster == "" || !utils.IsOpenShift() {
+		p.Status.Cluster = operatorapi.PlatformClusterKubernetes
+		p.Spec.BuildPlatform.BuildStrategy = operatorapi.OperatorBuildStrategy
 	}
 
 	err := SetPlatformDefaults(p, verbose)
@@ -50,5 +51,22 @@ func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.Kogi
 		log.Log.Infof("Maven Timeout set to %s", p.Spec.BuildPlatform.Timeout.Duration)
 	}
 
+	updatePlatform(ctx, c, p)
+
 	return nil
+}
+
+func updatePlatform(ctx context.Context, c client.Client, p *operatorapi.KogitoServerlessPlatform) {
+	config := operatorapi.KogitoServerlessPlatform{}
+	errGet := c.Get(ctx, ctrl.ObjectKey{Namespace: p.Namespace, Name: p.Name}, &config)
+	if errGet != nil {
+		log.Error(errGet, "Error reading the Platform")
+	}
+	config.Spec = p.Spec
+	config.Status.Cluster = p.Status.Cluster
+
+	updateErr := c.Update(ctx, &config)
+	if updateErr != nil {
+		log.Error(updateErr, "Error updating the BuildPlatform")
+	}
 }

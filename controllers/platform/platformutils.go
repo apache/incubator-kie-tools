@@ -38,6 +38,13 @@ import (
 type ResourceCustomizer func(object ctrl.Object) ctrl.Object
 
 func ConfigureRegistry(ctx context.Context, c client.Client, p *operatorapi.KogitoServerlessPlatform, verbose bool) error {
+	//@TODO Add a notification on the status about this registry value ignored when https://issues.redhat.com/browse/KOGITO-9218 will be implemented
+	if p.Spec.BuildPlatform.BuildStrategy == operatorapi.PlatformBuildStrategy && p.Status.Cluster == operatorapi.PlatformClusterOpenShift {
+		p.Spec.BuildPlatform.Registry = operatorapi.RegistrySpec{}
+		log.Info("Platform registry not set and ignored on openshift cluster")
+		return nil
+	}
+
 	if p.Spec.BuildPlatform.Registry.Address == "" && p.Status.Cluster == operatorapi.PlatformClusterKubernetes {
 		// try KEP-1755
 		address, err := GetRegistryAddress(ctx, c)
