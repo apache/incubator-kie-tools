@@ -23,10 +23,13 @@ public class RuleEntry {
 
     public final String id;
     public final String content;
+    public final String description;
+    public final String expressionLanguage;
 
-    public RuleEntry(final String id,
-                     final String content) {
+    public RuleEntry(final String id, final String content, final String description, final String expressionLanguage) {
         this.id = id;
         this.content = content;
+        this.description = description;
+        this.expressionLanguage = expressionLanguage;
     }
 }

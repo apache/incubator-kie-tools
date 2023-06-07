@@ -18,14 +18,17 @@ package org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props;
 public class InputClauseProps extends Clause {
 
     public final String idLiteralExpression;
+    public final String description;
 
     public InputClauseProps(final String id,
-                       final String name,
-                       final String dataType,
-                       final Double width,
-                       final ClauseUnaryTests unaryTests,
-                       final String idLiteralExpression) {
+                            final String name,
+                            final String dataType,
+                            final Double width,
+                            final ClauseUnaryTests unaryTests,
+                            final String idLiteralExpression,
+                            final String description) {
         super(id, name, dataType, width, unaryTests);
         this.idLiteralExpression = idLiteralExpression;
+        this.description = description;
     }
 }
