@@ -16,14 +16,24 @@
 import { basename, extname, parse } from "path";
 import { isOfKind } from "../constants/ExtensionHelper";
 
-export function parseWorkspaceFileRelativePath(relativePath: string) {
+export interface ParsedWorkspaceFileRelativePath {
+  relativePathWithoutExtension: string;
+  relativeDirPath: string;
+  extension: string;
+  nameWithoutExtension: string;
+  name: string;
+}
+
+export function parseWorkspaceFileRelativePath(relativePath: string): ParsedWorkspaceFileRelativePath {
   const extension = extractExtension(relativePath);
+  const extensionIndex = relativePath.lastIndexOf("." + extension);
+  const name = basename(relativePath);
   return {
-    relativePathWithoutExtension: relativePath.substring(0, relativePath.lastIndexOf("." + extension)) || relativePath,
+    relativePathWithoutExtension: extensionIndex !== -1 ? relativePath.substring(0, extensionIndex) : relativePath,
     relativeDirPath: parse(relativePath).dir,
     extension: extension,
-    nameWithoutExtension: basename(relativePath, `.${extension}`),
-    name: basename(relativePath),
+    nameWithoutExtension: name !== `.${extension}` ? basename(relativePath, `.${extension}`) : "",
+    name,
   };
 }
 
