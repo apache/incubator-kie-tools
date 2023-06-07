@@ -68,9 +68,6 @@ export class WorkspacesSharedWorker {
           kieToolsWorkspacesWorker_ready() {
             res();
           },
-          async kieToolsWorkspacesWorker_ping() {
-            return "pong";
-          },
         });
       };
     });
