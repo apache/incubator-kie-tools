@@ -31,4 +31,8 @@ export function setupWorkerConnection(args: {
   args.port.addEventListener("message", (message) => bus.server.receive(message.data, args.apiImpl));
   args.port.start(); // Required when using addEventListener. Otherwise, called implicitly by onmessage setter.
   bus.clientApi.notifications.kieToolsWorkspacesWorker_ready.send();
+
+  args.fsFlushManager.subscribable.subscribe((flushes) => {
+    bus.shared.kieSandboxWorkspacesStorage_flushes.set(flushes);
+  });
 }
