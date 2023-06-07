@@ -181,6 +181,12 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
               name: u.name,
             },
           }));
+        } else {
+          setExpression((prev: InvocationExpressionDefinition) => ({
+            ...prev,
+            dataType: u.dataType,
+            name: u.name,
+          }));
         }
       }
     },

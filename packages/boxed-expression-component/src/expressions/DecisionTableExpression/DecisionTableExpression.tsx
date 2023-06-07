@@ -332,6 +332,10 @@ export function DecisionTableExpression(
           if (u.column.depth === 0 && u.column.groupType === DecisionTableColumnType.OutputClause) {
             n.name = u.name;
             n.dataType = u.dataType;
+            // Single output column is merged with the aggregator column and should have the same datatype
+            if (n.output?.length === 1) {
+              n.output[0].dataType = u.dataType;
+            }
             continue;
           }
 
