@@ -23,14 +23,17 @@ public class OutputClauseProps extends Clause {
      * for the decision table, which is also an instance of LiteralExpression
      */
     public final ExpressionProps defaultOutputValue;
+    public final String description;
 
     public OutputClauseProps(final String id,
                              final String name,
                              final String dataType,
                              final Double width,
                              final ClauseUnaryTests unaryTests,
-                             final ExpressionProps defaultOutputValue) {
+                             final ExpressionProps defaultOutputValue,
+                             final String description) {
         super(id, name, dataType, width, unaryTests);
         this.defaultOutputValue = defaultOutputValue;
+        this.description = description;
     }
 }

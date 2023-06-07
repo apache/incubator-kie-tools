@@ -22,10 +22,13 @@ public class Cell {
 
     public final String id;
     public final String content;
+    public final String description;
+    public final String expressionLanguage;
 
-    public Cell(final String id,
-                     final String content) {
+    public Cell(final String id, final String content, String description, String expressionLanguage) {
         this.id = id;
         this.content = content;
+        this.description = description;
+        this.expressionLanguage = expressionLanguage;
     }
 }
