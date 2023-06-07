@@ -553,7 +553,7 @@ public class ExpressionEditorViewImplTest {
 
     @Test
     public void testUpdateExpressionLiteralProps() {
-        final LiteralProps props = new LiteralProps("", "", ExpressionType.LITERAL_EXPRESSION.getText(), null, 0d);
+        final LiteralProps props = new LiteralProps("", "", ExpressionType.LITERAL_EXPRESSION.getText(), null, "", "", 0d);
 
         doNothing().when(view).executeUndoableExpressionCommand(any());
 
