@@ -296,19 +296,13 @@ export function DecisionTableExpression(
           switch (groupType) {
             case DecisionTableColumnType.InputClause:
               const newInputEntries = [...newRules[u.rowIndex].inputEntries];
-              newInputEntries[u.columnIndex] = {
-                id: generateUuid(),
-                content: u.value,
-              };
+              newInputEntries[u.columnIndex].content = u.value;
               newRules[u.rowIndex].inputEntries = newInputEntries;
               n.rules = newRules;
               break;
             case DecisionTableColumnType.OutputClause:
               const newOutputEntries = [...newRules[u.rowIndex].outputEntries];
-              newOutputEntries[u.columnIndex - (prev.input?.length ?? 0)] = {
-                id: generateUuid(),
-                content: u.value,
-              };
+              newOutputEntries[u.columnIndex - (prev.input?.length ?? 0)].content = u.value;
               newRules[u.rowIndex].outputEntries = newOutputEntries;
               n.rules = newRules;
               break;

@@ -163,7 +163,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
           const newRows = [...(n.rows ?? [])];
 
           const newCells = [...newRows[u.rowIndex].cells];
-          newCells[u.columnIndex] = { id: generateUuid(), content: u.value };
+          newCells[u.columnIndex].content = u.value;
 
           newRows[u.rowIndex] = {
             ...newRows[u.rowIndex],
