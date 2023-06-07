@@ -74,7 +74,8 @@ import { SyncDropdownMenu } from "./SyncDropdownMenu";
 import { AcceleratorsDropdown } from "./Accelerators/AcceleratorsDropdown";
 import { listDeletedFiles } from "../../workspace/components/WorkspaceStatusIndicator";
 import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
-
+import { useQueryParams } from "../../queryParams/QueryParamsContext";
+import { QueryParams } from "../../navigation/Routes";
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
   workspaceFile: WorkspaceFile;
@@ -113,6 +114,7 @@ export function EditorToolbarWithWorkspace(
   const workspaces = useWorkspaces();
   const { i18n } = useOnlineI18n();
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
+  const queryParams = useQueryParams();
 
   const { alerts } = useGitIntegration();
 
@@ -339,6 +341,7 @@ export function EditorToolbarWithWorkspace(
                               fileRelativePath: file.relativePathWithoutExtension,
                               extension: file.extension,
                             }),
+                            search: queryParams.with(QueryParams.NEW_FILE, "new").toString(),
                           });
                         }}
                       />
