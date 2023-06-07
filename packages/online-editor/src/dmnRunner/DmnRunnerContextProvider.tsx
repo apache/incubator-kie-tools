@@ -450,7 +450,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     | object
     | undefined => {
     if (dmnField?.type === "string" && dmnField?.format === undefined) {
-      return "";
+      return undefined;
     }
     if (dmnField?.type === "number") {
       return undefined;
