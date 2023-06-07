@@ -240,13 +240,14 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           return;
         }
 
-        // extendedServicesModelPayload triggers a re-run in this effect before the jsonSchema values is updated
-        // in the useLayoutEffect, making this effect to be triggered with the previous file dmnRunnerInputs.
-        if (hasJsonSchema.current === false) {
-          return;
-        }
-
-        Promise.all(dmnRunnerInputs.map((inputs) => extendedServicesModelPayload(inputs)))
+        Promise.all(
+          dmnRunnerInputs.map((dmnRunnerInput) => {
+            // extendedServicesModelPayload triggers a re-run in this effect before the jsonSchema values is updated
+            // in the useLayoutEffect, making this effect to be triggered with the previous file dmnRunnerInputs.
+            const input = hasJsonSchema.current === false ? {} : dmnRunnerInput;
+            return extendedServicesModelPayload(input);
+          })
+        )
           .then((payloads) =>
             Promise.all(
               payloads.map((payload) => {
@@ -448,7 +449,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     | []
     | object
     | undefined => {
-    if (dmnField?.type === "string") {
+    if (dmnField?.type === "string" && dmnField?.format === undefined) {
       return "";
     }
     if (dmnField?.type === "number") {
@@ -484,7 +485,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       const validation = validator(toValidate);
       if (!validation && validator.errors) {
         validator.errors.forEach((error) => {
-          if (error.keyword !== "type") {
+          if (error.keyword !== "type" && error.keyword !== "format") {
             return;
           }
 
