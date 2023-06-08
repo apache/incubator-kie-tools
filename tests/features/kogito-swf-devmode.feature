@@ -141,3 +141,7 @@ Feature: Serverless Workflow devmode images
       | request_method       | GET               |
       | expected_status_code | 200               |
     And container log should contain Service Discovery has failed on property [kogito.dataindex.ws.url
+    
+  Scenario: Verify if container have the KOGITO_CODEGEN_PROCESS_FAILONERROR env set to false
+    When container is started with command bash
+    Then run sh -c 'echo $KOGITO_CODEGEN_PROCESS_FAILONERROR' in container and immediately check its output for false
