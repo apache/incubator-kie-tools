@@ -7,4 +7,4 @@ envs:
   - name: "SCRIPT_DEBUG"
     value: "true"
   - name: QUARKUS_EXTENSIONS
-    value: quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,kogito-quarkus-serverless-workflow-devui,kogito-addons-quarkus-source-files,kogito-addons-quarkus-jobs-service-embedded,kogito-addons-quarkus-data-index-inmemory,org.kie.kogito:kogito-addons-quarkus-fabric8-kubernetes-service-catalog:${KOGITO_VERSION}
+    value: kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,kogito-quarkus-serverless-workflow-devui,kogito-addons-quarkus-source-files,kogito-addons-quarkus-jobs-service-embedded,kogito-addons-quarkus-data-index-inmemory,org.kie.kogito:kogito-addons-quarkus-fabric8-kubernetes-service-catalog:${KOGITO_VERSION}
