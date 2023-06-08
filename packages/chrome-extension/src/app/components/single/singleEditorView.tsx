@@ -42,7 +42,7 @@ export interface FileInfo {
 
 export async function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileInfo }) {
   // wait for the dom element to be ready before rendering
-  await waitForElementToBeReady(".Box-sc-g0xbh4-0.izfgQu");
+  await waitForElementToBeReady(".Box-sc-g0xbh4-0.eRkHwF");
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
   if (!args.dependencies.singleView.githubTextEditorToReplaceElement()) {
