@@ -105,7 +105,7 @@ func build() string {
 	case "windows":
 		switch arch := strings.ToLower(runtime.GOARCH); arch {
 		case "amd64":
-			buildOutput += "win32-amd64"
+			buildOutput += "windows-amd64.exe"
 		default:
 			fmt.Println("Unsupported architecture:", arch)
 			os.Exit(1)
@@ -116,10 +116,6 @@ func build() string {
 	}
 
 	executable := buildOutput
-	if runtime.GOOS == "windows" {
-		executable += ".exe"
-	}
-
 	err = ExecuteCommand("chmod", "+x", executable)
 	if err != nil {
 		fmt.Println("Failed to make the built executable file executable:", err)
