@@ -310,36 +310,39 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     [getDefaultContextEntry, setExpression]
   );
 
-  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
-    if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
-      return [];
-    }
+  const allowedOperations = useCallback(
+    (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+      if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+        return [];
+      }
 
-    const columnIndex = conditions.selection.selectionStart.columnIndex;
-    const rowIndex = conditions.selection.selectionStart.rowIndex;
+      const columnIndex = conditions.selection.selectionStart.columnIndex;
+      const rowIndex = conditions.selection.selectionStart.rowIndex;
 
-    return [
-      ...(columnIndex > 1
-        ? [
-            BeeTableOperation.SelectionCopy,
-            BeeTableOperation.SelectionCut,
-            BeeTableOperation.SelectionPaste,
-            BeeTableOperation.SelectionReset,
-          ]
-        : []),
-      ...(conditions.selection.selectionStart.rowIndex >= 0
-        ? [
-            BeeTableOperation.RowInsertAbove,
-            ...(rowIndex !== conditions.reactTableInstanceRowsLength ? [BeeTableOperation.RowInsertBelow] : []), // do not insert below <result>
-            ...(conditions.reactTableInstanceRowsLength > 1 && rowIndex !== conditions.reactTableInstanceRowsLength
-              ? [BeeTableOperation.RowDelete]
-              : []), // do not delete <result>
-            BeeTableOperation.RowReset,
-            ...(rowIndex !== conditions.reactTableInstanceRowsLength ? [BeeTableOperation.RowDuplicate] : []), // do not duplicate <result>
-          ]
-        : []),
-    ];
-  }, []);
+      return [
+        ...(columnIndex > 1
+          ? [
+              BeeTableOperation.SelectionCopy,
+              BeeTableOperation.SelectionCut,
+              BeeTableOperation.SelectionPaste,
+              BeeTableOperation.SelectionReset,
+            ]
+          : []),
+        ...(conditions.selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              ...(rowIndex !== contextExpression.contextEntries.length ? [BeeTableOperation.RowInsertBelow] : []), // do not insert below <result>
+              ...(contextExpression.contextEntries.length > 1 && rowIndex !== contextExpression.contextEntries.length
+                ? [BeeTableOperation.RowDelete]
+                : []), // do not delete <result>
+              BeeTableOperation.RowReset,
+              ...(rowIndex !== contextExpression.contextEntries.length ? [BeeTableOperation.RowDuplicate] : []), // do not duplicate <result>
+            ]
+          : []),
+      ];
+    },
+    [contextExpression.contextEntries.length]
+  );
 
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>

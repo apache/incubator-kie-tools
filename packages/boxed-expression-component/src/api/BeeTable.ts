@@ -124,7 +124,6 @@ export type BeeTableOperationConfig =
 
 export type BeeTableContextMenuAllowedOperationsConditions = {
   selection: BeeTableSelection;
-  reactTableInstanceRowsLength: number;
   column: ReactTable.ColumnInstance<any> | undefined;
   columns: ReactTable.ColumnInstance<any>[] | undefined;
 };

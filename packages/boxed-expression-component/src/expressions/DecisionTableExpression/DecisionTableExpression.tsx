@@ -674,53 +674,56 @@ export function DecisionTableExpression(
     return decisionTableExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
   }, [decisionTableExpression.isNested]);
 
-  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
-    if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
-      return [];
-    }
+  const allowedOperations = useCallback(
+    (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+      if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+        return [];
+      }
 
-    const columnIndex = conditions.selection.selectionStart.columnIndex;
+      const columnIndex = conditions.selection.selectionStart.columnIndex;
 
-    const atLeastTwoColumnsOfTheSameGroupType = conditions.column?.groupType
-      ? _.groupBy(conditions.columns, (column) => column?.groupType)[conditions.column.groupType].length > 1
-      : true;
+      const atLeastTwoColumnsOfTheSameGroupType = conditions.column?.groupType
+        ? _.groupBy(conditions.columns, (column) => column?.groupType)[conditions.column.groupType].length > 1
+        : true;
 
-    const columnCanBeDeleted =
-      columnIndex > 0 &&
-      atLeastTwoColumnsOfTheSameGroupType &&
-      (conditions.columns?.length ?? 0) > 2 && // That's a regular column and the rowIndex column
-      (conditions.column?.columns?.length ?? 0) <= 0;
+      const columnCanBeDeleted =
+        columnIndex > 0 &&
+        atLeastTwoColumnsOfTheSameGroupType &&
+        (conditions.columns?.length ?? 0) > 2 && // That's a regular column and the rowIndex column
+        (conditions.column?.columns?.length ?? 0) <= 0;
 
-    const columnOperations =
-      columnIndex === 0 // This is the rowIndex column
-        ? []
-        : [
-            BeeTableOperation.ColumnInsertLeft,
-            BeeTableOperation.ColumnInsertRight,
-            ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
-          ];
+      const columnOperations =
+        columnIndex === 0 // This is the rowIndex column
+          ? []
+          : [
+              BeeTableOperation.ColumnInsertLeft,
+              BeeTableOperation.ColumnInsertRight,
+              ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
+            ];
 
-    return [
-      ...columnOperations,
-      ...(conditions.selection.selectionStart.rowIndex >= 0 && columnIndex > 0
-        ? [
-            BeeTableOperation.SelectionCopy,
-            BeeTableOperation.SelectionCut,
-            BeeTableOperation.SelectionPaste,
-            BeeTableOperation.SelectionReset,
-          ]
-        : []),
-      ...(conditions.selection.selectionStart.rowIndex >= 0
-        ? [
-            BeeTableOperation.RowInsertAbove,
-            BeeTableOperation.RowInsertBelow,
-            ...(conditions.reactTableInstanceRowsLength > 1 ? [BeeTableOperation.RowDelete] : []),
-            BeeTableOperation.RowReset,
-            BeeTableOperation.RowDuplicate,
-          ]
-        : []),
-    ];
-  }, []);
+      return [
+        ...columnOperations,
+        ...(conditions.selection.selectionStart.rowIndex >= 0 && columnIndex > 0
+          ? [
+              BeeTableOperation.SelectionCopy,
+              BeeTableOperation.SelectionCut,
+              BeeTableOperation.SelectionPaste,
+              BeeTableOperation.SelectionReset,
+            ]
+          : []),
+        ...(conditions.selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowReset,
+              BeeTableOperation.RowDuplicate,
+            ]
+          : []),
+      ];
+    },
+    [beeTableRows.length]
+  );
 
   return (
     <div className={`decision-table-expression ${decisionTableExpression.id}`}>

@@ -311,18 +311,13 @@ export function BeeTableContextMenuHandler({
     }
   });
 
-  const reactTableInstanceRowsLength = useMemo(() => {
-    return reactTableInstance.rows.length;
-  }, [reactTableInstance.rows.length]);
-
   const allowedOperationsForSelection = useMemo(() => {
     return allowedOperations({
       selection,
-      reactTableInstanceRowsLength,
       column,
       columns,
     } as BeeTableContextMenuAllowedOperationsConditions);
-  }, [allowedOperations, selection, reactTableInstanceRowsLength, column, columns]);
+  }, [allowedOperations, selection, column, columns]);
   const hasAllowedOperations = useMemo(() => {
     return allOperations.some((operation) => allowedOperationsForSelection.includes(operation.type));
   }, [allOperations, allowedOperationsForSelection]);

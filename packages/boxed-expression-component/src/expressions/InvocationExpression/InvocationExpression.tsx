@@ -318,23 +318,26 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     [getDefaultArgumentEntry, setExpression]
   );
 
-  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
-    if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
-      return [];
-    }
+  const allowedOperations = useCallback(
+    (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+      if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+        return [];
+      }
 
-    return [
-      ...(conditions.selection.selectionStart.rowIndex >= 0
-        ? [
-            BeeTableOperation.RowInsertAbove,
-            BeeTableOperation.RowInsertBelow,
-            ...(conditions.reactTableInstanceRowsLength > 1 ? [BeeTableOperation.RowDelete] : []),
-            BeeTableOperation.RowReset,
-            BeeTableOperation.RowDuplicate,
-          ]
-        : []),
-    ];
-  }, []);
+      return [
+        ...(conditions.selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowReset,
+              BeeTableOperation.RowDuplicate,
+            ]
+          : []),
+      ];
+    },
+    [beeTableRows.length]
+  );
 
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
