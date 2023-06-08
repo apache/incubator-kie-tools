@@ -19,6 +19,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -42,7 +43,6 @@ import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/Boxed
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./RelationExpression.css";
 import _ from "lodash";
-import { BeeTableSelection, BeeTableSelectionActiveCell } from "../../selection/BeeTableSelectionContext";
 
 type ROWTYPE = RelationExpressionDefinitionRow;
 
@@ -311,53 +311,45 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     return relationExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
   }, [relationExpression.isNested]);
 
-  const allowedOperations = useCallback(
-    (
-      selection: BeeTableSelection,
-      reactTableInstanceRowsLength: number,
-      column: ReactTable.ColumnInstance<any> | undefined,
-      columns: ReactTable.ColumnInstance<any>[] | undefined
-    ) => {
-      if (!selection.selectionStart || !selection.selectionEnd) {
-        return [];
-      }
+  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+    if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+      return [];
+    }
 
-      const columnIndex = selection.selectionStart.columnIndex;
+    const columnIndex = conditions.selection.selectionStart.columnIndex;
 
-      const columnCanBeDeleted = (columns?.length ?? 0) > 2; // That's a regular column and the rowIndex column
+    const columnCanBeDeleted = (conditions.columns?.length ?? 0) > 2; // That's a regular column and the rowIndex column
 
-      const columnOperations =
-        columnIndex === 0 // This is the rowIndex column
-          ? []
-          : [
-              BeeTableOperation.ColumnInsertLeft,
-              BeeTableOperation.ColumnInsertRight,
-              ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
-            ];
+    const columnOperations =
+      columnIndex === 0 // This is the rowIndex column
+        ? []
+        : [
+            BeeTableOperation.ColumnInsertLeft,
+            BeeTableOperation.ColumnInsertRight,
+            ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
+          ];
 
-      return [
-        ...columnOperations,
-        ...(columnIndex > 0 && selection.selectionStart.rowIndex >= 0
-          ? [
-              BeeTableOperation.SelectionCopy,
-              BeeTableOperation.SelectionCut,
-              BeeTableOperation.SelectionPaste,
-              BeeTableOperation.SelectionReset,
-            ]
-          : []),
-        ...(selection.selectionStart.rowIndex >= 0
-          ? [
-              BeeTableOperation.RowInsertAbove,
-              BeeTableOperation.RowInsertBelow,
-              ...(reactTableInstanceRowsLength > 1 ? [BeeTableOperation.RowDelete] : []),
-              BeeTableOperation.RowReset,
-              BeeTableOperation.RowDuplicate,
-            ]
-          : []),
-      ];
-    },
-    []
-  );
+    return [
+      ...columnOperations,
+      ...(columnIndex > 0 && conditions.selection.selectionStart.rowIndex >= 0
+        ? [
+            BeeTableOperation.SelectionCopy,
+            BeeTableOperation.SelectionCut,
+            BeeTableOperation.SelectionPaste,
+            BeeTableOperation.SelectionReset,
+          ]
+        : []),
+      ...(conditions.selection.selectionStart.rowIndex >= 0
+        ? [
+            BeeTableOperation.RowInsertAbove,
+            BeeTableOperation.RowInsertBelow,
+            ...(conditions.reactTableInstanceRowsLength > 1 ? [BeeTableOperation.RowDelete] : []),
+            BeeTableOperation.RowReset,
+            BeeTableOperation.RowDuplicate,
+          ]
+        : []),
+    ];
+  }, []);
 
   return (
     <div className={`relation-expression`}>

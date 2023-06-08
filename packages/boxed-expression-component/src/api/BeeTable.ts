@@ -52,12 +52,8 @@ export interface BeeTableProps<R extends object> {
   onColumnUpdates?: (columnUpdates: BeeTableColumnUpdate<R>[]) => void;
   /** Custom configuration for the table context menu */
   operationConfig?: BeeTableOperationConfig;
-  allowedOperations: (
-    selection: BeeTableSelection,
-    reactTableInstanceRowsLength: number,
-    column: ReactTable.ColumnInstance<any> | undefined,
-    columns: ReactTable.ColumnInstance<any>[] | undefined
-  ) => BeeTableOperation[];
+  /** Collection of allowed operations that are allowed for current table 'conditions' */
+  allowedOperations: (conditions: BeeTableContextMenuAllowedOperationsConditions) => BeeTableOperation[];
   /** The way in which the header will be rendered */
   headerVisibility?: BeeTableHeaderVisibility;
   /** Number of levels in the header, 0-based */
@@ -125,3 +121,10 @@ export interface BeeTableOperationGroup {
 export type BeeTableOperationConfig =
   | BeeTableOperationGroup[]
   | { [columnGroupType: string]: BeeTableOperationGroup[] };
+
+export type BeeTableContextMenuAllowedOperationsConditions = {
+  selection: BeeTableSelection;
+  reactTableInstanceRowsLength: number;
+  column: ReactTable.ColumnInstance<any> | undefined;
+  columns: ReactTable.ColumnInstance<any>[] | undefined;
+};

@@ -27,6 +27,7 @@ import { DmnUnitablesI18n } from "./i18n";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import * as ReactTable from "react-table";
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -40,7 +41,6 @@ import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import "./DmnRunnerOutputsTable.css";
 import { DecisionResult, DmnEvaluationResult } from "@kie-tools/extended-services-api";
-import { BeeTableSelection } from "@kie-tools/boxed-expression-component/dist/selection/BeeTableSelectionContext";
 import _ from "lodash";
 
 interface Props {
@@ -152,19 +152,7 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
         ],
       },
     ],
-    [
-      i18n.rows,
-      i18n.rowOperations.insertAbove,
-      i18n.rowOperations.insertBelow,
-      i18n.rowOperations.duplicate,
-      i18n.rowOperations.delete,
-      i18n.rowOperations.reset,
-      i18n.terms.selection,
-      i18n.terms.reset,
-      i18n.terms.copy,
-      i18n.terms.cut,
-      i18n.terms.paste,
-    ]
+    [i18n]
   );
 
   const uuid = useMemo(() => {
@@ -420,27 +408,19 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
     return row.original.id;
   }, []);
 
-  const allowedOperations = useCallback(
-    (
-      selection: BeeTableSelection,
-      reactTableInstanceRowsLength: number,
-      column: ReactTable.ColumnInstance<any> | undefined,
-      columns: ReactTable.ColumnInstance<any>[] | undefined
-    ) => {
-      return [
-        BeeTableOperation.RowInsertAbove,
-        BeeTableOperation.RowInsertBelow,
-        BeeTableOperation.RowDuplicate,
-        BeeTableOperation.RowDelete,
-        BeeTableOperation.RowReset,
-        BeeTableOperation.SelectionReset,
-        BeeTableOperation.SelectionCopy,
-        BeeTableOperation.SelectionCut,
-        BeeTableOperation.SelectionPaste,
-      ];
-    },
-    []
-  );
+  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+    return [
+      BeeTableOperation.RowInsertAbove,
+      BeeTableOperation.RowInsertBelow,
+      BeeTableOperation.RowDuplicate,
+      BeeTableOperation.RowDelete,
+      BeeTableOperation.RowReset,
+      BeeTableOperation.SelectionReset,
+      BeeTableOperation.SelectionCopy,
+      BeeTableOperation.SelectionCut,
+      BeeTableOperation.SelectionPaste,
+    ];
+  }, []);
 
   return (
     <StandaloneBeeTable

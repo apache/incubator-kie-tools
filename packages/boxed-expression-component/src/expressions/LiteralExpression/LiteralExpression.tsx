@@ -17,16 +17,17 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
-import { BeeTableHeaderVisibility, BeeTableOperation, LiteralExpressionDefinition } from "../../api";
+import {
+  BeeTableContextMenuAllowedOperationsConditions,
+  BeeTableHeaderVisibility,
+  BeeTableOperation,
+  LiteralExpressionDefinition,
+} from "../../api";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import { LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
-import {
-  BeeTableSelection,
-  useBeeTableCoordinates,
-  useBeeTableSelectableCellRef,
-} from "../../selection/BeeTableSelectionContext";
+import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
@@ -174,30 +175,22 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     ];
   }, []);
 
-  const allowedOperations = useCallback(
-    (
-      selection: BeeTableSelection,
-      reactTableInstanceRowsLength: number,
-      column: ReactTable.ColumnInstance<any> | undefined,
-      columns: ReactTable.ColumnInstance<any>[] | undefined
-    ) => {
-      if (!selection.selectionStart || !selection.selectionEnd) {
-        return [];
-      }
+  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+    if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+      return [];
+    }
 
-      return [
-        ...(selection.selectionStart.rowIndex === 0
-          ? [
-              BeeTableOperation.SelectionCopy,
-              BeeTableOperation.SelectionCut,
-              BeeTableOperation.SelectionPaste,
-              BeeTableOperation.SelectionReset,
-            ]
-          : []),
-      ];
-    },
-    []
-  );
+    return [
+      ...(conditions.selection.selectionStart.rowIndex === 0
+        ? [
+            BeeTableOperation.SelectionCopy,
+            BeeTableOperation.SelectionCut,
+            BeeTableOperation.SelectionPaste,
+            BeeTableOperation.SelectionReset,
+          ]
+        : []),
+    ];
+  }, []);
 
   return (
     <div className={`literal-expression`}>

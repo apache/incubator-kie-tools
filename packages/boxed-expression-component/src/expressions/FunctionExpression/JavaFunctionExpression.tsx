@@ -22,6 +22,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableCellProps,
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -41,11 +42,7 @@ import {
   JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
-import {
-  BeeTableSelection,
-  BeeTableSelectionActiveCell,
-  useBeeTableSelectableCellRef,
-} from "../../selection/BeeTableSelectionContext";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
@@ -263,17 +260,9 @@ export function JavaFunctionExpression({
     [setExpression]
   );
 
-  const allowedOperations = useCallback(
-    (
-      selection: BeeTableSelection,
-      reactTableInstanceRowsLength: number,
-      column: ReactTable.ColumnInstance<any> | undefined,
-      columns: ReactTable.ColumnInstance<any>[] | undefined
-    ) => {
-      return [];
-    },
-    []
-  );
+  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+    return [];
+  }, []);
 
   return (
     <div className={`function-expression ${functionExpression.id}`}>

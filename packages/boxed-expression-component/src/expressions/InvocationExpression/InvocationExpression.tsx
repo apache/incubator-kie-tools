@@ -18,6 +18,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -45,7 +46,6 @@ import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
 import { ContextEntryInfoCell } from "../ContextExpression";
 import "./InvocationExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
-import { BeeTableSelection, BeeTableSelectionActiveCell } from "../../selection/BeeTableSelectionContext";
 import _ from "lodash";
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
@@ -318,31 +318,23 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     [getDefaultArgumentEntry, setExpression]
   );
 
-  const allowedOperations = useCallback(
-    (
-      selection: BeeTableSelection,
-      reactTableInstanceRowsLength: number,
-      column: ReactTable.ColumnInstance<any> | undefined,
-      columns: ReactTable.ColumnInstance<any>[] | undefined
-    ) => {
-      if (!selection.selectionStart || !selection.selectionEnd) {
-        return [];
-      }
+  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+    if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+      return [];
+    }
 
-      return [
-        ...(selection.selectionStart.rowIndex >= 0
-          ? [
-              BeeTableOperation.RowInsertAbove,
-              BeeTableOperation.RowInsertBelow,
-              ...(reactTableInstanceRowsLength > 1 ? [BeeTableOperation.RowDelete] : []),
-              BeeTableOperation.RowReset,
-              BeeTableOperation.RowDuplicate,
-            ]
-          : []),
-      ];
-    },
-    []
-  );
+    return [
+      ...(conditions.selection.selectionStart.rowIndex >= 0
+        ? [
+            BeeTableOperation.RowInsertAbove,
+            BeeTableOperation.RowInsertBelow,
+            ...(conditions.reactTableInstanceRowsLength > 1 ? [BeeTableOperation.RowDelete] : []),
+            BeeTableOperation.RowReset,
+            BeeTableOperation.RowDuplicate,
+          ]
+        : []),
+    ];
+  }, []);
 
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>

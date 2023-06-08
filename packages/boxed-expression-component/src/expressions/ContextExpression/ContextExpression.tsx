@@ -18,6 +18,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as ReactTable from "react-table";
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -38,12 +39,7 @@ import {
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
   CONTEXT_EXPRESSION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
-import {
-  useBeeTableSelectableCellRef,
-  useBeeTableCoordinates,
-  BeeTableSelectionActiveCell,
-  BeeTableSelection,
-} from "../../selection/BeeTableSelectionContext";
+import { useBeeTableSelectableCellRef, useBeeTableCoordinates } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
@@ -314,44 +310,36 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     [getDefaultContextEntry, setExpression]
   );
 
-  const allowedOperations = useCallback(
-    (
-      selection: BeeTableSelection,
-      reactTableInstanceRowsLength: number,
-      column: ReactTable.ColumnInstance<any> | undefined,
-      columns: ReactTable.ColumnInstance<any>[] | undefined
-    ) => {
-      if (!selection.selectionStart || !selection.selectionEnd) {
-        return [];
-      }
+  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+    if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+      return [];
+    }
 
-      const columnIndex = selection.selectionStart.columnIndex;
-      const rowIndex = selection.selectionStart.rowIndex;
+    const columnIndex = conditions.selection.selectionStart.columnIndex;
+    const rowIndex = conditions.selection.selectionStart.rowIndex;
 
-      return [
-        ...(columnIndex > 1
-          ? [
-              BeeTableOperation.SelectionCopy,
-              BeeTableOperation.SelectionCut,
-              BeeTableOperation.SelectionPaste,
-              BeeTableOperation.SelectionReset,
-            ]
-          : []),
-        ...(selection.selectionStart.rowIndex >= 0
-          ? [
-              BeeTableOperation.RowInsertAbove,
-              ...(rowIndex !== reactTableInstanceRowsLength ? [BeeTableOperation.RowInsertBelow] : []), // do not insert below <result>
-              ...(reactTableInstanceRowsLength > 1 && rowIndex !== reactTableInstanceRowsLength
-                ? [BeeTableOperation.RowDelete]
-                : []), // do not delete <result>
-              BeeTableOperation.RowReset,
-              ...(rowIndex !== reactTableInstanceRowsLength ? [BeeTableOperation.RowDuplicate] : []), // do not duplicate <result>
-            ]
-          : []),
-      ];
-    },
-    []
-  );
+    return [
+      ...(columnIndex > 1
+        ? [
+            BeeTableOperation.SelectionCopy,
+            BeeTableOperation.SelectionCut,
+            BeeTableOperation.SelectionPaste,
+            BeeTableOperation.SelectionReset,
+          ]
+        : []),
+      ...(conditions.selection.selectionStart.rowIndex >= 0
+        ? [
+            BeeTableOperation.RowInsertAbove,
+            ...(rowIndex !== conditions.reactTableInstanceRowsLength ? [BeeTableOperation.RowInsertBelow] : []), // do not insert below <result>
+            ...(conditions.reactTableInstanceRowsLength > 1 && rowIndex !== conditions.reactTableInstanceRowsLength
+              ? [BeeTableOperation.RowDelete]
+              : []), // do not delete <result>
+            BeeTableOperation.RowReset,
+            ...(rowIndex !== conditions.reactTableInstanceRowsLength ? [BeeTableOperation.RowDuplicate] : []), // do not duplicate <result>
+          ]
+        : []),
+    ];
+  }, []);
 
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>

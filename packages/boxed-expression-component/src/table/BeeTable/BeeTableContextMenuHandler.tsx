@@ -21,7 +21,7 @@ import BlueprintIcon from "@patternfly/react-icons/dist/js/icons/blueprint-icon"
 import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import * as React from "react";
 import { useCallback, useLayoutEffect, useMemo } from "react";
-import { BeeTableOperation, BeeTableOperationConfig } from "../../api";
+import { BeeTableContextMenuAllowedOperationsConditions, BeeTableOperation, BeeTableOperationConfig } from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu/Hooks";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
@@ -44,12 +44,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 export interface BeeTableContextMenuHandlerProps {
   tableRef: React.RefObject<HTMLDivElement | null>;
   operationConfig: BeeTableOperationConfig | undefined;
-  allowedOperations: (
-    selection: BeeTableSelection,
-    reactTableInstanceRowsLength: number,
-    column: ReactTable.ColumnInstance<any> | undefined,
-    columns: ReactTable.ColumnInstance<any>[] | undefined
-  ) => BeeTableOperation[];
+  allowedOperations: (conditions: BeeTableContextMenuAllowedOperationsConditions) => BeeTableOperation[];
   reactTableInstance: ReactTable.TableInstance<any>;
   //
   onRowAdded?: (args: { beforeIndex: number }) => void;
@@ -76,11 +71,13 @@ export function BeeTableContextMenuHandler({
   const { setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
 
   const { activeCell, selectionStart, selectionEnd } = useBeeTableSelection();
-  const selection: BeeTableSelection = {
-    active: activeCell,
-    selectionStart: selectionStart,
-    selectionEnd: selectionEnd,
-  };
+  const selection: BeeTableSelection = useMemo(() => {
+    return {
+      active: activeCell,
+      selectionStart: selectionStart,
+      selectionEnd: selectionEnd,
+    };
+  }, [activeCell, selectionStart, selectionEnd]);
   const { copy, cut, paste, erase } = useBeeTableSelectionDispatch();
 
   const columns = useMemo(() => {
@@ -238,19 +235,25 @@ export function BeeTableContextMenuHandler({
           break;
         case BeeTableOperation.SelectionCopy:
           copy();
-          console.info("Copying");
+          console.debug(
+            `Copying area from: [${selectionStart?.rowIndex}, ${selectionStart?.columnIndex}] to [${selectionEnd?.rowIndex}, ${selectionEnd?.columnIndex}]`
+          );
           break;
         case BeeTableOperation.SelectionCut:
           cut();
-          console.info("Cuting");
+          console.debug(
+            `Cuting area from: [${selectionStart?.rowIndex}, ${selectionStart?.columnIndex}] to [${selectionEnd?.rowIndex}, ${selectionEnd?.columnIndex}]`
+          );
           break;
         case BeeTableOperation.SelectionPaste:
           paste();
-          console.info("Pasting");
+          console.debug(`Pasting into: [${selectionStart?.rowIndex}, ${selectionStart?.columnIndex}]`);
           break;
         case BeeTableOperation.SelectionReset:
           erase();
-          console.info("Reseting");
+          console.debug(
+            `Reseting area from: [${selectionStart?.rowIndex}, ${selectionStart?.columnIndex}] to [${selectionEnd?.rowIndex}, ${selectionEnd?.columnIndex}]`
+          );
           break;
         default:
           assertUnreachable(operation);
@@ -260,6 +263,8 @@ export function BeeTableContextMenuHandler({
     },
     [
       activeCell,
+      selectionStart,
+      selectionEnd,
       setCurrentlyOpenContextMenu,
       onColumnAdded,
       column?.groupType,
@@ -310,8 +315,17 @@ export function BeeTableContextMenuHandler({
     return reactTableInstance.rows.length;
   }, [reactTableInstance.rows.length]);
 
-  const currentAllowedOperations = allowedOperations(selection, reactTableInstanceRowsLength, column, columns);
-  const someOperationIsAllowed = allOperations.some((operation) => currentAllowedOperations.includes(operation.type));
+  const allowedOperationsForSelection = useMemo(() => {
+    return allowedOperations({
+      selection,
+      reactTableInstanceRowsLength,
+      column,
+      columns,
+    } as BeeTableContextMenuAllowedOperationsConditions);
+  }, [allowedOperations, selection, reactTableInstanceRowsLength, column, columns]);
+  const hasAllowedOperations = useMemo(() => {
+    return allOperations.some((operation) => allowedOperationsForSelection.includes(operation.type));
+  }, [allOperations, allowedOperationsForSelection]);
 
   return (
     <>
@@ -327,15 +341,15 @@ export function BeeTableContextMenuHandler({
             className="table-context-menu"
             onSelect={(e, itemId) => handleOperation(itemId as BeeTableOperation)}
           >
-            {someOperationIsAllowed &&
+            {hasAllowedOperations &&
               operationGroups.map(({ group, items }, operationGroupIndex) => (
                 <React.Fragment key={group}>
-                  {items.some((operation) => currentAllowedOperations.includes(operation.type)) &&
+                  {items.some((operation) => allowedOperationsForSelection.includes(operation.type)) &&
                     operationGroupIndex > 0 && <Divider key={"divider-" + group} style={{ padding: "16px" }} />}
                   <MenuGroup
                     label={group}
                     className={
-                      items.every((operation) => !currentAllowedOperations.includes(operation.type))
+                      items.every((operation) => !allowedOperationsForSelection.includes(operation.type))
                         ? "no-allowed-actions-in-group"
                         : ""
                     }
@@ -347,7 +361,7 @@ export function BeeTableContextMenuHandler({
                           data-ouia-component-id={"expression-table-context-menu-" + operation.name}
                           key={operation.type + group}
                           itemId={operation.type}
-                          isDisabled={!currentAllowedOperations.includes(operation.type)}
+                          isDisabled={!allowedOperationsForSelection.includes(operation.type)}
                         >
                           {operationLabel(operation.type)}
                         </MenuItem>
@@ -356,7 +370,7 @@ export function BeeTableContextMenuHandler({
                   </MenuGroup>
                 </React.Fragment>
               ))}
-            {!someOperationIsAllowed && (
+            {!hasAllowedOperations && (
               <EmptyState>
                 <Title headingLevel="h6">{i18n.noOperationsAvailable}</Title>
               </EmptyState>

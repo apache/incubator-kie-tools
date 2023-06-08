@@ -15,6 +15,7 @@
  */
 
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableCellProps,
   BeeTableHeaderVisibility,
   BeeTableOperation,
@@ -25,7 +26,6 @@ import {
 import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
 import { StandaloneBeeTable } from "@kie-tools/boxed-expression-component/dist/table/BeeTable/StandaloneBeeTable";
 import {
-  BeeTableSelection,
   SelectionPart,
   useBeeTableCoordinates,
   useBeeTableSelectableCellRef,
@@ -103,23 +103,15 @@ export function UnitablesBeeTable({
     [i18n]
   );
 
-  const allowedOperations = useCallback(
-    (
-      selection: BeeTableSelection,
-      reactTableInstanceRowsLength: number,
-      column: ReactTable.ColumnInstance<any> | undefined,
-      columns: ReactTable.ColumnInstance<any>[] | undefined
-    ) => {
-      return [
-        BeeTableOperation.RowInsertAbove,
-        BeeTableOperation.RowInsertBelow,
-        BeeTableOperation.RowDuplicate,
-        BeeTableOperation.RowReset,
-        BeeTableOperation.RowDelete,
-      ];
-    },
-    []
-  );
+  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+    return [
+      BeeTableOperation.RowInsertAbove,
+      BeeTableOperation.RowInsertBelow,
+      BeeTableOperation.RowDuplicate,
+      BeeTableOperation.RowReset,
+      BeeTableOperation.RowDelete,
+    ];
+  }, []);
 
   const uuid = useMemo(() => {
     return generateUuid();
