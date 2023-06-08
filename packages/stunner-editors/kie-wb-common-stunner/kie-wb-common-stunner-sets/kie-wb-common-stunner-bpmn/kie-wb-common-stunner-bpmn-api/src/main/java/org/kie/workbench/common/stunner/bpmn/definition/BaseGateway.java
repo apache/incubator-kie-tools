@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@MorphBase(defaultType = ParallelGateway.class)
+@MorphBase(defaultType = ExclusiveGateway.class)
 public abstract class BaseGateway implements BPMNViewDefinition {
 
     @Category
