@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./DmnFormI18n";
+export * from "./FormDmnI18n";
 export * from "./setup";

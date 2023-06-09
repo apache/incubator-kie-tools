@@ -31,7 +31,7 @@ import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/di
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { dmnFormI18n } from "./i18n";
+import { formDmnI18n } from "./i18n";
 import { diff } from "deep-object-diff";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import "./styles.scss";
@@ -82,8 +82,8 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
   const [formResultStatus, setFormResultStatus] = useState<FormDmnOutputsStatus>(FormDmnOutputsStatus.EMPTY);
   const [formResultError, setFormResultError] = useState<boolean>(false);
   const i18n = useMemo(() => {
-    dmnFormI18n.setLocale(props.locale ?? navigator.language);
-    return dmnFormI18n.getCurrent();
+    formDmnI18n.setLocale(props.locale ?? navigator.language);
+    return formDmnI18n.getCurrent();
   }, [props.locale]);
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
 

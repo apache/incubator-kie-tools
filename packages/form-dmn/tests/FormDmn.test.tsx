@@ -18,7 +18,7 @@ import * as React from "react";
 import { act, render } from "@testing-library/react";
 import { FormDmn, InputRow } from "../src";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
-import { dmnFormI18n } from "../src/i18n";
+import { formDmnI18n } from "../src/i18n";
 import { FormComponentProps } from "@kie-tools/form";
 
 const schema: any = {
@@ -37,7 +37,7 @@ const schema: any = {
 };
 
 const props: FormComponentProps<InputRow, ExtendedServicesDmnJsonSchema> = {
-  i18n: dmnFormI18n.getCurrent(),
+  i18n: formDmnI18n.getCurrent(),
   formInputs: {},
   setFormInputs: jest.fn(),
   formError: false,
@@ -163,7 +163,7 @@ describe("FormDmn tests", () => {
 
     const { getByText } = render(<FormDmn {...props} placeholder={true} formSchema={schema} formInputs={formInputs} />);
 
-    expect(getByText(dmnFormI18n.getCurrent().schema.selectPlaceholder)).toMatchSnapshot();
+    expect(getByText(formDmnI18n.getCurrent().schema.selectPlaceholder)).toMatchSnapshot();
   });
 
   it("should create a text field and a label", () => {

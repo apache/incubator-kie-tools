@@ -16,7 +16,7 @@
 
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { FormDmnValidator } from "../src/FormDmnValidator";
-import { dmnFormI18n } from "../src/i18n";
+import { formDmnI18n } from "../src/i18n";
 import { FormDmnJsonSchemaBridge } from "../src/uniforms";
 
 const schema: ExtendedServicesDmnJsonSchema = {
@@ -38,7 +38,7 @@ const schema: ExtendedServicesDmnJsonSchema = {
   },
 };
 
-const i18n = dmnFormI18n.getCurrent();
+const i18n = formDmnI18n.getCurrent();
 
 describe("FormDmnValidator Tests", () => {
   it("create instance", () => {

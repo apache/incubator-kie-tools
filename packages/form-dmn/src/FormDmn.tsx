@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { FormDmnValidator } from "./FormDmnValidator";
-import { dmnFormI18n } from "./i18n";
+import { formDmnI18n } from "./i18n";
 import { FormComponent, FormProps } from "@kie-tools/form/dist/FormComponent";
 import { DmnAutoFieldProvider } from "@kie-tools/dmn-runner/dist/uniforms";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
@@ -27,8 +27,8 @@ export type InputRow = Record<string, any>;
 
 export function FormDmn(props: FormProps<InputRow, ExtendedServicesDmnJsonSchema>) {
   const i18n = useMemo(() => {
-    dmnFormI18n.setLocale(props.locale ?? navigator.language);
-    return dmnFormI18n.getCurrent();
+    formDmnI18n.setLocale(props.locale ?? navigator.language);
+    return formDmnI18n.getCurrent();
   }, [props.locale]);
   const dmnValidator = useMemo(() => new FormDmnValidator(i18n), [i18n]);
 
