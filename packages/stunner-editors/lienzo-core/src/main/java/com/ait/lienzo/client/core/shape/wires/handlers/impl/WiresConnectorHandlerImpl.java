@@ -146,9 +146,16 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler {
     @Override
     public void onNodeMouseDown(final NodeMouseDownEvent event) {
         ifControlPointsBuilder(builder -> {
-            final Point2D point = WiresShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), event);
-            mouseDownEventConsumer.accept(new Event(point.getX(), point.getY(), false));
-            builder.createControlPointAt(event.getX(), event.getY());
+            mouseDownTimer = new Timer() {
+                @Override
+                public void run() {
+                    final Point2D point = WiresShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), event);
+                    mouseDownEventConsumer.accept(new Event(point.getX(), point.getY(), false));
+                    builder.createControlPointAt(event.getX(), event.getY());
+                }
+            };
+            mouseDownTimer.schedule(MOUSE_DOWN_TIMER_DELAY);
+            builder.scheduleControlPointBuildAnimation(MOUSE_DOWN_TIMER_DELAY);
         });
     }
 
