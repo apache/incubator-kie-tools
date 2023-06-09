@@ -4588,8 +4588,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.7.0
-        version: 5.7.0(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.7.1
+        version: 5.7.1(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -7374,8 +7374,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.7.0
-        version: 5.7.0(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.7.1
+        version: 5.7.1(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -8295,8 +8295,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.7.0
-        version: 5.7.0(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.7.1
+        version: 5.7.1(mocha@9.2.0)(typescript@4.8.4)
 
   packages/vscode-extension-dashbuilder-editor:
     dependencies:
@@ -8416,8 +8416,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.7.0
-        version: 5.7.0(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.7.1
+        version: 5.7.1(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -9072,8 +9072,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.7.0
-        version: 5.7.0(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.7.1
+        version: 5.7.1(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.36.2
         version: 5.70.0(webpack-cli@4.10.0)
@@ -21411,7 +21411,7 @@ packages:
       { integrity: sha512-Bq9VSor+kjvW3f9/MiiR4eE3XYgOl7/rS8lnSxbRbF3kS0B2r+Y9w5krBWxZgDxASVZbdYrn5wT4j/Wb0J9qow== }
     engines: { node: ">=10.13.0" }
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       tapable: 2.2.0
     dev: true
 
@@ -22273,12 +22273,12 @@ packages:
       cross-spawn: 7.0.3
       get-stream: 5.2.0
       human-signals: 1.1.1
-      is-stream: 2.0.0
+      is-stream: 2.0.1
       merge-stream: 2.0.0
       npm-run-path: 4.0.1
       onetime: 5.1.2
       p-finally: 2.0.1
-      signal-exit: 3.0.3
+      signal-exit: 3.0.7
       strip-final-newline: 2.0.0
     dev: true
 
@@ -24595,12 +24595,6 @@ packages:
     resolution:
       { integrity: sha512-uQPm8kcs47jx38atAcWTVxyltQYoPT68y9aWYdV6yWXSyW8mzSat0TL6CiWdZeCdF3KrAvpVtnHbTv4RN+rqdQ== }
     engines: { node: ">=0.10.0" }
-    dev: true
-
-  /is-stream@2.0.0:
-    resolution:
-      { integrity: sha512-XCoy+WlUr7d1+Z8GgSuXmpuUFC9fOhRXglJMx+dwLKTkL44Cjd4W1Z5P+BQZpr+cR93aGP4S/s7Ftw6Nd/kiEw== }
-    engines: { node: ">=8" }
     dev: true
 
   /is-stream@2.0.1:
@@ -27137,9 +27131,9 @@ packages:
     dependencies:
       monaco-editor: 0.33.0
 
-  /monaco-page-objects@3.7.0(selenium-webdriver@4.10.0)(typescript@4.8.4):
+  /monaco-page-objects@3.7.1(selenium-webdriver@4.10.0)(typescript@4.8.4):
     resolution:
-      { integrity: sha512-evcYc1K/pjL7i0ip3KYEzcU9UTw6HgX4N09h0WzVCbIgcHx8yWuX6iUsBS0yUW5z4EL5iFKKDrnatXT5G/4HOg== }
+      { integrity: sha512-6NFotXt2g0sIYSxrN7R8sC2KIgkaXGQLlfP1JCfqr0GfAQBTE1viTsqReMRn6kFYE4/zvWOs060Hrsv6wBpfWQ== }
     peerDependencies:
       selenium-webdriver: ^4.6.1
       typescript: ">=4.6.2"
@@ -31066,11 +31060,6 @@ packages:
       object-inspect: 1.12.2
     dev: true
 
-  /signal-exit@3.0.3:
-    resolution:
-      { integrity: sha512-VUJ49FC8U1OxwZLxIbTTrDvLnf/6TDgxZcK8wxR8zs13xpx7xbG60ndBlhNrFi2EMuFRoeDoJO7wthSLq42EjA== }
-    dev: true
-
   /signal-exit@3.0.7:
     resolution:
       { integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ== }
@@ -33341,20 +33330,20 @@ packages:
     engines: { node: ">=0.10.0" }
     dev: true
 
-  /vscode-extension-tester-locators@3.5.0(monaco-page-objects@3.7.0)(selenium-webdriver@4.10.0):
+  /vscode-extension-tester-locators@3.5.1(monaco-page-objects@3.7.1)(selenium-webdriver@4.10.0):
     resolution:
-      { integrity: sha512-ptpgaynqnGYHA5qXfx4Fjcd431zgSHtRbEiLTdtGeiLFKjhZd7eS4M1VCZns6il3aDROP3BiR4aXyoElT+S4Vg== }
+      { integrity: sha512-ZmeMxwbchZYizOcN8hLJUcVuq3KfOhlVPtBFa1zl+i7jmb92h/FDrLT4r5GE5BiDjgHf/YzydfdgZijnH7aNTQ== }
     peerDependencies:
-      monaco-page-objects: ^3.7.0
+      monaco-page-objects: ^3.7.1
       selenium-webdriver: ^4.6.1
     dependencies:
-      monaco-page-objects: 3.7.0(selenium-webdriver@4.10.0)(typescript@4.8.4)
+      monaco-page-objects: 3.7.1(selenium-webdriver@4.10.0)(typescript@4.8.4)
       selenium-webdriver: 4.10.0
     dev: true
 
-  /vscode-extension-tester@5.7.0(mocha@9.2.0)(typescript@4.8.4):
+  /vscode-extension-tester@5.7.1(mocha@9.2.0)(typescript@4.8.4):
     resolution:
-      { integrity: sha512-q9x18VzpXKzAqH2wkOMzKUkJlC9tcncbXz0PKyNGkC0Ktpvd0jTKHuVfxXj9BZmJdNu9k+68yI08CEDcfJu30Q== }
+      { integrity: sha512-UN2l8CuMzy9WsPRjDBjD228ECWsMgHjvbaE4Ct4aWrXazFnGjaGLsJdwSf2KDSk1chjAS1SNre7T5ox8Z7rOXQ== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
@@ -33370,13 +33359,13 @@ packages:
       hpagent: 1.2.0
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 3.7.0(selenium-webdriver@4.10.0)(typescript@4.8.4)
+      monaco-page-objects: 3.7.1(selenium-webdriver@4.10.0)(typescript@4.8.4)
       sanitize-filename: 1.6.3
       selenium-webdriver: 4.10.0
       targz: 1.0.1
       typescript: 4.8.4
       unzipper: 0.10.14
-      vscode-extension-tester-locators: 3.5.0(monaco-page-objects@3.7.0)(selenium-webdriver@4.10.0)
+      vscode-extension-tester-locators: 3.5.1(monaco-page-objects@3.7.1)(selenium-webdriver@4.10.0)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -33496,7 +33485,7 @@ packages:
     engines: { node: ">=10.13.0" }
     dependencies:
       glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /watchpack@2.4.0:
