@@ -97,7 +97,26 @@ export function BeeTableContextMenuHandler({
     }
 
     const columnIndex = activeCell.columnIndex;
-    return columns?.[columnIndex];
+    const rowIndex = activeCell.rowIndex;
+    if (rowIndex < 0) {
+      // column index for rows with index < -1 is equal to count of cells on given row
+      // so for the example below, 'output' column index is 1
+      // +-----+--------+--------+------------------------+
+      // |     |        |        |        output          |    <- rowIndex: -2
+      // |  #  |  in-1  |  in-2  +----------+-------------+
+      // |     |        |        |   out-1  |   out-2     |    <- rowIndex: -1
+      // +-----+--------+--------+----------+-------------+
+      //
+      // See the same principle in: src/table/BeeTable/BeeTable.tsx#getColumnCount
+      const nonPlaceholderColumns = columns?.filter((col) => !col?.placeholderOf);
+      if (nonPlaceholderColumns) {
+        return nonPlaceholderColumns[columnIndex];
+      } else {
+        console.error(`No column found at [${rowIndex}, ${columnIndex}]`);
+      }
+    } else {
+      return columns?.[columnIndex];
+    }
   }, [activeCell, columns]);
 
   const operationGroups = useMemo(() => {
