@@ -113,6 +113,10 @@ export function EditorPage(props: Props) {
       return;
     }
 
+    //If my queryparam is in the URL when the add new file in the new file dropdown is clicked on
+    //Then - the workspaceFilePromise will have the correct data and move on to the new file.
+    //Else - the workspaceFilePromise will have the 'current' data and stay on the current page and add the queryparams.
+
     history.replace({
       pathname: routes.workspaceWithFilePath.path({
         workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,

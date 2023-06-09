@@ -46,6 +46,11 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
             return;
           }
 
+          //If my queryparam is in the URL when the add new file in the new file dropdown is clicked on
+          //Then - the workspaceId and relativePath will have the correct values for the new file and be set below.
+          //Else - the workspaceId and relativePath will have the correct values for the new file but be cancelled before it reaches the setWorkspaceFilePromise.
+          //       Upon getting canceled it reverts to the workspaceId and relativePath of the current page and sets them to the current ones below.
+
           setWorkspaceFilePromise({ data: { workspaceFile, uniqueId } });
         });
       });

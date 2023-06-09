@@ -131,6 +131,9 @@ export function FileSwitcher(props: {
         setNewFileNameValid(true);
         return;
       }
+      history.replace({
+        search: queryParams.without(QueryParams.NEW_FILE).toString(),
+      });
 
       const newRelativePath = join(
         props.workspaceFile.relativeDirPath,
@@ -146,7 +149,7 @@ export function FileSwitcher(props: {
 
       setNewFileNameValid(!hasConflictingFileName && !hasForbiddenCharacters);
     },
-    [props.workspaceFile, workspaces]
+    [history, props.workspaceFile, queryParams, workspaces]
   );
 
   const renameWorkspaceFile = useCallback(
@@ -184,7 +187,9 @@ export function FileSwitcher(props: {
     },
     [newFileNameValid, resetWorkspaceFileName]
   );
-
+  if (workspaceFileNameRef.current && queryParamNewFile) {
+    workspaceFileNameRef.current.select();
+  }
   useEffect(resetWorkspaceFileName, [resetWorkspaceFileName]);
   const [isFilesDropdownOpen, setFilesDropdownOpen] = useState(false);
   const [isPopoverVisible, setPopoverVisible] = useState(false);
@@ -199,12 +204,6 @@ export function FileSwitcher(props: {
   useEffect(() => {
     setMenuHeights({});
   }, [props.workspace, filesMenuMode, activeMenu]);
-
-  // useEffect(() => {
-  //   if (workspaceFileNameRef.current !== null && queryParamNewFile) {
-  //     workspaceFileNameRef.current.select();
-  //   }
-  // }, [history, queryParamNewFile, queryParams, workspaceFileNameRef]);
 
   useEffect(() => {
     if (isFilesDropdownOpen) {

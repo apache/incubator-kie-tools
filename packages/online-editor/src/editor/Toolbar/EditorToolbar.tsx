@@ -320,6 +320,11 @@ export function EditorToolbarWithWorkspace(
                           onToggle={() => setNewFileDropdownMenuOpen((prev) => !prev)}
                           isPrimary={true}
                           toggleIndicator={CaretDownIcon}
+                          onClick={() =>
+                            history.push({
+                              search: queryParams.with(QueryParams.NEW_FILE, "new").toString(),
+                            })
+                          }
                         >
                           <PlusIcon />
                           &nbsp;&nbsp;New file
