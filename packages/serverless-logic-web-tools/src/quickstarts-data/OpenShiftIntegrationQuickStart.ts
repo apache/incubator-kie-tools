@@ -30,15 +30,15 @@ export const OpenShiftIntegrationQuickStart: QuickStart = {
     introduction: `You can integrate your Serverless Workflow project with Red Hat OpenShift. OpenShift is an enterprise-ready Kubernetes container platform, enabling your Serverless Workflow projects to be deployed and tested online.`,
 
     conclusion: `**Found an issue?**
-    
+
 If you find an issue or any misleading information, please feel free to report it [here](https://github.com/kiegroup/kogito-docs/issues/new). We really appreciate it!`,
 
     tasks: [
       {
-        title: "Setting KIE Sandbox Extended Services",
+        title: "Setting Extended Services",
         description: `<div class="sectionbody">
           <div class="paragraph">
-            <p>The KIE Sandbox Extended Services tool is required to proxy requests to an OpenShift instance. Therefore, setting the KIE Sandbox Extended Services enables you to deploy and monitor your Serverless Workflow projects.</p>
+            <p>The Extended Services tool is required to proxy requests to an OpenShift instance. Therefore, setting the Extended Services enables you to deploy and monitor your Serverless Workflow projects.</p>
           </div>
           <div class="olist arabic">
             <div class="title">
@@ -48,28 +48,26 @@ If you find an issue or any misleading information, please feel free to report i
             </div>
             <ol class="arabic">
               <li>
-                <p>In the Serverless Logic Web Tools web application, click on the <strong>Cog wheel</strong> (⚙️) on the top-right corner and go to the <strong>KIE Sandbox Extended Services</strong> tab. </p>
+                <p>In the Serverless Logic Web Tools web application, click the <strong>Cogwheel</strong> (⚙️) on the top-right corner and go to the <strong>Extended Services</strong> tab. </p>
               </li>
               <li>
-                <p>In case you are not connected to KIE Sandbox Extended Services, you see <strong>You are not connected to KIE Sandbox Extended Services. Click to setup</strong> mesaage along with <strong>Host</strong> and <strong>Port</strong> fields, containing the values as <code>
-                    <a class="bare" href="http://localhost" aria-invalid="true">http://localhost</a>
-                  </code> and <code>21345</code> respectively. </p>
+                <p>In case you are not connected to Extended Services, you see <strong>You are not connected to Extended Services. Click to setup</strong> mesaage.</p>
               </li>
               <li>
                 <p>Click on the link in the message.</p>
                 <div class="paragraph">
-                  <p>A window appears containing your current operating system as selected and a link to download to the latest version of KIE Sandbox Extended Services.</p>
+                  <p>A window appears containing your current operating system as selected and a link to download the latest version of Extended Services.</p>
                 </div>
               </li>
               <li>
-                <p>Download the KIE Sandbox Extended Services and execute it.</p>
+                <p>Download the Extended Services and execute it.</p>
                 <div class="openblock">
                   <div class="content">
                     <div class="paragraph">
                       <p>You might need to grant permissions to run the file depending on your operating system and settings.</p>
                     </div>
                     <div class="paragraph">
-                      <p>After executing the KIE Sandbox Extended Services the content in the <strong>KIE Sandbox Extended Services</strong> is updated and displays that you are connected to the KIE Sandbox Extended Services. </p>
+                      <p>After executing the Extended Services the content in the <strong>Extended Services</strong> is updated and displays that you are connected to the Extended Services. </p>
                     </div>
                   </div>
                 </div>
@@ -84,7 +82,7 @@ If you find an issue or any misleading information, please feel free to report i
           <h2 id="proc-connecting-openshift-instance-serverless-logic-web-tools">Connecting to OpenShift instance using Serverless Logic Web Tools</h2>
           <div class="sectionbody">
             <div class="paragraph">
-              <p>After setting the KIE Sandbox Extended Services, you can connect to your OpenShift instance to deploy your Serverless Workflow projects with Serverless Logic Web Tools.</p>
+              <p>After setting the Extended Services, you can connect to your OpenShift instance to deploy your Serverless Workflow projects with Serverless Logic Web Tools.</p>
             </div>
             <div class="ulist">
               <div class="title">
@@ -94,7 +92,7 @@ If you find an issue or any misleading information, please feel free to report i
               </div>
               <ul>
                 <li>
-                  <p>KIE Sandbox Extended Services tool installed and running.</p>
+                  <p>Extended Services tool is installed and running.</p>
                 </li>
                 <li>
                   <p>OpenShift instance is active.</p>
@@ -147,7 +145,10 @@ If you find an issue or any misleading information, please feel free to report i
                   </div>
                 </li>
                 <li>
-                  <p>Go to the Serverless Logic Web Tools web application, click on the <strong>Cog wheel</strong> (⚙️) on the top-right corner and go to the <strong>OpenShift</strong> tab. </p>
+                  <p>Go to the Serverless Logic Web Tools web application, click the <strong>Cogwheel</strong> (⚙️) on the top-right corner and go to the <strong>OpenShift</strong> tab. </p>
+                </li>
+                <li>
+                  <p>Click the <strong>Add connection</strong> button and a window will be shown.</p>
                 </li>
                 <li>
                   <p>Enter your OpenShift project name in the <strong>Namespace (project)</strong> field. </p>
@@ -178,7 +179,7 @@ If you find an issue or any misleading information, please feel free to report i
                       <div class="paragraph">
                         <p>
                           <b>NOTE</b>
-                          <br />If your OpenShift instance uses self-signed certificates, then you might need to enable <code>InsecureSkipVerify</code> on KIE Sandbox Extended Services.
+                          <br />If your OpenShift instance uses self-signed certificates, then you must enable the <code>InsecureSkipVerify</code> on Extended Services.
                         </p>
                       </div>
                     </td>
