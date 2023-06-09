@@ -14,5 +14,22 @@
  * limitations under the License.
  */
 
-export { en } from "./en";
-export { de } from "./de";
+import { EditorEnvelopeI18n } from "../EditorEnvelopeI18n";
+
+export const de: EditorEnvelopeI18n = {
+  keyBindingsHelpOverlay: {
+    title: "Tastenkombinationen",
+    categories: {
+      edit: "Editieren",
+      help: "Hilfe",
+    },
+    commands: {
+      undo: "Letzte Änderung rückgängig machen",
+      redo: "Letzte Änderung wiederholen",
+      showKeyboardOverlay: "Tastenkombinationen anzeigen",
+    },
+  },
+  loadingScreen: {
+    loading: "Laden...",
+  },
+};
