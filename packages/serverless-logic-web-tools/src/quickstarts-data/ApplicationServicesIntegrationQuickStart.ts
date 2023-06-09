@@ -116,7 +116,10 @@ If you find an issue or any misleading information, please feel free to report i
                 <p>If you already have a service account, find your <strong>Client ID</strong> and <strong>Client Secret</strong>. </p>
               </li>
               <li>
-                <p>In the Serverless Logic Web Tools, click on the <strong>Cog wheel</strong> (⚙️) on the top-right corner and go to the <strong>Service Account</strong> tab. </p>
+                <p>In the Serverless Logic Web Tools, click the <strong>Cogwheel</strong> (⚙️) on the top-right corner and go to the <strong>Service Account</strong> tab. </p>
+              </li>
+              <li>
+                <p>Click the <strong>Add service account</strong> button and a window will be shown.</p>
               </li>
               <li>
                 <p>Enter your <strong>Client ID</strong> and <strong>Client Secret</strong> in the respective fields. </p>
@@ -250,7 +253,10 @@ If you find an issue or any misleading information, please feel free to report i
                 <p>If you already have a Service Registry, find the value of <strong>Core Registry API</strong> of your Service Registry. </p>
               </li>
               <li>
-                <p>In the Serverless Logic Web Tools web application, click on the <strong>Cog wheel</strong> (⚙️) on the top-right corner and go to the <strong>Service Registry</strong> tab. </p>
+                <p>In the Serverless Logic Web Tools web application, click the <strong>Cogwheel</strong> (⚙️) on the top-right corner and go to the <strong>Service Registry</strong> tab. </p>
+              </li>
+              <li>
+                <p>Click the <strong>Add service registry</strong> button and a window will be shown.</p>
               </li>
               <li>
                 <p>Enter a name for your registry.</p>

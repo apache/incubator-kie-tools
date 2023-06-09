@@ -48,17 +48,15 @@ If you find an issue or any misleading information, please feel free to report i
             </div>
             <ol class="arabic">
               <li>
-                <p>In the Serverless Logic Web Tools web application, click on the <strong>Cog wheel</strong> (⚙️) on the top-right corner and go to the <strong>Extended Services</strong> tab. </p>
+                <p>In the Serverless Logic Web Tools web application, click the <strong>Cogwheel</strong> (⚙️) on the top-right corner and go to the <strong>Extended Services</strong> tab. </p>
               </li>
               <li>
-                <p>In case you are not connected to Extended Services, you see <strong>You are not connected to Extended Services. Click to setup</strong> mesaage along with <strong>Host</strong> and <strong>Port</strong> fields, containing the values as <code>
-                    <a class="bare" href="http://localhost" aria-invalid="true">http://localhost</a>
-                  </code> and <code>21345</code> respectively. </p>
+                <p>In case you are not connected to Extended Services, you see <strong>You are not connected to Extended Services. Click to setup</strong> mesaage.</p>
               </li>
               <li>
                 <p>Click on the link in the message.</p>
                 <div class="paragraph">
-                  <p>A window appears containing your current operating system as selected and a link to download to the latest version of Extended Services.</p>
+                  <p>A window appears containing your current operating system as selected and a link to download the latest version of Extended Services.</p>
                 </div>
               </li>
               <li>
@@ -94,7 +92,7 @@ If you find an issue or any misleading information, please feel free to report i
               </div>
               <ul>
                 <li>
-                  <p>Extended Services tool installed and running.</p>
+                  <p>Extended Services tool is installed and running.</p>
                 </li>
                 <li>
                   <p>OpenShift instance is active.</p>
@@ -147,7 +145,10 @@ If you find an issue or any misleading information, please feel free to report i
                   </div>
                 </li>
                 <li>
-                  <p>Go to the Serverless Logic Web Tools web application, click on the <strong>Cog wheel</strong> (⚙️) on the top-right corner and go to the <strong>OpenShift</strong> tab. </p>
+                  <p>Go to the Serverless Logic Web Tools web application, click the <strong>Cogwheel</strong> (⚙️) on the top-right corner and go to the <strong>OpenShift</strong> tab. </p>
+                </li>
+                <li>
+                  <p>Click the <strong>Add connection</strong> button and a window will be shown.</p>
                 </li>
                 <li>
                   <p>Enter your OpenShift project name in the <strong>Namespace (project)</strong> field. </p>
@@ -178,7 +179,7 @@ If you find an issue or any misleading information, please feel free to report i
                       <div class="paragraph">
                         <p>
                           <b>NOTE</b>
-                          <br />If your OpenShift instance uses self-signed certificates, then you might need to enable <code>InsecureSkipVerify</code> on Extended Services.
+                          <br />If your OpenShift instance uses self-signed certificates, then you must enable the <code>InsecureSkipVerify</code> on Extended Services.
                         </p>
                       </div>
                     </td>
