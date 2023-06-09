@@ -316,7 +316,7 @@ export function BeeTableContextMenuHandler({
       selection,
       column,
       columns,
-    } as BeeTableContextMenuAllowedOperationsConditions);
+    });
   }, [allowedOperations, selection, column, columns]);
   const hasAllowedOperations = useMemo(() => {
     return allOperations.some((operation) => allowedOperationsForSelection.includes(operation.type));
