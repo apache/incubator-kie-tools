@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.client.services;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -61,6 +62,9 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
     @Inject
     ExternalDataSetClientProvider externalDataSetClientProvider;
 
+    @Inject
+    JoinDataSetsService joinDataSetsService;
+
     public RuntimeDataSetClientServices() {
         // empty
     }
@@ -84,16 +88,19 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
     @Override
     public void lookupDataSet(DataSetDef def, DataSetLookup lookup, DataSetReadyCallback listener) throws Exception {
         var clientDataSet = clientDataSetManager.lookupDataSet(lookup);
-        if (!isAccumulate(lookup.getDataSetUUID()) && clientDataSet != null) {
+        String uuid = lookup.getDataSetUUID();
+        if (!isAccumulate(uuid) && clientDataSet != null) {
             listener.callback(clientDataSet);
             return;
         }
 
-        externalDataSetClientProvider.fetchAndRegister(lookup.getDataSetUUID(), lookup, listener);
-    }
+        var join = getJoin(uuid);
+        if (!join.isEmpty()) {
+            joinDataSetsService.joinDataSets(join, lookup, listener);
+            return;
+        }
 
-    private boolean isAccumulate(String uuid) {
-        return externalDataSetClientProvider.get(uuid).map(def -> def.isAccumulate()).orElse(false);
+        externalDataSetClientProvider.fetchAndRegister(uuid, lookup, listener);
     }
 
     @Override
@@ -128,6 +135,17 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
             clientDataSetManager.removeDataSet(uuid);
         }
 
+    }
+
+    private List<String> getJoin(String uuid) {
+        return externalDataSetClientProvider.get(uuid).filter(def -> def.getJoin() != null)
+                .map(def -> def.getJoin())
+                .orElse(Collections.emptyList());
+
+    }
+
+    private boolean isAccumulate(String uuid) {
+        return externalDataSetClientProvider.get(uuid).map(def -> def.isAccumulate()).orElse(false);
     }
 
 }

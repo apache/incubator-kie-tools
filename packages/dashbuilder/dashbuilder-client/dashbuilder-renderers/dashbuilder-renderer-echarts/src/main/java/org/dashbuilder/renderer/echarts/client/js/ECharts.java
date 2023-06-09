@@ -232,6 +232,7 @@ public interface ECharts {
         @JsProperty
         public native void setDistance(int distance);
 
+        @Override
         @JsProperty
         public native void setShow(boolean show);
 
