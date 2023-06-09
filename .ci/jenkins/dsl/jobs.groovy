@@ -14,6 +14,17 @@ import org.kie.jenkins.jobdsl.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.Utils
 
 jenkins_path = '.ci/jenkins'
+clustersConfig = [
+    minikube: [
+        AGENT_LABEL: 'kie-rhel8 && kie-mem16g',
+        MINIKUBE_VERSION: '1.30.1',
+        KUBERNETES_VERSION: '1.26.3',
+    ],
+    openshift: [
+        OPENSHIFT_API_KEY: 'OPENSHIFT_API',
+        OPENSHIFT_CREDS_KEY: 'OPENSHIFT_CREDS',
+    ],
+]
 
 // Setup branch
 createSetupBranchJob()
@@ -48,7 +59,7 @@ void createSetupBranchJob() {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
 
             stringParam('PROJECT_VERSION', '', 'Version to set.')
-            
+
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
     }
@@ -68,6 +79,8 @@ void setupDeployJob(JobType jobType) {
         OPENSHIFT_API_KEY: 'OPENSHIFT_API',
         OPENSHIFT_CREDS_KEY: 'OPENSHIFT_CREDS',
         PROPERTIES_FILE_NAME: 'deployment.properties',
+
+        TEST_CLUSTER_NAMES: clustersConfig.keySet().join(','),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -92,6 +105,11 @@ void setupDeployJob(JobType jobType) {
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
+    }
+
+    // Create E2E jobs
+    clustersConfig.each { clusterName, clusterEnv ->
+        setupE2EJob(jobType, clusterName, clusterEnv)
     }
 }
 
@@ -138,6 +156,28 @@ void setupPromoteJob(JobType jobType) {
             stringParam('GIT_TAG', '', 'Git tag to set, if different from v{KOGITO_VERSION}')
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
+        }
+    }
+}
+
+void setupE2EJob(JobType jobType, String clusterName, Map extraEnv = [:]) {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, "kogito-serverless-operator.e2e.${clusterName}", jobType, "${jenkins_path}/Jenkinsfile.e2e.cluster", 'Kogito Serverless Cloud Operator Deploy')
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+        CLUSTER_NAME: clusterName,
+
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
+        OPERATOR_IMAGE_NAME: 'kogito-serverless-operator',
+        MAX_REGISTRY_RETRIES: 3,
+        PROPERTIES_FILE_NAME: 'deployment.properties',
+    ])
+    jobParams.env.putAll(extraEnv)
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout for the tests')
+            stringParam('TEST_IMAGE_FULL_TAG', '', 'Image to test')
         }
     }
 }

@@ -32,6 +32,8 @@ metadata:
     sw.kogito.kie.org/resource-camel: mycamel-configmap
 spec:
   flow:
+    id: greeting
+    specVersion: "0.8"
     start: ChooseOnLanguage
     functions:
       - name: greetFunction

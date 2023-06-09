@@ -35,6 +35,7 @@ const (
 	KogitoServerlessWorkflowSampleYamlCR            = "sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml"
 	kogitoServerlessPlatformYamlCR                  = "sw.kogito_v1alpha08_kogitoserverlessplatform.yaml"
 	kogitoServerlessPlatformWithCacheMinikubeYamlCR = "sw.kogito_v1alpha08_kogitoserverlessplatform_withCache_minikube.yaml"
+	kogitoServerlessPlatformForOpenshift            = "sw.kogito_v1alpha08_kogitoserverlessplatform_openshift.yaml"
 	kogitoServerlessWorkflowSampleDevModeYamlCR     = "sw.kogito_v1alpha08_kogitoserverlessworkflow_devmode.yaml"
 	kogitoServerlessOperatorBuilderConfig           = "kogito-serverless-operator-builder-config_v1_configmap.yaml"
 
@@ -208,6 +209,11 @@ func GetBasePlatform() *operatorapi.KogitoServerlessPlatform {
 func GetPlatformMinikubeE2eTest() string {
 	return e2eSamples + kogitoServerlessPlatformWithCacheMinikubeYamlCR
 }
+
+func GetPlatformOpenshiftE2eTest() string {
+	return e2eSamples + kogitoServerlessPlatformForOpenshift
+}
+
 func GetServerlessWorkflowE2eTest() string {
 	return e2eSamples + kogitoServerlessWorkflowSampleDevModeYamlCR
 }

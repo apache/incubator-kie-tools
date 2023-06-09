@@ -7,6 +7,8 @@ metadata:
     sw.kogito.kie.org/version: 0.0.1
 spec:
   flow:
+    id: greeting
+    specVersion: "0.8"
     start: ChooseOnLanguage
     functions:
       - name: greetFunction

@@ -17,6 +17,7 @@ package e2e
 import (
 	"fmt"
 	"net/url"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
@@ -37,6 +38,11 @@ import (
 
 // namespace store the ns where the Operator and Operand will be executed
 const namespace = "kogito-serverless-operator-system"
+
+const (
+	minikubePlatform  = "minikube"
+	openshiftPlatform = "openshift"
+)
 
 var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 
@@ -182,7 +188,7 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 			By("creating an instance of the Kogito Serverless Platform")
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					test.GetPlatformMinikubeE2eTest()), "-n", namespace)
+					getKogitoServerlessPlatformFilename()), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -277,4 +283,18 @@ func verifyWorkflowIsAddressable() bool {
 		}
 		return false
 	}
+}
+
+func getKogitoServerlessPlatformFilename() string {
+	if getClusterPlatform() == openshiftPlatform {
+		return test.GetPlatformOpenshiftE2eTest()
+	}
+	return test.GetPlatformMinikubeE2eTest()
+}
+
+func getClusterPlatform() string {
+	if v, ok := os.LookupEnv("CLUSTER_PLATFORM"); ok {
+		return v
+	}
+	return minikubePlatform
 }
