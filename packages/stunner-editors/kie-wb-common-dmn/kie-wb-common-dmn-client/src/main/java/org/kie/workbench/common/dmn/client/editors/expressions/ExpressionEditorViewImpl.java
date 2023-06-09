@@ -359,6 +359,10 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         );
     }
 
+    void unmountNewBoxedExpressionEditor() {
+        DMNLoader.unmountBoxedExpressionEditor(".kie-dmn-new-expression-editor");
+    }
+
     @Override
     public void selectDomainObject(final String uuid) {
         this.selectedUUID = uuid;
@@ -648,6 +652,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @EventHandler("returnToDRGLink")
     void onClickReturnToDRGLink(final ClickEvent event) {
+        unmountNewBoxedExpressionEditor();
         presenter.exit();
     }
 

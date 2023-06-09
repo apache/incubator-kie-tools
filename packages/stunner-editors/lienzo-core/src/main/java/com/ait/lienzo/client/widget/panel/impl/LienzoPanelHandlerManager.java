@@ -224,8 +224,6 @@ public final class LienzoPanelHandlerManager {
             checkPressedMouseButton(mouseEvent.button);
 
             m_viewport.getOnEventHandlers().getOnMouseClickEventHandle().onMouseEventAfter(mouseEvent);
-
-            mouseEvent.stopPropagation();
         });
 
         addEventListener(EventType.DOUBLE_CLICKED, (Event event) ->
@@ -246,8 +244,6 @@ public final class LienzoPanelHandlerManager {
             event.preventDefault();
 
             m_viewport.getOnEventHandlers().getOnMouseDoubleClickEventHandle().onMouseEventAfter(mouseEvent);
-
-            mouseEvent.stopPropagation();
         });
 
         addEventListener(EventType.MOUSE_MOVE, (Event event) ->
@@ -280,8 +276,6 @@ public final class LienzoPanelHandlerManager {
             event.preventDefault();
 
             m_viewport.getOnEventHandlers().getOnMouseMoveEventHandle().onMouseEventAfter(mouseEvent);
-
-            mouseEvent.stopPropagation();
         });
 
         addEventListener(EventType.MOUSE_UP, (Event event) ->
@@ -307,8 +301,6 @@ public final class LienzoPanelHandlerManager {
             onNodeMouseUpTouchEnd(mouseEvent, null, x, y, nodeMouseUpEvent);
 
             m_viewport.getOnEventHandlers().getOnMouseUpEventHandle().onMouseEventAfter(mouseEvent);
-
-            mouseEvent.stopPropagation();
         });
 
         addEventListener(EventType.MOUSE_DOWN, (Event event) ->
@@ -333,8 +325,6 @@ public final class LienzoPanelHandlerManager {
             onNodeMouseDownTouchStart(mouseEvent, null, x, y, nodeMouseDownEvent);
 
             m_viewport.getOnEventHandlers().getOnMouseDownEventHandle().onMouseEventAfter(mouseEvent);
-
-            mouseEvent.stopPropagation();
         });
 
         addEventListener(EventType.MOUSE_OUT, (Event event) ->
@@ -349,8 +339,7 @@ public final class LienzoPanelHandlerManager {
             }
 
             onNodeMouseOutTouchCancel(mouseEvent, null, x, y, nodeMouseOutEvent);
-
-            mouseEvent.stopPropagation();
+            //onNodeMouseOut(, x, y);
         });
 
         addEventListener(EventType.MOUSE_OVER, (Event event) ->
@@ -369,8 +358,6 @@ public final class LienzoPanelHandlerManager {
             if (shape != null) {
                 fireEvent(mouseEvent, null, x, y, null, shape, nodeMouseOverEvent);
             }
-
-            mouseEvent.stopPropagation();
         });
 
         AddEventListenerOptions opt = AddEventListenerOptions.create();
