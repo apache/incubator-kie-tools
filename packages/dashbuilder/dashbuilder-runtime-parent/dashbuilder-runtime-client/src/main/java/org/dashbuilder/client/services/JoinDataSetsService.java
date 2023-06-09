@@ -39,7 +39,7 @@ public class JoinDataSetsService {
 
     @Inject
     ExternalDataSetClientProvider externalDataSetClientProvider;
-    
+
     @Inject
     ClientDataSetManager manager;
 
@@ -127,9 +127,8 @@ public class JoinDataSetsService {
             var initColumn = columnsToJoin.get(i);
 
             if (columnToJoin.getColumnType() != initColumn.getColumnType()) {
-                throw new RuntimeException("Data set " + dataSet.getDefinition().getUUID() + " column " + i +
-                        " should be of type " + initColumn.getColumnType());
-
+                throw new RuntimeException("Data set " + dataSet.getDefinition().getUUID() + " column " +
+                        columnToJoin.getId() + " should be of type " + initColumn.getColumnType());
             }
         }
 
