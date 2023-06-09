@@ -15,24 +15,16 @@
  */
 
 import { defaultDmnRunnerAutoFieldValue } from "@kie-tools/dmn-runner/dist/uniforms";
-import { Context, GuaranteedProps } from "uniforms/esm";
-import UnitablesListField from "./UnitablesListField";
-import UnitablesNestField from "./UnitablesNestField";
-import UnitablesNotSupportedField from "./UnitablesNotSupportedField";
 import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
+import { Context, GuaranteedProps } from "uniforms/esm";
+import FormDmnNotSupportedField from "./FormDmnNotSupportedField";
 
-export function unitablesDmnRunnerAutoFieldValue(
+export function formDmnRunnerAutoFieldValue(
   props: GuaranteedProps<unknown>,
   uniforms: Context<Record<string, unknown>>
 ) {
-  if (props.field?.type === "array") {
-    return UnitablesListField;
-  }
-  if (props.field?.type === "object") {
-    return UnitablesNestField;
-  }
   if (props.field?.[`${RECURSION_KEYWORD}`]) {
-    return UnitablesNotSupportedField;
+    return FormDmnNotSupportedField;
   }
   return defaultDmnRunnerAutoFieldValue(props, uniforms);
 }

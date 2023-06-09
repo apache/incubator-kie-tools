@@ -39,7 +39,7 @@ import {
   ExtendedServicesModelPayload,
   DmnInputFieldProperties,
 } from "@kie-tools/extended-services-api";
-import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
+import { DmnRunnerAjv, ValidateFunction } from "@kie-tools/dmn-runner/dist/ajv";
 import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
@@ -70,6 +70,9 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import getObjectValueByPath from "lodash/get";
 import unsetObjectValueByPath from "lodash/unset";
+import { resolveRefs, pathFromPtr } from "json-refs";
+import setObjectValueByPath from "lodash/set";
+import { RECURSION_KEYWORD, RECURSION_REF_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
 
 const JSON_SCHEMA_INPUT_SET_PATH = "definitions.InputSet.properties";
 
@@ -174,10 +177,19 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     setExtendedServicesError(false);
   }, [jsonSchema]);
 
-  // Reset JSON Schema and PersistenceJson;
+  // Refer to effect responsible for getting decision results
+  const hasJsonSchema = useRef<boolean>(false);
+  // Reset JSON Schema;
   useLayoutEffect(() => {
     setJsonSchema(undefined);
+    hasJsonSchema.current = false;
   }, [props.workspaceFile.relativePath]);
+
+  useLayoutEffect(() => {
+    if (jsonSchema) {
+      hasJsonSchema.current = true;
+    }
+  }, [jsonSchema]);
 
   // Control the isExpaded state based on the extended services status;
   useLayoutEffect(() => {
@@ -217,10 +229,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         context: formInputs,
       } as ExtendedServicesModelPayload;
     },
-    [props.workspaceFile, workspaces, props.dmnLanguageService]
+    [props.dmnLanguageService, props.workspaceFile.relativePath, props.workspaceFile.workspaceId, workspaces]
   );
 
-  // Responsible for get decision results;
+  // Responsible for getting decision results
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -228,7 +240,14 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           return;
         }
 
-        Promise.all(dmnRunnerInputs.map((inputs) => extendedServicesModelPayload(inputs)))
+        Promise.all(
+          dmnRunnerInputs.map((dmnRunnerInput) => {
+            // extendedServicesModelPayload triggers a re-run in this effect before the jsonSchema values is updated
+            // in the useLayoutEffect, making this effect to be triggered with the previous file dmnRunnerInputs.
+            const input = hasJsonSchema.current === false ? {} : dmnRunnerInput;
+            return extendedServicesModelPayload(input);
+          })
+        )
           .then((payloads) =>
             Promise.all(
               payloads.map((payload) => {
@@ -430,8 +449,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     | []
     | object
     | undefined => {
-    if (dmnField?.type === "string") {
-      return "";
+    if (dmnField?.type === "string" && dmnField?.format === undefined) {
+      return undefined;
     }
     if (dmnField?.type === "number") {
       return undefined;
@@ -461,6 +480,32 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [getFieldDefaultValue]
   );
 
+  const removeChangedPropertiesAndAdditionalProperties = useCallback(
+    <T extends ValidateFunction>(validator: T, toValidate: Record<string, any>) => {
+      const validation = validator(toValidate);
+      if (!validation && validator.errors) {
+        validator.errors.forEach((error) => {
+          if (error.keyword !== "type" && error.keyword !== "format") {
+            return;
+          }
+
+          const pathList = error.dataPath
+            .replace(/\['([^']+)'\]/g, "$1")
+            .replace(/\[(\d+)\]/g, ".$1")
+            .split(".")
+            .filter((e) => e !== "");
+
+          const path = pathList.length === 1 ? pathList[0] : pathList.slice(0, -1).join(".");
+          unsetObjectValueByPath(toValidate, path);
+
+          // This should be done to remove any previous form error
+          forceDmnRunnerReRender();
+        });
+      }
+    },
+    []
+  );
+
   // The refreshCallback is called after a CompanionFS event;
   // When another TAB updates the FS, this callback will sync up;
   useCompanionFsFileSyncedWithWorkspaceFile(
@@ -485,18 +530,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             dmnRunnerPersistenceJson.inputs.forEach((input) => {
               // save id;
               const id = input.id;
-              const validation = validate(input);
-              if (!validation && validate.errors) {
-                validate.errors.forEach((error) => {
-                  const pathList = error.dataPath
-                    .replace(/\[(\d+)\]/g, ".$1")
-                    .split(".")
-                    .slice(1);
-
-                  const path = pathList.length === 1 ? pathList.join(".") : pathList.slice(0, -1).join(".");
-                  unsetObjectValueByPath(input, path);
-                });
-              }
+              removeChangedPropertiesAndAdditionalProperties(validate, input);
               input.id = id;
             });
           } catch (error) {
@@ -541,30 +575,62 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         }
         return;
       },
-      [dmnRunnerAjv, dmnRunnerPersistenceService, getDefaultValues, jsonSchema, setDmnRunnerPersistenceJson]
+      [
+        dmnRunnerAjv,
+        dmnRunnerPersistenceService,
+        removeChangedPropertiesAndAdditionalProperties,
+        getDefaultValues,
+        jsonSchema,
+        setDmnRunnerPersistenceJson,
+      ]
     )
   );
 
-  const removeChangedPropertiesAndAdditionalProperties = useCallback(
-    <T extends ((obj: Record<string, any>) => boolean) & { errors: [{ keyword: string; dataPath: string }] }>(
-      validator: T,
-      toValidate: Record<string, any>
-    ) => {
-      const validation = validator(toValidate);
-      if (!validation && validator.errors) {
-        validator.errors.forEach((error) => {
-          if (error.keyword === "required") {
+  const resolveReferencesAndCheckForRecursion = useCallback(
+    async (jsonSchema: ExtendedServicesDmnJsonSchema, canceled: Holder<boolean>) => {
+      try {
+        const jsonSchemaCopy = cloneDeep(jsonSchema);
+        const $ref = getObjectValueByPath(jsonSchemaCopy, "$ref");
+        unsetObjectValueByPath(jsonSchemaCopy, "$ref");
+
+        const { refs, resolved } = await resolveRefs(jsonSchemaCopy as any);
+        if (canceled.get()) {
+          return;
+        }
+
+        let reResolve = false;
+        Object.entries(refs).forEach(([ptr, properties]) => {
+          if (properties?.circular) {
+            const path = pathFromPtr(ptr);
+            const recursiveRefPath = pathFromPtr(properties.def.$ref);
+            setObjectValueByPath(resolved, path.join("."), {
+              [`${RECURSION_KEYWORD}`]: true,
+              [`${RECURSION_REF_KEYWORD}`]: properties.def.$ref,
+              "x-dmn-type": recursiveRefPath[recursiveRefPath.length - 1],
+            });
+            reResolve = true;
+          }
+        });
+
+        if (reResolve) {
+          const { resolved: reResolved } = await resolveRefs(resolved);
+          if (canceled.get()) {
             return;
           }
 
-          const pathList = error.dataPath
-            .replace(/\['([^']+)'\]/g, "$1")
-            .replace(/\[(\d+)\]/g, ".$1")
-            .split(".");
+          if ($ref) {
+            setObjectValueByPath(reResolved, "$ref", $ref);
+          }
+          return reResolved;
+        }
 
-          const path = pathList.length === 1 ? pathList.join(".") : pathList.slice(0, -1).join(".");
-          unsetObjectValueByPath(toValidate, path);
-        });
+        if ($ref) {
+          setObjectValueByPath(resolved, "$ref", $ref);
+        }
+        return resolved;
+      } catch (err) {
+        console.log(err);
+        return;
       }
     },
     []
@@ -597,33 +663,48 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                 ...jsonSchema,
               };
 
-              setJsonSchema((previousJsonSchema) => {
-                // On the first render the previous will be undefined;
-                if (!previousJsonSchema) {
-                  return jsonSchemaDraft4;
-                }
+              resolveReferencesAndCheckForRecursion(jsonSchemaDraft4, canceled)
+                .then((resolvedSchema) => {
+                  if (canceled.get() || !resolvedSchema) {
+                    return;
+                  }
 
-                const validateInputs = dmnRunnerAjv.compile(jsonSchemaDraft4);
+                  setJsonSchema((previousJsonSchema) => {
+                    // Early bailout in the DMN first render;
+                    // This prevents to set the inputs from the previous DMN
+                    if (!previousJsonSchema) {
+                      return resolvedSchema;
+                    }
 
-                // Add default values and delete changed data types;
-                setDmnRunnerPersistenceJson({
-                  newConfigInputs: (previousConfigInputs) => {
-                    const newConfigInputs = cloneDeep(previousConfigInputs);
-                    removeChangedPropertiesAndAdditionalProperties(validateInputs as any, newConfigInputs);
-                    return newConfigInputs;
-                  },
-                  newInputsRow: (previousInputs) => {
-                    return cloneDeep(previousInputs).map((input) => {
-                      const id = input.id;
-                      removeChangedPropertiesAndAdditionalProperties(validateInputs as any, input);
-                      input.id = id;
-                      return input;
+                    const validateInputs = dmnRunnerAjv.compile(resolvedSchema);
+
+                    // Add default values and delete changed data types;
+                    setDmnRunnerPersistenceJson({
+                      newConfigInputs: (previousConfigInputs) => {
+                        const newConfigInputs = cloneDeep(previousConfigInputs);
+                        removeChangedPropertiesAndAdditionalProperties(validateInputs, newConfigInputs);
+                        return newConfigInputs;
+                      },
+                      newInputsRow: (previousInputs) => {
+                        return cloneDeep(previousInputs).map((input) => {
+                          const id = input.id;
+                          removeChangedPropertiesAndAdditionalProperties(validateInputs, input);
+                          input.id = id;
+                          return { ...getDefaultValues(resolvedSchema), ...input };
+                        });
+                      },
+                      cancellationToken: canceled,
                     });
-                  },
-                  cancellationToken: canceled,
+                    return resolvedSchema;
+                  });
+                })
+                .catch((err) => {
+                  if (canceled.get()) {
+                    return;
+                  }
+                  console.log(err);
+                  setJsonSchema(undefined);
                 });
-                return jsonSchemaDraft4;
-              });
             });
           })
           .catch((err) => {
@@ -636,8 +717,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServices.client,
         extendedServices.status,
         extendedServicesModelPayload,
+        getDefaultValues,
         props.workspaceFile.extension,
         removeChangedPropertiesAndAdditionalProperties,
+        resolveReferencesAndCheckForRecursion,
         setDmnRunnerPersistenceJson,
       ]
     )

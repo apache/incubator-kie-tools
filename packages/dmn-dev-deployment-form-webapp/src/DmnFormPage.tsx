@@ -15,7 +15,7 @@
  */
 
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
-import { DmnForm, DmnFormResult, extractDifferences } from "@kie-tools/form-dmn";
+import { FormDmn, FormDmnOutputs, extractDifferences } from "@kie-tools/form-dmn";
 import { DecisionResult } from "@kie-tools/extended-services-api";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -147,7 +147,7 @@ export function DmnFormPage(props: Props) {
                 </PageSection>
                 <div className={"kogito--dmn-form__content-body"}>
                   <PageSection className={"kogito--dmn-form__content-body-input"}>
-                    <DmnForm
+                    <FormDmn
                       formInputs={formInputs}
                       setFormInputs={setFormInputs}
                       formError={formError}
@@ -177,7 +177,7 @@ export function DmnFormPage(props: Props) {
                 </PageSection>
                 <div className={"kogito--dmn-form__content-body"}>
                   <PageSection isFilled={true} className="kogito--dmn-form__content-body-output">
-                    <DmnFormResult
+                    <FormDmnOutputs
                       results={formOutputs}
                       differences={formOutputDiffs}
                       locale={locale}
