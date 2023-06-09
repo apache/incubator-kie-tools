@@ -17,13 +17,15 @@
 export class Dependencies {
   public readonly singleEdit = {
     iframeContainerTarget: () => {
-      return document.querySelector(".Box-sc-g0xbh4-0.cpPHtE") as HTMLElement | null;
+      return document.querySelector("[class$='react-code-view-edit']")!.parentElement!
+        .parentElement as HTMLElement | null;
     },
     toolbarContainerTarget: () => {
-      return document.querySelector(".Box-sc-g0xbh4-0.cpPHtE") as HTMLElement | null;
+      return document.querySelector("[class$='react-code-view-edit']")!.parentElement!
+        .parentElement as HTMLElement | null;
     },
     githubTextEditorToReplaceElement: () => {
-      return document.querySelector(".Box-sc-g0xbh4-0.iexDVb") as HTMLElement | null;
+      return document.querySelector("[class$='react-code-view-edit']")!.parentElement as HTMLElement | null;
     },
   };
 
@@ -33,21 +35,21 @@ export class Dependencies {
       if (document.body.classList.contains("logged-out")) {
         return document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null;
       }
-      return document.querySelector(".Box-sc-g0xbh4-0.cluMzC") as HTMLElement | null;
+      return document.getElementById("highlighted-line-menu-positioner") as HTMLElement | null;
     },
     toolbarContainerTarget: () => {
       // TODO: This if can be removed once github unifies the ui for logged in/out users.
       if (document.body.classList.contains("logged-out")) {
         return document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null;
       }
-      return document.querySelector(".Box-sc-g0xbh4-0.izfgQu") as HTMLElement | null;
+      return document.querySelector("[class$='react-code-size-details-banner']") as HTMLElement | null;
     },
     githubTextEditorToReplaceElement: () => {
       // TODO: This if can be removed once github unifies the ui for logged in/out users.
       if (document.body.classList.contains("logged-out")) {
         return document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement | null;
       }
-      return document.querySelector(".Box-sc-g0xbh4-0.eRkHwF") as HTMLElement | null;
+      return document.getElementById("highlighted-line-menu-positioner")!.firstChild as HTMLElement | null;
     },
   };
 
@@ -69,7 +71,7 @@ export class Dependencies {
       if (document.body.classList.contains("logged-out")) {
         return document.querySelector(".file-navigation") as HTMLElement | null;
       }
-      return document.querySelector(".Box-sc-g0xbh4-0.gtBUEp") as HTMLElement | null;
+      return document.querySelector(".d-flex.gap-2")?.parentElement as HTMLElement | null;
     },
     buttonContainerOnPrs: () => {
       return document.querySelector(".gh-header-actions") as HTMLElement | null;
@@ -84,9 +86,7 @@ export class Dependencies {
       return document.body;
     },
     edit__githubFileNameInput: () => {
-      return document.querySelector(
-        "._UnstyledTextInput__UnstyledTextInput-sc-31b2um-0.dFGJZq"
-      ) as HTMLInputElement | null;
+      return document.querySelector("[aria-describedby=file-name-editor-breadcrumb]") as HTMLInputElement | null;
     },
     edit__githubTextAreaWithFileContents: () => {
       return document.querySelector(".js-react-code-editor") as HTMLTextAreaElement | null;

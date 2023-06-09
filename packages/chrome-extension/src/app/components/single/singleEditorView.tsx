@@ -44,7 +44,7 @@ export async function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: 
   // TODO: This if can be removed once github unifies the ui for logged in/out users.
   if (document.body.classList.contains("logged-in")) {
     // wait for the dom element to be ready before rendering
-    await waitForElementToBeReady(".Box-sc-g0xbh4-0.eRkHwF");
+    await waitForElementToBeReady("textarea[id='read-only-cursor-text-area']");
   }
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
