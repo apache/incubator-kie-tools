@@ -23,8 +23,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"k8s.io/client-go/kubernetes/scheme"
-
-	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 )
 
 func Test_Handler_WorkflowMinimal(t *testing.T) {
@@ -68,8 +66,8 @@ func Test_Handler_WorkflowMinimalAndPropsAndSpec(t *testing.T) {
 	assert.Equal(t, "hello-props", proj.Properties.Name)
 	assert.NotEmpty(t, proj.Properties.Data)
 	assert.Equal(t, 1, len(proj.Resources))
-	assert.Equal(t, "hello-openapis", proj.Resources[0].Name)
-	assert.Equal(t, proj.Workflow.Annotations[metadata.GetExtResTypeAnnotation(metadata.ExtResOpenApi)], proj.Resources[0].Name)
+	assert.Equal(t, "01-hello-resources", proj.Resources[0].Name)
+	assert.Equal(t, proj.Workflow.Spec.Resources.ConfigMaps[0].ConfigMap.Name, proj.Resources[0].Name)
 
 }
 
@@ -80,7 +78,7 @@ func Test_Handler_WorkflowMinimalAndPropsAndSpecAndGeneric(t *testing.T) {
 		AddResource("myopenapi.json", getSpecOpenApi()).
 		AddResource("myopenapi.json", getSpecOpenApi()).
 		AddResource("myopenapi2.json", getSpecOpenApi()).
-		AddResource("input.json", getSpecGeneric()).
+		AddResourceAt("input.json", "files", getSpecGeneric()).
 		AsObjects()
 	assert.NoError(t, err)
 	assert.NotNil(t, proj.Workflow)
@@ -90,10 +88,10 @@ func Test_Handler_WorkflowMinimalAndPropsAndSpecAndGeneric(t *testing.T) {
 	assert.Equal(t, "hello-props", proj.Properties.Name)
 	assert.NotEmpty(t, proj.Properties.Data)
 	assert.Equal(t, 2, len(proj.Resources))
-	assert.Equal(t, "hello-openapis", proj.Resources[0].Name)
-	assert.Equal(t, "hello-genericres", proj.Resources[1].Name)
-	assert.Equal(t, proj.Workflow.Annotations[metadata.GetExtResTypeAnnotation(metadata.ExtResOpenApi)], proj.Resources[0].Name)
-	assert.Equal(t, proj.Workflow.Annotations[metadata.GetExtResTypeAnnotation(metadata.ExtResGeneric)], proj.Resources[1].Name)
+	assert.Equal(t, "01-hello-resources", proj.Resources[0].Name)
+	assert.Equal(t, "02-hello-resources", proj.Resources[1].Name)
+	assert.Equal(t, proj.Workflow.Spec.Resources.ConfigMaps[0].ConfigMap.Name, proj.Resources[0].Name)
+	assert.Equal(t, proj.Workflow.Spec.Resources.ConfigMaps[1].ConfigMap.Name, proj.Resources[1].Name)
 	assert.NotEmpty(t, proj.Resources[0].Data["myopenapi.json"])
 	assert.NotEmpty(t, proj.Resources[1].Data["input.json"])
 }
@@ -103,7 +101,7 @@ func Test_Handler_WorklflowServiceAndPropsAndSpec_SaveAs(t *testing.T) {
 		WithWorkflow(getWorkflowService()).
 		WithAppProperties(getWorkflowProperties()).
 		AddResource("myopenapi.json", getSpecOpenApi()).
-		AddResourceTyped("schema.json", getSpecGeneric(), metadata.ExtResGeneric)
+		AddResourceAt("schema.json", "files", getSpecGeneric())
 	proj, err := handler.AsObjects()
 	assert.NoError(t, err)
 	assert.NotNil(t, proj.Workflow)

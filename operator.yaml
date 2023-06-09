@@ -2567,6 +2567,38 @@ spec:
                 - specVersion
                 - states
                 type: object
+              resources:
+                description: Resources workflow resources that are linked to this
+                  workflow definition. For example, a collection of OpenAPI specification
+                  files.
+                properties:
+                  configMaps:
+                    items:
+                      description: ConfigMapWorkflowResource ConfigMap local reference
+                        holding one or more workflow resources, such as OpenAPI files
+                        that will be mounted in the workflow application.
+                      properties:
+                        configMap:
+                          description: ConfigMap the given configMap name in the same
+                            workflow context to find the resource
+                          properties:
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Add other useful fields. apiVersion, kind, uid?'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                        workflowPath:
+                          description: WorkflowPath path relative to the workflow
+                            application root file system within the pod (/<application
+                            path>/src/main/resources). Starting trailing slashes will
+                            be removed.
+                          type: string
+                      required:
+                      - configMap
+                      type: object
+                    type: array
+                type: object
             required:
             - flow
             type: object
@@ -2621,6 +2653,9 @@ spec:
                   type: object
                 type: array
               endpoint:
+                type: string
+              lastTimeRecoverAttempt:
+                format: date-time
                 type: string
               observedGeneration:
                 description: The generation observed by the deployment controller.

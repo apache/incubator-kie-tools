@@ -67,6 +67,28 @@ func devDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (clien
 	return deployment, nil
 }
 
+// devDeploymentMutateVisitor guarantees the state of the default Deployment object
+func devDeploymentMutateVisitor(workflow *operatorapi.KogitoServerlessWorkflow) mutateVisitor {
+	return func(object client.Object) controllerutil.MutateFn {
+		return func() error {
+			if kubeutil.IsObjectNew(object) {
+				return nil
+			}
+			original, err := devDeploymentCreator(workflow)
+			if err != nil {
+				return err
+			}
+			object.(*appsv1.Deployment).Spec.Template.Spec.Volumes = make([]corev1.Volume, 0)
+			object.(*appsv1.Deployment).Spec.Template.Spec.Volumes = original.(*appsv1.Deployment).Spec.Template.Spec.Volumes
+			object.(*appsv1.Deployment).Spec.Template.Spec.Containers = make([]corev1.Container, 0)
+			object.(*appsv1.Deployment).Spec.Template.Spec.Containers = original.(*appsv1.Deployment).Spec.Template.Spec.Containers
+			object.(*appsv1.Deployment).Spec.Replicas = original.(*appsv1.Deployment).Spec.Replicas
+			object.(*appsv1.Deployment).Labels = original.GetLabels()
+			return nil
+		}
+	}
+}
+
 // workflowDefConfigMapCreator creates a new ConfigMap that holds the definition of a workflow specification.
 func workflowDefConfigMapCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
 	configMap, err := workflowdef.CreateNewConfigMap(workflow)

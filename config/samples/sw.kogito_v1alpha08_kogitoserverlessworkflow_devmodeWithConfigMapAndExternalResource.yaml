@@ -29,8 +29,11 @@ metadata:
     sw.kogito.kie.org/description: Greeting example on k8s!
     sw.kogito.kie.org/version: 0.0.1
     sw.kogito.kie.org/profile: dev
-    sw.kogito.kie.org/resource-camel: mycamel-configmap
 spec:
+  resources:
+    configMaps:
+      - configMap:
+          name: mycamel-configmap
   flow:
     id: greeting
     specVersion: "0.8"

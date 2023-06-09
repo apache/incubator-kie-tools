@@ -17,41 +17,39 @@ package workflowproj
 import (
 	"os"
 	"testing"
-
-	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 )
 
 func TestParseResourceType(t *testing.T) {
 	type args struct {
-		contents string
+		contents []byte
 	}
 	tests := []struct {
 		name string
 		args args
-		want metadata.ExtResType
+		want ResourceKind
 	}{
-		{name: "valid openapi", args: args{contents: getResourceContents("valid-openapi.yaml")}, want: metadata.ExtResOpenApi},
-		{name: "valid asyncapi", args: args{contents: getResourceContents("valid-asyncapi.yaml")}, want: metadata.ExtResAsyncApi},
-		{name: "valid camel", args: args{contents: getResourceContents("valid-camelroute.yaml")}, want: metadata.ExtResCamel},
-		{name: "valid openapi (JSON)", args: args{contents: getResourceContents("valid-openapi.json")}, want: metadata.ExtResOpenApi},
-		{name: "valid asyncapi (JSON)", args: args{contents: getResourceContents("valid-asyncapi.json")}, want: metadata.ExtResAsyncApi},
-		{name: "valid camel (JSON)", args: args{contents: getResourceContents("valid-camelroute.json")}, want: metadata.ExtResCamel},
-		{name: "generic resource", args: args{contents: getResourceContents("mygeneric.wsdl")}, want: metadata.ExtResGeneric},
+		{name: "valid openapi", args: args{contents: getResourceContents("valid-openapi.yaml")}, want: OpenApiResource},
+		{name: "valid asyncapi", args: args{contents: getResourceContents("valid-asyncapi.yaml")}, want: AsyncApiResource},
+		{name: "valid camel", args: args{contents: getResourceContents("valid-camelroute.yaml")}, want: CamelRouteResource},
+		{name: "valid openapi (JSON)", args: args{contents: getResourceContents("valid-openapi.json")}, want: OpenApiResource},
+		{name: "valid asyncapi (JSON)", args: args{contents: getResourceContents("valid-asyncapi.json")}, want: AsyncApiResource},
+		{name: "valid camel (JSON)", args: args{contents: getResourceContents("valid-camelroute.json")}, want: CamelRouteResource},
+		{name: "generic resource", args: args{contents: getResourceContents("mygeneric.wsdl")}, want: GenericResource},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := ParseResourceType(tt.args.contents)
+			got := ParseResourceKind(tt.args.contents)
 			if got != tt.want {
-				t.Errorf("ParseResourceType() got = %v, want %v", got, tt.want)
+				t.Errorf("ParseResourceKind() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func getResourceContents(filename string) string {
+func getResourceContents(filename string) []byte {
 	contents, err := os.ReadFile("testdata/" + filename)
 	if err != nil {
 		panic(err)
 	}
-	return string(contents)
+	return contents
 }

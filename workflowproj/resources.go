@@ -21,38 +21,45 @@ import (
 	libopenapiutils "github.com/pb33f/libopenapi/utils"
 	"github.com/santhosh-tekuri/jsonschema/v5"
 	"k8s.io/apimachinery/pkg/util/yaml"
-
-	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 )
 
-// ParseResourceType tries to parse the contents of the given resource and find the correct type.
+type ResourceKind int
+
+const (
+	OpenApiResource ResourceKind = iota
+	AsyncApiResource
+	CamelRouteResource
+	GenericResource
+)
+
+// ParseResourceKind tries to parse the contents of the given resource and find the correct type.
 // Async and OpenAPI files are pretty fast to parse (0.00s).
 // Camel and generic files can take a fair price from the CPU (0.03s on the i5) since it takes more processing power.
-func ParseResourceType(contents string) metadata.ExtResType {
+func ParseResourceKind(contents []byte) ResourceKind {
 	if len(contents) == 0 {
-		return metadata.ExtResGeneric
+		return GenericResource
 	}
-	doc, err := libopenapi.NewDocument([]byte(contents))
+	doc, err := libopenapi.NewDocument(contents)
 	if err == nil {
 		switch doc.GetSpecInfo().SpecType {
 		case libopenapiutils.AsyncApi:
-			return metadata.ExtResAsyncApi
+			return AsyncApiResource
 		default:
-			return metadata.ExtResOpenApi
+			return OpenApiResource
 		}
 	}
 	if err = validateCamelRoute(contents); err == nil {
-		return metadata.ExtResCamel
+		return CamelRouteResource
 	}
-	return metadata.ExtResGeneric
+	return GenericResource
 }
 
-func validateCamelRoute(contents string) error {
+func validateCamelRoute(contents []byte) error {
 	schema, err := jsonschema.CompileString("camel.json", camelSchema)
 	if err != nil {
 		return err
 	}
-	decoder := yaml.NewYAMLOrJSONDecoder(strings.NewReader(contents), 512)
+	decoder := yaml.NewYAMLOrJSONDecoder(strings.NewReader(string(contents)), 512)
 	var v []interface{}
 	if err = decoder.Decode(&v); err != nil {
 		return err

@@ -45,7 +45,7 @@ jobs:
           cache: true
 
       - name: Run tests
-        run: make test
+        run: make test test-workflowproj
 
       - uses: shogo82148/actions-goveralls@v1
         with:

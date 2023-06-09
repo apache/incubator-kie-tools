@@ -17,21 +17,25 @@ package profiles
 import (
 	"context"
 	"fmt"
+	"path"
 	"time"
 
-	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
-	"github.com/kiegroup/kogito-serverless-operator/utils"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/util/retry"
 
+	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
+	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+	"github.com/kiegroup/kogito-serverless-operator/utils"
+
 	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
 
 	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
-	v1 "k8s.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -44,8 +48,11 @@ import (
 )
 
 const (
-	configMapWorkflowDefVolumeName = "workflow-definition"
-	configMapWorkflowDefMountPath  = "/home/kogito/serverless-workflow-project/src/main/resources/workflows"
+	configMapWorkflowDefVolumeName             = "workflow-definition"
+	configMapWorkflowDefMountPath              = "/home/kogito/serverless-workflow-project/src/main/resources/workflows"
+	configMapResourcesVolumeName               = "resources"
+	configMapExternalResourcesVolumeNamePrefix = configMapResourcesVolumeName + "-"
+
 	// quarkusDevConfigMountPath mount path for application properties file in the Workflow Quarkus Application
 	// See: https://quarkus.io/guides/config-reference#application-properties-file
 	quarkusDevConfigMountPath    = "/home/kogito/serverless-workflow-project/src/main/resources"
@@ -54,18 +61,12 @@ const (
 	requeueAfterIsRunning        = 1 * time.Minute
 	// recoverDeploymentErrorRetries how many times the operator should try to recover from a failure before giving up
 	recoverDeploymentErrorRetries = 3
-	// recoverDeploymentErrorInterval interval between recovering from failures
-	recoverDeploymentErrorInterval = 5 * time.Minute
+	// requeueRecoverDeploymentErrorInterval interval between recovering from failures
+	requeueRecoverDeploymentErrorInterval = recoverDeploymentErrorInterval * time.Minute
+	recoverDeploymentErrorInterval        = 10
 )
 
 var _ ProfileReconciler = &developmentProfile{}
-
-var externalResourceTypeMountPathDevMode = map[metadata.ExtResType]string{
-	metadata.ExtResCamel:    quarkusDevConfigMountPath + "/" + workflowdef.ExternalResourceCamelMountDir,
-	metadata.ExtResGeneric:  quarkusDevConfigMountPath,
-	metadata.ExtResAsyncApi: quarkusDevConfigMountPath,
-	metadata.ExtResOpenApi:  quarkusDevConfigMountPath,
-}
 
 type developmentProfile struct {
 	baseReconciler
@@ -155,7 +156,7 @@ type ensureRunningDevWorkflowReconciliationState struct {
 }
 
 func (e *ensureRunningDevWorkflowReconciliationState) CanReconcile(workflow *operatorapi.KogitoServerlessWorkflow) bool {
-	return workflow.Status.IsReady() || workflow.Status.GetTopLevelCondition().IsUnknown()
+	return workflow.Status.IsReady() || workflow.Status.GetTopLevelCondition().IsUnknown() || workflow.Status.IsChildObjectsProblem()
 }
 
 func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, []client.Object, error) {
@@ -175,7 +176,11 @@ func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, wo
 
 	externalCM, err := workflowdef.FetchExternalResourcesConfigMapsRef(e.client, workflow)
 	if err != nil {
-		e.logger.Error(err, "External Resources ConfigMap not found")
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "External Resources ConfigMap not found: %s", err.Error())
+		if _, err = e.performStatusUpdate(ctx, workflow); err != nil {
+			return ctrl.Result{RequeueAfter: requeueAfterFailure}, objs, err
+		}
+		return ctrl.Result{RequeueAfter: requeueAfterFailure}, objs, nil
 	}
 
 	devBaseContainerImage := workflowdef.GetDefaultWorkflowDevModeImageTag()
@@ -186,9 +191,9 @@ func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, wo
 	}
 
 	deployment, _, err := e.ensurers.deployment.ensure(ctx, workflow,
-		defaultDeploymentMutateVisitor(workflow),
+		devDeploymentMutateVisitor(workflow),
 		naiveApplyImageDeploymentMutateVisitor(devBaseContainerImage),
-		mountDevConfigMapsMutateVisitor(flowDefCM.(*v1.ConfigMap), propsCM.(*v1.ConfigMap), externalCM))
+		mountDevConfigMapsMutateVisitor(flowDefCM.(*corev1.ConfigMap), propsCM.(*corev1.ConfigMap), externalCM))
 	if err != nil {
 		return ctrl.Result{RequeueAfter: requeueAfterFailure}, objs, err
 	}
@@ -269,6 +274,7 @@ func (f *followDeployDevWorkflowReconciliationState) Do(ctx context.Context, wor
 	}
 
 	failedReason := getDeploymentFailureMessage(deployment)
+	workflow.Status.LastTimeRecoverAttempt = metav1.Now()
 	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, failedReason)
 	f.logger.Info("Workflow deployment failed", "Reason Message", failedReason)
 	_, err := f.performStatusUpdate(ctx, workflow)
@@ -333,10 +339,16 @@ func (r *recoverFromFailureDevReconciliationState) Do(ctx context.Context, workf
 		if _, updateErr := r.performStatusUpdate(ctx, workflow); updateErr != nil {
 			return ctrl.Result{}, nil, updateErr
 		}
-		return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil, nil
+		return ctrl.Result{RequeueAfter: requeueRecoverDeploymentErrorInterval}, nil, nil
 	}
 
 	// TODO: we can improve deployment failures https://issues.redhat.com/browse/KOGITO-8812
+
+	// Guard to avoid consecutive reconciliations to mess with the recover interval
+	if !workflow.Status.LastTimeRecoverAttempt.IsZero() &&
+		metav1.Now().Sub(workflow.Status.LastTimeRecoverAttempt.Time).Minutes() > 10 {
+		return ctrl.Result{RequeueAfter: time.Minute * recoverDeploymentErrorInterval}, nil, nil
+	}
 
 	// let's try rolling out the deployment
 	if err := kubeutil.MarkDeploymentToRollout(deployment); err != nil {
@@ -349,14 +361,15 @@ func (r *recoverFromFailureDevReconciliationState) Do(ctx context.Context, workf
 
 	if retryErr != nil {
 		r.logger.Info("Error during Deployment rollout")
-		return ctrl.Result{RequeueAfter: recoverDeploymentErrorInterval}, nil, nil
+		return ctrl.Result{RequeueAfter: requeueRecoverDeploymentErrorInterval}, nil, nil
 	}
 
 	workflow.Status.RecoverFailureAttempts += 1
+	workflow.Status.LastTimeRecoverAttempt = metav1.Now()
 	if _, err := r.performStatusUpdate(ctx, workflow); err != nil {
 		return ctrl.Result{Requeue: false}, nil, err
 	}
-	return ctrl.Result{RequeueAfter: recoverDeploymentErrorInterval}, nil, nil
+	return ctrl.Result{RequeueAfter: requeueRecoverDeploymentErrorInterval}, nil, nil
 }
 
 // getDeploymentFailureMessage gets the replica failure reason.
@@ -371,30 +384,43 @@ func getDeploymentFailureMessage(deployment *appsv1.Deployment) string {
 }
 
 // mountDevConfigMapsMutateVisitor mounts the required configMaps in the Workflow Dev Deployment
-func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *v1.ConfigMap, resourceConfigMapsRef map[metadata.ExtResType]*v1.LocalObjectReference) mutateVisitor {
+func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *corev1.ConfigMap, workflowResCMs []operatorapi.ConfigMapWorkflowResource) mutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			deployment := object.(*appsv1.Deployment)
-			volumes := make([]v1.Volume, 0)
-			volumeMounts := make([]v1.VolumeMount, 0)
 
-			volumes = append(volumes,
-				kubeutil.Volume(configMapWorkflowDefVolumeName, flowDefCM.Name),
-				kubeutil.VolumeWithItems(configMapWorkflowPropsVolumeName, propsCM.Name,
-					[]v1.KeyToPath{{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName}}))
-
-			volumeMounts = append(volumeMounts,
+			volumes := make([]corev1.Volume, 0)
+			volumeMounts := []corev1.VolumeMount{
 				kubeutil.VolumeMount(configMapWorkflowDefVolumeName, true, configMapWorkflowDefMountPath),
-				kubeutil.VolumeMount(configMapWorkflowPropsVolumeName, true, quarkusDevConfigMountPath),
-			)
+				kubeutil.VolumeMount(configMapResourcesVolumeName, true, quarkusDevConfigMountPath),
+			}
 
-			externalVolumes, externalVolumesMount := workflowdef.ExternalResCMsToVolumesAndMount(resourceConfigMapsRef, externalResourceTypeMountPathDevMode)
-			volumes = append(volumes, externalVolumes...)
-			volumeMounts = append(volumeMounts, externalVolumesMount...)
+			// defaultResourcesVolume holds every ConfigMap mount required on src/main/resources
+			defaultResourcesVolume := corev1.Volume{Name: configMapResourcesVolumeName, VolumeSource: corev1.VolumeSource{Projected: &corev1.ProjectedVolumeSource{}}}
+			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, propsCM.Name, corev1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName})
 
-			deployment.Spec.Template.Spec.Volumes = make([]v1.Volume, 0)
+			// resourceVolumes holds every resource that needs to be mounted on src/main/resources/<specific_dir>
+			resourceVolumes := make([]corev1.Volume, 0)
+
+			for _, workflowResCM := range workflowResCMs {
+				// if we need to mount at the root dir, we use the defaultResourcesVolume
+				if len(workflowResCM.WorkflowPath) == 0 {
+					kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, workflowResCM.ConfigMap.Name)
+					continue
+				}
+				// the resource configMap needs a specific dir, inside the src/main/resources
+				// to avoid clashing with other configMaps trying to mount on the same dir, we create one projected per path
+				volumeMountName := configMapExternalResourcesVolumeNamePrefix + utils.PathToString(workflowResCM.WorkflowPath)
+				volumeMounts = kubeutil.VolumeMountAdd(volumeMounts, volumeMountName, path.Join(quarkusDevConfigMountPath, workflowResCM.WorkflowPath))
+				resourceVolumes = kubeutil.VolumeAddVolumeProjectionConfigMap(resourceVolumes, workflowResCM.ConfigMap.Name, volumeMountName)
+			}
+
+			volumes = append(volumes, defaultResourcesVolume, kubeutil.VolumeConfigMap(configMapWorkflowDefVolumeName, flowDefCM.Name))
+			volumes = append(volumes, resourceVolumes...)
+
+			deployment.Spec.Template.Spec.Volumes = make([]corev1.Volume, 0)
 			deployment.Spec.Template.Spec.Volumes = volumes
-			deployment.Spec.Template.Spec.Containers[0].VolumeMounts = make([]v1.VolumeMount, 0)
+			deployment.Spec.Template.Spec.Containers[0].VolumeMounts = make([]corev1.VolumeMount, 0)
 			deployment.Spec.Template.Spec.Containers[0].VolumeMounts = volumeMounts
 
 			return nil

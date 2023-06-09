@@ -17,6 +17,7 @@ package workflowproj
 import (
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/pkg/errors"
 	"github.com/serverlessworkflow/sdk-go/v2/model"
@@ -33,6 +34,9 @@ import (
 
 var _ WorkflowProjectHandler = &workflowProjectHandler{}
 
+// defaultResourcePath is the default resource path to add to the generated ConfigMaps
+const defaultResourcePath = "specs"
+
 // WorkflowProjectHandler is the description of the handler interface.
 // A handler can generate Kubernetes manifests to deploy a new Kogito Serverless Workflow project in the cluster
 type WorkflowProjectHandler interface {
@@ -45,11 +49,9 @@ type WorkflowProjectHandler interface {
 	WithAppProperties(reader io.Reader) WorkflowProjectHandler
 	// AddResource reader for a file or the content stream of any resource needed by the workflow. E.g. an OpenAPI specification file.
 	// Name is required, should match the workflow function definition.
-	// The handler will try to guess the file type using json schema validations.
-	// Guessing the file type can be resource intensive in some CPUs. If you mind processing power, use AddResourceTyped instead.
 	AddResource(name string, reader io.Reader) WorkflowProjectHandler
-	// AddResourceTyped see AddResource. But enforce the resource type (e.g. OpenAPI spec file).
-	AddResourceTyped(name string, reader io.Reader, resourceType metadata.ExtResType) WorkflowProjectHandler
+	// AddResourceAt same as AddResource, but defines the path instead of using the default.
+	AddResourceAt(name, path string, reader io.Reader) WorkflowProjectHandler
 	// SaveAsKubernetesManifests saves the project in the given file system path in YAML format.
 	SaveAsKubernetesManifests(path string) error
 	// AsObjects returns a reference to the WorkflowProject holding the Kubernetes Manifests based on your files.
@@ -69,7 +71,6 @@ type WorkflowProject struct {
 type resource struct {
 	name     string
 	contents io.Reader
-	kind     metadata.ExtResType
 }
 
 // New is the entry point for this package.
@@ -80,8 +81,9 @@ func New(namespace string) WorkflowProjectHandler {
 	utilruntime.Must(operatorapi.AddToScheme(s))
 	utilruntime.Must(corev1.AddToScheme(s))
 	return &workflowProjectHandler{
-		scheme:    s,
-		namespace: namespace,
+		scheme:       s,
+		namespace:    namespace,
+		rawResources: map[string][]*resource{},
 	}
 }
 
@@ -92,12 +94,12 @@ type workflowProjectHandler struct {
 	project          WorkflowProject
 	rawWorkflow      io.Reader
 	rawAppProperties io.Reader
-	rawResources     []resource
+	rawResources     map[string][]*resource
 	parsed           bool
 }
 
 func (w *workflowProjectHandler) Named(name string) WorkflowProjectHandler {
-	w.name = name
+	w.name = strings.ToLower(name)
 	w.parsed = false
 	return w
 }
@@ -115,25 +117,17 @@ func (w *workflowProjectHandler) WithAppProperties(reader io.Reader) WorkflowPro
 }
 
 func (w *workflowProjectHandler) AddResource(name string, reader io.Reader) WorkflowProjectHandler {
-	for _, r := range w.rawResources {
+	return w.AddResourceAt(name, defaultResourcePath, reader)
+}
+
+func (w *workflowProjectHandler) AddResourceAt(name, path string, reader io.Reader) WorkflowProjectHandler {
+	for _, r := range w.rawResources[path] {
 		if r.name == name {
 			r.contents = reader
 			return w
 		}
 	}
-	w.rawResources = append(w.rawResources, resource{name: name, contents: reader})
-	w.parsed = false
-	return w
-}
-
-func (w *workflowProjectHandler) AddResourceTyped(name string, reader io.Reader, kind metadata.ExtResType) WorkflowProjectHandler {
-	for _, r := range w.rawResources {
-		if r.name == name && r.kind == kind {
-			r.contents = reader
-			return w
-		}
-	}
-	w.rawResources = append(w.rawResources, resource{name: name, contents: reader, kind: kind})
+	w.rawResources[path] = append(w.rawResources[path], &resource{name: name, contents: reader})
 	w.parsed = false
 	return w
 }
@@ -146,17 +140,17 @@ func (w *workflowProjectHandler) SaveAsKubernetesManifests(path string) error {
 		return err
 	}
 	fileCount := 1
-	if err := saveAsKubernetesManifest(w.project.Workflow, path, fmt.Sprintf("%02d_", 1)); err != nil {
+	if err := saveAsKubernetesManifest(w.project.Workflow, path, fmt.Sprintf("%02d-", 1)); err != nil {
 		return err
 	}
 	for i, r := range w.project.Resources {
 		fileCount = i + 1
-		if err := saveAsKubernetesManifest(r, path, fmt.Sprintf("%02d_", fileCount)); err != nil {
+		if err := saveAsKubernetesManifest(r, path, fmt.Sprintf("%02d-", fileCount)); err != nil {
 			return err
 		}
 	}
 	fileCount++
-	if err := saveAsKubernetesManifest(w.project.Properties, path, fmt.Sprintf("%02d_", fileCount)); err != nil {
+	if err := saveAsKubernetesManifest(w.project.Properties, path, fmt.Sprintf("%02d-", fileCount)); err != nil {
 		return err
 	}
 	return nil
@@ -215,7 +209,7 @@ func (w *workflowProjectHandler) parseRawWorkflow() error {
 	}
 
 	if len(w.name) == 0 {
-		w.name = workflowDef.ID
+		w.name = strings.ToLower(workflowDef.ID)
 	}
 
 	w.project.Workflow = &operatorapi.KogitoServerlessWorkflow{
@@ -250,58 +244,42 @@ func (w *workflowProjectHandler) parseRawResources() error {
 	if len(w.rawResources) == 0 {
 		return nil
 	}
-	openApiRes := &corev1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Name: w.name + "-openapis", Namespace: w.namespace}, Data: nil}
-	asyncApiRes := &corev1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Name: w.name + "-asyncapis", Namespace: w.namespace}, Data: nil}
-	camelRoutesRes := &corev1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Name: w.name + "-camelroutes", Namespace: w.namespace}, Data: nil}
-	genericRes := &corev1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Name: w.name + "-genericres", Namespace: w.namespace}, Data: nil}
 
-	if w.project.Workflow.Annotations == nil {
-		w.project.Workflow.Annotations = map[string]string{}
-	}
+	resourceCount := 1
+	for path, resources := range w.rawResources {
+		cm := &corev1.ConfigMap{
+			ObjectMeta: metav1.ObjectMeta{Namespace: w.namespace, Name: fmt.Sprintf("%02d-%s-resources", resourceCount, w.name)},
+			Data:       map[string]string{},
+		}
 
-	for _, r := range w.rawResources {
-		contents, err := io.ReadAll(r.contents)
-		if err != nil {
-			return err
-		}
-		if len(contents) == 0 {
-			return errors.Errorf("Content for the resource %s is empty. Can't add an empty resource to the workflow project", r.name)
-		}
-		if r.kind == metadata.ExtResNone {
-			r.kind = ParseResourceType(string(contents))
-		}
-		// collect every resource into the given configMap
-		switch r.kind {
-		case metadata.ExtResOpenApi:
-			updateExternalResConfigMap(w.project.Workflow, r, openApiRes, string(contents))
-		case metadata.ExtResAsyncApi:
-			updateExternalResConfigMap(w.project.Workflow, r, asyncApiRes, string(contents))
-		case metadata.ExtResCamel:
-			updateExternalResConfigMap(w.project.Workflow, r, camelRoutesRes, string(contents))
-		default:
-			updateExternalResConfigMap(w.project.Workflow, r, genericRes, string(contents))
-		}
-	}
-
-	return w.addExternalResConfigMapToProject(openApiRes, asyncApiRes, camelRoutesRes, genericRes)
-}
-
-func (w *workflowProjectHandler) addExternalResConfigMapToProject(cms ...*corev1.ConfigMap) error {
-	for _, cm := range cms {
-		if cm.Data != nil {
-			if err := SetTypeToObject(cm, w.scheme); err != nil {
+		for _, r := range resources {
+			contents, err := io.ReadAll(r.contents)
+			if err != nil {
 				return err
 			}
-			w.project.Resources = append(w.project.Resources, cm)
+			if len(contents) == 0 {
+				return errors.Errorf("Content for the resource %s is empty. Can't add an empty resource to the workflow project", r.name)
+			}
+			cm.Data[r.name] = string(contents)
 		}
+
+		if err := w.addResourceConfigMapToProject(cm, path); err != nil {
+			return err
+		}
+		resourceCount++
 	}
+
 	return nil
 }
 
-func updateExternalResConfigMap(workflow *operatorapi.KogitoServerlessWorkflow, r resource, cm *corev1.ConfigMap, contents string) {
-	if cm.Data == nil {
-		cm.Data = map[string]string{}
+func (w *workflowProjectHandler) addResourceConfigMapToProject(cm *corev1.ConfigMap, path string) error {
+	if cm.Data != nil {
+		if err := SetTypeToObject(cm, w.scheme); err != nil {
+			return err
+		}
+		w.project.Workflow.Spec.Resources.ConfigMaps = append(w.project.Workflow.Spec.Resources.ConfigMaps,
+			operatorapi.ConfigMapWorkflowResource{ConfigMap: corev1.LocalObjectReference{Name: cm.Name}, WorkflowPath: path})
+		w.project.Resources = append(w.project.Resources, cm)
 	}
-	cm.Data[r.name] = contents
-	metadata.AddAnnotationExtResType(workflow, r.kind, cm.Name)
+	return nil
 }

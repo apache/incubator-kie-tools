@@ -14,7 +14,11 @@
 
 package utils
 
-import "strings"
+import (
+	"os"
+	"path"
+	"strings"
+)
 
 func RemoveFileExtension(fileName string) string {
 	if i := strings.LastIndex(fileName, "."); i >= 0 {
@@ -28,4 +32,9 @@ func RemoveKnownExtension(fileName, extension string) string {
 		return fileName[:i]
 	}
 	return fileName
+}
+
+// PathToString replaces the PathSeparator from a given path.
+func PathToString(pathRef string) string {
+	return strings.ReplaceAll(path.Clean(pathRef), string(os.PathSeparator), "")
 }

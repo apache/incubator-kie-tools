@@ -305,7 +305,7 @@ func mountProdConfigMapsMutateVisitor(propsCM *v1.ConfigMap) mutateVisitor {
 			volumes := make([]v1.Volume, 0)
 			volumeMounts := make([]v1.VolumeMount, 0)
 
-			volumes = append(volumes, kubeutil.VolumeWithItems(configMapWorkflowPropsVolumeName, propsCM.Name, []v1.KeyToPath{{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName}}))
+			volumes = append(volumes, kubeutil.VolumeConfigMap(configMapWorkflowPropsVolumeName, propsCM.Name, v1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName}))
 
 			volumeMounts = append(volumeMounts, kubeutil.VolumeMount(configMapWorkflowPropsVolumeName, true, quarkusProdConfigMountPath))
 

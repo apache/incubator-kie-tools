@@ -16,13 +16,12 @@ package workflowdef
 
 import (
 	"context"
+	"path"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-
-	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 
 	"github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 
@@ -50,17 +49,15 @@ func CreateNewConfigMap(workflow *operatorapi.KogitoServerlessWorkflow) (*corev1
 
 // FetchExternalResourcesConfigMapsRef fetches the Resource ConfigMaps into a LocalObjectReference that a client can mount to the workflow application.
 // The map format is map[<resource_type>]<ConfigMap_reference>. For example map["resource-openapi"]{MyOpenApisConfigMap}
-func FetchExternalResourcesConfigMapsRef(client client.Client, workflow *operatorapi.KogitoServerlessWorkflow) (map[metadata.ExtResType]*corev1.LocalObjectReference, error) {
-	externalConfigMaps := make(map[metadata.ExtResType]*corev1.LocalObjectReference, 0)
-	for k, val := range workflow.Annotations {
-		resource := metadata.GetAnnotationExtResType(k)
-		if len(resource) > 0 {
-			cm, err := fetchConfigMapReference(client, val, workflow.Namespace)
-			if err != nil {
-				return nil, err
-			} else {
-				externalConfigMaps[resource] = cm
-			}
+func FetchExternalResourcesConfigMapsRef(client client.Client, workflow *operatorapi.KogitoServerlessWorkflow) ([]operatorapi.ConfigMapWorkflowResource, error) {
+	var externalConfigMaps []operatorapi.ConfigMapWorkflowResource
+	for _, res := range workflow.Spec.Resources.ConfigMaps {
+		// check if there's a valid reference of the given CM
+		_, err := fetchConfigMapReference(client, res.ConfigMap.Name, workflow.Namespace)
+		if err != nil {
+			return nil, err
+		} else {
+			externalConfigMaps = append(externalConfigMaps, res)
 		}
 	}
 	return externalConfigMaps, nil
@@ -77,12 +74,13 @@ func fetchConfigMapReference(client client.Client, configMapName, namespace stri
 
 // ExternalResCMsToVolumesAndMount creates volume mounts for ExtResType ConfigMaps references.
 // See FetchExternalResourcesConfigMapsRef that should return the maps needed as input for this function.
-func ExternalResCMsToVolumesAndMount(configMaps map[metadata.ExtResType]*corev1.LocalObjectReference, mountPath map[metadata.ExtResType]string) ([]corev1.Volume, []corev1.VolumeMount) {
+// `baseMountPath` is a string with the base mount path to join with the given relative path in the configMap reference.
+func ExternalResCMsToVolumesAndMount(configMaps []operatorapi.ConfigMapWorkflowResource, baseMountPath string) ([]corev1.Volume, []corev1.VolumeMount) {
 	volumes := make([]corev1.Volume, 0)
 	volumeMounts := make([]corev1.VolumeMount, 0)
-	for k, cm := range configMaps {
-		volumes = append(volumes, kubernetes.Volume(cm.Name, cm.Name))
-		volumeMounts = append(volumeMounts, kubernetes.VolumeMount(cm.Name, true, mountPath[k]))
+	for _, cm := range configMaps {
+		volumes = append(volumes, kubernetes.VolumeConfigMap(cm.ConfigMap.Name, cm.ConfigMap.Name))
+		volumeMounts = append(volumeMounts, kubernetes.VolumeMount(cm.ConfigMap.Name, true, path.Join(baseMountPath, cm.WorkflowPath)))
 	}
 	return volumes, volumeMounts
 }

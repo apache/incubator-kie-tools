@@ -71,9 +71,6 @@ func (d *defaultObjectEnsurer) ensure(ctx context.Context, workflow *operatorapi
 	if err != nil {
 		return nil, result, err
 	}
-	if err = controllerutil.SetControllerReference(workflow, object, d.client.Scheme()); err != nil {
-		return nil, result, err
-	}
 	if result, err = controllerutil.CreateOrPatch(ctx, d.client, object,
 		func() error {
 			for _, v := range visitors {
@@ -81,7 +78,7 @@ func (d *defaultObjectEnsurer) ensure(ctx context.Context, workflow *operatorapi
 					return visitorErr
 				}
 			}
-			return nil
+			return controllerutil.SetControllerReference(workflow, object, d.client.Scheme())
 		}); err != nil {
 		return nil, result, err
 	}

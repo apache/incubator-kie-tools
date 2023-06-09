@@ -29,7 +29,6 @@ import (
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
@@ -63,15 +62,6 @@ var openshiftBuildPhaseMatrix = map[buildv1.BuildPhase]operatorapi.BuildPhase{
 	buildv1.BuildPhaseFailed:    operatorapi.BuildPhaseFailed,
 	buildv1.BuildPhaseError:     operatorapi.BuildPhaseError,
 	buildv1.BuildPhaseCancelled: operatorapi.BuildPhaseInterrupted,
-}
-
-// externalResourceDestinationDir map for special directories within the resource context.
-// In dev mode means within the src/main/resources. In build contexts, the actual context dir.
-var externalResourceDestinationDir = map[metadata.ExtResType]string{
-	metadata.ExtResGeneric:  "",
-	metadata.ExtResCamel:    workflowdef.ExternalResourceCamelMountDir,
-	metadata.ExtResOpenApi:  "",
-	metadata.ExtResAsyncApi: "",
 }
 
 var _ BuildManager = &openshiftBuilderManager{}
@@ -185,18 +175,14 @@ func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.Kogit
 }
 
 func (o *openshiftBuilderManager) addExternalResources(config *buildv1.BuildConfig, workflow *operatorapi.KogitoServerlessWorkflow) error {
-	externalCMs, err := workflowdef.FetchExternalResourcesConfigMapsRef(o.client, workflow)
-	if err != nil {
-		return err
-	}
-	if len(externalCMs) == 0 {
+	if len(workflow.Spec.Resources.ConfigMaps) == 0 {
 		return nil
 	}
 	var configMapSources []buildv1.ConfigMapBuildSource
-	for k, v := range externalCMs {
+	for _, workflowRes := range workflow.Spec.Resources.ConfigMaps {
 		configMapSources = append(configMapSources, buildv1.ConfigMapBuildSource{
-			ConfigMap:      *v,
-			DestinationDir: externalResourceDestinationDir[k],
+			ConfigMap:      workflowRes.ConfigMap,
+			DestinationDir: workflowRes.WorkflowPath,
 		})
 	}
 	config.Spec.Source.ConfigMaps = configMapSources

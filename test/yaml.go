@@ -32,6 +32,7 @@ import (
 )
 
 const (
+	kogitoServerlessWorkflowOrderProcessingFolder   = "order-processing"
 	KogitoServerlessWorkflowSampleYamlCR            = "sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml"
 	kogitoServerlessPlatformYamlCR                  = "sw.kogito_v1alpha08_kogitoserverlessplatform.yaml"
 	kogitoServerlessPlatformWithCacheMinikubeYamlCR = "sw.kogito_v1alpha08_kogitoserverlessplatform_withCache_minikube.yaml"
@@ -158,12 +159,6 @@ func GetBaseServerlessWorkflowWithDevProfile(namespace string) *operatorapi.Kogi
 	return workflow
 }
 
-func GetBaseServerlessWorkflowWithDevProfileAndExternalResource(namespace string) *operatorapi.KogitoServerlessWorkflow {
-	workflow := GetBaseServerlessWorkflowWithDevProfile(namespace)
-	workflow.Annotations["sw.kogito.kie.org/resource-camel"] = "mycamel-configmap"
-	return workflow
-}
-
 func GetBaseServerlessWorkflowWithProdProfile(namespace string) *operatorapi.KogitoServerlessWorkflow {
 	workflow := GetBaseServerlessWorkflow(namespace)
 	workflow.Annotations["sw.kogito.kie.org/profile"] = "prod"
@@ -203,7 +198,6 @@ func GetBasePlatform() *operatorapi.KogitoServerlessPlatform {
 	} else {
 		return &operatorapi.KogitoServerlessPlatform{}
 	}
-
 }
 
 func GetPlatformMinikubeE2eTest() string {
@@ -214,6 +208,6 @@ func GetPlatformOpenshiftE2eTest() string {
 	return e2eSamples + kogitoServerlessPlatformForOpenshift
 }
 
-func GetServerlessWorkflowE2eTest() string {
-	return e2eSamples + kogitoServerlessWorkflowSampleDevModeYamlCR
+func GetServerlessWorkflowE2eOrderProcessingFolder() string {
+	return e2eSamples + kogitoServerlessWorkflowOrderProcessingFolder
 }

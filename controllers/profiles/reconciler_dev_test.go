@@ -22,7 +22,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 
-	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
+	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+
 	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 
 	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
@@ -264,11 +265,16 @@ func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testin
 
 func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetBaseServerlessWorkflowWithDevProfileAndExternalResource(t.Name())
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
-	config := &rest.Config{}
-	devReconciler := newDevProfileReconciler(client, config, &logger)
 	configmapName := "mycamel-configmap"
+	workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
+	workflow.Spec.Resources.ConfigMaps = append(workflow.Spec.Resources.ConfigMaps,
+		operatorapi.ConfigMapWorkflowResource{ConfigMap: v1.LocalObjectReference{Name: configmapName}, WorkflowPath: "routes"})
+
+	config := &rest.Config{}
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
+
+	devReconciler := newDevProfileReconciler(client, config, &logger)
+
 	camelXmlRouteFileName := "camelroute-xml"
 	xmlRoute := `<route routeConfigurationId="xmlError">
 	   		<from uri="timer:xml?period=5s"/>
@@ -307,12 +313,12 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	wd := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0]
 	props := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1]
 	extCamel := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[2]
-	assert.Equal(t, wd.Name, configMapWorkflowDefVolumeName)
-	assert.Equal(t, wd.MountPath, configMapWorkflowDefMountPath)
-	assert.Equal(t, props.Name, configMapWorkflowPropsVolumeName)
-	assert.Equal(t, props.MountPath, quarkusDevConfigMountPath)
-	assert.Equal(t, extCamel.Name, configmapName)
-	assert.Equal(t, extCamel.MountPath, externalResourceTypeMountPathDevMode[metadata.ExtResCamel])
+	assert.Equal(t, configMapWorkflowDefVolumeName, wd.Name)
+	assert.Equal(t, configMapWorkflowDefMountPath, wd.MountPath)
+	assert.Equal(t, configMapResourcesVolumeName, props.Name)
+	assert.Equal(t, quarkusDevConfigMountPath, props.MountPath)
+	assert.Equal(t, configMapExternalResourcesVolumeNamePrefix+"routes", extCamel.Name)
+	assert.Equal(t, extCamel.MountPath, quarkusDevConfigMountPath+"/routes")
 
 	cmData[camelYamlRouteFileName] = yamlRoute
 	errUpdate := client.Update(context.Background(), cmUser)
@@ -333,8 +339,8 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Volumes))
 
 	extCamelRouteOne := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[2]
-	assert.Equal(t, extCamelRouteOne.Name, configmapName)
-	assert.Equal(t, extCamelRouteOne.MountPath, externalResourceTypeMountPathDevMode[metadata.ExtResCamel])
+	assert.Equal(t, configMapExternalResourcesVolumeNamePrefix+"routes", extCamelRouteOne.Name)
+	assert.Equal(t, quarkusDevConfigMountPath+"/routes", extCamelRouteOne.MountPath)
 
 	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
 	err = client.Update(context.TODO(), workflow)
@@ -356,6 +362,14 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
 	err = client.Status().Update(context.TODO(), workflow)
 	assert.NoError(t, err)
+	result, err = devReconciler.Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+	assert.Equal(t, api.ExternalResourcesNotFoundReason, workflow.Status.GetTopLevelCondition().Reason)
+
+	// delete the link
+	workflow.Spec.Resources.ConfigMaps = nil
+	assert.NoError(t, client.Update(context.TODO(), workflow))
 	result, err = devReconciler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.NotNil(t, result)

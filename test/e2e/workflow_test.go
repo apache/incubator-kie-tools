@@ -204,7 +204,7 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 			}, time.Minute, time.Second).Should(Succeed())
 
 			By("check the workflow is in running state")
-			EventuallyWithOffset(1, verifyWorkflowIsInRunningState, 15*time.Minute, 30*time.Second).Should(BeTrue())
+			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState("greeting") }, 15*time.Minute, 30*time.Second).Should(BeTrue())
 
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "delete", "-f", filepath.Join(projectDir,
@@ -214,30 +214,30 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 			}, time.Minute, time.Second).Should(Succeed())
 		})
 
-		It("should successfully deploy the greeting workflow in devmode and verify if it's running", func() {
+		It("should successfully deploy the orderprocessing workflow in devmode and verify if it's running", func() {
 
 			By("creating an instance of the Kogito Serverless Workflow in DevMode")
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					test.GetServerlessWorkflowE2eTest()), "-n", namespace)
+					test.GetServerlessWorkflowE2eOrderProcessingFolder()), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
 
 			By("check the workflow is in running state")
-			EventuallyWithOffset(1, verifyWorkflowIsInRunningState, 5*time.Minute, 30*time.Second).Should(BeTrue())
+			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState("orderprocessing") }, 5*time.Minute, 30*time.Second).Should(BeTrue())
 
-			cmdLog := exec.Command("kubectl", "logs", "kogito-greeting-builder", "-n", namespace)
+			cmdLog := exec.Command("kubectl", "logs", "orderprocessing", "-n", namespace)
 			if responseLog, errLog := utils.Run(cmdLog); errLog == nil {
-				GinkgoWriter.Println(fmt.Sprintf("builder podlog %s", responseLog))
+				GinkgoWriter.Println(fmt.Sprintf("devmode podlog %s", responseLog))
 			}
 
 			By("check that the workflow is addressable")
-			EventuallyWithOffset(1, verifyWorkflowIsAddressable, 5*time.Minute, 30*time.Second).Should(BeTrue())
+			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsAddressable("orderprocessing") }, 5*time.Minute, 30*time.Second).Should(BeTrue())
 
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "delete", "-f", filepath.Join(projectDir,
-					test.GetServerlessWorkflowE2eTest()), "-n", namespace)
+					test.GetServerlessWorkflowE2eOrderProcessingFolder()), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -245,8 +245,8 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 	})
 })
 
-func verifyWorkflowIsInRunningState() bool {
-	cmd := exec.Command("kubectl", "get", "workflow", "greeting", "-n", namespace, "-o", "jsonpath={.status.conditions[?(@.type=='Running')].status}")
+func verifyWorkflowIsInRunningState(workflowName string) bool {
+	cmd := exec.Command("kubectl", "get", "workflow", workflowName, "-n", namespace, "-o", "jsonpath={.status.conditions[?(@.type=='Running')].status}")
 	if response, err := utils.Run(cmd); err != nil {
 		GinkgoWriter.Println(fmt.Errorf("failed to check if greeting workflow is running: %v", err))
 		return false
@@ -265,8 +265,8 @@ func verifyWorkflowIsInRunningState() bool {
 	}
 }
 
-func verifyWorkflowIsAddressable() bool {
-	cmd := exec.Command("kubectl", "get", "workflow", "greeting", "-n", namespace, "-o", "jsonpath={.status.address.url}")
+func verifyWorkflowIsAddressable(workflowName string) bool {
+	cmd := exec.Command("kubectl", "get", "workflow", workflowName, "-n", namespace, "-o", "jsonpath={.status.address.url}")
 	if response, err := utils.Run(cmd); err != nil {
 		GinkgoWriter.Println(fmt.Errorf("failed to check if greeting workflow is running: %v", err))
 		return false
