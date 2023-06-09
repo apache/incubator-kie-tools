@@ -210,7 +210,7 @@ pipeline {
                                     } catch (err) {
                                         registerBuildFailedImage(image)
                                         util.archiveConsoleLog(image, 400)
-                                        throw err
+                                        unstable("Error building the '${image}' image")
                                     }
                                     if (!shouldSkipTests()) {
                                         try {
@@ -327,6 +327,15 @@ pipeline {
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.source.ref", getBotBranch())
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.uri", "https://github.com/${getGitAuthor()}/${getRepoName()}")
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.ref", getBuildBranch())
+                    }
+                }
+            }
+        }
+        stage('Finalize') {
+            steps {
+                script {
+                    if (getBuildFailedImages()) {
+                        currentBuild.currentResult = 'FAILURE'
                     }
                 }
             }
