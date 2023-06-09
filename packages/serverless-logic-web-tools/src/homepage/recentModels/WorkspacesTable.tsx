@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  PromiseStateStatus,
-  PromiseStateWrapper,
-  useLivePromiseState,
-} from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import {
@@ -34,12 +30,10 @@ import { useCallback, useMemo, useState } from "react";
 import { splitFiles } from "../../extension";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { TablePaginationProps, TableRowEmptyState } from "../../table";
-import {
-  WorkspacesTableRow,
-  WorkspacesTableRowError,
-  workspacesTableRowErrorContent,
-  WorkspacesTableRowLoading,
-} from "./WorkspacesTableRow";
+import { WorkspacesTableRow, WorkspacesTableRowError, WorkspacesTableRowLoading } from "./WorkspacesTableRow";
+import { useWorkspacesWithFilesPromise } from "./hooks/useWorkspacesWithFilesPromise";
+import { GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
+import { escapeRegExp } from "../../../regex";
 
 export const columnNames = {
   name: "Name",
@@ -55,7 +49,7 @@ export type WorkspacesTableProps = Pick<TablePaginationProps, "page" | "perPage"
   onWsToggle: (workspaceId: WorkspaceDescriptor["workspaceId"], checked: boolean) => void;
   searchValue: string;
   selectedWorkspaceIds: WorkspaceDescriptor["workspaceId"][];
-  workspaceDescriptors: WorkspaceDescriptor[];
+  workspaceIds: WorkspaceDescriptor["workspaceId"][];
 
   /**
    * event fired when an element is deleted
@@ -63,62 +57,58 @@ export type WorkspacesTableProps = Pick<TablePaginationProps, "page" | "perPage"
   onWsDelete: (workspaceId: WorkspaceDescriptor["workspaceId"]) => void;
 };
 
-export type WorkspacesTableRowData = Pick<
-  WorkspaceDescriptor,
-  "workspaceId" | "origin" | "createdDateISO" | "lastUpdatedDateISO"
-> & {
+export type WorkspacesTableRowData = {
   descriptor: WorkspaceDescriptor;
   editableFiles: WorkspaceFile[];
   hasErrors: boolean;
   isWsFolder: boolean;
-  name: string;
   totalFiles: number;
 };
 
 export function WorkspacesTable(props: WorkspacesTableProps) {
-  const { workspaceDescriptors, selectedWorkspaceIds, onClearFilters, searchValue, page, perPage } = props;
+  const { workspaceIds, selectedWorkspaceIds, onClearFilters, searchValue, page, perPage } = props;
   const [activeSortIndex, setActiveSortIndex] = useState<number>(3);
   const [activeSortDirection, setActiveSortDirection] = useState<"asc" | "desc">("desc");
-  const workspaces = useWorkspaces();
-
-  const [allWorkspacePromises] = useLivePromiseState<WorkspaceFile[][]>(
-    useMemo(
-      () => () => Promise.all(workspaceDescriptors.map((w) => workspaces.getFiles(w))),
-      [workspaceDescriptors, workspaces]
-    )
-  );
+  const workspacesWithFilesPromise = useWorkspacesWithFilesPromise(workspaceIds);
 
   const tableData = useMemo<WorkspacesTableRowData[]>(
     () =>
-      allWorkspacePromises.status !== PromiseStateStatus.RESOLVED
-        ? []
-        : workspaceDescriptors.map((workspace, index) => {
-            const allFiles = allWorkspacePromises.data[index];
-            const { editableFiles, readonlyFiles } = splitFiles(allFiles ?? []);
-            const isWsFolder =
-              editableFiles.length > 1 || readonlyFiles.length > 0 || workspace.origin.kind !== WorkspaceKind.LOCAL;
-            const hasErrors = !allFiles[0];
-            const name = getWorkspaceName(workspace, isWsFolder, hasErrors, allFiles);
+      workspacesWithFilesPromise.data?.map((item) => {
+        if (!item.success) {
+          return {
+            descriptor: {
+              workspaceId: item.workspaceId,
+              name: item.name ?? "Unknown workspace",
+              origin: item.origin ?? { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
+              createdDateISO: item.createdDateISO ?? new Date().toISOString(),
+              lastUpdatedDateISO: item.lastUpdatedDateISO ?? new Date().toISOString(),
+              gitAuthSessionId: undefined,
+            },
+            editableFiles: [],
+            hasErrors: true,
+            isWsFolder: true,
+            totalFiles: 0,
+          };
+        }
+        const { editableFiles, readonlyFiles } = splitFiles(item.files ?? []);
+        const isWsFolder =
+          editableFiles.length > 1 || readonlyFiles.length > 0 || item.descriptor.origin.kind !== WorkspaceKind.LOCAL;
+        const name = !isWsFolder && editableFiles.length ? editableFiles[0].nameWithoutExtension : item.descriptor.name;
 
-            return {
-              createdDateISO: workspace.createdDateISO,
-              descriptor: workspace,
-              editableFiles: editableFiles,
-              hasErrors,
-              isWsFolder,
-              lastUpdatedDateISO: workspace.lastUpdatedDateISO,
-              name,
-              origin: workspace.origin,
-              totalFiles: editableFiles.length + readonlyFiles.length,
-              workspaceId: workspace.workspaceId,
-            };
-          }),
-    [workspaceDescriptors, allWorkspacePromises.data, allWorkspacePromises.status]
+        return {
+          descriptor: { ...item.descriptor, name },
+          editableFiles: editableFiles,
+          hasErrors: false,
+          isWsFolder,
+          totalFiles: item.files.length,
+        };
+      }) ?? [],
+    [workspacesWithFilesPromise]
   );
 
   const filteredTableData = useMemo<WorkspacesTableRowData[]>(() => {
-    const searchRegex = new RegExp(searchValue, "i");
-    return searchValue ? tableData.filter((e) => e.name.search(searchRegex) >= 0) : tableData;
+    const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
+    return searchValue ? tableData.filter((e) => e.descriptor.name.search(searchRegex) >= 0) : tableData;
   }, [searchValue, tableData]);
 
   const sortedTableData = useMemo<WorkspacesTableRowData[]>(
@@ -187,7 +177,7 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
         </Thead>
         <Tbody>
           <PromiseStateWrapper
-            promise={allWorkspacePromises}
+            promise={workspacesWithFilesPromise}
             pending={<WorkspacesTableRowLoading />}
             rejected={() => <>ERROR</>}
             resolved={() =>
@@ -199,14 +189,21 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
                 />
               ) : (
                 visibleTableData.map((rowData, rowIndex) => (
-                  <ErrorBoundary key={rowData.workspaceId} error={<WorkspacesTableRowError rowData={rowData} />}>
-                    <WorkspacesTableRow
-                      rowData={rowData}
-                      rowIndex={rowIndex}
-                      isSelected={isWsCheckboxChecked(rowData.workspaceId)}
-                      onToggle={(checked) => props.onWsToggle(rowData.workspaceId, checked)}
-                      onDelete={props.onWsDelete}
-                    />
+                  <ErrorBoundary
+                    key={rowData.descriptor.workspaceId}
+                    error={<WorkspacesTableRowError rowData={rowData} />}
+                  >
+                    {rowData.hasErrors ? (
+                      <WorkspacesTableRowError rowData={rowData} />
+                    ) : (
+                      <WorkspacesTableRow
+                        rowData={rowData}
+                        rowIndex={rowIndex}
+                        isSelected={isWsCheckboxChecked(rowData.descriptor.workspaceId)}
+                        onToggle={(checked) => props.onWsToggle(rowData.descriptor.workspaceId, checked)}
+                        onDelete={props.onWsDelete}
+                      />
+                    )}
                   </ErrorBoundary>
                 ))
               )
@@ -219,23 +216,18 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
 }
 
 function getSortableRowValues(tableData: WorkspacesTableRowData): (string | number | boolean)[] {
-  const { name, isWsFolder, createdDateISO, lastUpdatedDateISO, editableFiles, totalFiles, descriptor } = tableData;
+  const { isWsFolder, editableFiles, totalFiles, descriptor } = tableData;
   const workspaceType = !editableFiles.length
     ? ""
     : isWsFolder
     ? "d_" + descriptor.origin.toString()
     : "f_" + editableFiles[0].extension;
-  return [name, workspaceType, createdDateISO, lastUpdatedDateISO, editableFiles.length, totalFiles];
-}
-
-function getWorkspaceName(
-  workspace: WorkspaceDescriptor,
-  isWsFolder: boolean,
-  hasErrors: boolean,
-  editableFiles: WorkspaceFile[]
-) {
-  if (hasErrors) {
-    return workspacesTableRowErrorContent;
-  }
-  return !isWsFolder && editableFiles.length ? editableFiles[0].nameWithoutExtension : workspace.name;
+  return [
+    descriptor.name,
+    workspaceType,
+    descriptor.createdDateISO,
+    descriptor.lastUpdatedDateISO,
+    editableFiles.length,
+    totalFiles,
+  ];
 }

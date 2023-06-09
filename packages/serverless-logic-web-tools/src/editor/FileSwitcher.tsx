@@ -28,7 +28,7 @@ import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggl
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
@@ -42,23 +42,11 @@ import {
 } from "@patternfly/react-core/dist/js/components/Menu";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
-import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
-import { ThLargeIcon } from "@patternfly/react-icons/dist/js/icons/th-large-icon";
-import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
-import {
-  PromiseStateWrapper,
-  useCombinedPromiseState,
-  usePromiseState,
-} from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { PromiseStateWrapper, useCombinedPromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useWorkspacesFilesPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
-import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
@@ -73,7 +61,6 @@ const ROOT_MENU_ID = "rootMenu";
 enum FilesDropdownMode {
   LIST_MODELS,
   LIST_MODELS_AND_OTHERS,
-  CAROUSEL,
 }
 
 const MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX = 400;
@@ -140,10 +127,10 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
   const handleWorkspaceFileNameKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       e.stopPropagation();
-      if (newFileNameValid && e.keyCode === 13 /* Enter */) {
+      if (newFileNameValid && e.key === "Enter") {
         e.currentTarget.blur();
         setPopoverVisible(false);
-      } else if (e.keyCode === 27 /* ESC */) {
+      } else if (e.key === "Escape") {
         resetWorkspaceFileName();
         e.currentTarget.blur();
         setPopoverVisible(false);
@@ -324,8 +311,6 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                 minWidth:
                   activeMenu === ROOT_MENU_ID
                     ? "400px"
-                    : filesDropdownMode === FilesDropdownMode.CAROUSEL
-                    ? "calc(100vw - 16px)"
                     : filesDropdownMode === FilesDropdownMode.LIST_MODELS
                     ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`
                     : filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
@@ -461,62 +446,6 @@ export function WorkspacesMenuItems(props: {
   );
 }
 
-export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
-  const workspaces = useWorkspaces();
-  const imgRef = useRef<HTMLImageElement>(null);
-  const [svg, setSvg] = usePromiseState<string>();
-
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        // FIXME: Uncomment when working on KOGITO-7805
-        // Promise.resolve()
-        //   .then(async () => workspaces.svgService.getSvg(props.workspaceFile))
-        //   .then(async (file) => {
-        //     if (canceled.get()) {
-        //       return;
-        //     }
-        //     if (file) {
-        //       setSvg({ data: decoder.decode(await file.getFileContents()) });
-        //     } else {
-        //       setSvg({ error: `Can't find SVG for '${props.workspaceFile.relativePath}'` });
-        //     }
-        //   });
-      },
-      [props.workspaceFile, workspaces, setSvg]
-    )
-  );
-
-  useEffect(() => {
-    if (svg.data) {
-      const blob = new Blob([svg.data], { type: "image/svg+xml" });
-      const url = URL.createObjectURL(blob);
-      imgRef.current!.addEventListener("load", () => URL.revokeObjectURL(url), { once: true });
-      imgRef.current!.src = url;
-    }
-  }, [svg]);
-
-  return (
-    <>
-      <PromiseStateWrapper
-        pending={<Skeleton height={"180px"} style={{ margin: "10px" }} />}
-        rejected={() => (
-          <div style={{ height: "180px", margin: "10px", borderRadius: "5px", backgroundColor: "#EEE" }}>
-            <Bullseye>
-              <ImageIcon size={"xl"} color={"gray"} />
-            </Bullseye>
-          </div>
-        )}
-        promise={svg}
-        resolved={() => (
-          // for some reason, the CardBody adds an extra 6px after the image is loaded. 200 - 6 = 194px.
-          <img style={{ height: "194px" }} ref={imgRef} alt={"SVG for " + props.workspaceFile.relativePath} />
-        )}
-      />
-    </>
-  );
-}
-
 export function SearchableFilesMenuGroup(props: {
   maxHeight: string;
   shouldFocusOnSearch: boolean;
@@ -579,9 +508,6 @@ export function FilesMenuItems(props: {
   setFilesDropdownMode: React.Dispatch<React.SetStateAction<FilesDropdownMode>>;
   shouldFocusOnSearch: boolean;
 }) {
-  const history = useHistory();
-  const routes = useRoutes();
-
   const sortedAndFilteredFiles = useMemo(
     () =>
       props.workspaceFiles
@@ -608,14 +534,6 @@ export function FilesMenuItems(props: {
             All
           </MenuItem>
         </SplitItem>
-        {/* FIXME: Uncomment when working on KOGITO-7805 */}
-        {/*<SplitItem>*/}
-        {/*  <FilesDropdownModeIcons*/}
-        {/*    filesDropdownMode={props.filesDropdownMode}*/}
-        {/*    setFilesDropdownMode={props.setFilesDropdownMode}*/}
-        {/*  />*/}
-        {/*  &nbsp; &nbsp;*/}
-        {/*</SplitItem>*/}
       </Split>
       <Divider component={"li"} />
 
@@ -687,65 +605,6 @@ export function FilesMenuItems(props: {
             </SearchableFilesMenuGroup>
           </SplitItem>
         )}
-
-        {props.filesDropdownMode === FilesDropdownMode.CAROUSEL && (
-          <SplitItem isFilled={true}>
-            <SearchableFilesMenuGroup
-              maxHeight={"500px"}
-              filesDropdownMode={props.filesDropdownMode}
-              shouldFocusOnSearch={props.shouldFocusOnSearch}
-              label={`Editable files in '${props.workspaceDescriptor.name}'`}
-              allFiles={editableFiles}
-            >
-              {({ filteredFiles }) => (
-                <Gallery hasGutter={true} style={{ padding: "8px" }}>
-                  {filteredFiles.map((file) => (
-                    <Card
-                      key={file.relativePath}
-                      isSelectable={true}
-                      isRounded={true}
-                      isCompact={true}
-                      isHoverable={true}
-                      isFullHeight={true}
-                      onClick={() => {
-                        history.push({
-                          pathname: routes.workspaceWithFilePath.path({
-                            workspaceId: file.workspaceId,
-                            fileRelativePath: file.relativePathWithoutExtension,
-                            extension: file.extension,
-                          }),
-                        });
-
-                        props.onSelectFile();
-                      }}
-                    >
-                      <CardHeader>
-                        <CardHeaderMain>
-                          <CardTitle>
-                            <Flex flexWrap={{ default: "nowrap" }}>
-                              <FlexItem>
-                                <TextContent>
-                                  <Text component={TextVariants.h4}>{file.nameWithoutExtension}</Text>
-                                </TextContent>
-                              </FlexItem>
-                              <FlexItem>
-                                <FileLabel extension={file.extension} />
-                              </FlexItem>
-                            </Flex>
-                          </CardTitle>
-                        </CardHeaderMain>
-                      </CardHeader>
-                      <CardBody style={{ padding: 0 }}>
-                        {/* FIXME: Uncomment when working on KOGITO-7805 */}
-                        {/* <FileSvg workspaceFile={file} />*/}
-                      </CardBody>
-                    </Card>
-                  ))}
-                </Gallery>
-              )}
-            </SearchableFilesMenuGroup>
-          </SplitItem>
-        )}
       </Split>
     </>
   );
@@ -782,42 +641,5 @@ export function FileMenuItem(props: { file: WorkspaceFile; onSelectFile: () => v
         <FileName file={props.file} />
       </Link>
     </MenuItem>
-  );
-}
-
-export function FilesDropdownModeIcons(props: {
-  filesDropdownMode: FilesDropdownMode;
-  setFilesDropdownMode: React.Dispatch<React.SetStateAction<FilesDropdownMode>>;
-}) {
-  return (
-    <>
-      {props.filesDropdownMode === FilesDropdownMode.CAROUSEL && (
-        <Button
-          className={"kie-tools--masthead-hoverable"}
-          variant="plain"
-          aria-label="Switch to list view"
-          onClick={(e) => {
-            e.stopPropagation();
-            props.setFilesDropdownMode(FilesDropdownMode.LIST_MODELS);
-          }}
-        >
-          <ListIcon />
-        </Button>
-      )}
-      {(props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
-        props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS) && (
-        <Button
-          className={"kie-tools--masthead-hoverable"}
-          variant="plain"
-          aria-label="Switch to carousel view"
-          onClick={(e) => {
-            e.stopPropagation();
-            props.setFilesDropdownMode(FilesDropdownMode.CAROUSEL);
-          }}
-        >
-          <ThLargeIcon />
-        </Button>
-      )}
-    </>
   );
 }
