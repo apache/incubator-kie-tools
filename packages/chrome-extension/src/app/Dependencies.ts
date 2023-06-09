@@ -29,12 +29,24 @@ export class Dependencies {
 
   public readonly singleView = {
     iframeContainerTarget: () => {
+      // TODO: This if can be removed once github unifies the ui for logged in/out users.
+      if (document.body.classList.contains("logged-out")) {
+        return document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null;
+      }
       return document.querySelector(".Box-sc-g0xbh4-0.cluMzC") as HTMLElement | null;
     },
     toolbarContainerTarget: () => {
+      // TODO: This if can be removed once github unifies the ui for logged in/out users.
+      if (document.body.classList.contains("logged-out")) {
+        return document.querySelector(".Box.mt-3.position-relative") as HTMLElement | null;
+      }
       return document.querySelector(".Box-sc-g0xbh4-0.izfgQu") as HTMLElement | null;
     },
     githubTextEditorToReplaceElement: () => {
+      // TODO: This if can be removed once github unifies the ui for logged in/out users.
+      if (document.body.classList.contains("logged-out")) {
+        return document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement | null;
+      }
       return document.querySelector(".Box-sc-g0xbh4-0.eRkHwF") as HTMLElement | null;
     },
   };
@@ -53,6 +65,10 @@ export class Dependencies {
 
   public readonly openRepoInExternalEditor = {
     buttonContainerOnRepoFilesList: () => {
+      // TODO: This if can be removed once github unifies the ui for logged in/out users.
+      if (document.body.classList.contains("logged-out")) {
+        return document.querySelector(".file-navigation") as HTMLElement | null;
+      }
       return document.querySelector(".Box-sc-g0xbh4-0.gtBUEp") as HTMLElement | null;
     },
     buttonContainerOnPrs: () => {
