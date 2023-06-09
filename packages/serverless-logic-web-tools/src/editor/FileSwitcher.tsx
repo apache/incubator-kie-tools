@@ -71,12 +71,20 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
   const [newFileNameValid, setNewFileNameValid] = useState<boolean>(true);
   const [filesDropdownMode, setFilesDropdownMode] = useState(FilesDropdownMode.LIST_MODELS);
 
+  const displayName = useMemo(
+    () =>
+      props.workspaceFile.nameWithoutExtension.trim().length
+        ? props.workspaceFile.nameWithoutExtension
+        : props.workspaceFile.name,
+    [props.workspaceFile]
+  );
+
   const resetWorkspaceFileName = useCallback(() => {
     if (workspaceFileNameRef.current) {
-      workspaceFileNameRef.current.value = props.workspaceFile.nameWithoutExtension;
+      workspaceFileNameRef.current.value = displayName;
       setNewFileNameValid(true);
     }
-  }, [props.workspaceFile]);
+  }, [displayName]);
 
   const checkNewFileName = useCallback(
     async (newFileNameWithoutExtension: string) => {
@@ -105,6 +113,9 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
 
   const renameWorkspaceFile = useCallback(
     async (newFileName: string | undefined) => {
+      if (!isEditable(props.workspaceFile.name)) {
+        return;
+      }
       const trimmedNewFileName = newFileName?.trim();
       if (!trimmedNewFileName || !newFileNameValid) {
         resetWorkspaceFileName();
@@ -263,7 +274,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                           size={"2xl"}
                           style={{ fontWeight: "bold" }}
                         >
-                          {props.workspaceFile.nameWithoutExtension}
+                          {displayName}
                         </Title>
                         <Tooltip
                           content={
@@ -287,6 +298,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                             }}
                             onKeyDown={handleWorkspaceFileNameKeyDown}
                             onChange={checkNewFileName}
+                            readOnlyVariant={!isEditable(props.workspaceFile.name) ? "plain" : undefined}
                             ref={workspaceFileNameRef}
                             type={"text"}
                             aria-label={"Edit file name"}
@@ -614,7 +626,9 @@ export function FileName(props: { file: WorkspaceFile }) {
   return (
     <>
       <Flex flexWrap={{ default: "nowrap" }}>
-        <FlexItem>{props.file.nameWithoutExtension}</FlexItem>
+        <FlexItem>
+          {props.file.nameWithoutExtension.trim().length ? props.file.nameWithoutExtension : props.file.name}
+        </FlexItem>
         <FlexItem>
           <FileLabel extension={props.file.extension} />
         </FlexItem>

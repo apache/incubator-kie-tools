@@ -36,21 +36,17 @@ export const labelColors: Record<string, LabelColorType> = {
 };
 
 export function FileLabel(props: { style?: LabelProps["style"]; extension: string; labelProps?: LabelProps }) {
-  const parsedExtension = props.extension.toLowerCase();
+  const parsedExtension = props.extension.trim().length ? props.extension.toLowerCase() : "n/a";
   const labelColor = labelColors[parsedExtension as string];
 
   return (
-    <>
-      {props.extension && (
-        <Label
-          {...props.labelProps}
-          style={props.style ?? {}}
-          color={labelColor?.color ?? "grey"}
-          data-ouia-component-id="file-type-label"
-        >
-          {labelColor?.label ?? props.extension.toUpperCase()}
-        </Label>
-      )}
-    </>
+    <Label
+      {...props.labelProps}
+      style={props.style ?? {}}
+      color={labelColor?.color ?? "grey"}
+      data-ouia-component-id="file-type-label"
+    >
+      {labelColor?.label ?? parsedExtension.toUpperCase()}
+    </Label>
   );
 }

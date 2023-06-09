@@ -95,6 +95,7 @@ import { useEnv } from "../env/EnvContext";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
 import { Link } from "react-router-dom";
 import { routes } from "../navigation/Routes";
+import { isEditable } from "../extension";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -1482,6 +1483,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         </Tooltip>
                       )}
                     </FlexItem>
+                    {!isEditable(props.workspaceFile.name) && (
+                      <FlexItem>
+                        <Text component={TextVariants.small}>Readonly</Text>
+                      </FlexItem>
+                    )}
                   </Flex>
                 </PageHeaderToolsItem>
               </FlexItem>

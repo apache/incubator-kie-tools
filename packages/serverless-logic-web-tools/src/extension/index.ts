@@ -15,11 +15,7 @@
  */
 
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { basename } from "path";
-import { PROJECT_FILES } from "../project";
 import { FileTypes, isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
-
-const EDIT_NON_MODEL_ALLOW_LIST = [PROJECT_FILES.applicationProperties];
 
 export const GLOB_PATTERN = {
   all: "**/*",
@@ -47,12 +43,7 @@ export function isModel(path: string): boolean {
 }
 
 export function isEditable(path: string): boolean {
-  return (
-    isModel(path) ||
-    EDIT_NON_MODEL_ALLOW_LIST.includes(basename(path)) ||
-    isOfKind("yaml", path) ||
-    isOfKind("json", path)
-  );
+  return isModel(path) || isApplicationProperties(path) || isOfKind("yaml", path) || isOfKind("json", path);
 }
 
 export function isSupportedByVirtualServiceRegistry(path: string): boolean {
