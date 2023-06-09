@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { WebView } from "vscode-extension-tester";
+import { TextEditor, WebView } from "vscode-extension-tester";
 
 /**
  * Helper class to easen work with dashbuilder text editor.
@@ -23,4 +23,8 @@ import { WebView } from "vscode-extension-tester";
  */
 export default class DashbuilderTextEditorTestHelper {
   constructor(private readonly webview: WebView) {}
+
+  public async getDashbuilderTextEditor(): Promise<TextEditor> {
+    return Promise.resolve(new TextEditor());
+  }
 }
