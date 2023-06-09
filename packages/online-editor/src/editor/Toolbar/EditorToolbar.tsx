@@ -76,6 +76,7 @@ import { listDeletedFiles } from "../../workspace/components/WorkspaceStatusIndi
 import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { QueryParams } from "../../navigation/Routes";
+
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
   workspaceFile: WorkspaceFile;
@@ -320,11 +321,6 @@ export function EditorToolbarWithWorkspace(
                           onToggle={() => setNewFileDropdownMenuOpen((prev) => !prev)}
                           isPrimary={true}
                           toggleIndicator={CaretDownIcon}
-                          onClick={() =>
-                            history.push({
-                              search: queryParams.with(QueryParams.NEW_FILE, "new").toString(),
-                            })
-                          }
                         >
                           <PlusIcon />
                           &nbsp;&nbsp;New file
