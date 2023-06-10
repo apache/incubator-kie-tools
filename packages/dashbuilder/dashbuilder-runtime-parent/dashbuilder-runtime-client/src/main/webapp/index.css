@@ -33,3 +33,11 @@
     transform: rotate(0deg);
   }
 }
+
+.panel-group .panel-heading {
+  cursor: pointer;
+}
+
+.panel-heading .collapsed {
+  font-weight: bold;
+}
