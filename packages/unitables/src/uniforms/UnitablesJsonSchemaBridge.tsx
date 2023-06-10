@@ -21,6 +21,7 @@ import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 import { joinName } from "uniforms";
 import { UnitablesColumnType } from "../UnitablesTypes";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
 
 export const DEFAULT_COLUMN_MIN_WIDTH = 150;
 const DEFAULT_DATE_TIME_CELL_WDITH = 210;
@@ -77,8 +78,10 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
         type = undefined;
       } else if (splitedXDmnType.length > 2) {
         type = splitedXDmnType[2].split("}")?.[0]?.trim();
-      } else {
+      } else if (splitedXDmnType.length === 2) {
         type = splitedXDmnType[1];
+      } else {
+        type = splitedXDmnType[0];
       }
     }
 

@@ -16,10 +16,10 @@
 
 import * as React from "react";
 import { render } from "@testing-library/react";
-import { DmnFormResult, DmnFormResultProps } from "../src";
+import { FormDmnOutputs, FormDmnOutputsProps } from "../src";
 import { DecisionResult, DmnEvaluationStatus } from "@kie-tools/extended-services-api";
 
-const props: DmnFormResultProps = {
+const props: FormDmnOutputsProps = {
   results: [],
   differences: [{}],
   locale: "en",
@@ -27,14 +27,14 @@ const props: DmnFormResultProps = {
   openExecutionTab: () => {},
 };
 
-describe("DmnFormResult tests", () => {
+describe("FormDmnOutputs tests", () => {
   it("should render the DMNFormResult with the empty state", async () => {
-    const { getByText } = render(<DmnFormResult {...props} />);
+    const { getByText } = render(<FormDmnOutputs {...props} />);
 
     expect(getByText("No response")).toMatchSnapshot();
   });
 
-  it("should render the DmnFormResult with one result", async () => {
+  it("should render the FormDmnOutputs with one result", async () => {
     const results: DecisionResult[] = [
       {
         decisionId: "_9BD7BB23-0B23-488F-8DED-F5462CF89E0B",
@@ -45,12 +45,12 @@ describe("DmnFormResult tests", () => {
       },
     ];
 
-    const { getByText } = render(<DmnFormResult {...props} results={results} />);
+    const { getByText } = render(<FormDmnOutputs {...props} results={results} />);
 
     expect(getByText("Decision-1")).toMatchSnapshot();
   });
 
-  it("should render the DmnFormResult with more then one result", async () => {
+  it("should render the FormDmnOutputs with more then one result", async () => {
     const results: DecisionResult[] = [
       {
         decisionId: "_9BD7BB23-0B23-488F-8DED-F5462CF89E0B",
@@ -75,7 +75,7 @@ describe("DmnFormResult tests", () => {
       },
     ];
 
-    const { getByText } = render(<DmnFormResult {...props} results={results} />);
+    const { getByText } = render(<FormDmnOutputs {...props} results={results} />);
 
     expect(getByText("Decision-1")).toMatchSnapshot();
     expect(getByText("Decision-2")).toMatchSnapshot();
@@ -93,7 +93,7 @@ describe("DmnFormResult tests", () => {
       },
     ];
 
-    const { getByText } = render(<DmnFormResult {...props} results={results} />);
+    const { getByText } = render(<FormDmnOutputs {...props} results={results} />);
 
     expect(getByText("Evaluation failed").tagName).toEqual("A");
     expect(getByText("Evaluation failed")).toMatchSnapshot();
@@ -110,7 +110,7 @@ describe("DmnFormResult tests", () => {
       },
     ];
 
-    const { getByText } = render(<DmnFormResult {...props} notificationsPanel={false} results={results} />);
+    const { getByText } = render(<FormDmnOutputs {...props} notificationsPanel={false} results={results} />);
 
     expect(getByText("Evaluation failed").tagName).toEqual("P");
     expect(getByText("Evaluation failed")).toMatchSnapshot();

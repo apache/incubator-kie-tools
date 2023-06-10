@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./DmnForm";
-export * from "./DmnFormResult";
+export * from "./FormDmn";
+export * from "./FormDmnOutputs";

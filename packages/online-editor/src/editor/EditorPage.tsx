@@ -231,7 +231,7 @@ export function EditorPage(props: Props) {
 
   // being (UPDATE PREVIEW SVGS)
   const updatePreviewSvg = useCallback(() => {
-    editor?.getPreview().then((svgString) => {
+    editor?.getPreview()?.then((svgString) => {
       if (!workspaceFilePromise.data || !svgString) {
         return;
       }

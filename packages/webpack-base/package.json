@@ -21,6 +21,7 @@
     "@kie-tools/root-env": "workspace:*",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
+    "querystring-es3": "^0.2.1",
     "source-map-loader": "^2.0.2",
     "ts-loader": "^9.4.2",
     "webpack": "^5.36.2"
