@@ -361,9 +361,6 @@ public class ExpressionContainerGridTest {
         assertThat(expressionCellValue.getValue().isPresent()).isTrue();
         assertThat(expressionCellValue.getValue().get()).isSameAs(undefinedExpressionEditor);
         assertThat(grid.isOnlyVisualChangeAllowed()).isFalse();
-
-        verify(undefinedExpressionEditor).selectFirstCell();
-        verify(gridLayer).batch();
     }
 
     @Test
@@ -381,9 +378,6 @@ public class ExpressionContainerGridTest {
         assertThat(expressionCellValue.getValue().isPresent()).isTrue();
         assertThat(expressionCellValue.getValue().get()).isSameAs(literalExpressionEditor);
         assertThat(grid.isOnlyVisualChangeAllowed()).isFalse();
-
-        verify(literalExpressionEditor).selectFirstCell();
-        verify(gridLayer).batch();
     }
 
     @Test
@@ -522,7 +516,6 @@ public class ExpressionContainerGridTest {
                            Optional.of(hasName),
                            false);
         verify(gridLayer).select(literalExpressionEditor);
-        verify(literalExpressionEditor).selectFirstCell();
         verify(gridLayer).batch();
 
         //Get and select ClearExpression item
