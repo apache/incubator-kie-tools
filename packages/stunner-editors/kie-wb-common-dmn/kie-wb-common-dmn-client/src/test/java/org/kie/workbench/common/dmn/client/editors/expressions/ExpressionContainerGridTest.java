@@ -515,8 +515,6 @@ public class ExpressionContainerGridTest {
                            hasExpression,
                            Optional.of(hasName),
                            false);
-        verify(gridLayer).select(literalExpressionEditor);
-        verify(gridLayer).batch();
 
         //Get and select ClearExpression item
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
@@ -547,7 +545,7 @@ public class ExpressionContainerGridTest {
         //Verify Expression has been restored and UndefinedExpressionEditor resized
         assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(COLUMN_NEW_WIDTH);
         verify(gridLayer).select(literalExpressionEditor);
-        verify(literalExpressionEditor, times(2)).selectFirstCell();
+        verify(literalExpressionEditor, times(1)).selectFirstCell();
         verify(gridLayer, times(2)).batch();
     }
 
