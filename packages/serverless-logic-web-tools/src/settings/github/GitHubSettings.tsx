@@ -104,7 +104,6 @@ export function GitHubSettings(props: SettingsPageProps) {
       pageTitle={PAGE_TITLE}
       subtitle={
         <>
-          {" "}
           Data you provide here is necessary for creating repositories containing models you design, and syncing changes
           with GitHub.
           <br />
