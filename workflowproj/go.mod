@@ -2,11 +2,8 @@ module github.com/kiegroup/kogito-serverless-operator/workflowproj
 
 go 1.19
 
-// Internal dependencies
-replace github.com/kiegroup/kogito-serverless-operator/api v0.0.0 => ../api
-
 require (
-	github.com/kiegroup/kogito-serverless-operator/api v0.0.0
+	github.com/kiegroup/kogito-serverless-operator/api v0.0.0-20230612141803-7bb1dd4abd50
 	github.com/pb33f/libopenapi v0.8.4
 	github.com/pkg/errors v0.9.1
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.0
