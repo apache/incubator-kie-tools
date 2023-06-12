@@ -33,3 +33,9 @@
     transform: rotate(0deg);
   }
 }
+
+.panel-group .panel-heading {
+  cursor: pointer;
+  font-size: medium;
+  font-weight: bold;
+}

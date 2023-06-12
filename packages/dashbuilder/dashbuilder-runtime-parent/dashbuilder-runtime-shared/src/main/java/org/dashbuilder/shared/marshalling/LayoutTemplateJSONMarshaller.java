@@ -92,6 +92,11 @@ public class LayoutTemplateJSONMarshaller {
     static final String MARKDOWN = "MARKDOWN";
     static final String MARKDOWN_CODE_PROP = "MARKDOWN_CODE";
 
+    static final String PANEL_DRAG_TYPE =
+            "org.dashbuilder.client.navigation.widget.PanelLayoutDragComponent";
+    static final String PANEL = "PANEL";
+    static final String PANEL_CODE_PROP = "Page Name";
+
     // to make the json more user friendly
     // replacement for Drag type
     private static final String TYPE = "type";
@@ -374,7 +379,8 @@ public class LayoutTemplateJSONMarshaller {
                 elementShortcut(object, HTML, HTML_CODE_PROP, HTML_DRAG_TYPE),
                 elementShortcut(object, SCREEN, SCREEN_NAME_PROP, SCREEN_DRAG_TYPE),
                 elementShortcut(object, DIV, DIV_ID_PROP, DIV_DRAG_TYPE),
-                elementShortcut(object, MARKDOWN, MARKDOWN_CODE_PROP, MARKDOWN_DRAG_TYPE))
+                elementShortcut(object, MARKDOWN, MARKDOWN_CODE_PROP, MARKDOWN_DRAG_TYPE),
+                elementShortcut(object, PANEL, PANEL_CODE_PROP, PANEL_DRAG_TYPE))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findAny();

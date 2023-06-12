@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.dataset.json;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +37,7 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
     public static final String HEADERS = "headers";
     public static final String ACCUMULATE = "accumulate";
     public static final String TYPE = "type";
+    public static final String JOIN = "join";
 
     @Override
     public void fromJson(ExternalDataSetDef def, JsonObject json) {
@@ -46,9 +48,10 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         var headers = json.getObject(HEADERS);
         var accumulate = json.getBoolean(ACCUMULATE);
         var type = json.getString(TYPE);
+        var join = json.getArray(JOIN);
 
-        if (isBlank(url) && isBlank(content)) {
-            throw new IllegalArgumentException("External Data Sets must have \"url\" or \"content\" field");
+        if (isBlank(url) && isBlank(content) && (join == null || join.length() == 0)) {
+            throw new IllegalArgumentException("Data Sets must have \"url\", \"content\" or \"join\" field");
         }
 
         if (!isBlank(url)) {
@@ -73,6 +76,12 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
             def.setType(serviceType);
         }
 
+        def.setJoin(new ArrayList<>());
+        if (join != null) {
+            for (var i = 0; i < join.length(); i++) {
+                def.getJoin().add(join.getString(i));
+            }
+        }
         def.setDynamic(dynamic);
         def.setAccumulate(accumulate);
     }
@@ -93,6 +102,14 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
             var headers = Json.createObject();
             def.getHeaders().forEach((k, v) -> headers.set(k, Json.create(v)));
             json.set(HEADERS, headers);
+        }
+
+        if (def.getJoin() != null) {
+            var join = Json.createArray();
+            for (var i = 0; i < def.getJoin().size(); i++) {
+                join.set(i, join.get(i));
+            }
+            json.set(JOIN, join);
         }
     }
 

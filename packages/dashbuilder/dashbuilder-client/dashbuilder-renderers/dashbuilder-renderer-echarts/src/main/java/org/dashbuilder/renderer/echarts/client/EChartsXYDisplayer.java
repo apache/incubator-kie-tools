@@ -77,12 +77,12 @@ public abstract class EChartsXYDisplayer extends EChartsAbstractDisplayer<EChart
         yAxis.setName(displayerSettings.getYAxisTitle());
         yAxis.setAxisLabel(axisLabelY);
 
-        // timeseries do not support format
+        // timeseries do not support format for axis X
         if (!isTimeseries) {
             // must format columns 0 if number
             axisLabelX.setFormatter(buildNumberLabelFormatterForColumn(0));
-            axisLabelY.setFormatter(buildNumberLabelFormatterForColumn(1));
         }
+        axisLabelY.setFormatter(buildNumberLabelFormatterForColumn(1));
 
         if (isBar) {
             xAxis.setType(XAxisType.value.name());

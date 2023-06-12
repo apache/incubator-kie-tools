@@ -829,3 +829,7 @@ uf-navtree-widget-clicked {
 [dashbuilder-mode="dark"] .mapTooltipContainer {
   background-color: #111;
 }
+
+[dashbuilder-mode="dark"] .panel-group .panel-heading {
+  background-image: linear-gradient(to bottom, #393555 0, #211d3b 100%);
+}
