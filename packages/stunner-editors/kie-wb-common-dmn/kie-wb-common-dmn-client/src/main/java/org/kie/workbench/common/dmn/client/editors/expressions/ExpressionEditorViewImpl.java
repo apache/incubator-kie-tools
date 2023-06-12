@@ -359,7 +359,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         );
     }
 
-    void unmountNewBoxedExpressionEditor() {
+    @Override
+    public void unmountNewBoxedExpressionEditor() {
         DMNLoader.unmountBoxedExpressionEditor(".kie-dmn-new-expression-editor");
     }
 
@@ -652,7 +653,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @EventHandler("returnToDRGLink")
     void onClickReturnToDRGLink(final ClickEvent event) {
-        unmountNewBoxedExpressionEditor();
         presenter.exit();
     }
 
