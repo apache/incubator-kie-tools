@@ -123,5 +123,8 @@ export class Dependencies {
     showDocumentBody: () => {
       (document.querySelector("[data-turbo-body]") as HTMLElement).style.display = "unset";
     },
+    getViewFileButton: () => {
+      return document.querySelector("a[class='pl-5 dropdown-item btn-link']") as HTMLAnchorElement | null;
+    },
   };
 }

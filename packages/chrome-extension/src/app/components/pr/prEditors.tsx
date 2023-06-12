@@ -62,7 +62,7 @@ export function parsePrInfo(dependencies: Dependencies): PrInfo {
 
   const targetOrganization = window.location.pathname.split("/")[1];
   const repository = window.location.pathname.split("/")[2];
-
+  const commitSHA = dependencies.all.getViewFileButton()?.href.split("/")[6];
   // PR is within the same organization
   if (prInfos.length < 6) {
     return {
@@ -71,6 +71,7 @@ export function parsePrInfo(dependencies: Dependencies): PrInfo {
       targetGitRef: prInfos[1],
       org: targetOrganization,
       gitRef: prInfos[3],
+      commitSHA: commitSHA ?? "",
     };
   }
 
@@ -81,6 +82,7 @@ export function parsePrInfo(dependencies: Dependencies): PrInfo {
     targetGitRef: prInfos[2],
     org: prInfos[4],
     gitRef: prInfos[5],
+    commitSHA: commitSHA ?? "",
   };
 }
 
