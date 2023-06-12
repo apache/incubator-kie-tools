@@ -104,7 +104,9 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
       subtitle={
         <>
           Data you provide here is necessary for uploading Open API specs associated with models you design to your
-          Service Registry instance. All information is locally stored in your browser and never shared with anyone.
+          Service Registry instance.
+          <br />
+          All information is locally stored in your browser and never shared with anyone.
         </>
       }
     >
