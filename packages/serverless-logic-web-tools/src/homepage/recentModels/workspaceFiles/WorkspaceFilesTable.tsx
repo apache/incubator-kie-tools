@@ -27,7 +27,7 @@ import { useCallback, useMemo, useState } from "react";
 import { isEditable } from "../../../extension";
 import { WorkspaceFilesTableRow } from "./WorkspaceFilesTableRow";
 import { TablePaginationProps, TableRowEmptyState } from "../../../table";
-import { escapeRegExp } from "../../../../regex";
+import { escapeRegExp } from "../../../regex";
 
 export const columnNames = {
   name: "Name",
@@ -69,7 +69,7 @@ export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
         extension: f.extension,
         fileDescriptor: f,
         isEditable: isEditable(f.relativePath),
-        name: f.nameWithoutExtension,
+        name: f.nameWithoutExtension.trim().length ? f.nameWithoutExtension : f.name,
         relativePath: f.relativePath,
         workspaceId: f.workspaceId,
       })),

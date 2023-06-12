@@ -33,7 +33,7 @@ import { TablePaginationProps, TableRowEmptyState } from "../../table";
 import { WorkspacesTableRow, WorkspacesTableRowError, WorkspacesTableRowLoading } from "./WorkspacesTableRow";
 import { useWorkspacesWithFilesPromise } from "./hooks/useWorkspacesWithFilesPromise";
 import { GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { escapeRegExp } from "../../../regex";
+import { escapeRegExp } from "../../regex";
 
 export const columnNames = {
   name: "Name",
