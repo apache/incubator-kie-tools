@@ -181,9 +181,7 @@ export function WorkspaceFiles(props: Props) {
               breadcrumb={
                 <Breadcrumb>
                   <BreadcrumbItem to={"#" + routes.recentModels.path({})}>Recent Models</BreadcrumbItem>
-                  <BreadcrumbItem to="#" isActive>
-                    {workspace.descriptor.name}
-                  </BreadcrumbItem>
+                  <BreadcrumbItem isActive>{workspace.descriptor.name}</BreadcrumbItem>
                 </Breadcrumb>
               }
             >

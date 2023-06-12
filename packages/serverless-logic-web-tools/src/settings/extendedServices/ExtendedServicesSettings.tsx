@@ -22,21 +22,20 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { AddCircleOIcon } from "@patternfly/react-icons/dist/js/icons/add-circle-o-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
 import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
-import { setPageTitle } from "../../PageTitle";
 import { QuickStartIds } from "../../quickstarts-data";
 import { ExtendedServicesConfig, useSettings, useSettingsDispatch } from "../SettingsContext";
+import { SettingsPageContainer } from "../SettingsPageContainer";
 import { SettingsPageProps } from "../types";
 
 const PAGE_TITLE = "Extended Services";
@@ -80,23 +79,17 @@ export function ExtendedServicesSettings(props: SettingsPageProps) {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
   }, []);
 
-  useEffect(() => {
-    setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
-  }, []);
-
   return (
-    <Page>
-      <PageSection variant={"light"} isWidthLimited>
-        <TextContent>
-          <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
-          <Text component={TextVariants.p}>
-            Data you provide here is necessary for proxying Serverless Logic Web Tools requests to OpenShift, thus
-            making it possible to deploy models.
-            <br /> All information is locally stored in your browser and never shared with anyone.
-          </Text>
-        </TextContent>
-      </PageSection>
-
+    <SettingsPageContainer
+      pageTitle={PAGE_TITLE}
+      subtitle={
+        <>
+          Data you provide here is necessary for proxying Serverless Logic Web Tools requests to OpenShift, thus making
+          it possible to deploy models.
+          <br /> All information is locally stored in your browser and never shared with anyone.
+        </>
+      }
+    >
       <PageSection isFilled>
         <PageSection variant={"light"}>
           {extendedServices.status === ExtendedServicesStatus.RUNNING ? (
@@ -291,6 +284,6 @@ export function ExtendedServicesSettings(props: SettingsPageProps) {
           </Form>
         </Modal>
       )}
-    </Page>
+    </SettingsPageContainer>
   );
 }

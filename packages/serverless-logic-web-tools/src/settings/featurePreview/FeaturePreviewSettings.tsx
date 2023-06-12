@@ -17,12 +17,10 @@
 import React from "react";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Form } from "@patternfly/react-core/dist/js/components/Form";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useCallback, useEffect, useState } from "react";
-import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
-import { setPageTitle } from "../../PageTitle";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { SettingsPageContainer } from "../SettingsPageContainer";
 import { saveConfigCookie } from "./FeaturePreviewConfig";
 
 const PAGE_TITLE = "Feature Preview";
@@ -46,22 +44,16 @@ export function FeaturePreviewSettings() {
     [config]
   );
 
-  useEffect(() => {
-    setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
-  }, []);
-
   return (
-    <Page>
-      <PageSection variant={"light"} isWidthLimited>
-        <TextContent>
-          <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
-          <Text component={TextVariants.p}>
-            Data you provide here is necessary for configuring the preview of features that are not fully supported yet.
-            <br /> All information is locally stored in your browser and never shared with anyone.
-          </Text>
-        </TextContent>
-      </PageSection>
-
+    <SettingsPageContainer
+      pageTitle={PAGE_TITLE}
+      subtitle={
+        <>
+          Data you provide here is necessary for configuring the preview of features that are not fully supported yet.
+          <br /> All information is locally stored in your browser and never shared with anyone.
+        </>
+      }
+    >
       <PageSection>
         <PageSection variant={"light"}>
           <Form>
@@ -75,6 +67,6 @@ export function FeaturePreviewSettings() {
           </Form>
         </PageSection>
       </PageSection>
-    </Page>
+    </SettingsPageContainer>
   );
 }
