@@ -159,7 +159,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
             presenter.getPalette().setVisible(!hidden);
         }
     }
-    
+
     protected void unmountNewBoxedExpressionEditor() {
         editor.unmountNewBoxedExpressionEditor();
     }
