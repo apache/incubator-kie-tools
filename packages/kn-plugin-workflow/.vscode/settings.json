@@ -1,0 +1,4 @@
+{
+  "go.testTimeout": "10m",
+  "go.buildTags": "it_tests"
+}
