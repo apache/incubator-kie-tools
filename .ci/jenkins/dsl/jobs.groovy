@@ -25,6 +25,7 @@ createSetupBranchJob()
 
 // Nightly jobs
 setupDeployJob(JobType.NIGHTLY)
+KogitoJobUtils.createEnvironmentIntegrationBranchNightlyJob(this, 'quarkus-lts')
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
