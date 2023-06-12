@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-import { en } from "./locales";
-import { de } from "./locales";
-import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
-import { NotificationsApiVsCodeI18nDictionary } from "./NotificationsApiVsCodeI18nDictionary";
+import { KieBcEditorsI18n } from "../KieBcEditorsI18n";
 
-export const notificationsApiVsCodeI18nDefaults: I18nDefaults<NotificationsApiVsCodeI18nDictionary> = {
-  locale: "en",
-  dictionary: en,
+const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
+
+export const de: KieBcEditorsI18n = {
+  unsupportedFile: `Diese Datei enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte konsultieren Sie ${KOGITO_JIRA_LINK} und melden Sie ein Problem. Vergessen Sie nicht, die aktuelle Datei hochzuladen.`,
 };
-
-export const notificationsApiVsCodeI18nDictionaries: I18nDictionaries<NotificationsApiVsCodeI18nDictionary> = new Map([
-  ["en", en], ["de", de],
-]);

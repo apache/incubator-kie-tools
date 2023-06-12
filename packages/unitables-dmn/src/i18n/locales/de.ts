@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-import { en } from "./locales";
-import { de } from "./locales";
-import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
-import { KieBcEditorsI18n } from "./KieBcEditorsI18n";
+import { DmnUnitablesI18n } from "..";
+import { de as de_common } from "@kie-tools/i18n-common-dictionary";
+import { de as de_boxed_expression } from "@kie-tools/boxed-expression-component/dist/i18n/locales/de";
 
-export const kieBcEditorsI18nDefaults: I18nDefaults<KieBcEditorsI18n> = { locale: "en", dictionary: en };
-export const kieBcEditorsI18nDictionaries: I18nDictionaries<KieBcEditorsI18n> = new Map([["en", en], ["de", de]]);
+export const de: DmnUnitablesI18n = {
+  ...de_common,
+  ...de_boxed_expression,
+  schema: {
+    selectPlaceholder: "Auswählen...",
+  },
+};

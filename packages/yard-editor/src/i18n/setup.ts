@@ -17,6 +17,7 @@
 import * as React from "react";
 import { useContext } from "react";
 import { en } from "./locales";
+import { de } from "./locales";
 import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 import { YardEditorI18n } from "./YardEditorI18n";
 import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
@@ -25,7 +26,7 @@ export const yardEditorI18nDefaults: I18nDefaults<YardEditorI18n> = {
   locale: "en",
   dictionary: en,
 };
-export const yardEditorDictionaries: I18nDictionaries<YardEditorI18n> = new Map([["en", en]]);
+export const yardEditorDictionaries: I18nDictionaries<YardEditorI18n> = new Map([["en", en], ["de", de]]);
 export const YardEditorI18nContext = React.createContext<I18nContextType<YardEditorI18n>>({} as never);
 
 export function useBoxedExpressionEditorI18n(): I18nContextType<YardEditorI18n> {

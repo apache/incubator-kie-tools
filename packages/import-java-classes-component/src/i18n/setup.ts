@@ -17,6 +17,7 @@
 import * as React from "react";
 import { useContext } from "react";
 import { en } from "./locales";
+import { de } from "./locales";
 import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 import { ImportJavaClassesWizardI18n } from "./ImportJavaClassesWizardI18n";
 import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
@@ -26,7 +27,7 @@ export const importJavaClassesWizardI18nDefaults: I18nDefaults<ImportJavaClasses
   dictionary: en,
 };
 export const importJavaClassesWizardI18nDictionaries: I18nDictionaries<ImportJavaClassesWizardI18n> = new Map([
-  ["en", en],
+  ["en", en], ["de", de],
 ]);
 export const ImportJavaClassesWizardI18nContext = React.createContext<I18nContextType<ImportJavaClassesWizardI18n>>(
   {} as never

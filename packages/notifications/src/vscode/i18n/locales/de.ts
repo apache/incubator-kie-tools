@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-import { en } from "./locales";
-import { de } from "./locales";
-import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
-import { NotificationsApiVsCodeI18nDictionary } from "./NotificationsApiVsCodeI18nDictionary";
+import { NotificationsApiVsCodeI18nDictionary } from "..";
 
-export const notificationsApiVsCodeI18nDefaults: I18nDefaults<NotificationsApiVsCodeI18nDictionary> = {
-  locale: "en",
-  dictionary: en,
+export const de: NotificationsApiVsCodeI18nDictionary = {
+  open: `Öffnen`,
 };
-
-export const notificationsApiVsCodeI18nDictionaries: I18nDictionaries<NotificationsApiVsCodeI18nDictionary> = new Map([
-  ["en", en], ["de", de],
-]);

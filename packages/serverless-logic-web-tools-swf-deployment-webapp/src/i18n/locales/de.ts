@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-import { en } from "./locales";
-import { de } from "./locales";
-import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
-import { KieBcEditorsI18n } from "./KieBcEditorsI18n";
+import { de as de_common } from "@kie-tools/i18n-common-dictionary";
+import { AppI18n } from "..";
 
-export const kieBcEditorsI18nDefaults: I18nDefaults<KieBcEditorsI18n> = { locale: "en", dictionary: en };
-export const kieBcEditorsI18nDictionaries: I18nDictionaries<KieBcEditorsI18n> = new Map([["en", en], ["de", de]]);
+export const de: AppI18n = {
+  ...de_common,
+  masthead: {
+    disclaimer: {
+      title: "Nur für die Entwicklung",
+      description: `Diese Bereitstellung ist für die Verwendung während der ${"Entwicklung".bold()} vorgesehen, daher sollten die Benutzer die
+        Dienste nicht in der Produktion oder für irgendeine Art von geschäftskritischen Arbeitslasten verwenden.`,
+    },
+  },
+};

@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-import { en } from "./locales";
-import { de } from "./locales";
-import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
-import { NotificationsApiVsCodeI18nDictionary } from "./NotificationsApiVsCodeI18nDictionary";
+import { UnitablesI18n } from "../UnitablesI18n";
+import { de as de_common } from "@kie-tools/i18n-common-dictionary";
+import { de as de_boxed_expression } from "@kie-tools/boxed-expression-component/dist/i18n/locales/de";
 
-export const notificationsApiVsCodeI18nDefaults: I18nDefaults<NotificationsApiVsCodeI18nDictionary> = {
-  locale: "en",
-  dictionary: en,
+export const de: UnitablesI18n = {
+  ...de_common,
+  ...de_boxed_expression,
+  schema: {
+    selectPlaceholder: "Auswählen...",
+  },
 };
-
-export const notificationsApiVsCodeI18nDictionaries: I18nDictionaries<NotificationsApiVsCodeI18nDictionary> = new Map([
-  ["en", en], ["de", de],
-]);

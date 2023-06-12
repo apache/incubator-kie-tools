@@ -17,6 +17,7 @@
 import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
 import { BackendI18n } from "./BackendI18n";
 import { en } from "./locales";
+import { de } from "./locales";
 
 export const backendI18nDefaults: I18nDefaults<BackendI18n> = { locale: "en", dictionary: en };
-export const backendI18nDictionaries: I18nDictionaries<BackendI18n> = new Map([["en", en]]);
+export const backendI18nDictionaries: I18nDictionaries<BackendI18n> = new Map([["en", en], ["de", de]]);

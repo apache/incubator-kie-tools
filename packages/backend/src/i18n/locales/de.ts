@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-import { en } from "./locales";
-import { de } from "./locales";
-import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
-import { NotificationsApiVsCodeI18nDictionary } from "./NotificationsApiVsCodeI18nDictionary";
+import { BackendI18n } from "..";
 
-export const notificationsApiVsCodeI18nDefaults: I18nDefaults<NotificationsApiVsCodeI18nDictionary> = {
-  locale: "en",
-  dictionary: en,
+export const de: BackendI18n = {
+  dontShowAgain: "Nicht mehr anzeigen",
+  installExtension: "Installieren",
+  installBackendExtensionMessage:
+    "Installieren Sie die Backend-Erweiterung, um die Möglichkeiten der Editoren zu erweitern.",
+  viewTestSummary: "Zusammenfassung anzeigen",
+  runningTestScenarios: "Ausführung von Testszenarien ...",
+  testScenarioSummary: (tests: number, errors: number, skipped: number, failures: number) =>
+    `Vollständige Ausführung von ${tests} Tests (Fehler: ${errors}, Übersprungen: ${skipped}, Fehlschläge: ${failures})`,
 };
-
-export const notificationsApiVsCodeI18nDictionaries: I18nDictionaries<NotificationsApiVsCodeI18nDictionary> = new Map([
-  ["en", en], ["de", de],
-]);
