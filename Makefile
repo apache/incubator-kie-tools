@@ -41,7 +41,7 @@ build-image: clone-repos _build-image
 _build-image:
 ifneq ($(ignore_build),true)
 	scripts/build-kogito-apps-components.sh ${image_name} ${KOGITO_APPS_TARGET_BRANCH} ${KOGITO_APPS_TARGET_URI};
-	${CEKIT_CMD} --descriptor ${image_name}-image.yaml build ${BUILD_ENGINE}
+	${CEKIT_CMD} --descriptor ${image_name}-image.yaml build ${build_options} ${BUILD_ENGINE}
 endif
 # tag with shortened version
 ifneq ($(ignore_tag),true)
@@ -69,7 +69,7 @@ build-prod-image: clone-repos _build-prod-image
 _build-prod-image:
 ifneq ($(ignore_build),true)
 	scripts/build-kogito-apps-components.sh ${image_name} ${KOGITO_APPS_TARGET_BRANCH} ${KOGITO_APPS_TARGET_URI};
-	scripts/build-product-image.sh "build" $(image_name) ${BUILD_ENGINE}
+	scripts/build-product-image.sh "build" $(image_name) ${build_options} ${BUILD_ENGINE}
 endif
 # if ignore_test is set to true, ignore the tests
 ifneq ($(ignore_test),true)
@@ -121,4 +121,4 @@ bats:
 prod_component=
 container-build-osbs:
 	echo "calling RHPAM container-build-osbs......................................"
-	$(CEKIT_CMD) --descriptor $(prod_component).yaml --redhat build osbs --assume-yes
+	$(CEKIT_CMD) --descriptor $(prod_component).yaml --redhat build ${build_options} osbs --assume-yes

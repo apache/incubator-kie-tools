@@ -21,8 +21,8 @@ pipeline {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         // Linked to node label
-        CONTAINER_ENGINE='podman'
-        CONTAINER_ENGINE_TLS_OPTIONS='--tls-verify-false'
+        CONTAINER_ENGINE = 'podman'
+        CONTAINER_ENGINE_TLS_OPTIONS = '--tls-verify=false'
 
         OPENSHIFT_API = credentials('OPENSHIFT_API')
         OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
@@ -51,86 +51,34 @@ pipeline {
                         assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
 
-                    dir(getRepoName()) {
-                        checkoutRepo()
-                    }
-
-                    installGitHubReleaseCLI()
-                }
-            }
-        }
-        // stage('Update PR with released Maven artifacts') {
-        //     when {
-        //         expression { return isRelease() && getPRSourceBranch() != '' }
-        //     }
-        //     steps {
-        //         script {
-        //             // Update maven information with new artifacts from Maven central in the PR
-        //             dir('artifacts-update') {
-        //                 checkoutRepo()
-        //                 githubscm.forkRepo(getBotAuthorCredsID())
-        //
-        //                 // Get the working branch
-        //                 sh 'git fetch origin'
-        //                 sh "git checkout ${getPRSourceBranch()}"
-        //
-        //                 // Update artifacts
-        //                 updateArtifactCmd = 'python3 scripts/update-maven-artifacts.py'
-        //                 if (getMavenArtifactRepository() != '') {
-        //                     updateArtifactCmd += " --repo-url ${getMavenArtifactRepository()}"
-        //                 }
-        //                 sh updateArtifactCmd
-        //
-        //                 try {
-        //                     githubscm.commitChanges('Setup Maven artifacts to released ones')
-        //                     githubscm.pushObject('origin', getPRSourceBranch(), getBotAuthorCredsID())
-        //                 } catch (err) {
-        //                     String body = "Seems like no change is to be committed.\nPlease review in ${env.BUILD_URL}console.\n" +
-        //                             "And take your decision here: ${env.BUILD_URL}input"
-        //                     sendNotification(body, 'Release Pipeline')
-        //                    input message: 'Should the pipeline continue ?', ok: 'Yes'
-        //                }
-        //            }
-        //        }
-        //    }
-        // }
-        stage('Pull "old" images') {
-            steps {
-                script {
+                    // Login old registry
                     if (isOldImageInOpenshiftRegistry()) {
                         loginOpenshiftRegistry()
                     } else if (getOldImageRegistryCredentials() != '') {
                         loginContainerRegistry(getOldImageRegistry(), getOldImageRegistryCredentials())
                     }
-                    dir(getRepoName()) {
-                        pullImages()
-                    }
-                }
-            }
-        }
-        stage('Tag images') {
-            steps {
-                script {
-                    dir(getRepoName()) {
-                        tagImages()
-                    }
-                }
-            }
-        }
-        stage('Pushing "new" images') {
-            steps {
-                script {
+
+                    // Login new registry
                     if (isNewImageInOpenshiftRegistry()) {
                         loginOpenshiftRegistry()
                     } else if (getNewImageRegistryCredentials() != '') {
                         loginContainerRegistry(getNewImageRegistry(), getNewImageRegistryCredentials())
                     }
-                    dir(getRepoName()) {
-                        pushImages()
 
-                        if (isQuayRegistry(getNewImageRegistry())) {
-                            makeQuayNewImagesPublic()
-                        }
+                    dir(getRepoName()) {
+                        checkoutRepo()
+                    }
+
+                    installGitHubReleaseCLI()
+                    cloud.installSkopeo()
+                }
+            }
+        }
+        stage('Promote images') {
+            steps {
+                script {
+                    dir(getRepoName()) {
+                        promoteImages()
                     }
                 }
             }
@@ -212,10 +160,10 @@ void sendUnsuccessfulNotification() {
     }
 }
 
-void sendNotification(String body, String subjectProject = 'Kogito Images') {
+void sendNotification(String body) {
     emailext body: body,
         subject: getNotificationSubject()
-        to: env.KOGITO_CI_EMAIL_TO
+    to: env.KOGITO_CI_EMAIL_TO
 }
 
 String getNotificationSubject() {
@@ -235,60 +183,25 @@ void checkoutRepo() {
 
 void clean() {
     cleanWs()
-    cleanImages()
+    util.cleanNode()
+    cloud.cleanSkopeo()
 }
 
-void cleanImages() {
-    sh "${env.CONTAINER_ENGINE} rm -f \$(${env.CONTAINER_ENGINE} ps -a -q) || date"
-    sh "${env.CONTAINER_ENGINE} rmi -f \$(${env.CONTAINER_ENGINE} images -q) || date"
-}
-
-void pullImages() {
+void promoteImages() {
     for (String imageName : getImages()) {
-        pullImage(getOldImageFullTag(imageName))
-    }
-}
-
-void pullImage(String fullImageName) {
-    retry(env.MAX_REGISTRY_RETRIES) {
-        sh "${env.CONTAINER_ENGINE} pull ${env.CONTAINER_ENGINE_TLS_OPTIONS ?: ''} ${fullImageName}"
-    }
-}
-
-void tagImages() {
-    for (String imageName : getImages()) {
-        tagImage(getOldImageFullTag(imageName), getNewImageFullTag(imageName, getNewImageTag()))
+        promoteImage(getOldImageFullTag(imageName), getNewImageFullTag(imageName, getNewImageTag()))
         if (isDeployLatestTag()) {
-            tagImage(getOldImageFullTag(imageName), getNewImageFullTag(imageName, 'latest'))
+            promoteImage(getOldImageFullTag(imageName), getNewImageFullTag(imageName, 'latest'))
         }
         String reducedTag = getReducedTag()
         if (reducedTag) {
-            tagImage(getOldImageFullTag(imageName), getNewImageFullTag(imageName, reducedTag))
+            promoteImage(getOldImageFullTag(imageName), getNewImageFullTag(imageName, reducedTag))
         }
     }
 }
 
-void tagImage(String oldImageName, String newImageName) {
-    sh "${env.CONTAINER_ENGINE} tag ${oldImageName} ${newImageName}"
-}
-
-void pushImages() {
-    for (String imageName : getImages()) {
-        pushImage(getNewImageFullTag(imageName, getNewImageTag()))
-        if (isDeployLatestTag()) {
-            pushImage(getNewImageFullTag(imageName, 'latest'))
-        }
-        String reducedTag = getReducedTag()
-        if (reducedTag) {
-            pushImage(getNewImageFullTag(imageName, reducedTag))
-        }
-    }
-}
-
-void pushImage(String fullImageName) {
-    retry(env.MAX_REGISTRY_RETRIES) {
-        sh "${env.CONTAINER_ENGINE} push ${env.CONTAINER_ENGINE_TLS_OPTIONS ?: ''} ${fullImageName}"
-    }
+void promoteImage(String oldImageName, String newImageName) {
+    cloud.skopeoCopyRegistryImages(oldImageName, newImageName, Integer.parseInt(env.MAX_REGISTRY_RETRIES))
 }
 
 // Set images public on quay. Useful when new images are introduced.
@@ -552,5 +465,5 @@ String[] getImages() {
 }
 
 void runPythonCommand(String cmd, boolean stdout = false) {
-    return sh(script: "source ~/virtenvs/cekit/bin/activate && ${cmd}", returnStdout: stdout)
+    return util.runWithPythonVirtualEnv(cmd, 'cekit', stdout)
 }

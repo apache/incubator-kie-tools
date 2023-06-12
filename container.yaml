@@ -2,5 +2,6 @@
 platforms:
   only:
     - x86_64
+    - aarch64
 compose:
   pulp_repos: true

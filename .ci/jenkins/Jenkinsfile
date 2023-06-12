@@ -21,8 +21,11 @@ pipeline {
         CI = true
 
         // Linked to node label
+        // Use docker due to multiplatform build
         CONTAINER_ENGINE='docker'
         CONTAINER_ENGINE_TLS_OPTIONS=''
+
+        IMAGE_BUILD_PLATFORMS = 'linux/amd64,linux/arm64'
     }
     stages {
         stage('Initialization') {
@@ -36,6 +39,9 @@ pipeline {
                         // Prod fix to be able to build the image as a community one
                         sh "echo '' > content_sets.yaml"
                     }
+
+                    cloud.prepareForDockerMultiplatformBuild()
+                    cloud.startLocalRegistry()
                 }
             }
         }
@@ -149,15 +155,13 @@ pipeline {
 
 void clean() {
     cleanWorkspaces()
-    cleanImages()
+    util.cleanNode(env.CONTAINER_ENGINE)
+    
+    cloud.cleanDockerMultiplatformBuild()
+    cloud.cleanLocalRegistry()
 
     // Clean Cekit cache, in case we reuse an old node
     sh "rm -rf \$HOME/.cekit/cache"
-}
-
-void cleanImages() {
-    sh "docker rm -f \$(docker ps -a -q) || date"
-    sh "docker rmi -f \$(docker images -q) || date"
 }
 
 void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
@@ -173,10 +177,23 @@ void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
 }
 
 void buildImage(String imageName) {
-    runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_test=true ignore_tag=${isProdCI()}")
+    // Generate the Dockerfile
+    runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_test=true ignore_tag=true build_options='--dry-run'")
+
+    // Build multiplatform from generated Dockerfile
+    dir('target/image') {
+        cloud.dockerBuildMultiPlatformImages(getTempBuiltImageTag(imageName), getImageBuildPlatforms(), false)
+    }
 }
 
 void testImage(String imageName) {
+    String testImageTag = "quay.io/kiegroup/${imageName}:${getImageVersion()}"
+    String tempBuiltImageTag = getTempBuiltImageTag(imageName)
+    // Pull and tag to test image
+    sh """
+        docker pull ${tempBuiltImageTag}
+        docker tag ${tempBuiltImageTag} ${testImageTag}
+    """
     runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_build=true ignore_test_prepare=true ignore_tag=${isProdCI()}")
 }
 
@@ -225,13 +242,23 @@ String[] getImages() {
     return runPythonCommand("${listCmd} | tr '\\n' ','", true).trim().split(',')
 }
 
+List getImageBuildPlatforms() {
+    return "${IMAGE_BUILD_PLATFORMS}".split(',') as List
+}
+
+String getImageVersion() {
+    return runPythonCommand('make display-image-version', true).trim()
+}
+
 boolean isProdCI() {
     return env.PROD_CI ? env.PROD_CI.toBoolean() : false
 }
 
-void runPythonCommand(String cmd, boolean stdout = false) {
-    return sh(returnStdout: stdout, script: """
-source ~/virtenvs/cekit/bin/activate 
-${cmd}
-""")
+String getTempBuiltImageTag(String imageName) {
+    return "localhost:5000/${imageName}:${githubscm.getCommitHash()}"
 }
+
+void runPythonCommand(String cmd, boolean stdout = false) {
+    return util.runWithPythonVirtualEnv(cmd, 'cekit', stdout)
+}
+

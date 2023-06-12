@@ -35,14 +35,17 @@ pipeline {
         JAVA_HOME = "${GRAALVM_HOME}"
 
         // Linked to node label
-        CONTAINER_ENGINE='docker'
-        CONTAINER_ENGINE_TLS_OPTIONS=''
+        // Use docker due to multiplatform build
+        CONTAINER_ENGINE = 'docker'
+        CONTAINER_ENGINE_TLS_OPTIONS = ''
 
         OPENSHIFT_API = credentials('OPENSHIFT_API')
         OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
         OPENSHIFT_CREDS_KEY = 'OPENSHIFT_CREDS'
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
+
+        IMAGE_BUILD_PLATFORMS = 'linux/amd64,linux/arm64'
     }
 
     stages {
@@ -62,6 +65,17 @@ pipeline {
                         assert getProjectVersion()
                         assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
+
+                    // Login to final registry
+                    if (isDeployImageInOpenshiftRegistry()) {
+                        loginOpenshiftRegistry()
+                    } else if (getDeployImageRegistryCredentials()) {
+                        loginContainerRegistry(getDeployImageRegistry(), getDeployImageRegistryCredentials())
+                    }
+
+                    cloud.prepareForDockerMultiplatformBuild()
+                    cloud.startLocalRegistry()
+                    cloud.installSkopeo()
                 }
             }
             post {
@@ -237,22 +251,10 @@ pipeline {
                 }
             }
         }
-        stage('Tagging') {
+        stage('Push to registry') {
             steps {
                 script {
-                    tagImages()
-                }
-            }
-        }
-        stage('Pushing') {
-            steps {
-                script {
-                    if (isDeployImageInOpenshiftRegistry()) {
-                        loginOpenshiftRegistry()
-                    } else if (getDeployImageRegistryCredentials()) {
-                        loginContainerRegistry(getDeployImageRegistry(), getDeployImageRegistryCredentials())
-                    }
-                    pushImages()
+                    pushFinalImages()
 
                     if (isQuayRegistry()) {
                         makeQuayImagesPublic()
@@ -388,22 +390,36 @@ void commitChanges(String commitMsg) {
 
 void clean() {
     cleanWs()
-    cleanImages()
+    util.cleanNode(env.CONTAINER_ENGINE)
+
+    cloud.cleanDockerMultiplatformBuild()
+    cloud.cleanLocalRegistry()
+    cloud.cleanSkopeo()
 
     // Clean Cekit cache, in case we reuse an old node
     sh 'rm -rf \$HOME/.cekit/cache'
 }
 
-void cleanImages() {
-    sh "${env.CONTAINER_ENGINE} rm -f \$(${env.CONTAINER_ENGINE} ps -a -q) || date"
-    sh "${env.CONTAINER_ENGINE} rmi -f \$(${env.CONTAINER_ENGINE} images -q) || date"
-}
-
 void buildImage(String imageName) {
-    runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_test=true")
+    // Generate the Dockerfile
+    runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_test=true ignore_tag=true build_options='--dry-run'")
+
+    // Build multiplatform from generated Dockerfile
+    String tempBuiltImageTag = getTempBuiltImageTag(imageName)
+    String squashMessage = "${imageName}:${getImageVersion()} squashed"
+    dir('target/image') {
+        cloud.dockerBuildMultiPlatformImages(tempBuiltImageTag, getImageBuildPlatforms(), true, squashMessage)
+    }
 }
 
 void testImage(String imageName) {
+    String testImageTag = "quay.io/kiegroup/${imageName}:${getImageVersion()}"
+    String tempBuiltImageTag = getTempBuiltImageTag(imageName)
+    // Pull and tag to test image
+    sh """
+        docker pull ${tempBuiltImageTag}
+        docker tag ${tempBuiltImageTag} ${testImageTag}
+    """
     runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_build=true ignore_test_prepare=true")
 }
 
@@ -415,7 +431,7 @@ String getMakeBuildImageArgs() {
     }
     args.add("BUILD_ENGINE=${CONTAINER_ENGINE}")
     if (env.CONTAINER_ENGINE_TLS_OPTIONS) {
-        args.add("BUILD_ENGINE_TLS_OPTIONS=${CONTAINER_ENGINE_TLS_OPTIONS}")   
+        args.add("BUILD_ENGINE_TLS_OPTIONS=${CONTAINER_ENGINE_TLS_OPTIONS}")
     }
     return args.join(' ')
 }
@@ -460,41 +476,22 @@ List getTestFailedImages() {
     return TEST_FAILED_IMAGES
 }
 
-void tagImages() {
+void pushFinalImages() {
     for (String imageName : getBuiltImages()) {
-        String builtImageFullTag = "quay.io/kiegroup/${imageName}:latest"
-        tagImage(builtImageFullTag, buildImageName(imageName))
+        String tempBuiltImageTag = getTempBuiltImageTag(imageName)
+        pushFinalImage(tempBuiltImageTag, buildImageName(imageName))
         if (isDeployLatestTag()) {
-            tagImage(builtImageFullTag, buildImageName(imageName, 'latest'))
+            pushFinalImage(tempBuiltImageTag, buildImageName(imageName, 'latest'))
         }
         String reducedTag = getReducedTag()
         if (reducedTag) {
-            tagImage(builtImageFullTag, buildImageName(imageName, reducedTag))
+            pushFinalImage(tempBuiltImageTag, buildImageName(imageName, reducedTag))
         }
     }
 }
 
-void tagImage(String oldImageName, String newImageName) {
-    sh "${env.CONTAINER_ENGINE} tag ${oldImageName} ${newImageName}"
-}
-
-void pushImages() {
-    for (String imageName : getBuiltImages()) {
-        pushImage(buildImageName(imageName))
-        if (isDeployLatestTag()) {
-            pushImage(buildImageName(imageName, 'latest'))
-        }
-        String reducedTag = getReducedTag()
-        if (reducedTag) {
-            pushImage(buildImageName(imageName, reducedTag))
-        }
-    }
-}
-
-void pushImage(String fullImageName) {
-    retry(env.MAX_REGISTRY_RETRIES) {
-        sh "${env.CONTAINER_ENGINE} push ${env.CONTAINER_ENGINE_TLS_OPTIONS ?: ''} ${fullImageName}"
-    }
+void pushFinalImage(String oldImageName, String newImageName) {
+    cloud.skopeoCopyRegistryImages(oldImageName, newImageName, Integer.parseInt(env.MAX_REGISTRY_RETRIES))
 }
 
 // Set images public on quay. Useful when new images are introduced.
@@ -517,6 +514,10 @@ String buildImageName(String imageName, String imageTag = '') {
 
 String getFinalImageName(String imageName) {
     return getDeployImageNameSuffix() ? "${imageName}-${getDeployImageNameSuffix()}" : imageName
+}
+
+String getImageVersion() {
+    return runPythonCommand('make display-image-version', true).trim()
 }
 
 String getReducedTag() {
@@ -675,6 +676,10 @@ boolean shouldSkipTests() {
     return params.SKIP_TESTS
 }
 
+List getImageBuildPlatforms() {
+    return "${IMAGE_BUILD_PLATFORMS}".split(',') as List
+}
+
 void setDeployPropertyIfNeeded(String key, def value) {
     if (value) {
         deployProperties[key] = value
@@ -689,9 +694,10 @@ boolean isThereAnyChanges() {
     return sh(script: 'git status --porcelain', returnStdout: true).trim() != ''
 }
 
+String getTempBuiltImageTag(String imageName) {
+    return "localhost:5000/${imageName}:${getImageVersion()}"
+}
+
 void runPythonCommand(String cmd, boolean stdout = false) {
-    return sh(returnStdout: stdout, script: """
-source ~/virtenvs/cekit/bin/activate 
-${cmd}
-""")
+    return util.runWithPythonVirtualEnv(cmd, 'cekit', stdout)
 }

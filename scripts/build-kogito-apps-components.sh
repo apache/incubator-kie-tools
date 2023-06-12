@@ -99,8 +99,10 @@ for ctx in ${contextDir}; do
 
     . ${script_dir_path}/setup-maven.sh "${build_target_dir}"/settings.xml
 
-    echo "Copy current maven repo to maven context local repo ${mvn_local_repo}"
-    cp -r ${HOME}/.m2/repository/* "${mvn_local_repo}"
+    if stat ${HOME}/.m2/repository/ &> /dev/null; then
+        echo "Copy current maven repo to maven context local repo ${mvn_local_repo}"
+        cp -r ${HOME}/.m2/repository/* "${mvn_local_repo}"
+    fi
 
     cd ${build_target_dir}
     echo "Using branch/tag ${gitBranch}, checking out. Temporary build dir is ${build_target_dir} and target dist is ${target_tmp_dir}"

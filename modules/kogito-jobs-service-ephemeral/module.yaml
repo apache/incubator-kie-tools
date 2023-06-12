@@ -10,7 +10,7 @@ artifacts:
 
 packages:
   install:
-    - pam.x86_64
+    - pam
 
 execute:
   - script: configure

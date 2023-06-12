@@ -17,9 +17,15 @@ artifacts:
   - name: graalvm-ce-java11-linux-amd64-22.3.2.tar.gz
     url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.2/graalvm-ce-java11-linux-amd64-22.3.2.tar.gz
     md5: 68c9e14932ac6c8606953b88aff89cf4
+  - name: graalvm-ce-java11-linux-aarch64-22.3.2.tar.gz
+    url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.2/graalvm-ce-java11-linux-aarch64-22.3.2.tar.gz
+    md5: 5cb31954ef5538057d83502c19492ad0
   - name: native-image-installable-svm-java11-linux-amd64-22.3.2.jar
     url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.2/native-image-installable-svm-java11-linux-amd64-22.3.2.jar
     md5: dae44733baf47ffaadf7ef98959b5653
+  - name: native-image-installable-svm-java11-linux-aarch64-22.3.2.jar
+    url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.2/native-image-installable-svm-java11-linux-aarch64-22.3.2.jar
+    md5: 9d87d8650aa17e2ec375a587dc445651
 
 execute:
   - script: configure
