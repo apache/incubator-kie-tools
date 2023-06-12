@@ -24,10 +24,10 @@ import (
 )
 
 type WorkflowStates struct {
-	Name    string   `json:"name"`
-	Type    string   `json:"type"`
-	Actions []string `json:"actions"`
-	End     bool     `json:"end"`
+	Name string            `json:"name"`
+	Type string            `json:"type"`
+	Data map[string]string `json:"data"`
+	End  bool              `json:"end"`
 }
 
 type Workflow struct {
@@ -41,10 +41,12 @@ type Workflow struct {
 
 func GetWorkflowTemplate() (workflowJsonByte []byte, err error) {
 	workflowStates := WorkflowStates{
-		Name:    "HelloWorld",
-		Type:    "operation",
-		Actions: []string{},
-		End:     true,
+		Name: "HelloWorld",
+		Type: "inject",
+		Data: map[string]string{
+			"message": "Hello World",
+		},
+		End: true,
 	}
 
 	workflow := Workflow{

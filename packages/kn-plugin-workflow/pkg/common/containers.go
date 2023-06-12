@@ -94,7 +94,7 @@ func StopContainer(containerTool string, containerID string) error {
 }
 
 func RunContainerCommand(containerTool string, portMapping string, path string) *exec.Cmd {
-	fmt.Println("🕒 Warming up Kogito containers, this could take some time...")
+	fmt.Println("🔎 Warming up Kogito containers, this could take some time...")
 	return exec.Command(
 		containerTool,
 		"run",
@@ -120,14 +120,14 @@ func GracefullyStopTheContainerWhenInterrupted(containerTool string) {
 			os.Exit(1) // Exit the program with error
 		}
 
-		fmt.Println("🕒 Stopping the container id: " + containerID)
+		fmt.Println("🔨 Stopping the container id: " + containerID)
 		if containerID != "" {
 			err := StopContainer(containerTool, containerID)
 			if err != nil {
-				fmt.Println("❌ Error stopping container id: " + containerID)
+				fmt.Println("❌ ERROR: Error stopping container id: " + containerID)
 				os.Exit(1)
 			} else {
-				fmt.Println("✅ Successfully stopped container id: " + containerID)
+				fmt.Println("🎉 Successfully stopped container id: " + containerID)
 			}
 		}
 
