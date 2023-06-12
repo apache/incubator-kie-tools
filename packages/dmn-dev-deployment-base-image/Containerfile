@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM registry.access.redhat.com/ubi8/openjdk-11:1.15
+FROM registry.access.redhat.com/ubi8/openjdk-11:1.16
 
 ARG QUARKUS_PLATFORM_VERSION
 ARG KOGITO_RUNTIME_VERSION
