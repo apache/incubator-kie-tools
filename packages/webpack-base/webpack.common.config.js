@@ -120,6 +120,7 @@ module.exports = (env) => {
         child_process: false,
         net: false,
         buffer: require.resolve("buffer/"),
+        querystring: require.resolve("querystring-es3"),
       },
       extensions: [".tsx", ".ts", ".js", ".jsx"],
       modules: ["node_modules"],

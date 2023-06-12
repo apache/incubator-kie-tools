@@ -15,7 +15,7 @@
  */
 
 import { FormJsonSchemaBridge } from "@kie-tools/form/dist/uniforms/FormJsonSchemaBridge";
-import { DmnFormI18n } from "../i18n";
+import { FormDmnI18n } from "../i18n";
 import { DmnInputFieldProperties, ExtendedServicesDmnJsonSchema, X_DMN_TYPE } from "@kie-tools/extended-services-api";
 import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/constants";
 
@@ -24,12 +24,26 @@ export enum Duration {
   YearsAndMonthsDuration,
 }
 
-export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
+export class FormDmnJsonSchemaBridge extends FormJsonSchemaBridge {
   schema: ExtendedServicesDmnJsonSchema;
 
-  constructor(formSchema: ExtendedServicesDmnJsonSchema, validator: (model: object) => void, i18n: DmnFormI18n) {
+  constructor(formSchema: ExtendedServicesDmnJsonSchema, validator: (model: object) => void, i18n: FormDmnI18n) {
     super(formSchema, validator, i18n);
     this.i18n = i18n;
+  }
+
+  public getProps(name: string, props: Record<string, any>) {
+    const superProps = super.getProps(name, props);
+
+    const spaceBetweenComponents = "5px";
+    if (!superProps.padding && !superProps.properties) {
+      superProps.style = { padding: spaceBetweenComponents };
+    } else if (!superProps.padding && superProps.properties) {
+      // nested fields should add margin instead of padding
+      superProps.style = { margin: spaceBetweenComponents };
+    }
+
+    return superProps;
   }
 
   public getType(name: string) {
@@ -51,10 +65,10 @@ export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
     const field = super.getField(name) as DmnInputFieldProperties;
 
     if (field?.format === DAYS_AND_TIME_DURATION_FORMAT) {
-      field.placeholder = (this.i18n as DmnFormI18n).dmnSchema.daysAndTimePlaceholder;
+      field.placeholder = (this.i18n as FormDmnI18n).dmnSchema.daysAndTimePlaceholder;
     }
     if (field?.format === YEARS_AND_MONTHS_DURATION_FORMAT) {
-      field.placeholder = (this.i18n as DmnFormI18n).dmnSchema.yearsAndMonthsPlaceholder;
+      field.placeholder = (this.i18n as FormDmnI18n).dmnSchema.yearsAndMonthsPlaceholder;
     }
     if (field?.format === "time") {
       field.placeholder = "hh:mm:ss";

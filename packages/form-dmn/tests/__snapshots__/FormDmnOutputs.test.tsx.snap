@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DmnFormResult tests should render an anchor tag 1`] = `
+exports[`FormDmnOutputs tests should render an anchor tag 1`] = `
 <a
   class="kogito--editor__dmn-form-result__evaluation-link"
 >
@@ -8,7 +8,7 @@ exports[`DmnFormResult tests should render an anchor tag 1`] = `
 </a>
 `;
 
-exports[`DmnFormResult tests should render an paragraph tag 1`] = `
+exports[`FormDmnOutputs tests should render an paragraph tag 1`] = `
 <p
   class="kogito--editor__dmn-form-result__evaluation-link"
 >
@@ -16,7 +16,7 @@ exports[`DmnFormResult tests should render an paragraph tag 1`] = `
 </p>
 `;
 
-exports[`DmnFormResult tests should render the DMNFormResult with the empty state 1`] = `
+exports[`FormDmnOutputs tests should render the DMNFormResult with the empty state 1`] = `
 <h2
   class=""
   data-ouia-component-id="OUIA-Generated-Text-1"
@@ -28,7 +28,7 @@ exports[`DmnFormResult tests should render the DMNFormResult with the empty stat
 </h2>
 `;
 
-exports[`DmnFormResult tests should render the DmnFormResult with more then one result 1`] = `
+exports[`FormDmnOutputs tests should render the FormDmnOutputs with more then one result 1`] = `
 <h2
   class="pf-c-title pf-m-xl"
   data-ouia-component-id="OUIA-Generated-Title-2"
@@ -39,7 +39,7 @@ exports[`DmnFormResult tests should render the DmnFormResult with more then one 
 </h2>
 `;
 
-exports[`DmnFormResult tests should render the DmnFormResult with more then one result 2`] = `
+exports[`FormDmnOutputs tests should render the FormDmnOutputs with more then one result 2`] = `
 <h2
   class="pf-c-title pf-m-xl"
   data-ouia-component-id="OUIA-Generated-Title-3"
@@ -50,7 +50,7 @@ exports[`DmnFormResult tests should render the DmnFormResult with more then one 
 </h2>
 `;
 
-exports[`DmnFormResult tests should render the DmnFormResult with more then one result 3`] = `
+exports[`FormDmnOutputs tests should render the FormDmnOutputs with more then one result 3`] = `
 <h2
   class="pf-c-title pf-m-xl"
   data-ouia-component-id="OUIA-Generated-Title-4"
@@ -61,7 +61,7 @@ exports[`DmnFormResult tests should render the DmnFormResult with more then one 
 </h2>
 `;
 
-exports[`DmnFormResult tests should render the DmnFormResult with one result 1`] = `
+exports[`FormDmnOutputs tests should render the FormDmnOutputs with one result 1`] = `
 <h2
   class="pf-c-title pf-m-xl"
   data-ouia-component-id="OUIA-Generated-Title-1"

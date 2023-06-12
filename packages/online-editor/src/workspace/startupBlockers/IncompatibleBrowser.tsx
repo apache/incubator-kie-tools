@@ -29,6 +29,7 @@ export const LATEST_VERSION_COMPATIBLE_WITH_LFS = "0.23.0";
 const hasNecessaryApis = window["SharedWorker"] && window["BroadcastChannel"];
 const isCompatibleBrowser = Bowser.getParser(window.navigator.userAgent).satisfies({
   chrome: ">4",
+  edge: ">=79",
   safari: ">=16",
   mobile: {
     safari: ">=16",
@@ -61,6 +62,7 @@ export function Component() {
           <Text component={TextVariants.p}>Compatible browsers are:</Text>
           <List>
             <ListItem>Chrome</ListItem>
+            <ListItem>Edge</ListItem>
             <ListItem>Safari 16 or newer</ListItem>
           </List>
         </TextContent>

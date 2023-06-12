@@ -23,7 +23,7 @@ import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { useOnlineI18n } from "../i18n";
-import { DmnForm, DmnFormResult, InputRow } from "@kie-tools/form-dmn";
+import { FormDmn, FormDmnOutputs, InputRow } from "@kie-tools/form-dmn";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -207,6 +207,7 @@ export function DmnRunnerDrawerPanelContent() {
                             aria-label="Select Row Input"
                             toggle={
                               <DropdownToggle
+                                style={{ padding: "0px" }}
                                 toggleIndicator={null}
                                 onToggle={() => openRowSelection((prevState) => !prevState)}
                               >
@@ -263,7 +264,7 @@ export function DmnRunnerDrawerPanelContent() {
                 </PageSection>
                 <div key={dmnRunnerKey} className={"kogito--editor__dmn-runner-drawer-content-body"}>
                   <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
-                    <DmnForm
+                    <FormDmn
                       // force a re-render when the row is changed;
                       key={formInputs?.id}
                       formInputs={formInputs}
@@ -314,7 +315,7 @@ export function DmnRunnerDrawerPanelContent() {
                   data-ouia-component-id={"dmn-runner-results"}
                 >
                   <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
-                    <DmnFormResult
+                    <FormDmnOutputs
                       results={results[currentInputIndex]}
                       differences={resultsDifference[currentInputIndex]}
                       locale={locale}

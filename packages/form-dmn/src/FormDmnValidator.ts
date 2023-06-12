@@ -15,17 +15,17 @@
  */
 
 import { Validator } from "@kie-tools/form/dist/Validator";
-import { DmnFormI18n } from "./i18n";
+import { FormDmnI18n } from "./i18n";
 import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/constants";
-import { DmnFormJsonSchemaBridge } from "./uniforms";
+import { FormDmnJsonSchemaBridge } from "./uniforms";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
 
-export class DmnValidator extends Validator {
+export class FormDmnValidator extends Validator {
   private dmnRunnerAjv = new DmnRunnerAjv();
 
-  constructor(i18n: DmnFormI18n) {
+  constructor(i18n: FormDmnI18n) {
     super(i18n);
   }
 
@@ -45,10 +45,10 @@ export class DmnValidator extends Validator {
         details: validator.errors?.map((error: any) => {
           if (error.keyword === "format") {
             if ((error.params as any).format === DAYS_AND_TIME_DURATION_FORMAT) {
-              return { ...error, message: (this.i18n as DmnFormI18n).validation.daysAndTimeError };
+              return { ...error, message: (this.i18n as FormDmnI18n).validation.daysAndTimeError };
             }
             if ((error.params as any).format === YEARS_AND_MONTHS_DURATION_FORMAT) {
-              return { ...error, message: (this.i18n as DmnFormI18n).validation.yearsAndMonthsError };
+              return { ...error, message: (this.i18n as FormDmnI18n).validation.yearsAndMonthsError };
             }
           }
           return error;
@@ -57,9 +57,9 @@ export class DmnValidator extends Validator {
     };
   }
 
-  public getBridge(formSchema: ExtendedServicesDmnJsonSchema): DmnFormJsonSchemaBridge {
+  public getBridge(formSchema: ExtendedServicesDmnJsonSchema): FormDmnJsonSchemaBridge {
     const formDraft4 = { ...formSchema, $schema: SCHEMA_DRAFT4 };
     const validator = this.createValidator(formDraft4);
-    return new DmnFormJsonSchemaBridge(formDraft4, validator, this.i18n as DmnFormI18n);
+    return new FormDmnJsonSchemaBridge(formDraft4, validator, this.i18n as FormDmnI18n);
   }
 }
