@@ -160,6 +160,10 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
         }
     }
 
+    protected void unmountNewBoxedExpressionEditor() {
+        editor.unmountNewBoxedExpressionEditor();
+    }
+
     private CanvasHandler getCanvasHandler() {
         return null != sessionManager.getCurrentSession() ? sessionManager.getCurrentSession().getCanvasHandler() : null;
     }
