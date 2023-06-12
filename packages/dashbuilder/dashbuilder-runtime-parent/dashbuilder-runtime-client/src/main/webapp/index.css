@@ -36,8 +36,6 @@
 
 .panel-group .panel-heading {
   cursor: pointer;
-}
-
-.panel-heading .collapsed {
+  font-size: medium;
   font-weight: bold;
 }

@@ -20,36 +20,53 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.PanelGroup;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 
 @ApplicationScoped
-public class ScreenLayoutDragComponent implements LayoutDragComponent {
+public class PanelLayoutDragComponent implements LayoutDragComponent {
 
-    public static final String SCREEN_NAME_PARAMETER = "Screen Name";
+    public static final String PAGE_NAME_PARAMETER = "Page Name";
     PerspectivePluginManager perspectivePluginManager;
 
     @Inject
-    public ScreenLayoutDragComponent(PerspectivePluginManager perspectivePluginManager) {
+    public PanelLayoutDragComponent(PerspectivePluginManager perspectivePluginManager) {
         this.perspectivePluginManager = perspectivePluginManager;
     }
 
     @Override
     public IsWidget getShowWidget(RenderingContext ctx) {
-        FlowPanel panel = GWT.create(FlowPanel.class);
-        panel.asWidget().getElement().addClassName("uf-perspective-col");
-        var perspectiveId = ctx.getComponent().getProperties().get(SCREEN_NAME_PARAMETER);
+        PanelHeader header = GWT.create(PanelHeader.class);
+        PanelCollapse panel = GWT.create(PanelCollapse.class);
+        PanelGroup group = GWT.create(PanelGroup.class);
+
+        var perspectiveId = ctx.getComponent().getProperties().get(PAGE_NAME_PARAMETER);
         if (perspectiveId == null) {
             return null;
         }
 
-        perspectivePluginManager.buildPerspectiveWidget(perspectiveId, screen -> panel.add(screen), issue -> panel
-                .add(new Label("Error with infinite recursion. Review the embedded page")));
-        return panel;
+        perspectivePluginManager.buildPerspectiveWidget(perspectiveId,
+                panel::add,
+                issue -> panel.add(new Label("Error with infinite recursion. Review the embedded page")));
+
+        header.setDataTargetWidget(panel);
+        header.setDataToggle(Toggle.COLLAPSE);
+        header.setText(perspectiveId);
+
+        panel.setToggle(true);
+
+        group.add(header);
+        group.add(panel);
+        group.asWidget().getElement().addClassName("uf-perspective-col");
+
+        return group;
     }
 
 }
