@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/docker/docker v23.0.6+incompatible
 	github.com/jstemmer/go-junit-report/v2 v2.0.0
+	github.com/kiegroup/kogito-serverless-operator/workflowproj v0.0.0-20230613140808-9a658cef8f79
 	github.com/ory/viper v1.7.5
 	github.com/spf13/afero v1.9.3
 	github.com/spf13/cobra v1.6.1
@@ -47,7 +48,6 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kiegroup/kogito-serverless-operator/api v0.0.0-20230613074518-8c40a054ef3c // indirect
-	github.com/kiegroup/kogito-serverless-operator/workflowproj v0.0.0-20230613140808-9a658cef8f79 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
