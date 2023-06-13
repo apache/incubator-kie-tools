@@ -19,7 +19,7 @@ RUN mkdir /kie-sandbox /.cache \
   && chmod -R g=u /kie-sandbox /.cache \
   && chown -R 1000:0 /kie-sandbox /.cache
 
-COPY --chown=1000:0 --chmod=+x dist-dev/kie_sandbox_extended_services_headless /kie-sandbox/kie_sandbox_extended_services_headless
+COPY --chown=1000:0 dist-dev/kie_sandbox_extended_services_headless /kie-sandbox/kie_sandbox_extended_services_headless
 
 EXPOSE 21345
 
