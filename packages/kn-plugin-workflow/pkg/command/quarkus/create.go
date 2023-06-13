@@ -86,7 +86,7 @@ func runCreate() error {
 
 	fmt.Println("🛠️ Creating a Quarkus Kogito Serverless Workflow project...")
 	if err = CreateQuarkusProject(cfg); err != nil {
-		fmt.Println("❌ERROR: creating Quarkus project", err)
+		fmt.Println("❌ ERROR: creating Quarkus project", err)
 		return err
 	}
 
