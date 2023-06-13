@@ -92,19 +92,19 @@ export function RecentModels() {
     setDeletingWorkspaceIds([]);
   }, []);
 
-  const deleteSuccessAlert = useGlobalAlert<{ modelsWord: string }>(
-    useCallback(({ close }, { modelsWord }) => {
-      return <Alert variant="success" title={`${capitalizeString(modelsWord)} deleted successfully`} />;
+  const deleteSuccessAlert = useGlobalAlert<{ elementsTypeName: string }>(
+    useCallback(({ close }, { elementsTypeName }) => {
+      return <Alert variant="success" title={`${capitalizeString(elementsTypeName)} deleted successfully`} />;
     }, []),
     { durationInSeconds: 2 }
   );
 
-  const deleteErrorAlert = useGlobalAlert<{ modelsWord: string }>(
-    useCallback(({ close }, { modelsWord }) => {
+  const deleteErrorAlert = useGlobalAlert<{ elementsTypeName: string }>(
+    useCallback(({ close }, { elementsTypeName }) => {
       return (
         <Alert
           variant="danger"
-          title={`Oops, something went wrong while trying to delete the selected ${modelsWord}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`}
+          title={`Oops, something went wrong while trying to delete the selected ${elementsTypeName}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`}
           actionClose={<AlertActionCloseButton onClose={close} />}
         />
       );
@@ -113,7 +113,7 @@ export function RecentModels() {
 
   const onConfirmDeleteModalDelete = useCallback(
     async (workspaceDescriptors: WorkspaceDescriptor[]) => {
-      const modelsWord = deletingWorkspaceIds.length > 1 ? "Models" : "Model";
+      const elementsTypeName = deletingWorkspaceIds.length > 1 ? "Models" : "Model";
       setIsConfirmDeleteModalOpen(false);
 
       Promise.all(
@@ -122,11 +122,11 @@ export function RecentModels() {
           .map((w) => workspaces.deleteWorkspace(w))
       )
         .then(() => {
-          deleteSuccessAlert.show({ modelsWord });
+          deleteSuccessAlert.show({ elementsTypeName });
         })
         .catch((e) => {
           console.error(e);
-          deleteErrorAlert.show({ modelsWord });
+          deleteErrorAlert.show({ elementsTypeName });
         })
         .finally(() => {
           setSelectedWorkspaceIds([]);

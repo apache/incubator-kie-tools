@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { BanIcon, CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { ActionsColumn, Td, Tr } from "@patternfly/react-table/dist/esm";
 import { TdSelectType } from "@patternfly/react-table/dist/esm/components/Table/base";
 import { useCallback, useMemo, useRef } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { routes } from "../../../navigation/Routes";
 import "../../../table/Table.css";
 import { FileLabel } from "../../../workspace/components/FileLabel";
@@ -33,7 +33,6 @@ export type WorkspaceFilesTableRowProps = {
   /**
    * total files count
    */
-  totalFilesCount: number;
   isSelected: boolean;
   /**
    * event fired when the Checkbox is toggled
@@ -49,11 +48,9 @@ export type WorkspaceFilesTableRowProps = {
 };
 
 export function WorkspaceFilesTableRow(props: WorkspaceFilesTableRowProps) {
-  const { isSelected, rowIndex, totalFilesCount } = props;
+  const { isSelected, rowIndex } = props;
   const { name, extension, isEditable, fileDescriptor } = props.rowData;
   const downloadRef = useRef<HTMLAnchorElement>(null);
-  const workspaces = useWorkspaces();
-  const history = useHistory();
 
   const linkTo = useMemo(
     () =>
@@ -66,14 +63,8 @@ export function WorkspaceFilesTableRow(props: WorkspaceFilesTableRowProps) {
   );
 
   const onDelete = useCallback(async () => {
-    if (totalFilesCount > 1) {
-      await workspaces.deleteFile({ file: fileDescriptor });
-    } else {
-      await workspaces.deleteWorkspace({ workspaceId: fileDescriptor.workspaceId });
-      history.push({ pathname: routes.recentModels.path({}) });
-    }
     props.onDelete(fileDescriptor);
-  }, [fileDescriptor, history, workspaces, totalFilesCount, props]);
+  }, [fileDescriptor, props]);
 
   const onDownload = useCallback(async () => {
     if (!downloadRef.current) {

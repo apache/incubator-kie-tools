@@ -47,6 +47,7 @@ export function WorkspaceFiles(props: Props) {
   const { workspaceId } = props;
   const workspacePromise = useWorkspacePromise(workspaceId);
   const [selectedWorkspaceFiles, setSelectedWorkspaceFiles] = useState<WorkspaceFile[]>([]);
+  const [deletingWorkspaceFiles, setDeletingWorkspaceFiles] = useState<WorkspaceFile[]>([]);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const [searchValue, setSearchValue] = React.useState("");
   const [page, setPage] = React.useState(1);
@@ -55,81 +56,91 @@ export function WorkspaceFiles(props: Props) {
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const workspaces = useWorkspaces();
   const history = useHistory();
-  const isSelectedWorkspaceFilesPlural = useMemo(() => selectedWorkspaceFiles.length > 1, [selectedWorkspaceFiles]);
-  const selectedElementTypesName = useMemo(
-    () => (isSelectedWorkspaceFilesPlural ? "files" : "file"),
-    [isSelectedWorkspaceFilesPlural]
+  const isDeletingWorkspaceFilesPlural = useMemo(() => deletingWorkspaceFiles.length > 1, [deletingWorkspaceFiles]);
+  const deletingElementTypesName = useMemo(
+    () => (isDeletingWorkspaceFilesPlural ? "files" : "file"),
+    [isDeletingWorkspaceFilesPlural]
   );
 
   const deleteModalMessage = useMemo(
     () => (
       <>
-        Deleting {isSelectedWorkspaceFilesPlural ? "these" : "this"}{" "}
-        <b>{isSelectedWorkspaceFilesPlural ? selectedWorkspaceFiles.length : selectedWorkspaceFiles[0]?.name}</b>{" "}
-        {selectedElementTypesName}
+        Deleting {isDeletingWorkspaceFilesPlural ? "these" : "this"}{" "}
+        <b>{isDeletingWorkspaceFilesPlural ? deletingWorkspaceFiles.length : deletingWorkspaceFiles[0]?.name}</b>{" "}
+        {deletingElementTypesName}
       </>
     ),
-    [isSelectedWorkspaceFilesPlural, selectedWorkspaceFiles, selectedElementTypesName]
+    [isDeletingWorkspaceFilesPlural, deletingWorkspaceFiles, deletingElementTypesName]
   );
 
-  const onConfirmDeleteModalClose = useCallback(() => setIsConfirmDeleteModalOpen(false), []);
+  const onSingleConfirmDeleteModalOpen = useCallback((workspaceFile: WorkspaceFile) => {
+    setIsConfirmDeleteModalOpen(true);
+    setDeletingWorkspaceFiles([workspaceFile]);
+  }, []);
 
-  const deleteSuccessAlert = useGlobalAlert<{ selectedElementTypesName: string }>(
-    useCallback(({ close }, { selectedElementTypesName }) => {
-      return <Alert variant="success" title={`${capitalizeString(selectedElementTypesName)} deleted successfully`} />;
+  const onBulkConfirmDeleteModalOpen = useCallback(() => {
+    setIsConfirmDeleteModalOpen(true);
+    setDeletingWorkspaceFiles(selectedWorkspaceFiles);
+  }, [selectedWorkspaceFiles]);
+
+  const onConfirmDeleteModalClose = useCallback(() => {
+    setIsConfirmDeleteModalOpen(false);
+    setDeletingWorkspaceFiles([]);
+  }, []);
+
+  const deleteSuccessAlert = useGlobalAlert<{ elementsTypeName: string }>(
+    useCallback(({ close }, { elementsTypeName }) => {
+      return <Alert variant="success" title={`${capitalizeString(elementsTypeName)} deleted successfully`} />;
     }, []),
     { durationInSeconds: 2 }
   );
 
-  const deleteErrorAlert = useGlobalAlert<{ selectedElementTypesName: string }>(
-    useCallback(({ close }, { selectedElementTypesName }) => {
+  const deleteErrorAlert = useGlobalAlert<{ elementsTypeName: string }>(
+    useCallback(({ close }, { elementsTypeName }) => {
       return (
         <Alert
           variant="danger"
-          title={`Oops, something went wrong while trying to delete the selected ${selectedElementTypesName}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`}
+          title={`Oops, something went wrong while trying to delete the selected ${elementsTypeName}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`}
           actionClose={<AlertActionCloseButton onClose={close} />}
         />
       );
     }, [])
   );
 
-  const onFileDelete = useCallback(() => {
-    setSelectedWorkspaceFiles([]);
-    setPage(1);
-  }, []);
-
   const onConfirmDeleteModalDelete = useCallback(
     async (totalFilesCount: number) => {
+      const elementsTypeName = deletingElementTypesName;
       setIsConfirmDeleteModalOpen(false);
 
-      if (selectedWorkspaceFiles.length === totalFilesCount) {
+      if (deletingWorkspaceFiles.length === totalFilesCount) {
         workspaces.deleteWorkspace({ workspaceId });
         history.push({ pathname: routes.recentModels.path({}) });
-        deleteSuccessAlert.show({ selectedElementTypesName });
+        deleteSuccessAlert.show({ elementsTypeName });
         return;
       }
 
-      Promise.all(selectedWorkspaceFiles.map((file) => workspaces.deleteFile({ file })))
+      Promise.all(deletingWorkspaceFiles.map((file) => workspaces.deleteFile({ file })))
         .then(() => {
-          deleteSuccessAlert.show({ selectedElementTypesName });
+          deleteSuccessAlert.show({ elementsTypeName });
         })
         .catch((e) => {
           console.error(e);
-          deleteErrorAlert.show({ selectedElementTypesName });
+          deleteErrorAlert.show({ elementsTypeName });
         })
         .finally(() => {
           setSelectedWorkspaceFiles([]);
+          setDeletingWorkspaceFiles([]);
           setPage(1);
         });
     },
     [
-      selectedWorkspaceFiles,
+      deletingWorkspaceFiles,
       workspaces,
       history,
       workspaceId,
       deleteErrorAlert,
       deleteSuccessAlert,
-      selectedElementTypesName,
+      deletingElementTypesName,
     ]
   );
 
@@ -202,7 +213,7 @@ export function WorkspaceFiles(props: Props) {
                     <>
                       <TableToolbar
                         itemCount={filesCount}
-                        onDeleteActionButtonClick={() => setIsConfirmDeleteModalOpen(true)}
+                        onDeleteActionButtonClick={onBulkConfirmDeleteModalOpen}
                         onToggleAllElements={(checked) => onToggleAllElements(checked, files)}
                         searchValue={searchValue}
                         selectedElementsCount={selectedWorkspaceFiles.length}
@@ -271,7 +282,7 @@ export function WorkspaceFiles(props: Props) {
                         totalFilesCount={allFilesCount}
                         workspaceFiles={files}
                         onClearFilters={onClearFilters}
-                        onFileDelete={onFileDelete}
+                        onDelete={onSingleConfirmDeleteModalOpen}
                       />
 
                       <TablePagination
@@ -303,7 +314,7 @@ export function WorkspaceFiles(props: Props) {
               isOpen={isConfirmDeleteModalOpen}
               onClose={onConfirmDeleteModalClose}
               onDelete={() => onConfirmDeleteModalDelete(workspace.files.length)}
-              elementsTypeName={selectedElementTypesName}
+              elementsTypeName={deletingElementTypesName}
               deleteMessage={deleteModalMessage}
             />
           </>
