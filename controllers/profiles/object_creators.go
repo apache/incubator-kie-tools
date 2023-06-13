@@ -90,6 +90,7 @@ func defaultDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (c
 						Ports: []corev1.ContainerPort{{
 							ContainerPort: defaultHTTPWorkflowPortInt,
 							Name:          "http",
+							Protocol:      corev1.ProtocolTCP,
 						}},
 						LivenessProbe: &corev1.Probe{
 							ProbeHandler: corev1.ProbeHandler{
@@ -152,14 +153,28 @@ func defaultDeploymentMutateVisitor(workflow *operatorapi.KogitoServerlessWorkfl
 			if err != nil {
 				return err
 			}
-			object.(*appsv1.Deployment).Spec.Template.Spec.Volumes = make([]corev1.Volume, 0)
-			object.(*appsv1.Deployment).Spec.Template.Spec.Volumes = original.(*appsv1.Deployment).Spec.Template.Spec.Volumes
-			object.(*appsv1.Deployment).Spec.Template.Spec.Containers = make([]corev1.Container, 0)
-			object.(*appsv1.Deployment).Spec.Template.Spec.Containers = original.(*appsv1.Deployment).Spec.Template.Spec.Containers
-			object.(*appsv1.Deployment).Spec.Replicas = original.(*appsv1.Deployment).Spec.Replicas
-			object.(*appsv1.Deployment).Labels = original.GetLabels()
+			ensureDefaultDeployment(original.(*appsv1.Deployment), object.(*appsv1.Deployment))
 			return nil
 		}
+	}
+}
+
+// ensureDefaultDeployment ensure that the original Deployment fields are immutable.
+func ensureDefaultDeployment(original *appsv1.Deployment, object *appsv1.Deployment) {
+	object.Spec.Replicas = original.Spec.Replicas
+	object.Spec.Selector = original.Spec.Selector
+	object.Labels = original.GetLabels()
+
+	workflowContainer := kubeutil.GetContainerByName(defaultContainerName, object)
+	if workflowContainer == nil {
+		object.Spec.Template.Spec.Containers = make([]corev1.Container, 0)
+		object.Spec.Template.Spec.Containers = original.Spec.Template.Spec.Containers
+	} else {
+		originalContainer := original.Spec.Template.Spec.Containers[0]
+		workflowContainer.SecurityContext = originalContainer.SecurityContext
+		workflowContainer.Ports = originalContainer.Ports
+		object.Spec.Template.Spec.Containers = make([]corev1.Container, 0)
+		object.Spec.Template.Spec.Containers = append(object.Spec.Template.Spec.Containers, *workflowContainer)
 	}
 }
 

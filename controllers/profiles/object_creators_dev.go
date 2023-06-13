@@ -78,12 +78,7 @@ func devDeploymentMutateVisitor(workflow *operatorapi.KogitoServerlessWorkflow) 
 			if err != nil {
 				return err
 			}
-			object.(*appsv1.Deployment).Spec.Template.Spec.Volumes = make([]corev1.Volume, 0)
-			object.(*appsv1.Deployment).Spec.Template.Spec.Volumes = original.(*appsv1.Deployment).Spec.Template.Spec.Volumes
-			object.(*appsv1.Deployment).Spec.Template.Spec.Containers = make([]corev1.Container, 0)
-			object.(*appsv1.Deployment).Spec.Template.Spec.Containers = original.(*appsv1.Deployment).Spec.Template.Spec.Containers
-			object.(*appsv1.Deployment).Spec.Replicas = original.(*appsv1.Deployment).Spec.Replicas
-			object.(*appsv1.Deployment).Labels = original.GetLabels()
+			ensureDefaultDeployment(original.(*appsv1.Deployment), object.(*appsv1.Deployment))
 			return nil
 		}
 	}

@@ -82,3 +82,17 @@ func MarkDeploymentToRollout(deployment *appsv1.Deployment) error {
 	deployment.Spec.Template.ObjectMeta.Annotations["kubectl.kubernetes.io/restartedAt"] = time.Now().Format(time.RFC3339)
 	return nil
 }
+
+// GetContainerByName returns a pointer to the Container within the given Deployment.
+// If none found, returns nil.
+func GetContainerByName(name string, deployment *appsv1.Deployment) *v1.Container {
+	if deployment == nil {
+		return nil
+	}
+	for _, container := range deployment.Spec.Template.Spec.Containers {
+		if container.Name == name {
+			return &container
+		}
+	}
+	return nil
+}
