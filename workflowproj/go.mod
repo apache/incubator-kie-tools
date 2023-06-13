@@ -3,7 +3,6 @@ module github.com/kiegroup/kogito-serverless-operator/workflowproj
 go 1.19
 
 require (
-	github.com/kiegroup/kogito-serverless-operator/api v0.0.0-20230612141803-7bb1dd4abd50
 	github.com/pb33f/libopenapi v0.8.4
 	github.com/pkg/errors v0.9.1
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.0
@@ -41,6 +40,7 @@ require (
 	github.com/imdario/mergo v0.3.6 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/kiegroup/kogito-serverless-operator/api v0.0.0-20230613074518-8c40a054ef3c // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
