@@ -18,6 +18,7 @@ import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseSta
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { Breadcrumb } from "@patternfly/react-core/components/Breadcrumb";
 import { BreadcrumbItem, Checkbox, Dropdown, DropdownToggle, ToolbarItem } from "@patternfly/react-core/dist/js";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
@@ -189,7 +190,28 @@ export function WorkspaceFiles(props: Props) {
                 <TextContent>
                   <Text component={TextVariants.h1}>Files in &lsquo;{workspace.descriptor.name}&rsquo;</Text>
                   <Text component={TextVariants.p}>
-                    Use your recent models from GitHub Repository, a GitHub Gist or saved in your browser.
+                    &apos;{workspace.descriptor?.name}&apos;
+                    {workspace.descriptor?.origin.kind === WorkspaceKind.GIT && (
+                      <>
+                        {" "}
+                        is linked to a Git Repository.{" "}
+                        <a href={workspace.descriptor?.origin.url.toString()} target="_blank" rel="noopener noreferrer">
+                          {workspace.descriptor?.origin.url.toString()}
+                        </a>
+                      </>
+                    )}
+                    {workspace.descriptor?.origin.kind === WorkspaceKind.GITHUB_GIST && (
+                      <>
+                        {" "}
+                        is linked to a GitHub Gist.{" "}
+                        <a href={workspace.descriptor?.origin.url.toString()} target="_blank" rel="noopener noreferrer">
+                          {workspace.descriptor?.origin.url.toString()}
+                        </a>
+                      </>
+                    )}
+                    {workspace.descriptor?.origin.kind === WorkspaceKind.LOCAL && (
+                      <> is saved directly in the browser. Incognito windows don&apos;t have access to it.</>
+                    )}
                   </Text>
                 </TextContent>
               </PageSection>
