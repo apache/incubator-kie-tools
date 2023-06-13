@@ -68,7 +68,7 @@
       - value: 5005
 
     run:
-      workdir: "/home/kogito"
+      workdir: "/home/kogito/${PROJECT_ARTIFACT_ID}"
       user: 1001
       cmd:
         - "/home/kogito/launch/run-app-devmode.sh"

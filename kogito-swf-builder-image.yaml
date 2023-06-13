@@ -66,5 +66,5 @@
         - name: org.kie.kogito.swf.builder.runtime
 
     run:
-      workdir: "/home/kogito"
+      workdir: "/home/kogito/${PROJECT_ARTIFACT_ID}"
       user: 1001

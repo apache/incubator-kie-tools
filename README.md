@@ -187,7 +187,7 @@ COPY * ./resources/
 RUN "${KOGITO_HOME}"/launch/build-app.sh './resources'
 #=============================
 # Runtime Run
-ENTRYPOINT ['java', '-jar', 'target/quarkus-app/quarkus-run.jar']
+CMD /usr/bin/java -jar target/quarkus-app/quarkus-run.jar
 #=============================
 ```
 

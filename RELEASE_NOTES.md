@@ -9,6 +9,7 @@
 ## Bug Fixes
 - [KOGITO-9182](https://issues.redhat.com/browse/KOGITO-9182): [Dev-mode] Unset the maven offline property if the QUARKUS_EXTENSION env is set
 - [KOGITO-9251](https://issues.redhat.com/browse/KOGITO-9251): [Dev-mode] KSW Discovery - You need to define a KubernetesServiceCatalog implementation
+- [KOGITO-9229](https://issues.redhat.com/browse/KOGITO-9229): Unify the jvm and mvn settings for devmode
 
 ## Known Issues
 

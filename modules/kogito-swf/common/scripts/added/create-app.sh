@@ -49,6 +49,7 @@ if [ ! -z ${KOGITO_VERSION} ]; then
         }" pom.xml
 fi
 
+
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
   -nsu \
   -s "${MAVEN_SETTINGS_PATH}" \

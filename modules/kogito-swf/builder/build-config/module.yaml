@@ -5,6 +5,6 @@ description: "Kogito Serverless Workflow builder image build configuration"
 
 envs:
   - name: "SCRIPT_DEBUG"
-    value: "true"
+    value: "false"
   - name: QUARKUS_EXTENSIONS
     value: quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health
