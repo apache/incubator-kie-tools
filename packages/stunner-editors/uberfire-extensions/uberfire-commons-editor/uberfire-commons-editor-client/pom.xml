@@ -169,9 +169,9 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.webjars.bower</groupId>
+                  <groupId>org.webjars.bowergithub.mrrio</groupId>
                   <artifactId>jspdf</artifactId>
-                  <version>${version.org.webjars.bower.jspdf}</version>
+                  <version>${version.org.webjars.bowergithub.mrrio.jspdf}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/jspdf</outputDirectory>
@@ -263,9 +263,9 @@
               <outputDirectory>${project.build.outputDirectory}/org/uberfire/ext/editor/commons/client/file/exports/js</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/jspdf/META-INF/resources/webjars/jspdf/${version.org.webjars.bower.jspdf}/dist/</directory>
+                  <directory>${project.build.directory}/jspdf/META-INF/resources/webjars/jspdf/dist/</directory>
                   <includes>
-                    <include>jspdf.min.js</include>
+                    <include>jspdf.umd.min.js</include>
                   </includes>
                 </resource>
               </resources>
