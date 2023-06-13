@@ -6,7 +6,7 @@ commitDone = false
 
 pipeline {
     agent {
-        label 'kie-rhel8 && podman && kie-mem16g && !built-in'
+        label 'kie-rhel8 && docker && kie-mem16g && !built-in'
     }
 
     options {
@@ -20,12 +20,15 @@ pipeline {
 
     environment {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
-        
+
         // Linked to node label
-        CONTAINER_ENGINE='podman'
-        CONTAINER_ENGINE_TLS_OPTIONS='--tls-verify=false'
+        // Use docker due to multiplatform build
+        CONTAINER_ENGINE = 'docker'
+        CONTAINER_ENGINE_TLS_OPTIONS = ''
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
+
+        IMAGE_BUILD_PLATFORMS = 'linux/amd64,linux/arm64'
     }
 
     stages {
@@ -50,6 +53,16 @@ pipeline {
                         assert helper.getProjectVersion()
                         assert helper.getBuildBranch() == util.getReleaseBranchFromVersion(helper.getProjectVersion())
                     }
+
+                    // Verify we have the connectivity to Openshift
+                    openshift.loginOpenshift()
+                    // Login to final registry
+                    helper.loginRegistry()
+
+                    // Prepare for multiplatform build
+                    cloud.prepareForDockerMultiplatformBuild()
+                    cloud.startLocalRegistry()
+                    cloud.installSkopeo()
                 }
             }
             post {
@@ -116,7 +129,17 @@ pipeline {
 
         stage('Build Operator') {
             steps {
-                runPythonCommand("make container-build BUILDER=${env.CONTAINER_ENGINE} IMG=${getBuiltImage()}")
+                script {
+                    String tempBuiltImageTag = getTempBuiltImageTag()
+
+                    // Generate the Dockerfile
+                    runPythonCommand("make container-build BUILDER=${env.CONTAINER_ENGINE} IMG=${tempBuiltImageTag} ignore_tag=true build_options='--dry-run'")
+
+                    // Build multiplatform from generated Dockerfile
+                    dir('target/image') {
+                        cloud.dockerBuildMultiPlatformImages(tempBuiltImageTag, getImageBuildPlatforms(), true, "Kogito Serverless Operator squashed image")
+                    }
+                }
             }
             post {
                 unsuccessful {
@@ -130,31 +153,18 @@ pipeline {
         stage('Push to registry') {
             steps {
                 script {
-                    helper.loginRegistry()
-
                     // If not release, push built image
                     // So the user using the `operator.yaml on branch can use an existing image`
                     if (!helper.isRelease()) {
-                        container.pushImage(getBuiltImage())
+                        pushFinalImage(getTempBuiltImageTag(), getBuiltImage())
                     }
 
                     // Tag with given parameter tag
-                    container.tagImage(getBuiltImage(), helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
-                    container.pushImage(helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
+                    pushFinalImage(getTempBuiltImageTag(), helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
 
                     // Tag with `latest` tag if asked for as parameter
                     if (helper.isDeployLatestTag()) {
-                        String finalFullImage = helper.getImageFullTag(env.OPERATOR_IMAGE_NAME, defaultImageParamsPrefix, 'latest')
-                        container.tagImage(getBuiltImage(), finalFullImage)
-                        container.pushImage(finalFullImage)
-                    }
-
-                    // Tag with reduced tag, aka X.Y, if it can be guessed from given tag parameter
-                    String reducedTag = helper.getReducedTag()
-                    if (reducedTag) {
-                        String finalFullImage = helper.getImageFullTag(env.OPERATOR_IMAGE_NAME, defaultImageParamsPrefix, reducedTag)
-                        container.tagImage(getBuiltImage(), finalFullImage)
-                        container.pushImage(finalFullImage)
+                        pushFinalImage(getTempBuiltImageTag(), helper.getImageFullTag(env.OPERATOR_IMAGE_NAME, defaultImageParamsPrefix, 'latest'))
                     }
 
                     // Store image deployment information
@@ -225,7 +235,10 @@ pipeline {
         cleanup {
             script {
                 helper.cleanGoPath()
-                util.cleanNode(containerEngine)
+                util.cleanNode(env.CONTAINER_ENGINE)
+                cloud.cleanDockerMultiplatformBuild()
+                cloud.cleanLocalRegistry()
+                cloud.cleanSkopeo()
             }
         }
     }
@@ -251,8 +264,16 @@ String getBuiltImage() {
     return "${getOperatorImageName()}:${getOperatorVersion()}"
 }
 
+String getTempBuiltImageTag() {
+    return "localhost:5000/kogito-serverless-operator:${getOperatorVersion()}"
+}
+
 def runPythonCommand(String cmd, boolean stdout = false) {
-    return sh(script: "source ~/virtenvs/cekit/bin/activate && ${cmd}", returnStdout: stdout)
+    return util.runWithPythonVirtualEnv(cmd, 'cekit', stdout)
+}
+
+void pushFinalImage(String oldImageName, String newImageName) {
+    cloud.skopeoCopyRegistryImages(oldImageName, newImageName, Integer.parseInt(env.MAX_REGISTRY_RETRIES))
 }
 
 String getCommitMessage() {
@@ -271,4 +292,8 @@ void launchE2ETestsJob(String clusterName) {
     if (job.result != 'SUCCESS') {
         unstable("Tests on cluster ${clusterName} finished with result ${job.result}")
     }
+}
+
+List getImageBuildPlatforms() {
+    return "${IMAGE_BUILD_PLATFORMS}".split(',') as List
 }

@@ -10,9 +10,6 @@
       - name: org.kie.kogito.goModDownload
       - name: org.kie.kogito.app.builder
 
-
-
-
 - name: kogito-serverless-operator
   version: 2.0.0-snapshot
   from: registry.access.redhat.com/ubi8/ubi-micro:latest

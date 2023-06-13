@@ -16,7 +16,7 @@ void initPipeline() {
 
     container = load '.ci/jenkins/scripts/container.groovy'
     container.containerEngine = env.CONTAINER_ENGINE
-    container.containerEngineTlsOptions = env.CONTAINER_ENGINE_TLS_OPTIONS
+    container.containerEngineTlsOptions = env.CONTAINER_ENGINE_TLS_OPTIONS ?: ''
     container.containerOpenshift = openshift
 
     minikube = load '.ci/jenkins/scripts/minikube.groovy'

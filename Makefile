@@ -155,7 +155,8 @@ podman-build: test ## Build container image with the manager.
 docker-push: ## Push docker image with the manager.
 	docker push ${IMG}
 
-# PLATFORMS defines the target platforms for  the manager image be build to provide support to multiple
+# This is currently done directly into the CI
+# PLATFORMS defines the target platforms for the manager image be build to provide support to multiple
 # architectures. (i.e. make docker-buildx IMG=myregistry/mypoperator:0.0.1). To use this option you need to:
 # - able to use docker buildx . More info: https://docs.docker.com/build/buildx/
 # - have enable BuildKit, More info: https://docs.docker.com/develop/develop-images/build_enhancements/
@@ -178,8 +179,10 @@ podman-push: ## Push container image with the manager.
 
 .PHONY: container-build
 container-build: test ## Build the container image
-	cekit -v --descriptor image.yaml build $(BUILDER)
+	cekit -v --descriptor image.yaml build ${build_options} $(BUILDER)
+ifneq ($(ignore_tag),true)
 	$(BUILDER) tag kogito-serverless-operator ${IMG}
+endif
 
 .PHONY: container-push
 container-push: ## Push the container image

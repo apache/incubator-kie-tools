@@ -18,8 +18,8 @@ pipeline {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         // Linked to node label
-        CONTAINER_ENGINE='podman'
-        CONTAINER_ENGINE_TLS_OPTIONS='--tls-verify=false'
+        CONTAINER_ENGINE = 'podman'
+        CONTAINER_ENGINE_TLS_OPTIONS = '--tls-verify=false'
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
         GITHUB_REPO = "${REPO_NAME}" // for github-release cli
@@ -46,45 +46,25 @@ pipeline {
                         assert helper.getProjectVersion()
                         assert helper.getBuildBranch() == util.getReleaseBranchFromVersion(helper.getProjectVersion())
                     }
-                }
-            }
-        }
-        stage('Pull "old" images') {
-            steps {
-                script {
-                    helper.loginRegistry(baseImageParamsPrefix)
 
-                    for (String imageName : IMAGES) {
-                        container.pullImage(helper.getImageFullTag(imageName, baseImageParamsPrefix))
-                    }
-                }
-            }
-        }
-        stage('Tag images') {
-            steps {
-                script {
-                    for (String imageName : IMAGES) {
-                        container.tagImage(helper.getImageFullTag(imageName, baseImageParamsPrefix), helper.getImageFullTag(imageName, promoteImageParamsPrefix))
-                        if (helper.isDeployLatestTag()) {
-                            container.tagImage(helper.getImageFullTag(imageName, baseImageParamsPrefix), helper.getImageFullTag(imageName, promoteImageParamsPrefix, 'latest'))
-                        }
-                    }
-                }
-            }
-        }
-        stage('Pushing') {
-            steps {
-                script {
+                    // Login old and new registries
+                    helper.loginRegistry(baseImageParamsPrefix)
                     helper.loginRegistry(promoteImageParamsPrefix)
 
+                    cloud.installSkopeo()
+                }
+            }
+        }
+        stage('Promote images') {
+            steps {
+                script {
                     for (String imageName : IMAGES) {
-                        container.pushImage(helper.getImageFullTag(imageName, promoteImageParamsPrefix))
-                        if (helper.isDeployLatestTag()) {
-                            container.pushImage(helper.getImageFullTag(imageName, promoteImageParamsPrefix, 'latest'))
-                        }
+                        // Tag with given parameter tag
+                        promoteImage(helper.getImageFullTag(imageName, baseImageParamsPrefix), helper.getImageFullTag(imageName, promoteImageParamsPrefix))
 
-                        if (helper.getImageRegistry() == 'quay.io') {
-                            helper.makeQuayImagePublic(helper.getFullImageName(imageName))
+                        // Tag with `latest` tag if asked for as parameter
+                        if (helper.isDeployLatestTag()) {
+                            promoteImage(helper.getImageFullTag(imageName, baseImageParamsPrefix, 'latest'), helper.getImageFullTag(imageName, promoteImageParamsPrefix, 'latest'))
                         }
                     }
                 }
@@ -146,6 +126,7 @@ pipeline {
             script {
                 helper.cleanGoPath()
                 util.cleanNode(containerEngine)
+                cloud.cleanSkopeo()
             }
         }
     }
@@ -157,4 +138,8 @@ void sendNotification() {
     } else {
         echo 'No notification sent per configuration'
     }
+}
+
+void promoteImage(String oldImageName, String newImageName) {
+    cloud.skopeoCopyRegistryImages(oldImageName, newImageName, Integer.parseInt(env.MAX_REGISTRY_RETRIES))
 }
