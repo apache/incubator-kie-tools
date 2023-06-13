@@ -40,7 +40,7 @@ import {
   DmnInputFieldProperties,
 } from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv, ValidateFunction } from "@kie-tools/dmn-runner/dist/ajv";
-import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
+import { SCHEMA_DRAFT4, X_DMN_ALLOWED_VALUES_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
@@ -73,6 +73,7 @@ import unsetObjectValueByPath from "lodash/unset";
 import { resolveRefs, pathFromPtr } from "json-refs";
 import setObjectValueByPath from "lodash/set";
 import { RECURSION_KEYWORD, RECURSION_REF_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
+import { diff } from "deep-object-diff";
 
 const JSON_SCHEMA_INPUT_SET_PATH = "definitions.InputSet.properties";
 
@@ -497,9 +498,6 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
           const path = pathList.length === 1 ? pathList[0] : pathList.slice(0, -1).join(".");
           unsetObjectValueByPath(toValidate, path);
-
-          // This should be done to remove any previous form error
-          forceDmnRunnerReRender();
         });
       }
     },
@@ -695,6 +693,11 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                       },
                       cancellationToken: canceled,
                     });
+
+                    // This should be done to remove any previous errors or to add new errors
+                    if (Object.keys(diff(previousJsonSchema, resolvedSchema)).length > 0) {
+                      forceDmnRunnerReRender();
+                    }
                     return resolvedSchema;
                   });
                 })
