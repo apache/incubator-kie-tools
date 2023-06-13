@@ -60,11 +60,10 @@ public class FileExportScriptInjectorTest {
                              " = function(blob, fileName, disableAutoBOM) {\n" +
                              "fileSaver\n" +
                              "return saveAs(blob, fileName, disableAutoBOM);};\n" +
+                             "jsPdf\n" +
                              jsPdfNsObject +
                              " = function(settings) {\n" +
-                             "jsPdf\n" +
-                             "var saveAs = " + NS + "JsFileSaver.saveAs; " +
-                             "return new jsPDF(settings);};" + "\n" +
+                             "return new window.jspdf.jsPDF(settings);};" + "\n" +
                              c2sNsObject + "\n",
                      script);
     }
