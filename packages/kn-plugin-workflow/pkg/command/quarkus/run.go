@@ -99,7 +99,7 @@ func runQuarkusProjectDevMode(cfg RunCmdConfig) (err error) {
 	go func() {
 		defer wg.Done()
 		if err := common.RunCommand(create, "mvn quarkus:dev"); err != nil {
-			fmt.Printf("❌ ERROR:  running Quarkus project: %v", err)
+			fmt.Printf("❌ ERROR: running Quarkus project: %v", err)
 			err = fmt.Errorf("Error running Quarkus project: %w", err)
 		}
 	}()
