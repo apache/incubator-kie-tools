@@ -79,9 +79,8 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
   }, [descriptor, editableFiles, isWsFolder, totalFiles]);
 
   const onDeleteWorkspace = useCallback(async () => {
-    await workspaces.deleteWorkspace({ workspaceId: descriptor.workspaceId });
     onDelete(descriptor.workspaceId);
-  }, [workspaces, descriptor.workspaceId, onDelete]);
+  }, [descriptor, onDelete]);
 
   const onDownloadWorkspace = useCallback(async () => {
     if (totalFiles === 0) {
