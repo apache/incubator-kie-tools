@@ -97,7 +97,7 @@ func runDeployUndeploy(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("❌ initializing deploy config: %w", err)
 	}
 
-	fmt.Printf("🛠️️  %s a Kogito Serverless Workflow file on Kubernetes via the Kogito Operator...\n", cfg.DeployingDeletingCapsLabel)
+	fmt.Printf("🛠️️  %s a Kogito Serverless Workflow file on Kubernetes via the Kogito Serverless Workflow Operator...\n", cfg.DeployingDeletingCapsLabel)
 
 	if err := checkDeployEnvironment(&cfg); err != nil {
 		return fmt.Errorf("❌ checking deploy environment: %w", err)
