@@ -46,7 +46,7 @@ type DeployCmdConfig struct {
 func NewDeployCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "deploy",
-		Short: "Deploy a Kogito Serverless Workflow file on Kubernetes via Kogito Operator",
+		Short: "Deploy a Kogito Serverless Workflow file on Kubernetes via Kogito Serverless Workflow Operator",
 		Long: `
 	Deploy a Kogito Serverless Workflow file in Kubernetes via the Kogito Operator. 
 	`,
