@@ -220,18 +220,6 @@ func (c *Collection) GetService(filter func(*corev1.Service) bool) *corev1.Servi
 	return retValue
 }
 
-// GetUserServiceForWorkflow returns a user Service for the given workflow.
-func (c *Collection) GetUserServiceForWorkflow(workflow *operatorapi.KogitoServerlessWorkflow) *corev1.Service {
-	if workflow == nil {
-		return nil
-	}
-	return c.GetService(func(s *corev1.Service) bool {
-		return s.ObjectMeta.Labels != nil &&
-			s.ObjectMeta.Labels[metadata.Label] == workflow.Name &&
-			s.ObjectMeta.Labels[metadata.ServiceType] == operatorapi.ServiceTypeUser
-	})
-}
-
 // GetServiceForWorkflow returns a user Service for the given workflow.
 func (c *Collection) GetServiceForWorkflow(workflow *operatorapi.KogitoServerlessWorkflow) *corev1.Service {
 	if workflow == nil {

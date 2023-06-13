@@ -19,24 +19,19 @@ const (
 	Key                         = Domain + "/key"
 	Name                        = Domain + "/name"
 	Description                 = Domain + "/description"
-	Annotations                 = Domain + "/annotations"
-	DataInputSchema             = Domain + "/dataInputSchema"
 	ExpressionLang              = Domain + "/expressionLang"
-	Metadata                    = Domain + "/metadata"
 	Version                     = Domain + "/version"
 	Label                       = Domain + "/label"
 	Profile                     = Domain + "/profile"
 	SecondaryPlatformAnnotation = Domain + "/secondary.platform"
 	OperatorIDAnnotation        = Domain + "/operator.id"
-	// TODO: is this the right value?
-	ServiceType = Domain + "/name"
 )
 
 const (
 	// DefaultExpressionLang is the default serverless workflow specification language
 	DefaultExpressionLang = "jq"
 	// SpecVersion is the current CNCF Serverless Workflow version supported by the operator
-	SpecVersion = "v0.8"
+	SpecVersion = "0.8"
 )
 
 type ProfileType string

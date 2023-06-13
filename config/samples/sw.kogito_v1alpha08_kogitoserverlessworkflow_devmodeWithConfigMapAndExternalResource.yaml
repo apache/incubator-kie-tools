@@ -35,8 +35,6 @@ spec:
       - configMap:
           name: mycamel-configmap
   flow:
-    id: greeting
-    specVersion: "0.8"
     start: ChooseOnLanguage
     functions:
       - name: greetFunction

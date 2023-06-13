@@ -493,7 +493,16 @@ spec:
               KogitoServerlessWorkflow
             properties:
               flow:
-                description: Workflow base definition
+                description: "Flow describes the contents of the Workflow definition
+                  following the CNCF Serverless Workflow Specification. The attributes
+                  not part of the flow are defined by the Custom Resource metadata
+                  information, as follows: \n - Id, name, and key are replaced by
+                  the Custom Resource's name. Must follow the Kubernetes naming patterns
+                  (RFC1123). \n - Description can be added in the CR's annotation
+                  field sw.kie.kogito.org/description \n - Version is also defined
+                  in the CR's annotation, field sw.kie.kogito.org/version \n - SpecVersion
+                  is in the CR's apiVersion, for example v1alpha08 means that it follows
+                  the specification version 0.8."
                 properties:
                   annotations:
                     description: Annotations List of helpful terms describing the
@@ -536,9 +545,6 @@ spec:
                     - failOnValidationErrors
                     - schema
                     type: object
-                  description:
-                    description: Workflow description.
-                    type: string
                   errors:
                     description: Defines checked errors that can be explicitly handled
                       during workflow execution.
@@ -616,14 +622,6 @@ spec:
                       - type
                       type: object
                     type: array
-                  expressionLang:
-                    default: jq
-                    description: Identifies the expression language used for workflow
-                      expressions. Default is 'jq'.
-                    enum:
-                    - jq
-                    - jsonpath
-                    type: string
                   functions:
                     items:
                       description: Function ...
@@ -665,23 +663,14 @@ spec:
                       - operation
                       type: object
                     type: array
-                  id:
-                    description: Workflow unique identifier
-                    type: string
                   keepActive:
                     description: If "true", workflow instances is not terminated when
                       there are no active execution paths. Instance can be terminated
                       with "terminate end definition" or reaching defined "workflowExecTimeout"
                     type: boolean
-                  key:
-                    description: Key Domain-specific workflow identifier
-                    type: string
                   metadata:
                     description: Metadata custom information shared with the runtime.
                     x-kubernetes-preserve-unknown-fields: true
-                  name:
-                    description: Workflow name
-                    type: string
                   retries:
                     items:
                       description: Retry ...
@@ -749,10 +738,6 @@ spec:
                     items:
                       type: string
                     type: array
-                  specVersion:
-                    default: "0.8"
-                    description: Serverless Workflow schema version
-                    type: string
                   start:
                     description: Workflow start definition.
                     x-kubernetes-preserve-unknown-fields: true
@@ -2560,11 +2545,7 @@ spec:
                         - duration
                         type: object
                     type: object
-                  version:
-                    description: Workflow version.
-                    type: string
                 required:
-                - specVersion
                 - states
                 type: object
               resources:

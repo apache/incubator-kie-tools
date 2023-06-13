@@ -110,8 +110,12 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 .PHONY: test
-test: manifests generate envtest vet fmt ## Run tests.
+test: manifests generate envtest vet fmt test-api ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test $(shell go list ./... | grep -v /test/) -coverprofile cover.out
+
+.PHONY: test-api
+test-api:
+	cd api && make test
 
 .PHONY: test-container-builder
 test-container-builder:

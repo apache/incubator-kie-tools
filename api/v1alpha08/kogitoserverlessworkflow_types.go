@@ -15,7 +15,7 @@
 package v1alpha08
 
 import (
-	"github.com/serverlessworkflow/sdk-go/v2/model"
+	cncfmodel "github.com/serverlessworkflow/sdk-go/v2/model"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"knative.dev/pkg/apis"
@@ -23,6 +23,73 @@ import (
 
 	"github.com/kiegroup/kogito-serverless-operator/api"
 )
+
+// Flow describes the contents of the Workflow definition following the CNCF Serverless Workflow Specification.
+// The attributes not part of the flow are defined by the Custom Resource metadata information, as follows:
+//
+// - Id, name, and key are replaced by the Custom Resource's name. Must follow the Kubernetes naming patterns (RFC1123).
+//
+// - Description can be added in the CR's annotation field sw.kie.kogito.org/description
+//
+// - Version is also defined in the CR's annotation, field sw.kie.kogito.org/version
+//
+// - SpecVersion is in the CR's apiVersion, for example v1alpha08 means that it follows the specification version 0.8.
+type Flow struct {
+	// Workflow start definition.
+	// +kubebuilder:validation:Schemaless
+	// +kubebuilder:pruning:PreserveUnknownFields
+	// +optional
+	Start *cncfmodel.Start `json:"start,omitempty"`
+	// Annotations List of helpful terms describing the workflows intended purpose, subject areas, or other important
+	// qualities.
+	// +optional
+	Annotations []string `json:"annotations,omitempty"`
+	// DataInputSchema URI of the JSON Schema used to validate the workflow data input
+	// +optional
+	DataInputSchema *cncfmodel.DataInputSchema `json:"dataInputSchema,omitempty"`
+	// Secrets allow you to access sensitive information, such as passwords, OAuth tokens, ssh keys, etc,
+	// inside your Workflow Expressions.
+	// +optional
+	Secrets cncfmodel.Secrets `json:"secrets,omitempty"`
+	// Constants Workflow constants are used to define static, and immutable, data which is available to
+	// Workflow Expressions.
+	// +optional
+	Constants *cncfmodel.Constants `json:"constants,omitempty"`
+	// Defines the workflow default timeout settings.
+	// +optional
+	Timeouts *cncfmodel.Timeouts `json:"timeouts,omitempty"`
+	// Defines checked errors that can be explicitly handled during workflow execution.
+	// +optional
+	Errors cncfmodel.Errors `json:"errors,omitempty"`
+	// If "true", workflow instances is not terminated when there are no active execution paths.
+	// Instance can be terminated with "terminate end definition" or reaching defined "workflowExecTimeout"
+	// +optional
+	KeepActive bool `json:"keepActive,omitempty"`
+	// Metadata custom information shared with the runtime.
+	// +kubebuilder:validation:Schemaless
+	// +kubebuilder:pruning:PreserveUnknownFields
+	// +optional
+	Metadata cncfmodel.Metadata `json:"metadata,omitempty"`
+	// AutoRetries If set to true, actions should automatically be retried on unchecked errors. Default is false
+	// +optional
+	AutoRetries bool `json:"autoRetries,omitempty"`
+	// Auth definitions can be used to define authentication information that should be applied to resources defined
+	// in the operation property of function definitions. It is not used as authentication information for the
+	// function invocation, but just to access the resource containing the function invocation information.
+	// +kubebuilder:validation:Schemaless
+	// +kubebuilder:pruning:PreserveUnknownFields
+	// +optional
+	Auth cncfmodel.Auths `json:"auth,omitempty" validate:"omitempty"`
+	// +kubebuilder:validation:MinItems=1
+	// +kubebuilder:pruning:PreserveUnknownFields
+	States []cncfmodel.State `json:"states" validate:"required,min=1,dive"`
+	// +optional
+	Events cncfmodel.Events `json:"events,omitempty"`
+	// +optional
+	Functions cncfmodel.Functions `json:"functions,omitempty"`
+	// +optional
+	Retries cncfmodel.Retries `json:"retries,omitempty" validate:"dive"`
+}
 
 // WorkflowResources collection of local objects holding workflow resources, such as OpenAPI files
 // that will be mounted in the workflow application.
@@ -44,7 +111,7 @@ type ConfigMapWorkflowResource struct {
 // KogitoServerlessWorkflowSpec defines the desired state of KogitoServerlessWorkflow
 type KogitoServerlessWorkflowSpec struct {
 	// +kubebuilder:validation:Required
-	Flow model.Workflow `json:"flow"`
+	Flow Flow `json:"flow"`
 	// Resources workflow resources that are linked to this workflow definition.
 	// For example, a collection of OpenAPI specification files.
 	Resources WorkflowResources `json:"resources,omitempty"`

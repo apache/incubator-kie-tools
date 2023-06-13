@@ -19,6 +19,7 @@ metadata:
   annotations:
     sw.kogito.kie.org/description: Workflow for processing Orders and produce Logistics Events
     sw.kogito.kie.org/version: 1.0.0
+    sw.kogito.kie.org/expressionLang: jsonpath
     sw.kogito.kie.org/profile: dev
 spec:
   resources:
@@ -26,7 +27,6 @@ spec:
       - configMap:
            name: orderprocessing-subflows
   flow:
-    expressionLang: jsonpath
     start: ReceiveOrder
     events:
       - kind: consumed

@@ -19,11 +19,10 @@ metadata:
   annotations:
     sw.kogito.kie.org/description: An example of how to consume events over HTTP
     sw.kogito.kie.org/version: 1.0.0
+    sw.kogito.kie.org/expressionLang: jsonpath
     sw.kogito.kie.org/profile: dev
 spec:
   flow:
-    expressionLang: jsonpath
-    description:
     start: printWaitMessage
     events:
       - name: startEvent

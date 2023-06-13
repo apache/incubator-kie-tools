@@ -38,8 +38,6 @@ metadata:
                   "type": "custom"
                 }
               ],
-              "id": "greeting",
-              "specVersion": "0.8",
               "start": "ChooseOnLanguage",
               "states": [
                 {

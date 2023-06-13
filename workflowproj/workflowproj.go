@@ -15,6 +15,7 @@
 package workflowproj
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strings"
@@ -212,10 +213,10 @@ func (w *workflowProjectHandler) parseRawWorkflow() error {
 		w.name = strings.ToLower(workflowDef.ID)
 	}
 
-	w.project.Workflow = &operatorapi.KogitoServerlessWorkflow{
-		ObjectMeta: metav1.ObjectMeta{Name: w.name, Namespace: w.namespace},
-		Spec:       operatorapi.KogitoServerlessWorkflowSpec{Flow: *workflowDef},
-	}
+	w.project.Workflow, err = operatorapi.FromCNCFWorkflow(workflowDef, context.TODO())
+	w.project.Workflow.Name = w.name
+	w.project.Workflow.Namespace = w.namespace
+
 	SetWorkflowProfile(w.project.Workflow, metadata.DevProfile)
 	SetDefaultLabels(w.project.Workflow, w.project.Workflow)
 	if err = SetTypeToObject(w.project.Workflow, w.scheme); err != nil {
