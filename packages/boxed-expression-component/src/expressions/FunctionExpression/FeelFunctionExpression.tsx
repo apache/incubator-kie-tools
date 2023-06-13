@@ -161,7 +161,10 @@ export function FeelFunctionExpression({
       return [];
     }
 
-    return [...(conditions.selection.selectionStart.rowIndex >= 0 ? [BeeTableOperation.RowReset] : [])];
+    return [
+      BeeTableOperation.SelectionCopy,
+      ...(conditions.selection.selectionStart.rowIndex >= 0 ? [BeeTableOperation.RowReset] : []),
+    ];
   }, []);
 
   /// //////////////////////////////////////////////////////

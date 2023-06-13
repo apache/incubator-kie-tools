@@ -191,6 +191,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
       }
 
       return [
+        BeeTableOperation.SelectionCopy,
         ...(conditions.selection.selectionStart.rowIndex >= 0
           ? [
               BeeTableOperation.RowInsertAbove,

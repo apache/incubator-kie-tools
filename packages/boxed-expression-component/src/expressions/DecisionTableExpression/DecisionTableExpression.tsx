@@ -703,13 +703,9 @@ export function DecisionTableExpression(
 
       return [
         ...columnOperations,
+        BeeTableOperation.SelectionCopy,
         ...(conditions.selection.selectionStart.rowIndex >= 0 && columnIndex > 0
-          ? [
-              BeeTableOperation.SelectionCopy,
-              BeeTableOperation.SelectionCut,
-              BeeTableOperation.SelectionPaste,
-              BeeTableOperation.SelectionReset,
-            ]
+          ? [BeeTableOperation.SelectionCut, BeeTableOperation.SelectionPaste, BeeTableOperation.SelectionReset]
           : []),
         ...(conditions.selection.selectionStart.rowIndex >= 0
           ? [

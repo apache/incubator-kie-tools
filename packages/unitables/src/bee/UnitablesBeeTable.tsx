@@ -105,6 +105,7 @@ export function UnitablesBeeTable({
 
   const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
     return [
+      BeeTableOperation.SelectionCopy,
       BeeTableOperation.RowInsertAbove,
       BeeTableOperation.RowInsertBelow,
       BeeTableOperation.RowDuplicate,

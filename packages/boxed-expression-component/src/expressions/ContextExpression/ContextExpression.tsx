@@ -320,13 +320,9 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
       const rowIndex = conditions.selection.selectionStart.rowIndex;
 
       return [
+        BeeTableOperation.SelectionCopy,
         ...(columnIndex > 1
-          ? [
-              BeeTableOperation.SelectionCopy,
-              BeeTableOperation.SelectionCut,
-              BeeTableOperation.SelectionPaste,
-              BeeTableOperation.SelectionReset,
-            ]
+          ? [BeeTableOperation.SelectionCut, BeeTableOperation.SelectionPaste, BeeTableOperation.SelectionReset]
           : []),
         ...(conditions.selection.selectionStart.rowIndex >= 0
           ? [

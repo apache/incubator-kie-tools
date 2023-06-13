@@ -332,13 +332,9 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
 
       return [
         ...columnOperations,
+        BeeTableOperation.SelectionCopy,
         ...(columnIndex > 0 && conditions.selection.selectionStart.rowIndex >= 0
-          ? [
-              BeeTableOperation.SelectionCopy,
-              BeeTableOperation.SelectionCut,
-              BeeTableOperation.SelectionPaste,
-              BeeTableOperation.SelectionReset,
-            ]
+          ? [BeeTableOperation.SelectionCut, BeeTableOperation.SelectionPaste, BeeTableOperation.SelectionReset]
           : []),
         ...(conditions.selection.selectionStart.rowIndex >= 0
           ? [

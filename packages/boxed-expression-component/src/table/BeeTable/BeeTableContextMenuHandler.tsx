@@ -38,8 +38,6 @@ import CopyIcon from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import PasteIcon from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { EmptyState } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 export interface BeeTableContextMenuHandlerProps {
   tableRef: React.RefObject<HTMLDivElement | null>;
@@ -341,6 +339,8 @@ export function BeeTableContextMenuHandler({
     return allOperations.some((operation) => allowedOperationsForSelection.includes(operation.type));
   }, [allOperations, allowedOperationsForSelection]);
 
+  let countGroupsWithAllowedOperations = 0;
+
   return (
     <>
       {isOpen && (
@@ -356,10 +356,13 @@ export function BeeTableContextMenuHandler({
             onSelect={(e, itemId) => handleOperation(itemId as BeeTableOperation)}
           >
             {hasAllowedOperations &&
-              operationGroups.map(({ group, items }, operationGroupIndex) => (
+              operationGroups.map(({ group, items }) => (
                 <React.Fragment key={group}>
                   {items.some((operation) => allowedOperationsForSelection.includes(operation.type)) &&
-                    operationGroupIndex > 0 && <Divider key={"divider-" + group} style={{ padding: "16px" }} />}
+                    ++countGroupsWithAllowedOperations &&
+                    countGroupsWithAllowedOperations > 1 && (
+                      <Divider key={"divider-" + group} style={{ padding: "16px" }} />
+                    )}
                   <MenuGroup
                     label={group}
                     className={
@@ -384,11 +387,6 @@ export function BeeTableContextMenuHandler({
                   </MenuGroup>
                 </React.Fragment>
               ))}
-            {!hasAllowedOperations && (
-              <EmptyState>
-                <Title headingLevel="h6">{i18n.noOperationsAvailable}</Title>
-              </EmptyState>
-            )}
           </Menu>
         </div>
       )}

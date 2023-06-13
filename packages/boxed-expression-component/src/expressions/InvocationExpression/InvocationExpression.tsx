@@ -325,6 +325,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
       }
 
       return [
+        BeeTableOperation.SelectionCopy,
         ...(conditions.selection.selectionStart.rowIndex >= 0
           ? [
               BeeTableOperation.RowInsertAbove,

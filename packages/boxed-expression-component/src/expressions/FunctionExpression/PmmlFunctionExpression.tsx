@@ -218,7 +218,7 @@ export function PmmlFunctionExpression({
   /// //////////////////////////////////////////////////////
 
   const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
-    return [];
+    return [BeeTableOperation.SelectionCopy];
   }, []);
 
   return (

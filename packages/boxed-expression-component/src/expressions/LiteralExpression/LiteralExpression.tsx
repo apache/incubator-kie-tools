@@ -181,13 +181,9 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
     }
 
     return [
+      BeeTableOperation.SelectionCopy,
       ...(conditions.selection.selectionStart.rowIndex === 0
-        ? [
-            BeeTableOperation.SelectionCopy,
-            BeeTableOperation.SelectionCut,
-            BeeTableOperation.SelectionPaste,
-            BeeTableOperation.SelectionReset,
-          ]
+        ? [BeeTableOperation.SelectionCut, BeeTableOperation.SelectionPaste, BeeTableOperation.SelectionReset]
         : []),
     ];
   }, []);
