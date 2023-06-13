@@ -102,6 +102,7 @@ generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and
 .PHONY: fmt
 fmt: ## Run go fmt against code.
 	./hack/goimports.sh
+	go work sync
 	go mod tidy
 	go fmt ./...
 
