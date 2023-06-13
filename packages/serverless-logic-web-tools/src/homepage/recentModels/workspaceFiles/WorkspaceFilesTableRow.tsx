@@ -122,9 +122,9 @@ export function WorkspaceFilesTableRow(props: WorkspaceFilesTableRowProps) {
               },
             ]}
           />
+          <a ref={downloadRef} />
         </Td>
       </Tr>
-      <a ref={downloadRef} />
     </>
   );
 }
