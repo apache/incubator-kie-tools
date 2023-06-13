@@ -83,13 +83,14 @@ func getDockerContainerID() (string, error) {
 }
 
 func StopContainer(containerTool string, containerID string) error {
+	fmt.Printf("⏳ Stopping %s container.\n", containerID)
 	stopCmd := exec.Command(containerTool, "stop", containerID)
 	err := stopCmd.Run()
 	if err != nil {
 		fmt.Printf("Error stopping container: %v\n", err)
 		return err
 	}
-	fmt.Printf("Container %s stopped successfully.\n", containerID)
+	fmt.Printf("🛑 Container %s stopped successfully.\n", containerID)
 	return nil
 }
 
