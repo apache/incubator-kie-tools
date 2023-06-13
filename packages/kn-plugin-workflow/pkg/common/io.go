@@ -31,12 +31,12 @@ func FindFilesWithExtensions(directoryPath string, extensions []string) ([]strin
 	if os.IsNotExist(err) {
 		return filePaths, nil
 	} else if err != nil {
-		return nil, fmt.Errorf("failed to access directory: %s", err)
+		return nil, fmt.Errorf("❌ ERROR: failed to access directory: %s", err)
 	}
 
 	files, err := os.ReadDir(directoryPath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read directory: %s", err)
+		return nil, fmt.Errorf("❌ ERROR: failed to read directory: %s", err)
 	}
 
 	for _, file := range files {
@@ -60,7 +60,7 @@ func FindFilesWithExtensions(directoryPath string, extensions []string) ([]strin
 func MustGetFile(filepath string) (io.Reader, error) {
 	file, err := os.OpenFile(filepath, os.O_RDONLY, os.ModePerm)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read file: %s", err)
+		return nil, fmt.Errorf("❌ ERROR: failed to read file: %s", err)
 	}
 	return file, nil
 }

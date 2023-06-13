@@ -88,32 +88,32 @@ func runDeployUndeploy(cmd *cobra.Command, args []string) error {
 	defer func(cfg *DeployCmdConfig) {
 		if cfg.TempDir != "" {
 			if err := os.RemoveAll(cfg.TempDir); err != nil {
-				fmt.Errorf("❌  failed to remove temp dir: %v", err)
+				fmt.Errorf("❌ ERROR:  failed to remove temp dir: %v", err)
 			}
 		}
 	}(&cfg)
 
 	if err != nil {
-		return fmt.Errorf("❌ initializing deploy config: %w", err)
+		return fmt.Errorf("❌ ERROR: initializing deploy config: %w", err)
 	}
 
 	fmt.Printf("🛠️️  %s a Kogito Serverless Workflow file on Kubernetes via the Kogito Serverless Workflow Operator...\n", cfg.DeployingDeletingCapsLabel)
 
 	if err := checkDeployEnvironment(&cfg); err != nil {
-		return fmt.Errorf("❌ checking deploy environment: %w", err)
+		return fmt.Errorf("❌ ERROR: checking deploy environment: %w", err)
 	}
 
 	if err := generateDeployEnvironment(&cfg); err != nil {
-		return fmt.Errorf("❌ generating deploy environment: %w", err)
+		return fmt.Errorf("❌ ERROR: generating deploy environment: %w", err)
 	}
 
 	if cfg.Delete {
 		if err = deleteDeploy(&cfg); err != nil {
-			return fmt.Errorf("❌ deleting deployment: %w", err)
+			return fmt.Errorf("❌ ERROR: deleting deployment: %w", err)
 		}
 	} else {
 		if err = deploy(&cfg); err != nil {
-			return fmt.Errorf("❌ applying deploy: %w", err)
+			return fmt.Errorf("❌ ERROR: applying deploy: %w", err)
 		}
 	}
 
@@ -127,11 +127,11 @@ func deleteDeploy(cfg *DeployCmdConfig) error {
 
 	files, err := common.FindServiceFiles(cfg.ManifestPath)
 	if err != nil {
-		return fmt.Errorf("failed to get kubernetes manifest service files: %w", err)
+		return fmt.Errorf("❌ ERROR: failed to get kubernetes manifest service files: %w", err)
 	}
 	for _, file := range files {
 		if err = common.ExecuteKubectlDelete(file, cfg.NameSpace); err != nil {
-			return fmt.Errorf("failed to %s manifest %s,  %w", cfg.DeployedDeletingLabel, file, err)
+			return fmt.Errorf("❌ ERROR: failed to %s manifest %s,  %w", cfg.DeployedDeletingLabel, file, err)
 		}
 		fmt.Printf(" - ✅ Manifest %s successfully %s in namespace %s\n", path.Base(file), cfg.DeployedDeletingLabel, cfg.NameSpace)
 
@@ -146,11 +146,11 @@ func deploy(cfg *DeployCmdConfig) error {
 
 	files, err := common.FindFilesWithExtensions(cfg.ManifestPath, manifestExtension)
 	if err != nil {
-		return fmt.Errorf("failed to get manifest directory and files: %w", err)
+		return fmt.Errorf("❌ ERROR: failed to get manifest directory and files: %w", err)
 	}
 	for _, file := range files {
 		if err = common.ExecuteKubectlApply(file, cfg.NameSpace); err != nil {
-			return fmt.Errorf("failed to %s manifest %s,  %w", cfg.DeployedDeletingLabel, file, err)
+			return fmt.Errorf("❌ ERROR: failed to %s manifest %s,  %w", cfg.DeployedDeletingLabel, file, err)
 		}
 		fmt.Printf(" - ✅ Manifest %s successfully %s in namespace %s\n", path.Base(file), cfg.DeployedDeletingLabel, cfg.NameSpace)
 
@@ -202,7 +202,7 @@ func generateDeployEnvironment(cfg *DeployCmdConfig) error {
 
 	dir, err := os.Getwd()
 	if err != nil {
-		return fmt.Errorf("failed to get current directory: %w", err)
+		return fmt.Errorf("❌ ERROR: failed to get current directory: %w", err)
 	}
 
 	applicationPropertiesPath := findApplicationPropertiesPath(dir)
@@ -215,7 +215,7 @@ func generateDeployEnvironment(cfg *DeployCmdConfig) error {
 
 	files, err := common.FindFilesWithExtensions(cfg.SupportFileFolder, extensions)
 	if err != nil {
-		return fmt.Errorf("failed to get current directory: %w", err)
+		return fmt.Errorf("❌ ERROR: failed to get current directory: %w", err)
 	}
 	cfg.SupportFilesPath = files
 	for _, file := range cfg.SupportFilesPath {
@@ -271,11 +271,11 @@ func findApplicationPropertiesPath(directoryPath string) string {
 }
 
 func findServerlessWorkflowFile() (string, error) {
-	extensions := []string{metadata.YAMLExtension, metadata.JSONExtension}
+	extensions := []string{metadata.YAMLExtension, metadata.YAMLExtensionShort, metadata.JSONExtension}
 
 	dir, err := os.Getwd()
 	if err != nil {
-		return "", fmt.Errorf("failed to get current directory: %w", err)
+		return "", fmt.Errorf("❌ ERROR: failed to get current directory: %w", err)
 	}
 
 	var matchingFiles []string
@@ -286,11 +286,11 @@ func findServerlessWorkflowFile() (string, error) {
 
 	switch len(matchingFiles) {
 	case 0:
-		return "", fmt.Errorf("no matching files found")
+		return "", fmt.Errorf("❌ ERROR: no matching files found")
 	case 1:
 		return matchingFiles[0], nil
 	default:
-		return "", fmt.Errorf("multiple serverless workflow definition files found")
+		return "", fmt.Errorf("❌ ERROR: multiple serverless workflow definition files found")
 	}
 }
 
@@ -313,7 +313,7 @@ func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployCmdConfig, err error) {
 		dir, err := os.Getwd()
 		cfg.SupportFileFolder = dir + "/specs"
 		if err != nil {
-			return cfg, fmt.Errorf("failed to get current directory: %w", err)
+			return cfg, fmt.Errorf("❌ ERROR: failed to get current directory: %w", err)
 		}
 	}
 	//setup manifest path
@@ -329,14 +329,14 @@ func setupConfigManifestPath(cfg *DeployCmdConfig) error {
 	if len(cfg.ManifestPath) == 0 {
 		tempDir, err := os.MkdirTemp("", "manifests")
 		if err != nil {
-			return fmt.Errorf("❌ failed to create temporary directory: %w", err)
+			return fmt.Errorf("❌ ERROR: failed to create temporary directory: %w", err)
 		}
 		cfg.ManifestPath = tempDir
 		cfg.TempDir = tempDir
 	} else {
 		_, err := os.Stat(cfg.ManifestPath)
 		if err != nil {
-			return fmt.Errorf("❌ cannot find or open directory %s : %w", cfg.ManifestPath, err)
+			return fmt.Errorf("❌ ERROR: cannot find or open directory %s : %w", cfg.ManifestPath, err)
 		}
 	}
 	return nil

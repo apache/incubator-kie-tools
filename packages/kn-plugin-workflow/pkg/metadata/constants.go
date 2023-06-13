@@ -42,6 +42,7 @@ const (
 	OperatorManagerPod = "kogito-serverless-operator-controller-manager"
 
 	YAMLExtension         = "sw.yaml"
+	YAMLExtensionShort    = "sw.yml"
 	JSONExtension         = "sw.json"
 	ApplicationProperties = "application.properties"
 
