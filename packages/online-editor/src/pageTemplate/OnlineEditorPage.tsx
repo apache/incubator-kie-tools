@@ -47,9 +47,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode; onKeyDown?
                   onClick={() => history.push({ pathname: routes.home.path({}) })}
                   style={{ textDecoration: "none" }}
                 >
-                  <Brand src={routes.static.images.appLogoReverse.path({})} alt={"Logo"} heights={{ default: "38px" }}>
-                    <source srcSet={routes.static.images.appLogoReverse.path({})} />
-                  </Brand>
+                  <img alt={"Logo"} src={routes.static.images.appLogoReverse.path({})} style={{ height: "38px" }} />
                 </MastheadBrand>
                 <AboutButton />
               </Flex>
