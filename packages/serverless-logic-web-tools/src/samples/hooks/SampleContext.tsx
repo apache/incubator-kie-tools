@@ -20,14 +20,6 @@ import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/Loc
 import * as React from "react";
 import { useContext, useMemo, useCallback, useState } from "react";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
-import {
-  fetchSampleCover,
-  fetchSampleDefinitions,
-  fetchSampleFiles,
-  Sample,
-  SampleCategory,
-  SampleCoversHashtable,
-} from "../SampleApi";
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import Fuse from "fuse.js";
 import {
@@ -35,8 +27,11 @@ import {
   SAMPLE_SEARCH_KEYS,
   resolveSampleFsMountPoint,
   SAMPLE_COVERS_CACHE_FILE_PATH,
+  KIE_SAMPLES_REPOSITORY_INFO,
 } from "../SampleConstants";
 import { useEnv } from "../../env/EnvContext";
+import { SampleService } from "../SampleService";
+import { FetchErrorResponse, Sample, SampleCategory, SampleCoversHashtable } from "../types";
 
 export interface SampleDispatchContextType {
   getSamples(args: { categoryFilter?: SampleCategory; searchFilter?: string }): Promise<Sample[]>;
@@ -65,6 +60,11 @@ export const SampleDispatchContext = React.createContext<SampleDispatchContextTy
 export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
   const { env } = useEnv();
   const settingsDispatch = useSettingsDispatch();
+
+  const service = useMemo(
+    () => new SampleService(settingsDispatch.github.octokit, KIE_SAMPLES_REPOSITORY_INFO),
+    [settingsDispatch.github.octokit]
+  );
 
   const fsCache = useMemo(() => new LfsFsCache(), []);
   const fs = useMemo(
@@ -157,7 +157,13 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
       if (!allSampleDefinitions) {
         filteredSamples = (await loadCache({
           path: SAMPLE_DEFINITIONS_CACHE_FILE_PATH,
-          loadFn: async () => fetchSampleDefinitions(settingsDispatch.github.octokit),
+          loadFn: async () => {
+            const response = await service.fetchDefinitions();
+            if (!response.success) {
+              throw new Error(prepareFetchErrorMessage({ response, target: "sample definitions" }));
+            }
+            return response.samples;
+          },
         })) as Sample[];
 
         setAllSampleDefinitions(filteredSamples);
@@ -181,7 +187,7 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
 
       return filteredSamples;
     },
-    [allSampleDefinitions, loadCache, settingsDispatch.github.octokit]
+    [allSampleDefinitions, loadCache, service]
   );
 
   const getSampleCover = useCallback(
@@ -192,18 +198,28 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
         const cover = await loadCacheEntity({
           path: SAMPLE_COVERS_CACHE_FILE_PATH,
           id: args.sample.sampleId,
-          loadFn: async () => fetchSampleCover({ octokit: settingsDispatch.github.octokit, sample: args.sample }),
+          loadFn: async () => {
+            const response = await service.fetchCover(args.sample);
+            if (!response.success) {
+              throw new Error(
+                prepareFetchErrorMessage({ response, target: `cover for sample '${args.sample.sampleId}'` })
+              );
+            }
+            return response.content;
+          },
           noCacheWriting: args.noCacheWriting,
         });
 
-        allSampleCovers[args.sample.sampleId] = cover;
-        setAllSampleCovers(allSampleCovers);
+        setAllSampleCovers((prev) => {
+          prev[args.sample.sampleId] = cover;
+          return prev;
+        });
         return cover;
       } else {
         return cachedCover;
       }
     },
-    [settingsDispatch.github.octokit, loadCacheEntity, allSampleCovers]
+    [allSampleCovers, loadCacheEntity, service]
   );
 
   const getSampleCovers = useCallback(
@@ -227,8 +243,14 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
   );
 
   const getSampleFiles = useCallback(
-    async (sampleId: string) => fetchSampleFiles({ octokit: settingsDispatch.github.octokit, sampleId }),
-    [settingsDispatch.github.octokit]
+    async (sampleId: string) => {
+      const response = await service.fetchFiles(sampleId);
+      if (!response.success) {
+        throw new Error(prepareFetchErrorMessage({ response, target: `files for sample '${sampleId}'` }));
+      }
+      return response.files;
+    },
+    [service]
   );
 
   const dispatch = useMemo(
@@ -240,4 +262,17 @@ export function SampleContextProvider(props: React.PropsWithChildren<{}>) {
 
 export function useSampleDispatch() {
   return useContext(SampleDispatchContext);
+}
+
+function prepareFetchErrorMessage(args: { response: FetchErrorResponse; target: string }): string {
+  if (args.response.error === "Unauthenticated") {
+    return "You have reached the limit for unauthenticated requests on GitHub. Please provide a GitHub token on Settings or try again later.";
+  }
+  if (args.response.error === "NotFound") {
+    return `Cannot find ${args.target} at the moment. Please try again later.`;
+  }
+  if (args.response.error === "Generic" && args.response.message) {
+    return args.response.message;
+  }
+  return `Something unexpected happened while trying to fetch ${args.target}.`;
 }
