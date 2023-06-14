@@ -49,7 +49,7 @@ export type WorkspaceFilesTableProps = Pick<TablePaginationProps, "page" | "perP
   /**
    * event fired when an element is deleted
    */
-  onFileDelete: (file: WorkspaceFile) => void;
+  onDelete: (file: WorkspaceFile) => void;
 };
 
 export type WorkspaceFilesTableRowData = Pick<WorkspaceFile, "extension"> & {
@@ -59,7 +59,7 @@ export type WorkspaceFilesTableRowData = Pick<WorkspaceFile, "extension"> & {
 };
 
 export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
-  const { workspaceFiles, selectedWorkspaceFiles, searchValue, page, perPage, totalFilesCount, onClearFilters } = props;
+  const { workspaceFiles, selectedWorkspaceFiles, searchValue, page, perPage, onClearFilters } = props;
   const [activeSortIndex, setActiveSortIndex] = useState<number>(0);
   const [activeSortDirection, setActiveSortDirection] = useState<"asc" | "desc">("desc");
 
@@ -152,13 +152,12 @@ export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
           ) : (
             visibleTableData.map((rowData, rowIndex) => (
               <WorkspaceFilesTableRow
-                totalFilesCount={totalFilesCount}
                 isSelected={isFileCheckboxChecked(rowData)}
                 key={rowIndex}
                 onToggle={(checked) => props.onFileToggle(rowData.fileDescriptor, checked)}
                 rowData={rowData}
                 rowIndex={rowIndex}
-                onDelete={props.onFileDelete}
+                onDelete={props.onDelete}
               />
             ))
           )}

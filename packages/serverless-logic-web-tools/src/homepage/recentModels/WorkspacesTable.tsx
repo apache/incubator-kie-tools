@@ -54,7 +54,7 @@ export type WorkspacesTableProps = Pick<TablePaginationProps, "page" | "perPage"
   /**
    * event fired when an element is deleted
    */
-  onWsDelete: (workspaceId: WorkspaceDescriptor["workspaceId"]) => void;
+  onDelete: (workspaceId: WorkspaceDescriptor["workspaceId"]) => void;
 };
 
 export type WorkspacesTableRowData = {
@@ -201,7 +201,7 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
                         rowIndex={rowIndex}
                         isSelected={isWsCheckboxChecked(rowData.descriptor.workspaceId)}
                         onToggle={(checked) => props.onWsToggle(rowData.descriptor.workspaceId, checked)}
-                        onDelete={props.onWsDelete}
+                        onDelete={props.onDelete}
                       />
                     )}
                   </ErrorBoundary>
