@@ -88,7 +88,7 @@ func runDeployUndeploy(cmd *cobra.Command, args []string) error {
 	defer func(cfg *DeployCmdConfig) {
 		if cfg.TempDir != "" {
 			if err := os.RemoveAll(cfg.TempDir); err != nil {
-				fmt.Errorf("❌ ERROR:  failed to remove temp dir: %v", err)
+				fmt.Errorf("❌ ERROR: failed to remove temp dir: %v", err)
 			}
 		}
 	}(&cfg)
