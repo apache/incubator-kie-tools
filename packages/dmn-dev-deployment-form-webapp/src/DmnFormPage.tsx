@@ -108,14 +108,6 @@ export function DmnFormPage(props: Props) {
     [getFieldDefaultValue]
   );
 
-  const formInputsWithDefaultValues = useMemo(
-    () => ({
-      ...getDefaultValues(jsonSchema),
-      ...formInputs,
-    }),
-    [formInputs, getDefaultValues, jsonSchema]
-  );
-
   const resolveReferencesAndCheckForRecursion = useCallback(
     async (jsonSchema: ExtendedServicesDmnJsonSchema, canceled: Holder<boolean>) => {
       try {
@@ -170,10 +162,20 @@ export function DmnFormPage(props: Props) {
     useCallback(
       ({ canceled }) => {
         resolveReferencesAndCheckForRecursion(props.formData.schema, canceled).then((resolvedJsonSchema) => {
+          if (canceled.get()) {
+            return;
+          }
+
           setJsonSchema(resolvedJsonSchema);
+          setFormInputs((previousFormInputs) => {
+            return {
+              ...getDefaultValues(resolvedJsonSchema),
+              ...previousFormInputs,
+            };
+          });
         });
       },
-      [props.formData.schema, resolveReferencesAndCheckForRecursion]
+      [props.formData.schema, resolveReferencesAndCheckForRecursion, getDefaultValues]
     )
   );
 
@@ -183,7 +185,7 @@ export function DmnFormPage(props: Props) {
     try {
       const formOutputs = await fetchDmnResult({
         modelName: props.formData.modelName,
-        inputs: formInputsWithDefaultValues,
+        inputs: formInputs,
       });
 
       setFormOutputs((previousOutputs: DecisionResult[]) => {
@@ -199,7 +201,7 @@ export function DmnFormPage(props: Props) {
       setOpenAlert(AlertTypes.ERROR);
       console.error(error);
     }
-  }, [formInputsWithDefaultValues, props.formData.modelName]);
+  }, [formInputs, props.formData.modelName]);
 
   const pageErrorMessage = useMemo(
     () => (
@@ -240,7 +242,7 @@ export function DmnFormPage(props: Props) {
   useEffect(() => {
     errorBoundaryRef.current?.reset();
     setPageError(false);
-  }, [props.formData.schema]);
+  }, [jsonSchema]);
 
   useEffect(() => {
     onSubmit();
@@ -273,11 +275,11 @@ export function DmnFormPage(props: Props) {
                 <div className={"kogito--dmn-form__content-body"}>
                   <PageSection className={"kogito--dmn-form__content-body-input"}>
                     <FormDmn
-                      formInputs={formInputsWithDefaultValues}
+                      formInputs={formInputs}
                       setFormInputs={setFormInputs}
                       formError={formError}
                       setFormError={setFormError}
-                      formSchema={props.formData.schema}
+                      formSchema={jsonSchema}
                       id={"form"}
                       showInlineError={true}
                       notificationsPanel={false}
