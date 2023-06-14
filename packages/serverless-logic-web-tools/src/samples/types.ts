@@ -87,34 +87,34 @@ export type FetchErrorResponse = { success: false } & (
     }
 );
 
-export type FetchFileContentResponse =
-  | {
-      success: true;
-      path: string;
-      content: string;
-    }
-  | FetchErrorResponse;
+export type FetchFileContentSuccess = {
+  success: true;
+  path: string;
+  content: string;
+};
 
-export type FetchFolderContentResponse =
-  | {
-      success: true;
-      contents: GitHubContentData[];
-    }
-  | FetchErrorResponse;
+export type FetchFileContentResponse = FetchFileContentSuccess | FetchErrorResponse;
 
-export type FetchSampleDefinitionsResponse =
-  | {
-      success: true;
-      samples: Sample[];
-    }
-  | FetchErrorResponse;
+export type FetchFolderContentSuccess = {
+  success: true;
+  contents: GitHubContentData[];
+};
 
-export type FetchSampleFilesResponse =
-  | {
-      success: true;
-      files: LocalFile[];
-    }
-  | FetchErrorResponse;
+export type FetchFolderContentResponse = FetchFolderContentSuccess | FetchErrorResponse;
+
+export type FetchSampleDefinitionsSuccess = {
+  success: true;
+  samples: Sample[];
+};
+
+export type FetchSampleDefinitionsResponse = FetchSampleDefinitionsSuccess | FetchErrorResponse;
+
+export type FetchSampleFilesSuccess = {
+  success: true;
+  files: LocalFile[];
+};
+
+export type FetchSampleFilesResponse = FetchSampleFilesSuccess | FetchErrorResponse;
 
 export interface SamplesRepositoryInfo {
   org: string;

@@ -271,7 +271,7 @@ function prepareFetchErrorMessage(args: { response: FetchErrorResponse; target: 
   if (args.response.error === "NotFound") {
     return `Cannot find ${args.target} at the moment. Please try again later.`;
   }
-  if (args.response.error === "Generic" && args.response.message) {
+  if (args.response.error === "Generic" && args.response.message?.trim().length) {
     return args.response.message;
   }
   return `Something unexpected happened while trying to fetch ${args.target}.`;

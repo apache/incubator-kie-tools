@@ -6089,6 +6089,9 @@ importers:
       jest:
         specifier: ^26.6.3
         version: 26.6.3(ts-node@10.9.1)
+      jest-fetch-mock:
+        specifier: ^3.0.3
+        version: 3.0.3
       jest-junit:
         specifier: ^14.0.0
         version: 14.0.0
@@ -25026,6 +25029,16 @@ packages:
       jest-util: 26.6.2
     dev: true
 
+  /jest-fetch-mock@3.0.3:
+    resolution:
+      { integrity: sha512-Ux1nWprtLrdrH4XwE7O7InRY6psIi3GOsqNESJgMJ+M5cv4A8Lh7SN9d2V2kKRZ8ebAfcd1LNyZguAOb6JiDqw== }
+    dependencies:
+      cross-fetch: 3.1.5
+      promise-polyfill: 8.3.0
+    transitivePeerDependencies:
+      - encoding
+    dev: true
+
   /jest-get-type@26.3.0:
     resolution:
       { integrity: sha512-TpfaviN1R2pQWkIihlfEanwOXK0zcxrKEE4MlU6Tn7keoXdN6/3gK/xl0yEh8DOunn5pOVGKf8hB4R9gVh04ig== }
@@ -25477,7 +25490,7 @@ packages:
     peerDependencies:
       jest: ">= 25"
     dependencies:
-      jest: 26.6.3
+      jest: 26.6.3(ts-node@10.9.1)
     dev: true
 
   /jest-worker@26.6.2:
@@ -29377,6 +29390,11 @@ packages:
         optional: true
     dev: true
 
+  /promise-polyfill@8.3.0:
+    resolution:
+      { integrity: sha512-H5oELycFml5yto/atYqmjyigJoAo3+OXwolYiH7OfQuYlAqhxNvTfiNMbV9hsC6Yp83yE5r2KTVmtrG6R9i6Pg== }
+    dev: true
+
   /promise-retry@2.0.1:
     resolution:
       { integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g== }
@@ -32423,7 +32441,7 @@ packages:
       bs-logger: 0.2.6
       buffer-from: 1.1.1
       fast-json-stable-stringify: 2.1.0
-      jest: 26.6.3
+      jest: 26.6.3(ts-node@10.9.1)
       jest-util: 26.6.2
       json5: 2.2.1
       lodash: 4.17.21

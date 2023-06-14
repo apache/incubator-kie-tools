@@ -59,13 +59,21 @@ export class SampleService {
       return { ...fileContentResponse };
     }
 
-    const definitions = JSON.parse(fileContentResponse.content) as SampleDefinition[];
-    const samples = definitions.map((definition) => ({
-      sampleId: definition.sample_path.replace(new RegExp(`^${this.repositoryInfo.paths.samplesFolder}/`), ""),
-      definition,
-    }));
+    try {
+      const definitions = JSON.parse(fileContentResponse.content) as SampleDefinition[];
+      const samples = definitions.map((definition) => ({
+        sampleId: definition.sample_path.replace(new RegExp(`^${this.repositoryInfo.paths.samplesFolder}/`), ""),
+        definition,
+      }));
 
-    return { success: true, samples };
+      return { success: true, samples };
+    } catch (e) {
+      return {
+        success: false,
+        error: "Generic",
+        message: e.message,
+      };
+    }
   }
 
   /**
@@ -112,39 +120,49 @@ export class SampleService {
       return { ...sampleFolderFilesResponse };
     }
 
-    const promises = sampleFolderFilesResponse.contents
-      .filter(
-        (file) => file.name !== SAMPLE_DEFINITION_FILE && extname(file.name) !== SVG_EXTENSION && file.type === "file"
-      )
-      .map((file) =>
-        this.fetchFileContent({
-          owner: this.repositoryInfo.org,
-          repo: this.repositoryInfo.name,
-          ref: this.repositoryInfo.ref,
-          path: file.path,
+    try {
+      const promises = sampleFolderFilesResponse.contents
+        .filter(
+          (file) => file.name !== SAMPLE_DEFINITION_FILE && extname(file.name) !== SVG_EXTENSION && file.type === "file"
+        )
+        .map((file) =>
+          this.fetchFileContent({
+            owner: this.repositoryInfo.org,
+            repo: this.repositoryInfo.name,
+            ref: this.repositoryInfo.ref,
+            path: file.path,
+          })
+        );
+
+      const resolvedPromises = await Promise.all(promises);
+
+      const firstNotSucceeded = resolvedPromises.find((response) => !response.success);
+      if (firstNotSucceeded && !firstNotSucceeded.success) {
+        return { ...firstNotSucceeded };
+      }
+
+      const filesArray: LocalFile[] = resolvedPromises
+        .map((response) => {
+          if (response.success) {
+            return {
+              path: decodeURIComponent(response.path).split(
+                `${this.repositoryInfo.paths.samplesFolder}/${sampleId}`
+              )[1],
+              fileContents: encoder.encode(response.content),
+            };
+          }
         })
-      );
+        .flat()
+        .filter((r): r is LocalFile => r !== undefined);
 
-    const resolvedPromises = await Promise.all(promises);
-
-    const firstNotSucceeded = resolvedPromises.find((response) => !response.success);
-    if (firstNotSucceeded && !firstNotSucceeded.success) {
-      return { ...firstNotSucceeded };
+      return { success: true, files: filesArray };
+    } catch (e) {
+      return {
+        success: false,
+        error: "Generic",
+        message: e.message,
+      };
     }
-
-    const filesArray: LocalFile[] = resolvedPromises
-      .map((response) => {
-        if (response.success) {
-          return {
-            path: decodeURIComponent(response.path).split(`${this.repositoryInfo.paths.samplesFolder}/${sampleId}`)[1],
-            fileContents: encoder.encode(response.content),
-          };
-        }
-      })
-      .flat()
-      .filter((r): r is LocalFile => r !== undefined);
-
-    return { success: true, files: filesArray };
   }
 
   /**
