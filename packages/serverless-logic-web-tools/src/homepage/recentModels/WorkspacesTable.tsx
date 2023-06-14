@@ -33,7 +33,6 @@ import { TablePaginationProps, TableRowEmptyState } from "../../table";
 import { WorkspacesTableRow, WorkspacesTableRowError, WorkspacesTableRowLoading } from "./WorkspacesTableRow";
 import { useWorkspacesWithFilesPromise } from "./hooks/useWorkspacesWithFilesPromise";
 import { GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { escapeRegExp } from "../../regex";
 
 export const columnNames = {
   name: "Name",
@@ -47,7 +46,6 @@ export const columnNames = {
 export type WorkspacesTableProps = Pick<TablePaginationProps, "page" | "perPage"> & {
   onClearFilters: () => void;
   onWsToggle: (workspaceId: WorkspaceDescriptor["workspaceId"], checked: boolean) => void;
-  searchValue: string;
   selectedWorkspaceIds: WorkspaceDescriptor["workspaceId"][];
   workspaceIds: WorkspaceDescriptor["workspaceId"][];
 
@@ -66,7 +64,7 @@ export type WorkspacesTableRowData = {
 };
 
 export function WorkspacesTable(props: WorkspacesTableProps) {
-  const { workspaceIds, selectedWorkspaceIds, onClearFilters, searchValue, page, perPage } = props;
+  const { workspaceIds, selectedWorkspaceIds, onClearFilters, page, perPage } = props;
   const [activeSortIndex, setActiveSortIndex] = useState<number>(3);
   const [activeSortDirection, setActiveSortDirection] = useState<"asc" | "desc">("desc");
   const workspacesWithFilesPromise = useWorkspacesWithFilesPromise(workspaceIds);
@@ -106,15 +104,10 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
     [workspacesWithFilesPromise]
   );
 
-  const filteredTableData = useMemo<WorkspacesTableRowData[]>(() => {
-    const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-    return searchValue ? tableData.filter((e) => e.descriptor.name.search(searchRegex) >= 0) : tableData;
-  }, [searchValue, tableData]);
-
   const sortedTableData = useMemo<WorkspacesTableRowData[]>(
     () =>
-      // slice() here is needed to create a copy of filteredTableData and sort the data
-      filteredTableData.slice().sort((a, b) => {
+      // slice() here is needed to create a copy of tableData and sort the data
+      tableData.slice().sort((a, b) => {
         const aValue = getSortableRowValues(a)[activeSortIndex];
         const bValue = getSortableRowValues(b)[activeSortIndex];
         // put items with errors at the top
@@ -131,7 +124,7 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
             : (bValue as string).localeCompare(aValue as string);
         }
       }),
-    [filteredTableData, activeSortIndex, activeSortDirection]
+    [tableData, activeSortIndex, activeSortDirection]
   );
 
   const visibleTableData = useMemo<WorkspacesTableRowData[]>(

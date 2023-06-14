@@ -34,8 +34,14 @@ import { ConfirmDeleteModal, defaultPerPageOptions, TablePagination, TableToolba
 import { WorkspacesTable } from "./WorkspacesTable";
 import { Link } from "react-router-dom";
 import { routes } from "../../navigation/Routes";
+import { escapeRegExp } from "../../regex";
 
 const PAGE_TITLE = "Recent models";
+
+function filterWorkspaces(workspaces: WorkspaceDescriptor[], searchValue: string): WorkspaceDescriptor[] {
+  const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
+  return searchValue ? workspaces.filter((e) => e.name.search(searchRegex) >= 0) : workspaces;
+}
 
 export function RecentModels() {
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
@@ -189,7 +195,9 @@ export function RecentModels() {
       promise={workspaceDescriptorsPromise}
       rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
       resolved={(workspaceDescriptors: WorkspaceDescriptor[]) => {
-        const itemCount = workspaceDescriptors.length;
+        const allWorkspacesCount = workspaceDescriptors.length;
+        const filteredWorkspaces = filterWorkspaces(workspaceDescriptors, searchValue);
+        const filteredWorkspacesCount = filteredWorkspaces.length;
 
         return (
           <>
@@ -205,12 +213,12 @@ export function RecentModels() {
 
               <PageSection isFilled aria-label="workspaces-table-section">
                 <PageSection variant={"light"} padding={{ default: "noPadding" }}>
-                  {itemCount > 0 && (
+                  {allWorkspacesCount > 0 && (
                     <>
                       <TableToolbar
-                        itemCount={itemCount}
+                        itemCount={filteredWorkspacesCount}
                         onDeleteActionButtonClick={() => setIsConfirmDeleteModalOpen(true)}
-                        onToggleAllElements={(checked) => onToggleAllElements(checked, workspaceDescriptors)}
+                        onToggleAllElements={(checked) => onToggleAllElements(checked, filteredWorkspaces)}
                         searchValue={searchValue}
                         selectedElementsCount={selectedWorkspaceIds.length}
                         setSearchValue={setSearchValue}
@@ -225,13 +233,12 @@ export function RecentModels() {
                         perPage={perPage}
                         onClearFilters={onClearFilters}
                         onWsToggle={onWsToggle}
-                        searchValue={searchValue}
                         selectedWorkspaceIds={selectedWorkspaceIds}
-                        workspaceIds={workspaceDescriptors.map((d) => d.workspaceId)}
+                        workspaceIds={filteredWorkspaces.map((d) => d.workspaceId)}
                         onWsDelete={onWorkspaceDelete}
                       />
                       <TablePagination
-                        itemCount={itemCount}
+                        itemCount={filteredWorkspacesCount}
                         page={page}
                         perPage={perPage}
                         perPageOptions={defaultPerPageOptions}
@@ -241,7 +248,7 @@ export function RecentModels() {
                       />
                     </>
                   )}
-                  {workspaceDescriptors.length === 0 && (
+                  {allWorkspacesCount === 0 && (
                     <Bullseye>
                       <EmptyState>
                         <EmptyStateIcon icon={CubesIcon} />
