@@ -18,6 +18,7 @@ import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -53,6 +54,7 @@ import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { assertUnreachable } from "../ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
 import "./DecisionTableExpression.css";
+import _ from "lodash";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
@@ -91,13 +93,22 @@ export function DecisionTableExpression(
           { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
         ],
       },
+      {
+        group: _.upperCase(i18n.terms.selection),
+        items: [
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.paste, type: BeeTableOperation.SelectionPaste },
+          { name: i18n.terms.reset, type: BeeTableOperation.SelectionReset },
+        ],
+      },
     ],
     [i18n]
   );
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
     const config: BeeTableOperationConfig = {};
-    config[""] = generateOperationConfig(i18n.inputClause);
+    config[""] = generateOperationConfig(i18n.outputClause);
     config[DecisionTableColumnType.InputClause] = generateOperationConfig(i18n.inputClause);
     config[DecisionTableColumnType.OutputClause] = generateOperationConfig(i18n.outputClause);
     config[DecisionTableColumnType.Annotation] = generateOperationConfig(i18n.ruleAnnotation);
@@ -663,6 +674,53 @@ export function DecisionTableExpression(
     return decisionTableExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
   }, [decisionTableExpression.isNested]);
 
+  const allowedOperations = useCallback(
+    (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+      if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+        return [];
+      }
+
+      const columnIndex = conditions.selection.selectionStart.columnIndex;
+
+      const atLeastTwoColumnsOfTheSameGroupType = conditions.column?.groupType
+        ? _.groupBy(conditions.columns, (column) => column?.groupType)[conditions.column.groupType].length > 1
+        : true;
+
+      const columnCanBeDeleted =
+        columnIndex > 0 &&
+        atLeastTwoColumnsOfTheSameGroupType &&
+        (conditions.columns?.length ?? 0) > 2 && // That's a regular column and the rowIndex column
+        (conditions.column?.columns?.length ?? 0) <= 0;
+
+      const columnOperations =
+        columnIndex === 0 // This is the rowIndex column
+          ? []
+          : [
+              BeeTableOperation.ColumnInsertLeft,
+              BeeTableOperation.ColumnInsertRight,
+              ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
+            ];
+
+      return [
+        ...columnOperations,
+        BeeTableOperation.SelectionCopy,
+        ...(conditions.selection.selectionStart.rowIndex >= 0 && columnIndex > 0
+          ? [BeeTableOperation.SelectionCut, BeeTableOperation.SelectionPaste, BeeTableOperation.SelectionReset]
+          : []),
+        ...(conditions.selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowReset,
+              BeeTableOperation.RowDuplicate,
+            ]
+          : []),
+      ];
+    },
+    [beeTableRows.length]
+  );
+
   return (
     <div className={`decision-table-expression ${decisionTableExpression.id}`}>
       <BeeTable
@@ -674,6 +732,7 @@ export function DecisionTableExpression(
         headerVisibility={beeTableHeaderVisibility}
         editColumnLabel={getEditColumnLabel}
         operationConfig={beeTableOperationConfig}
+        allowedOperations={allowedOperations}
         columns={beeTableColumns}
         rows={beeTableRows}
         onColumnUpdates={onColumnUpdates}

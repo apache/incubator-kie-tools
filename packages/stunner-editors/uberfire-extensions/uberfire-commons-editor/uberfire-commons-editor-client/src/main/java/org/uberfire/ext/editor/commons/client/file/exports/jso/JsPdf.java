@@ -23,7 +23,7 @@ import jsinterop.annotations.JsType;
 
 /**
  * Provides the JsInterop API for jsPdf.
- * Provided by the webjar <code>org.webjars.bower.jspdf</code>.
+ * Provided by the webjar <code>org.webjars.bowergithub.mrrio.jspdf</code>.
  * @see <a href="https://github.com/MrRio/jsPDF">jsPDF.js</a>
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)

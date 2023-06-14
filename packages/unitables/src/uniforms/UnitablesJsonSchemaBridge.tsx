@@ -21,12 +21,13 @@ import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 import { joinName } from "uniforms";
 import { UnitablesColumnType } from "../UnitablesTypes";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
 
 export const DEFAULT_COLUMN_MIN_WIDTH = 150;
 const DEFAULT_DATE_TIME_CELL_WDITH = 210;
 const DEFAULT_DATE_CELL_WIDTH = 170;
 const DEFAULT_TIME_CELL_WIDTH = 150;
+const DEFAULT_DAYS_DURATION_CELL_WIDTH = 245;
+const DEFAULT_YEARS_DURATION_CELL_WIDTH = 180;
 
 export const FORMS_ID = "unitables-forms";
 export const AUTO_ROW_ID = "unitables-row";
@@ -73,15 +74,19 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     if (!xDmnType) {
       type = field.type;
     } else {
-      const splitedXDmnType: string[] | undefined = xDmnType.split(":");
-      if (!splitedXDmnType) {
-        type = undefined;
-      } else if (splitedXDmnType.length > 2) {
-        type = splitedXDmnType[2].split("}")?.[0]?.trim();
-      } else if (splitedXDmnType.length === 2) {
-        type = splitedXDmnType[1];
+      if (field.format?.includes("date") || field.format?.includes("time") || field.format?.includes("duration")) {
+        type = field.format;
       } else {
-        type = splitedXDmnType[0];
+        const splitedXDmnType: string[] | undefined = xDmnType.split(":");
+        if (!splitedXDmnType) {
+          type = undefined;
+        } else if (splitedXDmnType.length > 2) {
+          type = splitedXDmnType[2].split("}")?.[0]?.trim();
+        } else if (splitedXDmnType.length === 2) {
+          type = splitedXDmnType[1];
+        } else {
+          type = splitedXDmnType[0];
+        }
       }
     }
 
@@ -116,6 +121,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
           width: DEFAULT_DATE_CELL_WIDTH,
           type: field.type,
         };
+      case "date-time":
       case "date and time":
         return {
           dataType: DmnBuiltInDataType.DateTime,
@@ -125,7 +131,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
       case "days and time duration":
         return {
           dataType: DmnBuiltInDataType.DateTimeDuration,
-          width: DEFAULT_COLUMN_MIN_WIDTH,
+          width: DEFAULT_DAYS_DURATION_CELL_WIDTH,
           type: field.type,
         };
       case "number":
@@ -149,7 +155,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
       case "years and months duration":
         return {
           dataType: DmnBuiltInDataType.YearsMonthsDuration,
-          width: DEFAULT_COLUMN_MIN_WIDTH,
+          width: DEFAULT_YEARS_DURATION_CELL_WIDTH,
           type: field.type,
         };
       default:

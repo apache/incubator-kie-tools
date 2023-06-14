@@ -42,6 +42,7 @@ export const en: FormDmnI18n = {
     },
   },
   validation: {
+    xDmnAllowedValues: "does not belong to set of allowed values",
     daysAndTimeError: "should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)",
     yearsAndMonthsError: "should match format P1Y(ears)2M(onths)",
   },

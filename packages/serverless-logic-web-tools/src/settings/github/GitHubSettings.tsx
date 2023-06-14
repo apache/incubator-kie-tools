@@ -15,28 +15,27 @@
  */
 
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { AddCircleOIcon } from "@patternfly/react-icons/dist/js/icons/add-circle-o-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
-import * as React from "react";
-import { useEffect, useCallback, useContext, useMemo, useRef, useState } from "react";
+import React from "react";
+import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { makeCookieName } from "../../cookies";
 import { QuickStartIds } from "../../quickstarts-data";
 import { AuthStatus, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
+import { SettingsPageContainer } from "../SettingsPageContainer";
 import { SettingsPageProps } from "../types";
-import { setPageTitle } from "../../PageTitle";
-import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
 
 const PAGE_TITLE = "GitHub";
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
@@ -100,24 +99,18 @@ export function GitHubSettings(props: SettingsPageProps) {
     setPotentialGitHubToken(undefined);
   }, [settingsDispatch.github.authService]);
 
-  useEffect(() => {
-    setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
-  }, []);
-
   return (
-    <Page>
-      <PageSection variant={"light"}>
-        <TextContent>
-          <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
-          <Text component={TextVariants.p}>
-            Data you provide here is necessary for creating repositories containing models you design, and syncing
-            changes with GitHub.
-            <br />
-            All information is locally stored in your browser and never shared with anyone.
-          </Text>
-        </TextContent>
-      </PageSection>
-
+    <SettingsPageContainer
+      pageTitle={PAGE_TITLE}
+      subtitle={
+        <>
+          Data you provide here is necessary for creating repositories containing models you design, and syncing changes
+          with GitHub.
+          <br />
+          All information is locally stored in your browser and never shared with anyone.
+        </>
+      }
+    >
       <PageSection isFilled>
         <PageSection variant={"light"}>
           {settings.github.authStatus === AuthStatus.TOKEN_EXPIRED && (
@@ -248,7 +241,7 @@ export function GitHubSettings(props: SettingsPageProps) {
           </Form>
         </Modal>
       )}
-    </Page>
+    </SettingsPageContainer>
   );
 }
 

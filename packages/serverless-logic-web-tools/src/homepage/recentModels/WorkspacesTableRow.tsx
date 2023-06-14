@@ -157,10 +157,10 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
               },
             ]}
           />
+          <a ref={downloadRef} />
+          <a ref={downloadAllRef} />
         </Td>
       </Tr>
-      <a ref={downloadRef} />
-      <a ref={downloadAllRef} />
     </>
   );
 }
