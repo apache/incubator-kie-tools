@@ -180,7 +180,7 @@ func checkDeployEnvironment(cfg *DeployCmdConfig) error {
 		}
 	}
 
-	fmt.Println("🔎  Checking if the Kogito Serverless Workflow Operator is correctly installed...")
+	fmt.Println("🔎 Checking if the Kogito Serverless Workflow Operator is correctly installed...")
 	if err := common.CheckOperatorInstalled(); err != nil {
 		return err
 	}
