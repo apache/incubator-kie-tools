@@ -128,5 +128,5 @@ export enum EnvelopeBusMessageDirectSender {
 }
 
 export interface EnvelopeBus {
-  postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any): void;
+  postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin: string, _?: any): void;
 }

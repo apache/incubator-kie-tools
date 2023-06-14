@@ -70,9 +70,9 @@ export function RefForwardingEmbeddedEnvelope<
     () => ({
       postMessage<D, T>(message: EnvelopeBusMessage<D, T>) {
         if (props.config.containerType === ContainerType.DIV) {
-          window.postMessage(message, "*");
+          window.postMessage(message, props.origin);
         } else {
-          iframeRef.current?.contentWindow?.postMessage(message, "*");
+          iframeRef.current?.contentWindow?.postMessage(message, props.origin);
         }
       },
     }),

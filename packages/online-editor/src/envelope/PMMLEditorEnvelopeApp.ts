@@ -19,6 +19,6 @@ import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
-  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
+  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin, _) },
   editorFactory: new PMMLEditorFactory(),
 });

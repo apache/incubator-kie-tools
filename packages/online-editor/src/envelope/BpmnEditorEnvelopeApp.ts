@@ -20,6 +20,6 @@ import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
 EditorEnvelope.initCustom<BpmnEditor, BpmnEditorEnvelopeApi, BpmnEditorChannelApi>({
   container: document.getElementById("envelope-app")!,
-  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
+  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin, _) },
   apiImplFactory: { create: (args) => new BpmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) },
 });

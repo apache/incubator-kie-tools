@@ -103,7 +103,10 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
 
   const envelopeServer = useMemo(() => {
     return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
-      { postMessage: (message) => iframeRef.current?.contentWindow?.postMessage(message, "*") },
+      {
+        postMessage: (message) =>
+          iframeRef.current?.contentWindow?.postMessage(message, props.editorEnvelopeLocator.targetOrigin),
+      },
       props.editorEnvelopeLocator.targetOrigin,
       (self) =>
         self.envelopeApi.requests.kogitoEditor_initRequest(

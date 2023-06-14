@@ -57,11 +57,14 @@ export class EnvelopeServer<
     public readonly type: EnvelopeServerType = EnvelopeServerType.REMOTE,
     public readonly manager = new EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>(
       (message) =>
-        bus.postMessage({
-          ...message,
-          targetEnvelopeId: type === EnvelopeServerType.LOCAL ? this.id : undefined,
-          directSender: EnvelopeBusMessageDirectSender.ENVELOPE_SERVER,
-        }),
+        bus.postMessage(
+          {
+            ...message,
+            targetEnvelopeId: type === EnvelopeServerType.LOCAL ? this.id : undefined,
+            directSender: EnvelopeBusMessageDirectSender.ENVELOPE_SERVER,
+          },
+          origin
+        ),
       "EnvelopeServer"
     )
   ) {
