@@ -15,7 +15,7 @@
  */
 package org.dashbuilder.client.services;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -47,8 +47,8 @@ public class JoinDataSetsService {
 
     public void joinDataSets(List<String> uuids, DataSetLookup lookup, DataSetReadyCallback listener) {
         var joinedDataSet = DataSetFactory.newEmptyDataSet();
-        var missingDatasets = new ArrayList<String>(uuids);
         var onError = new AtomicBoolean(false);
+        var dataSetsMap = new HashMap<String, DataSet>();
 
         joinedDataSet.setUUID(lookup.getDataSetUUID());
         for (var uuid : uuids) {
@@ -60,9 +60,12 @@ public class JoinDataSetsService {
                     if (onError.get()) {
                         return;
                     }
-                    missingDatasets.remove(uuid);
-                    join(joinedDataSet, dataSet);
-                    if (missingDatasets.isEmpty()) {
+                    dataSetsMap.put(uuid, dataSet);
+                    if (dataSetsMap.size() == uuids.size()) {
+                        uuids.stream()
+                                .map(dataSetsMap::get)
+                                .filter(ds -> !isEmpty(ds))
+                                .forEach(ds -> join(joinedDataSet, ds));
                         manager.registerDataSet(joinedDataSet);
                         var result = manager.lookupDataSet(lookup);
                         manager.removeDataSet(lookup.getDataSetUUID());
@@ -139,6 +142,10 @@ public class JoinDataSetsService {
         dataSet.getColumns().forEach((cl -> joinedDataSet.addColumn(cl.getId(), cl.getColumnType())));
         joinedDataSet.addColumn(DATASET_COLUMN, ColumnType.LABEL);
 
+    }
+
+    private boolean isEmpty(DataSet dataSet) {
+        return dataSet.getRowCount() == 0 && (dataSet.getColumns() == null || dataSet.getColumns().isEmpty());
     }
 
 }
