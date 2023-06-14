@@ -26,44 +26,41 @@ import (
 	"path"
 )
 
-func NewDeployCommand() *cobra.Command {
+func NewUndeployCommand() *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:   "deploy",
-		Short: "Deploy a Kogito Serverless Workflow file on Kubernetes via Kogito Serverless Workflow Operator",
+		Use:   "undeploy",
+		Short: "Undeploy a Kogito Serverless Workflow file on Kubernetes via Kogito Serverless Workflow Operator",
 		Long: `
-	Deploy a Kogito Serverless Workflow file in Kubernetes via the Kogito Serverless Workflow Operator. 
+	Undeploy a Kogito Serverless Workflow file in Kubernetes via the Kogito Serverless Workflow Operator. 
 	`,
 		Example: `
-	# Deploy the workflow from the current directory's project. 
+	# Undeploy the workflow from the current directory's project. 
 	# as a Knative service. You must provide target namespace.
-	{{.Name}} deploy --namespace <your_namespace>
+	{{.Name}} undeploy --namespace <your_namespace>
 	# Persist the generated Kubernetes manifests on a given path and deploy the 
 	# workflow from the current directory's project. 
-	{{.Name}} deploy --manifestPath=<full_directory_path>
-    # Specify a custom support files folder. 
-	{{.Name}} deploy --supportFiles=<full_directory_path>
+	{{.Name}} undeploy --manifestPath=<full_directory_path>
 		`,
 
-		PreRunE:    common.BindEnv("namespace", "manifestPath", "supportFilesFolder"),
-		SuggestFor: []string{"delpoy", "deplyo"},
+		PreRunE:    common.BindEnv("namespace", "manifestPath"),
+		SuggestFor: []string{"undelpoy", "undeplyo"},
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		return runDeployUndeploy(cmd, args)
+		return runUndeploy(cmd, args)
 	}
 
 	cmd.Flags().StringP("namespace", "n", "", "Target namespace of your deployment.")
 	cmd.Flags().StringP("manifestPath", "c", "", "Target directory of your generated Kubernetes manifests.")
-	cmd.Flags().StringP("supportFilesFolder", "s", "", "Specify a custom support files folder")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
 }
 
-func runDeployUndeploy(cmd *cobra.Command, args []string) error {
+func runUndeploy(cmd *cobra.Command, args []string) error {
 
-	cfg, err := runDeployCmdConfig(cmd)
+	cfg, err := runUndeployCmdConfig(cmd)
 	//temp dir cleanup
 	defer func(cfg *DeployUndeployCmdConfig) {
 		if cfg.TempDir != "" {
@@ -74,48 +71,46 @@ func runDeployUndeploy(cmd *cobra.Command, args []string) error {
 	}(&cfg)
 
 	if err != nil {
-		return fmt.Errorf("❌ ERROR: initializing deploy config: %w", err)
+		return fmt.Errorf("❌ ERROR: initializing undeploy config: %w", err)
 	}
 
-	fmt.Println("🛠️️ Deploy a Kogito Serverless Workflow file on Kubernetes via the Kogito Serverless Workflow Operator...")
+	fmt.Println("🛠️️ Undeploy a Kogito Serverless Workflow file on Kubernetes via the Kogito Serverless Workflow Operator...")
 
 	if err := checkEnvironment(&cfg); err != nil {
-		return fmt.Errorf("❌ ERROR: checking deploy environment: %w", err)
+		return fmt.Errorf("❌ ERROR: checking undeploy environment: %w", err)
 	}
 
 	if err := generateManifests(&cfg); err != nil {
-		return fmt.Errorf("❌ ERROR: generating deploy environment: %w", err)
+		return fmt.Errorf("❌ ERROR: generating undeploy manifests: %w", err)
 	}
 
-	if err = deploy(&cfg); err != nil {
-		return fmt.Errorf("❌ ERROR: applying deploy: %w", err)
+	if err = deleteDeploy(&cfg); err != nil {
+		return fmt.Errorf("❌ ERROR: undeploying: %w", err)
 	}
 
-	fmt.Printf("\n🎉 Kogito Serverless Workflow project successfully deployed.")
+	fmt.Println("\n🎉 Kogito Serverless Workflow project successfully undeployed.")
 
 	return nil
 }
 
-func deploy(cfg *DeployUndeployCmdConfig) error {
-	fmt.Printf("🛠 Deploying your Kogito Serverless project in namespace %s\n", cfg.NameSpace)
+func deleteDeploy(cfg *DeployUndeployCmdConfig) error {
+	fmt.Printf("🔨 Undeploying your Kogito Serverless project in namespace %s\n", cfg.NameSpace)
 
-	manifestExtension := []string{".yaml"}
-
-	files, err := common.FindFilesWithExtensions(cfg.ManifestPath, manifestExtension)
+	files, err := common.FindServiceFiles(cfg.ManifestPath)
 	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to get manifest directory and files: %w", err)
+		return fmt.Errorf("❌ ERROR: failed to get kubernetes manifest service files: %w", err)
 	}
 	for _, file := range files {
-		if err = common.ExecuteKubectlApply(file, cfg.NameSpace); err != nil {
-			return fmt.Errorf("❌ ERROR: failed to deploy manifest %s,  %w", file, err)
+		if err = common.ExecuteKubectlDelete(file, cfg.NameSpace); err != nil {
+			return fmt.Errorf("❌ ERROR: failed to undeploy manifest %s,  %w", file, err)
 		}
-		fmt.Printf(" - ✅ Manifest %s successfully deployed in namespace %s\n", path.Base(file), cfg.NameSpace)
+		fmt.Printf(" - ✅ Manifest %s successfully undeployed in namespace %s\n", path.Base(file), cfg.NameSpace)
 
 	}
 	return nil
 }
 
-func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err error) {
+func runUndeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err error) {
 
 	cfg = DeployUndeployCmdConfig{
 		NameSpace:         viper.GetString("namespace"),
