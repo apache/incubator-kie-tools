@@ -27,6 +27,7 @@ const (
 	KogitoAddonsQuarkusKnativeEventingExtension = "kogito-addons-quarkus-knative-eventing"
 	KogitoQuarkusServerlessWorkflowDevUi        = "kogito-quarkus-serverless-workflow-devui"
 	KogitoAddonsQuarkusSourceFiles              = "kogito-addons-quarkus-source-files"
+	KogitoDataIndexInMemory                     = "kogito-addons-quarkus-data-index-inmemory"
 
 	JavaVersion       = 11
 	MavenMajorVersion = 3
@@ -36,4 +37,14 @@ const (
 	WorkflowSwJson = "workflow.sw.json"
 
 	KogitoImage = "quay.io/kiegroup/kogito-swf-devmode-nightly:latest"
+
+	OperatorName       = "kogito-serverless-operator-system"
+	OperatorManagerPod = "kogito-serverless-operator-controller-manager"
+
+	YAMLExtension         = "sw.yaml"
+	YAMLExtensionShort    = "sw.yml"
+	JSONExtension         = "sw.json"
+	ApplicationProperties = "application.properties"
+
+	ManifestServiceFilesKind = "KogitoServerlessWorkflow"
 )

@@ -64,7 +64,7 @@ func NewDeployCommand() *cobra.Command {
 }
 
 func runDeploy(cmd *cobra.Command, args []string) error {
-	fmt.Println("🔨 Deploying your Quarkus Kogito Serverless Workflow project...")
+	fmt.Println("🛠️ Deploying your Quarkus Kogito Serverless Workflow project...")
 
 	cfg, err := runDeployCmdConfig(cmd)
 	if err != nil {
@@ -79,7 +79,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Println("✅ Quarkus Kogito Serverless Workflow project successfully deployed")
+	fmt.Println("🎉 Quarkus Kogito Serverless Workflow project successfully deployed")
 
 	return nil
 }
@@ -91,10 +91,10 @@ func deployKnativeServiceAndEventingBindings(cfg DeployCmdConfig) (bool, error) 
 		createService,
 		"deploy",
 	); err != nil {
-		fmt.Println("❌ Deploy failed, Knative service was not created.")
+		fmt.Println("❌ ERROR: Deploy failed, Knative service was not created.")
 		return isKnativeEventingBindingsCreated, err
 	}
-	fmt.Println("✅ Knative service successfully created")
+	fmt.Println("🎉 Knative service successfully created")
 
 	// Check if kogito.yml file exists
 	if exists, err := checkIfKogitoFileExists(cfg); exists && err == nil {
@@ -103,7 +103,7 @@ func deployKnativeServiceAndEventingBindings(cfg DeployCmdConfig) (bool, error) 
 			deploy,
 			"deploy",
 		); err != nil {
-			fmt.Println("❌ Deploy failed, Knative Eventing binding was not created.")
+			fmt.Println("❌ ERROR:Deploy failed, Knative Eventing binding was not created.")
 			return isKnativeEventingBindingsCreated, err
 		}
 		isKnativeEventingBindingsCreated = true
