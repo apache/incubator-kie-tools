@@ -15,7 +15,6 @@
  */
 package org.dashbuilder.client.services;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
