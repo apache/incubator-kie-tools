@@ -27,7 +27,6 @@ import { useCallback, useMemo, useState } from "react";
 import { isEditable } from "../../../extension";
 import { WorkspaceFilesTableRow } from "./WorkspaceFilesTableRow";
 import { TablePaginationProps, TableRowEmptyState } from "../../../table";
-import { escapeRegExp } from "../../../regex";
 
 export const columnNames = {
   name: "Name",
@@ -38,7 +37,6 @@ export const columnNames = {
 export type WorkspaceFilesTableProps = Pick<TablePaginationProps, "page" | "perPage"> & {
   onClearFilters: () => void;
   onFileToggle: (workspaceFile: WorkspaceFile, checked: boolean) => void;
-  searchValue: string;
   selectedWorkspaceFiles: WorkspaceFile[];
   /**
    * total files count
@@ -59,7 +57,7 @@ export type WorkspaceFilesTableRowData = Pick<WorkspaceFile, "extension"> & {
 };
 
 export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
-  const { workspaceFiles, selectedWorkspaceFiles, searchValue, page, perPage, totalFilesCount, onClearFilters } = props;
+  const { workspaceFiles, selectedWorkspaceFiles, page, perPage, totalFilesCount, onClearFilters } = props;
   const [activeSortIndex, setActiveSortIndex] = useState<number>(0);
   const [activeSortDirection, setActiveSortDirection] = useState<"asc" | "desc">("desc");
 
@@ -76,15 +74,10 @@ export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
     [workspaceFiles]
   );
 
-  const filteredTableData = useMemo<WorkspaceFilesTableRowData[]>(() => {
-    const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-    return searchValue ? tableData.filter((e) => e.name.search(searchRegex) >= 0) : tableData;
-  }, [searchValue, tableData]);
-
   const sortedTableData = useMemo<WorkspaceFilesTableRowData[]>(
     () =>
-      // slice() here is needed to create a copy of filteredTableData and sort the data
-      filteredTableData.slice().sort((a, b) => {
+      // slice() here is needed to create a copy of tableData and sort the data
+      tableData.slice().sort((a, b) => {
         const aValue = getSortableRowValues(a)[activeSortIndex];
         const bValue = getSortableRowValues(b)[activeSortIndex];
         if (typeof aValue === "number" || typeof aValue === "boolean") {
@@ -97,7 +90,7 @@ export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
             : (bValue as string).localeCompare(aValue as string);
         }
       }),
-    [filteredTableData, activeSortIndex, activeSortDirection]
+    [tableData, activeSortIndex, activeSortDirection]
   );
 
   const visibleTableData = useMemo<WorkspaceFilesTableRowData[]>(
