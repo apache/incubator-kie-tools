@@ -65,7 +65,7 @@ export function RecentModels() {
         Deleting {isDeletingWorkspacePlural ? "these" : "this"}{" "}
         <b>{isDeletingWorkspacePlural ? deletingWorkspaceIds.length : firstDeletingWorkspaceName}</b>{" "}
         {deletingElementTypesName}
-        {deletingFoldersCount ? ` removes the ${deletingElementTypesName} and all the models inside.` : "."}
+        {deletingFoldersCount ? ` removes the ${deletingElementTypesName} and all the files inside.` : "."}
       </>
     ),
     [
