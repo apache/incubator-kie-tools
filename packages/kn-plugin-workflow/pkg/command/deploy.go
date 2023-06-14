@@ -211,7 +211,7 @@ func generateDeployEnvironment(cfg *DeployCmdConfig) error {
 		fmt.Printf(" - ✅ Properties file found: %s\n", cfg.ApplicationPropertiesPath)
 	}
 
-	extensions := []string{".json", ".yaml"}
+	extensions := []string{".json", ".yaml", ".yml"}
 
 	files, err := common.FindFilesWithExtensions(cfg.SupportFileFolder, extensions)
 	if err != nil {
