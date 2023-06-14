@@ -25,14 +25,14 @@ import (
 )
 
 type cfgTestInputDeploy struct {
-	input command.DeployCmdConfig
+	input command.DeployUndeployCmdConfig
 }
 
 var cfgTestInputDeploy_Success = []cfgTestInputDeploy{
-	{input: command.DeployCmdConfig{}},
+	{input: command.DeployUndeployCmdConfig{}},
 }
 
-func transformDeployCmdCfgToArgs(cfg command.DeployCmdConfig) []string {
+func transformDeployCmdCfgToArgs(cfg command.DeployUndeployCmdConfig) []string {
 	args := []string{"deploy"}
 	return args
 }
