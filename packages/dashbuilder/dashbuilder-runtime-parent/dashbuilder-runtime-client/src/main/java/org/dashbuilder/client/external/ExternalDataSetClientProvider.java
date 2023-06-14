@@ -31,6 +31,7 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.Headers;
 import elemental2.dom.RequestInit;
 import elemental2.dom.Response;
+import elemental2.dom.URL;
 import elemental2.promise.IThenable;
 import org.dashbuilder.client.external.transformer.JSONAtaInjector;
 import org.dashbuilder.client.external.transformer.JSONAtaTransformer;
@@ -139,13 +140,25 @@ public class ExternalDataSetClientProvider {
 
     private void fetch(ExternalDataSetDef def, DataSetReadyCallback callback) {
         var req = RequestInit.create();
+        URL url = null;
+
+        try {
+            url = new URL(def.getUrl());
+        } catch (Exception e) {
+            // relative URLs
+            url = new URL(def.getUrl(), DomGlobal.location.href);
+        }
         if (def.getHeaders() != null) {
             var headers = new Headers();
             def.getHeaders().forEach(headers::append);
             req.setHeaders(headers);
         }
 
-        DomGlobal.fetch(def.getUrl(), req).then((Response response) -> {
+        if (def.getQuery() != null) {
+            def.getQuery().forEach(url.searchParams::set);
+        }
+
+        DomGlobal.fetch(url.toString(), req).then((Response response) -> {
             var contentType = response.headers.get(HttpHeaders.CONTENT_TYPE);
             var mimeType = SupportedMimeType.byMimeTypeOrUrl(contentType, def.getUrl())
                     .orElse(DEFAULT_TYPE);
