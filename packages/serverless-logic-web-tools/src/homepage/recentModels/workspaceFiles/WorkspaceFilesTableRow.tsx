@@ -30,9 +30,6 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 export const workspacesTableRowErrorContent = "Error obtaining workspace information";
 
 export type WorkspaceFilesTableRowProps = {
-  /**
-   * total files count
-   */
   isSelected: boolean;
   /**
    * event fired when the Checkbox is toggled
@@ -105,7 +102,7 @@ export function WorkspaceFilesTableRow(props: WorkspaceFilesTableRowProps) {
             items={[
               {
                 title: "Delete",
-                onClick: onDelete,
+                onClick: () => props.onDelete(fileDescriptor),
               },
               {
                 title: "Download",

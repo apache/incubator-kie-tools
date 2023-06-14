@@ -78,10 +78,6 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
     );
   }, [descriptor, editableFiles, isWsFolder, totalFiles]);
 
-  const onDeleteWorkspace = useCallback(async () => {
-    onDelete(descriptor.workspaceId);
-  }, [descriptor, onDelete]);
-
   const onDownloadWorkspace = useCallback(async () => {
     if (totalFiles === 0) {
       return;
@@ -149,7 +145,7 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
             items={[
               {
                 title: "Delete",
-                onClick: onDeleteWorkspace,
+                onClick: () => onDelete(descriptor.workspaceId),
               },
               {
                 title: "Download",
