@@ -118,7 +118,7 @@ func FindServiceFiles(directory string) ([]string, error) {
 
 		byteValue, err := io.ReadAll(file)
 		if err != nil {
-			return fmt.Errorf("❌ ERROR:failure reading file %q: %v\n", path, err)
+			return fmt.Errorf("❌ ERROR: failure reading file %q: %v\n", path, err)
 		}
 
 		var doc Document
