@@ -112,7 +112,7 @@ func FindServiceFiles(directory string) ([]string, error) {
 
 		file, err := os.Open(path)
 		if err != nil {
-			return fmt.Errorf("❌ ERROR:failure opening file %q: %v\n", path, err)
+			return fmt.Errorf("❌ ERROR: failure opening file %q: %v\n", path, err)
 		}
 		defer file.Close()
 
