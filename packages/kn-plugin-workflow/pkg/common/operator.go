@@ -60,7 +60,7 @@ func ExecuteKubectlDelete(crd, namespace string) error {
 
 	err := cmd.Run()
 	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to execute kubectl apply command for %s: %s", crd, err)
+		return fmt.Errorf("❌ ERROR: failed to execute kubectl delete command for %s: %s", crd, err)
 	}
 
 	return nil
