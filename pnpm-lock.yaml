@@ -2857,6 +2857,9 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -2903,6 +2906,9 @@ importers:
       "@types/jest-when":
         specifier: ^2.7.4
         version: 2.7.4
+      "@types/lodash":
+        specifier: ^4.14.168
+        version: 4.14.169
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21

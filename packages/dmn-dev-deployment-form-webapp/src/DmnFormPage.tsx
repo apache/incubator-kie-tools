@@ -16,7 +16,11 @@
 
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { FormDmn, FormDmnOutputs, extractDifferences } from "@kie-tools/form-dmn";
-import { DecisionResult } from "@kie-tools/extended-services-api";
+import {
+  DecisionResult,
+  DmnInputFieldProperties,
+  ExtendedServicesDmnJsonSchema,
+} from "@kie-tools/extended-services-api";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -29,6 +33,7 @@ import { fetchDmnResult } from "./DmnDevDeploymentRuntimeApi";
 import { DmnFormToolbar } from "./DmnFormToolbar";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { useDmnFormI18n } from "./i18n";
+import { get as getObjectValueByPath } from "lodash";
 
 interface Props {
   formData: FormData;
@@ -52,13 +57,58 @@ export function DmnFormPage(props: Props) {
   const [pageError, setPageError] = useState<boolean>(false);
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
 
+  const getFieldDefaultValue = useCallback((dmnField: DmnInputFieldProperties):
+    | string
+    | boolean
+    | []
+    | object
+    | undefined => {
+    if (dmnField?.type === "string" && dmnField?.format === undefined) {
+      return undefined;
+    }
+    if (dmnField?.type === "number") {
+      return undefined;
+    }
+    if (dmnField?.type === "boolean") {
+      return false;
+    }
+    if (dmnField?.type === "array") {
+      return [];
+    }
+    if (dmnField?.type === "object") {
+      return {};
+    }
+    return undefined;
+  }, []);
+
+  const getDefaultValues = useCallback(
+    (jsonSchema: ExtendedServicesDmnJsonSchema) => {
+      return Object.entries(getObjectValueByPath(jsonSchema, "definitions.InputSet.properties") ?? {})?.reduce(
+        (acc, [key, field]: [string, Record<string, string>]) => {
+          acc[key] = getFieldDefaultValue(field);
+          return acc;
+        },
+        {} as Record<string, any>
+      );
+    },
+    [getFieldDefaultValue]
+  );
+
+  const formInputsWithDefaultValues = useMemo(
+    () => ({
+      ...getDefaultValues(props.formData.schema),
+      ...formInputs,
+    }),
+    [formInputs, getDefaultValues, props.formData.schema]
+  );
+
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
   const onSubmit = useCallback(async () => {
     try {
       const formOutputs = await fetchDmnResult({
         modelName: props.formData.modelName,
-        inputs: formInputs,
+        inputs: formInputsWithDefaultValues,
       });
 
       setFormOutputs((previousOutputs: DecisionResult[]) => {
@@ -74,7 +124,7 @@ export function DmnFormPage(props: Props) {
       setOpenAlert(AlertTypes.ERROR);
       console.error(error);
     }
-  }, [formInputs, props.formData.modelName]);
+  }, [formInputsWithDefaultValues, props.formData.modelName]);
 
   const pageErrorMessage = useMemo(
     () => (
@@ -148,7 +198,7 @@ export function DmnFormPage(props: Props) {
                 <div className={"kogito--dmn-form__content-body"}>
                   <PageSection className={"kogito--dmn-form__content-body-input"}>
                     <FormDmn
-                      formInputs={formInputs}
+                      formInputs={formInputsWithDefaultValues}
                       setFormInputs={setFormInputs}
                       formError={formError}
                       setFormError={setFormError}
