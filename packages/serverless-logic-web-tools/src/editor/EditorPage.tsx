@@ -36,9 +36,8 @@ import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseSta
 import { useWorkspaceFilePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceFileHooks";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
-import { EditorPageErrorPage } from "./EditorPageErrorPage";
+import { ErrorPage } from "../error/ErrorPage";
 import { EditorToolbar } from "./EditorToolbar";
-import { APP_NAME } from "../AppConstants";
 import { WebToolsEmbeddedEditor, WebToolsEmbeddedEditorRef } from "./WebToolsEmbeddedEditor";
 import { useEditorNotifications } from "./hooks/useEditorNotifications";
 import { useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
@@ -224,7 +223,7 @@ export function EditorPage(props: Props) {
     <PromiseStateWrapper
       promise={workspaceFilePromise}
       pending={<LoadingSpinner />}
-      rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
+      rejected={(errors) => <ErrorPage kind="File" errors={errors} filePath={props.fileRelativePath} />}
       resolved={(file) => (
         <>
           <Page>
