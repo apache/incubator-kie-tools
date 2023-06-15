@@ -15,8 +15,8 @@
  */
 package org.dashbuilder.dataset.def;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -46,7 +46,7 @@ public class ExternalDataSetDef extends DataSetDef {
 
     private ExternalServiceType type;
 
-    private List<String> join;
+    private Collection<String> join;
 
     public ExternalDataSetDef() {
         super.setProvider(DataSetProviderType.EXTERNAL);
@@ -84,11 +84,11 @@ public class ExternalDataSetDef extends DataSetDef {
         this.content = content;
     }
 
-    public List<String> getJoin() {
+    public Collection<String> getJoin() {
         return join;
     }
 
-    public void setJoin(List<String> join) {
+    public void setJoin(Collection<String> join) {
         this.join = join;
     }
 

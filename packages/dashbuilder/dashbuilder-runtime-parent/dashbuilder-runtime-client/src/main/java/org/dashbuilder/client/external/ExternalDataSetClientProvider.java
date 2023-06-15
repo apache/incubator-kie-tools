@@ -24,8 +24,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.dev.util.HttpHeaders;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import elemental2.core.Global;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Headers;
@@ -35,15 +33,15 @@ import elemental2.dom.URL;
 import elemental2.promise.IThenable;
 import org.dashbuilder.client.external.transformer.JSONAtaInjector;
 import org.dashbuilder.client.external.transformer.JSONAtaTransformer;
-import org.dashbuilder.common.client.StringUtils;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
-import org.dashbuilder.dataset.json.ExternalDataSetJSONParser;
 import org.jboss.resteasy.util.HttpResponseCodes;
+
+import static org.dashbuilder.common.client.StringUtils.isBlank;
 
 @ApplicationScoped
 public class ExternalDataSetClientProvider {
@@ -54,7 +52,8 @@ public class ExternalDataSetClientProvider {
     @Inject
     ExternalDataCallbackCoordinator dataSetCallbackCoordinator;
 
-    ExternalDataSetJSONParser externalParser;
+    @Inject
+    ExternalDataSetParserProvider externalParserProvider;
 
     private Map<String, ExternalDataSetDef> externalDataSets;
 
@@ -66,9 +65,6 @@ public class ExternalDataSetClientProvider {
     public void setup() {
         externalDataSets = new HashMap<>();
         scheduledTimeouts = new HashMap<>();
-
-        var format = DateTimeFormat.getFormat(PredefinedFormat.ISO_8601);
-        externalParser = new ExternalDataSetJSONParser(format::parse);
     }
 
     public void fetchAndRegister(String uuid, DataSetLookup lookup, DataSetReadyCallback listener) {
@@ -196,11 +192,11 @@ public class ExternalDataSetClientProvider {
         DataSet dataSet = null;
         var content = contentType.tranformer.apply(responseText);
 
-        if (def.getType() != null && StringUtils.isBlank(def.getExpression())) {
+        if (def.getType() != null && isBlank(def.getExpression())) {
             def.setExpression(def.getType().getExpression());
         }
 
-        if (def.getExpression() != null && !def.getExpression().trim().isEmpty()) {
+        if (!isBlank(def.getExpression())) {
             try {
                 content = applyExpression(def.getExpression(), content);
             } catch (Exception e) {
@@ -213,7 +209,7 @@ public class ExternalDataSetClientProvider {
         }
 
         try {
-            dataSet = externalParser.parseDataSet(content);
+            dataSet = externalParserProvider.get().parseDataSet(content);
         } catch (Exception e) {
             callback.onError(new ClientRuntimeError("Error parsing dataset: " + e.getMessage(), e));
             return null;
@@ -244,6 +240,36 @@ public class ExternalDataSetClientProvider {
         return null;
     }
 
+    public String applyExpression(String expression, String responseText) {
+        JSONAtaInjector.ensureJSONAtaInjected();
+        var json = Global.JSON.parse(responseText);
+        var result = JSONAtaTransformer.jsonata(expression).evaluate(json);
+        return Global.JSON.stringify(result);
+    }
+
+    public void handleCache(String uuid) {
+        var def = externalDataSets.get(uuid);
+        if (def == null || def.isAccumulate()) {
+            return;
+        }
+        scheduledTimeouts.computeIfPresent(uuid, (k, v) -> {
+            DomGlobal.clearTimeout(v);
+            return null;
+        });
+        if (def.isCacheEnabled()) {
+            var refreshTimeAmount = def.getRefreshTimeAmount();
+            if (refreshTimeAmount != null) {
+                var id = DomGlobal.setTimeout(params -> {
+                    clientDataSetManager.removeDataSet(uuid);
+                    scheduledTimeouts.remove(uuid);
+                }, refreshTimeAmount.toMillis());
+                scheduledTimeouts.put(uuid, id);
+            }
+        } else {
+            clientDataSetManager.removeDataSet(uuid);
+        }
+    }
+
     void accumulateDataSet(DataSet dataSet, DataSet existingDs) {
         if (dataSet.getRowCount() > 0 && !existingDs.getColumns().equals(dataSet.getColumns())) {
             throw new RuntimeException("New data is not compatible with existing data.");
@@ -268,29 +294,6 @@ public class ExternalDataSetClientProvider {
         }
     }
 
-    private void handleCache(String uuid) {
-        var def = externalDataSets.get(uuid);
-        if (def == null || def.isAccumulate()) {
-            return;
-        }
-        scheduledTimeouts.computeIfPresent(uuid, (k, v) -> {
-            DomGlobal.clearTimeout(v);
-            return null;
-        });
-        if (def.isCacheEnabled()) {
-            var refreshTimeAmount = def.getRefreshTimeAmount();
-            if (refreshTimeAmount != null) {
-                var id = DomGlobal.setTimeout(params -> {
-                    clientDataSetManager.removeDataSet(uuid);
-                    scheduledTimeouts.remove(uuid);
-                }, refreshTimeAmount.toMillis());
-                scheduledTimeouts.put(uuid, id);
-            }
-        } else {
-            clientDataSetManager.removeDataSet(uuid);
-        }
-    }
-
     private IThenable<Object> notAbleToRetrieveDataSet(ExternalDataSetDef def, DataSetReadyCallback listener) {
         return notAbleToRetrieveDataSet(def, listener, new RuntimeException("Unknown Error"));
     }
@@ -303,13 +306,6 @@ public class ExternalDataSetClientProvider {
         }
         listener.onError(new ClientRuntimeError("Not able to retrieve dataset content", e));
         return null;
-    }
-
-    private String applyExpression(String expression, String responseText) {
-        JSONAtaInjector.ensureJSONAtaInjected();
-        var json = Global.JSON.parse(responseText);
-        var result = JSONAtaTransformer.jsonata(expression).evaluate(json);
-        return Global.JSON.stringify(result);
     }
 
     private void clearRegisteredDataSets() {

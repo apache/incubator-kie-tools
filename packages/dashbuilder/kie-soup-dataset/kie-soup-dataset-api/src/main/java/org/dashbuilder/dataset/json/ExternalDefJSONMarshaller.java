@@ -15,8 +15,8 @@
  */
 package org.dashbuilder.dataset.json;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
@@ -83,7 +83,7 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
             def.setType(serviceType);
         }
 
-        def.setJoin(new ArrayList<>());
+        def.setJoin(new HashSet<>());
         if (join != null) {
             for (var i = 0; i < join.length(); i++) {
                 def.getJoin().add(join.getString(i));
