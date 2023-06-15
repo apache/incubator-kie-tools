@@ -22,6 +22,7 @@
 .popover-menu-selector .pf-c-title,
 .popover-menu-selector .pf-c-popover__content > .pf-c-button + * {
   padding: 0;
+  text-align: left;
 }
 .popover-menu-selector .pf-c-popover__content {
   padding-bottom: 16px;
