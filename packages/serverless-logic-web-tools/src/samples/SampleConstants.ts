@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+import { join } from "path";
+import { SamplesRepositoryInfo } from "./types";
+
 export const SAMPLE_COVERS_CACHE_FILE_PATH = "/covers.json";
 
 export const SAMPLES_FS_MOUNT_POINT_PREFIX = "lfs_v1__samples__";
@@ -24,4 +27,14 @@ export const SAMPLE_SEARCH_KEYS = ["definition.category", "definition.title", "d
 
 export const resolveSampleFsMountPoint = (appVersion: string) => {
   return `${SAMPLES_FS_MOUNT_POINT_PREFIX}${appVersion}`;
+};
+
+export const KIE_SAMPLES_REPOSITORY_INFO: SamplesRepositoryInfo = {
+  org: "kiegroup",
+  name: "kie-samples",
+  ref: process.env["WEBPACK_REPLACE__samplesRepositoryRef"]!,
+  paths: {
+    samplesFolder: "samples",
+    sampleDefinitionsJson: join(".github", "supporting-files", "sample-definitions.json"),
+  },
 };

@@ -104,7 +104,7 @@ func runSWFProject(cfg RunCmdConfig) error {
 }
 
 func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
-	fmt.Println("🔨 Starting your Kogito Serverless Workflow in dev mode...")
+	fmt.Println("⏳ Starting your Kogito Serverless Workflow in dev mode...")
 	path, err := os.Getwd()
 	if err != nil {
 		fmt.Errorf("❌ Error running Kogito project: %w", err)

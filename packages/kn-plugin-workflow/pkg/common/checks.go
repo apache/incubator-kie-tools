@@ -19,7 +19,6 @@ package common
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -114,21 +113,6 @@ func CheckPodman() error {
 	return nil
 }
 
-func CheckKubectl() error {
-	fmt.Println("✅ Checking if kubectl is available...")
-	_, kubectlCheck := exec.LookPath("kubectl")
-	if err := kubectlCheck; err != nil {
-		fmt.Println("ERROR: kubectl not found")
-		fmt.Println("kubectl is required for deploy")
-		fmt.Println("Download from https://kubectl.docs.kubernetes.io/installation/kubectl/")
-		os.Exit(1)
-		return err
-	}
-
-	fmt.Println(" - kubectl is available")
-	return nil
-}
-
 func parseJavaVersion(version string) (int64, error) {
 	dotVersion := strings.Split(strings.Split(version, "\"")[1], ".")
 	intVersion, err := strconv.ParseInt(dotVersion[0], 10, 8)
@@ -199,6 +183,7 @@ func CheckProjectName(name string) (err error) {
 	if !matched {
 		fmt.Printf("The project name (\"%s\") contains invalid characters. Valid characters are alphanumeric (A-Za-z), underscore, dash and dot.", name)
 		err = fmt.Errorf("invalid project name")
+
 	}
 	return
 }

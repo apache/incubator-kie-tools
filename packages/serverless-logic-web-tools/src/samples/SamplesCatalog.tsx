@@ -37,7 +37,7 @@ import { setPageTitle } from "../PageTitle";
 import { useQueryParam } from "../queryParams/QueryParamsContext";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { useSampleDispatch } from "./hooks/SampleContext";
-import { Sample, SampleCategories, SampleCategory, SampleCoversHashtable } from "./SampleApi";
+import { Sample, SampleCategories, SampleCategory, SampleCoversHashtable } from "./types";
 import { SampleCard } from "./SampleCard";
 import { SampleCardSkeleton } from "./SampleCardSkeleton";
 import { SamplesLoadError } from "./SamplesLoadError";
