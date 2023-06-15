@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ func runUndeploy(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("❌ ERROR: generating undeploy manifests: %w", err)
 	}
 
-	if err = deleteDeploy(&cfg); err != nil {
+	if err = undeleteDeploy(&cfg); err != nil {
 		return fmt.Errorf("❌ ERROR: undeploying: %w", err)
 	}
 
@@ -93,7 +93,7 @@ func runUndeploy(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func deleteDeploy(cfg *DeployUndeployCmdConfig) error {
+func undeleteDeploy(cfg *DeployUndeployCmdConfig) error {
 	fmt.Printf("🔨 Undeploying your Kogito Serverless project in namespace %s\n", cfg.NameSpace)
 
 	files, err := common.FindServiceFiles(cfg.ManifestPath)
