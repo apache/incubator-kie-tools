@@ -258,7 +258,7 @@
     <!-- Third party Libraries -->
     <version.ch.qos.logback>1.2.11</version.ch.qos.logback>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
-    <version.com.google.guava>32.0.1-jre</version.com.google.guava>
+    <version.com.google.guava>30.1-jre</version.com.google.guava>
     <version.gwt.nio>1.1</version.gwt.nio>
     <version.com.google.gwt>2.9.0</version.com.google.gwt>
     <version.com.google.jsinterop.base>1.0.0</version.com.google.jsinterop.base>
