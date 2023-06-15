@@ -70,6 +70,7 @@ export const de: CommonI18n = {
     reset: "Zurücksetzen",
     run: "Ausführen",
     save: "Speichern",
+    selection: "Auswahl",
     setup: "Einrichtung",
     start: "Start",
     token: "Token",
