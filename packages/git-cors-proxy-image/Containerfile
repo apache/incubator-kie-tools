@@ -12,18 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM registry.access.redhat.com/ubi9/nodejs-18-minimal:1-51
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.2
 
-USER 1000
+ENV NODE_VERSION=20.3.0
+ARG NODE_PACKAGE=node-v$NODE_VERSION-linux-x64
+ARG NODE_HOME=/opt/$NODE_PACKAGE
 
-COPY --chown=1000:1000 --chmod=777 dist-dev/git-cors-proxy /tmp/git-cors-proxy
+ENV NODE_PATH $NODE_HOME/lib/node_modules
+ENV PATH $NODE_HOME/bin:$PATH
 
-RUN mkdir -p -m 777 $HOME/kie-sandbox \
-  && mv /tmp/git-cors-proxy $HOME/kie-sandbox \
-  && chgrp -R 0 $HOME/kie-sandbox \
-  && chmod -R g=u $HOME/kie-sandbox \
-  && npm install --production --silent --prefix $HOME/kie-sandbox/git-cors-proxy
+RUN microdnf install tar gzip -y \
+  && curl https://nodejs.org/dist/v$NODE_VERSION/$NODE_PACKAGE.tar.gz | tar -xzC /opt/ \
+  && mkdir /kie-sandbox \
+  && chgrp -R 0 /kie-sandbox \
+  && chmod -R g=u /kie-sandbox \
+  && chown -R 1000:0 /kie-sandbox
+
+COPY --chown=1000:0 --chmod=775 dist-dev/git-cors-proxy /kie-sandbox/git-cors-proxy
 
 EXPOSE 8080
 
-CMD $HOME/kie-sandbox/git-cors-proxy/bin.js start -p 8080
+USER 1000
+
+WORKDIR /kie-sandbox/git-cors-proxy
+
+RUN npm install --cache /kie-sandbox/.cache --production && chmod -R 775 .
+
+CMD [ "/kie-sandbox/git-cors-proxy/bin.js", "start", "-p", "8080" ]

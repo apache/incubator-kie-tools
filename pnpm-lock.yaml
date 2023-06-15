@@ -3904,15 +3904,12 @@ importers:
 
   packages/git-cors-proxy-image:
     devDependencies:
-      "@isomorphic-git/cors-proxy":
-        specifier: ^2.7.1
-        version: 2.7.1
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
-      patch-package:
-        specifier: ^6.4.7
-        version: 6.4.7
+      "@pefernan/cors-proxy":
+        specifier: ^0.0.2
+        version: 0.0.2
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -13547,22 +13544,6 @@ packages:
       "@hapi/hoek": 9.1.0
     dev: true
 
-  /@isomorphic-git/cors-proxy@2.7.1:
-    resolution:
-      { integrity: sha512-5P4bcOiwCJoYi6lf3pkTtFz6eQWaJsJD3IS75VQBgAoFFfNUlMw5Ufqd/UMFeqy6FJNgGCbuSHdfoKUx+pAlhA== }
-    hasBin: true
-    dependencies:
-      cross-env: 5.2.1
-      daemonize-process: 1.0.9
-      micro: 9.3.4
-      micro-cors: 0.1.1
-      minimisted: 2.0.1
-      node-fetch: 2.6.7
-      tree-kill: 1.2.2
-    transitivePeerDependencies:
-      - encoding
-    dev: true
-
   /@isomorphic-git/idb-keyval@3.3.2:
     resolution:
       { integrity: sha512-r8/AdpiS0/WJCNR/t/gsgL+M8NMVj/ek7s60uz3LmpCaTF2mEVlZJlB01ZzalgYzRLXwSPC92o+pdzjM7PN/pA== }
@@ -14244,7 +14225,7 @@ packages:
       "@octokit/request-error": 2.0.5
       "@octokit/types": 6.14.2
       is-plain-object: 5.0.0
-      node-fetch: 2.6.7
+      node-fetch: 2.6.11
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
       - encoding
@@ -14422,6 +14403,22 @@ packages:
   /@patternfly/react-tokens@4.94.6:
     resolution:
       { integrity: sha512-tm7C6nat+uKMr1hrapis7hS3rN9cr41tpcCKhx6cod6FLU8KwF2Yt5KUxakhIOCEcE/M/EhXhAw/qejp8w0r7Q== }
+
+  /@pefernan/cors-proxy@0.0.2:
+    resolution:
+      { integrity: sha512-sTYjD3u6JUVJkDOwvvswyYESPAUkpEJu8yVbvjPZl+DdwyWMrYon2MUveBVNkV+yTlPr1aazKIxc6j7GCabKIw== }
+    hasBin: true
+    dependencies:
+      cross-env: 5.2.1
+      daemonize-process: 1.0.9
+      micro: 9.3.4
+      micro-cors: 0.1.1
+      minimisted: 2.0.1
+      node-fetch: 2.6.11
+      tree-kill: 1.2.2
+    transitivePeerDependencies:
+      - encoding
+    dev: true
 
   /@pnpm/build-modules@9.3.5(@pnpm/logger@4.0.0):
     resolution:
@@ -27457,6 +27454,18 @@ packages:
       { integrity: sha512-73sE9+3UaLYYFmDsFZnqCInzPyh3MqIwZO9cw58yIqAZhONrrabrYyYe3TuIqtIiOuTXVhsGau8hcrhhwSsDIQ== }
     dev: true
     optional: true
+
+  /node-fetch@2.6.11:
+    resolution:
+      { integrity: sha512-4I6pdBY1EthSqDmJkiNk3JIT8cswwR9nfeW/cPdUagJYEQG7R95WRH74wpz7ma8Gh/9dI9FP+OU+0E4FvtA55w== }
+    engines: { node: 4.x || >=6.0.0 }
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
 
   /node-fetch@2.6.7:
     resolution:
