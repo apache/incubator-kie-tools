@@ -52,6 +52,12 @@ if [ "${CI}" = "true" ]; then
 fi
 mkdir -p ${mvn_local_repo}
 
+if [ "${NIGHTLY}" = "true" ]; then
+    # In case of a nightly, the Kogito/Drools artifacts are not deployed anywhere, so they need to be copied
+    # inside the maven repo local folder
+    cp -rp ${NIGHTLY_DEPLOY_FOLDER}/* ${mvn_local_repo}
+fi
+
 set -x
 echo "Create quarkus project to path ${build_target_dir}"
 cd ${build_target_dir}
