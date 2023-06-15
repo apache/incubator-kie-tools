@@ -342,7 +342,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
               BeeTableOperation.RowInsertBelow,
               ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
               BeeTableOperation.RowReset,
-              BeeTableOperation.RowDuplicate,
+              // BeeTableOperation.RowDuplicate, https://github.com/kiegroup/kie-issues/issues/347
             ]
           : []),
       ];
