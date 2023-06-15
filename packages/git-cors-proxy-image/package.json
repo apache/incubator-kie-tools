@@ -14,13 +14,10 @@
   },
   "scripts": {
     "build:dev": "echo \"Nothing to do\"",
-    "build:prod": "pnpm cleanup && pnpm copy:git-cors-proxy-package && pnpm copy:assets && run-script-os",
+    "build:prod": "pnpm cleanup && pnpm copy:git-cors-proxy-package && run-script-os",
     "build:prod:linux:darwin": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm podman:build\"",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
-    "copy:assets": "run-script-os",
-    "copy:assets:linux:darwin": "cp ./assets/npm-shrinkwrap.json dist-dev/git-cors-proxy",
-    "copy:assets:win32": "echo \"Copy assets not supported on Windows\"",
     "copy:git-cors-proxy-package": "run-script-os",
     "copy:git-cors-proxy-package:linux:darwin": "cp -R ./node_modules/@pefernan/cors-proxy/ dist-dev/git-cors-proxy",
     "copy:git-cors-proxy-package:win32": "echo \"Copy git-cors-proxy package not supported on Windows\"",
@@ -30,7 +27,7 @@
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
-    "@pefernan/cors-proxy": "^0.0.2",
+    "@pefernan/cors-proxy": "^0.0.3",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6"
   }

@@ -21,7 +21,7 @@ ARG NODE_HOME=/opt/$NODE_PACKAGE
 ENV NODE_PATH $NODE_HOME/lib/node_modules
 ENV PATH $NODE_HOME/bin:$PATH
 
-RUN microdnf install tar gzip -y \
+RUN microdnf install tar gzip-1.12-1.el9.x86_64 -y \
   && curl -O https://nodejs.org/dist/v$NODE_VERSION/$NODE_PACKAGE.tar.gz \
   && curl -O https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt \
   && grep $NODE_PACKAGE.tar.gz SHASUMS256.txt | sha256sum -c - \

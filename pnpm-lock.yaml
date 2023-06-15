@@ -3908,8 +3908,8 @@ importers:
         specifier: workspace:*
         version: link:../root-env
       "@pefernan/cors-proxy":
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: ^0.0.3
+        version: 0.0.3
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -14404,9 +14404,9 @@ packages:
     resolution:
       { integrity: sha512-tm7C6nat+uKMr1hrapis7hS3rN9cr41tpcCKhx6cod6FLU8KwF2Yt5KUxakhIOCEcE/M/EhXhAw/qejp8w0r7Q== }
 
-  /@pefernan/cors-proxy@0.0.2:
+  /@pefernan/cors-proxy@0.0.3:
     resolution:
-      { integrity: sha512-sTYjD3u6JUVJkDOwvvswyYESPAUkpEJu8yVbvjPZl+DdwyWMrYon2MUveBVNkV+yTlPr1aazKIxc6j7GCabKIw== }
+      { integrity: sha512-gEb0hRRYnOEvLpl1oQj2NWQBtSphFETdW0emXrMKPX5HTo8Q9DERXnmlOHE4alo54KG2nEM7l9WKAdmzJInZpQ== }
     hasBin: true
     dependencies:
       cross-env: 5.2.1
