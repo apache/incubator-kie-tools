@@ -24,7 +24,7 @@
     "copy:git-cors-proxy-package": "run-script-os",
     "copy:git-cors-proxy-package:linux:darwin": "cp -R ./node_modules/@pefernan/cors-proxy/ dist-dev/git-cors-proxy",
     "copy:git-cors-proxy-package:win32": "echo \"Copy git-cors-proxy package not supported on Windows\"",
-    "docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build --push $(echo $(build-env gitCorsProxy.image.buildTags) | xargs printf -- \"-t $(build-env gitCorsProxy.image.registry)/$(build-env gitCorsProxy.image.account)/$(build-env gitCorsProxy.image.name):%s\n\" | xargs echo) . -f Containerfile\" --else \"echo Docker not found, skipping image build.\"",
+    "docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build $(echo $(build-env gitCorsProxy.image.buildTags) | xargs printf -- \"-t $(build-env gitCorsProxy.image.registry)/$(build-env gitCorsProxy.image.account)/$(build-env gitCorsProxy.image.name):%s\n\" | xargs echo) . -f Containerfile\" --else \"echo Docker not found, skipping image build.\"",
     "podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env gitCorsProxy.image.buildTags) | xargs printf -- \"-t $(build-env gitCorsProxy.image.registry)/$(build-env gitCorsProxy.image.account)/$(build-env gitCorsProxy.image.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",
     "start": "cd ./node_modules/@pefernan/cors-proxy && pnpm start -p 8080"
   },
