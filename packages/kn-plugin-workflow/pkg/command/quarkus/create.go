@@ -84,16 +84,16 @@ func runCreate() error {
 		return err
 	}
 
-	fmt.Println("🔨 Creating a Quarkus Kogito Serverless Workflow project...")
+	fmt.Println("🛠️ Creating a Quarkus Kogito Serverless Workflow project...")
 	if err = CreateQuarkusProject(cfg); err != nil {
-		fmt.Println("❌  Error creating Quarkus project", err)
+		fmt.Println("❌ ERROR: creating Quarkus project", err)
 		return err
 	}
 
 	workflowFilePath := fmt.Sprintf("./%s/src/main/resources/%s", cfg.ProjectName, metadata.WorkflowSwJson)
 	common.CreateWorkflow(workflowFilePath)
 
-	fmt.Println("✅ Quarkus Kogito Serverless Workflow project successfully created")
+	fmt.Println("🎉 Quarkus Kogito Serverless Workflow project successfully created")
 	return nil
 }
 

@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.dataset.def;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -41,6 +42,8 @@ public class ExternalDataSetDef extends DataSetDef {
     private boolean accumulate;
 
     private ExternalServiceType type;
+
+    private List<String> join;
 
     public ExternalDataSetDef() {
         super.setProvider(DataSetProviderType.EXTERNAL);
@@ -78,11 +81,12 @@ public class ExternalDataSetDef extends DataSetDef {
         this.content = content;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(),
-                url,
-                dynamic);
+    public List<String> getJoin() {
+        return join;
+    }
+
+    public void setJoin(List<String> join) {
+        this.join = join;
     }
 
     public Map<String, String> getHeaders() {
@@ -118,6 +122,7 @@ public class ExternalDataSetDef extends DataSetDef {
         def.setHeaders(getHeaders());
         def.setAccumulate(isAccumulate());
         def.setType(getType());
+        def.setJoin(getJoin());
         return def;
     }
 
@@ -136,7 +141,8 @@ public class ExternalDataSetDef extends DataSetDef {
                Objects.equals(headers, other.headers) &&
                Objects.equals(url, other.url) &&
                Objects.equals(accumulate, other.accumulate) &&
-               Objects.equals(type, other.type);
+               Objects.equals(type, other.type) &&
+               Objects.equals(join, other.join);
     }
 
     public String toString() {
@@ -153,7 +159,21 @@ public class ExternalDataSetDef extends DataSetDef {
         out.append("Headers=").append(headers).append("\n");
         out.append("Accumulate=").append(accumulate).append("\n");
         out.append("Type=").append(type);
+        out.append("Join=").append(join);
         return out.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(),
+                url,
+                dynamic,
+                expression,
+                content,
+                headers,
+                accumulate,
+                type,
+                join);
     }
 
 }

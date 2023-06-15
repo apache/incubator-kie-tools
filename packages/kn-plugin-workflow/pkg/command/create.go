@@ -70,18 +70,18 @@ func NewCreateCommand() *cobra.Command {
 }
 
 func runCreate(cfg CreateCmdConfig) error {
-	fmt.Println("🔨 Creating workflow project")
+	fmt.Println("🛠️ Creating Serverless Workflow project")
 
 	if err := os.Mkdir(cfg.ProjectName, os.ModePerm); err != nil {
-		return fmt.Errorf("❌ Error creating project directory: %w", err)
+		return fmt.Errorf("❌ ERROR: Error creating project directory: %w", err)
 	}
 
 	workflowPath := fmt.Sprintf("./%s/%s", cfg.ProjectName, metadata.WorkflowSwJson)
 	if err := common.CreateWorkflow(workflowPath); err != nil {
-		return fmt.Errorf("❌ Error creating workflow file: %w", err)
+		return fmt.Errorf("❌ ERROR: Error creating workflow file: %w", err)
 	}
 
-	fmt.Println("✅ Kogito Serverless Workflow project successfully created")
+	fmt.Println("🎉 Kogito Serverless Workflow project successfully created")
 
 	return nil
 

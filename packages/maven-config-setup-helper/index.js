@@ -46,7 +46,7 @@ module.exports = {
       .map((l) => l.trim())
       .join("\n");
 
-    const newMavenConfigString = `${originalMvnConfigString.trim()} ${trimmedMavenConfigString.trim()}`.trim();
+    const newMavenConfigString = `${originalMvnConfigString.trim()}\n${trimmedMavenConfigString.trim()}`.trim();
     console.info(`[maven-config-setup-helper] Writing '${MVN_CONFIG_FILE_PATH}'...`);
     console.info(newMavenConfigString);
     fs.writeFileSync(MVN_CONFIG_FILE_PATH, newMavenConfigString);

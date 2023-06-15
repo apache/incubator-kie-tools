@@ -14,6 +14,18 @@
  * limitations under the License.
  */
 
+export const TIME_FEEL_REGEXP = /time\("([^.,\s]*)"\)/g;
+export const TIME_ENUM_REGEXP = /time\("([^.,\s]*)"\)[,]{0,1}[\s]*/g;
+
+export const DATE_FEEL_REGEXP = /date\("([^.,\s]*)"\)/g;
+export const DATE_ENUM_REGEXP = /date\("([^.,\s]*)"\)[,]{0,1}[\s]*/g;
+
+export const DATE_AND_TIME_FEEL_REGEXP = /date and time\("([^.,\s]*)"\)/g;
+export const DATE_AND_TIME_ENUM_REGEXP = /date and time\("([^.,\s]*)"\)[,]{0,1}[\s]*/g;
+
+export const DURATION_FEEL_REGEXP = /duration\("([^.,\s]*)"\)/g;
+export const DURATION_ENUM_REGEXP = /duration\("([^.,\s]*)"\)[,]{0,1}[\s]*/g;
+
 export const DAYS_AND_TIME_DURATION_FORMAT = "days and time duration";
 export const DAYS_AND_TIME_DURATION_REGEXP =
   /^(-|\+)?P(?:([-+]?[0-9]*)D)?(?:T(?:([-+]?[0-9]*)H)?(?:([-+]?[0-9]*)M)?(?:([-+]?[0-9]*)S)?)?$/;

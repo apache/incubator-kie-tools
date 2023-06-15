@@ -18,6 +18,7 @@ import * as React from "react";
 import * as ReactTable from "react-table";
 import { useCallback, useMemo } from "react";
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -42,6 +43,7 @@ import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./ListExpression.css";
 import { ListItemCell } from "./ListItemCell";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
+import _ from "lodash";
 
 export type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -81,6 +83,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+          { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
         ],
       },
     ],
@@ -181,6 +184,28 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
     [setExpression]
   );
 
+  const allowedOperations = useCallback(
+    (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+      if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+        return [];
+      }
+
+      return [
+        BeeTableOperation.SelectionCopy,
+        ...(conditions.selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowReset,
+              BeeTableOperation.RowDuplicate,
+            ]
+          : []),
+      ];
+    },
+    [beeTableRows.length]
+  );
+
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`${listExpression.id} list-expression`}>
@@ -193,6 +218,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
           columns={beeTableColumns}
           rows={beeTableRows}
           operationConfig={beeTableOperationConfig}
+          allowedOperations={allowedOperations}
           getRowKey={getRowKey}
           onRowAdded={onRowAdded}
           onRowDeleted={onRowDeleted}

@@ -73,6 +73,7 @@ public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements V
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
                 enableHandlers(true);
                 hidePaletteWidget(false);
+                unmountNewBoxedExpressionEditor();
                 addDRGEditorToCanvasWidget();
 
                 //Ensure Form Properties are updated to reflect the Graph node selection

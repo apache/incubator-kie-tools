@@ -78,11 +78,6 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
     );
   }, [descriptor, editableFiles, isWsFolder, totalFiles]);
 
-  const onDeleteWorkspace = useCallback(async () => {
-    await workspaces.deleteWorkspace({ workspaceId: descriptor.workspaceId });
-    onDelete(descriptor.workspaceId);
-  }, [workspaces, descriptor.workspaceId, onDelete]);
-
   const onDownloadWorkspace = useCallback(async () => {
     if (totalFiles === 0) {
       return;
@@ -150,7 +145,7 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
             items={[
               {
                 title: "Delete",
-                onClick: onDeleteWorkspace,
+                onClick: () => onDelete(descriptor.workspaceId),
               },
               {
                 title: "Download",
@@ -158,10 +153,10 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
               },
             ]}
           />
+          <a ref={downloadRef} />
+          <a ref={downloadAllRef} />
         </Td>
       </Tr>
-      <a ref={downloadRef} />
-      <a ref={downloadAllRef} />
     </>
   );
 }

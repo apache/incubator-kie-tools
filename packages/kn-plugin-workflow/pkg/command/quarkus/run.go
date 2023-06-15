@@ -86,7 +86,7 @@ func runQuarkusSWFProject(cfg RunCmdConfig) error {
 }
 
 func runQuarkusProjectDevMode(cfg RunCmdConfig) (err error) {
-	fmt.Println("🔨 Starting your Quarkus Kogito Serverless Workflow in dev mode...")
+	fmt.Println("🛠️ Starting your Quarkus Kogito Serverless Workflow in dev mode...")
 	create := common.ExecCommand(
 		"mvn",
 		"quarkus:dev",
@@ -99,7 +99,7 @@ func runQuarkusProjectDevMode(cfg RunCmdConfig) (err error) {
 	go func() {
 		defer wg.Done()
 		if err := common.RunCommand(create, "mvn quarkus:dev"); err != nil {
-			fmt.Printf("❌ Error running Quarkus project: %v", err)
+			fmt.Printf("❌ ERROR: running Quarkus project: %v", err)
 			err = fmt.Errorf("Error running Quarkus project: %w", err)
 		}
 	}()

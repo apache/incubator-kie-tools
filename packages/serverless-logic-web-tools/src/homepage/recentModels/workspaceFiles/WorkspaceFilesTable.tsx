@@ -27,7 +27,7 @@ import { useCallback, useMemo, useState } from "react";
 import { isEditable } from "../../../extension";
 import { WorkspaceFilesTableRow } from "./WorkspaceFilesTableRow";
 import { TablePaginationProps, TableRowEmptyState } from "../../../table";
-import { escapeRegExp } from "../../../../regex";
+import { escapeRegExp } from "../../../regex";
 
 export const columnNames = {
   name: "Name",
@@ -49,7 +49,7 @@ export type WorkspaceFilesTableProps = Pick<TablePaginationProps, "page" | "perP
   /**
    * event fired when an element is deleted
    */
-  onFileDelete: (file: WorkspaceFile) => void;
+  onDelete: (file: WorkspaceFile) => void;
 };
 
 export type WorkspaceFilesTableRowData = Pick<WorkspaceFile, "extension"> & {
@@ -59,7 +59,7 @@ export type WorkspaceFilesTableRowData = Pick<WorkspaceFile, "extension"> & {
 };
 
 export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
-  const { workspaceFiles, selectedWorkspaceFiles, searchValue, page, perPage, totalFilesCount, onClearFilters } = props;
+  const { workspaceFiles, selectedWorkspaceFiles, searchValue, page, perPage, onClearFilters } = props;
   const [activeSortIndex, setActiveSortIndex] = useState<number>(0);
   const [activeSortDirection, setActiveSortDirection] = useState<"asc" | "desc">("desc");
 
@@ -69,7 +69,7 @@ export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
         extension: f.extension,
         fileDescriptor: f,
         isEditable: isEditable(f.relativePath),
-        name: f.nameWithoutExtension,
+        name: f.nameWithoutExtension.trim().length ? f.nameWithoutExtension : f.name,
         relativePath: f.relativePath,
         workspaceId: f.workspaceId,
       })),
@@ -152,13 +152,12 @@ export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
           ) : (
             visibleTableData.map((rowData, rowIndex) => (
               <WorkspaceFilesTableRow
-                totalFilesCount={totalFilesCount}
                 isSelected={isFileCheckboxChecked(rowData)}
                 key={rowIndex}
                 onToggle={(checked) => props.onFileToggle(rowData.fileDescriptor, checked)}
                 rowData={rowData}
                 rowIndex={rowIndex}
-                onDelete={props.onFileDelete}
+                onDelete={props.onDelete}
               />
             ))
           )}

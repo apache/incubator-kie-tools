@@ -360,6 +360,11 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Override
+    public void unmountNewBoxedExpressionEditor() {
+        DMNLoader.unmountBoxedExpressionEditor(".kie-dmn-new-expression-editor");
+    }
+
+    @Override
     public void selectDomainObject(final String uuid) {
         this.selectedUUID = uuid;
         fireDomainObjectSelectionEvent(findDomainObject(uuid));

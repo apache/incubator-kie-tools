@@ -161,6 +161,11 @@ const renderBoxedExpressionEditor = (
   );
 };
 
+const unmountBoxedExpressionEditor = (selector: string) => {
+  const boxedExpressionEditorRootNode = document.querySelector(selector);
+  ReactDOM.unmountComponentAtNode(boxedExpressionEditorRootNode!);
+};
+
 const ImportJavaClassesWrapper = () => {
   window.ImportJavaClassesAPI = {
     importJavaClasses: (javaClasses: JavaClass[]) => {
@@ -185,4 +190,4 @@ const renderImportJavaClasses = (selector: string) => {
   ReactDOM.render(<ImportJavaClassesWrapper />, document.querySelector(selector));
 };
 
-export { renderBoxedExpressionEditor, renderImportJavaClasses };
+export { renderBoxedExpressionEditor, renderImportJavaClasses, unmountBoxedExpressionEditor };

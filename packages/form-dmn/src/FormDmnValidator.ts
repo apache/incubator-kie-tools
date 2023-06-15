@@ -16,8 +16,12 @@
 
 import { Validator } from "@kie-tools/form/dist/Validator";
 import { FormDmnI18n } from "./i18n";
-import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/constants";
 import { FormDmnJsonSchemaBridge } from "./uniforms";
+import {
+  DAYS_AND_TIME_DURATION_FORMAT,
+  X_DMN_ALLOWED_VALUES_KEYWORD,
+  YEARS_AND_MONTHS_DURATION_FORMAT,
+} from "@kie-tools/dmn-runner/dist/constants";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
@@ -50,6 +54,9 @@ export class FormDmnValidator extends Validator {
             if ((error.params as any).format === YEARS_AND_MONTHS_DURATION_FORMAT) {
               return { ...error, message: (this.i18n as FormDmnI18n).validation.yearsAndMonthsError };
             }
+          }
+          if (error.keyword === X_DMN_ALLOWED_VALUES_KEYWORD) {
+            return { ...error, message: (this.i18n as FormDmnI18n).validation.xDmnAllowedValues };
           }
           return error;
         }),

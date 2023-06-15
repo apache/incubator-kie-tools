@@ -74,48 +74,7 @@ public class ExternalDataSetClientProvider {
         var defOp = get(uuid);
         if (defOp.isPresent()) {
             var def = defOp.get();
-            if (def.getContent() != null && def.getUrl() == null) {
-                register(def, new DataSetReadyCallback() {
-
-                    @Override
-                    public boolean onError(ClientRuntimeError error) {
-                        return listener.onError(error);
-                    }
-
-                    @Override
-                    public void notFound() {
-                        listener.notFound();
-
-                    }
-
-                    @Override
-                    public void callback(DataSet dataSet) {
-                        doLookup(lookup, listener);
-                    }
-                }, def.getContent(), SupportedMimeType.JSON);
-
-            } else {
-                dataSetCallbackCoordinator.getCallback(def,
-                        new DataSetReadyCallback() {
-
-                            @Override
-                            public boolean onError(ClientRuntimeError error) {
-                                return listener.onError(error);
-                            }
-
-                            @Override
-                            public void notFound() {
-                                listener.notFound();
-                            }
-
-                            @Override
-                            public void callback(DataSet dataSet) {
-                                doLookup(lookup, listener);
-                            }
-                        },
-                        callback -> fetch(def, callback),
-                        () -> handleCache(def.getUUID()));
-            }
+            fetchAndRegisterDefinition(def, lookup, listener);
         } else {
             listener.notFound();
         }
@@ -141,6 +100,41 @@ public class ExternalDataSetClientProvider {
     public void clear() {
         clearRegisteredDataSets();
         externalDataSets.clear();
+    }
+
+    private void fetchAndRegisterDefinition(ExternalDataSetDef def,
+                                            DataSetLookup lookup,
+                                            DataSetReadyCallback listener) {
+        if (def.getContent() != null) {
+            register(def, new DataSetReadyCallbackWrapper(listener) {
+
+                @Override
+                public void callback(DataSet dataSet) {
+                    doLookup(lookup, listener);
+                }
+            }, def.getContent(), SupportedMimeType.JSON);
+            return;
+        }
+
+        if (def.getUrl() != null) {
+            dataSetCallbackCoordinator.getCallback(def,
+                    new DataSetReadyCallbackWrapper(listener) {
+
+                        @Override
+                        public void callback(DataSet dataSet) {
+                            doLookup(lookup, listener);
+                        }
+                    },
+                    callback -> fetch(def, callback),
+                    () -> handleCache(def.getUUID()));
+            return;
+        }
+
+        var errorMessage = "Not enough information to retrieve data. A 'content', 'url' or 'join' is required.";
+        if (def.getJoin() != null && !def.getJoin().isEmpty()) {
+            errorMessage = "Nested Join is not supported";
+        }
+        listener.onError(new ClientRuntimeError(errorMessage));
     }
 
     private void fetch(ExternalDataSetDef def, DataSetReadyCallback callback) {
@@ -308,4 +302,5 @@ public class ExternalDataSetClientProvider {
     private void clearRegisteredDataSets() {
         externalDataSets.keySet().forEach(d -> clientDataSetManager.removeDataSet(d));
     }
+
 }

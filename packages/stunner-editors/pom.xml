@@ -173,7 +173,7 @@
     <!-- Notice actually there exists a 1.3.3 version for jsPDF, but using this one
         produces a conflict with the UF ace js plugin once trying to create a new jsPDF
         instance.-->
-    <version.org.webjars.bower.jspdf>1.2.61</version.org.webjars.bower.jspdf>
+    <version.org.webjars.bowergithub.mrrio.jspdf>2.3.1</version.org.webjars.bowergithub.mrrio.jspdf>
     <version.org.webjars.bowergithub.gliffy.canvas2svg>0.1</version.org.webjars.bowergithub.gliffy.canvas2svg>
     <version.org.webjars.bower.mustachejs>3.0.1</version.org.webjars.bower.mustachejs>
     <version.org.webjars.bower.jqueryui>1.12.1</version.org.webjars.bower.jqueryui>

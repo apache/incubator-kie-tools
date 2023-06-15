@@ -22,7 +22,9 @@ import { useCallback, useEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableCellProps,
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
+  BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
   DmnBuiltInDataType,
@@ -150,7 +152,7 @@ export function JavaFunctionExpression({
     return [
       {
         group: _.upperCase(i18n.function),
-        items: [],
+        items: [{ name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset }],
       },
     ];
   }, [i18n]);
@@ -258,6 +260,10 @@ export function JavaFunctionExpression({
     [setExpression]
   );
 
+  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+    return [BeeTableOperation.SelectionCopy];
+  }, []);
+
   return (
     <div className={`function-expression ${functionExpression.id}`}>
       <BeeTable<JAVA_ROWTYPE>
@@ -265,6 +271,7 @@ export function JavaFunctionExpression({
         onColumnResizingWidthChange={onColumnResizingWidthChange}
         resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
         operationConfig={beeTableOperationConfig}
+        allowedOperations={allowedOperations}
         onColumnUpdates={onColumnUpdates}
         getRowKey={getRowKey}
         onRowReset={onRowReset}

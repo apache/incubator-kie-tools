@@ -86,6 +86,7 @@ export function BeeTableInternal<R extends object>({
   rows,
   columns,
   operationConfig,
+  allowedOperations,
   headerVisibility = BeeTableHeaderVisibility.AllLevels,
   headerLevelCountForAppendingRowIndexColumn = 0,
   skipLastHeaderGroup = false,
@@ -627,6 +628,7 @@ export function BeeTableInternal<R extends object>({
       <BeeTableContextMenuHandler
         tableRef={tableRef}
         operationConfig={operationConfig}
+        allowedOperations={allowedOperations}
         reactTableInstance={reactTableInstance}
         onRowAdded={onRowAdded2}
         onRowDuplicated={onRowDuplicated2}

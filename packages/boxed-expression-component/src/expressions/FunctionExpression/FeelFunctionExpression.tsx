@@ -20,6 +20,7 @@ import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableCellProps,
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -155,6 +156,17 @@ export function FeelFunctionExpression({
       }, [functionExpression])
     );
 
+  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+    if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+      return [];
+    }
+
+    return [
+      BeeTableOperation.SelectionCopy,
+      ...(conditions.selection.selectionStart.rowIndex >= 0 ? [BeeTableOperation.RowReset] : []),
+    ];
+  }, []);
+
   /// //////////////////////////////////////////////////////
 
   return (
@@ -164,6 +176,7 @@ export function FeelFunctionExpression({
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           operationConfig={beeTableOperationConfig}
+          allowedOperations={allowedOperations}
           onColumnUpdates={onColumnUpdates}
           getRowKey={getRowKey}
           onRowReset={onRowReset}
