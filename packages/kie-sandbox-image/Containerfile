@@ -20,6 +20,7 @@ RUN microdnf --disableplugin=subscription-manager -y install httpd-2.4.53-11.el9
   && microdnf --disableplugin=subscription-manager clean all \
   && sed -i -e 's/Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf \
   && sed -i -e 's/#ServerName www.example.com:80/ServerName 127.0.0.1:8080/' /etc/httpd/conf/httpd.conf \
+  && sed -i -e "/ServerName 127.0.0.1:8080/aHeader set Content-Security-Policy \"frame-ancestors 'self';\"" /etc/httpd/conf/httpd.conf \
   && sed -i -e 's/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/' /etc/httpd/conf/httpd.conf \
   && mkdir /kie-sandbox \
   && mv -t /kie-sandbox /tmp/entrypoint.sh /tmp/image-env-to-json-standalone /tmp/EnvJson.schema.json \
