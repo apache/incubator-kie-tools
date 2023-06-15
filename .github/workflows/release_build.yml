@@ -130,7 +130,6 @@ jobs:
       ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: "kie-tools"
       ONLINE_EDITOR__dmnDevDeploymentBaseImageName: "dmn-dev-deployment-base-image"
       ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: "${{ inputs.tag }}"
-      DMN_DEV_DEPLOYMENT_FORM_WEBAPP__gtmId: "GTM-PMJ42HB"
 
     if: ${{ needs.extract_runners.outputs.dmn_dev_deployment_base_image == 'true' }}
     runs-on: ubuntu-latest
@@ -397,7 +396,6 @@ jobs:
       DMN_DEV_DEPLOYMENT_BASE_IMAGE__account: "kie-tools"
       DMN_DEV_DEPLOYMENT_BASE_IMAGE__name: "dmn-dev-deployment-base-image"
       DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags: "latest ${{ inputs.tag }}"
-      DMN_DEV_DEPLOYMENT_FORM_WEBAPP__gtmId: "GTM-PMJ42HB"
 
     if: ${{ always() && needs.extract_runners.outputs.online_editor == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.dmn_dev_deployment_base_image.result == 'success' || needs.dmn_dev_deployment_base_image.result == 'skipped') }}
     runs-on: ubuntu-latest
@@ -1250,7 +1248,6 @@ jobs:
       SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
       SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
       SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesCompatibleVersion: "${{ inputs.tag }}"
-      SERVERLESS_LOGIC_WEB_TOOLS__gtmId: "GTM-5W2QP3C"
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry: "quay.io"
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount: "kie-tools"
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName: "serverless-logic-web-tools-swf-builder-image"

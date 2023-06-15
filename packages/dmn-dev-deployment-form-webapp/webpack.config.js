@@ -21,14 +21,11 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
 
 const buildEnv = env;
 
-module.exports = async (env, argv) => {
-  const gtmResource = getGtmResource(argv);
-
+module.exports = async (env) => {
   return merge(common(env), {
     entry: {
       index: "./src/index.tsx",
@@ -39,17 +36,6 @@ module.exports = async (env, argv) => {
         inject: false,
         minify: false,
       }),
-      new HtmlReplaceWebpackPlugin([
-        {
-          pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
-          replacement: (match, gtm, type) => {
-            if (gtmResource) {
-              return gtmResource[type] ?? `${match}`;
-            }
-            return `${match}`;
-          },
-        },
-      ]),
       new CopyPlugin({
         patterns: [
           { from: "./static/resources", to: "./resources" },
@@ -74,36 +60,3 @@ module.exports = async (env, argv) => {
     },
   });
 };
-
-function getGtmResource() {
-  const gtmId = buildEnv.dmnDevDeploymentFormWebapp.gtmId;
-  console.info(`Google Tag Manager :: ID: ${gtmId}`);
-
-  if (!gtmId) {
-    return undefined;
-  }
-
-  return {
-    id: gtmId,
-    header: `<!-- Google Tag Manager -->
-    <script>
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','${gtmId}');
-    </script>
-    <!-- End Google Tag Manager -->`,
-    body: `<!-- Google Tag Manager (noscript) -->
-    <noscript>
-      <iframe
-        src="https://www.googletagmanager.com/ns.html?id=${gtmId}"
-        height="0"
-        width="0"
-        style="display:none;visibility:hidden"
-      >
-      </iframe>
-    </noscript>
-    <!-- End Google Tag Manager (noscript) -->`,
-  };
-}

@@ -83,7 +83,6 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
-          { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
         ],
       },
     ],
@@ -198,7 +197,6 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
               BeeTableOperation.RowInsertBelow,
               ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
               BeeTableOperation.RowReset,
-              BeeTableOperation.RowDuplicate,
             ]
           : []),
       ];
