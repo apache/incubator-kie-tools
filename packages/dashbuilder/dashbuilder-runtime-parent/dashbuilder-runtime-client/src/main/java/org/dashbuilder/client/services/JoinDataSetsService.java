@@ -86,8 +86,9 @@ public class JoinDataSetsService {
                     if (onError.get()) {
                         return false;
                     }
-                    listener.onError(new ClientRuntimeError("Error fetching data set " + uuid + ": " + error
-                            .getMessage()));
+                    listener.onError(
+                            new ClientRuntimeError("Error fetching data set " + uuid + ": " + error.getMessage(), error
+                                    .getThrowable()));
                     onError.set(true);
                     return false;
                 }
@@ -153,7 +154,14 @@ public class JoinDataSetsService {
             manager.registerDataSet(joinedDataSet);
         }
 
-        var result = manager.lookupDataSet(lookup);
+        DataSet result = null;
+        try {
+            result = manager.lookupDataSet(lookup);
+        } catch (Exception e) {
+            listener.onError(new ClientRuntimeError("Error during dataset lookup", e));
+            return;
+        }
+
         externalDataSetClientProvider.handleCache(uuid);
         listener.callback(result);
     }
