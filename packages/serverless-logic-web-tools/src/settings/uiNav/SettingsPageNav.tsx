@@ -62,13 +62,6 @@ export function SettingsPageNav(props: { pathname: string }) {
           >
             <Link to={routes.settings.service_registry.path({})}>Service Registry</Link>
           </NavItem>
-          <NavItem
-            itemId={0}
-            key={`Settings-feature_preview-nav`}
-            isActive={props.pathname === routes.settings.feature_preview.path({})}
-          >
-            <Link to={routes.settings.feature_preview.path({})}>Feature Preview</Link>
-          </NavItem>
           {isChromiumBased && (
             <NavItem
               itemId={0}
