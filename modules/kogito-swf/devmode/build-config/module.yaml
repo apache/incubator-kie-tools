@@ -7,4 +7,5 @@ envs:
   - name: "SCRIPT_DEBUG"
     value: "true"
   - name: QUARKUS_EXTENSIONS
+    # NOTE: If you change the QUARKUS_EXTENSIONS value remember to update the scripts/logic/build-quarkus-app.sh too!
     value: kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,kogito-quarkus-serverless-workflow-devui,kogito-addons-quarkus-source-files,kogito-addons-quarkus-jobs-service-embedded,kogito-addons-quarkus-data-index-inmemory,org.kie.kogito:kogito-addons-quarkus-fabric8-kubernetes-service-catalog:${KOGITO_VERSION}

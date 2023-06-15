@@ -29,7 +29,9 @@ if [ -z ${quarkus_platform_version} ]; then
 fi
 
 case ${image_name} in
-    "kogito-swf-builder")        ;;
+    "kogito-swf-builder")
+        quarkus_extensions="${quarkus_extensions}"
+        ;;
     "kogito-swf-devmode")
         quarkus_extensions="${quarkus_extensions},${kogito_swf_devmode_extensions},${kogito_swf_devmode_extensions_2_16}"
         ;;

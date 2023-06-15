@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-devmode-quarkus-app-parent</artifactId>
+    <artifactId>kogito-image-build-artifacts-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
 
-    <name>Kogito Dev Mode Quarkus App</name>
+    <name>Kogito image build artifacts</name>
     <description>Maven project to build a Quarkus App with Kogito Serverless Worflow</description>
     <packaging>pom</packaging>
 
@@ -25,15 +25,18 @@
         </license>
     </licenses>
     <properties>
-        <build.quarkusapp.argument.imagename>kogito-swf-devmode</build.quarkusapp.argument.imagename>
+        <build.quarkusapp.argument.imagename.devmode>kogito-swf-devmode</build.quarkusapp.argument.imagename.devmode>
+        <build.quarkusapp.argument.imagename.builder>kogito-swf-builder</build.quarkusapp.argument.imagename.builder>
         <build.quarkusapp.argument.quarkusplatform.groupid>io.quarkus.platform</build.quarkusapp.argument.quarkusplatform.groupid>
         <build.quarkusapp.argument.quarkusplatform.version>2.16.7.Final</build.quarkusapp.argument.quarkusplatform.version>
-        <build.quarkusapp.argument.kogitoversion>1.39.0.Final</build.quarkusapp.argument.kogitoversion>
+        <build.quarkusapp.argument.kogitoversion>1.40.0.Final</build.quarkusapp.argument.kogitoversion>
     </properties>
 
     <modules>
-        <module>quarkus-app</module>
-        <module>maven-repo</module>
+        <module>devmode-quarkus-app</module>
+        <module>devmode-maven-repo</module>
+        <module>builder-quarkus-app</module>
+        <module>builder-maven-repo</module>
     </modules>
 
     <build>
@@ -44,22 +47,38 @@
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>build-quarkus-app</id>
+                        <id>devmode-quarkus-app</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
+                        <configuration>
+                            <executable>${project.basedir}/build-quarkus-app.sh</executable>
+                            <arguments>
+                                <argument>${build.quarkusapp.argument.imagename.devmode}</argument>
+                                <argument>${build.quarkusapp.argument.quarkusplatform.groupid}</argument>
+                                <argument>${build.quarkusapp.argument.quarkusplatform.version}</argument>
+                                <argument>${build.quarkusapp.argument.kogitoversion}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>builder-quarkus-app</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${project.basedir}/build-quarkus-app.sh</executable>
+                            <arguments>
+                                <argument>${build.quarkusapp.argument.imagename.builder}</argument>
+                                <argument>${build.quarkusapp.argument.quarkusplatform.groupid}</argument>
+                                <argument>${build.quarkusapp.argument.quarkusplatform.version}</argument>
+                                <argument>${build.quarkusapp.argument.kogitoversion}</argument>
+                            </arguments>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <executable>${project.basedir}/build-quarkus-app.sh</executable>
-                    <arguments>
-                        <argument>${build.quarkusapp.argument.imagename}</argument>
-                        <argument>${build.quarkusapp.argument.quarkusplatform.groupid}</argument>
-                        <argument>${build.quarkusapp.argument.quarkusplatform.version}</argument>
-                        <argument>${build.quarkusapp.argument.kogitoversion}</argument>
-                    </arguments>
-                </configuration>
             </plugin>
         </plugins>
     </build>

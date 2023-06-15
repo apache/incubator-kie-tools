@@ -4,12 +4,12 @@
 
     <parent>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-devmode-quarkus-app-parent</artifactId>
+        <artifactId>kogito-image-build-artifacts-parent</artifactId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kogito-devmode-maven-repository</artifactId>
-    <name>Kogito Dev Mode Quarkus App - Maven repository zip</name>
+    <artifactId>kogito-builder-quarkus-app</artifactId>
+    <name>Kogito Builder Quarkus App - Quarkus app zip</name>
 
     <build>
         <plugins>
@@ -26,7 +26,7 @@
                         <configuration>
                             <artifacts>
                                 <artifact>
-                                    <file>/tmp/build/${build.quarkusapp.argument.imagename}/${build.quarkusapp.argument.imagename}-maven-repo.zip</file>
+                                    <file>/tmp/build/${build.quarkusapp.argument.imagename.builder}/${build.quarkusapp.argument.imagename.builder}-quarkus-app.zip</file>
                                     <type>zip</type>
                                     <classifier>image-build</classifier>
                                 </artifact>
