@@ -290,7 +290,6 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       ["sort(list, precedes)", "sort($1, $2)"],
       ["sort(list)", "sort($1)"],
       ["split(string, delimiter)", "split($1, $2)"],
-      ["split(string, delimiter, flags)", "split($1, $2, $3)"],
       ["sqrt(number)", "sqrt($1)"],
       ["started by(range, point)", "started by($1, $2)"],
       ["started by(range1, range2)", "started by($1, $2)"],
