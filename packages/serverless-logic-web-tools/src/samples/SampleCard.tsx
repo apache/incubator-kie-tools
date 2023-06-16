@@ -17,7 +17,7 @@
 import { Button, Modal, ModalVariant, Skeleton } from "@patternfly/react-core/dist/js";
 import { Card, CardBody, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
-import { Sample, SampleCategory } from "./SampleApi";
+import { Sample, SampleCategory } from "./types";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";

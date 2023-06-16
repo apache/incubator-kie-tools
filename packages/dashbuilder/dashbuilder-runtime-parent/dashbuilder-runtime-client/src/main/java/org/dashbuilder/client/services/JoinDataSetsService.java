@@ -15,7 +15,7 @@
  */
 package org.dashbuilder.client.services;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -24,6 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.dashbuilder.client.external.ExternalDataSetClientProvider;
+import org.dashbuilder.client.external.ExternalDataSetParserProvider;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;
@@ -33,6 +34,9 @@ import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.DataSetLookupFactory;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
+import org.dashbuilder.dataset.def.ExternalDataSetDef;
+
+import static org.dashbuilder.common.client.StringUtils.isBlank;
 
 @ApplicationScoped
 public class JoinDataSetsService {
@@ -41,16 +45,18 @@ public class JoinDataSetsService {
     ExternalDataSetClientProvider externalDataSetClientProvider;
 
     @Inject
+    ExternalDataSetParserProvider parserProvider;
+
+    @Inject
     ClientDataSetManager manager;
 
     static final String DATASET_COLUMN = "dataset";
 
-    public void joinDataSets(List<String> uuids, DataSetLookup lookup, DataSetReadyCallback listener) {
-        var joinedDataSet = DataSetFactory.newEmptyDataSet();
-        var missingDatasets = new ArrayList<String>(uuids);
+    public void joinDataSets(ExternalDataSetDef def, DataSetLookup lookup, DataSetReadyCallback listener) {
         var onError = new AtomicBoolean(false);
+        var dataSetsMap = new HashMap<String, DataSet>();
+        var uuids = def.getJoin();
 
-        joinedDataSet.setUUID(lookup.getDataSetUUID());
         for (var uuid : uuids) {
             var dsLookup = DataSetLookupFactory.newDataSetLookupBuilder().dataset(uuid).buildLookup();
             externalDataSetClientProvider.fetchAndRegister(uuid, dsLookup, new DataSetReadyCallback() {
@@ -60,13 +66,9 @@ public class JoinDataSetsService {
                     if (onError.get()) {
                         return;
                     }
-                    missingDatasets.remove(uuid);
-                    join(joinedDataSet, dataSet);
-                    if (missingDatasets.isEmpty()) {
-                        manager.registerDataSet(joinedDataSet);
-                        var result = manager.lookupDataSet(lookup);
-                        manager.removeDataSet(lookup.getDataSetUUID());
-                        listener.callback(result);
+                    dataSetsMap.put(uuid, dataSet);
+                    if (dataSetsMap.size() == uuids.size()) {
+                        finishJoin(def, lookup, listener, dataSetsMap);
                     }
                 }
 
@@ -84,8 +86,9 @@ public class JoinDataSetsService {
                     if (onError.get()) {
                         return false;
                     }
-                    listener.onError(new ClientRuntimeError("Error fetching data set " + uuid + ": " + error
-                            .getMessage()));
+                    listener.onError(
+                            new ClientRuntimeError("Error fetching data set " + uuid + ": " + error.getMessage(), error
+                                    .getThrowable()));
                     onError.set(true);
                     return false;
                 }
@@ -115,6 +118,54 @@ public class JoinDataSetsService {
 
     }
 
+    private void finishJoin(ExternalDataSetDef def,
+                            DataSetLookup lookup,
+                            DataSetReadyCallback listener,
+                            HashMap<String, DataSet> dataSetsMap) {
+        var joinedDataSet = DataSetFactory.newEmptyDataSet();
+        var uuids = def.getJoin();
+        var uuid = lookup.getDataSetUUID();
+
+        uuids.stream()
+                .map(dataSetsMap::get)
+                .filter(ds -> !isEmpty(ds))
+                .forEach(ds -> join(joinedDataSet, ds));
+
+        if (!isBlank(def.getExpression())) {
+            var jsonArray = parserProvider.get().toJsonArray(joinedDataSet);
+            String transformedArray = "";
+            try {
+                transformedArray = externalDataSetClientProvider.applyExpression(def.getExpression(), jsonArray);
+            } catch (Exception e) {
+                listener.onError(new ClientRuntimeError("Error applying expression to joined dataset", e));
+                return;
+            }
+            DataSet transformedDataSet = null;
+            try {
+                transformedDataSet = parserProvider.get().parseDataSet(transformedArray);
+            } catch (Exception e) {
+                listener.onError(new ClientRuntimeError("Not able to parse data set after expression was applied", e));
+                return;
+            }
+            transformedDataSet.setUUID(uuid);
+            manager.registerDataSet(transformedDataSet);
+        } else {
+            joinedDataSet.setUUID(uuid);
+            manager.registerDataSet(joinedDataSet);
+        }
+
+        DataSet result = null;
+        try {
+            result = manager.lookupDataSet(lookup);
+        } catch (Exception e) {
+            listener.onError(new ClientRuntimeError("Error during dataset lookup", e));
+            return;
+        }
+
+        externalDataSetClientProvider.handleCache(uuid);
+        listener.callback(result);
+    }
+
     private void verifyColumnsCompatibility(List<DataColumn> initialColumns, DataSet dataSet) {
         var columnsToJoin = dataSet.getColumns();
         if (columnsToJoin.size() != initialColumns.size()) {
@@ -139,6 +190,10 @@ public class JoinDataSetsService {
         dataSet.getColumns().forEach((cl -> joinedDataSet.addColumn(cl.getId(), cl.getColumnType())));
         joinedDataSet.addColumn(DATASET_COLUMN, ColumnType.LABEL);
 
+    }
+
+    private boolean isEmpty(DataSet dataSet) {
+        return dataSet.getRowCount() == 0 && (dataSet.getColumns() == null || dataSet.getColumns().isEmpty());
     }
 
 }

@@ -30,7 +30,6 @@ exports[`FormDmn tests should remove require parameter 1`] = `
         <div
           class="pf-c-form__group"
           data-testid="wrapper-field"
-          style="padding: 5px;"
         >
           <div
             class="pf-c-form__group-label"
@@ -61,7 +60,6 @@ exports[`FormDmn tests should remove require parameter 1`] = `
               id="uniforms-0007-0001"
               name="name"
               placeholder=""
-              style="padding: 5px;"
               type="text"
               value=""
             />
@@ -87,7 +85,6 @@ exports[`FormDmn tests should render the DMN Form 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -118,7 +115,6 @@ exports[`FormDmn tests should render the DMN Form 1`] = `
             id="uniforms-0000-0001"
             name="name"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="Kogito"
           />
@@ -128,7 +124,6 @@ exports[`FormDmn tests should render the DMN Form 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -159,7 +154,6 @@ exports[`FormDmn tests should render the DMN Form 1`] = `
             id="uniforms-0000-0003"
             name="lastName"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="Tooling"
           />
@@ -169,7 +163,6 @@ exports[`FormDmn tests should render the DMN Form 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -200,7 +193,6 @@ exports[`FormDmn tests should render the DMN Form 1`] = `
             id="uniforms-0000-0005"
             name="daysAndTimeDuration"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="P1D"
           />
@@ -210,7 +202,6 @@ exports[`FormDmn tests should render the DMN Form 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -241,7 +232,6 @@ exports[`FormDmn tests should render the DMN Form 1`] = `
             id="uniforms-0000-0007"
             name="yearsAndMonthDuration"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value=""
           />
@@ -266,7 +256,6 @@ exports[`FormDmn tests should submit the formInputs 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -297,7 +286,6 @@ exports[`FormDmn tests should submit the formInputs 1`] = `
             id="uniforms-0001-0001"
             name="name"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="Kogito"
           />
@@ -307,7 +295,6 @@ exports[`FormDmn tests should submit the formInputs 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -338,7 +325,6 @@ exports[`FormDmn tests should submit the formInputs 1`] = `
             id="uniforms-0001-0003"
             name="lastName"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="Tooling"
           />
@@ -348,7 +334,6 @@ exports[`FormDmn tests should submit the formInputs 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -379,7 +364,6 @@ exports[`FormDmn tests should submit the formInputs 1`] = `
             id="uniforms-0001-0005"
             name="daysAndTimeDuration"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="P1D"
           />
@@ -389,7 +373,6 @@ exports[`FormDmn tests should submit the formInputs 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -420,7 +403,6 @@ exports[`FormDmn tests should submit the formInputs 1`] = `
             id="uniforms-0001-0007"
             name="yearsAndMonthDuration"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value=""
           />
@@ -445,7 +427,6 @@ exports[`FormDmn tests should validate the formInputs - invalid 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -476,7 +457,6 @@ exports[`FormDmn tests should validate the formInputs - invalid 1`] = `
             id="uniforms-0004-0001"
             name="name"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="Kogito"
           />
@@ -486,7 +466,6 @@ exports[`FormDmn tests should validate the formInputs - invalid 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -517,7 +496,6 @@ exports[`FormDmn tests should validate the formInputs - invalid 1`] = `
             id="uniforms-0004-0003"
             name="lastName"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="Tooling"
           />
@@ -527,7 +505,6 @@ exports[`FormDmn tests should validate the formInputs - invalid 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -558,7 +535,6 @@ exports[`FormDmn tests should validate the formInputs - invalid 1`] = `
             id="uniforms-0004-0005"
             name="daysAndTimeDuration"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="p"
           />
@@ -574,7 +550,6 @@ exports[`FormDmn tests should validate the formInputs - invalid 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -605,7 +580,6 @@ exports[`FormDmn tests should validate the formInputs - invalid 1`] = `
             id="uniforms-0004-0007"
             name="yearsAndMonthDuration"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value=""
           />
@@ -630,7 +604,6 @@ exports[`FormDmn tests should validate the formInputs - success 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -661,7 +634,6 @@ exports[`FormDmn tests should validate the formInputs - success 1`] = `
             id="uniforms-0003-0001"
             name="name"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="Kogito"
           />
@@ -671,7 +643,6 @@ exports[`FormDmn tests should validate the formInputs - success 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -702,7 +673,6 @@ exports[`FormDmn tests should validate the formInputs - success 1`] = `
             id="uniforms-0003-0003"
             name="lastName"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="Tooling"
           />
@@ -712,7 +682,6 @@ exports[`FormDmn tests should validate the formInputs - success 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -743,7 +712,6 @@ exports[`FormDmn tests should validate the formInputs - success 1`] = `
             id="uniforms-0003-0005"
             name="daysAndTimeDuration"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="P1D"
           />
@@ -753,7 +721,6 @@ exports[`FormDmn tests should validate the formInputs - success 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -784,7 +751,6 @@ exports[`FormDmn tests should validate the formInputs - success 1`] = `
             id="uniforms-0003-0007"
             name="yearsAndMonthDuration"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value=""
           />
@@ -809,7 +775,6 @@ exports[`FormDmn tests shouldn't submit the formInputs 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -840,7 +805,6 @@ exports[`FormDmn tests shouldn't submit the formInputs 1`] = `
             id="uniforms-0002-0001"
             name="name"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value=""
           />
@@ -850,7 +814,6 @@ exports[`FormDmn tests shouldn't submit the formInputs 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -881,7 +844,6 @@ exports[`FormDmn tests shouldn't submit the formInputs 1`] = `
             id="uniforms-0002-0003"
             name="lastName"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value=""
           />
@@ -891,7 +853,6 @@ exports[`FormDmn tests shouldn't submit the formInputs 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -922,7 +883,6 @@ exports[`FormDmn tests shouldn't submit the formInputs 1`] = `
             id="uniforms-0002-0005"
             name="daysAndTimeDuration"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value="p"
           />
@@ -938,7 +898,6 @@ exports[`FormDmn tests shouldn't submit the formInputs 1`] = `
       <div
         class="pf-c-form__group"
         data-testid="wrapper-field"
-        style="padding: 5px;"
       >
         <div
           class="pf-c-form__group-label"
@@ -969,7 +928,6 @@ exports[`FormDmn tests shouldn't submit the formInputs 1`] = `
             id="uniforms-0002-0007"
             name="yearsAndMonthDuration"
             placeholder=""
-            style="padding: 5px;"
             type="text"
             value=""
           />

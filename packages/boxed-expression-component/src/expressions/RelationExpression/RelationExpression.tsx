@@ -307,6 +307,29 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     },
     [setExpression]
   );
+
+  const onRowDuplicated = useCallback(
+    (args: { rowIndex: number }) => {
+      setExpression((prev: RelationExpressionDefinition) => {
+        const duplicatedRow = {
+          id: generateUuid(),
+          cells: prev.rows![args.rowIndex].cells.map((cell) => ({
+            ...cell,
+            id: generateUuid(),
+          })),
+        };
+
+        const newRows = [...(prev.rows ?? [])];
+        newRows.splice(args.rowIndex, 0, duplicatedRow);
+        return {
+          ...prev,
+          rows: newRows,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   const beeTableHeaderVisibility = useMemo(() => {
     return relationExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
   }, [relationExpression.isNested]);
@@ -367,6 +390,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         operationConfig={beeTableOperationConfig}
         allowedOperations={allowedOperations}
         onRowAdded={onRowAdded}
+        onRowDuplicated={onRowDuplicated}
         onRowDeleted={onRowDeleted}
         onColumnAdded={onColumnAdded}
         onColumnDeleted={onColumnDeleted}

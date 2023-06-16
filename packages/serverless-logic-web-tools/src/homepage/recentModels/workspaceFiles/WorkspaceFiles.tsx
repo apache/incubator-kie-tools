@@ -176,7 +176,13 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
   }, [searchValue]);
 
   useEffect(() => {
-    setSelectedWorkspaceFiles([]);
+    if (workspacePromise.data?.files) {
+      setSelectedWorkspaceFiles((selectedFiles) =>
+        selectedFiles.filter((sFile) =>
+          workspacePromise.data.files.some((wFile) => wFile.relativePath === sFile.relativePath)
+        )
+      );
+    }
   }, [workspacePromise]);
 
   return (

@@ -31,7 +31,7 @@ export interface Accelerator {
 
 const KOGITO_QUARKUS_ACCELERATOR_POTENTIAL_CONFLICT_FILES = ["application.properties", "META-INF/resources/index.html"];
 export const KOGITO_QUARKUS_ACCELERATOR: Accelerator = {
-  name: "Kogito Quarkus",
+  name: "Quarkus",
   remote: "kogito-quarkus-accelerator",
   url: "https://github.com/kiegroup/serverless-logic-sandbox-deployment",
   ref: "quarkus-accelerator",

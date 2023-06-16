@@ -19,13 +19,16 @@ import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.external.ExternalDataSetClientProvider;
+import org.dashbuilder.client.external.ExternalDataSetParserProvider;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.dataset.DataSetLookupFactory;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
+import org.dashbuilder.dataset.client.DataSetReadyCallbackAdapter;
 import org.dashbuilder.dataset.def.DataSetDefFactory;
+import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,6 +63,9 @@ public class JoinDataSetsServiceTest {
     @Mock
     ExternalDataSetClientProvider externalDataSetClientProvider;
 
+    @Mock
+    ExternalDataSetParserProvider parserProvider;
+
     @InjectMocks
     private JoinDataSetsService joinService;
 
@@ -71,9 +77,15 @@ public class JoinDataSetsServiceTest {
 
     @Captor
     ArgumentCaptor<DataSetReadyCallback> topDatasetCallbackCaptor;
+    private ExternalDataSetDef def;
 
     @Before
     public void init() {
+
+        def = new ExternalDataSetDef();
+        def.setJoin(List.of(DS1_UUID, DS2_UUID));
+        def.setUUID(RESULT_UUID);
+
         d1 = DataSetFactory.newDataSetBuilder()
                 .uuid(DS1_UUID)
                 .label(C1_ID)
@@ -102,7 +114,7 @@ public class JoinDataSetsServiceTest {
         joinService.join(result, d2);
         verifyDataSet(result);
     }
-    
+
     @Test
     public void testJoinSingleDataSet() {
         var result = DataSetFactory.newEmptyDataSet();
@@ -119,6 +131,7 @@ public class JoinDataSetsServiceTest {
 
     @Test
     public void testJoinDatasets() {
+
         var lookup = DataSetLookupFactory.newDataSetLookupBuilder()
                 .dataset(RESULT_UUID)
                 .column(C1_ID)
@@ -126,24 +139,12 @@ public class JoinDataSetsServiceTest {
                 .column(JoinDataSetsService.DATASET_COLUMN)
                 .buildLookup();
 
-        joinService.joinDataSets(List.of(DS1_UUID, DS2_UUID), lookup, new DataSetReadyCallback() {
-
-            @Override
-            public boolean onError(ClientRuntimeError error) {
-                // should not be called
-                return false;
-            }
-
-            @Override
-            public void notFound() {
-                // should not be called
-            }
+        joinService.joinDataSets(def, lookup, new DataSetReadyCallbackAdapter() {
 
             @Override
             public void callback(DataSet result) {
                 verifyDataSet(result);
             }
-
         });
 
         verify(externalDataSetClientProvider).fetchAndRegister(eq(DS1_UUID), any(), ds1DatasetCallbackCaptor.capture());
@@ -155,10 +156,61 @@ public class JoinDataSetsServiceTest {
     }
 
     @Test
+    public void testJoinDatasetsKeepOrder() {
+        var lookup = DataSetLookupFactory.newDataSetLookupBuilder()
+                .dataset(RESULT_UUID)
+                .column(C1_ID)
+                .column(C2_ID)
+                .column(JoinDataSetsService.DATASET_COLUMN)
+                .buildLookup();
+
+        def.setJoin(List.of(DS2_UUID, DS1_UUID));
+
+        joinService.joinDataSets(def, lookup, new DataSetReadyCallbackAdapter() {
+
+            @Override
+            public void callback(DataSet result) {
+                assertEquals(List.of("ds2", "ds2", "ds1", "ds1"),
+                        result.getColumnById(JoinDataSetsService.DATASET_COLUMN).getValues());
+            }
+
+        });
+        verify(externalDataSetClientProvider).fetchAndRegister(eq(DS1_UUID), any(), ds1DatasetCallbackCaptor.capture());
+        verify(externalDataSetClientProvider).fetchAndRegister(eq(DS2_UUID), any(), ds2DatasetCallbackCaptor.capture());
+
+        ds1DatasetCallbackCaptor.getValue().callback(d1);
+        ds2DatasetCallbackCaptor.getValue().callback(d2);
+    }
+
+    @Test
+    public void testJoinDatasetsIgnoringEmpty() {
+        var lookup = DataSetLookupFactory.newDataSetLookupBuilder()
+                .dataset(RESULT_UUID)
+                .column(C1_ID)
+                .column(C2_ID)
+                .column(JoinDataSetsService.DATASET_COLUMN)
+                .buildLookup();
+
+        joinService.joinDataSets(def, lookup, new DataSetReadyCallbackAdapter() {
+
+            @Override
+            public void callback(DataSet result) {
+                verifyDataSetD1(result);
+            }
+
+        });
+        verify(externalDataSetClientProvider).fetchAndRegister(eq(DS1_UUID), any(), ds1DatasetCallbackCaptor.capture());
+        verify(externalDataSetClientProvider).fetchAndRegister(eq(DS2_UUID), any(), ds2DatasetCallbackCaptor.capture());
+
+        ds1DatasetCallbackCaptor.getValue().callback(d1);
+        ds2DatasetCallbackCaptor.getValue().callback(DataSetFactory.newEmptyDataSet());
+    }
+
+    @Test
     public void testJoinDatasetsNotFound() {
         var lookup = DataSetLookupFactory.newDataSetLookupBuilder().buildLookup();
         var datasetReadyCallback = mock(DataSetReadyCallback.class);
-        joinService.joinDataSets(List.of(DS1_UUID, DS2_UUID), lookup, datasetReadyCallback);
+        joinService.joinDataSets(def, lookup, datasetReadyCallback);
 
         verify(externalDataSetClientProvider).fetchAndRegister(Mockito.eq(DS1_UUID), any(),
                 ds1DatasetCallbackCaptor.capture());
@@ -177,7 +229,7 @@ public class JoinDataSetsServiceTest {
     public void testJoinDatasetsError() {
         var lookup = DataSetLookupFactory.newDataSetLookupBuilder().buildLookup();
         var datasetReadyCallback = mock(DataSetReadyCallback.class);
-        joinService.joinDataSets(List.of(DS1_UUID, DS2_UUID), lookup, datasetReadyCallback);
+        joinService.joinDataSets(def, lookup, datasetReadyCallback);
 
         verify(externalDataSetClientProvider).fetchAndRegister(Mockito.eq(DS1_UUID), any(),
                 ds1DatasetCallbackCaptor.capture());
@@ -190,6 +242,16 @@ public class JoinDataSetsServiceTest {
 
         verify(datasetReadyCallback, times(1)).onError(any());
         verify(datasetReadyCallback, times(0)).callback(any());
+    }
+
+    private void verifyDataSetD1(DataSet result) {
+        assertEquals(List.of("D1_C1_R1", "D1_C1_R2"),
+                result.getColumnById(C1_ID).getValues());
+        assertEquals(List.of("D1_C2_R1", "D1_C2_R2"),
+                result.getColumnById(C2_ID).getValues());
+        assertEquals(List.of("ds1", "ds1"),
+                result.getColumnById(JoinDataSetsService.DATASET_COLUMN).getValues());
+        assertEquals(2, result.getRowCount());
     }
 
     private void verifyDataSet(DataSet result) {

@@ -243,6 +243,12 @@ export function RecentModels() {
       });
   }, [updateTableData, deletingWorkspaceIds, workspaces, deleteErrorAlert, deleteSuccessAlert, tableData]);
 
+  useEffect(() => {
+    setSelectedWorkspaceIds((selectedIds) =>
+      selectedIds.filter((id) => tableData.some((element) => element.descriptor.workspaceId === id))
+    );
+  }, [tableData]);
+
   return (
     <>
       <Page>

@@ -151,6 +151,10 @@ export function JavaFunctionExpression({
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
     return [
       {
+        group: _.upperCase(i18n.terms.selection),
+        items: [{ name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy }],
+      },
+      {
         group: _.upperCase(i18n.function),
         items: [{ name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset }],
       },
