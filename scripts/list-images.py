@@ -31,7 +31,7 @@ if __name__ == "__main__":
     elif args.prod:
         images = common.get_prod_images()
     elif args.swf_builder:
-        images = common.get_swf_builder_images()
+        images = common.get_swf_builder_images(args.prod)
     else:
         images = common.get_community_images()
 

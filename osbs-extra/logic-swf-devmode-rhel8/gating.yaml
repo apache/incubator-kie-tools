@@ -1,0 +1,7 @@
+--- !Policy
+id: "cvp-logic-swf-devmode-rhel8"
+product_versions:
+  - cvp
+decision_context: cvp_default
+rules:
+  - !PassingTestCaseRule {test_case_name: logic-swf-devmode-rhel8.openshift.external}

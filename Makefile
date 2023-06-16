@@ -121,4 +121,4 @@ bats:
 prod_component=
 container-build-osbs:
 	echo "calling RHPAM container-build-osbs......................................"
-	$(CEKIT_CMD) --descriptor $(prod_component).yaml --redhat build ${build_options} osbs --assume-yes
+	$(CEKIT_CMD) --descriptor $(prod_component).yaml --redhat build ${build_options} osbs --assume-yes ${osbs_options}

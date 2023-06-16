@@ -1,5 +1,6 @@
 @quay.io/kiegroup/kogito-swf-builder
 @quay.io/kiegroup/kogito-swf-devmode
+@openshift-serverless-1-tech-preview/logic-swf-devmode-rhel8
 Feature: Serverless Workflow images common
 
   Scenario: Verify if the swf and quarkus files are under /home/kogito/.m2/repository

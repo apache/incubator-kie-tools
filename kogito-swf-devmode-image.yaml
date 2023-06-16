@@ -61,7 +61,8 @@
           version: "3.8.6"
         - name: org.kie.kogito.project.versions
         - name: org.kie.kogito.swf.common.scripts
-        - name: org.kie.kogito.swf.devmode.runtime
+        - name: org.kie.kogito.swf.devmode.runtime.common
+        - name: org.kie.kogito.swf.devmode.runtime.community
 
     ports:
       - value: 8080
