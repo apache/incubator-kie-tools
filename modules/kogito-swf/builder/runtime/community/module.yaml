@@ -1,5 +1,5 @@
 schema_version: 1
-name: org.kie.kogito.swf.builder.runtime
+name: org.kie.kogito.swf.builder.runtime.community
 version: "2.0.0-snapshot"
 description: "Kogito Serverless Workflow builder runtime module"
 

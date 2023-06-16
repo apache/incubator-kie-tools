@@ -63,7 +63,7 @@
           version: "3.8.6"
         - name: org.kie.kogito.project.versions
         - name: org.kie.kogito.swf.common.scripts
-        - name: org.kie.kogito.swf.builder.runtime
+        - name: org.kie.kogito.swf.builder.runtime.community
 
     run:
       workdir: "/home/kogito/${PROJECT_ARTIFACT_ID}"

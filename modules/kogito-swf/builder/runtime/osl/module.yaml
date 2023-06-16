@@ -1,0 +1,15 @@
+schema_version: 1
+name: org.kie.kogito.swf.builder.runtime.osl
+version: "1.29.0"
+description: "OpenShift Serverless Logic builder module with required extensions"
+
+artifacts:
+  - name: kogito-builder-quarkus-app-image-build.zip
+    # kogito-builder-quarkus-app-1.38.0.Final-redhat-00002-image-build.zip
+    md5: e55ce232900dc6ea089813eb8ffe8d93
+  - name: kogito-builder-maven-repository-image-build.zip
+    # kogito-builder-maven-repository-1.38.0.Final-redhat-00002-image-build.zip
+    md5: 1489b401aa0356ac79fd3aa0e62bacf3
+
+execute:
+  - script: configure.sh

@@ -1,5 +1,6 @@
 @quay.io/kiegroup/kogito-swf-builder
 @quay.io/kiegroup/kogito-swf-devmode
+@openshift-serverless-1-tech-preview/logic-swf-builder-rhel8
 @openshift-serverless-1-tech-preview/logic-swf-devmode-rhel8
 Feature: Serverless Workflow images common
 

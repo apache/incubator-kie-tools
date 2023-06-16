@@ -48,3 +48,24 @@ items:
           from:
             kind: DockerImage
             name: registry.redhat.io/openshift-serverless-1-tech-preview/logic-swf-devmode-rhel8:1.29.0
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: logic-builder
+      annotations:
+        openshift.io/display-name: Red Hat build of Runtime image for Kogito Serverless Workflow base builder with Quarkus extensions libraries preinstalled
+        openshift.io/provider-display-name: Kie Group
+    spec:
+      tags:
+        - name: '1.29.0'
+          annotations:
+            description: Red Hat build of Runtime image for Kogito Serverless Workflow builder with Quarkus extensions libraries preinstalled
+            iconClass: icon-jbpm
+            tags: logic,builder,kogito,workflow,serverless
+            supports: quarkus
+            version: '1.29.0'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: registry.redhat.io/openshift-serverless-1-tech-preview/logic-swf-builder-rhel8:1.29.0
