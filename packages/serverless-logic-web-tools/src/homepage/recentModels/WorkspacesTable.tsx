@@ -13,26 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import React from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import {
   TableComposable,
   Tbody,
   Th,
   Thead,
-  Tr,
   ThProps,
+  Tr,
 } from "@patternfly/react-table/dist/js/components/TableComposable";
-import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { splitFiles } from "../../extension";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { TablePaginationProps, TableRowEmptyState } from "../../table";
-import { WorkspacesTableRow, WorkspacesTableRowError, WorkspacesTableRowLoading } from "./WorkspacesTableRow";
-import { useWorkspacesWithFilesPromise } from "./hooks/useWorkspacesWithFilesPromise";
-import { GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
+import { WorkspacesTableRow, WorkspacesTableRowError } from "./WorkspacesTableRow";
 
 export const columnNames = {
   name: "Name",
@@ -47,12 +42,12 @@ export type WorkspacesTableProps = Pick<TablePaginationProps, "page" | "perPage"
   onClearFilters: () => void;
   onWsToggle: (workspaceId: WorkspaceDescriptor["workspaceId"], checked: boolean) => void;
   selectedWorkspaceIds: WorkspaceDescriptor["workspaceId"][];
-  workspaceIds: WorkspaceDescriptor["workspaceId"][];
 
   /**
    * event fired when an element is deleted
    */
   onDelete: (workspaceId: WorkspaceDescriptor["workspaceId"]) => void;
+  tableData: WorkspacesTableRowData[];
 };
 
 export type WorkspacesTableRowData = {
@@ -64,45 +59,9 @@ export type WorkspacesTableRowData = {
 };
 
 export function WorkspacesTable(props: WorkspacesTableProps) {
-  const { workspaceIds, selectedWorkspaceIds, onClearFilters, page, perPage } = props;
+  const { selectedWorkspaceIds, onClearFilters, page, perPage, tableData } = props;
   const [activeSortIndex, setActiveSortIndex] = useState<number>(3);
   const [activeSortDirection, setActiveSortDirection] = useState<"asc" | "desc">("desc");
-  const workspacesWithFilesPromise = useWorkspacesWithFilesPromise(workspaceIds);
-
-  const tableData = useMemo<WorkspacesTableRowData[]>(
-    () =>
-      workspacesWithFilesPromise.data?.map((item) => {
-        if (!item.success) {
-          return {
-            descriptor: {
-              workspaceId: item.workspaceId,
-              name: item.name ?? "Unknown workspace",
-              origin: item.origin ?? { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
-              createdDateISO: item.createdDateISO ?? new Date().toISOString(),
-              lastUpdatedDateISO: item.lastUpdatedDateISO ?? new Date().toISOString(),
-              gitAuthSessionId: undefined,
-            },
-            editableFiles: [],
-            hasErrors: true,
-            isWsFolder: true,
-            totalFiles: 0,
-          };
-        }
-        const { editableFiles, readonlyFiles } = splitFiles(item.files ?? []);
-        const isWsFolder =
-          editableFiles.length > 1 || readonlyFiles.length > 0 || item.descriptor.origin.kind !== WorkspaceKind.LOCAL;
-        const name = !isWsFolder && editableFiles.length ? editableFiles[0].nameWithoutExtension : item.descriptor.name;
-
-        return {
-          descriptor: { ...item.descriptor, name },
-          editableFiles: editableFiles,
-          hasErrors: false,
-          isWsFolder,
-          totalFiles: item.files.length,
-        };
-      }) ?? [],
-    [workspacesWithFilesPromise]
-  );
 
   const sortedTableData = useMemo<WorkspacesTableRowData[]>(
     () =>
@@ -169,39 +128,29 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
           </Tr>
         </Thead>
         <Tbody>
-          <PromiseStateWrapper
-            promise={workspacesWithFilesPromise}
-            pending={<WorkspacesTableRowLoading />}
-            rejected={() => <>ERROR</>}
-            resolved={() =>
-              !visibleTableData.length ? (
-                <TableRowEmptyState
-                  colSpan={Object.keys(columnNames).length + 2}
-                  elementsName="modules"
-                  onClearFilters={onClearFilters}
-                />
-              ) : (
-                visibleTableData.map((rowData, rowIndex) => (
-                  <ErrorBoundary
-                    key={rowData.descriptor.workspaceId}
-                    error={<WorkspacesTableRowError rowData={rowData} />}
-                  >
-                    {rowData.hasErrors ? (
-                      <WorkspacesTableRowError rowData={rowData} />
-                    ) : (
-                      <WorkspacesTableRow
-                        rowData={rowData}
-                        rowIndex={rowIndex}
-                        isSelected={isWsCheckboxChecked(rowData.descriptor.workspaceId)}
-                        onToggle={(checked) => props.onWsToggle(rowData.descriptor.workspaceId, checked)}
-                        onDelete={props.onDelete}
-                      />
-                    )}
-                  </ErrorBoundary>
-                ))
-              )
-            }
-          />
+          {!visibleTableData.length ? (
+            <TableRowEmptyState
+              colSpan={Object.keys(columnNames).length + 2}
+              elementsName="modules"
+              onClearFilters={onClearFilters}
+            />
+          ) : (
+            visibleTableData.map((rowData, rowIndex) => (
+              <ErrorBoundary key={rowData.descriptor.workspaceId} error={<WorkspacesTableRowError rowData={rowData} />}>
+                {rowData.hasErrors ? (
+                  <WorkspacesTableRowError rowData={rowData} />
+                ) : (
+                  <WorkspacesTableRow
+                    rowData={rowData}
+                    rowIndex={rowIndex}
+                    isSelected={isWsCheckboxChecked(rowData.descriptor.workspaceId)}
+                    onToggle={(checked) => props.onWsToggle(rowData.descriptor.workspaceId, checked)}
+                    onDelete={props.onDelete}
+                  />
+                )}
+              </ErrorBoundary>
+            ))
+          )}
         </Tbody>
       </TableComposable>
     </>
