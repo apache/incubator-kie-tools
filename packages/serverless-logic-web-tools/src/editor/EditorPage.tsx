@@ -32,7 +32,7 @@ import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useController } from "@kie-tools-core/react-hooks/dist/useController";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
-import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { PromiseStateStatus, PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useWorkspaceFilePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceFileHooks";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
@@ -42,6 +42,7 @@ import { WebToolsEmbeddedEditor, WebToolsEmbeddedEditorRef } from "./WebToolsEmb
 import { useEditorNotifications } from "./hooks/useEditorNotifications";
 import { useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
 import { setPageTitle } from "../PageTitle";
+import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 
 export interface Props {
   workspaceId: string;
@@ -61,6 +62,7 @@ export function EditorPage(props: Props) {
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const lastContent = useRef<string>();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
+  const workspacePromise = useWorkspacePromise(props.workspaceId);
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
   const isEditorReady = useMemo(() => webToolsEditor?.editor?.isReady, [webToolsEditor]);
   const queryParams = useQueryParams();
@@ -219,7 +221,9 @@ export function EditorPage(props: Props) {
     [webToolsEditor]
   );
 
-  return (
+  return workspacePromise.status === PromiseStateStatus.REJECTED ? (
+    <ErrorPage kind="File" errors={workspacePromise.error} filePath={props.fileRelativePath} />
+  ) : (
     <PromiseStateWrapper
       promise={workspaceFilePromise}
       pending={<LoadingSpinner />}
