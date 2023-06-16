@@ -198,8 +198,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       ["for", "for element in $1 return\n\t$0"],
     ],
     Function: [
-      ["abs(duration)", "abs($1)"],
-      ["abs(number)", "abs($1)"],
+      ["abs(n)", "abs($1)"],
       ["after(range, value)", "after($1, $2)"],
       ["after(range1, range2)", "after($1, $2)"],
       ["after(value, range)", "after($1, $2)"],
