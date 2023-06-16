@@ -194,6 +194,14 @@ export function RecentModels() {
     setPageTitle([PAGE_TITLE]);
   }, []);
 
+  useEffect(() => {
+    if (workspaceDescriptorsPromise.data) {
+      setSelectedWorkspaceIds((selectedIds) =>
+        selectedIds.filter((id) => workspaceDescriptorsPromise.data.some((element) => element.workspaceId === id))
+      );
+    }
+  }, [workspaceDescriptorsPromise]);
+
   return (
     <PromiseStateWrapper
       promise={workspaceDescriptorsPromise}

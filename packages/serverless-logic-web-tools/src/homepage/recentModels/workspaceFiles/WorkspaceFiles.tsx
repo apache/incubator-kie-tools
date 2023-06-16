@@ -170,7 +170,13 @@ export function WorkspaceFiles(props: Props) {
   }, [searchValue]);
 
   useEffect(() => {
-    setSelectedWorkspaceFiles([]);
+    if (workspacePromise.data?.files) {
+      setSelectedWorkspaceFiles((selectedFiles) =>
+        selectedFiles.filter((sFile) =>
+          workspacePromise.data.files.some((wFile) => wFile.relativePath === sFile.relativePath)
+        )
+      );
+    }
   }, [workspacePromise]);
 
   return (
