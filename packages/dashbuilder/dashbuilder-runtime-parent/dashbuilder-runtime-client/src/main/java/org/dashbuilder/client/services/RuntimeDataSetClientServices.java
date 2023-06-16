@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.client.services;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -76,7 +77,7 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
 
     @Override
     public void fetchMetadata(String uuid, DataSetMetadataCallback listener) throws Exception {
-        // empty
+        // empty        
     }
 
     @Override
@@ -88,7 +89,7 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
     @Override
     public void lookupDataSet(DataSetDef def, DataSetLookup lookup, DataSetReadyCallback listener) throws Exception {
         var clientDataSet = clientDataSetManager.lookupDataSet(lookup);
-        String uuid = lookup.getDataSetUUID();
+        var uuid = lookup.getDataSetUUID();
         if (!isAccumulate(uuid) && clientDataSet != null) {
             listener.callback(clientDataSet);
             return;
@@ -96,7 +97,8 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
 
         var join = getJoin(uuid);
         if (!join.isEmpty()) {
-            joinDataSetsService.joinDataSets(join, lookup, listener);
+            var externalDef = externalDataSetClientProvider.get(uuid).get();
+            joinDataSetsService.joinDataSets(externalDef, lookup, listener);
             return;
         }
 
@@ -137,7 +139,7 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
 
     }
 
-    private List<String> getJoin(String uuid) {
+    private Collection<String> getJoin(String uuid) {
         return externalDataSetClientProvider.get(uuid).filter(def -> def.getJoin() != null)
                 .map(def -> def.getJoin())
                 .orElse(Collections.emptyList());
