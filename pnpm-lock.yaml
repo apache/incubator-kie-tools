@@ -2842,6 +2842,12 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools-core/react-hooks":
+        specifier: workspace:*
+        version: link:../react-hooks
+      "@kie-tools/dmn-runner":
+        specifier: workspace:*
+        version: link:../dmn-runner
       "@kie-tools/extended-services-api":
         specifier: workspace:*
         version: link:../extended-services-api
@@ -2857,6 +2863,12 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      json-refs:
+        specifier: ^3.0.15
+        version: 3.0.15
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -2903,6 +2915,9 @@ importers:
       "@types/jest-when":
         specifier: ^2.7.4
         version: 2.7.4
+      "@types/lodash":
+        specifier: ^4.14.168
+        version: 4.14.169
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
@@ -2936,6 +2951,9 @@ importers:
       jest-when:
         specifier: ^3.5.0
         version: 3.5.0(jest@26.6.3)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
