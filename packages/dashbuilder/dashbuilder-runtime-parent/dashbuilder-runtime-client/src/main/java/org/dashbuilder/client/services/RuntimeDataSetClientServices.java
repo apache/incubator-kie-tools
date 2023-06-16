@@ -28,7 +28,6 @@ import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.error.DefaultRuntimeErrorCallback;
 import org.dashbuilder.client.error.ErrorResponseVerifier;
 import org.dashbuilder.client.external.ExternalDataSetClientProvider;
-import org.dashbuilder.client.marshalling.ClientDataSetMetadataJSONMarshaller;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.DataSetMetadata;
@@ -44,9 +43,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 @Alternative
 @ApplicationScoped
 public class RuntimeDataSetClientServices implements DataSetClientServices {
-
-    @Inject
-    ClientDataSetMetadataJSONMarshaller dataSetMetadataJsonMarshaller;
 
     @Inject
     ErrorResponseVerifier verifier;

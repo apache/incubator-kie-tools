@@ -38,6 +38,8 @@ import org.dashbuilder.dataset.validation.groups.DataSetDefProviderTypeGroup;
 import org.dashbuilder.dataset.validation.groups.DataSetDefPushSizeValidation;
 import org.dashbuilder.dataset.validation.groups.DataSetDefRefreshIntervalValidation;
 
+import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.isBlank;
+
 /**
  * This class is used to define the origin, structure and runtime behaviour of a data set instance.
  */
@@ -226,6 +228,12 @@ public class DataSetDef {
 
     public void setProperty(String key, String value) {
         propertyMap.put(key, value);
+    }
+    
+    public void validate() {
+        if (isBlank(UUID)) {
+            throw new IllegalArgumentException("UUID is a required field in data sets");
+        }
     }
 
     public DataSetDef clone() {

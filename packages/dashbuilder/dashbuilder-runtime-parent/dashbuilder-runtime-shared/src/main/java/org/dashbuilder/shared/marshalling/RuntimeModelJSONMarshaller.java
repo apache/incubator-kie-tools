@@ -19,14 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import elemental2.dom.DomGlobal;
-import org.dashbuilder.dataprovider.DataSetProvider;
-import org.dashbuilder.dataprovider.DataSetProviderRegistry;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
@@ -62,26 +59,7 @@ public class RuntimeModelJSONMarshaller {
 
     static {
         instance = new RuntimeModelJSONMarshaller();
-        instance.defMarshaller = new DataSetDefJSONMarshaller(new DataSetProviderRegistry() {
-
-            @Override
-            public void registerDataProvider(DataSetProvider dataProvider) {}
-
-            @Override
-            public DataSetProviderType getProviderTypeByName(String name) {
-                return DataSetProviderType.EXTERNAL;
-            }
-
-            @Override
-            public DataSetProvider getDataSetProvider(DataSetProviderType type) {
-                return null;
-            }
-
-            @Override
-            public Set<DataSetProviderType> getAvailableTypes() {
-                return null;
-            }
-        });
+        instance.defMarshaller = new DataSetDefJSONMarshaller(DataSetProviderType.EXTERNAL);
     }
 
     public static RuntimeModelJSONMarshaller get() {
@@ -105,6 +83,8 @@ public class RuntimeModelJSONMarshaller {
         jsonObject.set(LAYOUT_TEMPLATES, ltArray);
 
         i.set(0);
+        // TODO: Make the global dataset DEF here - grab global datasset conf and apply to the parsed object, 
+        // letting the parsed ds with global values when it lacks its own attribute
         model.getClientDataSets()
                 .forEach(def -> externalDefsArray.set(i.getAndIncrement(), defMarshaller.toJsonObject(def)));
         jsonObject.set(EXTERNAL_DATASET_DEFS, externalDefsArray);
@@ -159,6 +139,7 @@ public class RuntimeModelJSONMarshaller {
         var lastModified = jsonObject.getNumber(LAST_MODIFIED);
         var layoutTemplates = new ArrayList<LayoutTemplate>();
         var externalDefs = new ArrayList<ExternalDataSetDef>();
+        var global = retrieveGlobalSettings(jsonObject);
         var nPages = 0;
         if (ltArray == null) {
             ltArray = jsonObject.getArray(PAGES);
@@ -199,7 +180,15 @@ public class RuntimeModelJSONMarshaller {
             for (int i = 0; i < nDatasets; i++) {
                 try {
                     var defJson = externalDefsArray.getObject(i).toJson();
-                    externalDefs.add((ExternalDataSetDef) defMarshaller.fromJson(defJson));
+                    ExternalDataSetDef externalDef = null;
+                    if (global.getDataSetDef().isPresent()) {
+                        var globalDef = global.getDataSetDef().get().clone();
+                        externalDef = (ExternalDataSetDef) defMarshaller.fromJson(globalDef, defJson);
+                    } else {
+                        externalDef = (ExternalDataSetDef) defMarshaller.fromJson(defJson);
+                    }
+                    externalDef.validate();
+                    externalDefs.add(externalDef);
                 } catch (Exception e) {
                     throw new RuntimeException("Error reading data set definition " + (i + 1) + "\n" + e.getMessage(),
                             e);

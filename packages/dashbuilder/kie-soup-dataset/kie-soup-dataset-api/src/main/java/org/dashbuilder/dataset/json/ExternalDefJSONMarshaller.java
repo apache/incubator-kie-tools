@@ -52,10 +52,6 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         var type = json.getString(TYPE);
         var join = json.getArray(JOIN);
 
-        if (isBlank(url) && isBlank(content) && (join == null || join.length() == 0)) {
-            throw new IllegalArgumentException("Data Sets must have \"url\", \"content\" or \"join\" field");
-        }
-
         if (!isBlank(url)) {
             def.setUrl(url);
         }

@@ -31,6 +31,27 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class RuntimeModelJSONMarshallerTest {
+    
+    private String GLOBAL_DATASET = "{\n" + 
+            "  \"global\": {\n" + 
+            "    \"dataset\": {\n" + 
+            "      \"content\": \"[[\\\"Global\\\"]]\"\n" + 
+            "    }\n" + 
+            "  },\n" + 
+            "  \"datasets\": [\n" + 
+            "    {\n" + 
+            "      \"uuid\": \"a\"\n" + 
+            "    },\n" + 
+            "    {\n" + 
+            "      \"uuid\": \"b\"\n" + 
+            "    }\n" + 
+            "  ],\n" + 
+            "  \"pages\": [\n" + 
+            "    {\n" + 
+            "      \"name\": null\n" + 
+            "    }\n" + 
+            "  ]\n" + 
+            "}";
 
     private String RUNTIME_MODEL_JSON = "{\n" + 
             "  \"lastModified\": 123,\n" + 
@@ -76,6 +97,19 @@ public class RuntimeModelJSONMarshallerTest {
     @Before
     public void setup() {
         marshaller = RuntimeModelJSONMarshaller.get();
+    }
+    
+    @Test
+    public void testGlobalDataSet() {
+        var model = marshaller.fromJson(GLOBAL_DATASET);
+        var datasets = model.getClientDataSets();
+        var a = model.getClientDataSets().get(0);
+        var b = model.getClientDataSets().get(1);
+        assertEquals(2, datasets.size());
+        assertEquals("[[\\\"Global\\\"]]", a.getContent());
+        assertEquals("[[\\\"Global\\\"]]", b.getContent());
+        assertEquals("a", a.getUUID());
+        assertEquals("b", b.getUUID());
     }
 
     @Test

@@ -148,6 +148,7 @@ public class JoinDataSetsService {
                 return;
             }
             transformedDataSet.setUUID(uuid);
+            externalDataSetClientProvider.applyColumnsToDataSet(def, transformedDataSet);
             manager.registerDataSet(transformedDataSet);
         } else {
             joinedDataSet.setUUID(uuid);
