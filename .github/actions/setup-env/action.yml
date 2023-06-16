@@ -33,10 +33,10 @@ runs:
         java-version: 11
         distribution: "zulu"
 
-    - name: "Set up GOLANG 1.19.8"
+    - name: "Set up GOLANG 1.19.10"
       uses: actions/setup-go@v3
       with:
-        go-version: "1.19.8"
+        go-version: "1.19.10"
 
     - name: "Set up Maven"
       uses: stCarolas/setup-maven@07fbbe97d97ef44336b7382563d66743297e442f #v4.5
