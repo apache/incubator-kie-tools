@@ -100,7 +100,7 @@ public class RuntimeModelJSONMarshallerTest {
     }
     
     @Test
-    public void testGlobalDataSet() {
+    public void globalDataSetTest() {
         var model = marshaller.fromJson(GLOBAL_DATASET);
         var datasets = model.getClientDataSets();
         var a = model.getClientDataSets().get(0);
@@ -142,7 +142,7 @@ public class RuntimeModelJSONMarshallerTest {
     }
     
     @Test
-    public void fromJsonTestWithPages() {
+    public void fromJsonTestWithPagesTest() {
         var model = marshaller.fromJson(RUNTIME_MODEL_JSON.replaceAll("layoutTemplates", "pages"));
         checkModel(model);
     }
