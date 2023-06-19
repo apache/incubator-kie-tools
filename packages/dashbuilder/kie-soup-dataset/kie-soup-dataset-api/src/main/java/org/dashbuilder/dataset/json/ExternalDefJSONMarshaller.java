@@ -15,8 +15,8 @@
  */
 package org.dashbuilder.dataset.json;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
@@ -35,6 +35,7 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
     public static final String EXPRESSION = "expression";
     public static final String CONTENT = "content";
     public static final String HEADERS = "headers";
+    public static final String QUERY = "query";
     public static final String ACCUMULATE = "accumulate";
     public static final String TYPE = "type";
     public static final String JOIN = "join";
@@ -46,6 +47,7 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         var content = json.getString(CONTENT);
         var expression = json.getString(EXPRESSION);
         var headers = json.getObject(HEADERS);
+        var query = json.getObject(QUERY);
         var accumulate = json.getBoolean(ACCUMULATE);
         var type = json.getString(TYPE);
         var join = json.getArray(JOIN);
@@ -67,8 +69,13 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         }
 
         if (headers != null) {
-            var headersMap = getHeaders(headers);
+            var headersMap = getMap(headers);
             def.setHeaders(headersMap);
+        }
+
+        if (query != null) {
+            var queryMap = getMap(query);
+            def.setQuery(queryMap);
         }
 
         if (!isBlank(type)) {
@@ -76,7 +83,7 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
             def.setType(serviceType);
         }
 
-        def.setJoin(new ArrayList<>());
+        def.setJoin(new HashSet<>());
         if (join != null) {
             for (var i = 0; i < join.length(); i++) {
                 def.getJoin().add(join.getString(i));
@@ -104,6 +111,12 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
             json.set(HEADERS, headers);
         }
 
+        if (def.getQuery() != null) {
+            var query = Json.createObject();
+            def.getQuery().forEach((k, v) -> query.set(k, Json.create(v)));
+            json.set(QUERY, query);
+        }
+
         if (def.getJoin() != null) {
             var join = Json.createArray();
             for (var i = 0; i < def.getJoin().size(); i++) {
@@ -113,11 +126,11 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         }
     }
 
-    private Map<String, String> getHeaders(JsonObject headers) {
-        var headersMap = new HashMap<String, String>();
-        for (var key : headers.keys()) {
-            headersMap.put(key, headers.getString(key));
+    private Map<String, String> getMap(JsonObject map) {
+        var hashMap = new HashMap<String, String>();
+        for (var key : map.keys()) {
+            hashMap.put(key, map.getString(key));
         }
-        return headersMap;
+        return hashMap;
     }
 }

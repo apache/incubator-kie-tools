@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.external.ExternalDataSetClientProvider;
+import org.dashbuilder.client.external.ExternalDataSetParserProvider;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetFactory;
@@ -27,6 +28,7 @@ import org.dashbuilder.dataset.client.ClientDataSetManager;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
 import org.dashbuilder.dataset.client.DataSetReadyCallbackAdapter;
 import org.dashbuilder.dataset.def.DataSetDefFactory;
+import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +63,9 @@ public class JoinDataSetsServiceTest {
     @Mock
     ExternalDataSetClientProvider externalDataSetClientProvider;
 
+    @Mock
+    ExternalDataSetParserProvider parserProvider;
+
     @InjectMocks
     private JoinDataSetsService joinService;
 
@@ -72,9 +77,15 @@ public class JoinDataSetsServiceTest {
 
     @Captor
     ArgumentCaptor<DataSetReadyCallback> topDatasetCallbackCaptor;
+    private ExternalDataSetDef def;
 
     @Before
     public void init() {
+
+        def = new ExternalDataSetDef();
+        def.setJoin(List.of(DS1_UUID, DS2_UUID));
+        def.setUUID(RESULT_UUID);
+
         d1 = DataSetFactory.newDataSetBuilder()
                 .uuid(DS1_UUID)
                 .label(C1_ID)
@@ -120,6 +131,7 @@ public class JoinDataSetsServiceTest {
 
     @Test
     public void testJoinDatasets() {
+
         var lookup = DataSetLookupFactory.newDataSetLookupBuilder()
                 .dataset(RESULT_UUID)
                 .column(C1_ID)
@@ -127,13 +139,12 @@ public class JoinDataSetsServiceTest {
                 .column(JoinDataSetsService.DATASET_COLUMN)
                 .buildLookup();
 
-        joinService.joinDataSets(List.of(DS1_UUID, DS2_UUID), lookup, new DataSetReadyCallbackAdapter() {
+        joinService.joinDataSets(def, lookup, new DataSetReadyCallbackAdapter() {
 
             @Override
             public void callback(DataSet result) {
                 verifyDataSet(result);
             }
-
         });
 
         verify(externalDataSetClientProvider).fetchAndRegister(eq(DS1_UUID), any(), ds1DatasetCallbackCaptor.capture());
@@ -153,7 +164,9 @@ public class JoinDataSetsServiceTest {
                 .column(JoinDataSetsService.DATASET_COLUMN)
                 .buildLookup();
 
-        joinService.joinDataSets(List.of(DS2_UUID, DS1_UUID), lookup, new DataSetReadyCallbackAdapter() {
+        def.setJoin(List.of(DS2_UUID, DS1_UUID));
+
+        joinService.joinDataSets(def, lookup, new DataSetReadyCallbackAdapter() {
 
             @Override
             public void callback(DataSet result) {
@@ -178,8 +191,7 @@ public class JoinDataSetsServiceTest {
                 .column(JoinDataSetsService.DATASET_COLUMN)
                 .buildLookup();
 
-
-        joinService.joinDataSets(List.of(DS1_UUID, DS2_UUID), lookup, new DataSetReadyCallbackAdapter() {
+        joinService.joinDataSets(def, lookup, new DataSetReadyCallbackAdapter() {
 
             @Override
             public void callback(DataSet result) {
@@ -198,7 +210,7 @@ public class JoinDataSetsServiceTest {
     public void testJoinDatasetsNotFound() {
         var lookup = DataSetLookupFactory.newDataSetLookupBuilder().buildLookup();
         var datasetReadyCallback = mock(DataSetReadyCallback.class);
-        joinService.joinDataSets(List.of(DS1_UUID, DS2_UUID), lookup, datasetReadyCallback);
+        joinService.joinDataSets(def, lookup, datasetReadyCallback);
 
         verify(externalDataSetClientProvider).fetchAndRegister(Mockito.eq(DS1_UUID), any(),
                 ds1DatasetCallbackCaptor.capture());
@@ -217,7 +229,7 @@ public class JoinDataSetsServiceTest {
     public void testJoinDatasetsError() {
         var lookup = DataSetLookupFactory.newDataSetLookupBuilder().buildLookup();
         var datasetReadyCallback = mock(DataSetReadyCallback.class);
-        joinService.joinDataSets(List.of(DS1_UUID, DS2_UUID), lookup, datasetReadyCallback);
+        joinService.joinDataSets(def, lookup, datasetReadyCallback);
 
         verify(externalDataSetClientProvider).fetchAndRegister(Mockito.eq(DS1_UUID), any(),
                 ds1DatasetCallbackCaptor.capture());

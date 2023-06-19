@@ -2842,6 +2842,12 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools-core/react-hooks":
+        specifier: workspace:*
+        version: link:../react-hooks
+      "@kie-tools/dmn-runner":
+        specifier: workspace:*
+        version: link:../dmn-runner
       "@kie-tools/extended-services-api":
         specifier: workspace:*
         version: link:../extended-services-api
@@ -2857,6 +2863,12 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      json-refs:
+        specifier: ^3.0.15
+        version: 3.0.15
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -2903,6 +2915,9 @@ importers:
       "@types/jest-when":
         specifier: ^2.7.4
         version: 2.7.4
+      "@types/lodash":
+        specifier: ^4.14.168
+        version: 4.14.169
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
@@ -2936,6 +2951,9 @@ importers:
       jest-when:
         specifier: ^3.5.0
         version: 3.5.0(jest@26.6.3)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -3904,9 +3922,9 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
-      "@pefernan/cors-proxy":
-        specifier: ^0.0.3
-        version: 0.0.3
+      "@thiagoelg/cors-proxy":
+        specifier: ^0.0.1
+        version: 0.0.1
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -14404,22 +14422,6 @@ packages:
     resolution:
       { integrity: sha512-tm7C6nat+uKMr1hrapis7hS3rN9cr41tpcCKhx6cod6FLU8KwF2Yt5KUxakhIOCEcE/M/EhXhAw/qejp8w0r7Q== }
 
-  /@pefernan/cors-proxy@0.0.3:
-    resolution:
-      { integrity: sha512-gEb0hRRYnOEvLpl1oQj2NWQBtSphFETdW0emXrMKPX5HTo8Q9DERXnmlOHE4alo54KG2nEM7l9WKAdmzJInZpQ== }
-    hasBin: true
-    dependencies:
-      cross-env: 5.2.1
-      daemonize-process: 1.0.9
-      micro: 9.3.4
-      micro-cors: 0.1.1
-      minimisted: 2.0.1
-      node-fetch: 2.6.11
-      tree-kill: 1.2.2
-    transitivePeerDependencies:
-      - encoding
-    dev: true
-
   /@pnpm/build-modules@9.3.5(@pnpm/logger@4.0.0):
     resolution:
       { integrity: sha512-R2Lvw7EcXFXdyMuohWK4JIew255hge484OLl7mButULJ6/PPvgjs1ph6nT+pROcdaxic/yVVVuVvd6WPlyE1oA== }
@@ -15844,6 +15846,22 @@ packages:
       "@babel/runtime": 7.16.7
       "@testing-library/dom": 7.31.0
       react: 17.0.2
+    dev: true
+
+  /@thiagoelg/cors-proxy@0.0.1:
+    resolution:
+      { integrity: sha512-bWuahxgmL4D7GgcaoI7YygUzwD1/tx3F7c7OzNhinQM8A+VYdmu2M+2RuronAfCDTsEmumMqFSZoF3FD/p58kQ== }
+    hasBin: true
+    dependencies:
+      cross-env: 5.2.1
+      daemonize-process: 1.0.9
+      micro: 9.3.4
+      micro-cors: 0.1.1
+      minimisted: 2.0.1
+      node-fetch: 2.6.11
+      tree-kill: 1.2.2
+    transitivePeerDependencies:
+      - encoding
     dev: true
 
   /@tootallnate/once@1.1.2:
@@ -28612,7 +28630,7 @@ packages:
       chalk: 4.1.2
       fs-extra: 9.1.0
       https-proxy-agent: 5.0.1
-      node-fetch: 2.6.7
+      node-fetch: 2.6.11
       progress: 2.0.3
       semver: 7.3.8
       tar-fs: 2.1.1
