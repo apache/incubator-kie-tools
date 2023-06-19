@@ -3026,6 +3026,9 @@ importers:
 
   packages/dmn-runner:
     dependencies:
+      "@kie-tools-core/react-hooks":
+        specifier: workspace:*
+        version: link:../react-hooks
       "@kie-tools/extended-services-api":
         specifier: workspace:*
         version: link:../extended-services-api
@@ -3041,6 +3044,15 @@ importers:
       ajv:
         specifier: ^6.12.6
         version: 6.12.6
+      deep-object-diff:
+        specifier: ^1.1.9
+        version: 1.1.9
+      json-refs:
+        specifier: ^3.0.15
+        version: 3.0.15
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       moment:
         specifier: ^2.29.4
         version: 2.29.4
@@ -3075,6 +3087,9 @@ importers:
       "@types/jest":
         specifier: ^26.0.23
         version: 26.0.23
+      "@types/lodash":
+        specifier: ^4.14.168
+        version: 4.14.169
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21

@@ -581,7 +581,6 @@
         "target": "@kie-tools-core/patternfly-base",
         "weight": 1
       },
-      { "source": "@kie-tools/dmn-dev-deployment-form-webapp", "target": "@kie-tools-core/react-hooks", "weight": 1 },
       { "source": "@kie-tools/dmn-dev-deployment-form-webapp", "target": "@kie-tools/form-dmn", "weight": 1 },
       {
         "source": "@kie-tools/dmn-dev-deployment-quarkus-app",
@@ -593,6 +592,7 @@
       { "source": "@kie-tools/form", "target": "@kie-tools/dmn-runner", "weight": 1 },
       { "source": "@kie-tools/form", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       { "source": "@kie-tools/form", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/dmn-runner", "target": "@kie-tools-core/react-hooks", "weight": 1 },
       { "source": "@kie-tools/dmn-runner", "target": "@kie-tools/extended-services-api", "weight": 1 },
       { "source": "@kie-tools/dmn-runner", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
       { "source": "@kie-tools/extended-services-api", "target": "@kie-tools-core/notifications", "weight": 1 },
@@ -674,7 +674,6 @@
       { "source": "@kie-tools-core/kubernetes-bridge", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/unitables", "weight": 1 },
       { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/unitables", "target": "@kie-tools-core/react-hooks", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/dmn-runner", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
