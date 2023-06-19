@@ -40,6 +40,7 @@ import { setPageTitle } from "../../../PageTitle";
 import { ConfirmDeleteModal, defaultPerPageOptions, TablePagination, TableToolbar } from "../../../table";
 import { WorkspaceFilesTable } from "./WorkspaceFilesTable";
 import { escapeRegExp } from "../../../regex";
+import { ErrorPage } from "../../../error/ErrorPage";
 
 function filterFiles(files: WorkspaceFile[], searchValue: string): WorkspaceFile[] {
   const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
@@ -188,7 +189,7 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
-      rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
+      rejected={(e) => <ErrorPage kind="WorkspaceFiles" workspaceId={props.workspaceId} errors={e} />}
       resolved={(workspace: ActiveWorkspace) => {
         const allFilesCount = workspace.files.length;
         const { editableFiles, readonlyFiles } = splitFiles(workspace.files);

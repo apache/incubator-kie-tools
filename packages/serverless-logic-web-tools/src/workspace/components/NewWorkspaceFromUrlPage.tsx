@@ -30,7 +30,7 @@ import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api
 import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../../settings/github/Hooks";
-import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
+import { ErrorPage } from "../../error/ErrorPage";
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
 import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
@@ -263,7 +263,7 @@ export function NewWorkspaceFromUrlPage() {
           throw new Error("Invalid UrlType " + importableUrl.type);
         }
       } catch (e) {
-        setImportingError(e.toString());
+        setImportingError(e.message);
         return;
       }
     }
@@ -284,7 +284,7 @@ export function NewWorkspaceFromUrlPage() {
 
   return (
     <>
-      {importingError && <EditorPageErrorPage path={importableUrl.url.toString()} errors={[importingError]} />}
+      {importingError && <ErrorPage kind="Url" url={importableUrl.url.toString()} errors={[importingError]} />}
       {!importingError && (
         <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
           <Bullseye>
