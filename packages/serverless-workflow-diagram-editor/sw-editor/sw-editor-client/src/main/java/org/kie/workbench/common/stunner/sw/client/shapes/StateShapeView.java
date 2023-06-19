@@ -37,17 +37,38 @@ public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> 
     public final static double STATE_SHAPE_HEIGHT = 90;
     public final static double STATE_SHAPE_ICON_RADIUS = 25;
     public final static double STATE_CORNER_RADIUS = 5.00;
+    private Text title;
 
     public StateShapeView(String name) {
         super(new MultiPath()
                       .rect(0, 0, STATE_SHAPE_WIDTH, STATE_SHAPE_HEIGHT)
                       .setCornerRadius(STATE_CORNER_RADIUS));
         initialize(name);
+        super.setTitle("name");
+        super.setTitleAlpha(0);
+    }
+
+    @Override
+    public StateShapeView setTitle(String name) {
+        title.setText(name);
+        title.setY(40 - title.getBoundingBox().getHeight() / 2);
+        return this;
+    }
+
+    @Override
+    public StateShapeView setTitleAlpha(double alpha) {
+        title.setAlpha(alpha);
+        return this;
+    }
+
+    @Override
+    public double getMarginX() {
+        return 80d;
     }
 
     private void initialize(String name) {
-        Text title = new Text(name)
-                .setX(90)
+        title = new Text(name)
+                .setX(80)
                 .setY(35)
                 .setStrokeWidth(0)
                 .setFillColor("#383B3D")
@@ -56,7 +77,7 @@ public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> 
                 .setTextBaseLine(MIDDLE)
                 .setFontSize(12)
                 .setListening(false);
-        TextLineBreakTruncateWrapper textWrapper = new TextLineBreakTruncateWrapper(title, BoundingBox.fromDoubles(0, 0, 140, 44));
+        TextLineBreakTruncateWrapper textWrapper = new TextLineBreakTruncateWrapper(title, BoundingBox.fromDoubles(0, 0, 150, 90));
 
         title.setWrapper(textWrapper);
         addChild(title);
@@ -71,6 +92,11 @@ public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> 
 
         iconImage = newGroup();
         icon.add(iconImage);
+    }
+
+    public void setText(String name) {
+        title.setText(name);
+        title.setVisible(true);
     }
 
     public void setIconPicture(Picture picture) {

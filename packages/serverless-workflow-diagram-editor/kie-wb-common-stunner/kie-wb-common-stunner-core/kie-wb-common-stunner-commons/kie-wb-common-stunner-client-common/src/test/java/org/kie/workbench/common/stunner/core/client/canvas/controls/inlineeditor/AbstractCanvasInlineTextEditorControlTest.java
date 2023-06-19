@@ -353,21 +353,6 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     }
 
     @Test
-    public void testShowInsideMiddleShape() {
-        initCanvas(CANVAS_X, CANVAS_Y, CANVAS_WIDTH, CANVAS_HEIGHT);
-        initShape(SHAPE_X, SHAPE_Y, SCROLL_X, SCROLL_Y, ZOOM);
-        initHasTitle(POSITION_INSIDE, ORIENTATION_HORIZONTAL, FONT_FAMILY, ALIGN_MIDDLE, FONT_SIZE, 0);
-        control.isMultiline = true;
-        control.bind(session);
-
-        control.init(canvasHandler);
-        when(textEditorBox.isVisible()).thenReturn(false);
-        control.show(element);
-
-        assertShow(true, ALIGN_MIDDLE, POSITION_INSIDE);
-    }
-
-    @Test
     public void testShowOutsideShape() {
         initCanvas(CANVAS_X, CANVAS_Y, CANVAS_WIDTH, CANVAS_HEIGHT);
         initShape(SHAPE_X, SHAPE_Y, SCROLL_X, SCROLL_Y, ZOOM);
@@ -416,7 +401,7 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     public void testShowWhenAlreadyShown() {
         initCanvas(CANVAS_X, CANVAS_Y, CANVAS_WIDTH, CANVAS_HEIGHT);
         initShape(SHAPE_X, SHAPE_Y, SCROLL_X, SCROLL_Y, ZOOM);
-        initHasTitle(POSITION_INSIDE, ORIENTATION_HORIZONTAL, FONT_FAMILY, ALIGN_MIDDLE, FONT_SIZE, 0);
+        initHasTitle(POSITION_INSIDE, ORIENTATION_HORIZONTAL, FONT_FAMILY, ALIGN_TOP, FONT_SIZE, 0);
         control.isMultiline = true;
         control.bind(session);
 
@@ -424,7 +409,7 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
         when(textEditorBox.isVisible()).thenReturn(true);
         control.show(element);
 
-        assertShow(true, ALIGN_MIDDLE, POSITION_INSIDE);
+        assertShow(true, ALIGN_TOP, POSITION_INSIDE);
     }
 
     @Test

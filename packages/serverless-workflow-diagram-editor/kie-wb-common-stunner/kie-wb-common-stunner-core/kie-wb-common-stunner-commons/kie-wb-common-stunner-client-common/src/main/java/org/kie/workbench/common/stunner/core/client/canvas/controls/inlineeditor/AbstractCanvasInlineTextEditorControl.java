@@ -226,17 +226,6 @@ public abstract class AbstractCanvasInlineTextEditorControl
                         exitHandler);
     }
 
-    boolean allowOnlyVisualChanges(final Element element) {
-        // TODO
-        /*if (element.getContent() instanceof Definition) {
-            final Definition definition = (Definition) element.getContent();
-            if (definition.getDefinition() instanceof DynamicReadOnly) {
-                return ((DynamicReadOnly) definition.getDefinition()).isAllowOnlyVisualChange();
-            }
-        }*/
-        return true;
-    }
-
     @Override
     public CanvasInlineTextEditorControl<AbstractCanvasHandler, EditorSession, Element> show(final Element item) {
         final double editorBoxWidth;
@@ -268,7 +257,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
         } else {
             editorBoxWidth = getInnerBoxWidth();
             editorBoxHeight = getInnerBoxHeight();
-            editorBoxAlign = ALIGN_MIDDLE;
+            editorBoxAlign = ALIGN_LEFT;
             floatingViewPositionX = getInnerBoxPosition().getX();
             floatingViewPositionY = getInnerBoxPosition().getY();
         }
