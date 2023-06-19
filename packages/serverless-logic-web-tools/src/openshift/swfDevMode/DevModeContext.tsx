@@ -207,6 +207,7 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
       }
 
       try {
+        const swfFileDirPath = args.targetSwfFile.relativeDirPath;
         const filesToUpload = [args.targetSwfFile];
 
         const applicationPropertiesFile = args.allFiles.find((f) => isApplicationProperties(f.relativePath));
@@ -215,13 +216,22 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
         }
 
         const supportingFiles = args.allFiles.filter((f) =>
-          isSupportingFileForDevMode({ path: f.relativePath, targetFolder: args.targetSwfFile.relativeDirPath })
+          isSupportingFileForDevMode({ path: f.relativePath, targetFolder: swfFileDirPath })
         );
         if (supportingFiles.length > 0) {
           filesToUpload.push(...supportingFiles);
         }
 
-        const zipBlob = await zipFiles(filesToUpload);
+        const cleanedUpFilesToUpload = filesToUpload.map(
+          (f) =>
+            new WorkspaceFile({
+              workspaceId: f.workspaceId,
+              getFileContents: f.getFileContents,
+              relativePath: f.relativePath.replace(swfFileDirPath, ""),
+            })
+        );
+
+        const zipBlob = await zipFiles(cleanedUpFilesToUpload);
 
         const formData = new FormData();
         formData.append(ZIP_FILE_PART_KEY, zipBlob, ZIP_FILE_NAME);

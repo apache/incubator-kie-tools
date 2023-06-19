@@ -29,7 +29,6 @@ public class JsonSchemaValidation implements FileValidation {
 
     @Override
     public FileValidationResult validate(final Path path) {
-
         try {
             FileInputStream schemaStream = new FileInputStream(path.toFile());
             JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream));
