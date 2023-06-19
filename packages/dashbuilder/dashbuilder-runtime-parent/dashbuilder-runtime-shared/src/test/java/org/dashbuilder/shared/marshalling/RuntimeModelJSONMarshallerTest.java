@@ -106,8 +106,8 @@ public class RuntimeModelJSONMarshallerTest {
         var a = model.getClientDataSets().get(0);
         var b = model.getClientDataSets().get(1);
         assertEquals(2, datasets.size());
-        assertEquals("[[\\\"Global\\\"]]", a.getContent());
-        assertEquals("[[\\\"Global\\\"]]", b.getContent());
+        assertEquals("[[\"Global\"]]", a.getContent());
+        assertEquals("[[\"Global\"]]", b.getContent());
         assertEquals("a", a.getUUID());
         assertEquals("b", b.getUUID());
     }
