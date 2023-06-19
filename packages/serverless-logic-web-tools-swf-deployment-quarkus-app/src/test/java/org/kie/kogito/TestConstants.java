@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.api;
+package org.kie.kogito;
 
-import java.nio.file.Path;
+public interface TestConstants {
 
-import org.kie.kogito.model.FileValidationResult;
-
-public interface FileValidation {
-
-    FileValidationResult validate(Path path);
+    String ASSETS_FOLDER = "src/test/resources/assets/";
 }

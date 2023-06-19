@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.api;
+package org.kie.kogito.validation;
 
-import java.nio.file.Path;
+public class ServerlessWorkflowValidationTest extends BaseValidationTest {
 
-import org.kie.kogito.model.FileValidationResult;
-
-public interface FileValidation {
-
-    FileValidationResult validate(Path path);
+    public ServerlessWorkflowValidationTest() {
+        super(new ServerlessWorkflowValidation(), "valid.sw.json", "invalid.sw.json");
+    }
 }

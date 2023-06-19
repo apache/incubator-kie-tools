@@ -31,11 +31,14 @@
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <kogito.bom.group-id>org.kie.kogito</kogito.bom.group-id>
     <kogito.bom.artifact-id>kogito-bom</kogito.bom.artifact-id>
-    <io.swagger.parser.v3-swagger-parser-v3-version>2.1.12</io.swagger.parser.v3-swagger-parser-v3-version>
-    <org.apache.commons-commons-compress-version>1.22</org.apache.commons-commons-compress-version>
+    <kogito.bom.version>1.40.0.Final</kogito.bom.version>
+    <io.swagger.parser.v3.swagger-parser-v3.version>2.1.12</io.swagger.parser.v3.swagger-parser-v3.version>
+    <org.apache.commons.commons-compress.version>1.22</org.apache.commons.commons-compress.version>
+    <com.github.erosb.everit-json-schema.version>1.14.2</com.github.erosb.everit-json-schema.version>
+    <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
   </properties>
 
-   <repositories>
+  <repositories>
     <repository>
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
@@ -63,9 +66,9 @@
       </dependency>
 
       <dependency>
-        <groupId>${quarkus.platform.group-id}</groupId>
-        <artifactId>quarkus-kogito-bom</artifactId>
-        <version>${quarkus.platform.version}</version>
+        <groupId>${kogito.bom.group-id}</groupId>
+        <artifactId>${kogito.bom.artifact-id}</artifactId>
+        <version>${kogito.bom.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -118,14 +121,23 @@
       <artifactId>kogito-addons-quarkus-source-files</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-jobs-service-embedded</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.erosb</groupId>
+      <artifactId>everit-json-schema</artifactId>
+      <version>${com.github.erosb.everit-json-schema.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
-      <version>${org.apache.commons-commons-compress-version}</version>
+      <version>${org.apache.commons.commons-compress.version}</version>
     </dependency>
     <dependency>
       <groupId>io.swagger.parser.v3</groupId>
       <artifactId>swagger-parser-v3</artifactId>
-      <version>${io.swagger.parser.v3-swagger-parser-v3-version}</version>
+      <version>${io.swagger.parser.v3.swagger-parser-v3.version}</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -157,6 +169,16 @@
           <compilerArgs>
             <arg>-parameters</arg>
           </compilerArgs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire-plugin.version}</version>
+        <configuration>
+          <systemPropertyVariables>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <maven.home>${maven.home}</maven.home>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>

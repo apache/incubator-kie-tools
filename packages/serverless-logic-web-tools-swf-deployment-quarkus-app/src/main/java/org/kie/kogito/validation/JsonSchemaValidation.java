@@ -16,33 +16,26 @@
 
 package org.kie.kogito.validation;
 
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.FileInputStream;
 import java.nio.file.Path;
-import java.util.Properties;
 
+import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.kie.kogito.api.FileValidation;
 import org.kie.kogito.model.FileValidationResult;
 
-public class PropertiesValidation implements FileValidation {
+public class JsonSchemaValidation implements FileValidation {
 
     @Override
     public FileValidationResult validate(final Path path) {
         try {
-            final Properties properties = new Properties();
-            try (var inputStream = Files.newInputStream(path)) {
-                properties.load(inputStream);
-            }
-            for (String key : properties.stringPropertyNames()) {
-                final String value = properties.getProperty(key);
-
-                if (key.isEmpty() || value.isEmpty()) {
-                    return FileValidationResult.createInvalidResult(path, "Key or value cannot be empty");
-                }
-            }
+            FileInputStream schemaStream = new FileInputStream(path.toFile());
+            JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream));
+            SchemaLoader.load(rawSchema);
             return FileValidationResult.createValidResult(path);
-        } catch (IOException e) {
-            return FileValidationResult.createInvalidResult(path, e.getMessage());
+        } catch (Exception e) {
+            return FileValidationResult.createInvalidResult(path, "Cannot validate JSON file as JSON Schema");
         }
     }
 }
