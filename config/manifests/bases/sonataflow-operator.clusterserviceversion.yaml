@@ -25,7 +25,7 @@ spec:
       kind: SonataFlow
       name: sonataflows.sonataflow.org
       version: v1alpha08
-  description: Sonata Flow Operator
+  description: SonataFlow Operator
   displayName: sonataflow-operator
   icon:
   - base64data: ""
@@ -49,7 +49,7 @@ spec:
   - serverless
   - serverlessworkflow
   links:
-  - name: Sonata Flow Operator
+  - name: SonataFlow Operator
     url: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/index.html
   maturity: alpha
   provider:

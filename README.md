@@ -41,11 +41,11 @@ You might need to register our schemes:
 utilruntime.Must(v1alpha08.AddToScheme(s))
 ```
 
-## Container Builder (container-builder)
+### Container Builder (container-builder)
 
 Please see the module's [README file](container-builder/README.md).
 
-## Workflow Project Handler (workflowproj)
+### Workflow Project Handler (workflowproj)
 
 Please see the module's [README file](workflowproj/README.md).
 

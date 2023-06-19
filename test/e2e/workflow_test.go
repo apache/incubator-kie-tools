@@ -44,7 +44,7 @@ const (
 	openshiftPlatform = "openshift"
 )
 
-var _ = Describe("Sonata Flow Operator", Ordered, func() {
+var _ = Describe("SonataFlow Operator", Ordered, func() {
 
 	BeforeAll(func() {
 
