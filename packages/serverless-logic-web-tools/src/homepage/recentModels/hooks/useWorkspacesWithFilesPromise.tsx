@@ -20,7 +20,7 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { WorkspaceFile, useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { WORKSPACES_BROADCAST_CHANNEL } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspacesBroadcastEvents";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 type WorkspaceWithFilesResponse =
   | {
@@ -40,19 +40,20 @@ export function useWorkspacesWithFilesPromise(workspaceIds?: WorkspaceDescriptor
     usePromiseState<WorkspaceWithFilesResponse[]>();
   const [ids, setIds] = useState<string[]>([]);
 
-  useEffect(() => {
-    if (workspaceIds) {
-      setIds(workspaceIds);
-    } else {
-      workspaces.listAllWorkspaces().then((data) => setIds(data.map((w) => w.workspaceId)));
-    }
-  }, [workspaces, workspaceIds]);
-
   const refresh = useCallback(
     async (canceled: Holder<boolean>) => {
+      if (canceled.get()) {
+        return;
+      }
+
       try {
+        const idsToFetch: WorkspaceDescriptor["workspaceId"][] = workspaceIds
+          ? workspaceIds
+          : (await workspaces.listAllWorkspaces()).map((w) => w.workspaceId);
+        setIds(idsToFetch);
+
         const workspaceWithFilesResponses = await Promise.all(
-          ids.map<Promise<WorkspaceWithFilesResponse>>(async (workspaceId) => {
+          idsToFetch.map<Promise<WorkspaceWithFilesResponse>>(async (workspaceId) => {
             let descriptor = undefined;
             try {
               descriptor = await workspaces.getWorkspace({ workspaceId });
@@ -68,10 +69,6 @@ export function useWorkspacesWithFilesPromise(workspaceIds?: WorkspaceDescriptor
             }
           })
         );
-        if (canceled.get()) {
-          return;
-        }
-
         setWorkspaceWithFilesResponsesPromise({ data: workspaceWithFilesResponses });
       } catch (error) {
         setWorkspaceWithFilesResponsesPromise({ error: "Can't load data from workspaces" });
@@ -79,7 +76,7 @@ export function useWorkspacesWithFilesPromise(workspaceIds?: WorkspaceDescriptor
         return;
       }
     },
-    [setWorkspaceWithFilesResponsesPromise, workspaces, ids]
+    [setWorkspaceWithFilesResponsesPromise, workspaces, workspaceIds]
   );
 
   useCancelableEffect(

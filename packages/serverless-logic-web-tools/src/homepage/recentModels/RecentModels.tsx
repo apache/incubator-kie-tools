@@ -46,14 +46,13 @@ export function RecentModels() {
   const [searchValue, setSearchValue] = useState("");
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
-  const [workspaceIds, setWorkspaceIds] = useState<WorkspaceDescriptor["workspaceId"][]>();
   const workspaces = useWorkspaces();
   const [deletingFoldersCount, setDeletingFoldersCount] = useState(0);
   const [firstDeletingWorkspaceName, setFirstDeletingWorkspaceName] = useState("");
   const [deleteModalDataLoaded, setDeleteModalDataLoaded] = useState(false);
   const [deleteModalFetchError, setDeleteModalFetchError] = useState(false);
   const isDeletingWorkspacePlural = useMemo(() => deletingWorkspaceIds.length > 1, [deletingWorkspaceIds]);
-  const workspacesWithFilesPromise = useWorkspacesWithFilesPromise(workspaceIds);
+  const workspacesWithFilesPromise = useWorkspacesWithFilesPromise();
 
   const deletingElementTypesName = useMemo(() => {
     if (deletingWorkspaceIds.length > 1) {
@@ -214,11 +213,6 @@ export function RecentModels() {
     [filteredTableData]
   );
 
-  const updateTableData = useCallback(async () => {
-    const allworkspaces = await workspaces.listAllWorkspaces();
-    setWorkspaceIds(allworkspaces.map((w) => w.workspaceId));
-  }, [workspaces]);
-
   const onConfirmDeleteModalDelete = useCallback(async () => {
     const elementsTypeName = deletingWorkspaceIds.length > 1 ? "Models" : "Model";
     setIsConfirmDeleteModalOpen(false);
@@ -236,12 +230,11 @@ export function RecentModels() {
         deleteErrorAlert.show({ elementsTypeName });
       })
       .finally(async () => {
-        await updateTableData();
         setSelectedWorkspaceIds([]);
         setDeletingWorkspaceIds([]);
         setPage(1);
       });
-  }, [updateTableData, deletingWorkspaceIds, workspaces, deleteErrorAlert, deleteSuccessAlert, tableData]);
+  }, [deletingWorkspaceIds, workspaces, deleteErrorAlert, deleteSuccessAlert, tableData]);
 
   useEffect(() => {
     setSelectedWorkspaceIds((selectedIds) =>
