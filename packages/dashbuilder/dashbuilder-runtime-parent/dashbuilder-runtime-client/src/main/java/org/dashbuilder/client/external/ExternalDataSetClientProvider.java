@@ -215,14 +215,7 @@ public class ExternalDataSetClientProvider {
             return null;
         }
 
-        if (!def.getColumns().isEmpty()) {
-            for (int i = 0; i < def.getColumns().size(); i++) {
-                var defColumn = def.getColumns().get(i);
-                var dsColumn = dataSet.getColumnByIndex(i);
-                dsColumn.setId(defColumn.getId());
-                dsColumn.setColumnType(defColumn.getColumnType());
-            }
-        }
+        applyColumnsToDataSet(def, dataSet);
 
         var existingDs = clientDataSetManager.getDataSet(def.getUUID());
         if (def.isAccumulate() && existingDs != null) {
@@ -238,6 +231,17 @@ public class ExternalDataSetClientProvider {
         clientDataSetManager.registerDataSet(dataSet);
         callback.callback(dataSet);
         return null;
+    }
+
+    public void applyColumnsToDataSet(ExternalDataSetDef def, DataSet dataSet) {
+        if (!def.getColumns().isEmpty()) {
+            for (int i = 0; i < def.getColumns().size(); i++) {
+                var defColumn = def.getColumns().get(i);
+                var dsColumn = dataSet.getColumnByIndex(i);
+                dsColumn.setId(defColumn.getId());
+                dsColumn.setColumnType(defColumn.getColumnType());
+            }
+        }
     }
 
     public String applyExpression(String expression, String responseText) {

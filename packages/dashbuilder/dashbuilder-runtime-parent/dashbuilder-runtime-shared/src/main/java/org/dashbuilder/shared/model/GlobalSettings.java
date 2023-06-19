@@ -15,6 +15,9 @@
  */
 package org.dashbuilder.shared.model;
 
+import java.util.Optional;
+
+import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.Mode;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -24,6 +27,7 @@ public class GlobalSettings {
 
     private Mode mode = Mode.LIGHT;
     private DisplayerSettings settings;
+    private ExternalDataSetDef def;
     private boolean allowUrlProperties;
 
     public Mode getMode() {
@@ -48,6 +52,14 @@ public class GlobalSettings {
 
     public void setAllowUrlProperties(boolean allowUrlProperties) {
         this.allowUrlProperties = allowUrlProperties;
+    }
+
+    public Optional<ExternalDataSetDef> getDataSetDef() {
+        return Optional.ofNullable(def);
+    }
+
+    public void setDataSetDef(ExternalDataSetDef def) {
+        this.def = def;
     }
 
 }

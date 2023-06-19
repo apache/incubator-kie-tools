@@ -20,16 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import org.dashbuilder.dataprovider.DataSetProviderType;
-import org.dashbuilder.dataset.validation.groups.ExternalDataSetDefValidation;
+
+import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.isBlank;
 
 public class ExternalDataSetDef extends DataSetDef {
 
-    @NotNull(groups = {ExternalDataSetDefValidation.class})
-    @Size(min = 4, groups = {ExternalDataSetDefValidation.class})
     private String url;
 
     private boolean dynamic;
@@ -123,6 +119,13 @@ public class ExternalDataSetDef extends DataSetDef {
     public Map<String, String> getQuery() {
         return query;
     }
+    
+    public void validate() {
+        super.validate();
+        if (isBlank(url) && isBlank(content) && (join == null || join.isEmpty())) {
+            throw new IllegalArgumentException("Data Sets must have \"url\", \"content\" or \"join\" field");
+        }
+    }
 
     @Override
     public DataSetDef clone() {
@@ -132,6 +135,7 @@ public class ExternalDataSetDef extends DataSetDef {
         def.setDynamic(isDynamic());
         def.setHeaders(getHeaders());
         def.setAccumulate(isAccumulate());
+        def.setContent(getContent());
         def.setType(getType());
         def.setJoin(getJoin());
         def.setQuery(getQuery());
